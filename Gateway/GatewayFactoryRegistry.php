@@ -5,7 +5,7 @@ namespace SwagMigrationNext\Gateway;
 use IteratorAggregate;
 use SwagMigrationNext\Migration\MigrationContext;
 
-class GatewayService implements GatewayServiceInterface
+class GatewayFactoryRegistry implements GatewayFactoryRegistryInterface
 {
     /**
      * @var GatewayFactoryInterface[]
@@ -23,14 +23,14 @@ class GatewayService implements GatewayServiceInterface
     /**
      * @throws GatewayNotFoundException
      */
-    public function getGateway(MigrationContext $context)
+    public function createGateway(MigrationContext $context): GatewayInterface
     {
         foreach ($this->gatewayFactories as $gatewayFactory) {
             if ($gatewayFactory->getName() === $context->getGatewayIdentifier()) {
-                return $gatewayFactory->createGateway($context);
+                return $gatewayFactory->create($context);
             }
         }
 
-        throw new GatewayNotFoundException(sprintf('Gateway "%s" not found', $context->getGatewayIdentifier()));
+        throw new GatewayNotFoundException($context->getGatewayIdentifier());
     }
 }

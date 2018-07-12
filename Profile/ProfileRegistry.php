@@ -30,6 +30,6 @@ class ProfileRegistry implements ProfileRegistryInterface
             }
         }
 
-        throw new ProfileNotFoundException(sprintf('Profile "%s" not found', $profileName));
+        throw new ProfileNotFoundException($profileName);
     }
 }

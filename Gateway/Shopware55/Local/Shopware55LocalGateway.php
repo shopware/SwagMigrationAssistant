@@ -1,11 +1,16 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Gateway\Shopware5\Local;
+namespace SwagMigrationNext\Gateway\Shopware55\Local;
 
 use SwagMigrationNext\Gateway\GatewayInterface;
 
-class Gateway implements GatewayInterface
+class Shopware55LocalGateway implements GatewayInterface
 {
+    /**
+     * @var string
+     */
+    private $dbHost;
+
     /**
      * @var string
      */
@@ -21,8 +26,9 @@ class Gateway implements GatewayInterface
      */
     private $dbPassword;
 
-    public function __construct(string $dbName, string $dbUser, string $dbPassword)
+    public function __construct(string $dbHost, string $dbName, string $dbUser, string $dbPassword)
     {
+        $this->dbHost = $dbHost;
         $this->dbName = $dbName;
         $this->dbUser = $dbUser;
         $this->dbPassword = $dbPassword;

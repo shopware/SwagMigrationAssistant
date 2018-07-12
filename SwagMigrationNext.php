@@ -14,7 +14,7 @@ class SwagMigrationNext extends Plugin
     /**
      * {@inheritdoc}
      */
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         parent::build($container);
 
@@ -22,6 +22,7 @@ class SwagMigrationNext extends Plugin
         $loader->load('gateway.xml');
         $loader->load('migration.xml');
         $loader->load('profile.xml');
+        $loader->load('shopware55.xml');
     }
 
     /**

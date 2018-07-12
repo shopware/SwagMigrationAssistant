@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Gateway\Shopware5\Api;
+namespace SwagMigrationNext\Gateway\Shopware55\Api;
 
 use SwagMigrationNext\Gateway\GatewayInterface;
 
-class Gateway implements GatewayInterface
+class Shopware55ApiGateway implements GatewayInterface
 {
     /**
      * @var string

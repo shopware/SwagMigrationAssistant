@@ -8,9 +8,5 @@
         <service id="SwagMigrationNext\Profile\ProfileRegistry" class="SwagMigrationNext\Profile\ProfileRegistry">
             <argument type="tagged" tag="shopware.migration.profile"/>
         </service>
-
-        <service id="SwagMigrationNext\Profile\Shopware5\Profile" class="SwagMigrationNext\Profile\Shopware5\Profile">
-            <tag name="shopware.migration.profile"/>
-        </service>
     </services>
 </container>

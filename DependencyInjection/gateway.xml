@@ -5,15 +5,18 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="SwagMigrationNext\Gateway\GatewayService" class="SwagMigrationNext\Gateway\GatewayService">
+        <service id="SwagMigrationNext\Gateway\GatewayFactoryRegistry"
+                 class="SwagMigrationNext\Gateway\GatewayFactoryRegistry">
             <argument type="tagged" tag="shopware.migration.gateway_factory"/>
         </service>
 
-        <service id="SwagMigrationNext\Gateway\Shopware5\Api\Factory" class="SwagMigrationNext\Gateway\Shopware5\Api\Factory">
+        <service id="SwagMigrationNext\Gateway\Shopware55\Api\Shopware55ApiFactory"
+                 class="SwagMigrationNext\Gateway\Shopware55\Api\Shopware55ApiFactory">
             <tag name="shopware.migration.gateway_factory"/>
         </service>
 
-        <service id="SwagMigrationNext\Gateway\Shopware5\Local\Factory" class="SwagMigrationNext\Gateway\Shopware5\Local\Factory">
+        <service id="SwagMigrationNext\Gateway\Shopware55\Local\Shopware55LocalFactory"
+                 class="SwagMigrationNext\Gateway\Shopware55\Local\Shopware55LocalFactory">
             <tag name="shopware.migration.gateway_factory"/>
         </service>
     </services>

@@ -24,10 +24,10 @@ class SwagMigrationDataDefinition extends EntityDefinition
         return new FieldCollection([
             new TenantIdField(),
             (new IdField('id', 'id'))->setFlags(new PrimaryKey(), new Required()),
-            (new StringField('profile', 'profile'))->setFlags(new PrimaryKey(), new Required()),
-            (new StringField('entity_type', 'entityType'))->setFlags(new PrimaryKey(), new Required()),
+            (new StringField('profile', 'profile'))->setFlags(new Required()),
+            (new StringField('entity_type', 'entityType'))->setFlags(new Required()),
             (new JsonField('raw', 'raw'))->setFlags(new Required()),
-            new JsonField('mapped', 'mapped'),
+            new JsonField('converted', 'converted'),
             new JsonField('unmapped', 'unmapped'),
             new DateField('created_at', 'createdAt'),
             new DateField('updated_at', 'updatedAt'),

@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="SwagMigrationNext\Profile\Shopware55\Shopware55Profile"
+                 class="SwagMigrationNext\Profile\Shopware55\Shopware55Profile">
+            <argument type="service" id="swag_migration_data.repository"/>
+            <argument type="service" id="SwagMigrationNext\Profile\Shopware55\Converter\ConverterRegistry"/>
+            <tag name="shopware.migration.profile"/>
+        </service>
+
+        <service id="SwagMigrationNext\Profile\Shopware55\Converter\ConverterRegistry"
+                 class="SwagMigrationNext\Profile\Shopware55\Converter\ConverterRegistry">
+            <argument type="tagged" tag="shopware.migration.shopware55.converter"/>
+        </service>
+
+        <service id="SwagMigrationNext\Profile\Shopware55\Converter\ProductConverter"
+                 class="SwagMigrationNext\Profile\Shopware55\Converter\ProductConverter">
+            <tag name="shopware.migration.shopware55.converter"/>
+        </service>
+    </services>
+</container>

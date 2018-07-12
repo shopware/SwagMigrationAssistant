@@ -2,15 +2,18 @@
 
 namespace SwagMigrationNext\Test\Gateway;
 
+use Exception;
+use Shopware\Core\Content\Product\ProductDefinition;
+use SwagMigrationNext\Gateway\GatewayFactoryRegistry;
 use SwagMigrationNext\Gateway\GatewayNotFoundException;
-use SwagMigrationNext\Gateway\GatewayService;
 use SwagMigrationNext\Migration\MigrationContext;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\HttpFoundation\Response;
 
 class GatewayServiceTest extends KernelTestCase
 {
     /**
-     * @var GatewayService
+     * @var GatewayFactoryRegistry
      */
     private $gatewayService;
 
@@ -20,15 +23,14 @@ class GatewayServiceTest extends KernelTestCase
 
         self::bootKernel();
 
-        $this->gatewayService = self::$container->get(GatewayService::class);
+        $this->gatewayService = self::$container->get(GatewayFactoryRegistry::class);
     }
 
-    public function testGetGatewayNotFound()
+    public function testGetGatewayNotFound(): void
     {
-        $this->expectException(GatewayNotFoundException::class);
         $migrationContext = new MigrationContext(
             'foobar',
-            'product',
+            ProductDefinition::getEntityName(),
             'api',
             [
                 'endpoint' => 'foo',
@@ -36,6 +38,13 @@ class GatewayServiceTest extends KernelTestCase
                 'apiKey' => 'foo',
             ]
         );
-        $this->gatewayService->getGateway($migrationContext);
+
+        try {
+            $this->gatewayService->createGateway($migrationContext);
+        } catch (Exception $e) {
+            /** @var GatewayNotFoundException $e */
+            self::assertInstanceOf(GatewayNotFoundException::class, $e);
+            self::assertEquals(Response::HTTP_NOT_FOUND, $e->getStatusCode());
+        }
     }
 }

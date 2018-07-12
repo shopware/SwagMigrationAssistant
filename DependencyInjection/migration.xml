@@ -23,8 +23,7 @@
                  class="SwagMigrationNext\Migration\MigrationService"
                  public="true">
             <argument type="service" id="SwagMigrationNext\Profile\ProfileRegistry"/>
-            <argument type="service" id="SwagMigrationNext\Gateway\GatewayService"/>
-            <argument type="service" id="swag_migration_data.repository"/>
+            <argument type="service" id="SwagMigrationNext\Gateway\GatewayFactoryRegistry"/>
         </service>
     </services>
 </container>
