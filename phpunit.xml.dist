@@ -9,6 +9,7 @@
         <server name="KERNEL_CLASS" value="Shopware\Development\Kernel"/>
         <env name="APP_ENV" value="test"/>
         <env name="APP_SECRET" value="s$cretf0rt3st"/>
+        <env name="DATABASE_URL" value="mysql://app:app@mysql:3306/shopware"/>
         <env name="SHELL_VERBOSITY" value="-1"/>
     </php>
 
@@ -23,8 +24,6 @@
             <directory suffix=".php">./</directory>
             <exclude>
                 <directory suffix=".php">./Test</directory>
-
-                <file>SwagMigrationNext.php</file>
             </exclude>
         </whitelist>
     </filter>

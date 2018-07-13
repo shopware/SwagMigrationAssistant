@@ -6,6 +6,8 @@ use SwagMigrationNext\Gateway\GatewayInterface;
 
 class Shopware55LocalGateway implements GatewayInterface
 {
+    public const GATEWAY_TYPE = 'local';
+
     /**
      * @var string
      */

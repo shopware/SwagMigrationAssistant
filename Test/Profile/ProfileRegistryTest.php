@@ -29,7 +29,7 @@ class ProfileRegistryTest extends KernelTestCase
         try {
             $this->profileRegistry->getProfile('foo');
         } catch (Exception $e) {
-            /** @var ProfileNotFoundException $e */
+            /* @var ProfileNotFoundException $e */
             self::assertInstanceOf(ProfileNotFoundException::class, $e);
             self::assertEquals(Response::HTTP_NOT_FOUND, $e->getStatusCode());
         }

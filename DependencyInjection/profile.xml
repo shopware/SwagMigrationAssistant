@@ -8,5 +8,19 @@
         <service id="SwagMigrationNext\Profile\ProfileRegistry" class="SwagMigrationNext\Profile\ProfileRegistry">
             <argument type="tagged" tag="shopware.migration.profile"/>
         </service>
+
+        <service id="SwagMigrationNext\Profile\SwagMigrationProfileDefinition"
+                 class="SwagMigrationNext\Profile\SwagMigrationProfileDefinition">
+            <tag name="shopware.entity.definition" entity="swag_migration_profile"/>
+        </service>
+
+        <service id="swag_migration_profile.repository" class="Shopware\Core\Framework\ORM\EntityRepository" public="true">
+            <argument>SwagMigrationNext\Profile\SwagMigrationProfileDefinition</argument>
+            <argument type="service" id="Shopware\Core\Framework\ORM\Read\EntityReaderInterface"/>
+            <argument type="service" id="Shopware\Core\Framework\ORM\VersionManager"/>
+            <argument type="service" id="Shopware\Core\Framework\ORM\Search\EntitySearcherInterface"/>
+            <argument type="service" id="Shopware\Core\Framework\ORM\Search\EntityAggregatorInterface"/>
+            <argument type="service" id="event_dispatcher"/>
+        </service>
     </services>
 </container>

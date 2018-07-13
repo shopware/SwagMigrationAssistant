@@ -29,7 +29,7 @@ class ConverterRegistryTest extends KernelTestCase
         try {
             $this->converterRegistry->getConverter('foo');
         } catch (Exception $e) {
-            /** @var ConverterNotFoundException $e */
+            /* @var ConverterNotFoundException $e */
             self::assertInstanceOf(ConverterNotFoundException::class, $e);
             self::assertEquals(Response::HTTP_NOT_FOUND, $e->getStatusCode());
         }
