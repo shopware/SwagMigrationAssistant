@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="SwagMigrationNext\Gateway\GatewayFactoryRegistry"
+                 class="SwagMigrationNext\Gateway\GatewayFactoryRegistry">
+            <argument type="tagged" tag="shopware.migration.gateway_factory"/>
+        </service>
+
+        <service id="SwagMigrationNext\Gateway\Shopware55\Api\Shopware55ApiFactory"
+                 class="SwagMigrationNext\Gateway\Shopware55\Api\Shopware55ApiFactory">
+            <tag name="shopware.migration.gateway_factory"/>
+        </service>
+
+        <service id="SwagMigrationNext\Gateway\Shopware55\Local\Shopware55LocalFactory"
+                 class="SwagMigrationNext\Gateway\Shopware55\Local\Shopware55LocalFactory">
+            <tag name="shopware.migration.gateway_factory"/>
+        </service>
+    </services>
+</container>

@@ -1,0 +1,29 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="SwagMigrationNext\Migration\Data\SwagMigrationDataDefinition"
+                 class="SwagMigrationNext\Migration\Data\SwagMigrationDataDefinition">
+            <tag name="shopware.entity.definition" entity="swag_migration_data"/>
+        </service>
+
+        <service id="swag_migration_data.repository" class="Shopware\Core\Framework\ORM\EntityRepository" public="true">
+            <argument>SwagMigrationNext\Migration\Data\SwagMigrationDataDefinition</argument>
+            <argument type="service" id="Shopware\Core\Framework\ORM\Read\EntityReaderInterface"/>
+            <argument type="service" id="Shopware\Core\Framework\ORM\VersionManager"/>
+            <argument type="service" id="Shopware\Core\Framework\ORM\Search\EntitySearcherInterface"/>
+            <argument type="service" id="Shopware\Core\Framework\ORM\Search\EntityAggregatorInterface"/>
+            <argument type="service" id="event_dispatcher"/>
+        </service>
+
+        <service id="SwagMigrationNext\Migration\MigrationService"
+                 class="SwagMigrationNext\Migration\MigrationService"
+                 public="true">
+            <argument type="service" id="SwagMigrationNext\Profile\ProfileRegistry"/>
+            <argument type="service" id="SwagMigrationNext\Gateway\GatewayFactoryRegistry"/>
+        </service>
+    </services>
+</container>
