@@ -42,7 +42,7 @@ class GatewayServiceTest extends KernelTestCase
         try {
             $this->gatewayService->createGateway($migrationContext);
         } catch (Exception $e) {
-            /** @var GatewayNotFoundException $e */
+            /* @var GatewayNotFoundException $e */
             self::assertInstanceOf(GatewayNotFoundException::class, $e);
             self::assertEquals(Response::HTTP_NOT_FOUND, $e->getStatusCode());
         }

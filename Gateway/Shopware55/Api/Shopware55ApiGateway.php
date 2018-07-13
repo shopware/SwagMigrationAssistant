@@ -6,6 +6,8 @@ use SwagMigrationNext\Gateway\GatewayInterface;
 
 class Shopware55ApiGateway implements GatewayInterface
 {
+    public const GATEWAY_TYPE = 'api';
+
     /**
      * @var string
      */

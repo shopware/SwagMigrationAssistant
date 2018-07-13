@@ -20,9 +20,6 @@ class ProductConverter implements ConverterInterface
         $converted->setName($data['name']);
         unset($data['name']);
 
-        return new ConvertStruct(
-            $converted,
-            $data
-        );
+        return new ConvertStruct($converted, $data);
     }
 }
