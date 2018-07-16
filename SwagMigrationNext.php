@@ -4,10 +4,10 @@ namespace SwagMigrationNext;
 
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Defaults;
-use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Plugin;
-use Shopware\Core\Framework\Plugin\Context\ActivateContext;
 use Shopware\Core\Framework\Plugin\Context\InstallContext;
+use Shopware\Core\Framework\Plugin\Context\UninstallContext;
+use Shopware\Core\Framework\Struct\Uuid;
 use SwagMigrationNext\Gateway\Shopware55\Api\Shopware55ApiGateway;
 use SwagMigrationNext\Gateway\Shopware55\Local\Shopware55LocalGateway;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
@@ -38,30 +38,39 @@ class SwagMigrationNext extends Plugin
     {
         /** @var Connection $connection */
         $connection = $this->container->get(Connection::class);
+        $fromHexToBytes = Uuid::fromHexToBytes(Defaults::TENANT_ID);
 
         $sql = file_get_contents($this->getPath() . '/schema.sql');
         $connection->query($sql);
+
+        $connection->insert('swag_migration_profile', [
+            'id' => Uuid::uuid4()->getBytes(),
+            'tenant_id' => $fromHexToBytes,
+            'profile' => Shopware55Profile::PROFILE_NAME,
+            'gateway_type' => Shopware55ApiGateway::GATEWAY_TYPE,
+        ]);
+
+        $connection->insert('swag_migration_profile', [
+            'id' => Uuid::uuid4()->getBytes(),
+            'tenant_id' => $fromHexToBytes,
+            'profile' => Shopware55Profile::PROFILE_NAME,
+            'gateway_type' => Shopware55LocalGateway::GATEWAY_TYPE,
+        ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function activate(ActivateContext $activateContext)
+    public function uninstall(UninstallContext $context)
     {
-        $profileRepo = $this->container->get('swag_migration_profile.repository');
+        if ($context->keepUserData()) {
+            parent::uninstall($context);
+            return;
+        }
 
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
-        $createData = [
-            [
-                'profile' => Shopware55Profile::PROFILE_NAME,
-                'gatewayType' => Shopware55ApiGateway::GATEWAY_TYPE,
-            ],
-            [
-                'profile' => Shopware55Profile::PROFILE_NAME,
-                'gatewayType' => Shopware55LocalGateway::GATEWAY_TYPE,
-            ],
-        ];
-        $profileRepo->create($createData, $context);
-        parent::activate($activateContext);
+        /** @var Connection $connection */
+        $connection = $this->container->get(Connection::class);
+        $connection->exec("DROP TABLE swag_migration_data; DROP TABLE swag_migration_profile");
+
+        parent::uninstall($context);
     }
+
+
 }
