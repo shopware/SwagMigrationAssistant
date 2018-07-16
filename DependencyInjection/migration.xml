@@ -30,7 +30,7 @@
                  class="SwagMigrationNext\Migration\MigrationWriteService"
                  public="true">
             <argument type="service" id="swag_migration_data.repository"/>
-            <argument type="tagged" tag="shopware.migration.writer"/>
+            <argument type="service" id="SwagMigrationNext\Migration\Writer\WriterRegistry"/>
         </service>
 
         <service id="SwagMigrationNext\Migration\Writer\ProductWriter"
