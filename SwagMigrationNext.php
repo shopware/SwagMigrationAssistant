@@ -29,6 +29,7 @@ class SwagMigrationNext extends Plugin
         $loader->load('migration.xml');
         $loader->load('profile.xml');
         $loader->load('shopware55.xml');
+        $loader->load('validator.xml');
         $loader->load('writer.xml');
     }
 
