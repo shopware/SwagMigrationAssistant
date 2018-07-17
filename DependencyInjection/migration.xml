@@ -45,5 +45,11 @@
             <tag name="shopware.migration.writer"/>
             <argument type="service" id="product.repository" />
         </service>
+
+        <service id="SwagMigrationNext\Migration\Controller\MigrationController"
+                 class="SwagMigrationNext\Migration\Controller\MigrationController"
+                 public="true">
+            <argument type="service" id="SwagMigrationNext\Migration\MigrationService"/>
+        </service>
     </services>
 </container>
