@@ -33,6 +33,23 @@ class Shopware55ApiGateway implements GatewayInterface
     public function read(string $entityType): array
     {
         // TODO use properties to create connection
-        return require __DIR__ . '/../../../Test/_fixtures/product_data.php';
+        $data = require __DIR__ . '/../../../Test/_fixtures/product_data.php';
+
+        foreach ($data as &$item) {
+            if (!empty($item['supplierID'])) {
+                $item['supplier.name'] = "TestSupplierName";
+            }
+
+            $item['tax.rate'] = 19;
+            $item['tax.name'] = "TestTaxName";
+
+            $item['prices'] = [
+                100,
+                200,
+                300
+            ];
+        }
+
+        return $data;
     }
 }

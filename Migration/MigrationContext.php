@@ -74,6 +74,9 @@ class MigrationContext extends Struct
         return $this->credentials;
     }
 
+    /**
+     * @return string
+     */
     public function getGatewayIdentifier(): string
     {
         return $this->getProfileName() . $this->getGatewayName();
