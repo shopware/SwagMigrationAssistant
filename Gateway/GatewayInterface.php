@@ -7,9 +7,9 @@ interface GatewayInterface
     /**
      * Reads the given entity type from its connection and returns the data
      *
-     * @param string $entityType
+     * @param string $entityName
      *
      * @return array
      */
-    public function read(string $entityType): array;
+    public function read(string $entityName): array;
 }

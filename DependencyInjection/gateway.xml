@@ -9,15 +9,5 @@
                  class="SwagMigrationNext\Gateway\GatewayFactoryRegistry">
             <argument type="tagged" tag="shopware.migration.gateway_factory"/>
         </service>
-
-        <service id="SwagMigrationNext\Gateway\Shopware55\Api\Shopware55ApiFactory"
-                 class="SwagMigrationNext\Gateway\Shopware55\Api\Shopware55ApiFactory">
-            <tag name="shopware.migration.gateway_factory"/>
-        </service>
-
-        <service id="SwagMigrationNext\Gateway\Shopware55\Local\Shopware55LocalFactory"
-                 class="SwagMigrationNext\Gateway\Shopware55\Local\Shopware55LocalFactory">
-            <tag name="shopware.migration.gateway_factory"/>
-        </service>
     </services>
 </container>

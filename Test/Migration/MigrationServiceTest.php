@@ -63,8 +63,8 @@ class MigrationServiceTest extends KernelTestCase
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
         $migrationContext = new MigrationContext(
             Shopware55Profile::PROFILE_NAME,
-            ProductDefinition::getEntityName(),
             'api',
+            ProductDefinition::getEntityName(),
             [
                 'endpoint' => 'foo',
                 'apiUser' => 'foo',
@@ -76,7 +76,7 @@ class MigrationServiceTest extends KernelTestCase
 
         $criteria = new Criteria();
         $criteria->addFilter(new TermQuery('profile', Shopware55Profile::PROFILE_NAME));
-        $criteria->addFilter(new TermQuery('entityType', ProductDefinition::getEntityName()));
+        $criteria->addFilter(new TermQuery('entityName', ProductDefinition::getEntityName()));
         /** @var EntitySearchResult $result */
         $result = $this->migrationDataRepo->search($criteria, $context);
         self::assertEquals(37, $result->getTotal());
@@ -95,8 +95,8 @@ class MigrationServiceTest extends KernelTestCase
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
         $migrationContext = new MigrationContext(
             Shopware55Profile::PROFILE_NAME,
-            ProductDefinition::getEntityName(),
             'local',
+            ProductDefinition::getEntityName(),
             [
                 'dbHost' => 'foo',
                 'dbName' => 'foo',
@@ -109,7 +109,7 @@ class MigrationServiceTest extends KernelTestCase
 
         $criteria = new Criteria();
         $criteria->addFilter(new TermQuery('profile', Shopware55Profile::PROFILE_NAME));
-        $criteria->addFilter(new TermQuery('entityType', ProductDefinition::getEntityName()));
+        $criteria->addFilter(new TermQuery('entityName', ProductDefinition::getEntityName()));
         /** @var EntitySearchResult $result */
         $result = $this->migrationDataRepo->search($criteria, $context);
         self::assertEquals(37, $result->getTotal());

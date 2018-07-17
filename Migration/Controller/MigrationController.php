@@ -29,12 +29,12 @@ class MigrationController extends Controller
      */
     public function fetchData(Request $request, Context $context): JsonResponse
     {
-        $profileName = $request->get('profileName');
-        $gatewayName = $request->get('gatewayName');
-        $entityType = $request->get('entityType');
+        $profileName = $request->get('profileName', '');
+        $gatewayName = $request->get('gatewayName', '');
+        $entityName = $request->get('entityName', '');
         $credentials = $request->get('credentials', []);
 
-        $migrationContext = new MigrationContext($profileName, $gatewayName, $entityType, $credentials);
+        $migrationContext = new MigrationContext($profileName, $gatewayName, $entityName, $credentials);
         $this->migrationService->fetchData($migrationContext, $context);
 
         return new JsonResponse(['success' => true]);

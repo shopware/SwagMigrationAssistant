@@ -36,7 +36,7 @@ class Shopware55LocalGateway implements GatewayInterface
         $this->dbPassword = $dbPassword;
     }
 
-    public function read(string $entityType): array
+    public function read(string $entityName): array
     {
         // TODO use properties to read directly from database
         $data = require __DIR__ . '/../../../Test/_fixtures/product_data.php';
