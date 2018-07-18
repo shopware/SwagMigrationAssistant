@@ -8,15 +8,14 @@ use Shopware\Core\Framework\ORM\EntityRepository;
 
 class ProductWriter implements WriterInterface
 {
-
     /**
      * @var EntityRepository
      */
-    private $entityRepository;
+    private $productRepository;
 
-    public function __construct(EntityRepository $entityRepository)
+    public function __construct(EntityRepository $productRepository)
     {
-        $this->entityRepository = $entityRepository;
+        $this->productRepository = $productRepository;
     }
 
     public function supports(): string
@@ -26,6 +25,6 @@ class ProductWriter implements WriterInterface
 
     public function writeData(array $data, Context $context): void
     {
-        $this->entityRepository->create($data, $context);
+        $this->productRepository->create($data, $context);
     }
 }

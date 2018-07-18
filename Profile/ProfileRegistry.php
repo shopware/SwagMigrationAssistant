@@ -11,9 +11,6 @@ class ProfileRegistry implements ProfileRegistryInterface
      */
     private $profiles;
 
-    /**
-     * @param IteratorAggregate $profiles
-     */
     public function __construct(IteratorAggregate $profiles)
     {
         $this->profiles = $profiles;

@@ -6,7 +6,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Shopware\Core\Framework\Context;
 use SwagMigrationNext\Migration\MigrationContext;
-use SwagMigrationNext\Migration\MigrationService;
+use SwagMigrationNext\Migration\MigrationCollectService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,11 +14,11 @@ use Symfony\Component\HttpFoundation\Request;
 class MigrationController extends Controller
 {
     /**
-     * @var MigrationService
+     * @var MigrationCollectService
      */
     private $migrationService;
 
-    public function __construct(MigrationService $migrationService)
+    public function __construct(MigrationCollectService $migrationService)
     {
         $this->migrationService = $migrationService;
     }

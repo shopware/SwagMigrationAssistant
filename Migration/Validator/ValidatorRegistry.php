@@ -20,8 +20,6 @@ class ValidatorRegistry implements ValidatorRegistryInterface
     }
 
     /**
-     * @param string $entityName
-     * @return ValidatorInterface
      * @throws ValidatorNotFoundException
      */
     public function getValidator(string $entityName): ValidatorInterface

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace SwagMigrationNext\Migration;
 
@@ -8,9 +8,6 @@ interface MigrationWriteServiceInterface
 {
     /**
      * Writes the converted data into the database
-     *
-     * @param MigrationContext $migrationContext
-     * @param Context $context
      */
     public function writeData(MigrationContext $migrationContext, Context $context): void;
 }

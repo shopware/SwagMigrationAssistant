@@ -23,23 +23,23 @@ class MigrationWriteService implements MigrationWriteServiceInterface
     public function __construct(
         EntityRepository $migrationDataRepository,
         WriterRegistryInterface $writerRegistry
-    )
-    {
+    ) {
         $this->migrationDataRepository = $migrationDataRepository;
         $this->writerRegistry = $writerRegistry;
     }
 
-    public function writeData(MigrationContext $migrationContext, Context $context): void {
+    public function writeData(MigrationContext $migrationContext, Context $context): void
+    {
         $criteria = new Criteria();
-        $criteria->addFilter(new TermQuery('entityType', $migrationContext->getEntityType()));
+        $criteria->addFilter(new TermQuery('entityName', $migrationContext->getEntityName()));
         $migrationData = $this->migrationDataRepository->search($criteria, $context);
 
         $converted = [];
-        array_map(function($data) use (&$converted) {
+        array_map(function ($data) use (&$converted) {
             $converted[] = array_filter($data->get('converted'));
         }, $migrationData->getElements());
 
-        $currentWriter = $this->writerRegistry->getWriter($migrationContext->getEntityType());
+        $currentWriter = $this->writerRegistry->getWriter($migrationContext->getEntityName());
         $currentWriter->writeData($converted, $context);
     }
 }

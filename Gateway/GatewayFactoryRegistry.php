@@ -12,9 +12,6 @@ class GatewayFactoryRegistry implements GatewayFactoryRegistryInterface
      */
     private $gatewayFactories;
 
-    /**
-     * @param IteratorAggregate $gatewayFactories
-     */
     public function __construct(IteratorAggregate $gatewayFactories)
     {
         $this->gatewayFactories = $gatewayFactories;

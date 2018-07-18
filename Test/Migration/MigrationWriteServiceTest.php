@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace SwagMigrationNext\Test\Migration;
 
@@ -11,7 +11,7 @@ use Shopware\Core\Framework\ORM\EntityRepository;
 use Shopware\Core\Framework\ORM\Search\Criteria;
 use Shopware\Core\Framework\ORM\Search\EntitySearchResult;
 use SwagMigrationNext\Migration\MigrationContext;
-use SwagMigrationNext\Migration\MigrationService;
+use SwagMigrationNext\Migration\MigrationCollectService;
 use SwagMigrationNext\Migration\MigrationWriteService;
 use SwagMigrationNext\Migration\Writer\WriterNotFoundException;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
@@ -31,7 +31,7 @@ class MigrationWriteServiceTest extends KernelTestCase
     private $productRepro;
 
     /**
-     * @var MigrationService
+     * @var MigrationCollectService
      */
     private $migrationService;
 
@@ -50,7 +50,7 @@ class MigrationWriteServiceTest extends KernelTestCase
         $this->connection = self::$container->get(Connection::class);
         $this->connection->beginTransaction();
 
-        $this->migrationService = self::$container->get(MigrationService::class);
+        $this->migrationService = self::$container->get(MigrationCollectService::class);
         $this->migrationWriteService = self::$container->get(MigrationWriteService::class);
         $this->productRepro = self::$container->get('product.repository');
     }
@@ -66,8 +66,8 @@ class MigrationWriteServiceTest extends KernelTestCase
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
         $migrationContext = new MigrationContext(
             Shopware55Profile::PROFILE_NAME,
-            ProductDefinition::getEntityName(),
             'local',
+            ProductDefinition::getEntityName(),
             [
                 'dbHost' => 'foo',
                 'dbName' => 'foo',
@@ -77,12 +77,14 @@ class MigrationWriteServiceTest extends KernelTestCase
         );
 
         $this->migrationService->fetchData($migrationContext, $context);
-        $this->migrationWriteService->writeData($migrationContext, $context);
-
         $criteria = new Criteria();
+        $productTotalBefore = $this->productRepro->search($criteria, $context)->getTotal();
+
+        $this->migrationWriteService->writeData($migrationContext, $context);
+        $productTotalAfter = $this->productRepro->search($criteria, $context)->getTotal();
+
         /** @var EntitySearchResult $result */
-        $result = $this->productRepro->search($criteria, $context);
-        self::assertEquals(1062, $result->getTotal());
+        self::assertEquals(37, $productTotalAfter - $productTotalBefore);
     }
 
     public function testWriterNotFound(): void
@@ -90,8 +92,8 @@ class MigrationWriteServiceTest extends KernelTestCase
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
         $migrationContext = new MigrationContext(
             Shopware55Profile::PROFILE_NAME,
-            ProductDefinition::getEntityName(),
             'local',
+            ProductDefinition::getEntityName(),
             [
                 'dbHost' => 'foo',
                 'dbName' => 'foo',
@@ -103,8 +105,8 @@ class MigrationWriteServiceTest extends KernelTestCase
         $this->migrationService->fetchData($migrationContext, $context);
         $migrationContext = new MigrationContext(
             Shopware55Profile::PROFILE_NAME,
-            'foobar',
             'local',
+            'foobar',
             []
         );
 

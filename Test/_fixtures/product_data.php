@@ -2028,5 +2028,5 @@ Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod 
             'available_to' => null,
             'configurator_set_id' => '7',
         ],
-    ]
+    ],
 ];

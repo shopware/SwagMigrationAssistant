@@ -6,7 +6,7 @@ use Shopware\Core\Framework\Context;
 use SwagMigrationNext\Gateway\GatewayFactoryRegistryInterface;
 use SwagMigrationNext\Profile\ProfileRegistryInterface;
 
-class MigrationService implements MigrationServiceInterface
+class MigrationCollectService implements MigrationCollectServiceInterface
 {
     /**
      * @var ProfileRegistryInterface
