@@ -2,6 +2,7 @@
 
 namespace SwagMigrationNext\Migration\Writer;
 
+use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\ORM\EntityRepository;
 
@@ -20,16 +21,11 @@ class ProductWriter implements WriterInterface
 
     public function supports(): string
     {
-        return 'product';
+        return ProductDefinition::getEntityName();
     }
 
     public function writeData(array $data, Context $context): void
     {
-        $converted = [];
-        array_map(function($data) use (&$converted) {
-            $converted[] = array_filter($data->get('converted'));
-        }, $data);
-
-        $this->entityRepository->create($converted, $context);
+        $this->entityRepository->create($data, $context);
     }
 }

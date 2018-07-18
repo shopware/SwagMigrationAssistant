@@ -30,9 +30,6 @@ class MigrationValidateService implements MigrationValidateServiceInterface
         $this->validatorRegistry = $validatorRegistry;
     }
 
-    /**
-     * @throws Validator\ValidatorNotFoundException
-     */
     public function validateData(MigrationContext $migrationContext, Context $context): void
     {
         $criteria = new Criteria();

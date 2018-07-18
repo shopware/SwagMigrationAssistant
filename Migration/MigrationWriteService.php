@@ -13,7 +13,7 @@ class MigrationWriteService implements MigrationWriteServiceInterface
     /**
      * @var EntityRepository
      */
-    private $entityRepository;
+    private $migrationDataRepository;
 
     /**
      * @var WriterRegistryInterface[]
@@ -21,20 +21,25 @@ class MigrationWriteService implements MigrationWriteServiceInterface
     private $writerRegistry;
 
     public function __construct(
-        EntityRepository $entityRepository,
+        EntityRepository $migrationDataRepository,
         WriterRegistryInterface $writerRegistry
     )
     {
-        $this->entityRepository = $entityRepository;
+        $this->migrationDataRepository = $migrationDataRepository;
         $this->writerRegistry = $writerRegistry;
     }
 
     public function writeData(MigrationContext $migrationContext, Context $context): void {
         $criteria = new Criteria();
         $criteria->addFilter(new TermQuery('entityType', $migrationContext->getEntityType()));
-        $migration_data = $this->entityRepository->search($criteria, $context);
+        $migrationData = $this->migrationDataRepository->search($criteria, $context);
+
+        $converted = [];
+        array_map(function($data) use (&$converted) {
+            $converted[] = array_filter($data->get('converted'));
+        }, $migrationData->getElements());
 
         $currentWriter = $this->writerRegistry->getWriter($migrationContext->getEntityType());
-        $currentWriter->writeData($migration_data->getElements(), $context);
+        $currentWriter->writeData($converted, $context);
     }
 }

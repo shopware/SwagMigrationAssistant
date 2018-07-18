@@ -8,16 +8,11 @@ interface ValidatorInterface
 {
     /**
      * Identifier which internal entity this validator supports
-     *
-     * @return string
      */
     public function supports(): string;
 
     /**
      * Validates the converted data of the supported entity type
-     *
-     * @param array $data
-     * @param Context $context
      */
     public function validateData(array $data, Context $context): void;
 }

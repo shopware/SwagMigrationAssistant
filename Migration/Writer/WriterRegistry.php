@@ -11,19 +11,11 @@ class WriterRegistry implements WriterRegistryInterface
      */
     private $writers;
 
-    /**
-     * @param IteratorAggregate $writers
-     */
     public function __construct(IteratorAggregate $writers)
     {
         $this->writers = $writers;
     }
 
-    /**
-     * @param string $entityName
-     * @return WriterInterface
-     * @throws WriterNotFoundException
-     */
     public function getWriter(string $entityName): WriterInterface
     {
         foreach ($this->writers as $writer) {
