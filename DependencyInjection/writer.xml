@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="SwagMigrationNext\Migration\Writer\WriterRegistry" class="SwagMigrationNext\Migration\Writer\WriterRegistry">
+            <argument type="tagged" tag="shopware.migration.writer"/>
+        </service>
+
+        <service id="SwagMigrationNext\Migration\Writer\ProductWriter"
+                 class="SwagMigrationNext\Migration\Writer\ProductWriter">
+            <tag name="shopware.migration.writer"/>
+            <argument type="service" id="product.repository"/>
+        </service>
+    </services>
+</container>

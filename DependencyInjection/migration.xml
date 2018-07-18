@@ -25,5 +25,25 @@
             <argument type="service" id="SwagMigrationNext\Profile\ProfileRegistry"/>
             <argument type="service" id="SwagMigrationNext\Gateway\GatewayFactoryRegistry"/>
         </service>
+
+        <service id="SwagMigrationNext\Migration\MigrationWriteService"
+                 class="SwagMigrationNext\Migration\MigrationWriteService"
+                 public="true">
+            <argument type="service" id="swag_migration_data.repository"/>
+            <argument type="service" id="SwagMigrationNext\Migration\Writer\WriterRegistry"/>
+        </service>
+
+        <service id="SwagMigrationNext\Migration\MigrationValidateService"
+                 class="SwagMigrationNext\Migration\MigrationValidateService"
+                 public="true">
+            <argument type="service" id="swag_migration_data.repository"/>
+            <argument type="service" id="SwagMigrationNext\Migration\Validator\ValidatorRegistry"/>
+        </service>
+
+        <service id="SwagMigrationNext\Migration\Writer\ProductWriter"
+                 class="SwagMigrationNext\Migration\Writer\ProductWriter">
+            <tag name="shopware.migration.writer"/>
+            <argument type="service" id="product.repository" />
+        </service>
     </services>
 </container>

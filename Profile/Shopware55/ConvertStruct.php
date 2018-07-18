@@ -17,13 +17,13 @@ class ConvertStruct extends Struct
      */
     private $unmapped;
 
-    public function __construct(Entity $entity, array $unmapped)
+    public function __construct(array $entity, array $unmapped)
     {
         $this->entity = $entity;
         $this->unmapped = $unmapped;
     }
 
-    public function getEntity(): Entity
+    public function getEntity(): array
     {
         return $this->entity;
     }

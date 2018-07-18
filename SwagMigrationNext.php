@@ -4,17 +4,13 @@ namespace SwagMigrationNext;
 
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Defaults;
-use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\ORM\EntityRepository;
 use Shopware\Core\Framework\Plugin;
-use Shopware\Core\Framework\Plugin\Context\ActivateContext;
 use Shopware\Core\Framework\Plugin\Context\InstallContext;
 use Shopware\Core\Framework\Plugin\Context\UninstallContext;
 use Shopware\Core\Framework\Struct\Uuid;
 use SwagMigrationNext\Gateway\Shopware55\Api\Shopware55ApiGateway;
 use SwagMigrationNext\Gateway\Shopware55\Local\Shopware55LocalGateway;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
-use SwagMigrationNext\Profile\SwagMigrationProfileDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
@@ -33,6 +29,8 @@ class SwagMigrationNext extends Plugin
         $loader->load('migration.xml');
         $loader->load('profile.xml');
         $loader->load('shopware55.xml');
+        $loader->load('validator.xml');
+        $loader->load('writer.xml');
     }
 
     /**
