@@ -1,6 +1,5 @@
 <?php declare(strict_types=1);
 
-
 namespace SwagMigrationNext\Test\Migration;
 
 use Doctrine\DBAL\Connection;
@@ -9,7 +8,7 @@ use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\ORM\EntityRepository;
 use SwagMigrationNext\Migration\MigrationContext;
-use SwagMigrationNext\Migration\MigrationService;
+use SwagMigrationNext\Migration\MigrationCollectService;
 use SwagMigrationNext\Migration\MigrationValidateService;
 use SwagMigrationNext\Migration\Validator\ValidatorNotFoundException;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
@@ -29,7 +28,7 @@ class MigrationValidateServiceTest extends KernelTestCase
     private $productRepro;
 
     /**
-     * @var MigrationService
+     * @var MigrationCollectService
      */
     private $migrationService;
 
@@ -48,7 +47,7 @@ class MigrationValidateServiceTest extends KernelTestCase
         $this->connection = self::$container->get(Connection::class);
         $this->connection->beginTransaction();
 
-        $this->migrationService = self::$container->get(MigrationService::class);
+        $this->migrationService = self::$container->get(MigrationCollectService::class);
         $this->migrationValidateService = self::$container->get(MigrationValidateService::class);
         $this->productRepro = self::$container->get('product.repository');
     }
@@ -64,8 +63,8 @@ class MigrationValidateServiceTest extends KernelTestCase
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
         $migrationContext = new MigrationContext(
             Shopware55Profile::PROFILE_NAME,
-            ProductDefinition::getEntityName(),
             'local',
+            ProductDefinition::getEntityName(),
             [
                 'dbHost' => 'foo',
                 'dbName' => 'foo',
@@ -85,8 +84,8 @@ class MigrationValidateServiceTest extends KernelTestCase
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
         $migrationContext = new MigrationContext(
             Shopware55Profile::PROFILE_NAME,
-            ProductDefinition::getEntityName(),
             'local',
+            ProductDefinition::getEntityName(),
             [
                 'dbHost' => 'foo',
                 'dbName' => 'foo',
@@ -98,8 +97,8 @@ class MigrationValidateServiceTest extends KernelTestCase
         $this->migrationService->fetchData($migrationContext, $context);
         $migrationContext = new MigrationContext(
             Shopware55Profile::PROFILE_NAME,
-            'foobar',
             'local',
+            'foobar',
             []
         );
 

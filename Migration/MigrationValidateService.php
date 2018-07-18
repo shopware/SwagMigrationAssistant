@@ -14,7 +14,7 @@ class MigrationValidateService implements MigrationValidateServiceInterface
     /**
      * @var EntityRepository
      */
-    private $entityRepository;
+    private $migrationDataRepository;
 
     /**
      * @var ValidatorInterface[]
@@ -22,21 +22,20 @@ class MigrationValidateService implements MigrationValidateServiceInterface
     private $validatorRegistry;
 
     public function __construct(
-        EntityRepository $entityRepository,
+        EntityRepository $migrationDataRepository,
         ValidatorRegistryInterface $validatorRegistry
-    )
-    {
-        $this->entityRepository = $entityRepository;
+    ) {
+        $this->migrationDataRepository = $migrationDataRepository;
         $this->validatorRegistry = $validatorRegistry;
     }
 
     public function validateData(MigrationContext $migrationContext, Context $context): void
     {
         $criteria = new Criteria();
-        $criteria->addFilter(new TermQuery('entityType', $migrationContext->getEntityType()));
-        $migration_data = $this->entityRepository->search($criteria, $context);
+        $criteria->addFilter(new TermQuery('entityName', $migrationContext->getEntityName()));
+        $migrationData = $this->migrationDataRepository->search($criteria, $context);
 
-        $currentValidator = $this->validatorRegistry->getValidator($migrationContext->getEntityType());
-        $currentValidator->validateData($migration_data->getElements(), $context);
+        $currentValidator = $this->validatorRegistry->getValidator($migrationContext->getEntityName());
+        $currentValidator->validateData($migrationData->getElements(), $context);
     }
 }

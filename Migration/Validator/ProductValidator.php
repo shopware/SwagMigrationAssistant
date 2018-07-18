@@ -1,9 +1,8 @@
 <?php declare(strict_types=1);
 
-
 namespace SwagMigrationNext\Migration\Validator;
 
-
+use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\ORM\EntityRepository;
 
@@ -12,16 +11,16 @@ class ProductValidator implements ValidatorInterface
     /**
      * @var EntityRepository
      */
-    private $entityRepository;
+    private $productRepository;
 
-    public function __construct(EntityRepository $entityRepository)
+    public function __construct(EntityRepository $productRepository)
     {
-        $this->entityRepository = $entityRepository;
+        $this->productRepository = $productRepository;
     }
 
     public function supports(): string
     {
-        return 'product';
+        return ProductDefinition::getEntityName();
     }
 
     public function validateData(array $data, Context $context): void

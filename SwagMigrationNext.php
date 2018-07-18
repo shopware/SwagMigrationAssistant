@@ -60,19 +60,21 @@ class SwagMigrationNext extends Plugin
         ]);
     }
 
-    public function uninstall(UninstallContext $context)
+    /**
+     * {@inheritdoc}
+     */
+    public function uninstall(UninstallContext $context): void
     {
         if ($context->keepUserData()) {
             parent::uninstall($context);
+
             return;
         }
 
         /** @var Connection $connection */
         $connection = $this->container->get(Connection::class);
-        $connection->exec("DROP TABLE swag_migration_data; DROP TABLE swag_migration_profile");
+        $connection->exec('DROP TABLE swag_migration_data; DROP TABLE swag_migration_profile');
 
         parent::uninstall($context);
     }
-
-
 }

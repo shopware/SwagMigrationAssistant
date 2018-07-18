@@ -2,7 +2,7 @@ CREATE TABLE `swag_migration_data` (
   `id`          binary(16) NOT NULL,
   `tenant_id`   binary(16) NOT NULL,
   `profile`     VARCHAR(255),
-  `entity_type` VARCHAR(255),
+  `entity_name` VARCHAR(255),
   `raw`         LONGTEXT,
   `converted`   LONGTEXT,
   `unmapped`    LONGTEXT,

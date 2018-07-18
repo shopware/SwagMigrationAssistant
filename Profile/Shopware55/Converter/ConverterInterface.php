@@ -8,17 +8,11 @@ interface ConverterInterface
 {
     /**
      * Identifier which internal entity this converter supports
-     *
-     * @return string
      */
     public function supports(): string;
 
     /**
      * Converts the given data into the internal structure
-     *
-     * @param array $data
-     *
-     * @return ConvertStruct
      */
     public function convert(array $data): ConvertStruct;
 }

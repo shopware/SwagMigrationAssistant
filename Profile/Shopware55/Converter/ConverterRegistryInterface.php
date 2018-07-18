@@ -6,9 +6,6 @@ interface ConverterRegistryInterface
 {
     /**
      * Returns the converter which supports the given internal entity
-     *
-     * @param string $entity
-     * @return ConverterInterface
      */
     public function getConverter(string $entity): ConverterInterface;
 }

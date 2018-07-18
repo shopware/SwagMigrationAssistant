@@ -30,8 +30,8 @@ class GatewayServiceTest extends KernelTestCase
     {
         $migrationContext = new MigrationContext(
             'foobar',
-            ProductDefinition::getEntityName(),
             'api',
+            ProductDefinition::getEntityName(),
             [
                 'endpoint' => 'foo',
                 'apiUser' => 'foo',

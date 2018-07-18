@@ -11,9 +11,6 @@ class ConverterRegistry implements ConverterRegistryInterface
      */
     private $converters;
 
-    /**
-     * @param IteratorAggregate $converters
-     */
     public function __construct(IteratorAggregate $converters)
     {
         $this->converters = $converters;

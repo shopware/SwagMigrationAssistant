@@ -3,10 +3,17 @@
 namespace SwagMigrationNext\Gateway\Shopware55\Api;
 
 use SwagMigrationNext\Gateway\GatewayInterface;
+use SwagMigrationNext\Gateway\Shopware55\Api\Reader\Shopware55ApiClient;
+use SwagMigrationNext\Gateway\Shopware55\Api\Reader\Shopware55ApiReaderRegistry;
 
 class Shopware55ApiGateway implements GatewayInterface
 {
     public const GATEWAY_TYPE = 'api';
+
+    /**
+     * @var Shopware55ApiReaderRegistry
+     */
+    private $apiReaderRegistry;
 
     /**
      * @var string
@@ -23,33 +30,24 @@ class Shopware55ApiGateway implements GatewayInterface
      */
     private $apiKey;
 
-    public function __construct(string $endpoint, string $apiUser, string $apiKey)
-    {
+    public function __construct(
+        Shopware55ApiReaderRegistry $apiReaderRegistry,
+        string $endpoint,
+        string $apiUser,
+        string $apiKey
+    ) {
         $this->endpoint = $endpoint;
         $this->apiUser = $apiUser;
         $this->apiKey = $apiKey;
+        $this->apiReaderRegistry = $apiReaderRegistry;
     }
 
-    public function read(string $entityType): array
+    public function read(string $entityName): array
     {
-        // TODO use properties to create connection
-        $data = require __DIR__ . '/../../../Test/_fixtures/product_data.php';
+        $apiClient = new Shopware55ApiClient($this->endpoint, $this->apiUser, $this->apiKey);
 
-        foreach ($data as &$item) {
-            if (!empty($item['supplierID'])) {
-                $item['supplier.name'] = "TestSupplierName";
-            }
+        $reader = $this->apiReaderRegistry->getReader($entityName);
 
-            $item['tax.rate'] = 19;
-            $item['tax.name'] = "TestTaxName";
-
-            $item['prices'] = [
-                100,
-                200,
-                300
-            ];
-        }
-
-        return $data;
+        return $reader->read($apiClient);
     }
 }

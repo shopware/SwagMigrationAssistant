@@ -8,9 +8,6 @@ interface MigrationValidateServiceInterface
 {
     /**
      * Validates the converted data
-     *
-     * @param MigrationContext $migrationContext
-     * @param Context $context
      */
     public function validateData(MigrationContext $migrationContext, Context $context): void;
 }

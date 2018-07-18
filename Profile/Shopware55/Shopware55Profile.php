@@ -36,15 +36,20 @@ class Shopware55Profile implements ProfileInterface
 
     public function collectData(GatewayInterface $gateway, MigrationContext $migrationContext, Context $context): void
     {
-        $entityType = $migrationContext->getEntityType();
-        $converter = $this->converterRegistry->getConverter($entityType);
-        $data = $gateway->read($entityType);
+        $entityName = $migrationContext->getEntityName();
+        $converter = $this->converterRegistry->getConverter($entityName);
+        /** @var array[] $data */
+        $data = $gateway->read($entityName);
+
+        if (!array_key_exists('data', $data)) {
+            return;
+        }
 
         $createData = [];
-        foreach ($data as $item) {
+        foreach ($data['data'] as $item) {
             $convertStruct = $converter->convert($item);
             $createData[] = [
-                'entityType' => $entityType,
+                'entityName' => $entityName,
                 'profile' => $this->getName(),
                 'raw' => $item,
                 'converted' => $convertStruct->getEntity(),

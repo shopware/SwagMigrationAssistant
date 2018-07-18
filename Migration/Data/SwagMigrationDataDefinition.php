@@ -25,7 +25,7 @@ class SwagMigrationDataDefinition extends EntityDefinition
             new TenantIdField(),
             (new IdField('id', 'id'))->setFlags(new PrimaryKey(), new Required()),
             (new StringField('profile', 'profile'))->setFlags(new Required()),
-            (new StringField('entity_type', 'entityType'))->setFlags(new Required()),
+            (new StringField('entity_name', 'entityName'))->setFlags(new Required()),
             (new JsonField('raw', 'raw'))->setFlags(new Required()),
             new JsonField('converted', 'converted'),
             new JsonField('unmapped', 'unmapped'),

@@ -5,6 +5,7 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
+        <!-- Shopware 5.5 Profile -->
         <service id="SwagMigrationNext\Profile\Shopware55\Shopware55Profile"
                  class="SwagMigrationNext\Profile\Shopware55\Shopware55Profile">
             <argument type="service" id="swag_migration_data.repository"/>
@@ -12,6 +13,7 @@
             <tag name="shopware.migration.profile"/>
         </service>
 
+        <!-- Shopware 5.5 Profile Converter -->
         <service id="SwagMigrationNext\Profile\Shopware55\Converter\ConverterRegistry"
                  class="SwagMigrationNext\Profile\Shopware55\Converter\ConverterRegistry">
             <argument type="tagged" tag="shopware.migration.shopware55.converter"/>
@@ -20,6 +22,29 @@
         <service id="SwagMigrationNext\Profile\Shopware55\Converter\ProductConverter"
                  class="SwagMigrationNext\Profile\Shopware55\Converter\ProductConverter">
             <tag name="shopware.migration.shopware55.converter"/>
+        </service>
+
+        <!-- Shopware 5.5 Gateway -->
+        <service id="SwagMigrationNext\Gateway\Shopware55\Api\Shopware55ApiFactory"
+                 class="SwagMigrationNext\Gateway\Shopware55\Api\Shopware55ApiFactory">
+            <argument type="service" id="SwagMigrationNext\Gateway\Shopware55\Api\Reader\Shopware55ApiReaderRegistry"/>
+            <tag name="shopware.migration.gateway_factory"/>
+        </service>
+
+        <service id="SwagMigrationNext\Gateway\Shopware55\Local\Shopware55LocalFactory"
+                 class="SwagMigrationNext\Gateway\Shopware55\Local\Shopware55LocalFactory">
+            <tag name="shopware.migration.gateway_factory"/>
+        </service>
+
+        <!-- Shopware 5.5 Gateway Reader -->
+        <service id="SwagMigrationNext\Gateway\Shopware55\Api\Reader\Shopware55ApiReaderRegistry"
+                 class="SwagMigrationNext\Gateway\Shopware55\Api\Reader\Shopware55ApiReaderRegistry">
+            <argument type="tagged" tag="shopware.migration.gateway.shopware55.reader"/>
+        </service>
+
+        <service id="SwagMigrationNext\Gateway\Shopware55\Api\Reader\Shopware55ApiProductReader"
+                 class="SwagMigrationNext\Gateway\Shopware55\Api\Reader\Shopware55ApiProductReader">
+            <tag name="shopware.migration.gateway.shopware55.reader"/>
         </service>
     </services>
 </container>

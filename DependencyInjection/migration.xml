@@ -19,8 +19,8 @@
             <argument type="service" id="event_dispatcher"/>
         </service>
 
-        <service id="SwagMigrationNext\Migration\MigrationService"
-                 class="SwagMigrationNext\Migration\MigrationService"
+        <service id="SwagMigrationNext\Migration\MigrationCollectService"
+                 class="SwagMigrationNext\Migration\MigrationCollectService"
                  public="true">
             <argument type="service" id="SwagMigrationNext\Profile\ProfileRegistry"/>
             <argument type="service" id="SwagMigrationNext\Gateway\GatewayFactoryRegistry"/>
@@ -44,6 +44,12 @@
                  class="SwagMigrationNext\Migration\Writer\ProductWriter">
             <tag name="shopware.migration.writer"/>
             <argument type="service" id="product.repository" />
+        </service>
+
+        <service id="SwagMigrationNext\Migration\Controller\MigrationController"
+                 class="SwagMigrationNext\Migration\Controller\MigrationController"
+                 public="true">
+            <argument type="service" id="SwagMigrationNext\Migration\MigrationCollectService"/>
         </service>
     </services>
 </container>
