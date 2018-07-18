@@ -1,0 +1,73 @@
+<?php declare(strict_types=1);
+/**
+ * Created by PhpStorm.
+ * User: mt
+ * Date: 18.07.18
+ * Time: 14:01
+ */
+
+namespace SwagMigrationNext\Test\Migration\Controller;
+
+use Doctrine\DBAL\Connection;
+use Shopware\Core\Content\Product\ProductDefinition;
+use Shopware\Core\Defaults;
+use Shopware\Core\Framework\Context;
+use SwagMigrationNext\Migration\Controller\MigrationController;
+use SwagMigrationNext\Test\MigrationServicesTrait;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+
+class MigrationControllerTest extends KernelTestCase
+{
+    use MigrationServicesTrait;
+
+    /**
+     * @var MigrationController
+     */
+    private $controller;
+
+    /**
+     * @var Connection
+     */
+    private $connection;
+
+    protected function setUp()
+    {
+        parent::setUp();
+        self::bootKernel();
+
+        /* @var Connection $connection */
+        $this->connection = self::$container->get(Connection::class);
+        $this->connection->beginTransaction();
+
+        $this->controller = new MigrationController($this->getMigrationCollectService(self::$container->get('swag_migration_data.repository')));
+    }
+
+    protected function tearDown()
+    {
+        $this->connection->rollBack();
+        parent::tearDown();
+    }
+
+    public function testFetchData()
+    {
+        $request = new Request([
+            'profileName' => 'shopware55',
+            'gatewayName' => 'api',
+            'entityName' => ProductDefinition::getEntityName(),
+            'credentials' => [
+                'endpoint' => 'test',
+                'apiUser' => 'test',
+                'apiKey' => 'test',
+            ],
+        ]);
+        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $result = $this->controller->fetchData($request, $context);
+
+        $this->assertEquals(Response::HTTP_OK, $result->getStatusCode());
+        $content = json_decode($result->getContent(), true);
+
+        $this->assertTrue($content['success']);
+    }
+}

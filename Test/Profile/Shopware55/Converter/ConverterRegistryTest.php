@@ -3,25 +3,24 @@
 namespace SwagMigrationNext\Test\Profile\Shopware55\Converter;
 
 use Exception;
+use PHPUnit\Framework\TestCase;
 use SwagMigrationNext\Profile\Shopware55\Converter\ConverterNotFoundException;
 use SwagMigrationNext\Profile\Shopware55\Converter\ConverterRegistry;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use SwagMigrationNext\Profile\Shopware55\Converter\ConverterRegistryInterface;
+use SwagMigrationNext\Profile\Shopware55\Converter\ProductConverter;
+use SwagMigrationNext\Test\Mock\DummyCollection;
 use Symfony\Component\HttpFoundation\Response;
 
-class ConverterRegistryTest extends KernelTestCase
+class ConverterRegistryTest extends TestCase
 {
     /**
-     * @var ConverterRegistry
+     * @var ConverterRegistryInterface
      */
     private $converterRegistry;
 
     protected function setUp()
     {
-        parent::setUp();
-
-        self::bootKernel();
-
-        $this->converterRegistry = self::$container->get(ConverterRegistry::class);
+        $this->converterRegistry = new ConverterRegistry(new DummyCollection([new ProductConverter()]));
     }
 
     public function testGetConverterNotFound(): void

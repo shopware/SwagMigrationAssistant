@@ -3,7 +3,7 @@
 namespace SwagMigrationNext\Migration;
 
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\ORM\EntityRepository;
+use Shopware\Core\Framework\ORM\RepositoryInterface;
 use Shopware\Core\Framework\ORM\Search\Criteria;
 use Shopware\Core\Framework\ORM\Search\Query\TermQuery;
 use SwagMigrationNext\Migration\Validator\ValidatorInterface;
@@ -12,7 +12,7 @@ use SwagMigrationNext\Migration\Validator\ValidatorRegistryInterface;
 class MigrationValidateService implements MigrationValidateServiceInterface
 {
     /**
-     * @var EntityRepository
+     * @var RepositoryInterface
      */
     private $migrationDataRepository;
 
@@ -22,7 +22,7 @@ class MigrationValidateService implements MigrationValidateServiceInterface
     private $validatorRegistry;
 
     public function __construct(
-        EntityRepository $migrationDataRepository,
+        RepositoryInterface $migrationDataRepository,
         ValidatorRegistryInterface $validatorRegistry
     ) {
         $this->migrationDataRepository = $migrationDataRepository;

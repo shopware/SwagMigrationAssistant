@@ -39,23 +39,6 @@ class Shopware55LocalGateway implements GatewayInterface
     public function read(string $entityName): array
     {
         // TODO use properties to read directly from database
-        $data = require __DIR__ . '/../../../Test/_fixtures/product_data.php';
-
-        foreach ($data['data'] as &$item) {
-            if (!empty($item['supplierID'])) {
-                $item['supplier.name'] = 'TestSupplierName';
-            }
-
-            $item['tax.rate'] = 19;
-            $item['tax.name'] = 'TestTaxName';
-
-            $item['prices'] = [
-                100,
-                200,
-                300,
-            ];
-        }
-
-        return $data;
+        return [];
     }
 }

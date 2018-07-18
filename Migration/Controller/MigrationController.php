@@ -5,8 +5,8 @@ namespace SwagMigrationNext\Migration\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Shopware\Core\Framework\Context;
+use SwagMigrationNext\Migration\MigrationCollectServiceInterface;
 use SwagMigrationNext\Migration\MigrationContext;
-use SwagMigrationNext\Migration\MigrationCollectService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,13 +14,13 @@ use Symfony\Component\HttpFoundation\Request;
 class MigrationController extends Controller
 {
     /**
-     * @var MigrationCollectService
+     * @var MigrationCollectServiceInterface
      */
-    private $migrationService;
+    private $migrationCollectService;
 
-    public function __construct(MigrationCollectService $migrationService)
+    public function __construct(MigrationCollectServiceInterface $migrationCollectService)
     {
-        $this->migrationService = $migrationService;
+        $this->migrationCollectService = $migrationCollectService;
     }
 
     /**
@@ -35,7 +35,7 @@ class MigrationController extends Controller
         $credentials = $request->get('credentials', []);
 
         $migrationContext = new MigrationContext($profileName, $gatewayName, $entityName, $credentials);
-        $this->migrationService->fetchData($migrationContext, $context);
+        $this->migrationCollectService->fetchData($migrationContext, $context);
 
         return new JsonResponse(['success' => true]);
     }

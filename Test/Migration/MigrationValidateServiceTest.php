@@ -6,34 +6,38 @@ use Doctrine\DBAL\Connection;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\ORM\EntityRepository;
+use Shopware\Core\Framework\ORM\RepositoryInterface;
+use SwagMigrationNext\Migration\MigrationCollectServiceInterface;
 use SwagMigrationNext\Migration\MigrationContext;
-use SwagMigrationNext\Migration\MigrationCollectService;
 use SwagMigrationNext\Migration\MigrationValidateService;
+use SwagMigrationNext\Migration\MigrationValidateServiceInterface;
 use SwagMigrationNext\Migration\Validator\ValidatorNotFoundException;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationNext\Test\MigrationServicesTrait;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
 class MigrationValidateServiceTest extends KernelTestCase
 {
+    use MigrationServicesTrait;
+
     /**
      * @var Connection
      */
     private $connection;
 
     /**
-     * @var EntityRepository
+     * @var RepositoryInterface
      */
-    private $productRepro;
+    private $productRepo;
 
     /**
-     * @var MigrationCollectService
+     * @var MigrationCollectServiceInterface
      */
-    private $migrationService;
+    private $migrationCollectService;
 
     /**
-     * @var MigrationValidateService
+     * @var MigrationValidateServiceInterface
      */
     private $migrationValidateService;
 
@@ -47,9 +51,9 @@ class MigrationValidateServiceTest extends KernelTestCase
         $this->connection = self::$container->get(Connection::class);
         $this->connection->beginTransaction();
 
-        $this->migrationService = self::$container->get(MigrationCollectService::class);
+        $this->migrationCollectService = $this->getMigrationCollectService(self::$container->get('swag_migration_data.repository'));
         $this->migrationValidateService = self::$container->get(MigrationValidateService::class);
-        $this->productRepro = self::$container->get('product.repository');
+        $this->productRepo = self::$container->get('product.repository');
     }
 
     protected function tearDown()
@@ -73,7 +77,7 @@ class MigrationValidateServiceTest extends KernelTestCase
             ]
         );
 
-        $this->migrationService->fetchData($migrationContext, $context);
+        $this->migrationCollectService->fetchData($migrationContext, $context);
         $this->migrationValidateService->validateData($migrationContext, $context);
         //Todo: Implement a real test
         self::assertTrue(true);
@@ -94,7 +98,7 @@ class MigrationValidateServiceTest extends KernelTestCase
             ]
         );
 
-        $this->migrationService->fetchData($migrationContext, $context);
+        $this->migrationCollectService->fetchData($migrationContext, $context);
         $migrationContext = new MigrationContext(
             Shopware55Profile::PROFILE_NAME,
             'local',

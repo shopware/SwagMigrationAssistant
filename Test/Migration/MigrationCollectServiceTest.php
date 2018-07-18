@@ -10,15 +10,18 @@ use Shopware\Core\Framework\ORM\RepositoryInterface;
 use Shopware\Core\Framework\ORM\Search\Criteria;
 use Shopware\Core\Framework\ORM\Search\EntitySearchResult;
 use Shopware\Core\Framework\ORM\Search\Query\TermQuery;
+use SwagMigrationNext\Migration\MigrationCollectServiceInterface;
 use SwagMigrationNext\Migration\MigrationContext;
-use SwagMigrationNext\Migration\MigrationCollectService;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationNext\Test\MigrationServicesTrait;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class MigrationCollectServiceTest extends KernelTestCase
 {
+    use MigrationServicesTrait;
+
     /**
-     * @var MigrationCollectService
+     * @var MigrationCollectServiceInterface
      */
     private $migrationCollectService;
 
@@ -47,8 +50,8 @@ class MigrationCollectServiceTest extends KernelTestCase
         $this->connection = self::$container->get(Connection::class);
         $this->connection->beginTransaction();
 
-        $this->migrationCollectService = self::$container->get(MigrationCollectService::class);
         $this->migrationDataRepo = self::$container->get('swag_migration_data.repository');
+        $this->migrationCollectService = $this->getMigrationCollectService($this->migrationDataRepo);
         $this->productRepo = self::$container->get('product.repository');
     }
 
@@ -58,18 +61,17 @@ class MigrationCollectServiceTest extends KernelTestCase
         parent::tearDown();
     }
 
-    public function testFetchDataLocalGateway(): void
+    public function testFetchDataApiGateway(): void
     {
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
         $migrationContext = new MigrationContext(
             Shopware55Profile::PROFILE_NAME,
-            'local',
+            'api',
             ProductDefinition::getEntityName(),
             [
-                'dbHost' => 'foo',
-                'dbName' => 'foo',
-                'dbUser' => 'foo',
-                'dbPassword' => 'foo',
+                'endpoint' => 'test',
+                'apiUser' => 'test',
+                'apiKey' => 'test',
             ]
         );
 
@@ -81,13 +83,25 @@ class MigrationCollectServiceTest extends KernelTestCase
         /** @var EntitySearchResult $result */
         $result = $this->migrationDataRepo->search($criteria, $context);
         self::assertEquals(37, $result->getTotal());
+    }
 
-        /** @var \Shopware\Core\Framework\Struct\ArrayStruct $migrationData */
-        $migrationData = $result->first();
-        $unmapped = $migrationData->get('unmapped');
-        $converted = $migrationData->get('converted');
+    public function testFetchDataLocalGateway(): void
+    {
+        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $migrationContext = new MigrationContext(
+            Shopware55Profile::PROFILE_NAME,
+            'local',
+            ProductDefinition::getEntityName(),
+            []
+        );
 
-        self::assertArrayNotHasKey('name', $unmapped);
-        self::assertNotNull($converted['name']);
+        $this->migrationCollectService->fetchData($migrationContext, $context);
+
+        $criteria = new Criteria();
+        $criteria->addFilter(new TermQuery('profile', Shopware55Profile::PROFILE_NAME));
+        $criteria->addFilter(new TermQuery('entityName', ProductDefinition::getEntityName()));
+        /** @var EntitySearchResult $result */
+        $result = $this->migrationDataRepo->search($criteria, $context);
+        self::assertEquals(37, $result->getTotal());
     }
 }

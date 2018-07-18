@@ -4,16 +4,16 @@ namespace SwagMigrationNext\Migration\Writer;
 
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\ORM\EntityRepository;
+use Shopware\Core\Framework\ORM\RepositoryInterface;
 
 class ProductWriter implements WriterInterface
 {
     /**
-     * @var EntityRepository
+     * @var RepositoryInterface
      */
     private $productRepository;
 
-    public function __construct(EntityRepository $productRepository)
+    public function __construct(RepositoryInterface $productRepository)
     {
         $this->productRepository = $productRepository;
     }

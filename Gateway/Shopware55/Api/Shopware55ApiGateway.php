@@ -4,14 +4,14 @@ namespace SwagMigrationNext\Gateway\Shopware55\Api;
 
 use SwagMigrationNext\Gateway\GatewayInterface;
 use SwagMigrationNext\Gateway\Shopware55\Api\Reader\Shopware55ApiClient;
-use SwagMigrationNext\Gateway\Shopware55\Api\Reader\Shopware55ApiReaderRegistry;
+use SwagMigrationNext\Gateway\Shopware55\Api\Reader\Shopware55ApiReaderRegistryInterface;
 
 class Shopware55ApiGateway implements GatewayInterface
 {
     public const GATEWAY_TYPE = 'api';
 
     /**
-     * @var Shopware55ApiReaderRegistry
+     * @var Shopware55ApiReaderRegistryInterface
      */
     private $apiReaderRegistry;
 
@@ -31,7 +31,7 @@ class Shopware55ApiGateway implements GatewayInterface
     private $apiKey;
 
     public function __construct(
-        Shopware55ApiReaderRegistry $apiReaderRegistry,
+        Shopware55ApiReaderRegistryInterface $apiReaderRegistry,
         string $endpoint,
         string $apiUser,
         string $apiKey

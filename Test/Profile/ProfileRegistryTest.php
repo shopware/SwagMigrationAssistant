@@ -3,25 +3,24 @@
 namespace SwagMigrationNext\Test\Profile;
 
 use Exception;
+use PHPUnit\Framework\TestCase;
 use SwagMigrationNext\Profile\ProfileNotFoundException;
 use SwagMigrationNext\Profile\ProfileRegistry;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use SwagMigrationNext\Profile\ProfileRegistryInterface;
+use SwagMigrationNext\Test\Mock\DummyCollection;
+use SwagMigrationNext\Test\Mock\Profile\Dummy\DummyProfile;
 use Symfony\Component\HttpFoundation\Response;
 
-class ProfileRegistryTest extends KernelTestCase
+class ProfileRegistryTest extends TestCase
 {
     /**
-     * @var ProfileRegistry
+     * @var ProfileRegistryInterface
      */
     private $profileRegistry;
 
     protected function setUp()
     {
-        parent::setUp();
-
-        self::bootKernel();
-
-        $this->profileRegistry = self::$container->get(ProfileRegistry::class);
+        $this->profileRegistry = new ProfileRegistry(new DummyCollection([new DummyProfile()]));
     }
 
     public function testGetProfileNotFound(): void

@@ -3,7 +3,7 @@
 namespace SwagMigrationNext\Migration;
 
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\ORM\EntityRepository;
+use Shopware\Core\Framework\ORM\RepositoryInterface;
 use Shopware\Core\Framework\ORM\Search\Criteria;
 use Shopware\Core\Framework\ORM\Search\Query\TermQuery;
 use SwagMigrationNext\Migration\Writer\WriterRegistryInterface;
@@ -11,7 +11,7 @@ use SwagMigrationNext\Migration\Writer\WriterRegistryInterface;
 class MigrationWriteService implements MigrationWriteServiceInterface
 {
     /**
-     * @var EntityRepository
+     * @var RepositoryInterface
      */
     private $migrationDataRepository;
 
@@ -21,7 +21,7 @@ class MigrationWriteService implements MigrationWriteServiceInterface
     private $writerRegistry;
 
     public function __construct(
-        EntityRepository $migrationDataRepository,
+        RepositoryInterface $migrationDataRepository,
         WriterRegistryInterface $writerRegistry
     ) {
         $this->migrationDataRepository = $migrationDataRepository;

@@ -7,36 +7,40 @@ use Exception;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\ORM\EntityRepository;
+use Shopware\Core\Framework\ORM\RepositoryInterface;
 use Shopware\Core\Framework\ORM\Search\Criteria;
 use Shopware\Core\Framework\ORM\Search\EntitySearchResult;
+use SwagMigrationNext\Migration\MigrationCollectServiceInterface;
 use SwagMigrationNext\Migration\MigrationContext;
-use SwagMigrationNext\Migration\MigrationCollectService;
 use SwagMigrationNext\Migration\MigrationWriteService;
+use SwagMigrationNext\Migration\MigrationWriteServiceInterface;
 use SwagMigrationNext\Migration\Writer\WriterNotFoundException;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationNext\Test\MigrationServicesTrait;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
 class MigrationWriteServiceTest extends KernelTestCase
 {
+    use MigrationServicesTrait;
+
     /**
      * @var Connection
      */
     private $connection;
 
     /**
-     * @var EntityRepository
+     * @var RepositoryInterface
      */
-    private $productRepro;
+    private $productRepo;
 
     /**
-     * @var MigrationCollectService
+     * @var MigrationCollectServiceInterface
      */
-    private $migrationService;
+    private $migrationCollectService;
 
     /**
-     * @var MigrationWriteService
+     * @var MigrationWriteServiceInterface
      */
     private $migrationWriteService;
 
@@ -50,9 +54,9 @@ class MigrationWriteServiceTest extends KernelTestCase
         $this->connection = self::$container->get(Connection::class);
         $this->connection->beginTransaction();
 
-        $this->migrationService = self::$container->get(MigrationCollectService::class);
+        $this->migrationCollectService = $this->getMigrationCollectService(self::$container->get('swag_migration_data.repository'));
         $this->migrationWriteService = self::$container->get(MigrationWriteService::class);
-        $this->productRepro = self::$container->get('product.repository');
+        $this->productRepo = self::$container->get('product.repository');
     }
 
     protected function tearDown()
@@ -68,22 +72,17 @@ class MigrationWriteServiceTest extends KernelTestCase
             Shopware55Profile::PROFILE_NAME,
             'local',
             ProductDefinition::getEntityName(),
-            [
-                'dbHost' => 'foo',
-                'dbName' => 'foo',
-                'dbUser' => 'foo',
-                'dbPassword' => 'foo',
-            ]
+            []
         );
 
-        $this->migrationService->fetchData($migrationContext, $context);
+        $this->migrationCollectService->fetchData($migrationContext, $context);
         $criteria = new Criteria();
-        $productTotalBefore = $this->productRepro->search($criteria, $context)->getTotal();
+        $productTotalBefore = $this->productRepo->search($criteria, $context)->getTotal();
 
         $this->migrationWriteService->writeData($migrationContext, $context);
-        $productTotalAfter = $this->productRepro->search($criteria, $context)->getTotal();
+        $productTotalAfter = $this->productRepo->search($criteria, $context)->getTotal();
 
-        /** @var EntitySearchResult $result */
+        /* @var EntitySearchResult $result */
         self::assertEquals(37, $productTotalAfter - $productTotalBefore);
     }
 
@@ -94,15 +93,10 @@ class MigrationWriteServiceTest extends KernelTestCase
             Shopware55Profile::PROFILE_NAME,
             'local',
             ProductDefinition::getEntityName(),
-            [
-                'dbHost' => 'foo',
-                'dbName' => 'foo',
-                'dbUser' => 'foo',
-                'dbPassword' => 'foo',
-            ]
+            []
         );
 
-        $this->migrationService->fetchData($migrationContext, $context);
+        $this->migrationCollectService->fetchData($migrationContext, $context);
         $migrationContext = new MigrationContext(
             Shopware55Profile::PROFILE_NAME,
             'local',

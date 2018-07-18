@@ -3,27 +3,26 @@
 namespace SwagMigrationNext\Test\Gateway;
 
 use Exception;
+use PHPUnit\Framework\TestCase;
 use Shopware\Core\Content\Product\ProductDefinition;
 use SwagMigrationNext\Gateway\GatewayFactoryRegistry;
+use SwagMigrationNext\Gateway\GatewayFactoryRegistryInterface;
 use SwagMigrationNext\Gateway\GatewayNotFoundException;
 use SwagMigrationNext\Migration\MigrationContext;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use SwagMigrationNext\Test\Mock\DummyCollection;
+use SwagMigrationNext\Test\Mock\Gateway\Dummy\Local\DummyLocalFactory;
 use Symfony\Component\HttpFoundation\Response;
 
-class GatewayServiceTest extends KernelTestCase
+class GatewayServiceTest extends TestCase
 {
     /**
-     * @var GatewayFactoryRegistry
+     * @var GatewayFactoryRegistryInterface
      */
-    private $gatewayService;
+    private $gatewayFactoryRegistry;
 
     protected function setUp()
     {
-        parent::setUp();
-
-        self::bootKernel();
-
-        $this->gatewayService = self::$container->get(GatewayFactoryRegistry::class);
+        $this->gatewayFactoryRegistry = new GatewayFactoryRegistry(new DummyCollection([new DummyLocalFactory()]));
     }
 
     public function testGetGatewayNotFound(): void
@@ -40,7 +39,7 @@ class GatewayServiceTest extends KernelTestCase
         );
 
         try {
-            $this->gatewayService->createGateway($migrationContext);
+            $this->gatewayFactoryRegistry->createGateway($migrationContext);
         } catch (Exception $e) {
             /* @var GatewayNotFoundException $e */
             self::assertInstanceOf(GatewayNotFoundException::class, $e);
