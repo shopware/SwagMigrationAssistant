@@ -6,7 +6,7 @@ use Shopware\Core\Content\Product\ProductDefinition;
 use SwagMigrationNext\Gateway\Shopware55\Api\Reader\Shopware55ApiClient;
 use SwagMigrationNext\Gateway\Shopware55\Api\Reader\Shopware55ApiReaderInterface;
 
-class DummyReader implements Shopware55ApiReaderInterface
+class ApiDummyReader implements Shopware55ApiReaderInterface
 {
     public function supports(): string
     {

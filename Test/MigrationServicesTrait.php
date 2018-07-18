@@ -13,7 +13,7 @@ use SwagMigrationNext\Profile\Shopware55\Converter\ConverterRegistry;
 use SwagMigrationNext\Profile\Shopware55\Converter\ProductConverter;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Mock\DummyCollection;
-use SwagMigrationNext\Test\Mock\Gateway\Dummy\Api\Reader\DummyReader;
+use SwagMigrationNext\Test\Mock\Gateway\Dummy\Api\Reader\ApiDummyReader;
 use SwagMigrationNext\Test\Mock\Gateway\Dummy\Local\DummyLocalFactory;
 
 trait MigrationServicesTrait
@@ -22,7 +22,9 @@ trait MigrationServicesTrait
     {
         $converterRegistry = new ConverterRegistry(new DummyCollection([new ProductConverter()]));
         $profileRegistry = new ProfileRegistry(new DummyCollection([new Shopware55Profile($migrationDataRepo, $converterRegistry)]));
-        $shopware55ApiReaderRegistry = new Shopware55ApiReaderRegistry(new DummyCollection([new DummyReader()]));
+
+        $shopware55ApiReaderRegistry = new Shopware55ApiReaderRegistry(new DummyCollection([new ApiDummyReader()]));
+
         $gatewayFactoryRegistry = new GatewayFactoryRegistry(new DummyCollection([
             new Shopware55ApiFactory($shopware55ApiReaderRegistry),
             new DummyLocalFactory(),

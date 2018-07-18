@@ -17,7 +17,7 @@ class Shopware55ApiReaderRegistry implements Shopware55ApiReaderRegistryInterfac
     }
 
     /**
-     * @throws Shopware55ReaderNotFoundException
+     * @throws Shopware55ApiReaderNotFoundException
      */
     public function getReader(string $entityName): Shopware55ApiReaderInterface
     {
@@ -27,6 +27,6 @@ class Shopware55ApiReaderRegistry implements Shopware55ApiReaderRegistryInterfac
             }
         }
 
-        throw new Shopware55ReaderNotFoundException($entityName);
+        throw new Shopware55ApiReaderNotFoundException($entityName);
     }
 }

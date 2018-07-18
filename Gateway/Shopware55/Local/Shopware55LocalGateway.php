@@ -2,11 +2,18 @@
 
 namespace SwagMigrationNext\Gateway\Shopware55\Local;
 
+use Doctrine\DBAL\Driver\PDOConnection;
 use SwagMigrationNext\Gateway\GatewayInterface;
+use SwagMigrationNext\Gateway\Shopware55\Local\Reader\Shopware55LocalReaderRegistryInterface;
 
 class Shopware55LocalGateway implements GatewayInterface
 {
     public const GATEWAY_TYPE = 'local';
+
+    /**
+     * @var Shopware55LocalReaderRegistryInterface
+     */
+    private $localReaderRegistry;
 
     /**
      * @var string
@@ -21,6 +28,11 @@ class Shopware55LocalGateway implements GatewayInterface
     /**
      * @var string
      */
+    private $dbPort;
+
+    /**
+     * @var string
+     */
     private $dbUser;
 
     /**
@@ -28,9 +40,17 @@ class Shopware55LocalGateway implements GatewayInterface
      */
     private $dbPassword;
 
-    public function __construct(string $dbHost, string $dbName, string $dbUser, string $dbPassword)
-    {
+    public function __construct(
+        Shopware55LocalReaderRegistryInterface $localReaderRegistry,
+        string $dbHost,
+        string $dbPort,
+        string $dbName,
+        string $dbUser,
+        string $dbPassword
+    ) {
+        $this->localReaderRegistry = $localReaderRegistry;
         $this->dbHost = $dbHost;
+        $this->dbPort = $dbPort;
         $this->dbName = $dbName;
         $this->dbUser = $dbUser;
         $this->dbPassword = $dbPassword;
@@ -38,7 +58,11 @@ class Shopware55LocalGateway implements GatewayInterface
 
     public function read(string $entityName): array
     {
-        // TODO use properties to read directly from database
-        return [];
+        $reader = $this->localReaderRegistry->getReader($entityName);
+
+        $dsn = sprintf('mysql:dbname=%s;host=%s;port=%s', $this->dbName, $this->dbHost, $this->dbPort);
+        $connection = new PDOConnection($dsn, $this->dbUser, $this->dbPassword);
+
+        return $reader->read($connection);
     }
 }

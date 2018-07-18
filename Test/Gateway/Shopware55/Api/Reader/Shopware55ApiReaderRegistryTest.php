@@ -10,11 +10,11 @@ namespace SwagMigrationNext\Test\Gateway\Shopware55\Api\Reader;
 
 use Exception;
 use PHPUnit\Framework\TestCase;
+use SwagMigrationNext\Gateway\Shopware55\Api\Reader\Shopware55ApiReaderNotFoundException;
 use SwagMigrationNext\Gateway\Shopware55\Api\Reader\Shopware55ApiReaderRegistry;
 use SwagMigrationNext\Gateway\Shopware55\Api\Reader\Shopware55ApiReaderRegistryInterface;
-use SwagMigrationNext\Gateway\Shopware55\Api\Reader\Shopware55ReaderNotFoundException;
 use SwagMigrationNext\Test\Mock\DummyCollection;
-use SwagMigrationNext\Test\Mock\Gateway\Dummy\Api\Reader\DummyReader;
+use SwagMigrationNext\Test\Mock\Gateway\Dummy\Api\Reader\ApiDummyReader;
 use Symfony\Component\HttpFoundation\Response;
 
 class Shopware55ApiReaderRegistryTest extends TestCase
@@ -26,7 +26,7 @@ class Shopware55ApiReaderRegistryTest extends TestCase
 
     protected function setUp()
     {
-        $this->readerRegistry = new Shopware55ApiReaderRegistry(new DummyCollection([new DummyReader()]));
+        $this->readerRegistry = new Shopware55ApiReaderRegistry(new DummyCollection([new ApiDummyReader()]));
     }
 
     public function testGetReader()
@@ -34,8 +34,8 @@ class Shopware55ApiReaderRegistryTest extends TestCase
         try {
             $this->readerRegistry->getReader('foo');
         } catch (Exception $e) {
-            /* @var Shopware55ReaderNotFoundException $e */
-            self::assertInstanceOf(Shopware55ReaderNotFoundException::class, $e);
+            /* @var Shopware55ApiReaderNotFoundException $e */
+            self::assertInstanceOf(Shopware55ApiReaderNotFoundException::class, $e);
             self::assertEquals(Response::HTTP_NOT_FOUND, $e->getStatusCode());
         }
     }
