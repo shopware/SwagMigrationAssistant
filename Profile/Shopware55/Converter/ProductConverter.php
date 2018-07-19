@@ -4,6 +4,9 @@ namespace SwagMigrationNext\Profile\Shopware55\Converter;
 
 use Ramsey\Uuid\Uuid;
 use Shopware\Core\Content\Product\ProductDefinition;
+use Shopware\Core\Content\Rule\RuleStruct;
+use Shopware\Core\Defaults;
+use Shopware\Core\Framework\Rule\Container\AndRule;
 use SwagMigrationNext\Profile\Shopware55\ConvertStruct;
 
 class ProductConverter implements ConverterInterface
@@ -15,7 +18,10 @@ class ProductConverter implements ConverterInterface
 
     public function convert(array $data): ConvertStruct
     {
-        $converted['id'] = Uuid::uuid4()->getHex();
+        $product_uuid = Uuid::uuid4()->getHex();
+
+        $converted['id'] = $product_uuid;
+        $converted['tendantId'] = Uuid::fromString('FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF')->getHex();
 
         $converted['name'] = $data['name'];
         unset($data['name']);
@@ -34,8 +40,25 @@ class ProductConverter implements ConverterInterface
         if (!empty($data['prices'])) {
             foreach ($data['prices'] as $price) {
                 $converted['price'] = [
-                    'gross' => $price,
-                    'net' => $price,
+                    'gross' => (float) $price['price'],
+                    'net' => (float) $price['price'],
+                ];
+
+                // Todo: Add a customer group and create a price rule for this
+                $converted['priceRules'][] = [
+                    'tendantId' => Uuid::fromString('FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF')->getHex(),
+                    'id' => Uuid::uuid4()->getHex(),
+                    // Todo: Create rule before creating the price rule
+                    'ruleId' => Uuid::fromString('FD2816FCCA184FB18581CFC4EC367B2D')->getHex(),
+                    // Todo: Create currency before creating the price rule
+                    'currencyId' => Defaults::CURRENCY,
+
+                    'price' => [
+                        'gross' => (float) $price['price'],
+                        'net' => (float) $price['price'],
+                    ],
+                    'quantityStart' => (int) $price['from'],
+                    'quantityEnd' => ($price['to'] === 'beliebig') ? null : (int) $price['to'],
                 ];
             }
         }

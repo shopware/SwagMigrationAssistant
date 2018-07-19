@@ -61,7 +61,7 @@ class Shopware55LocalGateway implements GatewayInterface
         $reader = $this->localReaderRegistry->getReader($entityName);
 
         $dsn = sprintf('mysql:dbname=%s;host=%s;port=%s', $this->dbName, $this->dbHost, $this->dbPort);
-        $connection = new PDOConnection($dsn, $this->dbUser, $this->dbPassword);
+        $connection = new PDOConnection($dsn, $this->dbUser, $this->dbPassword, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
 
         return $reader->read($connection);
     }
