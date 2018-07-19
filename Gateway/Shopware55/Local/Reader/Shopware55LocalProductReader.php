@@ -20,8 +20,7 @@ FROM s_articles AS product
 INNER JOIN s_articles_supplier AS supplier ON supplier.id = product.`supplierID`
 INNER JOIN s_core_tax as tax ON tax.id = product.taxID
 ';
-        $products = $connection->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
 
-        return ['data' => $products];
+        return $connection->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
     }
 }

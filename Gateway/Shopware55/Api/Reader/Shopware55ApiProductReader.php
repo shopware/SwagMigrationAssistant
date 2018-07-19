@@ -13,6 +13,6 @@ class Shopware55ApiProductReader implements Shopware55ApiReaderInterface
 
     public function read(Shopware55ApiClient $apiClient): array
     {
-        return $apiClient->get('articles');
+        return $apiClient->get('articles')['data'];
     }
 }

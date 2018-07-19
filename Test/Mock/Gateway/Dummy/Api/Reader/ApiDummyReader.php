@@ -17,7 +17,7 @@ class ApiDummyReader implements Shopware55ApiReaderInterface
     {
         $data = require __DIR__ . '/../../../../../_fixtures/product_data.php';
 
-        foreach ($data['data'] as &$item) {
+        foreach ($data as &$item) {
             if (!empty($item['supplierID'])) {
                 $item['supplier.name'] = 'TestSupplierName';
             }

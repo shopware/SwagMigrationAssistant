@@ -42,7 +42,7 @@ class Shopware55Profile implements ProfileInterface
         $data = $gateway->read($entityName);
 
         $createData = [];
-        foreach ($data['data'] as $item) {
+        foreach ($data as $item) {
             $convertStruct = $converter->convert($item);
             $createData[] = [
                 'entityName' => $entityName,
