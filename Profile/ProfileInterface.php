@@ -4,7 +4,6 @@ namespace SwagMigrationNext\Profile;
 
 use Shopware\Core\Framework\Context;
 use SwagMigrationNext\Gateway\GatewayInterface;
-use SwagMigrationNext\Migration\MigrationContext;
 
 interface ProfileInterface
 {
@@ -16,5 +15,5 @@ interface ProfileInterface
     /**
      * Collects the data from the given gateway and converts it into the internal structure
      */
-    public function collectData(GatewayInterface $gateway, MigrationContext $migrationContext, Context $context): void;
+    public function collectData(GatewayInterface $gateway, string $entityName, Context $context, array $additionalRelationData = []): void;
 }

@@ -23,13 +23,15 @@ class SwagMigrationDataDefinition extends EntityDefinition
     protected static function defineFields(): FieldCollection
     {
         return new FieldCollection([
-            new TenantIdField(),
             (new IdField('id', 'id'))->setFlags(new PrimaryKey(), new Required()),
+            new TenantIdField(),
             (new StringField('profile', 'profile'))->setFlags(new Required()),
             (new StringField('entity_name', 'entityName'))->setFlags(new Required()),
             (new JsonField('raw', 'raw'))->setFlags(new Required()),
             new JsonField('converted', 'converted'),
             new JsonField('unmapped', 'unmapped'),
+            new StringField('old_identifier', 'oldIdentifier'),
+            new IdField('entity_uuid', 'entityUuid'),
             new CreatedAtField(),
             new UpdatedAtField(),
         ]);

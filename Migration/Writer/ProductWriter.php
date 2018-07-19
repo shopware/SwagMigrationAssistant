@@ -25,6 +25,6 @@ class ProductWriter implements WriterInterface
 
     public function writeData(array $data, Context $context): void
     {
-        $this->productRepository->create($data, $context);
+        $this->productRepository->upsert($data, $context);
     }
 }

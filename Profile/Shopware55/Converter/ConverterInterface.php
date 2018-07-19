@@ -14,5 +14,5 @@ interface ConverterInterface
     /**
      * Converts the given data into the internal structure
      */
-    public function convert(array $data): ConvertStruct;
+    public function convert(array $data, array $additionalRelationData = []): ConvertStruct;
 }
