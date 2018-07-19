@@ -2,30 +2,29 @@
 
 namespace SwagMigrationNext\Profile\Shopware55;
 
-use Shopware\Core\Framework\ORM\Entity;
 use Shopware\Core\Framework\Struct\Struct;
 
 class ConvertStruct extends Struct
 {
     /**
-     * @var Entity
+     * @var array
      */
-    private $entity;
+    private $converted;
 
     /**
      * @var array
      */
     private $unmapped;
 
-    public function __construct(array $entity, array $unmapped)
+    public function __construct(array $converted, array $unmapped)
     {
-        $this->entity = $entity;
+        $this->converted = $converted;
         $this->unmapped = $unmapped;
     }
 
-    public function getEntity(): array
+    public function getConverted(): array
     {
-        return $this->entity;
+        return $this->converted;
     }
 
     public function getUnmapped(): array

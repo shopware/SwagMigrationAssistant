@@ -48,7 +48,7 @@ class Shopware55Profile implements ProfileInterface
                 'entityName' => $entityName,
                 'profile' => $this->getName(),
                 'raw' => $item,
-                'converted' => $convertStruct->getEntity(),
+                'converted' => $convertStruct->getConverted(),
                 'unmapped' => $convertStruct->getUnmapped(),
             ];
         }
