@@ -5,7 +5,6 @@ namespace SwagMigrationNext\Profile\Shopware55;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\ORM\RepositoryInterface;
 use SwagMigrationNext\Gateway\GatewayInterface;
-use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Profile\ProfileInterface;
 use SwagMigrationNext\Profile\Shopware55\Converter\ConverterRegistryInterface;
 
@@ -34,25 +33,26 @@ class Shopware55Profile implements ProfileInterface
         return self::PROFILE_NAME;
     }
 
-    public function collectData(GatewayInterface $gateway, MigrationContext $migrationContext, Context $context): void
+    public function collectData(GatewayInterface $gateway, string $entityName, Context $context, array $additionalRelationData = []): void
     {
-        $entityName = $migrationContext->getEntityName();
         $converter = $this->converterRegistry->getConverter($entityName);
         /** @var array[] $data */
         $data = $gateway->read($entityName);
 
         $createData = [];
-        foreach ($data as $item) {
-            $convertStruct = $converter->convert($item);
+        foreach ($data as $id => $item) {
+            $convertStruct = $converter->convert($item, $additionalRelationData);
             $createData[] = [
                 'entityName' => $entityName,
                 'profile' => $this->getName(),
                 'raw' => $item,
                 'converted' => $convertStruct->getConverted(),
                 'unmapped' => $convertStruct->getUnmapped(),
+                'oldIdentifier' => (string) $id,
+                'entityUuid' => $convertStruct->getUuid(),
             ];
         }
 
-        $this->migrationDataRepo->create($createData, $context);
+        $this->migrationDataRepo->upsert($createData, $context);
     }
 }

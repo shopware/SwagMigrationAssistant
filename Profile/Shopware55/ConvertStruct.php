@@ -16,10 +16,16 @@ class ConvertStruct extends Struct
      */
     private $unmapped;
 
-    public function __construct(array $converted, array $unmapped)
+    /**
+     * @var string
+     */
+    private $uuid;
+
+    public function __construct(array $converted, array $unmapped, string $uuid)
     {
         $this->converted = $converted;
         $this->unmapped = $unmapped;
+        $this->uuid = $uuid;
     }
 
     public function getConverted(): array
@@ -30,5 +36,10 @@ class ConvertStruct extends Struct
     public function getUnmapped(): array
     {
         return $this->unmapped;
+    }
+
+    public function getUuid(): string
+    {
+        return $this->uuid;
     }
 }

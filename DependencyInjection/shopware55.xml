@@ -24,6 +24,16 @@
             <tag name="shopware.migration.shopware55.converter"/>
         </service>
 
+        <service id="SwagMigrationNext\Profile\Shopware55\Converter\TaxConverter"
+                 class="SwagMigrationNext\Profile\Shopware55\Converter\TaxConverter">
+            <tag name="shopware.migration.shopware55.converter"/>
+        </service>
+
+        <service id="SwagMigrationNext\Profile\Shopware55\Converter\ProductManufacturerConverter"
+                 class="SwagMigrationNext\Profile\Shopware55\Converter\ProductManufacturerConverter">
+            <tag name="shopware.migration.shopware55.converter"/>
+        </service>
+
         <!-- Shopware 5.5 Gateway -->
         <service id="SwagMigrationNext\Gateway\Shopware55\Api\Shopware55ApiFactory"
                  class="SwagMigrationNext\Gateway\Shopware55\Api\Shopware55ApiFactory">
@@ -56,6 +66,16 @@
 
         <service id="SwagMigrationNext\Gateway\Shopware55\Local\Reader\Shopware55LocalProductReader"
                  class="SwagMigrationNext\Gateway\Shopware55\Local\Reader\Shopware55LocalProductReader">
+            <tag name="shopware.migration.gateway.shopware55.local.reader"/>
+        </service>
+
+        <service id="SwagMigrationNext\Gateway\Shopware55\Local\Reader\Shopware55LocalTaxReader"
+                 class="SwagMigrationNext\Gateway\Shopware55\Local\Reader\Shopware55LocalTaxReader">
+            <tag name="shopware.migration.gateway.shopware55.local.reader"/>
+        </service>
+
+        <service id="SwagMigrationNext\Gateway\Shopware55\Local\Reader\Shopware55LocalProductManufacturerReader"
+                 class="SwagMigrationNext\Gateway\Shopware55\Local\Reader\Shopware55LocalProductManufacturerReader">
             <tag name="shopware.migration.gateway.shopware55.local.reader"/>
         </service>
     </services>

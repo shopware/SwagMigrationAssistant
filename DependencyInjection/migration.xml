@@ -24,6 +24,7 @@
                  public="true">
             <argument type="service" id="SwagMigrationNext\Profile\ProfileRegistry"/>
             <argument type="service" id="SwagMigrationNext\Gateway\GatewayFactoryRegistry"/>
+            <argument type="service" id="swag_migration_data.repository"/>
         </service>
 
         <service id="SwagMigrationNext\Migration\MigrationWriteService"
@@ -50,6 +51,7 @@
                  class="SwagMigrationNext\Migration\Controller\MigrationController"
                  public="true">
             <argument type="service" id="SwagMigrationNext\Migration\MigrationCollectService"/>
+            <argument type="service" id="SwagMigrationNext\Migration\MigrationWriteService"/>
         </service>
     </services>
 </container>

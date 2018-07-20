@@ -5,7 +5,8 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="SwagMigrationNext\Migration\Writer\WriterRegistry" class="SwagMigrationNext\Migration\Writer\WriterRegistry">
+        <service id="SwagMigrationNext\Migration\Writer\WriterRegistry"
+                 class="SwagMigrationNext\Migration\Writer\WriterRegistry">
             <argument type="tagged" tag="shopware.migration.writer"/>
         </service>
 
@@ -13,6 +14,18 @@
                  class="SwagMigrationNext\Migration\Writer\ProductWriter">
             <tag name="shopware.migration.writer"/>
             <argument type="service" id="product.repository"/>
+        </service>
+
+        <service id="SwagMigrationNext\Migration\Writer\TaxWriter"
+                 class="SwagMigrationNext\Migration\Writer\TaxWriter">
+            <argument id="tax.repository" type="service"/>
+            <tag name="shopware.migration.writer"/>
+        </service>
+
+        <service id="SwagMigrationNext\Migration\Writer\ProductManufacturerWriter"
+                 class="SwagMigrationNext\Migration\Writer\ProductManufacturerWriter">
+            <argument id="product_manufacturer.repository" type="service"/>
+            <tag name="shopware.migration.writer"/>
         </service>
     </services>
 </container>
