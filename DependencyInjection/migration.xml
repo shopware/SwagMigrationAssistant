@@ -24,7 +24,6 @@
                  public="true">
             <argument type="service" id="SwagMigrationNext\Profile\ProfileRegistry"/>
             <argument type="service" id="SwagMigrationNext\Gateway\GatewayFactoryRegistry"/>
-            <argument type="service" id="swag_migration_data.repository"/>
         </service>
 
         <service id="SwagMigrationNext\Migration\MigrationWriteService"

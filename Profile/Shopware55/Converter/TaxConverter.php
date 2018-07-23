@@ -16,6 +16,7 @@ class TaxConverter implements ConverterInterface
     public function convert(array $data, array $additionalRelationData = []): ConvertStruct
     {
         $converted = [];
+        $oldId = $data['id'];
         $uuid = Uuid::uuid4()->getHex();
         $converted['id'] = $uuid;
 
@@ -25,6 +26,6 @@ class TaxConverter implements ConverterInterface
         $converted['name'] = $data['description'];
         unset($data['description']);
 
-        return new ConvertStruct($converted, $data, $uuid);
+        return new ConvertStruct($converted, $data, $oldId, $uuid);
     }
 }

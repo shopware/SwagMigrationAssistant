@@ -13,6 +13,7 @@ use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use SwagMigrationNext\Migration\Controller\MigrationController;
+use SwagMigrationNext\Migration\MigrationWriteService;
 use SwagMigrationNext\Test\MigrationServicesTrait;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,7 +42,10 @@ class MigrationControllerTest extends KernelTestCase
         $this->connection = self::$container->get(Connection::class);
         $this->connection->beginTransaction();
 
-        $this->controller = new MigrationController($this->getMigrationCollectService(self::$container->get('swag_migration_data.repository')));
+        $this->controller = new MigrationController(
+            $this->getMigrationCollectService(self::$container->get('swag_migration_data.repository')),
+            self::$container->get(MigrationWriteService::class)
+        );
     }
 
     protected function tearDown()

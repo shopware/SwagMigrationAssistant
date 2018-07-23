@@ -32,8 +32,9 @@ class MigrationWriteService implements MigrationWriteServiceInterface
     public function writeData(MigrationContext $migrationContext, Context $context): void
     {
         foreach (EntityRelationMapping::getMapping($migrationContext->getEntityName()) as $entity) {
+            $entityName = $entity['entity'];
             $criteria = new Criteria();
-            $criteria->addFilter(new TermQuery('entityName', $entity));
+            $criteria->addFilter(new TermQuery('entityName', $entityName));
             $migrationData = $this->migrationDataRepository->search($criteria, $context);
 
             $converted = [];
@@ -42,7 +43,7 @@ class MigrationWriteService implements MigrationWriteServiceInterface
                 $converted[] = array_filter($data->get('converted'));
             }, $migrationData->getElements());
 
-            $currentWriter = $this->writerRegistry->getWriter($entity);
+            $currentWriter = $this->writerRegistry->getWriter($entityName);
             $currentWriter->writeData($converted, $context);
         }
     }

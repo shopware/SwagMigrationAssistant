@@ -27,5 +27,11 @@
             <argument id="product_manufacturer.repository" type="service"/>
             <tag name="shopware.migration.writer"/>
         </service>
+
+        <service id="SwagMigrationNext\Migration\Writer\PriceWriter"
+                 class="SwagMigrationNext\Migration\Writer\PriceWriter">
+            <argument id="product_price_rule.repository" type="service"/>
+            <tag name="shopware.migration.writer"/>
+        </service>
     </services>
 </container>

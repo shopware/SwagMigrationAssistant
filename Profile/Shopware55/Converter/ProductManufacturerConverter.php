@@ -16,6 +16,7 @@ class ProductManufacturerConverter implements ConverterInterface
     public function convert(array $data, array $additionalRelationData = []): ConvertStruct
     {
         $converted = [];
+        $oldId = $data['id'];
         $uuid = Uuid::uuid4()->getHex();
 
         $converted['id'] = $uuid;
@@ -38,6 +39,6 @@ class ProductManufacturerConverter implements ConverterInterface
         $converted['metaKeywords'] = $data['meta_keywords'];
         unset($data['meta_keywords']);
 
-        return new ConvertStruct($converted, $data, $uuid);
+        return new ConvertStruct($converted, $data, $oldId, $uuid);
     }
 }
