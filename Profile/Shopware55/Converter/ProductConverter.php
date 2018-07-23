@@ -18,8 +18,8 @@ class ProductConverter implements ConverterInterface
 
     public function convert(array $data, array $additionalRelationData = []): ConvertStruct
     {
+        $oldId = $data['variantID'];
         $uuid = Uuid::uuid4()->getHex();
-
         $converted['id'] = $uuid;
 
         $converted['name'] = $data['name'];
@@ -39,25 +39,9 @@ class ProductConverter implements ConverterInterface
                     'gross' => (float) $price['price'],
                     'net' => (float) $price['price'],
                 ];
-
-                // Todo: Add a customer group and create a price rule for this
-//                $converted['priceRules'][] = [
-//                    'id' => Uuid::uuid4()->getHex(),
-//                    // Todo: Create rule before creating the price rule
-//                    'ruleId' => Uuid::fromString('FD2816FCCA184FB18581CFC4EC367B2D')->getHex(),
-//                    // Todo: Create currency before creating the price rule
-//                    'currencyId' => Defaults::CURRENCY,
-//
-//                    'price' => [
-//                        'gross' => (float) $price['price'],
-//                        'net' => (float) $price['price'],
-//                    ],
-//                    'quantityStart' => (int) $price['from'],
-//                    'quantityEnd' => ($price['to'] === 'beliebig') ? null : (int) $price['to'],
-//                ];
             }
         }
 
-        return new ConvertStruct($converted, $data, $uuid);
+        return new ConvertStruct($converted, $data, $oldId, $uuid);
     }
 }
