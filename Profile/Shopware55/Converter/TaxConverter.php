@@ -19,7 +19,7 @@ class TaxConverter implements ConverterInterface
         $uuid = Uuid::uuid4()->getHex();
         $converted['id'] = $uuid;
 
-        $converted['rate'] = (float) $data['tax'];
+        $converted['taxRate'] = (float) $data['tax'];
         unset($data['tax']);
 
         $converted['name'] = $data['description'];
