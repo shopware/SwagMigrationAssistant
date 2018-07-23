@@ -2,8 +2,6 @@
 
 namespace SwagMigrationNext\Profile\Shopware55;
 
-use Shopware\Core\Content\Product\Aggregate\ProductPriceRule\ProductPriceRuleDefinition;
-use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\ORM\RepositoryInterface;
 use SwagMigrationNext\Gateway\GatewayInterface;
@@ -41,7 +39,7 @@ class Shopware55Profile implements ProfileInterface
         /** @var array[] $data */
         $data = $gateway->read($entityName);
 
-        $additionalRelationData= [];
+        $additionalRelationData = [];
         $createData = [];
         foreach (EntityRelationMapping::getMapping($entityName) as $key => $entity) {
             $currentEntityName = $entity['entity'];

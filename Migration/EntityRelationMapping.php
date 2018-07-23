@@ -22,14 +22,14 @@ class EntityRelationMapping
         switch ($entityName) {
             case ProductDefinition::getEntityName():
                 return [
-                    [ 'entity' => TaxDefinition::getEntityName(), 'relation' => self::MANYTOONE ],
-                    [ 'entity' => ProductManufacturerDefinition::getEntityName(), 'relation' => self::MANYTOONE ],
-                    [ 'entity' => ProductDefinition::getEntityName(), 'relation' => self::MAIN ],
-                    [ 'entity' => ProductPriceRuleDefinition::getEntityName(), 'relation' => self::ONETOMANY ],
+                    ['entity' => TaxDefinition::getEntityName(), 'relation' => self::MANYTOONE],
+                    ['entity' => ProductManufacturerDefinition::getEntityName(), 'relation' => self::MANYTOONE],
+                    ['entity' => ProductDefinition::getEntityName(), 'relation' => self::MAIN],
+                    ['entity' => ProductPriceRuleDefinition::getEntityName(), 'relation' => self::ONETOMANY],
                 ];
             case CustomerDefinition::getEntityName():
                 return [
-                    [ 'entity' => CustomerDefinition::getEntityName(), 'relation' => self::MAIN ],
+                    ['entity' => CustomerDefinition::getEntityName(), 'relation' => self::MAIN],
                 ];
         }
 

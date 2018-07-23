@@ -40,17 +40,25 @@
             <argument type="service" id="SwagMigrationNext\Migration\Validator\ValidatorRegistry"/>
         </service>
 
-        <service id="SwagMigrationNext\Migration\Writer\ProductWriter"
-                 class="SwagMigrationNext\Migration\Writer\ProductWriter">
-            <tag name="shopware.migration.writer"/>
-            <argument type="service" id="product.repository" />
-        </service>
-
         <service id="SwagMigrationNext\Migration\Controller\MigrationController"
                  class="SwagMigrationNext\Migration\Controller\MigrationController"
                  public="true">
             <argument type="service" id="SwagMigrationNext\Migration\MigrationCollectService"/>
             <argument type="service" id="SwagMigrationNext\Migration\MigrationWriteService"/>
+        </service>
+
+        <service id="SwagMigrationNext\Command\MigrationFetchDataCommand"
+                 class="SwagMigrationNext\Command\MigrationFetchDataCommand">
+            <argument type="service" id="SwagMigrationNext\Migration\MigrationCollectService"/>
+            <argument>migration:fetch:data</argument>
+            <tag name="console.command" command="migration:fetch:data"/>
+        </service>
+
+        <service id="SwagMigrationNext\Command\MigrationWriteDataCommand"
+                 class="SwagMigrationNext\Command\MigrationWriteDataCommand">
+            <argument type="service" id="SwagMigrationNext\Migration\MigrationWriteService"/>
+            <argument>migration:write:data</argument>
+            <tag name="console.command" command="migration:write:data"/>
         </service>
     </services>
 </container>

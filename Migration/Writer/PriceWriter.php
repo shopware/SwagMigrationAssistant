@@ -1,8 +1,6 @@
 <?php declare(strict_types=1);
 
-
 namespace SwagMigrationNext\Migration\Writer;
-
 
 use Shopware\Core\Content\Product\Aggregate\ProductPriceRule\ProductPriceRuleDefinition;
 use Shopware\Core\Framework\Context;

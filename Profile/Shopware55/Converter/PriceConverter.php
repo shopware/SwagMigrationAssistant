@@ -1,6 +1,5 @@
 <?php declare(strict_types=1);
 
-
 namespace SwagMigrationNext\Profile\Shopware55\Converter;
 
 use Ramsey\Uuid\Uuid;
@@ -45,6 +44,6 @@ class PriceConverter implements ConverterInterface
         $converted['quantityEnd'] = ($data['to'] === 'beliebig') ? null : (int) $data['to'];
         unset($data['to']);
 
-       return new ConvertStruct($converted, $data, $oldId, $uuid);
+        return new ConvertStruct($converted, $data, $oldId, $uuid);
     }
 }

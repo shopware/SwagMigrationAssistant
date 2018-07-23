@@ -5,7 +5,6 @@ namespace SwagMigrationNext\Profile\Shopware55\Converter;
 use Ramsey\Uuid\Uuid;
 use Shopware\Core\Content\Product\Aggregate\ProductManufacturer\ProductManufacturerDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
-use Shopware\Core\Defaults;
 use Shopware\Core\System\Tax\TaxDefinition;
 use SwagMigrationNext\Profile\Shopware55\ConvertStruct;
 
