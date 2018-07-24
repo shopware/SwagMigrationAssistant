@@ -10,6 +10,7 @@
                  class="SwagMigrationNext\Profile\Shopware55\Shopware55Profile">
             <argument type="service" id="swag_migration_data.repository"/>
             <argument type="service" id="SwagMigrationNext\Profile\Shopware55\Converter\ConverterRegistry"/>
+            <argument type="service" id="SwagMigrationNext\Migration\Mapping\MappingService"/>
             <tag name="shopware.migration.profile"/>
         </service>
 
@@ -21,21 +22,7 @@
 
         <service id="SwagMigrationNext\Profile\Shopware55\Converter\ProductConverter"
                  class="SwagMigrationNext\Profile\Shopware55\Converter\ProductConverter">
-            <tag name="shopware.migration.shopware55.converter"/>
-        </service>
-
-        <service id="SwagMigrationNext\Profile\Shopware55\Converter\TaxConverter"
-                 class="SwagMigrationNext\Profile\Shopware55\Converter\TaxConverter">
-            <tag name="shopware.migration.shopware55.converter"/>
-        </service>
-
-        <service id="SwagMigrationNext\Profile\Shopware55\Converter\ProductManufacturerConverter"
-                 class="SwagMigrationNext\Profile\Shopware55\Converter\ProductManufacturerConverter">
-            <tag name="shopware.migration.shopware55.converter"/>
-        </service>
-
-        <service id="SwagMigrationNext\Profile\Shopware55\Converter\PriceConverter"
-                 class="SwagMigrationNext\Profile\Shopware55\Converter\PriceConverter">
+            <argument type="service" id="SwagMigrationNext\Migration\Mapping\MappingService"/>
             <tag name="shopware.migration.shopware55.converter"/>
         </service>
 
@@ -71,16 +58,6 @@
 
         <service id="SwagMigrationNext\Gateway\Shopware55\Local\Reader\Shopware55LocalProductReader"
                  class="SwagMigrationNext\Gateway\Shopware55\Local\Reader\Shopware55LocalProductReader">
-            <tag name="shopware.migration.gateway.shopware55.local.reader"/>
-        </service>
-
-        <service id="SwagMigrationNext\Gateway\Shopware55\Local\Reader\Shopware55LocalTaxReader"
-                 class="SwagMigrationNext\Gateway\Shopware55\Local\Reader\Shopware55LocalTaxReader">
-            <tag name="shopware.migration.gateway.shopware55.local.reader"/>
-        </service>
-
-        <service id="SwagMigrationNext\Gateway\Shopware55\Local\Reader\Shopware55LocalProductManufacturerReader"
-                 class="SwagMigrationNext\Gateway\Shopware55\Local\Reader\Shopware55LocalProductManufacturerReader">
             <tag name="shopware.migration.gateway.shopware55.local.reader"/>
         </service>
     </services>

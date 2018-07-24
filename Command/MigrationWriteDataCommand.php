@@ -13,7 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class MigrationWriteDataCommand extends ContainerAwareCommand
 {
-    // example call: bin/console migration:write:data -t ffffffffffffffffffffffffffffffff -p shopware55 -y product
+    // example call: bin/console migration:write:data -t 20080911ffff4fffafffffff19830531 -p shopware55 -y product
 
     /**
      * @var MigrationWriteServiceInterface
@@ -30,8 +30,8 @@ class MigrationWriteDataCommand extends ContainerAwareCommand
     {
         $this->setDescription('Writes data with the given profile');
         $this->addOption('tenant-id', 't', InputOption::VALUE_REQUIRED);
-        $this->addOption('profileName', 'p', InputOption::VALUE_REQUIRED);
-        $this->addOption('entityName', 'y', InputOption::VALUE_REQUIRED);
+        $this->addOption('profile', 'p', InputOption::VALUE_REQUIRED);
+        $this->addOption('entity', 'y', InputOption::VALUE_REQUIRED);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -46,17 +46,17 @@ class MigrationWriteDataCommand extends ContainerAwareCommand
         }
         $context = Context::createDefaultContext($tenantId);
 
-        $profileName = $input->getOption('profileName');
-        if (!$profileName) {
+        $profile = $input->getOption('profile');
+        if (!$profile) {
             throw new \InvalidArgumentException('No profile name provided');
         }
 
-        $entityName = $input->getOption('entityName');
-        if (!$entityName) {
+        $entity = $input->getOption('entity');
+        if (!$entity) {
             throw new \InvalidArgumentException('No entity name provided');
         }
 
-        $migrationContext = new MigrationContext($profileName, '', $entityName, []);
+        $migrationContext = new MigrationContext($profile, '', $entity, []);
 
         $output->writeln('Writing data...');
 

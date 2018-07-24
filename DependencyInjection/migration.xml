@@ -19,6 +19,27 @@
             <argument type="service" id="event_dispatcher"/>
         </service>
 
+        <service id="SwagMigrationNext\Migration\Mapping\SwagMigrationMappingDefinition"
+                 class="SwagMigrationNext\Migration\Mapping\SwagMigrationMappingDefinition">
+            <tag name="shopware.entity.definition" entity="swag_migration_mapping"/>
+        </service>
+
+        <service id="swag_migration_mapping.repository"
+                 class="Shopware\Core\Framework\ORM\EntityRepository"
+                 public="true">
+            <argument>SwagMigrationNext\Migration\Mapping\SwagMigrationMappingDefinition</argument>
+            <argument type="service" id="Shopware\Core\Framework\ORM\Read\EntityReaderInterface"/>
+            <argument type="service" id="Shopware\Core\Framework\ORM\VersionManager"/>
+            <argument type="service" id="Shopware\Core\Framework\ORM\Search\EntitySearcherInterface"/>
+            <argument type="service" id="Shopware\Core\Framework\ORM\Search\EntityAggregatorInterface"/>
+            <argument type="service" id="event_dispatcher"/>
+        </service>
+
+        <service id="SwagMigrationNext\Migration\Mapping\MappingService"
+                 class="SwagMigrationNext\Migration\Mapping\MappingService">
+            <argument type="service" id="swag_migration_mapping.repository"/>
+        </service>
+
         <service id="SwagMigrationNext\Migration\MigrationCollectService"
                  class="SwagMigrationNext\Migration\MigrationCollectService"
                  public="true">

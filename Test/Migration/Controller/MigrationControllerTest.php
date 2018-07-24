@@ -57,9 +57,9 @@ class MigrationControllerTest extends KernelTestCase
     public function testFetchData()
     {
         $request = new Request([
-            'profileName' => 'shopware55',
-            'gatewayName' => 'api',
-            'entityName' => ProductDefinition::getEntityName(),
+            'profile' => 'shopware55',
+            'gateway' => 'api',
+            'entity' => ProductDefinition::getEntityName(),
             'credentials' => [
                 'endpoint' => 'test',
                 'apiUser' => 'test',

@@ -10,23 +10,6 @@ class DummyLocalGateway implements GatewayInterface
 
     public function read(string $entityName): array
     {
-        $data = require __DIR__ . '/../../../../_fixtures/product_data.php';
-
-        foreach ($data as &$item) {
-            if (!empty($item['supplierID'])) {
-                $item['supplier.name'] = 'TestSupplierName';
-            }
-
-            $item['tax.rate'] = 19;
-            $item['tax.name'] = 'TestTaxName';
-
-            $item['prices'] = [
-                100,
-                200,
-                300,
-            ];
-        }
-
-        return $data;
+        return require __DIR__ . '/../../../../_fixtures/product_data.php';
     }
 }

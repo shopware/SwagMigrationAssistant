@@ -4,7 +4,10 @@ namespace SwagMigrationNext\Gateway\Shopware55\Local\Reader;
 
 use Doctrine\DBAL\Driver\PDOConnection;
 use PDO;
+use Shopware\Core\Content\Product\Aggregate\ProductManufacturer\ProductManufacturerDefinition;
+use Shopware\Core\Content\Product\Aggregate\ProductPriceRule\ProductPriceRuleDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
+use Shopware\Core\System\Tax\TaxDefinition;
 
 class Shopware55LocalProductReader implements Shopware55LocalReaderInterface
 {
@@ -27,11 +30,12 @@ INNER JOIN s_articles AS product ON product.id = variant.articleID
         $details = $connection->query($variantSql)->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_UNIQUE | PDO::FETCH_ASSOC);
 
         $ids = [];
+        $products = [];
         foreach ($details as $key => $detail) {
             $ids[] = $key;
-            $products[$key]['product'] = $detail;
-            $products[$key]['tax'] = [];
-            $products[$key]['product_manufacturer'] = [];
+            $products[$key][ProductDefinition::getEntityName()] = $detail;
+            $products[$key][TaxDefinition::getEntityName()] = [];
+            $products[$key][ProductManufacturerDefinition::getEntityName()] = [];
         }
         $idsString = implode(', ', $ids);
 
@@ -48,9 +52,8 @@ WHERE variant.id IN (%s)
         $ids = [];
         foreach ($taxes as $key => $tax) {
             $ids[] = $key;
-            $products[$key]['tax'] = $tax;
+            $products[$key][TaxDefinition::getEntityName()] = $tax;
         }
-        array_unique($products[$key]['tax']);
 
         $manufacturerSql = sprintf('
 SELECT variant.id, supplier.*
@@ -63,7 +66,7 @@ WHERE variant.id IN (%s)
         $manufacturers = $connection->query($manufacturerSql)->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_UNIQUE | PDO::FETCH_ASSOC);
 
         foreach ($manufacturers as $key => $manufacturer) {
-            $products[$key]['product_manufacturer'] = $manufacturer;
+            $products[$key][ProductManufacturerDefinition::getEntityName()] = $manufacturer;
         }
 
         $pricesSql = sprintf('
@@ -78,7 +81,7 @@ WHERE prices.articledetailsID IN (%s)
         $prices = $connection->query($pricesSql)->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_ASSOC);
 
         foreach ($prices as $key => $price) {
-            $products[$key]['product']['prices'] = $price;
+            $products[$key][ProductDefinition::getEntityName()]['prices'] = $price;
         }
 
         $pricesSql = sprintf('
@@ -92,7 +95,7 @@ WHERE prices.articledetailsID IN (%s)
         $prices = $connection->query($pricesSql)->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_ASSOC);
 
         foreach ($prices as $key => $price) {
-            $products[$key]['product_price_rule'] = $price;
+            $products[$key][ProductPriceRuleDefinition::getEntityName()] = $price;
         }
 
         return $products;

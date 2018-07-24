@@ -4,18 +4,26 @@ namespace SwagMigrationNext\Migration\Writer;
 
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\ORM\RepositoryInterface;
+use Shopware\Core\Framework\ORM\Write\EntityWriterInterface;
+use Shopware\Core\Framework\ORM\Write\WriteContext;
+use Shopware\Core\Framework\Struct\Serializer\StructNormalizer;
 
 class ProductWriter implements WriterInterface
 {
     /**
-     * @var RepositoryInterface
+     * @var EntityWriterInterface
      */
-    private $productRepository;
+    private $entityWriter;
 
-    public function __construct(RepositoryInterface $productRepository)
+    /**
+     * @var StructNormalizer
+     */
+    private $structNormalizer;
+
+    public function __construct(EntityWriterInterface $entityWriter, StructNormalizer $structNormalizer)
     {
-        $this->productRepository = $productRepository;
+        $this->entityWriter = $entityWriter;
+        $this->structNormalizer = $structNormalizer;
     }
 
     public function supports(): string
@@ -25,6 +33,18 @@ class ProductWriter implements WriterInterface
 
     public function writeData(array $data, Context $context): void
     {
-        $this->productRepository->upsert($data, $context);
+        foreach ($data as &$item) {
+            foreach ($item['priceRules'] as &$priceRule) {
+                $priceRule['rule']['payload'] = $this->structNormalizer->denormalize($priceRule['rule']['payload']);
+            }
+            unset($priceRule);
+        }
+        unset($item);
+
+        $this->entityWriter->upsert(
+            ProductDefinition::class,
+            $data,
+            WriteContext::createFromContext($context)
+        );
     }
 }

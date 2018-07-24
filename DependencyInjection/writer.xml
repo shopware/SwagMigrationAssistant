@@ -12,25 +12,8 @@
 
         <service id="SwagMigrationNext\Migration\Writer\ProductWriter"
                  class="SwagMigrationNext\Migration\Writer\ProductWriter">
-            <tag name="shopware.migration.writer"/>
-            <argument type="service" id="product.repository"/>
-        </service>
-
-        <service id="SwagMigrationNext\Migration\Writer\TaxWriter"
-                 class="SwagMigrationNext\Migration\Writer\TaxWriter">
-            <argument id="tax.repository" type="service"/>
-            <tag name="shopware.migration.writer"/>
-        </service>
-
-        <service id="SwagMigrationNext\Migration\Writer\ProductManufacturerWriter"
-                 class="SwagMigrationNext\Migration\Writer\ProductManufacturerWriter">
-            <argument id="product_manufacturer.repository" type="service"/>
-            <tag name="shopware.migration.writer"/>
-        </service>
-
-        <service id="SwagMigrationNext\Migration\Writer\PriceWriter"
-                 class="SwagMigrationNext\Migration\Writer\PriceWriter">
-            <argument id="product_price_rule.repository" type="service"/>
+            <argument type="service" id="Shopware\Core\Framework\ORM\Write\EntityWriter"/>
+            <argument type="service" id="Shopware\Core\Framework\Struct\Serializer\StructNormalizer"/>
             <tag name="shopware.migration.writer"/>
         </service>
     </services>

@@ -2,6 +2,8 @@
 
 namespace SwagMigrationNext\Gateway\Shopware55\Api\Reader;
 
+use GuzzleHttp\Client;
+
 interface Shopware55ApiReaderInterface
 {
     /**
@@ -12,5 +14,5 @@ interface Shopware55ApiReaderInterface
     /**
      * Reads data from its entity with the given API client
      */
-    public function read(Shopware55ApiClient $apiClient): array;
+    public function read(Client $apiClient): array;
 }

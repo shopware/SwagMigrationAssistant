@@ -79,7 +79,7 @@ class MigrationCollectServiceTest extends KernelTestCase
 
         $criteria = new Criteria();
         $criteria->addFilter(new TermQuery('profile', Shopware55Profile::PROFILE_NAME));
-        $criteria->addFilter(new TermQuery('entityName', ProductDefinition::getEntityName()));
+        $criteria->addFilter(new TermQuery('entity', ProductDefinition::getEntityName()));
         /** @var EntitySearchResult $result */
         $result = $this->migrationDataRepo->search($criteria, $context);
         self::assertEquals(37, $result->getTotal());
@@ -99,7 +99,7 @@ class MigrationCollectServiceTest extends KernelTestCase
 
         $criteria = new Criteria();
         $criteria->addFilter(new TermQuery('profile', Shopware55Profile::PROFILE_NAME));
-        $criteria->addFilter(new TermQuery('entityName', ProductDefinition::getEntityName()));
+        $criteria->addFilter(new TermQuery('entity', ProductDefinition::getEntityName()));
         /** @var EntitySearchResult $result */
         $result = $this->migrationDataRepo->search($criteria, $context);
         self::assertEquals(37, $result->getTotal());
