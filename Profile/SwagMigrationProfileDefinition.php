@@ -24,7 +24,7 @@ class SwagMigrationProfileDefinition extends EntityDefinition
             new TenantIdField(),
             (new IdField('id', 'id'))->setFlags(new PrimaryKey(), new Required()),
             (new StringField('profile', 'profile'))->setFlags(new Required()),
-            (new StringField('gateway_type', 'gatewayType'))->setFlags(new Required()),
+            (new StringField('gateway', 'gateway'))->setFlags(new Required()),
             new JsonField('credential_fields', 'credentialFields'),
         ]);
     }

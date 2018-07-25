@@ -60,6 +60,10 @@ class MappingService implements MappingServiceInterface
             return $this->readMapping[$entityName][$oldId];
         }
 
+        if ($this->profile === null) {
+            throw new ProfileForMappingMissingException('Profile for mapping is missing. Please set a profile first');
+        }
+
         $uuid = Uuid::uuid4()->getHex();
         $this->readMapping[$entityName][$oldId] = $uuid;
         $this->writeMapping[] = [

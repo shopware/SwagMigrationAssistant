@@ -2,6 +2,7 @@
 
 namespace SwagMigrationNext\Command;
 
+use InvalidArgumentException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Struct\Uuid;
 use SwagMigrationNext\Migration\MigrationContext;
@@ -39,21 +40,21 @@ class MigrationWriteDataCommand extends ContainerAwareCommand
         $tenantId = $input->getOption('tenant-id');
 
         if (!$tenantId) {
-            throw new \InvalidArgumentException('No tenant id provided');
+            throw new InvalidArgumentException('No tenant id provided');
         }
         if (!Uuid::isValid($tenantId)) {
-            throw new \Exception('Invalid uuid provided');
+            throw new InvalidArgumentException('Invalid uuid provided');
         }
         $context = Context::createDefaultContext($tenantId);
 
         $profile = $input->getOption('profile');
         if (!$profile) {
-            throw new \InvalidArgumentException('No profile name provided');
+            throw new InvalidArgumentException('No profile provided');
         }
 
         $entity = $input->getOption('entity');
         if (!$entity) {
-            throw new \InvalidArgumentException('No entity name provided');
+            throw new InvalidArgumentException('No entity provided');
         }
 
         $migrationContext = new MigrationContext($profile, '', $entity, []);

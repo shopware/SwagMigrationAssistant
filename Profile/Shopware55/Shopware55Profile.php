@@ -28,8 +28,11 @@ class Shopware55Profile implements ProfileInterface
      */
     private $mappingService;
 
-    public function __construct(RepositoryInterface $migrationDataRepo, ConverterRegistryInterface $converterRegistry, MappingServiceInterface $mappingService)
-    {
+    public function __construct(
+        RepositoryInterface $migrationDataRepo,
+        ConverterRegistryInterface $converterRegistry,
+        MappingServiceInterface $mappingService
+    ) {
         $this->migrationDataRepo = $migrationDataRepo;
         $this->converterRegistry = $converterRegistry;
         $this->mappingService = $mappingService;

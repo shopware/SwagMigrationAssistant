@@ -7,6 +7,7 @@ use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\ORM\RepositoryInterface;
+use SwagMigrationNext\Migration\Mapping\MappingService;
 use SwagMigrationNext\Migration\MigrationCollectServiceInterface;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\MigrationValidateService;
@@ -47,11 +48,13 @@ class MigrationValidateServiceTest extends KernelTestCase
 
         self::bootKernel();
 
-        /* @var Connection $connection */
         $this->connection = self::$container->get(Connection::class);
         $this->connection->beginTransaction();
 
-        $this->migrationCollectService = $this->getMigrationCollectService(self::$container->get('swag_migration_data.repository'));
+        $this->migrationCollectService = $this->getMigrationCollectService(
+            self::$container->get('swag_migration_data.repository'),
+            self::$container->get(MappingService::class)
+        );
         $this->migrationValidateService = self::$container->get(MigrationValidateService::class);
         $this->productRepo = self::$container->get('product.repository');
     }

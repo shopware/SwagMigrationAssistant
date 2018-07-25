@@ -2,6 +2,7 @@
 
 namespace SwagMigrationNext\Command;
 
+use InvalidArgumentException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Struct\Uuid;
 use SwagMigrationNext\Migration\MigrationCollectServiceInterface;
@@ -42,26 +43,26 @@ class MigrationFetchDataCommand extends ContainerAwareCommand
         $tenantId = $input->getOption('tenant-id');
 
         if (!$tenantId) {
-            throw new \InvalidArgumentException('No tenant id provided');
+            throw new InvalidArgumentException('No tenant id provided');
         }
         if (!Uuid::isValid($tenantId)) {
-            throw new \Exception('Invalid uuid provided');
+            throw new InvalidArgumentException('Invalid uuid provided');
         }
         $context = Context::createDefaultContext($tenantId);
 
         $profile = $input->getOption('profile');
         if (!$profile) {
-            throw new \InvalidArgumentException('No profile name provided');
+            throw new InvalidArgumentException('No profile provided');
         }
 
         $gateway = $input->getOption('gateway');
         if (!$gateway) {
-            throw new \InvalidArgumentException('No gateway name provided');
+            throw new InvalidArgumentException('No gateway provided');
         }
 
         $entity = $input->getOption('entity');
         if (!$entity) {
-            throw new \InvalidArgumentException('No entity name provided');
+            throw new InvalidArgumentException('No entity provided');
         }
 
         $credentialsItems = $input->getArgument('credentials');
@@ -70,7 +71,7 @@ class MigrationFetchDataCommand extends ContainerAwareCommand
         $credentialsCount = \count($credentialsItems);
 
         if ($credentialsCount % 2 !== 0) {
-            throw new \InvalidArgumentException('Invalid number of credential items');
+            throw new InvalidArgumentException('Invalid number of credential items');
         }
 
         for ($i = 0; $i < $credentialsCount; $i += 2) {
