@@ -90,4 +90,9 @@ class MappingServiceTest extends KernelTestCase
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
         static::assertNull($this->mappingService->readExistingMappings($context));
     }
+
+    public function testGetUuidReturnsNull()
+    {
+        static::assertNull($this->mappingService->getUuid('product', '12345'));
+    }
 }

@@ -54,6 +54,15 @@ class MappingService implements MappingServiceInterface
         }
     }
 
+    public function getUuid(string $entityName, string $oldId): ?string
+    {
+        if (isset($this->readMapping[$entityName][$oldId])) {
+            return $this->readMapping[$entityName][$oldId];
+        }
+
+        return null;
+    }
+
     public function createNewUuid(string $entityName, string $oldId): string
     {
         if (isset($this->readMapping[$entityName][$oldId])) {

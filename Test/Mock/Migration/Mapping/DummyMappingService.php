@@ -23,4 +23,9 @@ class DummyMappingService implements MappingServiceInterface
     public function setProfile(string $profileName): void
     {
     }
+
+    public function getUuid(string $entityName, string $oldId): ?string
+    {
+        return null;
+    }
 }

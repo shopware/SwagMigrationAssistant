@@ -47,10 +47,11 @@ class Shopware55Profile implements ProfileInterface
     {
         /** @var array[] $data */
         $data = $gateway->read($entityName);
+
         $this->mappingService->setProfile($this->getName());
         $this->mappingService->readExistingMappings($context);
-        $converter = $this->converterRegistry->getConverter($entityName);
 
+        $converter = $this->converterRegistry->getConverter($entityName);
         $createData = [];
         foreach ($data as $item) {
             $convertStruct = $converter->convert($item);

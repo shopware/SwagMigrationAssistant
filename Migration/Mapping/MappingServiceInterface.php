@@ -8,6 +8,8 @@ interface MappingServiceInterface
 {
     public function readExistingMappings(Context $context): void;
 
+    public function getUuid(string $entityName, string $oldId): ?string;
+
     public function createNewUuid(string $entityName, string $oldId): string;
 
     public function writeMapping(Context $context): void;

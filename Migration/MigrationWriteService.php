@@ -6,6 +6,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\ORM\RepositoryInterface;
 use Shopware\Core\Framework\ORM\Search\Criteria;
 use Shopware\Core\Framework\ORM\Search\Query\TermQuery;
+use Shopware\Core\Framework\ORM\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\Struct\ArrayStruct;
 use SwagMigrationNext\Migration\Writer\WriterRegistryInterface;
 
@@ -35,6 +36,7 @@ class MigrationWriteService implements MigrationWriteServiceInterface
         $criteria = new Criteria();
         $criteria->addFilter(new TermQuery('entity', $entity));
         $criteria->addFilter(new TermQuery('profile', $migrationContext->getProfile()));
+        $criteria->addSorting(new FieldSorting('createdAt', FieldSorting::ASCENDING));
         $migrationData = $this->migrationDataRepository->search($criteria, $context);
 
         if ($migrationData->getTotal() === 0) {

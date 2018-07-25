@@ -34,10 +34,16 @@ class ProductWriter implements WriterInterface
     public function writeData(array $data, Context $context): void
     {
         foreach ($data as &$item) {
-            foreach ($item['priceRules'] as &$priceRule) {
-                $priceRule['rule']['payload'] = $this->structNormalizer->denormalize($priceRule['rule']['payload']);
+            if (isset($item['priceRules'])) {
+                $this->normalizeRule($item);
             }
-            unset($priceRule);
+
+            if (isset($item['children'])) {
+                foreach ($item['children'] as &$child) {
+                    $this->normalizeRule($child);
+                }
+                unset($child);
+            }
         }
         unset($item);
 
@@ -46,5 +52,13 @@ class ProductWriter implements WriterInterface
             $data,
             WriteContext::createFromContext($context)
         );
+    }
+
+    private function normalizeRule(array &$item): void
+    {
+        foreach ($item['priceRules'] as &$priceRule) {
+            $priceRule['rule']['payload'] = $this->structNormalizer->denormalize($priceRule['rule']['payload']);
+        }
+        unset($priceRule);
     }
 }

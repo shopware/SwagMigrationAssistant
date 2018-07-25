@@ -28,26 +28,98 @@ class ProductConverter implements ConverterInterface
         return ProductDefinition::getEntityName();
     }
 
+    /**
+     * @throws ParentEntityForChildNotFoundException
+     */
     public function convert(array $data): ConvertStruct
+    {
+        $productKind = (int) $data['product_detail']['kind'];
+        unset($data['product_detail']['kind']);
+        $isProductWithVariant = $data['product']['configurator_set_id'] !== null;
+
+        if ($productKind === 1 && $isProductWithVariant) {
+            return $this->convertMainProduct($data);
+        }
+
+        if ($productKind === 2 && $isProductWithVariant) {
+            return $this->convertVariantProduct($data);
+        }
+
+        $converted = $this->getUuidForProduct($data);
+        $converted = $this->getProductData($data, $converted);
+
+        return new ConvertStruct($converted, $data);
+    }
+
+    private function convertMainProduct(array $data): ConvertStruct
+    {
+        $containerUuid = $this->mappingService->createNewUuid(
+            ProductDefinition::getEntityName() . '_container',
+            $data['product']['id']
+        );
+        $converted['id'] = $containerUuid;
+        unset($data['product']['id'], $data['product_detail']['articleID']);
+
+        $converted = $this->getProductData($data, $converted);
+
+        $converted['children'][] = $converted;
+        $converted['children'][0]['id'] = $this->mappingService->createNewUuid(
+            ProductDefinition::getEntityName(),
+            $data['product_detail']['id']
+        );
+        $converted['children'][0]['parentId'] = $containerUuid;
+        unset($data['product_detail']['id']);
+
+        return new ConvertStruct($converted, $data);
+    }
+
+    /**
+     * @throws ParentEntityForChildNotFoundException
+     */
+    private function convertVariantProduct(array $data): ConvertStruct
+    {
+        $parentUuid = $this->mappingService->getUuid(
+            ProductDefinition::getEntityName() . '_container',
+            $data['product']['id']
+        );
+
+        if ($parentUuid === null) {
+            throw new ParentEntityForChildNotFoundException(ProductDefinition::getEntityName());
+        }
+
+        $converted = $this->getUuidForProduct($data);
+        $converted['parentId'] = $parentUuid;
+        $converted = $this->getProductData($data, $converted);
+
+        return new ConvertStruct($converted, $data);
+    }
+
+    private function getUuidForProduct(array &$data): array
     {
         $converted['id'] = $this->mappingService->createNewUuid(
             ProductDefinition::getEntityName(),
             $data['product_detail']['id']
         );
+        unset($data['product_detail']['id'], $data['product_detail']['articleID'], $data['product']['id']);
 
+        return $converted;
+    }
+
+    private function getProductData(array &$data, array $converted): array
+    {
         $converted['name'] = $data['product']['name'];
-        unset($data['name']);
+        unset($data['product']['name']);
 
         $converted['manufacturer'] = $this->getManufacturer($data['supplier']);
-        unset($data['supplier']);
+        unset($data['supplier'], $data['product']['supplierID']);
         $converted['tax'] = $this->getTax($data['tax']);
-        unset($data['tax']);
+        unset($data['tax'], $data['product']['taxID']);
 
         $converted['price'] = $this->getPrice($data['prices'][0], $converted['tax']['taxRate']);
         $converted['priceRules'] = $this->getPriceRules($data['prices'], $converted);
         unset($data['prices']);
 
-        return new ConvertStruct($converted, $data);
+        return $converted;
     }
 
     private function getManufacturer(array $manufacturerData): array

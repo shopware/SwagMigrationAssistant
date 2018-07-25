@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ProfileForMappingMissingException extends ShopwareHttpException
 {
-    protected $code = 'SWAG-MIGRATION-PROFILE-FOR-MAPPING-MISSING';
+    protected $code = 'SWAG-MIGRATION-MAPPING-PROFILE-MISSING';
 
     public function getStatusCode(): int
     {

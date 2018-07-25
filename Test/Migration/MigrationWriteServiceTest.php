@@ -84,7 +84,7 @@ class MigrationWriteServiceTest extends KernelTestCase
         $productTotalAfter = $this->productRepo->search($criteria, $context)->getTotal();
 
         /* @var EntitySearchResult $result */
-        self::assertEquals(37, $productTotalAfter - $productTotalBefore);
+        self::assertEquals(42, $productTotalAfter - $productTotalBefore);
     }
 
     public function testWriteDataWithNoData(): void
