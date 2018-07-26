@@ -4,6 +4,7 @@ namespace SwagMigrationNext\Migration\Mapping;
 
 use Shopware\Core\Framework\ORM\EntityDefinition;
 use Shopware\Core\Framework\ORM\Field\IdField;
+use Shopware\Core\Framework\ORM\Field\JsonField;
 use Shopware\Core\Framework\ORM\Field\StringField;
 use Shopware\Core\Framework\ORM\Field\TenantIdField;
 use Shopware\Core\Framework\ORM\FieldCollection;
@@ -26,6 +27,7 @@ class SwagMigrationMappingDefinition extends EntityDefinition
             (new StringField('entity', 'entity'))->setFlags(new Required()),
             new StringField('old_identifier', 'oldIdentifier'),
             new IdField('entity_uuid', 'entityUuid'),
+            new JsonField('additional_data', 'additionalData'),
         ]);
     }
 }

@@ -1,13 +1,13 @@
 CREATE TABLE `swag_migration_data` (
-  `id`             BINARY(16) NOT NULL,
-  `tenant_id`      BINARY(16) NOT NULL,
-  `profile`        VARCHAR(255),
-  `entity`    VARCHAR(255),
-  `raw`            LONGTEXT,
-  `converted`      LONGTEXT,
-  `unmapped`       LONGTEXT,
-  `created_at`     DATETIME(3),
-  `updated_at`     DATETIME(3),
+  `id`         BINARY(16) NOT NULL,
+  `tenant_id`  BINARY(16) NOT NULL,
+  `profile`    VARCHAR(255),
+  `entity`     VARCHAR(255),
+  `raw`        LONGTEXT,
+  `converted`  LONGTEXT,
+  `unmapped`   LONGTEXT,
+  `created_at` DATETIME(3),
+  `updated_at` DATETIME(3),
   PRIMARY KEY (`id`, `tenant_id`),
   CHECK (JSON_VALID(`raw`)),
   CHECK (JSON_VALID(`converted`)),
@@ -15,13 +15,15 @@ CREATE TABLE `swag_migration_data` (
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 CREATE TABLE `swag_migration_mapping` (
-  `id`             BINARY(16) NOT NULL,
-  `tenant_id`      BINARY(16) NOT NULL,
-  `profile`        VARCHAR(255),
-  `entity`    VARCHAR(255),
-  `old_identifier` VARCHAR(255),
-  `entity_uuid`    BINARY(16),
-  PRIMARY KEY (`id`, `tenant_id`)
+  `id`              BINARY(16) NOT NULL,
+  `tenant_id`       BINARY(16) NOT NULL,
+  `profile`         VARCHAR(255),
+  `entity`          VARCHAR(255),
+  `old_identifier`  VARCHAR(255),
+  `entity_uuid`     BINARY(16),
+  `additional_data` LONGTEXT,
+  PRIMARY KEY (`id`, `tenant_id`),
+  CHECK (JSON_VALID(`additional_data`))
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 CREATE TABLE `swag_migration_profile` (

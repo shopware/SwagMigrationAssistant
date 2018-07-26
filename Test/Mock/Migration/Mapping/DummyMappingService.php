@@ -11,7 +11,7 @@ class DummyMappingService implements MappingServiceInterface
     {
     }
 
-    public function createNewUuid(string $entityName, string $oldId): string
+    public function createNewUuid(string $entityName, string $oldId, array $additionalData = null): string
     {
         return '';
     }

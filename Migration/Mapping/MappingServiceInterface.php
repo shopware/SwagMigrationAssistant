@@ -10,7 +10,7 @@ interface MappingServiceInterface
 
     public function getUuid(string $entityName, string $oldId): ?string;
 
-    public function createNewUuid(string $entityName, string $oldId): string;
+    public function createNewUuid(string $entityName, string $oldId, array $additionalData = null): string;
 
     public function writeMapping(Context $context): void;
 

@@ -8,6 +8,7 @@ use SwagMigrationNext\Profile\Shopware55\Converter\ConverterNotFoundException;
 use SwagMigrationNext\Profile\Shopware55\Converter\ConverterRegistry;
 use SwagMigrationNext\Profile\Shopware55\Converter\ConverterRegistryInterface;
 use SwagMigrationNext\Profile\Shopware55\Converter\ProductConverter;
+use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
 use SwagMigrationNext\Test\Mock\DummyCollection;
 use SwagMigrationNext\Test\Mock\Migration\Mapping\DummyMappingService;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,7 +22,7 @@ class ConverterRegistryTest extends TestCase
 
     protected function setUp()
     {
-        $this->converterRegistry = new ConverterRegistry(new DummyCollection([new ProductConverter(new DummyMappingService())]));
+        $this->converterRegistry = new ConverterRegistry(new DummyCollection([new ProductConverter(new DummyMappingService(), new ConverterHelperService())]));
     }
 
     public function testGetConverterNotFound(): void

@@ -15,6 +15,10 @@
         </service>
 
         <!-- Shopware 5.5 Profile Converter -->
+        <service id="SwagMigrationNext\Profile\Shopware55\ConverterHelperService"
+                 class="SwagMigrationNext\Profile\Shopware55\ConverterHelperService">
+        </service>
+
         <service id="SwagMigrationNext\Profile\Shopware55\Converter\ConverterRegistry"
                  class="SwagMigrationNext\Profile\Shopware55\Converter\ConverterRegistry">
             <argument type="tagged" tag="shopware.migration.shopware55.converter"/>
@@ -23,6 +27,7 @@
         <service id="SwagMigrationNext\Profile\Shopware55\Converter\ProductConverter"
                  class="SwagMigrationNext\Profile\Shopware55\Converter\ProductConverter">
             <argument type="service" id="SwagMigrationNext\Migration\Mapping\MappingService"/>
+            <argument type="service" id="SwagMigrationNext\Profile\Shopware55\ConverterHelperService"/>
             <tag name="shopware.migration.shopware55.converter"/>
         </service>
 

@@ -63,7 +63,7 @@ class MappingService implements MappingServiceInterface
         return null;
     }
 
-    public function createNewUuid(string $entityName, string $oldId): string
+    public function createNewUuid(string $entityName, string $oldId, array $additionalData = null): string
     {
         if (isset($this->readMapping[$entityName][$oldId])) {
             return $this->readMapping[$entityName][$oldId];
@@ -80,6 +80,7 @@ class MappingService implements MappingServiceInterface
             'entity' => $entityName,
             'oldIdentifier' => $oldId,
             'entityUuid' => $uuid,
+            'additionalData' => $additionalData,
         ];
 
         return $uuid;
