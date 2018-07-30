@@ -11,6 +11,7 @@ use Shopware\Core\Content\Rule\RuleDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Rule\Container\AndRule;
 use Shopware\Core\System\Tax\TaxDefinition;
+use Shopware\Core\System\Unit\UnitDefinition;
 use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationNext\Profile\Shopware55\ConverterHelperServiceInterface;
 use SwagMigrationNext\Profile\Shopware55\ConvertStruct;
@@ -145,7 +146,7 @@ class ProductConverter implements ConverterInterface
             $data['available_from'],
             $data['available_to'],
 
-            // TODO check how to handle this old pieces of sh*t
+            // TODO check how to handle these
             $data['configurator_set_id'],
             $data['pricegroupID'],
             $data['pricegroupActive'],
@@ -153,14 +154,17 @@ class ProductConverter implements ConverterInterface
             $data['template'],
             $data['detail']['ordernumber'],
             $data['detail']['additionaltext'],
-            $data['detail']['unitID'],
             $data['attributes']
         );
 
         $converted['manufacturer'] = $this->getManufacturer($data['manufacturer']);
         unset($data['manufacturer'], $data['supplierID']);
+
         $converted['tax'] = $this->getTax($data['tax']);
         unset($data['tax'], $data['taxID']);
+
+        $converted['unit'] = $this->getUnit($data['unit']);
+        unset($data['unit'], $data['detail']['unitID']);
 
         $converted['price'] = $this->getPrice($data['prices'][0], $converted['tax']['taxRate']);
         $converted['priceRules'] = $this->getPriceRules($data['prices'], $converted);
@@ -239,6 +243,18 @@ class ProductConverter implements ConverterInterface
         ];
     }
 
+    private function getUnit(array $unitData): array
+    {
+        return [
+            'id' => $this->mappingService->createNewUuid(
+                UnitDefinition::getEntityName(),
+                $unitData['id']
+            ),
+            'shortCode' => $unitData['unit'],
+            'name' => $unitData['description'],
+        ];
+    }
+
     private function getAssets(array $assets, array $converted): array
     {
         $media = [];
@@ -268,7 +284,8 @@ class ProductConverter implements ConverterInterface
             );
             $this->helper->convertValue($newAlbum, 'name', $asset['media']['album'], 'name');
             $this->helper->convertValue($newAlbum, 'position', $asset['media']['album'], 'position', $this->helper::TYPE_INTEGER);
-            $this->helper->convertValue($newAlbum, 'createThumbnails', $asset['media']['album']['settings'], 'create_thumbnails', $this->helper::TYPE_BOOLEAN);
+//            $this->helper->convertValue($newAlbum, 'createThumbnails', $asset['media']['album']['settings'], 'create_thumbnails', $this->helper::TYPE_BOOLEAN);
+            $newAlbum['createThumbnails'] = false; // TODO: Remove, needs a bugfix in the core
             $this->helper->convertValue($newAlbum, 'thumbnailSize', $asset['media']['album']['settings'], 'thumbnail_size');
             $this->helper->convertValue($newAlbum, 'icon', $asset['media']['album']['settings'], 'icon');
             $this->helper->convertValue($newAlbum, 'thumbnailHighDpi', $asset['media']['album']['settings'], 'thumbnail_high_dpi', $this->helper::TYPE_BOOLEAN);

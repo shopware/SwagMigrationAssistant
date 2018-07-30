@@ -20,7 +20,7 @@ class Shopware55ApiProductReader implements Shopware55ApiReaderInterface
         $result = $apiClient->get('SwagMigrationProducts');
 
         if ($result->getStatusCode() !== SymfonyResponse::HTTP_OK) {
-            throw new \Exception('machen wir später');
+            throw new GatewayReadException('Shopware 5.5 Api Products');
         }
 
         $arrayResult = json_decode($result->getBody()->getContents(), true);
