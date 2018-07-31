@@ -1,0 +1,25 @@
+{
+    "sw-migration": {
+        "general": {
+            "mainMenuItemGeneral": "Migration",
+            "descriptionTextModule": "Modul to migrate data from Shopware 5"
+        },
+        "wizard": {
+            "title": "Migration: Preparations",
+            "contentTitle": "Establish a connection to Shopware 5",
+            "apiKeyLabel": "API key",
+            "apiKeyPlaceholder": "Insert key ...",
+            "apiUserLabel": "Username (API-User)",
+            "apiUserPlaceholder": "Insert login username ...",
+            "endpointLabel": "Shop domain",
+            "endpointPlaceholder": "http://www.myshop.com",
+            "apiKeyHint": "You can find your API key in the user management in your user data. Please activate your API access, copy your API key to your clipboard and confirm it via saving your configuration.",
+            "buttonAbort": "Abort",
+            "buttonConnect": "Connect",
+            "pathTarget": "Shopware 5 backend:",
+            "pathSettings": "Configuration",
+            "pathUserManagement": "User administration",
+            "pathEditUser": "“Edit user”"
+        }
+    }
+}
