@@ -1,0 +1,8 @@
+{
+  "name": "swagmigrationnext",
+  "version": "1.0.0",
+  "description": "Migrate old shops into SW-Next",
+  "main": "index.js",
+  "author": "Shopware Services",
+  "license": "MIT"
+}

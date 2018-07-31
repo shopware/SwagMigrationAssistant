@@ -1,0 +1,26 @@
+{% block sw_breadcrumb %}
+    <ul class="sw-breadcrumb">
+        {% block sw_breadcrumb_description %}
+            <span class="sw-breadcrumb-description">
+                {{ description }}
+            </span>
+        {% endblock %}
+
+        {% block sw_breadcrumb_template %}
+            <li class="sw-breadcrumb__item"
+                v-for="(item, index) in items"
+                :key="index">
+                {% block sw_breadcrumb_seperator %}
+                    <sw-icon :name="separatorIcon"
+                             :size="separatorIconSize"
+                             v-if="index !== 0 && items.length > 0"
+                    ></sw-icon>
+                {% endblock %}
+
+                {% block sw_breadcrumb_item %}
+                    {{ item }}
+                {% endblock %}
+            </li>
+        {% endblock %}
+    </ul>
+{% endblock %}

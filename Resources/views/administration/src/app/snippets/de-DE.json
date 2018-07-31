@@ -1,0 +1,25 @@
+{
+    "sw-migration": {
+        "general": {
+            "mainMenuItemGeneral": "Migration",
+            "descriptionTextModule": "Modul zum Migrieren der Daten aus Shopware 5"
+        },
+        "wizard": {
+            "title": "Migration: Vorbereitung",
+            "contentTitle": "Verbindung zu Shopware 5 herstellen",
+            "apiKeyLabel": "API-Schlüssel",
+            "apiKeyPlaceholder": "Schlüssel einfügen ...",
+            "apiUserLabel": "Benutzername (API-User)",
+            "apiUserPlaceholder": "Login-Benutzernamen eintragen ...",
+            "endpointLabel": "Shop-Domain",
+            "endpointPlaceholder": "http://www.meinshop.com",
+            "apiKeyHint": "Den API-Schlüssel findest Du in der Benutzerverwaltung in Deinen Benutzerdaten. Bitte aktiviere den API-Zugang, kopiere den API-Schlüssel in die Zwischenablage und bestätige mit Speichern.",
+            "buttonAbort": "Abbrechen",
+            "buttonConnect": "Verbinden",
+            "pathTarget": "Shopware 5 Backend:",
+            "pathSettings": "Einstellungen",
+            "pathUserManagement": "Benutzerverwaltung",
+            "pathEditUser": "„Diesen Benutzer editieren“"
+        }
+    }
+}
