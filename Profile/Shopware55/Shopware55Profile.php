@@ -7,7 +7,6 @@ use Shopware\Core\Framework\ORM\Event\EntityWrittenContainerEvent;
 use Shopware\Core\Framework\ORM\RepositoryInterface;
 use SwagMigrationNext\Gateway\GatewayInterface;
 use SwagMigrationNext\Migration\Data\SwagMigrationDataDefinition;
-use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationNext\Profile\ProfileInterface;
 use SwagMigrationNext\Profile\Shopware55\Converter\ConverterRegistryInterface;
 
@@ -25,19 +24,12 @@ class Shopware55Profile implements ProfileInterface
      */
     private $converterRegistry;
 
-    /**
-     * @var MappingServiceInterface
-     */
-    private $mappingService;
-
     public function __construct(
         RepositoryInterface $migrationDataRepo,
-        ConverterRegistryInterface $converterRegistry,
-        MappingServiceInterface $mappingService
+        ConverterRegistryInterface $converterRegistry
     ) {
         $this->migrationDataRepo = $migrationDataRepo;
         $this->converterRegistry = $converterRegistry;
-        $this->mappingService = $mappingService;
     }
 
     public function getName(): string
@@ -55,13 +47,10 @@ class Shopware55Profile implements ProfileInterface
         /** @var array[] $data */
         $data = $gateway->read($entityName, $offset, $limit);
 
-        $this->mappingService->setProfile($this->getName());
-        $this->mappingService->readExistingMappings($context);
-
         $converter = $this->converterRegistry->getConverter($entityName);
         $createData = [];
         foreach ($data as $item) {
-            $convertStruct = $converter->convert($item);
+            $convertStruct = $converter->convert($item, $context);
             $createData[] = [
                 'entity' => $entityName,
                 'profile' => $this->getName(),
@@ -71,7 +60,6 @@ class Shopware55Profile implements ProfileInterface
             ];
         }
 
-        $this->mappingService->writeMapping($context);
         /** @var EntityWrittenContainerEvent $writtenEvent */
         $writtenEvent = $this->migrationDataRepo->upsert($createData, $context);
 

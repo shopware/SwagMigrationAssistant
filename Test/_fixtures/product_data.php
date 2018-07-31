@@ -209,7 +209,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -414,7 +414,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -468,7 +468,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -674,7 +674,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -879,7 +879,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -933,7 +933,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -987,7 +987,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -1201,7 +1201,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -1255,7 +1255,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -1309,7 +1309,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -1519,7 +1519,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -1573,7 +1573,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -1627,7 +1627,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -1848,7 +1848,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -2053,7 +2053,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -2247,7 +2247,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -2452,7 +2452,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -2646,7 +2646,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -2851,7 +2851,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -3056,7 +3056,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -3250,7 +3250,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -3304,7 +3304,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -3358,7 +3358,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -3572,7 +3572,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -3626,7 +3626,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -3680,7 +3680,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -3901,7 +3901,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -3955,7 +3955,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -4169,7 +4169,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -4223,7 +4223,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -4437,7 +4437,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -4491,7 +4491,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -4705,7 +4705,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -4759,7 +4759,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -4813,7 +4813,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -5034,7 +5034,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -5088,7 +5088,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -5142,7 +5142,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -5363,7 +5363,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -5417,7 +5417,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -5471,7 +5471,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -5692,7 +5692,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -5746,7 +5746,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -5800,7 +5800,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -6010,7 +6010,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -6064,7 +6064,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -6118,7 +6118,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -6328,7 +6328,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -6382,7 +6382,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -6436,7 +6436,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -6646,7 +6646,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -6700,7 +6700,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -6754,7 +6754,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -6964,7 +6964,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -7018,7 +7018,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -7072,7 +7072,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -7282,7 +7282,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -7336,7 +7336,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -7390,7 +7390,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -7600,7 +7600,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -7654,7 +7654,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -7708,7 +7708,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -7918,7 +7918,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -7972,7 +7972,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -8026,7 +8026,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -8236,7 +8236,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -8290,7 +8290,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -8344,7 +8344,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -8554,7 +8554,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -8608,7 +8608,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -8662,7 +8662,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -8872,7 +8872,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -8926,7 +8926,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -8980,7 +8980,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -9190,7 +9190,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -9244,7 +9244,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -9298,7 +9298,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -9519,7 +9519,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -9573,7 +9573,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -9627,7 +9627,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -9841,7 +9841,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -9895,7 +9895,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -9949,7 +9949,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -10152,7 +10152,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -10206,7 +10206,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -10260,7 +10260,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -10463,7 +10463,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -10517,7 +10517,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
@@ -10571,7 +10571,7 @@ return [
                         'settings' => [
                             'id' => '10',
                             'albumID' => '-1',
-                            'create_thumbnails' => '1',
+                            'create_thumbnails' => '0',
                             'thumbnail_size' => '200x200;600x600;1280x1280',
                             'icon' => 'sprite-inbox',
                             'thumbnail_high_dpi' => '1',
