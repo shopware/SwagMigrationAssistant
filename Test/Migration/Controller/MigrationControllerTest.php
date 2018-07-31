@@ -62,7 +62,7 @@ class MigrationControllerTest extends KernelTestCase
     {
         $request = new Request([
             'profile' => 'shopware55',
-            'gateway' => 'api',
+            'gateway' => 'local',
             'entity' => ProductDefinition::getEntityName(),
             'credentials' => [
                 'endpoint' => 'test',

@@ -4,9 +4,8 @@ namespace SwagMigrationNext\Test\Mock\Gateway\Dummy\Api\Reader;
 
 use GuzzleHttp\Client;
 use Shopware\Core\Content\Product\ProductDefinition;
-use SwagMigrationNext\Gateway\Shopware55\Api\Reader\Shopware55ApiReaderInterface;
 
-class ApiDummyReader implements Shopware55ApiReaderInterface
+class ApiDummyReader
 {
     public function supports(): string
     {

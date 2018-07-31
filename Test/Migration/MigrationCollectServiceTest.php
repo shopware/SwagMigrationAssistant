@@ -70,7 +70,7 @@ class MigrationCollectServiceTest extends KernelTestCase
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
         $migrationContext = new MigrationContext(
             Shopware55Profile::PROFILE_NAME,
-            'api',
+            'local',
             ProductDefinition::getEntityName(),
             [
                 'endpoint' => 'test',
