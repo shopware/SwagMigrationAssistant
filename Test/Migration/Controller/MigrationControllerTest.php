@@ -13,6 +13,7 @@ use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use SwagMigrationNext\Migration\Controller\MigrationController;
+use SwagMigrationNext\Migration\Mapping\MappingService;
 use SwagMigrationNext\Migration\MigrationWriteService;
 use SwagMigrationNext\Test\MigrationServicesTrait;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -43,7 +44,10 @@ class MigrationControllerTest extends KernelTestCase
         $this->connection->beginTransaction();
 
         $this->controller = new MigrationController(
-            $this->getMigrationCollectService(self::$container->get('swag_migration_data.repository')),
+            $this->getMigrationCollectService(
+                self::$container->get('swag_migration_data.repository'),
+                self::$container->get(MappingService::class)
+            ),
             self::$container->get(MigrationWriteService::class)
         );
     }
@@ -57,9 +61,9 @@ class MigrationControllerTest extends KernelTestCase
     public function testFetchData()
     {
         $request = new Request([
-            'profileName' => 'shopware55',
-            'gatewayName' => 'api',
-            'entityName' => ProductDefinition::getEntityName(),
+            'profile' => 'shopware55',
+            'gateway' => 'api',
+            'entity' => ProductDefinition::getEntityName(),
             'credentials' => [
                 'endpoint' => 'test',
                 'apiUser' => 'test',
@@ -68,6 +72,26 @@ class MigrationControllerTest extends KernelTestCase
         ]);
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
         $result = $this->controller->fetchData($request, $context);
+
+        $this->assertEquals(Response::HTTP_OK, $result->getStatusCode());
+        $content = json_decode($result->getContent(), true);
+
+        $this->assertTrue($content['success']);
+    }
+
+    public function testWriteData()
+    {
+        $request = new Request([
+            'profile' => 'shopware55',
+            'entity' => ProductDefinition::getEntityName(),
+            'credentials' => [
+                'endpoint' => 'test',
+                'apiUser' => 'test',
+                'apiKey' => 'test',
+            ],
+        ]);
+        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $result = $this->controller->writeData($request, $context);
 
         $this->assertEquals(Response::HTTP_OK, $result->getStatusCode());
         $content = json_decode($result->getContent(), true);

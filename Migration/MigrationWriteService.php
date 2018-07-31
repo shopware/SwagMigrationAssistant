@@ -6,6 +6,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\ORM\RepositoryInterface;
 use Shopware\Core\Framework\ORM\Search\Criteria;
 use Shopware\Core\Framework\ORM\Search\Query\TermQuery;
+use Shopware\Core\Framework\ORM\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\Struct\ArrayStruct;
 use SwagMigrationNext\Migration\Writer\WriterRegistryInterface;
 
@@ -31,20 +32,24 @@ class MigrationWriteService implements MigrationWriteServiceInterface
 
     public function writeData(MigrationContext $migrationContext, Context $context): void
     {
-        foreach (EntityRelationMapping::getMapping($migrationContext->getEntityName()) as $entity) {
-            $entityName = $entity['entity'];
-            $criteria = new Criteria();
-            $criteria->addFilter(new TermQuery('entityName', $entityName));
-            $migrationData = $this->migrationDataRepository->search($criteria, $context);
+        $entity = $migrationContext->getEntity();
+        $criteria = new Criteria();
+        $criteria->addFilter(new TermQuery('entity', $entity));
+        $criteria->addFilter(new TermQuery('profile', $migrationContext->getProfile()));
+        $criteria->addSorting(new FieldSorting('createdAt', FieldSorting::ASCENDING));
+        $migrationData = $this->migrationDataRepository->search($criteria, $context);
 
-            $converted = [];
-            array_map(function ($data) use (&$converted) {
-                /* @var ArrayStruct $data */
-                $converted[] = array_filter($data->get('converted'));
-            }, $migrationData->getElements());
-
-            $currentWriter = $this->writerRegistry->getWriter($entityName);
-            $currentWriter->writeData($converted, $context);
+        if ($migrationData->getTotal() === 0) {
+            return;
         }
+
+        $converted = [];
+        array_map(function ($data) use (&$converted) {
+            /* @var ArrayStruct $data */
+            $converted[] = array_filter($data->get('converted'));
+        }, $migrationData->getElements());
+
+        $currentWriter = $this->writerRegistry->getWriter($entity);
+        $currentWriter->writeData($converted, $context);
     }
 }

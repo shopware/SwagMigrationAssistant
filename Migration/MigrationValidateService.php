@@ -32,10 +32,10 @@ class MigrationValidateService implements MigrationValidateServiceInterface
     public function validateData(MigrationContext $migrationContext, Context $context): void
     {
         $criteria = new Criteria();
-        $criteria->addFilter(new TermQuery('entityName', $migrationContext->getEntityName()));
+        $criteria->addFilter(new TermQuery('entity', $migrationContext->getEntity()));
         $migrationData = $this->migrationDataRepository->search($criteria, $context);
 
-        $currentValidator = $this->validatorRegistry->getValidator($migrationContext->getEntityName());
+        $currentValidator = $this->validatorRegistry->getValidator($migrationContext->getEntity());
         $currentValidator->validateData($migrationData->getElements(), $context);
     }
 }

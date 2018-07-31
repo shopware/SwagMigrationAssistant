@@ -3,6 +3,7 @@
 namespace SwagMigrationNext;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DBALException;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Plugin;
 use Shopware\Core\Framework\Plugin\Context\InstallContext;
@@ -41,23 +42,29 @@ class SwagMigrationNext extends Plugin
         /** @var Connection $connection */
         $connection = $this->container->get(Connection::class);
         $fromHexToBytes = Uuid::fromHexToBytes(Defaults::TENANT_ID);
-
         $sql = file_get_contents($this->getPath() . '/schema.sql');
-        $connection->query($sql);
 
-        $connection->insert('swag_migration_profile', [
-            'id' => Uuid::uuid4()->getBytes(),
-            'tenant_id' => $fromHexToBytes,
-            'profile' => Shopware55Profile::PROFILE_NAME,
-            'gateway_type' => Shopware55ApiGateway::GATEWAY_TYPE,
-        ]);
-
-        $connection->insert('swag_migration_profile', [
-            'id' => Uuid::uuid4()->getBytes(),
-            'tenant_id' => $fromHexToBytes,
-            'profile' => Shopware55Profile::PROFILE_NAME,
-            'gateway_type' => Shopware55LocalGateway::GATEWAY_TYPE,
-        ]);
+        $connection->beginTransaction();
+        try {
+            $connection->query($sql);
+            $connection->insert('swag_migration_profile', [
+                'id' => Uuid::uuid4()->getBytes(),
+                'tenant_id' => $fromHexToBytes,
+                'profile' => Shopware55Profile::PROFILE_NAME,
+                'gateway' => Shopware55ApiGateway::GATEWAY_TYPE,
+                'credential_fields' => json_encode(['endpoint', 'apiUser', 'apiKey']),
+            ]);
+            $connection->insert('swag_migration_profile', [
+                'id' => Uuid::uuid4()->getBytes(),
+                'tenant_id' => $fromHexToBytes,
+                'profile' => Shopware55Profile::PROFILE_NAME,
+                'gateway' => Shopware55LocalGateway::GATEWAY_TYPE,
+                'credential_fields' => json_encode(['dbHost', 'dbPort', 'dbName', 'dbUser', 'dbPassword']),
+            ]);
+        } catch (DBALException $e) {
+            $connection->rollBack();
+            throw $e;
+        }
     }
 
     /**
@@ -73,7 +80,11 @@ class SwagMigrationNext extends Plugin
 
         /** @var Connection $connection */
         $connection = $this->container->get(Connection::class);
-        $connection->exec('DROP TABLE swag_migration_data; DROP TABLE swag_migration_profile');
+        $connection->exec('
+DROP TABLE IF EXISTS swag_migration_data;
+DROP TABLE IF EXISTS swag_migration_profile;
+DROP TABLE IF EXISTS swag_migration_mapping;
+');
 
         parent::uninstall($context);
     }

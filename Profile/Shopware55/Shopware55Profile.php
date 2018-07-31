@@ -5,7 +5,7 @@ namespace SwagMigrationNext\Profile\Shopware55;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\ORM\RepositoryInterface;
 use SwagMigrationNext\Gateway\GatewayInterface;
-use SwagMigrationNext\Migration\EntityRelationMapping;
+use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationNext\Profile\ProfileInterface;
 use SwagMigrationNext\Profile\Shopware55\Converter\ConverterRegistryInterface;
 
@@ -23,10 +23,19 @@ class Shopware55Profile implements ProfileInterface
      */
     private $converterRegistry;
 
-    public function __construct(RepositoryInterface $migrationDataRepo, ConverterRegistryInterface $converterRegistry)
-    {
+    /**
+     * @var MappingServiceInterface
+     */
+    private $mappingService;
+
+    public function __construct(
+        RepositoryInterface $migrationDataRepo,
+        ConverterRegistryInterface $converterRegistry,
+        MappingServiceInterface $mappingService
+    ) {
         $this->migrationDataRepo = $migrationDataRepo;
         $this->converterRegistry = $converterRegistry;
+        $this->mappingService = $mappingService;
     }
 
     public function getName(): string
@@ -39,60 +48,23 @@ class Shopware55Profile implements ProfileInterface
         /** @var array[] $data */
         $data = $gateway->read($entityName);
 
-        $additionalRelationData = [];
+        $this->mappingService->setProfile($this->getName());
+        $this->mappingService->readExistingMappings($context);
+
+        $converter = $this->converterRegistry->getConverter($entityName);
         $createData = [];
-        foreach (EntityRelationMapping::getMapping($entityName) as $key => $entity) {
-            $currentEntityName = $entity['entity'];
-            $currentEntityRelation = $entity['relation'];
-
-            $converter = $this->converterRegistry->getConverter($currentEntityName);
-
-            if ($currentEntityRelation === EntityRelationMapping::MANYTOONE || $currentEntityRelation === EntityRelationMapping::MAIN) {
-                foreach ($data as $id => $item) {
-                    $item = $item[$currentEntityName];
-
-                    $convertStruct = $converter->convert($item, $additionalRelationData);
-
-                    if (!isset($additionalRelationData[$currentEntityName][$convertStruct->getOldId()])) {
-                        $createData[] = [
-                            'entityName' => $currentEntityName,
-                            'profile' => $this->getName(),
-                            'raw' => $item,
-                            'converted' => $convertStruct->getConverted(),
-                            'unmapped' => $convertStruct->getUnmapped(),
-                            'oldIdentifier' => $convertStruct->getOldId(),
-                            'entityUuid' => $convertStruct->getUuid(),
-                        ];
-
-                        $additionalRelationData[$currentEntityName][$convertStruct->getOldId()] = $convertStruct->getUuid();
-                    }
-                }
-            }
-
-            if ($currentEntityRelation === EntityRelationMapping::ONETOMANY) {
-                foreach ($data as $row) {
-                    $row = $row[$currentEntityName];
-                    foreach ($row as $item) {
-                        $convertStruct = $converter->convert($item, $additionalRelationData);
-
-                        if (!isset($additionalRelationData[$currentEntityName][$convertStruct->getOldId()])) {
-                            $createData[] = [
-                                'entityName' => $currentEntityName,
-                                'profile' => $this->getName(),
-                                'raw' => $item,
-                                'converted' => $convertStruct->getConverted(),
-                                'unmapped' => $convertStruct->getUnmapped(),
-                                'oldIdentifier' => $convertStruct->getOldId(),
-                                'entityUuid' => $convertStruct->getUuid(),
-                            ];
-
-                            $additionalRelationData[$currentEntityName][$convertStruct->getOldId()] = $convertStruct->getUuid();
-                        }
-                    }
-                }
-            }
+        foreach ($data as $item) {
+            $convertStruct = $converter->convert($item);
+            $createData[] = [
+                'entity' => $entityName,
+                'profile' => $this->getName(),
+                'raw' => $item,
+                'converted' => $convertStruct->getConverted(),
+                'unmapped' => $convertStruct->getUnmapped(),
+            ];
         }
 
+        $this->mappingService->writeMapping($context);
         $this->migrationDataRepo->upsert($createData, $context);
     }
 }

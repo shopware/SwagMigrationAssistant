@@ -10,6 +10,7 @@ use Shopware\Core\Framework\ORM\RepositoryInterface;
 use Shopware\Core\Framework\ORM\Search\Criteria;
 use Shopware\Core\Framework\ORM\Search\EntitySearchResult;
 use Shopware\Core\Framework\ORM\Search\Query\TermQuery;
+use SwagMigrationNext\Migration\Mapping\MappingService;
 use SwagMigrationNext\Migration\MigrationCollectServiceInterface;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
@@ -51,7 +52,10 @@ class MigrationCollectServiceTest extends KernelTestCase
         $this->connection->beginTransaction();
 
         $this->migrationDataRepo = self::$container->get('swag_migration_data.repository');
-        $this->migrationCollectService = $this->getMigrationCollectService($this->migrationDataRepo);
+        $this->migrationCollectService = $this->getMigrationCollectService(
+            $this->migrationDataRepo,
+            self::$container->get(MappingService::class)
+        );
         $this->productRepo = self::$container->get('product.repository');
     }
 
@@ -79,7 +83,7 @@ class MigrationCollectServiceTest extends KernelTestCase
 
         $criteria = new Criteria();
         $criteria->addFilter(new TermQuery('profile', Shopware55Profile::PROFILE_NAME));
-        $criteria->addFilter(new TermQuery('entityName', ProductDefinition::getEntityName()));
+        $criteria->addFilter(new TermQuery('entity', ProductDefinition::getEntityName()));
         /** @var EntitySearchResult $result */
         $result = $this->migrationDataRepo->search($criteria, $context);
         self::assertEquals(37, $result->getTotal());
@@ -99,7 +103,7 @@ class MigrationCollectServiceTest extends KernelTestCase
 
         $criteria = new Criteria();
         $criteria->addFilter(new TermQuery('profile', Shopware55Profile::PROFILE_NAME));
-        $criteria->addFilter(new TermQuery('entityName', ProductDefinition::getEntityName()));
+        $criteria->addFilter(new TermQuery('entity', ProductDefinition::getEntityName()));
         /** @var EntitySearchResult $result */
         $result = $this->migrationDataRepo->search($criteria, $context);
         self::assertEquals(37, $result->getTotal());

@@ -38,12 +38,12 @@ class MigrationController extends Controller
      */
     public function fetchData(Request $request, Context $context): JsonResponse
     {
-        $profileName = $request->get('profileName', '');
-        $gatewayName = $request->get('gatewayName', '');
-        $entityName = $request->get('entityName', '');
+        $profile = $request->get('profile', '');
+        $gateway = $request->get('gateway', '');
+        $entity = $request->get('entity', '');
         $credentials = $request->get('credentials', []);
 
-        $migrationContext = new MigrationContext($profileName, $gatewayName, $entityName, $credentials);
+        $migrationContext = new MigrationContext($profile, $gateway, $entity, $credentials);
         $this->migrationCollectService->fetchData($migrationContext, $context);
 
         return new JsonResponse(['success' => true]);
@@ -55,10 +55,10 @@ class MigrationController extends Controller
      */
     public function writeData(Request $request, Context $context): JsonResponse
     {
-        $profileName = $request->get('profileName', '');
-        $entityName = $request->get('entityName', '');
+        $profile = $request->get('profile', '');
+        $entity = $request->get('entity', '');
 
-        $migrationContext = new MigrationContext($profileName, '', $entityName, []);
+        $migrationContext = new MigrationContext($profile, '', $entity, []);
         $this->migrationWriteService->writeData($migrationContext, $context);
 
         return new JsonResponse(['success' => true]);

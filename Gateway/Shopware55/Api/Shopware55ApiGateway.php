@@ -2,8 +2,8 @@
 
 namespace SwagMigrationNext\Gateway\Shopware55\Api;
 
+use GuzzleHttp\Client;
 use SwagMigrationNext\Gateway\GatewayInterface;
-use SwagMigrationNext\Gateway\Shopware55\Api\Reader\Shopware55ApiClient;
 use SwagMigrationNext\Gateway\Shopware55\Api\Reader\Shopware55ApiReaderRegistryInterface;
 
 class Shopware55ApiGateway implements GatewayInterface
@@ -44,7 +44,10 @@ class Shopware55ApiGateway implements GatewayInterface
 
     public function read(string $entityName): array
     {
-        $apiClient = new Shopware55ApiClient($this->endpoint, $this->apiUser, $this->apiKey);
+        $apiClient = new Client([
+            'base_uri' => $this->endpoint . '/api/',
+            'auth' => [$this->apiUser, $this->apiKey, 'digest'],
+        ]);
 
         $reader = $this->apiReaderRegistry->getReader($entityName);
 

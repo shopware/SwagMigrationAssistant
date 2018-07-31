@@ -2,6 +2,7 @@
 
 namespace SwagMigrationNext\Command;
 
+use InvalidArgumentException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Struct\Uuid;
 use SwagMigrationNext\Migration\MigrationCollectServiceInterface;
@@ -14,7 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class MigrationFetchDataCommand extends ContainerAwareCommand
 {
-    // example call: bin/console migration:fetch:data -t ffffffffffffffffffffffffffffffff -p shopware55 -g local -y product dbHost localhost dbName 5.5 dbUser root dbPassword root
+    // example call: bin/console migration:fetch:data -t 20080911ffff4fffafffffff19830531 -p shopware55 -g local -y product dbHost localhost dbName 5.5 dbUser root dbPassword root
 
     /**
      * @var MigrationCollectServiceInterface
@@ -31,9 +32,9 @@ class MigrationFetchDataCommand extends ContainerAwareCommand
     {
         $this->setDescription('Fetches data with the given profile from the given gateway');
         $this->addOption('tenant-id', 't', InputOption::VALUE_REQUIRED);
-        $this->addOption('profileName', 'p', InputOption::VALUE_REQUIRED);
-        $this->addOption('gatewayName', 'g', InputOption::VALUE_REQUIRED);
-        $this->addOption('entityName', 'y', InputOption::VALUE_REQUIRED);
+        $this->addOption('profile', 'p', InputOption::VALUE_REQUIRED);
+        $this->addOption('gateway', 'g', InputOption::VALUE_REQUIRED);
+        $this->addOption('entity', 'y', InputOption::VALUE_REQUIRED);
         $this->addArgument('credentials', InputArgument::IS_ARRAY | InputArgument::REQUIRED);
     }
 
@@ -42,26 +43,26 @@ class MigrationFetchDataCommand extends ContainerAwareCommand
         $tenantId = $input->getOption('tenant-id');
 
         if (!$tenantId) {
-            throw new \InvalidArgumentException('No tenant id provided');
+            throw new InvalidArgumentException('No tenant id provided');
         }
         if (!Uuid::isValid($tenantId)) {
-            throw new \Exception('Invalid uuid provided');
+            throw new InvalidArgumentException('Invalid uuid provided');
         }
         $context = Context::createDefaultContext($tenantId);
 
-        $profileName = $input->getOption('profileName');
-        if (!$profileName) {
-            throw new \InvalidArgumentException('No profile name provided');
+        $profile = $input->getOption('profile');
+        if (!$profile) {
+            throw new InvalidArgumentException('No profile provided');
         }
 
-        $gatewayName = $input->getOption('gatewayName');
-        if (!$gatewayName) {
-            throw new \InvalidArgumentException('No gateway name provided');
+        $gateway = $input->getOption('gateway');
+        if (!$gateway) {
+            throw new InvalidArgumentException('No gateway provided');
         }
 
-        $entityName = $input->getOption('entityName');
-        if (!$entityName) {
-            throw new \InvalidArgumentException('No entity name provided');
+        $entity = $input->getOption('entity');
+        if (!$entity) {
+            throw new InvalidArgumentException('No entity provided');
         }
 
         $credentialsItems = $input->getArgument('credentials');
@@ -70,14 +71,14 @@ class MigrationFetchDataCommand extends ContainerAwareCommand
         $credentialsCount = \count($credentialsItems);
 
         if ($credentialsCount % 2 !== 0) {
-            throw new \InvalidArgumentException('Invalid number of credential items');
+            throw new InvalidArgumentException('Invalid number of credential items');
         }
 
         for ($i = 0; $i < $credentialsCount; $i += 2) {
             $credentials[$credentialsItems[$i]] = $credentialsItems[$i + 1];
         }
 
-        $migrationContext = new MigrationContext($profileName, $gatewayName, $entityName, $credentials);
+        $migrationContext = new MigrationContext($profile, $gateway, $entity, $credentials);
 
         $output->writeln('Fetching data...');
 

@@ -2,7 +2,10 @@
 
 namespace SwagMigrationNext\Gateway\Shopware55\Api\Reader;
 
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Response as GuzzleResponse;
 use Shopware\Core\Content\Product\ProductDefinition;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class Shopware55ApiProductReader implements Shopware55ApiReaderInterface
 {
@@ -11,8 +14,17 @@ class Shopware55ApiProductReader implements Shopware55ApiReaderInterface
         return ProductDefinition::getEntityName();
     }
 
-    public function read(Shopware55ApiClient $apiClient): array
+    public function read(Client $apiClient): array
     {
-        return $apiClient->get('articles')['data'];
+        /** @var GuzzleResponse $result */
+        $result = $apiClient->get('SwagMigrationProducts');
+
+        if ($result->getStatusCode() !== SymfonyResponse::HTTP_OK) {
+            throw new GatewayReadException('Shopware 5.5 Api Products');
+        }
+
+        $arrayResult = json_decode($result->getBody()->getContents(), true);
+
+        return $arrayResult['data'];
     }
 }

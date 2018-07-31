@@ -9,44 +9,44 @@ class MigrationContext extends Struct
     /**
      * @var string
      */
-    private $profileName;
+    private $profile;
 
     /**
      * @var string
      */
-    private $entityName;
+    private $entity;
 
     /**
      * @var string
      */
-    private $gatewayName;
+    private $gateway;
 
     /**
      * @var array
      */
     private $credentials;
 
-    public function __construct(string $profileName, string $gatewayName, string $entityName, array $credentials)
+    public function __construct(string $profile, string $gateway, string $entity, array $credentials)
     {
-        $this->profileName = $profileName;
-        $this->gatewayName = $gatewayName;
-        $this->entityName = $entityName;
+        $this->profile = $profile;
+        $this->gateway = $gateway;
+        $this->entity = $entity;
         $this->credentials = $credentials;
     }
 
-    public function getProfileName(): string
+    public function getProfile(): string
     {
-        return $this->profileName;
+        return $this->profile;
     }
 
-    public function getEntityName(): string
+    public function getEntity(): string
     {
-        return $this->entityName;
+        return $this->entity;
     }
 
-    public function getGatewayName(): string
+    public function getGateway(): string
     {
-        return $this->gatewayName;
+        return $this->gateway;
     }
 
     public function getCredentials(): array
@@ -56,6 +56,6 @@ class MigrationContext extends Struct
 
     public function getGatewayIdentifier(): string
     {
-        return $this->getProfileName() . $this->getGatewayName();
+        return $this->getProfile() . $this->getGateway();
     }
 }
