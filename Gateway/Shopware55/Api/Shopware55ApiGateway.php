@@ -37,7 +37,7 @@ class Shopware55ApiGateway implements GatewayInterface
         $this->apiKey = $apiKey;
     }
 
-    public function read(string $entityName): array
+    public function read(string $entityName, int $offset, int $limit): array
     {
         $apiClient = new Client([
             'base_uri' => $this->endpoint . '/api/',
@@ -47,11 +47,11 @@ class Shopware55ApiGateway implements GatewayInterface
         switch ($entityName) {
             case ProductDefinition::getEntityName():
                 $reader = new Shopware55ApiProductReader();
-
-                return $reader->read($apiClient);
-
+                break;
             default:
                 throw new Shopware55ApiReaderNotFoundException($entityName);
         }
+
+        return $reader->read($apiClient, $offset, $limit);
     }
 }

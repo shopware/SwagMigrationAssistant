@@ -73,7 +73,9 @@ class MigrationWriteServiceTest extends KernelTestCase
             Shopware55Profile::PROFILE_NAME,
             'local',
             ProductDefinition::getEntityName(),
-            []
+            [],
+            0,
+            250
         );
 
         $this->migrationCollectService->fetchData($migrationContext, $context);
@@ -94,7 +96,9 @@ class MigrationWriteServiceTest extends KernelTestCase
             Shopware55Profile::PROFILE_NAME,
             'local',
             ProductDefinition::getEntityName(),
-            []
+            [],
+            0,
+            250
         );
         $this->migrationWriteService->writeData($migrationContext, $context);
 

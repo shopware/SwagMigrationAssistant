@@ -8,6 +8,7 @@ use Shopware\Core\Framework\Struct\Uuid;
 use SwagMigrationNext\Migration\MigrationCollectServiceInterface;
 use SwagMigrationNext\Migration\MigrationContext;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -78,12 +79,24 @@ class MigrationFetchDataCommand extends ContainerAwareCommand
             $credentials[$credentialsItems[$i]] = $credentialsItems[$i + 1];
         }
 
-        $migrationContext = new MigrationContext($profile, $gateway, $entity, $credentials);
-
         $output->writeln('Fetching data...');
 
-        $this->migrationCollectService->fetchData($migrationContext, $context);
+        $total = 37; // TODO Read from API endpoint
+        $limit = 100;
+        $totalImportedCount = 0;
+        $progressBar = new ProgressBar($output, $total);
+        $progressBar->start();
 
+        for ($offset = 0; $totalImportedCount < $total; $offset += $limit) {
+            $migrationContext = new MigrationContext($profile, $gateway, $entity, $credentials, $offset, $limit);
+            $importedCount = $this->migrationCollectService->fetchData($migrationContext, $context);
+            $totalImportedCount += $importedCount;
+            $progressBar->advance($importedCount);
+        }
+
+        $progressBar->finish();
+
+        $output->writeln('');
         $output->writeln('Fetching done.');
     }
 }

@@ -52,7 +52,7 @@ class Shopware55LocalGateway implements GatewayInterface
         $this->dbPassword = $dbPassword;
     }
 
-    public function read(string $entityName): array
+    public function read(string $entityName, int $offset, int $limit): array
     {
         $dsn = sprintf('mysql:dbname=%s;host=%s;port=%s', $this->dbName, $this->dbHost, $this->dbPort);
         $connection = new PDOConnection(

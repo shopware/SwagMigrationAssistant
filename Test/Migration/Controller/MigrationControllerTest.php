@@ -12,7 +12,7 @@ use Doctrine\DBAL\Connection;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
-use SwagMigrationNext\Migration\Controller\MigrationController;
+use SwagMigrationNext\Controller\MigrationController;
 use SwagMigrationNext\Migration\Mapping\MappingService;
 use SwagMigrationNext\Migration\MigrationWriteService;
 use SwagMigrationNext\Test\MigrationServicesTrait;

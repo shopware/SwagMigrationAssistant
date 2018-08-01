@@ -3,8 +3,10 @@
 namespace SwagMigrationNext\Profile\Shopware55;
 
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\ORM\Event\EntityWrittenContainerEvent;
 use Shopware\Core\Framework\ORM\RepositoryInterface;
 use SwagMigrationNext\Gateway\GatewayInterface;
+use SwagMigrationNext\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationNext\Profile\ProfileInterface;
 use SwagMigrationNext\Profile\Shopware55\Converter\ConverterRegistryInterface;
@@ -43,10 +45,15 @@ class Shopware55Profile implements ProfileInterface
         return self::PROFILE_NAME;
     }
 
-    public function collectData(GatewayInterface $gateway, string $entityName, Context $context): void
-    {
+    public function collectData(
+        GatewayInterface $gateway,
+        string $entityName,
+        Context $context,
+        int $offset,
+        int $limit
+    ): int {
         /** @var array[] $data */
-        $data = $gateway->read($entityName);
+        $data = $gateway->read($entityName, $offset, $limit);
 
         $this->mappingService->setProfile($this->getName());
         $this->mappingService->readExistingMappings($context);
@@ -65,6 +72,11 @@ class Shopware55Profile implements ProfileInterface
         }
 
         $this->mappingService->writeMapping($context);
-        $this->migrationDataRepo->upsert($createData, $context);
+        /** @var EntityWrittenContainerEvent $writtenEvent */
+        $writtenEvent = $this->migrationDataRepo->upsert($createData, $context);
+
+        $event = $writtenEvent->getEventByDefinition(SwagMigrationDataDefinition::class);
+
+        return \count($event->getIds());
     }
 }
