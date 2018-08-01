@@ -2,6 +2,7 @@
 
 namespace SwagMigrationNext\Profile\Shopware55\Converter;
 
+use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Content\Media\Aggregate\MediaAlbum\MediaAlbumDefinition;
 use Shopware\Core\Content\Media\Aggregate\MediaAlbumTranslation\MediaAlbumTranslationDefinition;
 use Shopware\Core\Content\Media\Aggregate\MediaTranslation\MediaTranslationDefinition;
@@ -19,7 +20,7 @@ use Shopware\Core\System\Tax\TaxDefinition;
 use Shopware\Core\System\Unit\Aggregate\UnitTranslation\UnitTranslationDefinition;
 use Shopware\Core\System\Unit\UnitDefinition;
 use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
-use SwagMigrationNext\Profile\Shopware55\ConverterHelperServiceInterface;
+use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\ConvertStruct;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
@@ -31,7 +32,7 @@ class ProductConverter implements ConverterInterface
     private $mappingService;
 
     /**
-     * @var ConverterHelperServiceInterface
+     * @var ConverterHelperService
      */
     private $helper;
 
@@ -52,7 +53,7 @@ class ProductConverter implements ConverterInterface
 
     public function __construct(
         MappingServiceInterface $mappingService,
-        ConverterHelperServiceInterface $converterHelperService
+        ConverterHelperService $converterHelperService
     ) {
         $this->mappingService = $mappingService;
         $this->helper = $converterHelperService;
@@ -205,14 +206,17 @@ class ProductConverter implements ConverterInterface
         $converted['priceRules'] = $this->getPriceRules($data['prices'], $converted);
         unset($data['prices']);
 
-        $converted['translations'] = [];
-
-        $this->setGivenDefaultTranslation($data, $converted);
-
         if (isset($data['assets'])) {
             $converted['media'] = $this->getAssets($data['assets'], $converted, $data['locale']);
             unset($data['assets']);
         }
+
+        $converted['translations'] = [];
+        $this->setGivenProductTranslation($data, $converted);
+        unset($data['locale']);
+
+        $converted['categories'] = $this->getCategoryMapping($data['categories']);
+        unset($data['categories']);
 
         $this->helper->convertValue($converted, 'active', $data, 'active', $this->helper::TYPE_BOOLEAN);
         $this->helper->convertValue($converted, 'minDeliveryTime', $data, 'shippingtime', $this->helper::TYPE_INTEGER);
@@ -468,7 +472,7 @@ class ProductConverter implements ConverterInterface
         return $newData;
     }
 
-    private function setGivenDefaultTranslation(array $data, array &$converted): void
+    private function setGivenProductTranslation(array &$data, array &$converted): void
     {
         $defaultTranslation['id'] = $this->mappingService->createNewUuid(
             $this->profile,
@@ -496,5 +500,26 @@ class ProductConverter implements ConverterInterface
         }
 
         $converted['translations'][$languageData['uuid']] = $defaultTranslation;
+    }
+
+    private function getCategoryMapping(array &$categories): array
+    {
+        $categoryMapping = [];
+
+        foreach ($categories as $key => $category) {
+            $categoryUuid = $this->mappingService->getUuid(
+                CategoryDefinition::getEntityName(),
+                $category['id'],
+                $this->context
+            );
+
+            if ($categoryUuid === null) {
+                continue;
+            }
+
+            $categoryMapping[] = ['id' => $categoryUuid];
+        }
+
+        return $categoryMapping;
     }
 }

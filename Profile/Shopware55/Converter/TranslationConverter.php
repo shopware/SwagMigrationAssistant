@@ -2,6 +2,8 @@
 
 namespace SwagMigrationNext\Profile\Shopware55\Converter;
 
+use Shopware\Core\Content\Category\Aggregate\CategoryTranslation\CategoryTranslationDefinition;
+use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Content\Product\Aggregate\ProductManufacturer\ProductManufacturerDefinition;
 use Shopware\Core\Content\Product\Aggregate\ProductManufacturerTranslation\ProductManufacturerTranslationDefinition;
 use Shopware\Core\Content\Product\Aggregate\ProductTranslation\ProductTranslationDefinition;
@@ -10,14 +12,14 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\System\Unit\Aggregate\UnitTranslation\UnitTranslationDefinition;
 use Shopware\Core\System\Unit\UnitDefinition;
 use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
-use SwagMigrationNext\Profile\Shopware55\ConverterHelperServiceInterface;
+use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\ConvertStruct;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
 class TranslationConverter implements ConverterInterface
 {
     /**
-     * @var ConverterHelperServiceInterface
+     * @var ConverterHelperService
      */
     private $helper;
 
@@ -27,7 +29,7 @@ class TranslationConverter implements ConverterInterface
     private $mappingService;
 
     public function __construct(
-        ConverterHelperServiceInterface $converterHelperService,
+        ConverterHelperService $converterHelperService,
         MappingServiceInterface $mappingService
     ) {
         $this->helper = $converterHelperService;
@@ -42,12 +44,14 @@ class TranslationConverter implements ConverterInterface
     public function convert(array $data, Context $context): ConvertStruct
     {
         switch ($data['objecttype']) {
-            case  'article':
+            case 'article':
                 return $this->createProductTranslation($data, $context);
-            case  'supplier':
+            case 'supplier':
                 return $this->createManufacturerProductTranslation($data, $context);
-            case  'config_units':
+            case 'config_units':
                 return $this->createUnitTranslation($data, $context);
+            case 'category':
+                return $this->createCategoryTranslation($data, $context);
         }
 
         return new ConvertStruct(null, $data);
@@ -78,7 +82,7 @@ class TranslationConverter implements ConverterInterface
 
         $objectData = unserialize($data['objectdata'], ['allowed_classes' => false]);
 
-        if (!is_array($objectData)) {
+        if (!\is_array($objectData)) {
             return new ConvertStruct(null, $sourceData);
         }
 
@@ -116,6 +120,8 @@ class TranslationConverter implements ConverterInterface
             $productTranslation['languageId'] = $languageData['uuid'];
         }
 
+        unset($data['name'], $data['locale']);
+
         return new ConvertStruct($productTranslation, $data);
     }
 
@@ -145,7 +151,7 @@ class TranslationConverter implements ConverterInterface
 
         $objectData = unserialize($data['objectdata'], ['allowed_classes' => false]);
 
-        if (!is_array($objectData)) {
+        if (!\is_array($objectData)) {
             return new ConvertStruct(null, $sourceData);
         }
 
@@ -183,6 +189,8 @@ class TranslationConverter implements ConverterInterface
             $manufacturerTranslation['languageId'] = $languageData['uuid'];
         }
 
+        unset($data['locale']);
+
         return new ConvertStruct($manufacturerTranslation, $data);
     }
 
@@ -204,7 +212,7 @@ class TranslationConverter implements ConverterInterface
         );
         unset($data['id'], $data['objectkey']);
 
-        if (!isset($manufacturerTranslation['unitId'])) {
+        if (!isset($unitTranslation['unitId'])) {
             return new ConvertStruct(null, $sourceData);
         }
 
@@ -212,7 +220,7 @@ class TranslationConverter implements ConverterInterface
 
         $objectData = unserialize($data['objectdata'], ['allowed_classes' => false]);
 
-        if (!is_array($objectData)) {
+        if (!\is_array($objectData)) {
             return new ConvertStruct(null, $sourceData);
         }
 
@@ -248,6 +256,83 @@ class TranslationConverter implements ConverterInterface
             $unitTranslation['languageId'] = $languageData['uuid'];
         }
 
+        unset($data['name'], $data['locale']);
+
         return new ConvertStruct($unitTranslation, $data);
+    }
+
+    private function createCategoryTranslation(array $data, Context $context): ConvertStruct
+    {
+        $sourceData = $data;
+
+        $categoryTranslation = [];
+        $categoryTranslation['id'] = $this->mappingService->createNewUuid(
+            Shopware55Profile::PROFILE_NAME,
+            CategoryDefinition::getEntityName(),
+            $data['id'],
+            $context
+        );
+        $categoryTranslation['categoryId'] = $this->mappingService->getUuid(
+            CategoryDefinition::getEntityName(),
+            $data['objectkey'],
+            $context
+        );
+        unset($data['id'], $data['objectkey']);
+
+        if (!isset($categoryTranslation['categoryId'])) {
+            return new ConvertStruct(null, $sourceData);
+        }
+
+        $categoryTranslation['entityDefinitionClass'] = CategoryTranslationDefinition::class;
+
+        $objectData = unserialize($data['objectdata'], ['allowed_classes' => false]);
+
+        if (!\is_array($objectData)) {
+            return new ConvertStruct(null, $sourceData);
+        }
+
+        foreach ($objectData as $key => $value) {
+            switch ($key) {
+                case 'description':
+                    $this->helper->convertValue($categoryTranslation, 'name', $objectData, 'description');
+                    break;
+                case 'cmsheadline':
+                    $this->helper->convertValue($categoryTranslation, 'cmsHeadline', $objectData, 'cmsheadline');
+                    break;
+                case 'cmstext':
+                    $this->helper->convertValue($categoryTranslation, 'cmsDescription', $objectData, 'cmstext');
+                    break;
+                case 'metatitle':
+                    $this->helper->convertValue($categoryTranslation, 'metaTitle', $objectData, 'metatitle');
+                    break;
+                case 'metadescription':
+                    $this->helper->convertValue($categoryTranslation, 'metaDescription', $objectData, 'metadescription');
+                    break;
+                case 'metakeywords':
+                    $this->helper->convertValue($categoryTranslation, 'metaKeywords', $objectData, 'metakeywords');
+                    break;
+            }
+        }
+
+        $data['objectdata'] = serialize($objectData);
+        if (empty($objectData)) {
+            unset($data['objectdata']);
+        }
+
+        unset($data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
+
+        $languageData = $this->mappingService->getLanguageUuid(Shopware55Profile::PROFILE_NAME, $data['locale'], $context);
+
+        if (isset($languageData['createData'])) {
+            $categoryTranslation['language']['id'] = $languageData['uuid'];
+            $categoryTranslation['language']['localeId'] = $languageData['createData']['localeId'];
+            $categoryTranslation['language']['name'] = $languageData['createData']['localeCode'];
+        } else {
+            $categoryTranslation['languageId'] = $languageData['uuid'];
+        }
+
+        unset($data['name'], $data['locale']);
+
+        return new ConvertStruct($categoryTranslation, $data);
     }
 }
