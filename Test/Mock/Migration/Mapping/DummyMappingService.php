@@ -11,12 +11,17 @@ class DummyMappingService implements MappingServiceInterface
     {
     }
 
-    public function createNewUuid(string $entityName, string $oldId, array $additionalData = null): string
-    {
+    public function createNewUuid(
+        string $profile,
+        string $entityName,
+        string $oldId,
+        Context $context,
+        array $additionalData = null
+    ): string {
         return '';
     }
 
-    public function writeMapping(Context $context): void
+    public function writeMapping(array $writeMapping, Context $context): void
     {
     }
 
@@ -24,7 +29,12 @@ class DummyMappingService implements MappingServiceInterface
     {
     }
 
-    public function getUuid(string $entityName, string $oldId): ?string
+    public function getUuid(string $entityName, string $oldId, Context $context): ?string
+    {
+        return null;
+    }
+
+    public function getLanguageUuid(string $profile, string $localeCode, Context $context): array
     {
         return null;
     }

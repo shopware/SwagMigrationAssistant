@@ -2,6 +2,7 @@
 
 namespace SwagMigrationNext\Profile\Shopware55\Converter;
 
+use Shopware\Core\Framework\Context;
 use SwagMigrationNext\Profile\Shopware55\ConvertStruct;
 
 interface ConverterInterface
@@ -14,5 +15,5 @@ interface ConverterInterface
     /**
      * Converts the given data into the internal structure
      */
-    public function convert(array $data): ConvertStruct;
+    public function convert(array $data, Context $context): ConvertStruct;
 }
