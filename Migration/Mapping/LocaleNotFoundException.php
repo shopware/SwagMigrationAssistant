@@ -1,20 +1,18 @@
 <?php declare(strict_types=1);
 
-
 namespace SwagMigrationNext\Migration\Mapping;
 
-
 use Shopware\Core\Framework\ShopwareHttpException;
-use Throwable;
 use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 
 class LocaleNotFoundException extends ShopwareHttpException
 {
-    protected $code = 'SWAG-MIGRATION-VALIDATOR-NOT-FOUND';
+    protected $code = 'SWAG-MIGRATION-LOCALE-NOT-FOUND';
 
     public function __construct(string $localeCode, $code = 0, Throwable $previous = null)
     {
-        $message = sprintf('Locale for locale code "%s" not found', $localeCode);
+        $message = sprintf('Locale entity for code "%s" not found', $localeCode);
         parent::__construct($message, $code, $previous);
     }
 

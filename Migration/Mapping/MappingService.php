@@ -27,8 +27,11 @@ class MappingService implements MappingServiceInterface
      */
     private $languageRepository;
 
-    public function __construct(RepositoryInterface $migrationMappingRepo, RepositoryInterface $localeRepository, RepositoryInterface $languageRepository)
-    {
+    public function __construct(
+        RepositoryInterface $migrationMappingRepo,
+        RepositoryInterface $localeRepository,
+        RepositoryInterface $languageRepository
+    ) {
         $this->migrationMappingRepo = $migrationMappingRepo;
         $this->localeRepository = $localeRepository;
         $this->languageRepository = $languageRepository;
@@ -51,21 +54,31 @@ class MappingService implements MappingServiceInterface
         return null;
     }
 
-    public function createNewUuid(string $profile, string $entityName, string $oldId, Context $context, array $additionalData = null): string
-    {
+    public function createNewUuid(
+        string $profile,
+        string $entityName,
+        string $oldId,
+        Context $context,
+        array $additionalData = null
+    ): string {
         $uuid = $this->getUuid($entityName, $oldId, $context);
         if ($uuid !== null) {
             return $uuid;
         }
 
         $uuid = Uuid::uuid4()->getHex();
-        $this->writeMapping([[
-            'profile' => $profile,
-            'entity' => $entityName,
-            'oldIdentifier' => $oldId,
-            'entityUuid' => $uuid,
-            'additionalData' => $additionalData,
-        ]], $context);
+        $this->writeMapping(
+            [
+                [
+                    'profile' => $profile,
+                    'entity' => $entityName,
+                    'oldIdentifier' => $oldId,
+                    'entityUuid' => $uuid,
+                    'additionalData' => $additionalData,
+                ]
+            ],
+            $context
+        );
 
         return $uuid;
     }
@@ -74,10 +87,6 @@ class MappingService implements MappingServiceInterface
     {
         $languageUuid = $this->searchLanguageInMapping($localeCode, $context);
         $localeUuid = $this->searchLocale($localeCode, $context);
-
-        if ($localeUuid === null) {
-            throw new LocaleNotFoundException($localeCode);
-        }
 
         if ($languageUuid !== null) {
             return [
@@ -126,7 +135,10 @@ class MappingService implements MappingServiceInterface
         return null;
     }
 
-    private function searchLocale(string $localeCode, Context $context): ?string
+    /**
+     * @throws LocaleNotFoundException
+     */
+    private function searchLocale(string $localeCode, Context $context): string
     {
         $criteria = new Criteria();
         $criteria->addFilter(new TermQuery('code', $localeCode));
@@ -136,13 +148,13 @@ class MappingService implements MappingServiceInterface
             /** @var ArrayStruct $element */
             $element = $result->getEntities()->first();
 
-            return $element->get('id');
+            return (string) $element->get('id');
         }
 
-        return null;
+        throw new LocaleNotFoundException($localeCode);
     }
 
-    private function searchLanguageByLocale(string $localeUuid, Context $context)
+    private function searchLanguageByLocale(string $localeUuid, Context $context): ?string
     {
         $criteria = new Criteria();
         $criteria->addFilter(new TermQuery('localeId', $localeUuid));
