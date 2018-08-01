@@ -26,11 +26,17 @@ class MigrationCollectService implements MigrationCollectServiceInterface
         $this->gatewayFactoryRegistry = $gatewayFactoryRegistry;
     }
 
-    public function fetchData(MigrationContext $migrationContext, Context $context): void
+    public function fetchData(MigrationContext $migrationContext, Context $context): int
     {
         $profile = $this->profileRegistry->getProfile($migrationContext->getProfile());
         $gateway = $this->gatewayFactoryRegistry->createGateway($migrationContext);
 
-        $profile->collectData($gateway, $migrationContext->getEntity(), $context);
+        return $profile->collectData(
+            $gateway,
+            $migrationContext->getEntity(),
+            $context,
+            $migrationContext->getOffset(),
+            $migrationContext->getLimit()
+        );
     }
 }

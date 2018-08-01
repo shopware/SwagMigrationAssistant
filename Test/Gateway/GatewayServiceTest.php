@@ -35,7 +35,9 @@ class GatewayServiceTest extends TestCase
                 'endpoint' => 'foo',
                 'apiUser' => 'foo',
                 'apiKey' => 'foo',
-            ]
+            ],
+            0,
+            250
         );
 
         try {

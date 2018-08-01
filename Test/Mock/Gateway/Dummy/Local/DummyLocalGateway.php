@@ -8,7 +8,7 @@ class DummyLocalGateway implements GatewayInterface
 {
     public const GATEWAY_TYPE = 'local';
 
-    public function read(string $entityName): array
+    public function read(string $entityName, int $offset, int $limit): array
     {
         return require __DIR__ . '/../../../../_fixtures/product_data.php';
     }

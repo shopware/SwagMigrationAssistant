@@ -4,7 +4,6 @@ namespace SwagMigrationNext\Test;
 
 use Shopware\Core\Framework\ORM\RepositoryInterface;
 use SwagMigrationNext\Gateway\GatewayFactoryRegistry;
-use SwagMigrationNext\Gateway\Shopware55\Api\Reader\Shopware55ApiReaderRegistry;
 use SwagMigrationNext\Gateway\Shopware55\Api\Shopware55ApiFactory;
 use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationNext\Migration\MigrationCollectService;
@@ -15,7 +14,6 @@ use SwagMigrationNext\Profile\Shopware55\Converter\ProductConverter;
 use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Mock\DummyCollection;
-use SwagMigrationNext\Test\Mock\Gateway\Dummy\Api\Reader\ApiDummyReader;
 use SwagMigrationNext\Test\Mock\Gateway\Dummy\Local\DummyLocalFactory;
 
 trait MigrationServicesTrait
@@ -27,10 +25,8 @@ trait MigrationServicesTrait
             new Shopware55Profile($migrationDataRepo, $converterRegistry, $mappingService),
         ]));
 
-        $shopware55ApiReaderRegistry = new Shopware55ApiReaderRegistry(new DummyCollection([new ApiDummyReader()]));
-
         $gatewayFactoryRegistry = new GatewayFactoryRegistry(new DummyCollection([
-            new Shopware55ApiFactory($shopware55ApiReaderRegistry),
+            new Shopware55ApiFactory(),
             new DummyLocalFactory(),
         ]));
 

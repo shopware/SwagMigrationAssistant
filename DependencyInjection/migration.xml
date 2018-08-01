@@ -61,8 +61,8 @@
             <argument type="service" id="SwagMigrationNext\Migration\Validator\ValidatorRegistry"/>
         </service>
 
-        <service id="SwagMigrationNext\Migration\Controller\MigrationController"
-                 class="SwagMigrationNext\Migration\Controller\MigrationController"
+        <service id="SwagMigrationNext\Controller\MigrationController"
+                 class="SwagMigrationNext\Controller\MigrationController"
                  public="true">
             <argument type="service" id="SwagMigrationNext\Migration\MigrationCollectService"/>
             <argument type="service" id="SwagMigrationNext\Migration\MigrationWriteService"/>

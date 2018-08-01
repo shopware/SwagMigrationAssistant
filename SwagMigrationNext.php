@@ -52,14 +52,14 @@ class SwagMigrationNext extends Plugin
                 'tenant_id' => $fromHexToBytes,
                 'profile' => Shopware55Profile::PROFILE_NAME,
                 'gateway' => Shopware55ApiGateway::GATEWAY_TYPE,
-                'credential_fields' => json_encode(['endpoint', 'apiUser', 'apiKey']),
+                'credential_fields' => json_encode(['endpoint' => '', 'apiUser' => '', 'apiKey' => '']),
             ]);
             $connection->insert('swag_migration_profile', [
                 'id' => Uuid::uuid4()->getBytes(),
                 'tenant_id' => $fromHexToBytes,
                 'profile' => Shopware55Profile::PROFILE_NAME,
                 'gateway' => Shopware55LocalGateway::GATEWAY_TYPE,
-                'credential_fields' => json_encode(['dbHost', 'dbPort', 'dbName', 'dbUser', 'dbPassword']),
+                'credential_fields' => json_encode(['dbHost' => '', 'dbPort' => '', 'dbName' => '', 'dbUser' => '', 'dbPassword' => '']),
             ]);
         } catch (DBALException $e) {
             $connection->rollBack();

@@ -77,7 +77,9 @@ class MigrationValidateServiceTest extends KernelTestCase
                 'dbName' => 'foo',
                 'dbUser' => 'foo',
                 'dbPassword' => 'foo',
-            ]
+            ],
+            0,
+            250
         );
 
         $this->migrationCollectService->fetchData($migrationContext, $context);
@@ -98,7 +100,9 @@ class MigrationValidateServiceTest extends KernelTestCase
                 'dbName' => 'foo',
                 'dbUser' => 'foo',
                 'dbPassword' => 'foo',
-            ]
+            ],
+            0,
+            250
         );
 
         $this->migrationCollectService->fetchData($migrationContext, $context);
@@ -106,7 +110,9 @@ class MigrationValidateServiceTest extends KernelTestCase
             Shopware55Profile::PROFILE_NAME,
             'local',
             'foobar',
-            []
+            [],
+            0,
+            250
         );
 
         try {

@@ -3,17 +3,14 @@
 namespace SwagMigrationNext\Gateway\Shopware55\Api;
 
 use GuzzleHttp\Client;
+use Shopware\Core\Content\Product\ProductDefinition;
 use SwagMigrationNext\Gateway\GatewayInterface;
-use SwagMigrationNext\Gateway\Shopware55\Api\Reader\Shopware55ApiReaderRegistryInterface;
+use SwagMigrationNext\Gateway\Shopware55\Api\Reader\Shopware55ApiProductReader;
+use SwagMigrationNext\Gateway\Shopware55\Api\Reader\Shopware55ApiReaderNotFoundException;
 
 class Shopware55ApiGateway implements GatewayInterface
 {
     public const GATEWAY_TYPE = 'api';
-
-    /**
-     * @var Shopware55ApiReaderRegistryInterface
-     */
-    private $apiReaderRegistry;
 
     /**
      * @var string
@@ -31,7 +28,6 @@ class Shopware55ApiGateway implements GatewayInterface
     private $apiKey;
 
     public function __construct(
-        Shopware55ApiReaderRegistryInterface $apiReaderRegistry,
         string $endpoint,
         string $apiUser,
         string $apiKey
@@ -39,18 +35,23 @@ class Shopware55ApiGateway implements GatewayInterface
         $this->endpoint = $endpoint;
         $this->apiUser = $apiUser;
         $this->apiKey = $apiKey;
-        $this->apiReaderRegistry = $apiReaderRegistry;
     }
 
-    public function read(string $entityName): array
+    public function read(string $entityName, int $offset, int $limit): array
     {
         $apiClient = new Client([
             'base_uri' => $this->endpoint . '/api/',
             'auth' => [$this->apiUser, $this->apiKey, 'digest'],
         ]);
 
-        $reader = $this->apiReaderRegistry->getReader($entityName);
+        switch ($entityName) {
+            case ProductDefinition::getEntityName():
+                $reader = new Shopware55ApiProductReader();
+                break;
+            default:
+                throw new Shopware55ApiReaderNotFoundException($entityName);
+        }
 
-        return $reader->read($apiClient);
+        return $reader->read($apiClient, $offset, $limit);
     }
 }

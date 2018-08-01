@@ -34,36 +34,12 @@
         <!-- Shopware 5.5 Gateway -->
         <service id="SwagMigrationNext\Gateway\Shopware55\Api\Shopware55ApiFactory"
                  class="SwagMigrationNext\Gateway\Shopware55\Api\Shopware55ApiFactory">
-            <argument type="service" id="SwagMigrationNext\Gateway\Shopware55\Api\Reader\Shopware55ApiReaderRegistry"/>
             <tag name="shopware.migration.gateway_factory"/>
         </service>
 
         <service id="SwagMigrationNext\Gateway\Shopware55\Local\Shopware55LocalFactory"
                  class="SwagMigrationNext\Gateway\Shopware55\Local\Shopware55LocalFactory">
             <tag name="shopware.migration.gateway_factory"/>
-            <argument type="service" id="SwagMigrationNext\Gateway\Shopware55\Local\Reader\Shopware55LocalReaderRegistry"/>
-        </service>
-
-        <!-- Shopware 5.5 Gateway API Reader -->
-        <service id="SwagMigrationNext\Gateway\Shopware55\Api\Reader\Shopware55ApiReaderRegistry"
-                 class="SwagMigrationNext\Gateway\Shopware55\Api\Reader\Shopware55ApiReaderRegistry">
-            <argument type="tagged" tag="shopware.migration.gateway.shopware55.api.reader"/>
-        </service>
-
-        <service id="SwagMigrationNext\Gateway\Shopware55\Api\Reader\Shopware55ApiProductReader"
-                 class="SwagMigrationNext\Gateway\Shopware55\Api\Reader\Shopware55ApiProductReader">
-            <tag name="shopware.migration.gateway.shopware55.api.reader"/>
-        </service>
-
-        <!-- Shopware 5.5 Gateway Local Reader -->
-        <service id="SwagMigrationNext\Gateway\Shopware55\Local\Reader\Shopware55LocalReaderRegistry"
-                 class="SwagMigrationNext\Gateway\Shopware55\Local\Reader\Shopware55LocalReaderRegistry">
-            <argument type="tagged" tag="shopware.migration.gateway.shopware55.local.reader"/>
-        </service>
-
-        <service id="SwagMigrationNext\Gateway\Shopware55\Local\Reader\Shopware55LocalProductReader"
-                 class="SwagMigrationNext\Gateway\Shopware55\Local\Reader\Shopware55LocalProductReader">
-            <tag name="shopware.migration.gateway.shopware55.local.reader"/>
         </service>
     </services>
 </container>

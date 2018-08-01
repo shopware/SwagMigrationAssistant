@@ -9,6 +9,7 @@ interface MigrationCollectServiceInterface
     /**
      * Uses the given migration context and the shopware context to read data from an external source
      * and tries to convert it into the internal structure.
+     * Returns the count of the imported data
      */
-    public function fetchData(MigrationContext $migrationContext, Context $context): void;
+    public function fetchData(MigrationContext $migrationContext, Context $context): int;
 }
