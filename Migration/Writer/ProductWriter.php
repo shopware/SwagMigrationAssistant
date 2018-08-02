@@ -2,6 +2,8 @@
 
 namespace SwagMigrationNext\Migration\Writer;
 
+use Doctrine\DBAL\DBALException;
+use Exception;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\ORM\Write\EntityWriterInterface;
@@ -47,11 +49,22 @@ class ProductWriter implements WriterInterface
         }
         unset($item);
 
-        $this->entityWriter->upsert(
-            ProductDefinition::class,
-            $data,
-            WriteContext::createFromContext($context)
-        );
+        try {
+            $this->entityWriter->upsert(
+                ProductDefinition::class,
+                $data,
+                WriteContext::createFromContext($context)
+            );
+        } catch (Exception $e) {
+            if ($e instanceof DBALException &&
+                strpos($e->getMessage(), 'SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails') !== false &&
+                strpos($e->getMessage(), 'CONSTRAINT `fk_product_category.category_id` FOREIGN KEY') !== false
+            ) {
+                throw new WriteProductException('As categories were imported before products, categories also have to be written first');
+            }
+
+            throw $e;
+        }
     }
 
     private function normalizeRule(array &$item): void

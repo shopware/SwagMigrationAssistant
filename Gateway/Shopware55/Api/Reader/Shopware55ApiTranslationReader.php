@@ -2,23 +2,10 @@
 
 namespace SwagMigrationNext\Gateway\Shopware55\Api\Reader;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\Response as GuzzleResponse;
-use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
-
-class Shopware55ApiTranslationReader
+class Shopware55ApiTranslationReader extends Shopware55ApiAbstractReader
 {
-    public function read(Client $apiClient): array
+    public function __construct(int $offset, int $limit)
     {
-        /** @var GuzzleResponse $result */
-        $result = $apiClient->get('SwagMigrationTranslations');
-
-        if ($result->getStatusCode() !== SymfonyResponse::HTTP_OK) {
-            throw new GatewayReadException('Shopware 5.5 Api Products');
-        }
-
-        $arrayResult = json_decode($result->getBody()->getContents(), true);
-
-        return $arrayResult['data'];
+        parent::__construct('Translations', $offset, $limit);
     }
 }

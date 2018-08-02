@@ -3,8 +3,10 @@
 namespace SwagMigrationNext\Gateway\Shopware55\Api;
 
 use GuzzleHttp\Client;
+use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
 use SwagMigrationNext\Gateway\GatewayInterface;
+use SwagMigrationNext\Gateway\Shopware55\Api\Reader\Shopware55ApiCategoryReader;
 use SwagMigrationNext\Gateway\Shopware55\Api\Reader\Shopware55ApiProductReader;
 use SwagMigrationNext\Gateway\Shopware55\Api\Reader\Shopware55ApiReaderNotFoundException;
 use SwagMigrationNext\Gateway\Shopware55\Api\Reader\Shopware55ApiTranslationReader;
@@ -47,15 +49,21 @@ class Shopware55ApiGateway implements GatewayInterface
 
         switch ($entityName) {
             case ProductDefinition::getEntityName():
-                $reader = new Shopware55ApiProductReader();
+                $reader = new Shopware55ApiProductReader($offset, $limit);
                 break;
+
+            case CategoryDefinition::getEntityName():
+                $reader = new Shopware55ApiCategoryReader($offset, $limit);
+                break;
+
             case 'translation':
-                $reader = new Shopware55ApiTranslationReader();
+                $reader = new Shopware55ApiTranslationReader($offset, $limit);
                 break;
+
             default:
                 throw new Shopware55ApiReaderNotFoundException($entityName);
         }
 
-        return $reader->read($apiClient, $offset, $limit);
+        return $reader->read($apiClient);
     }
 }

@@ -37,6 +37,13 @@
             <tag name="shopware.migration.shopware55.converter"/>
         </service>
 
+        <service id="SwagMigrationNext\Profile\Shopware55\Converter\CategoryConverter"
+                 class="SwagMigrationNext\Profile\Shopware55\Converter\CategoryConverter">
+            <argument type="service" id="SwagMigrationNext\Migration\Mapping\MappingService"/>
+            <argument type="service" id="SwagMigrationNext\Profile\Shopware55\ConverterHelperService"/>
+            <tag name="shopware.migration.shopware55.converter"/>
+        </service>
+
         <!-- Shopware 5.5 Gateway -->
         <service id="SwagMigrationNext\Gateway\Shopware55\Api\Shopware55ApiFactory"
                  class="SwagMigrationNext\Gateway\Shopware55\Api\Shopware55ApiFactory">

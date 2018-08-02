@@ -81,8 +81,8 @@ class MigrationFetchDataCommand extends ContainerAwareCommand
 
         $output->writeln('Fetching data...');
 
-        $total = 37; // TODO Read from API endpoint
-        $limit = 100;
+        $total = 1; // TODO Read from API endpoint
+        $limit = 1000;
         $totalImportedCount = 0;
         $progressBar = new ProgressBar($output, $total);
         $progressBar->start();
