@@ -16,13 +16,13 @@ class ConvertStruct extends Struct
      */
     private $unmapped;
 
-    public function __construct(array $converted, ?array $unmapped)
+    public function __construct(?array $converted, ?array $unmapped)
     {
         $this->converted = $converted;
         $this->unmapped = $unmapped;
     }
 
-    public function getConverted(): array
+    public function getConverted(): ?array
     {
         return $this->converted;
     }

@@ -16,5 +16,11 @@
             <argument type="service" id="Shopware\Core\Framework\Struct\Serializer\StructNormalizer"/>
             <tag name="shopware.migration.writer"/>
         </service>
+
+        <service id="SwagMigrationNext\Migration\Writer\TranslationWriter"
+                 class="SwagMigrationNext\Migration\Writer\TranslationWriter">
+            <argument type="service" id="Shopware\Core\Framework\ORM\Write\EntityWriter"/>
+            <tag name="shopware.migration.writer"/>
+        </service>
     </services>
 </container>

@@ -75,7 +75,7 @@ class MappingService implements MappingServiceInterface
                     'oldIdentifier' => $oldId,
                     'entityUuid' => $uuid,
                     'additionalData' => $additionalData,
-                ]
+                ],
             ],
             $context
         );
