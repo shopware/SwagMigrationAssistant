@@ -5,9 +5,11 @@ namespace SwagMigrationNext\Migration;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\ORM\RepositoryInterface;
 use Shopware\Core\Framework\ORM\Search\Criteria;
+use Shopware\Core\Framework\ORM\Search\Query\NotQuery;
 use Shopware\Core\Framework\ORM\Search\Query\TermQuery;
 use Shopware\Core\Framework\ORM\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\Struct\ArrayStruct;
+use spec\Prophecy\Argument\Token\ArrayEveryEntryTokenSpec;
 use SwagMigrationNext\Migration\Writer\WriterRegistryInterface;
 
 class MigrationWriteService implements MigrationWriteServiceInterface
@@ -25,7 +27,8 @@ class MigrationWriteService implements MigrationWriteServiceInterface
     public function __construct(
         RepositoryInterface $migrationDataRepository,
         WriterRegistryInterface $writerRegistry
-    ) {
+    )
+    {
         $this->migrationDataRepository = $migrationDataRepository;
         $this->writerRegistry = $writerRegistry;
     }
@@ -46,7 +49,10 @@ class MigrationWriteService implements MigrationWriteServiceInterface
         $converted = [];
         array_map(function ($data) use (&$converted) {
             /* @var ArrayStruct $data */
-            $converted[] = array_filter($data->get('converted'));
+            $value = $data->get('converted');
+            if ($value !== null) {
+                $converted[] = array_filter($value);
+            }
         }, $migrationData->getElements());
 
         $currentWriter = $this->writerRegistry->getWriter($entity);

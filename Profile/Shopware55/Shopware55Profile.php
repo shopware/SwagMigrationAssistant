@@ -51,6 +51,7 @@ class Shopware55Profile implements ProfileInterface
         $createData = [];
         foreach ($data as $item) {
             $convertStruct = $converter->convert($item, $context);
+
             $createData[] = [
                 'entity' => $entityName,
                 'profile' => $this->getName(),

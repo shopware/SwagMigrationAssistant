@@ -7,6 +7,7 @@ use Shopware\Core\Content\Product\ProductDefinition;
 use SwagMigrationNext\Gateway\GatewayInterface;
 use SwagMigrationNext\Gateway\Shopware55\Api\Reader\Shopware55ApiProductReader;
 use SwagMigrationNext\Gateway\Shopware55\Api\Reader\Shopware55ApiReaderNotFoundException;
+use SwagMigrationNext\Gateway\Shopware55\Api\Reader\Shopware55ApiTranslationReader;
 
 class Shopware55ApiGateway implements GatewayInterface
 {
@@ -47,6 +48,9 @@ class Shopware55ApiGateway implements GatewayInterface
         switch ($entityName) {
             case ProductDefinition::getEntityName():
                 $reader = new Shopware55ApiProductReader();
+                break;
+            case 'translation':
+                $reader = new Shopware55ApiTranslationReader();
                 break;
             default:
                 throw new Shopware55ApiReaderNotFoundException($entityName);
