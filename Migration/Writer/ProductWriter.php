@@ -9,6 +9,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\ORM\Write\EntityWriterInterface;
 use Shopware\Core\Framework\ORM\Write\WriteContext;
 use Shopware\Core\Framework\Struct\Serializer\StructNormalizer;
+use SwagMigrationNext\Exception\WriteProductException;
 
 class ProductWriter implements WriterInterface
 {

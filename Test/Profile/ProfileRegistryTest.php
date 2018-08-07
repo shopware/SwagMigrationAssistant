@@ -4,7 +4,7 @@ namespace SwagMigrationNext\Test\Profile;
 
 use Exception;
 use PHPUnit\Framework\TestCase;
-use SwagMigrationNext\Profile\ProfileNotFoundException;
+use SwagMigrationNext\Exception\ProfileNotFoundException;
 use SwagMigrationNext\Profile\ProfileRegistry;
 use SwagMigrationNext\Profile\ProfileRegistryInterface;
 use SwagMigrationNext\Test\Mock\DummyCollection;

@@ -1,10 +1,4 @@
 <?php declare(strict_types=1);
-/**
- * Created by PhpStorm.
- * User: mt
- * Date: 18.07.18
- * Time: 14:01
- */
 
 namespace SwagMigrationNext\Test\Migration\Controller;
 

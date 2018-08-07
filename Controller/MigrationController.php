@@ -4,6 +4,7 @@ namespace SwagMigrationNext\Controller;
 
 use Shopware\Core\Framework\Context;
 use SwagMigrationNext\Migration\AssetDownloadServiceInterface;
+use SwagMigrationNext\Exception\MigrationContextPropertyMissingException;
 use SwagMigrationNext\Migration\MigrationCollectServiceInterface;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\MigrationWriteServiceInterface;
@@ -40,16 +41,34 @@ class MigrationController extends Controller
     }
 
     /**
-     * @Route("/api/migration/fetch-data", name="api.admin.migration.fetch-data", methods={"POST"})
+     * @Route("/api/v{version}/migration/fetch-data", name="api.admin.migration.fetch-data", methods={"POST"})
+     *
+     * @throws MigrationContextPropertyMissingException
      */
     public function fetchData(Request $request, Context $context): JsonResponse
     {
-        $profile = $request->get('profile', '');
-        $gateway = $request->get('gateway', '');
-        $entity = $request->get('entity', '');
+        $profile = $request->get('profile');
+        $gateway = $request->get('gateway');
+        $entity = $request->get('entity');
         $offset = $request->request->getInt('offset');
         $limit = $request->request->getInt('limit', 250);
         $credentials = $request->get('credentials', []);
+
+        if ($profile === null) {
+            throw new MigrationContextPropertyMissingException('profile');
+        }
+
+        if ($gateway === null) {
+            throw new MigrationContextPropertyMissingException('gateway');
+        }
+
+        if ($entity === null) {
+            throw new MigrationContextPropertyMissingException('entity');
+        }
+
+        if (empty($credentials)) {
+            throw new MigrationContextPropertyMissingException('credentials');
+        }
 
         $migrationContext = new MigrationContext($profile, $gateway, $entity, $credentials, $offset, $limit);
         $this->migrationCollectService->fetchData($migrationContext, $context);
@@ -58,12 +77,22 @@ class MigrationController extends Controller
     }
 
     /**
-     * @Route("/api/migration/write-data", name="api.admin.migration.write-data", methods={"POST"})
+     * @Route("/api/v{version}/migration/write-data", name="api.admin.migration.write-data", methods={"POST"})
+     *
+     * @throws MigrationContextPropertyMissingException
      */
     public function writeData(Request $request, Context $context): JsonResponse
     {
         $profile = $request->get('profile', '');
         $entity = $request->get('entity', '');
+
+        if ($profile === null) {
+            throw new MigrationContextPropertyMissingException('profile');
+        }
+
+        if ($entity === null) {
+            throw new MigrationContextPropertyMissingException('entity');
+        }
 
         $migrationContext = new MigrationContext($profile, '', $entity, [], 0, 0);
         $this->migrationWriteService->writeData($migrationContext, $context);

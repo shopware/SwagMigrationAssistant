@@ -9,6 +9,7 @@ use Shopware\Core\Framework\ORM\Search\Query\TermQuery;
 use Shopware\Core\Framework\Struct\ArrayStruct;
 use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\System\Language\LanguageDefinition;
+use SwagMigrationNext\Exception\LocaleNotFoundException;
 
 class MappingService implements MappingServiceInterface
 {
