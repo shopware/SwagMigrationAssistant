@@ -4,6 +4,7 @@ namespace SwagMigrationNext\Gateway\Shopware55\Api\Reader;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
+use SwagMigrationNext\Exception\GatewayReadException;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 abstract class Shopware55ApiAbstractReader

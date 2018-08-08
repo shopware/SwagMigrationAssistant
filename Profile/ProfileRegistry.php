@@ -3,6 +3,7 @@
 namespace SwagMigrationNext\Profile;
 
 use IteratorAggregate;
+use SwagMigrationNext\Exception\ProfileNotFoundException;
 
 class ProfileRegistry implements ProfileRegistryInterface
 {

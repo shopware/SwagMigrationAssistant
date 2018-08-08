@@ -4,7 +4,7 @@ namespace SwagMigrationNext\Test\Migration\Writer;
 
 use Exception;
 use PHPUnit\Framework\TestCase;
-use SwagMigrationNext\Migration\Writer\WriterNotFoundException;
+use SwagMigrationNext\Exception\WriterNotFoundException;
 use SwagMigrationNext\Migration\Writer\WriterRegistry;
 use SwagMigrationNext\Migration\Writer\WriterRegistryInterface;
 use SwagMigrationNext\Test\Mock\DummyCollection;

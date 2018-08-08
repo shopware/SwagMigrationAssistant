@@ -3,6 +3,7 @@
 namespace SwagMigrationNext\Gateway;
 
 use IteratorAggregate;
+use SwagMigrationNext\Exception\GatewayNotFoundException;
 use SwagMigrationNext\Migration\MigrationContext;
 
 class GatewayFactoryRegistry implements GatewayFactoryRegistryInterface

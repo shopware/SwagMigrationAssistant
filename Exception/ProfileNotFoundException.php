@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Profile;
+namespace SwagMigrationNext\Exception;
 
 use Shopware\Core\Framework\ShopwareHttpException;
 use Symfony\Component\HttpFoundation\Response;

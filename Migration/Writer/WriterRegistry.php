@@ -3,6 +3,7 @@
 namespace SwagMigrationNext\Migration\Writer;
 
 use IteratorAggregate;
+use SwagMigrationNext\Exception\WriterNotFoundException;
 
 class WriterRegistry implements WriterRegistryInterface
 {

@@ -5,7 +5,7 @@ namespace SwagMigrationNext\Test\Migration\Mapping;
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
-use SwagMigrationNext\Migration\Mapping\LocaleNotFoundException;
+use SwagMigrationNext\Exception\LocaleNotFoundException;
 use SwagMigrationNext\Migration\Mapping\MappingService;
 use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
