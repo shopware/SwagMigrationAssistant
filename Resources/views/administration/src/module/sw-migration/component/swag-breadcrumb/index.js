@@ -1,8 +1,8 @@
 import { Component } from 'src/core/shopware';
-import template from './sw-breadcrumb.html.twig';
-import './sw-breadcrumb.less';
+import template from './swag-breadcrumb.html.twig';
+import './swag-breadcrumb.less';
 
-Component.register('sw-breadcrumb', {
+Component.register('swag-breadcrumb', {
     template,
 
     props: {

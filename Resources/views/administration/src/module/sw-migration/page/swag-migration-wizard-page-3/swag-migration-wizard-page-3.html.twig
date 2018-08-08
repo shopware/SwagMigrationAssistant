@@ -1,0 +1,41 @@
+{% block swag_migration_wizard_page_3 %}
+<div class="swag-migration-wizard sw-migration-wizard-page-3">
+    {% block swag_migration_wizard_page_3_content %}
+    <div class="swag-migration-wizard__content">
+        {% block swag_migration_wizard_page_3_information %}
+        <div class="content__information">
+            {% block swag_migration_wizard_page_3_title %}
+            <h3 class="information__header">
+                {{ $tc('sw-migration.wizard.pages.3.contentTitle') }}
+            </h3>
+            {% endblock %}
+
+            {% block swag_migration_wizard_page_3_svg %}
+            <swag-svg-step3></swag-svg-step3>
+            {% endblock %}
+
+            {% block swag_migration_wizard_page_3_api_hint %}
+            {{ $tc('sw-migration.wizard.pages.3.contentInformation') }}
+            {% endblock %}
+        </div>
+        {% endblock %}
+    </div>
+    {% endblock %}
+
+    {% block swag_migration_wizard_page_3_breadcrumb %}
+    <div class="swag-migration-wizard__breadcrumb">
+        {% block swag_migration_wizard_page_3_breadcrumb_content %}
+        {% block swag_migration_wizard_page_3_breadcrumb_icon %}
+        <sw-icon name="default-badge-info" size="14"></sw-icon>
+        {% endblock %}
+
+        {% block swag_migration_wizard_page_3_breadcrumb_path %}
+        <swag-breadcrumb :description="breadcrumbDescription"
+                       :items="breadcrumbItems">
+        </swag-breadcrumb>
+        {% endblock %}
+        {% endblock %}
+    </div>
+    {% endblock %}
+</div>
+{% endblock %}

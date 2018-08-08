@@ -1,23 +1,23 @@
-{% block sw_breadcrumb %}
-    <ul class="sw-breadcrumb">
-        {% block sw_breadcrumb_description %}
-            <span class="sw-breadcrumb-description">
+{% block swag_breadcrumb %}
+    <ul class="swag-breadcrumb">
+        {% block swag_breadcrumb_description %}
+            <span class="swag-breadcrumb-description">
                 {{ description }}
             </span>
         {% endblock %}
 
-        {% block sw_breadcrumb_template %}
-            <li class="sw-breadcrumb__item"
+        {% block swag_breadcrumb_template %}
+            <li class="swag-breadcrumb__item"
                 v-for="(item, index) in items"
                 :key="index">
-                {% block sw_breadcrumb_seperator %}
+                {% block swag_breadcrumb_seperator %}
                     <sw-icon :name="separatorIcon"
                              :size="separatorIconSize"
                              v-if="index !== 0 && items.length > 0"
                     ></sw-icon>
                 {% endblock %}
 
-                {% block sw_breadcrumb_item %}
+                {% block swag_breadcrumb_item %}
                     {{ item }}
                 {% endblock %}
             </li>

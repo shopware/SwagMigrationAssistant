@@ -1,6 +1,15 @@
 import { Module } from 'src/core/shopware';
-import './page/sw-migration-wizard';
-import './component/sw-breadcrumb';
+import './page/swag-migration-wizard';
+import './page/swag-migration-wizard-page-1';
+import './page/swag-migration-wizard-page-2';
+import './page/swag-migration-wizard-page-3';
+import './page/swag-migration-wizard-page-4';
+import './component/swag-breadcrumb';
+import './component/swag-dot-navigation';
+import './component/swag-svg-step1';
+import './component/swag-svg-step2';
+import './component/swag-svg-step3';
+
 
 Module.register('sw-migration', {
     type: 'core',
@@ -13,8 +22,26 @@ Module.register('sw-migration', {
 
     routes: {
         index: {
-            component: 'sw-migration-wizard',
-            path: 'index'
+            component: 'swag-migration-wizard',
+            path: 'index',
+            children: {
+                wizard1: {
+                    path: 'wizard1',
+                    component: 'swag-migration-wizard-page-1'
+                },
+                wizard2: {
+                    path: 'wizard2',
+                    component: 'swag-migration-wizard-page-2'
+                },
+                wizard3: {
+                    path: 'wizard3',
+                    component: 'swag-migration-wizard-page-3'
+                },
+                wizard4: {
+                    path: 'wizard4',
+                    component: 'swag-migration-wizard-page-4'
+                }
+            }
         }
     },
 
