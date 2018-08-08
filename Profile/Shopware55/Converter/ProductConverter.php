@@ -215,7 +215,9 @@ class ProductConverter implements ConverterInterface
         $this->setGivenProductTranslation($data, $converted);
         unset($data['locale']);
 
-        $converted['categories'] = $this->getCategoryMapping($data['categories']);
+        if (isset($data['categories'])) {
+            $converted['categories'] = $this->getCategoryMapping($data['categories']);
+        }
         unset($data['categories']);
 
         $this->helper->convertValue($converted, 'active', $data, 'active', $this->helper::TYPE_BOOLEAN);
@@ -366,7 +368,10 @@ class ProductConverter implements ConverterInterface
                 MediaDefinition::getEntityName(),
                 $asset['media']['id'],
                 $this->context,
-                ['uri' => $asset['media']['uri']]
+                [
+                    'uri' => $asset['media']['uri'],
+                    'file_size' => $asset['media']['file_size'],
+                ]
             );
 
             $translation['id'] = $this->mappingService->createNewUuid(

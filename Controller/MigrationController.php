@@ -3,6 +3,7 @@
 namespace SwagMigrationNext\Controller;
 
 use Shopware\Core\Framework\Context;
+use SwagMigrationNext\Migration\AssetDownloadServiceInterface;
 use SwagMigrationNext\Migration\MigrationCollectServiceInterface;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\MigrationWriteServiceInterface;
@@ -23,12 +24,19 @@ class MigrationController extends Controller
      */
     private $migrationWriteService;
 
+    /**
+     * @var AssetDownloadServiceInterface
+     */
+    private $assetDownloadService;
+
     public function __construct(
         MigrationCollectServiceInterface $migrationCollectService,
-        MigrationWriteServiceInterface $migrationWriteService
+        MigrationWriteServiceInterface $migrationWriteService,
+        AssetDownloadServiceInterface $assetDownloadService
     ) {
         $this->migrationCollectService = $migrationCollectService;
         $this->migrationWriteService = $migrationWriteService;
+        $this->assetDownloadService = $assetDownloadService;
     }
 
     /**
@@ -59,6 +67,16 @@ class MigrationController extends Controller
 
         $migrationContext = new MigrationContext($profile, '', $entity, [], 0, 0);
         $this->migrationWriteService->writeData($migrationContext, $context);
+
+        return new JsonResponse(['success' => true]);
+    }
+
+    /**
+     * @Route("/api/v{version}/migration/download-assets", name="api.admin.migration.download-assets", methods={"POST"})
+     */
+    public function downloadAssets(Request $request, Context $context): JsonResponse
+    {
+        $this->assetDownloadService->downloadAssets($context);
 
         return new JsonResponse(['success' => true]);
     }

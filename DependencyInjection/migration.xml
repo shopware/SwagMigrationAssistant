@@ -63,11 +63,21 @@
             <argument type="service" id="SwagMigrationNext\Migration\Validator\ValidatorRegistry"/>
         </service>
 
+        <service id="SwagMigrationNext\Migration\AssetDownloadService"
+                 class="SwagMigrationNext\Migration\AssetDownloadService"
+                 public="true">
+            <argument type="service" id="swag_migration_mapping.repository"/>
+            <argument type="service" id="Shopware\Core\Content\Media\Upload\MediaUpdater"/>
+            <argument type="service" id="event_dispatcher"/>
+            <argument type="service" id="logger" />
+        </service>
+
         <service id="SwagMigrationNext\Controller\MigrationController"
                  class="SwagMigrationNext\Controller\MigrationController"
                  public="true">
             <argument type="service" id="SwagMigrationNext\Migration\MigrationCollectService"/>
             <argument type="service" id="SwagMigrationNext\Migration\MigrationWriteService"/>
+            <argument type="service" id="SwagMigrationNext\Migration\AssetDownloadService"/>
         </service>
 
         <service id="SwagMigrationNext\Command\MigrationFetchDataCommand"
@@ -82,6 +92,15 @@
             <argument type="service" id="SwagMigrationNext\Migration\MigrationWriteService"/>
             <argument>migration:write:data</argument>
             <tag name="console.command" command="migration:write:data"/>
+        </service>
+
+        <service id="SwagMigrationNext\Command\MigrationDownloadAssetsCommand"
+                 class="SwagMigrationNext\Command\MigrationDownloadAssetsCommand">
+            <argument type="service" id="swag_migration_mapping.repository"/>
+            <argument type="service" id="Shopware\Core\Content\Media\Upload\MediaUpdater"/>
+            <argument type="service" id="event_dispatcher"/>
+            <tag name="console.command" command="migration:assets:download"/>
+            <tag name="kernel.event_subscriber"/>
         </service>
     </services>
 </container>
