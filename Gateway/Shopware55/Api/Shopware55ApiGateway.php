@@ -3,12 +3,14 @@
 namespace SwagMigrationNext\Gateway\Shopware55\Api;
 
 use GuzzleHttp\Client;
+use Shopware\Core\Checkout\Customer\CustomerDefinition;
 use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
 use SwagMigrationNext\Gateway\GatewayInterface;
 use SwagMigrationNext\Gateway\Shopware55\Api\Reader\Shopware55ApiAssetReader;
 use SwagMigrationNext\Gateway\Shopware55\Api\Reader\Shopware55ApiCategoryReader;
+use SwagMigrationNext\Gateway\Shopware55\Api\Reader\Shopware55ApiCustomerReader;
 use SwagMigrationNext\Gateway\Shopware55\Api\Reader\Shopware55ApiProductReader;
 use SwagMigrationNext\Gateway\Shopware55\Api\Reader\Shopware55ApiReaderNotFoundException;
 use SwagMigrationNext\Gateway\Shopware55\Api\Reader\Shopware55ApiTranslationReader;
@@ -64,6 +66,10 @@ class Shopware55ApiGateway implements GatewayInterface
 
             case MediaDefinition::getEntityName():
                 $reader = new Shopware55ApiAssetReader($offset, $limit);
+                break;
+
+            case CustomerDefinition::getEntityName():
+                $reader = new Shopware55ApiCustomerReader($offset, $limit);
                 break;
 
             default:
