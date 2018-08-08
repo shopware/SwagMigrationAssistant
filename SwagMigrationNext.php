@@ -40,7 +40,7 @@ class SwagMigrationNext extends Plugin
     {
         /** @var Connection $connection */
         $connection = $this->container->get(Connection::class);
-        $tenantId = Uuid::fromHexToBytes(Defaults::TENANT_ID);
+        $tenantId = Uuid::fromHexToBytes(Defaults::TENANT_ID); // TODO get correct context. Needs changes in the Core
         $sql = file_get_contents($this->getPath() . '/schema.sql');
 
         $connection->beginTransaction();
@@ -81,8 +81,8 @@ class SwagMigrationNext extends Plugin
         $connection = $this->container->get(Connection::class);
         $connection->exec('
 DROP TABLE IF EXISTS swag_migration_data;
-DROP TABLE IF EXISTS swag_migration_profile;
 DROP TABLE IF EXISTS swag_migration_mapping;
+DROP TABLE IF EXISTS swag_migration_profile;
 ');
 
         parent::uninstall($context);
