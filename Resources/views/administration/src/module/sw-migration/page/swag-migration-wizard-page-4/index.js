@@ -4,6 +4,21 @@ import template from './swag-migration-wizard-page-4.html.twig';
 Component.register('swag-migration-wizard-page-4', {
     template,
 
+    props: {
+        apiKey: {
+            type: String,
+            default: ''
+        },
+        apiUser: {
+            type: String,
+            default: ''
+        },
+        shopDomain: {
+            type: String,
+            default: ''
+        }
+    },
+
     data() {
         return {
             breadcrumbItems: [

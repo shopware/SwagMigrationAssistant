@@ -10,6 +10,7 @@
             "buttonConnect": "Connect",
             "buttonPrev": "Back",
             "buttonNext": "Next",
+            "buttonFinish": "Finish",
             "pathTarget": "Shopware 5 backend:",
             "pathSettings": "Configuration",
             "pathUserManagement": "User administration",
@@ -38,7 +39,15 @@
                     "apiUserLabel": "Username (API-User)",
                     "apiUserPlaceholder": "Insert login username ...",
                     "endpointLabel": "Shop domain",
-                    "endpointPlaceholder": "http://www.myshop.com"
+                    "endpointPlaceholder": "http://www.myshop.com",
+                    "success": {
+                        "contentTitle": "Erfolgreich verbunden!",
+                        "contentInformation": "Gehe auf Fertig und wähle in dem Migrations-Modul die jeweiligen Datensätze aus, die übertragen werden sollen. Die Daten können gesamt, Schritt für Schritt oder nachträglich migriert werden."
+                    },
+                    "error": {
+                        "contentTitle": "Verbindung nicht hergestellt.",
+                        "contentInformation": "Die Verbindung konnte leider nicht hergestellt werden. Bitte prüfe die Meldungen und behebe das Problem."
+                    }
                 }
             }
         }

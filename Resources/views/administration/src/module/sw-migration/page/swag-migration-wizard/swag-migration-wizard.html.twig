@@ -3,8 +3,11 @@
         <sw-modal size="800px" v-if="showModal" :title="$tc('sw-migration.wizard.title')" @closeModal="onCloseModal">
             {% block swag_migration_router_view %}
             <router-view
+                    :apiKey="apiKey"
                     @apiKeyChanged="onApiKeyChanged"
+                    :apiUser="apiUser"
                     @apiUserChanged="onApiUserChanged"
+                    :shopDomain="shopDomain"
                     @shopDomainChanged="onShopDomainChanged">
             </router-view>
             {% endblock %}
@@ -14,7 +17,7 @@
                 <div></div>
 
                 {% block swag_migration_wizard_navigation %}
-                <swag-dot-navigation :navCount="routeCount" :navIndex="routeIndex"></swag-dot-navigation>
+                <swag-dot-navigation :navCount="routeCountVisible" :navIndex="routeIndexVisible"></swag-dot-navigation>
                 {% endblock %}
 
                 {% block swag_migration_wizard_actions %}

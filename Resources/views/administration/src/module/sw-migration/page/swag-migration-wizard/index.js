@@ -16,9 +16,13 @@ Component.register('swag-migration-wizard', {
                 'sw.migration.index.wizard1',
                 'sw.migration.index.wizard2',
                 'sw.migration.index.wizard3',
-                'sw.migration.index.wizard4'
+                'sw.migration.index.wizard4',
+                'sw.migration.index.wizard4_success',
+                'sw.migration.index.wizard4_error'
             ],
+            routeCountVisible: 4,  //only show 4 dots and allow navigation between them.
             routeIndex: 0,
+            routeIndexVisible: 0,   //only count up to 3
             apiKey: '',
             apiUser: '',
             shopDomain: ''
@@ -28,6 +32,15 @@ Component.register('swag-migration-wizard', {
     computed: {
         routeCount() {
             return this.routes.length;
+        },
+        routeApiCredentialsIndex() {
+            return 3;
+        },
+        routeSuccessIndex() {
+            return 4;
+        },
+        routeErrorIndex() {
+            return 5;
         }
     },
 
@@ -51,12 +64,16 @@ Component.register('swag-migration-wizard', {
             console.log('API-Key:', this.apiKey);
             console.log('API-User:', this.apiUser);
             console.log('Shop-Domain:', this.shopDomain);
+
+            //this.navigateToRoute(this.routes[this.routeSuccessIndex]);
+            this.navigateToRoute(this.routes[this.routeErrorIndex]);
         },
 
         onCloseModal() {
             this.showModal = false;
             this.$route.query.show = this.showModal;
             this.routeIndex = 0;
+            this.routeIndexVisible = 0;
             this.apiKey = '';
             this.apiUser = '';
             this.shopDomain = '';
@@ -69,43 +86,72 @@ Component.register('swag-migration-wizard', {
             });
 
             if (currentRouteIndex !== -1) {
+                if (currentRouteIndex > this.routeCountVisible - 1) {
+                    this.routeIndexVisible = this.routeCountVisible -1;
+                }
+
                 this.routeIndex = currentRouteIndex;
                 this.onChildRouteChanged();
             }
         },
 
         onChildRouteChanged() {
-            this.buttonPreviousVisible = this.routeIndex !== 0;
             this.buttonPreviousText = this.$tc('sw-migration.wizard.buttonPrev');
 
-            if (this.routeIndex === this.routeCount - 1) {
+            //Handle next button text
+            if (this.routeIndex === this.routeApiCredentialsIndex) {
                 this.buttonNextText = this.$tc('sw-migration.wizard.buttonConnect');
-            } else {
+            }else if(this.routeIndex === this.routeSuccessIndex) {
+                this.buttonNextText = this.$tc('sw-migration.wizard.buttonFinish');
+            }else if(this.routeIndex === this.routeErrorIndex) {
+                this.buttonNextText = this.$tc('sw-migration.wizard.buttonPrev');
+            }else{
                 this.buttonNextText = this.$tc('sw-migration.wizard.buttonNext');
+            }
+
+            //Handle back button
+            if (this.routeIndex === this.routeSuccessIndex || this.routeIndex === this.routeErrorIndex) {
+                this.buttonPreviousVisible = false;
+            }else{
+                this.buttonPreviousVisible = this.routeIndex !== 0;
             }
         },
 
+        navigateToRoute(routeName) {
+            this.$router.push({name: routeName});
+        },
+
         updateChildRoute() {
-            this.$router.push({name: this.routes[this.routeIndex]});
+            this.navigateToRoute(this.routes[this.routeIndex]);
             this.onChildRouteChanged();
         },
 
         onPrevious() {
             if (this.routeIndex > 0) {
                 this.routeIndex--;
+                this.routeIndexVisible--;
                 this.updateChildRoute();
             }
         },
 
         onNext() {
-            if (this.routeIndex === this.routeCount - 1) {
+            if (this.routeIndex === this.routeApiCredentialsIndex) {
                 //we clicked connect.
                 this.onConnect();
+                return;
+            }else if(this.routeIndex === this.routeSuccessIndex) {
+                //we clicked finish.
+                this.onCloseModal();
+                return;
+            }else if(this.routeIndex === this.routeErrorIndex) {
+                //we clicked Back
+                this.navigateToRoute(this.routes[this.routeApiCredentialsIndex]);
                 return;
             }
 
             if (this.routeIndex < this.routeCount - 1) {
                 this.routeIndex++;
+                this.routeIndexVisible++;
                 this.updateChildRoute();
             }
         },
