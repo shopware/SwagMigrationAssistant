@@ -1,71 +1,74 @@
 {% block swag_migration_wizard_page_4 %}
 <div class="swag-migration-wizard sw-migration-wizard-page-4">
     {% block swag_migration_wizard_page_4_content %}
-        <div class="swag-migration-wizard__content">
-            {% block swag_migration_wizard_page_4_information %}
-                <div class="content__information">
-                    {% block swag_migration_wizard_page_4_title %}
-                        <h3 class="information__header">
-                            {{ $tc('sw-migration.wizard.pages.4.contentTitle') }}
-                        </h3>
-                    {% endblock %}
-
-                    {% block swag_migration_wizard_page_4_api_hint %}
-                        {{ $tc('sw-migration.wizard.pages.4.contentInformation') }}
-                    {% endblock %}
-                </div>
+    <div class="swag-migration-wizard__content">
+        {% block swag_migration_wizard_page_4_information %}
+        <div class="content__information">
+            {% block swag_migration_wizard_page_4_title %}
+            <h3 class="information__header">
+                {{ $tc('sw-migration.wizard.pages.4.contentTitle') }}
+            </h3>
             {% endblock %}
 
-            {% block swag_migration_wizard_page_4_credentials %}
-                <div class="content__credentials">
-                    {% block swag_migration_wizard_page_4_apikey_field %}
-                        <sw-field name="apiKey"
-                                  :label="$tc('sw-migration.wizard.pages.4.apiKeyLabel')"
-                                  :placeholder="$tc('sw-migration.wizard.pages.4.apiKeyPlaceholder')">
-                            {% block swag_migration_wizard_page_4_apikey_icon %}
-                                <sw-icon name="default-lock-key" slot="suffix"></sw-icon>
-                            {% endblock %}
-                        </sw-field>
-                    {% endblock %}
-
-                    {% block swag_migration_wizard_page_4_apiuser_field %}
-                        <sw-field name="apiUser"
-                                  :label="$tc('sw-migration.wizard.pages.4.apiUserLabel')"
-                                  :placeholder="$tc('sw-migration.wizard.pages.4.apiUserPlaceholder')">
-                            {% block swag_migration_wizard_page_4_apiuser_icon %}
-                                <sw-icon name="default-avatar-single" slot="suffix"></sw-icon>
-                            {% endblock %}
-                        </sw-field>
-                    {% endblock %}
-
-                    {% block swag_migration_wizard_page_4_endpoint_field %}
-                        <sw-field name="endpoint"
-                                  :label="$tc('sw-migration.wizard.pages.4.endpointLabel')"
-                                  :placeholder="$tc('sw-migration.wizard.pages.4.endpointPlaceholder')">
-                            {% block swag_migration_wizard_page_4_endpoint_icon %}
-                                <sw-icon name="default-web-link" slot="suffix"></sw-icon>
-                            {% endblock %}
-                        </sw-field>
-                    {% endblock %}
-                </div>
+            {% block swag_migration_wizard_page_4_api_hint %}
+            {{ $tc('sw-migration.wizard.pages.4.contentInformation') }}
             {% endblock %}
         </div>
+        {% endblock %}
+
+        {% block swag_migration_wizard_page_4_credentials %}
+        <div class="content__credentials">
+            {% block swag_migration_wizard_page_4_apikey_field %}
+            <sw-field name="apiKey"
+                      :label="$tc('sw-migration.wizard.pages.4.apiKeyLabel')"
+                      :placeholder="$tc('sw-migration.wizard.pages.4.apiKeyPlaceholder')"
+                      @input="$emit('apiKeyChanged', $event)">
+                {% block swag_migration_wizard_page_4_apikey_icon %}
+                <sw-icon name="default-lock-key" slot="suffix"></sw-icon>
+                {% endblock %}
+            </sw-field>
+            {% endblock %}
+
+            {% block swag_migration_wizard_page_4_apiuser_field %}
+            <sw-field name="apiUser"
+                      :label="$tc('sw-migration.wizard.pages.4.apiUserLabel')"
+                      :placeholder="$tc('sw-migration.wizard.pages.4.apiUserPlaceholder')"
+                      @input="$emit('apiUserChanged', $event)">
+                {% block swag_migration_wizard_page_4_apiuser_icon %}
+                <sw-icon name="default-avatar-single" slot="suffix"></sw-icon>
+                {% endblock %}
+            </sw-field>
+            {% endblock %}
+
+            {% block swag_migration_wizard_page_4_endpoint_field %}
+            <sw-field name="endpoint"
+                      :label="$tc('sw-migration.wizard.pages.4.endpointLabel')"
+                      :placeholder="$tc('sw-migration.wizard.pages.4.endpointPlaceholder')"
+                      @input="$emit('shopDomainChanged', $event)">
+                {% block swag_migration_wizard_page_4_endpoint_icon %}
+                <sw-icon name="default-web-link" slot="suffix"></sw-icon>
+                {% endblock %}
+            </sw-field>
+            {% endblock %}
+        </div>
+        {% endblock %}
+    </div>
     {% endblock %}
 
     {% block swag_migration_wizard_page_4_breadcrumb %}
-        <div class="swag-migration-wizard__breadcrumb">
-            {% block swag_migration_wizard_page_4_breadcrumb_content %}
-                {% block swag_migration_wizard_page_4_breadcrumb_icon %}
-                    <sw-icon name="default-badge-info" size="14"></sw-icon>
-                {% endblock %}
+    <div class="swag-migration-wizard__breadcrumb">
+        {% block swag_migration_wizard_page_4_breadcrumb_content %}
+        {% block swag_migration_wizard_page_4_breadcrumb_icon %}
+        <sw-icon name="default-badge-info" size="14"></sw-icon>
+        {% endblock %}
 
-                {% block swag_migration_wizard_page_4_breadcrumb_path %}
-                    <swag-breadcrumb :description="breadcrumbDescription"
-                                   :items="breadcrumbItems">
-                    </swag-breadcrumb>
-                {% endblock %}
-            {% endblock %}
-        </div>
+        {% block swag_migration_wizard_page_4_breadcrumb_path %}
+        <swag-breadcrumb :description="breadcrumbDescription"
+                         :items="breadcrumbItems">
+        </swag-breadcrumb>
+        {% endblock %}
+        {% endblock %}
+    </div>
     {% endblock %}
 </div>
 {% endblock %}

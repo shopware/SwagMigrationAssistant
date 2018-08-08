@@ -1,4 +1,4 @@
-import { Component } from 'src/core/shopware';
+import {Component} from 'src/core/shopware';
 import template from './swag-migration-wizard.html.twig';
 import './swag-migration-wizard.less';
 
@@ -18,7 +18,10 @@ Component.register('swag-migration-wizard', {
                 'sw.migration.index.wizard3',
                 'sw.migration.index.wizard4'
             ],
-            routeIndex: 0
+            routeIndex: 0,
+            apiKey: '',
+            apiUser: '',
+            shopDomain: ''
         };
     },
 
@@ -45,12 +48,18 @@ Component.register('swag-migration-wizard', {
     methods: {
         onConnect() {
             console.log('we want to connect here...');
+            console.log('API-Key:', this.apiKey);
+            console.log('API-User:', this.apiUser);
+            console.log('Shop-Domain:', this.shopDomain);
         },
 
         onCloseModal() {
             this.showModal = false;
             this.$route.query.show = this.showModal;
             this.routeIndex = 0;
+            this.apiKey = '';
+            this.apiUser = '';
+            this.shopDomain = '';
         },
 
         matchRouteWithIndex() {
@@ -71,7 +80,7 @@ Component.register('swag-migration-wizard', {
 
             if (this.routeIndex === this.routeCount - 1) {
                 this.buttonNextText = this.$tc('sw-migration.wizard.buttonConnect');
-            }else{
+            } else {
                 this.buttonNextText = this.$tc('sw-migration.wizard.buttonNext');
             }
         },
@@ -99,6 +108,18 @@ Component.register('swag-migration-wizard', {
                 this.routeIndex++;
                 this.updateChildRoute();
             }
+        },
+
+        onApiKeyChanged(value) {
+            this.apiKey = value;
+        },
+
+        onApiUserChanged(value) {
+            this.apiUser = value;
+        },
+
+        onShopDomainChanged(value) {
+            this.shopDomain = value;
         }
     }
 });

@@ -1,4 +1,4 @@
-import { Component } from 'src/core/shopware';
+import {Component} from 'src/core/shopware';
 import template from './swag-migration-wizard-page-3.html.twig';
 
 Component.register('swag-migration-wizard-page-3', {
