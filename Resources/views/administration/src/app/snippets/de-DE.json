@@ -1,5 +1,5 @@
 {
-    "sw-migration": {
+    "swag-migration": {
         "general": {
             "mainMenuItemGeneral": "Migration",
             "descriptionTextModule": "Modul zum Migrieren der Daten aus Shopware 5"
@@ -20,6 +20,12 @@
             "pathSettings": "Einstellungen",
             "pathUserManagement": "Benutzerverwaltung",
             "pathEditUser": "„Diesen Benutzer editieren“"
+        },
+        "index": {
+            "title": "Migration",
+            "migrateButton": "Migrieren",
+            "shopInfoCardTitle": "Shopsystem",
+            "selectDataCardTitle": "Datenauswahl"
         }
     }
 }

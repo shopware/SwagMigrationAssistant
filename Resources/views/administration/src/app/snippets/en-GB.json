@@ -1,5 +1,5 @@
 {
-    "sw-migration": {
+    "swag-migration": {
         "general": {
             "mainMenuItemGeneral": "Migration",
             "descriptionTextModule": "Modul to migrate data from Shopware 5"
