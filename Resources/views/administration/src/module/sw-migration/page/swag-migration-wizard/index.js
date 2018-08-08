@@ -33,22 +33,13 @@ Component.register('swag-migration-wizard', {
             this.showModal = this.$route.query.show;
         }
 
-        //check for current child route
-        let currentRouteIndex = this.routes.findIndex((r) => {
-            return r === this.$router.currentRoute.name;
-        });
-
-        if (currentRouteIndex !== -1) {
-            this.routeIndex = currentRouteIndex;
-            this.onChildRouteChanged();
-        } else {
-            this.updateChildRoute();    //show the first child route instead of nothing.
-        }
+        this.matchRouteWithIndex();
     },
 
     beforeRouteUpdate(to, from, next) {
         this.showModal = true;
         next();
+        this.matchRouteWithIndex();
     },
 
     methods: {
@@ -59,6 +50,19 @@ Component.register('swag-migration-wizard', {
         onCloseModal() {
             this.showModal = false;
             this.$route.query.show = this.showModal;
+            this.routeIndex = 0;
+        },
+
+        matchRouteWithIndex() {
+            //check for current child route
+            let currentRouteIndex = this.routes.findIndex((r) => {
+                return r === this.$router.currentRoute.name;
+            });
+
+            if (currentRouteIndex !== -1) {
+                this.routeIndex = currentRouteIndex;
+                this.onChildRouteChanged();
+            }
         },
 
         onChildRouteChanged() {

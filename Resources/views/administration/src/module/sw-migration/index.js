@@ -24,6 +24,7 @@ Module.register('sw-migration', {
         index: {
             component: 'swag-migration-wizard',
             path: 'index',
+            redirect: { name: 'sw.migration.index.wizard1' },
             children: {
                 wizard1: {
                     path: 'wizard1',

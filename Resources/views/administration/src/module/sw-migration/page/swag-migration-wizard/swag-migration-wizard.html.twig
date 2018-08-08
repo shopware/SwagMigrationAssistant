@@ -1,6 +1,6 @@
 {% block swag_migration_wizard %}
     <div class="swag-migration-wizard">
-        <sw-modal size="800px" v-if="showModal" :title="$tc('sw-migration.wizard.title')">
+        <sw-modal size="800px" v-if="showModal" :title="$tc('sw-migration.wizard.title')" @closeModal="onCloseModal">
             {% block swag_migration_router_view %}
             <router-view></router-view>
             {% endblock %}
