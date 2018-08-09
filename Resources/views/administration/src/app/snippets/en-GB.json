@@ -41,12 +41,12 @@
                     "endpointLabel": "Shop domain",
                     "endpointPlaceholder": "http://www.myshop.com",
                     "success": {
-                        "contentTitle": "Erfolgreich verbunden!",
-                        "contentInformation": "Gehe auf Fertig und wähle in dem Migrations-Modul die jeweiligen Datensätze aus, die übertragen werden sollen. Die Daten können gesamt, Schritt für Schritt oder nachträglich migriert werden."
+                        "contentTitle": "Successfully connected!",
+                        "contentInformation": "Click on Finish and select in the migration module the data sets to be transferred. The data can be migrated completely, step by step or subsequently."
                     },
                     "error": {
-                        "contentTitle": "Verbindung nicht hergestellt.",
-                        "contentInformation": "Die Verbindung konnte leider nicht hergestellt werden. Bitte prüfe die Meldungen und behebe das Problem."
+                        "contentTitle": "Connection not established.",
+                        "contentInformation": "Unfortunately, the connection could not be established. Please check the messages and fix the problem."
                     }
                 }
             }
