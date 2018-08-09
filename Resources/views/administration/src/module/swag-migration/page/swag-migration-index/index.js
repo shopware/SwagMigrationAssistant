@@ -13,7 +13,13 @@ Component.register('swag-migration-index', {
 
     data() {
         return {
-            profile: {}
+            profile: {},
+            catalogues: [
+                {
+                    id: 1,
+                    name: 'Default'
+                }
+            ],
         };
     },
 

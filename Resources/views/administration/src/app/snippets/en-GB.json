@@ -30,7 +30,15 @@
                 "buttonMoreInfo": "Show more information"
             },
             "selectDataCard": {
-                "cardTitle": "Data selection"
+                "cardTitle": "Data selection",
+                "hint": "The selected data is transferred with language versions and created subshops. This data has relevant dependencies that are necessary for the completeness of the migration.",
+                "dataHeader": "Data",
+                "dataPossible": {
+                    "customersAndOrders": "Customers & Orders",
+                    "categoriesAndProducts": "Categories & Products",
+                    "media": "Media"
+                },
+                "catalogueHeader": "Catalogue"
             }
         }
     }
