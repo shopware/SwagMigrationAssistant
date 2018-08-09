@@ -62,24 +62,30 @@ class MigrationDownloadAssetsCommand extends Command implements EventSubscriberI
 
     public function onStart(MigrationAssetDownloadStartEvent $event): void
     {
-        $this->io->progressStart($event->getNumberOfFiles());
+        if (isset($this->io)) {
+            $this->io->progressStart($event->getNumberOfFiles());
+        }
     }
 
     public function onAdvance(MigrationAssetDownloadAdvanceEvent $event): void
     {
-        $this->io->progressAdvance();
+        if (isset($this->io)) {
+            $this->io->progressAdvance();
+        }
     }
 
     public function onFinish(MigrationAssetDownloadFinishEvent $event): void
     {
-        $this->io->progressFinish();
-        $this->io->table(
-            ['Action', 'Number of files'],
-            [
-                ['Migrated', $event->getMigrated()],
-                ['Skipped', $event->getSkipped()],
-            ]
-        );
+        if (isset($this->io)) {
+            $this->io->progressFinish();
+            $this->io->table(
+                ['Action', 'Number of files'],
+                [
+                    ['Migrated', $event->getMigrated()],
+                    ['Skipped', $event->getSkipped()],
+                ]
+            );
+        }
     }
 
     protected function configure(): void

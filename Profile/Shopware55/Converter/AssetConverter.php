@@ -39,7 +39,7 @@ class AssetConverter implements ConverterInterface
 
     public function convert(array $data, Context $context): ConvertStruct
     {
-        $locale = 'de_DE';
+        $locale = $data['_locale'];
 
         $converted = [];
         $converted['id'] = $this->mappingService->createNewUuid(
