@@ -5,14 +5,14 @@
 
     <template slot="smart-bar-actions">
         <sw-button variant="primary" @click="onMigrate">
-            Migrieren
+            {{ $tc('swag-migration.index.migrateButton') }}
         </sw-button>
     </template>
 
     <sw-card-view slot="content">
-        <sw-card :title="$tc('swag-migration.index.shopInfoCardTitle')">
+        <sw-card :title="$tc('swag-migration.index.shopInfoCard.cardTitle')">
             <sw-container slot="grid" type="row">
-                <sw-card-section divider="bottom">
+                <sw-card-section>
                     <sw-container grid="100%">
 
                         <div class="swag-migration-index__metadata">
@@ -27,12 +27,12 @@
                         <div class="swag-migration-index__actions">
                             <sw-button size="small" disabled>
                                 <sw-icon name="small-pencil" small></sw-icon>
-                                Einstellungen bearbeiten
+                                {{ $tc('swag-migration.index.shopInfoCard.buttonEditSettings') }}
                             </sw-button>
 
                             <sw-button size="small" disabled>
                                 <sw-icon name="small-pencil" small></sw-icon>
-                                Einstellungen bearbeiten
+                                {{ $tc('swag-migration.index.shopInfoCard.buttonMoreInfo') }}
                             </sw-button>
                         </div>
 
@@ -41,7 +41,7 @@
             </sw-container>
         </sw-card>
 
-        <sw-card :title="$tc('swag-migration.index.selectDataCardTitle')">
+        <sw-card :title="$tc('swag-migration.index.selectDataCard.cardTitle')">
 
         </sw-card>
     </sw-card-view>

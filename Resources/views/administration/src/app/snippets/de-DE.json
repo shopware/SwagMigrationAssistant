@@ -24,8 +24,14 @@
         "index": {
             "title": "Migration",
             "migrateButton": "Migrieren",
-            "shopInfoCardTitle": "Shopsystem",
-            "selectDataCardTitle": "Datenauswahl"
+            "shopInfoCard": {
+                "cardTitle": "Shopsystem",
+                "buttonEditSettings": "Einstellungen bearbeiten",
+                "buttonMoreInfo": "Mehr Infos einblenden"
+            },
+            "selectDataCard": {
+                "cardTitle": "Datenauswahl"
+            }
         }
     }
 }

@@ -20,6 +20,18 @@
             "pathSettings": "Configuration",
             "pathUserManagement": "User administration",
             "pathEditUser": "“Edit user”"
+        },
+        "index": {
+            "title": "Migration",
+            "migrateButton": "Migrate",
+            "shopInfoCard": {
+                "cardTitle": "Shopsystem",
+                "buttonEditSettings": "Edit Settings",
+                "buttonMoreInfo": "Show more information"
+            },
+            "selectDataCard": {
+                "cardTitle": "Data selection"
+            }
         }
     }
 }
