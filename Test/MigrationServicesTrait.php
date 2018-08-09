@@ -12,6 +12,7 @@ use SwagMigrationNext\Profile\ProfileRegistry;
 use SwagMigrationNext\Profile\Shopware55\Converter\AssetConverter;
 use SwagMigrationNext\Profile\Shopware55\Converter\CategoryConverter;
 use SwagMigrationNext\Profile\Shopware55\Converter\ConverterRegistry;
+use SwagMigrationNext\Profile\Shopware55\Converter\CustomerConverter;
 use SwagMigrationNext\Profile\Shopware55\Converter\ProductConverter;
 use SwagMigrationNext\Profile\Shopware55\Converter\TranslationConverter;
 use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
@@ -30,6 +31,7 @@ trait MigrationServicesTrait
                     new TranslationConverter(new ConverterHelperService(), $mappingService),
                     new CategoryConverter($mappingService, new ConverterHelperService()),
                     new AssetConverter($mappingService, new ConverterHelperService()),
+                    new CustomerConverter($mappingService, new ConverterHelperService()),
                 ]
             )
         );

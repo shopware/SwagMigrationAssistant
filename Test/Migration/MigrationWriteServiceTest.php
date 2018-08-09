@@ -5,6 +5,7 @@ namespace SwagMigrationNext\Test\Migration;
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Content\Media\MediaDefinition;
+use Shopware\Core\Checkout\Customer\CustomerDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
@@ -50,6 +51,11 @@ class MigrationWriteServiceTest extends KernelTestCase
     private $productTranslationRepo;
 
     /**
+     * @var RepositoryInterface
+     */
+    private $customerRepo;
+
+    /**
      * @var MigrationCollectServiceInterface
      */
     private $migrationCollectService;
@@ -78,12 +84,36 @@ class MigrationWriteServiceTest extends KernelTestCase
         $this->categoryRepo = self::$container->get('category.repository');
         $this->mediaRepo = self::$container->get('media.repository');
         $this->productTranslationRepo = self::$container->get('product_translation.repository');
+        $this->customerRepo = self::$container->get('customer.repository');
     }
 
     protected function tearDown()
     {
         $this->connection->rollBack();
         parent::tearDown();
+    }
+
+    public function testWriteCustomerData(): void
+    {
+        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $migrationContext = new MigrationContext(
+            Shopware55Profile::PROFILE_NAME,
+            'local',
+            CustomerDefinition::getEntityName(),
+            [],
+            0,
+            250
+        );
+
+        $this->migrationCollectService->fetchData($migrationContext, $context);
+        $criteria = new Criteria();
+        $productTotalBefore = $this->customerRepo->search($criteria, $context)->getTotal();
+
+        $this->migrationWriteService->writeData($migrationContext, $context);
+        $productTotalAfter = $this->customerRepo->search($criteria, $context)->getTotal();
+
+        /* @var EntitySearchResult $result */
+        self::assertEquals(2, $productTotalAfter - $productTotalBefore);
     }
 
     public function testWriteAssetData(): void

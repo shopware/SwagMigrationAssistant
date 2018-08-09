@@ -5,6 +5,7 @@ namespace SwagMigrationNext\Test\Migration;
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Content\Media\MediaDefinition;
+use Shopware\Core\Checkout\Customer\CustomerDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
@@ -143,6 +144,32 @@ class MigrationCollectServiceTest extends KernelTestCase
         /** @var EntitySearchResult $result */
         $result = $this->migrationDataRepo->search($criteria, $context);
         self::assertEquals(5, $result->getTotal());
+    }
+
+    public function testFetchCustomerDataApiGateway(): void
+    {
+        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $migrationContext = new MigrationContext(
+            Shopware55Profile::PROFILE_NAME,
+            'local',
+            CustomerDefinition::getEntityName(),
+            [
+                'endpoint' => 'test',
+                'apiUser' => 'test',
+                'apiKey' => 'test',
+            ],
+            0,
+            250
+        );
+
+        $this->migrationCollectService->fetchData($migrationContext, $context);
+
+        $criteria = new Criteria();
+        $criteria->addFilter(new TermQuery('profile', Shopware55Profile::PROFILE_NAME));
+        $criteria->addFilter(new TermQuery('entity', CustomerDefinition::getEntityName()));
+        /** @var EntitySearchResult $result */
+        $result = $this->migrationDataRepo->search($criteria, $context);
+        self::assertEquals(2, $result->getTotal());
     }
 
     public function testFetchProductDataApiGateway(): void
