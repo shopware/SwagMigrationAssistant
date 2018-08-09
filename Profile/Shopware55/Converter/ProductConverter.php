@@ -191,14 +191,14 @@ class ProductConverter implements ConverterInterface
             $data['attributes']
         );
 
-        $converted['manufacturer'] = $this->getManufacturer($data['manufacturer'], $data['locale']);
+        $converted['manufacturer'] = $this->getManufacturer($data['manufacturer'], $data['_locale']);
         unset($data['manufacturer'], $data['supplierID']);
 
         $converted['tax'] = $this->getTax($data['tax']);
         unset($data['tax'], $data['taxID']);
 
         if (isset($data['unit']) && isset($data['unit']['id'])) {
-            $converted['unit'] = $this->getUnit($data['unit'], $data['locale']);
+            $converted['unit'] = $this->getUnit($data['unit'], $data['_locale']);
         }
         unset($data['unit'], $data['detail']['unitID']);
 
@@ -207,13 +207,13 @@ class ProductConverter implements ConverterInterface
         unset($data['prices']);
 
         if (isset($data['assets'])) {
-            $converted['media'] = $this->getAssets($data['assets'], $converted, $data['locale']);
+            $converted['media'] = $this->getAssets($data['assets'], $converted, $data['_locale']);
             unset($data['assets']);
         }
 
         $converted['translations'] = [];
         $this->setGivenProductTranslation($data, $converted);
-        unset($data['locale']);
+        unset($data['_locale']);
 
         if (isset($data['categories'])) {
             $converted['categories'] = $this->getCategoryMapping($data['categories']);
@@ -482,7 +482,7 @@ class ProductConverter implements ConverterInterface
         $defaultTranslation['id'] = $this->mappingService->createNewUuid(
             $this->profile,
             ProductTranslationDefinition::getEntityName(),
-            $this->oldProductId . ':' . $data['locale'],
+            $this->oldProductId . ':' . $data['_locale'],
             $this->context
         );
         $defaultTranslation['productId'] = $converted['id'];
@@ -494,7 +494,7 @@ class ProductConverter implements ConverterInterface
         $this->helper->convertValue($defaultTranslation, 'keywords', $data, 'keywords');
         $this->helper->convertValue($defaultTranslation, 'packUnit', $data['detail'], 'packunit');
 
-        $languageData = $this->mappingService->getLanguageUuid($this->profile, $data['locale'], $this->context);
+        $languageData = $this->mappingService->getLanguageUuid($this->profile, $data['_locale'], $this->context);
 
         if (isset($languageData['createData']) && !empty($languageData['createData'])) {
             $defaultTranslation['language']['id'] = $languageData['uuid'];

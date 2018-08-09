@@ -29,5 +29,11 @@
             <argument type="service" id="Shopware\Core\Content\Category\Util\CategoryPathBuilder"/>
             <tag name="shopware.migration.writer"/>
         </service>
+
+        <service id="SwagMigrationNext\Migration\Writer\AssetWriter"
+                 class="SwagMigrationNext\Migration\Writer\AssetWriter">
+            <argument type="service" id="Shopware\Core\Framework\ORM\Write\EntityWriter"/>
+            <tag name="shopware.migration.writer"/>
+        </service>
     </services>
 </container>
