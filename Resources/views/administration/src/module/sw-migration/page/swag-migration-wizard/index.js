@@ -88,6 +88,8 @@ Component.register('swag-migration-wizard', {
             if (currentRouteIndex !== -1) {
                 if (currentRouteIndex > this.routeCountVisible - 1) {
                     this.routeIndexVisible = this.routeCountVisible -1;
+                }else{
+                    this.routeIndexVisible = currentRouteIndex;
                 }
 
                 this.routeIndex = currentRouteIndex;
