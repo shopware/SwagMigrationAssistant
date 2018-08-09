@@ -29,7 +29,8 @@
                 },
                 "3": {
                     "contentTitle": "Plugin Installation - Shopware 5 Backend",
-                    "contentInformation": "Das Plugin „XXXXXXX“ ist kostenlos und es sind keine Eingaben oder Einstellungen erfolderlich. Bitte installiere und aktiviere das Plugin."
+                    "contentInformation": "Das Plugin „XXXXXXX“ ist kostenlos und es sind keine Eingaben oder Einstellungen erfolderlich. Bitte installiere und aktiviere das Plugin.",
+                    "pluginLink": "Mehr Infos zum Plugin"
                 },
                 "4": {
                     "contentTitle": "Verbindung zu Shopware 5 herstellen",

@@ -29,7 +29,8 @@
                 },
                 "3": {
                     "contentTitle": "Plugin installation - Shopware 5 Backend",
-                    "contentInformation": "The plugin 'XXXXXXX' is free and no input or settings are required. Please install and activate the plugin."
+                    "contentInformation": "The plugin 'XXXXXXX' is free and no input or settings are required. Please install and activate the plugin.",
+                    "pluginLink": "More information about the plugin"
                 },
                 "4": {
                     "contentTitle": "Establish a connection to Shopware 5",
