@@ -31,6 +31,7 @@
             },
             "selectDataCard": {
                 "cardTitle": "Data selection",
+                "hintTitle": "Information:",
                 "hint": "The selected data is transferred with language versions and created subshops. This data has relevant dependencies that are necessary for the completeness of the migration.",
                 "dataHeader": "Data",
                 "dataPossible": {
@@ -38,7 +39,8 @@
                     "categoriesAndProducts": "Categories & Products",
                     "media": "Media"
                 },
-                "catalogueHeader": "Catalogue"
+                "catalogueHeader": "Catalogue",
+                "defaultCatalogue": "Default"
             }
         }
     }

@@ -17,7 +17,7 @@ Component.register('swag-migration-index', {
             catalogues: [
                 {
                     id: 1,
-                    name: 'Default'
+                    name: this.$tc('swag-migration.index.selectDataCard.defaultCatalogue')
                 }
             ],
         };
