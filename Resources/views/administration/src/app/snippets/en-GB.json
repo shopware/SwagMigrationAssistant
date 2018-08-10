@@ -47,7 +47,8 @@
                     },
                     "error": {
                         "contentTitle": "Connection not established.",
-                        "contentInformation": "Unfortunately, the connection could not be established. Please check the messages and fix the problem."
+                        "contentInformation": "Unfortunately, the connection could not be established. Please check the messages and fix the problem.",
+                        "alertErrorTitle": "Attention:"
                     }
                 }
             }

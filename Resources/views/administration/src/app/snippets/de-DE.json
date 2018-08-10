@@ -47,7 +47,8 @@
                     },
                     "error": {
                         "contentTitle": "Verbindung nicht hergestellt.",
-                        "contentInformation": "Die Verbindung konnte leider nicht hergestellt werden. Bitte prüfe die Meldungen und behebe das Problem."
+                        "contentInformation": "Die Verbindung konnte leider nicht hergestellt werden. Bitte prüfe die Meldungen und behebe das Problem.",
+                        "alertErrorTitle": "Achtung:"
                     }
                 }
             }
