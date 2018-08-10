@@ -1,0 +1,7 @@
+{% block swag_dot_navigation %}
+    <div class="swag-dot-navigation">
+        <template v-for="n in navCount">
+            <span class="swag-dot-navigation__indicator" :class="{ 'is--active': (n-1) === navIndex }"></span>
+        </template>
+    </div>
+{% endblock %}
