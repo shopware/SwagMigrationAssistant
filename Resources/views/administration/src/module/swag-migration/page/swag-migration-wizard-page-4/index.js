@@ -22,11 +22,11 @@ Component.register('swag-migration-wizard-page-4', {
     data() {
         return {
             breadcrumbItems: [
-                this.$tc('sw-migration.wizard.pathSettings'),
-                this.$tc('sw-migration.wizard.pathUserManagement'),
-                this.$tc('sw-migration.wizard.pathEditUser')
+                this.$tc('swag-migration.wizard.pathSettings'),
+                this.$tc('swag-migration.wizard.pathUserManagement'),
+                this.$tc('swag-migration.wizard.pathEditUser')
             ],
-            breadcrumbDescription: this.$tc('sw-migration.wizard.pathTarget')
+            breadcrumbDescription: this.$tc('swag-migration.wizard.pathTarget')
         };
     }
 });

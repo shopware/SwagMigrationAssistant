@@ -1,17 +1,17 @@
 {% block swag_migration_wizard_page_4 %}
-<div class="swag-migration-wizard sw-migration-wizard-page-4">
+<div class="swag-migration-wizard swag-migration-wizard-page-4">
     {% block swag_migration_wizard_page_4_content %}
     <div class="swag-migration-wizard__content">
         {% block swag_migration_wizard_page_4_information %}
         <div class="content__information">
             {% block swag_migration_wizard_page_4_title %}
             <h3 class="information__header">
-                {{ $tc('sw-migration.wizard.pages.4.contentTitle') }}
+                {{ $tc('swag-migration.wizard.pages.4.contentTitle') }}
             </h3>
             {% endblock %}
 
             {% block swag_migration_wizard_page_4_api_hint %}
-            {{ $tc('sw-migration.wizard.pages.4.contentInformation') }}
+            {{ $tc('swag-migration.wizard.pages.4.contentInformation') }}
             {% endblock %}
         </div>
         {% endblock %}
@@ -20,8 +20,8 @@
         <div class="content__credentials">
             {% block swag_migration_wizard_page_4_apikey_field %}
             <sw-field name="apiKey"
-                      :label="$tc('sw-migration.wizard.pages.4.apiKeyLabel')"
-                      :placeholder="$tc('sw-migration.wizard.pages.4.apiKeyPlaceholder')"
+                      :label="$tc('swag-migration.wizard.pages.4.apiKeyLabel')"
+                      :placeholder="$tc('swag-migration.wizard.pages.4.apiKeyPlaceholder')"
                       :value="apiKey"
                       @input="$emit('apiKeyChanged', $event)">
                 {% block swag_migration_wizard_page_4_apikey_icon %}
@@ -32,8 +32,8 @@
 
             {% block swag_migration_wizard_page_4_apiuser_field %}
             <sw-field name="apiUser"
-                      :label="$tc('sw-migration.wizard.pages.4.apiUserLabel')"
-                      :placeholder="$tc('sw-migration.wizard.pages.4.apiUserPlaceholder')"
+                      :label="$tc('swag-migration.wizard.pages.4.apiUserLabel')"
+                      :placeholder="$tc('swag-migration.wizard.pages.4.apiUserPlaceholder')"
                       :value="apiUser"
                       @input="$emit('apiUserChanged', $event)">
                 {% block swag_migration_wizard_page_4_apiuser_icon %}
@@ -44,8 +44,8 @@
 
             {% block swag_migration_wizard_page_4_endpoint_field %}
             <sw-field name="endpoint"
-                      :label="$tc('sw-migration.wizard.pages.4.endpointLabel')"
-                      :placeholder="$tc('sw-migration.wizard.pages.4.endpointPlaceholder')"
+                      :label="$tc('swag-migration.wizard.pages.4.endpointLabel')"
+                      :placeholder="$tc('swag-migration.wizard.pages.4.endpointPlaceholder')"
                       :value="shopDomain"
                       @input="$emit('shopDomainChanged', $event)">
                 {% block swag_migration_wizard_page_4_endpoint_icon %}

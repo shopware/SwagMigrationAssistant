@@ -1,96 +1,42 @@
 {% block swag_migration_wizard %}
     <div class="swag-migration-wizard">
-        {% block swag_migration_wizard_modal %}
-            <sw-modal size="800px"
-                      v-if="showModal"
-                      :title="$tc('swag-migration.wizard.title')"
-                      @closeModal="onCloseModal">
-                {% block swag_migration_wizard_content %}
-                    <div class="swag-migration-wizard__content">
-                        {% block swag_migration_wizard_information %}
-                            <div class="content__information">
-                                {% block swag_migration_wizard_title %}
-                                    <h3 class="information__header">
-                                        {{ $tc('swag-migration.wizard.contentTitle') }}
-                                    </h3>
-                                {% endblock %}
+        <sw-modal size="800px" v-if="showModal" :title="$tc('swag-migration.wizard.title')" @closeModal="onCloseModal">
+            {% block swag_migration_router_view %}
+            <router-view
+                    :apiKey="apiKey"
+                    @apiKeyChanged="onApiKeyChanged"
+                    :apiUser="apiUser"
+                    @apiUserChanged="onApiUserChanged"
+                    :shopDomain="shopDomain"
+                    @shopDomainChanged="onShopDomainChanged">
+            </router-view>
+            {% endblock %}
 
-                                {% block swag_migration_wizard_api_hint %}
-                                    {{ $tc('swag-migration.wizard.apiKeyHint') }}
-                                {% endblock %}
-                            </div>
-                        {% endblock %}
-
-                        {% block swag_migration_wizard_credentials %}
-                            <div class="content__credentials">
-                                {% block swag_migration_wizard_endpoint_field %}
-                                    <sw-field :label="$tc('swag-migration.wizard.endpointLabel')"
-                                              :placeholder="$tc('swag-migration.wizard.endpointPlaceholder')"
-                                              v-model="credentials.endpoint">
-                                        {% block swag_migration_wizard_endpoint_icon %}
-                                            <sw-icon name="default-web-link" slot="suffix"></sw-icon>
-                                        {% endblock %}
-                                    </sw-field>
-                                {% endblock %}
-
-                                {% block swag_migration_wizard_apiuser_field %}
-                                    <sw-field :label="$tc('swag-migration.wizard.apiUserLabel')"
-                                              :placeholder="$tc('swag-migration.wizard.apiUserPlaceholder')"
-                                              v-model="credentials.apiUser">
-                                        {% block swag_migration_wizard_apiuser_icon %}
-                                            <sw-icon name="default-avatar-single" slot="suffix"></sw-icon>
-                                        {% endblock %}
-                                    </sw-field>
-                                {% endblock %}
-
-                                {% block swag_migration_wizard_apikey_field %}
-                                    <sw-field :label="$tc('swag-migration.wizard.apiKeyLabel')"
-                                              :placeholder="$tc('swag-migration.wizard.apiKeyPlaceholder')"
-                                              v-model="credentials.apiKey">
-                                        {% block swag_migration_wizard_apikey_icon %}
-                                            <sw-icon name="default-lock-key" slot="suffix"></sw-icon>
-                                        {% endblock %}
-                                    </sw-field>
-                                {% endblock %}
-                            </div>
-                        {% endblock %}
-                    </div>
-                {% endblock %}
-
-                {% block swag_migration_wizard_breadcrumb %}
-                    <div class="swag-migration-wizard__breadcrumb">
-                        {% block swag_migration_wizard_breadcrumb_content %}
-                            {% block swag_migration_wizard_breadcrumb_icon %}
-                                <sw-icon name="default-badge-info" size="14"></sw-icon>
-                            {% endblock %}
-
-                            {% block swag_migration_wizard_breadcrumb_path %}
-                                <sw-breadcrumb :description="breadcrumbDescription"
-                                               :items="breadcrumbItems">
-                                </sw-breadcrumb>
-                            {% endblock %}
-                        {% endblock %}
-                    </div>
-                {% endblock %}
-
+            <template slot="modal-footer">
                 {% block swag_migration_wizard_footer %}
-                    <template slot="modal-footer">
-                        {% block swag_migration_wizard_footer_content %}
-                            {% block swag_migration_wizard_abortButton %}
-                                <sw-button @click="onCloseModal">
-                                    {{ $tc('swag-migration.wizard.buttonAbort') }}
-                                </sw-button>
-                            {% endblock %}
+                <div></div>
 
-                            {% block swag_migration_wizard_connectButton %}
-                                <sw-button variant="primary" @click="onConnect">
-                                    {{ $tc('swag-migration.wizard.buttonConnect') }}
-                                </sw-button>
-                            {% endblock %}
-                        {% endblock %}
-                    </template>
+                {% block swag_migration_wizard_navigation %}
+                <swag-dot-navigation :navCount="routeCountVisible" :navIndex="routeIndexVisible"></swag-dot-navigation>
                 {% endblock %}
-            </sw-modal>
-        {% endblock %}
+
+                {% block swag_migration_wizard_actions %}
+                <div class="swag-migration-wizard__actions">
+                    {% block swag_migration_wizard_actions_previous %}
+                        <sw-button v-show="buttonPreviousVisible" size="small" @click="onPrevious">
+                            {{ buttonPreviousText }}
+                        </sw-button>
+                    {% endblock %}
+                    {% block swag_migration_wizard_actions_next %}
+                        <sw-button v-show="buttonNextVisible" size="small" variant="primary" @click="onNext">
+                            {{ buttonNextText }}
+                        </sw-button>
+                    {% endblock %}
+                </div>
+                {% endblock %}
+                {% endblock %}
+            </template>
+
+        </sw-modal>
     </div>
 {% endblock %}
