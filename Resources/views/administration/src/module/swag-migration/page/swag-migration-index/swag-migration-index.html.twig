@@ -1,0 +1,47 @@
+<sw-page class="swag-migration-index">
+    <template slot="smart-bar-header">
+        <h2>{{ $tc('swag-migration.general.mainMenuItemGeneral') }}</h2>
+    </template>
+
+    <template slot="smart-bar-actions">
+        <sw-button variant="primary" @click="onMigrate">
+            {{ $tc('swag-migration.index.migrateButton') }}
+        </sw-button>
+    </template>
+
+    <sw-card-view slot="content">
+        <sw-card :title="$tc('swag-migration.index.shopInfoCard.cardTitle')">
+            <sw-container slot="grid" type="row">
+                <sw-card-section>
+                    <sw-container grid="100%">
+
+                        <div class="swag-migration-index__metadata">
+                            <div class="swag-migration-index__metadata-shop-domain">
+                                www.domain.de
+                            </div>
+
+                            <div class="swag-migration-index__metadata-shopware-version">
+                                Shopware 5.5.0 RC1
+                            </div>
+                        </div>
+                        <div class="swag-migration-index__actions">
+                            <sw-button size="small" disabled>
+                                <sw-icon name="small-pencil" small></sw-icon>
+                                {{ $tc('swag-migration.index.shopInfoCard.buttonEditSettings') }}
+                            </sw-button>
+
+                            <sw-button size="small" disabled>
+                                <sw-icon name="small-pencil" small></sw-icon>
+                                {{ $tc('swag-migration.index.shopInfoCard.buttonMoreInfo') }}
+                            </sw-button>
+                        </div>
+
+                    </sw-container>
+                </sw-card-section>
+            </sw-container>
+        </sw-card>
+
+        <swag-migration-data-selector :catalogues="catalogues"></swag-migration-data-selector>
+
+    </sw-card-view>
+</sw-page>

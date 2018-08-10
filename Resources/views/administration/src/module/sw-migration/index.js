@@ -1,4 +1,5 @@
 import { Module } from 'src/core/shopware';
+import './page/swag-migration-index';
 import './page/swag-migration-wizard';
 import './page/swag-migration-wizard-page-1';
 import './page/swag-migration-wizard-page-2';
@@ -17,7 +18,7 @@ import './component/swag-svg-step4-error';
 
 Module.register('sw-migration', {
     type: 'core',
-    name: 'Migration',
+    name: 'swag-migration.general.mainMenuItemGeneral',
     description: 'sw-migration.general.descriptionTextModule',
     version: '1.0.0',
     targetVersion: '1.0.0',
@@ -26,9 +27,13 @@ Module.register('sw-migration', {
 
     routes: {
         index: {
+            component: 'swag-migration-index',
+            path: 'index'
+        },
+        wizard: {
             component: 'swag-migration-wizard',
-            path: 'index',
-            redirect: { name: 'sw.migration.index.wizard1' },
+            path: 'wizard',
+            redirect: { name: 'sw.migration.wizard.wizard1' },
             children: {
                 wizard1: {
                     path: 'wizard1',

@@ -1,0 +1,23 @@
+{% block swag_migration_index_data_selector %}
+<sw-card :title="$tc('swag-migration.index.selectDataCard.cardTitle')" class="swag-migration-data-selector">
+    <sw-grid ref="tableDataGrid" :items="tableData">
+        <template slot="columns" slot-scope="{ item }">
+            <sw-grid-column flex="1fr" :label="$tc('swag-migration.index.selectDataCard.dataHeader')">
+                {{ item.data }}
+            </sw-grid-column>
+
+            <sw-grid-column flex="1fr" align="" :label="$tc('swag-migration.index.selectDataCard.catalogueHeader')">
+                <sw-field type="select"
+                          validation="required"
+                          v-model="item.catalogueId">
+                        <option slot="options" v-for="catalogue in catalogues" :value="catalogue.id">{{ catalogue.name }}</option>
+                </sw-field>
+            </sw-grid-column>
+        </template>
+    </sw-grid>
+
+    <sw-alert variant="info" class="swag-migration-index-data-selector__alert">
+        <strong>{{ $tc('swag-migration.index.selectDataCard.hintTitle') }} </strong>{{ $tc('swag-migration.index.selectDataCard.hint') }}
+    </sw-alert>
+</sw-card>
+{% endblock %}

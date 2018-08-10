@@ -13,12 +13,12 @@ Component.register('swag-migration-wizard', {
             buttonPreviousText: this.$tc('sw-migration.wizard.buttonPrev'),
             buttonNextText: this.$tc('sw-migration.wizard.buttonNext'),
             routes: [
-                'sw.migration.index.wizard1',
-                'sw.migration.index.wizard2',
-                'sw.migration.index.wizard3',
-                'sw.migration.index.wizard4',
-                'sw.migration.index.wizard4_success',
-                'sw.migration.index.wizard4_error'
+                'sw.migration.wizard.wizard1',
+                'sw.migration.wizard.wizard2',
+                'sw.migration.wizard.wizard3',
+                'sw.migration.wizard.wizard4',
+                'sw.migration.wizard.wizard4_success',
+                'sw.migration.wizard.wizard4_error'
             ],
             routeCountVisible: 4,  //only show 4 dots and allow navigation between them.
             routeIndex: 0,

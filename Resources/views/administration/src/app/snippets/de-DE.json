@@ -1,5 +1,5 @@
 {
-    "sw-migration": {
+    "swag-migration": {
         "general": {
             "mainMenuItemGeneral": "Migration",
             "descriptionTextModule": "Modul zum Migrieren der Daten aus Shopware 5"
@@ -52,6 +52,28 @@
                     }
                 }
             }
+        },
+        "index": {
+          "title": "Migration",
+          "migrateButton": "Migrieren",
+          "shopInfoCard": {
+            "cardTitle": "Shopsystem",
+            "buttonEditSettings": "Einstellungen bearbeiten",
+            "buttonMoreInfo": "Mehr Infos einblenden"
+          },
+          "selectDataCard": {
+            "cardTitle": "Datenauswahl",
+            "hintTitle": "Info:",
+            "hint": "Die ausgewählten Daten werden mit Sprachversionen und angelegten Subshops übertragen. Diese Daten haben relevante Abhängigkeiten, die für die Vollständigkeit der Migration notwendig sind.",
+            "dataHeader": "Daten",
+            "dataPossible": {
+              "customersAndOrders": "Kunden & Bestellungen",
+              "categoriesAndProducts": "Kategorien & Produkte",
+              "media": "Medien"
+            },
+            "catalogueHeader": "Katalog",
+            "defaultCatalogue": "Standard"
+          }
         }
     }
 }
