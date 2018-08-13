@@ -118,7 +118,7 @@ class TranslationConverter implements ConverterInterface
 
         unset($data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
 
-        $languageData = $this->mappingService->getLanguageUuid(Shopware55Profile::PROFILE_NAME, $data['locale'], $context);
+        $languageData = $this->mappingService->getLanguageUuid(Shopware55Profile::PROFILE_NAME, $data['_locale'], $context);
 
         if (isset($languageData['createData'])) {
             $productTranslation['language']['id'] = $languageData['uuid'];
@@ -128,7 +128,7 @@ class TranslationConverter implements ConverterInterface
             $productTranslation['languageId'] = $languageData['uuid'];
         }
 
-        unset($data['name'], $data['locale']);
+        unset($data['name'], $data['_locale']);
 
         return new ConvertStruct($productTranslation, $data);
     }
@@ -187,7 +187,7 @@ class TranslationConverter implements ConverterInterface
 
         unset($data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
 
-        $languageData = $this->mappingService->getLanguageUuid(Shopware55Profile::PROFILE_NAME, $data['locale'], $context);
+        $languageData = $this->mappingService->getLanguageUuid(Shopware55Profile::PROFILE_NAME, $data['_locale'], $context);
 
         if (isset($languageData['createData'])) {
             $manufacturerTranslation['language']['id'] = $languageData['uuid'];
@@ -197,7 +197,7 @@ class TranslationConverter implements ConverterInterface
             $manufacturerTranslation['languageId'] = $languageData['uuid'];
         }
 
-        unset($data['locale']);
+        unset($data['_locale']);
 
         return new ConvertStruct($manufacturerTranslation, $data);
     }
@@ -254,7 +254,7 @@ class TranslationConverter implements ConverterInterface
 
         unset($data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
 
-        $languageData = $this->mappingService->getLanguageUuid(Shopware55Profile::PROFILE_NAME, $data['locale'], $context);
+        $languageData = $this->mappingService->getLanguageUuid(Shopware55Profile::PROFILE_NAME, $data['_locale'], $context);
 
         if (isset($languageData['createData'])) {
             $unitTranslation['language']['id'] = $languageData['uuid'];
@@ -264,7 +264,7 @@ class TranslationConverter implements ConverterInterface
             $unitTranslation['languageId'] = $languageData['uuid'];
         }
 
-        unset($data['name'], $data['locale']);
+        unset($data['name'], $data['_locale']);
 
         return new ConvertStruct($unitTranslation, $data);
     }
@@ -329,7 +329,7 @@ class TranslationConverter implements ConverterInterface
 
         unset($data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
 
-        $languageData = $this->mappingService->getLanguageUuid(Shopware55Profile::PROFILE_NAME, $data['locale'], $context);
+        $languageData = $this->mappingService->getLanguageUuid(Shopware55Profile::PROFILE_NAME, $data['_locale'], $context);
 
         if (isset($languageData['createData'])) {
             $categoryTranslation['language']['id'] = $languageData['uuid'];
@@ -339,7 +339,7 @@ class TranslationConverter implements ConverterInterface
             $categoryTranslation['languageId'] = $languageData['uuid'];
         }
 
-        unset($data['name'], $data['locale']);
+        unset($data['name'], $data['_locale']);
 
         return new ConvertStruct($categoryTranslation, $data);
     }

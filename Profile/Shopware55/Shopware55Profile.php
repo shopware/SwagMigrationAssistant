@@ -47,6 +47,10 @@ class Shopware55Profile implements ProfileInterface
         /** @var array[] $data */
         $data = $gateway->read($entityName, $offset, $limit);
 
+        if (count($data) === 0) {
+            return 0;
+        }
+
         $converter = $this->converterRegistry->getConverter($entityName);
         $createData = [];
         foreach ($data as $item) {
@@ -59,6 +63,10 @@ class Shopware55Profile implements ProfileInterface
                 'converted' => $convertStruct->getConverted(),
                 'unmapped' => $convertStruct->getUnmapped(),
             ];
+        }
+
+        if (count($createData) === 0) {
+            return 0;
         }
 
         /** @var EntityWrittenContainerEvent $writtenEvent */

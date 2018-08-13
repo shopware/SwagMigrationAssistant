@@ -67,6 +67,12 @@
             <argument type="service" id="logger" />
         </service>
 
+        <service id="SwagMigrationNext\Migration\MigrationEnvironmentService"
+                 class="SwagMigrationNext\Migration\MigrationEnvironmentService"
+                 public="true">
+            <argument type="service" id="SwagMigrationNext\Gateway\GatewayFactoryRegistry"/>
+        </service>
+
         <service id="SwagMigrationNext\Controller\MigrationController"
                  class="SwagMigrationNext\Controller\MigrationController"
                  public="true">
@@ -78,6 +84,7 @@
         <service id="SwagMigrationNext\Command\MigrationFetchDataCommand"
                  class="SwagMigrationNext\Command\MigrationFetchDataCommand">
             <argument type="service" id="SwagMigrationNext\Migration\MigrationCollectService"/>
+            <argument type="service" id="SwagMigrationNext\Migration\MigrationEnvironmentService"/>
             <argument>migration:fetch:data</argument>
             <tag name="console.command" command="migration:fetch:data"/>
         </service>

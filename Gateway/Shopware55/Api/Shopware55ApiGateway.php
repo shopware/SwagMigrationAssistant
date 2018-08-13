@@ -11,6 +11,7 @@ use SwagMigrationNext\Gateway\GatewayInterface;
 use SwagMigrationNext\Gateway\Shopware55\Api\Reader\Shopware55ApiAssetReader;
 use SwagMigrationNext\Gateway\Shopware55\Api\Reader\Shopware55ApiCategoryReader;
 use SwagMigrationNext\Gateway\Shopware55\Api\Reader\Shopware55ApiCustomerReader;
+use SwagMigrationNext\Gateway\Shopware55\Api\Reader\Shopware55ApiEnvironmentReader;
 use SwagMigrationNext\Gateway\Shopware55\Api\Reader\Shopware55ApiProductReader;
 use SwagMigrationNext\Gateway\Shopware55\Api\Reader\Shopware55ApiReaderNotFoundException;
 use SwagMigrationNext\Gateway\Shopware55\Api\Reader\Shopware55ApiTranslationReader;
@@ -70,6 +71,10 @@ class Shopware55ApiGateway implements GatewayInterface
 
             case CustomerDefinition::getEntityName():
                 $reader = new Shopware55ApiCustomerReader($offset, $limit);
+                break;
+
+            case 'environment':
+                $reader = new Shopware55ApiEnvironmentReader();
                 break;
 
             default:

@@ -7,6 +7,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Struct\Uuid;
 use SwagMigrationNext\Migration\MigrationCollectServiceInterface;
 use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Migration\MigrationEnvironmentService;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
@@ -23,10 +24,16 @@ class MigrationFetchDataCommand extends ContainerAwareCommand
      */
     private $migrationCollectService;
 
-    public function __construct(MigrationCollectServiceInterface $migrationCollectService, ?string $name = null)
+    /**
+     * @var MigrationEnvironmentService
+     */
+    private $environmentService;
+
+    public function __construct(MigrationCollectServiceInterface $migrationCollectService, MigrationEnvironmentService $environmentService, ?string $name = null)
     {
         parent::__construct($name);
         $this->migrationCollectService = $migrationCollectService;
+        $this->environmentService = $environmentService;
     }
 
     protected function configure(): void
@@ -81,13 +88,15 @@ class MigrationFetchDataCommand extends ContainerAwareCommand
 
         $output->writeln('Fetching data...');
 
-        $total = 1; // TODO Read from API endpoint
+        $migrationContext = new MigrationContext($profile, $gateway, $entity, $credentials, 0, 0);
+        $total = $this->environmentService->getEntityTotal($migrationContext);
+
         $limit = 1000;
         $totalImportedCount = 0;
         $progressBar = new ProgressBar($output, $total);
         $progressBar->start();
 
-        for ($offset = 0; $totalImportedCount < $total; $offset += $limit) {
+        for ($offset = 0; $offset < $total; $offset += $limit) {
             $migrationContext = new MigrationContext($profile, $gateway, $entity, $credentials, $offset, $limit);
             $importedCount = $this->migrationCollectService->fetchData($migrationContext, $context);
             $totalImportedCount += $importedCount;
@@ -98,5 +107,8 @@ class MigrationFetchDataCommand extends ContainerAwareCommand
 
         $output->writeln('');
         $output->writeln('Fetching done.');
+        $output->writeln('');
+        $output->writeln('Imported: ' . $totalImportedCount);
+        $output->writeln('Skipped: ' . ($total - $totalImportedCount));
     }
 }

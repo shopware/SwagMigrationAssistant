@@ -7,11 +7,11 @@ use SwagMigrationNext\Exception\MigrationContextPropertyMissingException;
 use SwagMigrationNext\Migration\AssetDownloadServiceInterface;
 use SwagMigrationNext\Migration\MigrationCollectServiceInterface;
 use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Migration\MigrationEnvironmentService;
 use SwagMigrationNext\Migration\MigrationWriteServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
 
 class MigrationController extends Controller
 {
@@ -30,14 +30,21 @@ class MigrationController extends Controller
      */
     private $assetDownloadService;
 
+    /**
+     * @var MigrationEnvironmentService
+     */
+    private $environmentService;
+
     public function __construct(
         MigrationCollectServiceInterface $migrationCollectService,
         MigrationWriteServiceInterface $migrationWriteService,
-        AssetDownloadServiceInterface $assetDownloadService
+        AssetDownloadServiceInterface $assetDownloadService,
+        MigrationEnvironmentService $environmentService
     ) {
         $this->migrationCollectService = $migrationCollectService;
         $this->migrationWriteService = $migrationWriteService;
         $this->assetDownloadService = $assetDownloadService;
+        $this->environmentService = $environmentService;
     }
 
     /**
@@ -108,5 +115,19 @@ class MigrationController extends Controller
         $this->assetDownloadService->downloadAssets($context);
 
         return new JsonResponse(['success' => true]);
+    }
+
+    /**
+     * @Route("/api/v{version}/migration/get-entity-total", name="api.admin.migration.get-entity-total", methods={"GET"})
+     */
+    public function getEntityTotal(Request $request, Context $context): int
+    {
+        $entity = $request->get('entity', '');
+
+        if ($entity === null) {
+            throw new MigrationContextPropertyMissingException('entity');
+        }
+
+        $this->environmentService->getEntityTotal($entity);
     }
 }
