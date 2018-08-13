@@ -1,0 +1,23 @@
+@import "~less/variables";
+
+@sw-progress-bar-border:            lightgrey;
+@sw-progress-bar-value-color:       @color-shopware-blue;
+@sw-progress-bar-height:            14px;
+
+.sw-progress-bar {
+  width: 100%;
+  height: @sw-progress-bar-height;
+
+  .sw-progress-bar__total {
+    width: 100%;
+    height: 100%;
+    border: @sw-progress-bar-border 1px solid;
+    border-radius: @sw-progress-bar-height / 2;
+  }
+
+  .sw-progress-bar__value {
+    height: 100%;
+    background-color: @sw-progress-bar-value-color;
+    border-radius: @sw-progress-bar-height / 2;
+  }
+}

@@ -15,6 +15,8 @@ import './component/swag-svg-step3';
 import './component/swag-svg-step4-success';
 import './component/swag-svg-step4-error';
 import './component/swag-migration-data-selector';
+import './component/swag-migration-loading-screen';
+import './component/sw-progress-bar';
 
 
 Module.register('swag-migration', {

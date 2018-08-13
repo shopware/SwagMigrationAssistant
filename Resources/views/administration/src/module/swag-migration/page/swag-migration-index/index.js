@@ -18,8 +18,9 @@ Component.register('swag-migration-index', {
                 {
                     id: 1,
                     name: this.$tc('swag-migration.index.selectDataCard.defaultCatalogue')
-                }
+                },
             ],
+            componentIndex: 1,
         };
     },
 
@@ -53,7 +54,7 @@ Component.register('swag-migration-index', {
         },
 
         editSettings() {
-            this.$router.push({ name: 'swag.migration.wizard' });
+            this.$router.push({ name: 'swag.migration.wizard.wizard4' });
         }
     }
 });

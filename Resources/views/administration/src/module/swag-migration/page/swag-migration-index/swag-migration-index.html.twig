@@ -41,7 +41,8 @@
             </sw-container>
         </sw-card>
 
-        <swag-migration-data-selector :catalogues="catalogues"></swag-migration-data-selector>
+        <swag-migration-data-selector :catalogues="catalogues" v-if="componentIndex === 0"></swag-migration-data-selector>
+        <swag-migration-loading-screen v-if="componentIndex === 1"></swag-migration-loading-screen>
 
     </sw-card-view>
 </sw-page>

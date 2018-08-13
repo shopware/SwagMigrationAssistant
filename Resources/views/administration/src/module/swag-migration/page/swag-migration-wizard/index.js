@@ -54,9 +54,7 @@ Component.register('swag-migration-wizard', {
             }
         };
 
-
         this.migrationProfileService.getList(params).then((response) => {
-            console.log(response);
             this.credentials = response.data[0].credentialFields;
             this.profileId = response.data[0].id;
         });
@@ -81,21 +79,13 @@ Component.register('swag-migration-wizard', {
             console.log('API-User:', this.credentials.apiUser);
             console.log('Shop-Domain:', this.credentials.endpoint);
 
-
-            /*this.migrationProfileService.getList({ offset: 0, limit: 10 }).then((response) => {
-                console.log(response);
-            });*/
-
             // TODO loading indicator?
-            /*this.migrationProfileService.updateById(this.profileId, { credentialFields: this.credentials }).then((response) => {
+            this.migrationProfileService.updateById(this.profileId, { credentialFields: this.credentials }).then((response) => {
                 if (response.status === 204) {
+                    console.log(this.migrationService.checkConnection);
                     this.migrationService.checkConnection().then((connectionCheckResponse) => {
                         if (connectionCheckResponse.success) {
                             this.navigateToRoute(this.routes[this.routeSuccessIndex]);
-                            /!*this.$router.push({
-                                name: 'swag.migration.index',
-                                params: { profileId: this.profileId }
-                            });*!/
                         }else{
                             this.navigateToRoute(this.routes[this.routeErrorIndex]);
                         }
@@ -103,9 +93,7 @@ Component.register('swag-migration-wizard', {
                 }else{
                     this.navigateToRoute(this.routes[this.routeErrorIndex]);
                 }
-            });*/
-
-            this.navigateToRoute(this.routes[this.routeSuccessIndex]);
+            });
         },
 
         onCloseModal() {
@@ -113,11 +101,12 @@ Component.register('swag-migration-wizard', {
             this.$route.query.show = this.showModal;
             this.routeIndex = 0;
             this.routeIndexVisible = 0;
-            this.apiKey = '';
-            this.apiUser = '';
-            this.shopDomain = '';
 
-            this.navigateToRoute('swag.migration.index');
+            //navigate to modul
+            this.$router.push({
+                name: 'swag.migration.index',
+                params: { profileId: this.profileId }
+            });
         },
 
         matchRouteWithIndex() {
