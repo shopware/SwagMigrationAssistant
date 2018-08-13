@@ -9,6 +9,7 @@ use Shopware\Core\Framework\Context;
 use SwagMigrationNext\Controller\MigrationController;
 use SwagMigrationNext\Migration\AssetDownloadService;
 use SwagMigrationNext\Migration\Mapping\MappingService;
+use SwagMigrationNext\Migration\MigrationEnvironmentService;
 use SwagMigrationNext\Migration\MigrationWriteService;
 use SwagMigrationNext\Test\MigrationServicesTrait;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -34,7 +35,6 @@ class MigrationControllerTest extends KernelTestCase
         parent::setUp();
         self::bootKernel();
 
-        /* @var Connection $connection */
         $this->connection = self::$container->get(Connection::class);
         $this->connection->beginTransaction();
 
@@ -44,7 +44,8 @@ class MigrationControllerTest extends KernelTestCase
                 self::$container->get(MappingService::class)
             ),
             self::$container->get(MigrationWriteService::class),
-            self::$container->get(AssetDownloadService::class)
+            self::$container->get(AssetDownloadService::class),
+            self::$container->get(MigrationEnvironmentService::class)
         );
     }
 

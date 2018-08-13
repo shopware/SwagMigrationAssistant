@@ -30,6 +30,9 @@ class DummyLocalGateway implements GatewayInterface
             case CustomerDefinition::getEntityName():
                 return require __DIR__ . '/../../../../_fixtures/customer_data.php';
                 break;
+            case 'environment':
+                return require __DIR__ . '/../../../../_fixtures/environment_data.php';
+                break;
         }
     }
 }

@@ -122,7 +122,7 @@ class MigrationController extends Controller
      */
     public function getEntityTotal(Request $request, Context $context): int
     {
-        $entity = $request->get('entity', '');
+        $entity = $request->get('entity');
 
         if ($entity === null) {
             throw new MigrationContextPropertyMissingException('entity');
