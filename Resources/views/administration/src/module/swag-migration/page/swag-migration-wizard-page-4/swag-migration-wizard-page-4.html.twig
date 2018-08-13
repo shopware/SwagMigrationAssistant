@@ -46,8 +46,8 @@
             <sw-field name="endpoint"
                       :label="$tc('swag-migration.wizard.pages.4.endpointLabel')"
                       :placeholder="$tc('swag-migration.wizard.pages.4.endpointPlaceholder')"
-                      :value="shopDomain"
-                      @input="$emit('shopDomainChanged', $event)">
+                      :value="endpoint"
+                      @input="$emit('endpointChanged', $event)">
                 {% block swag_migration_wizard_page_4_endpoint_icon %}
                 <sw-icon name="default-web-link" slot="suffix"></sw-icon>
                 {% endblock %}

@@ -13,7 +13,7 @@ Component.register('swag-migration-wizard-page-4', {
             type: String,
             default: ''
         },
-        shopDomain: {
+        endpoint: {
             type: String,
             default: ''
         }

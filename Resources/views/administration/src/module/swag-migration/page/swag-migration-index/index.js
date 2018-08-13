@@ -50,6 +50,10 @@ Component.register('swag-migration-index', {
                 type: 'migration-error',
                 error
             });
+        },
+
+        editSettings() {
+            this.$router.push({ name: 'swag.migration.wizard' });
         }
     }
 });

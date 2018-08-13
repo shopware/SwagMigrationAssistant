@@ -3,12 +3,12 @@
         <sw-modal size="800px" v-if="showModal" :title="$tc('swag-migration.wizard.title')" @closeModal="onCloseModal">
             {% block swag_migration_router_view %}
             <router-view
-                    :apiKey="apiKey"
+                    :apiKey="credentials.apiKey"
                     @apiKeyChanged="onApiKeyChanged"
-                    :apiUser="apiUser"
+                    :apiUser="credentials.apiUser"
                     @apiUserChanged="onApiUserChanged"
-                    :shopDomain="shopDomain"
-                    @shopDomainChanged="onShopDomainChanged">
+                    :endpoint="credentials.endpoint"
+                    @endpointChanged="onEndpointChanged">
             </router-view>
             {% endblock %}
 

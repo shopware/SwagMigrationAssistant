@@ -5,6 +5,8 @@ import './swag-migration-wizard.less';
 Component.register('swag-migration-wizard', {
     template,
 
+    inject: ['migrationProfileService', 'migrationService'],
+
     data() {
         return {
             showModal: true,
@@ -23,9 +25,8 @@ Component.register('swag-migration-wizard', {
             routeCountVisible: 4,  //only show 4 dots and allow navigation between them.
             routeIndex: 0,
             routeIndexVisible: 0,   //only count up to 3
-            apiKey: '',
-            apiUser: '',
-            shopDomain: ''
+            profileId: '0x945f840058dc4e5583a02f70bef46071',
+            credentials: {} //.endpoint .apiUser .apiKey
         };
     },
 
@@ -45,6 +46,21 @@ Component.register('swag-migration-wizard', {
     },
 
     created() {
+        const params = {
+            offset: 0,
+            limit: 100,
+            additionalParams: {
+                term: { gateway: 'api' }
+            }
+        };
+
+
+        this.migrationProfileService.getList(params).then((response) => {
+            console.log(response);
+            this.credentials = response.data[0].credentialFields;
+            this.profileId = response.data[0].id;
+        });
+
         if (this.$route.query.show) {
             this.showModal = this.$route.query.show;
         }
@@ -61,12 +77,35 @@ Component.register('swag-migration-wizard', {
     methods: {
         onConnect() {
             console.log('we want to connect here...');
-            console.log('API-Key:', this.apiKey);
-            console.log('API-User:', this.apiUser);
-            console.log('Shop-Domain:', this.shopDomain);
+            console.log('API-Key:', this.credentials.apiKey);
+            console.log('API-User:', this.credentials.apiUser);
+            console.log('Shop-Domain:', this.credentials.endpoint);
 
-            //this.navigateToRoute(this.routes[this.routeSuccessIndex]);
-            this.navigateToRoute(this.routes[this.routeErrorIndex]);
+
+            /*this.migrationProfileService.getList({ offset: 0, limit: 10 }).then((response) => {
+                console.log(response);
+            });*/
+
+            // TODO loading indicator?
+            /*this.migrationProfileService.updateById(this.profileId, { credentialFields: this.credentials }).then((response) => {
+                if (response.status === 204) {
+                    this.migrationService.checkConnection().then((connectionCheckResponse) => {
+                        if (connectionCheckResponse.success) {
+                            this.navigateToRoute(this.routes[this.routeSuccessIndex]);
+                            /!*this.$router.push({
+                                name: 'swag.migration.index',
+                                params: { profileId: this.profileId }
+                            });*!/
+                        }else{
+                            this.navigateToRoute(this.routes[this.routeErrorIndex]);
+                        }
+                    });
+                }else{
+                    this.navigateToRoute(this.routes[this.routeErrorIndex]);
+                }
+            });*/
+
+            this.navigateToRoute(this.routes[this.routeSuccessIndex]);
         },
 
         onCloseModal() {
@@ -77,6 +116,8 @@ Component.register('swag-migration-wizard', {
             this.apiKey = '';
             this.apiUser = '';
             this.shopDomain = '';
+
+            this.navigateToRoute('swag.migration.index');
         },
 
         matchRouteWithIndex() {
@@ -159,15 +200,15 @@ Component.register('swag-migration-wizard', {
         },
 
         onApiKeyChanged(value) {
-            this.apiKey = value;
+            this.credentials.apiKey = value;
         },
 
         onApiUserChanged(value) {
-            this.apiUser = value;
+            this.credentials.apiUser = value;
         },
 
-        onShopDomainChanged(value) {
-            this.shopDomain = value;
+        onEndpointChanged(value) {
+            this.credentials.endpoint = value;
         }
     }
 });
