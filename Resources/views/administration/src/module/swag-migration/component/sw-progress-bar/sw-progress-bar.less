@@ -1,8 +1,8 @@
 @import "~less/variables";
 
-@sw-progress-bar-border: lightgrey;
-@sw-progress-bar-value-color: @color-shopware-blue;
-@sw-progress-bar-height: 14px;
+@sw-progress-bar-value-color:       @color-shopware-blue;
+@sw-progress-bar-background-color:  lighten(@color-gutenberg, 40%);
+@sw-progress-bar-height:            8px;
 
 .sw-progress-bar {
     width: 100%;
@@ -11,7 +11,7 @@
     .sw-progress-bar__total {
         width: 100%;
         height: 100%;
-        border: @sw-progress-bar-border 1px solid;
+        background-color: @sw-progress-bar-background-color;
         border-radius: @sw-progress-bar-height / 2;
     }
 

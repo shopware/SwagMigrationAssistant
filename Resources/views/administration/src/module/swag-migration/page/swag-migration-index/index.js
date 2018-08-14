@@ -20,7 +20,7 @@ Component.register('swag-migration-index', {
                     name: this.$tc('swag-migration.index.selectDataCard.defaultCatalogue')
                 },
             ],
-            componentIndex: 0,
+            componentIndex: 1,
         };
     },
 

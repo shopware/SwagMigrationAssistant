@@ -69,6 +69,25 @@
             },
             "catalogueHeader": "Catalogue",
             "defaultCatalogue": "Default"
+          },
+          "loadingScreenCard": {
+            "cardTitle": "Step {step} of {total}",
+            "status": {
+              "fetchData": {
+                "long": "Read data from {profileName}...",
+                "short": "Read data"
+              },
+              "writeData": {
+                "long": "Write data to Shopware Playground...",
+                "short": "Write data"
+              },
+              "downloadMedia": {
+                "long": "Download media to Shopware Playground...",
+                "short": "Media download"
+              }
+            },
+            "hintTitle": "Note:",
+            "hint": "Please remain logged in and do not delete any data in the other shop system until the process is complete. You can work in the system, the process continues in the background."
           }
         }
     }

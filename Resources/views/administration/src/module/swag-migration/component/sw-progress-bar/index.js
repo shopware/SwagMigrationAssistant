@@ -25,6 +25,10 @@ Component.register('sw-progress-bar', {
                 percentage = 100;
             }
 
+            if (percentage < 0) {
+                percentage = 0;
+            }
+
             return percentage + '%';
         }
     }

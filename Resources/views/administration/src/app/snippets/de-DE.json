@@ -69,6 +69,25 @@
             },
             "catalogueHeader": "Katalog",
             "defaultCatalogue": "Standard"
+          },
+          "loadingScreenCard": {
+            "cardTitle": "Schritt {step} von {total}",
+            "status": {
+              "fetchData": {
+                "long": "Lesen der Daten von {profileName}...",
+                "short": "Daten lesen"
+              },
+              "writeData": {
+                "long": "Schreiben der Daten in Shopware Playground...",
+                "short": "Daten schreiben"
+              },
+              "downloadMedia": {
+                "long": "Download der Medien in Shopware Playground...",
+                "short": "Medien Download"
+              }
+            },
+            "hintTitle": "Hinweis:",
+            "hint": "Bitte bleibe angemeldet und lösche keine Daten in dem anderen Shopsystem solange der Prozess nicht abgeschlossen ist. Du kannst aber im System arbeiten, der Prozess läuft im Hintergrund weiter."
           }
         }
     }
