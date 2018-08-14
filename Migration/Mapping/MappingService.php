@@ -28,14 +28,28 @@ class MappingService implements MappingServiceInterface
      */
     private $languageRepository;
 
+    /**
+     * @var RepositoryInterface
+     */
+    private $paymentRepository;
+
+    /**
+     * @var RepositoryInterface
+     */
+    private $countryRepository;
+
     public function __construct(
         RepositoryInterface $migrationMappingRepo,
         RepositoryInterface $localeRepository,
-        RepositoryInterface $languageRepository
+        RepositoryInterface $languageRepository,
+        RepositoryInterface $paymentRepository,
+        RepositoryInterface $countryRepository
     ) {
         $this->migrationMappingRepo = $migrationMappingRepo;
         $this->localeRepository = $localeRepository;
         $this->languageRepository = $languageRepository;
+        $this->paymentRepository = $paymentRepository;
+        $this->countryRepository = $countryRepository;
     }
 
     public function getUuid(string $entityName, string $oldId, Context $context): ?string
@@ -112,6 +126,39 @@ class MappingService implements MappingServiceInterface
                 'localeCode' => $localeCode,
             ],
         ];
+    }
+
+    public function getPaymentUuid(string $technicalName, Context $context): ?string
+    {
+        $criteria = new Criteria();
+        $criteria->addFilter(new TermQuery('technicalName', $technicalName));
+        $result = $this->paymentRepository->search($criteria, $context);
+
+        if ($result->getTotal() > 0) {
+            /** @var ArrayStruct $element */
+            $element = $result->getEntities()->first();
+
+            return $element->get('id');
+        }
+
+        return null;
+    }
+
+    public function getCountryUuid(string $iso, string $iso3, Context $context): ?string
+    {
+        $criteria = new Criteria();
+        $criteria->addFilter(new TermQuery('iso', $iso));
+        $criteria->addFilter(new TermQuery('iso3', $iso3));
+        $result = $this->countryRepository->search($criteria, $context);
+
+        if ($result->getTotal() > 0) {
+            /** @var ArrayStruct $element */
+            $element = $result->getEntities()->first();
+
+            return $element->get('id');
+        }
+
+        return null;
     }
 
     private function writeMapping(array $writeMapping, Context $context): void

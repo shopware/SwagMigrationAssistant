@@ -40,6 +40,8 @@
             <argument type="service" id="swag_migration_mapping.repository"/>
             <argument type="service" id="locale.repository"/>
             <argument type="service" id="language.repository"/>
+            <argument type="service" id="payment_method.repository"/>
+            <argument type="service" id="country.repository"/>
         </service>
 
         <service id="SwagMigrationNext\Migration\MigrationCollectService"
@@ -65,6 +67,12 @@
             <argument type="service" id="logger" />
         </service>
 
+        <service id="SwagMigrationNext\Migration\MigrationEnvironmentService"
+                 class="SwagMigrationNext\Migration\MigrationEnvironmentService"
+                 public="true">
+            <argument type="service" id="SwagMigrationNext\Gateway\GatewayFactoryRegistry"/>
+        </service>
+
         <service id="SwagMigrationNext\Controller\MigrationController"
                  class="SwagMigrationNext\Controller\MigrationController"
                  public="true">
@@ -76,6 +84,7 @@
         <service id="SwagMigrationNext\Command\MigrationFetchDataCommand"
                  class="SwagMigrationNext\Command\MigrationFetchDataCommand">
             <argument type="service" id="SwagMigrationNext\Migration\MigrationCollectService"/>
+            <argument type="service" id="SwagMigrationNext\Migration\MigrationEnvironmentService"/>
             <argument>migration:fetch:data</argument>
             <tag name="console.command" command="migration:fetch:data"/>
         </service>

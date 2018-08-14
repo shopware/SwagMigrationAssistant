@@ -35,5 +35,11 @@
             <argument type="service" id="Shopware\Core\Framework\ORM\Write\EntityWriter"/>
             <tag name="shopware.migration.writer"/>
         </service>
+
+        <service id="SwagMigrationNext\Migration\Writer\CustomerWriter"
+                 class="SwagMigrationNext\Migration\Writer\CustomerWriter">
+            <argument type="service" id="Shopware\Core\Framework\ORM\Write\EntityWriter"/>
+            <tag name="shopware.migration.writer"/>
+        </service>
     </services>
 </container>

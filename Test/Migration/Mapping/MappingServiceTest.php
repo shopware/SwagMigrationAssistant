@@ -35,7 +35,9 @@ class MappingServiceTest extends KernelTestCase
         $this->mappingService = new MappingService(
             self::$container->get('swag_migration_mapping.repository'),
             self::$container->get('locale.repository'),
-            self::$container->get('language.repository')
+            self::$container->get('language.repository'),
+            self::$container->get('payment_method.repository'),
+            self::$container->get('country.repository')
         );
     }
 
@@ -65,7 +67,9 @@ class MappingServiceTest extends KernelTestCase
         $newMappingService = new MappingService(
             self::$container->get('swag_migration_mapping.repository'),
             self::$container->get('locale.repository'),
-            self::$container->get('language.repository')
+            self::$container->get('language.repository'),
+            self::$container->get('payment_method.repository'),
+            self::$container->get('country.repository')
         );
 
         $uuid2 = $newMappingService->createNewUuid(Shopware55Profile::PROFILE_NAME, 'product', '123', $context);

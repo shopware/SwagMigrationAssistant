@@ -38,4 +38,12 @@ class DummyMappingService implements MappingServiceInterface
     {
         return null;
     }
+
+    public function getPaymentUuid(string $technicalName, Context $context): ?string
+    {
+    }
+
+    public function getCountryUuid(string $iso, string $iso3, Context $context): ?string
+    {
+    }
 }
