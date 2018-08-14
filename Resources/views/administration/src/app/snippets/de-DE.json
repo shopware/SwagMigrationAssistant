@@ -1,0 +1,75 @@
+{
+    "swag-migration": {
+        "general": {
+            "mainMenuItemGeneral": "Migration",
+            "descriptionTextModule": "Modul zum Migrieren der Daten aus Shopware 5"
+        },
+        "wizard": {
+            "title": "Migration: Vorbereitung",
+            "buttonAbort": "Abbrechen",
+            "buttonConnect": "Verbinden",
+            "buttonPrev": "Zurück",
+            "buttonNext": "Weiter",
+            "buttonFinish": "Fertig",
+            "pathTarget": "Shopware 5 Backend:",
+            "pathSettings": "Einstellungen",
+            "pathUserManagement": "Benutzerverwaltung",
+            "pathPluginManagement": "Plugin Manager",
+            "pathExtensions": "Erweiterungen",
+            "pathMigrationtools": "Migrationstools",
+            "pathEditUser": "„Diesen Benutzer editieren“",
+            "pages": {
+                "introduction": {
+                    "contentTitle": "Starte Shopware Playground mit eigenen Daten.",
+                    "contentInformation": "Migriere deine Daten aus Shopware 5 zu Shopware Playground und lege eigene Projekte an. Erkunde die Möglichkeiten von Shopware Playground mit echten Daten."
+                },
+                "pluginInformation": {
+                    "contentTitle": "Login Shopware 5 Backend",
+                    "contentInformation": "Logge dich mit deinen Zugangsdaten in das Shopware 5 Backend ein und rufe den Plugin-Manager auf. Das Plugin „XXXXXXX“ ist kostenlos und wird für die Migration benötigt. Bitte installiere und aktiviere das Plugin.",
+                    "pluginLink": "Mehr Infos zum Plugin"
+                },
+                "credentials": {
+                    "contentTitle": "Verbindung zu Shopware 5 herstellen",
+                    "contentInformation": "Den API-Schlüssel findest Du in der Benutzerverwaltung in Deinen Benutzerdaten. Bitte aktiviere den API-Zugang, kopiere den API-Schlüssel in die Zwischenablage und bestätige mit Speichern.",
+                    "apiKeyLabel": "API-Schlüssel",
+                    "apiKeyPlaceholder": "Schlüssel einfügen ...",
+                    "apiUserLabel": "Benutzername (API-User)",
+                    "apiUserPlaceholder": "Login-Benutzernamen eintragen ...",
+                    "endpointLabel": "Shop-Domain",
+                    "endpointPlaceholder": "http://www.meinshop.com",
+                    "success": {
+                        "contentTitle": "Erfolgreich verbunden!",
+                        "contentInformation": "Gehe auf Fertig und wähle in dem Migrations-Modul die jeweiligen Datensätze aus, die übertragen werden sollen. Die Daten können gesamt, Schritt für Schritt oder nachträglich migriert werden."
+                    },
+                    "error": {
+                        "contentTitle": "Verbindung nicht hergestellt.",
+                        "contentInformation": "Die Verbindung konnte leider nicht hergestellt werden. Bitte prüfe die Meldungen und behebe das Problem.",
+                        "alertErrorTitle": "Achtung:"
+                    }
+                }
+            }
+        },
+        "index": {
+          "title": "Migration",
+          "migrateButton": "Migrieren",
+          "shopInfoCard": {
+            "cardTitle": "Shopsystem",
+            "buttonEditSettings": "Einstellungen bearbeiten",
+            "buttonMoreInfo": "Mehr Infos einblenden"
+          },
+          "selectDataCard": {
+            "cardTitle": "Datenauswahl",
+            "hintTitle": "Info:",
+            "hint": "Die ausgewählten Daten werden mit Sprachversionen und angelegten Subshops übertragen. Diese Daten haben relevante Abhängigkeiten, die für die Vollständigkeit der Migration notwendig sind.",
+            "dataHeader": "Daten",
+            "dataPossible": {
+              "customersAndOrders": "Kunden & Bestellungen",
+              "categoriesAndProducts": "Kategorien & Produkte",
+              "media": "Medien"
+            },
+            "catalogueHeader": "Katalog",
+            "defaultCatalogue": "Standard"
+          }
+        }
+    }
+}

@@ -1,0 +1,75 @@
+{
+    "swag-migration": {
+        "general": {
+            "mainMenuItemGeneral": "Migration",
+            "descriptionTextModule": "Modul to migrate data from Shopware 5"
+        },
+        "wizard": {
+            "title": "Migration: Preparations",
+            "buttonAbort": "Abort",
+            "buttonConnect": "Connect",
+            "buttonPrev": "Back",
+            "buttonNext": "Next",
+            "buttonFinish": "Finish",
+            "pathTarget": "Shopware 5 backend:",
+            "pathSettings": "Configuration",
+            "pathUserManagement": "User administration",
+            "pathPluginManagement": "Plugin Manager",
+            "pathExtensions": "Extensions",
+            "pathMigrationtools": "Migration tools",
+            "pathEditUser": "“Edit user”",
+            "pages": {
+                "introduction": {
+                    "contentTitle": "Launch Shopware Playground with your own data.",
+                    "contentInformation": "Migrate your data from Shopware 5 to Shopware Playground and create your own projects. Explore the possibilities of Shopware Playground with real data."
+                },
+                "pluginInformation": {
+                    "contentTitle": "Login Shopware 5 Backend",
+                    "contentInformation": "Log into the Shopware 5 backend with your access data and open the plugin manager. The plugin 'XXXXXXX' is free and is required for the migration. Please install and activate the plugin.",
+                    "pluginLink": "More information about the plugin"
+                },
+                "credentials": {
+                    "contentTitle": "Establish a connection to Shopware 5",
+                    "contentInformation": "You can find your API key in the user management in your user data. Please activate your API access, copy your API key to your clipboard and confirm it via saving your configuration.",
+                    "apiKeyLabel": "API key",
+                    "apiKeyPlaceholder": "Insert key ...",
+                    "apiUserLabel": "Username (API-User)",
+                    "apiUserPlaceholder": "Insert login username ...",
+                    "endpointLabel": "Shop domain",
+                    "endpointPlaceholder": "http://www.myshop.com",
+                    "success": {
+                        "contentTitle": "Successfully connected!",
+                        "contentInformation": "Click on Finish and select in the migration module the data sets to be transferred. The data can be migrated completely, step by step or subsequently."
+                    },
+                    "error": {
+                        "contentTitle": "Connection not established.",
+                        "contentInformation": "Unfortunately, the connection could not be established. Please check the messages and fix the problem.",
+                        "alertErrorTitle": "Attention:"
+                    }
+                }
+            }
+        },
+        "index": {
+          "title": "Migration",
+          "migrateButton": "Migrate",
+          "shopInfoCard": {
+            "cardTitle": "Shopsystem",
+            "buttonEditSettings": "Edit Settings",
+            "buttonMoreInfo": "Show more information"
+          },
+          "selectDataCard": {
+            "cardTitle": "Data selection",
+            "hintTitle": "Information:",
+            "hint": "The selected data is transferred with language versions and created subshops. This data has relevant dependencies that are necessary for the completeness of the migration.",
+            "dataHeader": "Data",
+            "dataPossible": {
+              "customersAndOrders": "Customers & Orders",
+              "categoriesAndProducts": "Categories & Products",
+              "media": "Media"
+            },
+            "catalogueHeader": "Catalogue",
+            "defaultCatalogue": "Default"
+          }
+        }
+    }
+}

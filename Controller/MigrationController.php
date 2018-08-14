@@ -48,6 +48,15 @@ class MigrationController extends Controller
     }
 
     /**
+     * @Route("/api/v{version}/migration/check-connection", name="api.admin.migration.check-connection", methods={"POST"})
+     */
+    public function checkConnection(): JsonResponse
+    {
+        // TODO request against common API of 5.5 plugin
+        return new JsonResponse(['success' => true]);
+    }
+
+    /**
      * @Route("/api/v{version}/migration/fetch-data", name="api.admin.migration.fetch-data", methods={"POST"})
      *
      * @throws MigrationContextPropertyMissingException
@@ -59,7 +68,7 @@ class MigrationController extends Controller
         $entity = $request->get('entity');
         $offset = $request->request->getInt('offset');
         $limit = $request->request->getInt('limit', 250);
-        $credentials = $request->get('credentials', []);
+        $credentials = $request->get('credentialFields', []);
 
         if ($profile === null) {
             throw new MigrationContextPropertyMissingException('profile');

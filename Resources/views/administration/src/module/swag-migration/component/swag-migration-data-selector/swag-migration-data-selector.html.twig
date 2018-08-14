@@ -1,0 +1,31 @@
+{% block swag_migration_index_data_selector %}
+<sw-card :title="$tc('swag-migration.index.selectDataCard.cardTitle')" class="swag-migration-data-selector">
+    {% block swag_migration_index_data_selector_grid %}
+    <sw-grid ref="tableDataGrid" :items="tableData">
+        <template slot="columns" slot-scope="{ item }">
+            {% block swag_migration_index_data_selector_grid_column_data %}
+            <sw-grid-column flex="1fr" :label="$tc('swag-migration.index.selectDataCard.dataHeader')">
+                {{ item.data }}
+            </sw-grid-column>
+            {% endblock %}
+
+            {% block swag_migration_index_data_selector_grid_column_catalogue %}
+            <sw-grid-column flex="1fr" align="" :label="$tc('swag-migration.index.selectDataCard.catalogueHeader')">
+                <sw-field type="select"
+                          validation="required"
+                          v-model="item.catalogueId">
+                        <option slot="options" v-for="catalogue in catalogues" :value="catalogue.id">{{ catalogue.name }}</option>
+                </sw-field>
+            </sw-grid-column>
+            {% endblock %}
+        </template>
+    </sw-grid>
+    {% endblock %}
+
+    {% block swag_migration_index_data_selector_alert %}
+    <sw-alert variant="info" class="swag-migration-index-data-selector__alert">
+        <strong>{{ $tc('swag-migration.index.selectDataCard.hintTitle') }} </strong>{{ $tc('swag-migration.index.selectDataCard.hint') }}
+    </sw-alert>
+    {% endblock %}
+</sw-card>
+{% endblock %}
