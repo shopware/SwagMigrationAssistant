@@ -12,6 +12,7 @@ use SwagMigrationNext\Migration\MigrationWriteServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 
 class MigrationController extends Controller
 {
@@ -119,7 +120,7 @@ class MigrationController extends Controller
     /**
      * @Route("/api/v{version}/migration/download-assets", name="api.admin.migration.download-assets", methods={"POST"})
      */
-    public function downloadAssets(Request $request, Context $context): JsonResponse
+    public function downloadAssets(Context $context): JsonResponse
     {
         $this->assetDownloadService->downloadAssets($context);
 
@@ -129,7 +130,7 @@ class MigrationController extends Controller
     /**
      * @Route("/api/v{version}/migration/get-entity-total", name="api.admin.migration.get-entity-total", methods={"GET"})
      */
-    public function getEntityTotal(Request $request, Context $context): int
+    public function getEntityTotal(Request $request): int
     {
         $entity = $request->get('entity');
 
