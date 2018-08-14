@@ -7,6 +7,7 @@ use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use SwagMigrationNext\Controller\MigrationController;
+use SwagMigrationNext\Migration\AssetDownloadService;
 use SwagMigrationNext\Migration\Mapping\MappingService;
 use SwagMigrationNext\Migration\MigrationWriteService;
 use SwagMigrationNext\Test\MigrationServicesTrait;
@@ -42,7 +43,8 @@ class MigrationControllerTest extends KernelTestCase
                 self::$container->get('swag_migration_data.repository'),
                 self::$container->get(MappingService::class)
             ),
-            self::$container->get(MigrationWriteService::class)
+            self::$container->get(MigrationWriteService::class),
+            self::$container->get(AssetDownloadService::class)
         );
     }
 

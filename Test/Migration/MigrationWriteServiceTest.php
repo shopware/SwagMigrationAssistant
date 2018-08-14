@@ -3,6 +3,8 @@
 namespace SwagMigrationNext\Test\Migration;
 
 use Doctrine\DBAL\Connection;
+use Shopware\Core\Content\Category\CategoryDefinition;
+use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
@@ -33,6 +35,21 @@ class MigrationWriteServiceTest extends KernelTestCase
     private $productRepo;
 
     /**
+     * @var RepositoryInterface
+     */
+    private $categoryRepo;
+
+    /**
+     * @var RepositoryInterface
+     */
+    private $mediaRepo;
+
+    /**
+     * @var RepositoryInterface
+     */
+    private $productTranslationRepo;
+
+    /**
      * @var MigrationCollectServiceInterface
      */
     private $migrationCollectService;
@@ -58,6 +75,9 @@ class MigrationWriteServiceTest extends KernelTestCase
         );
         $this->migrationWriteService = self::$container->get(MigrationWriteService::class);
         $this->productRepo = self::$container->get('product.repository');
+        $this->categoryRepo = self::$container->get('category.repository');
+        $this->mediaRepo = self::$container->get('media.repository');
+        $this->productTranslationRepo = self::$container->get('product_translation.repository');
     }
 
     protected function tearDown()
@@ -66,7 +86,53 @@ class MigrationWriteServiceTest extends KernelTestCase
         parent::tearDown();
     }
 
-    public function testWriteData(): void
+    public function testWriteAssetData(): void
+    {
+        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $migrationContext = new MigrationContext(
+            Shopware55Profile::PROFILE_NAME,
+            'local',
+            MediaDefinition::getEntityName(),
+            [],
+            0,
+            250
+        );
+
+        $this->migrationCollectService->fetchData($migrationContext, $context);
+        $criteria = new Criteria();
+        $totalBefore = $this->mediaRepo->search($criteria, $context)->getTotal();
+
+        $this->migrationWriteService->writeData($migrationContext, $context);
+        $totalAfter = $this->mediaRepo->search($criteria, $context)->getTotal();
+
+        /* @var EntitySearchResult $result */
+        self::assertEquals(23, $totalAfter - $totalBefore);
+    }
+
+    public function testWriteCategoryData(): void
+    {
+        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $migrationContext = new MigrationContext(
+            Shopware55Profile::PROFILE_NAME,
+            'local',
+            CategoryDefinition::getEntityName(),
+            [],
+            0,
+            250
+        );
+
+        $this->migrationCollectService->fetchData($migrationContext, $context);
+        $criteria = new Criteria();
+        $totalBefore = $this->categoryRepo->search($criteria, $context)->getTotal();
+
+        $this->migrationWriteService->writeData($migrationContext, $context);
+        $totalAfter = $this->categoryRepo->search($criteria, $context)->getTotal();
+
+        /* @var EntitySearchResult $result */
+        self::assertEquals(8, $totalAfter - $totalBefore);
+    }
+
+    public function testWriteProductData(): void
     {
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
         $migrationContext = new MigrationContext(
@@ -89,7 +155,43 @@ class MigrationWriteServiceTest extends KernelTestCase
         self::assertEquals(42, $productTotalAfter - $productTotalBefore);
     }
 
-    public function testWriteDataWithNoData(): void
+    public function testWriteTranslationData(): void
+    {
+        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+
+        $migrationContext = new MigrationContext(
+            Shopware55Profile::PROFILE_NAME,
+            'local',
+            ProductDefinition::getEntityName(),
+            [],
+            0,
+            250
+        );
+        $criteria = new Criteria();
+        $productTotalBefore = $this->productRepo->search($criteria, $context)->getTotal();
+        $this->migrationCollectService->fetchData($migrationContext, $context);
+        $this->migrationWriteService->writeData($migrationContext, $context);
+        $productTotalAfter = $this->productRepo->search($criteria, $context)->getTotal();
+
+        $migrationContext = new MigrationContext(
+            Shopware55Profile::PROFILE_NAME,
+            'local',
+            'translation',
+            [],
+            0,
+            250
+        );
+        $productTranslationTotalBefore = $this->getTranslationTotal();
+        $this->migrationCollectService->fetchData($migrationContext, $context);
+        $this->migrationWriteService->writeData($migrationContext, $context);
+        $productTranslationTotalAfter = $this->getTranslationTotal();
+
+        /* @var EntitySearchResult $result */
+        self::assertEquals(42, $productTotalAfter - $productTotalBefore);
+        self::assertEquals(2, $productTranslationTotalAfter - $productTranslationTotalBefore);
+    }
+
+    public function testWriteProductDataWithNoData(): void
     {
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
         $migrationContext = new MigrationContext(
@@ -106,5 +208,10 @@ class MigrationWriteServiceTest extends KernelTestCase
         $productTotalAfter = $this->productRepo->search($criteria, $context)->getTotal();
 
         static::assertEquals(0, $productTotalAfter);
+    }
+
+    private function getTranslationTotal()
+    {
+        return $this->connection->query('SELECT count(*) FROM product_translation')->fetch(\PDO::FETCH_COLUMN);
     }
 }

@@ -68,10 +68,18 @@ class TranslationConverter implements ConverterInterface
             $context
         );
         $productTranslation['productId'] = $this->mappingService->getUuid(
-            ProductDefinition::getEntityName(),
+            ProductDefinition::getEntityName() . '_container',
             $data['objectkey'],
             $context
         );
+
+        if (!isset($productTranslation['productId'])) {
+            $productTranslation['productId'] = $this->mappingService->getUuid(
+                ProductDefinition::getEntityName(),
+                $data['objectkey'],
+                $context
+            );
+        }
 
         if (!isset($productTranslation['productId'])) {
             return new ConvertStruct(null, $sourceData);

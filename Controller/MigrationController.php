@@ -3,8 +3,8 @@
 namespace SwagMigrationNext\Controller;
 
 use Shopware\Core\Framework\Context;
-use SwagMigrationNext\Migration\AssetDownloadServiceInterface;
 use SwagMigrationNext\Exception\MigrationContextPropertyMissingException;
+use SwagMigrationNext\Migration\AssetDownloadServiceInterface;
 use SwagMigrationNext\Migration\MigrationCollectServiceInterface;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\MigrationWriteServiceInterface;

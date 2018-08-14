@@ -108,7 +108,8 @@ class AssetDownloadService implements AssetDownloadServiceInterface
                 $this->normalDownload($client, $uuid, $uri, $fileSize, $context);
             }
         } catch (GuzzleException $exception) {
-            $this->logger->error("HTTP-Error: " . $exception->getMessage(), ['uri' => $uri, 'uuid' => $uuid]);
+            $this->logger->error('HTTP-Error: ' . $exception->getMessage(), ['uri' => $uri, 'uuid' => $uuid]);
+
             return;
         }
     }

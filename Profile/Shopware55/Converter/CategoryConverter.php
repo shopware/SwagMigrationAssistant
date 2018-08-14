@@ -112,7 +112,7 @@ class CategoryConverter implements ConverterInterface
 
         $converted['translations'] = [];
         $this->setGivenCategoryTranslation($data, $converted);
-        unset($data['locale']);
+        unset($data['_locale']);
 
         if (empty($data)) {
             $data = null;
@@ -127,7 +127,7 @@ class CategoryConverter implements ConverterInterface
         $defaultTranslation['id'] = $this->mappingService->createNewUuid(
             $this->profile,
             CategoryTranslationDefinition::getEntityName(),
-            $this->oldCategoryId . ':' . $data['locale'],
+            $this->oldCategoryId . ':' . $data['_locale'],
             $this->context
         );
         $defaultTranslation['categoryId'] = $converted['id'];
@@ -139,7 +139,7 @@ class CategoryConverter implements ConverterInterface
         $this->helper->convertValue($defaultTranslation, 'cmsHeadline', $data, 'cmsheadline');
         $this->helper->convertValue($defaultTranslation, 'cmsDescription', $data, 'cmstext');
 
-        $languageData = $this->mappingService->getLanguageUuid($this->profile, $data['locale'], $this->context);
+        $languageData = $this->mappingService->getLanguageUuid($this->profile, $data['_locale'], $this->context);
 
         if (isset($languageData['createData']) && !empty($languageData['createData'])) {
             $defaultTranslation['language']['id'] = $languageData['uuid'];
