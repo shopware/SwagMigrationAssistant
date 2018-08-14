@@ -3,8 +3,6 @@
 namespace SwagMigrationNext\Profile\Shopware55\Converter;
 
 use Shopware\Core\Content\Category\CategoryDefinition;
-use Shopware\Core\Content\Media\Aggregate\MediaAlbum\MediaAlbumDefinition;
-use Shopware\Core\Content\Media\Aggregate\MediaAlbumTranslation\MediaAlbumTranslationDefinition;
 use Shopware\Core\Content\Media\Aggregate\MediaTranslation\MediaTranslationDefinition;
 use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Content\Product\Aggregate\ProductManufacturer\ProductManufacturerDefinition;
@@ -395,46 +393,6 @@ class ProductConverter implements ConverterInterface
 
             $newMedia['translations'][$languageData['uuid']] = $translation;
 
-            $newAlbum = [];
-            $newAlbum['id'] = $this->mappingService->createNewUuid(
-                $this->profile,
-                MediaAlbumDefinition::getEntityName(),
-                $asset['media']['album']['id'],
-                $this->context
-            );
-
-            $translation = [];
-            $translation['id'] = $this->mappingService->createNewUuid(
-                $this->profile,
-                MediaAlbumTranslationDefinition::getEntityName(),
-                $asset['media']['album']['id'] . ':' . $locale,
-                $this->context
-            );
-
-            $this->helper->convertValue($translation, 'name', $asset['media']['album'], 'name');
-
-            $languageData = $this->mappingService->getLanguageUuid($this->profile, $locale, $this->context);
-
-            if (isset($languageData['createData']) && !empty($languageData['createData'])) {
-                $translation['language']['id'] = $languageData['uuid'];
-                $translation['language']['localeId'] = $languageData['createData']['localeId'];
-                $translation['language']['name'] = $languageData['createData']['localeCode'];
-            } else {
-                $translation['languageId'] = $languageData['uuid'];
-            }
-
-            $newAlbum['translations'][$languageData['uuid']] = $translation;
-
-            $this->helper->convertValue($newAlbum, 'position', $asset['media']['album'], 'position', $this->helper::TYPE_INTEGER);
-//            $this->helper->convertValue($newAlbum, 'createThumbnails', $asset['media']['album']['settings'], 'create_thumbnails', $this->helper::TYPE_BOOLEAN);
-            $newAlbum['createThumbnails'] = false; // TODO: Remove, needs a bugfix in the core
-            $this->helper->convertValue($newAlbum, 'thumbnailSize', $asset['media']['album']['settings'], 'thumbnail_size');
-            $this->helper->convertValue($newAlbum, 'icon', $asset['media']['album']['settings'], 'icon');
-            $this->helper->convertValue($newAlbum, 'thumbnailHighDpi', $asset['media']['album']['settings'], 'thumbnail_high_dpi', $this->helper::TYPE_BOOLEAN);
-            $this->helper->convertValue($newAlbum, 'thumbnailQuality', $asset['media']['album']['settings'], 'thumbnail_quality', $this->helper::TYPE_INTEGER);
-            $this->helper->convertValue($newAlbum, 'thumbnailHighDpiQuality', $asset['media']['album']['settings'], 'thumbnail_high_dpi_quality', $this->helper::TYPE_INTEGER);
-
-            $newMedia['album'] = $newAlbum;
             $newProductMedia['media'] = $newMedia;
             $media[] = $newProductMedia;
         }
