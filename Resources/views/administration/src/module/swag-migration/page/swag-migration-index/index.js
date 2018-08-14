@@ -54,7 +54,7 @@ Component.register('swag-migration-index', {
         },
 
         editSettings() {
-            this.$router.push({ name: 'swag.migration.wizard.wizard4' });
+            this.$router.push({ name: 'swag.migration.wizard.credentials' });
         }
     }
 });

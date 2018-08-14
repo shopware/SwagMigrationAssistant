@@ -1,19 +1,17 @@
 import { Module } from 'src/core/shopware';
 import './page/swag-migration-index';
 import './page/swag-migration-wizard';
-import './page/swag-migration-wizard-page-1';
-import './page/swag-migration-wizard-page-2';
-import './page/swag-migration-wizard-page-3';
-import './page/swag-migration-wizard-page-4';
-import './page/swag-migration-wizard-page-4-success';
-import './page/swag-migration-wizard-page-4-error';
+import './page/swag-migration-wizard-page-introduction';
+import './page/swag-migration-wizard-page-plugin-information';
+import './page/swag-migration-wizard-page-credentials';
+import './page/swag-migration-wizard-page-credentials-success';
+import './page/swag-migration-wizard-page-credentials-error';
 import './component/swag-breadcrumb';
 import './component/swag-dot-navigation';
-import './component/swag-svg-step1';
-import './component/swag-svg-step2';
-import './component/swag-svg-step3';
-import './component/swag-svg-step4-success';
-import './component/swag-svg-step4-error';
+import './component/swag-svg-wizard-introduction';
+import './component/swag-svg-wizard-plugin-information';
+import './component/swag-svg-wizard-credentials-success';
+import './component/swag-svg-wizard-credentials-error';
 import './component/swag-migration-data-selector';
 import './component/swag-migration-loading-screen';
 import './component/sw-progress-bar';
@@ -36,31 +34,27 @@ Module.register('swag-migration', {
         wizard: {
             component: 'swag-migration-wizard',
             path: 'wizard',
-            redirect: { name: 'swag.migration.wizard.wizard1' },
+            redirect: { name: 'swag.migration.wizard.introduction' },
             children: {
-                wizard1: {
-                    path: 'wizard1',
-                    component: 'swag-migration-wizard-page-1'
+                introduction: {
+                    path: 'introduction',
+                    component: 'swag-migration-wizard-page-introduction'
                 },
-                wizard2: {
-                    path: 'wizard2',
-                    component: 'swag-migration-wizard-page-2'
+                plugin_information: {
+                    path: 'plugin-information',
+                    component: 'swag-migration-wizard-page-plugin-information'
                 },
-                wizard3: {
-                    path: 'wizard3',
-                    component: 'swag-migration-wizard-page-3'
+                credentials: {
+                    path: 'credentials',
+                    component: 'swag-migration-wizard-page-credentials'
                 },
-                wizard4: {
-                    path: 'wizard4',
-                    component: 'swag-migration-wizard-page-4'
+                credentials_success: {
+                    path: 'credentials/success',
+                    component: 'swag-migration-wizard-page-credentials-success'
                 },
-                wizard4_success: {
-                    path: 'wizard4/success',
-                    component: 'swag-migration-wizard-page-4-success'
-                },
-                wizard4_error: {
-                    path: 'wizard4/error',
-                    component: 'swag-migration-wizard-page-4-error'
+                credentials_error: {
+                    path: 'credentials/error',
+                    component: 'swag-migration-wizard-page-credentials-error'
                 }
             }
         }

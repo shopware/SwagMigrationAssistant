@@ -1,0 +1,47 @@
+{% block swag_migration_wizard_page_plugin_information %}
+<div class="swag-migration-wizard swag-migration-wizard-page-plugin-information">
+    {% block swag_migration_wizard_page_plugin_information_content %}
+    <div class="swag-migration-wizard__content">
+        {% block swag_migration_wizard_page_plugin_information_information %}
+        <div class="content__information">
+            {% block swag_migration_wizard_page_plugin_information_title %}
+            <h3 class="information__header">
+                {{ $tc('swag-migration.wizard.pages.pluginInformation.contentTitle') }}
+            </h3>
+            {% endblock %}
+
+            {% block swag_migration_wizard_page_plugin_information_svg %}
+            <swag-svg-wizard-plugin-information></swag-svg-wizard-plugin-information>
+            {% endblock %}
+
+            {% block swag_migration_wizard_page_plugin_information_api_hint %}
+            {{ $tc('swag-migration.wizard.pages.pluginInformation.contentInformation') }}
+            {% endblock %}
+
+            {% block swag_migration_wizard_page_plugin_information_plugin_link %}
+            <div class="swag-migration-wizard__plugin-link">
+                <a href="#">{{ $tc('swag-migration.wizard.pages.pluginInformation.pluginLink') }}</a>
+            </div>
+            {% endblock %}
+        </div>
+        {% endblock %}
+    </div>
+    {% endblock %}
+
+    {% block swag_migration_wizard_page_plugin_information_breadcrumb %}
+    <div class="swag-migration-wizard__breadcrumb">
+        {% block swag_migration_wizard_page_plugin_information_breadcrumb_content %}
+        {% block swag_migration_wizard_page_plugin_information_breadcrumb_icon %}
+        <sw-icon name="default-badge-info" size="14"></sw-icon>
+        {% endblock %}
+
+        {% block swag_migration_wizard_page_plugin_information_breadcrumb_path %}
+        <swag-breadcrumb :description="breadcrumbDescription"
+                         :items="breadcrumbItems">
+        </swag-breadcrumb>
+        {% endblock %}
+        {% endblock %}
+    </div>
+    {% endblock %}
+</div>
+{% endblock %}

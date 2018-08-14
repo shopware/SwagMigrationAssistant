@@ -15,14 +15,13 @@ Component.register('swag-migration-wizard', {
             buttonPreviousText: this.$tc('swag-migration.wizard.buttonPrev'),
             buttonNextText: this.$tc('swag-migration.wizard.buttonNext'),
             routes: [
-                'swag.migration.wizard.wizard1',
-                'swag.migration.wizard.wizard2',
-                'swag.migration.wizard.wizard3',
-                'swag.migration.wizard.wizard4',
-                'swag.migration.wizard.wizard4_success',
-                'swag.migration.wizard.wizard4_error'
+                'swag.migration.wizard.introduction',
+                'swag.migration.wizard.plugin_information',
+                'swag.migration.wizard.credentials',
+                'swag.migration.wizard.credentials_success',
+                'swag.migration.wizard.credentials_error'
             ],
-            routeCountVisible: 4,  //only show 4 dots and allow navigation between them.
+            routeCountVisible: 3,  //only show 4 dots and allow navigation between them.
             routeIndex: 0,
             routeIndexVisible: 0,   //only count up to 3
             profileId: '0x945f840058dc4e5583a02f70bef46071',
@@ -35,13 +34,13 @@ Component.register('swag-migration-wizard', {
             return this.routes.length;
         },
         routeApiCredentialsIndex() {
-            return 3;
+            return 2;
         },
         routeSuccessIndex() {
-            return 4;
+            return 3;
         },
         routeErrorIndex() {
-            return 5;
+            return 4;
         }
     },
 

@@ -19,20 +19,16 @@
             "pathMigrationtools": "Migration tools",
             "pathEditUser": "“Edit user”",
             "pages": {
-                "1": {
+                "introduction": {
                     "contentTitle": "Launch Shopware Playground with your own data.",
                     "contentInformation": "Migrate your data from Shopware 5 to Shopware Playground and create your own projects. Explore the possibilities of Shopware Playground with real data."
                 },
-                "2": {
+                "pluginInformation": {
                     "contentTitle": "Login Shopware 5 Backend",
-                    "contentInformation": "Log into the Shopware 5 backend with your access data and open the plugin manager."
-                },
-                "3": {
-                    "contentTitle": "Plugin installation - Shopware 5 Backend",
-                    "contentInformation": "The plugin 'XXXXXXX' is free and no input or settings are required. Please install and activate the plugin.",
+                    "contentInformation": "Log into the Shopware 5 backend with your access data and open the plugin manager. The plugin 'XXXXXXX' is free and is required for the migration. Please install and activate the plugin.",
                     "pluginLink": "More information about the plugin"
                 },
-                "4": {
+                "credentials": {
                     "contentTitle": "Establish a connection to Shopware 5",
                     "contentInformation": "You can find your API key in the user management in your user data. Please activate your API access, copy your API key to your clipboard and confirm it via saving your configuration.",
                     "apiKeyLabel": "API key",
