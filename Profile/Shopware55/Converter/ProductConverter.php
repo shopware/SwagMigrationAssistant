@@ -195,7 +195,7 @@ class ProductConverter implements ConverterInterface
         $converted['tax'] = $this->getTax($data['tax']);
         unset($data['tax'], $data['taxID']);
 
-        if (isset($data['unit']) && isset($data['unit']['id'])) {
+        if (isset($data['unit']['id'])) {
             $converted['unit'] = $this->getUnit($data['unit'], $data['_locale']);
         }
         unset($data['unit'], $data['detail']['unitID']);

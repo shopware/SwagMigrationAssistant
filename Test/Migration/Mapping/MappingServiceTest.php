@@ -3,6 +3,7 @@
 namespace SwagMigrationNext\Test\Migration\Mapping;
 
 use Doctrine\DBAL\Connection;
+use Exception;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use SwagMigrationNext\Exception\LocaleNotFoundException;
@@ -77,7 +78,7 @@ class MappingServiceTest extends KernelTestCase
         static::assertEquals($uuid1, $uuid2);
     }
 
-    public function testGetUuidReturnsNull()
+    public function testGetUuidReturnsNull(): void
     {
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
         static::assertNull($this->mappingService->getUuid('product', '12345', $context));
@@ -89,7 +90,7 @@ class MappingServiceTest extends KernelTestCase
 
         try {
             $this->mappingService->getLanguageUuid(Shopware55Profile::PROFILE_NAME, 'foobar', $context);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             /* @var LocaleNotFoundException $e */
             self::assertInstanceOf(LocaleNotFoundException::class, $e);
             self::assertEquals(Response::HTTP_NOT_FOUND, $e->getStatusCode());

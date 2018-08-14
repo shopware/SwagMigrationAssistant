@@ -102,7 +102,7 @@ class CustomerConverter implements ConverterInterface
             $data['lastlogin']
         );
 
-        if (isset($data['group']) && isset($data['group']['id'])) {
+        if (isset($data['group']['id'])) {
             $converted['group'] = $this->getCustomerGroup($data, $context);
         }
         unset($data['group']);
@@ -117,8 +117,8 @@ class CustomerConverter implements ConverterInterface
         }
         unset($data['addresses']);
 
-        // Todo: Create a new touchpoint?
-        $converted['touchpointId'] = Defaults::TOUCHPOINT;
+        // Todo: Create a new sales channel?
+        $converted['salesChannelId'] = Defaults::SALES_CHANNEL;
 
         return new ConvertStruct($converted, $data);
     }
@@ -235,12 +235,12 @@ class CustomerConverter implements ConverterInterface
                 $context
             );
 
-            if (isset($originalData['default_billing_address_id']) && $address['id'] == $originalData['default_billing_address_id']) {
+            if (isset($originalData['default_billing_address_id']) && $address['id'] === $originalData['default_billing_address_id']) {
                 $converted['defaultBillingAddressId'] = $newAddress['id'];
                 unset($originalData['default_billing_address_id']);
             }
 
-            if (isset($originalData['default_shipping_address_id']) && $address['id'] == $originalData['default_shipping_address_id']) {
+            if (isset($originalData['default_shipping_address_id']) && $address['id'] === $originalData['default_shipping_address_id']) {
                 $converted['defaultShippingAddressId'] = $newAddress['id'];
                 unset($originalData['default_shipping_address_id']);
             }

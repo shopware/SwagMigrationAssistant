@@ -79,6 +79,7 @@
             <argument type="service" id="SwagMigrationNext\Migration\MigrationCollectService"/>
             <argument type="service" id="SwagMigrationNext\Migration\MigrationWriteService"/>
             <argument type="service" id="SwagMigrationNext\Migration\AssetDownloadService"/>
+            <argument type="service" id="SwagMigrationNext\Migration\MigrationEnvironmentService"/>
         </service>
 
         <service id="SwagMigrationNext\Command\MigrationFetchDataCommand"

@@ -62,21 +62,21 @@ class MigrationDownloadAssetsCommand extends Command implements EventSubscriberI
 
     public function onStart(MigrationAssetDownloadStartEvent $event): void
     {
-        if (isset($this->io)) {
+        if ($this->io !== null) {
             $this->io->progressStart($event->getNumberOfFiles());
         }
     }
 
     public function onAdvance(MigrationAssetDownloadAdvanceEvent $event): void
     {
-        if (isset($this->io)) {
+        if ($this->io !== null) {
             $this->io->progressAdvance();
         }
     }
 
     public function onFinish(MigrationAssetDownloadFinishEvent $event): void
     {
-        if (isset($this->io)) {
+        if ($this->io !== null) {
             $this->io->progressFinish();
             $this->io->table(
                 ['Action', 'Number of files'],

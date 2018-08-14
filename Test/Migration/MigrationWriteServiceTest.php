@@ -3,9 +3,10 @@
 namespace SwagMigrationNext\Test\Migration;
 
 use Doctrine\DBAL\Connection;
+use PDO;
+use Shopware\Core\Checkout\Customer\CustomerDefinition;
 use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Content\Media\MediaDefinition;
-use Shopware\Core\Checkout\Customer\CustomerDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
@@ -242,6 +243,6 @@ class MigrationWriteServiceTest extends KernelTestCase
 
     private function getTranslationTotal()
     {
-        return $this->connection->query('SELECT count(*) FROM product_translation')->fetch(\PDO::FETCH_COLUMN);
+        return $this->connection->query('SELECT count(*) FROM product_translation')->fetch(PDO::FETCH_COLUMN);
     }
 }

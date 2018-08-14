@@ -130,7 +130,7 @@ class MigrationController extends Controller
     /**
      * @Route("/api/v{version}/migration/get-entity-total", name="api.admin.migration.get-entity-total", methods={"GET"})
      */
-    public function getEntityTotal(Request $request): int
+    public function getEntityTotal(Request $request): JsonResponse
     {
         $entity = $request->get('entity');
 
@@ -138,6 +138,8 @@ class MigrationController extends Controller
             throw new MigrationContextPropertyMissingException('entity');
         }
 
-        $this->environmentService->getEntityTotal($entity);
+        $total = $this->environmentService->getEntityTotal($entity);
+
+        return new JsonResponse(['success' => true, 'entity' => $entity, 'total' => $total]);
     }
 }

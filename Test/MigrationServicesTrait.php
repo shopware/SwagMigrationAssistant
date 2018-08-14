@@ -22,8 +22,10 @@ use SwagMigrationNext\Test\Mock\Gateway\Dummy\Local\DummyLocalFactory;
 
 trait MigrationServicesTrait
 {
-    protected function getMigrationCollectService(RepositoryInterface $migrationDataRepo, MappingServiceInterface $mappingService): MigrationCollectServiceInterface
-    {
+    protected function getMigrationCollectService(
+        RepositoryInterface $migrationDataRepo,
+        MappingServiceInterface $mappingService
+    ): MigrationCollectServiceInterface {
         $converterRegistry = new ConverterRegistry(
             new DummyCollection(
                 [
@@ -37,7 +39,7 @@ trait MigrationServicesTrait
         );
 
         $profileRegistry = new ProfileRegistry(new DummyCollection([
-            new Shopware55Profile($migrationDataRepo, $converterRegistry, $mappingService),
+            new Shopware55Profile($migrationDataRepo, $converterRegistry),
         ]));
 
         $gatewayFactoryRegistry = new GatewayFactoryRegistry(new DummyCollection([
