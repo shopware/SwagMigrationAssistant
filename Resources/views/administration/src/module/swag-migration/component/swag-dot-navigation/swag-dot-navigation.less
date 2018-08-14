@@ -1,18 +1,21 @@
 @import "~less/variables";
 
+@swag-dot-navigation-indicator-color: darken(@color-light-gray, 5%);
+@swag-dot-navigation-indicator-active-color: @color-shopware-blue;
+
 .swag-dot-navigation {
-  text-align: center;
+    text-align: center;
 }
 
 .swag-dot-navigation__indicator {
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  background-color: darken(@color-light-gray, 5%);
-  border-radius: 50%;
-  margin: 0 5px;
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    background-color: @swag-dot-navigation-indicator-color;
+    border-radius: 50%;
+    margin: 0 5px;
 
-  &.is--active {
-    background-color: @color-shopware-blue;
-  }
+    &.is--active {
+        background-color: @swag-dot-navigation-indicator-active-color;
+    }
 }
