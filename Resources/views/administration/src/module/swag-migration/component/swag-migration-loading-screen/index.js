@@ -63,9 +63,5 @@ Component.register('swag-migration-loading-screen', {
         title() {
             return this.$t('swag-migration.index.loadingScreenCard.cardTitle', { step: this.statusIndex + 1, total: this.statusCount });
         }
-    },
-
-    methods: {
-
     }
 });

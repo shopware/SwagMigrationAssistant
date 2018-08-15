@@ -1,48 +1,109 @@
+{% block swag_migration_index %}
 <sw-page class="swag-migration-index">
+    {% block swag_migration_index_smart_bar_header %}
     <template slot="smart-bar-header">
         <h2>{{ $tc('swag-migration.general.mainMenuItemGeneral') }}</h2>
     </template>
+    {% endblock %}
 
+    {% block swag_migration_index_smart_bar_actions %}
     <template slot="smart-bar-actions">
-        <sw-button variant="primary" @click="onMigrate">
+        <sw-button variant="primary" @click="showMigrateConfirmDialog" :disabled="isMigrating">
             {{ $tc('swag-migration.index.migrateButton') }}
         </sw-button>
     </template>
+    {% endblock %}
 
+    {% block swag_migration_index_content %}
     <sw-card-view slot="content">
+        {% block swag_migration_index_card_shopInfo %}
         <sw-card :title="$tc('swag-migration.index.shopInfoCard.cardTitle')">
+            {% block swag_migration_index_card_shopInfo_content %}
             <sw-container slot="grid" type="row">
                 <sw-card-section>
                     <sw-container grid="100%">
 
+                        {% block swag_migration_index_card_shopInfo_metaData %}
                         <div class="swag-migration-index__metadata">
+                            {% block swag_migration_index_card_shopInfo_metaData_domain %}
                             <div class="swag-migration-index__metadata-shop-domain">
                                 www.domain.de
                             </div>
+                            {% endblock %}
 
+                            {% block swag_migration_index_card_shopInfo_metaData_version %}
                             <div class="swag-migration-index__metadata-shopware-version">
                                 Shopware 5.5.0 RC1
                             </div>
+                            {% endblock %}
                         </div>
+                        {% endblock %}
+
+                        {% block swag_migration_index_card_shopInfo_actions %}
                         <div class="swag-migration-index__actions">
+                            {% block swag_migration_index_card_shopInfo_actions_editSettings %}
                             <sw-button size="small" @click="editSettings">
                                 <sw-icon name="small-pencil" small></sw-icon>
                                 {{ $tc('swag-migration.index.shopInfoCard.buttonEditSettings') }}
                             </sw-button>
+                            {% endblock %}
 
+                            {% block swag_migration_index_card_shopInfo_actions_moreInfo %}
                             <sw-button size="small" disabled>
                                 <sw-icon name="small-pencil" small></sw-icon>
                                 {{ $tc('swag-migration.index.shopInfoCard.buttonMoreInfo') }}
                             </sw-button>
+                            {% endblock %}
                         </div>
+                        {% endblock %}
 
                     </sw-container>
                 </sw-card-section>
             </sw-container>
+            {% endblock %}
         </sw-card>
+        {% endblock %}
 
+        {% block swag_migration_index_card_dataSelector %}
         <swag-migration-data-selector ref="dataSelector" :targets="targets" :tableData="tableData" v-if="componentIndex === 0"></swag-migration-data-selector>
+        {% endblock %}
+
+        {% block swag_migration_index_card_loadingScreen %}
         <swag-migration-loading-screen v-if="componentIndex === 1" profileName="Shopware 5" :progressBars="progressBars" :statusIndex="statusIndex"></swag-migration-loading-screen>
+        {% endblock %}
+
+        {% block swag_migration_index_modal_confirmDialog %}
+        <sw-modal v-if="showConfirmDialog" :title="$tc('swag-migration.index.confirmDialog.title')"
+                  :isLoading="isMigrating" @closeModal="onCloseConfirmDialog" variant="small">
+
+            {% block swag_migration_index_modal_confirmDialog_message %}
+            <p class="swag-migration-index-confirm-dialog-message">
+                {{ $tc('swag-migration.index.confirmDialog.message') }}
+            </p>
+            {% endblock %}
+
+            {% block swag_migration_index_modal_confirmDialog_footer %}
+            <template slot="modal-footer">
+                {% block swag_migration_index_modal_confirmDialog_footer_cancelAction %}
+                <sw-button @click="onCloseConfirmDialog"
+                           size="small">
+                    {{ $tc('swag-migration.index.confirmDialog.cancel') }}
+                </sw-button>
+                {% endblock %}
+
+                {% block swag_migration_index_modal_confirmDialog_footer_confirmAction %}
+                <sw-button @click="onMigrate"
+                           variant="primary"
+                           size="small">
+                    {{ $tc('swag-migration.index.confirmDialog.confirm') }}
+                </sw-button>
+                {% endblock %}
+            </template>
+            {% endblock %}
+        </sw-modal>
+        {% endblock %}
 
     </sw-card-view>
+    {% endblock %}
 </sw-page>
+{% endblock %}

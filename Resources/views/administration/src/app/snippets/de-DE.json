@@ -88,6 +88,12 @@
             },
             "hintTitle": "Hinweis:",
             "hint": "Bitte bleibe angemeldet und lösche keine Daten in dem anderen Shopsystem solange der Prozess nicht abgeschlossen ist. Du kannst aber im System arbeiten, der Prozess läuft im Hintergrund weiter."
+          },
+          "confirmDialog": {
+            "title": "Migration",
+            "message": "Möchtest Du wirklich migrieren?",
+            "cancel": "Abbrechen",
+            "confirm": "Migrieren"
           }
         }
     }

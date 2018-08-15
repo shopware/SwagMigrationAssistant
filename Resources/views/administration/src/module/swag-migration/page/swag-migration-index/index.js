@@ -15,6 +15,8 @@ Component.register('swag-migration-index', {
         return {
             profile: {},
             componentIndex: 0,
+            isMigrating: false,
+            showConfirmDialog: false,
             targets: [],
             selectedData: {},
             tableData: [
@@ -103,7 +105,13 @@ Component.register('swag-migration-index', {
     },
 
     methods: {
+        showMigrateConfirmDialog() {
+            this.showConfirmDialog = true;
+        },
+
         async onMigrate() {
+            this.showConfirmDialog = false;
+            this.isMigrating = true;
             this.selectedData = this.$refs.dataSelector.getSelectedData();
 
             this.componentIndex = 1;    //show fetch loading screen
@@ -140,6 +148,7 @@ Component.register('swag-migration-index', {
             this.progressBars.shift();
 
             this.progressBars[0].value = 100;
+            this.isMigrating = false;
         },
 
         onProgress(entityName) {
@@ -196,6 +205,10 @@ Component.register('swag-migration-index', {
 
         editSettings() {
             this.$router.push({ name: 'swag.migration.wizard.credentials' });
+        },
+
+        onCloseConfirmDialog() {
+            this.showConfirmDialog = false;
         }
     }
 });

@@ -88,6 +88,12 @@
             },
             "hintTitle": "Note:",
             "hint": "Please remain logged in and do not delete any data in the other shop system until the process is complete. You can work in the system, the process continues in the background."
+          },
+          "confirmDialog": {
+            "title": "Migration",
+            "message": "Do you really want to migrate?",
+            "cancel": "Cancel",
+            "confirm": "Migrate"
           }
         }
     }
