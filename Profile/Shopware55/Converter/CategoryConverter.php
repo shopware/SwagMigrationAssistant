@@ -121,7 +121,7 @@ class CategoryConverter implements ConverterInterface
         return new ConvertStruct($converted, $data);
     }
 
-    private function setGivenCategoryTranslation(array &$data, array &$converted)
+    private function setGivenCategoryTranslation(array &$data, array &$converted): void
     {
         $defaultTranslation = [];
         $defaultTranslation['id'] = $this->mappingService->createNewUuid(

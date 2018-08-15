@@ -47,7 +47,7 @@ class Shopware55Profile implements ProfileInterface
         /** @var array[] $data */
         $data = $gateway->read($entityName, $offset, $limit);
 
-        if (count($data) === 0) {
+        if (\count($data) === 0) {
             return 0;
         }
 
@@ -65,7 +65,7 @@ class Shopware55Profile implements ProfileInterface
             ];
         }
 
-        if (count($createData) === 0) {
+        if (\count($createData) === 0) {
             return 0;
         }
 

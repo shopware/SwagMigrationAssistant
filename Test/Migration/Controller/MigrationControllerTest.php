@@ -55,7 +55,7 @@ class MigrationControllerTest extends KernelTestCase
         parent::tearDown();
     }
 
-    public function testFetchData()
+    public function testFetchData(): void
     {
         $request = new Request([
             'profile' => 'shopware55',
@@ -70,13 +70,13 @@ class MigrationControllerTest extends KernelTestCase
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
         $result = $this->controller->fetchData($request, $context);
 
-        $this->assertEquals(Response::HTTP_OK, $result->getStatusCode());
+        static::assertEquals(Response::HTTP_OK, $result->getStatusCode());
         $content = json_decode($result->getContent(), true);
 
-        $this->assertTrue($content['success']);
+        static::assertTrue($content['success']);
     }
 
-    public function testWriteData()
+    public function testWriteData(): void
     {
         $request = new Request([
             'profile' => 'shopware55',
@@ -90,9 +90,9 @@ class MigrationControllerTest extends KernelTestCase
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
         $result = $this->controller->writeData($request, $context);
 
-        $this->assertEquals(Response::HTTP_OK, $result->getStatusCode());
+        static::assertEquals(Response::HTTP_OK, $result->getStatusCode());
         $content = json_decode($result->getContent(), true);
 
-        $this->assertTrue($content['success']);
+        static::assertTrue($content['success']);
     }
 }

@@ -6,7 +6,6 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
 use Psr\Log\LoggerInterface;
-use Shopware\Core\Content\Media\Exception\IllegalMimeTypeException;
 use Shopware\Core\Content\Media\Upload\MediaUpdater;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\ORM\RepositoryInterface;
@@ -74,10 +73,8 @@ class AssetDownloadService implements AssetDownloadServiceInterface
         $criteria = new Criteria();
         $criteria->addFilter(new TermQuery('entity', 'media'));
 
-        /**
-         * @var ArrayStruct[]
-         */
         $entitySearchResult = $this->migrationMappingRepository->search($criteria, $context);
+        /** @var ArrayStruct[] $assets */
         $assets = $entitySearchResult->getElements();
 
         $this->event->dispatch(MigrationAssetDownloadStartEvent::EVENT_NAME, new MigrationAssetDownloadStartEvent($entitySearchResult->getTotal()));
@@ -85,7 +82,7 @@ class AssetDownloadService implements AssetDownloadServiceInterface
             $uuid = $asset->get('entityUuid');
             $additionalData = $asset->get('additionalData');
 
-            if (is_array($additionalData) && isset($additionalData['uri'])) {
+            if (\is_array($additionalData) && isset($additionalData['uri'])) {
                 $this->event->dispatch(MigrationAssetDownloadAdvanceEvent::EVENT_NAME, new MigrationAssetDownloadAdvanceEvent($additionalData['uri']));
                 $this->download($client, $uuid, $additionalData['uri'], (int) $additionalData['file_size'], $context);
             }
@@ -95,15 +92,13 @@ class AssetDownloadService implements AssetDownloadServiceInterface
 
     private function download(Client $client, string $uuid, string $uri, int $fileSize, Context $context): void
     {
-        if (!is_dir('_temp')) {
-            if (!mkdir('_temp')) {
-                return;
-            }
+        if (!is_dir('_temp') && !mkdir('_temp') && !is_dir('_temp')) {
+            return;
         }
 
         try {
             if ($fileSize > self::MAX_FILESIZE) {
-                $this->chunckDownload($client, $uuid, $uri, $fileSize, $context);
+                $this->chunkDownload($client, $uuid, $uri, $fileSize, $context);
             } else {
                 $this->normalDownload($client, $uuid, $uri, $fileSize, $context);
             }
@@ -114,11 +109,7 @@ class AssetDownloadService implements AssetDownloadServiceInterface
         }
     }
 
-    /**
-     * @throws GuzzleException
-     * @throws IllegalMimeTypeException
-     */
-    private function chunckDownload(Client $client, string $uuid, string $uri, int $fileSize, Context $context): void
+    private function chunkDownload(Client $client, string $uuid, string $uri, int $fileSize, Context $context): void
     {
         $fileExtension = pathinfo($uri, PATHINFO_EXTENSION);
         $filePath = sprintf('_temp/%s.%s', $uuid, $fileExtension);
@@ -151,10 +142,6 @@ class AssetDownloadService implements AssetDownloadServiceInterface
         $this->persistFileToMedia($filePath, $uuid, $fileSize, $context);
     }
 
-    /**
-     * @throws GuzzleException
-     * @throws IllegalMimeTypeException
-     */
     private function normalDownload(Client $client, string $uuid, string $uri, int $fileSize, Context $context): void
     {
         $fileExtension = pathinfo($uri, PATHINFO_EXTENSION);
@@ -175,9 +162,6 @@ class AssetDownloadService implements AssetDownloadServiceInterface
         $this->persistFileToMedia($filePath, $uuid, $fileSize, $context);
     }
 
-    /**
-     * @throws IllegalMimeTypeException
-     */
     private function persistFileToMedia(string $filePath, string $uuid, int $fileSize, Context $context): void
     {
         $mimeType = mime_content_type($filePath);

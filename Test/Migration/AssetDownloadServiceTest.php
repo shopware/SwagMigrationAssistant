@@ -99,7 +99,7 @@ class AssetDownloadServiceTest extends KernelTestCase
         parent::tearDown();
     }
 
-    public function testDownloadAssets()
+    public function testDownloadAssets(): void
     {
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
         $migrationContext = new MigrationContext(

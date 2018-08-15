@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ProductConverterTest extends TestCase
 {
-    public function testConvertNoParent()
+    public function testConvertNoParent(): void
     {
         $productConverter = new ProductConverter(new DummyMappingService(), new ConverterHelperService());
 
