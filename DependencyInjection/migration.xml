@@ -80,6 +80,7 @@
             <argument type="service" id="SwagMigrationNext\Migration\MigrationWriteService"/>
             <argument type="service" id="SwagMigrationNext\Migration\AssetDownloadService"/>
             <argument type="service" id="SwagMigrationNext\Migration\MigrationEnvironmentService"/>
+            <argument type="service" id="swag_migration_profile.repository"/>
         </service>
 
         <service id="SwagMigrationNext\Command\MigrationFetchDataCommand"

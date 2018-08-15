@@ -3,6 +3,9 @@
 namespace SwagMigrationNext\Controller;
 
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\ORM\Read\ReadCriteria;
+use Shopware\Core\Framework\ORM\RepositoryInterface;
+use Shopware\Core\Framework\Struct\ArrayStruct;
 use SwagMigrationNext\Exception\MigrationContextPropertyMissingException;
 use SwagMigrationNext\Migration\AssetDownloadServiceInterface;
 use SwagMigrationNext\Migration\MigrationCollectServiceInterface;
@@ -36,25 +39,52 @@ class MigrationController extends Controller
      */
     private $environmentService;
 
+    /**
+     * @var RepositoryInterface
+     */
+    private $migrationProfileRepo;
+
     public function __construct(
         MigrationCollectServiceInterface $migrationCollectService,
         MigrationWriteServiceInterface $migrationWriteService,
         AssetDownloadServiceInterface $assetDownloadService,
-        MigrationEnvironmentService $environmentService
+        MigrationEnvironmentService $environmentService,
+        RepositoryInterface $migrationProfileRepo
     ) {
         $this->migrationCollectService = $migrationCollectService;
         $this->migrationWriteService = $migrationWriteService;
         $this->assetDownloadService = $assetDownloadService;
         $this->environmentService = $environmentService;
+        $this->migrationProfileRepo = $migrationProfileRepo;
     }
 
     /**
      * @Route("/api/v{version}/migration/check-connection", name="api.admin.migration.check-connection", methods={"POST"})
      */
-    public function checkConnection(): JsonResponse
+    public function checkConnection(Request $request, Context $context): JsonResponse
     {
-        // TODO request against common API of 5.5 plugin
-        return new JsonResponse(['success' => true]);
+        $profileId = $request->get('profileId');
+
+        if ($profileId === null) {
+            throw new MigrationContextPropertyMissingException('profile ID');
+        }
+
+        $readCriteria = new ReadCriteria([$profileId]);
+        $profileCollection = $this->migrationProfileRepo->read($readCriteria, $context);
+        /** @var ArrayStruct $profile */
+        $profile = $profileCollection->get($profileId);
+
+        /** @var string $profileName */
+        $profileName = $profile->get('profile');
+        /** @var string $gateway */
+        $gateway = $profile->get('gateway');
+        $credentials = $profile->get('credentialFields');
+
+        $migrationContext = new MigrationContext($profileName, $gateway, '', $credentials, 0, 0);
+
+        $information = $this->environmentService->getEnvironmentInformation($migrationContext);
+
+        return new JsonResponse(['success' => true, 'environmentInformation' => $information]);
     }
 
     /**
@@ -100,8 +130,8 @@ class MigrationController extends Controller
      */
     public function writeData(Request $request, Context $context): JsonResponse
     {
-        $profile = $request->get('profile', '');
-        $entity = $request->get('entity', '');
+        $profile = $request->get('profile');
+        $entity = $request->get('entity');
 
         if ($profile === null) {
             throw new MigrationContextPropertyMissingException('profile');
@@ -125,21 +155,5 @@ class MigrationController extends Controller
         $this->assetDownloadService->downloadAssets($context);
 
         return new JsonResponse(['success' => true]);
-    }
-
-    /**
-     * @Route("/api/v{version}/migration/get-entity-total", name="api.admin.migration.get-entity-total", methods={"GET"})
-     */
-    public function getEntityTotal(Request $request): JsonResponse
-    {
-        $entity = $request->get('entity');
-
-        if ($entity === null) {
-            throw new MigrationContextPropertyMissingException('entity');
-        }
-
-        $total = $this->environmentService->getEntityTotal($entity);
-
-        return new JsonResponse(['success' => true, 'entity' => $entity, 'total' => $total]);
     }
 }
