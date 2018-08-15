@@ -18,11 +18,11 @@ class MigrationApiService extends ApiService {
             });
     }
 
-    checkConnection() {
+    checkConnection(profileId) {
         const headers = this.getBasicHeaders();
 
         return this.httpClient
-            .post(`${this.getApiBasePath()}/check-connection`, {}, {
+            .post(`${this.getApiBasePath()}/check-connection`, { profileId: profileId}, {
                 headers
             })
             .then((response) => {

@@ -51,4 +51,11 @@ class MigrationEnvironmentService
 
         return $data[$key];
     }
+
+    public function getEnvironmentInformation(MigrationContext $migrationContext): array
+    {
+        $gateway = $this->gatewayFactoryRegistry->createGateway($migrationContext);
+
+        return $gateway->read('environment', 0, 0);
+    }
 }

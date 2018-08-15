@@ -61,16 +61,16 @@ class Shopware55ApiGateway implements GatewayInterface
                 $reader = new Shopware55ApiCategoryReader($offset, $limit);
                 break;
 
-            case 'translation':
-                $reader = new Shopware55ApiTranslationReader($offset, $limit);
-                break;
-
             case MediaDefinition::getEntityName():
                 $reader = new Shopware55ApiAssetReader($offset, $limit);
                 break;
 
             case CustomerDefinition::getEntityName():
                 $reader = new Shopware55ApiCustomerReader($offset, $limit);
+                break;
+
+            case 'translation':
+                $reader = new Shopware55ApiTranslationReader($offset, $limit);
                 break;
 
             case 'environment':

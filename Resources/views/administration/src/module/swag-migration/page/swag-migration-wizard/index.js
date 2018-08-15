@@ -81,8 +81,7 @@ Component.register('swag-migration-wizard', {
             // TODO loading indicator?
             this.migrationProfileService.updateById(this.profileId, { credentialFields: this.credentials }).then((response) => {
                 if (response.status === 204) {
-                    console.log(this.migrationService.checkConnection);
-                    this.migrationService.checkConnection().then((connectionCheckResponse) => {
+                    this.migrationService.checkConnection(this.profileId).then((connectionCheckResponse) => {
                         if (connectionCheckResponse.success) {
                             this.navigateToRoute(this.routes[this.routeSuccessIndex]);
                         }else{
