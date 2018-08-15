@@ -41,8 +41,8 @@
             </sw-container>
         </sw-card>
 
-        <swag-migration-data-selector :catalogues="catalogues" v-if="componentIndex === 0"></swag-migration-data-selector>
-        <swag-migration-loading-screen v-if="componentIndex === 1" profileName="Shopware 5"></swag-migration-loading-screen>
+        <swag-migration-data-selector ref="dataSelector" :catalogues="catalogues" :tableData="tableData" v-if="componentIndex === 0"></swag-migration-data-selector>
+        <swag-migration-loading-screen v-if="componentIndex === 1" profileName="Shopware 5" :progressBars="progressBars" :statusIndex="statusIndex"></swag-migration-loading-screen>
 
     </sw-card-view>
 </sw-page>

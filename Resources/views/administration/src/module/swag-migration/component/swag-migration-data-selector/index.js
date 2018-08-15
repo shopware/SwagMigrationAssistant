@@ -8,35 +8,35 @@ Component.register('swag-migration-data-selector', {
 
     props: {
         catalogues: {
-            type: Array,
-            required: true,
-            default: []
+            type: Array
+        },
+        tableData: {
+            type: Array
         }
     },
 
-    data() {
-        return {
-            tableData: [
-                {
-                    id: 0,
-                    data: this.$tc('swag-migration.index.selectDataCard.dataPossible.customersAndOrders'),
-                    catalogueId: 1
-                },
-                {
-                    id: 1,
-                    data: this.$tc('swag-migration.index.selectDataCard.dataPossible.categoriesAndProducts'),
-                    catalogueId: 1
-                },
-                {
-                    id: 2,
-                    data: this.$tc('swag-migration.index.selectDataCard.dataPossible.media'),
-                    catalogueId: 1
-                }
-            ],
-        };
+    watch: {
+        catalogues() {
+            if (this.catalogues.length < 1)
+                return;
+
+            this.tableData.forEach((row) => {
+                row.catalogueId = this.catalogues[0].id;
+            });
+        }
     },
 
     mounted() {
         this.$refs.tableDataGrid.selectAll(true);
+    },
+
+    methods: {
+        getSelectedData() {
+            return this.$refs.tableDataGrid.getSelection();
+        },
+
+        getTableData() {
+            return this.$refs.tableDataGrid.getSelection();
+        }
     }
 });

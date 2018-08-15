@@ -9,27 +9,21 @@ Component.register('swag-migration-loading-screen', {
     props: {
         profileName: {
             type: String,
+        },
+        progressBars: {
+            type: Array,
+        },
+        statusIndex: {
+            type: Number,
+            default: 0,
+            required: false,
         }
     },
 
     data() {
         return {
-            progressBars: [
-                {
-                    title: this.$tc('swag-migration.index.selectDataCard.dataPossible.customersAndOrders'),
-                    value: 100
-                },
-                {
-                    title: this.$tc('swag-migration.index.selectDataCard.dataPossible.categoriesAndProducts'),
-                    value: 30
-                },
-                {
-                    title: this.$tc('swag-migration.index.selectDataCard.dataPossible.media'),
-                    value: 0
-                }
-            ],
             status: ['fetchData', 'writeData', 'downloadMedia'],
-            statusIndex: 0,
+
         };
     },
 
