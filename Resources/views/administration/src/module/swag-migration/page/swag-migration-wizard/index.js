@@ -10,6 +10,7 @@ Component.register('swag-migration-wizard', {
     data() {
         return {
             showModal: true,
+            isLoading: false,
             buttonPreviousVisible: true,
             buttonNextVisible: true,
             buttonPreviousText: this.$tc('swag-migration.wizard.buttonPrev'),
@@ -41,6 +42,20 @@ Component.register('swag-migration-wizard', {
         },
         routeErrorIndex() {
             return 4;
+        },
+        nextButtonDisabled() {
+            if (this.isLoading) {
+                return true;
+            }
+
+            if (this.routeIndex === this.routeApiCredentialsIndex) {
+                return !(this.credentials.endpoint && this.credentials.apiUser && this.credentials.apiKey);
+            }
+
+            return false;
+        },
+        backButtonDisabled() {
+            return this.isLoading;
         }
     },
 
@@ -73,15 +88,12 @@ Component.register('swag-migration-wizard', {
 
     methods: {
         onConnect() {
-            console.log('we want to connect here...');
-            console.log('API-Key:', this.credentials.apiKey);
-            console.log('API-User:', this.credentials.apiUser);
-            console.log('Shop-Domain:', this.credentials.endpoint);
+            this.isLoading = true;
 
-            // TODO loading indicator?
             this.migrationProfileService.updateById(this.profileId, { credentialFields: this.credentials }).then((response) => {
                 if (response.status === 204) {
                     this.migrationService.checkConnection(this.profileId).then((connectionCheckResponse) => {
+                        this.isLoading = false;
                         if (connectionCheckResponse.success) {
                             this.navigateToRoute(this.routes[this.routeSuccessIndex]);
                         }else{
@@ -89,22 +101,31 @@ Component.register('swag-migration-wizard', {
                         }
                     });
                 }else{
+                    this.isLoading = false;
                     this.navigateToRoute(this.routes[this.routeErrorIndex]);
                 }
             });
         },
 
         onCloseModal() {
+            if (this.isLoading) {
+                return;
+            }
+
+            let _routeIndex = this.routeIndex;
+
             this.showModal = false;
             this.$route.query.show = this.showModal;
             this.routeIndex = 0;
             this.routeIndexVisible = 0;
 
-            //navigate to modul
-            this.$router.push({
-                name: 'swag.migration.index',
-                params: { profileId: this.profileId }
-            });
+            if (_routeIndex === this.routeSuccessIndex) {
+                //navigate to module
+                this.$router.push({
+                    name: 'swag.migration.index',
+                    params: { profileId: this.profileId }
+                });
+            }
         },
 
         matchRouteWithIndex() {

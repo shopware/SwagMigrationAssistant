@@ -15,26 +15,32 @@ Component.register('swag-migration-index', {
         return {
             profile: {},
             componentIndex: 0,
-            catalogues: [],
+            targets: [],
             selectedData: {},
             tableData: [
                 {
                     id: 'customers_orders',
                     entityNames: ['customer', 'order'],
                     data: this.$tc('swag-migration.index.selectDataCard.dataPossible.customersAndOrders'),
-                    catalogueId: ''
+                    targetDisabled: true,
+                    targetHidden: true,
+                    targetId: ''
                 },
                 {
                     id: 'categories_products',
                     entityNames: ['category', 'product', 'translation'],
                     data: this.$tc('swag-migration.index.selectDataCard.dataPossible.categoriesAndProducts'),
-                    catalogueId: ''
+                    targetDisabled: true,
+                    targetHidden: false,
+                    targetId: ''
                 },
                 {
                     id: 'media',
                     entityNames: ['media'],
                     data: this.$tc('swag-migration.index.selectDataCard.dataPossible.media'),
-                    catalogueId: ''
+                    targetDisabled: true,
+                    targetHidden: false,
+                    targetId: ''
                 }
             ],
             statusIndex: 0,
@@ -67,14 +73,28 @@ Component.register('swag-migration-index', {
             }
         };
 
+        //Get profile with credentials from server
         this.migrationProfileService.getList(params).then((response) => {
             this.profile = response.data[0];
-        });
 
+            //check if credentials are given
+            if (!this.profile.credentialFields.endpoint || !this.profile.credentialFields.apiUser || !this.profile.credentialFields.apiKey ) {
+                this.$router.push({ name: 'swag.migration.wizard.introduction' });
+                return;
+            }
+
+
+            //Do connection check
+            this.migrationService.checkConnection(this.profile.id).then((connectionCheckResponse) => {
+                if (!connectionCheckResponse.success) {
+                    this.$router.push({ name: 'swag.migration.wizard.credentials' });
+                }
+            });
+        });
 
         this.catalogService.getList({ offset: 0, limit: 100 }).then((response) => {
             response.data.forEach((catalog) => {
-                this.catalogues.push({
+                this.targets.push({
                     id: catalog.id,
                     name: catalog.name
                 });

@@ -1,6 +1,6 @@
 {% block swag_migration_wizard %}
     <div class="swag-migration-wizard">
-        <sw-modal size="800px" v-if="showModal" :title="$tc('swag-migration.wizard.title')" @closeModal="onCloseModal">
+        <sw-modal size="800px" v-if="showModal" :title="$tc('swag-migration.wizard.title')" :isLoading="isLoading" @closeModal="onCloseModal">
             {% block swag_migration_router_view %}
             <router-view
                     :apiKey="credentials.apiKey"
@@ -23,12 +23,12 @@
                 {% block swag_migration_wizard_actions %}
                 <div class="swag-migration-wizard__actions">
                     {% block swag_migration_wizard_actions_previous %}
-                        <sw-button v-show="buttonPreviousVisible" size="small" @click="onPrevious">
+                        <sw-button v-show="buttonPreviousVisible" size="small" @click="onPrevious" :disabled="backButtonDisabled">
                             {{ buttonPreviousText }}
                         </sw-button>
                     {% endblock %}
                     {% block swag_migration_wizard_actions_next %}
-                        <sw-button v-show="buttonNextVisible" size="small" variant="primary" @click="onNext">
+                        <sw-button v-show="buttonNextVisible" size="small" variant="primary" @click="onNext" :disabled="nextButtonDisabled">
                             {{ buttonNextText }}
                         </sw-button>
                     {% endblock %}

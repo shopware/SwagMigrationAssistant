@@ -67,7 +67,7 @@
               "categoriesAndProducts": "Categories & Products",
               "media": "Media"
             },
-            "catalogueHeader": "Catalogue",
+            "targetHeader": "Target",
             "defaultCatalogue": "Default"
           },
           "loadingScreenCard": {

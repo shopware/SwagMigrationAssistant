@@ -7,7 +7,7 @@ Component.register('swag-migration-data-selector', {
     template,
 
     props: {
-        catalogues: {
+        targets: {
             type: Array
         },
         tableData: {
@@ -16,12 +16,12 @@ Component.register('swag-migration-data-selector', {
     },
 
     watch: {
-        catalogues() {
-            if (this.catalogues.length < 1)
+        targets() {
+            if (this.targets.length < 1)
                 return;
 
             this.tableData.forEach((row) => {
-                row.catalogueId = this.catalogues[0].id;
+                row.targetId = this.targets[0].id;
             });
         }
     },
