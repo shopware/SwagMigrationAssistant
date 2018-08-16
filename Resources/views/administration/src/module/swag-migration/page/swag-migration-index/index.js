@@ -54,16 +54,19 @@ Component.register('swag-migration-index', {
             progressBarsPossible: [
                 {
                     entityNames: ['customer', 'order'],
+                    parentId: 'customers_orders',
                     title: this.$tc('swag-migration.index.selectDataCard.dataPossible.customersAndOrders'),
                     value: 0
                 },
                 {
                     entityNames: ['category', 'product', 'translation'],
+                    parentId: 'categories_products',
                     title: this.$tc('swag-migration.index.selectDataCard.dataPossible.categoriesAndProducts'),
                     value: 0
                 },
                 {
                     entityNames: ['media'],
+                    parentId: 'media',
                     title: this.$tc('swag-migration.index.selectDataCard.dataPossible.media'),
                     value: 0
                 }
@@ -201,7 +204,9 @@ Component.register('swag-migration-index', {
             //copy the progressBarsPossible to progressBars
             this.progressBars = [];
             this.progressBarsPossible.forEach((bar) => {
-                this.progressBars.push(Object.assign({}, bar));
+                if (this.selectedData[bar.parentId]) {  //only add the progress bars for the selected data
+                    this.progressBars.push(Object.assign({}, bar));
+                }
             });
         },
 
