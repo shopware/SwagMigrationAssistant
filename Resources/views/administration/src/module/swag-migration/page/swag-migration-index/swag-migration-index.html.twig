@@ -25,38 +25,48 @@
 
                         {% block swag_migration_index_card_shopInfo_metaData %}
                         <div class="swag-migration-index__metadata">
-                            {% block swag_migration_index_card_shopInfo_metaData_domain %}
-                            <div class="swag-migration-index__metadata-shop-domain">
-                                www.domain.de
-                            </div>
+                            {% block swag_migration_index_card_shopInfo_metaData_avatar %}
+                            <sw-avatar class="swag-migration-index__metadata_avatar"
+                                       color="#189EFF"
+                                       :user="{ firstName: 'S', lastName: '' }"
+                                       size="80px"></sw-avatar>
                             {% endblock %}
 
-                            {% block swag_migration_index_card_shopInfo_metaData_version %}
-                            <div class="swag-migration-index__metadata-shopware-version">
-                                Shopware 5.5.0 RC1
+                            {% block swag_migration_index_card_shopInfo_metaData_info %}
+                            <div class="swag-migration-index__metadata_info">
+                                {% block swag_migration_index_card_shopInfo_metaData_domain %}
+                                <div class="swag-migration-index__metadata-shop-domain">
+                                    {{ shopDomain }}
+                                </div>
+                                {% endblock %}
+
+                                {% block swag_migration_index_card_shopInfo_metaData_version %}
+                                <div class="swag-migration-index__metadata-shopware-version">
+                                    {{ shopVersion }}
+                                </div>
+                                {% endblock %}
+
+                                {% block swag_migration_index_card_shopInfo_actions %}
+                                <div class="swag-migration-index__actions">
+                                    {% block swag_migration_index_card_shopInfo_actions_editSettings %}
+                                    <sw-button size="small" @click="editSettings">
+                                        <sw-icon name="small-pencil" small></sw-icon>
+                                        {{ $tc('swag-migration.index.shopInfoCard.buttonEditSettings') }}
+                                    </sw-button>
+                                    {% endblock %}
+
+                                    {% block swag_migration_index_card_shopInfo_actions_moreInfo %}
+                                    <sw-button size="small" disabled>
+                                        <sw-icon name="small-pencil" small></sw-icon>
+                                        {{ $tc('swag-migration.index.shopInfoCard.buttonMoreInfo') }}
+                                    </sw-button>
+                                    {% endblock %}
+                                </div>
+                                {% endblock %}
                             </div>
                             {% endblock %}
                         </div>
                         {% endblock %}
-
-                        {% block swag_migration_index_card_shopInfo_actions %}
-                        <div class="swag-migration-index__actions">
-                            {% block swag_migration_index_card_shopInfo_actions_editSettings %}
-                            <sw-button size="small" @click="editSettings">
-                                <sw-icon name="small-pencil" small></sw-icon>
-                                {{ $tc('swag-migration.index.shopInfoCard.buttonEditSettings') }}
-                            </sw-button>
-                            {% endblock %}
-
-                            {% block swag_migration_index_card_shopInfo_actions_moreInfo %}
-                            <sw-button size="small" disabled>
-                                <sw-icon name="small-pencil" small></sw-icon>
-                                {{ $tc('swag-migration.index.shopInfoCard.buttonMoreInfo') }}
-                            </sw-button>
-                            {% endblock %}
-                        </div>
-                        {% endblock %}
-
                     </sw-container>
                 </sw-card-section>
             </sw-container>

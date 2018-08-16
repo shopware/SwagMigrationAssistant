@@ -10,6 +10,7 @@ Component.register('swag-migration-index', {
     data() {
         return {
             profile: {},
+            environmentInformation: {},
             componentIndex: 0,
             components: {
                 dataSelector: 0,
@@ -70,6 +71,22 @@ Component.register('swag-migration-index', {
         };
     },
 
+    computed: {
+        shopDomain() {
+            if (this.environmentInformation.strucure)
+                return this.environmentInformation.strucure[0].host;
+
+            return '';
+        },
+
+        shopVersion() {
+            if (this.environmentInformation.shopwareVersion)
+                return this.environmentInformation.shopwareVersion;
+
+            return '';
+        }
+    },
+
     created() {
         const params = {
             offset: 0,
@@ -95,6 +112,8 @@ Component.register('swag-migration-index', {
                 if (!connectionCheckResponse.success) {
                     this.$router.push({ name: 'swag.migration.wizard.credentials' });
                 }
+
+                this.environmentInformation = connectionCheckResponse.environmentInformation;
             }).catch((error) => {
                 this.$router.push({ name: 'swag.migration.wizard.credentials' });
             });
