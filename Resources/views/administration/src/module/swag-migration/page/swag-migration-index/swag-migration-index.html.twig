@@ -72,6 +72,18 @@
         <swag-migration-loading-screen v-if="componentIndex === 1" profileName="Shopware 5" :progressBars="progressBars" :statusIndex="statusIndex"></swag-migration-loading-screen>
         {% endblock %}
 
+        {% block swag_migration_index_card_loadingScreen_success %}
+        <swag-migration-loading-screen-success v-if="componentIndex === 2" @onClickBack="onClickBack"></swag-migration-loading-screen-success>
+        {% endblock %}
+
+        {% block swag_migration_index_card_loadingScreen_warning %}
+        <swag-migration-loading-screen-warning v-if="componentIndex === 3" @onClickBack="onClickBack"></swag-migration-loading-screen-warning>
+        {% endblock %}
+
+        {% block swag_migration_index_card_loadingScreen_failure %}
+        <swag-migration-loading-screen-failure v-if="componentIndex === 4" @onClickBack="onClickBack"></swag-migration-loading-screen-failure>
+        {% endblock %}
+
         {% block swag_migration_index_modal_confirmDialog %}
         <sw-modal v-if="showConfirmDialog" :title="$tc('swag-migration.index.confirmDialog.title')"
                   :isLoading="isMigrating" @closeModal="onCloseConfirmDialog" variant="small">

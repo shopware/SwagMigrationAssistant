@@ -52,6 +52,8 @@
         "index": {
           "title": "Migration",
           "migrateButton": "Migrate",
+          "finishButton": "Finish",
+          "backButton": "Back to overview",
           "shopInfoCard": {
             "cardTitle": "Shopsystem",
             "buttonEditSettings": "Edit Settings",
@@ -87,7 +89,27 @@
               }
             },
             "hintTitle": "Note:",
-            "hint": "Please remain logged in and do not delete any data in the other shop system until the process is complete. You can work in the system, the process continues in the background."
+            "hint": "Please remain logged in and do not delete any data in the other shop system until the process is complete. You can work in the system, the process continues in the background.",
+            "result": {
+              "success": {
+                "title": "Done",
+                "contentTitle": "Migration done",
+                "hintTitle": "Information:",
+                "hintContent": "Minions ipsum underweaaar baboiii me want bananaaa! Me want bananaaa! Jiji. Bappleees po kass poopayee poulet tikka masala gelatooo. Tatata bala tu uuuhhh poopayee bee do bee do bee do ti aamoo! Jeje hahaha jeje gelatooo poulet tikka masala tatata bala tu para tú. Bappleees bee do bee do bee do tatata bala tu hahaha aaaaaah me want bananaaa! Gelatooo bananaaaa para tú belloo!"
+              },
+              "warning": {
+                "title": "Done",
+                "contentTitle": "Migration done",
+                "hintTitle": "Information:",
+                "hintContent": "Minions ipsum underweaaar baboiii me want bananaaa! Me want bananaaa! Jiji. Bappleees po kass poopayee poulet tikka masala gelatooo. Tatata bala tu uuuhhh poopayee bee do bee do bee do ti aamoo! Jeje hahaha jeje gelatooo poulet tikka masala tatata bala tu para tú. Bappleees bee do bee do bee do tatata bala tu hahaha aaaaaah me want bananaaa! Gelatooo bananaaaa para tú belloo!"
+              },
+              "failure": {
+                "title": "Failed",
+                "contentTitle": "Migration not possible!",
+                "hintTitle": "Attention:",
+                "hintContent": "Minions ipsum underweaaar baboiii me want bananaaa! Me want bananaaa! Jiji. Bappleees po kass poopayee poulet tikka masala gelatooo. Tatata bala tu uuuhhh poopayee bee do bee do bee do ti aamoo! Jeje hahaha jeje gelatooo poulet tikka masala tatata bala tu para tú. Bappleees bee do bee do bee do tatata bala tu hahaha aaaaaah me want bananaaa! Gelatooo bananaaaa para tú belloo!"
+              }
+            }
           },
           "confirmDialog": {
             "title": "Migration",

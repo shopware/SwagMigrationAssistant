@@ -99,6 +99,9 @@ Component.register('swag-migration-wizard', {
                         }else{
                             this.navigateToRoute(this.routes[this.routeErrorIndex]);
                         }
+                    }).catch((error) => {
+                        this.isLoading = false;
+                        this.navigateToRoute(this.routes[this.routeErrorIndex]);
                     });
                 }else{
                     this.isLoading = false;

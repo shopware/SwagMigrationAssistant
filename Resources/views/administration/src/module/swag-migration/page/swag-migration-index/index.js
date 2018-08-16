@@ -5,16 +5,19 @@ import './swag-migration-index.less';
 Component.register('swag-migration-index', {
     template,
 
-    mixins: [
-        'notification'
-    ],
-
     inject: ['migrationProfileService', 'migrationService', 'catalogService'],
 
     data() {
         return {
             profile: {},
             componentIndex: 0,
+            components: {
+                dataSelector: 0,
+                loadingScreen: 1,
+                resultSuccess: 2,
+                resultWarning: 3,
+                resultFailure: 4
+            },
             isMigrating: false,
             showConfirmDialog: false,
             targets: [],
@@ -46,7 +49,8 @@ Component.register('swag-migration-index', {
                 }
             ],
             statusIndex: 0,
-            progressBars: [
+            progressBars: [],
+            progressBarsPossible: [
                 {
                     entityNames: ['customer', 'order'],
                     title: this.$tc('swag-migration.index.selectDataCard.dataPossible.customersAndOrders'),
@@ -91,6 +95,8 @@ Component.register('swag-migration-index', {
                 if (!connectionCheckResponse.success) {
                     this.$router.push({ name: 'swag.migration.wizard.credentials' });
                 }
+            }).catch((error) => {
+                this.$router.push({ name: 'swag.migration.wizard.credentials' });
             });
         });
 
@@ -113,8 +119,10 @@ Component.register('swag-migration-index', {
             this.showConfirmDialog = false;
             this.isMigrating = true;
             this.selectedData = this.$refs.dataSelector.getSelectedData();
+            this.statusIndex = 0;
+            this.resetProgress();
 
-            this.componentIndex = 1;    //show fetch loading screen
+            this.componentIndex = this.components.loadingScreen;    //show loading screen
 
             //get all entities in order
             let allEntityNames = [];
@@ -148,7 +156,12 @@ Component.register('swag-migration-index', {
             this.progressBars.shift();
 
             this.progressBars[0].value = 100;
-            this.isMigrating = false;
+
+            if (State.getStore('error').errors.system.length > 0) {
+                this.componentIndex = this.components.resultWarning;    //show result warning screen
+            }else{
+                this.componentIndex = this.components.resultSuccess;    //show result success screen
+            }
         },
 
         onProgress(entityName) {
@@ -166,8 +179,10 @@ Component.register('swag-migration-index', {
         },
 
         resetProgress() {
-            this.progressBars.forEach((bar) => {
-                bar.value = 0;
+            //copy the progressBarsPossible to progressBars
+            this.progressBars = [];
+            this.progressBarsPossible.forEach((bar) => {
+                this.progressBars.push(Object.assign({}, bar));
             });
         },
 
@@ -182,7 +197,6 @@ Component.register('swag-migration-index', {
             return new Promise((resolve, reject) => {
                 this.migrationService[methodName](params).then((response) => {
                     this.onProgress(entityName);
-                    this.createNotificationSuccess({message: 'Success: ' + entityName});
                     resolve();
                 }).catch((response) => {
                     if (response.response.data && response.response.data.errors) {
@@ -209,6 +223,11 @@ Component.register('swag-migration-index', {
 
         onCloseConfirmDialog() {
             this.showConfirmDialog = false;
+        },
+
+        onClickBack() {
+            this.componentIndex = this.components.dataSelector;
+            this.isMigrating = false;
         }
     }
 });
