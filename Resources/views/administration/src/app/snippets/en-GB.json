@@ -44,7 +44,10 @@
                     "error": {
                         "contentTitle": "Connection not established.",
                         "contentInformation": "Unfortunately, the connection could not be established. Please check the messages and fix the problem.",
-                        "alertErrorTitle": "Attention:"
+                        "alertErrorTitle": "Attention:",
+                        "connectionErrorMsg": "Could not connect to the server. Please check the given shop domain.",
+                        "authenticationErrorMsg": "Your access data is not correct. Please check it and try again.",
+                        "undefinedErrorMsg": "Internal server error. Please try again."
                     }
                 }
             }

@@ -44,7 +44,10 @@
                     "error": {
                         "contentTitle": "Verbindung nicht hergestellt.",
                         "contentInformation": "Die Verbindung konnte leider nicht hergestellt werden. Bitte prüfe die Meldungen und behebe das Problem.",
-                        "alertErrorTitle": "Achtung:"
+                        "alertErrorTitle": "Achtung:",
+                        "connectionErrorMsg": "Es konnte keine Verbindung zum angegebenen Server hergestellt werden. Bitte überprüfe die angegebene Shop-Domain.",
+                        "authenticationErrorMsg": "Deine Zugangsdaten sind nicht korrekt. Bitte überprüfe sie und versuche es erneut.",
+                        "undefinedErrorMsg": "Interner Server Fehler. Bitte versuche es erneut."
                     }
                 }
             }

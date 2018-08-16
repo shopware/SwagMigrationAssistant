@@ -8,7 +8,8 @@
                     :apiUser="credentials.apiUser"
                     @apiUserChanged="onApiUserChanged"
                     :endpoint="credentials.endpoint"
-                    @endpointChanged="onEndpointChanged">
+                    @endpointChanged="onEndpointChanged"
+                    :errorMessage="errorMessage">
             </router-view>
             {% endblock %}
 

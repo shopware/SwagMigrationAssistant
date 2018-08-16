@@ -26,7 +26,8 @@ Component.register('swag-migration-wizard', {
             routeIndex: 0,
             routeIndexVisible: 0,   //only count up to 3
             profileId: '0x945f840058dc4e5583a02f70bef46071',
-            credentials: {} //.endpoint .apiUser .apiKey
+            credentials: {}, //.endpoint .apiUser .apiKey
+            errorMessage: ''
         };
     },
 
@@ -97,17 +98,33 @@ Component.register('swag-migration-wizard', {
                         if (connectionCheckResponse.success) {
                             this.navigateToRoute(this.routes[this.routeSuccessIndex]);
                         }else{
-                            this.navigateToRoute(this.routes[this.routeErrorIndex]);
+                            this.onResponseError(-1);
                         }
                     }).catch((error) => {
                         this.isLoading = false;
-                        this.navigateToRoute(this.routes[this.routeErrorIndex]);
+                        this.onResponseError(error.response.data.errors[0].code);
                     });
                 }else{
                     this.isLoading = false;
-                    this.navigateToRoute(this.routes[this.routeErrorIndex]);
+                    this.onResponseError(response.status);
                 }
             });
+        },
+
+        onResponseError(errorCode) {
+            switch (errorCode) {
+                case '0': //can't connect to shop
+                    this.errorMessage = this.$tc('swag-migration.wizard.pages.credentials.error.connectionErrorMsg');
+                    break;
+                case '401':   //invalid access credentials
+                    this.errorMessage = this.$tc('swag-migration.wizard.pages.credentials.error.authenticationErrorMsg');
+                    break;
+                default:    //something else
+                    this.errorMessage = this.$tc('swag-migration.wizard.pages.credentials.error.undefinedErrorMsg');
+                    break;
+            }
+
+            this.navigateToRoute(this.routes[this.routeErrorIndex]);
         },
 
         onCloseModal() {
