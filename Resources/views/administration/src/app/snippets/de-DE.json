@@ -25,7 +25,7 @@
                 },
                 "pluginInformation": {
                     "contentTitle": "Login Shopware 5 Backend",
-                    "contentInformation": "Logge dich mit deinen Zugangsdaten in das Shopware 5 Backend ein und rufe den Plugin-Manager auf. Das Plugin „XXXXXXX“ ist kostenlos und wird für die Migration benötigt. Bitte installiere und aktiviere das Plugin.",
+                    "contentInformation": "Logge dich mit deinen Zugangsdaten in das Shopware 5 Backend ein und rufe den Plugin-Manager auf. Das Plugin „Shopware Playground Connector“ ist kostenlos und wird für die Migration benötigt. Bitte installiere und aktiviere das Plugin.",
                     "pluginLink": "Mehr Infos zum Plugin"
                 },
                 "credentials": {

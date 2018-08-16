@@ -1,4 +1,4 @@
-import { Component } from 'src/core/shopware';
+import {Component} from 'src/core/shopware';
 import template from './swag-migration-data-selector.html.twig';
 import './swag-migration-data-selector.less';
 

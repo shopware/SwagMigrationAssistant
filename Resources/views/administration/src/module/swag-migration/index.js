@@ -1,4 +1,4 @@
-import { Module } from 'src/core/shopware';
+import {Module} from 'src/core/shopware';
 import './page/swag-migration-index';
 import './page/swag-migration-wizard';
 import './page/swag-migration-wizard-page-introduction';

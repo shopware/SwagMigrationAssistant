@@ -1,4 +1,4 @@
-import { Component } from 'src/core/shopware';
+import {Component} from 'src/core/shopware';
 import template from './swag-migration-loading-screen.html.twig';
 import './swag-migration-loading-screen.less';
 
@@ -51,7 +51,10 @@ Component.register('swag-migration-loading-screen', {
         },
 
         statusShort() {
-            return this.$t('swag-migration.index.loadingScreenCard.cardTitle', { step: this.statusIndex + 1, total: this.statusCount }) +
+            return this.$t('swag-migration.index.loadingScreenCard.cardTitle', {
+                    step: this.statusIndex + 1,
+                    total: this.statusCount
+                }) +
                 ' - ' +
                 this.$t(`swag-migration.index.loadingScreenCard.status.${this.currentStatus}.short`);
         },
@@ -61,7 +64,10 @@ Component.register('swag-migration-loading-screen', {
         },
 
         title() {
-            return this.$t('swag-migration.index.loadingScreenCard.cardTitle', { step: this.statusIndex + 1, total: this.statusCount });
+            return this.$t('swag-migration.index.loadingScreenCard.cardTitle', {
+                step: this.statusIndex + 1,
+                total: this.statusCount
+            });
         }
     }
 });

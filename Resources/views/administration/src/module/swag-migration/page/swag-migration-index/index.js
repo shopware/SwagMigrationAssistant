@@ -1,4 +1,4 @@
-import { Component, State } from 'src/core/shopware';
+import {Component, State} from 'src/core/shopware';
 import template from './swag-migration-index.html.twig';
 import './swag-migration-index.less';
 
@@ -75,6 +75,13 @@ Component.register('swag-migration-index', {
     },
 
     computed: {
+        shopFirstLetter() {
+            if (this.environmentInformation.shopwareVersion)
+                return this.environmentInformation.shopwareVersion[0];
+
+            return '';
+        },
+
         shopDomain() {
             if (this.environmentInformation.strucure)
                 return this.environmentInformation.strucure[0].host;
@@ -104,7 +111,7 @@ Component.register('swag-migration-index', {
             this.profile = response.data[0];
 
             //check if credentials are given
-            if (!this.profile.credentialFields.endpoint || !this.profile.credentialFields.apiUser || !this.profile.credentialFields.apiKey ) {
+            if (!this.profile.credentialFields.endpoint || !this.profile.credentialFields.apiUser || !this.profile.credentialFields.apiKey) {
                 this.$router.push({ name: 'swag.migration.wizard.introduction' });
                 return;
             }
@@ -174,14 +181,12 @@ Component.register('swag-migration-index', {
             //TODO: implment media download
             this.statusIndex = 2;
             this.resetProgress();
-            this.progressBars.shift();
-            this.progressBars.shift();
 
             this.progressBars[0].value = 100;
 
             if (State.getStore('error').errors.system.length > 0) {
                 this.componentIndex = this.components.resultWarning;    //show result warning screen
-            }else{
+            } else {
                 this.componentIndex = this.components.resultSuccess;    //show result success screen
             }
         },
