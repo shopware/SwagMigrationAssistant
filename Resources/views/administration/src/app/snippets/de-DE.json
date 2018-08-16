@@ -34,9 +34,9 @@
                     "apiKeyLabel": "API-Schlüssel",
                     "apiKeyPlaceholder": "Schlüssel einfügen ...",
                     "apiUserLabel": "Benutzername (API-User)",
-                    "apiUserPlaceholder": "Login-Benutzernamen eintragen ...",
-                    "endpointLabel": "Shop-Domain",
-                    "endpointPlaceholder": "http://www.meinshop.com",
+                    "apiUserPlaceholder": "Login Benutzernamen eintragen ...",
+                    "endpointLabel": "Shop Domain",
+                    "endpointPlaceholder": "http://www.demoshop.com",
                     "success": {
                         "contentTitle": "Erfolgreich verbunden!",
                         "contentInformation": "Gehe auf Fertig und wähle in dem Migrations-Modul die jeweiligen Datensätze aus, die übertragen werden sollen. Die Daten können gesamt, Schritt für Schritt oder nachträglich migriert werden."

@@ -6,7 +6,7 @@
         },
         "wizard": {
             "title": "Migration: Preparations",
-            "buttonAbort": "Abort",
+            "buttonAbort": "Cancel",
             "buttonConnect": "Connect",
             "buttonPrev": "Back",
             "buttonNext": "Next",
@@ -25,25 +25,25 @@
                 },
                 "pluginInformation": {
                     "contentTitle": "Login Shopware 5 Backend",
-                    "contentInformation": "Log into the Shopware 5 backend with your access data and open the plugin manager. The plugin 'XXXXXXX' is free and is required for the migration. Please install and activate the plugin.",
+                    "contentInformation": "Use your access data to log into the Shopware 5 backend and open the plugin manager. To get started, download and activate the free plugin 'Shopware Playground Connector'. No additional input or settings are required.",
                     "pluginLink": "More information about the plugin"
                 },
                 "credentials": {
-                    "contentTitle": "Establish a connection to Shopware 5",
-                    "contentInformation": "You can find your API key in the user management in your user data. Please activate your API access, copy your API key to your clipboard and confirm it via saving your configuration.",
+                    "contentTitle": "Create the connection with Shopware 5",
+                    "contentInformation": "The API key can be found within the administration of your user data. Please activate the API access, copy the API key to your clipboard and confirm by saving.",
                     "apiKeyLabel": "API key",
-                    "apiKeyPlaceholder": "Insert key ...",
-                    "apiUserLabel": "Username (API-User)",
-                    "apiUserPlaceholder": "Insert login username ...",
+                    "apiKeyPlaceholder": "Insert API key ...",
+                    "apiUserLabel": "User name (API user)",
+                    "apiUserPlaceholder": "Enter your login user name ...",
                     "endpointLabel": "Shop domain",
-                    "endpointPlaceholder": "http://www.myshop.com",
+                    "endpointPlaceholder": "http://www.demoshop.com",
                     "success": {
                         "contentTitle": "Successfully connected!",
                         "contentInformation": "Click on Finish and select in the migration module the data sets to be transferred. The data can be migrated completely, step by step or subsequently."
                     },
                     "error": {
-                        "contentTitle": "Connection not established.",
-                        "contentInformation": "Unfortunately, the connection could not be established. Please check the messages and fix the problem.",
+                        "contentTitle": "Unable to create a connection",
+                        "contentInformation": "Unfortunately, the connection could not be established. Please refer to the error messages and try again.",
                         "alertErrorTitle": "Attention:",
                         "connectionErrorMsg": "Could not connect to the server. Please check the given shop domain.",
                         "authenticationErrorMsg": "Your access data is not correct. Please check it and try again.",
