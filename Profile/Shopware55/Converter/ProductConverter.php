@@ -17,15 +17,15 @@ use Shopware\Core\Framework\Rule\Container\AndRule;
 use Shopware\Core\System\Tax\TaxDefinition;
 use Shopware\Core\System\Unit\Aggregate\UnitTranslation\UnitTranslationDefinition;
 use Shopware\Core\System\Unit\UnitDefinition;
-use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\ConvertStruct;
+use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
 class ProductConverter implements ConverterInterface
 {
     /**
-     * @var MappingServiceInterface
+     * @var Shopware55MappingService
      */
     private $mappingService;
 
@@ -50,7 +50,7 @@ class ProductConverter implements ConverterInterface
     private $profile;
 
     public function __construct(
-        MappingServiceInterface $mappingService,
+        Shopware55MappingService $mappingService,
         ConverterHelperService $converterHelperService
     ) {
         $this->mappingService = $mappingService;

@@ -21,15 +21,15 @@ use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\System\Country\CountryDefinition;
-use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\ConvertStruct;
+use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
 class OrderConverter implements ConverterInterface
 {
     /**
-     * @var MappingServiceInterface
+     * @var Shopware55MappingService
      */
     private $mappingService;
 
@@ -49,7 +49,7 @@ class OrderConverter implements ConverterInterface
     private $taxCalculator;
 
     public function __construct(
-        MappingServiceInterface $mappingService,
+        Shopware55MappingService $mappingService,
         ConverterHelperService $converterHelperService,
         TaxCalculator $taxCalculator
     ) {

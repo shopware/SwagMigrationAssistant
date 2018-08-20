@@ -18,11 +18,5 @@ interface MappingServiceInterface
 
     public function getLanguageUuid(string $profile, string $localeCode, Context $context): array;
 
-    public function getPaymentUuid(string $technicalName, Context $context): ?string;
-
     public function getCountryUuid(string $oldId, string $iso, string $iso3, string $profile, Context $context): ?string;
-
-    public function getOrderStateUuid(int $oldStateId, Context $context): ?string;
-
-    public function getTransactionStateUuid(int $oldStateId, Context $context): ?string;
 }

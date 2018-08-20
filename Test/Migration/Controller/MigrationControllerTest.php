@@ -8,9 +8,9 @@ use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use SwagMigrationNext\Controller\MigrationController;
 use SwagMigrationNext\Migration\AssetDownloadService;
-use SwagMigrationNext\Migration\Mapping\MappingService;
 use SwagMigrationNext\Migration\MigrationEnvironmentService;
 use SwagMigrationNext\Migration\MigrationWriteService;
+use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 use SwagMigrationNext\Test\MigrationServicesTrait;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,7 +41,7 @@ class MigrationControllerTest extends KernelTestCase
         $this->controller = new MigrationController(
             $this->getMigrationCollectService(
                 self::$container->get('swag_migration_data.repository'),
-                self::$container->get(MappingService::class)
+                self::$container->get(Shopware55MappingService::class)
             ),
             self::$container->get(MigrationWriteService::class),
             self::$container->get(AssetDownloadService::class),

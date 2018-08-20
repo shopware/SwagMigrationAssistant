@@ -13,9 +13,9 @@ use Shopware\Core\Framework\ORM\RepositoryInterface;
 use Shopware\Core\Framework\ORM\Search\Criteria;
 use Shopware\Core\Framework\ORM\Search\EntitySearchResult;
 use Shopware\Core\Framework\ORM\Search\Query\TermQuery;
-use SwagMigrationNext\Migration\Mapping\MappingService;
 use SwagMigrationNext\Migration\MigrationCollectServiceInterface;
 use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\MigrationServicesTrait;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -57,7 +57,7 @@ class MigrationCollectServiceTest extends KernelTestCase
         $this->migrationDataRepo = self::$container->get('swag_migration_data.repository');
         $this->migrationCollectService = $this->getMigrationCollectService(
             $this->migrationDataRepo,
-            self::$container->get(MappingService::class)
+            self::$container->get(Shopware55MappingService::class)
         );
         $this->productRepo = self::$container->get('product.repository');
     }

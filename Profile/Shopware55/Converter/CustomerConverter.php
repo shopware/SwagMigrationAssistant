@@ -12,15 +12,15 @@ use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\System\Country\Aggregate\CountryTranslation\CountryTranslationDefinition;
 use Shopware\Core\System\Country\CountryDefinition;
-use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\ConvertStruct;
+use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
 class CustomerConverter implements ConverterInterface
 {
     /**
-     * @var MappingServiceInterface
+     * @var Shopware55MappingService
      */
     private $mappingService;
 
@@ -40,7 +40,7 @@ class CustomerConverter implements ConverterInterface
     private $mainLocale;
 
     public function __construct(
-        MappingServiceInterface $mappingService,
+        Shopware55MappingService $mappingService,
         ConverterHelperService $converterHelperService
     ) {
         $this->mappingService = $mappingService;

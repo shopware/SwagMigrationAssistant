@@ -11,9 +11,9 @@ use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\System\Unit\Aggregate\UnitTranslation\UnitTranslationDefinition;
 use Shopware\Core\System\Unit\UnitDefinition;
-use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\ConvertStruct;
+use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
 class TranslationConverter implements ConverterInterface
@@ -24,13 +24,13 @@ class TranslationConverter implements ConverterInterface
     private $helper;
 
     /**
-     * @var MappingServiceInterface
+     * @var Shopware55MappingService
      */
     private $mappingService;
 
     public function __construct(
         ConverterHelperService $converterHelperService,
-        MappingServiceInterface $mappingService
+        Shopware55MappingService $mappingService
     ) {
         $this->helper = $converterHelperService;
         $this->mappingService = $mappingService;

@@ -5,15 +5,15 @@ namespace SwagMigrationNext\Profile\Shopware55\Converter;
 use Shopware\Core\Content\Category\Aggregate\CategoryTranslation\CategoryTranslationDefinition;
 use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Framework\Context;
-use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\ConvertStruct;
+use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
 class CategoryConverter implements ConverterInterface
 {
     /**
-     * @var MappingServiceInterface
+     * @var Shopware55MappingService
      */
     private $mappingService;
 
@@ -38,7 +38,7 @@ class CategoryConverter implements ConverterInterface
     private $oldCategoryId;
 
     public function __construct(
-        MappingServiceInterface $mappingService,
+        Shopware55MappingService $mappingService,
         ConverterHelperService $converterHelperService
     ) {
         $this->mappingService = $mappingService;
