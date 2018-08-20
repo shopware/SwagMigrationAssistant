@@ -42,8 +42,11 @@ class MigrationDownloadAssetsCommand extends Command implements EventSubscriberI
      */
     private $event;
 
-    public function __construct(RepositoryInterface $migrationMappingRepository, MediaUpdater $mediaUpdater, EventDispatcherInterface $event)
-    {
+    public function __construct(
+        RepositoryInterface $migrationMappingRepository,
+        MediaUpdater $mediaUpdater,
+        EventDispatcherInterface $event
+    ) {
         parent::__construct();
 
         $this->migrationMappingRepository = $migrationMappingRepository;
@@ -112,7 +115,12 @@ class MigrationDownloadAssetsCommand extends Command implements EventSubscriberI
 
         $output->writeln('Downloading assets...');
 
-        $assetDownloadService = new AssetDownloadService($this->migrationMappingRepository, $this->mediaUpdater, $this->event, $logger);
+        $assetDownloadService = new AssetDownloadService(
+            $this->migrationMappingRepository,
+            $this->mediaUpdater,
+            $this->event,
+            $logger
+        );
         $assetDownloadService->downloadAssets($context);
 
         $output->writeln('Downloading done.');

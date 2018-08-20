@@ -79,6 +79,7 @@ class AssetDownloadService implements AssetDownloadServiceInterface
 
         $this->event->dispatch(MigrationAssetDownloadStartEvent::EVENT_NAME, new MigrationAssetDownloadStartEvent($entitySearchResult->getTotal()));
         foreach ($assets as $asset) {
+            /** @var string $uuid */
             $uuid = $asset->get('entityUuid');
             $additionalData = $asset->get('additionalData');
 
@@ -165,7 +166,9 @@ class AssetDownloadService implements AssetDownloadServiceInterface
     private function persistFileToMedia(string $filePath, string $uuid, int $fileSize, Context $context): void
     {
         $mimeType = mime_content_type($filePath);
-        $context->getExtension('write_protection')->set('write_media', true);
+        /** @var ArrayStruct $writeProtection */
+        $writeProtection = $context->getExtension('write_protection');
+        $writeProtection->set('write_media', true);
         $this->mediaUpdater->persistFileToMedia($filePath, $uuid, $mimeType, $fileSize, $context);
     }
 

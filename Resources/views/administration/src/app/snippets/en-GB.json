@@ -16,7 +16,6 @@
             "pathUserManagement": "User administration",
             "pathPluginManagement": "Plugin Manager",
             "pathExtensions": "Extensions",
-            "pathMigrationtools": "Migration tools",
             "pathEditUser": "“Edit user”",
             "pages": {
                 "introduction": {

@@ -29,8 +29,11 @@ class MigrationFetchDataCommand extends ContainerAwareCommand
      */
     private $environmentService;
 
-    public function __construct(MigrationCollectServiceInterface $migrationCollectService, MigrationEnvironmentService $environmentService, ?string $name = null)
-    {
+    public function __construct(
+        MigrationCollectServiceInterface $migrationCollectService,
+        MigrationEnvironmentService $environmentService,
+        ?string $name = null
+    ) {
         parent::__construct($name);
         $this->migrationCollectService = $migrationCollectService;
         $this->environmentService = $environmentService;
@@ -91,7 +94,7 @@ class MigrationFetchDataCommand extends ContainerAwareCommand
         $migrationContext = new MigrationContext($profile, $gateway, $entity, $credentials, 0, 0);
         $total = $this->environmentService->getEntityTotal($migrationContext);
 
-        $limit = 1000;
+        $limit = 100;
         $totalImportedCount = 0;
         $progressBar = new ProgressBar($output, $total);
         $progressBar->start();

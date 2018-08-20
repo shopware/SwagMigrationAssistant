@@ -2,13 +2,13 @@
 
 namespace SwagMigrationNext\Migration\Writer;
 
-use Shopware\Core\Content\Product\ProductDefinition;
+use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\ORM\Write\EntityWriterInterface;
 use Shopware\Core\Framework\ORM\Write\WriteContext;
 use Shopware\Core\Framework\Struct\Serializer\StructNormalizer;
 
-class ProductWriter implements WriterInterface
+class OrderWriter implements WriterInterface
 {
     /**
      * @var EntityWriterInterface
@@ -28,37 +28,23 @@ class ProductWriter implements WriterInterface
 
     public function supports(): string
     {
-        return ProductDefinition::getEntityName();
+        return OrderDefinition::getEntityName();
     }
 
     public function writeData(array $data, Context $context): void
     {
         foreach ($data as &$item) {
-            if (isset($item['priceRules'])) {
-                $this->normalizeRule($item);
+            foreach ($item['transactions'] as &$transaction) {
+                $transaction['amount'] = $this->structNormalizer->denormalize($transaction['amount']);
             }
-
-            if (isset($item['children'])) {
-                foreach ($item['children'] as &$child) {
-                    $this->normalizeRule($child);
-                }
-                unset($child);
-            }
+            unset($transaction);
         }
         unset($item);
 
         $this->entityWriter->upsert(
-            ProductDefinition::class,
+            OrderDefinition::class,
             $data,
             WriteContext::createFromContext($context)
         );
-    }
-
-    private function normalizeRule(array &$item): void
-    {
-        foreach ($item['priceRules'] as &$priceRule) {
-            $priceRule['rule']['payload'] = $this->structNormalizer->denormalize($priceRule['rule']['payload']);
-        }
-        unset($priceRule);
     }
 }

@@ -133,6 +133,7 @@ class ProductConverter implements ConverterInterface
     private function convertVariantProduct(array $data): ConvertStruct
     {
         $parentUuid = $this->mappingService->getUuid(
+            Shopware55Profile::PROFILE_NAME,
             ProductDefinition::getEntityName() . '_container',
             $data['id'],
             $this->context
@@ -471,6 +472,7 @@ class ProductConverter implements ConverterInterface
 
         foreach ($categories as $key => $category) {
             $categoryUuid = $this->mappingService->getUuid(
+                Shopware55Profile::PROFILE_NAME,
                 CategoryDefinition::getEntityName(),
                 $category['id'],
                 $this->context

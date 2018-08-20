@@ -85,6 +85,7 @@ class CategoryConverter implements ConverterInterface
 
         if (isset($data['parent'])) {
             $parentUuid = $this->mappingService->getUuid(
+                Shopware55Profile::PROFILE_NAME,
                 CategoryDefinition::getEntityName(),
                 $data['parent'],
                 $this->context

@@ -29,23 +29,33 @@ class DummyMappingService implements MappingServiceInterface
     {
     }
 
-    public function getUuid(string $entityName, string $oldId, Context $context): ?string
+    public function getUuid(string $profile, string $entityName, string $oldId, Context $context): ?string
     {
         return null;
     }
 
     public function getLanguageUuid(string $profile, string $localeCode, Context $context): array
     {
-        return null;
+        return [];
     }
 
     public function getPaymentUuid(string $technicalName, Context $context): ?string
     {
-        return '';
+        return null;
     }
 
-    public function getCountryUuid(string $iso, string $iso3, Context $context): ?string
+    public function getCountryUuid(string $oldId, string $iso, string $iso3, string $profile, Context $context): ?string
     {
-        return '';
+        return null;
+    }
+
+    public function getOrderStateUuid(int $oldStateId, Context $context): ?string
+    {
+        return null;
+    }
+
+    public function getTransactionStateUuid(int $oldStateId, Context $context): ?string
+    {
+        return null;
     }
 }

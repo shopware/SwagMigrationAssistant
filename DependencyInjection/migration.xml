@@ -42,6 +42,8 @@
             <argument type="service" id="language.repository"/>
             <argument type="service" id="payment_method.repository"/>
             <argument type="service" id="country.repository"/>
+            <argument type="service" id="order_state.repository"/>
+            <argument type="service" id="order_transaction_state.repository"/>
         </service>
 
         <service id="SwagMigrationNext\Migration\MigrationCollectService"

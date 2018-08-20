@@ -2,7 +2,9 @@
 
 namespace SwagMigrationNext\Migration;
 
+use InvalidArgumentException;
 use Shopware\Core\Checkout\Customer\CustomerDefinition;
+use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
@@ -26,7 +28,6 @@ class MigrationEnvironmentService
         $gateway = $this->gatewayFactoryRegistry->createGateway($migrationContext);
         $data = $gateway->read('environment', 0, 0);
 
-        $key = '';
         switch ($entity) {
             case ProductDefinition::getEntityName():
                 $key = 'products';
@@ -43,6 +44,11 @@ class MigrationEnvironmentService
             case 'translation':
                 $key = 'translations';
                 break;
+            case OrderDefinition::getEntityName():
+                $key = 'orders';
+                break;
+            default:
+                throw new InvalidArgumentException('No valid entity provided');
         }
 
         if (!isset($data[$key])) {

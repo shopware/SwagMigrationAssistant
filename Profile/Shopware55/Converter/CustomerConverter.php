@@ -11,6 +11,7 @@ use Shopware\Core\Checkout\Payment\PaymentMethodDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\System\Country\Aggregate\CountryTranslation\CountryTranslationDefinition;
+use Shopware\Core\System\Country\CountryDefinition;
 use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\ConvertStruct;
@@ -54,6 +55,7 @@ class CustomerConverter implements ConverterInterface
     public function convert(array $data, Context $context): ConvertStruct
     {
         $this->mainLocale = $data['_locale'];
+        unset($data['_locale']);
         $converted = [];
         $this->oldId = $data['id'];
         $customerUuid = $this->mappingService->createNewUuid(
@@ -83,6 +85,25 @@ class CustomerConverter implements ConverterInterface
         $this->helper->convertValue($converted, 'number', $data, 'customernumber');
         $this->helper->convertValue($converted, 'birthday', $data, 'birthday');
         $this->helper->convertValue($converted, 'lockedUntil', $data, 'lockeduntil');
+        $this->helper->convertValue($converted, 'encoder', $data, 'encoder');
+
+        if (isset($data['group']['id'])) {
+            $converted['group'] = $this->getCustomerGroup($data['group'], $context);
+        }
+        unset($data['group']);
+
+        if ($data['defaultpayment']['id']) {
+            $this->getDefaultPaymentMethod($data, $converted, $context);
+        }
+        unset($data['defaultpayment'], $data['paymentpreset']);
+
+        if (isset($data['addresses'])) {
+            $converted['addresses'] = $this->getAddresses($data, $converted, $context, $customerUuid);
+        }
+        unset($data['addresses']);
+
+        // Todo: Create a new sales channel?
+        $converted['salesChannelId'] = Defaults::SALES_CHANNEL;
 
         // Legacy data which don't need a mapping or there is no equivalent field
         unset(
@@ -96,29 +117,15 @@ class CustomerConverter implements ConverterInterface
             $data['group']['mode'],
             $data['paymentID'],
             $data['customergroup'],
+            $data['firstlogin'],
+            $data['lastlogin'],
 
             // TODO check how to handle these
-            $data['firstlogin'],
-            $data['lastlogin']
+            $data['shop'], // TODO use for sales channel information?
+            $data['subshopID'], // TODO use for sales channel information?
+            $data['language'], // TODO use for sales channel information?
+            $data['customerlanguage'] // TODO use for sales channel information?
         );
-
-        if (isset($data['group']['id'])) {
-            $converted['group'] = $this->getCustomerGroup($data, $context);
-        }
-        unset($data['group']);
-
-        if (isset($data['defaultpayment']) && isset($data['defaultpayment']['id'])) {
-            $this->getDefaultPaymentMethod($data, $converted, $context);
-        }
-        unset($data['defaultpayment']);
-
-        if (isset($data['addresses'])) {
-            $converted['addresses'] = $this->getAddresses($data, $converted, $context, $customerUuid);
-        }
-        unset($data['addresses']);
-
-        // Todo: Create a new sales channel?
-        $converted['salesChannelId'] = Defaults::SALES_CHANNEL;
 
         return new ConvertStruct($converted, $data);
     }
@@ -128,25 +135,25 @@ class CustomerConverter implements ConverterInterface
         $group['id'] = $this->mappingService->createNewUuid(
             Shopware55Profile::PROFILE_NAME,
             CustomerGroupDefinition::getEntityName(),
-            $originalData['group']['id'],
+            $originalData['id'],
             $context
         );
         $translation['id'] = $this->mappingService->createNewUuid(
             Shopware55Profile::PROFILE_NAME,
             CustomerGroupTranslationDefinition::getEntityName(),
-            $originalData['group']['id'] . ':' . $this->mainLocale,
+            $originalData['id'] . ':' . $this->mainLocale,
             $context
         );
 
         $translation['customerGroupId'] = $group['id'];
-        $this->helper->convertValue($translation, 'name', $originalData['group'], 'description');
+        $this->helper->convertValue($translation, 'name', $originalData, 'description');
 
-        $this->helper->convertValue($group, 'displayGross', $originalData['group'], 'tax', $this->helper::TYPE_BOOLEAN);
-        $this->helper->convertValue($group, 'inputGross', $originalData['group'], 'taxinput', $this->helper::TYPE_BOOLEAN);
-        $group['hasGlobalDiscount'] = $originalData['group']['discount'] !== 0;
-        $this->helper->convertValue($group, 'percentageGlobalDiscount', $originalData['group'], 'discount');
-        $this->helper->convertValue($group, 'minimumOrderAmount', $originalData['group'], 'minimumorder');
-        $this->helper->convertValue($group, 'minimumOrderAmountSurcharge', $originalData['group'], 'minimumordersurcharge');
+        $this->helper->convertValue($group, 'displayGross', $originalData, 'tax', $this->helper::TYPE_BOOLEAN);
+        $this->helper->convertValue($group, 'inputGross', $originalData, 'taxinput', $this->helper::TYPE_BOOLEAN);
+        $this->helper->convertValue($group, 'hasGlobalDiscount', $originalData, 'mode', $this->helper::TYPE_BOOLEAN);
+        $this->helper->convertValue($group, 'percentageGlobalDiscount', $originalData, 'discount', $this->helper::TYPE_FLOAT);
+        $this->helper->convertValue($group, 'minimumOrderAmount', $originalData, 'minimumorder', $this->helper::TYPE_FLOAT);
+        $this->helper->convertValue($group, 'minimumOrderAmountSurcharge', $originalData, 'minimumordersurcharge', $this->helper::TYPE_FLOAT);
 
         $languageData = $this->mappingService->getLanguageUuid(Shopware55Profile::PROFILE_NAME, $this->mainLocale, $context);
 
@@ -272,7 +279,13 @@ class CustomerConverter implements ConverterInterface
         $country = [];
         $countryUuid = null;
         if (isset($oldCountryData['countryiso'], $oldCountryData['iso3'])) {
-            $countryUuid = $this->mappingService->getCountryUuid($oldCountryData['countryiso'], $oldCountryData['iso3'], $context);
+            $countryUuid = $this->mappingService->getCountryUuid(
+                $oldCountryData['id'],
+                $oldCountryData['countryiso'],
+                $oldCountryData['iso3'],
+                Shopware55Profile::PROFILE_NAME,
+                $context
+            );
         }
 
         if ($countryUuid !== null) {
@@ -280,7 +293,7 @@ class CustomerConverter implements ConverterInterface
         } else {
             $country['id'] = $this->mappingService->createNewUuid(
                 Shopware55Profile::PROFILE_NAME,
-                CustomerAddressDefinition::getEntityName(),
+                CountryDefinition::getEntityName(),
                 $oldCountryData['id'],
                 $context
             );
