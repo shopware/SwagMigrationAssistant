@@ -11,9 +11,9 @@ use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\System\Unit\Aggregate\UnitTranslation\UnitTranslationDefinition;
 use Shopware\Core\System\Unit\UnitDefinition;
-use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\ConvertStruct;
+use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
 class TranslationConverter implements ConverterInterface
@@ -24,13 +24,13 @@ class TranslationConverter implements ConverterInterface
     private $helper;
 
     /**
-     * @var MappingServiceInterface
+     * @var Shopware55MappingService
      */
     private $mappingService;
 
     public function __construct(
         ConverterHelperService $converterHelperService,
-        MappingServiceInterface $mappingService
+        Shopware55MappingService $mappingService
     ) {
         $this->helper = $converterHelperService;
         $this->mappingService = $mappingService;
@@ -68,6 +68,7 @@ class TranslationConverter implements ConverterInterface
             $context
         );
         $productTranslation['productId'] = $this->mappingService->getUuid(
+            Shopware55Profile::PROFILE_NAME,
             ProductDefinition::getEntityName() . '_container',
             $data['objectkey'],
             $context
@@ -75,6 +76,7 @@ class TranslationConverter implements ConverterInterface
 
         if (!isset($productTranslation['productId'])) {
             $productTranslation['productId'] = $this->mappingService->getUuid(
+                Shopware55Profile::PROFILE_NAME,
                 ProductDefinition::getEntityName(),
                 $data['objectkey'],
                 $context
@@ -144,6 +146,7 @@ class TranslationConverter implements ConverterInterface
             $context
         );
         $manufacturerTranslation['productManufacturerId'] = $this->mappingService->getUuid(
+            Shopware55Profile::PROFILE_NAME,
             ProductManufacturerDefinition::getEntityName(),
             $data['objectkey'],
             $context
@@ -214,6 +217,7 @@ class TranslationConverter implements ConverterInterface
             $context
         );
         $unitTranslation['unitId'] = $this->mappingService->getUuid(
+            Shopware55Profile::PROFILE_NAME,
             UnitDefinition::getEntityName(),
             $data['objectkey'],
             $context
@@ -281,6 +285,7 @@ class TranslationConverter implements ConverterInterface
             $context
         );
         $categoryTranslation['categoryId'] = $this->mappingService->getUuid(
+            Shopware55Profile::PROFILE_NAME,
             CategoryDefinition::getEntityName(),
             $data['objectkey'],
             $context

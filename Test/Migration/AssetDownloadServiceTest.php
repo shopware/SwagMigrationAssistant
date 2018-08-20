@@ -13,15 +13,14 @@ use Shopware\Core\Framework\ORM\Search\Criteria;
 use Shopware\Core\Framework\ORM\Search\Query\NotQuery;
 use Shopware\Core\Framework\ORM\Search\Query\TermQuery;
 use SwagMigrationNext\Migration\AssetDownloadService;
-use SwagMigrationNext\Migration\Mapping\MappingService;
 use SwagMigrationNext\Migration\MigrationCollectServiceInterface;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\MigrationWriteService;
 use SwagMigrationNext\Migration\MigrationWriteServiceInterface;
+use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\MigrationServicesTrait;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class AssetDownloadServiceTest extends KernelTestCase
 {
@@ -71,12 +70,6 @@ class AssetDownloadServiceTest extends KernelTestCase
         $this->connection = self::$container->get(Connection::class);
         $this->connection->beginTransaction();
 
-        /**
-         * @var MediaUpdater
-         * @var $eventDispatcher  EventDispatcherInterface
-         * @var $logger           LoggerInterface
-         * @var $migrationMapping RepositoryInterface
-         */
         $mediaUpdater = self::$container->get(MediaUpdater::class);
         $eventDispatcher = self::$container->get('event_dispatcher');
         $this->logger = self::$container->get('logger');
@@ -87,7 +80,7 @@ class AssetDownloadServiceTest extends KernelTestCase
         $this->productRepo = self::$container->get('product.repository');
         $this->migrationCollectService = $this->getMigrationCollectService(
             self::$container->get('swag_migration_data.repository'),
-            self::$container->get(MappingService::class)
+            self::$container->get(Shopware55MappingService::class)
         );
 
         $this->assetDownloadService = new AssetDownloadService($migrationMapping, $mediaUpdater, $eventDispatcher, $this->logger);
@@ -101,6 +94,7 @@ class AssetDownloadServiceTest extends KernelTestCase
 
     public function testDownloadAssets(): void
     {
+        static::markTestSkipped('needs an correct URL to download the assets from');
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
         $migrationContext = new MigrationContext(
             Shopware55Profile::PROFILE_NAME,

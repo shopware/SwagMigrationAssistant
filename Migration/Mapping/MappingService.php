@@ -8,6 +8,7 @@ use Shopware\Core\Framework\ORM\Search\Criteria;
 use Shopware\Core\Framework\ORM\Search\Query\TermQuery;
 use Shopware\Core\Framework\Struct\ArrayStruct;
 use Shopware\Core\Framework\Struct\Uuid;
+use Shopware\Core\System\Country\CountryDefinition;
 use Shopware\Core\System\Language\LanguageDefinition;
 use SwagMigrationNext\Exception\LocaleNotFoundException;
 
@@ -16,7 +17,7 @@ class MappingService implements MappingServiceInterface
     /**
      * @var RepositoryInterface
      */
-    private $migrationMappingRepo;
+    protected $migrationMappingRepo;
 
     /**
      * @var RepositoryInterface
@@ -31,30 +32,24 @@ class MappingService implements MappingServiceInterface
     /**
      * @var RepositoryInterface
      */
-    private $paymentRepository;
-
-    /**
-     * @var RepositoryInterface
-     */
     private $countryRepository;
 
     public function __construct(
         RepositoryInterface $migrationMappingRepo,
         RepositoryInterface $localeRepository,
         RepositoryInterface $languageRepository,
-        RepositoryInterface $paymentRepository,
         RepositoryInterface $countryRepository
     ) {
         $this->migrationMappingRepo = $migrationMappingRepo;
         $this->localeRepository = $localeRepository;
         $this->languageRepository = $languageRepository;
-        $this->paymentRepository = $paymentRepository;
         $this->countryRepository = $countryRepository;
     }
 
-    public function getUuid(string $entityName, string $oldId, Context $context): ?string
+    public function getUuid(string $profile, string $entityName, string $oldId, Context $context): ?string
     {
         $criteria = new Criteria();
+        $criteria->addFilter(new TermQuery('profile', $profile));
         $criteria->addFilter(new TermQuery('entity', $entityName));
         $criteria->addFilter(new TermQuery('oldIdentifier', $oldId));
         $result = $this->migrationMappingRepo->search($criteria, $context);
@@ -76,7 +71,7 @@ class MappingService implements MappingServiceInterface
         Context $context,
         array $additionalData = null
     ): string {
-        $uuid = $this->getUuid($entityName, $oldId, $context);
+        $uuid = $this->getUuid($profile, $entityName, $oldId, $context);
         if ($uuid !== null) {
             return $uuid;
         }
@@ -128,24 +123,14 @@ class MappingService implements MappingServiceInterface
         ];
     }
 
-    public function getPaymentUuid(string $technicalName, Context $context): ?string
+    public function getCountryUuid(string $oldId, string $iso, string $iso3, string $profile, Context $context): ?string
     {
-        $criteria = new Criteria();
-        $criteria->addFilter(new TermQuery('technicalName', $technicalName));
-        $result = $this->paymentRepository->search($criteria, $context);
+        $countryUuid = $this->getUuid($profile, CountryDefinition::getEntityName(), $oldId, $context);
 
-        if ($result->getTotal() > 0) {
-            /** @var ArrayStruct $element */
-            $element = $result->getEntities()->first();
-
-            return $element->get('id');
+        if ($countryUuid !== null) {
+            return $countryUuid;
         }
 
-        return null;
-    }
-
-    public function getCountryUuid(string $iso, string $iso3, Context $context): ?string
-    {
         $criteria = new Criteria();
         $criteria->addFilter(new TermQuery('iso', $iso));
         $criteria->addFilter(new TermQuery('iso3', $iso3));
@@ -155,7 +140,21 @@ class MappingService implements MappingServiceInterface
             /** @var ArrayStruct $element */
             $element = $result->getEntities()->first();
 
-            return $element->get('id');
+            $countryUuid = $element->getId();
+
+            $this->writeMapping(
+                [
+                    [
+                        'profile' => $profile,
+                        'entity' => CountryDefinition::getEntityName(),
+                        'oldIdentifier' => $oldId,
+                        'entityUuid' => $countryUuid,
+                    ],
+                ],
+                $context
+            );
+
+            return $countryUuid;
         }
 
         return null;
@@ -196,7 +195,7 @@ class MappingService implements MappingServiceInterface
             /** @var ArrayStruct $element */
             $element = $result->getEntities()->first();
 
-            return (string) $element->get('id');
+            return $element->getId();
         }
 
         throw new LocaleNotFoundException($localeCode);
@@ -212,7 +211,7 @@ class MappingService implements MappingServiceInterface
             /** @var ArrayStruct $element */
             $element = $result->getEntities()->first();
 
-            return $element->get('id');
+            return $element->getId();
         }
 
         return null;

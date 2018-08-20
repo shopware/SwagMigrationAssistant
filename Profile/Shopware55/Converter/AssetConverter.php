@@ -5,15 +5,15 @@ namespace SwagMigrationNext\Profile\Shopware55\Converter;
 use Shopware\Core\Content\Media\Aggregate\MediaTranslation\MediaTranslationDefinition;
 use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Framework\Context;
-use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\ConvertStruct;
+use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
 class AssetConverter implements ConverterInterface
 {
     /**
-     * @var MappingServiceInterface
+     * @var Shopware55MappingService
      */
     private $mappingService;
 
@@ -23,7 +23,7 @@ class AssetConverter implements ConverterInterface
     private $helper;
 
     public function __construct(
-        MappingServiceInterface $mappingService,
+        Shopware55MappingService $mappingService,
         ConverterHelperService $converterHelperService
     ) {
         $this->mappingService = $mappingService;

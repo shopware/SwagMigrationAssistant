@@ -38,7 +38,9 @@ class MappingServiceTest extends KernelTestCase
             self::$container->get('locale.repository'),
             self::$container->get('language.repository'),
             self::$container->get('payment_method.repository'),
-            self::$container->get('country.repository')
+            self::$container->get('country.repository'),
+            self::$container->get('order_state.repository'),
+            self::$container->get('order_transaction_state.repository')
         );
     }
 
@@ -70,7 +72,9 @@ class MappingServiceTest extends KernelTestCase
             self::$container->get('locale.repository'),
             self::$container->get('language.repository'),
             self::$container->get('payment_method.repository'),
-            self::$container->get('country.repository')
+            self::$container->get('country.repository'),
+            self::$container->get('order_state.repository'),
+            self::$container->get('order_transaction_state.repository')
         );
 
         $uuid2 = $newMappingService->createNewUuid(Shopware55Profile::PROFILE_NAME, 'product', '123', $context);
@@ -81,7 +85,7 @@ class MappingServiceTest extends KernelTestCase
     public function testGetUuidReturnsNull(): void
     {
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
-        static::assertNull($this->mappingService->getUuid('product', '12345', $context));
+        static::assertNull($this->mappingService->getUuid(Shopware55Profile::PROFILE_NAME, 'product', '12345', $context));
     }
 
     public function testLocaleNotFoundException(): void

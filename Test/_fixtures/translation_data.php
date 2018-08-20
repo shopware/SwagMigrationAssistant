@@ -8,7 +8,7 @@ return [
             'objectkey' => '1',
             'objectlanguage' => '1',
             'dirty' => '0',
-            'locale' => 'de_DE',
+            '_locale' => 'de_DE',
             'name' => null,
         ],
     1 => [
@@ -18,7 +18,7 @@ return [
             'objectkey' => '5',
             'objectlanguage' => '3',
             'dirty' => '1',
-            'locale' => 'en_GB',
+            '_locale' => 'en_GB',
             'name' => null,
         ],
     2 => [
@@ -28,7 +28,7 @@ return [
             'objectkey' => '1',
             'objectlanguage' => '3',
             'dirty' => '1',
-            'locale' => 'en_GB',
+            '_locale' => 'en_GB',
             'name' => null,
         ],
     3 => [
@@ -45,7 +45,7 @@ We wish you a nice day.
             'objectkey' => '64',
             'objectlanguage' => '2',
             'dirty' => '0',
-            'locale' => null,
+            '_locale' => null,
             'name' => null,
         ],
     4 => [
@@ -55,7 +55,7 @@ We wish you a nice day.
             'objectkey' => '1',
             'objectlanguage' => '2',
             'dirty' => '0',
-            'locale' => null,
+            '_locale' => null,
             'name' => null,
         ],
 ];

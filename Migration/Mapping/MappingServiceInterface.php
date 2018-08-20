@@ -6,7 +6,7 @@ use Shopware\Core\Framework\Context;
 
 interface MappingServiceInterface
 {
-    public function getUuid(string $entityName, string $oldId, Context $context): ?string;
+    public function getUuid(string $profile, string $entityName, string $oldId, Context $context): ?string;
 
     public function createNewUuid(
         string $profile,
@@ -18,7 +18,5 @@ interface MappingServiceInterface
 
     public function getLanguageUuid(string $profile, string $localeCode, Context $context): array;
 
-    public function getPaymentUuid(string $technicalName, Context $context): ?string;
-
-    public function getCountryUuid(string $iso, string $iso3, Context $context): ?string;
+    public function getCountryUuid(string $oldId, string $iso, string $iso3, string $profile, Context $context): ?string;
 }
