@@ -5,12 +5,13 @@ import './swag-migration-index.less';
 Component.register('swag-migration-index', {
     template,
 
-    inject: ['migrationProfileService', 'migrationService', 'catalogService'],
+    inject: ['migrationProfileService', 'migrationService', 'catalogService', 'migrationWorkerService'],
 
     data() {
         return {
             profile: {},
             environmentInformation: {},
+            entityCounts: {},
             componentIndex: 0,
             components: {
                 dataSelector: 0,
@@ -19,10 +20,10 @@ Component.register('swag-migration-index', {
                 resultWarning: 3,
                 resultFailure: 4
             },
+            statusIndex: 0,
             isMigrating: false,
             showConfirmDialog: false,
-            targets: [],
-            selectedData: {},
+            targets: [],        //possible data target locations
             tableData: [
                 {
                     id: 'customers_orders',
@@ -30,7 +31,12 @@ Component.register('swag-migration-index', {
                     data: this.$tc('swag-migration.index.selectDataCard.dataPossible.customersAndOrders'),
                     targetDisabled: true,
                     targetHidden: true,
-                    targetId: ''
+                    selected: false,
+                    targetId: '',
+                    progressBar: {
+                        value: 0,
+                        maxValue: 100
+                    }
                 },
                 {
                     id: 'categories_products',
@@ -38,7 +44,12 @@ Component.register('swag-migration-index', {
                     data: this.$tc('swag-migration.index.selectDataCard.dataPossible.categoriesAndProducts'),
                     targetDisabled: true,
                     targetHidden: false,
-                    targetId: ''
+                    selected: false,
+                    targetId: '',
+                    progressBar: {
+                        value: 0,
+                        maxValue: 100
+                    }
                 },
                 {
                     id: 'media',
@@ -46,31 +57,14 @@ Component.register('swag-migration-index', {
                     data: this.$tc('swag-migration.index.selectDataCard.dataPossible.media'),
                     targetDisabled: true,
                     targetHidden: false,
-                    targetId: ''
+                    selected: false,
+                    targetId: '',
+                    progressBar: {
+                        value: 0,
+                        maxValue: 100
+                    }
                 }
-            ],
-            statusIndex: 0,
-            progressBars: [],
-            progressBarsPossible: [
-                {
-                    entityNames: ['customer', 'order'],
-                    parentId: 'customers_orders',
-                    title: this.$tc('swag-migration.index.selectDataCard.dataPossible.customersAndOrders'),
-                    value: 0
-                },
-                {
-                    entityNames: ['category', 'product'], // 'translation'], TODO revert, when the core could handle translations correctly
-                    parentId: 'categories_products',
-                    title: this.$tc('swag-migration.index.selectDataCard.dataPossible.categoriesAndProducts'),
-                    value: 0
-                },
-                {
-                    entityNames: ['media'],
-                    parentId: 'media',
-                    title: this.$tc('swag-migration.index.selectDataCard.dataPossible.media'),
-                    value: 0
-                }
-            ],
+            ]
         };
     },
 
@@ -114,7 +108,6 @@ Component.register('swag-migration-index', {
                 return;
             }
 
-
             //Do connection check
             this.migrationService.checkConnection(this.profile.id).then((connectionCheckResponse) => {
                 if (!connectionCheckResponse.success) {
@@ -122,11 +115,14 @@ Component.register('swag-migration-index', {
                 }
 
                 this.environmentInformation = connectionCheckResponse.environmentInformation;
+                this.normalizeEnvironmentInformation();
+                this.calculateProgressMaxValues();
             }).catch((error) => {
                 this.$router.push({ name: 'swag.migration.wizard.credentials' });
             });
         });
 
+        //Get possible targets
         this.catalogService.getList({ offset: 0, limit: 100 }).then((response) => {
             response.data.forEach((catalog) => {
                 this.targets.push({
@@ -142,45 +138,74 @@ Component.register('swag-migration-index', {
             this.showConfirmDialog = true;
         },
 
-        async onMigrate() {
-            this.showConfirmDialog = false;
-            this.isMigrating = true;
-            this.selectedData = this.$refs.dataSelector.getSelectedData();
-            this.statusIndex = 0;
-            this.resetProgress();
+        normalizeEnvironmentInformation() {
+            this.entityCounts.customer = this.environmentInformation.customers;
+            this.entityCounts.order = this.environmentInformation.orders;
+            this.entityCounts.category = this.environmentInformation.categories;
+            this.entityCounts.product = this.environmentInformation.products;
+            this.entityCounts.media = this.environmentInformation.assets;
+            this.entityCounts.translation = 10;
+        },
 
-            this.componentIndex = this.components.loadingScreen;    //show loading screen
+        calculateProgressMaxValues() {
+            this.tableData.forEach((data) => {
+                let totalCount = 0;
+                data.entityNames.forEach((currentEntityName) => {
+                    totalCount += this.entityCounts[currentEntityName];
+                });
+                data.progressBar.maxValue = totalCount;
+            });
+        },
 
-            //get all entities in order
+        checkSelectedData() {
+            let selectedObject = this.$refs.dataSelector.getSelectedData();
+            this.tableData.forEach((data) => {
+                data.selected = data.id in selectedObject;
+            });
+        },
+
+        getAllEntityNames() {
             let allEntityNames = [];
-            this.tableData.forEach((row) => {
-                if (row.id in this.selectedData) {
-                    row.entityNames.forEach((entityName) => {
-                        allEntityNames.push(entityName);
-                    });
+            this.tableData.forEach((data) => {
+                if (data.selected) {
+                    allEntityNames = allEntityNames.concat(data.entityNames);
                 }
             });
 
+            return allEntityNames;
+        },
+
+        async onMigrate() {
+            this.showConfirmDialog = false;
+            this.isMigrating = true;
+            this.checkSelectedData();
+            this.statusIndex = 0;
+            this.resetProgress();
+
+            //show loading screen
+            this.componentIndex = this.components.loadingScreen;
+
+            //get all entities in order
+            let allEntityNames = this.getAllEntityNames();
+
             //step 1 - read/fetch
-            //call the api with the entities in right order
-            for (let i = 0; i < allEntityNames.length; i++) {
-                await this.migrateEntityRequest(allEntityNames[i], 'fetchData');
-            }
+            await this.migrationWorkerService.fetchData(this.profile, allEntityNames, this.entityCounts, (progressData) => {
+                this.onProgress(progressData.entityName, progressData.newOffset, progressData.deltaOffset, progressData.entityCount);
+            });
 
             //step 2- write
             this.statusIndex = 1;
             this.resetProgress();
-
-            for (let i = 0; i < allEntityNames.length; i++) {
-                await this.migrateEntityRequest(allEntityNames[i], 'writeData');
-            }
+            await this.migrationWorkerService.writeData(this.profile, allEntityNames, this.entityCounts, (progressData) => {
+                this.onProgress(progressData.entityName, progressData.newOffset, progressData.deltaOffset, progressData.entityCount);
+            });
 
             //step 3 - media download
             //TODO: implment media download
             this.statusIndex = 2;
             this.resetProgress();
 
-            this.progressBars[0].value = 100;
+            this.tableData[2].progressBar.value = 100;
 
             if (State.getStore('error').errors.system.length > 0) {
                 this.componentIndex = this.components.resultWarning;    //show result warning screen
@@ -189,51 +214,17 @@ Component.register('swag-migration-index', {
             }
         },
 
-        onProgress(entityName) {
-            let progressBar = this.progressBars.find((bar) => {
-                return bar.entityNames.includes(entityName);
+        onProgress(entityName, newOffset, deltaOffset, entityCount) {
+            let data = this.tableData.find((data) => {
+                return data.entityNames.includes(entityName);
             });
 
-            let entityIndex = progressBar.entityNames.findIndex((entity) => {
-                return entity === entityName;
-            });
-
-            let entityCount = progressBar.entityNames.length;
-
-            progressBar.value = (entityIndex + 1) / entityCount * 100;
+            data.progressBar.value +=  deltaOffset;
         },
 
         resetProgress() {
-            //copy the progressBarsPossible to progressBars
-            this.progressBars = [];
-            this.progressBarsPossible.forEach((bar) => {
-                if (this.selectedData[bar.parentId]) {  //only add the progress bars for the selected data
-                    this.progressBars.push(Object.assign({}, bar));
-                }
-            });
-        },
-
-        migrateEntityRequest(entityName, methodName) {
-            let params = {
-                profile: this.profile.profile,
-                gateway: this.profile.gateway,
-                credentialFields: this.profile.credentialFields,
-                entity: entityName
-            };
-
-            return new Promise((resolve, reject) => {
-                this.migrationService[methodName](params).then((response) => {
-                    this.onProgress(entityName);
-                    resolve();
-                }).catch((response) => {
-                    if (response.response.data && response.response.data.errors) {
-                        response.response.data.errors.forEach((error) => {
-                            this.addError(error);
-                        });
-                    }
-                    //reject();
-                    resolve();
-                });
+            this.tableData.forEach((data) => {
+                data.progressBar.value = 0;
             });
         },
 

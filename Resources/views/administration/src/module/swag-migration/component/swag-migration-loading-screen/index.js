@@ -10,7 +10,7 @@ Component.register('swag-migration-loading-screen', {
         profileName: {
             type: String,
         },
-        progressBars: {
+        tableData: {
             type: Array,
         },
         statusIndex: {
@@ -30,7 +30,14 @@ Component.register('swag-migration-loading-screen', {
     computed: {
 
         progressBarCount() {
-            return this.progressBars.length;
+            let count = 0;
+            this.tableData.forEach((data) => {
+                if (data.selected) {
+                    count++;
+                }
+            });
+
+            return count;
         },
 
         progressBarContainerGridStyle() {
