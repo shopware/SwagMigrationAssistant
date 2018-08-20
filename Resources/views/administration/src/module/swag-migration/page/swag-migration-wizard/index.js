@@ -10,6 +10,7 @@ Component.register('swag-migration-wizard', {
     data() {
         return {
             showModal: true,
+            isLoading: false,
             buttonPreviousVisible: true,
             buttonNextVisible: true,
             buttonPreviousText: this.$tc('swag-migration.wizard.buttonPrev'),
@@ -25,7 +26,8 @@ Component.register('swag-migration-wizard', {
             routeIndex: 0,
             routeIndexVisible: 0,   //only count up to 3
             profileId: '0x945f840058dc4e5583a02f70bef46071',
-            credentials: {} //.endpoint .apiUser .apiKey
+            credentials: {}, //.endpoint .apiUser .apiKey
+            errorMessage: ''
         };
     },
 
@@ -41,6 +43,20 @@ Component.register('swag-migration-wizard', {
         },
         routeErrorIndex() {
             return 4;
+        },
+        nextButtonDisabled() {
+            if (this.isLoading) {
+                return true;
+            }
+
+            if (this.routeIndex === this.routeApiCredentialsIndex) {
+                return !(this.credentials.endpoint && this.credentials.apiUser && this.credentials.apiKey);
+            }
+
+            return false;
+        },
+        backButtonDisabled() {
+            return this.isLoading;
         }
     },
 
@@ -73,38 +89,63 @@ Component.register('swag-migration-wizard', {
 
     methods: {
         onConnect() {
-            console.log('we want to connect here...');
-            console.log('API-Key:', this.credentials.apiKey);
-            console.log('API-User:', this.credentials.apiUser);
-            console.log('Shop-Domain:', this.credentials.endpoint);
+            this.isLoading = true;
 
-            // TODO loading indicator?
             this.migrationProfileService.updateById(this.profileId, { credentialFields: this.credentials }).then((response) => {
                 if (response.status === 204) {
                     this.migrationService.checkConnection(this.profileId).then((connectionCheckResponse) => {
+                        this.isLoading = false;
                         if (connectionCheckResponse.success) {
                             this.navigateToRoute(this.routes[this.routeSuccessIndex]);
-                        }else{
-                            this.navigateToRoute(this.routes[this.routeErrorIndex]);
+                        } else {
+                            this.onResponseError(-1);
                         }
+                    }).catch((error) => {
+                        this.isLoading = false;
+                        this.onResponseError(error.response.data.errors[0].code);
                     });
-                }else{
-                    this.navigateToRoute(this.routes[this.routeErrorIndex]);
+                } else {
+                    this.isLoading = false;
+                    this.onResponseError(response.status);
                 }
             });
         },
 
+        onResponseError(errorCode) {
+            switch (errorCode) {
+                case '0': //can't connect to shop
+                    this.errorMessage = this.$tc('swag-migration.wizard.pages.credentials.error.connectionErrorMsg');
+                    break;
+                case '401':   //invalid access credentials
+                    this.errorMessage = this.$tc('swag-migration.wizard.pages.credentials.error.authenticationErrorMsg');
+                    break;
+                default:    //something else
+                    this.errorMessage = this.$tc('swag-migration.wizard.pages.credentials.error.undefinedErrorMsg');
+                    break;
+            }
+
+            this.navigateToRoute(this.routes[this.routeErrorIndex]);
+        },
+
         onCloseModal() {
+            if (this.isLoading) {
+                return;
+            }
+
+            let _routeIndex = this.routeIndex;
+
             this.showModal = false;
             this.$route.query.show = this.showModal;
             this.routeIndex = 0;
             this.routeIndexVisible = 0;
 
-            //navigate to modul
-            this.$router.push({
-                name: 'swag.migration.index',
-                params: { profileId: this.profileId }
-            });
+            if (_routeIndex === this.routeSuccessIndex) {
+                //navigate to module
+                this.$router.push({
+                    name: 'swag.migration.index',
+                    params: { profileId: this.profileId }
+                });
+            }
         },
 
         matchRouteWithIndex() {
@@ -115,8 +156,8 @@ Component.register('swag-migration-wizard', {
 
             if (currentRouteIndex !== -1) {
                 if (currentRouteIndex > this.routeCountVisible - 1) {
-                    this.routeIndexVisible = this.routeCountVisible -1;
-                }else{
+                    this.routeIndexVisible = this.routeCountVisible - 1;
+                } else {
                     this.routeIndexVisible = currentRouteIndex;
                 }
 
@@ -131,24 +172,24 @@ Component.register('swag-migration-wizard', {
             //Handle next button text
             if (this.routeIndex === this.routeApiCredentialsIndex) {
                 this.buttonNextText = this.$tc('swag-migration.wizard.buttonConnect');
-            }else if(this.routeIndex === this.routeSuccessIndex) {
+            } else if (this.routeIndex === this.routeSuccessIndex) {
                 this.buttonNextText = this.$tc('swag-migration.wizard.buttonFinish');
-            }else if(this.routeIndex === this.routeErrorIndex) {
+            } else if (this.routeIndex === this.routeErrorIndex) {
                 this.buttonNextText = this.$tc('swag-migration.wizard.buttonPrev');
-            }else{
+            } else {
                 this.buttonNextText = this.$tc('swag-migration.wizard.buttonNext');
             }
 
             //Handle back button
             if (this.routeIndex === this.routeSuccessIndex || this.routeIndex === this.routeErrorIndex) {
                 this.buttonPreviousVisible = false;
-            }else{
+            } else {
                 this.buttonPreviousVisible = this.routeIndex !== 0;
             }
         },
 
         navigateToRoute(routeName) {
-            this.$router.push({name: routeName});
+            this.$router.push({ name: routeName });
         },
 
         updateChildRoute() {
@@ -169,11 +210,11 @@ Component.register('swag-migration-wizard', {
                 //we clicked connect.
                 this.onConnect();
                 return;
-            }else if(this.routeIndex === this.routeSuccessIndex) {
+            } else if (this.routeIndex === this.routeSuccessIndex) {
                 //we clicked finish.
                 this.onCloseModal();
                 return;
-            }else if(this.routeIndex === this.routeErrorIndex) {
+            } else if (this.routeIndex === this.routeErrorIndex) {
                 //we clicked Back
                 this.navigateToRoute(this.routes[this.routeApiCredentialsIndex]);
                 return;

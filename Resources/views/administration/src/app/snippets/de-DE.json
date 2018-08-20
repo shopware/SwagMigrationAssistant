@@ -25,7 +25,7 @@
                 },
                 "pluginInformation": {
                     "contentTitle": "Login Shopware 5 Backend",
-                    "contentInformation": "Logge dich mit deinen Zugangsdaten in das Shopware 5 Backend ein und rufe den Plugin-Manager auf. Das Plugin „XXXXXXX“ ist kostenlos und wird für die Migration benötigt. Bitte installiere und aktiviere das Plugin.",
+                    "contentInformation": "Logge dich mit deinen Zugangsdaten in das Shopware 5 Backend ein und rufe den Plugin-Manager auf. Das Plugin „Shopware Playground Connector“ ist kostenlos und wird für die Migration benötigt. Bitte installiere und aktiviere das Plugin.",
                     "pluginLink": "Mehr Infos zum Plugin"
                 },
                 "credentials": {
@@ -34,9 +34,9 @@
                     "apiKeyLabel": "API-Schlüssel",
                     "apiKeyPlaceholder": "Schlüssel einfügen ...",
                     "apiUserLabel": "Benutzername (API-User)",
-                    "apiUserPlaceholder": "Login-Benutzernamen eintragen ...",
-                    "endpointLabel": "Shop-Domain",
-                    "endpointPlaceholder": "http://www.meinshop.com",
+                    "apiUserPlaceholder": "Login Benutzernamen eintragen ...",
+                    "endpointLabel": "Shop Domain",
+                    "endpointPlaceholder": "http://www.demoshop.com",
                     "success": {
                         "contentTitle": "Erfolgreich verbunden!",
                         "contentInformation": "Gehe auf Fertig und wähle in dem Migrations-Modul die jeweiligen Datensätze aus, die übertragen werden sollen. Die Daten können gesamt, Schritt für Schritt oder nachträglich migriert werden."
@@ -44,7 +44,10 @@
                     "error": {
                         "contentTitle": "Verbindung nicht hergestellt.",
                         "contentInformation": "Die Verbindung konnte leider nicht hergestellt werden. Bitte prüfe die Meldungen und behebe das Problem.",
-                        "alertErrorTitle": "Achtung:"
+                        "alertErrorTitle": "Achtung:",
+                        "connectionErrorMsg": "Es konnte keine Verbindung zum angegebenen Server hergestellt werden. Bitte überprüfe die angegebene Shop-Domain.",
+                        "authenticationErrorMsg": "Deine Zugangsdaten sind nicht korrekt. Bitte überprüfe sie und versuche es erneut.",
+                        "undefinedErrorMsg": "Interner Server Fehler. Bitte versuche es erneut."
                     }
                 }
             }
@@ -52,6 +55,8 @@
         "index": {
           "title": "Migration",
           "migrateButton": "Migrieren",
+          "finishButton": "Fertig",
+          "backButton": "Zurück zur Übersicht",
           "shopInfoCard": {
             "cardTitle": "Shopsystem",
             "buttonEditSettings": "Einstellungen bearbeiten",
@@ -67,8 +72,53 @@
               "categoriesAndProducts": "Kategorien & Produkte",
               "media": "Medien"
             },
-            "catalogueHeader": "Katalog",
+            "targetHeader": "Ziel",
             "defaultCatalogue": "Standard"
+          },
+          "loadingScreenCard": {
+            "cardTitle": "Schritt {step} von {total}",
+            "status": {
+              "fetchData": {
+                "long": "Lesen der Daten von {profileName}...",
+                "short": "Daten lesen"
+              },
+              "writeData": {
+                "long": "Schreiben der Daten in Shopware Playground...",
+                "short": "Daten schreiben"
+              },
+              "downloadMedia": {
+                "long": "Download der Medien in Shopware Playground...",
+                "short": "Medien Download"
+              }
+            },
+            "hintTitle": "Hinweis:",
+            "hint": "Bitte bleibe angemeldet und lösche keine Daten in dem anderen Shopsystem solange der Prozess nicht abgeschlossen ist. Du kannst aber im System arbeiten, der Prozess läuft im Hintergrund weiter.",
+            "result": {
+              "success": {
+                "title": "Abgeschlossen",
+                "contentTitle": "Migration abgeschlossen",
+                "hintTitle": "Hinweis:",
+                "hintContent": "Minions ipsum underweaaar baboiii me want bananaaa! Me want bananaaa! Jiji. Bappleees po kass poopayee poulet tikka masala gelatooo. Tatata bala tu uuuhhh poopayee bee do bee do bee do ti aamoo! Jeje hahaha jeje gelatooo poulet tikka masala tatata bala tu para tú. Bappleees bee do bee do bee do tatata bala tu hahaha aaaaaah me want bananaaa! Gelatooo bananaaaa para tú belloo!"
+              },
+              "warning": {
+                "title": "Abgeschlossen",
+                "contentTitle": "Migration nicht vollständig abgeschlossen",
+                "hintTitle": "Achtung:",
+                "hintContent": "Minions ipsum underweaaar baboiii me want bananaaa! Me want bananaaa! Jiji. Bappleees po kass poopayee poulet tikka masala gelatooo. Tatata bala tu uuuhhh poopayee bee do bee do bee do ti aamoo! Jeje hahaha jeje gelatooo poulet tikka masala tatata bala tu para tú. Bappleees bee do bee do bee do tatata bala tu hahaha aaaaaah me want bananaaa! Gelatooo bananaaaa para tú belloo!"
+              },
+              "failure": {
+                "title": "Fehlgeschlagen",
+                "contentTitle": "Migration nicht möglich!",
+                "hintTitle": "Achtung:",
+                "hintContent": "Minions ipsum underweaaar baboiii me want bananaaa! Me want bananaaa! Jiji. Bappleees po kass poopayee poulet tikka masala gelatooo. Tatata bala tu uuuhhh poopayee bee do bee do bee do ti aamoo! Jeje hahaha jeje gelatooo poulet tikka masala tatata bala tu para tú. Bappleees bee do bee do bee do tatata bala tu hahaha aaaaaah me want bananaaa! Gelatooo bananaaaa para tú belloo!"
+              }
+            }
+          },
+          "confirmDialog": {
+            "title": "Migration",
+            "message": "Möchtest Du wirklich migrieren?",
+            "cancel": "Abbrechen",
+            "confirm": "Migrieren"
           }
         }
     }

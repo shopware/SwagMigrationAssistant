@@ -1,0 +1,35 @@
+{% block swag_migration_loading_screen_warning %}
+    <sw-card :title="$tc('swag-migration.index.loadingScreenCard.result.warning.title')"
+             class="swag-migration-loading-screen-warning">
+        {% block swag_migration_loading_screen_warning_content %}
+            <div class="swag-migration-loading__content">
+                {% block swag_migration_loading_screen_warning_information %}
+                    <div class="content__information">
+                        {% block swag_migration_loading_screen_warning_title %}
+                            <h3 class="information__header">
+                                {{ $tc('swag-migration.index.loadingScreenCard.result.warning.contentTitle') }}
+                            </h3>
+                        {% endblock %}
+
+                        {% block swag_migration_loading_screen_warning_svg %}
+                            <swag-svg-wizard-credentials-error></swag-svg-wizard-credentials-error>
+                        {% endblock %}
+
+                        {% block swag_migration_loading_screen_warning_hint %}
+                            <sw-alert variant="warning">
+                                {{ $tc('swag-migration.index.loadingScreenCard.result.warning.hintTitle') }}
+                                {{ $tc('swag-migration.index.loadingScreenCard.result.warning.hintContent') }}
+                            </sw-alert>
+                        {% endblock %}
+
+                        {% block swag_migration_loading_screen_warning_button_back %}
+                            <sw-button @click="$emit('onClickBack')">
+                                {{ $tc('swag-migration.index.backButton') }}
+                            </sw-button>
+                        {% endblock %}
+                    </div>
+                {% endblock %}
+            </div>
+        {% endblock %}
+    </sw-card>
+{% endblock %}

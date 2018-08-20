@@ -1,4 +1,4 @@
-import { Module } from 'src/core/shopware';
+import {Module} from 'src/core/shopware';
 import './page/swag-migration-index';
 import './page/swag-migration-wizard';
 import './page/swag-migration-wizard-page-introduction';
@@ -12,8 +12,12 @@ import './component/swag-svg-wizard-introduction';
 import './component/swag-svg-wizard-plugin-information';
 import './component/swag-svg-wizard-credentials-success';
 import './component/swag-svg-wizard-credentials-error';
+import './component/swag-svg-wizard-credentials-failure';
 import './component/swag-migration-data-selector';
 import './component/swag-migration-loading-screen';
+import './component/swag-migration-loading-screen-success';
+import './component/swag-migration-loading-screen-warning';
+import './component/swag-migration-loading-screen-failure';
 import './component/sw-progress-bar';
 
 

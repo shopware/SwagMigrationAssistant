@@ -18,6 +18,19 @@ class MigrationApiService extends ApiService {
             });
     }
 
+    writeData(additionalParams = {}, additionalHeaders = {}) {
+        const params = additionalParams;
+        const headers = this.getBasicHeaders(additionalHeaders);
+
+        return this.httpClient
+            .post(`${this.getApiBasePath()}/write-data`, params, {
+                headers
+            })
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
     checkConnection(profileId) {
         const headers = this.getBasicHeaders();
 
