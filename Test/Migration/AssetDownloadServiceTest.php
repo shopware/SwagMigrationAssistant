@@ -101,6 +101,7 @@ class AssetDownloadServiceTest extends KernelTestCase
 
     public function testDownloadAssets(): void
     {
+        static::markTestSkipped('needs an correct URL to download the assets from');
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
         $migrationContext = new MigrationContext(
             Shopware55Profile::PROFILE_NAME,

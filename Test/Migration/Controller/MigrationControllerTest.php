@@ -45,7 +45,8 @@ class MigrationControllerTest extends KernelTestCase
             ),
             self::$container->get(MigrationWriteService::class),
             self::$container->get(AssetDownloadService::class),
-            self::$container->get(MigrationEnvironmentService::class)
+            self::$container->get(MigrationEnvironmentService::class),
+            self::$container->get('swag_migration_profile.repository')
         );
     }
 
@@ -61,7 +62,7 @@ class MigrationControllerTest extends KernelTestCase
             'profile' => 'shopware55',
             'gateway' => 'local',
             'entity' => ProductDefinition::getEntityName(),
-            'credentials' => [
+            'credentialFields' => [
                 'endpoint' => 'test',
                 'apiUser' => 'test',
                 'apiKey' => 'test',
@@ -81,7 +82,7 @@ class MigrationControllerTest extends KernelTestCase
         $request = new Request([
             'profile' => 'shopware55',
             'entity' => ProductDefinition::getEntityName(),
-            'credentials' => [
+            'credentialFields' => [
                 'endpoint' => 'test',
                 'apiUser' => 'test',
                 'apiKey' => 'test',
