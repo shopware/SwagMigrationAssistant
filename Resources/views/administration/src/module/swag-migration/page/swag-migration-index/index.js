@@ -249,7 +249,13 @@ Component.register('swag-migration-index', {
             //get all entities in order
             let entityGroups = this.getEntityGroups();
 
-            this.migrationWorkerService.startMigration(this.profile, entityGroups, this.onStatus, this.onProgress);
+            this.migrationWorkerService.startMigration(this.profile, entityGroups, this.onStatus, this.onProgress).catch(() => {
+                //show data selection again
+                this.isMigrating = false;
+                this.componentIndex = this.components.dataSelector;
+
+                alert('Migration bereits gestartet'); //TODO: Replace - Design?
+            });
         },
 
         onStatus(statusData) {

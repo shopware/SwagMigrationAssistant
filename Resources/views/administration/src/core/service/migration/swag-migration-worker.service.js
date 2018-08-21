@@ -1,3 +1,4 @@
+import StorageBroadcastService from '../storage-broadcaster.service';
 
 class MigrationService {
     constructor(migrationService) {
@@ -13,6 +14,9 @@ class MigrationService {
             FINISHED: 3,
         };
 
+        this._broadcastResponseFlag = false;
+        this._broadcastService = new StorageBroadcastService(this._onBroadcastReceived.bind(this));
+
         this._migrationService = migrationService;
         this._errors = [];
         this._chunkSize = this._DEFAULT_CHUNK_SIZE;
@@ -24,6 +28,10 @@ class MigrationService {
         this._statusSubscriber = null;
         this._profile = null;
         this._status = null;
+
+        this._broadcastService.sendMessage({
+            migrationMessage: 'initialized'
+        });
     }
 
     get status() {
@@ -65,8 +73,19 @@ class MigrationService {
 
     async startMigration(profile, entityGroups, statusCallback, progressCallback) {
         return new Promise(async (resolve, reject) => {
-            if (this._isMigrating)
+            if (this._isMigrating) {
                 reject();
+                return;
+            }
+
+            let isRunningInOtherTab = true;
+            await this._isMigrationRunningInOtherTab().then((isRunning) => {
+                isRunningInOtherTab = isRunning;
+            });
+            if (isRunningInOtherTab) {
+                reject();
+                return;
+            }
 
             this._isMigrating = true;
             this._profile = profile;
@@ -74,6 +93,7 @@ class MigrationService {
             this._errors = [];
             this.subscribeStatus(statusCallback);
             this.subscribeProgress(progressCallback);
+            resolve();
 
             //step 1 - read/fetch
             await this._fetchData();
@@ -89,6 +109,40 @@ class MigrationService {
 
             this._isMigrating = false;
         });
+    }
+
+    _isMigrationRunningInOtherTab() {
+        return new Promise(async (resolve, reject) => {
+            this._broadcastService.sendMessage({
+                migrationMessage: 'migrationWanted'
+            });
+
+            let oldFlag = this._broadcastResponseFlag;
+            setTimeout(() => {
+                if (this._broadcastResponseFlag !== oldFlag) {
+                    resolve(true);
+                    return;
+                }
+
+                resolve(false);
+            }, 1000);
+        });
+    }
+
+    _onBroadcastReceived(data) {
+        //answer incoming migration wanted request based on current migration state.
+        if (data.migrationMessage === 'migrationWanted') {
+            if (this.isMigrating) {
+                this._broadcastService.sendMessage({
+                    migrationMessage: 'migrationDenied'
+                });
+            }
+        }
+
+        //allow own migration if no migrationDenied response comes back.
+        if(data.migrationMessage === 'migrationDenied') {
+            this._broadcastResponseFlag = !this._broadcastResponseFlag;
+        }
     }
 
     _callProgressSubscriber(param) {
