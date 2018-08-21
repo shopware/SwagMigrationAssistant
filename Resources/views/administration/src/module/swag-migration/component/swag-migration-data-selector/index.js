@@ -16,18 +16,22 @@ Component.register('swag-migration-data-selector', {
     },
 
     watch: {
-        targets() {
-            if (this.targets.length < 1)
-                return;
+        targets: {
+            handler: function() {
+                if (this.targets.length < 1)
+                    return;
 
-            this.tableData.forEach((row) => {
-                row.targetId = this.targets[0].id;
-            });
+                this.tableData.forEach((data) => {
+                    data.targetId = this.targets[0].id;
+                });
+            },
+            immediate: true
         }
     },
 
     mounted() {
         this.$refs.tableDataGrid.selectAll(true);
+
     },
 
     methods: {

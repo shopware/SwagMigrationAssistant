@@ -92,6 +92,11 @@ Component.register('swag-migration-index', {
     },
 
     created() {
+        if (this.migrationWorkerService.isMigrating || this.migrationWorkerService.status === this.migrationWorkerService.MIGRATION_STATUS.FINISHED) {
+            this.restoreRunningMigration();
+        }
+
+
         const params = {
             offset: 0,
             limit: 100,
@@ -123,7 +128,7 @@ Component.register('swag-migration-index', {
         });
 
         //Get possible targets
-        this.catalogService.getList({ offset: 0, limit: 100 }).then((response) => {
+        this.catalogService.getList({}).then((response) => {
             response.data.forEach((catalog) => {
                 this.targets.push({
                     id: catalog.id,
@@ -133,7 +138,48 @@ Component.register('swag-migration-index', {
         });
     },
 
+    beforeDestroy() {
+        this.migrationWorkerService.unsubscribeProgress();
+        this.migrationWorkerService.unsubscribeStatus();
+    },
+
     methods: {
+        restoreRunningMigration() {
+            this.isMigrating = true;
+
+            //show loading screen
+            this.componentIndex = this.components.loadingScreen;
+
+            //Get current status
+            this.onStatus({ status: this.migrationWorkerService.status });
+            if (this.migrationWorkerService.status === this.migrationWorkerService.MIGRATION_STATUS.FINISHED) {
+                return;
+            }
+
+            //Get data to migrate (selected table data + progress)
+            let selectedEntityGroups = this.migrationWorkerService.entityGroups;
+            this.tableData.forEach((data) => {
+                let group = selectedEntityGroups.find((g) => {
+                    return g.id === data.id;
+                });
+
+                if (group !== undefined) {
+                    //found entity in group -> means it was selected
+                    data.selected = true;
+
+                    //set the progress for the group
+                    data.progressBar.value = group.progress;
+                }
+            });
+
+
+            //subscribe to the progress event again
+            this.migrationWorkerService.subscribeProgress(this.onProgress);
+
+            //subscribe to the status event again
+            this.migrationWorkerService.subscribeStatus(this.onStatus);
+        },
+
         showMigrateConfirmDialog() {
             this.showConfirmDialog = true;
         },
@@ -164,15 +210,30 @@ Component.register('swag-migration-index', {
             });
         },
 
-        getAllEntityNames() {
-            let allEntityNames = [];
+        getEntityGroups() {
+            let entityGroups = [];
             this.tableData.forEach((data) => {
                 if (data.selected) {
-                    allEntityNames = allEntityNames.concat(data.entityNames);
+                    let entities = [];
+                    let groupCount = 0;
+                    data.entityNames.forEach((name) => {
+                        entities.push({
+                            entityName: name,
+                            entityCount: this.entityCounts[name]
+                        });
+                        groupCount += this.entityCounts[name];
+                    });
+
+                    entityGroups.push({
+                        id: data.id,
+                        entities: entities,
+                        progress: 0,
+                        count: groupCount
+                    });
                 }
             });
 
-            return allEntityNames;
+            return entityGroups;
         },
 
         async onMigrate() {
@@ -186,40 +247,30 @@ Component.register('swag-migration-index', {
             this.componentIndex = this.components.loadingScreen;
 
             //get all entities in order
-            let allEntityNames = this.getAllEntityNames();
+            let entityGroups = this.getEntityGroups();
 
-            //step 1 - read/fetch
-            await this.migrationWorkerService.fetchData(this.profile, allEntityNames, this.entityCounts, (progressData) => {
-                this.onProgress(progressData.entityName, progressData.newOffset, progressData.deltaOffset, progressData.entityCount);
-            });
+            this.migrationWorkerService.startMigration(this.profile, entityGroups, this.onStatus, this.onProgress);
+        },
 
-            //step 2- write
-            this.statusIndex = 1;
+        onStatus(statusData) {
             this.resetProgress();
-            await this.migrationWorkerService.writeData(this.profile, allEntityNames, this.entityCounts, (progressData) => {
-                this.onProgress(progressData.entityName, progressData.newOffset, progressData.deltaOffset, progressData.entityCount);
-            });
+            this.statusIndex = statusData.status;
 
-            //step 3 - media download
-            //TODO: implment media download
-            this.statusIndex = 2;
-            this.resetProgress();
-
-            this.tableData[2].progressBar.value = 100;
-
-            if (State.getStore('error').errors.system.length > 0) {
-                this.componentIndex = this.components.resultWarning;    //show result warning screen
-            } else {
-                this.componentIndex = this.components.resultSuccess;    //show result success screen
+            if (this.statusIndex === this.migrationWorkerService.MIGRATION_STATUS.FINISHED) {
+                if (this.migrationWorkerService.errors.length > 0) {
+                    this.componentIndex = this.components.resultWarning;    //show result warning screen
+                } else {
+                    this.componentIndex = this.components.resultSuccess;    //show result success screen
+                }
             }
         },
 
-        onProgress(entityName, newOffset, deltaOffset, entityCount) {
+        onProgress(progressData) {
             let data = this.tableData.find((data) => {
-                return data.entityNames.includes(entityName);
+                return data.entityNames.includes(progressData.entityName);
             });
 
-            data.progressBar.value +=  deltaOffset;
+            data.progressBar.value = progressData.entityGroupProgressValue;
         },
 
         resetProgress() {
@@ -244,6 +295,7 @@ Component.register('swag-migration-index', {
         },
 
         onClickBack() {
+            this.migrationWorkerService.status = this.migrationWorkerService.MIGRATION_STATUS.WAITING;
             this.componentIndex = this.components.dataSelector;
             this.isMigrating = false;
         }
