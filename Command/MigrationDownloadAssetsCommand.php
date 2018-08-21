@@ -93,9 +93,12 @@ class MigrationDownloadAssetsCommand extends Command implements EventSubscriberI
 
     protected function configure(): void
     {
-        $this->setName('migration:assets:download');
-        $this->setDescription('Downloads all assets');
-        $this->addOption('tenant-id', 't', InputOption::VALUE_REQUIRED);
+        $this
+            ->setName('migration:assets:download')
+            ->setDescription('Downloads all assets')
+            ->addOption('tenant-id', 't', InputOption::VALUE_REQUIRED)
+            ->addOption('catalog-id', 'c', InputOption::VALUE_REQUIRED)
+        ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

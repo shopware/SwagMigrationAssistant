@@ -103,7 +103,9 @@ class MigrationWriteServiceTest extends KernelTestCase
             CustomerDefinition::getEntityName(),
             [],
             0,
-            250
+            250,
+            null,
+            Defaults::SALES_CHANNEL
         );
 
         $this->migrationCollectService->fetchData($migrationContext, $context);

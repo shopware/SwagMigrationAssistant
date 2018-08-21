@@ -10,7 +10,7 @@ use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
 use SwagMigrationNext\Gateway\GatewayFactoryRegistryInterface;
 
-class MigrationEnvironmentService
+class MigrationEnvironmentService implements MigrationEnvironmentServiceInterface
 {
     /**
      * @var GatewayFactoryRegistryInterface

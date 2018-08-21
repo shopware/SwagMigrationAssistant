@@ -76,8 +76,12 @@ class OrderConverter implements ConverterInterface
     /**
      * @throws AssociationEntityRequiredMissingException
      */
-    public function convert(array $data, Context $context): ConvertStruct
-    {
+    public function convert(
+        array $data,
+        Context $context,
+        ?string $catalogId = null,
+        ?string $salesChannelId = null
+    ): ConvertStruct {
         $this->mainLocale = $data['_locale'];
         unset($data['_locale']);
         $this->context = $context;
@@ -148,7 +152,11 @@ class OrderConverter implements ConverterInterface
         $converted['transactions'] = $this->getTransactions($data, $converted);
         unset($data['cleared'], $data['paymentstatus']);
 
-        $converted['salesChannelId'] = Defaults::SALES_CHANNEL;
+        if ($salesChannelId !== null) {
+            $converted['salesChannelId'] = $salesChannelId;
+        } else {
+            $converted['salesChannelId'] = Defaults::SALES_CHANNEL;
+        }
 
         // Legacy data which don't need a mapping or there is no equivalent field
         unset(

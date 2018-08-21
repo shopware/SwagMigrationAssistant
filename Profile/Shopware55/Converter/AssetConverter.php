@@ -35,8 +35,12 @@ class AssetConverter implements ConverterInterface
         return MediaDefinition::getEntityName();
     }
 
-    public function convert(array $data, Context $context): ConvertStruct
-    {
+    public function convert(
+        array $data,
+        Context $context,
+        ?string $catalogId = null,
+        ?string $salesChannelId = null
+    ): ConvertStruct {
         $profile = Shopware55Profile::PROFILE_NAME;
         $locale = $data['_locale'];
 
@@ -52,6 +56,10 @@ class AssetConverter implements ConverterInterface
             ]
         );
         unset($data['uri'], $data['file_size']);
+
+        if ($catalogId !== null) {
+            $converted['catalogId'] = $catalogId;
+        }
 
         $translation['id'] = $this->mappingService->createNewUuid(
             $profile,

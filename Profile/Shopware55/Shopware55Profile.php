@@ -7,6 +7,7 @@ use Shopware\Core\Framework\ORM\Event\EntityWrittenContainerEvent;
 use Shopware\Core\Framework\ORM\RepositoryInterface;
 use SwagMigrationNext\Gateway\GatewayInterface;
 use SwagMigrationNext\Migration\Data\SwagMigrationDataDefinition;
+use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Profile\ProfileInterface;
 use SwagMigrationNext\Profile\Shopware55\Converter\ConverterRegistryInterface;
 
@@ -37,24 +38,23 @@ class Shopware55Profile implements ProfileInterface
         return self::PROFILE_NAME;
     }
 
-    public function collectData(
-        GatewayInterface $gateway,
-        string $entityName,
-        Context $context,
-        int $offset,
-        int $limit
-    ): int {
+    public function collectData(GatewayInterface $gateway, MigrationContext $migrationContext, Context $context): int
+    {
+        $entityName = $migrationContext->getEntity();
         /** @var array[] $data */
-        $data = $gateway->read($entityName, $offset, $limit);
+        $data = $gateway->read($entityName, $migrationContext->getOffset(), $migrationContext->getLimit());
 
         if (\count($data) === 0) {
             return 0;
         }
 
+        $catalogId = $migrationContext->getCatalogId();
+        $salesChannelId = $migrationContext->getSalesChannelId();
+
         $converter = $this->converterRegistry->getConverter($entityName);
         $createData = [];
         foreach ($data as $item) {
-            $convertStruct = $converter->convert($item, $context);
+            $convertStruct = $converter->convert($item, $context, $catalogId, $salesChannelId);
 
             $createData[] = [
                 'entity' => $entityName,

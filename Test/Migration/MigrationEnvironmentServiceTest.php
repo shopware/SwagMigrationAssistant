@@ -12,6 +12,7 @@ use SwagMigrationNext\Gateway\GatewayFactoryRegistryInterface;
 use SwagMigrationNext\Gateway\Shopware55\Api\Shopware55ApiFactory;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\MigrationEnvironmentService;
+use SwagMigrationNext\Migration\MigrationEnvironmentServiceInterface;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Mock\DummyCollection;
 use SwagMigrationNext\Test\Mock\Gateway\Dummy\Local\DummyLocalFactory;
@@ -25,7 +26,7 @@ class MigrationEnvironmentServiceTest extends KernelTestCase
     private $connection;
 
     /**
-     * @var MigrationEnvironmentService
+     * @var MigrationEnvironmentServiceInterface
      */
     private $migrationEnvironmentService;
 

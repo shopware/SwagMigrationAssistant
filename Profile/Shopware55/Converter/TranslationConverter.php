@@ -51,8 +51,12 @@ class TranslationConverter implements ConverterInterface
         return 'translation';
     }
 
-    public function convert(array $data, Context $context): ConvertStruct
-    {
+    public function convert(
+        array $data,
+        Context $context,
+        ?string $catalogId = null,
+        ?string $salesChannelId = null
+    ): ConvertStruct {
         $this->profile = Shopware55Profile::PROFILE_NAME;
         $this->context = $context;
 

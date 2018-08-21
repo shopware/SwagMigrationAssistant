@@ -29,10 +29,13 @@ class MigrationWriteDataCommand extends ContainerAwareCommand
 
     protected function configure(): void
     {
-        $this->setDescription('Writes data with the given profile');
-        $this->addOption('tenant-id', 't', InputOption::VALUE_REQUIRED);
-        $this->addOption('profile', 'p', InputOption::VALUE_REQUIRED);
-        $this->addOption('entity', 'y', InputOption::VALUE_REQUIRED);
+        $this
+            ->setDescription('Writes data with the given profile')
+            ->addOption('tenant-id', 't', InputOption::VALUE_REQUIRED)
+            ->addOption('catalog-id', 'c', InputOption::VALUE_REQUIRED)
+            ->addOption('profile', 'p', InputOption::VALUE_REQUIRED)
+            ->addOption('entity', 'y', InputOption::VALUE_REQUIRED)
+        ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -47,6 +50,11 @@ class MigrationWriteDataCommand extends ContainerAwareCommand
         }
         $context = Context::createDefaultContext($tenantId);
 
+        $catalogId = $input->getOption('catalog-id');
+        if ($catalogId !== null && Uuid::isValid($catalogId)) {
+            $context = $context->createWithCatalogIds(array_merge($context->getCatalogIds(), [$catalogId]));
+        }
+
         $profile = $input->getOption('profile');
         if (!$profile) {
             throw new InvalidArgumentException('No profile provided');
@@ -57,7 +65,7 @@ class MigrationWriteDataCommand extends ContainerAwareCommand
             throw new InvalidArgumentException('No entity provided');
         }
 
-        $migrationContext = new MigrationContext($profile, '', $entity, [], 0, 0);
+        $migrationContext = new MigrationContext($profile, '', $entity, [], 0, 0, $catalogId);
 
         $output->writeln('Writing data...');
 

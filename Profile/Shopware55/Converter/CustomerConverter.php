@@ -62,8 +62,12 @@ class CustomerConverter implements ConverterInterface
         return CustomerDefinition::getEntityName();
     }
 
-    public function convert(array $data, Context $context): ConvertStruct
-    {
+    public function convert(
+        array $data,
+        Context $context,
+        ?string $catalogId = null,
+        ?string $salesChannelId = null
+    ): ConvertStruct {
         $this->profile = Shopware55Profile::PROFILE_NAME;
         $this->context = $context;
         $this->mainLocale = $data['_locale'];
@@ -115,8 +119,11 @@ class CustomerConverter implements ConverterInterface
         }
         unset($data['addresses']);
 
-        // Todo: Create a new sales channel?
-        $converted['salesChannelId'] = Defaults::SALES_CHANNEL;
+        if ($salesChannelId !== null) {
+            $converted['salesChannelId'] = $salesChannelId;
+        } else {
+            $converted['salesChannelId'] = Defaults::SALES_CHANNEL;
+        }
 
         // Legacy data which don't need a mapping or there is no equivalent field
         unset(
