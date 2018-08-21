@@ -48,6 +48,16 @@ class OrderConverter implements ConverterInterface
      */
     private $taxCalculator;
 
+    /**
+     * @var Context
+     */
+    private $context;
+
+    /**
+     * @var string
+     */
+    private $profile;
+
     public function __construct(
         Shopware55MappingService $mappingService,
         ConverterHelperService $converterHelperService,
@@ -70,21 +80,23 @@ class OrderConverter implements ConverterInterface
     {
         $this->mainLocale = $data['_locale'];
         unset($data['_locale']);
+        $this->context = $context;
+        $this->profile = Shopware55Profile::PROFILE_NAME;
 
         $converted = [];
         $converted['id'] = $this->mappingService->createNewUuid(
-            Shopware55Profile::PROFILE_NAME,
+            $this->profile,
             OrderDefinition::getEntityName(),
             $data['id'],
-            $context
+            $this->context
         );
         unset($data['id']);
 
         $converted['customerId'] = $this->mappingService->getUuid(
-            Shopware55Profile::PROFILE_NAME,
+            $this->profile,
             CustomerDefinition::getEntityName(),
             $data['userID'],
-            $context
+            $this->context
         );
         unset($data['userID'], $data['customer']);
 
@@ -116,24 +128,24 @@ class OrderConverter implements ConverterInterface
         $converted['currencyId'] = Defaults::CURRENCY;
         unset($data['currency'], $data['currencyFactor']);
 
-        $this->getPaymentMethod($data, $converted, $context);
+        $this->getPaymentMethod($data, $converted);
         unset($data['payment'], $data['paymentID']);
 
         $this->helper->convertValue($converted, 'date', $data, 'ordertime');
 
-        $converted['stateId'] = $this->mappingService->getOrderStateUuid((int) $data['status'], $context);
+        $converted['stateId'] = $this->mappingService->getOrderStateUuid((int) $data['status'], $this->context);
         unset($data['status'], $data['orderstatus']);
 
-        $converted['billingAddress'] = $this->getAddress($data['billingaddress'], $context);
+        $converted['billingAddress'] = $this->getAddress($data['billingaddress']);
         unset($data['billingaddress']);
 
-        $converted['deliveries'] = $this->getDeliveries($data, $context, $converted);
+        $converted['deliveries'] = $this->getDeliveries($data, $converted);
         unset($data['trackingcode'], $data['shippingMethod'], $data['dispatchID'], $data['shippingaddress']);
 
-        $converted['lineItems'] = $this->getLineItems($data['details'], $context);
+        $converted['lineItems'] = $this->getLineItems($data['details']);
         unset($data['details']);
 
-        $converted['transactions'] = $this->getTransactions($data, $converted, $context);
+        $converted['transactions'] = $this->getTransactions($data, $converted);
         unset($data['cleared'], $data['paymentstatus']);
 
         $converted['salesChannelId'] = Defaults::SALES_CHANNEL;
@@ -169,7 +181,7 @@ class OrderConverter implements ConverterInterface
         return new ConvertStruct($converted, $data);
     }
 
-    private function getTransactions(array $data, array $converted, Context $context): array
+    private function getTransactions(array $data, array $converted): array
     {
         $taxRates = array_unique(array_column($converted['lineItems'], 'taxRate'));
         $taxRules = [];
@@ -189,7 +201,7 @@ class OrderConverter implements ConverterInterface
             [
                 'id' => Uuid::uuid4()->getHex(),
                 'paymentMethodId' => $converted['paymentMethod']['id'],
-                'orderTransactionStateId' => $this->mappingService->getTransactionStateUuid((int) $data['cleared'], $context),
+                'orderTransactionStateId' => $this->mappingService->getTransactionStateUuid((int) $data['cleared'], $this->context),
                 'amount' => new Price(
                     $converted['amountTotal'],
                     $converted['amountTotal'],
@@ -202,26 +214,26 @@ class OrderConverter implements ConverterInterface
         return $transactions;
     }
 
-    private function getPaymentMethod(array $originalData, array &$converted, Context $context): void
+    private function getPaymentMethod(array $originalData, array &$converted): void
     {
-        $paymentMethodUuid = $this->mappingService->getPaymentUuid($originalData['payment']['name'], $context);
+        $paymentMethodUuid = $this->mappingService->getPaymentUuid($originalData['payment']['name'], $this->context);
 
         if ($paymentMethodUuid !== null) {
             $paymentMethod['id'] = $paymentMethodUuid;
         } else {
             $paymentMethod['id'] = $this->mappingService->createNewUuid(
-                Shopware55Profile::PROFILE_NAME,
+                $this->profile,
                 PaymentMethodDefinition::getEntityName(),
                 $originalData['payment']['id'],
-                $context
+                $this->context
             );
         }
 
         $translation['id'] = $this->mappingService->createNewUuid(
-            Shopware55Profile::PROFILE_NAME,
+            $this->profile,
             PaymentMethodTranslationDefinition::getEntityName(),
             $originalData['payment']['id'] . ':' . $this->mainLocale,
-            $context
+            $this->context
         );
 
         $translation['paymentMethodId'] = $paymentMethod['id'];
@@ -246,7 +258,7 @@ class OrderConverter implements ConverterInterface
         $this->helper->convertValue($paymentMethod, 'source', $originalData['payment'], 'source', $this->helper::TYPE_INTEGER);
         $this->helper->convertValue($paymentMethod, 'mobileInactive', $originalData['payment'], 'mobile_inactive', $this->helper::TYPE_BOOLEAN);
 
-        $languageData = $this->mappingService->getLanguageUuid(Shopware55Profile::PROFILE_NAME, $this->mainLocale, $context);
+        $languageData = $this->mappingService->getLanguageUuid($this->profile, $this->mainLocale, $this->context);
 
         if (isset($languageData['createData']) && !empty($languageData['createData'])) {
             $translation['language']['id'] = $languageData['uuid'];
@@ -261,21 +273,21 @@ class OrderConverter implements ConverterInterface
         $converted['paymentMethod'] = $paymentMethod;
     }
 
-    private function getAddress(array $originalData, Context $context): array
+    private function getAddress(array $originalData): array
     {
         $address = [];
         $address['id'] = $this->mappingService->createNewUuid(
-            Shopware55Profile::PROFILE_NAME,
+            $this->profile,
             OrderAddressDefinition::getEntityName(),
             $originalData['id'],
-            $context
+            $this->context
         );
 
         $address['countryId'] = $this->mappingService->getUuid(
-            Shopware55Profile::PROFILE_NAME,
+            $this->profile,
             CountryDefinition::getEntityName(),
             $originalData['countryID'],
-            $context
+            $this->context
         );
         $this->helper->convertValue($address, 'salutation', $originalData, 'salutation');
         $this->helper->convertValue($address, 'firstName', $originalData, 'firstname');
@@ -296,15 +308,15 @@ class OrderConverter implements ConverterInterface
         return $address;
     }
 
-    private function getDeliveries(array $data, Context $context, array $converted): array
+    private function getDeliveries(array $data, array $converted): array
     {
         $deliveries = [];
 
         $delivery = [
             'id' => Uuid::uuid4()->getHex(),
-            'shippingAddress' => $this->getAddress($data['shippingaddress'], $context),
+            'shippingAddress' => $this->getAddress($data['shippingaddress']),
             'orderStateId' => $converted['stateId'],
-            'shippingMethod' => $this->getShippingMethod($data['shippingMethod'], $context),
+            'shippingMethod' => $this->getShippingMethod($data['shippingMethod']),
             'shippingDateEarliest' => $converted['date'],
             'shippingDateLatest' => $converted['date'],
         ];
@@ -318,21 +330,21 @@ class OrderConverter implements ConverterInterface
         return $deliveries;
     }
 
-    private function getShippingMethod(array $originalData, Context $context): array
+    private function getShippingMethod(array $originalData): array
     {
         $shippingMethod = [];
         $shippingMethod['id'] = $this->mappingService->createNewUuid(
-            Shopware55Profile::PROFILE_NAME,
+            $this->profile,
             ShippingMethodDefinition::getEntityName(),
             $originalData['id'],
-            $context
+            $this->context
         );
 
         $translation['id'] = $this->mappingService->createNewUuid(
-            Shopware55Profile::PROFILE_NAME,
+            $this->profile,
             ShippingMethodTranslationDefinition::getEntityName(),
             $originalData['id'] . ':' . $this->mainLocale,
-            $context
+            $this->context
         );
 
         $translation['shippingMethodId'] = $shippingMethod['id'];
@@ -340,7 +352,7 @@ class OrderConverter implements ConverterInterface
         $this->helper->convertValue($translation, 'description', $originalData, 'description');
         $this->helper->convertValue($translation, 'comment', $originalData, 'comment');
 
-        $languageData = $this->mappingService->getLanguageUuid(Shopware55Profile::PROFILE_NAME, $this->mainLocale, $context);
+        $languageData = $this->mappingService->getLanguageUuid($this->profile, $this->mainLocale, $this->context);
 
         if (isset($languageData['createData']) && !empty($languageData['createData'])) {
             $translation['language']['id'] = $languageData['uuid'];
@@ -378,7 +390,7 @@ class OrderConverter implements ConverterInterface
         return $shippingMethod;
     }
 
-    private function getLineItems(array $originalData, Context $context): array
+    private function getLineItems(array $originalData): array
     {
         $lineItems = [];
 
@@ -390,10 +402,10 @@ class OrderConverter implements ConverterInterface
 
             if ($isProduct) {
                 $lineItem['identifier'] = $this->mappingService->getUuid(
-                    Shopware55Profile::PROFILE_NAME,
+                    $this->profile,
                     ProductDefinition::getEntityName(),
                     $originalLineItem['articleDetailID'],
-                    $context
+                    $this->context
                 );
 
                 if ($lineItem['identifier'] === null) {

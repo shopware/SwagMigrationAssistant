@@ -37,11 +37,12 @@ class AssetConverter implements ConverterInterface
 
     public function convert(array $data, Context $context): ConvertStruct
     {
+        $profile = Shopware55Profile::PROFILE_NAME;
         $locale = $data['_locale'];
 
         $converted = [];
         $converted['id'] = $this->mappingService->createNewUuid(
-            Shopware55Profile::PROFILE_NAME,
+            $profile,
             MediaDefinition::getEntityName(),
             $data['id'],
             $context,
@@ -53,7 +54,7 @@ class AssetConverter implements ConverterInterface
         unset($data['uri'], $data['file_size']);
 
         $translation['id'] = $this->mappingService->createNewUuid(
-            Shopware55Profile::PROFILE_NAME,
+            $profile,
             MediaTranslationDefinition::getEntityName(),
             $data['id'] . ':' . $locale,
             $context
@@ -63,7 +64,7 @@ class AssetConverter implements ConverterInterface
         $this->helper->convertValue($translation, 'name', $data, 'name');
         $this->helper->convertValue($translation, 'description', $data, 'description');
 
-        $languageData = $this->mappingService->getLanguageUuid(Shopware55Profile::PROFILE_NAME, $locale, $context);
+        $languageData = $this->mappingService->getLanguageUuid($profile, $locale, $context);
 
         if (isset($languageData['createData']) && !empty($languageData['createData'])) {
             $translation['language']['id'] = $languageData['uuid'];

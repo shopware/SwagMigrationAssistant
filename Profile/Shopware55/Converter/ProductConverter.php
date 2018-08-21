@@ -70,6 +70,7 @@ class ProductConverter implements ConverterInterface
         $this->profile = Shopware55Profile::PROFILE_NAME;
         $this->context = $context;
         $this->oldProductId = $data['id'];
+        unset($data['id']);
 
         $productKind = (int) $data['detail']['kind'];
         unset($data['detail']['kind']);
@@ -98,11 +99,11 @@ class ProductConverter implements ConverterInterface
         $containerUuid = $this->mappingService->createNewUuid(
             $this->profile,
             ProductDefinition::getEntityName() . '_container',
-            $data['id'],
+            $this->oldProductId,
             $this->context
         );
         $converted['id'] = $containerUuid;
-        unset($data['id'], $data['detail']['articleID']);
+        unset($data['detail']['articleID']);
 
         $converted = $this->getProductData($data, $converted);
 
@@ -133,9 +134,9 @@ class ProductConverter implements ConverterInterface
     private function convertVariantProduct(array $data): ConvertStruct
     {
         $parentUuid = $this->mappingService->getUuid(
-            Shopware55Profile::PROFILE_NAME,
+            $this->profile,
             ProductDefinition::getEntityName() . '_container',
-            $data['id'],
+            $this->oldProductId,
             $this->context
         );
 
@@ -162,7 +163,7 @@ class ProductConverter implements ConverterInterface
             $data['detail']['id'],
             $this->context
         );
-        unset($data['detail']['id'], $data['detail']['articleID'], $data['id']);
+        unset($data['detail']['id'], $data['detail']['articleID']);
 
         return $converted;
     }
@@ -472,7 +473,7 @@ class ProductConverter implements ConverterInterface
 
         foreach ($categories as $key => $category) {
             $categoryUuid = $this->mappingService->getUuid(
-                Shopware55Profile::PROFILE_NAME,
+                $this->profile,
                 CategoryDefinition::getEntityName(),
                 $category['id'],
                 $this->context
