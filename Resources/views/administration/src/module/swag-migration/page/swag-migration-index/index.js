@@ -34,7 +34,7 @@ Component.register('swag-migration-index', {
                 },
                 {
                     id: 'categories_products',
-                    entityNames: ['category', 'product', 'translation'],
+                    entityNames: ['category', 'product'], // 'translation'], TODO revert, when the core could handle translations correctly
                     data: this.$tc('swag-migration.index.selectDataCard.dataPossible.categoriesAndProducts'),
                     targetDisabled: true,
                     targetHidden: false,
@@ -59,7 +59,7 @@ Component.register('swag-migration-index', {
                     value: 0
                 },
                 {
-                    entityNames: ['category', 'product', 'translation'],
+                    entityNames: ['category', 'product'], // 'translation'], TODO revert, when the core could handle translations correctly
                     parentId: 'categories_products',
                     title: this.$tc('swag-migration.index.selectDataCard.dataPossible.categoriesAndProducts'),
                     value: 0

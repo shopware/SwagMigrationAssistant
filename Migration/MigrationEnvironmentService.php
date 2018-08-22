@@ -41,9 +41,9 @@ class MigrationEnvironmentService implements MigrationEnvironmentServiceInterfac
             case MediaDefinition::getEntityName():
                 $key = 'assets';
                 break;
-            case 'translation':
-                $key = 'translations';
-                break;
+//            case 'translation': TODO revert, when the core could handle translations correctly
+//                $key = 'translations';
+//                break;
             case OrderDefinition::getEntityName():
                 $key = 'orders';
                 break;

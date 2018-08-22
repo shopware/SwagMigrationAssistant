@@ -2,6 +2,7 @@
 
 namespace SwagMigrationNext\Migration\Mapping;
 
+use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\ORM\RepositoryInterface;
 use Shopware\Core\Framework\ORM\Search\Criteria;
@@ -95,6 +96,8 @@ class MappingService implements MappingServiceInterface
 
     public function getLanguageUuid(string $profile, string $localeCode, Context $context): array
     {
+        return ['uuid' => Defaults::LANGUAGE]; // TODO revert, when the core could handle translations correctly
+
         $languageUuid = $this->searchLanguageInMapping($localeCode, $context);
         $localeUuid = $this->searchLocale($localeCode, $context);
 
