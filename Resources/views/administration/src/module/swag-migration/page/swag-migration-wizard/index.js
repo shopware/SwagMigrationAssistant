@@ -64,9 +64,7 @@ Component.register('swag-migration-wizard', {
         const params = {
             offset: 0,
             limit: 100,
-            additionalParams: {
-                term: { gateway: 'api' }
-            }
+            term: { gateway: 'api' }
         };
 
         this.migrationProfileService.getList(params).then((response) => {

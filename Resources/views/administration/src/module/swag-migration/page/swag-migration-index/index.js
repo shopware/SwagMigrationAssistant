@@ -101,9 +101,7 @@ Component.register('swag-migration-index', {
         const params = {
             offset: 0,
             limit: 100,
-            additionalParams: {
-                term: { gateway: 'api' }
-            }
+            term: { gateway: 'api' }
         };
 
         //Get profile with credentials from server
