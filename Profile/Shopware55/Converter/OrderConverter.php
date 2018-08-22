@@ -104,6 +104,11 @@ class OrderConverter implements ConverterInterface
                 $this->context
             ),
             'email' => $data['customer']['email'],
+            'firstName' => $data['customer']['firstname'],
+            'lastName' => $data['customer']['lastname'],
+            'title' => $data['customer']['title'],
+            'salutation' => $data['customer']['salutation'],
+            'customerNumber' => $data['customer']['customernumber'],
         ];
         unset($data['userID'], $data['customer']);
 
