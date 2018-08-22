@@ -75,9 +75,9 @@ class Shopware55ApiGateway implements GatewayInterface
                 $reader = new Shopware55ApiOrderReader($offset, $limit);
                 break;
 
-            case 'translation':
-                $reader = new Shopware55ApiTranslationReader($offset, $limit);
-                break;
+//            case 'translation': TODO revert, when the core could handle translations correctly
+//                $reader = new Shopware55ApiTranslationReader($offset, $limit);
+//                break;
 
             case 'environment':
                 $reader = new Shopware55ApiEnvironmentReader();
