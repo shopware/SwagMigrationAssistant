@@ -2,9 +2,9 @@ import StorageBroadcastService from '../storage-broadcaster.service';
 
 class MigrationService {
     constructor(migrationService) {
-        this._MAX_REQUEST_TIME = 2000;   //in ms
-        this._DEFAULT_CHUNK_SIZE = 50;   //in data sets
-        this._CHUNK_INCREMENT = 5;       //in data sets
+        this._MAX_REQUEST_TIME = 2000;   // in ms
+        this._DEFAULT_CHUNK_SIZE = 50;   // in data sets
+        this._CHUNK_INCREMENT = 5;       // in data sets
 
         this.MIGRATION_STATUS = {
             WAITING: -1,
@@ -14,15 +14,21 @@ class MigrationService {
             FINISHED: 3,
         };
 
+        // will be toggled when we receive a response for our 'migrationWanted' request
         this._broadcastResponseFlag = false;
-        this._broadcastService = new StorageBroadcastService(this._onBroadcastReceived.bind(this));
+
+        // handles cross browser tab communication
+        this._broadcastService = new StorageBroadcastService(
+            this._onBroadcastReceived.bind(this),
+            'swag-migration-service'
+        );
 
         this._migrationService = migrationService;
-        this._errors = [];
         this._chunkSize = this._DEFAULT_CHUNK_SIZE;
 
-        //state variables
+        // state variables
         this._isMigrating = false;
+        this._errors = [];
         this._entityGroups = [];
         this._progressSubscriber = null;
         this._statusSubscriber = null;
@@ -78,6 +84,7 @@ class MigrationService {
                 return;
             }
 
+            // Wait for the 'migrationWanted' request and response to allow or deny the migration
             let isRunningInOtherTab = true;
             await this._isMigrationRunningInOtherTab().then((isRunning) => {
                 isRunningInOtherTab = isRunning;
@@ -93,24 +100,31 @@ class MigrationService {
             this._errors = [];
             this.subscribeStatus(statusCallback);
             this.subscribeProgress(progressCallback);
-            resolve();
 
-            //step 1 - read/fetch
+            // step 1 - read/fetch
             await this._fetchData();
 
-            //step 2- write
+            // step 2- write
             await this._writeData();
 
-            //step 3 - media download
+            // step 3 - media download
             await this._downloadData();
 
-            //step 4 - show results
+            // step 4 - show results
             await this._migrateFinish();
 
             this._isMigrating = false;
+            resolve();
         });
     }
 
+    /**
+     * Resolves with true if a migration is already running in another tab. otherwise false.
+     * It will resolve after 100ms.
+     *
+     * @returns {Promise}
+     * @private
+     */
     _isMigrationRunningInOtherTab() {
         return new Promise(async (resolve, reject) => {
             this._broadcastService.sendMessage({
@@ -125,12 +139,18 @@ class MigrationService {
                 }
 
                 resolve(false);
-            }, 1000);
+            }, 100);
         });
     }
 
+    /**
+     * Gets called with data from another browser tab
+     *
+     * @param data
+     * @private
+     */
     _onBroadcastReceived(data) {
-        //answer incoming migration wanted request based on current migration state.
+        // answer incoming migration wanted request based on current migration state.
         if (data.migrationMessage === 'migrationWanted') {
             if (this.isMigrating) {
                 this._broadcastService.sendMessage({
@@ -139,7 +159,7 @@ class MigrationService {
             }
         }
 
-        //allow own migration if no migrationDenied response comes back.
+        // allow own migration if no migrationDenied response comes back.
         if(data.migrationMessage === 'migrationDenied') {
             this._broadcastResponseFlag = !this._broadcastResponseFlag;
         }
@@ -147,13 +167,13 @@ class MigrationService {
 
     _callProgressSubscriber(param) {
         if (this._progressSubscriber !== null) {
-            this._progressSubscriber(param);
+            this._progressSubscriber.call(null, param);
         }
     }
 
     _callStatusSubscriber(param) {
         if (this._statusSubscriber !== null) {
-            this._statusSubscriber(param);
+            this._statusSubscriber.call(null, param);
         }
     }
 
@@ -189,6 +209,13 @@ class MigrationService {
         });
     }
 
+    /**
+     * Do all the API requests for all entities with the given methodName
+     *
+     * @param methodName api endpoint name for example 'fetchData' or 'writeData'
+     * @returns {Promise}
+     * @private
+     */
     async _migrateProcess(methodName) {
         return new Promise(async (resolve, reject) => {
             for (let i = 0; i < this._entityGroups.length; i++) {
@@ -205,6 +232,17 @@ class MigrationService {
         });
     }
 
+    /**
+     * Do all the API requests for one entity in chunks
+     *
+     * @param entityName
+     * @param entityCount
+     * @param group
+     * @param groupProgress
+     * @param methodName
+     * @returns {Promise<void>}
+     * @private
+     */
     async _migrateEntity(entityName, entityCount, group, groupProgress, methodName) {
         let currentOffset = 0;
         while (currentOffset < entityCount) {
@@ -214,10 +252,10 @@ class MigrationService {
                 newOffset = entityCount;
             }
 
-            //update own state of progress
+            // update own state of progress
             group.progress = groupProgress + newOffset;
 
-            //call event subscriber
+            // call event subscriber
             this._callProgressSubscriber({
                 entityName,
                 entityGroupProgressValue: groupProgress + newOffset
@@ -229,16 +267,15 @@ class MigrationService {
         this._chunkSize = this._DEFAULT_CHUNK_SIZE;
     }
 
-    _handleChunkSize(requestTime) {
-        if (requestTime < this._MAX_REQUEST_TIME) {
-            this._chunkSize += this._CHUNK_INCREMENT;
-        }
-
-        if (requestTime > this._MAX_REQUEST_TIME) {
-            this._chunkSize -= this._CHUNK_INCREMENT;
-        }
-    }
-
+    /**
+     * Do a single API request for the given entity with given offset.
+     *
+     * @param entityName
+     * @param methodName
+     * @param offset
+     * @returns {Promise}
+     * @private
+     */
     _migrateEntityRequest(entityName, methodName, offset) {
         let params = {
             profile: this._profile.profile,
@@ -252,10 +289,8 @@ class MigrationService {
         return new Promise((resolve, reject) => {
             let beforeRequestTime = new Date();
             this._migrationService[methodName](params).then((response) => {
-
                 let afterRequestTime = new Date();
                 this._handleChunkSize(afterRequestTime.getTime() -beforeRequestTime.getTime());
-
                 resolve();
             }).catch((response) => {
                 if (response.response.data && response.response.data.errors) {
@@ -266,10 +301,25 @@ class MigrationService {
 
                 let afterRequestTime = new Date();
                 this._handleChunkSize(afterRequestTime.getTime() -beforeRequestTime.getTime());
-                //reject();
                 resolve();
             });
         });
+    }
+
+    /**
+     * Update the chunkSize depending on the requestTime
+     *
+     * @param requestTime
+     * @private
+     */
+    _handleChunkSize(requestTime) {
+        if (requestTime < this._MAX_REQUEST_TIME) {
+            this._chunkSize += this._CHUNK_INCREMENT;
+        }
+
+        if (requestTime > this._MAX_REQUEST_TIME) {
+            this._chunkSize -= this._CHUNK_INCREMENT;
+        }
     }
 
     _addError(error) {

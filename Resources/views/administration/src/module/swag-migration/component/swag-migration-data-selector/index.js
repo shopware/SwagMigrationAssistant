@@ -31,7 +31,6 @@ Component.register('swag-migration-data-selector', {
 
     mounted() {
         this.$refs.tableDataGrid.selectAll(true);
-
     },
 
     methods: {

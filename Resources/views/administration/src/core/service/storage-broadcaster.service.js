@@ -1,11 +1,10 @@
 import utils from 'src/core/service/util.service';
 
 export default class StorageBroadcastService {
-    constructor(cb = () => {}, adapter = localStorage) {
+    constructor(receiveCallback = () => {}, channelKey) {
         this._clientId = utils.createId();
-        this._messageKey = 'storage-broadcast';
-        this.adapter = adapter;
-        this.cb = cb;
+        this._channelKey = channelKey;  // To identify the messages of all StorageBroadcastServices
+        this._receiveCallback = receiveCallback;
 
         window.addEventListener('storage', this.messageReceived.bind(this));
     }
@@ -18,6 +17,11 @@ export default class StorageBroadcastService {
         this._clientId = id;
     }
 
+    /**
+     * Send a data packet to all other browser tabs that listens
+     *
+     * @param data
+     */
     sendMessage(data) {
         if (!data.id || !data.id.length) {
             data.id = this._clientId;
@@ -25,21 +29,27 @@ export default class StorageBroadcastService {
 
         data = JSON.stringify(data);
 
-        this.adapter.setItem(this._messageKey, data);
+        localStorage.setItem(this._channelKey, data);
     }
 
+    /**
+     * Handles receive logic, so only data from other tabs trigger the callback
+     *
+     * @param event
+     * @returns {boolean}
+     */
     messageReceived(event) {
-        if (event.key !== 'storage-broadcast') {
-            return;
+        if (event.key !== this._channelKey) {
+            return false;
         }
 
-        const data = JSON.parse(this.adapter.getItem(this._messageKey));
-        this.adapter.removeItem(this._messageKey);
+        const data = JSON.parse(localStorage.getItem(this._channelKey));
+        localStorage.removeItem(this._channelKey);
 
         if(!data || data.id === this._clientId) {
             return false;
         }
 
-        this.cb.call(null, data);
+        this._receiveCallback.call(null, data);
     }
 }

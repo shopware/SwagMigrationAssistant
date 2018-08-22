@@ -23,7 +23,7 @@ Component.register('swag-migration-index', {
             statusIndex: 0,
             isMigrating: false,
             showConfirmDialog: false,
-            targets: [],        //possible data target locations
+            targets: [],        // possible data target locations
             tableData: [
                 {
                     id: 'customers_orders',
@@ -69,25 +69,24 @@ Component.register('swag-migration-index', {
     },
 
     computed: {
-        shopFirstLetter() {
-            if (this.environmentInformation.shopwareVersion)
-                return this.environmentInformation.shopwareVersion[0];
-
-            return '';
-        },
-
         shopDomain() {
-            if (this.environmentInformation.strucure)
-                return this.environmentInformation.strucure[0].host;
+            if (this.environmentInformation.structure) {
+                return this.environmentInformation.structure[0].host;
+            }
 
             return '';
         },
 
         shopVersion() {
-            if (this.environmentInformation.shopwareVersion)
+            if (this.environmentInformation.shopwareVersion && this.environmentInformation.shopwareVersion !== '___VERSION___') {
                 return this.environmentInformation.shopwareVersion;
+            }
 
-            return '';
+            return this.$tc('swag-migration.index.shopVersionFallback');
+        },
+
+        shopFirstLetter() {
+            return this.shopVersion[0];
         }
     },
 
@@ -103,17 +102,17 @@ Component.register('swag-migration-index', {
             term: { gateway: 'api' }
         };
 
-        //Get profile with credentials from server
+        // Get profile with credentials from server
         this.migrationProfileService.getList(params).then((response) => {
             this.profile = response.data[0];
 
-            //check if credentials are given
+            // check if credentials are given
             if (!this.profile.credentialFields.endpoint || !this.profile.credentialFields.apiUser || !this.profile.credentialFields.apiKey) {
                 this.$router.push({ name: 'swag.migration.wizard.introduction' });
                 return;
             }
 
-            //Do connection check
+            // Do connection check
             this.migrationService.checkConnection(this.profile.id).then((connectionCheckResponse) => {
                 if (!connectionCheckResponse.success) {
                     this.$router.push({ name: 'swag.migration.wizard.credentials' });
@@ -127,7 +126,7 @@ Component.register('swag-migration-index', {
             });
         });
 
-        //Get possible targets
+        // Get possible targets
         this.catalogService.getList({}).then((response) => {
             response.data.forEach((catalog) => {
                 this.targets.push({
@@ -136,6 +135,8 @@ Component.register('swag-migration-index', {
                 });
             });
         });
+
+        window.addEventListener('beforeunload', this.onBrowserTabClosing.bind(this));
     },
 
     beforeDestroy() {
@@ -147,16 +148,16 @@ Component.register('swag-migration-index', {
         restoreRunningMigration() {
             this.isMigrating = true;
 
-            //show loading screen
+            // show loading screen
             this.componentIndex = this.components.loadingScreen;
 
-            //Get current status
+            // Get current status
             this.onStatus({ status: this.migrationWorkerService.status });
             if (this.migrationWorkerService.status === this.migrationWorkerService.MIGRATION_STATUS.FINISHED) {
                 return;
             }
 
-            //Get data to migrate (selected table data + progress)
+            // Get data to migrate (selected table data + progress)
             let selectedEntityGroups = this.migrationWorkerService.entityGroups;
             this.tableData.forEach((data) => {
                 let group = selectedEntityGroups.find((g) => {
@@ -164,19 +165,19 @@ Component.register('swag-migration-index', {
                 });
 
                 if (group !== undefined) {
-                    //found entity in group -> means it was selected
+                    // found entity in group -> means it was selected
                     data.selected = true;
 
-                    //set the progress for the group
+                    // set the progress for the group
                     data.progressBar.value = group.progress;
                 }
             });
 
 
-            //subscribe to the progress event again
+            // subscribe to the progress event again
             this.migrationWorkerService.subscribeProgress(this.onProgress);
 
-            //subscribe to the status event again
+            // subscribe to the status event again
             this.migrationWorkerService.subscribeStatus(this.onStatus);
         },
 
@@ -210,6 +211,29 @@ Component.register('swag-migration-index', {
             });
         },
 
+        /**
+         * Creates an data array similar to the following:
+         * [
+         *      {
+         *          id: "customers_orders"
+         *          entities: [
+         *              {
+         *                  entityName: "customer",
+         *                  entityCount: 2
+         *              },
+         *              {
+         *                  entityName: "order",
+         *                  entityCount: 4
+         *              }
+         *          ],
+         *          count: 6
+         *          progress: 6
+         *      },
+         *      ...
+         *  ]
+         *
+         * @returns {Array}
+         */
         getEntityGroups() {
             let entityGroups = [];
             this.tableData.forEach((data) => {
@@ -243,18 +267,18 @@ Component.register('swag-migration-index', {
             this.statusIndex = 0;
             this.resetProgress();
 
-            //show loading screen
+            // show loading screen
             this.componentIndex = this.components.loadingScreen;
 
-            //get all entities in order
+            // get all entities in order
             let entityGroups = this.getEntityGroups();
 
-            this.migrationWorkerService.startMigration(this.profile, entityGroups, this.onStatus, this.onProgress).catch(() => {
-                //show data selection again
+            await this.migrationWorkerService.startMigration(this.profile, entityGroups, this.onStatus.bind(this), this.onProgress.bind(this)).catch(() => {
+                // show data selection again
                 this.isMigrating = false;
                 this.componentIndex = this.components.dataSelector;
 
-                alert('Migration bereits gestartet'); //TODO: Replace - Design?
+                alert(this.$tc('swag-migration.index.migrationAlreadyRunning')); // TODO: Replace - Design?
             });
         },
 
@@ -264,9 +288,9 @@ Component.register('swag-migration-index', {
 
             if (this.statusIndex === this.migrationWorkerService.MIGRATION_STATUS.FINISHED) {
                 if (this.migrationWorkerService.errors.length > 0) {
-                    this.componentIndex = this.components.resultWarning;    //show result warning screen
+                    this.componentIndex = this.components.resultWarning;    // show result warning screen
                 } else {
-                    this.componentIndex = this.components.resultSuccess;    //show result success screen
+                    this.componentIndex = this.components.resultSuccess;    // show result success screen
                 }
             }
         },
@@ -304,6 +328,14 @@ Component.register('swag-migration-index', {
             this.migrationWorkerService.status = this.migrationWorkerService.MIGRATION_STATUS.WAITING;
             this.componentIndex = this.components.dataSelector;
             this.isMigrating = false;
+        },
+
+        onBrowserTabClosing(e) {
+            if (this.isMigrating) {
+                var dialogText = this.$tc('swag-migration.index.browserClosingHint');
+                e.returnValue = dialogText;
+                return dialogText;
+            }
         }
     }
 });

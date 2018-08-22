@@ -22,11 +22,11 @@ Component.register('swag-migration-wizard', {
                 'swag.migration.wizard.credentials_success',
                 'swag.migration.wizard.credentials_error'
             ],
-            routeCountVisible: 3,  //only show 4 dots and allow navigation between them.
+            routeCountVisible: 3,  // only show 4 dots and allow navigation between them.
             routeIndex: 0,
-            routeIndexVisible: 0,   //only count up to 3
+            routeIndexVisible: 0,   // only count up to 3
             profileId: '0x945f840058dc4e5583a02f70bef46071',
-            credentials: {}, //.endpoint .apiUser .apiKey
+            credentials: {}, // .endpoint .apiUser .apiKey
             errorMessage: ''
         };
     },
@@ -121,13 +121,13 @@ Component.register('swag-migration-wizard', {
 
         onResponseError(errorCode) {
             switch (errorCode) {
-                case '0': //can't connect to shop
+                case '0': // can't connect to shop
                     this.errorMessage = this.$tc('swag-migration.wizard.pages.credentials.error.connectionErrorMsg');
                     break;
-                case '401':   //invalid access credentials
+                case '401':   // invalid access credentials
                     this.errorMessage = this.$tc('swag-migration.wizard.pages.credentials.error.authenticationErrorMsg');
                     break;
-                default:    //something else
+                default:    // something else
                     this.errorMessage = this.$tc('swag-migration.wizard.pages.credentials.error.undefinedErrorMsg');
                     break;
             }
@@ -147,7 +147,7 @@ Component.register('swag-migration-wizard', {
             this.routeIndexVisible = 0;
 
             if (_routeIndex === this.routeSuccessIndex) {
-                //navigate to module
+                // navigate to module
                 this.$router.push({
                     name: 'swag.migration.index',
                     params: { profileId: this.profileId }
@@ -156,7 +156,7 @@ Component.register('swag-migration-wizard', {
         },
 
         matchRouteWithIndex() {
-            //check for current child route
+            // check for current child route
             let currentRouteIndex = this.routes.findIndex((r) => {
                 return r === this.$router.currentRoute.name;
             });
@@ -176,7 +176,7 @@ Component.register('swag-migration-wizard', {
         onChildRouteChanged() {
             this.buttonPreviousText = this.$tc('swag-migration.wizard.buttonPrev');
 
-            //Handle next button text
+            // Handle next button text
             if (this.routeIndex === this.routeApiCredentialsIndex) {
                 this.buttonNextText = this.$tc('swag-migration.wizard.buttonConnect');
             } else if (this.routeIndex === this.routeSuccessIndex) {
@@ -187,7 +187,7 @@ Component.register('swag-migration-wizard', {
                 this.buttonNextText = this.$tc('swag-migration.wizard.buttonNext');
             }
 
-            //Handle back button
+            // Handle back button
             if (this.routeIndex === this.routeSuccessIndex || this.routeIndex === this.routeErrorIndex) {
                 this.buttonPreviousVisible = false;
             } else {
@@ -214,15 +214,15 @@ Component.register('swag-migration-wizard', {
 
         onNext() {
             if (this.routeIndex === this.routeApiCredentialsIndex) {
-                //we clicked connect.
+                // we clicked connect.
                 this.onConnect();
                 return;
             } else if (this.routeIndex === this.routeSuccessIndex) {
-                //we clicked finish.
+                // we clicked finish.
                 this.onCloseModal();
                 return;
             } else if (this.routeIndex === this.routeErrorIndex) {
-                //we clicked Back
+                // we clicked Back
                 this.navigateToRoute(this.routes[this.routeApiCredentialsIndex]);
                 return;
             }
