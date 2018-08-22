@@ -22,17 +22,17 @@ class MappingService implements MappingServiceInterface
     /**
      * @var RepositoryInterface
      */
-    private $localeRepository;
+    protected $localeRepository;
 
     /**
      * @var RepositoryInterface
      */
-    private $languageRepository;
+    protected $languageRepository;
 
     /**
      * @var RepositoryInterface
      */
-    private $countryRepository;
+    protected $countryRepository;
 
     public function __construct(
         RepositoryInterface $migrationMappingRepo,
@@ -160,7 +160,7 @@ class MappingService implements MappingServiceInterface
         return null;
     }
 
-    private function writeMapping(array $writeMapping, Context $context): void
+    protected function writeMapping(array $writeMapping, Context $context): void
     {
         $this->migrationMappingRepo->create($writeMapping, $context);
     }

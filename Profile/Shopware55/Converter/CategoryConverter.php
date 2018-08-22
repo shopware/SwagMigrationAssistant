@@ -53,8 +53,12 @@ class CategoryConverter implements ConverterInterface
     /**
      * @throws ParentEntityForChildNotFoundException
      */
-    public function convert(array $data, Context $context): ConvertStruct
-    {
+    public function convert(
+        array $data,
+        Context $context,
+        ?string $catalogId = null,
+        ?string $salesChannelId = null
+    ): ConvertStruct {
         $this->profile = Shopware55Profile::PROFILE_NAME;
         $this->context = $context;
         $this->oldCategoryId = $data['id'];
@@ -78,14 +82,18 @@ class CategoryConverter implements ConverterInterface
         $converted['id'] = $this->mappingService->createNewUuid(
             $this->profile,
             CategoryDefinition::getEntityName(),
-            $data['id'],
+            $this->oldCategoryId,
             $this->context
         );
         unset($data['id']);
 
+        if ($catalogId !== null) {
+            $converted['catalogId'] = $catalogId;
+        }
+
         if (isset($data['parent'])) {
             $parentUuid = $this->mappingService->getUuid(
-                Shopware55Profile::PROFILE_NAME,
+                $this->profile,
                 CategoryDefinition::getEntityName(),
                 $data['parent'],
                 $this->context

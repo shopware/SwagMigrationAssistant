@@ -3,10 +3,14 @@
 namespace SwagMigrationNext\Test\Mock\Migration\Mapping;
 
 use Shopware\Core\Framework\Context;
-use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
+use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 
-class DummyMappingService implements MappingServiceInterface
+class DummyMappingService extends Shopware55MappingService
 {
+    public function __construct()
+    {
+    }
+
     public function readExistingMappings(Context $context): void
     {
     }

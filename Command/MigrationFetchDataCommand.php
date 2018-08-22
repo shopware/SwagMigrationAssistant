@@ -7,7 +7,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Struct\Uuid;
 use SwagMigrationNext\Migration\MigrationCollectServiceInterface;
 use SwagMigrationNext\Migration\MigrationContext;
-use SwagMigrationNext\Migration\MigrationEnvironmentService;
+use SwagMigrationNext\Migration\MigrationEnvironmentServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
@@ -25,13 +25,13 @@ class MigrationFetchDataCommand extends ContainerAwareCommand
     private $migrationCollectService;
 
     /**
-     * @var MigrationEnvironmentService
+     * @var MigrationEnvironmentServiceInterface
      */
     private $environmentService;
 
     public function __construct(
         MigrationCollectServiceInterface $migrationCollectService,
-        MigrationEnvironmentService $environmentService,
+        MigrationEnvironmentServiceInterface $environmentService,
         ?string $name = null
     ) {
         parent::__construct($name);
@@ -41,12 +41,16 @@ class MigrationFetchDataCommand extends ContainerAwareCommand
 
     protected function configure(): void
     {
-        $this->setDescription('Fetches data with the given profile from the given gateway');
-        $this->addOption('tenant-id', 't', InputOption::VALUE_REQUIRED);
-        $this->addOption('profile', 'p', InputOption::VALUE_REQUIRED);
-        $this->addOption('gateway', 'g', InputOption::VALUE_REQUIRED);
-        $this->addOption('entity', 'y', InputOption::VALUE_REQUIRED);
-        $this->addArgument('credentials', InputArgument::IS_ARRAY | InputArgument::REQUIRED);
+        $this
+            ->setDescription('Fetches data with the given profile from the given gateway')
+            ->addOption('tenant-id', 't', InputOption::VALUE_REQUIRED)
+            ->addOption('profile', 'p', InputOption::VALUE_REQUIRED)
+            ->addOption('gateway', 'g', InputOption::VALUE_REQUIRED)
+            ->addOption('entity', 'y', InputOption::VALUE_REQUIRED)
+            ->addOption('catalog-id', 'c', InputOption::VALUE_REQUIRED)
+            ->addOption('sales-channel-id', 's', InputOption::VALUE_REQUIRED)
+            ->addArgument('credentials', InputArgument::IS_ARRAY | InputArgument::REQUIRED)
+        ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -60,6 +64,16 @@ class MigrationFetchDataCommand extends ContainerAwareCommand
             throw new InvalidArgumentException('Invalid uuid provided');
         }
         $context = Context::createDefaultContext($tenantId);
+
+        $catalogId = $input->getOption('catalog-id');
+        if ($catalogId !== null && !Uuid::isValid($catalogId)) {
+            throw new InvalidArgumentException('Invalid catalogue uuid provided');
+        }
+
+        $salesChannelId = $input->getOption('sales-channel-id');
+        if ($salesChannelId !== null && !Uuid::isValid($salesChannelId)) {
+            throw new InvalidArgumentException('Invalid sales channel uuid provided');
+        }
 
         $profile = $input->getOption('profile');
         if (!$profile) {
@@ -100,7 +114,16 @@ class MigrationFetchDataCommand extends ContainerAwareCommand
         $progressBar->start();
 
         for ($offset = 0; $offset < $total; $offset += $limit) {
-            $migrationContext = new MigrationContext($profile, $gateway, $entity, $credentials, $offset, $limit);
+            $migrationContext = new MigrationContext(
+                $profile,
+                $gateway,
+                $entity,
+                $credentials,
+                $offset,
+                $limit,
+                $catalogId,
+                $salesChannelId
+            );
             $importedCount = $this->migrationCollectService->fetchData($migrationContext, $context);
             $totalImportedCount += $importedCount;
             $progressBar->advance($importedCount);

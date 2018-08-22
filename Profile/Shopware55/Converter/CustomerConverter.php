@@ -32,12 +32,22 @@ class CustomerConverter implements ConverterInterface
     /**
      * @var string
      */
-    private $oldId;
+    private $profile;
+
+    /**
+     * @var Context
+     */
+    private $context;
 
     /**
      * @var string
      */
     private $mainLocale;
+
+    /**
+     * @var string
+     */
+    private $oldCustomerId;
 
     public function __construct(
         Shopware55MappingService $mappingService,
@@ -52,17 +62,24 @@ class CustomerConverter implements ConverterInterface
         return CustomerDefinition::getEntityName();
     }
 
-    public function convert(array $data, Context $context): ConvertStruct
-    {
+    public function convert(
+        array $data,
+        Context $context,
+        ?string $catalogId = null,
+        ?string $salesChannelId = null
+    ): ConvertStruct {
+        $this->profile = Shopware55Profile::PROFILE_NAME;
+        $this->context = $context;
         $this->mainLocale = $data['_locale'];
         unset($data['_locale']);
+        $this->oldCustomerId = $data['id'];
+
         $converted = [];
-        $this->oldId = $data['id'];
         $customerUuid = $this->mappingService->createNewUuid(
-            Shopware55Profile::PROFILE_NAME,
+            $this->profile,
             CustomerDefinition::getEntityName(),
-            $data['id'],
-            $context
+            $this->oldCustomerId,
+            $this->context
         );
         $converted['id'] = $customerUuid;
         unset($data['id']);
@@ -88,22 +105,25 @@ class CustomerConverter implements ConverterInterface
         $this->helper->convertValue($converted, 'encoder', $data, 'encoder');
 
         if (isset($data['group']['id'])) {
-            $converted['group'] = $this->getCustomerGroup($data['group'], $context);
+            $converted['group'] = $this->getCustomerGroup($data['group']);
         }
         unset($data['group']);
 
         if ($data['defaultpayment']['id']) {
-            $this->getDefaultPaymentMethod($data, $converted, $context);
+            $this->getDefaultPaymentMethod($data, $converted);
         }
         unset($data['defaultpayment'], $data['paymentpreset']);
 
         if (isset($data['addresses'])) {
-            $converted['addresses'] = $this->getAddresses($data, $converted, $context, $customerUuid);
+            $converted['addresses'] = $this->getAddresses($data, $converted, $customerUuid);
         }
         unset($data['addresses']);
 
-        // Todo: Create a new sales channel?
-        $converted['salesChannelId'] = Defaults::SALES_CHANNEL;
+        if ($salesChannelId !== null) {
+            $converted['salesChannelId'] = $salesChannelId;
+        } else {
+            $converted['salesChannelId'] = Defaults::SALES_CHANNEL;
+        }
 
         // Legacy data which don't need a mapping or there is no equivalent field
         unset(
@@ -130,19 +150,19 @@ class CustomerConverter implements ConverterInterface
         return new ConvertStruct($converted, $data);
     }
 
-    private function getCustomerGroup(array $originalData, Context $context): array
+    private function getCustomerGroup(array $originalData): array
     {
         $group['id'] = $this->mappingService->createNewUuid(
-            Shopware55Profile::PROFILE_NAME,
+            $this->profile,
             CustomerGroupDefinition::getEntityName(),
             $originalData['id'],
-            $context
+            $this->context
         );
         $translation['id'] = $this->mappingService->createNewUuid(
-            Shopware55Profile::PROFILE_NAME,
+            $this->profile,
             CustomerGroupTranslationDefinition::getEntityName(),
             $originalData['id'] . ':' . $this->mainLocale,
-            $context
+            $this->context
         );
 
         $translation['customerGroupId'] = $group['id'];
@@ -155,7 +175,7 @@ class CustomerConverter implements ConverterInterface
         $this->helper->convertValue($group, 'minimumOrderAmount', $originalData, 'minimumorder', $this->helper::TYPE_FLOAT);
         $this->helper->convertValue($group, 'minimumOrderAmountSurcharge', $originalData, 'minimumordersurcharge', $this->helper::TYPE_FLOAT);
 
-        $languageData = $this->mappingService->getLanguageUuid(Shopware55Profile::PROFILE_NAME, $this->mainLocale, $context);
+        $languageData = $this->mappingService->getLanguageUuid($this->profile, $this->mainLocale, $this->context);
 
         if (isset($languageData['createData']) && !empty($languageData['createData'])) {
             $translation['language']['id'] = $languageData['uuid'];
@@ -170,26 +190,29 @@ class CustomerConverter implements ConverterInterface
         return $group;
     }
 
-    private function getDefaultPaymentMethod(array $originalData, array &$converted, Context $context): void
+    private function getDefaultPaymentMethod(array $originalData, array &$converted): void
     {
-        $defaultPaymentMethodUuid = $this->mappingService->getPaymentUuid($originalData['defaultpayment']['name'], $context);
+        $defaultPaymentMethodUuid = $this->mappingService->getPaymentUuid(
+            $originalData['defaultpayment']['name'],
+            $this->context
+        );
 
         if ($defaultPaymentMethodUuid !== null) {
             $defaultPaymentMethod['id'] = $defaultPaymentMethodUuid;
         } else {
             $defaultPaymentMethod['id'] = $this->mappingService->createNewUuid(
-                Shopware55Profile::PROFILE_NAME,
+                $this->profile,
                 PaymentMethodDefinition::getEntityName(),
                 $originalData['defaultpayment']['id'],
-                $context
+                $this->context
             );
         }
 
         $translation['id'] = $this->mappingService->createNewUuid(
-            Shopware55Profile::PROFILE_NAME,
+            $this->profile,
             PaymentMethodTranslationDefinition::getEntityName(),
             $originalData['defaultpayment']['id'] . ':' . $this->mainLocale,
-            $context
+            $this->context
         );
 
         $translation['paymentMethodId'] = $defaultPaymentMethod['id'];
@@ -214,7 +237,7 @@ class CustomerConverter implements ConverterInterface
         $this->helper->convertValue($defaultPaymentMethod, 'source', $originalData['defaultpayment'], 'source', $this->helper::TYPE_INTEGER);
         $this->helper->convertValue($defaultPaymentMethod, 'mobileInactive', $originalData['defaultpayment'], 'mobile_inactive', $this->helper::TYPE_BOOLEAN);
 
-        $languageData = $this->mappingService->getLanguageUuid(Shopware55Profile::PROFILE_NAME, $this->mainLocale, $context);
+        $languageData = $this->mappingService->getLanguageUuid($this->profile, $this->mainLocale, $this->context);
 
         if (isset($languageData['createData']) && !empty($languageData['createData'])) {
             $translation['language']['id'] = $languageData['uuid'];
@@ -229,17 +252,17 @@ class CustomerConverter implements ConverterInterface
         $converted['defaultPaymentMethod'] = $defaultPaymentMethod;
     }
 
-    private function getAddresses(array &$originalData, array &$converted, Context $context, string $customerUuid): array
+    private function getAddresses(array &$originalData, array &$converted, string $customerUuid): array
     {
         $addresses = [];
         foreach ($originalData['addresses'] as $address) {
             $newAddress = [];
 
             $newAddress['id'] = $this->mappingService->createNewUuid(
-                Shopware55Profile::PROFILE_NAME,
+                $this->profile,
                 CustomerAddressDefinition::getEntityName(),
                 $address['id'],
-                $context
+                $this->context
             );
 
             if (isset($originalData['default_billing_address_id']) && $address['id'] === $originalData['default_billing_address_id']) {
@@ -253,7 +276,7 @@ class CustomerConverter implements ConverterInterface
             }
 
             $newAddress['customerId'] = $customerUuid;
-            $newAddress['country'] = $this->getCountry($address['country'], $context);
+            $newAddress['country'] = $this->getCountry($address['country']);
             $this->helper->convertValue($newAddress, 'salutation', $address, 'salutation');
             $this->helper->convertValue($newAddress, 'firstName', $address, 'firstname');
             $this->helper->convertValue($newAddress, 'lastName', $address, 'lastname');
@@ -274,7 +297,7 @@ class CustomerConverter implements ConverterInterface
         return $addresses;
     }
 
-    private function getCountry(array $oldCountryData, Context $context): array
+    private function getCountry(array $oldCountryData): array
     {
         $country = [];
         $countryUuid = null;
@@ -283,8 +306,8 @@ class CustomerConverter implements ConverterInterface
                 $oldCountryData['id'],
                 $oldCountryData['countryiso'],
                 $oldCountryData['iso3'],
-                Shopware55Profile::PROFILE_NAME,
-                $context
+                $this->profile,
+                $this->context
             );
         }
 
@@ -292,18 +315,18 @@ class CustomerConverter implements ConverterInterface
             $country['id'] = $countryUuid;
         } else {
             $country['id'] = $this->mappingService->createNewUuid(
-                Shopware55Profile::PROFILE_NAME,
+                $this->profile,
                 CountryDefinition::getEntityName(),
                 $oldCountryData['id'],
-                $context
+                $this->context
             );
         }
 
         $translation['id'] = $this->mappingService->createNewUuid(
-            Shopware55Profile::PROFILE_NAME,
+            $this->profile,
             CountryTranslationDefinition::getEntityName(),
             $oldCountryData['id'] . ':' . $this->mainLocale,
-            $context
+            $this->context
         );
 
         $translation['countryId'] = $country['id'];
@@ -319,7 +342,7 @@ class CustomerConverter implements ConverterInterface
         $this->helper->convertValue($country, 'displayStateInRegistration', $oldCountryData, 'display_state_in_registration', $this->helper::TYPE_BOOLEAN);
         $this->helper->convertValue($country, 'forceStateInRegistration', $oldCountryData, 'force_state_in_registration', $this->helper::TYPE_BOOLEAN);
 
-        $languageData = $this->mappingService->getLanguageUuid(Shopware55Profile::PROFILE_NAME, $this->mainLocale, $context);
+        $languageData = $this->mappingService->getLanguageUuid($this->profile, $this->mainLocale, $this->context);
 
         if (isset($languageData['createData']) && !empty($languageData['createData'])) {
             $translation['language']['id'] = $languageData['uuid'];

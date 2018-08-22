@@ -49,6 +49,11 @@ class ProductConverter implements ConverterInterface
      */
     private $profile;
 
+    /**
+     * @var string|null
+     */
+    private $catalogId;
+
     public function __construct(
         Shopware55MappingService $mappingService,
         ConverterHelperService $converterHelperService
@@ -65,11 +70,17 @@ class ProductConverter implements ConverterInterface
     /**
      * @throws ParentEntityForChildNotFoundException
      */
-    public function convert(array $data, Context $context): ConvertStruct
-    {
+    public function convert(
+        array $data,
+        Context $context,
+        ?string $catalogId = null,
+        ?string $salesChannelId = null
+    ): ConvertStruct {
         $this->profile = Shopware55Profile::PROFILE_NAME;
         $this->context = $context;
+        $this->catalogId = $catalogId;
         $this->oldProductId = $data['id'];
+        unset($data['id']);
 
         $productKind = (int) $data['detail']['kind'];
         unset($data['detail']['kind']);
@@ -86,6 +97,10 @@ class ProductConverter implements ConverterInterface
         $converted = $this->getUuidForProduct($data);
         $converted = $this->getProductData($data, $converted);
 
+        if ($catalogId !== null) {
+            $converted['catalogId'] = $catalogId;
+        }
+
         if (empty($data)) {
             $data = null;
         }
@@ -98,11 +113,11 @@ class ProductConverter implements ConverterInterface
         $containerUuid = $this->mappingService->createNewUuid(
             $this->profile,
             ProductDefinition::getEntityName() . '_container',
-            $data['id'],
+            $this->oldProductId,
             $this->context
         );
         $converted['id'] = $containerUuid;
-        unset($data['id'], $data['detail']['articleID']);
+        unset($data['detail']['articleID']);
 
         $converted = $this->getProductData($data, $converted);
 
@@ -120,6 +135,10 @@ class ProductConverter implements ConverterInterface
             unset($data['detail']);
         }
 
+        if ($this->catalogId !== null) {
+            $converted['catalogId'] = $this->catalogId;
+        }
+
         if (empty($data)) {
             $data = null;
         }
@@ -133,9 +152,9 @@ class ProductConverter implements ConverterInterface
     private function convertVariantProduct(array $data): ConvertStruct
     {
         $parentUuid = $this->mappingService->getUuid(
-            Shopware55Profile::PROFILE_NAME,
+            $this->profile,
             ProductDefinition::getEntityName() . '_container',
-            $data['id'],
+            $this->oldProductId,
             $this->context
         );
 
@@ -146,6 +165,10 @@ class ProductConverter implements ConverterInterface
         $converted = $this->getUuidForProduct($data);
         $converted['parentId'] = $parentUuid;
         $converted = $this->getProductData($data, $converted);
+
+        if ($this->catalogId !== null) {
+            $converted['catalogId'] = $this->catalogId;
+        }
 
         if (empty($data)) {
             $data = null;
@@ -162,7 +185,7 @@ class ProductConverter implements ConverterInterface
             $data['detail']['id'],
             $this->context
         );
-        unset($data['detail']['id'], $data['detail']['articleID'], $data['id']);
+        unset($data['detail']['id'], $data['detail']['articleID']);
 
         return $converted;
     }
@@ -472,7 +495,7 @@ class ProductConverter implements ConverterInterface
 
         foreach ($categories as $key => $category) {
             $categoryUuid = $this->mappingService->getUuid(
-                Shopware55Profile::PROFILE_NAME,
+                $this->profile,
                 CategoryDefinition::getEntityName(),
                 $category['id'],
                 $this->context

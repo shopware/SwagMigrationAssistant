@@ -10,7 +10,7 @@ use SwagMigrationNext\Exception\MigrationContextPropertyMissingException;
 use SwagMigrationNext\Migration\AssetDownloadServiceInterface;
 use SwagMigrationNext\Migration\MigrationCollectServiceInterface;
 use SwagMigrationNext\Migration\MigrationContext;
-use SwagMigrationNext\Migration\MigrationEnvironmentService;
+use SwagMigrationNext\Migration\MigrationEnvironmentServiceInterface;
 use SwagMigrationNext\Migration\MigrationWriteServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -35,7 +35,7 @@ class MigrationController extends Controller
     private $assetDownloadService;
 
     /**
-     * @var MigrationEnvironmentService
+     * @var MigrationEnvironmentServiceInterface
      */
     private $environmentService;
 
@@ -48,7 +48,7 @@ class MigrationController extends Controller
         MigrationCollectServiceInterface $migrationCollectService,
         MigrationWriteServiceInterface $migrationWriteService,
         AssetDownloadServiceInterface $assetDownloadService,
-        MigrationEnvironmentService $environmentService,
+        MigrationEnvironmentServiceInterface $environmentService,
         RepositoryInterface $migrationProfileRepo
     ) {
         $this->migrationCollectService = $migrationCollectService;
@@ -100,6 +100,8 @@ class MigrationController extends Controller
         $offset = $request->request->getInt('offset');
         $limit = $request->request->getInt('limit', 250);
         $credentials = $request->get('credentialFields', []);
+        $catalogId = $request->get('catalogId');
+        $salesChannelId = $request->get('salesChannelId');
 
         if ($profile === null) {
             throw new MigrationContextPropertyMissingException('profile');
@@ -117,7 +119,16 @@ class MigrationController extends Controller
             throw new MigrationContextPropertyMissingException('credentials');
         }
 
-        $migrationContext = new MigrationContext($profile, $gateway, $entity, $credentials, $offset, $limit);
+        $migrationContext = new MigrationContext(
+            $profile,
+            $gateway,
+            $entity,
+            $credentials,
+            $offset,
+            $limit,
+            $catalogId,
+            $salesChannelId
+        );
         $this->migrationCollectService->fetchData($migrationContext, $context);
 
         return new JsonResponse(['success' => true]);
