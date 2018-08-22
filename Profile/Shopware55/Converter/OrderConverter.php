@@ -96,15 +96,18 @@ class OrderConverter implements ConverterInterface
         );
         unset($data['id']);
 
-        $converted['customerId'] = $this->mappingService->getUuid(
-            $this->profile,
-            CustomerDefinition::getEntityName(),
-            $data['userID'],
-            $this->context
-        );
+        $converted['orderCustomer'] = [
+            'customerId' => $this->mappingService->getUuid(
+                $this->profile,
+                CustomerDefinition::getEntityName(),
+                $data['userID'],
+                $this->context
+            ),
+            'email' => $data['customer']['email'],
+        ];
         unset($data['userID'], $data['customer']);
 
-        if ($converted['customerId'] === null) {
+        if ($converted['orderCustomer']['customerId'] === null) {
             throw new AssociationEntityRequiredMissingException(
                 OrderDefinition::getEntityName(),
                 CustomerDefinition::getEntityName()
