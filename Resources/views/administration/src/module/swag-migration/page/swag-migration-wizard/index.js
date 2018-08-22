@@ -74,17 +74,27 @@ Component.register('swag-migration-wizard', {
             this.profileId = response.data[0].id;
         });
 
-        if (this.$route.query.show) {
-            this.showModal = this.$route.query.show;
-        }
-
         this.matchRouteWithIndex();
     },
 
     beforeRouteUpdate(to, from, next) {
-        this.showModal = true;
         next();
         this.matchRouteWithIndex();
+    },
+
+    /**
+     * Close modal and after it is closed we redirect to next route.
+     * (note: without closing it first the sw-modal will stay in the DOM)
+     *
+     * @param to
+     * @param from
+     * @param next
+     */
+    beforeRouteLeave(to, from, next) {
+        this.showModal = false;
+        this.$nextTick(() => {
+            next();
+        });
     },
 
     methods: {
@@ -135,7 +145,6 @@ Component.register('swag-migration-wizard', {
             let _routeIndex = this.routeIndex;
 
             this.showModal = false;
-            this.$route.query.show = this.showModal;
             this.routeIndex = 0;
             this.routeIndexVisible = 0;
 
