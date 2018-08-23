@@ -143,6 +143,8 @@ class MigrationController extends Controller
     {
         $profile = $request->get('profile');
         $entity = $request->get('entity');
+        $offset = $request->request->getInt('offset');
+        $limit = $request->request->getInt('limit', 250);
 
         if ($profile === null) {
             throw new MigrationContextPropertyMissingException('profile');
@@ -152,7 +154,7 @@ class MigrationController extends Controller
             throw new MigrationContextPropertyMissingException('entity');
         }
 
-        $migrationContext = new MigrationContext($profile, '', $entity, [], 0, 0);
+        $migrationContext = new MigrationContext($profile, '', $entity, [], $offset, $limit);
         $this->migrationWriteService->writeData($migrationContext, $context);
 
         return new JsonResponse(['success' => true]);

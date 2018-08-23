@@ -5,12 +5,13 @@ import './swag-migration-index.less';
 Component.register('swag-migration-index', {
     template,
 
-    inject: ['migrationProfileService', 'migrationService', 'catalogService'],
+    inject: ['migrationProfileService', 'migrationService', 'catalogService', 'migrationWorkerService'],
 
     data() {
         return {
             profile: {},
             environmentInformation: {},
+            entityCounts: {},
             componentIndex: 0,
             components: {
                 dataSelector: 0,
@@ -19,10 +20,10 @@ Component.register('swag-migration-index', {
                 resultWarning: 3,
                 resultFailure: 4
             },
+            statusIndex: 0,
             isMigrating: false,
             showConfirmDialog: false,
-            targets: [],
-            selectedData: {},
+            targets: [],        // possible data target locations
             tableData: [
                 {
                     id: 'customers_orders',
@@ -30,7 +31,12 @@ Component.register('swag-migration-index', {
                     data: this.$tc('swag-migration.index.selectDataCard.dataPossible.customersAndOrders'),
                     targetDisabled: true,
                     targetHidden: true,
-                    targetId: ''
+                    selected: false,
+                    targetId: '',
+                    progressBar: {
+                        value: 0,
+                        maxValue: 100
+                    }
                 },
                 {
                     id: 'categories_products',
@@ -38,7 +44,12 @@ Component.register('swag-migration-index', {
                     data: this.$tc('swag-migration.index.selectDataCard.dataPossible.categoriesAndProducts'),
                     targetDisabled: true,
                     targetHidden: false,
-                    targetId: ''
+                    selected: false,
+                    targetId: '',
+                    progressBar: {
+                        value: 0,
+                        maxValue: 100
+                    }
                 },
                 {
                     id: 'media',
@@ -46,88 +57,77 @@ Component.register('swag-migration-index', {
                     data: this.$tc('swag-migration.index.selectDataCard.dataPossible.media'),
                     targetDisabled: true,
                     targetHidden: false,
-                    targetId: ''
+                    selected: false,
+                    targetId: '',
+                    progressBar: {
+                        value: 0,
+                        maxValue: 100
+                    }
                 }
-            ],
-            statusIndex: 0,
-            progressBars: [],
-            progressBarsPossible: [
-                {
-                    entityNames: ['customer', 'order'],
-                    parentId: 'customers_orders',
-                    title: this.$tc('swag-migration.index.selectDataCard.dataPossible.customersAndOrders'),
-                    value: 0
-                },
-                {
-                    entityNames: ['category', 'product'], // 'translation'], TODO revert, when the core could handle translations correctly
-                    parentId: 'categories_products',
-                    title: this.$tc('swag-migration.index.selectDataCard.dataPossible.categoriesAndProducts'),
-                    value: 0
-                },
-                {
-                    entityNames: ['media'],
-                    parentId: 'media',
-                    title: this.$tc('swag-migration.index.selectDataCard.dataPossible.media'),
-                    value: 0
-                }
-            ],
+            ]
         };
     },
 
     computed: {
-        shopFirstLetter() {
-            if (this.environmentInformation.shopwareVersion)
-                return this.environmentInformation.shopwareVersion[0];
-
-            return '';
-        },
-
         shopDomain() {
-            if (this.environmentInformation.strucure)
-                return this.environmentInformation.strucure[0].host;
+            if (this.environmentInformation.structure) {
+                return this.environmentInformation.structure[0].host;
+            }
 
             return '';
         },
 
         shopVersion() {
-            if (this.environmentInformation.shopwareVersion)
+            if (this.environmentInformation.shopwareVersion && this.environmentInformation.shopwareVersion !== '___VERSION___') {
                 return this.environmentInformation.shopwareVersion;
+            }
 
-            return '';
+            return this.$tc('swag-migration.index.shopVersionFallback');
+        },
+
+        shopFirstLetter() {
+            return this.shopVersion[0];
         }
     },
 
     created() {
+        if (this.migrationWorkerService.isMigrating || this.migrationWorkerService.status === this.migrationWorkerService.MIGRATION_STATUS.FINISHED) {
+            this.restoreRunningMigration();
+        }
+
+
         const params = {
             offset: 0,
             limit: 100,
             term: { gateway: 'api' }
         };
 
-        //Get profile with credentials from server
+        // Get profile with credentials from server
         this.migrationProfileService.getList(params).then((response) => {
             this.profile = response.data[0];
 
-            //check if credentials are given
+            // check if credentials are given
             if (!this.profile.credentialFields.endpoint || !this.profile.credentialFields.apiUser || !this.profile.credentialFields.apiKey) {
                 this.$router.push({ name: 'swag.migration.wizard.introduction' });
                 return;
             }
 
-
-            //Do connection check
+            // Do connection check
             this.migrationService.checkConnection(this.profile.id).then((connectionCheckResponse) => {
                 if (!connectionCheckResponse.success) {
                     this.$router.push({ name: 'swag.migration.wizard.credentials' });
                 }
 
                 this.environmentInformation = connectionCheckResponse.environmentInformation;
+                this.normalizeEnvironmentInformation();
+                this.calculateProgressMaxValues();
             }).catch((error) => {
                 this.$router.push({ name: 'swag.migration.wizard.credentials' });
             });
         });
 
-        this.catalogService.getList({ offset: 0, limit: 100 }).then((response) => {
+        // Get possible targets
+        this.catalogService.getList({}).then((response) => {
             response.data.forEach((catalog) => {
                 this.targets.push({
                     id: catalog.id,
@@ -135,105 +135,177 @@ Component.register('swag-migration-index', {
                 });
             });
         });
+
+        window.addEventListener('beforeunload', this.onBrowserTabClosing.bind(this));
+    },
+
+    beforeDestroy() {
+        this.migrationWorkerService.unsubscribeProgress();
+        this.migrationWorkerService.unsubscribeStatus();
     },
 
     methods: {
+        restoreRunningMigration() {
+            this.isMigrating = true;
+
+            // show loading screen
+            this.componentIndex = this.components.loadingScreen;
+
+            // Get current status
+            this.onStatus({ status: this.migrationWorkerService.status });
+            if (this.migrationWorkerService.status === this.migrationWorkerService.MIGRATION_STATUS.FINISHED) {
+                return;
+            }
+
+            // Get data to migrate (selected table data + progress)
+            let selectedEntityGroups = this.migrationWorkerService.entityGroups;
+            this.tableData.forEach((data) => {
+                let group = selectedEntityGroups.find((g) => {
+                    return g.id === data.id;
+                });
+
+                if (group !== undefined) {
+                    // found entity in group -> means it was selected
+                    data.selected = true;
+
+                    // set the progress for the group
+                    data.progressBar.value = group.progress;
+                }
+            });
+
+
+            // subscribe to the progress event again
+            this.migrationWorkerService.subscribeProgress(this.onProgress);
+
+            // subscribe to the status event again
+            this.migrationWorkerService.subscribeStatus(this.onStatus);
+        },
+
         showMigrateConfirmDialog() {
             this.showConfirmDialog = true;
+        },
+
+        normalizeEnvironmentInformation() {
+            this.entityCounts.customer = this.environmentInformation.customers;
+            this.entityCounts.order = this.environmentInformation.orders;
+            this.entityCounts.category = this.environmentInformation.categories;
+            this.entityCounts.product = this.environmentInformation.products;
+            this.entityCounts.media = this.environmentInformation.assets;
+            this.entityCounts.translation = 10;
+        },
+
+        calculateProgressMaxValues() {
+            this.tableData.forEach((data) => {
+                let totalCount = 0;
+                data.entityNames.forEach((currentEntityName) => {
+                    totalCount += this.entityCounts[currentEntityName];
+                });
+                data.progressBar.maxValue = totalCount;
+            });
+        },
+
+        checkSelectedData() {
+            let selectedObject = this.$refs.dataSelector.getSelectedData();
+            this.tableData.forEach((data) => {
+                data.selected = data.id in selectedObject;
+            });
+        },
+
+        /**
+         * Creates an data array similar to the following:
+         * [
+         *      {
+         *          id: "customers_orders"
+         *          entities: [
+         *              {
+         *                  entityName: "customer",
+         *                  entityCount: 2
+         *              },
+         *              {
+         *                  entityName: "order",
+         *                  entityCount: 4
+         *              }
+         *          ],
+         *          count: 6
+         *          progress: 6
+         *      },
+         *      ...
+         *  ]
+         *
+         * @returns {Array}
+         */
+        getEntityGroups() {
+            let entityGroups = [];
+            this.tableData.forEach((data) => {
+                if (data.selected) {
+                    let entities = [];
+                    let groupCount = 0;
+                    data.entityNames.forEach((name) => {
+                        entities.push({
+                            entityName: name,
+                            entityCount: this.entityCounts[name]
+                        });
+                        groupCount += this.entityCounts[name];
+                    });
+
+                    entityGroups.push({
+                        id: data.id,
+                        entities: entities,
+                        progress: 0,
+                        count: groupCount
+                    });
+                }
+            });
+
+            return entityGroups;
         },
 
         async onMigrate() {
             this.showConfirmDialog = false;
             this.isMigrating = true;
-            this.selectedData = this.$refs.dataSelector.getSelectedData();
+            this.checkSelectedData();
             this.statusIndex = 0;
             this.resetProgress();
 
-            this.componentIndex = this.components.loadingScreen;    //show loading screen
+            // show loading screen
+            this.componentIndex = this.components.loadingScreen;
 
-            //get all entities in order
-            let allEntityNames = [];
-            this.tableData.forEach((row) => {
-                if (row.id in this.selectedData) {
-                    row.entityNames.forEach((entityName) => {
-                        allEntityNames.push(entityName);
-                    });
-                }
+            // get all entities in order
+            let entityGroups = this.getEntityGroups();
+
+            await this.migrationWorkerService.startMigration(this.profile, entityGroups, this.onStatus.bind(this), this.onProgress.bind(this)).catch(() => {
+                // show data selection again
+                this.isMigrating = false;
+                this.componentIndex = this.components.dataSelector;
+
+                alert(this.$tc('swag-migration.index.migrationAlreadyRunning')); // TODO: Replace - Design?
             });
+        },
 
-            //step 1 - read/fetch
-            //call the api with the entities in right order
-            for (let i = 0; i < allEntityNames.length; i++) {
-                await this.migrateEntityRequest(allEntityNames[i], 'fetchData');
-            }
-
-            //step 2- write
-            this.statusIndex = 1;
+        onStatus(statusData) {
             this.resetProgress();
+            this.statusIndex = statusData.status;
 
-            for (let i = 0; i < allEntityNames.length; i++) {
-                await this.migrateEntityRequest(allEntityNames[i], 'writeData');
-            }
-
-            //step 3 - media download
-            //TODO: implment media download
-            this.statusIndex = 2;
-            this.resetProgress();
-
-            this.progressBars[0].value = 100;
-
-            if (State.getStore('error').errors.system.length > 0) {
-                this.componentIndex = this.components.resultWarning;    //show result warning screen
-            } else {
-                this.componentIndex = this.components.resultSuccess;    //show result success screen
+            if (this.statusIndex === this.migrationWorkerService.MIGRATION_STATUS.FINISHED) {
+                if (this.migrationWorkerService.errors.length > 0) {
+                    this.componentIndex = this.components.resultWarning;    // show result warning screen
+                } else {
+                    this.componentIndex = this.components.resultSuccess;    // show result success screen
+                }
             }
         },
 
-        onProgress(entityName) {
-            let progressBar = this.progressBars.find((bar) => {
-                return bar.entityNames.includes(entityName);
+        onProgress(progressData) {
+            let data = this.tableData.find((data) => {
+                return data.entityNames.includes(progressData.entityName);
             });
 
-            let entityIndex = progressBar.entityNames.findIndex((entity) => {
-                return entity === entityName;
-            });
-
-            let entityCount = progressBar.entityNames.length;
-
-            progressBar.value = (entityIndex + 1) / entityCount * 100;
+            data.progressBar.value = progressData.entityGroupProgressValue;
         },
 
         resetProgress() {
-            //copy the progressBarsPossible to progressBars
-            this.progressBars = [];
-            this.progressBarsPossible.forEach((bar) => {
-                if (this.selectedData[bar.parentId]) {  //only add the progress bars for the selected data
-                    this.progressBars.push(Object.assign({}, bar));
-                }
-            });
-        },
-
-        migrateEntityRequest(entityName, methodName) {
-            let params = {
-                profile: this.profile.profile,
-                gateway: this.profile.gateway,
-                credentialFields: this.profile.credentialFields,
-                entity: entityName
-            };
-
-            return new Promise((resolve, reject) => {
-                this.migrationService[methodName](params).then((response) => {
-                    this.onProgress(entityName);
-                    resolve();
-                }).catch((response) => {
-                    if (response.response.data && response.response.data.errors) {
-                        response.response.data.errors.forEach((error) => {
-                            this.addError(error);
-                        });
-                    }
-                    //reject();
-                    resolve();
-                });
+            this.tableData.forEach((data) => {
+                data.progressBar.value = 0;
             });
         },
 
@@ -253,8 +325,17 @@ Component.register('swag-migration-index', {
         },
 
         onClickBack() {
+            this.migrationWorkerService.status = this.migrationWorkerService.MIGRATION_STATUS.WAITING;
             this.componentIndex = this.components.dataSelector;
             this.isMigrating = false;
+        },
+
+        onBrowserTabClosing(e) {
+            if (this.isMigrating) {
+                var dialogText = this.$tc('swag-migration.index.browserClosingHint');
+                e.returnValue = dialogText;
+                return dialogText;
+            }
         }
     }
 });

@@ -36,6 +36,8 @@ class MigrationWriteService implements MigrationWriteServiceInterface
         $criteria = new Criteria();
         $criteria->addFilter(new TermQuery('entity', $entity));
         $criteria->addFilter(new TermQuery('profile', $migrationContext->getProfile()));
+        $criteria->setOffset($migrationContext->getOffset());
+        $criteria->setLimit($migrationContext->getLimit());
         $criteria->addSorting(new FieldSorting('createdAt', FieldSorting::ASCENDING));
         $migrationData = $this->migrationDataRepository->search($criteria, $context);
 

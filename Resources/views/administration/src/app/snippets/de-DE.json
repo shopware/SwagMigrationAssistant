@@ -56,6 +56,9 @@
           "migrateButton": "Migrieren",
           "finishButton": "Fertig",
           "backButton": "Zurück zur Übersicht",
+          "shopVersionFallback": "Shopware",
+          "browserClosingHint": "Möchtest Du die Migration wirklich abbrechen?",
+          "migrationAlreadyRunning": "Migration bereits gestartet.",
           "shopInfoCard": {
             "cardTitle": "Shopsystem",
             "buttonEditSettings": "Einstellungen bearbeiten",
