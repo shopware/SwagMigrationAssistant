@@ -9,7 +9,6 @@ use Shopware\Core\Checkout\Cart\Tax\TaxCalculator;
 use Shopware\Core\Checkout\Customer\CustomerDefinition;
 use Shopware\Core\Checkout\DiscountSurcharge\Cart\DiscountSurchargeCollector;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressDefinition;
-use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemDefinition;
 use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Checkout\Payment\Aggregate\PaymentMethodTranslation\PaymentMethodTranslationDefinition;
 use Shopware\Core\Checkout\Payment\PaymentMethodDefinition;
@@ -425,10 +424,7 @@ class OrderConverter implements ConverterInterface
                 );
 
                 if ($lineItem['identifier'] === null) {
-                    throw new AssociationEntityRequiredMissingException(
-                        OrderLineItemDefinition::getEntityName(),
-                        ProductDefinition::getEntityName()
-                    );
+                    $lineItem['identifier'] = 'unmapped-product-' . $originalLineItem['articleordernumber'];
                 }
 
                 $lineItem['type'] = ProductCollector::LINE_ITEM_TYPE;
