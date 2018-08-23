@@ -17,7 +17,7 @@ Component.register('swag-migration-data-selector', {
 
     watch: {
         targets: {
-            handler: () => {
+            handler: function targetHandler() {
                 if (this.targets.length < 1) {
                     return;
                 }

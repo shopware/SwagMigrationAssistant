@@ -271,7 +271,7 @@ Component.register('swag-migration-index', {
             return entityGroups;
         },
 
-        async onMigrate() {
+        onMigrate() {
             this.showConfirmDialog = false;
             this.isMigrating = true;
             this.checkSelectedData();
@@ -284,7 +284,11 @@ Component.register('swag-migration-index', {
             // get all entities in order
             const entityGroups = this.getEntityGroups();
 
-            await this.migrationWorkerService.startMigration(this.profile, entityGroups, this.onStatus.bind(this), this.onProgress.bind(this)).catch(() => {
+            this.migrationWorkerService.startMigration(
+                this.profile, entityGroups,
+                this.onStatus.bind(this),
+                this.onProgress.bind(this)
+            ).catch(() => {
                 // show data selection again
                 this.isMigrating = false;
                 this.componentIndex = this.components.dataSelector;

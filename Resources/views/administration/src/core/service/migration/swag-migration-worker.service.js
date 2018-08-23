@@ -217,6 +217,7 @@ class MigrationService {
      * @private
      */
     async _migrateProcess(methodName) {
+        /* eslint-disable no-await-in-loop */
         return new Promise(async (resolve) => {
             for (let i = 0; i < this._entityGroups.length; i += 1) {
                 let groupProgress = 0;
@@ -230,6 +231,7 @@ class MigrationService {
 
             resolve();
         });
+        /* eslint-enable no-await-in-loop */
     }
 
     /**
@@ -245,6 +247,7 @@ class MigrationService {
      */
     async _migrateEntity(entityName, entityCount, group, groupProgress, methodName) {
         let currentOffset = 0;
+        /* eslint-disable no-await-in-loop */
         while (currentOffset < entityCount) {
             await this._migrateEntityRequest(entityName, methodName, currentOffset);
             let newOffset = currentOffset + this._chunkSize;
@@ -263,6 +266,7 @@ class MigrationService {
 
             currentOffset += this._chunkSize;
         }
+        /* eslint-enable no-await-in-loop */
 
         this._chunkSize = this._DEFAULT_CHUNK_SIZE;
     }
