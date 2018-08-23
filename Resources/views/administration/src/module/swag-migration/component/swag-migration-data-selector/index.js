@@ -1,4 +1,4 @@
-import {Component} from 'src/core/shopware';
+import { Component } from 'src/core/shopware';
 import template from './swag-migration-data-selector.html.twig';
 import './swag-migration-data-selector.less';
 
@@ -17,9 +17,10 @@ Component.register('swag-migration-data-selector', {
 
     watch: {
         targets: {
-            handler: function() {
-                if (this.targets.length < 1)
+            handler: () => {
+                if (this.targets.length < 1) {
                     return;
+                }
 
                 this.tableData.forEach((data) => {
                     data.targetId = this.targets[0].id;

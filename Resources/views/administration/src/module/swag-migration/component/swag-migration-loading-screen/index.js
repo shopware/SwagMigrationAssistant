@@ -1,4 +1,4 @@
-import {Component} from 'src/core/shopware';
+import { Component } from 'src/core/shopware';
 import template from './swag-migration-loading-screen.html.twig';
 import './swag-migration-loading-screen.less';
 
@@ -8,21 +8,21 @@ Component.register('swag-migration-loading-screen', {
 
     props: {
         profileName: {
-            type: String,
+            type: String
         },
         tableData: {
-            type: Array,
+            type: Array
         },
         statusIndex: {
             type: Number,
             default: 0,
-            required: false,
+            required: false
         }
     },
 
     data() {
         return {
-            status: ['fetchData', 'writeData', 'downloadMedia'],
+            status: ['fetchData', 'writeData', 'downloadMedia']
 
         };
     },
@@ -33,7 +33,7 @@ Component.register('swag-migration-loading-screen', {
             let count = 0;
             this.tableData.forEach((data) => {
                 if (data.selected) {
-                    count++;
+                    count += 1;
                 }
             });
 
@@ -42,8 +42,8 @@ Component.register('swag-migration-loading-screen', {
 
         progressBarContainerGridStyle() {
             let style = '';
-            for (let i = 0; i < this.progressBarCount; i++) {
-                style = style + ' 1fr';
+            for (let i = 0; i < this.progressBarCount; i += 1) {
+                style = `${style} 1fr`;
             }
 
             return style;
@@ -58,16 +58,17 @@ Component.register('swag-migration-loading-screen', {
         },
 
         statusShort() {
-            return this.$t('swag-migration.index.loadingScreenCard.cardTitle', {
-                    step: this.statusIndex + 1,
-                    total: this.statusCount
-                }) +
-                ' - ' +
-                this.$t(`swag-migration.index.loadingScreenCard.status.${this.currentStatus}.short`);
+            return `${this.$t('swag-migration.index.loadingScreenCard.cardTitle', {
+                step: this.statusIndex + 1,
+                total: this.statusCount
+            })} - ${this.$t(`swag-migration.index.loadingScreenCard.status.${this.currentStatus}.short`)}`;
         },
 
         statusLong() {
-            return this.$t(`swag-migration.index.loadingScreenCard.status.${this.currentStatus}.long`, { profileName: this.profileName });
+            return this.$t(
+                `swag-migration.index.loadingScreenCard.status.${this.currentStatus}.long`,
+                { profileName: this.profileName }
+            );
         },
 
         title() {

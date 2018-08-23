@@ -1,4 +1,4 @@
-import {Component} from 'src/core/shopware';
+import { Component } from 'src/core/shopware';
 import template from './sw-progress-bar.html.twig';
 import './sw-progress-bar.less';
 
@@ -29,7 +29,7 @@ Component.register('sw-progress-bar', {
                 percentage = 0;
             }
 
-            return percentage + '%';
+            return `${percentage}%`;
         }
     }
 });
