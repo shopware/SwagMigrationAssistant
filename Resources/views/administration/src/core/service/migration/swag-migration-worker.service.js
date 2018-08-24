@@ -246,7 +246,7 @@ class MigrationService {
         let currentOffset = 0;
         /* eslint-disable no-await-in-loop */
         while (currentOffset < entityCount) {
-            await this._migrateEntityRequest(entityName, methodName, currentOffset);
+            await this._migrateEntityRequest(entityName, group.targetId, methodName, currentOffset);
             let newOffset = currentOffset + this._chunkSize;
             if (newOffset > entityCount) {
                 newOffset = entityCount;
@@ -277,17 +277,17 @@ class MigrationService {
      * @returns {Promise}
      * @private
      */
-    _migrateEntityRequest(entityName, methodName, offset) {
-        const params = {
-            profile: this._profile.profile,
-            gateway: this._profile.gateway,
-            credentialFields: this._profile.credentialFields,
-            entity: entityName,
-            offset: offset,
-            limit: this._chunkSize
-        };
-
+    _migrateEntityRequest(entityName, targetId, methodName, offset) {
         return new Promise((resolve) => {
+            const params = {
+                profile: this._profile.profile,
+                gateway: this._profile.gateway,
+                credentialFields: this._profile.credentialFields,
+                entity: entityName,
+                catalogId: targetId,
+                offset: offset,
+                limit: this._chunkSize
+            };
             const beforeRequestTime = new Date();
             this._migrationService[methodName](params).then((response) => {
                 if (!response) {
