@@ -44,7 +44,7 @@ Component.register('swag-migration-index', {
                     // TODO revert, when the core could handle translations correctly
                     entityNames: ['category', 'product'], // 'translation'],
                     data: this.$tc('swag-migration.index.selectDataCard.dataPossible.categoriesAndProducts'),
-                    targetDisabled: true,
+                    targetDisabled: false,
                     targetHidden: false,
                     selected: false,
                     targetId: '',
@@ -57,7 +57,7 @@ Component.register('swag-migration-index', {
                     id: 'media',
                     entityNames: ['media'],
                     data: this.$tc('swag-migration.index.selectDataCard.dataPossible.media'),
-                    targetDisabled: true,
+                    targetDisabled: false,
                     targetHidden: false,
                     selected: false,
                     targetId: '',
@@ -252,6 +252,7 @@ Component.register('swag-migration-index', {
          *                  entityCount: 4
          *              }
          *          ],
+         *          targetId: "20080911ffff4fffafffffff19830531"
          *          count: 6
          *          progress: 6
          *      },
@@ -278,7 +279,8 @@ Component.register('swag-migration-index', {
                         id: data.id,
                         entities: entities,
                         progress: 0,
-                        count: groupCount
+                        count: groupCount,
+                        targetId: data.targetId
                     });
                 }
             });
