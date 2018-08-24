@@ -1,5 +1,5 @@
 {% block swag_migration_index %}
-    <sw-page class="swag-migration-index">
+    <sw-page class="swag-migration-index" :isLoading="true">
         {% block swag_migration_index_smart_bar_header %}
             <template slot="smart-bar-header">
                 <h2>{{ $tc('swag-migration.general.mainMenuItemGeneral') }}</h2>
@@ -8,14 +8,14 @@
 
         {% block swag_migration_index_smart_bar_actions %}
             <template slot="smart-bar-actions">
-                <sw-button variant="primary" @click="showMigrateConfirmDialog" :disabled="isMigrating">
+                <sw-button variant="primary" @click="showMigrateConfirmDialog" :disabled="isMigrating || isLoading">
                     {{ $tc('swag-migration.index.migrateButton') }}
                 </sw-button>
             </template>
         {% endblock %}
 
         {% block swag_migration_index_content %}
-            <sw-card-view slot="content">
+            <sw-card-view slot="content"  v-if="!isLoading">
                 {% block swag_migration_index_card_shopInfo %}
                     <sw-card :title="$tc('swag-migration.index.shopInfoCard.cardTitle')">
                         {% block swag_migration_index_card_shopInfo_content %}
@@ -131,6 +131,10 @@
                 {% endblock %}
 
             </sw-card-view>
+        {% endblock %}
+
+        {% block swag_migration_index_loader %}
+        <sw-loader slot="content" v-if="isLoading"></sw-loader>
         {% endblock %}
     </sw-page>
 {% endblock %}

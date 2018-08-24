@@ -10,7 +10,7 @@ Component.register('swag-migration-wizard', {
     data() {
         return {
             showModal: true,
-            isLoading: false,
+            isLoading: true,
             buttonPreviousVisible: true,
             buttonNextVisible: true,
             buttonPreviousText: this.$tc('swag-migration.wizard.buttonPrev'),
@@ -68,8 +68,13 @@ Component.register('swag-migration-wizard', {
         };
 
         this.migrationProfileService.getList(params).then((response) => {
+            if (!response) {
+                return;
+            }
+
             this.credentials = response.data[0].credentialFields;
             this.profileId = response.data[0].id;
+            this.isLoading = false;
         });
 
         this.matchRouteWithIndex();

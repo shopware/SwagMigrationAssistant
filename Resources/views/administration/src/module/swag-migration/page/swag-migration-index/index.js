@@ -9,6 +9,7 @@ Component.register('swag-migration-index', {
 
     data() {
         return {
+            isLoading: true,
             profile: {},
             environmentInformation: {},
             entityCounts: {},
@@ -111,6 +112,10 @@ Component.register('swag-migration-index', {
 
         // Get profile with credentials from server
         this.migrationProfileService.getList(params).then((response) => {
+            if (!response) {
+                return;
+            }
+
             this.profile = response.data[0];
 
             // check if credentials are given
@@ -125,6 +130,10 @@ Component.register('swag-migration-index', {
 
             // Do connection check
             this.migrationService.checkConnection(this.profile.id).then((connectionCheckResponse) => {
+                if (!connectionCheckResponse) {
+                    return;
+                }
+
                 if (!connectionCheckResponse.success) {
                     this.$router.push({ name: 'swag.migration.wizard.credentials' });
                 }
@@ -132,6 +141,8 @@ Component.register('swag-migration-index', {
                 this.environmentInformation = connectionCheckResponse.environmentInformation;
                 this.normalizeEnvironmentInformation();
                 this.calculateProgressMaxValues();
+
+                this.isLoading = false;
             }).catch(() => {
                 this.$router.push({ name: 'swag.migration.wizard.credentials' });
             });
@@ -139,6 +150,10 @@ Component.register('swag-migration-index', {
 
         // Get possible targets
         this.catalogService.getList({}).then((response) => {
+            if (!response) {
+                return;
+            }
+
             response.data.forEach((catalog) => {
                 this.targets.push({
                     id: catalog.id,
@@ -292,8 +307,7 @@ Component.register('swag-migration-index', {
                 // show data selection again
                 this.isMigrating = false;
                 this.componentIndex = this.components.dataSelector;
-
-                // alert(this.$tc('swag-migration.index.migrationAlreadyRunning')); // TODO: Replace - Design?
+                console.log(this.$tc('swag-migration.index.migrationAlreadyRunning')); // TODO: Replace - Design?
             });
         },
 
