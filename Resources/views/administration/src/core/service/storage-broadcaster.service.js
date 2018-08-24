@@ -3,7 +3,7 @@ import utils from 'src/core/service/util.service';
 export default class StorageBroadcastService {
     constructor(receiveCallback = () => {}, channelKey) {
         this._clientId = utils.createId();
-        this._channelKey = channelKey;  // To identify the messages of all StorageBroadcastServices
+        this._channelKey = channelKey; // To identify the messages of all StorageBroadcastServices
         this._receiveCallback = receiveCallback;
 
         window.addEventListener('storage', this.messageReceived.bind(this));
@@ -46,10 +46,11 @@ export default class StorageBroadcastService {
         const data = JSON.parse(localStorage.getItem(this._channelKey));
         localStorage.removeItem(this._channelKey);
 
-        if(!data || data.id === this._clientId) {
+        if (!data || data.id === this._clientId) {
             return false;
         }
 
         this._receiveCallback.call(null, data);
+        return true;
     }
 }

@@ -1,4 +1,4 @@
-import {Component} from 'src/core/shopware';
+import { Component } from 'src/core/shopware';
 import template from './swag-migration-wizard.html.twig';
 import './swag-migration-wizard.less';
 
@@ -10,7 +10,7 @@ Component.register('swag-migration-wizard', {
     data() {
         return {
             showModal: true,
-            isLoading: false,
+            isLoading: true,
             buttonPreviousVisible: true,
             buttonNextVisible: true,
             buttonPreviousText: this.$tc('swag-migration.wizard.buttonPrev'),
@@ -22,9 +22,9 @@ Component.register('swag-migration-wizard', {
                 'swag.migration.wizard.credentials_success',
                 'swag.migration.wizard.credentials_error'
             ],
-            routeCountVisible: 3,  // only show 4 dots and allow navigation between them.
+            routeCountVisible: 3, // only show 4 dots and allow navigation between them.
             routeIndex: 0,
-            routeIndexVisible: 0,   // only count up to 3
+            routeIndexVisible: 0, // only count up to 3
             profileId: '0x945f840058dc4e5583a02f70bef46071',
             credentials: {}, // .endpoint .apiUser .apiKey
             errorMessage: ''
@@ -68,8 +68,13 @@ Component.register('swag-migration-wizard', {
         };
 
         this.migrationProfileService.getList(params).then((response) => {
+            if (!response) {
+                return;
+            }
+
             this.credentials = response.data[0].credentialFields;
             this.profileId = response.data[0].id;
+            this.isLoading = false;
         });
 
         this.matchRouteWithIndex();
@@ -99,7 +104,10 @@ Component.register('swag-migration-wizard', {
         onConnect() {
             this.isLoading = true;
 
-            this.migrationProfileService.updateById(this.profileId, { credentialFields: this.credentials }).then((response) => {
+            this.migrationProfileService.updateById(
+                this.profileId,
+                { credentialFields: this.credentials }
+            ).then((response) => {
                 if (response.status === 204) {
                     this.migrationService.checkConnection(this.profileId).then((connectionCheckResponse) => {
                         this.isLoading = false;
@@ -121,15 +129,15 @@ Component.register('swag-migration-wizard', {
 
         onResponseError(errorCode) {
             switch (errorCode) {
-                case '0': // can't connect to shop
-                    this.errorMessage = this.$tc('swag-migration.wizard.pages.credentials.error.connectionErrorMsg');
-                    break;
-                case '401':   // invalid access credentials
-                    this.errorMessage = this.$tc('swag-migration.wizard.pages.credentials.error.authenticationErrorMsg');
-                    break;
-                default:    // something else
-                    this.errorMessage = this.$tc('swag-migration.wizard.pages.credentials.error.undefinedErrorMsg');
-                    break;
+            case '0': // can't connect to shop
+                this.errorMessage = this.$tc('swag-migration.wizard.pages.credentials.error.connectionErrorMsg');
+                break;
+            case '401': // invalid access credentials
+                this.errorMessage = this.$tc('swag-migration.wizard.pages.credentials.error.authenticationErrorMsg');
+                break;
+            default: // something else
+                this.errorMessage = this.$tc('swag-migration.wizard.pages.credentials.error.undefinedErrorMsg');
+                break;
             }
 
             this.navigateToRoute(this.routes[this.routeErrorIndex]);
@@ -140,13 +148,13 @@ Component.register('swag-migration-wizard', {
                 return;
             }
 
-            let _routeIndex = this.routeIndex;
+            const routeIndexCopy = this.routeIndex;
 
             this.showModal = false;
             this.routeIndex = 0;
             this.routeIndexVisible = 0;
 
-            if (_routeIndex === this.routeSuccessIndex) {
+            if (routeIndexCopy === this.routeSuccessIndex) {
                 // navigate to module
                 this.$router.push({
                     name: 'swag.migration.index',
@@ -157,7 +165,7 @@ Component.register('swag-migration-wizard', {
 
         matchRouteWithIndex() {
             // check for current child route
-            let currentRouteIndex = this.routes.findIndex((r) => {
+            const currentRouteIndex = this.routes.findIndex((r) => {
                 return r === this.$router.currentRoute.name;
             });
 
@@ -206,8 +214,8 @@ Component.register('swag-migration-wizard', {
 
         onPrevious() {
             if (this.routeIndex > 0) {
-                this.routeIndex--;
-                this.routeIndexVisible--;
+                this.routeIndex -= 1;
+                this.routeIndexVisible -= 1;
                 this.updateChildRoute();
             }
         },
@@ -217,19 +225,19 @@ Component.register('swag-migration-wizard', {
                 // we clicked connect.
                 this.onConnect();
                 return;
-            } else if (this.routeIndex === this.routeSuccessIndex) {
+            } if (this.routeIndex === this.routeSuccessIndex) {
                 // we clicked finish.
                 this.onCloseModal();
                 return;
-            } else if (this.routeIndex === this.routeErrorIndex) {
+            } if (this.routeIndex === this.routeErrorIndex) {
                 // we clicked Back
                 this.navigateToRoute(this.routes[this.routeApiCredentialsIndex]);
                 return;
             }
 
             if (this.routeIndex < this.routeCount - 1) {
-                this.routeIndex++;
-                this.routeIndexVisible++;
+                this.routeIndex += 1;
+                this.routeIndexVisible += 1;
                 this.updateChildRoute();
             }
         },

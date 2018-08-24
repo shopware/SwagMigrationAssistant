@@ -2,16 +2,16 @@ import StorageBroadcastService from '../storage-broadcaster.service';
 
 class MigrationService {
     constructor(migrationService) {
-        this._MAX_REQUEST_TIME = 2000;   // in ms
-        this._DEFAULT_CHUNK_SIZE = 50;   // in data sets
-        this._CHUNK_INCREMENT = 5;       // in data sets
+        this._MAX_REQUEST_TIME = 2000; // in ms
+        this._DEFAULT_CHUNK_SIZE = 50; // in data sets
+        this._CHUNK_INCREMENT = 5; // in data sets
 
         this.MIGRATION_STATUS = {
             WAITING: -1,
             FETCH_DATA: 0,
             WRITE_DATA: 1,
             DOWNLOAD_DATA: 2,
-            FINISHED: 3,
+            FINISHED: 3
         };
 
         // will be toggled when we receive a response for our 'migrationWanted' request
@@ -77,7 +77,7 @@ class MigrationService {
         this._progressSubscriber = null;
     }
 
-    async startMigration(profile, entityGroups, statusCallback, progressCallback) {
+    startMigration(profile, entityGroups, statusCallback, progressCallback) {
         return new Promise(async (resolve, reject) => {
             if (this._isMigrating) {
                 reject();
@@ -85,36 +85,33 @@ class MigrationService {
             }
 
             // Wait for the 'migrationWanted' request and response to allow or deny the migration
-            let isRunningInOtherTab = true;
-            await this._isMigrationRunningInOtherTab().then((isRunning) => {
-                isRunningInOtherTab = isRunning;
+            this._isMigrationRunningInOtherTab().then((isRunningInOtherTab) => {
+                if (isRunningInOtherTab) {
+                    reject();
+                    return;
+                }
+
+                this._isMigrating = true;
+                this._profile = profile;
+                this._entityGroups = entityGroups;
+                this._errors = [];
+                this.subscribeStatus(statusCallback);
+                this.subscribeProgress(progressCallback);
+
+                // step 1 - read/fetch
+                this._fetchData().then(() => {
+                    // step 2 - write data
+                    return this._writeData();
+                }).then(() => {
+                    // step 3 - download data
+                    return this._downloadData();
+                }).then(() => {
+                    // step 4 - finish -> show results
+                    this._migrateFinish();
+                    this._isMigrating = false;
+                    resolve();
+                });
             });
-            if (isRunningInOtherTab) {
-                reject();
-                return;
-            }
-
-            this._isMigrating = true;
-            this._profile = profile;
-            this._entityGroups = entityGroups;
-            this._errors = [];
-            this.subscribeStatus(statusCallback);
-            this.subscribeProgress(progressCallback);
-
-            // step 1 - read/fetch
-            await this._fetchData();
-
-            // step 2- write
-            await this._writeData();
-
-            // step 3 - media download
-            await this._downloadData();
-
-            // step 4 - show results
-            await this._migrateFinish();
-
-            this._isMigrating = false;
-            resolve();
         });
     }
 
@@ -126,12 +123,12 @@ class MigrationService {
      * @private
      */
     _isMigrationRunningInOtherTab() {
-        return new Promise(async (resolve, reject) => {
+        return new Promise(async (resolve) => {
             this._broadcastService.sendMessage({
                 migrationMessage: 'migrationWanted'
             });
 
-            let oldFlag = this._broadcastResponseFlag;
+            const oldFlag = this._broadcastResponseFlag;
             setTimeout(() => {
                 if (this._broadcastResponseFlag !== oldFlag) {
                     resolve(true);
@@ -160,7 +157,7 @@ class MigrationService {
         }
 
         // allow own migration if no migrationDenied response comes back.
-        if(data.migrationMessage === 'migrationDenied') {
+        if (data.migrationMessage === 'migrationDenied') {
             this._broadcastResponseFlag = !this._broadcastResponseFlag;
         }
     }
@@ -217,12 +214,13 @@ class MigrationService {
      * @private
      */
     async _migrateProcess(methodName) {
-        return new Promise(async (resolve, reject) => {
-            for (let i = 0; i < this._entityGroups.length; i++) {
+        /* eslint-disable no-await-in-loop */
+        return new Promise(async (resolve) => {
+            for (let i = 0; i < this._entityGroups.length; i += 1) {
                 let groupProgress = 0;
-                for (let ii = 0; ii < this._entityGroups[i].entities.length; ii++) {
-                    let entityName = this._entityGroups[i].entities[ii].entityName;
-                    let entityCount = this._entityGroups[i].entities[ii].entityCount;
+                for (let ii = 0; ii < this._entityGroups[i].entities.length; ii += 1) {
+                    const entityName = this._entityGroups[i].entities[ii].entityName;
+                    const entityCount = this._entityGroups[i].entities[ii].entityCount;
                     await this._migrateEntity(entityName, entityCount, this._entityGroups[i], groupProgress, methodName);
                     groupProgress += entityCount;
                 }
@@ -230,6 +228,7 @@ class MigrationService {
 
             resolve();
         });
+        /* eslint-enable no-await-in-loop */
     }
 
     /**
@@ -245,6 +244,7 @@ class MigrationService {
      */
     async _migrateEntity(entityName, entityCount, group, groupProgress, methodName) {
         let currentOffset = 0;
+        /* eslint-disable no-await-in-loop */
         while (currentOffset < entityCount) {
             await this._migrateEntityRequest(entityName, methodName, currentOffset);
             let newOffset = currentOffset + this._chunkSize;
@@ -263,6 +263,7 @@ class MigrationService {
 
             currentOffset += this._chunkSize;
         }
+        /* eslint-enable no-await-in-loop */
 
         this._chunkSize = this._DEFAULT_CHUNK_SIZE;
     }
@@ -277,7 +278,7 @@ class MigrationService {
      * @private
      */
     _migrateEntityRequest(entityName, methodName, offset) {
-        let params = {
+        const params = {
             profile: this._profile.profile,
             gateway: this._profile.gateway,
             credentialFields: this._profile.credentialFields,
@@ -286,11 +287,22 @@ class MigrationService {
             limit: this._chunkSize
         };
 
-        return new Promise((resolve, reject) => {
-            let beforeRequestTime = new Date();
+        return new Promise((resolve) => {
+            const beforeRequestTime = new Date();
             this._migrationService[methodName](params).then((response) => {
-                let afterRequestTime = new Date();
-                this._handleChunkSize(afterRequestTime.getTime() -beforeRequestTime.getTime());
+                if (!response) {
+                    this._addError({
+                        code: '0',
+                        detail: 'No connection to Server',
+                        status: '444',
+                        title: 'No connection',
+                        trace: []
+                    });
+                    return;
+                }
+
+                const afterRequestTime = new Date();
+                this._handleChunkSize(afterRequestTime.getTime() - beforeRequestTime.getTime());
                 resolve();
             }).catch((response) => {
                 if (response.response.data && response.response.data.errors) {
@@ -299,8 +311,8 @@ class MigrationService {
                     });
                 }
 
-                let afterRequestTime = new Date();
-                this._handleChunkSize(afterRequestTime.getTime() -beforeRequestTime.getTime());
+                const afterRequestTime = new Date();
+                this._handleChunkSize(afterRequestTime.getTime() - beforeRequestTime.getTime());
                 resolve();
             });
         });
@@ -323,6 +335,7 @@ class MigrationService {
     }
 
     _addError(error) {
+        console.log(error); // TODO: display errors in the UI
         this._errors.push(error);
     }
 }

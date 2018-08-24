@@ -35,7 +35,7 @@ class MigrationApiService extends ApiService {
         const headers = this.getBasicHeaders();
 
         return this.httpClient
-            .post(`${this.getApiBasePath()}/check-connection`, { profileId: profileId}, {
+            .post(`${this.getApiBasePath()}/check-connection`, { profileId: profileId }, {
                 headers
             })
             .then((response) => {

@@ -1,4 +1,4 @@
-import {Component, State} from 'src/core/shopware';
+import { Component, State } from 'src/core/shopware';
 import template from './swag-migration-index.html.twig';
 import './swag-migration-index.less';
 
@@ -9,6 +9,7 @@ Component.register('swag-migration-index', {
 
     data() {
         return {
+            isLoading: true,
             profile: {},
             environmentInformation: {},
             entityCounts: {},
@@ -23,7 +24,7 @@ Component.register('swag-migration-index', {
             statusIndex: 0,
             isMigrating: false,
             showConfirmDialog: false,
-            targets: [],        // possible data target locations
+            targets: [], // possible data target locations
             tableData: [
                 {
                     id: 'customers_orders',
@@ -40,7 +41,8 @@ Component.register('swag-migration-index', {
                 },
                 {
                     id: 'categories_products',
-                    entityNames: ['category', 'product'], // 'translation'], TODO revert, when the core could handle translations correctly
+                    // TODO revert, when the core could handle translations correctly
+                    entityNames: ['category', 'product'], // 'translation'],
                     data: this.$tc('swag-migration.index.selectDataCard.dataPossible.categoriesAndProducts'),
                     targetDisabled: true,
                     targetHidden: false,
@@ -78,7 +80,10 @@ Component.register('swag-migration-index', {
         },
 
         shopVersion() {
-            if (this.environmentInformation.shopwareVersion && this.environmentInformation.shopwareVersion !== '___VERSION___') {
+            if (
+                this.environmentInformation.shopwareVersion &&
+                this.environmentInformation.shopwareVersion !== '___VERSION___'
+            ) {
                 return this.environmentInformation.shopwareVersion;
             }
 
@@ -91,7 +96,10 @@ Component.register('swag-migration-index', {
     },
 
     created() {
-        if (this.migrationWorkerService.isMigrating || this.migrationWorkerService.status === this.migrationWorkerService.MIGRATION_STATUS.FINISHED) {
+        if (
+            this.migrationWorkerService.isMigrating ||
+            this.migrationWorkerService.status === this.migrationWorkerService.MIGRATION_STATUS.FINISHED
+        ) {
             this.restoreRunningMigration();
         }
 
@@ -104,16 +112,28 @@ Component.register('swag-migration-index', {
 
         // Get profile with credentials from server
         this.migrationProfileService.getList(params).then((response) => {
+            if (!response) {
+                return;
+            }
+
             this.profile = response.data[0];
 
             // check if credentials are given
-            if (!this.profile.credentialFields.endpoint || !this.profile.credentialFields.apiUser || !this.profile.credentialFields.apiKey) {
+            if (
+                !this.profile.credentialFields.endpoint ||
+                !this.profile.credentialFields.apiUser ||
+                !this.profile.credentialFields.apiKey
+            ) {
                 this.$router.push({ name: 'swag.migration.wizard.introduction' });
                 return;
             }
 
             // Do connection check
             this.migrationService.checkConnection(this.profile.id).then((connectionCheckResponse) => {
+                if (!connectionCheckResponse) {
+                    return;
+                }
+
                 if (!connectionCheckResponse.success) {
                     this.$router.push({ name: 'swag.migration.wizard.credentials' });
                 }
@@ -121,13 +141,19 @@ Component.register('swag-migration-index', {
                 this.environmentInformation = connectionCheckResponse.environmentInformation;
                 this.normalizeEnvironmentInformation();
                 this.calculateProgressMaxValues();
-            }).catch((error) => {
+
+                this.isLoading = false;
+            }).catch(() => {
                 this.$router.push({ name: 'swag.migration.wizard.credentials' });
             });
         });
 
         // Get possible targets
         this.catalogService.getList({}).then((response) => {
+            if (!response) {
+                return;
+            }
+
             response.data.forEach((catalog) => {
                 this.targets.push({
                     id: catalog.id,
@@ -158,9 +184,9 @@ Component.register('swag-migration-index', {
             }
 
             // Get data to migrate (selected table data + progress)
-            let selectedEntityGroups = this.migrationWorkerService.entityGroups;
+            const selectedEntityGroups = this.migrationWorkerService.entityGroups;
             this.tableData.forEach((data) => {
-                let group = selectedEntityGroups.find((g) => {
+                const group = selectedEntityGroups.find((g) => {
                     return g.id === data.id;
                 });
 
@@ -205,7 +231,7 @@ Component.register('swag-migration-index', {
         },
 
         checkSelectedData() {
-            let selectedObject = this.$refs.dataSelector.getSelectedData();
+            const selectedObject = this.$refs.dataSelector.getSelectedData();
             this.tableData.forEach((data) => {
                 data.selected = data.id in selectedObject;
             });
@@ -235,10 +261,10 @@ Component.register('swag-migration-index', {
          * @returns {Array}
          */
         getEntityGroups() {
-            let entityGroups = [];
+            const entityGroups = [];
             this.tableData.forEach((data) => {
                 if (data.selected) {
-                    let entities = [];
+                    const entities = [];
                     let groupCount = 0;
                     data.entityNames.forEach((name) => {
                         entities.push({
@@ -260,7 +286,7 @@ Component.register('swag-migration-index', {
             return entityGroups;
         },
 
-        async onMigrate() {
+        onMigrate() {
             this.showConfirmDialog = false;
             this.isMigrating = true;
             this.checkSelectedData();
@@ -271,14 +297,17 @@ Component.register('swag-migration-index', {
             this.componentIndex = this.components.loadingScreen;
 
             // get all entities in order
-            let entityGroups = this.getEntityGroups();
+            const entityGroups = this.getEntityGroups();
 
-            await this.migrationWorkerService.startMigration(this.profile, entityGroups, this.onStatus.bind(this), this.onProgress.bind(this)).catch(() => {
+            this.migrationWorkerService.startMigration(
+                this.profile, entityGroups,
+                this.onStatus.bind(this),
+                this.onProgress.bind(this)
+            ).catch(() => {
                 // show data selection again
                 this.isMigrating = false;
                 this.componentIndex = this.components.dataSelector;
-
-                alert(this.$tc('swag-migration.index.migrationAlreadyRunning')); // TODO: Replace - Design?
+                console.log(this.$tc('swag-migration.index.migrationAlreadyRunning')); // TODO: Replace - Design?
             });
         },
 
@@ -288,19 +317,19 @@ Component.register('swag-migration-index', {
 
             if (this.statusIndex === this.migrationWorkerService.MIGRATION_STATUS.FINISHED) {
                 if (this.migrationWorkerService.errors.length > 0) {
-                    this.componentIndex = this.components.resultWarning;    // show result warning screen
+                    this.componentIndex = this.components.resultWarning; // show result warning screen
                 } else {
-                    this.componentIndex = this.components.resultSuccess;    // show result success screen
+                    this.componentIndex = this.components.resultSuccess; // show result success screen
                 }
             }
         },
 
         onProgress(progressData) {
-            let data = this.tableData.find((data) => {
+            const resultData = this.tableData.find((data) => {
                 return data.entityNames.includes(progressData.entityName);
             });
 
-            data.progressBar.value = progressData.entityGroupProgressValue;
+            resultData.progressBar.value = progressData.entityGroupProgressValue;
         },
 
         resetProgress() {
@@ -332,10 +361,12 @@ Component.register('swag-migration-index', {
 
         onBrowserTabClosing(e) {
             if (this.isMigrating) {
-                var dialogText = this.$tc('swag-migration.index.browserClosingHint');
+                const dialogText = this.$tc('swag-migration.index.browserClosingHint');
                 e.returnValue = dialogText;
                 return dialogText;
             }
+
+            return '';
         }
     }
 });

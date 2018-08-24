@@ -1,4 +1,4 @@
-import {Component} from 'src/core/shopware';
+import { Component } from 'src/core/shopware';
 import template from './swag-migration-wizard-page-plugin-information.html.twig';
 
 Component.register('swag-migration-wizard-page-plugin-information', {
@@ -11,5 +11,5 @@ Component.register('swag-migration-wizard-page-plugin-information', {
             ],
             breadcrumbDescription: this.$tc('swag-migration.wizard.pathTarget')
         };
-    },
+    }
 });
