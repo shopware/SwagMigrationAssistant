@@ -20,7 +20,7 @@
             "pages": {
                 "introduction": {
                     "contentTitle": "Launch Shopware Playground with your own data.",
-                    "contentInformation": "Migrate your data from Shopware 5 to Shopware Playground and create your own projects. Explore the possibilities of Shopware Playground with real data."
+                    "contentInformation": "Migrate your data from Shopware 5 to Shopware Playground and create your own experiments. Explore the possibilities of Shopware Playground with real data."
                 },
                 "pluginInformation": {
                     "contentTitle": "Login Shopware 5 Backend",
