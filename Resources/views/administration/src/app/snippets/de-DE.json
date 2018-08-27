@@ -20,7 +20,7 @@
             "pages": {
                 "introduction": {
                     "contentTitle": "Starte Shopware Playground mit eigenen Daten.",
-                    "contentInformation": "Migriere deine Daten aus Shopware 5 zu Shopware Playground und lege eigene Projekte an. Erkunde die Möglichkeiten von Shopware Playground mit echten Daten."
+                    "contentInformation": "Migriere deine Daten aus Shopware 5 zu Shopware Playground und lege eigene Experimente an. Erkunde die Möglichkeiten von Shopware Playground mit echten Daten."
                 },
                 "pluginInformation": {
                     "contentTitle": "Login Shopware 5 Backend",
