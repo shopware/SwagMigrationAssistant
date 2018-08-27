@@ -7,7 +7,8 @@ use Shopware\Core\Framework\ORM\Read\ReadCriteria;
 use Shopware\Core\Framework\ORM\RepositoryInterface;
 use Shopware\Core\Framework\Struct\ArrayStruct;
 use SwagMigrationNext\Exception\MigrationContextPropertyMissingException;
-use SwagMigrationNext\Migration\AssetDownloadServiceInterface;
+use SwagMigrationNext\Exception\MigrationWorkloadPropertyMissingException;
+use SwagMigrationNext\Migration\HttpAssetDownloadServiceInterface;
 use SwagMigrationNext\Migration\MigrationCollectServiceInterface;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\MigrationEnvironmentServiceInterface;
@@ -31,7 +32,7 @@ class MigrationController extends Controller
     private $migrationWriteService;
 
     /**
-     * @var AssetDownloadServiceInterface
+     * @var HttpAssetDownloadServiceInterface
      */
     private $assetDownloadService;
 
@@ -48,7 +49,7 @@ class MigrationController extends Controller
     public function __construct(
         MigrationCollectServiceInterface $migrationCollectService,
         MigrationWriteServiceInterface $migrationWriteService,
-        AssetDownloadServiceInterface $assetDownloadService,
+        HttpAssetDownloadServiceInterface $assetDownloadService,
         MigrationEnvironmentServiceInterface $environmentService,
         RepositoryInterface $migrationProfileRepo
     ) {
@@ -162,12 +163,46 @@ class MigrationController extends Controller
     }
 
     /**
-     * @Route("/api/v{version}/migration/download-assets", name="api.admin.migration.download-assets", methods={"POST"})
+     * @Route("/api/v{version}/migration/fetch-media-uuids", name="api.admin.migration.fetch-media-uuids", methods={"GET"})
      */
-    public function downloadAssets(Context $context): JsonResponse
+    public function fetchMediaUuids(Request $request, Context $context): JsonResponse
     {
-        $this->assetDownloadService->downloadAssets($context);
+        $offset = $request->request->getInt('offset');
+        $limit = $request->request->getInt('limit', 100);
 
-        return new JsonResponse(['success' => true]);
+        $mediaUuids = $this->assetDownloadService->fetchMediaUuids($offset, $limit);
+
+        return new JsonResponse(['mediaUuids' => $mediaUuids]);
+    }
+
+    /**
+     * @Route("/api/v{version}/migration/download-assets", name="api.admin.migration.download-assets", methods={"POST"})
+     *
+     * @throws MigrationWorkloadPropertyMissingException
+     */
+    public function downloadAssets(Request $request, Context $context): JsonResponse
+    {
+        $workload = $request->get('workload', []);
+        $fileChunkByteSize = $request->request->getInt('fileChunkByteSize', 1000 * 1000);
+
+        if (\count($workload) === 0) {
+            return new JsonResponse(['workload' => []]);
+        }
+
+        foreach ($workload as $work) {
+            if (!isset($work['uuid'])) {
+                throw new MigrationWorkloadPropertyMissingException('uuid');
+            }
+            if (!isset($work['currentOffset'])) {
+                throw new MigrationWorkloadPropertyMissingException('currentOffset');
+            }
+            if (!isset($work['state'])) {
+                throw new MigrationWorkloadPropertyMissingException('state');
+            }
+        }
+
+        $newWorkload = $this->assetDownloadService->downloadAssets($context, $workload, $fileChunkByteSize);
+
+        return new JsonResponse(['workload' => $newWorkload]);
     }
 }

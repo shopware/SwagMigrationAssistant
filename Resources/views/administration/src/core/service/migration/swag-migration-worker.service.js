@@ -1,3 +1,4 @@
+import { Application } from 'src/core/shopware';
 import StorageBroadcastService from '../storage-broadcaster.service';
 
 class MigrationService {
@@ -13,6 +14,13 @@ class MigrationService {
             DOWNLOAD_DATA: 2,
             FINISHED: 3
         };
+
+        this._ASSET_ERROR_THRESHOLD = 3;
+        this._ASSET_UUID_CHUNK = 100; // Amount of uuids we fetch with one request
+        this._ASSET_WORKLOAD_COUNT = 5; // The amount of assets we download per request in parallel
+        // The maximum amount of bytes we download per file in one request
+        this._ASSET_FILE_CHUNK_BYTE_SIZE = 1000 * 1000 * 8; // 8 MB
+        this._CHUNK_SIZE_BYTE_INCREMENT = 250 * 1000; // 250 KB
 
         // will be toggled when we receive a response for our 'migrationWanted' request
         this._broadcastResponseFlag = false;
@@ -34,10 +42,17 @@ class MigrationService {
         this._statusSubscriber = null;
         this._profile = null;
         this._status = null;
+        this._assetTotalCount = 0;
+        this._assetCurrentOffset = 0;
+        this._assetUuidPool = [];
+        this._assetWorkload = [];
+        this._assetProgress = 0;
 
         this._broadcastService.sendMessage({
             migrationMessage: 'initialized'
         });
+
+        this._applicationRoot = Application.getApplicationRoot();
     }
 
     get status() {
@@ -77,7 +92,7 @@ class MigrationService {
         this._progressSubscriber = null;
     }
 
-    startMigration(profile, entityGroups, statusCallback, progressCallback) {
+    startMigration(profile, entityGroups, assetCount, statusCallback, progressCallback) {
         return new Promise(async (resolve, reject) => {
             if (this._isMigrating) {
                 reject();
@@ -93,6 +108,7 @@ class MigrationService {
 
                 this._isMigrating = true;
                 this._profile = profile;
+                this._assetTotalCount = assetCount;
                 this._entityGroups = entityGroups;
                 this._errors = [];
                 this.subscribeStatus(statusCallback);
@@ -190,8 +206,10 @@ class MigrationService {
 
     _downloadData() {
         this._resetProgress();
+        this._resetAssetProgress();
         this._status = this.MIGRATION_STATUS.DOWNLOAD_DATA;
         this._callStatusSubscriber({ status: this.status });
+        return this._downloadProcess();
     }
 
     _migrateFinish() {
@@ -204,6 +222,13 @@ class MigrationService {
         this._entityGroups.forEach((group) => {
             group.progress = 0;
         });
+    }
+
+    _resetAssetProgress() {
+        this._assetCurrentOffset = 0;
+        this._assetUuidPool = [];
+        this._assetWorkload = [];
+        this._assetProgress = 0;
     }
 
     /**
@@ -232,6 +257,157 @@ class MigrationService {
     }
 
     /**
+     * Get a chunk of asset uuids and put it into our pool.
+     *
+     * @returns {Promise}
+     * @private
+     */
+    _fetchAssetUuidsChunk() {
+        return new Promise(async (resolve) => {
+            if (this._assetUuidPool.length >= this._ASSET_WORKLOAD_COUNT) {
+                resolve();
+                return;
+            }
+
+            this._migrationService.fetchAssetUuids({
+                offset: this._assetCurrentOffset,
+                limit: this._ASSET_UUID_CHUNK
+            }).then((res) => {
+                this._assetUuidPool = this._assetUuidPool.concat(res.mediaUuids);
+                this._assetCurrentOffset += this._ASSET_UUID_CHUNK;
+                resolve();
+            });
+        });
+    }
+
+    /**
+     * Download all media files to filesystem
+     *
+     * @returns {Promise}
+     * @private
+     */
+    async _downloadProcess() {
+        /* eslint-disable no-await-in-loop */
+        return new Promise(async (resolve) => {
+            await this._fetchAssetUuidsChunk();
+
+            // make workload
+            this._makeWorkload(this._ASSET_WORKLOAD_COUNT);
+
+            while (this._assetProgress < this._assetTotalCount) {
+                // send workload to api
+                let newWorkload;
+                const beforeRequestTime = new Date();
+
+                await this._downloadAssets().then((w) => {
+                    newWorkload = w;
+                });
+
+                const afterRequestTime = new Date();
+                // process response and update local workload
+                this._updateWorkload(newWorkload, afterRequestTime - beforeRequestTime);
+
+                await this._fetchAssetUuidsChunk();
+
+                if (this._assetUuidPool.length === 0 && newWorkload.length === 0) {
+                    break;
+                }
+            }
+
+            resolve();
+        });
+        /* eslint-enable no-await-in-loop */
+    }
+
+    /**
+     * Push asset uuids from the pool into the current workload
+     *
+     * @param assetCount the amount of uuids to add
+     * @private
+     */
+    _makeWorkload(assetCount) {
+        const uuids = this._assetUuidPool.splice(0, assetCount);
+        uuids.forEach((uuid) => {
+            this._assetWorkload.push({
+                uuid,
+                currentOffset: 0,
+                state: 'inProgress'
+            });
+        });
+    }
+
+    /**
+     * Analyse the given workload and update our own workload.
+     * Remove finished assets from our workload and add new ones.
+     * Remove failed assets (errorCount >= this._ASSET_ERROR_THRESHOLD) and add errors for them.
+     * Make sure we have the asset amount in our workload that we specified (this._ASSET_WORKLOAD_COUNT).
+     *
+     * @param newWorkload
+     * @param requestTime
+     * @private
+     */
+    _updateWorkload(newWorkload, requestTime) {
+        const finishedAssets = newWorkload.filter((asset) => asset.state === 'finished');
+        let assetsRemovedCount = finishedAssets.length;
+        this._assetWorkload = newWorkload.filter((asset) => asset.state === 'inProgress');
+
+        // check for errorCount
+        this._assetWorkload = this._assetWorkload.filter((asset) => {
+            if (!asset.errorCount || (asset.errorCount && asset.errorCount <= this._ASSET_ERROR_THRESHOLD)) {
+                return true;
+            }
+
+            assetsRemovedCount += 1;
+            this._addError({
+                code: '0',
+                detail: this._applicationRoot.$i18n.t(
+                    'swag-migration.index.error.canNotDownloadAsset.detail',
+                    { assetUri: asset.additionalData.uri }
+                ),
+                status: '444',
+                title: this._applicationRoot.$i18n.tc('swag-migration.index.error.canNotDownloadAsset.title'),
+                trace: []
+            });
+
+            return false;
+        });
+
+        // Get the assets that have utilized the full amount of fileByteChunkSize
+        const assetsWithoutAnyErrors = this._assetWorkload.filter((asset) => !asset.errorCount);
+        if (assetsWithoutAnyErrors.length !== 0) {
+            this._handleAssetFileChunkByteSize(requestTime);
+        }
+
+        this._assetProgress += assetsRemovedCount;
+        // call event subscriber
+        this._callProgressSubscriber({
+            entityName: 'media',
+            entityGroupProgressValue: this._assetProgress
+        });
+
+        this._makeWorkload(assetsRemovedCount);
+    }
+
+    /**
+     * Send the asset download request with our workload and fileChunkByteSize.
+     *
+     * @returns {Promise}
+     * @private
+     */
+    _downloadAssets() {
+        return new Promise((resolve) => {
+            this._migrationService.downloadAssets({
+                workload: this._assetWorkload,
+                fileChunkByteSize: this._ASSET_FILE_CHUNK_BYTE_SIZE
+            }).then((res) => {
+                resolve(res.workload);
+            }).catch(() => {
+                resolve(this._assetWorkload);
+            });
+        });
+    }
+
+    /**
      * Do all the API requests for one entity in chunks
      *
      * @param entityName
@@ -246,8 +422,9 @@ class MigrationService {
         let currentOffset = 0;
         /* eslint-disable no-await-in-loop */
         while (currentOffset < entityCount) {
+            const oldChunkSize = this._chunkSize;
             await this._migrateEntityRequest(entityName, group.targetId, methodName, currentOffset);
-            let newOffset = currentOffset + this._chunkSize;
+            let newOffset = currentOffset + oldChunkSize;
             if (newOffset > entityCount) {
                 newOffset = entityCount;
             }
@@ -261,7 +438,7 @@ class MigrationService {
                 entityGroupProgressValue: groupProgress + newOffset
             });
 
-            currentOffset += this._chunkSize;
+            currentOffset += oldChunkSize;
         }
         /* eslint-enable no-await-in-loop */
 
@@ -293,11 +470,12 @@ class MigrationService {
                 if (!response) {
                     this._addError({
                         code: '0',
-                        detail: 'No connection to Server',
+                        detail: this._applicationRoot.$i18n.tc('swag-migration.index.error.canNotConnectToServer.detail'),
                         status: '444',
-                        title: 'No connection',
+                        title: this._applicationRoot.$i18n.tc('swag-migration.index.error.canNotConnectToServer.title'),
                         trace: []
                     });
+                    resolve();
                     return;
                 }
 
@@ -305,6 +483,18 @@ class MigrationService {
                 this._handleChunkSize(afterRequestTime.getTime() - beforeRequestTime.getTime());
                 resolve();
             }).catch((response) => {
+                if (!response) {
+                    this._addError({
+                        code: '0',
+                        detail: this._applicationRoot.$i18n.tc('swag-migration.index.error.canNotConnectToServer.detail'),
+                        status: '444',
+                        title: this._applicationRoot.$i18n.tc('swag-migration.index.error.canNotConnectToServer.title'),
+                        trace: []
+                    });
+                    resolve();
+                    return;
+                }
+
                 if (response.response.data && response.response.data.errors) {
                     response.response.data.errors.forEach((error) => {
                         this._addError(error);
@@ -321,7 +511,7 @@ class MigrationService {
     /**
      * Update the chunkSize depending on the requestTime
      *
-     * @param requestTime
+     * @param {int} requestTime Request time in milliseconds
      * @private
      */
     _handleChunkSize(requestTime) {
@@ -331,6 +521,22 @@ class MigrationService {
 
         if (requestTime > this._MAX_REQUEST_TIME) {
             this._chunkSize -= this._CHUNK_INCREMENT;
+        }
+    }
+
+    /**
+     * Update the ASSET_FILE_CHUNK_BYTE_SIZE depending on the requestTime
+     *
+     * @param {int} requestTime Request time in milliseconds
+     * @private
+     */
+    _handleAssetFileChunkByteSize(requestTime) {
+        if (requestTime < this._MAX_REQUEST_TIME) {
+            this._ASSET_FILE_CHUNK_BYTE_SIZE += this._CHUNK_SIZE_BYTE_INCREMENT;
+        }
+
+        if (requestTime > this._MAX_REQUEST_TIME) {
+            this._ASSET_FILE_CHUNK_BYTE_SIZE -= this._CHUNK_SIZE_BYTE_INCREMENT;
         }
     }
 

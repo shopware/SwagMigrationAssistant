@@ -17,7 +17,7 @@ use SwagMigrationNext\Command\Event\MigrationAssetDownloadFinishEvent;
 use SwagMigrationNext\Command\Event\MigrationAssetDownloadStartEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-class AssetDownloadService implements AssetDownloadServiceInterface
+class CliAssetDownloadService implements CliAssetDownloadServiceInterface
 {
     /**
      * @var int

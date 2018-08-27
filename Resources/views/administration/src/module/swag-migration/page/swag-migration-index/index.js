@@ -192,7 +192,9 @@ Component.register('swag-migration-index', {
 
                 if (group !== undefined) {
                     // found entity in group -> means it was selected
-                    data.selected = true;
+                    if (this.statusIndex !== this.migrationWorkerService.MIGRATION_STATUS.DOWNLOAD_DATA) {
+                        data.selected = true;
+                    }
 
                     // set the progress for the group
                     data.progressBar.value = group.progress;
@@ -301,7 +303,9 @@ Component.register('swag-migration-index', {
             const entityGroups = this.getEntityGroups();
 
             this.migrationWorkerService.startMigration(
-                this.profile, entityGroups,
+                this.profile,
+                entityGroups,
+                this.environmentInformation.assets,
                 this.onStatus.bind(this),
                 this.onProgress.bind(this)
             ).catch(() => {
@@ -316,7 +320,11 @@ Component.register('swag-migration-index', {
             this.resetProgress();
             this.statusIndex = statusData.status;
 
-            if (this.statusIndex === this.migrationWorkerService.MIGRATION_STATUS.FINISHED) {
+            if (this.statusIndex === this.migrationWorkerService.MIGRATION_STATUS.DOWNLOAD_DATA) {
+                this.tableData.forEach((data) => {
+                    data.selected = (data.id === 'media');
+                });
+            } else if (this.statusIndex === this.migrationWorkerService.MIGRATION_STATUS.FINISHED) {
                 if (this.migrationWorkerService.errors.length > 0) {
                     this.componentIndex = this.components.resultWarning; // show result warning screen
                 } else {

@@ -4,7 +4,7 @@ namespace SwagMigrationNext\Migration;
 
 use Shopware\Core\Framework\Context;
 
-interface AssetDownloadServiceInterface
+interface CliAssetDownloadServiceInterface
 {
     /**
      * Downloads all assets out of the migration mapping table
