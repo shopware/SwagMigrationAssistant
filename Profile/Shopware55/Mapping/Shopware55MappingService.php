@@ -160,13 +160,14 @@ class Shopware55MappingService extends MappingService
             case 32: // the_credit_has_been_accepted
                 $criteria->addFilter(new TermQuery('position', 18));
                 break;
-            case 33: //the_payment_has_been_ordered
+            case 33: // the_payment_has_been_ordered
                 $criteria->addFilter(new TermQuery('position', 19));
                 break;
             case 34: // a_time_extension_has_been_registered
                 $criteria->addFilter(new TermQuery('position', 20));
                 break;
             case 35: // the_process_has_been_cancelled
+            case 0: // Cancelled order without payment state
                 $criteria->addFilter(new TermQuery('position', 2));
                 break;
             default:

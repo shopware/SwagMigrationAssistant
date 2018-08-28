@@ -65,7 +65,7 @@ class MigrationWriteDataCommand extends ContainerAwareCommand
             throw new InvalidArgumentException('No entity provided');
         }
 
-        $migrationContext = new MigrationContext($profile, '', $entity, [], 0, 0, $catalogId);
+        $migrationContext = new MigrationContext($profile, '', $entity, [], 0, 1000, $catalogId);
 
         $output->writeln('Writing data...');
 

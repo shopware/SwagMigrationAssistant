@@ -159,7 +159,7 @@ class ProductConverter implements ConverterInterface
         );
 
         if ($parentUuid === null) {
-            throw new ParentEntityForChildNotFoundException(ProductDefinition::getEntityName());
+            throw new ParentEntityForChildNotFoundException(ProductDefinition::getEntityName(), (int) $this->oldProductId);
         }
 
         $converted = $this->getUuidForProduct($data);
@@ -213,7 +213,9 @@ class ProductConverter implements ConverterInterface
             $data['attributes']
         );
 
-        $converted['manufacturer'] = $this->getManufacturer($data['manufacturer'], $data['_locale']);
+        if (isset($data['manufacturer'])) {
+            $converted['manufacturer'] = $this->getManufacturer($data['manufacturer'], $data['_locale']);
+        }
         unset($data['manufacturer'], $data['supplierID']);
 
         $converted['tax'] = $this->getTax($data['tax']);

@@ -39,7 +39,7 @@ class MigrationEnvironmentServiceTest extends KernelTestCase
         $this->connection = self::$container->get(Connection::class);
         $this->connection->beginTransaction();
 
-        /** @var $gatewayFactoryRegistry GatewayFactoryRegistryInterface */
+        /** @var GatewayFactoryRegistryInterface $gatewayFactoryRegistry */
         $gatewayFactoryRegistry = new GatewayFactoryRegistry(new DummyCollection([
             new Shopware55ApiFactory(),
             new DummyLocalFactory(),

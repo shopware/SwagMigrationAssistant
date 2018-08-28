@@ -50,7 +50,6 @@ class MigrationCollectServiceTest extends KernelTestCase
 
         self::bootKernel();
 
-        /* @var Connection $connection */
         $this->connection = self::$container->get(Connection::class);
         $this->connection->beginTransaction();
 
