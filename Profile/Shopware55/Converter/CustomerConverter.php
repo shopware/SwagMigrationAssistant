@@ -68,6 +68,16 @@ class CustomerConverter implements ConverterInterface
         ?string $catalogId = null,
         ?string $salesChannelId = null
     ): ConvertStruct {
+        $oldData = $data;
+
+        if (!isset($data['email'], $data['firstname'], $data['lastname'], $data['group']['id']) ||
+            $data['email'] === '' ||
+            $data['firstname'] === '' ||
+            $data['lastname'] === ''
+        ) {
+            return new ConvertStruct(null, $oldData);
+        }
+
         $this->profile = Shopware55Profile::PROFILE_NAME;
         $this->context = $context;
         $this->mainLocale = $data['_locale'];
@@ -99,23 +109,28 @@ class CustomerConverter implements ConverterInterface
         $this->helper->convertValue($converted, 'salutation', $data, 'salutation');
         $this->helper->convertValue($converted, 'firstName', $data, 'firstname');
         $this->helper->convertValue($converted, 'lastName', $data, 'lastname');
-        $this->helper->convertValue($converted, 'number', $data, 'customernumber');
+        $this->helper->convertValue($converted, 'customerNumber', $data, 'customernumber');
         $this->helper->convertValue($converted, 'birthday', $data, 'birthday');
         $this->helper->convertValue($converted, 'lockedUntil', $data, 'lockeduntil');
         $this->helper->convertValue($converted, 'encoder', $data, 'encoder');
 
-        if (isset($data['group']['id'])) {
-            $converted['group'] = $this->getCustomerGroup($data['group']);
+        if (!isset($converted['customerNumber']) || $converted['customerNumber'] === '') {
+            $converted['customerNumber'] = 'number-' . $this->oldCustomerId;
         }
-        unset($data['group']);
+
+        $converted['group'] = $this->getCustomerGroup($data['group']);
+        unset($data['group'], $data['customergroup']);
 
         if ($data['defaultpayment']['id']) {
-            $this->getDefaultPaymentMethod($data, $converted);
+            $this->getDefaultPaymentMethod($data['defaultpayment'], $converted);
         }
         unset($data['defaultpayment'], $data['paymentpreset']);
+        if (!isset($converted['defaultPaymentMethod'])) {
+            $converted['defaultPaymentMethodId'] = Defaults::PAYMENT_METHOD_SEPA;
+        }
 
         if (isset($data['addresses'])) {
-            $converted['addresses'] = $this->getAddresses($data, $converted, $customerUuid);
+            $this->getAddresses($data, $converted, $customerUuid);
         }
         unset($data['addresses']);
 
@@ -136,7 +151,6 @@ class CustomerConverter implements ConverterInterface
             $data['changed'],
             $data['group']['mode'],
             $data['paymentID'],
-            $data['customergroup'],
             $data['firstlogin'],
             $data['lastlogin'],
 
@@ -144,8 +158,18 @@ class CustomerConverter implements ConverterInterface
             $data['shop'], // TODO use for sales channel information?
             $data['subshopID'], // TODO use for sales channel information?
             $data['language'], // TODO use for sales channel information?
-            $data['customerlanguage'] // TODO use for sales channel information?
+            $data['customerlanguage'], // TODO use for sales channel information?
+            $data['attributes']
         );
+
+        if (empty($data)) {
+            $data = null;
+        }
+
+        if (!isset($converted['defaultBillingAddressId'], $converted['defaultShippingAddressId'])) {
+            $this->mappingService->deleteMapping($converted['id'], $this->profile, $this->context);
+            return new ConvertStruct(null, $oldData);
+        }
 
         return new ConvertStruct($converted, $data);
     }
@@ -192,10 +216,7 @@ class CustomerConverter implements ConverterInterface
 
     private function getDefaultPaymentMethod(array $originalData, array &$converted): void
     {
-        $defaultPaymentMethodUuid = $this->mappingService->getPaymentUuid(
-            $originalData['defaultpayment']['name'],
-            $this->context
-        );
+        $defaultPaymentMethodUuid = $this->mappingService->getPaymentUuid($originalData['name'], $this->context);
 
         if ($defaultPaymentMethodUuid !== null) {
             $defaultPaymentMethod['id'] = $defaultPaymentMethodUuid;
@@ -203,7 +224,7 @@ class CustomerConverter implements ConverterInterface
             $defaultPaymentMethod['id'] = $this->mappingService->createNewUuid(
                 $this->profile,
                 PaymentMethodDefinition::getEntityName(),
-                $originalData['defaultpayment']['id'],
+                $originalData['id'],
                 $this->context
             );
         }
@@ -211,31 +232,31 @@ class CustomerConverter implements ConverterInterface
         $translation['id'] = $this->mappingService->createNewUuid(
             $this->profile,
             PaymentMethodTranslationDefinition::getEntityName(),
-            $originalData['defaultpayment']['id'] . ':' . $this->mainLocale,
+            $originalData['id'] . ':' . $this->mainLocale,
             $this->context
         );
 
         $translation['paymentMethodId'] = $defaultPaymentMethod['id'];
-        $this->helper->convertValue($translation, 'name', $originalData['defaultpayment'], 'description');
-        $this->helper->convertValue($translation, 'additionalDescription', $originalData['defaultpayment'], 'additionaldescription');
+        $this->helper->convertValue($translation, 'name', $originalData, 'description');
+        $this->helper->convertValue($translation, 'additionalDescription', $originalData, 'additionaldescription');
 
         //todo: What about the PluginID?
-        $this->helper->convertValue($defaultPaymentMethod, 'technicalName', $originalData['defaultpayment'], 'name');
-        $this->helper->convertValue($defaultPaymentMethod, 'template', $originalData['defaultpayment'], 'template');
-        $this->helper->convertValue($defaultPaymentMethod, 'class', $originalData['defaultpayment'], 'class');
-        $this->helper->convertValue($defaultPaymentMethod, 'table', $originalData['defaultpayment'], 'table');
-        $this->helper->convertValue($defaultPaymentMethod, 'hide', $originalData['defaultpayment'], 'hide', $this->helper::TYPE_BOOLEAN);
-        $this->helper->convertValue($defaultPaymentMethod, 'percentageSurcharge', $originalData['defaultpayment'], 'debit_percent', $this->helper::TYPE_FLOAT);
-        $this->helper->convertValue($defaultPaymentMethod, 'absoluteSurcharge', $originalData['defaultpayment'], 'surcharge', $this->helper::TYPE_FLOAT);
-        $this->helper->convertValue($defaultPaymentMethod, 'surchargeString', $originalData['defaultpayment'], 'surchargestring');
-        $this->helper->convertValue($defaultPaymentMethod, 'position', $originalData['defaultpayment'], 'position', $this->helper::TYPE_INTEGER);
-        $this->helper->convertValue($defaultPaymentMethod, 'active', $originalData['defaultpayment'], 'active', $this->helper::TYPE_BOOLEAN);
-        $this->helper->convertValue($defaultPaymentMethod, 'allowEsd', $originalData['defaultpayment'], 'esdactive', $this->helper::TYPE_BOOLEAN);
-        $this->helper->convertValue($defaultPaymentMethod, 'usedIframe', $originalData['defaultpayment'], 'embediframe');
-        $this->helper->convertValue($defaultPaymentMethod, 'hideProspect', $originalData['defaultpayment'], 'hideprospect', $this->helper::TYPE_BOOLEAN);
-        $this->helper->convertValue($defaultPaymentMethod, 'action', $originalData['defaultpayment'], 'action');
-        $this->helper->convertValue($defaultPaymentMethod, 'source', $originalData['defaultpayment'], 'source', $this->helper::TYPE_INTEGER);
-        $this->helper->convertValue($defaultPaymentMethod, 'mobileInactive', $originalData['defaultpayment'], 'mobile_inactive', $this->helper::TYPE_BOOLEAN);
+        $this->helper->convertValue($defaultPaymentMethod, 'technicalName', $originalData, 'name');
+        $this->helper->convertValue($defaultPaymentMethod, 'template', $originalData, 'template');
+        $this->helper->convertValue($defaultPaymentMethod, 'class', $originalData, 'class');
+        $this->helper->convertValue($defaultPaymentMethod, 'table', $originalData, 'table');
+        $this->helper->convertValue($defaultPaymentMethod, 'hide', $originalData, 'hide', $this->helper::TYPE_BOOLEAN);
+        $this->helper->convertValue($defaultPaymentMethod, 'percentageSurcharge', $originalData, 'debit_percent', $this->helper::TYPE_FLOAT);
+        $this->helper->convertValue($defaultPaymentMethod, 'absoluteSurcharge', $originalData, 'surcharge', $this->helper::TYPE_FLOAT);
+        $this->helper->convertValue($defaultPaymentMethod, 'surchargeString', $originalData, 'surchargestring');
+        $this->helper->convertValue($defaultPaymentMethod, 'position', $originalData, 'position', $this->helper::TYPE_INTEGER);
+        $this->helper->convertValue($defaultPaymentMethod, 'active', $originalData, 'active', $this->helper::TYPE_BOOLEAN);
+        $this->helper->convertValue($defaultPaymentMethod, 'allowEsd', $originalData, 'esdactive', $this->helper::TYPE_BOOLEAN);
+        $this->helper->convertValue($defaultPaymentMethod, 'usedIframe', $originalData, 'embediframe');
+        $this->helper->convertValue($defaultPaymentMethod, 'hideProspect', $originalData, 'hideprospect', $this->helper::TYPE_BOOLEAN);
+        $this->helper->convertValue($defaultPaymentMethod, 'action', $originalData, 'action');
+        $this->helper->convertValue($defaultPaymentMethod, 'source', $originalData, 'source', $this->helper::TYPE_INTEGER);
+        $this->helper->convertValue($defaultPaymentMethod, 'mobileInactive', $originalData, 'mobile_inactive', $this->helper::TYPE_BOOLEAN);
 
         $languageData = $this->mappingService->getLanguageUuid($this->profile, $this->mainLocale, $this->context);
 
@@ -252,11 +273,20 @@ class CustomerConverter implements ConverterInterface
         $converted['defaultPaymentMethod'] = $defaultPaymentMethod;
     }
 
-    private function getAddresses(array &$originalData, array &$converted, string $customerUuid): array
+    private function getAddresses(array &$originalData, array &$converted, string $customerUuid): void
     {
         $addresses = [];
         foreach ($originalData['addresses'] as $address) {
             $newAddress = [];
+
+            if (!isset($address['firstname'], $address['lastname'], $address['zipcode'], $address['city'], $address['street']) ||
+                $address['firstname'] === '' ||
+                $address['lastname'] === '' ||
+                $address['zipcode'] === '' ||
+                $address['city'] === ''
+            ) {
+                continue;
+            }
 
             $newAddress['id'] = $this->mappingService->createNewUuid(
                 $this->profile,
@@ -294,7 +324,13 @@ class CustomerConverter implements ConverterInterface
             $addresses[] = $newAddress;
         }
 
-        return $addresses;
+        if (!isset($converted['defaultShippingAddressId']) && isset($converted['defaultBillingAddressId'])) {
+            $converted['defaultShippingAddressId'] = $converted['defaultBillingAddressId'];
+        }
+
+        if (!empty($addresses)) {
+            $converted['addresses'] = $addresses;
+        }
     }
 
     private function getCountry(array $oldCountryData): array

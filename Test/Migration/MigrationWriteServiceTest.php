@@ -12,7 +12,6 @@ use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\ORM\RepositoryInterface;
 use Shopware\Core\Framework\ORM\Search\Criteria;
-use Shopware\Core\Framework\ORM\Search\EntitySearchResult;
 use SwagMigrationNext\Migration\MigrationCollectServiceInterface;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\MigrationWriteService;
@@ -72,7 +71,6 @@ class MigrationWriteServiceTest extends KernelTestCase
 
         self::bootKernel();
 
-        /* @var Connection $connection */
         $this->connection = self::$container->get(Connection::class);
         $this->connection->beginTransaction();
 
@@ -115,7 +113,6 @@ class MigrationWriteServiceTest extends KernelTestCase
         $this->migrationWriteService->writeData($migrationContext, $context);
         $productTotalAfter = $this->customerRepo->search($criteria, $context)->getTotal();
 
-        /* @var EntitySearchResult $result */
         self::assertEquals(2, $productTotalAfter - $productTotalBefore);
     }
 
@@ -138,7 +135,6 @@ class MigrationWriteServiceTest extends KernelTestCase
         $this->migrationWriteService->writeData($migrationContext, $context);
         $totalAfter = $this->mediaRepo->search($criteria, $context)->getTotal();
 
-        /* @var EntitySearchResult $result */
         self::assertEquals(23, $totalAfter - $totalBefore);
     }
 
@@ -161,7 +157,6 @@ class MigrationWriteServiceTest extends KernelTestCase
         $this->migrationWriteService->writeData($migrationContext, $context);
         $totalAfter = $this->categoryRepo->search($criteria, $context)->getTotal();
 
-        /* @var EntitySearchResult $result */
         self::assertEquals(8, $totalAfter - $totalBefore);
     }
 
@@ -184,7 +179,6 @@ class MigrationWriteServiceTest extends KernelTestCase
         $this->migrationWriteService->writeData($migrationContext, $context);
         $productTotalAfter = $this->productRepo->search($criteria, $context)->getTotal();
 
-        /* @var EntitySearchResult $result */
         self::assertEquals(42, $productTotalAfter - $productTotalBefore);
     }
 
@@ -219,7 +213,6 @@ class MigrationWriteServiceTest extends KernelTestCase
         $this->migrationWriteService->writeData($migrationContext, $context);
         $productTranslationTotalAfter = $this->getTranslationTotal();
 
-        /* @var EntitySearchResult $result */
         self::assertEquals(42, $productTotalAfter - $productTotalBefore);
         self::assertEquals(2, $productTranslationTotalAfter - $productTranslationTotalBefore);
     }

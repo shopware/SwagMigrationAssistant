@@ -50,7 +50,7 @@ class MigrationWriteService implements MigrationWriteServiceInterface
             /* @var ArrayStruct $data */
             $value = $data->get('converted');
             if ($value !== null) {
-                $converted[] = array_filter($value);
+                $converted[] = $value;
             }
         }, $migrationData->getElements());
 

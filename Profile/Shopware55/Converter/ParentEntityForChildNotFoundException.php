@@ -10,9 +10,9 @@ class ParentEntityForChildNotFoundException extends ShopwareHttpException
 {
     protected $code = 'SWAG-MIGRATION-SHOPWARE55-PARENT-ENTITY-NOT-FOUND';
 
-    public function __construct(string $entity, $code = 0, Throwable $previous = null)
+    public function __construct(string $entity, int $oldIdentifier, $code = 0, Throwable $previous = null)
     {
-        $message = sprintf('Parent entity for "%s" child not found', $entity);
+        $message = sprintf('Parent entity for "%s: %d" child not found', $entity, $oldIdentifier);
         parent::__construct($message, $code, $previous);
     }
 

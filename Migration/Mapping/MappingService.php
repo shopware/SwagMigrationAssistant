@@ -163,6 +163,21 @@ class MappingService implements MappingServiceInterface
         return null;
     }
 
+    public function deleteMapping(string $entityUuid, string $profile, Context $context): void
+    {
+        $criteria = new Criteria();
+        $criteria->addFilter(new TermQuery('entityUuid', $entityUuid));
+        $criteria->addFilter(new TermQuery('profile', $profile));
+        $result = $this->migrationMappingRepo->search($criteria, $context);
+
+        if ($result->getTotal() > 0) {
+            /** @var ArrayStruct $element */
+            $element = $result->getEntities()->first();
+
+            $this->migrationMappingRepo->delete([['id' => $element->getId()]], $context);
+        }
+    }
+
     protected function writeMapping(array $writeMapping, Context $context): void
     {
         $this->migrationMappingRepo->create($writeMapping, $context);

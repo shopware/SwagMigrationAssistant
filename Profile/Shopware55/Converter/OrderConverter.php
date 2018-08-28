@@ -81,6 +81,10 @@ class OrderConverter implements ConverterInterface
         ?string $catalogId = null,
         ?string $salesChannelId = null
     ): ConvertStruct {
+        if (!isset($data['billingaddress']['id'])) {
+            return new ConvertStruct(null, $data);
+        }
+
         $this->mainLocale = $data['_locale'];
         unset($data['_locale']);
         $this->context = $context;
@@ -147,16 +151,18 @@ class OrderConverter implements ConverterInterface
         $converted['stateId'] = $this->mappingService->getOrderStateUuid((int) $data['status'], $this->context);
         unset($data['status'], $data['orderstatus']);
 
-        $converted['billingAddress'] = $this->getAddress($data['billingaddress']);
-        unset($data['billingaddress']);
-
         $converted['deliveries'] = $this->getDeliveries($data, $converted);
         unset($data['trackingcode'], $data['shippingMethod'], $data['dispatchID'], $data['shippingaddress']);
 
-        $converted['lineItems'] = $this->getLineItems($data['details']);
+        $converted['billingAddress'] = $this->getAddress($data['billingaddress']);
+        unset($data['billingaddress']);
+
+        if (isset($data['details'])) {
+            $converted['lineItems'] = $this->getLineItems($data['details']);
+        }
         unset($data['details']);
 
-        $converted['transactions'] = $this->getTransactions($data, $converted);
+        $this->getTransactions($data, $converted);
         unset($data['cleared'], $data['paymentstatus']);
 
         if ($salesChannelId !== null) {
@@ -196,9 +202,14 @@ class OrderConverter implements ConverterInterface
         return new ConvertStruct($converted, $data);
     }
 
-    private function getTransactions(array $data, array $converted): array
+    private function getTransactions(array $data, array &$converted): void
     {
+        if (isset($converted['lineItems'])) {
+            return;
+        }
+
         $taxRates = array_unique(array_column($converted['lineItems'], 'taxRate'));
+
         $taxRules = [];
         foreach ($taxRates as $taxRate) {
             $taxRules[] = new TaxRule($taxRate);
@@ -226,7 +237,7 @@ class OrderConverter implements ConverterInterface
             ],
         ];
 
-        return $transactions;
+        $converted['transactions'] = $transactions;
     }
 
     private function getPaymentMethod(array $originalData, array &$converted): void
@@ -329,12 +340,22 @@ class OrderConverter implements ConverterInterface
 
         $delivery = [
             'id' => Uuid::uuid4()->getHex(),
-            'shippingAddress' => $this->getAddress($data['shippingaddress']),
             'orderStateId' => $converted['stateId'],
-            'shippingMethod' => $this->getShippingMethod($data['shippingMethod']),
             'shippingDateEarliest' => $converted['date'],
             'shippingDateLatest' => $converted['date'],
         ];
+
+        if (isset($data['shippingMethod']['id'])) {
+            $delivery['shippingMethod'] = $this->getShippingMethod($data['shippingMethod']);
+        }
+
+        if (isset($data['shippingaddress']['id'])) {
+            $delivery['shippingAddress'] = $this->getAddress($data['shippingaddress']);
+        }
+
+        if (!isset($delivery['shippingAddress'])) {
+            $delivery['shippingAddress'] = $this->getAddress($data['billingaddress']);
+        }
 
         if (isset($data['trackingcode']) && $data['trackingcode'] !== '') {
             $delivery['trackingCode'] = $data['trackingcode'];
@@ -416,14 +437,16 @@ class OrderConverter implements ConverterInterface
             ];
 
             if ($isProduct) {
-                $lineItem['identifier'] = $this->mappingService->getUuid(
-                    $this->profile,
-                    ProductDefinition::getEntityName(),
-                    $originalLineItem['articleDetailID'],
-                    $this->context
-                );
+                if ($originalLineItem['articleDetailID'] !== null) {
+                    $lineItem['identifier'] = $this->mappingService->getUuid(
+                        $this->profile,
+                        ProductDefinition::getEntityName(),
+                        $originalLineItem['articleDetailID'],
+                        $this->context
+                    );
+                }
 
-                if ($lineItem['identifier'] === null) {
+                if (!isset($lineItem['identifier'])) {
                     $lineItem['identifier'] = 'unmapped-product-' . $originalLineItem['articleordernumber'];
                 }
 
