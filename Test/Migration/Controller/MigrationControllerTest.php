@@ -73,8 +73,6 @@ class MigrationControllerTest extends KernelTestCase
 
         static::assertEquals(Response::HTTP_OK, $result->getStatusCode());
         $content = json_decode($result->getContent(), true);
-
-        static::assertTrue($content['success']);
     }
 
     public function testWriteData(): void
@@ -93,7 +91,5 @@ class MigrationControllerTest extends KernelTestCase
 
         static::assertEquals(Response::HTTP_OK, $result->getStatusCode());
         $content = json_decode($result->getContent(), true);
-
-        static::assertTrue($content['success']);
     }
 }

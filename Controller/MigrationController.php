@@ -15,6 +15,7 @@ use SwagMigrationNext\Migration\MigrationWriteServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class MigrationController extends Controller
@@ -84,7 +85,7 @@ class MigrationController extends Controller
 
         $information = $this->environmentService->getEnvironmentInformation($migrationContext);
 
-        return new JsonResponse(['success' => true, 'environmentInformation' => $information]);
+        return new JsonResponse(['environmentInformation' => $information]);
     }
 
     /**
@@ -92,7 +93,7 @@ class MigrationController extends Controller
      *
      * @throws MigrationContextPropertyMissingException
      */
-    public function fetchData(Request $request, Context $context): JsonResponse
+    public function fetchData(Request $request, Context $context): Response
     {
         $profile = $request->get('profile');
         $gateway = $request->get('gateway');
@@ -131,7 +132,7 @@ class MigrationController extends Controller
         );
         $this->migrationCollectService->fetchData($migrationContext, $context);
 
-        return new JsonResponse(['success' => true]);
+        return new Response();
     }
 
     /**
@@ -139,7 +140,7 @@ class MigrationController extends Controller
      *
      * @throws MigrationContextPropertyMissingException
      */
-    public function writeData(Request $request, Context $context): JsonResponse
+    public function writeData(Request $request, Context $context): Response
     {
         $profile = $request->get('profile');
         $entity = $request->get('entity');
@@ -157,7 +158,7 @@ class MigrationController extends Controller
         $migrationContext = new MigrationContext($profile, '', $entity, [], $offset, $limit);
         $this->migrationWriteService->writeData($migrationContext, $context);
 
-        return new JsonResponse(['success' => true]);
+        return new Response();
     }
 
     /**
