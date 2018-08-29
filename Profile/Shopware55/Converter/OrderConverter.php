@@ -204,7 +204,7 @@ class OrderConverter implements ConverterInterface
 
     private function getTransactions(array $data, array &$converted): void
     {
-        if (isset($converted['lineItems'])) {
+        if (!isset($converted['lineItems'])) {
             return;
         }
 
