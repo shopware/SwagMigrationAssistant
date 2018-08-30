@@ -75,7 +75,10 @@
               "media": "Medien"
             },
             "targetHeader": "Ziel",
-            "defaultCatalogue": "Standard"
+            "defaultCatalogue": "Standard",
+            "gdprTitle": "PLACEHOLDER Datenschutzverordnung",
+            "gdprText": "PLACEHOLDER Ich stimme der Bestimmung zum Datenschutz zu. ... Weitergabe personenbezogenen Daten an Shopware Playground - die in \"Kunden & Bestellungen\" vorhanden sind.",
+            "gdprLink": "PLACEHOLDER Was passiert mit den Daten - mehr erfahren."
           },
           "loadingScreenCard": {
             "cardTitle": "Schritt {step} von {total}",

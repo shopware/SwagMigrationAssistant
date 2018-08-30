@@ -23,6 +23,7 @@ Component.register('swag-migration-index', {
             },
             statusIndex: 0,
             isMigrating: false,
+            isMigrationAllowed: false,
             showConfirmDialog: false,
             targets: [], // possible data target locations
             tableData: [
@@ -367,6 +368,10 @@ Component.register('swag-migration-index', {
             }
 
             return '';
+        },
+
+        onMigrationAllowed(allowed) {
+            this.isMigrationAllowed = allowed;
         }
     }
 });
