@@ -111,7 +111,7 @@ Component.register('swag-migration-wizard', {
                 if (response.status === 204) {
                     this.migrationService.checkConnection(this.profileId).then((connectionCheckResponse) => {
                         this.isLoading = false;
-                        if (connectionCheckResponse.success) {
+                        if (connectionCheckResponse.environmentInformation) {
                             this.navigateToRoute(this.routes[this.routeSuccessIndex]);
                         } else {
                             this.onResponseError(-1);

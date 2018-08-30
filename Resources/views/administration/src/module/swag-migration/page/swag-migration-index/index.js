@@ -103,7 +103,6 @@ Component.register('swag-migration-index', {
             this.restoreRunningMigration();
         }
 
-
         const params = {
             offset: 0,
             limit: 100,
@@ -134,7 +133,7 @@ Component.register('swag-migration-index', {
                     return;
                 }
 
-                if (!connectionCheckResponse.success) {
+                if (!connectionCheckResponse.environmentInformation) {
                     this.$router.push({ name: 'swag.migration.wizard.credentials' });
                 }
 
@@ -198,7 +197,6 @@ Component.register('swag-migration-index', {
                     data.progressBar.value = group.progress;
                 }
             });
-
 
             // subscribe to the progress event again
             this.migrationWorkerService.subscribeProgress(this.onProgress);
