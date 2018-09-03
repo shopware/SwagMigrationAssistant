@@ -8,7 +8,7 @@
 
         {% block swag_migration_index_smart_bar_actions %}
             <template slot="smart-bar-actions">
-                <sw-button variant="primary" @click="showMigrateConfirmDialog" :disabled="isMigrating || isLoading">
+                <sw-button variant="primary" @click="showMigrateConfirmDialog" :disabled="isMigrating || isLoading || !isMigrationAllowed">
                     {{ $tc('swag-migration.index.migrateButton') }}
                 </sw-button>
             </template>
@@ -74,8 +74,12 @@
                 {% endblock %}
 
                 {% block swag_migration_index_card_dataSelector %}
-                    <swag-migration-data-selector ref="dataSelector" :targets="targets" :tableData="tableData"
-                                                  v-if="componentIndex === 0"></swag-migration-data-selector>
+                    <swag-migration-data-selector ref="dataSelector"
+                                                  :targets="targets"
+                                                  :tableData="tableData"
+                                                  v-if="componentIndex === 0"
+                                                  @swag-migration-data-selector-migration-allowed="onMigrationAllowed">
+                    </swag-migration-data-selector>
                 {% endblock %}
 
                 {% block swag_migration_index_card_loadingScreen %}

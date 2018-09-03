@@ -75,7 +75,10 @@
               "media": "Media"
             },
             "targetHeader": "Target",
-            "defaultCatalogue": "Default"
+            "defaultCatalogue": "Default",
+            "gdprTitle": "PLACEHOLDER General Data Protection",
+            "gdprText": "PLACEHOLDER",
+            "gdprLink": "PLACEHOLDER"
           },
           "loadingScreenCard": {
             "cardTitle": "Step {step} of {total}",
