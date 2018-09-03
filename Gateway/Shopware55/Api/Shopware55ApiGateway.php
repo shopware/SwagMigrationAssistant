@@ -49,10 +49,12 @@ class Shopware55ApiGateway implements GatewayInterface
 
     public function read(string $entityName, int $offset, int $limit): array
     {
-        $apiClient = new Client([
+        $apiClientOptions = [
             'base_uri' => $this->endpoint . '/api/',
             'auth' => [$this->apiUser, $this->apiKey, 'digest'],
-        ]);
+            'verify' => false,
+        ];
+        $apiClient = new Client($apiClientOptions);
 
         switch ($entityName) {
             case ProductDefinition::getEntityName():
@@ -80,7 +82,7 @@ class Shopware55ApiGateway implements GatewayInterface
 //                break;
 
             case 'environment':
-                $reader = new Shopware55ApiEnvironmentReader();
+                $reader = new Shopware55ApiEnvironmentReader($apiClientOptions);
                 break;
 
             default:
