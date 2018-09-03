@@ -40,7 +40,7 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
         $this->fileSaver = $fileSaver;
     }
 
-    public function fetchMediaUuids(int $offset, int $limit): array
+    public function fetchMediaUuids(Context $context, int $offset, int $limit): array
     {
         // TODO: Normalize additional data to use the orm system instead of JSON_EXTRACT (performance)
         $queryBuilder = $this->connection->createQueryBuilder();
@@ -51,6 +51,7 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
             ->setFirstResult($offset)
             ->setMaxResults($limit)
             ->orderBy('CONVERT(JSON_EXTRACT(`additional_data`, \'$.file_size\'), UNSIGNED INTEGER)');
+
         return $queryBuilder->execute()->fetchAll(PDO::FETCH_COLUMN);
     }
 

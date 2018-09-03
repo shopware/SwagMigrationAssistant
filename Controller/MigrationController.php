@@ -167,10 +167,10 @@ class MigrationController extends Controller
      */
     public function fetchMediaUuids(Request $request, Context $context): JsonResponse
     {
-        $offset = $request->request->getInt('offset');
-        $limit = $request->request->getInt('limit', 100);
+        $offset = $request->query->getInt('offset');
+        $limit = $request->query->getInt('limit', 100);
 
-        $mediaUuids = $this->assetDownloadService->fetchMediaUuids($offset, $limit);
+        $mediaUuids = $this->assetDownloadService->fetchMediaUuids($context, $offset, $limit);
 
         return new JsonResponse(['mediaUuids' => $mediaUuids]);
     }
@@ -182,7 +182,7 @@ class MigrationController extends Controller
      */
     public function downloadAssets(Request $request, Context $context): JsonResponse
     {
-        $workload = $request->get('workload', []);
+        $workload = $request->request->get('workload', []);
         $fileChunkByteSize = $request->request->getInt('fileChunkByteSize', 1000 * 1000);
 
         if (\count($workload) === 0) {
