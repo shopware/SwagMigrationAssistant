@@ -3,7 +3,7 @@
 namespace SwagMigrationNext\Command;
 
 use InvalidArgumentException;
-use Shopware\Core\Content\Media\Upload\MediaUpdater;
+use Shopware\Core\Content\Media\File\FileSaver;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\ORM\RepositoryInterface;
 use Shopware\Core\Framework\Struct\Uuid;
@@ -33,9 +33,9 @@ class MigrationDownloadAssetsCommand extends Command implements EventSubscriberI
     private $migrationMappingRepository;
 
     /**
-     * @var MediaUpdater
+     * @var FileSaver
      */
-    private $mediaUpdater;
+    private $fileSaver;
 
     /**
      * @var EventDispatcherInterface
@@ -44,13 +44,13 @@ class MigrationDownloadAssetsCommand extends Command implements EventSubscriberI
 
     public function __construct(
         RepositoryInterface $migrationMappingRepository,
-        MediaUpdater $mediaUpdater,
+        FileSaver $fileSaver,
         EventDispatcherInterface $event
     ) {
         parent::__construct();
 
         $this->migrationMappingRepository = $migrationMappingRepository;
-        $this->mediaUpdater = $mediaUpdater;
+        $this->fileSaver = $fileSaver;
         $this->event = $event;
     }
 
@@ -120,7 +120,7 @@ class MigrationDownloadAssetsCommand extends Command implements EventSubscriberI
 
         $assetDownloadService = new AssetDownloadService(
             $this->migrationMappingRepository,
-            $this->mediaUpdater,
+            $this->fileSaver,
             $this->event,
             $logger
         );

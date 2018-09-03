@@ -6,7 +6,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
 use Psr\Log\LoggerInterface;
-use Shopware\Core\Content\Media\Upload\MediaUpdater;
+use Shopware\Core\Content\Media\File\FileSaver;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\ORM\RepositoryInterface;
 use Shopware\Core\Framework\ORM\Search\Criteria;
@@ -45,9 +45,9 @@ class AssetDownloadService implements AssetDownloadServiceInterface
     private $chunkSizeBytes = 1 * 1024 * 1024;
 
     /**
-     * @var MediaUpdater
+     * @var FileSaver
      */
-    private $mediaUpdater;
+    private $fileSaver;
 
     /**
      * @var EventDispatcherInterface
@@ -59,10 +59,10 @@ class AssetDownloadService implements AssetDownloadServiceInterface
      */
     private $logger;
 
-    public function __construct(RepositoryInterface $migrationMappingRepository, MediaUpdater $mediaUpdater, EventDispatcherInterface $event, LoggerInterface $logger)
+    public function __construct(RepositoryInterface $migrationMappingRepository, FileSaver $fileSaver, EventDispatcherInterface $event, LoggerInterface $logger)
     {
         $this->migrationMappingRepository = $migrationMappingRepository;
-        $this->mediaUpdater = $mediaUpdater;
+        $this->fileSaver = $fileSaver;
         $this->event = $event;
         $this->logger = $logger;
     }
@@ -140,7 +140,7 @@ class AssetDownloadService implements AssetDownloadServiceInterface
         }
         fclose($fileHandle);
 
-        $this->persistFileToMedia($filePath, $uuid, $fileSize, $context);
+        $this->persistFileToMedia($filePath, $fileExtension, $uuid, $fileSize, $context);
     }
 
     private function normalDownload(Client $client, string $uuid, string $uri, int $fileSize, Context $context): void
@@ -160,16 +160,16 @@ class AssetDownloadService implements AssetDownloadServiceInterface
         fwrite($fileHandle, $response->getBody()->getContents());
         fclose($fileHandle);
 
-        $this->persistFileToMedia($filePath, $uuid, $fileSize, $context);
+        $this->persistFileToMedia($filePath, $fileExtension, $uuid, $fileSize, $context);
     }
 
-    private function persistFileToMedia(string $filePath, string $uuid, int $fileSize, Context $context): void
+    private function persistFileToMedia(string $filePath, string $fileExtension, string $uuid, int $fileSize, Context $context): void
     {
         $mimeType = mime_content_type($filePath);
         /** @var ArrayStruct $writeProtection */
         $writeProtection = $context->getExtension('write_protection');
         $writeProtection->set('write_media', true);
-        $this->mediaUpdater->persistFileToMedia($filePath, $uuid, $mimeType, $fileSize, $context);
+        $this->fileSaver->persistFileToMedia($filePath, $uuid, $mimeType, $fileExtension, $fileSize, $context);
     }
 
     private function handleChunkSize(float $requestTime): void
