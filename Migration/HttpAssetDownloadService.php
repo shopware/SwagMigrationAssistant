@@ -7,9 +7,10 @@ use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Promise;
 use GuzzleHttp\Psr7\Response;
+use PDO;
 use Shopware\Core\Content\Media\Exception\IllegalMimeTypeException;
 use Shopware\Core\Content\Media\Exception\UploadException;
-use Shopware\Core\Content\Media\Upload\MediaUpdater;
+use Shopware\Core\Content\Media\File\FileSaver;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\ORM\RepositoryInterface;
 use Shopware\Core\Framework\ORM\Search\Criteria;
@@ -28,15 +29,15 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
      */
     private $connection;
     /**
-     * @var MediaUpdater
+     * @var FileSaver
      */
-    private $mediaUpdater;
+    private $fileSaver;
 
-    public function __construct(RepositoryInterface $migrationMappingRepository, Connection $connection, MediaUpdater $mediaUpdater)
+    public function __construct(RepositoryInterface $migrationMappingRepository, Connection $connection, FileSaver $fileSaver)
     {
         $this->migrationMappingRepository = $migrationMappingRepository;
         $this->connection = $connection;
-        $this->mediaUpdater = $mediaUpdater;
+        $this->fileSaver = $fileSaver;
     }
 
     public function fetchMediaUuids(int $offset, int $limit): array
@@ -50,9 +51,7 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
             ->setFirstResult($offset)
             ->setMaxResults($limit)
             ->orderBy('CONVERT(JSON_EXTRACT(`additional_data`, \'$.file_size\'), UNSIGNED INTEGER)');
-        $queryResult = $queryBuilder->execute()->fetchAll(\PDO::FETCH_COLUMN);
-
-        return $queryResult;
+        return $queryBuilder->execute()->fetchAll(PDO::FETCH_COLUMN);
     }
 
     /**
@@ -177,8 +176,7 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
         /** @var ArrayStruct $writeProtection */
         $writeProtection = $context->getExtension('write_protection');
         $writeProtection->set('write_media', true);
-        // TODO: Update persistFileToMedia params if new PR is merged next-773
-        $this->mediaUpdater->persistFileToMedia($filePath, $uuid, $mimeType, $fileExtension, $fileSize, $context);
+        $this->fileSaver->persistFileToMedia($filePath, $uuid, $mimeType, $fileExtension, $fileSize, $context);
     }
 
     private function doNormalDownloadRequest(array &$workload, Client $client): ?Promise\PromiseInterface

@@ -6,6 +6,8 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
 use Psr\Log\LoggerInterface;
+use Shopware\Core\Content\Media\Exception\IllegalMimeTypeException;
+use Shopware\Core\Content\Media\Exception\UploadException;
 use Shopware\Core\Content\Media\File\FileSaver;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\ORM\RepositoryInterface;
@@ -110,6 +112,10 @@ class CliAssetDownloadService implements CliAssetDownloadServiceInterface
         }
     }
 
+    /**
+     * @throws IllegalMimeTypeException
+     * @throws UploadException
+     */
     private function chunkDownload(Client $client, string $uuid, string $uri, int $fileSize, Context $context): void
     {
         $fileExtension = pathinfo($uri, PATHINFO_EXTENSION);
@@ -143,6 +149,11 @@ class CliAssetDownloadService implements CliAssetDownloadServiceInterface
         $this->persistFileToMedia($filePath, $fileExtension, $uuid, $fileSize, $context);
     }
 
+    /**
+     * @throws GuzzleException
+     * @throws IllegalMimeTypeException
+     * @throws UploadException
+     */
     private function normalDownload(Client $client, string $uuid, string $uri, int $fileSize, Context $context): void
     {
         $fileExtension = pathinfo($uri, PATHINFO_EXTENSION);
@@ -163,6 +174,10 @@ class CliAssetDownloadService implements CliAssetDownloadServiceInterface
         $this->persistFileToMedia($filePath, $fileExtension, $uuid, $fileSize, $context);
     }
 
+    /**
+     * @throws IllegalMimeTypeException
+     * @throws UploadException
+     */
     private function persistFileToMedia(string $filePath, string $fileExtension, string $uuid, int $fileSize, Context $context): void
     {
         $mimeType = mime_content_type($filePath);
