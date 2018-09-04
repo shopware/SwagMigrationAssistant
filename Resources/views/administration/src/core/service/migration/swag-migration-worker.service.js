@@ -131,7 +131,7 @@ class MigrationService {
                     // step 4 - finish -> show results
                     this._migrateFinish();
                     this._isMigrating = false;
-                    resolve();
+                    resolve(this._errors);
                 });
             });
         });
@@ -586,7 +586,6 @@ class MigrationService {
     }
 
     _addError(error) {
-        console.log(error); // TODO: display errors in the UI
         this._errors.push(error);
     }
 

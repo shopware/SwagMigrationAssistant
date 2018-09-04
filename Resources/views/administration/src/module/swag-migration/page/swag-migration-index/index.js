@@ -359,11 +359,20 @@ Component.register('swag-migration-index', {
                 });
             } else if (this.statusIndex === this.migrationWorkerService.MIGRATION_STATUS.FINISHED) {
                 if (this.migrationWorkerService.errors.length > 0) {
-                    this.componentIndex = this.components.resultWarning; // show result warning screen
+                    this.onFinishWithErrors(this.migrationWorkerService.errors);
                 } else {
-                    this.componentIndex = this.components.resultSuccess; // show result success screen
+                    this.onFinishWithoutErrors();
                 }
             }
+        },
+
+        onFinishWithoutErrors() {
+            this.componentIndex = this.components.resultSuccess; // show result success screen
+        },
+
+        onFinishWithErrors(errors) {
+            console.log(errors);
+            this.componentIndex = this.components.resultWarning; // show result warning screen
         },
 
         onProgress(progressData) {
