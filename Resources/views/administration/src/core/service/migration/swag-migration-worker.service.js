@@ -3,9 +3,10 @@ import StorageBroadcastService from '../storage-broadcaster.service';
 
 class MigrationService {
     constructor(migrationService) {
-        this._MAX_REQUEST_TIME = 2000; // in ms
+        this._MAX_REQUEST_TIME = 10000; // in ms
         this._DEFAULT_CHUNK_SIZE = 50; // in data sets
         this._CHUNK_INCREMENT = 5; // in data sets
+        this.__MIN_INCREMENT = this._CHUNK_INCREMENT;
 
         this.MIGRATION_STATUS = {
             WAITING: -1,
@@ -21,6 +22,7 @@ class MigrationService {
         // The maximum amount of bytes we download per file in one request
         this._ASSET_FILE_CHUNK_BYTE_SIZE = 1000 * 1000 * 8; // 8 MB
         this._CHUNK_SIZE_BYTE_INCREMENT = 250 * 1000; // 250 KB
+        this._ASSET_MIN_FILE_CHUNK_BYTE_SIZE = this._CHUNK_SIZE_BYTE_INCREMENT;
 
         // will be toggled when we receive a response for our 'migrationWanted' request
         this._broadcastResponseFlag = false;
@@ -519,7 +521,10 @@ class MigrationService {
             this._chunkSize += this._CHUNK_INCREMENT;
         }
 
-        if (requestTime > this._MAX_REQUEST_TIME) {
+        if (
+            requestTime > this._MAX_REQUEST_TIME &&
+            (this._chunkSize - this._CHUNK_INCREMENT) >= this.__MIN_INCREMENT
+        ) {
             this._chunkSize -= this._CHUNK_INCREMENT;
         }
     }
@@ -535,7 +540,10 @@ class MigrationService {
             this._ASSET_FILE_CHUNK_BYTE_SIZE += this._CHUNK_SIZE_BYTE_INCREMENT;
         }
 
-        if (requestTime > this._MAX_REQUEST_TIME) {
+        if (
+            requestTime > this._MAX_REQUEST_TIME &&
+            (this._ASSET_FILE_CHUNK_BYTE_SIZE - this._CHUNK_SIZE_BYTE_INCREMENT) >= this._ASSET_MIN_FILE_CHUNK_BYTE_SIZE
+        ) {
             this._ASSET_FILE_CHUNK_BYTE_SIZE -= this._CHUNK_SIZE_BYTE_INCREMENT;
         }
     }
