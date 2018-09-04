@@ -12,7 +12,7 @@ use Shopware\Core\Framework\ORM\RepositoryInterface;
 use Shopware\Core\Framework\ORM\Search\Criteria;
 use Shopware\Core\Framework\ORM\Search\Query\NotQuery;
 use Shopware\Core\Framework\ORM\Search\Query\TermQuery;
-use SwagMigrationNext\Migration\AssetDownloadService;
+use SwagMigrationNext\Migration\CliAssetDownloadService;
 use SwagMigrationNext\Migration\MigrationCollectServiceInterface;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\MigrationWriteService;
@@ -32,7 +32,7 @@ class AssetDownloadServiceTest extends KernelTestCase
     private $connection;
 
     /**
-     * @var AssetDownloadService
+     * @var CliAssetDownloadService
      */
     private $assetDownloadService;
 
@@ -83,7 +83,7 @@ class AssetDownloadServiceTest extends KernelTestCase
             self::$container->get(Shopware55MappingService::class)
         );
 
-        $this->assetDownloadService = new AssetDownloadService($migrationMapping, $mediaUpdater, $eventDispatcher, $this->logger);
+        $this->assetDownloadService = new CliAssetDownloadService($migrationMapping, $mediaUpdater, $eventDispatcher, $this->logger);
     }
 
     protected function tearDown()

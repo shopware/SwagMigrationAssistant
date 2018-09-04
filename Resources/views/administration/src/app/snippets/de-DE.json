@@ -1,130 +1,140 @@
 {
-    "swag-migration": {
-        "general": {
-            "mainMenuItemGeneral": "Migration",
-            "descriptionTextModule": "Modul zum Migrieren der Daten aus Shopware 5"
+  "swag-migration": {
+    "general": {
+      "mainMenuItemGeneral": "Migration",
+      "descriptionTextModule": "Modul zum Migrieren der Daten aus Shopware 5"
+    },
+    "wizard": {
+      "title": "Migration: Vorbereitung",
+      "buttonAbort": "Abbrechen",
+      "buttonConnect": "Verbinden",
+      "buttonPrev": "Zurück",
+      "buttonNext": "Weiter",
+      "buttonFinish": "Fertig",
+      "pathTarget": "Shopware 5 Backend:",
+      "pathSettings": "Einstellungen",
+      "pathUserManagement": "Benutzerverwaltung",
+      "pathPluginManagement": "Plugin Manager",
+      "pathExtensions": "Erweiterungen",
+      "pathEditUser": "„Diesen Benutzer editieren“",
+      "pages": {
+        "introduction": {
+          "contentTitle": "Starte Shopware Playground mit eigenen Daten.",
+          "contentInformation": "Migriere deine Daten aus Shopware 5 zu Shopware Playground und lege eigene Experimente an. Erkunde die Möglichkeiten von Shopware Playground mit echten Daten."
         },
-        "wizard": {
-            "title": "Migration: Vorbereitung",
-            "buttonAbort": "Abbrechen",
-            "buttonConnect": "Verbinden",
-            "buttonPrev": "Zurück",
-            "buttonNext": "Weiter",
-            "buttonFinish": "Fertig",
-            "pathTarget": "Shopware 5 Backend:",
-            "pathSettings": "Einstellungen",
-            "pathUserManagement": "Benutzerverwaltung",
-            "pathPluginManagement": "Plugin Manager",
-            "pathExtensions": "Erweiterungen",
-            "pathEditUser": "„Diesen Benutzer editieren“",
-            "pages": {
-                "introduction": {
-                    "contentTitle": "Starte Shopware Playground mit eigenen Daten.",
-                    "contentInformation": "Migriere deine Daten aus Shopware 5 zu Shopware Playground und lege eigene Experimente an. Erkunde die Möglichkeiten von Shopware Playground mit echten Daten."
-                },
-                "pluginInformation": {
-                    "contentTitle": "Login Shopware 5 Backend",
-                    "contentInformation": "Logge dich mit deinen Zugangsdaten in das Shopware 5 Backend ein und rufe den Plugin-Manager auf. Das Plugin „Shopware Playground Connector“ ist kostenlos und wird für die Migration benötigt. Bitte installiere und aktiviere das Plugin.",
-                    "pluginLink": "Mehr Infos zum Plugin"
-                },
-                "credentials": {
-                    "contentTitle": "Verbindung zu Shopware 5 herstellen",
-                    "contentInformation": "Den API-Schlüssel findest Du in der Benutzerverwaltung in Deinen Benutzerdaten. Bitte aktiviere den API-Zugang, kopiere den API-Schlüssel in die Zwischenablage und bestätige mit Speichern.",
-                    "apiKeyLabel": "API-Schlüssel",
-                    "apiKeyPlaceholder": "Schlüssel einfügen ...",
-                    "apiUserLabel": "Benutzername (API-User)",
-                    "apiUserPlaceholder": "Login Benutzernamen eintragen ...",
-                    "endpointLabel": "Shop Domain",
-                    "endpointPlaceholder": "http://www.demoshop.com",
-                    "success": {
-                        "contentTitle": "Erfolgreich verbunden!",
-                        "contentInformation": "Gehe auf Fertig und wähle in dem Migrations-Modul die jeweiligen Datensätze aus, die übertragen werden sollen. Die Daten können gesamt, Schritt für Schritt oder nachträglich migriert werden."
-                    },
-                    "error": {
-                        "contentTitle": "Verbindung nicht hergestellt.",
-                        "contentInformation": "Die Verbindung konnte leider nicht hergestellt werden. Bitte prüfe die Meldungen und behebe das Problem.",
-                        "alertErrorTitle": "Achtung:",
-                        "connectionErrorMsg": "Es konnte keine Verbindung zum angegebenen Server hergestellt werden. Bitte überprüfe die angegebene Shop-Domain.",
-                        "authenticationErrorMsg": "Deine Zugangsdaten sind nicht korrekt. Bitte überprüfe sie und versuche es erneut.",
-                        "undefinedErrorMsg": "Interner Server Fehler. Bitte versuche es erneut."
-                    }
-                }
-            }
+        "pluginInformation": {
+          "contentTitle": "Login Shopware 5 Backend",
+          "contentInformation": "Logge dich mit deinen Zugangsdaten in das Shopware 5 Backend ein und rufe den Plugin-Manager auf. Das Plugin „Shopware Playground Connector“ ist kostenlos und wird für die Migration benötigt. Bitte installiere und aktiviere das Plugin.",
+          "pluginLink": "Mehr Infos zum Plugin"
         },
-        "index": {
-          "title": "Migration",
-          "migrateButton": "Migrieren",
-          "finishButton": "Fertig",
-          "backButton": "Zurück zur Übersicht",
-          "shopVersionFallback": "Shopware",
-          "browserClosingHint": "Möchtest Du die Migration wirklich abbrechen?",
-          "migrationAlreadyRunning": "Migration bereits gestartet.",
-          "shopInfoCard": {
-            "cardTitle": "Shopsystem",
-            "buttonEditSettings": "Einstellungen bearbeiten",
-            "buttonMoreInfo": "Mehr Infos einblenden"
+        "credentials": {
+          "contentTitle": "Verbindung zu Shopware 5 herstellen",
+          "contentInformation": "Den API-Schlüssel findest Du in der Benutzerverwaltung in Deinen Benutzerdaten. Bitte aktiviere den API-Zugang, kopiere den API-Schlüssel in die Zwischenablage und bestätige mit Speichern.",
+          "apiKeyLabel": "API-Schlüssel",
+          "apiKeyPlaceholder": "Schlüssel einfügen ...",
+          "apiUserLabel": "Benutzername (API-User)",
+          "apiUserPlaceholder": "Login Benutzernamen eintragen ...",
+          "endpointLabel": "Shop Domain",
+          "endpointPlaceholder": "http://www.demoshop.com",
+          "success": {
+            "contentTitle": "Erfolgreich verbunden!",
+            "contentInformation": "Gehe auf Fertig und wähle in dem Migrations-Modul die jeweiligen Datensätze aus, die übertragen werden sollen. Die Daten können gesamt, Schritt für Schritt oder nachträglich migriert werden."
           },
-          "selectDataCard": {
-            "cardTitle": "Datenauswahl",
-            "hintTitle": "Info:",
-            "hint": "Die ausgewählten Daten werden mit Sprachversionen und angelegten Subshops übertragen. Diese Daten haben relevante Abhängigkeiten, die für die Vollständigkeit der Migration notwendig sind.",
-            "dataHeader": "Daten",
-            "dataPossible": {
-              "customersAndOrders": "Kunden & Bestellungen",
-              "categoriesAndProducts": "Kategorien & Produkte",
-              "media": "Medien"
-            },
-            "targetHeader": "Ziel",
-            "defaultCatalogue": "Standard",
-            "gdprTitle": "PLACEHOLDER Datenschutzverordnung",
-            "gdprText": "PLACEHOLDER Ich stimme der Bestimmung zum Datenschutz zu. ... Weitergabe personenbezogenen Daten an Shopware Playground - die in \"Kunden & Bestellungen\" vorhanden sind.",
-            "gdprLink": "PLACEHOLDER Was passiert mit den Daten - mehr erfahren."
-          },
-          "loadingScreenCard": {
-            "cardTitle": "Schritt {step} von {total}",
-            "status": {
-              "fetchData": {
-                "long": "Lesen der Daten von {profileName}...",
-                "short": "Daten lesen"
-              },
-              "writeData": {
-                "long": "Schreiben der Daten in Shopware Playground...",
-                "short": "Daten schreiben"
-              },
-              "downloadMedia": {
-                "long": "Download der Medien in Shopware Playground...",
-                "short": "Medien Download"
-              }
-            },
-            "hintTitle": "Hinweis:",
-            "hint": "Bitte bleibe angemeldet und lösche keine Daten in dem anderen Shopsystem solange der Prozess nicht abgeschlossen ist. Du kannst aber im System arbeiten, der Prozess läuft im Hintergrund weiter.",
-            "result": {
-              "success": {
-                "title": "Abgeschlossen",
-                "contentTitle": "Migration abgeschlossen",
-                "hintTitle": "Hinweis:",
-                "hintContent": "Minions ipsum underweaaar baboiii me want bananaaa! Me want bananaaa! Jiji. Bappleees po kass poopayee poulet tikka masala gelatooo. Tatata bala tu uuuhhh poopayee bee do bee do bee do ti aamoo! Jeje hahaha jeje gelatooo poulet tikka masala tatata bala tu para tú. Bappleees bee do bee do bee do tatata bala tu hahaha aaaaaah me want bananaaa! Gelatooo bananaaaa para tú belloo!"
-              },
-              "warning": {
-                "title": "Abgeschlossen",
-                "contentTitle": "Migration nicht vollständig abgeschlossen",
-                "hintTitle": "Achtung:",
-                "hintContent": "Minions ipsum underweaaar baboiii me want bananaaa! Me want bananaaa! Jiji. Bappleees po kass poopayee poulet tikka masala gelatooo. Tatata bala tu uuuhhh poopayee bee do bee do bee do ti aamoo! Jeje hahaha jeje gelatooo poulet tikka masala tatata bala tu para tú. Bappleees bee do bee do bee do tatata bala tu hahaha aaaaaah me want bananaaa! Gelatooo bananaaaa para tú belloo!"
-              },
-              "failure": {
-                "title": "Fehlgeschlagen",
-                "contentTitle": "Migration nicht möglich!",
-                "hintTitle": "Achtung:",
-                "hintContent": "Minions ipsum underweaaar baboiii me want bananaaa! Me want bananaaa! Jiji. Bappleees po kass poopayee poulet tikka masala gelatooo. Tatata bala tu uuuhhh poopayee bee do bee do bee do ti aamoo! Jeje hahaha jeje gelatooo poulet tikka masala tatata bala tu para tú. Bappleees bee do bee do bee do tatata bala tu hahaha aaaaaah me want bananaaa! Gelatooo bananaaaa para tú belloo!"
-              }
-            }
-          },
-          "confirmDialog": {
-            "title": "Migration",
-            "message": "Möchtest Du wirklich migrieren?",
-            "cancel": "Abbrechen",
-            "confirm": "Migrieren"
+          "error": {
+            "contentTitle": "Verbindung nicht hergestellt.",
+            "contentInformation": "Die Verbindung konnte leider nicht hergestellt werden. Bitte prüfe die Meldungen und behebe das Problem.",
+            "alertErrorTitle": "Achtung:",
+            "connectionErrorMsg": "Es konnte keine Verbindung zum angegebenen Server hergestellt werden. Bitte überprüfe die angegebene Shop-Domain.",
+            "authenticationErrorMsg": "Deine Zugangsdaten sind nicht korrekt. Bitte überprüfe sie und versuche es erneut.",
+            "undefinedErrorMsg": "Interner Server Fehler. Bitte versuche es erneut."
           }
         }
+      }
+    },
+    "index": {
+      "title": "Migration",
+      "migrateButton": "Migrieren",
+      "finishButton": "Fertig",
+      "backButton": "Zurück zur Übersicht",
+      "shopVersionFallback": "Shopware",
+      "browserClosingHint": "Möchtest Du die Migration wirklich abbrechen?",
+      "migrationAlreadyRunning": "Migration bereits gestartet.",
+      "shopInfoCard": {
+        "cardTitle": "Shopsystem",
+        "buttonEditSettings": "Einstellungen bearbeiten",
+        "buttonMoreInfo": "Mehr Infos einblenden"
+      },
+      "selectDataCard": {
+        "cardTitle": "Datenauswahl",
+        "hintTitle": "Info:",
+        "hint": "Die ausgewählten Daten werden mit Sprachversionen und angelegten Subshops übertragen. Diese Daten haben relevante Abhängigkeiten, die für die Vollständigkeit der Migration notwendig sind.",
+        "dataHeader": "Daten",
+        "dataPossible": {
+          "customersAndOrders": "Kunden & Bestellungen",
+          "categoriesAndProducts": "Kategorien & Produkte",
+          "media": "Medien"
+        },
+        "targetHeader": "Ziel",
+        "defaultCatalogue": "Standard",
+        "gdprTitle": "PLACEHOLDER Datenschutzverordnung",
+        "gdprText": "PLACEHOLDER Ich stimme der Bestimmung zum Datenschutz zu. ... Weitergabe personenbezogenen Daten an Shopware Playground - die in \"Kunden & Bestellungen\" vorhanden sind.",
+        "gdprLink": "PLACEHOLDER Was passiert mit den Daten - mehr erfahren."
+      },
+      "loadingScreenCard": {
+        "cardTitle": "Schritt {step} von {total}",
+        "status": {
+          "fetchData": {
+            "long": "Lesen der Daten von {profileName}...",
+            "short": "Daten lesen"
+          },
+          "writeData": {
+            "long": "Schreiben der Daten in Shopware Playground...",
+            "short": "Daten schreiben"
+          },
+          "downloadMedia": {
+            "long": "Download der Medien in Shopware Playground...",
+            "short": "Medien Download"
+          }
+        },
+        "hintTitle": "Hinweis:",
+        "hint": "Bitte bleibe angemeldet und lösche keine Daten in dem anderen Shopsystem solange der Prozess nicht abgeschlossen ist. Du kannst aber im System arbeiten, der Prozess läuft im Hintergrund weiter.",
+        "result": {
+          "success": {
+            "title": "Abgeschlossen",
+            "contentTitle": "Migration abgeschlossen",
+            "hintTitle": "Hinweis:",
+            "hintContent": "Minions ipsum underweaaar baboiii me want bananaaa! Me want bananaaa! Jiji. Bappleees po kass poopayee poulet tikka masala gelatooo. Tatata bala tu uuuhhh poopayee bee do bee do bee do ti aamoo! Jeje hahaha jeje gelatooo poulet tikka masala tatata bala tu para tú. Bappleees bee do bee do bee do tatata bala tu hahaha aaaaaah me want bananaaa! Gelatooo bananaaaa para tú belloo!"
+          },
+          "warning": {
+            "title": "Abgeschlossen",
+            "contentTitle": "Migration nicht vollständig abgeschlossen",
+            "hintTitle": "Achtung:",
+            "hintContent": "Minions ipsum underweaaar baboiii me want bananaaa! Me want bananaaa! Jiji. Bappleees po kass poopayee poulet tikka masala gelatooo. Tatata bala tu uuuhhh poopayee bee do bee do bee do ti aamoo! Jeje hahaha jeje gelatooo poulet tikka masala tatata bala tu para tú. Bappleees bee do bee do bee do tatata bala tu hahaha aaaaaah me want bananaaa! Gelatooo bananaaaa para tú belloo!"
+          },
+          "failure": {
+            "title": "Fehlgeschlagen",
+            "contentTitle": "Migration nicht möglich!",
+            "hintTitle": "Achtung:",
+            "hintContent": "Minions ipsum underweaaar baboiii me want bananaaa! Me want bananaaa! Jiji. Bappleees po kass poopayee poulet tikka masala gelatooo. Tatata bala tu uuuhhh poopayee bee do bee do bee do ti aamoo! Jeje hahaha jeje gelatooo poulet tikka masala tatata bala tu para tú. Bappleees bee do bee do bee do tatata bala tu hahaha aaaaaah me want bananaaa! Gelatooo bananaaaa para tú belloo!"
+          }
+        }
+      },
+      "confirmDialog": {
+        "title": "Migration",
+        "message": "Möchtest Du wirklich migrieren?",
+        "cancel": "Abbrechen",
+        "confirm": "Migrieren"
+      },
+      "error": {
+        "canNotDownloadAsset": {
+          "title": "Medien-Download fehlgeschlagen",
+          "detail": "Medien-Datei konnte nicht gedownloadet werden: {assetUri}"
+        },
+        "canNotConnectToServer": {
+          "title": "Keine Verbindung",
+          "detail": "Keine Verbindung zum Server"
+        }
+      }
     }
+  }
 }

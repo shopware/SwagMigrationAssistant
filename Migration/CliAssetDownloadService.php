@@ -6,7 +6,10 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
 use Psr\Log\LoggerInterface;
+use Shopware\Core\Content\Media\Exception\IllegalMimeTypeException;
+use Shopware\Core\Content\Media\Exception\UploadException;
 use Shopware\Core\Content\Media\File\FileSaver;
+use Shopware\Core\Content\Media\File\MediaFile;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\ORM\RepositoryInterface;
 use Shopware\Core\Framework\ORM\Search\Criteria;
@@ -17,7 +20,7 @@ use SwagMigrationNext\Command\Event\MigrationAssetDownloadFinishEvent;
 use SwagMigrationNext\Command\Event\MigrationAssetDownloadStartEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-class AssetDownloadService implements AssetDownloadServiceInterface
+class CliAssetDownloadService implements CliAssetDownloadServiceInterface
 {
     /**
      * @var int
@@ -110,6 +113,10 @@ class AssetDownloadService implements AssetDownloadServiceInterface
         }
     }
 
+    /**
+     * @throws IllegalMimeTypeException
+     * @throws UploadException
+     */
     private function chunkDownload(Client $client, string $uuid, string $uri, int $fileSize, Context $context): void
     {
         $fileExtension = pathinfo($uri, PATHINFO_EXTENSION);
@@ -143,6 +150,11 @@ class AssetDownloadService implements AssetDownloadServiceInterface
         $this->persistFileToMedia($filePath, $fileExtension, $uuid, $fileSize, $context);
     }
 
+    /**
+     * @throws GuzzleException
+     * @throws IllegalMimeTypeException
+     * @throws UploadException
+     */
     private function normalDownload(Client $client, string $uuid, string $uri, int $fileSize, Context $context): void
     {
         $fileExtension = pathinfo($uri, PATHINFO_EXTENSION);
@@ -163,13 +175,15 @@ class AssetDownloadService implements AssetDownloadServiceInterface
         $this->persistFileToMedia($filePath, $fileExtension, $uuid, $fileSize, $context);
     }
 
+    /**
+     * @throws IllegalMimeTypeException
+     * @throws UploadException
+     */
     private function persistFileToMedia(string $filePath, string $fileExtension, string $uuid, int $fileSize, Context $context): void
     {
         $mimeType = mime_content_type($filePath);
-        /** @var ArrayStruct $writeProtection */
-        $writeProtection = $context->getExtension('write_protection');
-        $writeProtection->set('write_media', true);
-        $this->fileSaver->persistFileToMedia($filePath, $uuid, $mimeType, $fileExtension, $fileSize, $context);
+        $mediaFile = new MediaFile($uuid, $mimeType, $fileExtension, $fileSize);
+        $this->fileSaver->persistFileToMedia($mediaFile, $uuid, $context);
     }
 
     private function handleChunkSize(float $requestTime): void

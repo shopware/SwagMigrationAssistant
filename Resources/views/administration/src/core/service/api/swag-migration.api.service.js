@@ -42,6 +42,30 @@ class MigrationApiService extends ApiService {
                 return ApiService.handleResponse(response);
             });
     }
+
+    fetchAssetUuids(additionalParams = {}, additionalHeaders = {}) {
+        const params = additionalParams;
+        const headers = this.getBasicHeaders(additionalHeaders);
+
+        return this.httpClient
+            .get(`${this.getApiBasePath()}/fetch-media-uuids`, { params, headers })
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
+    downloadAssets(additionalParams = {}, additionalHeaders = {}) {
+        const params = additionalParams;
+        const headers = this.getBasicHeaders(additionalHeaders);
+
+        return this.httpClient
+            .post(`${this.getApiBasePath()}/download-assets`, params, {
+                headers
+            })
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
 }
 
 export default MigrationApiService;

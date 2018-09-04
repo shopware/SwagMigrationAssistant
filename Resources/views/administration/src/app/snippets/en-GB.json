@@ -1,130 +1,140 @@
 {
-    "swag-migration": {
-        "general": {
-            "mainMenuItemGeneral": "Migration",
-            "descriptionTextModule": "Modul to migrate data from Shopware 5"
+  "swag-migration": {
+    "general": {
+      "mainMenuItemGeneral": "Migration",
+      "descriptionTextModule": "Modul to migrate data from Shopware 5"
+    },
+    "wizard": {
+      "title": "Migration: Preparations",
+      "buttonAbort": "Cancel",
+      "buttonConnect": "Connect",
+      "buttonPrev": "Back",
+      "buttonNext": "Next",
+      "buttonFinish": "Finish",
+      "pathTarget": "Shopware 5 backend:",
+      "pathSettings": "Configuration",
+      "pathUserManagement": "User administration",
+      "pathPluginManagement": "Plugin Manager",
+      "pathExtensions": "Extensions",
+      "pathEditUser": "“Edit user”",
+      "pages": {
+        "introduction": {
+          "contentTitle": "Launch Shopware Playground with your own data.",
+          "contentInformation": "Migrate your data from Shopware 5 to Shopware Playground and create your own experiments. Explore the possibilities of Shopware Playground with real data."
         },
-        "wizard": {
-            "title": "Migration: Preparations",
-            "buttonAbort": "Cancel",
-            "buttonConnect": "Connect",
-            "buttonPrev": "Back",
-            "buttonNext": "Next",
-            "buttonFinish": "Finish",
-            "pathTarget": "Shopware 5 backend:",
-            "pathSettings": "Configuration",
-            "pathUserManagement": "User administration",
-            "pathPluginManagement": "Plugin Manager",
-            "pathExtensions": "Extensions",
-            "pathEditUser": "“Edit user”",
-            "pages": {
-                "introduction": {
-                    "contentTitle": "Launch Shopware Playground with your own data.",
-                    "contentInformation": "Migrate your data from Shopware 5 to Shopware Playground and create your own experiments. Explore the possibilities of Shopware Playground with real data."
-                },
-                "pluginInformation": {
-                    "contentTitle": "Login Shopware 5 Backend",
-                    "contentInformation": "Use your access data to log into the Shopware 5 backend and open the plugin manager. To get started, download and activate the free plugin 'Shopware Playground Connector'. No additional input or settings are required.",
-                    "pluginLink": "More information about the plugin"
-                },
-                "credentials": {
-                    "contentTitle": "Create the connection with Shopware 5",
-                    "contentInformation": "The API key can be found within the administration of your user data. Please activate the API access, copy the API key to your clipboard and confirm by saving.",
-                    "apiKeyLabel": "API key",
-                    "apiKeyPlaceholder": "Insert API key ...",
-                    "apiUserLabel": "User name (API user)",
-                    "apiUserPlaceholder": "Enter your login user name ...",
-                    "endpointLabel": "Shop domain",
-                    "endpointPlaceholder": "http://www.demoshop.com",
-                    "success": {
-                        "contentTitle": "Successfully connected!",
-                        "contentInformation": "Click on Finish and select in the migration module the data sets to be transferred. The data can be migrated completely, step by step or subsequently."
-                    },
-                    "error": {
-                        "contentTitle": "Unable to create a connection",
-                        "contentInformation": "Unfortunately, the connection could not be established. Please refer to the error messages and try again.",
-                        "alertErrorTitle": "Attention:",
-                        "connectionErrorMsg": "Could not connect to the server. Please check the given shop domain.",
-                        "authenticationErrorMsg": "Your access data is not correct. Please check it and try again.",
-                        "undefinedErrorMsg": "Internal server error. Please try again."
-                    }
-                }
-            }
+        "pluginInformation": {
+          "contentTitle": "Login Shopware 5 Backend",
+          "contentInformation": "Use your access data to log into the Shopware 5 backend and open the plugin manager. To get started, download and activate the free plugin 'Shopware Playground Connector'. No additional input or settings are required.",
+          "pluginLink": "More information about the plugin"
         },
-        "index": {
-          "title": "Migration",
-          "migrateButton": "Migrate",
-          "finishButton": "Finish",
-          "backButton": "Back to overview",
-          "shopVersionFallback": "Shopware",
-          "browserClosingHint": "Do you really want to abort the migration?",
-          "migrationAlreadyRunning": "Migration already started.",
-          "shopInfoCard": {
-            "cardTitle": "Shopsystem",
-            "buttonEditSettings": "Edit Settings",
-            "buttonMoreInfo": "Show more information"
+        "credentials": {
+          "contentTitle": "Create the connection with Shopware 5",
+          "contentInformation": "The API key can be found within the administration of your user data. Please activate the API access, copy the API key to your clipboard and confirm by saving.",
+          "apiKeyLabel": "API key",
+          "apiKeyPlaceholder": "Insert API key ...",
+          "apiUserLabel": "User name (API user)",
+          "apiUserPlaceholder": "Enter your login user name ...",
+          "endpointLabel": "Shop domain",
+          "endpointPlaceholder": "http://www.demoshop.com",
+          "success": {
+            "contentTitle": "Successfully connected!",
+            "contentInformation": "Click on Finish and select in the migration module the data sets to be transferred. The data can be migrated completely, step by step or subsequently."
           },
-          "selectDataCard": {
-            "cardTitle": "Data selection",
-            "hintTitle": "Information:",
-            "hint": "The selected data is transferred with language versions and created subshops. This data has relevant dependencies that are necessary for the completeness of the migration.",
-            "dataHeader": "Data",
-            "dataPossible": {
-              "customersAndOrders": "Customers & Orders",
-              "categoriesAndProducts": "Categories & Products",
-              "media": "Media"
-            },
-            "targetHeader": "Target",
-            "defaultCatalogue": "Default",
-            "gdprTitle": "PLACEHOLDER General Data Protection",
-            "gdprText": "PLACEHOLDER",
-            "gdprLink": "PLACEHOLDER"
-          },
-          "loadingScreenCard": {
-            "cardTitle": "Step {step} of {total}",
-            "status": {
-              "fetchData": {
-                "long": "Read data from {profileName}...",
-                "short": "Read data"
-              },
-              "writeData": {
-                "long": "Write data to Shopware Playground...",
-                "short": "Write data"
-              },
-              "downloadMedia": {
-                "long": "Download media to Shopware Playground...",
-                "short": "Media download"
-              }
-            },
-            "hintTitle": "Note:",
-            "hint": "Please remain logged in and do not delete any data in the other shop system until the process is complete. You can work in the system, the process continues in the background.",
-            "result": {
-              "success": {
-                "title": "Done",
-                "contentTitle": "Migration done",
-                "hintTitle": "Information:",
-                "hintContent": "Minions ipsum underweaaar baboiii me want bananaaa! Me want bananaaa! Jiji. Bappleees po kass poopayee poulet tikka masala gelatooo. Tatata bala tu uuuhhh poopayee bee do bee do bee do ti aamoo! Jeje hahaha jeje gelatooo poulet tikka masala tatata bala tu para tú. Bappleees bee do bee do bee do tatata bala tu hahaha aaaaaah me want bananaaa! Gelatooo bananaaaa para tú belloo!"
-              },
-              "warning": {
-                "title": "Done",
-                "contentTitle": "Migration done",
-                "hintTitle": "Information:",
-                "hintContent": "Minions ipsum underweaaar baboiii me want bananaaa! Me want bananaaa! Jiji. Bappleees po kass poopayee poulet tikka masala gelatooo. Tatata bala tu uuuhhh poopayee bee do bee do bee do ti aamoo! Jeje hahaha jeje gelatooo poulet tikka masala tatata bala tu para tú. Bappleees bee do bee do bee do tatata bala tu hahaha aaaaaah me want bananaaa! Gelatooo bananaaaa para tú belloo!"
-              },
-              "failure": {
-                "title": "Failed",
-                "contentTitle": "Migration not possible!",
-                "hintTitle": "Attention:",
-                "hintContent": "Minions ipsum underweaaar baboiii me want bananaaa! Me want bananaaa! Jiji. Bappleees po kass poopayee poulet tikka masala gelatooo. Tatata bala tu uuuhhh poopayee bee do bee do bee do ti aamoo! Jeje hahaha jeje gelatooo poulet tikka masala tatata bala tu para tú. Bappleees bee do bee do bee do tatata bala tu hahaha aaaaaah me want bananaaa! Gelatooo bananaaaa para tú belloo!"
-              }
-            }
-          },
-          "confirmDialog": {
-            "title": "Migration",
-            "message": "Do you really want to migrate?",
-            "cancel": "Cancel",
-            "confirm": "Migrate"
+          "error": {
+            "contentTitle": "Unable to create a connection",
+            "contentInformation": "Unfortunately, the connection could not be established. Please refer to the error messages and try again.",
+            "alertErrorTitle": "Attention:",
+            "connectionErrorMsg": "Could not connect to the server. Please check the given shop domain.",
+            "authenticationErrorMsg": "Your access data is not correct. Please check it and try again.",
+            "undefinedErrorMsg": "Internal server error. Please try again."
           }
         }
+      }
+    },
+    "index": {
+      "title": "Migration",
+      "migrateButton": "Migrate",
+      "finishButton": "Finish",
+      "backButton": "Back to overview",
+      "shopVersionFallback": "Shopware",
+      "browserClosingHint": "Do you really want to abort the migration?",
+      "migrationAlreadyRunning": "Migration already started.",
+      "shopInfoCard": {
+        "cardTitle": "Shopsystem",
+        "buttonEditSettings": "Edit Settings",
+        "buttonMoreInfo": "Show more information"
+      },
+      "selectDataCard": {
+        "cardTitle": "Data selection",
+        "hintTitle": "Information:",
+        "hint": "The selected data is transferred with language versions and created subshops. This data has relevant dependencies that are necessary for the completeness of the migration.",
+        "dataHeader": "Data",
+        "dataPossible": {
+          "customersAndOrders": "Customers & Orders",
+          "categoriesAndProducts": "Categories & Products",
+          "media": "Media"
+        },
+        "targetHeader": "Target",
+        "defaultCatalogue": "Default",
+        "gdprTitle": "PLACEHOLDER General Data Protection",
+        "gdprText": "PLACEHOLDER",
+        "gdprLink": "PLACEHOLDER"
+      },
+      "loadingScreenCard": {
+        "cardTitle": "Step {step} of {total}",
+        "status": {
+          "fetchData": {
+            "long": "Read data from {profileName}...",
+            "short": "Read data"
+          },
+          "writeData": {
+            "long": "Write data to Shopware Playground...",
+            "short": "Write data"
+          },
+          "downloadMedia": {
+            "long": "Download media to Shopware Playground...",
+            "short": "Media download"
+          }
+        },
+        "hintTitle": "Note:",
+        "hint": "Please remain logged in and do not delete any data in the other shop system until the process is complete. You can work in the system, the process continues in the background.",
+        "result": {
+          "success": {
+            "title": "Done",
+            "contentTitle": "Migration done",
+            "hintTitle": "Information:",
+            "hintContent": "Minions ipsum underweaaar baboiii me want bananaaa! Me want bananaaa! Jiji. Bappleees po kass poopayee poulet tikka masala gelatooo. Tatata bala tu uuuhhh poopayee bee do bee do bee do ti aamoo! Jeje hahaha jeje gelatooo poulet tikka masala tatata bala tu para tú. Bappleees bee do bee do bee do tatata bala tu hahaha aaaaaah me want bananaaa! Gelatooo bananaaaa para tú belloo!"
+          },
+          "warning": {
+            "title": "Done",
+            "contentTitle": "Migration done",
+            "hintTitle": "Information:",
+            "hintContent": "Minions ipsum underweaaar baboiii me want bananaaa! Me want bananaaa! Jiji. Bappleees po kass poopayee poulet tikka masala gelatooo. Tatata bala tu uuuhhh poopayee bee do bee do bee do ti aamoo! Jeje hahaha jeje gelatooo poulet tikka masala tatata bala tu para tú. Bappleees bee do bee do bee do tatata bala tu hahaha aaaaaah me want bananaaa! Gelatooo bananaaaa para tú belloo!"
+          },
+          "failure": {
+            "title": "Failed",
+            "contentTitle": "Migration not possible!",
+            "hintTitle": "Attention:",
+            "hintContent": "Minions ipsum underweaaar baboiii me want bananaaa! Me want bananaaa! Jiji. Bappleees po kass poopayee poulet tikka masala gelatooo. Tatata bala tu uuuhhh poopayee bee do bee do bee do ti aamoo! Jeje hahaha jeje gelatooo poulet tikka masala tatata bala tu para tú. Bappleees bee do bee do bee do tatata bala tu hahaha aaaaaah me want bananaaa! Gelatooo bananaaaa para tú belloo!"
+          }
+        }
+      },
+      "confirmDialog": {
+        "title": "Migration",
+        "message": "Do you really want to migrate?",
+        "cancel": "Cancel",
+        "confirm": "Migrate"
+      },
+      "error": {
+        "canNotDownloadAsset": {
+          "title": "Can not download asset",
+          "detail": "Can not download asset with url: {assetUri}"
+        },
+        "canNotConnectToServer": {
+          "title": "No connection",
+          "detail": "No connection to server"
+        }
+      }
     }
+  }
 }

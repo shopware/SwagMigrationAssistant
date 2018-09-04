@@ -168,6 +168,7 @@ class CustomerConverter implements ConverterInterface
 
         if (!isset($converted['defaultBillingAddressId'], $converted['defaultShippingAddressId'])) {
             $this->mappingService->deleteMapping($converted['id'], $this->profile, $this->context);
+
             return new ConvertStruct(null, $oldData);
         }
 
