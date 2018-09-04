@@ -81,7 +81,7 @@ class OrderConverter implements ConverterInterface
         ?string $catalogId = null,
         ?string $salesChannelId = null
     ): ConvertStruct {
-        if (!isset($data['billingaddress']['id'])) {
+        if (!isset($data['billingaddress']['id'], $data['payment'], $data['customer'])) {
             return new ConvertStruct(null, $data);
         }
 
@@ -261,6 +261,11 @@ class OrderConverter implements ConverterInterface
             $originalData['payment']['id'] . ':' . $this->mainLocale,
             $this->context
         );
+
+        // TODO: Delete this default value, if the Core deletes the require Flag of the PaymentMethodTranslation
+        if (strlen($originalData['payment']['additionaldescription']) === 0) {
+            $originalData['payment']['additionaldescription'] = '....';
+        }
 
         $translation['paymentMethodId'] = $paymentMethod['id'];
         $this->helper->convertValue($translation, 'name', $originalData['payment'], 'description');

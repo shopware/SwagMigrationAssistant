@@ -63,6 +63,10 @@ class CategoryConverter implements ConverterInterface
         $this->context = $context;
         $this->oldCategoryId = $data['id'];
 
+        if (!isset($data['_locale'])) {
+            return new ConvertStruct(null, $data);
+        }
+
         // Legacy data which don't need a mapping or there is no equivalent field
         unset(
             $data['path'], // will be generated
@@ -79,18 +83,6 @@ class CategoryConverter implements ConverterInterface
             $data['mediaID']
         );
 
-        $converted['id'] = $this->mappingService->createNewUuid(
-            $this->profile,
-            CategoryDefinition::getEntityName(),
-            $this->oldCategoryId,
-            $this->context
-        );
-        unset($data['id']);
-
-        if ($catalogId !== null) {
-            $converted['catalogId'] = $catalogId;
-        }
-
         if (isset($data['parent'])) {
             $parentUuid = $this->mappingService->getUuid(
                 $this->profile,
@@ -106,6 +98,18 @@ class CategoryConverter implements ConverterInterface
             $converted['parentId'] = $parentUuid;
         }
         unset($data['parent']);
+
+        $converted['id'] = $this->mappingService->createNewUuid(
+            $this->profile,
+            CategoryDefinition::getEntityName(),
+            $this->oldCategoryId,
+            $this->context
+        );
+        unset($data['id']);
+
+        if ($catalogId !== null) {
+            $converted['catalogId'] = $catalogId;
+        }
 
         $this->helper->convertValue($converted, 'position', $data, 'position', $this->helper::TYPE_INTEGER);
         $this->helper->convertValue($converted, 'level', $data, 'level', $this->helper::TYPE_INTEGER);

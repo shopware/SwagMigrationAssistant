@@ -54,6 +54,10 @@ class MigrationWriteService implements MigrationWriteServiceInterface
             }
         }, $migrationData->getElements());
 
+        if (empty($converted)) {
+            return;
+        }
+
         $currentWriter = $this->writerRegistry->getWriter($entity);
         $currentWriter->writeData($converted, $context);
     }

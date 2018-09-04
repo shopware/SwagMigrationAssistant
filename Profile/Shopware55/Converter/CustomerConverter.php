@@ -78,6 +78,11 @@ class CustomerConverter implements ConverterInterface
             return new ConvertStruct(null, $oldData);
         }
 
+        // TODO: Remove this check, if the Core can handle 'Schnellbesteller'
+        if ($data['accountmode'] === '1') {
+            return new ConvertStruct(null, $oldData);
+        }
+
         $this->profile = Shopware55Profile::PROFILE_NAME;
         $this->context = $context;
         $this->mainLocale = $data['_locale'];
@@ -97,7 +102,7 @@ class CustomerConverter implements ConverterInterface
         $this->helper->convertValue($converted, 'password', $data, 'password');
         $this->helper->convertValue($converted, 'active', $data, 'active', $this->helper::TYPE_BOOLEAN);
         $this->helper->convertValue($converted, 'email', $data, 'email');
-        $this->helper->convertValue($converted, 'accountMode', $data, 'accountmode', $this->helper::TYPE_INTEGER);
+        $this->helper->convertValue($converted, 'guest', $data, 'accountmode', $this->helper::TYPE_BOOLEAN);
         $this->helper->convertValue($converted, 'confirmationKey', $data, 'confirmationkey');
         $this->helper->convertValue($converted, 'newsletter', $data, 'newsletter', $this->helper::TYPE_BOOLEAN);
         $this->helper->convertValue($converted, 'validation', $data, 'validation');
@@ -236,6 +241,11 @@ class CustomerConverter implements ConverterInterface
             $originalData['id'] . ':' . $this->mainLocale,
             $this->context
         );
+
+        // TODO: Delete this default value, if the Core deletes the require Flag of the PaymentMethodTranslation
+        if (!isset($originalData['additionaldescription']) || strlen($originalData['additionaldescription']) === 0) {
+            $originalData['additionaldescription'] = '....';
+        }
 
         $translation['paymentMethodId'] = $defaultPaymentMethod['id'];
         $this->helper->convertValue($translation, 'name', $originalData, 'description');
