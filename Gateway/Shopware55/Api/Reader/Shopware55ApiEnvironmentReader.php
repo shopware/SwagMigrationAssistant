@@ -14,7 +14,7 @@ class Shopware55ApiEnvironmentReader
      */
     private $apiClientOptions;
 
-    public function __construct(Array $apiClientOptions)
+    public function __construct(array $apiClientOptions)
     {
         $this->apiClientOptions = $apiClientOptions;
     }
@@ -28,23 +28,22 @@ class Shopware55ApiEnvironmentReader
         $verifiedOptions['verify'] = true;
         $apiClientVerified = new Client($verifiedOptions);
 
-        try
-        {
+        try {
             $information = [
                 'environmentInformation' => $this->getData($apiClientVerified),
-                'error' => false
+                'error' => false,
             ];
+
             return $information;
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             $information = [
                 'environmentInformation' => $this->getData($apiClient),
                 'error' => [
                     'code' => $e->getCode(),
-                    'detail' => $e->getMessage()
-                ]
+                    'detail' => $e->getMessage(),
+                ],
             ];
+
             return $information;
         }
     }
@@ -52,7 +51,8 @@ class Shopware55ApiEnvironmentReader
     /**
      * @throws GatewayReadException
      */
-    private function getData(Client $apiClient) {
+    private function getData(Client $apiClient)
+    {
         /** @var GuzzleResponse $result */
         $result = $apiClient->get(
             'SwagMigrationEnvironment'

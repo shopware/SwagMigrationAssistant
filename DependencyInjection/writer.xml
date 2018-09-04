@@ -12,7 +12,7 @@
 
         <service id="SwagMigrationNext\Migration\Writer\ProductWriter"
                  class="SwagMigrationNext\Migration\Writer\ProductWriter">
-            <argument type="service" id="Shopware\Core\Framework\ORM\Write\EntityWriter"/>
+            <argument type="service" id="product.repository"/>
             <argument type="service" id="Shopware\Core\Framework\Struct\Serializer\StructNormalizer"/>
             <tag name="shopware.migration.writer"/>
         </service>
@@ -25,26 +25,26 @@
 
         <service id="SwagMigrationNext\Migration\Writer\CategoryWriter"
                  class="SwagMigrationNext\Migration\Writer\CategoryWriter">
-            <argument type="service" id="Shopware\Core\Framework\ORM\Write\EntityWriter"/>
+            <argument type="service" id="category.repository"/>
             <argument type="service" id="Shopware\Core\Content\Category\Util\CategoryPathBuilder"/>
             <tag name="shopware.migration.writer"/>
         </service>
 
         <service id="SwagMigrationNext\Migration\Writer\AssetWriter"
                  class="SwagMigrationNext\Migration\Writer\AssetWriter">
-            <argument type="service" id="Shopware\Core\Framework\ORM\Write\EntityWriter"/>
+            <argument type="service" id="media.repository"/>
             <tag name="shopware.migration.writer"/>
         </service>
 
         <service id="SwagMigrationNext\Migration\Writer\CustomerWriter"
                  class="SwagMigrationNext\Migration\Writer\CustomerWriter">
-            <argument type="service" id="Shopware\Core\Framework\ORM\Write\EntityWriter"/>
+            <argument type="service" id="customer.repository"/>
             <tag name="shopware.migration.writer"/>
         </service>
 
         <service id="SwagMigrationNext\Migration\Writer\OrderWriter"
                  class="SwagMigrationNext\Migration\Writer\OrderWriter">
-            <argument type="service" id="Shopware\Core\Framework\ORM\Write\EntityWriter"/>
+            <argument type="service" id="order.repository"/>
             <argument type="service" id="Shopware\Core\Framework\Struct\Serializer\StructNormalizer"/>
             <tag name="shopware.migration.writer"/>
         </service>

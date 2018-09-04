@@ -5,24 +5,23 @@ namespace SwagMigrationNext\Migration\Writer;
 use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Content\Category\Util\CategoryPathBuilder;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\ORM\Write\EntityWriterInterface;
-use Shopware\Core\Framework\ORM\Write\WriteContext;
+use Shopware\Core\Framework\ORM\RepositoryInterface;
 
 class CategoryWriter implements WriterInterface
 {
     /**
-     * @var EntityWriterInterface
+     * @var RepositoryInterface
      */
-    private $entityWriter;
+    private $categoryRepository;
 
     /**
      * @var CategoryPathBuilder
      */
     private $categoryPathBuilder;
 
-    public function __construct(EntityWriterInterface $entityWriter, CategoryPathBuilder $categoryPathBuilder)
+    public function __construct(RepositoryInterface $categoryRepository, CategoryPathBuilder $categoryPathBuilder)
     {
-        $this->entityWriter = $entityWriter;
+        $this->categoryRepository = $categoryRepository;
         $this->categoryPathBuilder = $categoryPathBuilder;
     }
 
@@ -33,14 +32,6 @@ class CategoryWriter implements WriterInterface
 
     public function writeData(array $data, Context $context): void
     {
-        $this->entityWriter->upsert(
-            CategoryDefinition::class,
-            $data,
-            WriteContext::createFromContext($context)
-        );
-
-        foreach (array_column($data, 'id') as $categoryId) {
-            $this->categoryPathBuilder->update($categoryId, $context);
-        }
+        $this->categoryRepository->upsert($data, $context);
     }
 }

@@ -81,7 +81,7 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
 
         //Fetch assets from database
         $client = new Client([
-            'verify' => false
+            'verify' => false,
         ]);
         $criteria = new Criteria();
         $criteria->addFilter(new TermsQuery('entityUuid', array_keys($mappedWorkload)));

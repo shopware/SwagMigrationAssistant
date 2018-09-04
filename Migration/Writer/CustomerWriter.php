@@ -4,19 +4,18 @@ namespace SwagMigrationNext\Migration\Writer;
 
 use Shopware\Core\Checkout\Customer\CustomerDefinition;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\ORM\Write\EntityWriterInterface;
-use Shopware\Core\Framework\ORM\Write\WriteContext;
+use Shopware\Core\Framework\ORM\RepositoryInterface;
 
 class CustomerWriter implements WriterInterface
 {
     /**
-     * @var EntityWriterInterface
+     * @var RepositoryInterface
      */
-    private $entityWriter;
+    private $customerRepository;
 
-    public function __construct(EntityWriterInterface $entityWriter)
+    public function __construct(RepositoryInterface $customerRepository)
     {
-        $this->entityWriter = $entityWriter;
+        $this->customerRepository = $customerRepository;
     }
 
     public function supports(): string
@@ -26,10 +25,6 @@ class CustomerWriter implements WriterInterface
 
     public function writeData(array $data, Context $context): void
     {
-        $this->entityWriter->upsert(
-            CustomerDefinition::class,
-            $data,
-            WriteContext::createFromContext($context)
-        );
+        $this->customerRepository->upsert($data, $context);
     }
 }

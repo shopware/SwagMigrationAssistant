@@ -4,19 +4,18 @@ namespace SwagMigrationNext\Migration\Writer;
 
 use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\ORM\Write\EntityWriterInterface;
-use Shopware\Core\Framework\ORM\Write\WriteContext;
+use Shopware\Core\Framework\ORM\RepositoryInterface;
 
 class AssetWriter implements WriterInterface
 {
     /**
-     * @var EntityWriterInterface
+     * @var RepositoryInterface
      */
-    private $entityWriter;
+    private $mediaRepository;
 
-    public function __construct(EntityWriterInterface $entityWriter)
+    public function __construct(RepositoryInterface $mediaRepository)
     {
-        $this->entityWriter = $entityWriter;
+        $this->mediaRepository = $mediaRepository;
     }
 
     public function supports(): string
@@ -26,10 +25,6 @@ class AssetWriter implements WriterInterface
 
     public function writeData(array $data, Context $context): void
     {
-        $this->entityWriter->upsert(
-            MediaDefinition::class,
-            $data,
-            WriteContext::createFromContext($context)
-        );
+        $this->mediaRepository->upsert($data, $context);
     }
 }
