@@ -9,6 +9,7 @@ use Psr\Log\LoggerInterface;
 use Shopware\Core\Content\Media\Exception\IllegalMimeTypeException;
 use Shopware\Core\Content\Media\Exception\UploadException;
 use Shopware\Core\Content\Media\File\FileSaver;
+use Shopware\Core\Content\Media\File\MediaFile;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\ORM\RepositoryInterface;
 use Shopware\Core\Framework\ORM\Search\Criteria;
@@ -181,10 +182,8 @@ class CliAssetDownloadService implements CliAssetDownloadServiceInterface
     private function persistFileToMedia(string $filePath, string $fileExtension, string $uuid, int $fileSize, Context $context): void
     {
         $mimeType = mime_content_type($filePath);
-        /** @var ArrayStruct $writeProtection */
-        $writeProtection = $context->getExtension('write_protection');
-        $writeProtection->set('write_media', true);
-        $this->fileSaver->persistFileToMedia($filePath, $uuid, $mimeType, $fileExtension, $fileSize, $context);
+        $mediaFile = new MediaFile($uuid, $mimeType, $fileExtension, $fileSize);
+        $this->fileSaver->persistFileToMedia($mediaFile, $uuid, $context);
     }
 
     private function handleChunkSize(float $requestTime): void

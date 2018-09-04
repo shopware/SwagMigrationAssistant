@@ -11,6 +11,7 @@ use PDO;
 use Shopware\Core\Content\Media\Exception\IllegalMimeTypeException;
 use Shopware\Core\Content\Media\Exception\UploadException;
 use Shopware\Core\Content\Media\File\FileSaver;
+use Shopware\Core\Content\Media\File\MediaFile;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\ORM\RepositoryInterface;
 use Shopware\Core\Framework\ORM\Search\Criteria;
@@ -174,10 +175,8 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
     private function persistFileToMedia(string $filePath, string $uuid, int $fileSize, string $fileExtension, Context $context): void
     {
         $mimeType = mime_content_type($filePath);
-        /** @var ArrayStruct $writeProtection */
-        $writeProtection = $context->getExtension('write_protection');
-        $writeProtection->set('write_media', true);
-        $this->fileSaver->persistFileToMedia($filePath, $uuid, $mimeType, $fileExtension, $fileSize, $context);
+        $mediaFile = new MediaFile($filePath, $mimeType, $fileExtension, $fileSize);
+        $this->fileSaver->persistFileToMedia($mediaFile, $uuid, $context);
     }
 
     private function doNormalDownloadRequest(array &$workload, Client $client): ?Promise\PromiseInterface
