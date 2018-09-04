@@ -86,7 +86,7 @@ class MigrationController extends Controller
 
         $information = $this->environmentService->getEnvironmentInformation($migrationContext);
 
-        return new JsonResponse(['environmentInformation' => $information]);
+        return new JsonResponse($information);
     }
 
     /**

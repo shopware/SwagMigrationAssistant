@@ -112,6 +112,21 @@ Component.register('swag-migration-wizard', {
                     this.migrationService.checkConnection(this.profileId).then((connectionCheckResponse) => {
                         this.isLoading = false;
                         if (connectionCheckResponse.environmentInformation) {
+                            if (connectionCheckResponse.error) {
+                                switch (connectionCheckResponse.error.code) {
+                                case 0: // SSL certificate is not verified
+                                    this.errorMessage = this.$tc(
+                                        'swag-migration.wizard.pages.credentials.success.connectionUnsecureMsg'
+                                    );
+                                    break;
+                                default: // Something else
+                                    this.errorMessage = this.$tc(
+                                        'swag-migration.wizard.pages.credentials.success.undefinedErrorMsg'
+                                    );
+                                    break;
+                                }
+                            }
+
                             this.navigateToRoute(this.routes[this.routeSuccessIndex]);
                         } else {
                             this.onResponseError(-1);

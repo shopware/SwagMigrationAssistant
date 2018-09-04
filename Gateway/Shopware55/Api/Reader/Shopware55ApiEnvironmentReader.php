@@ -10,10 +10,49 @@ use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 class Shopware55ApiEnvironmentReader
 {
     /**
+     * @var array
+     */
+    private $apiClientOptions;
+
+    public function __construct(Array $apiClientOptions)
+    {
+        $this->apiClientOptions = $apiClientOptions;
+    }
+
+    /**
      * @throws GatewayReadException
      */
     public function read(Client $apiClient): array
     {
+        $verifiedOptions = $this->apiClientOptions;
+        $verifiedOptions['verify'] = true;
+        $apiClientVerified = new Client($verifiedOptions);
+
+        try
+        {
+            $information = [
+                'environmentInformation' => $this->getData($apiClientVerified),
+                'error' => false
+            ];
+            return $information;
+        }
+        catch (\Exception $e)
+        {
+            $information = [
+                'environmentInformation' => $this->getData($apiClient),
+                'error' => [
+                    'code' => $e->getCode(),
+                    'detail' => $e->getMessage()
+                ]
+            ];
+            return $information;
+        }
+    }
+
+    /**
+     * @throws GatewayReadException
+     */
+    private function getData(Client $apiClient) {
         /** @var GuzzleResponse $result */
         $result = $apiClient->get(
             'SwagMigrationEnvironment'
