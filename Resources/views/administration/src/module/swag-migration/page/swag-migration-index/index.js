@@ -305,7 +305,6 @@ Component.register('swag-migration-index', {
             this.migrationWorkerService.startMigration(
                 this.profile,
                 entityGroups,
-                this.environmentInformation.assets,
                 this.onStatus.bind(this),
                 this.onProgress.bind(this)
             ).catch(() => {

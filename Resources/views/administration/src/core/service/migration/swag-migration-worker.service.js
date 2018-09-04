@@ -92,7 +92,7 @@ class MigrationService {
         this._progressSubscriber = null;
     }
 
-    startMigration(profile, entityGroups, assetCount, statusCallback, progressCallback) {
+    startMigration(profile, entityGroups, statusCallback, progressCallback) {
         return new Promise(async (resolve, reject) => {
             if (this._isMigrating) {
                 reject();
@@ -108,7 +108,6 @@ class MigrationService {
 
                 this._isMigrating = true;
                 this._profile = profile;
-                this._assetTotalCount = assetCount;
                 this._entityGroups = entityGroups;
                 this._errors = [];
                 this.subscribeStatus(statusCallback);
@@ -120,7 +119,13 @@ class MigrationService {
                     return this._writeData();
                 }).then(() => {
                     // step 3 - download data
-                    return this._downloadData();
+                    const mediaGroup = this._entityGroups.find((group) => group.id === 'media');
+                    if (mediaGroup !== undefined) {
+                        this._assetTotalCount = mediaGroup.count;
+                        return this._downloadData();
+                    }
+
+                    return Promise.resolve();
                 }).then(() => {
                     // step 4 - finish -> show results
                     this._migrateFinish();
