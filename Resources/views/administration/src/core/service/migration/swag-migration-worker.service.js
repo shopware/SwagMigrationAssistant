@@ -51,8 +51,6 @@ class MigrationService {
         this._broadcastService.sendMessage({
             migrationMessage: 'initialized'
         });
-
-        this._applicationRoot = Application.getApplicationRoot();
     }
 
     get status() {
@@ -360,12 +358,12 @@ class MigrationService {
             assetsRemovedCount += 1;
             this._addError({
                 code: '0',
-                detail: this._applicationRoot.$i18n.t(
+                detail: this.applicationRoot.$i18n.t(
                     'swag-migration.index.error.canNotDownloadAsset.detail',
                     { assetUri: asset.additionalData.uri }
                 ),
                 status: '444',
-                title: this._applicationRoot.$i18n.tc('swag-migration.index.error.canNotDownloadAsset.title'),
+                title: this.applicationRoot.$i18n.tc('swag-migration.index.error.canNotDownloadAsset.title'),
                 trace: []
             });
 
@@ -470,9 +468,9 @@ class MigrationService {
                 if (!response) {
                     this._addError({
                         code: '0',
-                        detail: this._applicationRoot.$i18n.tc('swag-migration.index.error.canNotConnectToServer.detail'),
+                        detail: this.applicationRoot.$i18n.tc('swag-migration.index.error.canNotConnectToServer.detail'),
                         status: '444',
-                        title: this._applicationRoot.$i18n.tc('swag-migration.index.error.canNotConnectToServer.title'),
+                        title: this.applicationRoot.$i18n.tc('swag-migration.index.error.canNotConnectToServer.title'),
                         trace: []
                     });
                     resolve();
@@ -486,9 +484,9 @@ class MigrationService {
                 if (!response) {
                     this._addError({
                         code: '0',
-                        detail: this._applicationRoot.$i18n.tc('swag-migration.index.error.canNotConnectToServer.detail'),
+                        detail: this.applicationRoot.$i18n.tc('swag-migration.index.error.canNotConnectToServer.detail'),
                         status: '444',
-                        title: this._applicationRoot.$i18n.tc('swag-migration.index.error.canNotConnectToServer.title'),
+                        title: this.applicationRoot.$i18n.tc('swag-migration.index.error.canNotConnectToServer.title'),
                         trace: []
                     });
                     resolve();
@@ -543,6 +541,14 @@ class MigrationService {
     _addError(error) {
         console.log(error); // TODO: display errors in the UI
         this._errors.push(error);
+    }
+
+    get applicationRoot() {
+        if (this._applicationRoot) {
+            return this._applicationRoot;
+        }
+        this._applicationRoot = Application.getApplicationRoot();
+        return this._applicationRoot;
     }
 }
 
