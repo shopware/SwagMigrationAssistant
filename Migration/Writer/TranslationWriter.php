@@ -8,6 +8,9 @@ use Shopware\Core\Framework\ORM\Write\WriteContext;
 
 class TranslationWriter implements WriterInterface
 {
+    /**
+     * @var EntityWriterInterface
+     */
     private $entityWriter;
 
     public function __construct(EntityWriterInterface $entityWriter)
