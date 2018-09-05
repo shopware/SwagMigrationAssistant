@@ -14,7 +14,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class MigrationWriteDataCommand extends ContainerAwareCommand
 {
-    // example call: bin/console migration:write:data -t 20080911ffff4fffafffffff19830531 -p shopware55 -y product
+    // example call: bin/console migration:write:data -p shopware55 -y product
 
     /**
      * @var MigrationWriteServiceInterface
@@ -31,7 +31,6 @@ class MigrationWriteDataCommand extends ContainerAwareCommand
     {
         $this
             ->setDescription('Writes data with the given profile')
-            ->addOption('tenant-id', 't', InputOption::VALUE_REQUIRED)
             ->addOption('catalog-id', 'c', InputOption::VALUE_REQUIRED)
             ->addOption('profile', 'p', InputOption::VALUE_REQUIRED)
             ->addOption('entity', 'y', InputOption::VALUE_REQUIRED)
@@ -41,13 +40,6 @@ class MigrationWriteDataCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $tenantId = $input->getOption('tenant-id');
-
-        if (!$tenantId) {
-            throw new InvalidArgumentException('No tenant id provided');
-        }
-        if (!Uuid::isValid($tenantId)) {
-            throw new InvalidArgumentException('Invalid uuid provided');
-        }
         $context = Context::createDefaultContext($tenantId);
 
         $catalogId = $input->getOption('catalog-id');

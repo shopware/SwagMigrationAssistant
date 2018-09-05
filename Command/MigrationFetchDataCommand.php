@@ -17,7 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class MigrationFetchDataCommand extends ContainerAwareCommand
 {
-    // example call: bin/console migration:fetch:data -t 20080911ffff4fffafffffff19830531 -p shopware55 -g local -y product dbHost localhost dbName 5.5 dbUser root dbPassword root
+    // example call: bin/console migration:fetch:data -p shopware55 -g local -y product dbHost localhost dbName 5.5 dbUser root dbPassword root
 
     /**
      * @var MigrationCollectServiceInterface
@@ -43,7 +43,6 @@ class MigrationFetchDataCommand extends ContainerAwareCommand
     {
         $this
             ->setDescription('Fetches data with the given profile from the given gateway')
-            ->addOption('tenant-id', 't', InputOption::VALUE_REQUIRED)
             ->addOption('profile', 'p', InputOption::VALUE_REQUIRED)
             ->addOption('gateway', 'g', InputOption::VALUE_REQUIRED)
             ->addOption('entity', 'y', InputOption::VALUE_REQUIRED)
@@ -56,13 +55,6 @@ class MigrationFetchDataCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $tenantId = $input->getOption('tenant-id');
-
-        if (!$tenantId) {
-            throw new InvalidArgumentException('No tenant id provided');
-        }
-        if (!Uuid::isValid($tenantId)) {
-            throw new InvalidArgumentException('Invalid uuid provided');
-        }
         $context = Context::createDefaultContext($tenantId);
 
         $catalogId = $input->getOption('catalog-id');
