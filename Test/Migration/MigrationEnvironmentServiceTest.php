@@ -2,11 +2,12 @@
 
 namespace SwagMigrationNext\Test\Migration;
 
-use Doctrine\DBAL\Driver\Connection;
+use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Customer\CustomerDefinition;
 use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
+use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagMigrationNext\Gateway\GatewayFactoryRegistry;
 use SwagMigrationNext\Gateway\GatewayFactoryRegistryInterface;
 use SwagMigrationNext\Gateway\Shopware55\Api\Shopware55ApiFactory;
@@ -16,14 +17,10 @@ use SwagMigrationNext\Migration\MigrationEnvironmentServiceInterface;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Mock\DummyCollection;
 use SwagMigrationNext\Test\Mock\Gateway\Dummy\Local\DummyLocalFactory;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
-class MigrationEnvironmentServiceTest extends KernelTestCase
+class MigrationEnvironmentServiceTest extends TestCase
 {
-    /**
-     * @var Connection
-     */
-    private $connection;
+    use IntegrationTestBehaviour;
 
     /**
      * @var MigrationEnvironmentServiceInterface
@@ -32,13 +29,6 @@ class MigrationEnvironmentServiceTest extends KernelTestCase
 
     protected function setUp()
     {
-        parent::setUp();
-
-        self::bootKernel();
-
-        $this->connection = self::$container->get(Connection::class);
-        $this->connection->beginTransaction();
-
         /** @var GatewayFactoryRegistryInterface $gatewayFactoryRegistry */
         $gatewayFactoryRegistry = new GatewayFactoryRegistry(new DummyCollection([
             new Shopware55ApiFactory(),
@@ -46,12 +36,6 @@ class MigrationEnvironmentServiceTest extends KernelTestCase
         ]));
 
         $this->migrationEnvironmentService = new MigrationEnvironmentService($gatewayFactoryRegistry);
-    }
-
-    protected function tearDown()
-    {
-        $this->connection->rollBack();
-        parent::tearDown();
     }
 
     public function testGetEntityTotal(): void

@@ -2,7 +2,7 @@
 
 namespace SwagMigrationNext\Test\Migration;
 
-use Doctrine\DBAL\Connection;
+use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Customer\CustomerDefinition;
 use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Content\Media\MediaDefinition;
@@ -13,16 +13,17 @@ use Shopware\Core\Framework\ORM\RepositoryInterface;
 use Shopware\Core\Framework\ORM\Search\Criteria;
 use Shopware\Core\Framework\ORM\Search\EntitySearchResult;
 use Shopware\Core\Framework\ORM\Search\Query\TermQuery;
+use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagMigrationNext\Migration\MigrationCollectServiceInterface;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\MigrationServicesTrait;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
-class MigrationCollectServiceTest extends KernelTestCase
+class MigrationCollectServiceTest extends TestCase
 {
-    use MigrationServicesTrait;
+    use MigrationServicesTrait,
+        IntegrationTestBehaviour;
 
     /**
      * @var MigrationCollectServiceInterface
@@ -35,36 +36,18 @@ class MigrationCollectServiceTest extends KernelTestCase
     private $migrationDataRepo;
 
     /**
-     * @var Connection
-     */
-    private $connection;
-
-    /**
      * @var RepositoryInterface
      */
     private $productRepo;
 
     protected function setUp()
     {
-        parent::setUp();
-
-        self::bootKernel();
-
-        $this->connection = self::$container->get(Connection::class);
-        $this->connection->beginTransaction();
-
-        $this->migrationDataRepo = self::$container->get('swag_migration_data.repository');
+        $this->migrationDataRepo = $this->getContainer()->get('swag_migration_data.repository');
         $this->migrationCollectService = $this->getMigrationCollectService(
             $this->migrationDataRepo,
-            self::$container->get(Shopware55MappingService::class)
+            $this->getContainer()->get(Shopware55MappingService::class)
         );
-        $this->productRepo = self::$container->get('product.repository');
-    }
-
-    protected function tearDown()
-    {
-        $this->connection->rollBack();
-        parent::tearDown();
+        $this->productRepo = $this->getContainer()->get('product.repository');
     }
 
     public function testFetchAssetDataApiGateway(): void
