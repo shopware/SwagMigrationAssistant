@@ -35,6 +35,11 @@ class AssetConverter implements ConverterInterface
         return MediaDefinition::getEntityName();
     }
 
+    public function writeMapping(Context $context): void
+    {
+        $this->mappingService->writeMapping($context);
+    }
+
     public function convert(
         array $data,
         Context $context,

@@ -79,6 +79,8 @@ class Shopware55Profile implements ProfileInterface
             return 0;
         }
 
+        $converter->writeMapping($context);
+
         /** @var EntityWrittenContainerEvent $writtenEvent */
         $writtenEvent = $this->migrationDataRepo->upsert($createData, $context);
 

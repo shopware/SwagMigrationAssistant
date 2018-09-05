@@ -72,6 +72,11 @@ class OrderConverter implements ConverterInterface
         return OrderDefinition::getEntityName();
     }
 
+    public function writeMapping(Context $context): void
+    {
+        $this->mappingService->writeMapping($context);
+    }
+
     /**
      * @throws AssociationEntityRequiredMissingException
      */

@@ -62,6 +62,11 @@ class CustomerConverter implements ConverterInterface
         return CustomerDefinition::getEntityName();
     }
 
+    public function writeMapping(Context $context): void
+    {
+        $this->mappingService->writeMapping($context);
+    }
+
     public function convert(
         array $data,
         Context $context,

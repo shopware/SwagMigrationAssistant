@@ -16,4 +16,6 @@ interface ConverterInterface
      * Converts the given data into the internal structure
      */
     public function convert(array $data, Context $context, ?string $catalogId = null, ?string $salesChannelId = null): ConvertStruct;
+
+    public function writeMapping(Context $context): void;
 }
