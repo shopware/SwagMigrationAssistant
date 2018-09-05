@@ -9,5 +9,5 @@ interface CliAssetDownloadServiceInterface
     /**
      * Downloads all assets out of the migration mapping table
      */
-    public function downloadAssets(Context $context): void;
+    public function downloadAssets(string $profile, Context $context): void;
 }

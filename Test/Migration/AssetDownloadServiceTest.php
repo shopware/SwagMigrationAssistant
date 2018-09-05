@@ -99,7 +99,7 @@ class AssetDownloadServiceTest extends TestCase
         $criteria->addFilter(new TermQuery('mimeType', null));
         $totalBeforeAssetDownload = $this->mediaRepository->search($criteria, $context)->getTotal();
 
-        $this->assetDownloadService->downloadAssets($context);
+        $this->assetDownloadService->downloadAssets(Shopware55Profile::PROFILE_NAME, $context);
 
         $criteria = new Criteria();
         $criteria->addFilter(new NotQuery([new TermQuery('mimeType', null)]));

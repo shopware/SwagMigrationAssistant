@@ -12,12 +12,13 @@ use Shopware\Core\Content\Media\Exception\IllegalMimeTypeException;
 use Shopware\Core\Content\Media\Exception\UploadException;
 use Shopware\Core\Content\Media\File\FileSaver;
 use Shopware\Core\Content\Media\File\MediaFile;
+use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\ORM\RepositoryInterface;
 use Shopware\Core\Framework\ORM\Search\Criteria;
 use Shopware\Core\Framework\ORM\Search\Query\TermsQuery;
-use Shopware\Core\Framework\Struct\ArrayStruct;
 use SwagMigrationNext\Exception\NoFileSystemPermissions;
+use SwagMigrationNext\Migration\Mapping\SwagMigrationMappingStruct;
 
 class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
 {
@@ -34,21 +35,24 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
      */
     private $fileSaver;
 
-    public function __construct(RepositoryInterface $migrationMappingRepository, Connection $connection, FileSaver $fileSaver)
-    {
+    public function __construct(
+        RepositoryInterface $migrationMappingRepository,
+        Connection $connection,
+        FileSaver $fileSaver
+    ) {
         $this->migrationMappingRepository = $migrationMappingRepository;
         $this->connection = $connection;
         $this->fileSaver = $fileSaver;
     }
 
-    public function fetchMediaUuids(Context $context, int $offset, int $limit): array
+    public function fetchMediaUuids(Context $context, string $profile, int $offset, int $limit): array
     {
         // TODO: Normalize additional data to use the orm system instead of JSON_EXTRACT (performance)
         $queryBuilder = $this->connection->createQueryBuilder();
         $queryBuilder->addSelect('LOWER(HEX(entity_uuid))')
             ->from('swag_migration_mapping', 'mapping')
             ->where('entity = :entity')
-            ->setParameter('entity', 'media')
+            ->setParameter('entity', MediaDefinition::getEntityName())
             ->setFirstResult($offset)
             ->setMaxResults($limit)
             ->orderBy('CONVERT(JSON_EXTRACT(`additional_data`, \'$.file_size\'), UNSIGNED INTEGER)');
@@ -58,7 +62,7 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
 
     /**
      * @param Context $context
-     * @param array   $workload          [{ "uuid": "asdf", "currentOffset": 0, "state": "inProgress" }]
+     * @param array   $workload          [{ "uuid": "04ed51ccbb2341bc9b352d78e64213fb", "currentOffset": 0, "state": "inProgress" }]
      * @param int     $fileChunkByteSize
      *
      * @throws IllegalMimeTypeException
@@ -86,13 +90,14 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
         $criteria = new Criteria();
         $criteria->addFilter(new TermsQuery('entityUuid', array_keys($mappedWorkload)));
         $entitySearchResult = $this->migrationMappingRepository->search($criteria, $context);
-        /** @var ArrayStruct[] $assets */
+        /** @var SwagMigrationMappingStruct[] $assets */
         $assets = $entitySearchResult->getElements();
 
         //Do download requests and store the promises
         $promises = $this->doAssetDownloadRequests($assets, $fileChunkByteSize, $mappedWorkload, $client);
 
         // Wait for the requests to complete, even if some of them fail
+        /** @var array $results */
         $results = Promise\settle($promises)->wait();
 
         //handle responses
@@ -101,10 +106,12 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
             $state = $result['state'];
             $additionalData = $mappedWorkload[$uuid]['additionalData'];
 
-            $oldWorkloadSearchResult = array_filter($workload,
+            $oldWorkloadSearchResult = array_filter(
+                $workload,
                 function ($work) use ($uuid) {
                     return $work['uuid'] === $uuid;
-                });
+                }
+            );
             $oldWorkload = array_pop($oldWorkloadSearchResult);
 
             if ($state !== 'fulfilled') {
@@ -145,13 +152,15 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
 
     /**
      * Start all the download requests for the assets in parallel (async) and return the promise array.
+     *
+     * @param SwagMigrationMappingStruct[] $assets
      */
     private function doAssetDownloadRequests(array $assets, int $fileChunkByteSize, array &$mappedWorkload, Client $client): array
     {
         $promises = [];
         foreach ($assets as $asset) {
-            $uuid = strtolower($asset->get('entityUuid'));
-            $additionalData = $asset->get('additionalData');
+            $uuid = strtolower($asset->getEntityUuid());
+            $additionalData = $asset->getAdditionalData();
             $mappedWorkload[$uuid]['additionalData'] = $additionalData;
 
             if ($additionalData['file_size'] <= $fileChunkByteSize) {

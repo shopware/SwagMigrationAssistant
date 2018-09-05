@@ -41,7 +41,7 @@
             "contentInformation": "Click on Finish and select in the migration module the data sets to be transferred. The data can be migrated completely, step by step or subsequently.",
             "alertErrorTitle": "Attention:",
             "undefinedErrorMsg": "An unknown error occurred while checking the SSL certificate from the specified shop domain.",
-            "connectionUnsecureMsg": "The SSL certificate of the given shop domain is not secure. We recommend you to check the certificate for your own security."
+            "connectionInsecureMsg": "The SSL certificate of the given shop domain is not secure. We recommend you to check the certificate for your own security."
           },
           "error": {
             "contentTitle": "Unable to create a connection",

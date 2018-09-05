@@ -116,6 +116,10 @@ Component.register('swag-migration-index', {
                 return;
             }
 
+            if (response.data.length === 0) {
+                return;
+            }
+
             this.profile = response.data[0];
 
             // check if credentials are given
