@@ -40,12 +40,12 @@ class SwagMigrationNext extends Plugin
     {
         /** @var Connection $connection */
         $connection = $this->container->get(Connection::class);
-        $tenantId = Uuid::fromHexToBytes(Defaults::TENANT_ID); // TODO get correct context. Needs changes in the Core
+        $tenantId = Uuid::fromHexToBytes($installContext->getContext()->getTenantId());
         $sql = file_get_contents($this->getPath() . '/schema.sql');
 
         $connection->beginTransaction();
         try {
-            $connection->query($sql);
+            $connection->executeUpdate($sql);
             $connection->insert('swag_migration_profile', [
                 'id' => Uuid::uuid4()->getBytes(),
                 'tenant_id' => $tenantId,
