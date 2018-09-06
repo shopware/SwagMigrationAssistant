@@ -79,7 +79,7 @@ class ProductConverter implements ConverterInterface
         $this->profile = Shopware55Profile::PROFILE_NAME;
         $this->context = $context;
         $this->catalogId = $catalogId;
-        $this->oldProductId = $data['id'];
+        $this->oldProductId = $data['detail']['ordernumber'];
         unset($data['id']);
 
         $productKind = (int) $data['detail']['kind'];
@@ -125,7 +125,7 @@ class ProductConverter implements ConverterInterface
         $converted['children'][0]['id'] = $this->mappingService->createNewUuid(
             $this->profile,
             ProductDefinition::getEntityName(),
-            $data['detail']['id'],
+            $this->oldProductId,
             $this->context
         );
         $converted['children'][0]['parentId'] = $containerUuid;
@@ -182,7 +182,7 @@ class ProductConverter implements ConverterInterface
         $converted['id'] = $this->mappingService->createNewUuid(
             $this->profile,
             ProductDefinition::getEntityName(),
-            $data['detail']['id'],
+            $this->oldProductId,
             $this->context
         );
         unset($data['detail']['id'], $data['detail']['articleID']);

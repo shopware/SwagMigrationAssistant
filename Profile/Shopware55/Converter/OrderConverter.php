@@ -442,17 +442,17 @@ class OrderConverter implements ConverterInterface
             ];
 
             if ($isProduct) {
-                if ($originalLineItem['articleDetailID'] !== null) {
+                if ($originalLineItem['articleordernumber'] !== null) {
                     $lineItem['identifier'] = $this->mappingService->getUuid(
                         $this->profile,
                         ProductDefinition::getEntityName(),
-                        $originalLineItem['articleDetailID'],
+                        $originalLineItem['articleordernumber'],
                         $this->context
                     );
                 }
 
                 if (!isset($lineItem['identifier'])) {
-                    $lineItem['identifier'] = 'unmapped-product-' . $originalLineItem['articleordernumber'];
+                    $lineItem['identifier'] = 'unmapped-product-' . $originalLineItem['articleordernumber'] . '-' . $originalLineItem['articleID'];
                 }
 
                 $lineItem['type'] = ProductCollector::LINE_ITEM_TYPE;
