@@ -2,12 +2,16 @@
 
 namespace SwagMigrationNext\Profile\Shopware55;
 
+use DateTime;
+use Exception;
+
 class ConverterHelperService
 {
     public const TYPE_STRING = 'string';
     public const TYPE_BOOLEAN = 'bool';
     public const TYPE_INTEGER = 'int';
     public const TYPE_FLOAT = 'float';
+    public const TYPE_DATETIME = 'datetime';
 
     public function convertValue(
         array &$newData,
@@ -27,11 +31,27 @@ class ConverterHelperService
                 case self::TYPE_FLOAT:
                     $sourceValue = (float) $sourceData[$sourceKey];
                     break;
+                case self::TYPE_DATETIME:
+                    $sourceValue = $sourceData[$sourceKey];
+                    if (!$this->validDate($sourceValue)) {
+                        return;
+                    }
+                    break;
                 default:
                     $sourceValue = (string) $sourceData[$sourceKey];
             }
             $newData[$newKey] = $sourceValue;
         }
         unset($sourceData[$sourceKey]);
+    }
+
+    private function validDate(string $value): bool
+    {
+        try {
+            new DateTime($value);
+            return true;
+        } catch (Exception $e) {
+            return false;
+        }
     }
 }

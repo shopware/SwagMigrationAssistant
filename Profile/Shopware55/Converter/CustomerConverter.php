@@ -120,8 +120,8 @@ class CustomerConverter implements ConverterInterface
         $this->helper->convertValue($converted, 'firstName', $data, 'firstname');
         $this->helper->convertValue($converted, 'lastName', $data, 'lastname');
         $this->helper->convertValue($converted, 'customerNumber', $data, 'customernumber');
-        $this->helper->convertValue($converted, 'birthday', $data, 'birthday');
-        $this->helper->convertValue($converted, 'lockedUntil', $data, 'lockeduntil');
+        $this->helper->convertValue($converted, 'birthday', $data, 'birthday', $this->helper::TYPE_DATETIME);
+        $this->helper->convertValue($converted, 'lockedUntil', $data, 'lockeduntil', $this->helper::TYPE_DATETIME);
         $this->helper->convertValue($converted, 'encoder', $data, 'encoder');
 
         if (!isset($converted['customerNumber']) || $converted['customerNumber'] === '') {

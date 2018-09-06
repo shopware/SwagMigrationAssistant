@@ -490,7 +490,7 @@ class MigrationService {
                 this._handleChunkSize(afterRequestTime.getTime() - beforeRequestTime.getTime());
                 resolve();
             }).catch((response) => {
-                if (!response) {
+                if (!response || !response.response) {
                     this._addError({
                         code: '0',
                         detail: this.applicationRoot.$i18n.tc('swag-migration.index.error.canNotConnectToServer.detail'),

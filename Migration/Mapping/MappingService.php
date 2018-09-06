@@ -148,6 +148,7 @@ class MappingService implements MappingServiceInterface
         $criteria = new Criteria();
         $criteria->addFilter(new TermQuery('iso', $iso));
         $criteria->addFilter(new TermQuery('iso3', $iso3));
+        $criteria->setLimit(1);
         $result = $this->countryRepository->search($criteria, $context);
 
         if ($result->getTotal() > 0) {
@@ -183,6 +184,7 @@ class MappingService implements MappingServiceInterface
         $criteria = new Criteria();
         $criteria->addFilter(new TermQuery('entityUuid', $entityUuid));
         $criteria->addFilter(new TermQuery('profile', $profile));
+        $criteria->setLimit(1);
         $result = $this->migrationMappingRepo->search($criteria, $context);
 
         if ($result->getTotal() > 0) {
@@ -220,6 +222,7 @@ class MappingService implements MappingServiceInterface
         $criteria = new Criteria();
         $criteria->addFilter(new TermQuery('entity', LanguageDefinition::getEntityName()));
         $criteria->addFilter(new TermQuery('oldIdentifier', $localeCode));
+        $criteria->setLimit(1);
         $result = $this->migrationMappingRepo->search($criteria, $context);
 
         if ($result->getTotal() > 0) {
@@ -239,6 +242,7 @@ class MappingService implements MappingServiceInterface
     {
         $criteria = new Criteria();
         $criteria->addFilter(new TermQuery('code', $localeCode));
+        $criteria->setLimit(1);
         $result = $this->localeRepository->search($criteria, $context);
 
         if ($result->getTotal() > 0) {
@@ -255,6 +259,7 @@ class MappingService implements MappingServiceInterface
     {
         $criteria = new Criteria();
         $criteria->addFilter(new TermQuery('localeId', $localeUuid));
+        $criteria->setLimit(1);
         $result = $this->languageRepository->search($criteria, $context);
 
         if ($result->getTotal() > 0) {

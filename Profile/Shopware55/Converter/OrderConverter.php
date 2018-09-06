@@ -111,13 +111,14 @@ class OrderConverter implements ConverterInterface
                 $data['userID'],
                 $this->context
             ),
-            'email' => $data['customer']['email'],
-            'firstName' => $data['customer']['firstname'],
-            'lastName' => $data['customer']['lastname'],
-            'title' => $data['customer']['title'],
-            'salutation' => $data['customer']['salutation'],
-            'customerNumber' => $data['customer']['customernumber'],
         ];
+
+        $this->helper->convertValue($converted['orderCustomer'], 'email', $data['customer'], 'email');
+        $this->helper->convertValue($converted['orderCustomer'], 'firstName', $data['customer'], 'firstname');
+        $this->helper->convertValue($converted['orderCustomer'], 'lastName', $data['customer'], 'lastname');
+        $this->helper->convertValue($converted['orderCustomer'], 'salutation', $data['customer'], 'salutation');
+        $this->helper->convertValue($converted['orderCustomer'], 'customerNumber', $data['customer'], 'customernumber');
+
         unset($data['userID'], $data['customer']);
 
         if ($converted['orderCustomer']['customerId'] === null) {
@@ -151,7 +152,7 @@ class OrderConverter implements ConverterInterface
         $this->getPaymentMethod($data, $converted);
         unset($data['payment'], $data['paymentID']);
 
-        $this->helper->convertValue($converted, 'date', $data, 'ordertime');
+        $this->helper->convertValue($converted, 'date', $data, 'ordertime', $this->helper::TYPE_DATETIME);
 
         $converted['stateId'] = $this->mappingService->getOrderStateUuid((int) $data['status'], $this->context);
         unset($data['status'], $data['orderstatus']);
@@ -463,6 +464,7 @@ class OrderConverter implements ConverterInterface
                 $lineItem['type'] = ProductCollector::LINE_ITEM_TYPE;
             } else {
                 $this->helper->convertValue($lineItem, 'identifier', $originalLineItem, 'articleordernumber');
+
                 $lineItem['type'] = DiscountSurchargeCollector::DATA_KEY;
             }
 
@@ -471,6 +473,17 @@ class OrderConverter implements ConverterInterface
             $this->helper->convertValue($lineItem, 'unitPrice', $originalLineItem, 'price', $this->helper::TYPE_FLOAT);
             $lineItem['totalPrice'] = $lineItem['quantity'] * $lineItem['unitPrice'];
             $lineItem['taxRate'] = (float) $originalLineItem['tax_rate'];
+
+            if (!isset(
+                $lineItem['identifier'],
+                $lineItem['quantity'],
+                $lineItem['label'],
+                $lineItem['unitPrice'],
+                $lineItem['totalPrice'],
+                $lineItem['taxRate']
+            )) {
+                continue;
+            }
 
             $lineItems[] = $lineItem;
         }

@@ -48,6 +48,7 @@ class Shopware55MappingService extends MappingService
     {
         $criteria = new Criteria();
         $criteria->addFilter(new TermQuery('technicalName', $technicalName));
+        $criteria->setLimit(1);
         $result = $this->paymentRepository->search($criteria, $context);
 
         if ($result->getTotal() > 0) {
@@ -63,6 +64,7 @@ class Shopware55MappingService extends MappingService
     public function getOrderStateUuid(int $oldStateId, Context $context): ?string
     {
         $criteria = new Criteria();
+        $criteria->setLimit(1);
         switch ($oldStateId) {
             case -1: // cancelled
                 $criteria->addFilter(new TermQuery('position', 3));
@@ -113,6 +115,7 @@ class Shopware55MappingService extends MappingService
     public function getTransactionStateUuid(int $oldStateId, Context $context): ?string
     {
         $criteria = new Criteria();
+        $criteria->setLimit(1);
         switch ($oldStateId) {
             case 9: // partially_invoiced
                 $criteria->addFilter(new TermQuery('position', 4));
