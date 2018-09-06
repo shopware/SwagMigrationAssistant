@@ -164,6 +164,22 @@ class MigrationController extends Controller
     }
 
     /**
+     * @Route("/api/v{version}/migration/fetch-media-count", name="api.admin.migration.fetch-media-count", methods={"GET"})
+     */
+    public function fetchMediaCount(Request $request, Context $context): JsonResponse
+    {
+        $profile = $request->get('profile');
+
+        if ($profile === null) {
+            throw new MigrationContextPropertyMissingException('profile');
+        }
+
+        $mediaCount = $this->assetDownloadService->fetchMediaCount($context, $profile);
+
+        return new JsonResponse(['mediaCount' => $mediaCount]);
+    }
+
+    /**
      * @Route("/api/v{version}/migration/fetch-media-uuids", name="api.admin.migration.fetch-media-uuids", methods={"GET"})
      */
     public function fetchMediaUuids(Request $request, Context $context): JsonResponse

@@ -119,9 +119,10 @@ class MigrationService {
                     return this._writeData();
                 }).then(() => {
                     // step 3 - download data
-                    const mediaGroup = this._entityGroups.find((group) => group.id === 'media');
-                    if (mediaGroup !== undefined) {
-                        this._assetTotalCount = mediaGroup.count;
+                    const containsMediaGroup = this._entityGroups.find((group) => {
+                        return group.id === 'media' || group.id === 'categories_products';
+                    });
+                    if (containsMediaGroup !== undefined) {
                         return this._downloadData();
                     }
 
@@ -210,11 +211,13 @@ class MigrationService {
     }
 
     _downloadData() {
-        this._resetProgress();
-        this._resetAssetProgress();
-        this._status = this.MIGRATION_STATUS.DOWNLOAD_DATA;
-        this._callStatusSubscriber({ status: this.status });
-        return this._downloadProcess();
+        return this._getAssetTotalCount().then(() => {
+            this._resetProgress();
+            this._resetAssetProgress();
+            this._status = this.MIGRATION_STATUS.DOWNLOAD_DATA;
+            this._callStatusSubscriber({ status: this.status });
+            return this._downloadProcess();
+        });
     }
 
     _migrateFinish() {
@@ -262,13 +265,33 @@ class MigrationService {
     }
 
     /**
+     * Get the count of media objects that are available for the migration.
+     *
+     * @returns {Promise}
+     * @private
+     */
+    _getAssetTotalCount() {
+        return new Promise((resolve) => {
+            this._migrationService.fetchAssetCount({
+                profile: this._profile.profile
+            }).then((res) => {
+                this._assetTotalCount = res.mediaCount;
+                resolve();
+            }).catch(() => {
+                this._assetTotalCount = 0;
+                resolve();
+            });
+        });
+    }
+
+    /**
      * Get a chunk of asset uuids and put it into our pool.
      *
      * @returns {Promise}
      * @private
      */
     _fetchAssetUuidsChunk() {
-        return new Promise(async (resolve) => {
+        return new Promise((resolve) => {
             if (this._assetUuidPool.length >= this._ASSET_WORKLOAD_COUNT) {
                 resolve();
                 return;
@@ -388,7 +411,8 @@ class MigrationService {
         // call event subscriber
         this._callProgressSubscriber({
             entityName: 'media',
-            entityGroupProgressValue: this._assetProgress
+            entityGroupProgressValue: this._assetProgress,
+            entityCount: this._assetTotalCount
         });
 
         this._makeWorkload(assetsRemovedCount);
@@ -441,7 +465,8 @@ class MigrationService {
             // call event subscriber
             this._callProgressSubscriber({
                 entityName,
-                entityGroupProgressValue: groupProgress + newOffset
+                entityGroupProgressValue: groupProgress + newOffset,
+                entityCount: group.count
             });
 
             currentOffset += oldChunkSize;
