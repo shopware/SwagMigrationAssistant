@@ -26,7 +26,6 @@
         <service id="SwagMigrationNext\Migration\Writer\CategoryWriter"
                  class="SwagMigrationNext\Migration\Writer\CategoryWriter">
             <argument type="service" id="category.repository"/>
-            <argument type="service" id="Shopware\Core\Content\Category\Util\CategoryPathBuilder"/>
             <tag name="shopware.migration.writer"/>
         </service>
 

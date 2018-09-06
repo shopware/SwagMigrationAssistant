@@ -2,6 +2,7 @@
 
 namespace SwagMigrationNext\Gateway\Shopware55\Api\Reader;
 
+use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
 use SwagMigrationNext\Exception\GatewayReadException;
@@ -35,7 +36,7 @@ class Shopware55ApiEnvironmentReader
             ];
 
             return $information;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $information = [
                 'environmentInformation' => $this->getData($apiClient),
                 'error' => [

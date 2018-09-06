@@ -263,7 +263,7 @@ class OrderConverter implements ConverterInterface
         );
 
         // TODO: Delete this default value, if the Core deletes the require Flag of the PaymentMethodTranslation
-        if (strlen($originalData['payment']['additionaldescription']) === 0) {
+        if ($originalData['payment']['additionaldescription'] === '') {
             $originalData['payment']['additionaldescription'] = '....';
         }
 
@@ -355,11 +355,11 @@ class OrderConverter implements ConverterInterface
         }
 
         if (isset($data['shippingaddress']['id'])) {
-            $delivery['shippingAddress'] = $this->getAddress($data['shippingaddress']);
+            $delivery['shippingOrderAddress'] = $this->getAddress($data['shippingaddress']);
         }
 
-        if (!isset($delivery['shippingAddress'])) {
-            $delivery['shippingAddress'] = $this->getAddress($data['billingaddress']);
+        if (!isset($delivery['shippingOrderAddress'])) {
+            $delivery['shippingOrderAddress'] = $this->getAddress($data['billingaddress']);
         }
 
         if (isset($data['trackingcode']) && $data['trackingcode'] !== '') {

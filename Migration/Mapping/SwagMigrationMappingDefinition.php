@@ -3,10 +3,12 @@
 namespace SwagMigrationNext\Migration\Mapping;
 
 use Shopware\Core\Framework\ORM\EntityDefinition;
+use Shopware\Core\Framework\ORM\Field\CreatedAtField;
 use Shopware\Core\Framework\ORM\Field\IdField;
 use Shopware\Core\Framework\ORM\Field\JsonField;
 use Shopware\Core\Framework\ORM\Field\StringField;
 use Shopware\Core\Framework\ORM\Field\TenantIdField;
+use Shopware\Core\Framework\ORM\Field\UpdatedAtField;
 use Shopware\Core\Framework\ORM\FieldCollection;
 use Shopware\Core\Framework\ORM\Write\Flag\PrimaryKey;
 use Shopware\Core\Framework\ORM\Write\Flag\Required;
@@ -18,7 +20,7 @@ class SwagMigrationMappingDefinition extends EntityDefinition
         return 'swag_migration_mapping';
     }
 
-    protected static function defineFields(): FieldCollection
+    public static function defineFields(): FieldCollection
     {
         return new FieldCollection([
             (new IdField('id', 'id'))->setFlags(new PrimaryKey(), new Required()),
@@ -28,6 +30,18 @@ class SwagMigrationMappingDefinition extends EntityDefinition
             new StringField('old_identifier', 'oldIdentifier'),
             new IdField('entity_uuid', 'entityUuid'),
             new JsonField('additional_data', 'additionalData'),
+            new CreatedAtField(),
+            new UpdatedAtField(),
         ]);
+    }
+
+    public static function getCollectionClass(): string
+    {
+        return SwagMigrationMappingCollection::class;
+    }
+
+    public static function getStructClass(): string
+    {
+        return SwagMigrationMappingStruct::class;
     }
 }

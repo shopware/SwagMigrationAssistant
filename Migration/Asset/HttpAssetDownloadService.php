@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Migration;
+namespace SwagMigrationNext\Migration\Asset;
 
 use Doctrine\DBAL\Connection;
 use Exception;
@@ -61,15 +61,11 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
     }
 
     /**
-     * @param Context $context
      * @param array   $workload          [{ "uuid": "04ed51ccbb2341bc9b352d78e64213fb", "currentOffset": 0, "state": "inProgress" }]
-     * @param int     $fileChunkByteSize
      *
      * @throws IllegalMimeTypeException
      * @throws NoFileSystemPermissions
      * @throws UploadException
-     *
-     * @return array
      */
     public function downloadAssets(Context $context, array $workload, int $fileChunkByteSize): array
     {

@@ -8,11 +8,12 @@ use Shopware\Core\Framework\ORM\RepositoryInterface;
 use Shopware\Core\Framework\Struct\ArrayStruct;
 use SwagMigrationNext\Exception\MigrationContextPropertyMissingException;
 use SwagMigrationNext\Exception\MigrationWorkloadPropertyMissingException;
-use SwagMigrationNext\Migration\HttpAssetDownloadServiceInterface;
-use SwagMigrationNext\Migration\MigrationCollectServiceInterface;
+use SwagMigrationNext\Migration\Asset\HttpAssetDownloadServiceInterface;
 use SwagMigrationNext\Migration\MigrationContext;
-use SwagMigrationNext\Migration\MigrationEnvironmentServiceInterface;
-use SwagMigrationNext\Migration\MigrationWriteServiceInterface;
+use SwagMigrationNext\Migration\Service\MigrationCollectServiceInterface;
+use SwagMigrationNext\Migration\Service\MigrationEnvironmentServiceInterface;
+use SwagMigrationNext\Migration\Service\MigrationWriteServiceInterface;
+use SwagMigrationNext\Profile\SwagMigrationProfileStruct;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -73,14 +74,14 @@ class MigrationController extends Controller
 
         $readCriteria = new ReadCriteria([$profileId]);
         $profileCollection = $this->migrationProfileRepo->read($readCriteria, $context);
-        /** @var ArrayStruct $profile */
+        /** @var SwagMigrationProfileStruct $profile */
         $profile = $profileCollection->get($profileId);
 
         /** @var string $profileName */
-        $profileName = $profile->get('profile');
+        $profileName = $profile->getProfile();
         /** @var string $gateway */
-        $gateway = $profile->get('gateway');
-        $credentials = $profile->get('credentialFields');
+        $gateway = $profile->getGateway();
+        $credentials = $profile->getCredentialFields();
 
         $migrationContext = new MigrationContext($profileName, $gateway, '', $credentials, 0, 0);
 

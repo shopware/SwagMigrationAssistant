@@ -9,7 +9,7 @@ use Shopware\Core\Framework\ORM\RepositoryInterface;
 use SwagMigrationNext\Command\Event\MigrationAssetDownloadAdvanceEvent;
 use SwagMigrationNext\Command\Event\MigrationAssetDownloadFinishEvent;
 use SwagMigrationNext\Command\Event\MigrationAssetDownloadStartEvent;
-use SwagMigrationNext\Migration\CliAssetDownloadService;
+use SwagMigrationNext\Migration\Asset\CliAssetDownloadService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;

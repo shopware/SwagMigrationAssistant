@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Migration;
+namespace SwagMigrationNext\Migration\Asset;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;

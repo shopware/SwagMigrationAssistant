@@ -1,9 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Migration;
+namespace SwagMigrationNext\Migration\Service;
 
 use Shopware\Core\Framework\Context;
 use SwagMigrationNext\Gateway\GatewayFactoryRegistryInterface;
+use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Profile\ProfileRegistryInterface;
 
 class MigrationCollectService implements MigrationCollectServiceInterface

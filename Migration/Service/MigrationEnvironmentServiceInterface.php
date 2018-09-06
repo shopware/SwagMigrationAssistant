@@ -1,6 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Migration;
+namespace SwagMigrationNext\Migration\Service;
+
+use SwagMigrationNext\Migration\MigrationContext;
 
 interface MigrationEnvironmentServiceInterface
 {

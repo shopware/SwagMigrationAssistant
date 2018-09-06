@@ -159,7 +159,7 @@ class ProductConverter implements ConverterInterface
         );
 
         if ($parentUuid === null) {
-            throw new ParentEntityForChildNotFoundException(ProductDefinition::getEntityName(), (int) $this->oldProductId);
+            throw new ParentEntityForChildNotFoundException(ProductDefinition::getEntityName(), $this->oldProductId);
         }
 
         $converted = $this->getUuidForProduct($data);
@@ -233,6 +233,7 @@ class ProductConverter implements ConverterInterface
         if (isset($data['assets'])) {
             $converted['media'] = $this->getAssets($data['assets'], $converted, $data['_locale']);
             unset($data['assets']);
+            // TODO select cover media file and set it correctly
         }
 
         $converted['translations'] = [];
@@ -383,7 +384,6 @@ class ProductConverter implements ConverterInterface
                 $this->context
             );
             $newProductMedia['productId'] = $converted['id'];
-            $this->helper->convertValue($newProductMedia, 'isCover', $asset, 'main', $this->helper::TYPE_BOOLEAN);
             $this->helper->convertValue($newProductMedia, 'position', $asset, 'position', $this->helper::TYPE_INTEGER);
 
             $newMedia = [];

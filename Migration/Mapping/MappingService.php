@@ -7,10 +7,12 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\ORM\RepositoryInterface;
 use Shopware\Core\Framework\ORM\Search\Criteria;
 use Shopware\Core\Framework\ORM\Search\Query\TermQuery;
-use Shopware\Core\Framework\Struct\ArrayStruct;
 use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\System\Country\CountryDefinition;
+use Shopware\Core\System\Country\CountryStruct;
 use Shopware\Core\System\Language\LanguageDefinition;
+use Shopware\Core\System\Language\LanguageStruct;
+use Shopware\Core\System\Locale\LocaleStruct;
 use SwagMigrationNext\Exception\LocaleNotFoundException;
 
 class MappingService implements MappingServiceInterface
@@ -56,10 +58,10 @@ class MappingService implements MappingServiceInterface
         $result = $this->migrationMappingRepo->search($criteria, $context);
 
         if ($result->getTotal() > 0) {
-            /** @var ArrayStruct $element */
+            /** @var SwagMigrationMappingStruct $element */
             $element = $result->getEntities()->first();
 
-            return $element->get('entityUuid');
+            return $element->getEntityUuid();
         }
 
         return null;
@@ -140,7 +142,7 @@ class MappingService implements MappingServiceInterface
         $result = $this->countryRepository->search($criteria, $context);
 
         if ($result->getTotal() > 0) {
-            /** @var ArrayStruct $element */
+            /** @var CountryStruct $element */
             $element = $result->getEntities()->first();
 
             $countryUuid = $element->getId();
@@ -171,7 +173,7 @@ class MappingService implements MappingServiceInterface
         $result = $this->migrationMappingRepo->search($criteria, $context);
 
         if ($result->getTotal() > 0) {
-            /** @var ArrayStruct $element */
+            /** @var SwagMigrationMappingStruct $element */
             $element = $result->getEntities()->first();
 
             $this->migrationMappingRepo->delete([['id' => $element->getId()]], $context);
@@ -191,10 +193,10 @@ class MappingService implements MappingServiceInterface
         $result = $this->migrationMappingRepo->search($criteria, $context);
 
         if ($result->getTotal() > 0) {
-            /** @var ArrayStruct $element */
+            /** @var SwagMigrationMappingStruct $element */
             $element = $result->getEntities()->first();
 
-            return $element->get('entityUuid');
+            return $element->getEntityUuid();
         }
 
         return null;
@@ -210,7 +212,7 @@ class MappingService implements MappingServiceInterface
         $result = $this->localeRepository->search($criteria, $context);
 
         if ($result->getTotal() > 0) {
-            /** @var ArrayStruct $element */
+            /** @var LocaleStruct $element */
             $element = $result->getEntities()->first();
 
             return $element->getId();
@@ -226,7 +228,7 @@ class MappingService implements MappingServiceInterface
         $result = $this->languageRepository->search($criteria, $context);
 
         if ($result->getTotal() > 0) {
-            /** @var ArrayStruct $element */
+            /** @var LanguageStruct $element */
             $element = $result->getEntities()->first();
 
             return $element->getId();

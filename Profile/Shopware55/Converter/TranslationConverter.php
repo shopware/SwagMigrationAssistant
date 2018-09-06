@@ -253,6 +253,7 @@ class TranslationConverter implements ConverterInterface
             return new ConvertStruct(null, $sourceData);
         }
 
+        /** @var array $objectData */
         $objectData = array_pop($objectData);
 
         foreach ($objectData as $key => $value) {
