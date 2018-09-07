@@ -1,7 +1,7 @@
 {% block sw_settings_content_card_slot_default %}
     {% parent %}
 
-    <sw-settings-item :label="$tc('swag-migration.general.mainMenuItemGeneral')" :to="{ name: 'swag.migration.index' }">
+    <sw-settings-item :label="$tc('swag-migration.general.mainMenuItemGeneral')" :to="{ name: 'swag.migration.index' }" class="sw-settings-index__migration">
         <template slot="icon">
             <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80" class="sw-settings-index__migration-icon">
                 <defs>
