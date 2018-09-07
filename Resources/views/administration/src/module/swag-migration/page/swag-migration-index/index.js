@@ -5,7 +5,7 @@ import './swag-migration-index.less';
 Component.register('swag-migration-index', {
     template,
 
-    inject: ['migrationProfileService', 'migrationService', 'catalogService', 'migrationWorkerService'],
+    inject: ['migrationProfileService', 'migrationService', 'migrationWorkerService'],
 
     data() {
         return {
@@ -25,15 +25,17 @@ Component.register('swag-migration-index', {
             isMigrating: false,
             isMigrationAllowed: false,
             showConfirmDialog: false,
-            targets: [], // possible data target locations
+            catalogs: [],
+            salesChannels: [],
             tableData: [
                 {
-                    id: 'customers_orders',
-                    entityNames: ['customer', 'order'],
-                    data: this.$tc('swag-migration.index.selectDataCard.dataPossible.customersAndOrders'),
-                    targetDisabled: true,
-                    targetHidden: true,
+                    id: 'categories_products',
+                    // TODO revert, when the core could handle translations correctly
+                    entityNames: ['category', 'product'], // 'translation'],
+                    data: this.$tc('swag-migration.index.selectDataCard.dataPossible.categoriesAndProducts'),
                     selected: false,
+                    target: 'catalog',
+                    targets: [],
                     targetId: '',
                     progressBar: {
                         value: 0,
@@ -41,13 +43,12 @@ Component.register('swag-migration-index', {
                     }
                 },
                 {
-                    id: 'categories_products',
-                    // TODO revert, when the core could handle translations correctly
-                    entityNames: ['category', 'product'], // 'translation'],
-                    data: this.$tc('swag-migration.index.selectDataCard.dataPossible.categoriesAndProducts'),
-                    targetDisabled: false,
-                    targetHidden: false,
+                    id: 'customers_orders',
+                    entityNames: ['customer', 'order'],
+                    data: this.$tc('swag-migration.index.selectDataCard.dataPossible.customersAndOrders'),
                     selected: false,
+                    target: 'salesChannel',
+                    targets: [],
                     targetId: '',
                     progressBar: {
                         value: 0,
@@ -58,9 +59,9 @@ Component.register('swag-migration-index', {
                     id: 'media',
                     entityNames: ['media'],
                     data: this.$tc('swag-migration.index.selectDataCard.dataPossible.media'),
-                    targetDisabled: false,
-                    targetHidden: false,
                     selected: false,
+                    target: 'catalog',
+                    targets: [],
                     targetId: '',
                     progressBar: {
                         value: 0,
@@ -93,6 +94,14 @@ Component.register('swag-migration-index', {
 
         shopFirstLetter() {
             return this.shopVersion[0];
+        },
+
+        catalogStore() {
+            return State.getStore('catalog');
+        },
+
+        salesChannelStore() {
+            return State.getStore('sales_channel');
         }
     },
 
@@ -153,16 +162,29 @@ Component.register('swag-migration-index', {
         });
 
         // Get possible targets
-        this.catalogService.getList({}).then((response) => {
-            if (!response) {
-                return;
-            }
+        const catalogPromise = this.catalogStore.getList({});
+        const salesChannelPromise = this.salesChannelStore.getList({});
 
-            response.data.forEach((catalog) => {
-                this.targets.push({
-                    id: catalog.id,
-                    name: catalog.name
-                });
+        Promise.all([catalogPromise, salesChannelPromise]).then((responses) => {
+            this.catalogs = responses[0].items;
+            this.salesChannels = responses[1].items;
+
+            this.tableData.forEach((tableItem) => {
+                switch (tableItem.target) {
+                case 'catalog':
+                    tableItem.targets = this.catalogs;
+                    break;
+                case 'salesChannel':
+                    tableItem.targets = this.salesChannels;
+                    break;
+                default:
+                    tableItem.targets = [];
+                    break;
+                }
+
+                if (tableItem.targets.length !== 0) {
+                    tableItem.targetId = tableItem.targets[0].id;
+                }
             });
         });
 
@@ -263,7 +285,8 @@ Component.register('swag-migration-index', {
          *                  entityCount: 4
          *              }
          *          ],
-         *          targetId: "20080911ffff4fffafffffff19830531"
+         *          targetId: "20080911ffff4fffafffffff19830531",
+         *          target: "salesChannel"
          *          count: 6
          *          progress: 6
          *      },
@@ -291,7 +314,8 @@ Component.register('swag-migration-index', {
                         entities: entities,
                         progress: 0,
                         count: groupCount,
-                        targetId: data.targetId
+                        targetId: data.targetId,
+                        target: data.target
                     });
                 }
             });

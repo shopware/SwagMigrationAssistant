@@ -9,15 +9,15 @@
                         </sw-grid-column>
                     {% endblock %}
 
-                    {% block swag_migration_index_data_selector_grid_column_catalogue %}
+                    {% block swag_migration_index_data_selector_grid_column_catalog %}
                         <sw-grid-column flex="1fr" align=""
                                         :label="$tc('swag-migration.index.selectDataCard.targetHeader')">
                             <sw-field type="select"
                                       validation="required"
-                                      v-model="item.targetId" v-show="!item.targetHidden"
-                                      :disabled="item.targetDisabled">
-                                <option slot="options" v-for="target in targets"
-                                        :value="target.id">{{ target.name }}</option>
+                                      v-model="item.targetId">
+                                <option slot="options" v-for="target in item.targets"
+                                        :value="target.id">{{ target.name }}
+                                </option>
                             </sw-field>
                         </sw-grid-column>
                     {% endblock %}

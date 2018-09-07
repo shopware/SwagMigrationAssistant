@@ -164,11 +164,7 @@ class CustomerConverter implements ConverterInterface
         }
         unset($data['addresses']);
 
-        if ($salesChannelId !== null) {
-            $converted['salesChannelId'] = $salesChannelId;
-        } else {
-            $converted['salesChannelId'] = Defaults::SALES_CHANNEL;
-        }
+        $converted['salesChannelId'] = $salesChannelId;
 
         // Legacy data which don't need a mapping or there is no equivalent field
         unset(

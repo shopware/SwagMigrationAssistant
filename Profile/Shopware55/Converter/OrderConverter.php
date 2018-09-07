@@ -171,11 +171,7 @@ class OrderConverter implements ConverterInterface
         $this->getTransactions($data, $converted);
         unset($data['cleared'], $data['paymentstatus']);
 
-        if ($salesChannelId !== null) {
-            $converted['salesChannelId'] = $salesChannelId;
-        } else {
-            $converted['salesChannelId'] = Defaults::SALES_CHANNEL;
-        }
+        $converted['salesChannelId'] = $salesChannelId;
 
         // Legacy data which don't need a mapping or there is no equivalent field
         unset(

@@ -78,7 +78,6 @@
           "media": "Medien"
         },
         "targetHeader": "Ziel",
-        "defaultCatalogue": "Standard",
         "gdprTitle": "Nutzungsbedingungen",
         "gdprText": "Für die Import der Daten gelten die <a href=\"https:\/\/playground.shopware.com\/terms-and-conditions\">Allgemeinen Nutzungsbedingungen<\/a> von Shopware Playground. Der Importprozess nimmt keinen Einfluss auf die Daten des Quellsystems."
       },
