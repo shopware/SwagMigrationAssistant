@@ -54,8 +54,13 @@ Component.register('swag-migration-loading-screen', {
         },
 
         statusCount() {
-            const mediaGroup = this.tableData.find((data) => data.id === 'media' && data.selected);
-            if (mediaGroup !== undefined) {
+            const containsMediaGroup = this.tableData.find((data) => {
+                return (data.selected) && (
+                    data.id === 'media' ||
+                    data.id === 'categories_products'
+                );
+            });
+            if (containsMediaGroup !== undefined) {
                 return this.status.length;
             }
 

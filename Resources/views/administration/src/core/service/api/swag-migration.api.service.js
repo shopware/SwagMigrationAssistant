@@ -43,6 +43,17 @@ class MigrationApiService extends ApiService {
             });
     }
 
+    fetchAssetCount(additionalParams = {}, additionalHeaders = {}) {
+        const params = additionalParams;
+        const headers = this.getBasicHeaders(additionalHeaders);
+
+        return this.httpClient
+            .get(`${this.getApiBasePath()}/fetch-media-count`, { params, headers })
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
     fetchAssetUuids(additionalParams = {}, additionalHeaders = {}) {
         const params = additionalParams;
         const headers = this.getBasicHeaders(additionalHeaders);

@@ -37,7 +37,7 @@ Component.register('swag-migration-index', {
                     targetId: '',
                     progressBar: {
                         value: 0,
-                        maxValue: 100
+                        maxValue: 0
                     }
                 },
                 {
@@ -51,7 +51,7 @@ Component.register('swag-migration-index', {
                     targetId: '',
                     progressBar: {
                         value: 0,
-                        maxValue: 100
+                        maxValue: 0
                     }
                 },
                 {
@@ -64,7 +64,7 @@ Component.register('swag-migration-index', {
                     targetId: '',
                     progressBar: {
                         value: 0,
-                        maxValue: 100
+                        maxValue: 0
                     }
                 }
             ]
@@ -200,6 +200,9 @@ Component.register('swag-migration-index', {
                         data.selected = true;
                     }
 
+                    // set the progress max value from our service
+                    data.progressBar.maxValue = group.count;
+
                     // set the progress for the group
                     data.progressBar.value = group.progress;
                 }
@@ -227,11 +230,14 @@ Component.register('swag-migration-index', {
 
         calculateProgressMaxValues() {
             this.tableData.forEach((data) => {
-                let totalCount = 0;
-                data.entityNames.forEach((currentEntityName) => {
-                    totalCount += this.entityCounts[currentEntityName];
-                });
-                data.progressBar.maxValue = totalCount;
+                // Skip the calculation for maxValues that we have from our service (in case of restore)
+                if (data.progressBar.maxValue === 0) {
+                    let totalCount = 0;
+                    data.entityNames.forEach((currentEntityName) => {
+                        totalCount += this.entityCounts[currentEntityName];
+                    });
+                    data.progressBar.maxValue = totalCount;
+                }
             });
         },
 
@@ -340,6 +346,12 @@ Component.register('swag-migration-index', {
             const resultData = this.tableData.find((data) => {
                 return data.entityNames.includes(progressData.entityName);
             });
+
+            if (this.statusIndex === this.migrationWorkerService.MIGRATION_STATUS.DOWNLOAD_DATA &&
+                resultData.progressBar.maxValue !== progressData.entityCount
+            ) {
+                resultData.progressBar.maxValue = progressData.entityCount;
+            }
 
             resultData.progressBar.value = progressData.entityGroupProgressValue;
         },
