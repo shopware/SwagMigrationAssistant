@@ -25,7 +25,7 @@ class DummyMappingService extends Shopware55MappingService
         return '';
     }
 
-    public function writeMapping(array $writeMapping, Context $context): void
+    public function saveMapping(array $mapping, Context $context): void
     {
     }
 

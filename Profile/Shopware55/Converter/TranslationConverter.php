@@ -51,6 +51,11 @@ class TranslationConverter implements ConverterInterface
         return 'translation';
     }
 
+    public function writeMapping(Context $context): void
+    {
+        $this->mappingService->writeMapping($context);
+    }
+
     public function convert(
         array $data,
         Context $context,

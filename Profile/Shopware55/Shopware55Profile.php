@@ -11,6 +11,7 @@ use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Profile\ProfileInterface;
 use SwagMigrationNext\Profile\Shopware55\Converter\AssociationEntityRequiredMissingException;
 use SwagMigrationNext\Profile\Shopware55\Converter\ConverterRegistryInterface;
+use SwagMigrationNext\Profile\Shopware55\Converter\CustomerExistsException;
 use SwagMigrationNext\Profile\Shopware55\Converter\ParentEntityForChildNotFoundException;
 
 class Shopware55Profile implements ProfileInterface
@@ -72,12 +73,17 @@ class Shopware55Profile implements ProfileInterface
             } catch (AssociationEntityRequiredMissingException $e) {
                 // TODO: Log error
                 continue;
+            } catch (CustomerExistsException $e) {
+                // TODO: Log error
+                continue;
             }
         }
 
         if (\count($createData) === 0) {
             return 0;
         }
+
+        $converter->writeMapping($context);
 
         /** @var EntityWrittenContainerEvent $writtenEvent */
         $writtenEvent = $this->migrationDataRepo->upsert($createData, $context);

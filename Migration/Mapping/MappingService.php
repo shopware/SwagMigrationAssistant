@@ -37,6 +37,10 @@ class MappingService implements MappingServiceInterface
      */
     protected $countryRepository;
 
+    protected $uuids = [];
+
+    protected $writeArray = [];
+
     public function __construct(
         RepositoryInterface $migrationMappingRepo,
         RepositoryInterface $localeRepository,
@@ -51,17 +55,25 @@ class MappingService implements MappingServiceInterface
 
     public function getUuid(string $profile, string $entityName, string $oldId, Context $context): ?string
     {
+        if (isset($this->uuids[$profile][$entityName][$oldId])) {
+            return $this->uuids[$profile][$entityName][$oldId];
+        }
+
         $criteria = new Criteria();
         $criteria->addFilter(new TermQuery('profile', $profile));
         $criteria->addFilter(new TermQuery('entity', $entityName));
         $criteria->addFilter(new TermQuery('oldIdentifier', $oldId));
+        $criteria->setLimit(1);
         $result = $this->migrationMappingRepo->search($criteria, $context);
 
         if ($result->getTotal() > 0) {
             /** @var SwagMigrationMappingStruct $element */
             $element = $result->getEntities()->first();
+            $uuid = $element->getEntityUuid();
 
-            return $element->getEntityUuid();
+            $this->uuids[$profile][$entityName][$oldId] = $uuid;
+
+            return $uuid;
         }
 
         return null;
@@ -80,17 +92,14 @@ class MappingService implements MappingServiceInterface
         }
 
         $uuid = Uuid::uuid4()->getHex();
-        $this->writeMapping(
+        $this->saveMapping(
             [
-                [
-                    'profile' => $profile,
-                    'entity' => $entityName,
-                    'oldIdentifier' => $oldId,
-                    'entityUuid' => $uuid,
-                    'additionalData' => $additionalData,
-                ],
-            ],
-            $context
+                'profile' => $profile,
+                'entity' => $entityName,
+                'oldIdentifier' => $oldId,
+                'entityUuid' => $uuid,
+                'additionalData' => $additionalData,
+            ]
         );
 
         return $uuid;
@@ -139,6 +148,7 @@ class MappingService implements MappingServiceInterface
         $criteria = new Criteria();
         $criteria->addFilter(new TermQuery('iso', $iso));
         $criteria->addFilter(new TermQuery('iso3', $iso3));
+        $criteria->setLimit(1);
         $result = $this->countryRepository->search($criteria, $context);
 
         if ($result->getTotal() > 0) {
@@ -147,16 +157,13 @@ class MappingService implements MappingServiceInterface
 
             $countryUuid = $element->getId();
 
-            $this->writeMapping(
+            $this->saveMapping(
                 [
-                    [
-                        'profile' => $profile,
-                        'entity' => CountryDefinition::getEntityName(),
-                        'oldIdentifier' => $oldId,
-                        'entityUuid' => $countryUuid,
-                    ],
-                ],
-                $context
+                    'profile' => $profile,
+                    'entity' => CountryDefinition::getEntityName(),
+                    'oldIdentifier' => $oldId,
+                    'entityUuid' => $countryUuid,
+                ]
             );
 
             return $countryUuid;
@@ -167,9 +174,17 @@ class MappingService implements MappingServiceInterface
 
     public function deleteMapping(string $entityUuid, string $profile, Context $context): void
     {
+        foreach ($this->writeArray as $writeMapping) {
+            if ($writeMapping['profile'] === $profile && $writeMapping['entityUuid'] === $entityUuid) {
+                unset($writeMapping);
+                break;
+            }
+        }
+
         $criteria = new Criteria();
         $criteria->addFilter(new TermQuery('entityUuid', $entityUuid));
         $criteria->addFilter(new TermQuery('profile', $profile));
+        $criteria->setLimit(1);
         $result = $this->migrationMappingRepo->search($criteria, $context);
 
         if ($result->getTotal() > 0) {
@@ -180,9 +195,26 @@ class MappingService implements MappingServiceInterface
         }
     }
 
-    protected function writeMapping(array $writeMapping, Context $context): void
+    public function writeMapping(Context $context): void
     {
-        $this->migrationMappingRepo->create($writeMapping, $context);
+        if (empty($this->writeArray)) {
+            return;
+        }
+
+        $this->migrationMappingRepo->create($this->writeArray, $context);
+        $this->writeArray = [];
+        $this->uuids = [];
+    }
+
+    protected function saveMapping(array $mapping): void
+    {
+        $profile = $mapping['profile'];
+        $entity = $mapping['entity'];
+        $oldId = $mapping['oldIdentifier'];
+        $uuid = $mapping['entityUuid'];
+
+        $this->uuids[$profile][$entity][$oldId] = $uuid;
+        $this->writeArray[] = $mapping;
     }
 
     private function searchLanguageInMapping(string $localeCode, Context $context): ?string
@@ -190,6 +222,7 @@ class MappingService implements MappingServiceInterface
         $criteria = new Criteria();
         $criteria->addFilter(new TermQuery('entity', LanguageDefinition::getEntityName()));
         $criteria->addFilter(new TermQuery('oldIdentifier', $localeCode));
+        $criteria->setLimit(1);
         $result = $this->migrationMappingRepo->search($criteria, $context);
 
         if ($result->getTotal() > 0) {
@@ -209,6 +242,7 @@ class MappingService implements MappingServiceInterface
     {
         $criteria = new Criteria();
         $criteria->addFilter(new TermQuery('code', $localeCode));
+        $criteria->setLimit(1);
         $result = $this->localeRepository->search($criteria, $context);
 
         if ($result->getTotal() > 0) {
@@ -225,6 +259,7 @@ class MappingService implements MappingServiceInterface
     {
         $criteria = new Criteria();
         $criteria->addFilter(new TermQuery('localeId', $localeUuid));
+        $criteria->setLimit(1);
         $result = $this->languageRepository->search($criteria, $context);
 
         if ($result->getTotal() > 0) {

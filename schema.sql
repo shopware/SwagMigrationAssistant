@@ -9,6 +9,7 @@ CREATE TABLE `swag_migration_data` (
     `created_at` DATETIME(3) NOT NULL,
     `updated_at` DATETIME(3),
     PRIMARY KEY (`id`, `tenant_id`),
+    KEY indexData (`entity`, `profile`, `created_at`),
     CHECK (JSON_VALID(`raw`)),
     CHECK (JSON_VALID(`converted`)),
     CHECK (JSON_VALID(`unmapped`))
@@ -28,6 +29,7 @@ CREATE TABLE `swag_migration_mapping` (
     `created_at`      DATETIME(3) NOT NULL,
     `updated_at`      DATETIME(3),
     PRIMARY KEY (`id`, `tenant_id`),
+    KEY indexMapping (`entity`, `profile`, `old_identifier`),
     CHECK (JSON_VALID(`additional_data`))
 )
     ENGINE = InnoDB

@@ -67,6 +67,11 @@ class ProductConverter implements ConverterInterface
         return ProductDefinition::getEntityName();
     }
 
+    public function writeMapping(Context $context): void
+    {
+        $this->mappingService->writeMapping($context);
+    }
+
     /**
      * @throws ParentEntityForChildNotFoundException
      */
@@ -269,7 +274,7 @@ class ProductConverter implements ConverterInterface
         $this->helper->convertValue($converted, 'minPurchase', $data['detail'], 'minpurchase', $this->helper::TYPE_INTEGER);
         $this->helper->convertValue($converted, 'purchaseUnit', $data['detail'], 'purchaseunit', $this->helper::TYPE_FLOAT);
         $this->helper->convertValue($converted, 'referenceUnit', $data['detail'], 'referenceunit', $this->helper::TYPE_FLOAT);
-        $this->helper->convertValue($converted, 'releaseDate', $data['detail'], 'releasedate');
+        $this->helper->convertValue($converted, 'releaseDate', $data['detail'], 'releasedate', $this->helper::TYPE_DATETIME);
         $this->helper->convertValue($converted, 'shippingFree', $data['detail'], 'shippingfree', $this->helper::TYPE_BOOLEAN);
         $this->helper->convertValue($converted, 'minDeliveryTime', $data['detail'], 'shippingtime', $this->helper::TYPE_INTEGER);
         $this->helper->convertValue($converted, 'purchasePrice', $data['detail'], 'purchaseprice', $this->helper::TYPE_FLOAT);

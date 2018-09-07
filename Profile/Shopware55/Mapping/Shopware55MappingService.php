@@ -5,6 +5,7 @@ namespace SwagMigrationNext\Profile\Shopware55\Mapping;
 use Shopware\Core\Checkout\Order\Aggregate\OrderState\OrderStateStruct;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransactionState\OrderTransactionStateStruct;
 use Shopware\Core\Checkout\Payment\PaymentMethodStruct;
+use Shopware\Core\Checkout\Customer\CustomerDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\ORM\RepositoryInterface;
 use Shopware\Core\Framework\ORM\Search\Criteria;
@@ -48,6 +49,7 @@ class Shopware55MappingService extends MappingService
     {
         $criteria = new Criteria();
         $criteria->addFilter(new TermQuery('technicalName', $technicalName));
+        $criteria->setLimit(1);
         $result = $this->paymentRepository->search($criteria, $context);
 
         if ($result->getTotal() > 0) {
@@ -63,6 +65,7 @@ class Shopware55MappingService extends MappingService
     public function getOrderStateUuid(int $oldStateId, Context $context): ?string
     {
         $criteria = new Criteria();
+        $criteria->setLimit(1);
         switch ($oldStateId) {
             case -1: // cancelled
                 $criteria->addFilter(new TermQuery('position', 3));
@@ -113,6 +116,7 @@ class Shopware55MappingService extends MappingService
     public function getTransactionStateUuid(int $oldStateId, Context $context): ?string
     {
         $criteria = new Criteria();
+        $criteria->setLimit(1);
         switch ($oldStateId) {
             case 9: // partially_invoiced
                 $criteria->addFilter(new TermQuery('position', 4));
@@ -186,5 +190,18 @@ class Shopware55MappingService extends MappingService
         }
 
         return null;
+    }
+
+    public function createCustomerEmailMapping(string $profile, string $email, string $uuid): void
+    {
+        $this->saveMapping(
+            [
+                'profile' => $profile,
+                'entity' => CustomerDefinition::getEntityName(),
+                'oldIdentifier' => $email,
+                'entityUuid' => $uuid,
+                'additionalData' => null,
+            ]
+        );
     }
 }
