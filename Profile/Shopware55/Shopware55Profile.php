@@ -11,6 +11,7 @@ use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Profile\ProfileInterface;
 use SwagMigrationNext\Profile\Shopware55\Converter\AssociationEntityRequiredMissingException;
 use SwagMigrationNext\Profile\Shopware55\Converter\ConverterRegistryInterface;
+use SwagMigrationNext\Profile\Shopware55\Converter\CustomerExistsException;
 use SwagMigrationNext\Profile\Shopware55\Converter\ParentEntityForChildNotFoundException;
 
 class Shopware55Profile implements ProfileInterface
@@ -70,6 +71,9 @@ class Shopware55Profile implements ProfileInterface
                 // TODO: Log error
                 continue;
             } catch (AssociationEntityRequiredMissingException $e) {
+                // TODO: Log error
+                continue;
+            } catch (CustomerExistsException $e) {
                 // TODO: Log error
                 continue;
             }
