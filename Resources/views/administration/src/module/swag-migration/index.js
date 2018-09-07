@@ -19,7 +19,7 @@ import './component/swag-migration-loading-screen-success';
 import './component/swag-migration-loading-screen-warning';
 import './component/swag-migration-loading-screen-failure';
 import './component/sw-progress-bar';
-
+import './extension/sw-settings-index';
 
 Module.register('swag-migration', {
     type: 'plugin',
@@ -28,12 +28,15 @@ Module.register('swag-migration', {
     version: '1.0.0',
     targetVersion: '1.0.0',
     color: '#ff5555',
-    icon: 'default-chart-bar-filled',
+    icon: 'default-action-settings',
 
     routes: {
         index: {
             component: 'swag-migration-index',
-            path: 'index'
+            path: 'index',
+            meta: {
+                parentPath: 'sw.settings.index'
+            }
         },
         wizard: {
             component: 'swag-migration-wizard',
@@ -66,9 +69,11 @@ Module.register('swag-migration', {
 
     navigation: [{
         id: 'swag-migration',
+        parent: 'sw-settings',
         label: 'swag-migration.general.mainMenuItemGeneral',
         path: 'swag.migration.index',
         color: '#ff5555',
-        icon: 'default-chart-bar-filled'
+        icon: 'default-chart-bar-filled',
+        position: 800
     }]
 });

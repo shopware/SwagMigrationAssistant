@@ -2,7 +2,11 @@
     <sw-page class="swag-migration-index" :isLoading="true">
         {% block swag_migration_index_smart_bar_header %}
             <template slot="smart-bar-header">
-                <h2>{{ $tc('swag-migration.general.mainMenuItemGeneral') }}</h2>
+            <h2>
+                {{ $tc('sw-settings.index.title') }}
+                <sw-icon name="small-arrow-medium-right" small></sw-icon>
+                {{ $tc('swag-migration.general.mainMenuItemGeneral') }}
+            </h2>
             </template>
         {% endblock %}
 
