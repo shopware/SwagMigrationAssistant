@@ -26,14 +26,10 @@
         {% endblock %}
 
         {% block swag_migration_index_data_selector_gdpr %}
-        <sw-alert v-if="showGdpr" variant="warning" class="swag-migration-index-data-selector__gdpr">
-            <strong>{{ $tc('swag-migration.index.selectDataCard.gdprTitle') }} </strong>
+        <sw-alert variant="warning" class="swag-migration-index-data-selector__gdpr">
+            <strong>{{ $tc('swag-migration.index.selectDataCard.gdprTitle') }}</strong>
             <div class="swag-migration-index-data-selector__gdpr_group">
-                <sw-field type="checkbox" v-model="gdprChecked"></sw-field>
-                <p>
-                    {{ $tc('swag-migration.index.selectDataCard.gdprText') }}</br>
-                    <a href="#">{{ $tc('swag-migration.index.selectDataCard.gdprLink') }}</a>
-                </p>
+                <p v-html="$tc('swag-migration.index.selectDataCard.gdprText')"></p>
             </div>
         </sw-alert>
         {% endblock %}

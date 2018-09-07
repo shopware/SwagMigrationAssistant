@@ -79,23 +79,22 @@
         },
         "targetHeader": "Target",
         "defaultCatalogue": "Default",
-        "gdprTitle": "PLACEHOLDER General Data Protection",
-        "gdprText": "PLACEHOLDER",
-        "gdprLink": "PLACEHOLDER"
+        "gdprTitle": "Terms of use",
+        "gdprText": "The general <a href=\"https:\/\/playground.shopware.com\/terms-and-conditions\">terms of use<\/a> of Shopware Playground applys to the import of data. The import process does not affect the data of the source system."
       },
       "loadingScreenCard": {
         "cardTitle": "Step {step} of {total}",
         "status": {
           "fetchData": {
-            "long": "Read data from {profileName}...",
+            "long": "Read data from {profileName} ...",
             "short": "Read data"
           },
           "writeData": {
-            "long": "Write data to Shopware Playground...",
+            "long": "Write data to Shopware Playground ...",
             "short": "Write data"
           },
           "downloadMedia": {
-            "long": "Download media to Shopware Playground...",
+            "long": "Download media to Shopware Playground ...",
             "short": "Media download"
           }
         },
