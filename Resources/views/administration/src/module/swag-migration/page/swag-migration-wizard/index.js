@@ -175,6 +175,10 @@ Component.register('swag-migration-wizard', {
                     name: 'swag.migration.index',
                     params: { profileId: this.profileId }
                 });
+            } else {
+                this.$router.push({
+                    name: 'sw.settings.index'
+                });
             }
         },
 
