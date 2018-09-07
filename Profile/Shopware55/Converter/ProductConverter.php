@@ -24,6 +24,9 @@ use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
 class ProductConverter implements ConverterInterface
 {
+    public const MAIN_PRODUCT_TYPE = 1;
+    public const VARIANT_PRODUCT_TYPE = 2;
+
     /**
      * @var Shopware55MappingService
      */
@@ -87,16 +90,17 @@ class ProductConverter implements ConverterInterface
         $this->oldProductId = $data['detail']['ordernumber'];
         unset($data['id']);
 
-        $productKind = (int) $data['detail']['kind'];
+        $productType = (int) $data['detail']['kind'];
         unset($data['detail']['kind']);
         $isProductWithVariant = $data['configurator_set_id'] !== null;
 
-        if ($productKind === 1 && $isProductWithVariant) {
-            return $this->convertMainProduct($data);
+        if ($productType === self::MAIN_PRODUCT_TYPE && $isProductWithVariant) {
+//            return $this->convertMainProduct($data); TODO reimplement when variant handling is implemented in core
         }
 
-        if ($productKind === 2 && $isProductWithVariant) {
-            return $this->convertVariantProduct($data);
+        if ($productType === self::VARIANT_PRODUCT_TYPE && $isProductWithVariant) {
+            return new ConvertStruct(null, $data);
+//            return $this->convertVariantProduct($data); TODO reimplement when variant handling is implemented in core
         }
 
         $converted = $this->getUuidForProduct($data);

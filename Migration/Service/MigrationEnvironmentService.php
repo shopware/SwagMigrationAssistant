@@ -52,11 +52,11 @@ class MigrationEnvironmentService implements MigrationEnvironmentServiceInterfac
                 throw new InvalidArgumentException('No valid entity provided');
         }
 
-        if (!isset($data[$key])) {
+        if (!isset($data['environmentInformation'][$key])) {
             return 0;
         }
 
-        return $data[$key];
+        return $data['environmentInformation'][$key];
     }
 
     public function getEnvironmentInformation(MigrationContext $migrationContext): array
