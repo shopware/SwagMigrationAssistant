@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Migration;
+namespace SwagMigrationNext\Migration\Service;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\ORM\RepositoryInterface;
@@ -8,6 +8,8 @@ use Shopware\Core\Framework\ORM\Search\Criteria;
 use Shopware\Core\Framework\ORM\Search\Query\TermQuery;
 use Shopware\Core\Framework\ORM\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\Struct\ArrayStruct;
+use SwagMigrationNext\Migration\Data\SwagMigrationDataStruct;
+use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Writer\WriterRegistryInterface;
 
 class MigrationWriteService implements MigrationWriteServiceInterface
@@ -47,8 +49,8 @@ class MigrationWriteService implements MigrationWriteServiceInterface
 
         $converted = [];
         array_map(function ($data) use (&$converted) {
-            /* @var ArrayStruct $data */
-            $value = $data->get('converted');
+            /* @var SwagMigrationDataStruct $data */
+            $value = $data->getConverted();
             if ($value !== null) {
                 $converted[] = $value;
             }

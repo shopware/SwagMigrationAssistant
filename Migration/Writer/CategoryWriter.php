@@ -3,7 +3,6 @@
 namespace SwagMigrationNext\Migration\Writer;
 
 use Shopware\Core\Content\Category\CategoryDefinition;
-use Shopware\Core\Content\Category\Util\CategoryPathBuilder;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\ORM\RepositoryInterface;
 
@@ -14,15 +13,9 @@ class CategoryWriter implements WriterInterface
      */
     private $categoryRepository;
 
-    /**
-     * @var CategoryPathBuilder
-     */
-    private $categoryPathBuilder;
-
-    public function __construct(RepositoryInterface $categoryRepository, CategoryPathBuilder $categoryPathBuilder)
+    public function __construct(RepositoryInterface $categoryRepository)
     {
         $this->categoryRepository = $categoryRepository;
-        $this->categoryPathBuilder = $categoryPathBuilder;
     }
 
     public function supports(): string

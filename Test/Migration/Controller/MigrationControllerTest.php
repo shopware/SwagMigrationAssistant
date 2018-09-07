@@ -2,58 +2,42 @@
 
 namespace SwagMigrationNext\Test\Migration\Controller;
 
-use Doctrine\DBAL\Connection;
+use PHPUnit\Framework\TestCase;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagMigrationNext\Controller\MigrationController;
-use SwagMigrationNext\Migration\CliAssetDownloadService;
-use SwagMigrationNext\Migration\MigrationEnvironmentService;
-use SwagMigrationNext\Migration\MigrationWriteService;
+use SwagMigrationNext\Migration\Asset\HttpAssetDownloadService;
+use SwagMigrationNext\Migration\Service\MigrationEnvironmentService;
+use SwagMigrationNext\Migration\Service\MigrationWriteService;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 use SwagMigrationNext\Test\MigrationServicesTrait;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class MigrationControllerTest extends KernelTestCase
+class MigrationControllerTest extends TestCase
 {
-    use MigrationServicesTrait;
+    use MigrationServicesTrait,
+        IntegrationTestBehaviour;
 
     /**
      * @var MigrationController
      */
     private $controller;
 
-    /**
-     * @var Connection
-     */
-    private $connection;
-
     protected function setUp()
     {
-        parent::setUp();
-        self::bootKernel();
-
-        $this->connection = self::$container->get(Connection::class);
-        $this->connection->beginTransaction();
-
         $this->controller = new MigrationController(
             $this->getMigrationCollectService(
-                self::$container->get('swag_migration_data.repository'),
-                self::$container->get(Shopware55MappingService::class)
+                $this->getContainer()->get('swag_migration_data.repository'),
+                $this->getContainer()->get(Shopware55MappingService::class)
             ),
-            self::$container->get(MigrationWriteService::class),
-            self::$container->get(CliAssetDownloadService::class),
-            self::$container->get(MigrationEnvironmentService::class),
-            self::$container->get('swag_migration_profile.repository')
+            $this->getContainer()->get(MigrationWriteService::class),
+            $this->getContainer()->get(HttpAssetDownloadService::class),
+            $this->getContainer()->get(MigrationEnvironmentService::class),
+            $this->getContainer()->get('swag_migration_profile.repository')
         );
-    }
-
-    protected function tearDown()
-    {
-        $this->connection->rollBack();
-        parent::tearDown();
     }
 
     public function testFetchData(): void
@@ -72,7 +56,6 @@ class MigrationControllerTest extends KernelTestCase
         $result = $this->controller->fetchData($request, $context);
 
         static::assertEquals(Response::HTTP_OK, $result->getStatusCode());
-        $content = json_decode($result->getContent(), true);
     }
 
     public function testWriteData(): void
@@ -90,6 +73,5 @@ class MigrationControllerTest extends KernelTestCase
         $result = $this->controller->writeData($request, $context);
 
         static::assertEquals(Response::HTTP_OK, $result->getStatusCode());
-        $content = json_decode($result->getContent(), true);
     }
 }

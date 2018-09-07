@@ -23,9 +23,6 @@ class TranslationWriter implements WriterInterface
         return 'translation';
     }
 
-    /**
-     * Writes the converted data of the supported entity type into the database
-     */
     public function writeData(array $data, Context $context): void
     {
         $translationArray = [];

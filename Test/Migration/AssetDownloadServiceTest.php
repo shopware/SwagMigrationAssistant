@@ -2,9 +2,9 @@
 
 namespace SwagMigrationNext\Test\Migration;
 
-use Doctrine\DBAL\Driver\Connection;
+use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
-use Shopware\Core\Content\Media\Upload\MediaUpdater;
+use Shopware\Core\Content\Media\File\FileSaver;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
@@ -12,24 +12,20 @@ use Shopware\Core\Framework\ORM\RepositoryInterface;
 use Shopware\Core\Framework\ORM\Search\Criteria;
 use Shopware\Core\Framework\ORM\Search\Query\NotQuery;
 use Shopware\Core\Framework\ORM\Search\Query\TermQuery;
-use SwagMigrationNext\Migration\CliAssetDownloadService;
-use SwagMigrationNext\Migration\MigrationCollectServiceInterface;
+use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
+use SwagMigrationNext\Migration\Asset\CliAssetDownloadService;
 use SwagMigrationNext\Migration\MigrationContext;
-use SwagMigrationNext\Migration\MigrationWriteService;
-use SwagMigrationNext\Migration\MigrationWriteServiceInterface;
+use SwagMigrationNext\Migration\Service\MigrationCollectServiceInterface;
+use SwagMigrationNext\Migration\Service\MigrationWriteService;
+use SwagMigrationNext\Migration\Service\MigrationWriteServiceInterface;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\MigrationServicesTrait;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
-class AssetDownloadServiceTest extends KernelTestCase
+class AssetDownloadServiceTest extends TestCase
 {
-    use MigrationServicesTrait;
-
-    /**
-     * @var Connection
-     */
-    private $connection;
+    use MigrationServicesTrait,
+        IntegrationTestBehaviour;
 
     /**
      * @var CliAssetDownloadService
@@ -63,33 +59,20 @@ class AssetDownloadServiceTest extends KernelTestCase
 
     protected function setUp()
     {
-        parent::setUp();
+        $fileSaver = $this->getContainer()->get(FileSaver::class);
+        $eventDispatcher = $this->getContainer()->get('event_dispatcher');
+        $this->logger = $this->getContainer()->get('logger');
+        $migrationMapping = $this->getContainer()->get('swag_migration_mapping.repository');
+        $this->mediaRepository = $this->getContainer()->get('media.repository');
 
-        self::bootKernel();
-
-        $this->connection = self::$container->get(Connection::class);
-        $this->connection->beginTransaction();
-
-        $mediaUpdater = self::$container->get(MediaUpdater::class);
-        $eventDispatcher = self::$container->get('event_dispatcher');
-        $this->logger = self::$container->get('logger');
-        $migrationMapping = self::$container->get('swag_migration_mapping.repository');
-        $this->mediaRepository = self::$container->get('media.repository');
-
-        $this->migrationWriteService = self::$container->get(MigrationWriteService::class);
-        $this->productRepo = self::$container->get('product.repository');
+        $this->migrationWriteService = $this->getContainer()->get(MigrationWriteService::class);
+        $this->productRepo = $this->getContainer()->get('product.repository');
         $this->migrationCollectService = $this->getMigrationCollectService(
-            self::$container->get('swag_migration_data.repository'),
-            self::$container->get(Shopware55MappingService::class)
+            $this->getContainer()->get('swag_migration_data.repository'),
+            $this->getContainer()->get(Shopware55MappingService::class)
         );
 
-        $this->assetDownloadService = new CliAssetDownloadService($migrationMapping, $mediaUpdater, $eventDispatcher, $this->logger);
-    }
-
-    protected function tearDown()
-    {
-        $this->connection->rollBack();
-        parent::tearDown();
+        $this->assetDownloadService = new CliAssetDownloadService($migrationMapping, $fileSaver, $eventDispatcher, $this->logger);
     }
 
     public function testDownloadAssets(): void
@@ -116,7 +99,7 @@ class AssetDownloadServiceTest extends KernelTestCase
         $criteria->addFilter(new TermQuery('mimeType', null));
         $totalBeforeAssetDownload = $this->mediaRepository->search($criteria, $context)->getTotal();
 
-        $this->assetDownloadService->downloadAssets($context);
+        $this->assetDownloadService->downloadAssets(Shopware55Profile::PROFILE_NAME, $context);
 
         $criteria = new Criteria();
         $criteria->addFilter(new NotQuery([new TermQuery('mimeType', null)]));

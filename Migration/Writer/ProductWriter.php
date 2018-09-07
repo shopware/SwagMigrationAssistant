@@ -30,6 +30,9 @@ class ProductWriter implements WriterInterface
         return ProductDefinition::getEntityName();
     }
 
+    /**
+     * @param array[][] $data
+     */
     public function writeData(array $data, Context $context): void
     {
         foreach ($data as &$item) {
@@ -49,6 +52,9 @@ class ProductWriter implements WriterInterface
         $this->productRepository->upsert($data, $context);
     }
 
+    /**
+     * @param array[] $item
+     */
     private function normalizeRule(array &$item): void
     {
         foreach ($item['priceRules'] as &$priceRule) {

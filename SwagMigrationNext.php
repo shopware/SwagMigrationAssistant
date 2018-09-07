@@ -42,6 +42,7 @@ class SwagMigrationNext extends Plugin
         $connection = $this->container->get(Connection::class);
         $tenantId = Uuid::fromHexToBytes($installContext->getContext()->getTenantId());
         $sql = file_get_contents($this->getPath() . '/schema.sql');
+        $now = (new \DateTime())->format(Defaults::DATE_FORMAT);
 
         $connection->beginTransaction();
         try {
@@ -52,6 +53,7 @@ class SwagMigrationNext extends Plugin
                 'profile' => Shopware55Profile::PROFILE_NAME,
                 'gateway' => Shopware55ApiGateway::GATEWAY_TYPE,
                 'credential_fields' => json_encode(['endpoint' => '', 'apiUser' => '', 'apiKey' => '']),
+                'created_at' => $now,
             ]);
             $connection->insert('swag_migration_profile', [
                 'id' => Uuid::uuid4()->getBytes(),
@@ -59,6 +61,7 @@ class SwagMigrationNext extends Plugin
                 'profile' => Shopware55Profile::PROFILE_NAME,
                 'gateway' => Shopware55LocalGateway::GATEWAY_TYPE,
                 'credential_fields' => json_encode(['dbHost' => '', 'dbPort' => '', 'dbName' => '', 'dbUser' => '', 'dbPassword' => '']),
+                'created_at' => $now,
             ]);
         } catch (DBALException $e) {
             $connection->rollBack();

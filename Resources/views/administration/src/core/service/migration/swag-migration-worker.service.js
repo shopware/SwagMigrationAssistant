@@ -275,6 +275,7 @@ class MigrationService {
             }
 
             this._migrationService.fetchAssetUuids({
+                profile: this._profile.profile,
                 offset: this._assetCurrentOffset,
                 limit: this._ASSET_UUID_CHUNK
             }).then((res) => {
@@ -454,6 +455,7 @@ class MigrationService {
      * Do a single API request for the given entity with given offset.
      *
      * @param entityName
+     * @param targetId
      * @param methodName
      * @param offset
      * @returns {Promise}

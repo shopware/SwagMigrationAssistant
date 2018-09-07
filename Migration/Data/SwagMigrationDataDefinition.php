@@ -20,7 +20,7 @@ class SwagMigrationDataDefinition extends EntityDefinition
         return 'swag_migration_data';
     }
 
-    protected static function defineFields(): FieldCollection
+    public static function defineFields(): FieldCollection
     {
         return new FieldCollection([
             (new IdField('id', 'id'))->setFlags(new PrimaryKey(), new Required()),
@@ -33,5 +33,15 @@ class SwagMigrationDataDefinition extends EntityDefinition
             new CreatedAtField(),
             new UpdatedAtField(),
         ]);
+    }
+
+    public static function getCollectionClass(): string
+    {
+        return SwagMigrationDataCollection::class;
+    }
+
+    public static function getStructClass(): string
+    {
+        return SwagMigrationDataStruct::class;
     }
 }

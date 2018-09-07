@@ -243,7 +243,7 @@ class CustomerConverter implements ConverterInterface
         );
 
         // TODO: Delete this default value, if the Core deletes the require Flag of the PaymentMethodTranslation
-        if (!isset($originalData['additionaldescription']) || strlen($originalData['additionaldescription']) === 0) {
+        if (!isset($originalData['additionaldescription']) || $originalData['additionaldescription'] === '') {
             $originalData['additionaldescription'] = '....';
         }
 
@@ -284,6 +284,9 @@ class CustomerConverter implements ConverterInterface
         $converted['defaultPaymentMethod'] = $defaultPaymentMethod;
     }
 
+    /**
+     * @param array[] $originalData
+     */
     private function getAddresses(array &$originalData, array &$converted, string $customerUuid): void
     {
         $addresses = [];

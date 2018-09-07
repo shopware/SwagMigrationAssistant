@@ -5,7 +5,8 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="SwagMigrationNext\Profile\ProfileRegistry" class="SwagMigrationNext\Profile\ProfileRegistry">
+        <service id="SwagMigrationNext\Profile\ProfileRegistry"
+                 class="SwagMigrationNext\Profile\ProfileRegistry">
             <argument type="tagged" tag="shopware.migration.profile"/>
         </service>
 
@@ -14,7 +15,9 @@
             <tag name="shopware.entity.definition" entity="swag_migration_profile"/>
         </service>
 
-        <service id="swag_migration_profile.repository" class="Shopware\Core\Framework\ORM\EntityRepository" public="true">
+        <service id="swag_migration_profile.repository"
+                 class="Shopware\Core\Framework\ORM\EntityRepository"
+                 public="true">
             <argument>SwagMigrationNext\Profile\SwagMigrationProfileDefinition</argument>
             <argument type="service" id="Shopware\Core\Framework\ORM\Read\EntityReaderInterface"/>
             <argument type="service" id="Shopware\Core\Framework\ORM\VersionManager"/>

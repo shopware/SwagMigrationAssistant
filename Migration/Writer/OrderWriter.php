@@ -30,6 +30,9 @@ class OrderWriter implements WriterInterface
         return OrderDefinition::getEntityName();
     }
 
+    /**
+     * @param array[][] $data
+     */
     public function writeData(array $data, Context $context): void
     {
         foreach ($data as &$item) {

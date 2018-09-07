@@ -116,7 +116,7 @@ Component.register('swag-migration-wizard', {
                                 switch (connectionCheckResponse.error.code) {
                                 case 0: // SSL certificate is not verified
                                     this.errorMessage = this.$tc(
-                                        'swag-migration.wizard.pages.credentials.success.connectionUnsecureMsg'
+                                        'swag-migration.wizard.pages.credentials.success.connectionInsecureMsg'
                                     );
                                     break;
                                 default: // Something else

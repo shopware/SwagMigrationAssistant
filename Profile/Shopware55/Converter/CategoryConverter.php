@@ -92,7 +92,7 @@ class CategoryConverter implements ConverterInterface
             );
 
             if ($parentUuid === null) {
-                throw new ParentEntityForChildNotFoundException(CategoryDefinition::getEntityName(), (int) $this->oldCategoryId);
+                throw new ParentEntityForChildNotFoundException(CategoryDefinition::getEntityName(), $this->oldCategoryId);
             }
 
             $converted['parentId'] = $parentUuid;

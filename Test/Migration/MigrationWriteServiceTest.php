@@ -4,6 +4,7 @@ namespace SwagMigrationNext\Test\Migration;
 
 use Doctrine\DBAL\Connection;
 use PDO;
+use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Customer\CustomerDefinition;
 use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Content\Media\MediaDefinition;
@@ -12,23 +13,19 @@ use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\ORM\RepositoryInterface;
 use Shopware\Core\Framework\ORM\Search\Criteria;
-use SwagMigrationNext\Migration\MigrationCollectServiceInterface;
+use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagMigrationNext\Migration\MigrationContext;
-use SwagMigrationNext\Migration\MigrationWriteService;
-use SwagMigrationNext\Migration\MigrationWriteServiceInterface;
+use SwagMigrationNext\Migration\Service\MigrationCollectServiceInterface;
+use SwagMigrationNext\Migration\Service\MigrationWriteService;
+use SwagMigrationNext\Migration\Service\MigrationWriteServiceInterface;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\MigrationServicesTrait;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
-class MigrationWriteServiceTest extends KernelTestCase
+class MigrationWriteServiceTest extends TestCase
 {
-    use MigrationServicesTrait;
-
-    /**
-     * @var Connection
-     */
-    private $connection;
+    use MigrationServicesTrait,
+        IntegrationTestBehaviour;
 
     /**
      * @var RepositoryInterface
@@ -67,29 +64,16 @@ class MigrationWriteServiceTest extends KernelTestCase
 
     protected function setUp()
     {
-        parent::setUp();
-
-        self::bootKernel();
-
-        $this->connection = self::$container->get(Connection::class);
-        $this->connection->beginTransaction();
-
         $this->migrationCollectService = $this->getMigrationCollectService(
-            self::$container->get('swag_migration_data.repository'),
-            self::$container->get(Shopware55MappingService::class)
+            $this->getContainer()->get('swag_migration_data.repository'),
+            $this->getContainer()->get(Shopware55MappingService::class)
         );
-        $this->migrationWriteService = self::$container->get(MigrationWriteService::class);
-        $this->productRepo = self::$container->get('product.repository');
-        $this->categoryRepo = self::$container->get('category.repository');
-        $this->mediaRepo = self::$container->get('media.repository');
-        $this->productTranslationRepo = self::$container->get('product_translation.repository');
-        $this->customerRepo = self::$container->get('customer.repository');
-    }
-
-    protected function tearDown()
-    {
-        $this->connection->rollBack();
-        parent::tearDown();
+        $this->migrationWriteService = $this->getContainer()->get(MigrationWriteService::class);
+        $this->productRepo = $this->getContainer()->get('product.repository');
+        $this->categoryRepo = $this->getContainer()->get('category.repository');
+        $this->mediaRepo = $this->getContainer()->get('media.repository');
+        $this->productTranslationRepo = $this->getContainer()->get('product_translation.repository');
+        $this->customerRepo = $this->getContainer()->get('customer.repository');
     }
 
     public function testWriteCustomerData(): void
@@ -238,6 +222,6 @@ class MigrationWriteServiceTest extends KernelTestCase
 
     private function getTranslationTotal()
     {
-        return $this->connection->query('SELECT count(*) FROM product_translation')->fetch(PDO::FETCH_COLUMN);
+        return $this->getContainer()->get(Connection::class)->query('SELECT count(*) FROM product_translation')->fetch(PDO::FETCH_COLUMN);
     }
 }

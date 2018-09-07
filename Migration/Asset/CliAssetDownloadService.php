@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Migration;
+namespace SwagMigrationNext\Migration\Asset;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
@@ -10,14 +10,15 @@ use Shopware\Core\Content\Media\Exception\IllegalMimeTypeException;
 use Shopware\Core\Content\Media\Exception\UploadException;
 use Shopware\Core\Content\Media\File\FileSaver;
 use Shopware\Core\Content\Media\File\MediaFile;
+use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\ORM\RepositoryInterface;
 use Shopware\Core\Framework\ORM\Search\Criteria;
 use Shopware\Core\Framework\ORM\Search\Query\TermQuery;
-use Shopware\Core\Framework\Struct\ArrayStruct;
 use SwagMigrationNext\Command\Event\MigrationAssetDownloadAdvanceEvent;
 use SwagMigrationNext\Command\Event\MigrationAssetDownloadFinishEvent;
 use SwagMigrationNext\Command\Event\MigrationAssetDownloadStartEvent;
+use SwagMigrationNext\Migration\Mapping\SwagMigrationMappingStruct;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class CliAssetDownloadService implements CliAssetDownloadServiceInterface
@@ -62,29 +63,34 @@ class CliAssetDownloadService implements CliAssetDownloadServiceInterface
      */
     private $logger;
 
-    public function __construct(RepositoryInterface $migrationMappingRepository, FileSaver $fileSaver, EventDispatcherInterface $event, LoggerInterface $logger)
-    {
+    public function __construct(
+        RepositoryInterface $migrationMappingRepository,
+        FileSaver $fileSaver,
+        EventDispatcherInterface $event,
+        LoggerInterface $logger
+    ) {
         $this->migrationMappingRepository = $migrationMappingRepository;
         $this->fileSaver = $fileSaver;
         $this->event = $event;
         $this->logger = $logger;
     }
 
-    public function downloadAssets(Context $context): void
+    public function downloadAssets(string $profile, Context $context): void
     {
         $client = new Client();
         $criteria = new Criteria();
-        $criteria->addFilter(new TermQuery('entity', 'media'));
+        $criteria->addFilter(new TermQuery('entity', MediaDefinition::getEntityName()));
+        $criteria->addFilter(new TermQuery('profile', $profile));
 
         $entitySearchResult = $this->migrationMappingRepository->search($criteria, $context);
-        /** @var ArrayStruct[] $assets */
+        /** @var SwagMigrationMappingStruct[] $assets */
         $assets = $entitySearchResult->getElements();
 
         $this->event->dispatch(MigrationAssetDownloadStartEvent::EVENT_NAME, new MigrationAssetDownloadStartEvent($entitySearchResult->getTotal()));
         foreach ($assets as $asset) {
             /** @var string $uuid */
-            $uuid = $asset->get('entityUuid');
-            $additionalData = $asset->get('additionalData');
+            $uuid = $asset->getEntityUuid();
+            $additionalData = $asset->getAdditionalData();
 
             if (\is_array($additionalData) && isset($additionalData['uri'])) {
                 $this->event->dispatch(MigrationAssetDownloadAdvanceEvent::EVENT_NAME, new MigrationAssetDownloadAdvanceEvent($additionalData['uri']));

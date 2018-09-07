@@ -2,49 +2,34 @@
 
 namespace SwagMigrationNext\Test\Migration\Mapping;
 
-use Doctrine\DBAL\Connection;
 use Exception;
+use PHPUnit\Framework\TestCase;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagMigrationNext\Exception\LocaleNotFoundException;
 use SwagMigrationNext\Migration\Mapping\MappingService;
 use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-class MappingServiceTest extends KernelTestCase
+class MappingServiceTest extends TestCase
 {
+    use IntegrationTestBehaviour;
+
     /**
      * @var MappingServiceInterface
      */
     private $mappingService;
 
-    /**
-     * @var Connection
-     */
-    private $connection;
-
     protected function setUp()
     {
-        parent::setUp();
-        self::bootKernel();
-
-        $this->connection = self::$container->get(Connection::class);
-        $this->connection->beginTransaction();
-
         $this->mappingService = new MappingService(
-            self::$container->get('swag_migration_mapping.repository'),
-            self::$container->get('locale.repository'),
-            self::$container->get('language.repository'),
-            self::$container->get('country.repository')
+            $this->getContainer()->get('swag_migration_mapping.repository'),
+            $this->getContainer()->get('locale.repository'),
+            $this->getContainer()->get('language.repository'),
+            $this->getContainer()->get('country.repository')
         );
-    }
-
-    protected function tearDown()
-    {
-        $this->connection->rollBack();
-        parent::tearDown();
     }
 
     public function testCreateNewUuid(): void
@@ -65,10 +50,10 @@ class MappingServiceTest extends KernelTestCase
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
 
         $newMappingService = new MappingService(
-            self::$container->get('swag_migration_mapping.repository'),
-            self::$container->get('locale.repository'),
-            self::$container->get('language.repository'),
-            self::$container->get('country.repository')
+            $this->getContainer()->get('swag_migration_mapping.repository'),
+            $this->getContainer()->get('locale.repository'),
+            $this->getContainer()->get('language.repository'),
+            $this->getContainer()->get('country.repository')
         );
 
         $uuid2 = $newMappingService->createNewUuid(Shopware55Profile::PROFILE_NAME, 'product', '123', $context);

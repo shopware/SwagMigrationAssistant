@@ -1,8 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Migration;
+namespace SwagMigrationNext\Migration\Service;
 
 use Shopware\Core\Framework\Context;
+use SwagMigrationNext\Migration\MigrationContext;
 
 interface MigrationWriteServiceInterface
 {

@@ -6,11 +6,10 @@ use InvalidArgumentException;
 use Shopware\Core\Content\Media\File\FileSaver;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\ORM\RepositoryInterface;
-use Shopware\Core\Framework\Struct\Uuid;
 use SwagMigrationNext\Command\Event\MigrationAssetDownloadAdvanceEvent;
 use SwagMigrationNext\Command\Event\MigrationAssetDownloadFinishEvent;
 use SwagMigrationNext\Command\Event\MigrationAssetDownloadStartEvent;
-use SwagMigrationNext\Migration\CliAssetDownloadService;
+use SwagMigrationNext\Migration\Asset\CliAssetDownloadService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -96,7 +95,7 @@ class MigrationDownloadAssetsCommand extends Command implements EventSubscriberI
         $this
             ->setName('migration:assets:download')
             ->setDescription('Downloads all assets')
-            ->addOption('tenant-id', 't', InputOption::VALUE_REQUIRED)
+            ->addOption('profile', 'p', InputOption::VALUE_REQUIRED)
             ->addOption('catalog-id', 'c', InputOption::VALUE_REQUIRED)
         ;
     }
@@ -104,14 +103,12 @@ class MigrationDownloadAssetsCommand extends Command implements EventSubscriberI
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $tenantId = $input->getOption('tenant-id');
-
-        if (!$tenantId) {
-            throw new InvalidArgumentException('No tenant id provided');
-        }
-        if (!Uuid::isValid($tenantId)) {
-            throw new InvalidArgumentException('Invalid uuid provided');
-        }
         $context = Context::createDefaultContext($tenantId);
+
+        $profile = $input->getOption('profile');
+        if (!$profile) {
+            throw new InvalidArgumentException('No profile provided');
+        }
 
         $this->io = new SymfonyStyle($input, $output);
         $logger = new ConsoleLogger($output);
@@ -124,7 +121,7 @@ class MigrationDownloadAssetsCommand extends Command implements EventSubscriberI
             $this->event,
             $logger
         );
-        $assetDownloadService->downloadAssets($context);
+        $assetDownloadService->downloadAssets($profile, $context);
 
         $output->writeln('Downloading done.');
     }

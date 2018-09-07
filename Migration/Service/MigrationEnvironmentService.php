@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Migration;
+namespace SwagMigrationNext\Migration\Service;
 
 use InvalidArgumentException;
 use Shopware\Core\Checkout\Customer\CustomerDefinition;
@@ -9,6 +9,7 @@ use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
 use SwagMigrationNext\Gateway\GatewayFactoryRegistryInterface;
+use SwagMigrationNext\Migration\MigrationContext;
 
 class MigrationEnvironmentService implements MigrationEnvironmentServiceInterface
 {
