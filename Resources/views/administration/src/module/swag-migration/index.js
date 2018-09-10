@@ -27,7 +27,7 @@ Module.register('swag-migration', {
     description: 'swag-migration.general.descriptionTextModule',
     version: '1.0.0',
     targetVersion: '1.0.0',
-    color: '#ff5555',
+    color: '#9AA8B5',
     icon: 'default-action-settings',
 
     routes: {
@@ -72,8 +72,7 @@ Module.register('swag-migration', {
         parent: 'sw-settings',
         label: 'swag-migration.general.mainMenuItemGeneral',
         path: 'swag.migration.index',
-        color: '#ff5555',
-        icon: 'default-chart-bar-filled',
-        position: 800
+        color: '#9AA8B5',
+        icon: 'default-chart-bar-filled'
     }]
 });
