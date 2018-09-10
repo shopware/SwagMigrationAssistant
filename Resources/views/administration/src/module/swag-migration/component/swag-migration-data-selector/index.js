@@ -17,9 +17,7 @@ Component.register('swag-migration-data-selector', {
 
     data() {
         return {
-            selection: {},
-            showGdpr: false,
-            gdprChecked: false
+            selection: {}
         };
     },
 
@@ -35,9 +33,6 @@ Component.register('swag-migration-data-selector', {
                 });
             },
             immediate: true
-        },
-        gdprChecked() {
-            this.checkIfMigrationIsAllowed();
         }
     },
 
@@ -64,10 +59,7 @@ Component.register('swag-migration-data-selector', {
             this.checkIfMigrationIsAllowed();
         },
         checkIfMigrationIsAllowed() {
-            if (
-                (Object.keys(this.selection).length > 0 && (this.showGdpr && this.gdprChecked)) ||
-                (Object.keys(this.selection).length > 0 && !this.showGdpr)
-            ) {
+            if (Object.keys(this.selection).length > 0) {
                 this.$emit('swag-migration-data-selector-migration-allowed', true);
             } else {
                 this.$emit('swag-migration-data-selector-migration-allowed', false);
