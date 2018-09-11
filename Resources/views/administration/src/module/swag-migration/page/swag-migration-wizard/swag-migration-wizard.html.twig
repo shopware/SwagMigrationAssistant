@@ -25,7 +25,10 @@
 
                     {% block swag_migration_wizard_navigation %}
                         <swag-dot-navigation :navCount="routeCountVisible"
-                                             :navIndex="routeIndexVisible"></swag-dot-navigation>
+                                             :navIndex="routeIndexVisible"
+                                             v-if="!editMode">
+                        </swag-dot-navigation>
+                        <div v-else></div>
                     {% endblock %}
 
                     {% block swag_migration_wizard_actions %}

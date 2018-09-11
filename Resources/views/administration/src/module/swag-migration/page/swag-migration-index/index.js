@@ -394,7 +394,12 @@ Component.register('swag-migration-index', {
         },
 
         editSettings() {
-            this.$router.push({ name: 'swag.migration.wizard.credentials' });
+            this.$router.push({
+                name: 'swag.migration.wizard.credentials',
+                params: {
+                    editMode: true
+                }
+            });
         },
 
         onCloseConfirmDialog() {
