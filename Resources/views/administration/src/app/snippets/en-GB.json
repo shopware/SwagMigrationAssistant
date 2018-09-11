@@ -1,11 +1,11 @@
 {
   "swag-migration": {
     "general": {
-      "mainMenuItemGeneral": "Migration",
-      "descriptionTextModule": "Modul to migrate data from Shopware 5"
+      "mainMenuItemGeneral": "Playground Connector",
+      "descriptionTextModule": "Module to import data from Shopware 5"
     },
     "wizard": {
-      "title": "Migration: Preparations",
+      "title": "Data import: Preparations",
       "buttonAbort": "Cancel",
       "buttonConnect": "Connect",
       "buttonPrev": "Back",
@@ -20,16 +20,16 @@
       "pages": {
         "introduction": {
           "contentTitle": "Launch Shopware Playground with your own data.",
-          "contentInformation": "Migrate your data from Shopware 5 to Shopware Playground and create your own experiments. Explore the possibilities of Shopware Playground with real data."
+          "contentInformation": "Import your data from Shopware 5 to Shopware Playground and create your own experiments. Explore the possibilities of Shopware Playground with real data."
         },
         "pluginInformation": {
           "contentTitle": "Login Shopware 5 Backend",
-          "contentInformation": "Use your access data to log into the Shopware 5 backend and open the plugin manager. To get started, download and activate the free plugin 'Shopware Playground Connector'. No additional input or settings are required.",
+          "contentInformation": "Use your access data to log in to the Shopware 5 backend and open the plugin manager. To get started, download and activate the free plugin “Shopware Playground Connector”. No additional input or settings are required.",
           "pluginLink": "More information about the plugin"
         },
         "credentials": {
           "contentTitle": "Create the connection with Shopware 5",
-          "contentInformation": "The API key can be found within the administration of your user data. Please activate the API access, copy the API key to your clipboard and confirm by saving.",
+          "contentInformation": "The API key can be found in the administration of your user data. Please activate the API access, copy the API key to your clipboard and confirm by clicking “Save”.",
           "apiKeyLabel": "API key",
           "apiKeyPlaceholder": "Insert API key ...",
           "apiUserLabel": "User name (API user)",
@@ -55,22 +55,22 @@
       }
     },
     "index": {
-      "title": "Migration",
-      "migrateButton": "Migrate",
+      "title": "Data import",
+      "migrateButton": "Import",
       "finishButton": "Finish",
       "backButton": "Back to overview",
       "shopVersionFallback": "Shopware",
-      "browserClosingHint": "Do you really want to abort the migration?",
-      "migrationAlreadyRunning": "Migration already started.",
+      "browserClosingHint": "Do you really want to abort the data import?",
+      "migrationAlreadyRunning": "Import already started.",
       "shopInfoCard": {
-        "cardTitle": "Shopsystem",
+        "cardTitle": "Shop system",
         "buttonEditSettings": "Edit Settings",
         "buttonMoreInfo": "Show more information"
       },
       "selectDataCard": {
         "cardTitle": "Data selection",
         "hintTitle": "Information:",
-        "hint": "The selected data is transferred with language versions and created subshops. This data has relevant dependencies that are necessary for the completeness of the migration.",
+        "hint": "The selected data is transferred with language versions and created subshops. This data has relevant dependencies that are necessary for the completeness of the import.",
         "dataHeader": "Data",
         "dataPossible": {
           "customersAndOrders": "Customers & Orders",
@@ -102,34 +102,34 @@
         "result": {
           "success": {
             "title": "Done",
-            "contentTitle": "Migration done",
+            "contentTitle": "Data import done",
             "hintTitle": "Information:",
             "hintContent": "Minions ipsum underweaaar baboiii me want bananaaa! Me want bananaaa! Jiji. Bappleees po kass poopayee poulet tikka masala gelatooo. Tatata bala tu uuuhhh poopayee bee do bee do bee do ti aamoo! Jeje hahaha jeje gelatooo poulet tikka masala tatata bala tu para tú. Bappleees bee do bee do bee do tatata bala tu hahaha aaaaaah me want bananaaa! Gelatooo bananaaaa para tú belloo!"
           },
           "warning": {
             "title": "Done",
-            "contentTitle": "Migration done",
+            "contentTitle": "Data import not completed",
             "hintTitle": "Information:",
             "hintContent": "Minions ipsum underweaaar baboiii me want bananaaa! Me want bananaaa! Jiji. Bappleees po kass poopayee poulet tikka masala gelatooo. Tatata bala tu uuuhhh poopayee bee do bee do bee do ti aamoo! Jeje hahaha jeje gelatooo poulet tikka masala tatata bala tu para tú. Bappleees bee do bee do bee do tatata bala tu hahaha aaaaaah me want bananaaa! Gelatooo bananaaaa para tú belloo!"
           },
           "failure": {
             "title": "Failed",
-            "contentTitle": "Migration not possible!",
+            "contentTitle": "Data import not possible!",
             "hintTitle": "Attention:",
             "hintContent": "Minions ipsum underweaaar baboiii me want bananaaa! Me want bananaaa! Jiji. Bappleees po kass poopayee poulet tikka masala gelatooo. Tatata bala tu uuuhhh poopayee bee do bee do bee do ti aamoo! Jeje hahaha jeje gelatooo poulet tikka masala tatata bala tu para tú. Bappleees bee do bee do bee do tatata bala tu hahaha aaaaaah me want bananaaa! Gelatooo bananaaaa para tú belloo!"
           }
         }
       },
       "confirmDialog": {
-        "title": "Migration",
-        "message": "Do you really want to migrate?",
+        "title": "Data import",
+        "message": "Do you really want to import your data?",
         "cancel": "Cancel",
-        "confirm": "Migrate"
+        "confirm": "Import"
       },
       "error": {
         "canNotDownloadAsset": {
-          "title": "Can not download asset",
-          "detail": "Can not download asset with url: {assetUri}"
+          "title": "Cannot download asset",
+          "detail": "Cannot download asset with url: {assetUri}"
         },
         "canNotConnectToServer": {
           "title": "No connection",

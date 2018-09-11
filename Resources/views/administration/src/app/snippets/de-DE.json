@@ -1,11 +1,11 @@
 {
   "swag-migration": {
     "general": {
-      "mainMenuItemGeneral": "Migration",
-      "descriptionTextModule": "Modul zum Migrieren der Daten aus Shopware 5"
+      "mainMenuItemGeneral": "Playground Connector",
+      "descriptionTextModule": "Modul zum Import der Daten aus Shopware 5"
     },
     "wizard": {
-      "title": "Migration: Vorbereitung",
+      "title": "Datenimport: Vorbereitung",
       "buttonAbort": "Abbrechen",
       "buttonConnect": "Verbinden",
       "buttonPrev": "Zurück",
@@ -20,11 +20,11 @@
       "pages": {
         "introduction": {
           "contentTitle": "Starte Shopware Playground mit eigenen Daten.",
-          "contentInformation": "Migriere deine Daten aus Shopware 5 zu Shopware Playground und lege eigene Experimente an. Erkunde die Möglichkeiten von Shopware Playground mit echten Daten."
+          "contentInformation": "Importiere Deine Daten aus Shopware 5 zu Shopware Playground und lege eigene Experimente an. Erkunde die Möglichkeiten von Shopware Playground mit echten Daten."
         },
         "pluginInformation": {
           "contentTitle": "Login Shopware 5 Backend",
-          "contentInformation": "Logge dich mit deinen Zugangsdaten in das Shopware 5 Backend ein und rufe den Plugin-Manager auf. Das Plugin „Shopware Playground Connector“ ist kostenlos und wird für die Migration benötigt. Bitte installiere und aktiviere das Plugin.",
+          "contentInformation": "Logge dich mit Deinen Zugangsdaten in das Shopware 5 Backend ein und rufe den Plugin-Manager auf. Das Plugin „Shopware Playground Connector“ ist kostenlos und wird für den Datenimport benötigt. Bitte installiere und aktiviere das Plugin.",
           "pluginLink": "Mehr Infos zum Plugin"
         },
         "credentials": {
@@ -33,12 +33,12 @@
           "apiKeyLabel": "API-Schlüssel",
           "apiKeyPlaceholder": "Schlüssel einfügen ...",
           "apiUserLabel": "Benutzername (API-User)",
-          "apiUserPlaceholder": "Login Benutzernamen eintragen ...",
+          "apiUserPlaceholder": "Login-Benutzernamen eintragen ...",
           "endpointLabel": "Shop-Domain",
           "endpointPlaceholder": "https://www.demoshop.com",
           "success": {
             "contentTitle": "Erfolgreich verbunden!",
-            "contentInformation": "Gehe auf Fertig und wähle in dem Migrations-Modul die jeweiligen Datensätze aus, die übertragen werden sollen. Die Daten können gesamt, Schritt für Schritt oder nachträglich migriert werden.",
+            "contentInformation": "Gehe auf Fertig und wähle in dem Datenimport-Modul die jeweiligen Datensätze aus, die übertragen werden sollen. Die Daten können komplett, Schritt für Schritt oder nachträglich importiert werden.",
             "alertErrorTitle": "Achtung:",
             "undefinedErrorMsg": "Bei der Prüfung des SSL-Zertifikats von der angegebenen Shop-Domain ist ein unbekannter Fehler aufgetreten.",
             "connectionInsecureMsg": "Das SSL-Zertifikat der angegebenen Shop-Domain ist nicht sicher. Wir empfehlen eine Überprüfung des Zertifikats zur eigenen Sicherheit."
@@ -55,13 +55,13 @@
       }
     },
     "index": {
-      "title": "Migration",
-      "migrateButton": "Migrieren",
+      "title": "Datenimport",
+      "migrateButton": "Importieren",
       "finishButton": "Fertig",
       "backButton": "Zurück zur Übersicht",
       "shopVersionFallback": "Shopware",
-      "browserClosingHint": "Möchtest Du die Migration wirklich abbrechen?",
-      "migrationAlreadyRunning": "Migration bereits gestartet.",
+      "browserClosingHint": "Möchtest Du den Datenimport wirklich abbrechen?",
+      "migrationAlreadyRunning": "Der Datenimport wurde bereits gestartet.",
       "shopInfoCard": {
         "cardTitle": "Shopsystem",
         "buttonEditSettings": "Einstellungen bearbeiten",
@@ -70,7 +70,7 @@
       "selectDataCard": {
         "cardTitle": "Datenauswahl",
         "hintTitle": "Info:",
-        "hint": "Die ausgewählten Daten werden mit Sprachversionen und angelegten Subshops übertragen. Diese Daten haben relevante Abhängigkeiten, die für die Vollständigkeit der Migration notwendig sind.",
+        "hint": "Die ausgewählten Daten werden mit Sprachinformationen übertragen. Diese Daten haben relevante Abhängigkeiten, die für die Vollständigkeit den Datenimport notwendig sind.",
         "dataHeader": "Daten",
         "dataPossible": {
           "customersAndOrders": "Kunden & Bestellungen",
@@ -79,7 +79,7 @@
         },
         "targetHeader": "Ziel",
         "gdprTitle": "Nutzungsbedingungen",
-        "gdprText": "Für die Import der Daten gelten die <a href=\"https:\/\/playground.shopware.com\/terms-and-conditions\">Allgemeinen Nutzungsbedingungen<\/a> von Shopware Playground. Der Importprozess nimmt keinen Einfluss auf die Daten des Quellsystems."
+        "gdprText": "Für den Import der Daten gelten die <a href=\"https:\/\/playground.shopware.com\/terms-and-conditions\">Allgemeinen Nutzungsbedingungen<\/a> von Shopware Playground. Der Importprozess nimmt keinen Einfluss auf die Daten des Quellsystems."
       },
       "loadingScreenCard": {
         "cardTitle": "Schritt {step} von {total}",
@@ -102,29 +102,29 @@
         "result": {
           "success": {
             "title": "Abgeschlossen",
-            "contentTitle": "Migration abgeschlossen",
+            "contentTitle": "Datenimport abgeschlossen",
             "hintTitle": "Hinweis:",
             "hintContent": "Minions ipsum underweaaar baboiii me want bananaaa! Me want bananaaa! Jiji. Bappleees po kass poopayee poulet tikka masala gelatooo. Tatata bala tu uuuhhh poopayee bee do bee do bee do ti aamoo! Jeje hahaha jeje gelatooo poulet tikka masala tatata bala tu para tú. Bappleees bee do bee do bee do tatata bala tu hahaha aaaaaah me want bananaaa! Gelatooo bananaaaa para tú belloo!"
           },
           "warning": {
             "title": "Abgeschlossen",
-            "contentTitle": "Migration nicht vollständig abgeschlossen",
+            "contentTitle": "Datenimport nicht vollständig abgeschlossen",
             "hintTitle": "Achtung:",
             "hintContent": "Minions ipsum underweaaar baboiii me want bananaaa! Me want bananaaa! Jiji. Bappleees po kass poopayee poulet tikka masala gelatooo. Tatata bala tu uuuhhh poopayee bee do bee do bee do ti aamoo! Jeje hahaha jeje gelatooo poulet tikka masala tatata bala tu para tú. Bappleees bee do bee do bee do tatata bala tu hahaha aaaaaah me want bananaaa! Gelatooo bananaaaa para tú belloo!"
           },
           "failure": {
             "title": "Fehlgeschlagen",
-            "contentTitle": "Migration nicht möglich!",
+            "contentTitle": "Datenimport nicht möglich!",
             "hintTitle": "Achtung:",
             "hintContent": "Minions ipsum underweaaar baboiii me want bananaaa! Me want bananaaa! Jiji. Bappleees po kass poopayee poulet tikka masala gelatooo. Tatata bala tu uuuhhh poopayee bee do bee do bee do ti aamoo! Jeje hahaha jeje gelatooo poulet tikka masala tatata bala tu para tú. Bappleees bee do bee do bee do tatata bala tu hahaha aaaaaah me want bananaaa! Gelatooo bananaaaa para tú belloo!"
           }
         }
       },
       "confirmDialog": {
-        "title": "Migration",
-        "message": "Möchtest Du wirklich migrieren?",
+        "title": "Datenimport",
+        "message": "Möchtest Du wirklich Deine Daten importieren?",
         "cancel": "Abbrechen",
-        "confirm": "Migrieren"
+        "confirm": "Importieren"
       },
       "error": {
         "canNotDownloadAsset": {
