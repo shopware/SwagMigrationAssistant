@@ -21,9 +21,6 @@ Component.register('swag-migration-wizard-page-credentials', {
 
     data() {
         return {
-            localApiKey: '',
-            localApiUser: '',
-            localEndpoint: '',
             breadcrumbItems: [
                 this.$tc('swag-migration.wizard.pathSettings'),
                 this.$tc('swag-migration.wizard.pathUserManagement'),
@@ -31,35 +28,5 @@ Component.register('swag-migration-wizard-page-credentials', {
             ],
             breadcrumbDescription: this.$tc('swag-migration.wizard.pathTarget')
         };
-    },
-
-    created() {
-        this.updateApiKey();
-        this.updateApiUser();
-        this.updateEndpoint();
-    },
-
-    watch: {
-        apiKey() {
-            this.updateApiKey();
-        },
-        apiUser() {
-            this.updateApiUser();
-        },
-        endpoint() {
-            this.updateEndpoint();
-        }
-    },
-
-    methods: {
-        updateApiKey() {
-            this.localApiKey = this.apiKey;
-        },
-        updateApiUser() {
-            this.localApiUser = this.apiUser;
-        },
-        updateEndpoint() {
-            this.localEndpoint = this.endpoint;
-        }
     }
 });
