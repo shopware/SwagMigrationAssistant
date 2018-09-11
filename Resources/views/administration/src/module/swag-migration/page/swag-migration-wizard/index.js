@@ -11,6 +11,7 @@ Component.register('swag-migration-wizard', {
         return {
             showModal: true,
             isLoading: true,
+            editMode: false, // Don't show dot navigation or back button if we come from the module
             buttonPreviousVisible: true,
             buttonNextVisible: true,
             buttonPreviousText: this.$tc('swag-migration.wizard.buttonPrev'),
@@ -61,6 +62,8 @@ Component.register('swag-migration-wizard', {
     },
 
     created() {
+        this.editMode = this.$route.params.editMode !== undefined ? this.$route.params.editMode : false;
+
         const params = {
             offset: 0,
             limit: 100,
@@ -175,6 +178,11 @@ Component.register('swag-migration-wizard', {
                     name: 'swag.migration.index',
                     params: { profileId: this.profileId }
                 });
+            } else if (this.editMode && routeIndexCopy !== this.routeErrorIndex) {
+                this.$router.push({
+                    name: 'swag.migration.index',
+                    params: { profileId: this.profileId }
+                });
             } else {
                 this.$router.push({
                     name: 'sw.settings.index'
@@ -217,8 +225,10 @@ Component.register('swag-migration-wizard', {
             // Handle back button
             if (this.routeIndex === this.routeSuccessIndex || this.routeIndex === this.routeErrorIndex) {
                 this.buttonPreviousVisible = false;
-            } else {
+            } else if (!this.editMode) {
                 this.buttonPreviousVisible = this.routeIndex !== 0;
+            } else {
+                this.buttonPreviousVisible = false;
             }
         },
 
