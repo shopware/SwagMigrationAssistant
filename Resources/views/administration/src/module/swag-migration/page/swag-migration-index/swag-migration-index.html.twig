@@ -100,7 +100,8 @@
 
                 {% block swag_migration_index_card_loadingScreen_warning %}
                     <swag-migration-loading-screen-warning v-if="componentIndex === 3"
-                                                           @onClickBack="onClickBack">
+                                                           @onClickBack="onClickBack"
+                                                           :errorList="errorList">
                     </swag-migration-loading-screen-warning>
                 {% endblock %}
 
@@ -111,8 +112,11 @@
                 {% endblock %}
 
                 {% block swag_migration_index_modal_confirmDialog %}
-                    <sw-modal v-if="showConfirmDialog" :title="$tc('swag-migration.index.confirmDialog.title')"
-                              :isLoading="isMigrating" @closeModal="onCloseConfirmDialog" variant="small">
+                    <sw-modal v-if="showConfirmDialog"
+                              :title="$tc('swag-migration.index.confirmDialog.title')"
+                              :isLoading="isMigrating"
+                              @closeModal="onCloseConfirmDialog"
+                              variant="small">
 
                         {% block swag_migration_index_modal_confirmDialog_message %}
                             <p class="swag-migration-index-confirm-dialog-message">

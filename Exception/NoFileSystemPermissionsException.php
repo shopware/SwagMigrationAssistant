@@ -6,7 +6,7 @@ use Shopware\Core\Framework\ShopwareHttpException;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
-class NoFileSystemPermissions extends ShopwareHttpException
+class NoFileSystemPermissionsException extends ShopwareHttpException
 {
     protected $code = 'SWAG-MIGRATION-NO-FILE-SYSTEM-PERMISSIONS';
 

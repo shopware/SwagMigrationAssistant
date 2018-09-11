@@ -389,12 +389,14 @@ class MigrationService {
             assetsRemovedCount += 1;
             this._addError({
                 code: '0',
-                detail: this.applicationRoot.$i18n.t(
-                    'swag-migration.index.error.canNotDownloadAsset.detail',
-                    { assetUri: asset.additionalData.uri }
-                ),
                 status: '444',
                 title: this.applicationRoot.$i18n.tc('swag-migration.index.error.canNotDownloadAsset.title'),
+                detail: this.applicationRoot.$i18n.tc('swag-migration.index.error.canNotDownloadAsset.detail'),
+                information: this.applicationRoot.$i18n.t(
+                    'swag-migration.index.error.canNotDownloadAsset.information',
+                    { path: asset.additionalData.uri }
+                ),
+                path: asset.additionalData.uri,
                 trace: []
             });
 
@@ -512,6 +514,9 @@ class MigrationService {
                         detail: this.applicationRoot.$i18n.tc('swag-migration.index.error.canNotConnectToServer.detail'),
                         status: '444',
                         title: this.applicationRoot.$i18n.tc('swag-migration.index.error.canNotConnectToServer.title'),
+                        information: this.applicationRoot.$i18n.tc(
+                            'swag-migration.index.error.canNotConnectToServer.information'
+                        ),
                         trace: []
                     });
                     resolve();
@@ -528,6 +533,9 @@ class MigrationService {
                         detail: this.applicationRoot.$i18n.tc('swag-migration.index.error.canNotConnectToServer.detail'),
                         status: '444',
                         title: this.applicationRoot.$i18n.tc('swag-migration.index.error.canNotConnectToServer.title'),
+                        information: this.applicationRoot.$i18n.tc(
+                            'swag-migration.index.error.canNotConnectToServer.information'
+                        ),
                         trace: []
                     });
                     resolve();

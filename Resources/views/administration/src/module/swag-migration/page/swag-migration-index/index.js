@@ -21,6 +21,7 @@ Component.register('swag-migration-index', {
                 resultWarning: 3,
                 resultFailure: 4
             },
+            errorList: [],
             statusIndex: 0,
             isMigrating: false,
             isMigrationAllowed: false,
@@ -371,7 +372,130 @@ Component.register('swag-migration-index', {
         },
 
         onFinishWithErrors(errors) {
-            console.log(errors);
+            errors.forEach((error) => {
+                let snippet = null;
+
+                if (error.information === undefined) {
+                    let firstParamStart = error.detail.indexOf('"') + 1;
+                    const firstParamStop = error.detail.indexOf('"', firstParamStart);
+                    let argument = error.detail.substring(firstParamStart, firstParamStop);
+
+                    const secondParamStart = error.detail.indexOf('"', firstParamStop + 1) + 1;
+                    const secondParamStop = error.detail.indexOf('"', secondParamStart);
+
+                    switch (error.code) {
+                    // Authorization Error
+                    case '401':
+                        snippet = this.$t('swag-migration.index.error.authorizationError.information');
+                        break;
+
+                    // GatewayNotFoundException
+                    case 'SWAG-MIGRATION-GATEWAY-NOT-FOUND':
+                        snippet = this.$t('swag-migration.index.error.gatewayNotFound.information', {
+                            notFoundGateway: argument
+                        });
+                        break;
+
+                    // GatewayReadException
+                    case 'SWAG-MIGRATION-GATEWAY-READ':
+                        snippet = this.$t('swag-migration.index.error.gatewayRead.information', {
+                            unreadableGateway: argument
+                        });
+                        break;
+
+                    // LocaleNotFoundException
+                    case 'SWAG-MIGRATION-LOCALE-NOT-FOUND':
+                        snippet = this.$t('swag-migration.index.error.localeNotFound.information', {
+                            notFoundCode: argument
+                        });
+                        break;
+
+                    // NoFileSystemPermissionsException
+                    case 'SWAG-MIGRATION-NO-FILE-SYSTEM-PERMISSIONS':
+                        snippet = this.$t('swag-migration.index.error.noFileSystemPermissions.information');
+                        break;
+
+                    // ProfileNotFoundException
+                    case 'SWAG-MIGRATION-PROFILE-NOT-FOUND':
+                        snippet = this.$t('swag-migration.index.error.profileNotFound.information', {
+                            notFoundProfile: argument
+                        });
+                        break;
+
+                    // MigrationContextPropertyMissingException
+                    case 'SWAG-MIGRATION-CONTEXT-PROPERTY-MISSING':
+                        snippet = this.$t('swag-migration.index.error.migrationContextPropertyMissing.information', {
+                            notFoundProperty: argument
+                        });
+                        break;
+
+                    // MigrationWorkloadPropertyMissingException
+                    case 'SWAG-MIGRATION-WORKLOAD-PROPERTY-MISSING':
+                        snippet = this.$t('swag-migration.index.error.migrationsWorkloadPropertyMissing.information', {
+                            notFoundProperty: argument
+                        });
+                        break;
+
+                    // WriterNotFoundException
+                    case 'SWAG-MIGRATION-WRITER-NOT-FOUND':
+                        snippet = this.$t('swag-migration.index.error.writerNotFound.information', {
+                            notFoundWriter: argument
+                        });
+                        break;
+
+                    /* Shopware55 profile */
+                    // ParentEntityForChildNotFoundException
+                    case 'SWAG-MIGRATION-SHOPWARE55-PARENT-ENTITY-NOT-FOUND':
+                        snippet = this.$t('swag-migration.index.error.parentEntityNotFound.information', {
+                            entity: argument
+                        });
+                        break;
+
+                    // AssociationEntityRequiredMissingException
+                    case 'SWAG-MIGRATION-SHOPWARE55-ASSOCIATION-REQUIRED-MISSING':
+                        snippet = this.$t('swag-migration.index.error.associationRequiredMissing.information', {
+                            missingEntity: argument,
+                            requiredFor: error.detail.substring(secondParamStart, secondParamStop)
+
+                        });
+                        break;
+
+                    // CustomerExistsException
+                    case 'SWAG-MIGRATION-SHOPWARE55-CUSTOMER-EXISTS':
+                        snippet = this.$t('swag-migration.index.error.customerExists.information', {
+                            mail: argument
+                        });
+                        break;
+
+                    default:
+                        if (error.detail.startsWith('Notice: Undefined index:')) {
+                            // Undefined Index Error
+                            firstParamStart = error.detail.lastIndexOf(':') + 2;
+                            argument = error.detail.substring(firstParamStart);
+                            snippet = this.$t('swag-migration.index.error.undefinedIndex.information', {
+                                unidentifiedIndex: argument
+                            });
+                        } else {
+                            // Error Fallback
+                            snippet = this.$t('swag-migration.index.error.unknownError.information');
+                        }
+                        break;
+                    }
+
+                    this.errorList.push(Object.assign(error, { information: snippet }));
+                } else {
+                    this.errorList.push(error);
+                }
+            });
+
+            this.errorList.sort((a, b) => { return a.detail.toLowerCase() > b.detail.toLowerCase(); });
+            this.errorList.forEach((error) => {
+                console.log(error);
+            });
+
+            this.errorList = this.errorList.map((item) => item.information);
+            this.errorList = [...new Set(this.errorList)];
+
             this.componentIndex = this.components.resultWarning; // show result warning screen
         },
 
