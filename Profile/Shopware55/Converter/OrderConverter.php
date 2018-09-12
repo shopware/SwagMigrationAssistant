@@ -354,6 +354,8 @@ class OrderConverter implements ConverterInterface
 
         if (isset($data['shippingMethod']['id'])) {
             $delivery['shippingMethod'] = $this->getShippingMethod($data['shippingMethod']);
+        } else {
+            return [];
         }
 
         if (isset($data['shippingaddress']['id'])) {

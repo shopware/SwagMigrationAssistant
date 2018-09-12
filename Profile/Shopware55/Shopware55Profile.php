@@ -67,14 +67,19 @@ class Shopware55Profile implements ProfileInterface
                     'converted' => $convertStruct->getConverted(),
                     'unmapped' => $convertStruct->getUnmapped(),
                 ];
-            } catch (ParentEntityForChildNotFoundException $e) {
+            } catch (
+                ParentEntityForChildNotFoundException |
+                AssociationEntityRequiredMissingException |
+                CustomerExistsException $e
+            ) {
                 // TODO: Log error
-                continue;
-            } catch (AssociationEntityRequiredMissingException $e) {
-                // TODO: Log error
-                continue;
-            } catch (CustomerExistsException $e) {
-                // TODO: Log error
+                $createData[] = [
+                    'entity' => $entityName,
+                    'profile' => $this->getName(),
+                    'raw' => $item,
+                    'converted' => null,
+                    'unmapped' => $item,
+                ];
                 continue;
             }
         }
