@@ -26,17 +26,24 @@
         {% endblock %}
 
         {% block swag_migration_index_data_selector_gdpr %}
-        <sw-alert variant="warning" class="swag-migration-index-data-selector__gdpr">
-            <strong>{{ $tc('swag-migration.index.selectDataCard.gdprTitle') }}</strong>
-            <div class="swag-migration-index-data-selector__gdpr_group">
+        <sw-alert variant="warning"
+                  class="swag-migration-index-data-selector__tou"
+                  :title="$tc('swag-migration.index.selectDataCard.gdprTitle')">
                 <p v-html="$tc('swag-migration.index.selectDataCard.gdprText')"></p>
-            </div>
         </sw-alert>
         {% endblock %}
 
+        {% block swag_migration_index_data_selector_info %}
+            <sw-alert variant="info"
+                      :title="$tc('swag-migration.index.selectDataCard.infoTitle')">
+                <p v-html="$tc('swag-migration.index.selectDataCard.infoText')"></p>
+            </sw-alert>
+        {% endblock %}
+
         {% block swag_migration_index_data_selector_alert %}
-            <sw-alert variant="info" class="swag-migration-index-data-selector__alert">
-                <strong>{{ $tc('swag-migration.index.selectDataCard.hintTitle') }} </strong>{{ $tc('swag-migration.index.selectDataCard.hint') }}
+            <sw-alert variant="info"
+                      :title="$tc('swag-migration.index.selectDataCard.hintTitle')">
+                <p v-html="$tc('swag-migration.index.selectDataCard.hint')"></p>
             </sw-alert>
         {% endblock %}
     </sw-card>
