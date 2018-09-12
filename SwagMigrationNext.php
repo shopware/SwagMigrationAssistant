@@ -2,6 +2,7 @@
 
 namespace SwagMigrationNext;
 
+use DateTime;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
 use Shopware\Core\Defaults;
@@ -36,17 +37,23 @@ class SwagMigrationNext extends Plugin
     /**
      * {@inheritdoc}
      */
-    public function install(InstallContext $installContext): void
+    public function getMigrationNamespace(): string
+    {
+        return $this->getNamespace() . '\Core\Version';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function postInstall(InstallContext $installContext): void
     {
         /** @var Connection $connection */
         $connection = $this->container->get(Connection::class);
         $tenantId = Uuid::fromHexToBytes($installContext->getContext()->getTenantId());
-        $sql = file_get_contents($this->getPath() . '/schema.sql');
-        $now = (new \DateTime())->format(Defaults::DATE_FORMAT);
+        $now = (new DateTime())->format(Defaults::DATE_FORMAT);
 
         $connection->beginTransaction();
         try {
-            $connection->executeUpdate($sql);
             $connection->insert('swag_migration_profile', [
                 'id' => Uuid::uuid4()->getBytes(),
                 'tenant_id' => $tenantId,
@@ -63,6 +70,8 @@ class SwagMigrationNext extends Plugin
                 'credential_fields' => json_encode(['dbHost' => '', 'dbPort' => '', 'dbName' => '', 'dbUser' => '', 'dbPassword' => '']),
                 'created_at' => $now,
             ]);
+
+            $connection->commit();
         } catch (DBALException $e) {
             $connection->rollBack();
             throw $e;
