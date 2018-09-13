@@ -176,11 +176,15 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
             $additionalData = $asset->getAdditionalData();
             $mappedWorkload[$uuid]['additionalData'] = $additionalData;
 
+            /* Todo: Implement Chunkdownload
             if ($additionalData['file_size'] <= $fileChunkByteSize) {
                 $promise = $this->doNormalDownloadRequest($mappedWorkload[$uuid], $client);
             } else {
                 $promise = $this->doChunkDownloadRequest($fileChunkByteSize, $mappedWorkload[$uuid], $client);
             }
+            */
+
+            $promise = $this->doNormalDownloadRequest($mappedWorkload[$uuid], $client);
 
             if ($promise !== null) {
                 $promises[$uuid] = $promise;
