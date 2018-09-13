@@ -38,7 +38,7 @@
           "endpointPlaceholder": "https://www.demoshop.com",
           "success": {
             "contentTitle": "Erfolgreich verbunden!",
-            "contentInformation": "Gehe auf Fertig und wähle in dem Datenimport-Modul die jeweiligen Datensätze aus, die übertragen werden sollen. Die Daten können komplett, Schritt für Schritt oder nachträglich importiert werden.",
+            "contentInformation": "Gehe auf „Fertig“ und wähle in dem Datenimport-Modul die jeweiligen Datensätze aus, die übertragen werden sollen. Die Daten können komplett, Schritt für Schritt oder nachträglich importiert werden.",
             "alertErrorTitle": "Achtung:",
             "undefinedErrorMsg": "Bei der Prüfung des SSL-Zertifikats von der angegebenen Shop-Domain ist ein unbekannter Fehler aufgetreten.",
             "connectionInsecureMsg": "Das SSL-Zertifikat der angegebenen Shop-Domain ist nicht sicher. Wir empfehlen eine Überprüfung des Zertifikats zur eigenen Sicherheit."
@@ -95,7 +95,7 @@
             "short": "Daten schreiben"
           },
           "downloadMedia": {
-            "long": "Download der Medien in Shopware Playground ...",
+            "long": "Download der Medien nach Shopware Playground ...",
             "short": "Medien-Download"
           }
         },
@@ -104,21 +104,23 @@
         "result": {
           "success": {
             "title": "Abgeschlossen",
-            "contentTitle": "Datenimport abgeschlossen",
-            "hintTitle": "Hinweis:",
-            "hintContent": "Minions ipsum underweaaar baboiii me want bananaaa! Me want bananaaa! Jiji. Bappleees po kass poopayee poulet tikka masala gelatooo. Tatata bala tu uuuhhh poopayee bee do bee do bee do ti aamoo! Jeje hahaha jeje gelatooo poulet tikka masala tatata bala tu para tú. Bappleees bee do bee do bee do tatata bala tu hahaha aaaaaah me want bananaaa! Gelatooo bananaaaa para tú belloo!"
+            "contentTitle": "Datenimport abgeschlossen!",
+            "hintTitle": "Erkunde Shopware Playground!",
+            "hintContent": "Ab jetzt kannst du mit Deinen Daten unsere Experimente entdecken oder einfach Deine eigenen entwickeln."
           },
           "warning": {
             "title": "Abgeschlossen",
-            "contentTitle": "Datenimport nicht vollständig abgeschlossen",
+            "contentTitle": "Datenimport nicht vollständig abgeschlossen!",
             "hintTitle": "Achtung:",
-            "hintContent": "Minions ipsum underweaaar baboiii me want bananaaa! Me want bananaaa! Jiji. Bappleees po kass poopayee poulet tikka masala gelatooo. Tatata bala tu uuuhhh poopayee bee do bee do bee do ti aamoo! Jeje hahaha jeje gelatooo poulet tikka masala tatata bala tu para tú. Bappleees bee do bee do bee do tatata bala tu hahaha aaaaaah me want bananaaa! Gelatooo bananaaaa para tú belloo!"
+            "hintContent": "Der Import konnte nicht vollständig abgeschlossen werden. Möglicherweise sind Daten fehlerhaft oder unvollständig importiert worden.",
+            "warningListTitle": "Es sind keine Fehler aufgetreten | Folgender Fehler ist aufgetreten | Folgende Fehler sind aufgetreten",
+            "warningListHint": "Für weitere Informationen kannst du in die Konsolenlogs der Entwicklertools deines Browser schauen."
           },
           "failure": {
             "title": "Fehlgeschlagen",
             "contentTitle": "Datenimport nicht möglich!",
             "hintTitle": "Achtung:",
-            "hintContent": "Minions ipsum underweaaar baboiii me want bananaaa! Me want bananaaa! Jiji. Bappleees po kass poopayee poulet tikka masala gelatooo. Tatata bala tu uuuhhh poopayee bee do bee do bee do ti aamoo! Jeje hahaha jeje gelatooo poulet tikka masala tatata bala tu para tú. Bappleees bee do bee do bee do tatata bala tu hahaha aaaaaah me want bananaaa! Gelatooo bananaaaa para tú belloo!"
+            "hintContent": "Die Migration konnte nicht durchgeführt werden."
           }
         }
       },
@@ -129,13 +131,59 @@
         "confirm": "Importieren"
       },
       "error": {
+        "associationRequiredMissing": {
+          "information": "Das Mapping von „{missingEntity}“ konnte nicht gefunden werden. Diese ist allerdings erforderlich für „{requiredFor}“. Bitte importiere zuerst „{missingEntity}“ um fortzufahren."
+        },
+        "authorizationError": {
+          "information": "Authorisierungsfehler. Deine Zugangsdaten sind nicht korrekt. Bitte überprüfe sie und versuche es erneut."
+        },
         "canNotDownloadAsset": {
           "title": "Medien-Download fehlgeschlagen",
-          "detail": "Medien-Datei konnte nicht gedownloadet werden: {assetUri}"
+          "detail": "Medien-Datei konnte nicht heruntergeladen werden",
+          "information": "Medien-Datei konnte nicht heruntergeladen werden. Betroffene Datei: {path}"
         },
         "canNotConnectToServer": {
           "title": "Keine Verbindung",
-          "detail": "Keine Verbindung zum Server"
+          "detail": "Keine Verbindung zum Server",
+          "information": "Keine Verbindung zum Server. Bitte überprüfe die Verbindung."
+        },
+        "customerExists": {
+          "information": "Ein Kunde mit der E-Mail „{mail}“ existiert bereits. Du kannst den Kunden auf diese Weise nicht der Datenbank hinzufügen."
+        },
+        "gatewayNotFound": {
+          "information": "Gateway „{notFoundGateway}“ konnte nicht gefunden werden."
+        },
+        "gatewayRead": {
+          "information": "Gateway „{unreadableGateway}“ konnte nicht gelesen werden."
+        },
+        "localeNotFound": {
+          "information": "Eintrag des Locale-Codes „{notFoundCode}“ konnte nicht gefunden werden."
+        },
+        "migrationContextPropertyMissing": {
+          "information": "Erforderliche Eigenschaft „{notFoundProperty}“ konnte für den Importkontext nicht gefunden werden."
+        },
+        "migrationsWorkloadPropertyMissing": {
+          "information": "Erforderliche Eigenschaft „{notFoundProperty}“ konnte für den Import-Workload nicht gefunden werden."
+        },
+        "noFileSystemPermissions": {
+          "information": "Du besitzt keine Rechte um Datein oder Ordner zu erstellen oder zu schreiben. Bitte überprüfe deine Berechtigungen."
+        },
+        "parentEntityNotFound": {
+          "information": "Eltern-Entität für das „{entity}“-Kind konnte nicht gefunden werden."
+        },
+        "profileNotFound": {
+          "information": "Importprofil „{notFoundProfile}“ konnte nicht gefunden werden."
+        },
+        "writerNotFound": {
+          "information": "Filewriter für die „{notFoundWriter}“-Entität konnte nicht gefunden werden."
+        },
+        "undefinedIndex" : {
+          "title": "Unidentifizierter Index",
+          "detail": "Unidentifizierter Index konnte nicht importiert werden.",
+          "information": "Index „{unidentifiedIndex}“ konnte nicht identifiziert werden. Bitte prüfe deine Daten."
+        },
+        "unknownError": {
+          "information": "Unbekannter Fehlertyp. Für weitere Informationen kannst du in die Konsolenlogs der Entwicklertools deines Browser schauen."
         }
       }
     }

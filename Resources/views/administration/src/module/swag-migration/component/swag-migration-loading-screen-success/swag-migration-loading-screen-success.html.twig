@@ -16,8 +16,8 @@
                         {% endblock %}
 
                         {% block swag_migration_loading_screen_success_hint %}
-                            <sw-alert variant="success">
-                                {{ $tc('swag-migration.index.loadingScreenCard.result.success.hintTitle') }}
+                            <sw-alert variant="success"
+                                      :title="$tc('swag-migration.index.loadingScreenCard.result.success.hintTitle')">
                                 {{ $tc('swag-migration.index.loadingScreenCard.result.success.hintContent') }}
                             </sw-alert>
                         {% endblock %}

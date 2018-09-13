@@ -17,8 +17,25 @@
 
                         {% block swag_migration_loading_screen_warning_hint %}
                             <sw-alert variant="warning">
-                                {{ $tc('swag-migration.index.loadingScreenCard.result.warning.hintTitle') }}
+                                <p class="information__alert-header">{{ $tc('swag-migration.index.loadingScreenCard.result.warning.hintTitle') }}</p>
                                 {{ $tc('swag-migration.index.loadingScreenCard.result.warning.hintContent') }}
+                                {% block swag_migration_loading_screen_warning_hint_errors %}
+                                    <div v-if="errorList.length > 0">
+                                        {% block swag_migration_loading_screen_warning_hint_errors_title %}
+                                            <p class="information__list-header">{{ $tc('swag-migration.index.loadingScreenCard.result.warning.warningListTitle', errorList.length) }}:</p>
+                                        {% endblock %}
+                                        {% block swag_migration_loading_screen_warning_hint_errors_list %}
+                                            <ul class="information__list">
+                                                <li v-for="error in errorList">
+                                                    {{ error }}
+                                                </li>
+                                            </ul>
+                                        {% endblock %}
+                                        {% block swag_migration_loading_screen_warning_hint_errors_hint %}
+                                            <p class="information__hint">{{ $tc('swag-migration.index.loadingScreenCard.result.warning.warningListHint') }}</p>
+                                        {% endblock %}
+                                    </div>
+                                {% endblock %}
                             </sw-alert>
                         {% endblock %}
 

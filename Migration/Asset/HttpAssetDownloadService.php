@@ -20,7 +20,7 @@ use Shopware\Core\Framework\ORM\Search\Aggregation\CountAggregation;
 use Shopware\Core\Framework\ORM\Search\Criteria;
 use Shopware\Core\Framework\ORM\Search\Query\TermQuery;
 use Shopware\Core\Framework\ORM\Search\Query\TermsQuery;
-use SwagMigrationNext\Exception\NoFileSystemPermissions;
+use SwagMigrationNext\Exception\NoFileSystemPermissionsException;
 use SwagMigrationNext\Migration\Mapping\SwagMigrationMappingStruct;
 
 class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
@@ -67,13 +67,13 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
      * @param array   $workload          [{ "uuid": "04ed51ccbb2341bc9b352d78e64213fb", "currentOffset": 0, "state": "inProgress" }]
      *
      * @throws IllegalMimeTypeException
-     * @throws NoFileSystemPermissions
+     * @throws NoFileSystemPermissionsException
      * @throws UploadException
      */
     public function downloadAssets(Context $context, array $workload, int $fileChunkByteSize): array
     {
         if (!is_dir('_temp') && !mkdir('_temp') && !is_dir('_temp')) {
-            throw new NoFileSystemPermissions();
+            throw new NoFileSystemPermissionsException();
         }
 
         //Map workload with uuids as keys

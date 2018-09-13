@@ -104,21 +104,23 @@
         "result": {
           "success": {
             "title": "Done",
-            "contentTitle": "Data import done",
-            "hintTitle": "Information:",
-            "hintContent": "Minions ipsum underweaaar baboiii me want bananaaa! Me want bananaaa! Jiji. Bappleees po kass poopayee poulet tikka masala gelatooo. Tatata bala tu uuuhhh poopayee bee do bee do bee do ti aamoo! Jeje hahaha jeje gelatooo poulet tikka masala tatata bala tu para tú. Bappleees bee do bee do bee do tatata bala tu hahaha aaaaaah me want bananaaa! Gelatooo bananaaaa para tú belloo!"
+            "contentTitle": "Data import done!",
+            "hintTitle": "Explore Shopware Playground!",
+            "hintContent": "From now on, you can discover our experiments with your data or simply develop your own."
           },
           "warning": {
             "title": "Done",
-            "contentTitle": "Data import not completed",
-            "hintTitle": "Information:",
-            "hintContent": "Minions ipsum underweaaar baboiii me want bananaaa! Me want bananaaa! Jiji. Bappleees po kass poopayee poulet tikka masala gelatooo. Tatata bala tu uuuhhh poopayee bee do bee do bee do ti aamoo! Jeje hahaha jeje gelatooo poulet tikka masala tatata bala tu para tú. Bappleees bee do bee do bee do tatata bala tu hahaha aaaaaah me want bananaaa! Gelatooo bananaaaa para tú belloo!"
+            "contentTitle": "Data import not completed!",
+            "hintTitle": "Warning:",
+            "hintContent": "The import could not be completed properly. Imported data may be incorrect or incomplete.",
+            "warningListTitle": "No error occurred | The following error occurred | The following errors occurred",
+            "warningListHint": "For more information, you can check the console logs of the developer tools in your browser."
           },
           "failure": {
             "title": "Failed",
             "contentTitle": "Data import not possible!",
             "hintTitle": "Attention:",
-            "hintContent": "Minions ipsum underweaaar baboiii me want bananaaa! Me want bananaaa! Jiji. Bappleees po kass poopayee poulet tikka masala gelatooo. Tatata bala tu uuuhhh poopayee bee do bee do bee do ti aamoo! Jeje hahaha jeje gelatooo poulet tikka masala tatata bala tu para tú. Bappleees bee do bee do bee do tatata bala tu hahaha aaaaaah me want bananaaa! Gelatooo bananaaaa para tú belloo!"
+            "hintContent": "The migration could not be completed."
           }
         }
       },
@@ -129,13 +131,59 @@
         "confirm": "Import"
       },
       "error": {
+        "associationRequiredMissing": {
+          "information": "Mapping of \"{missingEntity}\" is missing, but it is a required association for \"{requiredFor}\". Please import \"{missingEntity}\" first to continue."
+        },
+        "authorizationError": {
+          "information": "Authorization Error. Your access data is not correct. Please check it and try again."
+        },
         "canNotDownloadAsset": {
-          "title": "Cannot download asset",
-          "detail": "Cannot download asset with url: {assetUri}"
+          "title": "Media download failed",
+          "detail": "Cannot download media",
+          "information": "Cannot download media. Affected file: {path}"
         },
         "canNotConnectToServer": {
           "title": "No connection",
-          "detail": "No connection to server"
+          "detail": "No connection to server",
+          "information": "No connection to server. Please check the connection for issues."
+        },
+        "customerExists": {
+          "information": "Customer with email \"{mail}\" already exists. You cannot add this user with that e-mail to your database."
+        },
+        "gatewayNotFound": {
+          "information": "Gateway \"{notFoundGateway}\" not found."
+        },
+        "gatewayRead": {
+          "information": "Could not read gateway \"{unreadableGateway}\"."
+        },
+        "localeNotFound": {
+          "information": "Locale entry code \"{notFoundCode}\" not found."
+        },
+        "migrationContextPropertyMissing": {
+          "information": "Required property \"{notFoundProperty}\" for import context not found."
+        },
+        "migrationsWorkloadPropertyMissing": {
+          "information": "Required property \"{notFoundProperty}\" for import workload not found."
+        },
+        "noFileSystemPermissions": {
+          "information": "No file system permissions to create or write files or directories. Please check your permissions."
+        },
+        "parentEntityNotFound": {
+          "information": "Parent entity for \"{entity}\" child not found."
+        },
+        "profileNotFound": {
+          "information": "Migration profile \"{notFoundProfile}\" not found."
+        },
+        "writerNotFound": {
+          "information": "File writer for \"{notFoundWriter}\" entity not found."
+        },
+        "undefinedIndex" : {
+          "title": "Unidentified index",
+          "detail": "Unidentified index couldn't be found.",
+          "information": "Index \"{unidentifiedIndex}\" could not be found. Please check your data."
+        },
+        "unknownError": {
+          "information": "Unknown error. For more information, you can check the console logs of the developer tools in your browser."
         }
       }
     }

@@ -12,7 +12,7 @@ class GatewayReadException extends ShopwareHttpException
 
     public function __construct(string $gateway, $code = 0, Throwable $previous = null)
     {
-        $message = sprintf('Could not read from gateway: %s', $gateway);
+        $message = sprintf('Could not read from gateway: "%s"', $gateway);
         parent::__construct($message, $code, $previous);
     }
 
