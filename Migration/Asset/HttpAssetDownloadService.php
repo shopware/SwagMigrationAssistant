@@ -64,7 +64,7 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
     }
 
     /**
-     * @param array   $workload          [{ "uuid": "04ed51ccbb2341bc9b352d78e64213fb", "currentOffset": 0, "state": "inProgress" }]
+     * @param array $workload [{ "uuid": "04ed51ccbb2341bc9b352d78e64213fb", "currentOffset": 0, "state": "inProgress" }]
      *
      * @throws IllegalMimeTypeException
      * @throws NoFileSystemPermissionsException

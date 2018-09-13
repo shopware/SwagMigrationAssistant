@@ -104,13 +104,31 @@ class OrderConverter implements ConverterInterface
         );
         unset($data['id']);
 
-        $converted['orderCustomer'] = [
-            'customerId' => $this->mappingService->getUuid(
+        $customerId = $this->mappingService->getUuid(
+            $this->profile,
+            CustomerDefinition::getEntityName(),
+            $data['customer']['email'],
+            $this->context
+        );
+
+        if ($customerId === null) {
+            $customerId = $this->mappingService->getUuid(
                 $this->profile,
                 CustomerDefinition::getEntityName(),
                 $data['userID'],
                 $this->context
-            ),
+            );
+        }
+
+        if ($customerId === null) {
+            throw new AssociationEntityRequiredMissingException(
+                OrderDefinition::getEntityName(),
+                CustomerDefinition::getEntityName()
+            );
+        }
+
+        $converted['orderCustomer'] = [
+            'customerId' => $customerId,
         ];
 
         $this->helper->convertValue($converted['orderCustomer'], 'email', $data['customer'], 'email');
@@ -118,15 +136,7 @@ class OrderConverter implements ConverterInterface
         $this->helper->convertValue($converted['orderCustomer'], 'lastName', $data['customer'], 'lastname');
         $this->helper->convertValue($converted['orderCustomer'], 'salutation', $data['customer'], 'salutation');
         $this->helper->convertValue($converted['orderCustomer'], 'customerNumber', $data['customer'], 'customernumber');
-
         unset($data['userID'], $data['customer']);
-
-        if ($converted['orderCustomer']['customerId'] === null) {
-            throw new AssociationEntityRequiredMissingException(
-                OrderDefinition::getEntityName(),
-                CustomerDefinition::getEntityName()
-            );
-        }
 
         $this->helper->convertValue($converted, 'isNet', $data, 'net', $this->helper::TYPE_BOOLEAN);
         $this->helper->convertValue($converted, 'isTaxFree', $data, 'taxfree', $this->helper::TYPE_BOOLEAN);

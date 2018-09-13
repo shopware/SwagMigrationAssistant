@@ -28,6 +28,7 @@ class GatewayServiceTest extends TestCase
     public function testGetGatewayNotFound(): void
     {
         $migrationContext = new MigrationContext(
+            '',
             'foobar',
             'api',
             ProductDefinition::getEntityName(),

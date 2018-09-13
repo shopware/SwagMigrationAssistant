@@ -2,7 +2,6 @@ import { Component } from 'src/core/shopware';
 import template from './swag-migration-loading-screen.html.twig';
 import './swag-migration-loading-screen.less';
 
-
 Component.register('swag-migration-loading-screen', {
     template,
 
@@ -28,7 +27,6 @@ Component.register('swag-migration-loading-screen', {
     },
 
     computed: {
-
         progressBarCount() {
             let count = 0;
             this.tableData.forEach((data) => {

@@ -54,6 +54,7 @@ class MigrationCollectServiceTest extends TestCase
     {
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
         $migrationContext = new MigrationContext(
+            '',
             Shopware55Profile::PROFILE_NAME,
             'local',
             MediaDefinition::getEntityName(),
@@ -80,6 +81,7 @@ class MigrationCollectServiceTest extends TestCase
     {
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
         $migrationContext = new MigrationContext(
+            '',
             Shopware55Profile::PROFILE_NAME,
             'local',
             CategoryDefinition::getEntityName(),
@@ -106,6 +108,7 @@ class MigrationCollectServiceTest extends TestCase
     {
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
         $migrationContext = new MigrationContext(
+            '',
             Shopware55Profile::PROFILE_NAME,
             'local',
             'translation',
@@ -132,6 +135,7 @@ class MigrationCollectServiceTest extends TestCase
     {
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
         $migrationContext = new MigrationContext(
+            '',
             Shopware55Profile::PROFILE_NAME,
             'local',
             CustomerDefinition::getEntityName(),
@@ -158,6 +162,7 @@ class MigrationCollectServiceTest extends TestCase
     {
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
         $migrationContext = new MigrationContext(
+            '',
             Shopware55Profile::PROFILE_NAME,
             'local',
             ProductDefinition::getEntityName(),
@@ -184,6 +189,7 @@ class MigrationCollectServiceTest extends TestCase
     {
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
         $migrationContext = new MigrationContext(
+            '',
             Shopware55Profile::PROFILE_NAME,
             'local',
             ProductDefinition::getEntityName(),

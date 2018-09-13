@@ -14,7 +14,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class MigrationWriteDataCommand extends ContainerAwareCommand
 {
-    // example call: bin/console migration:write:data -p shopware55 -y product
+    // example call: bin/console migration:write:data -y product -r 0c5ca6049b9a46a987b510e1c5bde36a
 
     /**
      * @var MigrationWriteServiceInterface
@@ -32,7 +32,7 @@ class MigrationWriteDataCommand extends ContainerAwareCommand
         $this
             ->setDescription('Writes data with the given profile')
             ->addOption('catalog-id', 'c', InputOption::VALUE_REQUIRED)
-            ->addOption('profile', 'p', InputOption::VALUE_REQUIRED)
+            ->addOption('run-id', 'r', InputOption::VALUE_REQUIRED)
             ->addOption('entity', 'y', InputOption::VALUE_REQUIRED)
         ;
     }
@@ -47,9 +47,9 @@ class MigrationWriteDataCommand extends ContainerAwareCommand
             $context = $context->createWithCatalogIds(array_merge($context->getCatalogIds(), [$catalogId]));
         }
 
-        $profile = $input->getOption('profile');
-        if (!$profile) {
-            throw new InvalidArgumentException('No profile provided');
+        $runUuid = $input->getOption('run-id');
+        if (!$runUuid) {
+            throw new InvalidArgumentException('No run-id provided');
         }
 
         $entity = $input->getOption('entity');
@@ -57,7 +57,7 @@ class MigrationWriteDataCommand extends ContainerAwareCommand
             throw new InvalidArgumentException('No entity provided');
         }
 
-        $migrationContext = new MigrationContext($profile, '', $entity, [], 0, 1000, $catalogId);
+        $migrationContext = new MigrationContext($runUuid, $runUuid, '', $entity, [], 0, 1000, $catalogId);
 
         $output->writeln('Writing data...');
 

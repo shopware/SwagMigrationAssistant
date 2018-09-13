@@ -5,7 +5,7 @@ import './swag-migration-index.less';
 Component.register('swag-migration-index', {
     template,
 
-    inject: ['migrationProfileService', 'migrationService', 'migrationWorkerService'],
+    inject: ['migrationService', 'migrationWorkerService'],
 
     data() {
         return {
@@ -103,93 +103,19 @@ Component.register('swag-migration-index', {
 
         salesChannelStore() {
             return State.getStore('sales_channel');
+        },
+
+        migrationRunStore() {
+            return State.getStore('swag_migration_run');
+        },
+
+        migrationProfileStore() {
+            return State.getStore('swag_migration_profile');
         }
     },
 
     created() {
-        if (
-            this.migrationWorkerService.isMigrating ||
-            this.migrationWorkerService.status === this.migrationWorkerService.MIGRATION_STATUS.FINISHED
-        ) {
-            this.restoreRunningMigration();
-        }
-
-        const params = {
-            offset: 0,
-            limit: 100,
-            term: { gateway: 'api' }
-        };
-
-        // Get profile with credentials from server
-        this.migrationProfileService.getList(params).then((response) => {
-            if (!response) {
-                return;
-            }
-
-            if (response.data.length === 0) {
-                return;
-            }
-
-            this.profile = response.data[0];
-
-            // check if credentials are given
-            if (
-                !this.profile.credentialFields.endpoint ||
-                !this.profile.credentialFields.apiUser ||
-                !this.profile.credentialFields.apiKey
-            ) {
-                this.$router.push({ name: 'swag.migration.wizard.introduction' });
-                return;
-            }
-
-            // Do connection check
-            this.migrationService.checkConnection(this.profile.id).then((connectionCheckResponse) => {
-                if (!connectionCheckResponse) {
-                    return;
-                }
-
-                if (!connectionCheckResponse.environmentInformation) {
-                    this.$router.push({ name: 'swag.migration.wizard.credentials' });
-                }
-
-                this.environmentInformation = connectionCheckResponse.environmentInformation;
-                this.normalizeEnvironmentInformation();
-                this.calculateProgressMaxValues();
-
-                this.isLoading = false;
-            }).catch(() => {
-                this.$router.push({ name: 'swag.migration.wizard.credentials' });
-            });
-        });
-
-        // Get possible targets
-        const catalogPromise = this.catalogStore.getList({});
-        const salesChannelPromise = this.salesChannelStore.getList({});
-
-        Promise.all([catalogPromise, salesChannelPromise]).then((responses) => {
-            this.catalogs = responses[0].items;
-            this.salesChannels = responses[1].items;
-
-            this.tableData.forEach((tableItem) => {
-                switch (tableItem.target) {
-                case 'catalog':
-                    tableItem.targets = this.catalogs;
-                    break;
-                case 'salesChannel':
-                    tableItem.targets = this.salesChannels;
-                    break;
-                default:
-                    tableItem.targets = [];
-                    break;
-                }
-
-                if (tableItem.targets.length !== 0) {
-                    tableItem.targetId = tableItem.targets[0].id;
-                }
-            });
-        });
-
-        window.addEventListener('beforeunload', this.onBrowserTabClosing.bind(this));
+        this.createdComponent();
     },
 
     beforeDestroy() {
@@ -198,6 +124,87 @@ Component.register('swag-migration-index', {
     },
 
     methods: {
+        createdComponent() {
+            if (
+                this.migrationWorkerService.isMigrating ||
+                this.migrationWorkerService.status === this.migrationWorkerService.MIGRATION_STATUS.FINISHED
+            ) {
+                this.restoreRunningMigration();
+            }
+
+            const params = {
+                limit: 1,
+                term: { gateway: 'api' }
+            };
+
+            // Get profile with credentials from server
+            this.migrationProfileStore.getList(params).then((response) => {
+                if (!response) {
+                    return;
+                }
+
+                if (response.items.length === 0) {
+                    return;
+                }
+
+                this.profile = response.items[0];
+
+                // check if credentials are given
+                if (
+                    !this.profile.credentialFields.endpoint ||
+                    !this.profile.credentialFields.apiUser ||
+                    !this.profile.credentialFields.apiKey
+                ) {
+                    this.$router.push({ name: 'swag.migration.wizard.introduction' });
+                    return;
+                }
+
+                // Do connection check
+                this.migrationService.checkConnection(this.profile.id).then((connectionCheckResponse) => {
+                    if (!connectionCheckResponse) {
+                        return;
+                    }
+
+                    if (!connectionCheckResponse.environmentInformation) {
+                        this.$router.push({ name: 'swag.migration.wizard.credentials' });
+                    }
+
+                    this.environmentInformation = connectionCheckResponse.environmentInformation;
+                    this.normalizeEnvironmentInformation();
+                    this.calculateProgressMaxValues();
+
+                    this.isLoading = false;
+                }).catch(() => {
+                    this.$router.push({ name: 'swag.migration.wizard.credentials' });
+                });
+            });
+
+            // Get possible targets
+            const catalogPromise = this.catalogStore.getList({});
+            const salesChannelPromise = this.salesChannelStore.getList({});
+
+            Promise.all([catalogPromise, salesChannelPromise]).then((responses) => {
+                this.catalogs = responses[0].items;
+                this.salesChannels = responses[1].items;
+
+                this.tableData.forEach((tableItem) => {
+                    if (tableItem.target === 'catalog') {
+                        tableItem.targets = this.catalogs;
+                    } else if (tableItem.target === 'salesChannel') {
+                        tableItem.targets = this.salesChannels;
+                    } else {
+                        tableItem.targets = [];
+                    }
+
+                    if (tableItem.targets.length !== 0) {
+                        tableItem.targetId = tableItem.targets[0].id;
+                    }
+                });
+            });
+
+            window.addEventListener('beforeunload', this.onBrowserTabClosing.bind(this));
+        },
+
         restoreRunningMigration() {
             this.isMigrating = true;
 
@@ -337,7 +344,22 @@ Component.register('swag-migration-index', {
             // get all entities in order
             const entityGroups = this.getEntityGroups();
 
+            const toBeFetched = {};
+            entityGroups.forEach((entityGroup) => {
+                entityGroup.entities.forEach((entity) => {
+                    toBeFetched[entity.entityName] = entity.entityCount;
+                });
+            });
+
+            const migrationRun = this.migrationRunStore.create();
+            migrationRun.profile = this.profile.profile;
+            migrationRun.totals = {
+                toBeFetched: toBeFetched
+            };
+            migrationRun.save();
+
             this.migrationWorkerService.startMigration(
+                migrationRun.id,
                 this.profile,
                 entityGroups,
                 this.onStatus.bind(this),

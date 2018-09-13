@@ -80,6 +80,7 @@ class AssetDownloadServiceTest extends TestCase
         static::markTestSkipped('needs an correct URL to download the assets from');
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
         $migrationContext = new MigrationContext(
+            '',
             Shopware55Profile::PROFILE_NAME,
             'local',
             ProductDefinition::getEntityName(),
