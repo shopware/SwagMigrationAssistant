@@ -48,6 +48,7 @@ class AssetConverter implements ConverterInterface
     ): ConvertStruct {
         $profile = Shopware55Profile::PROFILE_NAME;
         $locale = $data['_locale'];
+        unset($data['_locale']);
 
         $converted = [];
         $converted['id'] = $this->mappingService->createNewUuid(
@@ -102,6 +103,10 @@ class AssetConverter implements ConverterInterface
             $data['album'],
             $data['albumID']
         );
+
+        if (empty($data)) {
+            $data = null;
+        }
 
         return new ConvertStruct($converted, $data);
     }

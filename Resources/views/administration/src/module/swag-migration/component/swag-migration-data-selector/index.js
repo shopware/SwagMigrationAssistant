@@ -18,11 +18,15 @@ Component.register('swag-migration-data-selector', {
     },
 
     mounted() {
-        this.$refs.tableDataGrid.selectAll(true);
-        this.onGridSelectItem(this.$refs.tableDataGrid.getSelection());
+        this.mountedComponent();
     },
 
     methods: {
+        mountedComponent() {
+            this.$refs.tableDataGrid.selectAll(true);
+            this.onGridSelectItem(this.$refs.tableDataGrid.getSelection());
+        },
+
         getSelectedData() {
             return this.$refs.tableDataGrid.getSelection();
         },

@@ -4,6 +4,7 @@ namespace SwagMigrationNext\Command;
 
 use InvalidArgumentException;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\ORM\RepositoryInterface;
 use Shopware\Core\Framework\Struct\Uuid;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Service\MigrationCollectServiceInterface;
@@ -17,7 +18,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class MigrationFetchDataCommand extends ContainerAwareCommand
 {
-    // example call: bin/console migration:fetch:data -p shopware55 -g local -y product dbHost localhost dbName 5.5 dbUser root dbPassword root
+    // example call: bin/console migration:fetch:data -p shopware55 -g api -y product endpoint localhost apiUser demo apiKey 4vElV9nlvCNBcCb0Ef61N9VBCnTr4AgKVXKmqVqP
 
     /**
      * @var MigrationCollectServiceInterface
@@ -29,14 +30,21 @@ class MigrationFetchDataCommand extends ContainerAwareCommand
      */
     private $environmentService;
 
+    /**
+     * @var RepositoryInterface
+     */
+    private $migrationRunRepo;
+
     public function __construct(
         MigrationCollectServiceInterface $migrationCollectService,
         MigrationEnvironmentServiceInterface $environmentService,
+        RepositoryInterface $migrationRunRepo,
         ?string $name = null
     ) {
         parent::__construct($name);
         $this->migrationCollectService = $migrationCollectService;
         $this->environmentService = $environmentService;
+        $this->migrationRunRepo = $migrationRunRepo;
     }
 
     protected function configure(): void
@@ -97,8 +105,15 @@ class MigrationFetchDataCommand extends ContainerAwareCommand
 
         $output->writeln('Fetching data...');
 
-        $migrationContext = new MigrationContext($profile, $gateway, $entity, $credentials, 0, 0);
+        $migrationContext = new MigrationContext('', $profile, $gateway, $entity, $credentials, 0, 0);
         $total = $this->environmentService->getEntityTotal($migrationContext);
+
+        $runUuid = Uuid::uuid4()->getHex();
+        $this->migrationRunRepo->create([[
+            'id' => $runUuid,
+            'totals' => ['toBeFetched' => [$entity => $total]],
+            'profile' => $profile,
+        ]], $context);
 
         $limit = 100;
         $totalImportedCount = 0;
@@ -107,6 +122,7 @@ class MigrationFetchDataCommand extends ContainerAwareCommand
 
         for ($offset = 0; $offset < $total; $offset += $limit) {
             $migrationContext = new MigrationContext(
+                $runUuid,
                 $profile,
                 $gateway,
                 $entity,

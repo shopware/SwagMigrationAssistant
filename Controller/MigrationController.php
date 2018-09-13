@@ -68,7 +68,7 @@ class MigrationController extends Controller
         $profileId = $request->get('profileId');
 
         if ($profileId === null) {
-            throw new MigrationContextPropertyMissingException('profile ID');
+            throw new MigrationContextPropertyMissingException('profileId');
         }
 
         $readCriteria = new ReadCriteria([$profileId]);
@@ -82,7 +82,7 @@ class MigrationController extends Controller
         $gateway = $profile->getGateway();
         $credentials = $profile->getCredentialFields();
 
-        $migrationContext = new MigrationContext($profileName, $gateway, '', $credentials, 0, 0);
+        $migrationContext = new MigrationContext('', $profileName, $gateway, '', $credentials, 0, 0);
 
         $information = $this->environmentService->getEnvironmentInformation($migrationContext);
 
@@ -96,14 +96,19 @@ class MigrationController extends Controller
      */
     public function fetchData(Request $request, Context $context): Response
     {
-        $profile = $request->get('profile');
-        $gateway = $request->get('gateway');
-        $entity = $request->get('entity');
+        $runUuid = $request->request->get('runUuid');
+        $profile = $request->request->get('profile');
+        $gateway = $request->request->get('gateway');
+        $entity = $request->request->get('entity');
         $offset = $request->request->getInt('offset');
         $limit = $request->request->getInt('limit', 250);
-        $credentials = $request->get('credentialFields', []);
-        $catalogId = $request->get('catalogId');
-        $salesChannelId = $request->get('salesChannelId');
+        $credentials = $request->request->get('credentialFields', []);
+        $catalogId = $request->request->get('catalogId');
+        $salesChannelId = $request->request->get('salesChannelId');
+
+        if ($runUuid === null) {
+            throw new MigrationContextPropertyMissingException('runUuid');
+        }
 
         if ($profile === null) {
             throw new MigrationContextPropertyMissingException('profile');
@@ -118,10 +123,11 @@ class MigrationController extends Controller
         }
 
         if (empty($credentials)) {
-            throw new MigrationContextPropertyMissingException('credentials');
+            throw new MigrationContextPropertyMissingException('credentialFields');
         }
 
         $migrationContext = new MigrationContext(
+            $runUuid,
             $profile,
             $gateway,
             $entity,
@@ -143,20 +149,20 @@ class MigrationController extends Controller
      */
     public function writeData(Request $request, Context $context): Response
     {
-        $profile = $request->get('profile');
-        $entity = $request->get('entity');
+        $runUuid = $request->request->get('runUuid');
+        $entity = $request->request->get('entity');
         $offset = $request->request->getInt('offset');
         $limit = $request->request->getInt('limit', 250);
 
-        if ($profile === null) {
-            throw new MigrationContextPropertyMissingException('profile');
+        if ($runUuid === null) {
+            throw new MigrationContextPropertyMissingException('runUuid');
         }
 
         if ($entity === null) {
             throw new MigrationContextPropertyMissingException('entity');
         }
 
-        $migrationContext = new MigrationContext($profile, '', $entity, [], $offset, $limit);
+        $migrationContext = new MigrationContext($runUuid, '', '', $entity, [], $offset, $limit);
         $this->migrationWriteService->writeData($migrationContext, $context);
 
         return new Response();

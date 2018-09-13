@@ -41,6 +41,7 @@ class MigrationEnvironmentServiceTest extends TestCase
     public function testGetEntityTotal(): void
     {
         $migrationContext = new MigrationContext(
+            '',
             Shopware55Profile::PROFILE_NAME,
             'local',
             CustomerDefinition::getEntityName(),
@@ -54,6 +55,7 @@ class MigrationEnvironmentServiceTest extends TestCase
         self::assertEquals(2, $total);
 
         $migrationContext = new MigrationContext(
+            '',
             Shopware55Profile::PROFILE_NAME,
             'local',
             ProductDefinition::getEntityName(),
@@ -67,6 +69,7 @@ class MigrationEnvironmentServiceTest extends TestCase
         self::assertEquals(37, $total);
 
         $migrationContext = new MigrationContext(
+            '',
             Shopware55Profile::PROFILE_NAME,
             'local',
             CategoryDefinition::getEntityName(),
@@ -80,6 +83,7 @@ class MigrationEnvironmentServiceTest extends TestCase
         self::assertEquals(8, $total);
 
         $migrationContext = new MigrationContext(
+            '',
             Shopware55Profile::PROFILE_NAME,
             'local',
             MediaDefinition::getEntityName(),

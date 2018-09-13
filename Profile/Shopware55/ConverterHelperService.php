@@ -49,6 +49,7 @@ class ConverterHelperService
     {
         try {
             new DateTime($value);
+
             return true;
         } catch (Exception $e) {
             return false;

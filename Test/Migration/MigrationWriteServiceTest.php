@@ -80,6 +80,7 @@ class MigrationWriteServiceTest extends TestCase
     {
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
         $migrationContext = new MigrationContext(
+            '',
             Shopware55Profile::PROFILE_NAME,
             'local',
             CustomerDefinition::getEntityName(),
@@ -104,6 +105,7 @@ class MigrationWriteServiceTest extends TestCase
     {
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
         $migrationContext = new MigrationContext(
+            '',
             Shopware55Profile::PROFILE_NAME,
             'local',
             MediaDefinition::getEntityName(),
@@ -126,6 +128,7 @@ class MigrationWriteServiceTest extends TestCase
     {
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
         $migrationContext = new MigrationContext(
+            '',
             Shopware55Profile::PROFILE_NAME,
             'local',
             CategoryDefinition::getEntityName(),
@@ -148,6 +151,7 @@ class MigrationWriteServiceTest extends TestCase
     {
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
         $migrationContext = new MigrationContext(
+            '',
             Shopware55Profile::PROFILE_NAME,
             'local',
             ProductDefinition::getEntityName(),
@@ -171,6 +175,7 @@ class MigrationWriteServiceTest extends TestCase
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
 
         $migrationContext = new MigrationContext(
+            '',
             Shopware55Profile::PROFILE_NAME,
             'local',
             ProductDefinition::getEntityName(),
@@ -185,6 +190,7 @@ class MigrationWriteServiceTest extends TestCase
         $productTotalAfter = $this->productRepo->search($criteria, $context)->getTotal();
 
         $migrationContext = new MigrationContext(
+            '',
             Shopware55Profile::PROFILE_NAME,
             'local',
             'translation',
@@ -205,6 +211,7 @@ class MigrationWriteServiceTest extends TestCase
     {
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
         $migrationContext = new MigrationContext(
+            '',
             Shopware55Profile::PROFILE_NAME,
             'local',
             ProductDefinition::getEntityName(),

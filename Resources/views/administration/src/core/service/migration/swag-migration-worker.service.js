@@ -1,8 +1,9 @@
 import { Application } from 'src/core/shopware';
+import CriteriaFactory from 'src/core/factory/criteria.factory';
 import StorageBroadcastService from '../storage-broadcaster.service';
 
 class MigrationService {
-    constructor(migrationService) {
+    constructor(migrationService, migrationDataService, migrationRunService) {
         this._MAX_REQUEST_TIME = 10000; // in ms
         this._DEFAULT_CHUNK_SIZE = 50; // in data sets
         this._CHUNK_INCREMENT = 5; // in data sets
@@ -34,6 +35,8 @@ class MigrationService {
         );
 
         this._migrationService = migrationService;
+        this._migrationDataService = migrationDataService;
+        this._migrationRunService = migrationRunService;
         this._chunkSize = this._DEFAULT_CHUNK_SIZE;
 
         // state variables
@@ -42,6 +45,7 @@ class MigrationService {
         this._entityGroups = [];
         this._progressSubscriber = null;
         this._statusSubscriber = null;
+        this._runId = '';
         this._profile = null;
         this._status = null;
         this._assetTotalCount = 0;
@@ -92,7 +96,7 @@ class MigrationService {
         this._progressSubscriber = null;
     }
 
-    startMigration(profile, entityGroups, statusCallback, progressCallback) {
+    startMigration(runId, profile, entityGroups, statusCallback, progressCallback) {
         return new Promise(async (resolve, reject) => {
             if (this._isMigrating) {
                 reject();
@@ -107,6 +111,7 @@ class MigrationService {
                 }
 
                 this._isMigrating = true;
+                this._runId = runId;
                 this._profile = profile;
                 this._entityGroups = entityGroups;
                 this._errors = [];
@@ -207,7 +212,23 @@ class MigrationService {
         this._resetProgress();
         this._status = this.MIGRATION_STATUS.WRITE_DATA;
         this._callStatusSubscriber({ status: this.status });
-        return this._migrateProcess('writeData');
+
+        return this._updateEntityCountForWrite().then(() => {
+            return this._migrationRunService.getById(this._runId).then((response) => {
+                const totals = response.data.totals;
+                const toBeWritten = {};
+                this._entityGroups.forEach((entityGroup) => {
+                    entityGroup.entities.forEach((entity) => {
+                        toBeWritten[entity.entityName] = entity.entityCount;
+                    });
+                });
+                totals.toBeWritten = toBeWritten;
+
+                return this._migrationRunService.updateById(this._runId, { totals: totals }).then(() => {
+                    return this._migrateProcess('writeData');
+                });
+            });
+        });
     }
 
     _downloadData() {
@@ -262,6 +283,50 @@ class MigrationService {
             resolve();
         });
         /* eslint-enable no-await-in-loop */
+    }
+
+    _updateEntityCountForWrite() {
+        return new Promise((resolve) => {
+            const countRequests = [];
+            this._entityGroups.forEach((entityGroup) => {
+                entityGroup.entities.forEach((entity) => {
+                    const entityName = entity.entityName;
+
+                    const criteria = CriteriaFactory.nested(
+                        'AND',
+                        CriteriaFactory.term('runId', this._runId),
+                        CriteriaFactory.not(
+                            'AND',
+                            CriteriaFactory.term('converted', null)
+                        ),
+                        CriteriaFactory.term('entity', entityName)
+                    );
+
+                    const count = {};
+                    count[entityName] = {
+                        count: { field: 'swag_migration_data.entity' }
+                    };
+                    const params = {
+                        aggregations: count,
+                        criteria: criteria,
+                        limit: 1
+                    };
+                    countRequests.push(this._migrationDataService.getList(params));
+                });
+            });
+
+            Promise.all(countRequests).then((responses) => {
+                let i = 0;
+                this._entityGroups.forEach((entityGroup) => {
+                    entityGroup.entities.forEach((entity) => {
+                        entity.entityCount = parseInt(responses[i].aggregations[entity.entityName].count, 10);
+                        i += 1;
+                    });
+                });
+
+                resolve();
+            });
+        });
     }
 
     /**
@@ -492,6 +557,7 @@ class MigrationService {
     _migrateEntityRequest(entityName, targetId, target, methodName, offset) {
         return new Promise((resolve) => {
             const params = {
+                runUuid: this._runId,
                 profile: this._profile.profile,
                 gateway: this._profile.gateway,
                 credentialFields: this._profile.credentialFields,

@@ -11,7 +11,6 @@ use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Profile\ProfileInterface;
 use SwagMigrationNext\Profile\Shopware55\Converter\AssociationEntityRequiredMissingException;
 use SwagMigrationNext\Profile\Shopware55\Converter\ConverterRegistryInterface;
-use SwagMigrationNext\Profile\Shopware55\Converter\CustomerExistsException;
 use SwagMigrationNext\Profile\Shopware55\Converter\ParentEntityForChildNotFoundException;
 
 class Shopware55Profile implements ProfileInterface
@@ -44,6 +43,7 @@ class Shopware55Profile implements ProfileInterface
     public function collectData(GatewayInterface $gateway, MigrationContext $migrationContext, Context $context): int
     {
         $entityName = $migrationContext->getEntity();
+        $runId = $migrationContext->getRunUuid();
         /** @var array[] $data */
         $data = $gateway->read($entityName, $migrationContext->getOffset(), $migrationContext->getLimit());
 
@@ -62,19 +62,18 @@ class Shopware55Profile implements ProfileInterface
 
                 $createData[] = [
                     'entity' => $entityName,
-                    'profile' => $this->getName(),
+                    'runId' => $runId,
                     'raw' => $item,
                     'converted' => $convertStruct->getConverted(),
                     'unmapped' => $convertStruct->getUnmapped(),
                 ];
-            } catch (
-                ParentEntityForChildNotFoundException |
+            } catch (ParentEntityForChildNotFoundException |
                 AssociationEntityRequiredMissingException $exception
             ) {
                 // TODO: Log error
                 $createData[] = [
                     'entity' => $entityName,
-                    'profile' => $this->getName(),
+                    'runId' => $runId,
                     'raw' => $item,
                     'converted' => null,
                     'unmapped' => $item,

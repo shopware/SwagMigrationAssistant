@@ -4,13 +4,14 @@ namespace SwagMigrationNext\Migration\Data;
 
 use DateTime;
 use Shopware\Core\Framework\ORM\Entity;
+use SwagMigrationNext\Migration\Run\SwagMigrationRunStruct;
 
 class SwagMigrationDataStruct extends Entity
 {
     /**
      * @var string
      */
-    protected $profile;
+    protected $runId;
 
     /**
      * @var string
@@ -33,6 +34,11 @@ class SwagMigrationDataStruct extends Entity
     protected $unmapped;
 
     /**
+     * @var bool
+     */
+    protected $written;
+
+    /**
      * @var DateTime
      */
     protected $createdAt;
@@ -42,14 +48,19 @@ class SwagMigrationDataStruct extends Entity
      */
     protected $updatedAt;
 
-    public function getProfile(): string
+    /**
+     * @var SwagMigrationRunStruct
+     */
+    protected $run;
+
+    public function getRunId(): string
     {
-        return $this->profile;
+        return $this->runId;
     }
 
-    public function setProfile(string $profile): void
+    public function setRunId(string $runId): void
     {
-        $this->profile = $profile;
+        $this->runId = $runId;
     }
 
     public function getEntity(): string
@@ -92,6 +103,16 @@ class SwagMigrationDataStruct extends Entity
         $this->unmapped = $unmapped;
     }
 
+    public function getWritten(): bool
+    {
+        return $this->written;
+    }
+
+    public function setWritten(bool $written): void
+    {
+        $this->written = $written;
+    }
+
     public function getCreatedAt(): DateTime
     {
         return $this->createdAt;
@@ -110,5 +131,15 @@ class SwagMigrationDataStruct extends Entity
     public function setUpdatedAt(DateTime $updatedAt): void
     {
         $this->updatedAt = $updatedAt;
+    }
+
+    public function getRun(): SwagMigrationRunStruct
+    {
+        return $this->run;
+    }
+
+    public function setRun(SwagMigrationRunStruct $run): void
+    {
+        $this->run = $run;
     }
 }

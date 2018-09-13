@@ -9,6 +9,11 @@ class MigrationContext extends Struct
     /**
      * @var string
      */
+    private $runUuid;
+
+    /**
+     * @var string
+     */
     private $profile;
 
     /**
@@ -47,6 +52,7 @@ class MigrationContext extends Struct
     private $salesChannelId;
 
     public function __construct(
+        string $runUuid,
         string $profile,
         string $gateway,
         string $entity,
@@ -56,6 +62,7 @@ class MigrationContext extends Struct
         ?string $catalogId = null,
         ?string $salesChannelId = null
     ) {
+        $this->runUuid = $runUuid;
         $this->profile = $profile;
         $this->gateway = $gateway;
         $this->entity = $entity;
@@ -64,6 +71,11 @@ class MigrationContext extends Struct
         $this->limit = $limit;
         $this->catalogId = $catalogId;
         $this->salesChannelId = $salesChannelId;
+    }
+
+    public function getRunUuid(): string
+    {
+        return $this->runUuid;
     }
 
     public function getProfile(): string
