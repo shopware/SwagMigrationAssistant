@@ -39,14 +39,14 @@
           "success": {
             "contentTitle": "Erfolgreich verbunden!",
             "contentInformation": "Gehe auf „Fertig“ und wähle in dem Datenimport-Modul die jeweiligen Datensätze aus, die übertragen werden sollen. Die Daten können komplett, Schritt für Schritt oder nachträglich importiert werden.",
-            "alertErrorTitle": "Achtung:",
+            "alertErrorTitle": "Achtung",
             "undefinedErrorMsg": "Bei der Prüfung des SSL-Zertifikats von der angegebenen Shop-Domain ist ein unbekannter Fehler aufgetreten.",
             "connectionInsecureMsg": "Das SSL-Zertifikat der angegebenen Shop-Domain ist nicht sicher. Wir empfehlen eine Überprüfung des Zertifikats zur eigenen Sicherheit."
           },
           "error": {
             "contentTitle": "Verbindung nicht hergestellt.",
             "contentInformation": "Die Verbindung konnte leider nicht hergestellt werden. Bitte prüfe die Meldungen und behebe das Problem.",
-            "alertErrorTitle": "Achtung:",
+            "alertErrorTitle": "Achtung",
             "connectionErrorMsg": "Es konnte keine Verbindung zum angegebenen Server hergestellt werden. Bitte überprüfe die angegebene Shop-Domain.",
             "authenticationErrorMsg": "Deine Zugangsdaten sind nicht korrekt. Bitte überprüfe sie und versuche es erneut.",
             "undefinedErrorMsg": "Interner Server Fehler. Bitte versuche es erneut."
