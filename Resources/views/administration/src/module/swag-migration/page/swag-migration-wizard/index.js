@@ -106,6 +106,7 @@ Component.register('swag-migration-wizard', {
     methods: {
         onConnect() {
             this.isLoading = true;
+            this.errorMessage = '';
 
             this.migrationProfileService.updateById(
                 this.profileId,

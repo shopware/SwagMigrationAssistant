@@ -1,7 +1,10 @@
 {% block swag_migration_index_data_selector %}
     <sw-card :title="$tc('swag-migration.index.selectDataCard.cardTitle')" class="swag-migration-data-selector">
         {% block swag_migration_index_data_selector_grid %}
-            <sw-grid ref="tableDataGrid" :items="tableData" @sw-grid-select-item="onGridSelectItem">
+            <sw-grid ref="tableDataGrid"
+                     :items="tableData"
+                     @sw-grid-select-item="onGridSelectItem"
+                     @sw-grid-select-all="onGridSelectItem">
                 <template slot="columns" slot-scope="{ item }">
                     {% block swag_migration_index_data_selector_grid_column_data %}
                         <sw-grid-column flex="1fr" :label="$tc('swag-migration.index.selectDataCard.dataHeader')">
