@@ -235,7 +235,8 @@ class ProductConverter implements ConverterInterface
         }
         unset($data['unit'], $data['detail']['unitID']);
 
-        $converted['price'] = $this->getPrice($data['prices'][0], $converted['tax']['taxRate']);
+        $setInGross = isset($data['prices'][0]['customergroup']) ? (bool) $data['prices'][0]['customergroup']['taxinput'] : false;
+        $converted['price'] = $this->getPrice($data['prices'][0], $converted['tax']['taxRate'], $setInGross);
         $converted['priceRules'] = $this->getPriceRules($data['prices'], $converted);
         unset($data['prices']);
 
@@ -435,10 +436,13 @@ class ProductConverter implements ConverterInterface
         return $media;
     }
 
-    private function getPrice(array $priceData, float $taxRate): array
+    private function getPrice(array $priceData, float $taxRate, bool $setInGross): array
     {
+        $gross = (float) $priceData['price'] * (1 + $taxRate / 100);
+        $gross = $setInGross === true ? round($gross, 4) : $gross;
+
         return [
-            'gross' => (float) $priceData['price'] * (1 + $taxRate / 100),
+            'gross' => $gross,
             'net' => (float) $priceData['price'],
         ];
     }
@@ -447,6 +451,7 @@ class ProductConverter implements ConverterInterface
     {
         $newData = [];
         foreach ($priceData as $price) {
+            $setInGross = isset($price['customergroup']) ? (bool) $price['customergroup']['taxinput'] : false;
             $newData[] = [
                 'productId' => $converted['id'],
                 'currencyId' => Defaults::CURRENCY,
@@ -461,7 +466,7 @@ class ProductConverter implements ConverterInterface
                     'priority' => 0,
                     'payload' => new AndRule(),
                 ],
-                'price' => $this->getPrice($price, $converted['tax']['taxRate']),
+                'price' => $this->getPrice($price, $converted['tax']['taxRate'], $setInGross),
                 'quantityStart' => (int) $price['from'],
                 'quantityEnd' => $price['to'] !== 'beliebig' ? (int) $price['to'] : null,
             ];
