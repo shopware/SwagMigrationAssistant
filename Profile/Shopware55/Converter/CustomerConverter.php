@@ -90,39 +90,23 @@ class CustomerConverter implements ConverterInterface
         $this->context = $context;
         $this->mainLocale = $data['_locale'];
         unset($data['_locale']);
-        $this->oldCustomerId = $data['id'];
-
-        // TODO: Remove this check, if the Core can handle 'Schnellbesteller'
-        if ($data['accountmode'] === '1') {
-            return new ConvertStruct(null, $oldData);
-        }
-
-        if (
-            $this->mappingService->getUuid(
-                $this->profile,
-                CustomerDefinition::getEntityName(),
-                $data['email'],
-                $context
-            ) !== null
-        ) {
-            throw new CustomerExistsException($data['email']);
-        }
 
         $converted = [];
+        if (isset($data['accountmode']) && $data['accountmode'] === '1') {
+            $this->oldCustomerId = $data['id'];
+        } else {
+            $this->oldCustomerId = $data['email'];
+        }
+
         $customerUuid = $this->mappingService->createNewUuid(
             $this->profile,
             CustomerDefinition::getEntityName(),
             $this->oldCustomerId,
             $this->context
         );
+
         $converted['id'] = $customerUuid;
         unset($data['id']);
-
-        $this->mappingService->createCustomerEmailMapping(
-            $this->profile,
-            $data['email'],
-            $customerUuid
-        );
 
         $this->helper->convertValue($converted, 'password', $data, 'password');
         $this->helper->convertValue($converted, 'active', $data, 'active', $this->helper::TYPE_BOOLEAN);
