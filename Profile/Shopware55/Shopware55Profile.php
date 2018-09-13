@@ -69,8 +69,7 @@ class Shopware55Profile implements ProfileInterface
                 ];
             } catch (
                 ParentEntityForChildNotFoundException |
-                AssociationEntityRequiredMissingException |
-                CustomerExistsException $e
+                AssociationEntityRequiredMissingException $exception
             ) {
                 // TODO: Log error
                 $createData[] = [

@@ -191,17 +191,4 @@ class Shopware55MappingService extends MappingService
 
         return null;
     }
-
-    public function createCustomerEmailMapping(string $profile, string $email, string $uuid): void
-    {
-        $this->saveMapping(
-            [
-                'profile' => $profile,
-                'entity' => CustomerDefinition::getEntityName(),
-                'oldIdentifier' => $email,
-                'entityUuid' => $uuid,
-                'additionalData' => null,
-            ]
-        );
-    }
 }
