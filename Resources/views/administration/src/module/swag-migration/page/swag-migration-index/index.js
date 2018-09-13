@@ -336,6 +336,7 @@ Component.register('swag-migration-index', {
             this.isMigrating = true;
             this.checkSelectedData();
             this.statusIndex = 0;
+            this.errorList = [];
             this.resetProgress();
 
             // show loading screen
