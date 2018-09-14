@@ -316,26 +316,10 @@ class MigrationService {
             this._entityGroups.forEach((entityGroup) => {
                 entityGroup.entities.forEach((entity) => {
                     const entityName = entity.entityName;
+                    const params = this._getEntityCountParameter(entityName);
 
-                    const criteria = CriteriaFactory.nested(
-                        'AND',
-                        CriteriaFactory.term('runId', this._runId),
-                        CriteriaFactory.not(
-                            'AND',
-                            CriteriaFactory.term('converted', null)
-                        ),
-                        CriteriaFactory.term('entity', entityName)
-                    );
+                    params.criteria = CriteriaFactory.nested('AND', ...params.criteria);
 
-                    const count = {};
-                    count[entityName] = {
-                        count: { field: 'swag_migration_data.entity' }
-                    };
-                    const params = {
-                        aggregations: count,
-                        criteria: criteria,
-                        limit: 1
-                    };
                     countRequests.push(this._migrationDataService.getList(params));
                 });
             });
@@ -360,6 +344,33 @@ class MigrationService {
     }
 
     /**
+     * @param {String} entityName
+     * @returns {Object}
+     * @private
+     */
+    _getEntityCountParameter(entityName) {
+        const criteria = [];
+
+        criteria.push(CriteriaFactory.term('runId', this._runId));
+        criteria.push(CriteriaFactory.term('entity', entityName));
+        criteria.push(CriteriaFactory.not(
+            'AND',
+            CriteriaFactory.term('converted', null)
+        ));
+
+        const count = {};
+        count[entityName] = {
+            count: { field: 'swag_migration_data.entity' }
+        };
+
+        return {
+            aggregations: count,
+            criteria: criteria,
+            limit: 1
+        };
+    }
+
+    /**
      * Get the count of media objects that are available for the migration.
      *
      * @returns {Promise}
@@ -367,10 +378,11 @@ class MigrationService {
      */
     _getAssetTotalCount() {
         return new Promise((resolve) => {
-            this._migrationService.fetchAssetCount({
-                profile: this._profile.profile
-            }).then((res) => {
-                this._assetTotalCount = res.mediaCount;
+            const params = this._getEntityCountParameter('media');
+            params.criteria.push(CriteriaFactory.term('written', true));
+            params.criteria = CriteriaFactory.nested('AND', ...params.criteria);
+            this._migrationDataService.getList(params).then((res) => {
+                this._assetTotalCount = parseInt(res.aggregations.media.count, 10);
                 resolve();
             }).catch(() => {
                 this._assetTotalCount = 0;

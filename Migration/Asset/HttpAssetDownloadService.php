@@ -15,10 +15,7 @@ use Shopware\Core\Content\Media\File\MediaFile;
 use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\ORM\RepositoryInterface;
-use Shopware\Core\Framework\ORM\Search\Aggregation\AggregationResult;
-use Shopware\Core\Framework\ORM\Search\Aggregation\CountAggregation;
 use Shopware\Core\Framework\ORM\Search\Criteria;
-use Shopware\Core\Framework\ORM\Search\Query\TermQuery;
 use Shopware\Core\Framework\ORM\Search\Query\TermsQuery;
 use SwagMigrationNext\Exception\NoFileSystemPermissionsException;
 use SwagMigrationNext\Migration\Mapping\SwagMigrationMappingStruct;
@@ -147,20 +144,6 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
         }
 
         return array_values($mappedWorkload);
-    }
-
-    public function fetchMediaCount(Context $context, string $profile): int
-    {
-        $criteria = new Criteria();
-        $criteria->addFilter(new TermQuery('entity', MediaDefinition::getEntityName()));
-        $criteria->addFilter(new TermQuery('profile', $profile));
-        $criteria->addAggregation(new CountAggregation('id', 'mediaCount'));
-        $criteria->setLimit(1);
-        $entitySearchResult = $this->migrationMappingRepository->search($criteria, $context);
-        /** @var AggregationResult $aggregationResult */
-        $aggregationResult = $entitySearchResult->getAggregations()['mediaCount'];
-
-        return (int) $aggregationResult->getResult()['count'];
     }
 
     /**
