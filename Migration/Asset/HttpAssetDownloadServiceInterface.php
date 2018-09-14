@@ -6,8 +6,6 @@ use Shopware\Core\Framework\Context;
 
 interface HttpAssetDownloadServiceInterface
 {
-    public function fetchMediaCount(Context $context, string $runUuid): int;
-
     public function fetchMediaUuids(Context $context, string $profile, int $offset, int $limit): array;
 
     public function downloadAssets(Context $context, array $workload, int $fileChunkByteSize): array;
