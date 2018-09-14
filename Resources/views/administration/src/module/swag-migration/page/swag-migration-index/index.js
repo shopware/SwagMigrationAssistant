@@ -121,6 +121,7 @@ Component.register('swag-migration-index', {
     beforeDestroy() {
         this.migrationWorkerService.unsubscribeProgress();
         this.migrationWorkerService.unsubscribeStatus();
+        this.migrationWorkerService.unsubscribeUpdateEntityCount();
     },
 
     methods: {
@@ -243,6 +244,9 @@ Component.register('swag-migration-index', {
 
             // subscribe to the status event again
             this.migrationWorkerService.subscribeStatus(this.onStatus);
+
+            // subscribe to the update entity count event again
+            this.migrationWorkerService.subscribeUpdateEntityCount(this.onUpdateEntityCount);
         },
 
         showMigrateConfirmDialog() {
@@ -364,7 +368,8 @@ Component.register('swag-migration-index', {
                 this.profile,
                 entityGroups,
                 this.onStatus.bind(this),
-                this.onProgress.bind(this)
+                this.onProgress.bind(this),
+                this.onUpdateEntityCount.bind(this)
             ).catch(() => {
                 // show data selection again
                 this.isMigrating = false;
@@ -534,6 +539,16 @@ Component.register('swag-migration-index', {
             }
 
             resultData.progressBar.value = progressData.entityGroupProgressValue;
+        },
+
+        onUpdateEntityCount(updateData) {
+            this.tableData.forEach((tableItem) => {
+                updateData.forEach((updateItem) => {
+                    if (tableItem.id === updateItem.id) {
+                        tableItem.progressBar.maxValue = updateItem.count;
+                    }
+                });
+            });
         },
 
         resetProgress() {

@@ -45,6 +45,7 @@ class MigrationService {
         this._entityGroups = [];
         this._progressSubscriber = null;
         this._statusSubscriber = null;
+        this._updateEntityCountSubscriber = null;
         this._runId = '';
         this._profile = null;
         this._status = null;
@@ -80,23 +81,40 @@ class MigrationService {
         return this._errors;
     }
 
-    subscribeStatus(cb) {
-        this._statusSubscriber = cb;
+    subscribeStatus(callback) {
+        this._statusSubscriber = callback;
     }
 
     unsubscribeStatus() {
         this._statusSubscriber = null;
     }
 
-    subscribeProgress(cb) {
-        this._progressSubscriber = cb;
+    subscribeProgress(callback) {
+        this._progressSubscriber = callback;
     }
 
     unsubscribeProgress() {
         this._progressSubscriber = null;
     }
 
-    startMigration(runId, profile, entityGroups, statusCallback, progressCallback) {
+    subscribeUpdateEntityCount(callback) {
+        this._updateEntityCountSubscriber = callback;
+    }
+
+    unsubscribeUpdateEntityCount() {
+        this._updateEntityCountSubscriber = null;
+    }
+
+    /**
+     * @param {String} runId
+     * @param {Object} profile
+     * @param {Object} entityGroups
+     * @param statusCallback
+     * @param progressCallback
+     * @param updateEntityCountCallback
+     * @returns {Promise}
+     */
+    startMigration(runId, profile, entityGroups, statusCallback, progressCallback, updateEntityCountCallback) {
         return new Promise(async (resolve, reject) => {
             if (this._isMigrating) {
                 reject();
@@ -117,6 +135,7 @@ class MigrationService {
                 this._errors = [];
                 this.subscribeStatus(statusCallback);
                 this.subscribeProgress(progressCallback);
+                this.subscribeUpdateEntityCount(updateEntityCountCallback);
 
                 // step 1 - read/fetch
                 this._fetchData().then(() => {
@@ -198,6 +217,12 @@ class MigrationService {
     _callStatusSubscriber(param) {
         if (this._statusSubscriber !== null) {
             this._statusSubscriber.call(null, param);
+        }
+    }
+
+    _callUpdateEntityCountSubscriber(param) {
+        if (this._updateEntityCountSubscriber !== null) {
+            this._updateEntityCountSubscriber.call(null, param);
         }
     }
 
@@ -318,11 +343,16 @@ class MigrationService {
             Promise.all(countRequests).then((responses) => {
                 let i = 0;
                 this._entityGroups.forEach((entityGroup) => {
+                    let groupsCount = 0;
                     entityGroup.entities.forEach((entity) => {
                         entity.entityCount = parseInt(responses[i].aggregations[entity.entityName].count, 10);
+                        groupsCount += entity.entityCount;
                         i += 1;
                     });
+                    entityGroup.count = groupsCount;
                 });
+
+                this._callUpdateEntityCountSubscriber(this._entityGroups);
 
                 resolve();
             });
