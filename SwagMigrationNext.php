@@ -92,8 +92,8 @@ class SwagMigrationNext extends Plugin
         /** @var Connection $connection */
         $connection = $this->container->get(Connection::class);
         $connection->exec('
-DROP TABLE IF EXISTS swag_migration_run;
 DROP TABLE IF EXISTS swag_migration_data;
+DROP TABLE IF EXISTS swag_migration_run;
 DROP TABLE IF EXISTS swag_migration_mapping;
 DROP TABLE IF EXISTS swag_migration_profile;
 ');
