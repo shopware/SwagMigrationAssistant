@@ -9,12 +9,8 @@
 
             {% block swag_migration_router_view %}
                 <router-view
-                        :apiKey="credentials.apiKey"
-                        @apiKeyChanged="onApiKeyChanged"
-                        :apiUser="credentials.apiUser"
-                        @apiUserChanged="onApiUserChanged"
-                        :endpoint="credentials.endpoint"
-                        @endpointChanged="onEndpointChanged"
+                        :credentials="credentials"
+                        @credentialsChanged="onCredentialsChanged"
                         :errorMessage="errorMessage">
                 </router-view>
             {% endblock %}

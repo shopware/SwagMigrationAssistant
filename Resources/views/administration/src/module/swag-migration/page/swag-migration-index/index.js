@@ -141,11 +141,14 @@ Component.register('swag-migration-index', {
                 this.profile = response.items[0];
 
                 // check if credentials are given
-                if (
-                    !this.profile.credentialFields.endpoint ||
-                    !this.profile.credentialFields.apiUser ||
-                    !this.profile.credentialFields.apiKey
-                ) {
+                let credentialsGiven = true;
+                Object.keys(this.profile.credentialFields).forEach((field) => {
+                    if (this.profile.credentialFields[field].required && this.profile.credentialFields[field].value === '') {
+                        credentialsGiven = false;
+                    }
+                });
+
+                if (!credentialsGiven) {
                     this.$router.push({ name: 'swag.migration.wizard.introduction' });
                     return;
                 }
