@@ -6,12 +6,14 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagMigrationNext\Controller\MigrationController;
 use SwagMigrationNext\Migration\Asset\HttpAssetDownloadService;
 use SwagMigrationNext\Migration\Service\MigrationEnvironmentService;
 use SwagMigrationNext\Migration\Service\MigrationWriteService;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
+use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\MigrationServicesTrait;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,8 +28,25 @@ class MigrationControllerTest extends TestCase
      */
     private $controller;
 
+    /**
+     * @var string
+     */
+    private $runUuid;
+
     protected function setUp()
     {
+        $this->runUuid = Uuid::uuid4()->getHex();
+        $runRepo = $this->getContainer()->get('swag_migration_run.repository');
+        $runRepo->create(
+            [
+                [
+                    'id' => $this->runUuid,
+                    'profile' => Shopware55Profile::PROFILE_NAME
+                ]
+            ],
+            Context::createDefaultContext(Defaults::TENANT_ID)
+        );
+
         $this->controller = new MigrationController(
             $this->getMigrationCollectService(
                 $this->getContainer()->get('swag_migration_data.repository'),
@@ -42,8 +61,9 @@ class MigrationControllerTest extends TestCase
 
     public function testFetchData(): void
     {
-        $request = new Request([
-            'profile' => 'shopware55',
+        $request = new Request([], [
+            'profile' => Shopware55Profile::PROFILE_NAME,
+            'runUuid' => $this->runUuid,
             'gateway' => 'local',
             'entity' => ProductDefinition::getEntityName(),
             'credentialFields' => [
@@ -60,14 +80,9 @@ class MigrationControllerTest extends TestCase
 
     public function testWriteData(): void
     {
-        $request = new Request([
-            'profile' => 'shopware55',
+        $request = new Request([], [
+            'runUuid' => $this->runUuid,
             'entity' => ProductDefinition::getEntityName(),
-            'credentialFields' => [
-                'endpoint' => 'test',
-                'apiUser' => 'test',
-                'apiKey' => 'test',
-            ],
         ]);
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
         $result = $this->controller->writeData($request, $context);

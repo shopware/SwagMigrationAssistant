@@ -47,7 +47,8 @@ class MappingServiceTest extends TestCase
     {
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
         $uuid1 = $this->mappingService->createNewUuid(Shopware55Profile::PROFILE_NAME, 'product', '123', $context);
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+
+        $this->mappingService->writeMapping($context);
 
         $newMappingService = new MappingService(
             $this->getContainer()->get('swag_migration_mapping.repository'),
@@ -69,6 +70,7 @@ class MappingServiceTest extends TestCase
 
     public function testLocaleNotFoundException(): void
     {
+        static::markTestSkipped('Remove when translation support is implemented');
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
 
         try {
