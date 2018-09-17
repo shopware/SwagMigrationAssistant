@@ -1,11 +1,11 @@
-import { Component } from 'src/core/shopware';
+import { Component, State } from 'src/core/shopware';
 import template from './swag-migration-wizard.html.twig';
 import './swag-migration-wizard.less';
 
 Component.register('swag-migration-wizard', {
     template,
 
-    inject: ['swagMigrationProfileService', 'migrationService'],
+    inject: ['migrationService'],
 
     data() {
         return {
@@ -26,6 +26,7 @@ Component.register('swag-migration-wizard', {
             routeCountVisible: 3, // only show 4 dots and allow navigation between them.
             routeIndex: 0,
             routeIndexVisible: 0, // only count up to 3
+            profile: {}, // state object
             profileId: '',
             credentials: {}, // .endpoint .apiUser .apiKey
             errorMessage: ''
@@ -63,6 +64,10 @@ Component.register('swag-migration-wizard', {
 
         backButtonDisabled() {
             return this.isLoading;
+        },
+
+        migrationProfileStore() {
+            return State.getStore('swag_migration_profile');
         }
     },
 
@@ -96,17 +101,18 @@ Component.register('swag-migration-wizard', {
 
             const params = {
                 offset: 0,
-                limit: 100,
+                limit: 1,
                 term: { gateway: 'api' }
             };
 
-            this.swagMigrationProfileService.getList(params).then((response) => {
+            this.migrationProfileStore.getList(params).then((response) => {
                 if (!response) {
                     return;
                 }
 
-                this.credentials = response.data[0].credentialFields;
-                this.profileId = response.data[0].id;
+                this.profile = response.items[0];
+                this.credentials = response.items[0].credentialFields;
+                this.profileId = response.items[0].id;
                 this.isLoading = false;
             });
 
@@ -117,11 +123,9 @@ Component.register('swag-migration-wizard', {
             this.isLoading = true;
             this.errorMessage = '';
 
-            this.swagMigrationProfileService.updateById(
-                this.profileId,
-                { credentialFields: this.credentials }
-            ).then((response) => {
-                if (response.status === 204) {
+            this.profile.credentialFields = this.credentials;
+            this.profile.save().then((response) => {
+                if (response.errors.length === 0) {
                     this.migrationService.checkConnection(this.profileId).then((connectionCheckResponse) => {
                         this.isLoading = false;
                         if (connectionCheckResponse.environmentInformation) {
@@ -150,7 +154,7 @@ Component.register('swag-migration-wizard', {
                     });
                 } else {
                     this.isLoading = false;
-                    this.onResponseError(response.status);
+                    this.onResponseError('');
                 }
             });
         },
