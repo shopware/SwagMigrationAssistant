@@ -72,7 +72,7 @@
         "hintTitle": "Information zum Datenimport",
         "hint": "Die ausgewählten Daten werden mit Sprachinformationen übertragen und haben relevante Abhängigkeiten, die für die Vollständigkeit des Datenimports notwendig sind.",
         "infoTitle": "Über die neuen Kataloge und Verkaufskanäle",
-        "infoText": "Kataloge und Verkaufskanäle sind neue Elemente für Shopware Playground, die Dir helfen Deine Daten ohne Sub- und Sprachshops zu struktieren. Für mehr Informationen zum Thema empfehlen wir Dir die Artikel in unserer Dokumentation zu <a href=\"https://docs.shopware.com/de/shopware-playground-de/admin/kataloge\">Katalogen</a> und <a href=\"https://docs.shopware.com/de/shopware-playground-de/admin/verkaufskanaele\">Verkaufskanälen</a>.",
+        "infoText": "Kataloge und Verkaufskanäle sind neue Elemente für Shopware Playground, die Dir helfen Deine Daten ohne Sub- und Sprachshops zu struktieren. Für mehr Informationen zum Thema empfehlen wir Dir die Artikel in unserer Dokumentation zu <a target=\"_blank\" href=\"https://docs.shopware.com/de/shopware-playground-de/admin/kataloge\">Katalogen</a> und <a target=\"_blank\" href=\"https://docs.shopware.com/de/shopware-playground-de/admin/verkaufskanaele\">Verkaufskanälen</a>.",
         "dataHeader": "Daten",
         "dataPossible": {
           "customersAndOrders": "Kunden & Bestellungen",
@@ -81,7 +81,7 @@
         },
         "targetHeader": "Ziel",
         "gdprTitle": "Nutzungsbedingungen",
-        "gdprText": "Für den Import der Daten gelten die <a href=\"https://playground.shopware.com/terms-of-use\">Allgemeinen Nutzungsbedingungen</a> von Shopware Playground. Der Importprozess nimmt keinen Einfluss auf die Daten des Quellsystems."
+        "gdprText": "Für den Import der Daten gelten die <a target=\"_blank\" href=\"https://playground.shopware.com/terms-of-use\">Allgemeinen Nutzungsbedingungen</a> von Shopware Playground. Der Importprozess nimmt keinen Einfluss auf die Daten des Quellsystems."
       },
       "loadingScreenCard": {
         "cardTitle": "Schritt {step} von {total}",

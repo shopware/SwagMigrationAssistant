@@ -72,7 +72,7 @@
         "hintTitle": "Information on data import",
         "hint": "The selected data is transferred with language information and has relevant dependencies that are necessary for the integrity of the data import.",
         "infoTitle": "About the new catalogues and sales channels",
-        "infoText": "Catalogues and sales channels are new elements for Shopware Playground that help you to structure your data without sub- and language shops. For more information on this topic, we recommend the articles in our documentation on <a href=\"https://docs.shopware.com/en/shopware-playground-en/admin/catalogues\">catalogues</a> and <a href=\"https://docs.shopware.com/en/shopware-playground-en/admin/saleschannels\">sales channels</a>.",
+        "infoText": "Catalogues and sales channels are new elements for Shopware Playground that help you to structure your data without sub- and language shops. For more information on this topic, we recommend the articles in our documentation on <a target=\"_blank\" href=\"https://docs.shopware.com/en/shopware-playground-en/admin/catalogues\">catalogues</a> and <a target=\"_blank\" href=\"https://docs.shopware.com/en/shopware-playground-en/admin/saleschannels\">sales channels</a>.",
         "dataHeader": "Data",
         "dataPossible": {
           "customersAndOrders": "Customers & Orders",
@@ -81,7 +81,7 @@
         },
         "targetHeader": "Target",
         "gdprTitle": "Terms of use",
-        "gdprText": "The general <a href=\"https://playground.shopware.com/terms-of-use\">terms of use</a> of Shopware Playground applys to the import of data. The import process does not affect the data of the source system."
+        "gdprText": "The general <a target=\"_blank\" href=\"https://playground.shopware.com/terms-of-use\">terms of use</a> of Shopware Playground applys to the import of data. The import process does not affect the data of the source system."
       },
       "loadingScreenCard": {
         "cardTitle": "Step {step} of {total}",
