@@ -14,6 +14,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\Flag\Required;
 use SwagMigrationNext\Migration\Mapping\SwagMigrationMappingDefinition;
+use SwagMigrationNext\Migration\Run\SwagMigrationRunDefinition;
 
 class SwagMigrationProfileDefinition extends EntityDefinition
 {
@@ -32,6 +33,7 @@ class SwagMigrationProfileDefinition extends EntityDefinition
             new JsonField('credential_fields', 'credentialFields'),
             new CreatedAtField(),
             new UpdatedAtField(),
+            new OneToManyAssociationField('runs', SwagMigrationRunDefinition::class, 'profile_id', false),
             new OneToManyAssociationField('mappings', SwagMigrationMappingDefinition::class, 'profile_id', false),
         ]);
     }

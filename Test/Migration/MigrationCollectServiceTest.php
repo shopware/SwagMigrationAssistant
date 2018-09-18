@@ -62,19 +62,19 @@ class MigrationCollectServiceTest extends TestCase
 
     protected function setUp()
     {
+        $this->profileUuidService = new MigrationProfileUuidService($this->getContainer()->get('swag_migration_profile.repository'));
         $this->runUuid = Uuid::uuid4()->getHex();
         $runRepo = $this->getContainer()->get('swag_migration_run.repository');
         $runRepo->create(
             [
                 [
                     'id' => $this->runUuid,
-                    'profile' => Shopware55Profile::PROFILE_NAME,
+                    'profileId' => $this->profileUuidService->getProfileUuid(),
                 ],
             ],
             Context::createDefaultContext(Defaults::TENANT_ID)
         );
 
-        $this->profileUuidService = new MigrationProfileUuidService($this->getContainer()->get('swag_migration_profile.repository'));
         $this->loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
         $this->migrationDataRepo = $this->getContainer()->get('swag_migration_data.repository');
         $this->migrationCollectService = $this->getMigrationCollectService(

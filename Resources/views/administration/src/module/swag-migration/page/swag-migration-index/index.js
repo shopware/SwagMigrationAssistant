@@ -6,7 +6,7 @@ import './swag-migration-index.less';
 Component.register('swag-migration-index', {
     template,
 
-    inject: ['migrationService', 'migrationWorkerService'],
+    inject: ['migrationService', 'migrationWorkerService', 'swagMigrationRunService'],
 
     data() {
         return {
@@ -20,13 +20,16 @@ Component.register('swag-migration-index', {
                 loadingScreen: 1,
                 resultSuccess: 2,
                 resultWarning: 3,
-                resultFailure: 4
+                resultFailure: 4,
+                pauseScreen: 5
             },
             errorList: [],
-            statusIndex: 0,
+            statusIndex: -1,
             isMigrating: false,
             isMigrationAllowed: false,
-            showConfirmDialog: false,
+            isPaused: false,
+            showMigrationConfirmDialog: false,
+            showAbortMigrationConfirmDialog: false,
             catalogs: [],
             salesChannels: [],
             tableData: [
@@ -101,6 +104,53 @@ Component.register('swag-migration-index', {
 
         migrationProfileStore() {
             return State.getStore('swag_migration_profile');
+        },
+
+        leftButtonVisible() {
+            return this.isPaused || (this.isMigrating && !this.isLoading);
+        },
+
+        leftButtonDisabled() {
+            return this.isLoading;
+        },
+
+        leftButtonText() {
+            return this.$tc('swag-migration.index.abortButton');
+        },
+
+        rightButtonDisabled() {
+            if (this.statusIndex === this.migrationWorkerService.MIGRATION_STATUS.FETCH_DATA && this.isMigrating) {
+                return true;
+            }
+
+            if (!this.isMigrationAllowed && this.isPaused) {
+                return false;
+            }
+
+            return this.isLoading || !this.isMigrationAllowed;
+        },
+
+        rightButtonText() {
+            if (
+                (!this.isMigrating && !this.isPaused) ||
+                (this.statusIndex === this.migrationWorkerService.MIGRATION_STATUS.FETCH_DATA && this.isMigrating)
+            ) {
+                return this.$tc('swag-migration.index.migrateButton');
+            }
+
+            if (this.isPaused) {
+                return this.$tc('swag-migration.index.continueButton');
+            }
+
+            return this.$tc('swag-migration.index.pauseButton');
+        },
+
+        abortMigrationBackText() {
+            if (this.isPaused) {
+                return this.$tc('swag-migration.index.confirmAbortDialog.cancelPause');
+            }
+
+            return this.$tc('swag-migration.index.confirmAbortDialog.cancelRunning');
         }
     },
 
@@ -115,7 +165,17 @@ Component.register('swag-migration-index', {
     },
 
     methods: {
-        createdComponent() {
+        async createdComponent() {
+            if (this.migrationWorkerService.isMigrating === false && this.migrationWorkerService.status === null) {
+                await this.migrationWorkerService.checkForRunningMigration().then((running) => {
+                    this.isPaused = running;
+                    if (this.isPaused) {
+                        this.componentIndex = this.components.pauseScreen;
+                    }
+                });
+            }
+
+
             if (
                 this.migrationWorkerService.isMigrating ||
                 this.migrationWorkerService.status === this.migrationWorkerService.MIGRATION_STATUS.FINISHED
@@ -239,8 +299,59 @@ Component.register('swag-migration-index', {
             this.migrationWorkerService.subscribeUpdateEntityCount(this.onUpdateEntityCount);
         },
 
-        showMigrateConfirmDialog() {
-            this.showConfirmDialog = true;
+        onLeftButtonClick() {
+            // abort
+            this.showAbortMigrationConfirmDialog = true;
+        },
+
+        onRightButtonClick() {
+            if (!this.isMigrating && !this.isPaused) {
+                // migrate
+                this.showMigrationConfirmDialog = true;
+                return;
+            }
+
+            if (this.isPaused) {
+                // continue
+                this.isLoading = true;
+                this.migrationWorkerService.checkForRunningMigration().then((running) => {
+                    this.isLoading = false;
+                    this.isPaused = false;
+                    if (running === false) {
+                        this.isMigrating = false;
+                        this.componentIndex = this.components.dataSelector;
+                        return;
+                    }
+
+                    this.migrationWorkerService.restoreRunningMigration();
+                    this.restoreRunningMigration();
+                });
+                return;
+            }
+
+            // pause
+            this.migrationWorkerService.stopMigration();
+            this.isMigrating = false;
+            this.isPaused = true;
+            this.componentIndex = this.components.pauseScreen;
+        },
+
+        onMigrationAbort() {
+            this.showAbortMigrationConfirmDialog = false;
+
+            if (this.isMigrating) {
+                this.migrationWorkerService.stopMigration();
+            }
+
+            this.isPaused = false;
+            this.isMigrating = false;
+            this.componentIndex = this.components.dataSelector;
+            console.log(this.migrationWorkerService.runId);
+            // const migrationRun = this.migrationRunStore.getById(this.migrationWorkerService.runId);
+            // console.log(migrationRun);
+            // migrationRun.status = 'aborted';
+            // migrationRun.save();
+            this.swagMigrationRunService.updateById(this.migrationWorkerService.runId, { status: 'aborted' });
         },
 
         normalizeEnvironmentInformation() {
@@ -326,7 +437,7 @@ Component.register('swag-migration-index', {
         },
 
         onMigrate() {
-            this.showConfirmDialog = false;
+            this.showMigrationConfirmDialog = false;
             this.isMigrating = true;
             this.checkSelectedData();
             this.statusIndex = 0;
@@ -347,10 +458,14 @@ Component.register('swag-migration-index', {
             });
 
             const migrationRun = this.migrationRunStore.create();
-            migrationRun.profile = this.profile.profile;
+            migrationRun.profile = this.profile;
             migrationRun.totals = {
                 toBeFetched: toBeFetched
             };
+            migrationRun.additionalData = {
+                entityGroups
+            };
+            migrationRun.status = 'running';
             migrationRun.save();
 
             this.migrationWorkerService.startMigration(
@@ -368,7 +483,7 @@ Component.register('swag-migration-index', {
         },
 
         onStatus(statusData) {
-            this.resetProgress();
+            this.resetProgress(false);
             this.statusIndex = statusData.status;
 
             if (this.statusIndex === this.migrationWorkerService.MIGRATION_STATUS.DOWNLOAD_DATA) {
@@ -536,9 +651,11 @@ Component.register('swag-migration-index', {
             });
         },
 
-        resetProgress() {
+        resetProgress(ignoreCurrentValue = true) {
             this.tableData.forEach((data) => {
-                data.progressBar.value = 0;
+                if (ignoreCurrentValue || data.progressBar.value >= data.progressBar.maxValue) {
+                    data.progressBar.value = 0;
+                }
             });
         },
 
@@ -558,8 +675,12 @@ Component.register('swag-migration-index', {
             });
         },
 
-        onCloseConfirmDialog() {
-            this.showConfirmDialog = false;
+        onCloseMigrationConfirmDialog() {
+            this.showMigrationConfirmDialog = false;
+        },
+
+        onCloseAbortMigrationConfirmDialog() {
+            this.showAbortMigrationConfirmDialog = false;
         },
 
         onClickBack() {

@@ -95,22 +95,22 @@ class MigrationWriteServiceTest extends TestCase
 
     protected function setUp()
     {
+        $this->profileUuidService = new MigrationProfileUuidService(
+            $this->getContainer()->get('swag_migration_profile.repository'),
+            Shopware55Profile::PROFILE_NAME,
+            Shopware55LocalGateway::GATEWAY_TYPE
+        );
+
         $this->runUuid = Uuid::uuid4()->getHex();
         $runRepo = $this->getContainer()->get('swag_migration_run.repository');
         $runRepo->create(
             [
                 [
                     'id' => $this->runUuid,
-                    'profile' => Shopware55Profile::PROFILE_NAME,
+                    'profileId' => $this->profileUuidService->getProfileUuid(),
                 ],
             ],
             Context::createDefaultContext(Defaults::TENANT_ID)
-        );
-
-        $this->profileUuidService = new MigrationProfileUuidService(
-            $this->getContainer()->get('swag_migration_profile.repository'),
-            Shopware55Profile::PROFILE_NAME,
-            Shopware55LocalGateway::GATEWAY_TYPE
         );
 
         $this->migrationCollectService = $this->getMigrationCollectService(

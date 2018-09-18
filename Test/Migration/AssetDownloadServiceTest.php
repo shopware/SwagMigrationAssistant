@@ -91,7 +91,7 @@ class AssetDownloadServiceTest extends TestCase
             [
                 [
                     'id' => $this->runUuid,
-                    'profile' => Shopware55Profile::PROFILE_NAME,
+                    'profileId' => $this->profileUuidService->getProfileUuid(),
                 ],
             ],
             Context::createDefaultContext(Defaults::TENANT_ID)

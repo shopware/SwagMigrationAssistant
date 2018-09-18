@@ -69,6 +69,9 @@
     "index": {
       "title": "Datenimport",
       "migrateButton": "Importieren",
+      "pauseButton": "Pausieren",
+      "continueButton": "Fortsetzen",
+      "abortButton": "Beenden",
       "finishButton": "Fertig",
       "backButton": "Zurück zur Übersicht",
       "browserClosingHint": "Möchtest Du den Datenimport wirklich abbrechen?",
@@ -135,6 +138,10 @@
             "hintTitle": "Achtung:",
             "hintContent": "Die Migration konnte nicht durchgeführt werden."
           }
+        },
+        "pauseScreen": {
+          "title": "Pause.",
+          "message": "Der Import wurde pausiert.<br>Setze ihn fort oder breche den Prozess ab.<br><br>"
         }
       },
       "confirmDialog": {
@@ -142,6 +149,14 @@
         "message": "Möchtest Du wirklich Deine Daten importieren?",
         "cancel": "Abbrechen",
         "confirm": "Importieren"
+      },
+      "confirmAbortDialog": {
+        "title": "Datenimport",
+        "message": "Den Datenimport jetzt Beenden?",
+        "cancelRunning": "Fortsetzen",
+        "cancelPause": "Weiter pausieren",
+        "confirm": "Beenden",
+        "hintContent": "Wenn der Prozess beendet wird, sind die Daten nicht vollständig und dadurch teilweise unbrauchbar."
       },
       "error": {
         "associationRequiredMissing": {

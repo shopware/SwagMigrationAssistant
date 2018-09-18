@@ -11,6 +11,7 @@ use SwagMigrationNext\Migration\Asset\HttpAssetDownloadServiceInterface;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Service\MigrationCollectServiceInterface;
 use SwagMigrationNext\Migration\Service\MigrationEnvironmentServiceInterface;
+use SwagMigrationNext\Migration\Service\MigrationProgressServiceInterface;
 use SwagMigrationNext\Migration\Service\MigrationWriteServiceInterface;
 use SwagMigrationNext\Profile\SwagMigrationProfileStruct;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -46,18 +47,25 @@ class MigrationController extends Controller
      */
     private $migrationProfileRepo;
 
+    /**
+     * @var MigrationProgressServiceInterface
+     */
+    private $migrationProgressService;
+
     public function __construct(
         MigrationCollectServiceInterface $migrationCollectService,
         MigrationWriteServiceInterface $migrationWriteService,
         HttpAssetDownloadServiceInterface $assetDownloadService,
         MigrationEnvironmentServiceInterface $environmentService,
-        RepositoryInterface $migrationProfileRepo
+        RepositoryInterface $migrationProfileRepo,
+        MigrationProgressServiceInterface $migrationProgressService
     ) {
         $this->migrationCollectService = $migrationCollectService;
         $this->migrationWriteService = $migrationWriteService;
         $this->assetDownloadService = $assetDownloadService;
         $this->environmentService = $environmentService;
         $this->migrationProfileRepo = $migrationProfileRepo;
+        $this->migrationProgressService = $migrationProgressService;
     }
 
     /**
@@ -226,5 +234,15 @@ class MigrationController extends Controller
         $newWorkload = $this->assetDownloadService->downloadAssets($runId, $context, $workload, $fileChunkByteSize);
 
         return new JsonResponse(['workload' => $newWorkload]);
+    }
+
+    /**
+     * @Route("/api/v{version}/migration/get-state", name="api.admin.migration.get-state", methods={"GET"})
+     */
+    public function getState(Request $request, Context $context): JsonResponse
+    {
+        $state = $this->migrationProgressService->getProgress($context);
+
+        return new JsonResponse($state);
     }
 }

@@ -6,7 +6,7 @@
     },
     "wizard": {
       "title": "Data import: Preparations",
-      "buttonAbort": "Cancel",
+      "buttonAbort": "Stop import",
       "buttonConnect": "Connect",
       "buttonPrev": "Back",
       "buttonNext": "Next",
@@ -69,6 +69,9 @@
     "index": {
       "title": "Data import",
       "migrateButton": "Import",
+      "pauseButton": "Pause",
+      "continueButton": "Continue",
+      "abortButton": "Abort",
       "finishButton": "Finish",
       "backButton": "Back to overview",
       "browserClosingHint": "Do you really want to abort the data import?",
@@ -135,6 +138,10 @@
             "hintTitle": "Attention:",
             "hintContent": "The migration could not be completed."
           }
+        },
+        "pauseScreen": {
+          "title": "Pause.",
+          "message": "The import was paused.<br>Continue it or abort the process.<br><br>"
         }
       },
       "confirmDialog": {
@@ -142,6 +149,14 @@
         "message": "Do you really want to import your data?",
         "cancel": "Cancel",
         "confirm": "Import"
+      },
+      "confirmAbortDialog": {
+        "title": "Data import",
+        "message": "Stop data import now?",
+        "cancelRunning": "Continue",
+        "cancelPause": "Pause further",
+        "confirm": "Stop import",
+        "hintContent": "When the process is finished, the data is not complete and therefore partially unusable."
       },
       "error": {
         "associationRequiredMissing": {

@@ -15,9 +15,11 @@ use SwagMigrationNext\Controller\MigrationController;
 use SwagMigrationNext\Migration\Asset\HttpAssetDownloadService;
 use SwagMigrationNext\Migration\Asset\MediaFileService;
 use SwagMigrationNext\Migration\Service\MigrationEnvironmentService;
+use SwagMigrationNext\Migration\Service\MigrationProgressService;
 use SwagMigrationNext\Migration\Service\MigrationWriteService;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationNext\Test\Migration\Services\MigrationProfileUuidService;
 use SwagMigrationNext\Test\MigrationServicesTrait;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -37,15 +39,21 @@ class MigrationControllerTest extends TestCase
      */
     private $runUuid;
 
+    /**
+     * @var MigrationProfileUuidService
+     */
+    private $profileUuidService;
+
     protected function setUp()
     {
+        $this->profileUuidService = new MigrationProfileUuidService($this->getContainer()->get('swag_migration_profile.repository'));
         $this->runUuid = Uuid::uuid4()->getHex();
         $runRepo = $this->getContainer()->get('swag_migration_run.repository');
         $runRepo->create(
             [
                 [
                     'id' => $this->runUuid,
-                    'profile' => Shopware55Profile::PROFILE_NAME,
+                    'profileId' => $this->profileUuidService->getProfileUuid(),
                 ],
             ],
             Context::createDefaultContext(Defaults::TENANT_ID)
@@ -61,7 +69,8 @@ class MigrationControllerTest extends TestCase
             $this->getContainer()->get(MigrationWriteService::class),
             $this->getContainer()->get(HttpAssetDownloadService::class),
             $this->getContainer()->get(MigrationEnvironmentService::class),
-            $this->getContainer()->get('swag_migration_profile.repository')
+            $this->getContainer()->get('swag_migration_profile.repository'),
+            $this->getContainer()->get(MigrationProgressService::class)
         );
     }
 
