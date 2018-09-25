@@ -10,6 +10,8 @@ use Shopware\Core\Checkout\Payment\Aggregate\PaymentMethodTranslation\PaymentMet
 use Shopware\Core\Checkout\Payment\PaymentMethodDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\System\Country\Aggregate\CountryState\CountryStateDefinition;
+use Shopware\Core\System\Country\Aggregate\CountryStateTranslation\CountryStateTranslationDefinition;
 use Shopware\Core\System\Country\Aggregate\CountryTranslation\CountryTranslationDefinition;
 use Shopware\Core\System\Country\CountryDefinition;
 use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
@@ -326,6 +328,10 @@ class CustomerConverter implements ConverterInterface
 
             $newAddress['customerId'] = $customerUuid;
             $newAddress['country'] = $this->getCountry($address['country']);
+            if (isset($address['state'])) {
+                $newAddress['countryState'] = $this->getCountryState($address['state'], $newAddress['country']);
+            }
+
             $this->helper->convertValue($newAddress, 'salutation', $address, 'salutation');
             $this->helper->convertValue($newAddress, 'firstName', $address, 'firstname');
             $this->helper->convertValue($newAddress, 'lastName', $address, 'lastname');
@@ -410,5 +416,44 @@ class CustomerConverter implements ConverterInterface
         $country['translations'][$languageData['uuid']] = $translation;
 
         return $country;
+    }
+
+    private function getCountryState(array $oldStateData, array $newCountryData): array
+    {
+        $state = [];
+        $state['id'] = $this->mappingService->createNewUuid(
+            $this->profile,
+            CountryStateDefinition::getEntityName(),
+            $oldStateData['id'],
+            $this->context
+        );
+        $state['countryId'] = $newCountryData['id'];
+
+        $translation['id'] = $this->mappingService->createNewUuid(
+            $this->profile,
+            CountryStateTranslationDefinition::getEntityName(),
+            $oldStateData['id'] . ':' . $this->mainLocale,
+            $this->context
+        );
+
+        $translation['countryStateId'] = $state['id'];
+        $this->helper->convertValue($translation, 'name', $oldStateData, 'name');
+        $this->helper->convertValue($state, 'shortCode', $oldStateData, 'shortcode');
+        $this->helper->convertValue($state, 'position', $oldStateData, 'position', $this->helper::TYPE_INTEGER);
+        $this->helper->convertValue($state, 'active', $oldStateData, 'active', $this->helper::TYPE_BOOLEAN);
+
+        $languageData = $this->mappingService->getLanguageUuid($this->profile, $this->mainLocale, $this->context);
+
+        if (isset($languageData['createData']) && !empty($languageData['createData'])) {
+            $translation['language']['id'] = $languageData['uuid'];
+            $translation['language']['localeId'] = $languageData['createData']['localeId'];
+            $translation['language']['name'] = $languageData['createData']['localeCode'];
+        } else {
+            $translation['languageId'] = $languageData['uuid'];
+        }
+
+        $state['translations'][$languageData['uuid']] = $translation;
+
+        return $state;
     }
 }

@@ -54,8 +54,8 @@ class MigrationCollectServiceTest extends TestCase
             [
                 [
                     'id' => $this->runUuid,
-                    'profile' => Shopware55Profile::PROFILE_NAME
-                ]
+                    'profile' => Shopware55Profile::PROFILE_NAME,
+                ],
             ],
             Context::createDefaultContext(Defaults::TENANT_ID)
         );
@@ -219,7 +219,7 @@ class MigrationCollectServiceTest extends TestCase
         $this->migrationCollectService->fetchData($migrationContext, $context);
 
         $criteria = new Criteria();
-        $criteria->addFilter(new TermQuery('runId', $this->runUuid));;
+        $criteria->addFilter(new TermQuery('runId', $this->runUuid));
         $criteria->addFilter(new TermQuery('entity', ProductDefinition::getEntityName()));
         /** @var EntitySearchResult $result */
         $result = $this->migrationDataRepo->search($criteria, $context);
