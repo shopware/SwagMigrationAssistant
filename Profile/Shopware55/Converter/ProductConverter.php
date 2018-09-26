@@ -241,9 +241,10 @@ class ProductConverter implements ConverterInterface
         unset($data['prices']);
 
         if (isset($data['assets'])) {
-            $converted['media'] = $this->getAssets($data['assets'], $converted, $data['_locale']);
-            unset($data['assets']);
-            // TODO select cover media file and set it correctly
+            $mediaTemp = $this->getAssets($data['assets'], $converted, $data['_locale']);
+            $converted['media'] = $mediaTemp['media'];
+            $converted['cover'] = $mediaTemp['cover'];
+            unset($data['assets'], $mediaTemp);
         }
 
         $converted['translations'] = [];
@@ -283,6 +284,7 @@ class ProductConverter implements ConverterInterface
         $this->helper->convertValue($converted, 'shippingFree', $data['detail'], 'shippingfree', $this->helper::TYPE_BOOLEAN);
         $this->helper->convertValue($converted, 'minDeliveryTime', $data['detail'], 'shippingtime', $this->helper::TYPE_INTEGER);
         $this->helper->convertValue($converted, 'purchasePrice', $data['detail'], 'purchaseprice', $this->helper::TYPE_FLOAT);
+
         if (empty($data['detail'])) {
             unset($data['detail']);
         }
@@ -381,6 +383,7 @@ class ProductConverter implements ConverterInterface
     private function getAssets(array $assets, array $converted, $locale): array
     {
         $media = [];
+        $cover = null;
         foreach ($assets as $asset) {
             if (!isset($asset['media']['id'])) {
                 continue;
@@ -431,9 +434,13 @@ class ProductConverter implements ConverterInterface
 
             $newProductMedia['media'] = $newMedia;
             $media[] = $newProductMedia;
+
+            if ($cover === null && (int) $asset['main'] === 1) {
+                $cover = $newProductMedia;
+            }
         }
 
-        return $media;
+        return ['media' => $media, 'cover' => $cover];
     }
 
     private function getPrice(array $priceData, float $taxRate, bool $setInGross): array
