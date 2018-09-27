@@ -24,6 +24,7 @@ class GatewayFactoryRegistry implements GatewayFactoryRegistryInterface
     public function createGateway(MigrationContext $context): GatewayInterface
     {
         foreach ($this->gatewayFactories as $gatewayFactory) {
+
             if ($gatewayFactory->getName() === $context->getGatewayIdentifier()) {
                 return $gatewayFactory->create($context);
             }

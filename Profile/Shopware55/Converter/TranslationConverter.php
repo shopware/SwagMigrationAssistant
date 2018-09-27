@@ -15,7 +15,6 @@ use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\ConvertStruct;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
-use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
 class TranslationConverter implements ConverterInterface
 {
@@ -32,7 +31,7 @@ class TranslationConverter implements ConverterInterface
     /**
      * @var string
      */
-    private $profile;
+    private $profileId;
 
     /**
      * @var Context
@@ -73,10 +72,11 @@ class TranslationConverter implements ConverterInterface
         array $data,
         Context $context,
         string  $runId,
+        string $profileId,
         ?string $catalogId = null,
         ?string $salesChannelId = null
     ): ConvertStruct {
-        $this->profile = Shopware55Profile::PROFILE_NAME;
+        $this->profileId = $profileId;
         $this->context = $context;
         $this->runId = $runId;
 
@@ -107,13 +107,13 @@ class TranslationConverter implements ConverterInterface
         $sourceData = $data;
         $productTranslation = [];
         $productTranslation['id'] = $this->mappingService->createNewUuid(
-            $this->profile,
+            $this->profileId,
             ProductTranslationDefinition::getEntityName(),
             $data['id'],
             $this->context
         );
         $productTranslation['productId'] = $this->mappingService->getUuid(
-            $this->profile,
+            $this->profileId,
             ProductDefinition::getEntityName() . '_container',
             $data['objectkey'],
             $this->context
@@ -121,7 +121,7 @@ class TranslationConverter implements ConverterInterface
 
         if (!isset($productTranslation['productId'])) {
             $productTranslation['productId'] = $this->mappingService->getUuid(
-                $this->profile,
+                $this->profileId,
                 ProductDefinition::getEntityName() . '_mainProduct',
                 $data['objectkey'],
                 $this->context
@@ -179,7 +179,7 @@ class TranslationConverter implements ConverterInterface
 
         unset($data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
 
-        $languageData = $this->mappingService->getLanguageUuid($this->profile, $data['_locale'], $this->context);
+        $languageData = $this->mappingService->getLanguageUuid($this->profileId, $data['_locale'], $this->context);
 
         if (isset($languageData['createData'])) {
             $productTranslation['language']['id'] = $languageData['uuid'];
@@ -199,13 +199,13 @@ class TranslationConverter implements ConverterInterface
         $sourceData = $data;
         $manufacturerTranslation = [];
         $manufacturerTranslation['id'] = $this->mappingService->createNewUuid(
-            $this->profile,
+            $this->profileId,
             ProductManufacturerTranslationDefinition::getEntityName(),
             $data['id'],
             $this->context
         );
         $manufacturerTranslation['productManufacturerId'] = $this->mappingService->getUuid(
-            $this->profile,
+            $this->profileId,
             ProductManufacturerDefinition::getEntityName(),
             $data['objectkey'],
             $this->context
@@ -272,7 +272,7 @@ class TranslationConverter implements ConverterInterface
 
         unset($data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
 
-        $languageData = $this->mappingService->getLanguageUuid($this->profile, $data['_locale'], $this->context);
+        $languageData = $this->mappingService->getLanguageUuid($this->profileId, $data['_locale'], $this->context);
 
         if (isset($languageData['createData'])) {
             $manufacturerTranslation['language']['id'] = $languageData['uuid'];
@@ -297,13 +297,13 @@ class TranslationConverter implements ConverterInterface
 
         $unitTranslation = [];
         $unitTranslation['id'] = $this->mappingService->createNewUuid(
-            $this->profile,
+            $this->profileId,
             UnitTranslationDefinition::getEntityName(),
             $data['id'],
             $this->context
         );
         $unitTranslation['unitId'] = $this->mappingService->getUuid(
-            $this->profile,
+            $this->profileId,
             UnitDefinition::getEntityName(),
             $data['objectkey'],
             $this->context
@@ -366,7 +366,7 @@ class TranslationConverter implements ConverterInterface
 
         unset($data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
 
-        $languageData = $this->mappingService->getLanguageUuid($this->profile, $data['_locale'], $this->context);
+        $languageData = $this->mappingService->getLanguageUuid($this->profileId, $data['_locale'], $this->context);
 
         if (isset($languageData['createData'])) {
             $unitTranslation['language']['id'] = $languageData['uuid'];
@@ -391,13 +391,13 @@ class TranslationConverter implements ConverterInterface
 
         $categoryTranslation = [];
         $categoryTranslation['id'] = $this->mappingService->createNewUuid(
-            $this->profile,
+            $this->profileId,
             CategoryDefinition::getEntityName(),
             $data['id'],
             $this->context
         );
         $categoryTranslation['categoryId'] = $this->mappingService->getUuid(
-            $this->profile,
+            $this->profileId,
             CategoryDefinition::getEntityName(),
             $data['objectkey'],
             $this->context
@@ -471,7 +471,7 @@ class TranslationConverter implements ConverterInterface
 
         unset($data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
 
-        $languageData = $this->mappingService->getLanguageUuid($this->profile, $data['_locale'], $this->context);
+        $languageData = $this->mappingService->getLanguageUuid($this->profileId, $data['_locale'], $this->context);
 
         if (isset($languageData['createData'])) {
             $categoryTranslation['language']['id'] = $languageData['uuid'];

@@ -403,7 +403,7 @@ class MigrationService {
             }
 
             this._migrationService.fetchAssetUuids({
-                profile: this._profile.profile,
+                profileId: this._profile.id,
                 offset: this._assetCurrentOffset,
                 limit: this._ASSET_UUID_CHUNK
             }).then((res) => {
@@ -596,7 +596,8 @@ class MigrationService {
         return new Promise((resolve) => {
             const params = {
                 runUuid: this._runId,
-                profile: this._profile.profile,
+                profileId: this._profile.id,
+                profileName: this._profile.profile,
                 gateway: this._profile.gateway,
                 credentialFields: this._profile.credentialFields,
                 entity: entityName,

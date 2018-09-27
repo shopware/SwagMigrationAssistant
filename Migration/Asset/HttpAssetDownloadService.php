@@ -56,7 +56,7 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
         $this->loggingService = $loggingService;
     }
 
-    public function fetchMediaUuids(Context $context, string $profile, int $offset, int $limit): array
+    public function fetchMediaUuids(Context $context, string $profileId, int $offset, int $limit): array
     {
         // TODO: Normalize additional data to use the orm system instead of JSON_EXTRACT (performance)
         $queryBuilder = $this->connection->createQueryBuilder();
@@ -64,6 +64,8 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
             ->from('swag_migration_mapping', 'mapping')
             ->where('entity = :entity')
             ->setParameter('entity', MediaDefinition::getEntityName())
+            ->andWhere('HEX(profile_id) = :profileId')
+            ->setParameter('profileId', $profileId)
             ->setFirstResult($offset)
             ->setMaxResults($limit)
             ->orderBy('CONVERT(JSON_EXTRACT(`additional_data`, \'$.file_size\'), UNSIGNED INTEGER)');

@@ -14,7 +14,12 @@ class MigrationContext extends Struct
     /**
      * @var string
      */
-    private $profile;
+    private $profileId;
+
+    /**
+     * @var string
+     */
+    private $profileName;
 
     /**
      * @var string
@@ -51,9 +56,11 @@ class MigrationContext extends Struct
      */
     private $salesChannelId;
 
+
     public function __construct(
         string $runUuid,
-        string $profile,
+        string $profileId,
+        string $profileName,
         string $gateway,
         string $entity,
         array $credentials,
@@ -63,7 +70,8 @@ class MigrationContext extends Struct
         ?string $salesChannelId = null
     ) {
         $this->runUuid = $runUuid;
-        $this->profile = $profile;
+        $this->profileId = $profileId;
+        $this->profileName = $profileName;
         $this->gateway = $gateway;
         $this->entity = $entity;
         $this->credentials = $credentials;
@@ -78,9 +86,14 @@ class MigrationContext extends Struct
         return $this->runUuid;
     }
 
-    public function getProfile(): string
+    public function getProfileId(): string
     {
-        return $this->profile;
+        return $this->profileId;
+    }
+
+    public function getProfileName(): string
+    {
+        return $this->profileName;
     }
 
     public function getEntity(): string
@@ -100,7 +113,7 @@ class MigrationContext extends Struct
 
     public function getGatewayIdentifier(): string
     {
-        return $this->getProfile() . $this->getGateway();
+        return $this->getProfileName() . $this->getGateway();
     }
 
     public function getOffset(): int

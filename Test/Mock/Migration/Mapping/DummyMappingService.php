@@ -17,26 +17,26 @@ class DummyMappingService extends Shopware55MappingService
     {
     }
 
-    public function getUuid(string $profile, string $entityName, string $oldId, Context $context): ?string
+    public function getUuid(string $profileId, string $entityName, string $oldId, Context $context): ?string
     {
-        if (isset($this->uuids[$profile][$entityName][$oldId])) {
-            return $this->uuids[$profile][$entityName][$oldId];
+        if (isset($this->uuids[$profileId][$entityName][$oldId])) {
+            return $this->uuids[$profileId][$entityName][$oldId];
         }
 
         return null;
     }
 
-    public function deleteMapping(string $entityUuid, string $profile, Context $context): void
+    public function deleteMapping(string $entityUuid, string $profileId, Context $context): void
     {
         foreach ($this->writeArray as $writeMapping) {
-            if ($writeMapping['profile'] === $profile && $writeMapping['entityUuid'] === $entityUuid) {
+            if ($writeMapping['profile'] === $profileId && $writeMapping['entityUuid'] === $entityUuid) {
                 unset($writeMapping);
                 break;
             }
         }
     }
 
-    public function getLanguageUuid(string $profile, string $localeCode, Context $context): array
+    public function getLanguageUuid(string $profileId, string $localeCode, Context $context): array
     {
         return ['uuid' => self::DEFAULT_LANGUAGE_UUID];
     }
@@ -46,7 +46,7 @@ class DummyMappingService extends Shopware55MappingService
         return null;
     }
 
-    public function getCountryUuid(string $oldId, string $iso, string $iso3, string $profile, Context $context): ?string
+    public function getCountryUuid(string $oldId, string $iso, string $iso3, string $profileId, Context $context): ?string
     {
         return null;
     }

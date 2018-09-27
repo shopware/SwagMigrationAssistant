@@ -29,6 +29,7 @@ class GatewayServiceTest extends TestCase
     {
         $migrationContext = new MigrationContext(
             '',
+            '',
             'foobar',
             'api',
             ProductDefinition::getEntityName(),

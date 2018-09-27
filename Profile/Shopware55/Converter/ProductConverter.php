@@ -21,7 +21,6 @@ use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\ConvertStruct;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
-use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
 class ProductConverter implements ConverterInterface
 {
@@ -51,7 +50,7 @@ class ProductConverter implements ConverterInterface
     /**
      * @var string
      */
-    private $profile;
+    private $profileId;
 
     /**
      * @var string|null
@@ -95,10 +94,11 @@ class ProductConverter implements ConverterInterface
         array $data,
         Context $context,
         string $runId,
+        string $profileId,
         ?string $catalogId = null,
         ?string $salesChannelId = null
     ): ConvertStruct {
-        $this->profile = Shopware55Profile::PROFILE_NAME;
+        $this->profileId = $profileId;
         $this->context = $context;
         $this->runId = $runId;
         $this->catalogId = $catalogId;
@@ -153,7 +153,7 @@ class ProductConverter implements ConverterInterface
     private function convertMainProduct(array $data): ConvertStruct
     {
         $containerUuid = $this->mappingService->createNewUuid(
-            $this->profile,
+            $this->profileId,
             ProductDefinition::getEntityName() . '_container',
             $data['id'],
             $this->context
@@ -165,7 +165,7 @@ class ProductConverter implements ConverterInterface
 
         $converted['children'][] = $converted;
         $converted['children'][0]['id'] = $this->mappingService->createNewUuid(
-            $this->profile,
+            $this->profileId,
             ProductDefinition::getEntityName(),
             $this->oldProductId,
             $this->context
@@ -194,7 +194,7 @@ class ProductConverter implements ConverterInterface
     private function convertVariantProduct(array $data): ConvertStruct
     {
         $parentUuid = $this->mappingService->getUuid(
-            $this->profile,
+            $this->profileId,
             ProductDefinition::getEntityName() . '_container',
             $data['detail']['articleID'],
             $this->context
@@ -222,14 +222,14 @@ class ProductConverter implements ConverterInterface
     private function getUuidForProduct(array &$data): array
     {
         $converted['id'] = $this->mappingService->createNewUuid(
-            $this->profile,
+            $this->profileId,
             ProductDefinition::getEntityName(),
             $this->oldProductId,
             $this->context
         );
 
         $this->mappingService->createNewUuid(
-            $this->profile,
+            $this->profileId,
             ProductDefinition::getEntityName() . '_mainProduct',
             $data['detail']['articleID'],
             $this->context,
@@ -347,7 +347,7 @@ class ProductConverter implements ConverterInterface
     private function getManufacturer(array $manufacturerData, string $locale): array
     {
         $manufacturerUuid = $this->mappingService->createNewUuid(
-            $this->profile,
+            $this->profileId,
             ProductManufacturerDefinition::getEntityName(),
             $manufacturerData['id'],
             $this->context
@@ -358,7 +358,7 @@ class ProductConverter implements ConverterInterface
 
         $translations = [];
         $translations['id'] = $this->mappingService->createNewUuid(
-            $this->profile,
+            $this->profileId,
             ProductManufacturerTranslationDefinition::getEntityName(),
             $manufacturerData['id'] . ':' . $locale,
             $this->context
@@ -370,7 +370,7 @@ class ProductConverter implements ConverterInterface
         $this->helper->convertValue($translations, 'metaDescription', $manufacturerData, 'meta_description');
         $this->helper->convertValue($translations, 'metaKeywords', $manufacturerData, 'meta_keywords');
 
-        $languageData = $this->mappingService->getLanguageUuid($this->profile, $locale, $this->context);
+        $languageData = $this->mappingService->getLanguageUuid($this->profileId, $locale, $this->context);
 
         if (isset($languageData['createData']) && !empty($languageData['createData'])) {
             $translations['language']['id'] = $languageData['uuid'];
@@ -389,7 +389,7 @@ class ProductConverter implements ConverterInterface
     {
         return [
             'id' => $this->mappingService->createNewUuid(
-                $this->profile,
+                $this->profileId,
                 TaxDefinition::getEntityName(),
                 $taxData['id'],
                 $this->context
@@ -402,7 +402,7 @@ class ProductConverter implements ConverterInterface
     private function getUnit(array $unitData, string $locale): array
     {
         $translation['id'] = $this->mappingService->createNewUuid(
-            $this->profile,
+            $this->profileId,
             UnitTranslationDefinition::getEntityName(),
             $unitData['id'] . ':' . $locale,
             $this->context
@@ -411,7 +411,7 @@ class ProductConverter implements ConverterInterface
         $this->helper->convertValue($translation, 'shortCode', $unitData, 'unit');
         $this->helper->convertValue($translation, 'name', $unitData, 'description');
 
-        $languageData = $this->mappingService->getLanguageUuid($this->profile, $locale, $this->context);
+        $languageData = $this->mappingService->getLanguageUuid($this->profileId, $locale, $this->context);
 
         if (isset($languageData['createData']) && !empty($languageData['createData'])) {
             $translation['language']['id'] = $languageData['uuid'];
@@ -423,7 +423,7 @@ class ProductConverter implements ConverterInterface
 
         return [
             'id' => $this->mappingService->createNewUuid(
-                $this->profile,
+                $this->profileId,
                 UnitDefinition::getEntityName(),
                 $unitData['id'],
                 $this->context
@@ -453,7 +453,7 @@ class ProductConverter implements ConverterInterface
 
             $newProductMedia = [];
             $newProductMedia['id'] = $this->mappingService->createNewUuid(
-                $this->profile,
+                $this->profileId,
                 ProductMediaDefinition::getEntityName(),
                 $asset['id'],
                 $this->context
@@ -463,7 +463,7 @@ class ProductConverter implements ConverterInterface
 
             $newMedia = [];
             $newMedia['id'] = $this->mappingService->createNewUuid(
-                $this->profile,
+                $this->profileId,
                 MediaDefinition::getEntityName(),
                 $asset['media']['id'],
                 $this->context,
@@ -474,7 +474,7 @@ class ProductConverter implements ConverterInterface
             );
 
             $translation['id'] = $this->mappingService->createNewUuid(
-                $this->profile,
+                $this->profileId,
                 MediaTranslationDefinition::getEntityName(),
                 $asset['media']['id'] . ':' . $locale,
                 $this->context
@@ -482,7 +482,7 @@ class ProductConverter implements ConverterInterface
             $this->helper->convertValue($translation, 'name', $asset['media'], 'name');
             $this->helper->convertValue($translation, 'description', $asset['media'], 'description');
 
-            $languageData = $this->mappingService->getLanguageUuid($this->profile, $locale, $this->context);
+            $languageData = $this->mappingService->getLanguageUuid($this->profileId, $locale, $this->context);
 
             if (isset($languageData['createData']) && !empty($languageData['createData'])) {
                 $translation['language']['id'] = $languageData['uuid'];
@@ -526,7 +526,7 @@ class ProductConverter implements ConverterInterface
                 'currencyId' => Defaults::CURRENCY,
                 'rule' => [
                     'id' => $this->mappingService->createNewUuid(
-                        $this->profile,
+                        $this->profileId,
                         RuleDefinition::getEntityName(),
                         $price['pricegroup'],
                         $this->context
@@ -547,7 +547,7 @@ class ProductConverter implements ConverterInterface
     private function setGivenProductTranslation(array &$data, array &$converted): void
     {
         $defaultTranslation['id'] = $this->mappingService->createNewUuid(
-            $this->profile,
+            $this->profileId,
             ProductTranslationDefinition::getEntityName(),
             $this->oldProductId . ':' . $data['_locale'],
             $this->context
@@ -561,7 +561,7 @@ class ProductConverter implements ConverterInterface
         $this->helper->convertValue($defaultTranslation, 'keywords', $data, 'keywords');
         $this->helper->convertValue($defaultTranslation, 'packUnit', $data['detail'], 'packunit');
 
-        $languageData = $this->mappingService->getLanguageUuid($this->profile, $data['_locale'], $this->context);
+        $languageData = $this->mappingService->getLanguageUuid($this->profileId, $data['_locale'], $this->context);
 
         if (isset($languageData['createData']) && !empty($languageData['createData'])) {
             $defaultTranslation['language']['id'] = $languageData['uuid'];
@@ -580,7 +580,7 @@ class ProductConverter implements ConverterInterface
 
         foreach ($categories as $key => $category) {
             $categoryUuid = $this->mappingService->getUuid(
-                $this->profile,
+                $this->profileId,
                 CategoryDefinition::getEntityName(),
                 $category['id'],
                 $this->context

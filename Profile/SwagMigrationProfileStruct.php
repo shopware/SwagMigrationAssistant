@@ -4,6 +4,7 @@ namespace SwagMigrationNext\Profile;
 
 use DateTime;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
+use SwagMigrationNext\Migration\Mapping\SwagMigrationMappingStruct;
 
 class SwagMigrationProfileStruct extends Entity
 {
@@ -31,6 +32,27 @@ class SwagMigrationProfileStruct extends Entity
      * @var DateTime|null
      */
     protected $updatedAt;
+
+    /**
+     * @var SwagMigrationMappingStruct[]
+     */
+    protected $mappings;
+
+    /**
+     * @return SwagMigrationMappingStruct[]
+     */
+    public function getMappings(): array
+    {
+        return $this->mappings;
+    }
+
+    /**
+     * @param SwagMigrationMappingStruct[] $mappings
+     */
+    public function setMappings(array $mappings): void
+    {
+        $this->mappings = $mappings;
+    }
 
     public function getProfile(): string
     {

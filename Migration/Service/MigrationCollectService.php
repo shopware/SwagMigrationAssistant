@@ -38,7 +38,7 @@ class MigrationCollectService implements MigrationCollectServiceInterface
     public function fetchData(MigrationContext $migrationContext, Context $context): int
     {
         try {
-            $profile = $this->profileRegistry->getProfile($migrationContext->getProfile());
+            $profile = $this->profileRegistry->getProfile($migrationContext->getProfileName());
             $gateway = $this->gatewayFactoryRegistry->createGateway($migrationContext);
             $returnCount = $profile->collectData($gateway, $migrationContext, $context);
         } catch (\Exception $exception) {

@@ -116,7 +116,7 @@ class Shopware55Profile implements ProfileInterface
                 $environmentData['error']['detail']
             );
         }
-        
+
         if (!isset($environmentDataArray['translations'])) {
             $environmentDataArray['translations'] = 0;
         }
@@ -174,7 +174,7 @@ class Shopware55Profile implements ProfileInterface
         $createData = [];
         foreach ($data as $item) {
             try {
-                $convertStruct = $converter->convert($item, $context, $runId, $catalogId, $salesChannelId);
+                $convertStruct = $converter->convert($item, $context, $runId, $migrationContext->getProfileId(), $catalogId, $salesChannelId);
 
                 $createData[] = [
                     'entity' => $entityName,

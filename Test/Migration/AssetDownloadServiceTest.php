@@ -82,6 +82,7 @@ class AssetDownloadServiceTest extends TestCase
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
         $migrationContext = new MigrationContext(
             '',
+            '',
             Shopware55Profile::PROFILE_NAME,
             'local',
             ProductDefinition::getEntityName(),
