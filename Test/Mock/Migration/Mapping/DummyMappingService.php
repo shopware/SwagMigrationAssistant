@@ -13,6 +13,24 @@ class DummyMappingService extends Shopware55MappingService
     {
     }
 
+    public function readExistingMappings(Context $context): void
+    {
+    }
+
+    public function createNewUuid(
+        string $profileId,
+        string $entityName,
+        string $oldId,
+        Context $context,
+        array $additionalData = null
+    ): string {
+        return '';
+    }
+
+    public function saveMapping(array $mapping): void
+    {
+    }
+
     public function setProfile(string $profileName): void
     {
     }

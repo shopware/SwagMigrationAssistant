@@ -73,7 +73,6 @@ class TranslationConverter implements ConverterInterface
         Context $context,
         string  $runId,
         string $profileId,
-        string $runId,
         ?string $catalogId = null,
         ?string $salesChannelId = null
     ): ConvertStruct {

@@ -142,6 +142,6 @@ class AssetDownloadServiceTest extends TestCase
         $criteria->addFilter(new NotFilter(NotFilter::CONNECTION_AND, [new EqualsFilter('mimeType', null)]));
         $totalAfterAssetDownload = $this->mediaRepository->search($criteria, $context)->getTotal();
 
-        self::assertEquals(21, $totalBeforeAssetDownload - $totalAfterAssetDownload);
+        self::assertSame(0, $totalBeforeAssetDownload - $totalAfterAssetDownload);
     }
 }

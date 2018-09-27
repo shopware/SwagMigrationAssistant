@@ -5,7 +5,6 @@ namespace SwagMigrationNext\Profile\Shopware55\Converter;
 use Shopware\Core\Content\Category\Aggregate\CategoryTranslation\CategoryTranslationDefinition;
 use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\Struct\Uuid;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\ConvertStruct;
@@ -71,7 +70,6 @@ class CategoryConverter implements ConverterInterface
         Context $context,
         string $runId,
         string $profileId,
-        string $runId,
         ?string $catalogId = null,
         ?string $salesChannelId = null
     ): ConvertStruct {

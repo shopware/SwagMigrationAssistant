@@ -43,13 +43,13 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
     public function __construct(
         RepositoryInterface $migrationMappingRepository,
         FileSaver $fileSaver,
-        LoggingServiceInterface $loggingService,
-        RepositoryInterface $migrationMediaFileRepo
+        RepositoryInterface $migrationMediaFileRepo,
+        LoggingServiceInterface $loggingService
     ) {
         $this->migrationMappingRepository = $migrationMappingRepository;
         $this->fileSaver = $fileSaver;
-        $this->loggingService = $loggingService;
         $this->mediaFileRepo = $migrationMediaFileRepo;
+        $this->loggingService = $loggingService;
     }
 
     public function fetchMediaUuids(Context $context, string $runId, int $limit): array
@@ -80,6 +80,13 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
      */
     public function downloadAssets(string $runId, Context $context, array $workload, int $fileChunkByteSize): array
     {
+        //Map workload with uuids as keys
+        $mappedWorkload = [];
+        foreach ($workload as $work) {
+            $mappedWorkload[$work['uuid']] = $work;
+            $runId = $work['runId'];
+        }
+
         if (!is_dir('_temp') && !mkdir('_temp') && !is_dir('_temp')) {
             $exception = new NoFileSystemPermissionsException();
             $this->loggingService->addError($runId, (string) $exception->getCode(), $exception->getMessage());

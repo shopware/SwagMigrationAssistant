@@ -32,7 +32,7 @@ class SwagMigrationProfileDefinition extends EntityDefinition
             new JsonField('credential_fields', 'credentialFields'),
             new CreatedAtField(),
             new UpdatedAtField(),
-            new OneToManyAssociationField('mappings', SwagMigrationMappingDefinition::class, 'profile_id', false),
+            new OneToManyAssociationField('mappings', SwagMigrationMappingDefinition::class, 'profile_id', false)
         ]);
     }
 

@@ -56,6 +56,7 @@ class MigrationContext extends Struct
      */
     private $salesChannelId;
 
+
     public function __construct(
         string $runUuid,
         string $profileId,
