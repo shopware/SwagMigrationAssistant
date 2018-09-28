@@ -16,6 +16,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
+use SwagMigrationNext\Migration\Asset\MediaFileService;
 use Shopware\Core\System\Currency\CurrencyStruct;
 use SwagMigrationNext\Migration\Asset\MediaFileService;
 use SwagMigrationNext\Migration\MigrationContext;

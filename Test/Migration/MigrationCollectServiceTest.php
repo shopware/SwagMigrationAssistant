@@ -15,6 +15,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
+use SwagMigrationNext\Migration\Asset\MediaFileService;
 use SwagMigrationNext\Migration\Logging\LoggingService;
 use SwagMigrationNext\Migration\Logging\SwagMigrationLoggingStruct;
 use SwagMigrationNext\Migration\Asset\MediaFileService;

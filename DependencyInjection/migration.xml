@@ -4,11 +4,6 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
-        <service id="SwagMigrationNext\Migration\Logging\LoggingService"
-                 class="SwagMigrationNext\Migration\Logging\LoggingService">
-            <argument type="service" id="swag_migration_logging.repository"/>
-        </service>
-
         <service id="SwagMigrationNext\Migration\Asset\SwagMigrationMediaFileDefinition"
                  class="SwagMigrationNext\Migration\Asset\SwagMigrationMediaFileDefinition">
             <tag name="shopware.entity.definition" entity="swag_migration_media_file"/>
@@ -23,6 +18,11 @@
             <argument type="service" id="Shopware\Core\Framework\ORM\Search\EntitySearcherInterface"/>
             <argument type="service" id="Shopware\Core\Framework\ORM\Search\EntityAggregatorInterface"/>
             <argument type="service" id="event_dispatcher"/>
+        </service>
+
+        <service id="SwagMigrationNext\Migration\Logging\LoggingService"
+                 class="SwagMigrationNext\Migration\Logging\LoggingService">
+            <argument type="service" id="swag_migration_logging.repository"/>
         </service>
 
         <service id="SwagMigrationNext\Migration\Asset\MediaFileService"

@@ -41,14 +41,12 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
     private $loggingService;
 
     public function __construct(
-        RepositoryInterface $migrationMappingRepository,
-        FileSaver $fileSaver,
         RepositoryInterface $migrationMediaFileRepo,
+        FileSaver $fileSaver,
         LoggingServiceInterface $loggingService
     ) {
-        $this->migrationMappingRepository = $migrationMappingRepository;
-        $this->fileSaver = $fileSaver;
         $this->mediaFileRepo = $migrationMediaFileRepo;
+        $this->fileSaver = $fileSaver;
         $this->loggingService = $loggingService;
     }
 
@@ -82,9 +80,11 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
     {
         //Map workload with uuids as keys
         $mappedWorkload = [];
+        $mediaIds = [];
         foreach ($workload as $work) {
             $mappedWorkload[$work['uuid']] = $work;
             $runId = $work['runId'];
+            $mediaIds[] = $work['uuid'];
         }
 
         if (!is_dir('_temp') && !mkdir('_temp') && !is_dir('_temp')) {
@@ -183,7 +183,6 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
         }
 
         $this->setDownloadedFlag($runId, $context, $finishedUuids);
-
         $this->loggingService->saveLogging($context);
 
         return array_values($mappedWorkload);

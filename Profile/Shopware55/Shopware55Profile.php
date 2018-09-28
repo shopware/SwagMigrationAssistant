@@ -93,6 +93,7 @@ class Shopware55Profile implements ProfileInterface
         }
 
         $converter->writeMapping($context);
+        $this->mediaFileService->writeMediaFile($context);
         $this->loggingService->saveLogging($context);
 
         /** @var EntityWrittenContainerEvent $writtenEvent */
