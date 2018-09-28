@@ -4,6 +4,8 @@ namespace SwagMigrationNext\Test\Profile\Shopware55\Converter;
 
 use Exception;
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
+use SwagMigrationNext\Migration\Asset\MediaFileService;
 use SwagMigrationNext\Profile\Shopware55\Converter\ConverterNotFoundException;
 use SwagMigrationNext\Profile\Shopware55\Converter\ConverterRegistry;
 use SwagMigrationNext\Profile\Shopware55\Converter\ConverterRegistryInterface;
@@ -16,6 +18,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ConverterRegistryTest extends TestCase
 {
+    use IntegrationTestBehaviour;
+
     /**
      * @var ConverterRegistryInterface
      */
@@ -23,7 +27,16 @@ class ConverterRegistryTest extends TestCase
 
     protected function setUp()
     {
-        $this->converterRegistry = new ConverterRegistry(new DummyCollection([new ProductConverter(new DummyMappingService(), new ConverterHelperService(), new DummyLoggingService())]));
+        $this->converterRegistry = new ConverterRegistry(
+            new DummyCollection([
+                new ProductConverter(
+                    new DummyMappingService(),
+                    new ConverterHelperService(),
+                    new MediaFileService($this->getContainer()->get('swag_migration_media_file.repository')),
+                    new DummyLoggingService()
+                )
+            ])
+        );
     }
 
     public function testGetConverterNotFound(): void

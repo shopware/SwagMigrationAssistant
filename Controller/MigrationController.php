@@ -179,15 +179,14 @@ class MigrationController extends Controller
      */
     public function fetchMediaUuids(Request $request, Context $context): JsonResponse
     {
-        $offset = $request->query->getInt('offset');
         $limit = $request->query->getInt('limit', 100);
-        $profileId = $request->query->get('profileId');
+        $runId = $request->query->get('runId');
 
-        if ($profileId === null) {
-            throw new MigrationWorkloadPropertyMissingException('profileId');
+        if ($runId === null) {
+            throw new MigrationWorkloadPropertyMissingException('runId');
         }
 
-        $mediaUuids = $this->assetDownloadService->fetchMediaUuids($context, $profileId, $offset, $limit);
+        $mediaUuids = $this->assetDownloadService->fetchMediaUuids($context, $runId, $limit);
 
         return new JsonResponse(['mediaUuids' => $mediaUuids]);
     }
@@ -200,8 +199,13 @@ class MigrationController extends Controller
     public function downloadAssets(Request $request, Context $context): JsonResponse
     {
         /** @var array $workload */
+        $runId = $request->request->get('runId');
         $workload = $request->request->get('workload', []);
         $fileChunkByteSize = $request->request->getInt('fileChunkByteSize', 1000 * 1000);
+
+        if ($runId === null) {
+            throw new MigrationContextPropertyMissingException('runId');
+        }
 
         if (\count($workload) === 0) {
             return new JsonResponse(['workload' => []]);
@@ -219,7 +223,7 @@ class MigrationController extends Controller
             }
         }
 
-        $newWorkload = $this->assetDownloadService->downloadAssets($context, $workload, $fileChunkByteSize);
+        $newWorkload = $this->assetDownloadService->downloadAssets($runId, $context, $workload, $fileChunkByteSize);
 
         return new JsonResponse(['workload' => $newWorkload]);
     }

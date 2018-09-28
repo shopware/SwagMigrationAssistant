@@ -18,6 +18,7 @@ use Shopware\Core\System\Tax\TaxDefinition;
 use Shopware\Core\System\Unit\Aggregate\UnitTranslation\UnitTranslationDefinition;
 use Shopware\Core\System\Unit\UnitDefinition;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationNext\Migration\Asset\MediaFileServiceInterface;
 use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\ConvertStruct;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
@@ -63,6 +64,11 @@ class ProductConverter implements ConverterInterface
     private $runId;
 
     /**
+     * @var MediaFileServiceInterface
+     */
+    private $mediaFileService;
+
+    /**
      * @var LoggingServiceInterface
      */
     private $loggingService;
@@ -70,10 +76,12 @@ class ProductConverter implements ConverterInterface
     public function __construct(
         Shopware55MappingService $mappingService,
         ConverterHelperService $converterHelperService,
+        MediaFileServiceInterface $mediaFileService,
         LoggingServiceInterface $loggingService
     ) {
         $this->mappingService = $mappingService;
         $this->helper = $converterHelperService;
+        $this->mediaFileService = $mediaFileService;
         $this->loggingService = $loggingService;
     }
 
@@ -98,9 +106,9 @@ class ProductConverter implements ConverterInterface
         ?string $catalogId = null,
         ?string $salesChannelId = null
     ): ConvertStruct {
-        $this->profileId = $profileId;
         $this->context = $context;
         $this->runId = $runId;
+        $this->profileId = $profileId;
         $this->catalogId = $catalogId;
         $this->oldProductId = $data['detail']['ordernumber'];
 
@@ -466,10 +474,15 @@ class ProductConverter implements ConverterInterface
                 $this->profileId,
                 MediaDefinition::getEntityName(),
                 $asset['media']['id'],
-                $this->context,
+                $this->context
+            );
+
+            $this->mediaFileService->saveMediaFile(
                 [
+                    'runId' => $this->runId,
                     'uri' => $asset['media']['uri'],
-                    'file_size' => $asset['media']['file_size'],
+                    'fileSize' => (int) $asset['media']['file_size'],
+                    'mediaId' => $newMedia['id'],
                 ]
             );
 

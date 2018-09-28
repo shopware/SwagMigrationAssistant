@@ -4,6 +4,7 @@ namespace SwagMigrationNext\Migration\Run;
 
 use DateTime;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
+use SwagMigrationNext\Migration\Asset\SwagMigrationMediaFileStruct;
 use SwagMigrationNext\Migration\Data\SwagMigrationDataStruct;
 
 class SwagMigrationRunStruct extends Entity
@@ -32,6 +33,11 @@ class SwagMigrationRunStruct extends Entity
      * @var SwagMigrationDataStruct[]
      */
     protected $data;
+
+    /**
+     * @var SwagMigrationMediaFileStruct[]
+     */
+    protected $mediaFiles;
 
     public function getProfile(): string
     {
@@ -87,5 +93,21 @@ class SwagMigrationRunStruct extends Entity
     public function setData(array $data): void
     {
         $this->data = $data;
+    }
+
+    /**
+     * @return SwagMigrationMediaFileStruct[]
+     */
+    public function getMediaFiles(): array
+    {
+        return $this->mediaFiles;
+    }
+
+    /**
+     * @param SwagMigrationMediaFileStruct[] $mediaFiles
+     */
+    public function setMediaFiles(array $mediaFiles): void
+    {
+        $this->mediaFiles = $mediaFiles;
     }
 }

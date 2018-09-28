@@ -139,6 +139,7 @@ DROP TABLE IF EXISTS swag_migration_data;
 DROP TABLE IF EXISTS swag_migration_run;
 DROP TABLE IF EXISTS swag_migration_mapping;
 DROP TABLE IF EXISTS swag_migration_profile;
+DROP TABLE IF EXISTS swag_migration_media_file;
 ');
 
         parent::uninstall($context);

@@ -20,9 +20,10 @@ class Migration1538041441UpdateMapping extends MigrationStep
     public function updateDestructive(Connection $connection): void
     {
         // implement update destructive
+        $this->dropProfileColumn($connection);
     }
 
-    private function addProfileIdColumn(Connection $connection)
+    private function addProfileIdColumn(Connection $connection): void
     {
         // add profileId column
         $sql = <<<SQL
@@ -47,19 +48,25 @@ SQL;
         $sql = <<<SQL
 SELECT id FROM `swag_migration_profile` WHERE `profile`='shopware55' AND `gateway`='api';
 SQL;
-        $results = $connection->fetchAll($sql);
-        if (count($results) === 0) {
+        $profileId = $connection->fetchColumn($sql);
+        if ($profileId === false) {
             return;
         }
-
-        $profileId = $results[0]['id'];
 
         // Update profile in run table
         $sql = <<<SQL
 UPDATE `swag_migration_mapping` SET `profile_id`=:profileId WHERE `profile_name`='shopware55';
 SQL;
         $connection->executeUpdate($sql, [
-            'profileId' => $profileId
+            'profileId' => $profileId,
         ]);
+    }
+
+    private function dropProfileColumn(Connection $connection): void
+    {
+        $sql = <<<SQL
+ALTER TABLE `swag_migration_mapping` DROP `profile`;
+SQL;
+        $connection->exec($sql);
     }
 }

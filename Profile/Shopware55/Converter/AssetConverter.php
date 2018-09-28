@@ -5,10 +5,10 @@ namespace SwagMigrationNext\Profile\Shopware55\Converter;
 use Shopware\Core\Content\Media\Aggregate\MediaTranslation\MediaTranslationDefinition;
 use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Framework\Context;
+use SwagMigrationNext\Migration\Asset\MediaFileServiceInterface;
 use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\ConvertStruct;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
-use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
 class AssetConverter implements ConverterInterface
 {
@@ -22,12 +22,19 @@ class AssetConverter implements ConverterInterface
      */
     private $helper;
 
+    /**
+     * @var MediaFileServiceInterface
+     */
+    private $mediaFileService;
+
     public function __construct(
         Shopware55MappingService $mappingService,
-        ConverterHelperService $converterHelperService
+        ConverterHelperService $converterHelperService,
+        MediaFileServiceInterface $mediaFileService
     ) {
         $this->mappingService = $mappingService;
         $this->helper = $converterHelperService;
+        $this->mediaFileService = $mediaFileService;
     }
 
     public function supports(): string
@@ -45,6 +52,7 @@ class AssetConverter implements ConverterInterface
         Context $context,
         string $runId,
         string $profileId,
+        string $runId,
         ?string $catalogId = null,
         ?string $salesChannelId = null
     ): ConvertStruct {
@@ -56,10 +64,15 @@ class AssetConverter implements ConverterInterface
             $profileId,
             MediaDefinition::getEntityName(),
             $data['id'],
-            $context,
+            $context
+        );
+
+        $this->mediaFileService->saveMediaFile(
             [
+                'runId' => $runId,
                 'uri' => $data['uri'],
-                'file_size' => $data['file_size'],
+                'fileSize' => (int) $data['file_size'],
+                'mediaId' => $converted['id'],
             ]
         );
         unset($data['uri'], $data['file_size']);

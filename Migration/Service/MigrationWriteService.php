@@ -2,11 +2,15 @@
 
 namespace SwagMigrationNext\Migration\Service;
 
+use Shopware\Core\Content\Media\MediaDefinition;
+use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Query\TermQuery;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
+use SwagMigrationNext\Migration\Asset\MediaFileServiceInterface;
 use SwagMigrationNext\Migration\Data\SwagMigrationDataStruct;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\MigrationContext;
@@ -29,10 +33,16 @@ class MigrationWriteService implements MigrationWriteServiceInterface
      */
     private $loggingService;
 
-    public function __construct(RepositoryInterface $migrationDataRepo, WriterRegistryInterface $writerRegistry, LoggingServiceInterface $loggingService)
+    /**
+     * @var MediaFileServiceInterface
+     */
+    private $mediaFileService;
+
+    public function __construct(RepositoryInterface $migrationDataRepo, WriterRegistryInterface $writerRegistry, MediaFileServiceInterface $mediaFileService, LoggingServiceInterface $loggingService)
     {
         $this->migrationDataRepo = $migrationDataRepo;
         $this->writerRegistry = $writerRegistry;
+        $this->mediaFileService = $mediaFileService;
         $this->loggingService = $loggingService;
     }
 
@@ -53,7 +63,7 @@ class MigrationWriteService implements MigrationWriteServiceInterface
 
         $converted = [];
         $updateWrittenData = [];
-        array_map(function ($data) use (&$converted, &$updateWrittenData) {
+        foreach ($migrationData->getElements() as $data) {
             /* @var SwagMigrationDataStruct $data */
             $value = $data->getConverted();
             if ($value !== null) {
@@ -63,7 +73,7 @@ class MigrationWriteService implements MigrationWriteServiceInterface
                     'written' => true,
                 ];
             }
-        }, $migrationData->getElements());
+        }
 
         if (empty($converted)) {
             return;
@@ -79,6 +89,12 @@ class MigrationWriteService implements MigrationWriteServiceInterface
         }
         $currentWriter->writeData($converted, $context);
 
+        // Update written-Flag of the entity in the data table
         $this->migrationDataRepo->update($updateWrittenData, $context);
+
+        // Update written-Flag of the media file in the media file table
+        if ($entity === MediaDefinition::getEntityName() || $entity === ProductDefinition::getEntityName()) {
+            $this->mediaFileService->setWrittenFlag($converted, $migrationContext, $context);
+        }
     }
 }

@@ -3,7 +3,7 @@ import CriteriaFactory from 'src/core/factory/criteria.factory';
 import StorageBroadcastService from '../storage-broadcaster.service';
 
 class MigrationService {
-    constructor(migrationService, migrationDataService, migrationRunService) {
+    constructor(migrationService, migrationDataService, migrationRunService, migrationMediaFileService) {
         this._MAX_REQUEST_TIME = 10000; // in ms
         this._DEFAULT_CHUNK_SIZE = 50; // in data sets
         this._CHUNK_INCREMENT = 5; // in data sets
@@ -35,6 +35,7 @@ class MigrationService {
 
         this._migrationService = migrationService;
         this._migrationDataService = migrationDataService;
+        this._migrationMediaFileService = migrationMediaFileService;
         this._migrationRunService = migrationRunService;
         this._chunkSize = this._DEFAULT_CHUNK_SIZE;
 
@@ -49,7 +50,6 @@ class MigrationService {
         this._profile = null;
         this._status = null;
         this._assetTotalCount = 0;
-        this._assetCurrentOffset = 0;
         this._assetUuidPool = [];
         this._assetWorkload = [];
         this._assetProgress = 0;
@@ -278,7 +278,6 @@ class MigrationService {
     }
 
     _resetAssetProgress() {
-        this._assetCurrentOffset = 0;
         this._assetUuidPool = [];
         this._assetWorkload = [];
         this._assetProgress = 0;
@@ -361,17 +360,14 @@ class MigrationService {
         return new Promise((resolve) => {
             const count = {
                 mediaCount: {
-                    count: { field: 'swag_migration_data.entity' }
+                    count: { field: 'swag_migration_media_file.mediaId' }
                 }
             };
             const criteria = CriteriaFactory.multi(
                 'AND',
                 CriteriaFactory.equals('runId', this._runId),
-                CriteriaFactory.not(
-                    'AND',
-                    CriteriaFactory.equals('converted', null)
-                ),
-                CriteriaFactory.equals('entity', 'media')
+                CriteriaFactory.equals('written', true),
+                CriteriaFactory.equals('downloaded', false)
             );
             const params = {
                 aggregations: count,
@@ -379,7 +375,7 @@ class MigrationService {
                 limit: 1
             };
 
-            this._migrationDataService.getList(params).then((res) => {
+            this._migrationMediaFileService.getList(params).then((res) => {
                 this._assetTotalCount = parseInt(res.aggregations.mediaCount.count, 10);
                 resolve();
             }).catch(() => {
@@ -403,12 +399,21 @@ class MigrationService {
             }
 
             this._migrationService.fetchAssetUuids({
-                profileId: this._profile.id,
-                offset: this._assetCurrentOffset,
+                runId: this._runId,
                 limit: this._ASSET_UUID_CHUNK
             }).then((res) => {
-                this._assetUuidPool = this._assetUuidPool.concat(res.mediaUuids);
-                this._assetCurrentOffset += this._ASSET_UUID_CHUNK;
+                res.mediaUuids.forEach((uuid) => {
+                    let isInWorkload = false;
+                    this._assetWorkload.forEach((media) => {
+                        if (media.uuid === uuid) {
+                            isInWorkload = true;
+                        }
+                    });
+
+                    if (!isInWorkload && !this._assetUuidPool.includes(uuid)) {
+                        this._assetUuidPool.push(uuid);
+                    }
+                });
                 resolve();
             });
         });
@@ -532,6 +537,7 @@ class MigrationService {
     _downloadAssets() {
         return new Promise((resolve) => {
             this._migrationService.downloadAssets({
+                runId: this._runId,
                 workload: this._assetWorkload,
                 fileChunkByteSize: this._ASSET_FILE_CHUNK_BYTE_SIZE
             }).then((res) => {

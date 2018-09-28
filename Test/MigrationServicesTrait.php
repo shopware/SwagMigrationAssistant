@@ -10,6 +10,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
 use SwagMigrationNext\Gateway\GatewayFactoryRegistry;
 use SwagMigrationNext\Gateway\Shopware55\Api\Shopware55ApiFactory;
 use SwagMigrationNext\Migration\Logging\LoggingService;
+use SwagMigrationNext\Migration\Asset\MediaFileServiceInterface;
 use SwagMigrationNext\Migration\Service\MigrationCollectService;
 use SwagMigrationNext\Migration\Service\MigrationCollectServiceInterface;
 use SwagMigrationNext\Profile\ProfileRegistry;
@@ -31,8 +32,9 @@ trait MigrationServicesTrait
 {
     protected function getMigrationCollectService(
         RepositoryInterface $migrationDataRepo,
-        RepositoryInterface $loggingRepo,
-        Shopware55MappingService $mappingService
+        Shopware55MappingService $mappingService,
+        MediaFileServiceInterface $mediaFileService,
+        RepositoryInterface $loggingRepo
     ): MigrationCollectServiceInterface {
         $loggingService = new LoggingService($loggingRepo);
         $priceRounding = new PriceRounding(2);
@@ -40,10 +42,10 @@ trait MigrationServicesTrait
         $converterRegistry = new ConverterRegistry(
             new DummyCollection(
                 [
-                    new ProductConverter($mappingService, new ConverterHelperService(), $loggingService),
+                    new ProductConverter($mappingService, new ConverterHelperService(), $mediaFileService, $loggingService),
                     new TranslationConverter($mappingService, new ConverterHelperService(), $loggingService),
                     new CategoryConverter($mappingService, new ConverterHelperService(), $loggingService),
-                    new AssetConverter($mappingService, new ConverterHelperService()),
+                    new AssetConverter($mappingService, new ConverterHelperService(), $mediaFileService),
                     new CustomerConverter($mappingService, new ConverterHelperService(), $loggingService),
                     new CustomerConverter($mappingService, new ConverterHelperService(), $loggingService),
                     new OrderConverter(
@@ -64,7 +66,12 @@ trait MigrationServicesTrait
         );
 
         $profileRegistry = new ProfileRegistry(new DummyCollection([
-            new Shopware55Profile($migrationDataRepo, $converterRegistry, $loggingService),
+            new Shopware55Profile(
+                $migrationDataRepo,
+                $converterRegistry,
+                $mediaFileService,
+                $loggingService
+            ),
         ]));
 
         $gatewayFactoryRegistry = new GatewayFactoryRegistry(new DummyCollection([

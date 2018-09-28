@@ -24,6 +24,7 @@ use SwagMigrationNext\Profile\Shopware55\Converter\ProductConverter;
 use SwagMigrationNext\Profile\Shopware55\Converter\TranslationConverter;
 use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationNext\Test\Migration\Services\MigrationProfileUuidService;
 use SwagMigrationNext\Test\Mock\DummyCollection;
 use SwagMigrationNext\Test\Mock\Gateway\Dummy\Local\DummyLocalFactory;
 use SwagMigrationNext\Test\Mock\Migration\Logging\DummyLoggingService;
@@ -37,6 +38,11 @@ class MigrationEnvironmentServiceTest extends TestCase
      * @var MigrationEnvironmentServiceInterface
      */
     private $migrationEnvironmentService;
+
+    /**
+     * @var MigrationProfileUuidService
+     */
+    private $profileUuidService;
 
     protected function setUp()
     {
@@ -68,8 +74,11 @@ class MigrationEnvironmentServiceTest extends TestCase
 
     public function testGetEntityTotal(): void
     {
+        $this->profileUuidService = new MigrationProfileUuidService($this->getContainer()->get('swag_migration_profile.repository'));
+
         $migrationContext = new MigrationContext(
             Uuid::uuid4()->getHex(),
+            $this->profileUuidService->getProfileUuid(),
             Shopware55Profile::PROFILE_NAME,
             'local',
             CustomerDefinition::getEntityName(),
@@ -84,6 +93,7 @@ class MigrationEnvironmentServiceTest extends TestCase
 
         $migrationContext = new MigrationContext(
             '',
+            $this->profileUuidService->getProfileUuid(),
             Shopware55Profile::PROFILE_NAME,
             'local',
             ProductDefinition::getEntityName(),
@@ -98,6 +108,7 @@ class MigrationEnvironmentServiceTest extends TestCase
 
         $migrationContext = new MigrationContext(
             '',
+            $this->profileUuidService->getProfileUuid(),
             Shopware55Profile::PROFILE_NAME,
             'local',
             CategoryDefinition::getEntityName(),
@@ -112,6 +123,7 @@ class MigrationEnvironmentServiceTest extends TestCase
 
         $migrationContext = new MigrationContext(
             '',
+            $this->profileUuidService->getProfileUuid(),
             Shopware55Profile::PROFILE_NAME,
             'local',
             MediaDefinition::getEntityName(),

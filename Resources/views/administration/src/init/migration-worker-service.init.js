@@ -5,6 +5,7 @@ Application.addServiceProvider('migrationWorkerService', (container) => {
     return new MigrationWorkerService(
         container.migrationService,
         container.swagMigrationDataService,
-        container.swagMigrationRunService
+        container.swagMigrationRunService,
+        container.swagMigrationMediaFileService
     );
 });

@@ -12,6 +12,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenContainerEvent;
 use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
 use SwagMigrationNext\Gateway\GatewayInterface;
+use SwagMigrationNext\Migration\Asset\MediaFileServiceInterface;
 use SwagMigrationNext\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationNext\Migration\EnvironmentInformation;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
@@ -39,6 +40,11 @@ class Shopware55Profile implements ProfileInterface
     private $converterRegistry;
 
     /**
+     * @var MediaFileServiceInterface
+     */
+    private $mediaFileService;
+
+    /**
      * @var LoggingServiceInterface
      */
     private $loggingService;
@@ -46,10 +52,12 @@ class Shopware55Profile implements ProfileInterface
     public function __construct(
         RepositoryInterface $migrationDataRepo,
         ConverterRegistryInterface $converterRegistry,
+        MediaFileServiceInterface $mediaFileService,
         LoggingServiceInterface $loggingService
     ) {
         $this->migrationDataRepo = $migrationDataRepo;
         $this->converterRegistry = $converterRegistry;
+        $this->mediaFileService = $mediaFileService;
         $this->loggingService = $loggingService;
     }
 

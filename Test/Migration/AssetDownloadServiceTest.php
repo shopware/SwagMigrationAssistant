@@ -10,16 +10,22 @@ use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Query\NotQuery;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Query\TermQuery;
+use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
+use SwagMigrationNext\Gateway\Shopware55\Local\Shopware55LocalGateway;
 use SwagMigrationNext\Migration\Asset\CliAssetDownloadService;
+use SwagMigrationNext\Migration\Asset\MediaFileService;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Service\MigrationCollectServiceInterface;
 use SwagMigrationNext\Migration\Service\MigrationWriteService;
 use SwagMigrationNext\Migration\Service\MigrationWriteServiceInterface;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationNext\Test\Migration\Services\MigrationProfileUuidService;
 use SwagMigrationNext\Test\MigrationServicesTrait;
 
 class AssetDownloadServiceTest extends TestCase
@@ -57,6 +63,16 @@ class AssetDownloadServiceTest extends TestCase
      */
     private $logger;
 
+    /**
+     * @var MigrationProfileUuidService
+     */
+    private $profileUuidService;
+
+    /**
+     * @var string
+     */
+    private $runUuid;
+
     protected function setUp()
     {
         $fileSaver = $this->getContainer()->get(FileSaver::class);
@@ -64,13 +80,30 @@ class AssetDownloadServiceTest extends TestCase
         $this->logger = $this->getContainer()->get('logger');
         $migrationMapping = $this->getContainer()->get('swag_migration_mapping.repository');
         $this->mediaRepository = $this->getContainer()->get('media.repository');
+        $runRepository = $this->getContainer()->get('swag_migration_run.repository');
+        $this->profileUuidService = new MigrationProfileUuidService(
+            $this->getContainer()->get('swag_migration_profile.repository'),
+            Shopware55Profile::PROFILE_NAME,
+            Shopware55LocalGateway::GATEWAY_TYPE
+        );
+        $this->runUuid = Uuid::uuid4()->getHex();
+        $runRepository->create(
+            [
+                [
+                    'id' => $this->runUuid,
+                    'profile' => Shopware55Profile::PROFILE_NAME,
+                ],
+            ],
+            Context::createDefaultContext(Defaults::TENANT_ID)
+        );
 
         $this->migrationWriteService = $this->getContainer()->get(MigrationWriteService::class);
         $this->productRepo = $this->getContainer()->get('product.repository');
         $this->migrationCollectService = $this->getMigrationCollectService(
             $this->getContainer()->get('swag_migration_data.repository'),
-            $this->getContainer()->get('swag_migration_logging.repository'),
-            $this->getContainer()->get(Shopware55MappingService::class)
+            $this->getContainer()->get(Shopware55MappingService::class),
+            $this->getContainer()->get(MediaFileService::class),
+            $this->getContainer()->get('swag_migration_logging.repository')
         );
 
         $this->assetDownloadService = new CliAssetDownloadService($migrationMapping, $fileSaver, $eventDispatcher, $this->logger);
@@ -80,11 +113,12 @@ class AssetDownloadServiceTest extends TestCase
     {
         static::markTestSkipped('needs an correct URL to download the assets from');
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
+
         $migrationContext = new MigrationContext(
-            '',
-            '',
+            $this->runUuid,
+            $this->profileUuidService->getProfileUuid(),
             Shopware55Profile::PROFILE_NAME,
-            'local',
+            Shopware55LocalGateway::GATEWAY_TYPE,
             ProductDefinition::getEntityName(),
             [],
             0,
@@ -108,6 +142,6 @@ class AssetDownloadServiceTest extends TestCase
         $criteria->addFilter(new NotFilter(NotFilter::CONNECTION_AND, [new EqualsFilter('mimeType', null)]));
         $totalAfterAssetDownload = $this->mediaRepository->search($criteria, $context)->getTotal();
 
-        self::assertSame(0, $totalBeforeAssetDownload - $totalAfterAssetDownload);
+        self::assertEquals(21, $totalBeforeAssetDownload - $totalAfterAssetDownload);
     }
 }

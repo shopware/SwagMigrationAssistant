@@ -38,22 +38,6 @@ class SwagMigrationProfileStruct extends Entity
      */
     protected $mappings;
 
-    /**
-     * @return SwagMigrationMappingStruct[]
-     */
-    public function getMappings(): array
-    {
-        return $this->mappings;
-    }
-
-    /**
-     * @param SwagMigrationMappingStruct[] $mappings
-     */
-    public function setMappings(array $mappings): void
-    {
-        $this->mappings = $mappings;
-    }
-
     public function getProfile(): string
     {
         return $this->profile;
@@ -102,5 +86,21 @@ class SwagMigrationProfileStruct extends Entity
     public function setUpdatedAt(DateTime $updatedAt): void
     {
         $this->updatedAt = $updatedAt;
+    }
+
+    /**
+     * @return SwagMigrationMappingStruct[]
+     */
+    public function getMappings(): array
+    {
+        return $this->mappings;
+    }
+
+    /**
+     * @param SwagMigrationMappingStruct[] $mappings
+     */
+    public function setMappings(array $mappings): void
+    {
+        $this->mappings = $mappings;
     }
 }

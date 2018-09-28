@@ -6,10 +6,14 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\ORM\RepositoryInterface;
+use Shopware\Core\Framework\ORM\Search\Criteria;
+use Shopware\Core\Framework\ORM\Search\Query\TermQuery;
 use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagMigrationNext\Controller\MigrationController;
 use SwagMigrationNext\Migration\Asset\HttpAssetDownloadService;
+use SwagMigrationNext\Migration\Asset\MediaFileService;
 use SwagMigrationNext\Migration\Service\MigrationEnvironmentService;
 use SwagMigrationNext\Migration\Service\MigrationWriteService;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
@@ -50,8 +54,9 @@ class MigrationControllerTest extends TestCase
         $this->controller = new MigrationController(
             $this->getMigrationCollectService(
                 $this->getContainer()->get('swag_migration_data.repository'),
-                $this->getContainer()->get('swag_migration_logging.repository'),
-                $this->getContainer()->get(Shopware55MappingService::class)
+                $this->getContainer()->get(Shopware55MappingService::class),
+                $this->getContainer()->get(MediaFileService::class),
+                $this->getContainer()->get('swag_migration_logging.repository')
             ),
             $this->getContainer()->get(MigrationWriteService::class),
             $this->getContainer()->get(HttpAssetDownloadService::class),
@@ -62,8 +67,19 @@ class MigrationControllerTest extends TestCase
 
     public function testFetchData(): void
     {
+        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+
+        /** @var $profileRepo RepositoryInterface */
+        $profileRepo = $this->getContainer()->get('swag_migration_profile.repository');
+        $criteria = new Criteria();
+        $criteria->addFilter(new TermQuery('profile', 'shopware55'));
+        $criteria->addFilter(new TermQuery('gateway', 'api'));
+        $profileResult = $profileRepo->search($criteria, $context);
+        $profileIds = $profileResult->getIds();
+
         $request = new Request([], [
-            'profile' => Shopware55Profile::PROFILE_NAME,
+            'profileName' => Shopware55Profile::PROFILE_NAME,
+            'profileId' => array_pop($profileIds),
             'runUuid' => $this->runUuid,
             'gateway' => 'local',
             'entity' => ProductDefinition::getEntityName(),
@@ -73,7 +89,6 @@ class MigrationControllerTest extends TestCase
                 'apiKey' => 'test',
             ],
         ]);
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
         $result = $this->controller->fetchData($request, $context);
 
         static::assertSame(Response::HTTP_OK, $result->getStatusCode());
