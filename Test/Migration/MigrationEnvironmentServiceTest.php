@@ -7,6 +7,7 @@ use Shopware\Core\Checkout\Customer\CustomerDefinition;
 use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
+use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagMigrationNext\Gateway\GatewayFactoryRegistry;
 use SwagMigrationNext\Gateway\GatewayFactoryRegistryInterface;
@@ -41,7 +42,7 @@ class MigrationEnvironmentServiceTest extends TestCase
     public function testGetEntityTotal(): void
     {
         $migrationContext = new MigrationContext(
-            '',
+            Uuid::uuid4()->getHex(),
             Shopware55Profile::PROFILE_NAME,
             'local',
             CustomerDefinition::getEntityName(),

@@ -16,6 +16,7 @@ class ProductConverterTest extends TestCase
 {
     public function testConvertNoParent(): void
     {
+        static::markTestSkipped('Remove if variant support is implemented again');
         $productConverter = new ProductConverter(new DummyMappingService(), new ConverterHelperService());
 
         $testData = [
