@@ -19,6 +19,9 @@ use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Struct\Uuid;
+use Shopware\Core\System\Country\Aggregate\CountryState\CountryStateDefinition;
+use Shopware\Core\System\Country\Aggregate\CountryStateTranslation\CountryStateTranslationDefinition;
+use Shopware\Core\System\Country\Aggregate\CountryTranslation\CountryTranslationDefinition;
 use Shopware\Core\System\Country\CountryDefinition;
 use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\ConvertStruct;
@@ -332,6 +335,22 @@ class OrderConverter implements ConverterInterface
             $originalData['countryID'],
             $this->context
         );
+
+        if (isset($originalData['country']) && $address['countryId'] === null) {
+            $address['country'] = $this->getCountry($originalData['country']);
+        }
+
+        $address['countryStateId'] = $this->mappingService->getUuid(
+            $this->profile,
+            CountryStateDefinition::getEntityName(),
+            $originalData['stateID'],
+            $this->context
+        );
+
+        if (isset($originalData['stateID']) && $address['countryStateId'] === null) {
+            $address['countryState'] = $this->getCountryState($originalData['state'], $address['countryId'] ?? $address['country']['id']);
+        }
+
         $this->helper->convertValue($address, 'salutation', $originalData, 'salutation');
         $this->helper->convertValue($address, 'firstName', $originalData, 'firstname');
         $this->helper->convertValue($address, 'lastName', $originalData, 'lastname');
@@ -349,6 +368,102 @@ class OrderConverter implements ConverterInterface
         $this->helper->convertValue($address, 'additionalAddressLine2', $originalData, 'additional_address_line2');
 
         return $address;
+    }
+
+    private function getCountry(array $oldCountryData): array
+    {
+        $country = [];
+        if (isset($oldCountryData['countryiso'], $oldCountryData['iso3'])) {
+            $country['id'] = $this->mappingService->getCountryUuid(
+                $oldCountryData['id'],
+                $oldCountryData['countryiso'],
+                $oldCountryData['iso3'],
+                $this->profile,
+                $this->context
+            );
+        }
+
+        if (!isset($country['id'])) {
+            $country['id'] = $this->mappingService->createNewUuid(
+                $this->profile,
+                CountryDefinition::getEntityName(),
+                $oldCountryData['id'],
+                $this->context
+            );
+        }
+
+        $translation['id'] = $this->mappingService->createNewUuid(
+            $this->profile,
+            CountryTranslationDefinition::getEntityName(),
+            $oldCountryData['id'] . ':' . $this->mainLocale,
+            $this->context
+        );
+
+        $translation['countryId'] = $country['id'];
+        $this->helper->convertValue($translation, 'name', $oldCountryData, 'countryname');
+
+        $this->helper->convertValue($country, 'iso', $oldCountryData, 'countryiso');
+        $this->helper->convertValue($country, 'position', $oldCountryData, 'position', $this->helper::TYPE_INTEGER);
+        $this->helper->convertValue($country, 'taxFree', $oldCountryData, 'taxfree', $this->helper::TYPE_BOOLEAN);
+        $this->helper->convertValue($country, 'taxfreeForVatId', $oldCountryData, 'taxfree_ustid', $this->helper::TYPE_BOOLEAN);
+        $this->helper->convertValue($country, 'taxfreeVatidChecked', $oldCountryData, 'taxfree_ustid_checked', $this->helper::TYPE_BOOLEAN);
+        $this->helper->convertValue($country, 'active', $oldCountryData, 'active', $this->helper::TYPE_BOOLEAN);
+        $this->helper->convertValue($country, 'iso3', $oldCountryData, 'iso3');
+        $this->helper->convertValue($country, 'displayStateInRegistration', $oldCountryData, 'display_state_in_registration', $this->helper::TYPE_BOOLEAN);
+        $this->helper->convertValue($country, 'forceStateInRegistration', $oldCountryData, 'force_state_in_registration', $this->helper::TYPE_BOOLEAN);
+
+        $languageData = $this->mappingService->getLanguageUuid($this->profile, $this->mainLocale, $this->context);
+
+        if (isset($languageData['createData']) && !empty($languageData['createData'])) {
+            $translation['language']['id'] = $languageData['uuid'];
+            $translation['language']['localeId'] = $languageData['createData']['localeId'];
+            $translation['language']['name'] = $languageData['createData']['localeCode'];
+        } else {
+            $translation['languageId'] = $languageData['uuid'];
+        }
+
+        $country['translations'][$languageData['uuid']] = $translation;
+
+        return $country;
+    }
+
+    private function getCountryState(array $oldStateData, string $newCountryId): array
+    {
+        $state = [];
+        $state['id'] = $this->mappingService->createNewUuid(
+            $this->profile,
+            CountryStateDefinition::getEntityName(),
+            $oldStateData['id'],
+            $this->context
+        );
+        $state['countryId'] = $newCountryId;
+
+        $translation['id'] = $this->mappingService->createNewUuid(
+            $this->profile,
+            CountryStateTranslationDefinition::getEntityName(),
+            $oldStateData['id'] . ':' . $this->mainLocale,
+            $this->context
+        );
+
+        $translation['countryStateId'] = $state['id'];
+        $this->helper->convertValue($translation, 'name', $oldStateData, 'name');
+        $this->helper->convertValue($state, 'shortCode', $oldStateData, 'shortcode');
+        $this->helper->convertValue($state, 'position', $oldStateData, 'position', $this->helper::TYPE_INTEGER);
+        $this->helper->convertValue($state, 'active', $oldStateData, 'active', $this->helper::TYPE_BOOLEAN);
+
+        $languageData = $this->mappingService->getLanguageUuid($this->profile, $this->mainLocale, $this->context);
+
+        if (isset($languageData['createData']) && !empty($languageData['createData'])) {
+            $translation['language']['id'] = $languageData['uuid'];
+            $translation['language']['localeId'] = $languageData['createData']['localeId'];
+            $translation['language']['name'] = $languageData['createData']['localeCode'];
+        } else {
+            $translation['languageId'] = $languageData['uuid'];
+        }
+
+        $state['translations'][$languageData['uuid']] = $translation;
+
+        return $state;
     }
 
     private function getDeliveries(array $data, array $converted): array

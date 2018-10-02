@@ -73,5 +73,5 @@ return [
         'orders' => 0,
         'shops' => 2,
         'shoppingWorlds' => 1,
-    ]
+    ],
 ];

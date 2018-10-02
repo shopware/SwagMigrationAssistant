@@ -41,8 +41,8 @@ class MigrationControllerTest extends TestCase
             [
                 [
                     'id' => $this->runUuid,
-                    'profile' => Shopware55Profile::PROFILE_NAME
-                ]
+                    'profile' => Shopware55Profile::PROFILE_NAME,
+                ],
             ],
             Context::createDefaultContext(Defaults::TENANT_ID)
         );
