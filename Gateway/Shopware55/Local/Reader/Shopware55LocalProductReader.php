@@ -2,11 +2,11 @@
 
 namespace SwagMigrationNext\Gateway\Shopware55\Local\Reader;
 
-use Doctrine\DBAL\Driver\PDOConnection;
+use Doctrine\DBAL\Connection;
 
 class Shopware55LocalProductReader
 {
-    public function read(PDOConnection $connection): array
+    public function read(Connection $connection): array
     {
         return [];
     }
