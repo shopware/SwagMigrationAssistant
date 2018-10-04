@@ -3,7 +3,6 @@
 namespace SwagMigrationNext\Test\Migration;
 
 use Doctrine\DBAL\Connection;
-use PDO;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Customer\CustomerDefinition;
 use Shopware\Core\Content\Category\CategoryDefinition;
@@ -245,8 +244,10 @@ class MigrationWriteServiceTest extends TestCase
         static::assertEquals(0, $productTotalAfter);
     }
 
-    private function getTranslationTotal()
+    private function getTranslationTotal(): int
     {
-        return $this->getContainer()->get(Connection::class)->query('SELECT count(*) FROM product_translation')->fetch(PDO::FETCH_COLUMN);
+        return (int) $this->getContainer()->get(Connection::class)
+            ->executeQuery('SELECT count(*) FROM product_translation')
+            ->fetchColumn();
     }
 }

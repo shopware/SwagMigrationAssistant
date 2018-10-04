@@ -3,11 +3,11 @@
 namespace SwagMigrationNext\Migration\Asset;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\FetchMode;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Promise;
 use GuzzleHttp\Psr7\Response;
-use PDO;
 use Shopware\Core\Content\Media\Exception\IllegalMimeTypeException;
 use Shopware\Core\Content\Media\Exception\UploadException;
 use Shopware\Core\Content\Media\File\FileSaver;
@@ -57,7 +57,7 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
             ->setMaxResults($limit)
             ->orderBy('CONVERT(JSON_EXTRACT(`additional_data`, \'$.file_size\'), UNSIGNED INTEGER)');
 
-        return $queryBuilder->execute()->fetchAll(PDO::FETCH_COLUMN);
+        return $queryBuilder->execute()->fetchAll(FetchMode::COLUMN);
     }
 
     /**

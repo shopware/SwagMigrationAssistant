@@ -2,8 +2,7 @@
 
 namespace SwagMigrationNext\Gateway\Shopware55\Local;
 
-use Doctrine\DBAL\Driver\PDOConnection;
-use PDO;
+use Doctrine\DBAL\DriverManager;
 use Shopware\Core\Content\Product\ProductDefinition;
 use SwagMigrationNext\Gateway\GatewayInterface;
 use SwagMigrationNext\Gateway\Shopware55\Local\Reader\Shopware55LocalProductReader;
@@ -54,13 +53,17 @@ class Shopware55LocalGateway implements GatewayInterface
 
     public function read(string $entityName, int $offset, int $limit): array
     {
-        $dsn = sprintf('mysql:dbname=%s;host=%s;port=%s', $this->dbName, $this->dbHost, $this->dbPort);
-        $connection = new PDOConnection(
-            $dsn,
-            $this->dbUser,
-            $this->dbPassword,
-            [PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8mb4']
+        $connectionParams = array(
+            'dbname' => $this->dbName,
+            'user' => $this->dbUser,
+            'password' => $this->dbPassword,
+            'host' => $this->dbHost,
+            'port' => $this->dbPort,
+            'driver' => 'pdo_mysql',
+            'charset' => 'utf8mb4',
         );
+
+        $connection = DriverManager::getConnection($connectionParams);
 
         switch ($entityName) {
             case ProductDefinition::getEntityName():
