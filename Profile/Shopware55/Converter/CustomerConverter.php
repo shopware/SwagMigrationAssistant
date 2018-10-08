@@ -574,7 +574,7 @@ class CustomerConverter implements ConverterInterface
         $this->helper->convertValue($state, 'position', $oldStateData, 'position', $this->helper::TYPE_INTEGER);
         $this->helper->convertValue($state, 'active', $oldStateData, 'active', $this->helper::TYPE_BOOLEAN);
 
-        $languageData = $this->mappingService->getLanguageUuid($this->profile, $this->mainLocale, $this->context);
+        $languageData = $this->mappingService->getLanguageUuid($this->profileId, $this->mainLocale, $this->context);
 
         if (isset($languageData['createData']) && !empty($languageData['createData'])) {
             $translation['language']['id'] = $languageData['uuid'];

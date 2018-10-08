@@ -519,7 +519,7 @@ class OrderConverter implements ConverterInterface
         $this->helper->convertValue($country, 'displayStateInRegistration', $oldCountryData, 'display_state_in_registration', $this->helper::TYPE_BOOLEAN);
         $this->helper->convertValue($country, 'forceStateInRegistration', $oldCountryData, 'force_state_in_registration', $this->helper::TYPE_BOOLEAN);
 
-        $languageData = $this->mappingService->getLanguageUuid($this->profile, $this->mainLocale, $this->context);
+        $languageData = $this->mappingService->getLanguageUuid($this->profileId, $this->mainLocale, $this->context);
 
         if (isset($languageData['createData']) && !empty($languageData['createData'])) {
             $translation['language']['id'] = $languageData['uuid'];
