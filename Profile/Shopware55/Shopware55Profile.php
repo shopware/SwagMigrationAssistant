@@ -14,6 +14,7 @@ use Shopware\Core\Framework\ORM\RepositoryInterface;
 use SwagMigrationNext\Gateway\GatewayInterface;
 use SwagMigrationNext\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationNext\Migration\EnvironmentInformation;
+use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Profile\ProfileInterface;
 use SwagMigrationNext\Profile\Shopware55\Converter\AssociationEntityRequiredMissingException;
@@ -37,12 +38,19 @@ class Shopware55Profile implements ProfileInterface
      */
     private $converterRegistry;
 
+    /**
+     * @var LoggingServiceInterface
+     */
+    private $errorLogService;
+
     public function __construct(
         RepositoryInterface $migrationDataRepo,
-        ConverterRegistryInterface $converterRegistry
+        ConverterRegistryInterface $converterRegistry,
+        LoggingServiceInterface $errorLogService
     ) {
         $this->migrationDataRepo = $migrationDataRepo;
         $this->converterRegistry = $converterRegistry;
+        $this->errorLogService = $errorLogService;
     }
 
     public function getName(): string
@@ -156,7 +164,8 @@ class Shopware55Profile implements ProfileInterface
             } catch (ParentEntityForChildNotFoundException |
             AssociationEntityRequiredMissingException $exception
             ) {
-                // TODO: Log error
+                $this->errorLogService->addError($context, $runId, $exception->getMessage(), [ 'entity' => $entityName, 'raw' => $item ]);
+
                 $createData[] = [
                     'entity' => $entityName,
                     'runId' => $runId,

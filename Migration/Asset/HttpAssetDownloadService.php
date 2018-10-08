@@ -18,10 +18,13 @@ use Shopware\Core\Framework\ORM\RepositoryInterface;
 use Shopware\Core\Framework\ORM\Search\Criteria;
 use Shopware\Core\Framework\ORM\Search\Query\TermsQuery;
 use SwagMigrationNext\Exception\NoFileSystemPermissionsException;
+use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\Mapping\SwagMigrationMappingStruct;
 
 class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
 {
+    private const ASSET_ERROR_THRESHOLD = 3;
+
     /**
      * @var RepositoryInterface
      */
@@ -35,14 +38,21 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
      */
     private $fileSaver;
 
+    /**
+     * @var LoggingServiceInterface
+     */
+    private $loggingService;
+
     public function __construct(
         RepositoryInterface $migrationMappingRepository,
         Connection $connection,
-        FileSaver $fileSaver
+        FileSaver $fileSaver,
+        LoggingServiceInterface $loggingService
     ) {
         $this->migrationMappingRepository = $migrationMappingRepository;
         $this->connection = $connection;
         $this->fileSaver = $fileSaver;
+        $this->loggingService = $loggingService;
     }
 
     public function fetchMediaUuids(Context $context, string $profile, int $offset, int $limit): array
@@ -118,6 +128,18 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
                     ++$mappedWorkload[$uuid]['errorCount'];
                 } else {
                     $mappedWorkload[$uuid]['errorCount'] = 1;
+                }
+
+                if ($mappedWorkload[$uuid]['errorCount'] > self::ASSET_ERROR_THRESHOLD) {
+                    $mappedWorkload[$uuid]['state'] = 'error';
+                    $this->loggingService->addError(
+                        $context,
+                        $mappedWorkload[$uuid]['runId'],
+                        'Cannot download media.',
+                        [
+                            'uri' => $mappedWorkload[$uuid]['additionalData']['uri']
+                        ]
+                    );
                 }
 
                 continue;

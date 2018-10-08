@@ -5,9 +5,30 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
+        <service id="SwagMigrationNext\Migration\Logging\SwagMigrationLoggingDefinition"
+                 class="SwagMigrationNext\Migration\Logging\SwagMigrationLoggingDefinition">
+            <tag name="shopware.entity.definition" entity="swag_migration_logging"/>
+        </service>
+
+        <service id="swag_migration_logging.repository"
+                 class="Shopware\Core\Framework\ORM\EntityRepository"
+                 public="true">
+            <argument>SwagMigrationNext\Migration\Logging\SwagMigrationLoggingDefinition</argument>
+            <argument type="service" id="Shopware\Core\Framework\ORM\Read\EntityReaderInterface"/>
+            <argument type="service" id="Shopware\Core\Framework\ORM\VersionManager"/>
+            <argument type="service" id="Shopware\Core\Framework\ORM\Search\EntitySearcherInterface"/>
+            <argument type="service" id="Shopware\Core\Framework\ORM\Search\EntityAggregatorInterface"/>
+            <argument type="service" id="event_dispatcher"/>
+        </service>
+
         <service id="SwagMigrationNext\Migration\Run\SwagMigrationRunDefinition"
                  class="SwagMigrationNext\Migration\Run\SwagMigrationRunDefinition">
             <tag name="shopware.entity.definition" entity="swag_migration_run"/>
+        </service>
+
+        <service id="SwagMigrationNext\Migration\Logging\LoggingService"
+                 class="SwagMigrationNext\Migration\Logging\LoggingService">
+            <argument type="service" id="swag_migration_logging.repository"/>
         </service>
 
         <service id="swag_migration_run.repository"
@@ -91,6 +112,7 @@
             <argument type="service" id="swag_migration_mapping.repository"/>
             <argument type="service" id="Doctrine\DBAL\Connection"/>
             <argument type="service" id="Shopware\Core\Content\Media\File\FileSaver"/>
+            <argument type="service" id="SwagMigrationNext\Migration\Logging\LoggingService"/>
         </service>
 
         <service id="SwagMigrationNext\Migration\Service\MigrationEnvironmentService"

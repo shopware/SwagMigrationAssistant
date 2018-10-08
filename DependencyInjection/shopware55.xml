@@ -10,6 +10,7 @@
                  class="SwagMigrationNext\Profile\Shopware55\Shopware55Profile">
             <argument type="service" id="swag_migration_data.repository"/>
             <argument type="service" id="SwagMigrationNext\Profile\Shopware55\Converter\ConverterRegistry"/>
+            <argument type="service" id="SwagMigrationNext\Migration\Logging\LoggingService"/>
             <tag name="shopware.migration.profile"/>
         </service>
 
