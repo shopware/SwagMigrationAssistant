@@ -12,6 +12,8 @@ use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\ORM\RepositoryInterface;
 use Shopware\Core\Framework\ORM\Search\Criteria;
+use Shopware\Core\Framework\ORM\Search\Query\MatchQuery;
+use Shopware\Core\Framework\ORM\Search\Query\TermQuery;
 use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagMigrationNext\Migration\MigrationContext;
@@ -53,6 +55,11 @@ class MigrationWriteServiceTest extends TestCase
     private $customerRepo;
 
     /**
+     * @var RepositoryInterface
+     */
+    private $discountRepo;
+
+    /**
      * @var MigrationCollectServiceInterface
      */
     private $migrationCollectService;
@@ -91,6 +98,7 @@ class MigrationWriteServiceTest extends TestCase
         $this->mediaRepo = $this->getContainer()->get('media.repository');
         $this->productTranslationRepo = $this->getContainer()->get('product_translation.repository');
         $this->customerRepo = $this->getContainer()->get('customer.repository');
+        $this->discountRepo = $this->getContainer()->get('customer_group_discount.repository');
     }
 
     public function testWriteCustomerData(): void
@@ -116,6 +124,36 @@ class MigrationWriteServiceTest extends TestCase
         $productTotalAfter = $this->customerRepo->search($criteria, $context)->getTotal();
 
         self::assertEquals(2, $productTotalAfter - $productTotalBefore);
+    }
+
+    public function testWriteCustomerGroupDiscounts(): void
+    {
+        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $migrationContext = new MigrationContext(
+            $this->runUuid,
+            Shopware55Profile::PROFILE_NAME,
+            'local',
+            CustomerDefinition::getEntityName(),
+            [],
+            0,
+            250,
+            null,
+            Defaults::SALES_CHANNEL
+        );
+
+        $this->migrationCollectService->fetchData($migrationContext, $context);
+        $criteria = new Criteria();
+        $discountTotalBefore = $this->discountRepo->search($criteria, $context)->getTotal();
+
+        $this->migrationWriteService->writeData($migrationContext, $context);
+        $discountTotalAfter = $this->discountRepo->search($criteria, $context)->getTotal();
+
+        self::assertEquals(3, $discountTotalAfter - $discountTotalBefore);
+
+        // percentageDiscounts which will be inserted: [ Customer 0 => [5, 50], Customer 1 => [ 500, 50 ] ]
+        $this->discountCheckOneMatch($context, $discountTotalBefore);
+        $this->discountCheckDoubledMatch($context, $discountTotalBefore);
+        $this->discountCheckTwoMatches($context, $discountTotalBefore);
     }
 
     public function testWriteAssetData(): void
@@ -249,5 +287,35 @@ class MigrationWriteServiceTest extends TestCase
         return (int) $this->getContainer()->get(Connection::class)
             ->executeQuery('SELECT count(*) FROM product_translation')
             ->fetchColumn();
+    }
+
+    private function discountCheckOneMatch($context, $discountTotalBefore): void
+    {
+        $oneResultCriteria = new Criteria();
+        $oneResultCriteria->addFilter(
+            new TermQuery('percentageDiscount', 500)
+        );
+        $oneResult = $this->discountRepo->search($oneResultCriteria, $context)->getTotal();
+        self::assertEquals(1, $oneResult - $discountTotalBefore);
+    }
+
+    private function discountCheckDoubledMatch($context, $discountTotalBefore): void
+    {
+        $doubledResultCriteria = new Criteria();
+        $doubledResultCriteria->addFilter(
+            new TermQuery('percentageDiscount', 50)
+        );
+        $doubledResult = $this->discountRepo->search($doubledResultCriteria, $context)->getTotal();
+        self::assertEquals(1, $doubledResult - $discountTotalBefore);
+    }
+
+    private function discountCheckTwoMatches($context, $discountTotalBefore): void
+    {
+        $twoResultsCriteria = new Criteria();
+        $twoResultsCriteria->addFilter(
+            new MatchQuery('percentageDiscount', 50)
+        );
+        $twoResults = $this->discountRepo->search($twoResultsCriteria, $context)->getTotal();
+        self::assertEquals(2, $twoResults - $discountTotalBefore);
     }
 }

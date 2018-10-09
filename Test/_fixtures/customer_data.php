@@ -52,6 +52,24 @@ return [
                     'discount' => '0',
                     'minimumorder' => '0',
                     'minimumordersurcharge' => '0',
+                    'discounts' => [
+                        0 => [
+                            'discount' => [
+                                'basketdiscount' => 5,
+                                'basketdiscountstart' => 1000,
+                                'groupID' => 1,
+                                'id' => 5
+                            ]
+                        ],
+                        1 => [
+                            'discount' => [
+                                'basketdiscount' => 50,
+                                'basketdiscountstart' => 10000,
+                                'groupID' => 1,
+                                'id' => 6
+                            ]
+                        ]
+                    ]
                 ],
             'defaultpayment' => [
                     'id' => '5',
@@ -203,6 +221,24 @@ return [
                     'discount' => '0',
                     'minimumorder' => '0',
                     'minimumordersurcharge' => '0',
+                    'discounts' => [
+                            0 => [
+                                    'discount' => [
+                                            'basketdiscount' => 500,
+                                            'basketdiscountstart' => 100000,
+                                            'groupID' => 2,
+                                            'id' => 7
+                                    ],
+                            ],
+                            1 => [
+                                'discount' => [
+                                    'basketdiscount' => 50,
+                                    'basketdiscountstart' => 10000,
+                                    'groupID' => 1,
+                                    'id' => 6
+                                ]
+                            ]
+                    ],
                 ],
             'defaultpayment' => [
                     'id' => '5',
