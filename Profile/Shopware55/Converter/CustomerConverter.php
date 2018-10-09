@@ -239,7 +239,7 @@ class CustomerConverter implements ConverterInterface
             $discount['id'] = $this->mappingService->createNewUuid(
                 $this->profile,
                 CustomerGroupDiscountDefinition::getEntityName(),
-                $oldDiscount['id'],
+                (string) $oldDiscount['id'],
                 $this->context
             );
 
