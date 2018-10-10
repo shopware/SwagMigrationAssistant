@@ -70,9 +70,6 @@ class CustomerConverter implements ConverterInterface
         $this->mappingService->writeMapping($context);
     }
 
-    /**
-     * @throws CustomerExistsException
-     */
     public function convert(
         array $data,
         Context $context,
@@ -138,7 +135,7 @@ class CustomerConverter implements ConverterInterface
         $converted['group'] = $this->getCustomerGroup($data['group']);
         unset($data['group'], $data['customergroup']);
 
-        if ($data['defaultpayment']['id']) {
+        if (isset($data['defaultpayment']['id'])) {
             $this->getDefaultPaymentMethod($data['defaultpayment'], $converted);
         }
         unset($data['defaultpayment'], $data['paymentpreset']);
@@ -330,7 +327,8 @@ class CustomerConverter implements ConverterInterface
                 $address['firstname'] === '' ||
                 $address['lastname'] === '' ||
                 $address['zipcode'] === '' ||
-                $address['city'] === ''
+                $address['city'] === '' ||
+                $address['street'] === ''
             ) {
                 continue;
             }
@@ -375,12 +373,30 @@ class CustomerConverter implements ConverterInterface
             $addresses[] = $newAddress;
         }
 
-        if (!isset($converted['defaultShippingAddressId']) && isset($converted['defaultBillingAddressId'])) {
-            $converted['defaultShippingAddressId'] = $converted['defaultBillingAddressId'];
+        if (empty($addresses)) {
+            return;
         }
 
-        if (!empty($addresses)) {
-            $converted['addresses'] = $addresses;
+        $converted['addresses'] = $addresses;
+
+        // No valid default shipping address was converted, but the default billing address is valid
+        if (!isset($converted['defaultShippingAddressId']) && isset($converted['defaultBillingAddressId'])) {
+            $converted['defaultShippingAddressId'] = $converted['defaultBillingAddressId'];
+            unset($originalData['default_shipping_address_id']);
+        }
+
+        // No valid default billing address was converted, but the default shipping address is valid
+        if (!isset($converted['defaultBillingAddressId']) && isset($converted['defaultShippingAddressId'])) {
+            $converted['defaultBillingAddressId'] = $converted['defaultShippingAddressId'];
+            unset($originalData['default_billing_address_id']);
+        }
+
+        // No valid default billing and shipping address was converted, so use the first valid one as default
+        if (!isset($converted['defaultBillingAddressId']) && !isset($converted['defaultShippingAddressId'])) {
+            $converted['defaultBillingAddressId'] = $addresses[0]['id'];
+            $converted['defaultShippingAddressId'] = $addresses[0]['id'];
+
+            unset($originalData['default_billing_address_id'], $originalData['default_shipping_address_id']);
         }
     }
 

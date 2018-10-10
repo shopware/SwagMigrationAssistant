@@ -118,12 +118,12 @@ class MigrationWriteServiceTest extends TestCase
 
         $this->migrationCollectService->fetchData($migrationContext, $context);
         $criteria = new Criteria();
-        $productTotalBefore = $this->customerRepo->search($criteria, $context)->getTotal();
+        $customerTotalBefore = $this->customerRepo->search($criteria, $context)->getTotal();
 
         $this->migrationWriteService->writeData($migrationContext, $context);
-        $productTotalAfter = $this->customerRepo->search($criteria, $context)->getTotal();
+        $customerTotalAfter = $this->customerRepo->search($criteria, $context)->getTotal();
 
-        self::assertEquals(2, $productTotalAfter - $productTotalBefore);
+        self::assertSame(3, $customerTotalAfter - $customerTotalBefore);
     }
 
     public function testWriteCustomerGroupDiscounts(): void
@@ -148,12 +148,7 @@ class MigrationWriteServiceTest extends TestCase
         $this->migrationWriteService->writeData($migrationContext, $context);
         $discountTotalAfter = $this->discountRepo->search($criteria, $context)->getTotal();
 
-        self::assertEquals(3, $discountTotalAfter - $discountTotalBefore);
-
-        // percentageDiscounts which will be inserted: [ Customer 0 => [5, 50], Customer 1 => [ 500, 50 ] ]
-        $this->discountCheckOneMatch($context, $discountTotalBefore);
-        $this->discountCheckDoubledMatch($context, $discountTotalBefore);
-        $this->discountCheckTwoMatches($context, $discountTotalBefore);
+        self::assertSame(1, $discountTotalAfter - $discountTotalBefore);
     }
 
     public function testWriteAssetData(): void
@@ -176,7 +171,7 @@ class MigrationWriteServiceTest extends TestCase
         $this->migrationWriteService->writeData($migrationContext, $context);
         $totalAfter = $this->mediaRepo->search($criteria, $context)->getTotal();
 
-        self::assertEquals(23, $totalAfter - $totalBefore);
+        self::assertSame(23, $totalAfter - $totalBefore);
     }
 
     public function testWriteCategoryData(): void
@@ -199,7 +194,7 @@ class MigrationWriteServiceTest extends TestCase
         $this->migrationWriteService->writeData($migrationContext, $context);
         $totalAfter = $this->categoryRepo->search($criteria, $context)->getTotal();
 
-        self::assertEquals(8, $totalAfter - $totalBefore);
+        self::assertSame(8, $totalAfter - $totalBefore);
     }
 
     public function testWriteProductData(): void
@@ -222,7 +217,7 @@ class MigrationWriteServiceTest extends TestCase
         $this->migrationWriteService->writeData($migrationContext, $context);
         $productTotalAfter = $this->productRepo->search($criteria, $context)->getTotal();
 
-        self::assertEquals(14, $productTotalAfter - $productTotalBefore); //TODO change back to 42 after variant support is implemented
+        self::assertSame(14, $productTotalAfter - $productTotalBefore); //TODO change back to 42 after variant support is implemented
     }
 
     public function testWriteTranslationData(): void
@@ -258,8 +253,8 @@ class MigrationWriteServiceTest extends TestCase
         $this->migrationWriteService->writeData($migrationContext, $context);
         $productTranslationTotalAfter = $this->getTranslationTotal();
 
-        self::assertEquals(14, $productTotalAfter - $productTotalBefore); //TODO change back to 42 after variant support is implemented
-        self::assertEquals(0, $productTranslationTotalAfter - $productTranslationTotalBefore);  //TODO change back to 2 after translation support is implemented
+        self::assertSame(14, $productTotalAfter - $productTotalBefore); //TODO change back to 42 after variant support is implemented
+        self::assertSame(0, $productTranslationTotalAfter - $productTranslationTotalBefore);  //TODO change back to 2 after translation support is implemented
     }
 
     public function testWriteProductDataWithNoData(): void
@@ -279,7 +274,7 @@ class MigrationWriteServiceTest extends TestCase
         $criteria = new Criteria();
         $productTotalAfter = $this->productRepo->search($criteria, $context)->getTotal();
 
-        static::assertEquals(0, $productTotalAfter);
+        static::assertSame(0, $productTotalAfter);
     }
 
     private function getTranslationTotal(): int
@@ -287,35 +282,5 @@ class MigrationWriteServiceTest extends TestCase
         return (int) $this->getContainer()->get(Connection::class)
             ->executeQuery('SELECT count(*) FROM product_translation')
             ->fetchColumn();
-    }
-
-    private function discountCheckOneMatch($context, $discountTotalBefore): void
-    {
-        $oneResultCriteria = new Criteria();
-        $oneResultCriteria->addFilter(
-            new TermQuery('percentageDiscount', 500)
-        );
-        $oneResult = $this->discountRepo->search($oneResultCriteria, $context)->getTotal();
-        self::assertEquals(1, $oneResult - $discountTotalBefore);
-    }
-
-    private function discountCheckDoubledMatch($context, $discountTotalBefore): void
-    {
-        $doubledResultCriteria = new Criteria();
-        $doubledResultCriteria->addFilter(
-            new TermQuery('percentageDiscount', 50)
-        );
-        $doubledResult = $this->discountRepo->search($doubledResultCriteria, $context)->getTotal();
-        self::assertEquals(1, $doubledResult - $discountTotalBefore);
-    }
-
-    private function discountCheckTwoMatches($context, $discountTotalBefore): void
-    {
-        $twoResultsCriteria = new Criteria();
-        $twoResultsCriteria->addFilter(
-            new MatchQuery('percentageDiscount', 50)
-        );
-        $twoResults = $this->discountRepo->search($twoResultsCriteria, $context)->getTotal();
-        self::assertEquals(2, $twoResults - $discountTotalBefore);
     }
 }
