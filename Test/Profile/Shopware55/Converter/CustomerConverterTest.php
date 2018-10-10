@@ -130,7 +130,7 @@ class CustomerConverterTest extends TestCase
         static::assertArrayHasKey('addresses', $converted);
         static::assertSame(Defaults::SALES_CHANNEL, $converted['salesChannelId']);
         static::assertSame('Mustermann', $converted['lastName']);
-        static::assertSame('number-max_mustermann@muster.de', $converted['customerNumber']);
+        static::assertSame('number-test@example.com', $converted['customerNumber']);
     }
 
     public function testConvertCustomerWithoutPayment(): void
