@@ -32,7 +32,7 @@ class ConverterRegistryTest extends TestCase
         } catch (Exception $e) {
             /* @var ConverterNotFoundException $e */
             self::assertInstanceOf(ConverterNotFoundException::class, $e);
-            self::assertEquals(Response::HTTP_NOT_FOUND, $e->getStatusCode());
+            self::assertSame(Response::HTTP_NOT_FOUND, $e->getStatusCode());
         }
     }
 }

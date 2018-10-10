@@ -94,7 +94,7 @@ class AssetDownloadServiceTest extends TestCase
         $this->migrationWriteService->writeData($migrationContext, $context);
         $productTotalAfter = $this->productRepo->search($criteria, $context)->getTotal();
 
-        self::assertEquals(42, $productTotalAfter - $productTotalBefore);
+        self::assertSame(42, $productTotalAfter - $productTotalBefore);
 
         $criteria = new Criteria();
         $criteria->addFilter(new TermQuery('mimeType', null));
@@ -106,6 +106,6 @@ class AssetDownloadServiceTest extends TestCase
         $criteria->addFilter(new NotQuery([new TermQuery('mimeType', null)]));
         $totalAfterAssetDownload = $this->mediaRepository->search($criteria, $context)->getTotal();
 
-        self::assertEquals(0, $totalBeforeAssetDownload - $totalAfterAssetDownload);
+        self::assertSame(0, $totalBeforeAssetDownload - $totalAfterAssetDownload);
     }
 }

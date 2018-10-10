@@ -2,11 +2,11 @@
 
 namespace SwagMigrationNext\Test\Profile\Shopware55\Converter;
 
+use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Customer\CustomerDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use SwagMigrationNext\Profile\Shopware55\Converter\CustomerConverter;
-use PHPUnit\Framework\TestCase;
 use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
 use SwagMigrationNext\Test\Mock\Migration\Mapping\DummyMappingService;
 

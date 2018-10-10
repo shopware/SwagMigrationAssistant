@@ -75,7 +75,7 @@ class MigrationControllerTest extends TestCase
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
         $result = $this->controller->fetchData($request, $context);
 
-        static::assertEquals(Response::HTTP_OK, $result->getStatusCode());
+        static::assertSame(Response::HTTP_OK, $result->getStatusCode());
     }
 
     public function testWriteData(): void
@@ -87,6 +87,6 @@ class MigrationControllerTest extends TestCase
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
         $result = $this->controller->writeData($request, $context);
 
-        static::assertEquals(Response::HTTP_OK, $result->getStatusCode());
+        static::assertSame(Response::HTTP_OK, $result->getStatusCode());
     }
 }

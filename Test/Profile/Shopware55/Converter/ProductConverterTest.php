@@ -31,7 +31,7 @@ class ProductConverterTest extends TestCase
         } catch (Exception $e) {
             /* @var ParentEntityForChildNotFoundException $e */
             self::assertInstanceOf(ParentEntityForChildNotFoundException::class, $e);
-            self::assertEquals(Response::HTTP_NOT_FOUND, $e->getStatusCode());
+            self::assertSame(Response::HTTP_NOT_FOUND, $e->getStatusCode());
         }
     }
 }

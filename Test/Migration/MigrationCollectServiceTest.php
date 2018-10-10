@@ -92,7 +92,7 @@ class MigrationCollectServiceTest extends TestCase
         $criteria->addFilter(new TermQuery('entity', MediaDefinition::getEntityName()));
         /** @var EntitySearchResult $result */
         $result = $this->migrationDataRepo->search($criteria, $context);
-        self::assertEquals(23, $result->getTotal());
+        self::assertSame(23, $result->getTotal());
     }
 
     public function testFetchCategoryDataApiGateway(): void
@@ -119,7 +119,7 @@ class MigrationCollectServiceTest extends TestCase
         $criteria->addFilter(new TermQuery('entity', CategoryDefinition::getEntityName()));
         /** @var EntitySearchResult $result */
         $result = $this->migrationDataRepo->search($criteria, $context);
-        self::assertEquals(8, $result->getTotal());
+        self::assertSame(8, $result->getTotal());
     }
 
     public function testFetchTranslationDataApiGateway(): void
@@ -146,7 +146,7 @@ class MigrationCollectServiceTest extends TestCase
         $criteria->addFilter(new TermQuery('entity', 'translation'));
         /** @var EntitySearchResult $result */
         $result = $this->migrationDataRepo->search($criteria, $context);
-        self::assertEquals(5, $result->getTotal());
+        self::assertSame(5, $result->getTotal());
     }
 
     public function testFetchCustomerDataApiGateway(): void
@@ -173,7 +173,7 @@ class MigrationCollectServiceTest extends TestCase
         $criteria->addFilter(new TermQuery('entity', CustomerDefinition::getEntityName()));
         /** @var EntitySearchResult $result */
         $result = $this->migrationDataRepo->search($criteria, $context);
-        self::assertEquals(2, $result->getTotal());
+        self::assertSame(3, $result->getTotal());
     }
 
     public function testFetchProductDataApiGateway(): void
@@ -200,7 +200,7 @@ class MigrationCollectServiceTest extends TestCase
         $criteria->addFilter(new TermQuery('entity', ProductDefinition::getEntityName()));
         /** @var EntitySearchResult $result */
         $result = $this->migrationDataRepo->search($criteria, $context);
-        self::assertEquals(37, $result->getTotal());
+        self::assertSame(37, $result->getTotal());
     }
 
     public function testFetchProductDataLocalGateway(): void
@@ -223,6 +223,6 @@ class MigrationCollectServiceTest extends TestCase
         $criteria->addFilter(new TermQuery('entity', ProductDefinition::getEntityName()));
         /** @var EntitySearchResult $result */
         $result = $this->migrationDataRepo->search($criteria, $context);
-        self::assertEquals(37, $result->getTotal());
+        self::assertSame(37, $result->getTotal());
     }
 }
