@@ -81,6 +81,7 @@ class ProductConverter implements ConverterInterface
     public function convert(
         array $data,
         Context $context,
+        string $runId,
         ?string $catalogId = null,
         ?string $salesChannelId = null
     ): ConvertStruct {

@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Struct\Uuid;
 use SwagMigrationNext\Profile\Shopware55\Converter\AssetConverter;
 use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
 use SwagMigrationNext\Test\Mock\Migration\Mapping\DummyMappingService;
@@ -36,7 +37,7 @@ class AssetConverterTest extends TestCase
         $mediaData = require __DIR__ . '/../../../_fixtures/media_data.php';
 
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
-        $convertResult = $this->assetConverter->convert($mediaData[0], $context, Defaults::CATALOG);
+        $convertResult = $this->assetConverter->convert($mediaData[0], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
 
         $converted = $convertResult->getConverted();
 

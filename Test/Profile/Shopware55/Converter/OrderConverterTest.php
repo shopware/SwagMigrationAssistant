@@ -10,14 +10,19 @@ use Shopware\Core\Checkout\Cart\Tax\TaxRuleCalculator;
 use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Struct\Uuid;
+use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagMigrationNext\Profile\Shopware55\Converter\AssociationEntityRequiredMissingException;
 use SwagMigrationNext\Profile\Shopware55\Converter\CustomerConverter;
 use SwagMigrationNext\Profile\Shopware55\Converter\OrderConverter;
 use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
+use SwagMigrationNext\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationNext\Test\Mock\Migration\Mapping\DummyMappingService;
 
 class OrderConverterTest extends TestCase
 {
+    use IntegrationTestBehaviour;
+
     /**
      * @var OrderConverter
      */
@@ -30,6 +35,7 @@ class OrderConverterTest extends TestCase
 
     protected function setUp()
     {
+        $loggingService = new DummyLoggingService();
         $mappingService = new DummyMappingService();
         $converterHelperService = new ConverterHelperService();
         $rounding = new PriceRounding(2);
@@ -42,8 +48,8 @@ class OrderConverterTest extends TestCase
                 new PercentageTaxRuleCalculator($taxRuleCalculator),
             ]
         );
-        $this->orderConverter = new OrderConverter($mappingService, $converterHelperService, $taxCalculator);
-        $this->customerConverter = new CustomerConverter($mappingService, $converterHelperService);
+        $this->orderConverter = new OrderConverter($mappingService, $converterHelperService, $taxCalculator, $loggingService);
+        $this->customerConverter = new CustomerConverter($mappingService, $converterHelperService, $loggingService);
     }
 
     public function testSupports(): void
@@ -62,6 +68,7 @@ class OrderConverterTest extends TestCase
         $this->customerConverter->convert(
             $customerData[0],
             $context,
+            Uuid::uuid4()->getHex(),
             Defaults::CATALOG,
             Defaults::SALES_CHANNEL
         );
@@ -69,6 +76,7 @@ class OrderConverterTest extends TestCase
         $convertResult = $this->orderConverter->convert(
             $orderData[0],
             $context,
+            Uuid::uuid4()->getHex(),
             Defaults::CATALOG,
             Defaults::SALES_CHANNEL
         );
@@ -90,7 +98,7 @@ class OrderConverterTest extends TestCase
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
         $this->expectException(AssociationEntityRequiredMissingException::class);
         $this->expectExceptionMessage('Mapping of "customer" is missing, but it is a required association for "order". Import "customer" first');
-        $this->orderConverter->convert($orderData[0], $context, Defaults::CATALOG, Defaults::SALES_CHANNEL);
+        $this->orderConverter->convert($orderData[0], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG, Defaults::SALES_CHANNEL);
     }
 
     public function testConvertNetOrder(): void
@@ -102,6 +110,7 @@ class OrderConverterTest extends TestCase
         $this->customerConverter->convert(
             $customerData[1],
             $context,
+            Uuid::uuid4()->getHex(),
             Defaults::CATALOG,
             Defaults::SALES_CHANNEL
         );
@@ -109,6 +118,7 @@ class OrderConverterTest extends TestCase
         $convertResult = $this->orderConverter->convert(
             $orderData[1],
             $context,
+            Uuid::uuid4()->getHex(),
             Defaults::CATALOG,
             Defaults::SALES_CHANNEL
         );
@@ -138,6 +148,7 @@ class OrderConverterTest extends TestCase
         $this->customerConverter->convert(
             $customerData[0],
             $context,
+            Uuid::uuid4()->getHex(),
             Defaults::CATALOG,
             Defaults::SALES_CHANNEL
         );
@@ -145,6 +156,7 @@ class OrderConverterTest extends TestCase
         $convertResult = $this->orderConverter->convert(
             $orderData,
             $context,
+            Uuid::uuid4()->getHex(),
             Defaults::CATALOG,
             Defaults::SALES_CHANNEL
         );
@@ -172,6 +184,7 @@ class OrderConverterTest extends TestCase
         $this->customerConverter->convert(
             $customerData[0],
             $context,
+            Uuid::uuid4()->getHex(),
             Defaults::CATALOG,
             Defaults::SALES_CHANNEL
         );
@@ -179,6 +192,7 @@ class OrderConverterTest extends TestCase
         $convertResult = $this->orderConverter->convert(
             $orderData,
             $context,
+            Uuid::uuid4()->getHex(),
             Defaults::CATALOG,
             Defaults::SALES_CHANNEL
         );
@@ -204,6 +218,7 @@ class OrderConverterTest extends TestCase
         $this->customerConverter->convert(
             $customerData[0],
             $context,
+            Uuid::uuid4()->getHex(),
             Defaults::CATALOG,
             Defaults::SALES_CHANNEL
         );
@@ -211,6 +226,7 @@ class OrderConverterTest extends TestCase
         $convertResult = $this->orderConverter->convert(
             $orderData,
             $context,
+            Uuid::uuid4()->getHex(),
             Defaults::CATALOG,
             Defaults::SALES_CHANNEL
         );
@@ -235,6 +251,7 @@ class OrderConverterTest extends TestCase
         $this->customerConverter->convert(
             $customerData[0],
             $context,
+            Uuid::uuid4()->getHex(),
             Defaults::CATALOG,
             Defaults::SALES_CHANNEL
         );
@@ -242,6 +259,7 @@ class OrderConverterTest extends TestCase
         $convertResult = $this->orderConverter->convert(
             $orderData,
             $context,
+            Uuid::uuid4()->getHex(),
             Defaults::CATALOG,
             Defaults::SALES_CHANNEL
         );

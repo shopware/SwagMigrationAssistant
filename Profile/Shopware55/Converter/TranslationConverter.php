@@ -11,6 +11,7 @@ use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\System\Unit\Aggregate\UnitTranslation\UnitTranslationDefinition;
 use Shopware\Core\System\Unit\UnitDefinition;
+use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\ConvertStruct;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
@@ -38,12 +39,24 @@ class TranslationConverter implements ConverterInterface
      */
     private $context;
 
+    /**
+     * @var string
+     */
+    private $runId;
+
+    /**
+     * @var LoggingServiceInterface
+     */
+    private $loggingService;
+
     public function __construct(
         Shopware55MappingService $mappingService,
-        ConverterHelperService $converterHelperService
+        ConverterHelperService $converterHelperService,
+        LoggingServiceInterface $loggingService
     ) {
         $this->helper = $converterHelperService;
         $this->mappingService = $mappingService;
+        $this->loggingService = $loggingService;
     }
 
     public function supports(): string
@@ -59,15 +72,17 @@ class TranslationConverter implements ConverterInterface
     public function convert(
         array $data,
         Context $context,
+        string  $runId,
         ?string $catalogId = null,
         ?string $salesChannelId = null
     ): ConvertStruct {
         $this->profile = Shopware55Profile::PROFILE_NAME;
         $this->context = $context;
+        $this->runId = $runId;
 
         switch ($data['objecttype']) {
-            case 'article':
-                return new ConvertStruct(null, $data); // Does not work currently, because products are mapped with the SKU
+//            Does not work currently, because products are mapped with the SKU
+//            case 'article':
 //                return $this->createProductTranslation($data);
             case 'supplier':
                 return $this->createManufacturerProductTranslation($data);
@@ -76,6 +91,13 @@ class TranslationConverter implements ConverterInterface
             case 'category':
                 return $this->createCategoryTranslation($data);
         }
+
+        $this->loggingService->addWarning(
+            $this->runId,
+            'Not convert able object type',
+            sprintf('Translation of object type "%s" could not converted.', $data['objecttype']),
+            ['data' => $data]
+        );
 
         return new ConvertStruct(null, $data);
     }
@@ -107,6 +129,13 @@ class TranslationConverter implements ConverterInterface
         }
 
         if (!isset($productTranslation['productId'])) {
+            $this->loggingService->addWarning(
+                $this->runId,
+                'Empty necessary data',
+                'Product-Translation-Entity could not converted cause of empty necessary field "productId".',
+                ['data' => $data]
+            );
+
             return new ConvertStruct(null, $sourceData);
         }
 
@@ -116,6 +145,13 @@ class TranslationConverter implements ConverterInterface
         $objectData = unserialize($data['objectdata'], ['allowed_classes' => false]);
 
         if (!\is_array($objectData)) {
+            $this->loggingService->addWarning(
+                $this->runId,
+                'Invalid unserialized data',
+                'Product-Translation-Entity could not converted cause of invalid unserialized object data.',
+                ['data' => $data['objectdata']]
+            );
+
             return new ConvertStruct(null, $sourceData);
         }
 
@@ -177,6 +213,13 @@ class TranslationConverter implements ConverterInterface
         unset($data['id'], $data['objectkey']);
 
         if (!isset($manufacturerTranslation['productManufacturerId'])) {
+            $this->loggingService->addWarning(
+                $this->runId,
+                'Empty necessary data',
+                'Manufacturer-Translation-Entity could not converted cause of empty necessary field "productManufacturerId".',
+                ['data' => $data]
+            );
+
             return new ConvertStruct(null, $sourceData);
         }
 
@@ -186,6 +229,13 @@ class TranslationConverter implements ConverterInterface
         $objectData = unserialize($data['objectdata'], ['allowed_classes' => false]);
 
         if (!\is_array($objectData)) {
+            $this->loggingService->addWarning(
+                $this->runId,
+                'Invalid unserialized data',
+                'Manufacturer-Translation-Entity could not converted cause of invalid unserialized object data.',
+                ['data' => $data['objectdata']]
+            );
+
             return new ConvertStruct(null, $sourceData);
         }
 
@@ -210,6 +260,13 @@ class TranslationConverter implements ConverterInterface
         if (empty($objectData)) {
             unset($data['objectdata']);
         } else {
+            $this->loggingService->addWarning(
+                $this->runId,
+                'Invalid unserialized data',
+                'Manufacturer-Translation-Entity could not converted cause of invalid unserialized object data.',
+                ['data' => $data['objectdata']]
+            );
+
             return new ConvertStruct(null, $sourceData);
         }
 
@@ -254,6 +311,13 @@ class TranslationConverter implements ConverterInterface
         unset($data['id'], $data['objectkey']);
 
         if (!isset($unitTranslation['unitId'])) {
+            $this->loggingService->addWarning(
+                $this->runId,
+                'Empty necessary data',
+                'Manufacturer-Translation-Entity could not converted cause of empty necessary field "unitId".',
+                ['data' => $data]
+            );
+
             return new ConvertStruct(null, $sourceData);
         }
 
@@ -262,6 +326,13 @@ class TranslationConverter implements ConverterInterface
         $objectData = unserialize($data['objectdata'], ['allowed_classes' => false]);
 
         if (!\is_array($objectData)) {
+            $this->loggingService->addWarning(
+                $this->runId,
+                'Invalid unserialized data',
+                'Unit-Translation-Entity could not converted cause of invalid unserialized object data.',
+                ['data' => $data['objectdata']]
+            );
+
             return new ConvertStruct(null, $sourceData);
         }
 
@@ -327,6 +398,13 @@ class TranslationConverter implements ConverterInterface
         unset($data['id'], $data['objectkey']);
 
         if (!isset($categoryTranslation['categoryId'])) {
+            $this->loggingService->addWarning(
+                $this->runId,
+                'Empty necessary data',
+                'Category-Translation-Entity could not converted cause of empty necessary field "categoryId".',
+                ['data' => $data]
+            );
+
             return new ConvertStruct(null, $sourceData);
         }
 
@@ -335,6 +413,13 @@ class TranslationConverter implements ConverterInterface
         $objectData = unserialize($data['objectdata'], ['allowed_classes' => false]);
 
         if (!\is_array($objectData)) {
+            $this->loggingService->addWarning(
+                $this->runId,
+                'Invalid unserialized data',
+                'Category-Translation-Entity could not converted cause of invalid unserialized object data.',
+                ['data' => $data['objectdata']]
+            );
+
             return new ConvertStruct(null, $sourceData);
         }
 
@@ -367,6 +452,13 @@ class TranslationConverter implements ConverterInterface
         if (empty($objectData)) {
             unset($data['objectdata']);
         } else {
+            $this->loggingService->addWarning(
+                $this->runId,
+                'Invalid unserialized data',
+                'Category-Translation-Entity could not converted cause of invalid unserialized object data.',
+                ['data' => $data['objectdata']]
+            );
+
             return new ConvertStruct(null, $sourceData);
         }
 

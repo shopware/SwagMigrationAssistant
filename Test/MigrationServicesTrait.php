@@ -9,6 +9,7 @@ use Shopware\Core\Checkout\Cart\Tax\TaxRuleCalculator;
 use Shopware\Core\Framework\ORM\RepositoryInterface;
 use SwagMigrationNext\Gateway\GatewayFactoryRegistry;
 use SwagMigrationNext\Gateway\Shopware55\Api\Shopware55ApiFactory;
+use SwagMigrationNext\Migration\Logging\LoggingService;
 use SwagMigrationNext\Migration\Service\MigrationCollectService;
 use SwagMigrationNext\Migration\Service\MigrationCollectServiceInterface;
 use SwagMigrationNext\Profile\ProfileRegistry;
@@ -29,6 +30,7 @@ trait MigrationServicesTrait
 {
     protected function getMigrationCollectService(
         RepositoryInterface $migrationDataRepo,
+        RepositoryInterface $loggingRepo,
         Shopware55MappingService $mappingService
     ): MigrationCollectServiceInterface {
         $priceRounding = new PriceRounding(2);
@@ -36,11 +38,12 @@ trait MigrationServicesTrait
         $converterRegistry = new ConverterRegistry(
             new DummyCollection(
                 [
-                    new ProductConverter($mappingService, new ConverterHelperService()),
-                    new TranslationConverter($mappingService, new ConverterHelperService()),
-                    new CategoryConverter($mappingService, new ConverterHelperService()),
+                    new ProductConverter($mappingService, new ConverterHelperService(), new LoggingService($loggingRepo)),
+                    new TranslationConverter($mappingService, new ConverterHelperService(), new LoggingService($loggingRepo)),
+                    new CategoryConverter($mappingService, new ConverterHelperService(), new LoggingService($loggingRepo)),
                     new AssetConverter($mappingService, new ConverterHelperService()),
-                    new CustomerConverter($mappingService, new ConverterHelperService()),
+                    new CustomerConverter($mappingService, new ConverterHelperService(), new LoggingService($loggingRepo)),
+                    new CustomerConverter($mappingService, new ConverterHelperService(), new LoggingService($loggingRepo)),
                     new OrderConverter(
                         $mappingService,
                         new ConverterHelperService(),
@@ -50,14 +53,15 @@ trait MigrationServicesTrait
                                 new PercentageTaxRuleCalculator($taxRuleCalculator),
                                 $taxRuleCalculator,
                             ]
-                        )
+                        ),
+                        new LoggingService($loggingRepo)
                     ),
                 ]
             )
         );
 
         $profileRegistry = new ProfileRegistry(new DummyCollection([
-            new Shopware55Profile($migrationDataRepo, $converterRegistry),
+            new Shopware55Profile($migrationDataRepo, $converterRegistry, new LoggingService($loggingRepo)),
         ]));
 
         $gatewayFactoryRegistry = new GatewayFactoryRegistry(new DummyCollection([
@@ -65,6 +69,6 @@ trait MigrationServicesTrait
             new DummyLocalFactory(),
         ]));
 
-        return new MigrationCollectService($profileRegistry, $gatewayFactoryRegistry);
+        return new MigrationCollectService($profileRegistry, $gatewayFactoryRegistry, new LoggingService($loggingRepo));
     }
 }

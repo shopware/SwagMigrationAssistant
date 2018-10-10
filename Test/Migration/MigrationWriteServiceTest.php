@@ -101,6 +101,7 @@ class MigrationWriteServiceTest extends TestCase
 
         $this->migrationCollectService = $this->getMigrationCollectService(
             $this->getContainer()->get('swag_migration_data.repository'),
+            $this->getContainer()->get('swag_migration_logging.repository'),
             $this->getContainer()->get(Shopware55MappingService::class)
         );
         $this->migrationWriteService = $this->getContainer()->get(MigrationWriteService::class);

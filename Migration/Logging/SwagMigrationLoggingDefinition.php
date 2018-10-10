@@ -1,8 +1,6 @@
 <?php declare(strict_types=1);
 
-
 namespace SwagMigrationNext\Migration\Logging;
-
 
 use Shopware\Core\Framework\ORM\EntityDefinition;
 use Shopware\Core\Framework\ORM\Field\CreatedAtField;
@@ -30,8 +28,8 @@ class SwagMigrationLoggingDefinition extends EntityDefinition
             (new IdField('id', 'id'))->setFlags(new PrimaryKey(), new Required()),
             new TenantIdField(),
             (new FkField('run_id', 'runId', SwagMigrationRunDefinition::class))->setFlags(new Required()),
-            new StringField('type', 'type'),
-            new JsonField('log_entry', 'logEntry'),
+            (new StringField('type', 'type'))->setFlags(new Required()),
+            (new JsonField('log_entry', 'logEntry'))->setFlags(new Required()),
             new CreatedAtField(),
             new UpdatedAtField(),
         ]);

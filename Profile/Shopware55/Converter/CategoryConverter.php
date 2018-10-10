@@ -5,6 +5,8 @@ namespace SwagMigrationNext\Profile\Shopware55\Converter;
 use Shopware\Core\Content\Category\Aggregate\CategoryTranslation\CategoryTranslationDefinition;
 use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Struct\Uuid;
+use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\ConvertStruct;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
@@ -37,12 +39,19 @@ class CategoryConverter implements ConverterInterface
      */
     private $oldCategoryId;
 
+    /**
+     * @var LoggingServiceInterface
+     */
+    private $loggingService;
+
     public function __construct(
         Shopware55MappingService $mappingService,
-        ConverterHelperService $converterHelperService
+        ConverterHelperService $converterHelperService,
+        LoggingServiceInterface $loggingService
     ) {
         $this->mappingService = $mappingService;
         $this->helper = $converterHelperService;
+        $this->loggingService = $loggingService;
     }
 
     public function supports(): string
@@ -61,6 +70,7 @@ class CategoryConverter implements ConverterInterface
     public function convert(
         array $data,
         Context $context,
+        string $runId,
         ?string $catalogId = null,
         ?string $salesChannelId = null
     ): ConvertStruct {
@@ -69,6 +79,13 @@ class CategoryConverter implements ConverterInterface
         $this->oldCategoryId = $data['id'];
 
         if (!isset($data['_locale'])) {
+            $this->loggingService->addWarning(
+                $runId,
+                'Empty locale',
+                'Category-Entity could not converted cause of empty locale.',
+                ['id' => $this->oldCategoryId]
+            );
+
             return new ConvertStruct(null, $data);
         }
 

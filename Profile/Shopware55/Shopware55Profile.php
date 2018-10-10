@@ -41,16 +41,16 @@ class Shopware55Profile implements ProfileInterface
     /**
      * @var LoggingServiceInterface
      */
-    private $errorLogService;
+    private $loggingService;
 
     public function __construct(
         RepositoryInterface $migrationDataRepo,
         ConverterRegistryInterface $converterRegistry,
-        LoggingServiceInterface $errorLogService
+        LoggingServiceInterface $loggingService
     ) {
         $this->migrationDataRepo = $migrationDataRepo;
         $this->converterRegistry = $converterRegistry;
-        $this->errorLogService = $errorLogService;
+        $this->loggingService = $loggingService;
     }
 
     public function getName(): string
@@ -63,6 +63,16 @@ class Shopware55Profile implements ProfileInterface
         $entityName = $migrationContext->getEntity();
         /** @var array[] $data */
         $data = $gateway->read($entityName, $migrationContext->getOffset(), $migrationContext->getLimit());
+        $runId = $migrationContext->getRunUuid();
+
+        try {
+            $data = $gateway->read($entityName, $migrationContext->getOffset(), $migrationContext->getLimit());
+        } catch (\Exception $exception) {
+            $this->loggingService->addError($runId, (string) $exception->getCode(), $exception->getMessage(), ['entity' => $entityName]);
+            $this->loggingService->saveLogging($context);
+
+            return 0;
+        }
 
         if (\count($data) === 0) {
             return 0;
@@ -76,6 +86,7 @@ class Shopware55Profile implements ProfileInterface
         }
 
         $converter->writeMapping($context);
+        $this->loggingService->saveLogging($context);
 
         /** @var EntityWrittenContainerEvent $writtenEvent */
         $writtenEvent = $this->migrationDataRepo->upsert($createData, $context);
@@ -152,7 +163,7 @@ class Shopware55Profile implements ProfileInterface
         $createData = [];
         foreach ($data as $item) {
             try {
-                $convertStruct = $converter->convert($item, $context, $catalogId, $salesChannelId);
+                $convertStruct = $converter->convert($item, $context, $runId, $catalogId, $salesChannelId);
 
                 $createData[] = [
                     'entity' => $entityName,
@@ -164,7 +175,7 @@ class Shopware55Profile implements ProfileInterface
             } catch (ParentEntityForChildNotFoundException |
             AssociationEntityRequiredMissingException $exception
             ) {
-                $this->errorLogService->addError($context, $runId, $exception->getMessage(), [ 'entity' => $entityName, 'raw' => $item ]);
+                $this->loggingService->addError($runId, (string) $exception->getCode(), $exception->getMessage(), ['entity' => $entityName, 'raw' => $item]);
 
                 $createData[] = [
                     'entity' => $entityName,

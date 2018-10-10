@@ -63,6 +63,7 @@ class MigrationCollectServiceTest extends TestCase
         $this->migrationDataRepo = $this->getContainer()->get('swag_migration_data.repository');
         $this->migrationCollectService = $this->getMigrationCollectService(
             $this->migrationDataRepo,
+            $this->getContainer()->get('swag_migration_logging.repository'),
             $this->getContainer()->get(Shopware55MappingService::class)
         );
         $this->productRepo = $this->getContainer()->get('product.repository');

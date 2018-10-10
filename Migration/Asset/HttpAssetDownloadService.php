@@ -20,6 +20,7 @@ use Shopware\Core\Framework\ORM\Search\Query\TermsQuery;
 use SwagMigrationNext\Exception\NoFileSystemPermissionsException;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\Mapping\SwagMigrationMappingStruct;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
 {
@@ -79,14 +80,19 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
      */
     public function downloadAssets(Context $context, array $workload, int $fileChunkByteSize): array
     {
-        if (!is_dir('_temp') && !mkdir('_temp') && !is_dir('_temp')) {
-            throw new NoFileSystemPermissionsException();
-        }
-
         //Map workload with uuids as keys
         $mappedWorkload = [];
         foreach ($workload as $work) {
             $mappedWorkload[$work['uuid']] = $work;
+            $runId = $work['runId'];
+        }
+
+        if (!is_dir('_temp') && !mkdir('_temp') && !is_dir('_temp')) {
+            $exception = new NoFileSystemPermissionsException();
+            $this->loggingService->addError($runId, (string) $exception->getCode(), $exception->getMessage());
+            $this->loggingService->saveLogging($context);
+
+            return $workload;
         }
 
         //Fetch assets from database
@@ -133,11 +139,11 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
                 if ($mappedWorkload[$uuid]['errorCount'] > self::ASSET_ERROR_THRESHOLD) {
                     $mappedWorkload[$uuid]['state'] = 'error';
                     $this->loggingService->addError(
-                        $context,
                         $mappedWorkload[$uuid]['runId'],
+                        (string) SymfonyResponse::HTTP_REQUEST_TIMEOUT,
                         'Cannot download media.',
                         [
-                            'uri' => $mappedWorkload[$uuid]['additionalData']['uri']
+                            'uri' => $mappedWorkload[$uuid]['additionalData']['uri'],
                         ]
                     );
                 }
@@ -164,6 +170,8 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
                 unset($mappedWorkload[$uuid]['errorCount']);
             }
         }
+
+        $this->loggingService->saveLogging($context);
 
         return array_values($mappedWorkload);
     }

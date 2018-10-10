@@ -24,6 +24,7 @@ use Shopware\Core\System\Country\Aggregate\CountryTranslation\CountryTranslation
 use Shopware\Core\System\Country\CountryDefinition;
 use Shopware\Core\System\Currency\Aggregate\CurrencyTranslation\CurrencyTranslationDefinition;
 use Shopware\Core\System\Currency\CurrencyDefinition;
+use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\ConvertStruct;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
@@ -61,14 +62,36 @@ class OrderConverter implements ConverterInterface
      */
     private $profile;
 
+    /**
+     * @var LoggingServiceInterface
+     */
+    private $loggingService;
+
+    /**
+     * @var string
+     */
+    private $oldId;
+
+    /**
+     * @var string
+     */
+    private $uuid;
+
+    /**
+     * @var string
+     */
+    private $runId;
+
     public function __construct(
         Shopware55MappingService $mappingService,
         ConverterHelperService $converterHelperService,
-        TaxCalculator $taxCalculator
+        TaxCalculator $taxCalculator,
+        LoggingServiceInterface $loggingService
     ) {
         $this->mappingService = $mappingService;
         $this->helper = $converterHelperService;
         $this->taxCalculator = $taxCalculator;
+        $this->loggingService = $loggingService;
     }
 
     public function supports(): string
@@ -87,10 +110,35 @@ class OrderConverter implements ConverterInterface
     public function convert(
         array $data,
         Context $context,
+        string $runId,
         ?string $catalogId = null,
         ?string $salesChannelId = null
     ): ConvertStruct {
-        if (!isset($data['billingaddress']['id'], $data['payment'], $data['customer'])) {
+        $this->oldId = $data['id'];
+        $this->runId = $runId;
+
+        $fields = [];
+        if (!isset($data['billingaddress']['id'])) {
+            $fields[] = 'billingaddress';
+        }
+        if (!isset($data['payment'])) {
+            $fields[] = 'payment';
+        }
+        if (!isset($data['customer'])) {
+            $fields[] = 'customer';
+        }
+        if (!isset($data['currencyFactor'])) {
+            $fields[] = 'currencyFactor';
+        }
+
+        if (!empty($fields)) {
+            $this->loggingService->addWarning(
+                $this->runId,
+                'Empty necessary data',
+                sprintf('Order-Entity could not converted cause of empty necessary field(s): %s.', implode(', ', $fields)),
+                ['id' => $this->oldId]
+            );
+
             return new ConvertStruct(null, $data);
         }
 
@@ -107,6 +155,7 @@ class OrderConverter implements ConverterInterface
             $this->context
         );
         unset($data['id']);
+        $this->uuid = $converted['id'];
 
         $customerId = $this->mappingService->getUuid(
             $this->profile,

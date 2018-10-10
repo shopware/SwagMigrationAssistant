@@ -491,7 +491,7 @@ class MigrationService {
                 assetsRemovedCount += 1;
                 this._addError({
                     code: '0',
-                    status: '444',
+                    status: '408',
                     title: this.applicationRoot.$i18n.tc('swag-migration.index.error.canNotDownloadAsset.title'),
                     detail: this.applicationRoot.$i18n.tc('swag-migration.index.error.canNotDownloadAsset.detail'),
                     information: this.applicationRoot.$i18n.t(

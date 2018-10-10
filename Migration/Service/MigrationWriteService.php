@@ -8,6 +8,7 @@ use Shopware\Core\Framework\ORM\Search\Criteria;
 use Shopware\Core\Framework\ORM\Search\Query\TermQuery;
 use Shopware\Core\Framework\ORM\Search\Sorting\FieldSorting;
 use SwagMigrationNext\Migration\Data\SwagMigrationDataStruct;
+use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Writer\WriterRegistryInterface;
 
@@ -23,10 +24,16 @@ class MigrationWriteService implements MigrationWriteServiceInterface
      */
     private $writerRegistry;
 
-    public function __construct(RepositoryInterface $migrationDataRepo, WriterRegistryInterface $writerRegistry)
+    /**
+     * @var LoggingServiceInterface
+     */
+    private $loggingService;
+
+    public function __construct(RepositoryInterface $migrationDataRepo, WriterRegistryInterface $writerRegistry, LoggingServiceInterface $loggingService)
     {
         $this->migrationDataRepo = $migrationDataRepo;
         $this->writerRegistry = $writerRegistry;
+        $this->loggingService = $loggingService;
     }
 
     public function writeData(MigrationContext $migrationContext, Context $context): void
@@ -62,7 +69,14 @@ class MigrationWriteService implements MigrationWriteServiceInterface
             return;
         }
 
-        $currentWriter = $this->writerRegistry->getWriter($entity);
+        try {
+            $currentWriter = $this->writerRegistry->getWriter($entity);
+        } catch (\Exception $exception) {
+            $this->loggingService->addError($migrationContext->getRunUuid(), (string) $exception->getCode(), $exception->getMessage(), ['entity' => $entity]);
+            $this->loggingService->saveLogging($context);
+
+            return;
+        }
         $currentWriter->writeData($converted, $context);
 
         $this->migrationDataRepo->update($updateWrittenData, $context);

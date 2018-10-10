@@ -15,6 +15,7 @@ use Shopware\Core\System\Country\Aggregate\CountryState\CountryStateDefinition;
 use Shopware\Core\System\Country\Aggregate\CountryStateTranslation\CountryStateTranslationDefinition;
 use Shopware\Core\System\Country\Aggregate\CountryTranslation\CountryTranslationDefinition;
 use Shopware\Core\System\Country\CountryDefinition;
+use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\ConvertStruct;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
@@ -52,12 +53,24 @@ class CustomerConverter implements ConverterInterface
      */
     private $oldCustomerId;
 
+    /**
+     * @var LoggingServiceInterface
+     */
+    private $loggingService;
+
+    /**
+     * @var string
+     */
+    private $runId;
+
     public function __construct(
         Shopware55MappingService $mappingService,
-        ConverterHelperService $converterHelperService
+        ConverterHelperService $converterHelperService,
+        LoggingServiceInterface $loggingService
     ) {
         $this->mappingService = $mappingService;
         $this->helper = $converterHelperService;
+        $this->loggingService = $loggingService;
     }
 
     public function supports(): string
@@ -73,16 +86,35 @@ class CustomerConverter implements ConverterInterface
     public function convert(
         array $data,
         Context $context,
+        string $runId,
         ?string $catalogId = null,
         ?string $salesChannelId = null
     ): ConvertStruct {
         $oldData = $data;
+        $this->runId = $runId;
 
-        if (!isset($data['email'], $data['firstname'], $data['lastname'], $data['group']['id']) ||
-            $data['email'] === '' ||
-            $data['firstname'] === '' ||
-            $data['lastname'] === ''
-        ) {
+        $fields = [];
+        if ($this->isEmpty('email', $data)) {
+            $fields[] = 'email';
+        }
+        if ($this->isEmpty('firstname', $data)) {
+            $fields[] = 'firstname';
+        }
+        if ($this->isEmpty('lastname', $data)) {
+            $fields[] = 'lastname';
+        }
+        if (!isset($data['group']['id'])) {
+            $fields[] = 'group id';
+        }
+
+        if (!empty($fields)) {
+            $this->loggingService->addWarning(
+                $this->runId,
+                'Empty necessary data fields',
+                sprintf('Customer-Entity could not converted cause of empty necessary field(s): %s.', implode(', ', $fields)),
+                ['id' => $data['id']]
+            );
+
             return new ConvertStruct(null, $oldData);
         }
 
@@ -178,6 +210,13 @@ class CustomerConverter implements ConverterInterface
 
         if (!isset($converted['defaultBillingAddressId'], $converted['defaultShippingAddressId'])) {
             $this->mappingService->deleteMapping($converted['id'], $this->profile, $this->context);
+
+            $this->loggingService->addWarning(
+                $this->runId,
+                'No address data',
+                'Customer-Entity could not converted cause of empty address data.',
+                ['id' => $this->oldCustomerId]
+            );
 
             return new ConvertStruct(null, $oldData);
         }
@@ -323,13 +362,34 @@ class CustomerConverter implements ConverterInterface
         foreach ($originalData['addresses'] as $address) {
             $newAddress = [];
 
-            if (!isset($address['firstname'], $address['lastname'], $address['zipcode'], $address['city'], $address['street']) ||
-                $address['firstname'] === '' ||
-                $address['lastname'] === '' ||
-                $address['zipcode'] === '' ||
-                $address['city'] === '' ||
-                $address['street'] === ''
-            ) {
+            $fields = [];
+            if ($this->isEmpty('firstname', $address)) {
+                $fields[] = 'email';
+            }
+            if ($this->isEmpty('lastname', $address)) {
+                $fields[] = 'firstname';
+            }
+            if ($this->isEmpty('zipcode', $address)) {
+                $fields[] = 'zipcode';
+            }
+            if ($this->isEmpty('city', $address)) {
+                $fields[] = 'city';
+            }
+            if ($this->isEmpty('street', $address)) {
+                $fields[] = 'street';
+            }
+
+            if (!empty($fields)) {
+                $this->loggingService->addWarning(
+                    $this->runId,
+                    'Empty necessary data fields for address',
+                    sprintf('Address-Entity could not converted cause of empty necessary field(s): %s.', implode(', ', $fields)),
+                    [
+                        'id' => $this->oldCustomerId,
+                        'uuid' => $customerUuid,
+                    ]
+                );
+
                 continue;
             }
 
@@ -383,20 +443,49 @@ class CustomerConverter implements ConverterInterface
         if (!isset($converted['defaultShippingAddressId']) && isset($converted['defaultBillingAddressId'])) {
             $converted['defaultShippingAddressId'] = $converted['defaultBillingAddressId'];
             unset($originalData['default_shipping_address_id']);
+
+            $this->loggingService->addInfo(
+                $this->runId,
+                'No default shipping address',
+                'Default shipping address of customer is empty and will set with the default billing address',
+                [
+                    'id' => $this->oldCustomerId,
+                    'uuid' => $customerUuid,
+                ]
+            );
         }
 
         // No valid default billing address was converted, but the default shipping address is valid
         if (!isset($converted['defaultBillingAddressId']) && isset($converted['defaultShippingAddressId'])) {
             $converted['defaultBillingAddressId'] = $converted['defaultShippingAddressId'];
             unset($originalData['default_billing_address_id']);
+
+            $this->loggingService->addInfo(
+                $this->runId,
+                'No default billing address',
+                'Default billing address of customer is empty and will set with the default shipping address',
+                [
+                    'id' => $this->oldCustomerId,
+                    'uuid' => $customerUuid,
+                ]
+            );
         }
 
         // No valid default billing and shipping address was converted, so use the first valid one as default
         if (!isset($converted['defaultBillingAddressId']) && !isset($converted['defaultShippingAddressId'])) {
             $converted['defaultBillingAddressId'] = $addresses[0]['id'];
             $converted['defaultShippingAddressId'] = $addresses[0]['id'];
-
             unset($originalData['default_billing_address_id'], $originalData['default_shipping_address_id']);
+
+            $this->loggingService->addInfo(
+                $this->runId,
+                'No default billing and shipping address',
+                'Default billing and shipping address of customer is empty and will set with the first address',
+                [
+                    'id' => $this->oldCustomerId,
+                    'uuid' => $customerUuid,
+                ]
+            );
         }
     }
 
@@ -497,5 +586,10 @@ class CustomerConverter implements ConverterInterface
         $state['translations'][$languageData['uuid']] = $translation;
 
         return $state;
+    }
+
+    private function isEmpty(string $key, array $array): bool
+    {
+        return !isset($array[$key]) || $array[$key] === '';
     }
 }
