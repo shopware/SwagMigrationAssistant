@@ -32,8 +32,8 @@
 
         <service id="SwagMigrationNext\Profile\Shopware55\Converter\TranslationConverter"
                  class="SwagMigrationNext\Profile\Shopware55\Converter\TranslationConverter">
-            <argument type="service" id="SwagMigrationNext\Profile\Shopware55\ConverterHelperService"/>
             <argument type="service" id="SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService"/>
+            <argument type="service" id="SwagMigrationNext\Profile\Shopware55\ConverterHelperService"/>
             <tag name="shopware.migration.shopware55.converter"/>
         </service>
 
