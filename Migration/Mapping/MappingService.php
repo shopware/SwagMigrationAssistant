@@ -10,6 +10,7 @@ use Shopware\Core\Framework\ORM\Search\Query\TermQuery;
 use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\System\Country\CountryDefinition;
 use Shopware\Core\System\Country\CountryStruct;
+use Shopware\Core\System\Currency\CurrencyStruct;
 use Shopware\Core\System\Language\LanguageDefinition;
 use Shopware\Core\System\Language\LanguageStruct;
 use Shopware\Core\System\Locale\LocaleStruct;
@@ -41,16 +42,23 @@ class MappingService implements MappingServiceInterface
 
     protected $writeArray = [];
 
+    /**
+     * @var RepositoryInterface
+     */
+    private $currencyRepository;
+
     public function __construct(
         RepositoryInterface $migrationMappingRepo,
         RepositoryInterface $localeRepository,
         RepositoryInterface $languageRepository,
-        RepositoryInterface $countryRepository
+        RepositoryInterface $countryRepository,
+        RepositoryInterface $currencyRepository
     ) {
         $this->migrationMappingRepo = $migrationMappingRepo;
         $this->localeRepository = $localeRepository;
         $this->languageRepository = $languageRepository;
         $this->countryRepository = $countryRepository;
+        $this->currencyRepository = $currencyRepository;
     }
 
     public function getUuid(string $profile, string $entityName, string $oldId, Context $context): ?string
@@ -167,6 +175,23 @@ class MappingService implements MappingServiceInterface
             );
 
             return $countryUuid;
+        }
+
+        return null;
+    }
+
+    public function getCurrencyUuid(string $oldShortName, Context $context): ?string
+    {
+        $criteria = new Criteria();
+        $criteria->addFilter(new TermQuery('shortName', $oldShortName));
+        $criteria->setLimit(1);
+        $result = $this->currencyRepository->search($criteria, $context);
+
+        if ($result->getTotal() > 0) {
+            /** @var CurrencyStruct $element */
+            $element = $result->getEntities()->first();
+
+            return $element->getId();
         }
 
         return null;

@@ -59,6 +59,7 @@
             <argument type="service" id="locale.repository"/>
             <argument type="service" id="language.repository"/>
             <argument type="service" id="country.repository"/>
+            <argument type="service" id="currency.repository"/>
         </service>
 
         <service id="SwagMigrationNext\Migration\Service\MigrationCollectService"
