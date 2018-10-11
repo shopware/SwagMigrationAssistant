@@ -50,6 +50,11 @@ class DummyMappingService extends Shopware55MappingService
         return null;
     }
 
+    public function getCurrencyUuid(string $oldShortName, Context $context): ?string
+    {
+        return null;
+    }
+
     public function getOrderStateUuid(int $oldStateId, Context $context): ?string
     {
         return null;

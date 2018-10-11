@@ -16,13 +16,14 @@ use Shopware\Core\Checkout\Shipping\Aggregate\ShippingMethodTranslation\Shipping
 use Shopware\Core\Checkout\Shipping\ShippingMethodDefinition;
 use Shopware\Core\Content\Product\Cart\ProductCollector;
 use Shopware\Core\Content\Product\ProductDefinition;
-use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\System\Country\Aggregate\CountryState\CountryStateDefinition;
 use Shopware\Core\System\Country\Aggregate\CountryStateTranslation\CountryStateTranslationDefinition;
 use Shopware\Core\System\Country\Aggregate\CountryTranslation\CountryTranslationDefinition;
 use Shopware\Core\System\Country\CountryDefinition;
+use Shopware\Core\System\Currency\Aggregate\CurrencyTranslation\CurrencyTranslationDefinition;
+use Shopware\Core\System\Currency\CurrencyDefinition;
 use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\ConvertStruct;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
@@ -159,7 +160,8 @@ class OrderConverter implements ConverterInterface
         $converted['shippingTotal'] = $shipping;
         $converted['positionPrice'] = $amount - $shipping;
 
-        $converted['currencyId'] = Defaults::CURRENCY;
+        $this->helper->convertValue($converted, 'currencyFactor', $data, 'currencyFactor', $this->helper::TYPE_FLOAT);
+        $converted['currency'] = $this->getCurrency($data['paymentcurrency']);
         unset($data['currency'], $data['currencyFactor'], $data['paymentcurrency']);
 
         $this->getPaymentMethod($data, $converted);
@@ -215,6 +217,51 @@ class OrderConverter implements ConverterInterface
         }
 
         return new ConvertStruct($converted, $data);
+    }
+
+    private function getCurrency(array $originalData): array
+    {
+        $currency = [];
+        $currency['id'] = $this->mappingService->getCurrencyUuid($originalData['currency'], $this->context);
+
+        if (!isset($currency['id'])) {
+            $currency['id'] = $this->mappingService->createNewUuid(
+                $this->profile,
+                CurrencyDefinition::getEntityName(),
+                $originalData['id'],
+                $this->context
+            );
+        }
+
+        $translation['id'] = $this->mappingService->createNewUuid(
+            $this->profile,
+            CurrencyTranslationDefinition::getEntityName(),
+            $originalData['id'] . ':' . $this->mainLocale,
+            $this->context
+        );
+
+        $this->helper->convertValue($currency, 'isDefault', $originalData, 'standard', $this->helper::TYPE_BOOLEAN);
+        $this->helper->convertValue($currency, 'factor', $originalData, 'factor', $this->helper::TYPE_FLOAT);
+        $this->helper->convertValue($currency, 'position', $originalData, 'position', $this->helper::TYPE_INTEGER);
+        $this->helper->convertValue($translation, 'shortName', $originalData, 'currency');
+        $this->helper->convertValue($translation, 'name', $originalData, 'name');
+
+        $currency['symbol'] = html_entity_decode($originalData['templatechar']);
+        $currency['placedInFront'] = ((int) $originalData['symbol_position']) > 16;
+
+        $languageData = $this->mappingService->getLanguageUuid($this->profile, $this->mainLocale, $this->context);
+
+        if (isset($languageData['createData']) && !empty($languageData['createData'])) {
+            $translation['language']['id'] = $languageData['uuid'];
+            $translation['language']['localeId'] = $languageData['createData']['localeId'];
+            $translation['language']['name'] = $languageData['createData']['localeCode'];
+        } else {
+            $translation['languageId'] = $languageData['uuid'];
+        }
+
+        $currency['translations'][$languageData['uuid']] = $translation;
+
+        return $currency;
     }
 
     private function getTransactions(array $data, array &$converted): void

@@ -20,6 +20,8 @@ interface MappingServiceInterface
 
     public function getCountryUuid(string $oldId, string $iso, string $iso3, string $profile, Context $context): ?string;
 
+    public function getCurrencyUuid(string $oldShortName, Context $context): ?string;
+
     public function deleteMapping(string $entityUuid, string $profile, Context $context): void;
 
     public function writeMapping(Context $context): void;

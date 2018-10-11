@@ -87,6 +87,7 @@
             <argument type="service" id="payment_method.repository"/>
             <argument type="service" id="order_state.repository"/>
             <argument type="service" id="order_transaction_state.repository"/>
+            <argument type="service" id="currency.repository"/>
         </service>
     </services>
 </container>

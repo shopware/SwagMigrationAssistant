@@ -28,7 +28,8 @@ class MappingServiceTest extends TestCase
             $this->getContainer()->get('swag_migration_mapping.repository'),
             $this->getContainer()->get('locale.repository'),
             $this->getContainer()->get('language.repository'),
-            $this->getContainer()->get('country.repository')
+            $this->getContainer()->get('country.repository'),
+            $this->getContainer()->get('currency.repository')
         );
     }
 
@@ -54,7 +55,8 @@ class MappingServiceTest extends TestCase
             $this->getContainer()->get('swag_migration_mapping.repository'),
             $this->getContainer()->get('locale.repository'),
             $this->getContainer()->get('language.repository'),
-            $this->getContainer()->get('country.repository')
+            $this->getContainer()->get('country.repository'),
+            $this->getContainer()->get('currency.repository')
         );
 
         $uuid2 = $newMappingService->createNewUuid(Shopware55Profile::PROFILE_NAME, 'product', '123', $context);
