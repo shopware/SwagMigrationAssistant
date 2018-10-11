@@ -46,7 +46,7 @@ class GatewayServiceTest extends TestCase
         } catch (Exception $e) {
             /* @var GatewayNotFoundException $e */
             self::assertInstanceOf(GatewayNotFoundException::class, $e);
-            self::assertEquals(Response::HTTP_NOT_FOUND, $e->getStatusCode());
+            self::assertSame(Response::HTTP_NOT_FOUND, $e->getStatusCode());
         }
     }
 }

@@ -53,7 +53,7 @@ class Shopware55LocalGateway implements GatewayInterface
 
     public function read(string $entityName, int $offset, int $limit): array
     {
-        $connectionParams = array(
+        $connectionParams = [
             'dbname' => $this->dbName,
             'user' => $this->dbUser,
             'password' => $this->dbPassword,
@@ -61,7 +61,7 @@ class Shopware55LocalGateway implements GatewayInterface
             'port' => $this->dbPort,
             'driver' => 'pdo_mysql',
             'charset' => 'utf8mb4',
-        );
+        ];
 
         $connection = DriverManager::getConnection($connectionParams);
 

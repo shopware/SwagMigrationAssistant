@@ -39,8 +39,8 @@ class TranslationConverter implements ConverterInterface
     private $context;
 
     public function __construct(
-        ConverterHelperService $converterHelperService,
-        Shopware55MappingService $mappingService
+        Shopware55MappingService $mappingService,
+        ConverterHelperService $converterHelperService
     ) {
         $this->helper = $converterHelperService;
         $this->mappingService = $mappingService;
@@ -67,7 +67,8 @@ class TranslationConverter implements ConverterInterface
 
         switch ($data['objecttype']) {
             case 'article':
-                return $this->createProductTranslation($data);
+                return new ConvertStruct(null, $data); // Does not work currently, because products are mapped with the SKU
+//                return $this->createProductTranslation($data);
             case 'supplier':
                 return $this->createManufacturerProductTranslation($data);
             case 'config_units':
@@ -208,6 +209,8 @@ class TranslationConverter implements ConverterInterface
         $data['objectdata'] = serialize($objectData);
         if (empty($objectData)) {
             unset($data['objectdata']);
+        } else {
+            return new ConvertStruct(null, $sourceData);
         }
 
         unset($data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
@@ -223,6 +226,10 @@ class TranslationConverter implements ConverterInterface
         }
 
         unset($data['_locale']);
+
+        if (empty($data)) {
+            $data = null;
+        }
 
         return new ConvertStruct($manufacturerTranslation, $data);
     }
@@ -293,6 +300,10 @@ class TranslationConverter implements ConverterInterface
 
         unset($data['name'], $data['_locale']);
 
+        if (empty($data)) {
+            $data = null;
+        }
+
         return new ConvertStruct($unitTranslation, $data);
     }
 
@@ -327,6 +338,8 @@ class TranslationConverter implements ConverterInterface
             return new ConvertStruct(null, $sourceData);
         }
 
+        // no equivalent in category translation definition
+        unset($objectData['streamId'], $objectData['external'], $objectData['externalTarget']);
         foreach ($objectData as $key => $value) {
             switch ($key) {
                 case 'description':
@@ -353,6 +366,8 @@ class TranslationConverter implements ConverterInterface
         $data['objectdata'] = serialize($objectData);
         if (empty($objectData)) {
             unset($data['objectdata']);
+        } else {
+            return new ConvertStruct(null, $sourceData);
         }
 
         unset($data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
@@ -368,6 +383,10 @@ class TranslationConverter implements ConverterInterface
         }
 
         unset($data['name'], $data['_locale']);
+
+        if (empty($data)) {
+            $data = null;
+        }
 
         return new ConvertStruct($categoryTranslation, $data);
     }

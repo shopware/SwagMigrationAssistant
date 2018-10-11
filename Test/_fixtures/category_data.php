@@ -30,7 +30,6 @@ return [
             'sorting_ids' => null,
             'facet_ids' => null,
             'external_target' => '',
-            'locale' => null,
             'asset' => [
                     'id' => '1',
                     'albumID' => '-1',
@@ -45,7 +44,7 @@ return [
                     'userID' => '50',
                     'created' => '2017-10-05',
                 ],
-            '_locale' => 'en_GB',
+            '_locale' => 'de_DE',
         ],
     1 => [
             'id' => '6',
@@ -76,7 +75,6 @@ return [
             'sorting_ids' => null,
             'facet_ids' => null,
             'external_target' => '',
-            'locale' => null,
             'asset' => [
                     'id' => '14',
                     'albumID' => '-1',
@@ -91,7 +89,7 @@ return [
                     'userID' => '50',
                     'created' => '2017-10-05',
                 ],
-            '_locale' => 'en_GB',
+            '_locale' => 'de_DE',
         ],
     2 => [
             'id' => '7',
@@ -122,7 +120,6 @@ return [
             'sorting_ids' => null,
             'facet_ids' => null,
             'external_target' => '',
-            'locale' => null,
             'asset' => [
                     'id' => '8',
                     'albumID' => '-1',
@@ -137,7 +134,7 @@ return [
                     'userID' => '50',
                     'created' => '2017-10-05',
                 ],
-            '_locale' => 'en_GB',
+            '_locale' => 'de_DE',
         ],
     3 => [
             'id' => '8',
@@ -168,7 +165,6 @@ return [
             'sorting_ids' => null,
             'facet_ids' => null,
             'external_target' => '',
-            'locale' => null,
             'asset' => [
                     'id' => '1',
                     'albumID' => '-1',
@@ -183,7 +179,7 @@ return [
                     'userID' => '50',
                     'created' => '2017-10-05',
                 ],
-            '_locale' => 'en_GB',
+            '_locale' => 'de_DE',
         ],
     4 => [
             'id' => '9',
@@ -214,7 +210,6 @@ return [
             'sorting_ids' => null,
             'facet_ids' => null,
             'external_target' => '',
-            'locale' => null,
             'asset' => [
                     'id' => '3',
                     'albumID' => '-1',
@@ -229,7 +224,7 @@ return [
                     'userID' => '50',
                     'created' => '2017-10-05',
                 ],
-            '_locale' => 'en_GB',
+            '_locale' => 'de_DE',
         ],
     5 => [
             'id' => '10',
@@ -260,7 +255,6 @@ return [
             'sorting_ids' => null,
             'facet_ids' => null,
             'external_target' => '',
-            'locale' => null,
             'asset' => [
                     'id' => '10',
                     'albumID' => '-1',
@@ -275,7 +269,7 @@ return [
                     'userID' => '50',
                     'created' => '2017-10-05',
                 ],
-            '_locale' => 'en_GB',
+            '_locale' => 'de_DE',
         ],
     6 => [
             'id' => '11',
@@ -306,7 +300,6 @@ return [
             'sorting_ids' => null,
             'facet_ids' => null,
             'external_target' => '',
-            'locale' => null,
             'asset' => [
                     'id' => '23',
                     'albumID' => '-1',
@@ -321,7 +314,7 @@ return [
                     'userID' => '50',
                     'created' => '2017-10-06',
                 ],
-            '_locale' => 'en_GB',
+            '_locale' => 'de_DE',
         ],
     7 => [
             'id' => '12',
@@ -352,7 +345,6 @@ return [
             'sorting_ids' => null,
             'facet_ids' => null,
             'external_target' => '',
-            'locale' => null,
             'asset' => [
                     'id' => '6',
                     'albumID' => '-1',
@@ -367,6 +359,6 @@ return [
                     'userID' => '50',
                     'created' => '2017-10-05',
                 ],
-            '_locale' => 'en_GB',
+            '_locale' => 'de_DE',
         ],
 ];

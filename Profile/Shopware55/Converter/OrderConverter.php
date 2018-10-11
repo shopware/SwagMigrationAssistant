@@ -160,7 +160,7 @@ class OrderConverter implements ConverterInterface
         $converted['positionPrice'] = $amount - $shipping;
 
         $converted['currencyId'] = Defaults::CURRENCY;
-        unset($data['currency'], $data['currencyFactor']);
+        unset($data['currency'], $data['currencyFactor'], $data['paymentcurrency']);
 
         $this->getPaymentMethod($data, $converted);
         unset($data['payment'], $data['paymentID']);
@@ -340,15 +340,19 @@ class OrderConverter implements ConverterInterface
             $address['country'] = $this->getCountry($originalData['country']);
         }
 
-        $address['countryStateId'] = $this->mappingService->getUuid(
-            $this->profile,
-            CountryStateDefinition::getEntityName(),
-            $originalData['stateID'],
-            $this->context
-        );
+        if (isset($originalData['stateID'])) {
+            $address['countryStateId'] = $this->mappingService->getUuid(
+                $this->profile,
+                CountryStateDefinition::getEntityName(),
+                $originalData['stateID'],
+                $this->context
+            );
 
-        if (isset($originalData['stateID']) && $address['countryStateId'] === null) {
-            $address['countryState'] = $this->getCountryState($originalData['state'], $address['countryId'] ?? $address['country']['id']);
+            if (isset($address['countryStateId'], $originalData['state'])
+                && (isset($address['countryId']) || isset($address['country']['id']))
+            ) {
+                $address['countryState'] = $this->getCountryState($originalData['state'], $address['countryId'] ?? $address['country']['id']);
+            }
         }
 
         $this->helper->convertValue($address, 'salutation', $originalData, 'salutation');
@@ -595,18 +599,6 @@ class OrderConverter implements ConverterInterface
             $this->helper->convertValue($lineItem, 'label', $originalLineItem, 'name');
             $this->helper->convertValue($lineItem, 'unitPrice', $originalLineItem, 'price', $this->helper::TYPE_FLOAT);
             $lineItem['totalPrice'] = $lineItem['quantity'] * $lineItem['unitPrice'];
-            $lineItem['taxRate'] = (float) $originalLineItem['tax_rate'];
-
-            if (!isset(
-                $lineItem['identifier'],
-                $lineItem['quantity'],
-                $lineItem['label'],
-                $lineItem['unitPrice'],
-                $lineItem['totalPrice'],
-                $lineItem['taxRate']
-            )) {
-                continue;
-            }
 
             $lineItems[] = $lineItem;
         }

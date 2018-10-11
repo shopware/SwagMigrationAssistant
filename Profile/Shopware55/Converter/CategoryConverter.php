@@ -85,7 +85,8 @@ class CategoryConverter implements ConverterInterface
             $data['attributes'],
             $data['template'],
             $data['external_target'],
-            $data['mediaID']
+            $data['mediaID'],
+            $data['asset']
         );
 
         if (isset($data['parent'])) {

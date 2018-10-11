@@ -53,7 +53,7 @@ class MigrationEnvironmentServiceTest extends TestCase
 
         $total = $this->migrationEnvironmentService->getEntityTotal($migrationContext);
 
-        self::assertEquals(2, $total);
+        self::assertSame(2, $total);
 
         $migrationContext = new MigrationContext(
             '',
@@ -67,7 +67,7 @@ class MigrationEnvironmentServiceTest extends TestCase
 
         $total = $this->migrationEnvironmentService->getEntityTotal($migrationContext);
 
-        self::assertEquals(37, $total);
+        self::assertSame(37, $total);
 
         $migrationContext = new MigrationContext(
             '',
@@ -81,7 +81,7 @@ class MigrationEnvironmentServiceTest extends TestCase
 
         $total = $this->migrationEnvironmentService->getEntityTotal($migrationContext);
 
-        self::assertEquals(8, $total);
+        self::assertSame(8, $total);
 
         $migrationContext = new MigrationContext(
             '',
@@ -95,6 +95,6 @@ class MigrationEnvironmentServiceTest extends TestCase
 
         $total = $this->migrationEnvironmentService->getEntityTotal($migrationContext);
 
-        self::assertEquals(23, $total);
+        self::assertSame(23, $total);
     }
 }

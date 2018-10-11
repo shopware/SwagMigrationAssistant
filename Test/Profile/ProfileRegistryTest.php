@@ -30,7 +30,7 @@ class ProfileRegistryTest extends TestCase
         } catch (Exception $e) {
             /* @var ProfileNotFoundException $e */
             self::assertInstanceOf(ProfileNotFoundException::class, $e);
-            self::assertEquals(Response::HTTP_NOT_FOUND, $e->getStatusCode());
+            self::assertSame(Response::HTTP_NOT_FOUND, $e->getStatusCode());
         }
     }
 }

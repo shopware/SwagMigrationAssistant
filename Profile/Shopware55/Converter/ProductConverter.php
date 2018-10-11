@@ -88,7 +88,6 @@ class ProductConverter implements ConverterInterface
         $this->context = $context;
         $this->catalogId = $catalogId;
         $this->oldProductId = $data['detail']['ordernumber'];
-        unset($data['id']);
 
         $productType = (int) $data['detail']['kind'];
         unset($data['detail']['kind']);
@@ -122,7 +121,7 @@ class ProductConverter implements ConverterInterface
         $containerUuid = $this->mappingService->createNewUuid(
             $this->profile,
             ProductDefinition::getEntityName() . '_container',
-            $this->oldProductId,
+            $data['id'],
             $this->context
         );
         $converted['id'] = $containerUuid;
@@ -163,7 +162,7 @@ class ProductConverter implements ConverterInterface
         $parentUuid = $this->mappingService->getUuid(
             $this->profile,
             ProductDefinition::getEntityName() . '_container',
-            $this->oldProductId,
+            $data['detail']['articleID'],
             $this->context
         );
 
@@ -203,6 +202,7 @@ class ProductConverter implements ConverterInterface
     {
         // Legacy data which don't need a mapping or there is no equivalent field
         unset(
+            $data['id'],
             $data['datum'],
             $data['changetime'],
             $data['crossbundlelook'],
@@ -213,6 +213,7 @@ class ProductConverter implements ConverterInterface
 
             // TODO check how to handle these
             $data['configurator_set_id'],
+            $data['configuratorOptions'],
             $data['pricegroupID'],
             $data['pricegroupActive'],
             $data['filtergroupID'],
@@ -241,10 +242,17 @@ class ProductConverter implements ConverterInterface
         unset($data['prices']);
 
         if (isset($data['assets'])) {
-            $mediaTemp = $this->getAssets($data['assets'], $converted, $data['_locale']);
-            $converted['media'] = $mediaTemp['media'];
-            $converted['cover'] = $mediaTemp['cover'];
-            unset($data['assets'], $mediaTemp);
+            $convertedMedia = $this->getAssets($data['assets'], $converted, $data['_locale']);
+
+            if (!empty($convertedMedia['media'])) {
+                $converted['media'] = $convertedMedia['media'];
+            }
+
+            if (isset($convertedMedia['cover'])) {
+                $converted['cover'] = $convertedMedia['cover'];
+            }
+
+            unset($data['assets'], $convertedMedia);
         }
 
         $converted['translations'] = [];
@@ -512,7 +520,7 @@ class ProductConverter implements ConverterInterface
         $converted['translations'][$languageData['uuid']] = $defaultTranslation;
     }
 
-    private function getCategoryMapping(array &$categories): array
+    private function getCategoryMapping(array $categories): array
     {
         $categoryMapping = [];
 

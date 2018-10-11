@@ -30,7 +30,7 @@ trait MigrationServicesTrait
             new DummyCollection(
                 [
                     new ProductConverter($mappingService, new ConverterHelperService()),
-                    new TranslationConverter(new ConverterHelperService(), $mappingService),
+                    new TranslationConverter($mappingService, new ConverterHelperService()),
                     new CategoryConverter($mappingService, new ConverterHelperService()),
                     new AssetConverter($mappingService, new ConverterHelperService()),
                     new CustomerConverter($mappingService, new ConverterHelperService()),

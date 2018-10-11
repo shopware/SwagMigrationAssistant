@@ -24,6 +24,7 @@
             <directory suffix=".php">./</directory>
             <exclude>
                 <directory suffix=".php">./Test</directory>
+                <directory suffix=".php">./Core/Version</directory>
 
                 <file>SwagMigrationNext.php</file>
             </exclude>

@@ -40,7 +40,7 @@ class MappingServiceTest extends TestCase
         static::assertNotNull($uuid1);
 
         $uuid2 = $this->mappingService->createNewUuid(Shopware55Profile::PROFILE_NAME, 'product', '123', $context);
-        static::assertEquals($uuid1, $uuid2);
+        static::assertSame($uuid1, $uuid2);
     }
 
     public function testReadExistingMappings(): void
@@ -59,7 +59,7 @@ class MappingServiceTest extends TestCase
 
         $uuid2 = $newMappingService->createNewUuid(Shopware55Profile::PROFILE_NAME, 'product', '123', $context);
 
-        static::assertEquals($uuid1, $uuid2);
+        static::assertSame($uuid1, $uuid2);
     }
 
     public function testGetUuidReturnsNull(): void
@@ -78,7 +78,7 @@ class MappingServiceTest extends TestCase
         } catch (Exception $e) {
             /* @var LocaleNotFoundException $e */
             self::assertInstanceOf(LocaleNotFoundException::class, $e);
-            self::assertEquals(Response::HTTP_NOT_FOUND, $e->getStatusCode());
+            self::assertSame(Response::HTTP_NOT_FOUND, $e->getStatusCode());
         }
     }
 }
