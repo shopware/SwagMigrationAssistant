@@ -11,7 +11,6 @@ use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Struct\Uuid;
-use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagMigrationNext\Profile\Shopware55\Converter\AssociationEntityRequiredMissingException;
 use SwagMigrationNext\Profile\Shopware55\Converter\CustomerConverter;
 use SwagMigrationNext\Profile\Shopware55\Converter\OrderConverter;
@@ -21,8 +20,6 @@ use SwagMigrationNext\Test\Mock\Migration\Mapping\DummyMappingService;
 
 class OrderConverterTest extends TestCase
 {
-    use IntegrationTestBehaviour;
-
     /**
      * @var OrderConverter
      */
@@ -33,9 +30,14 @@ class OrderConverterTest extends TestCase
      */
     private $customerConverter;
 
+    /**
+     * @var DummyLoggingService
+     */
+    private $loggingService;
+
     protected function setUp()
     {
-        $loggingService = new DummyLoggingService();
+        $this->loggingService = new DummyLoggingService();
         $mappingService = new DummyMappingService();
         $converterHelperService = new ConverterHelperService();
         $rounding = new PriceRounding(2);
@@ -48,8 +50,8 @@ class OrderConverterTest extends TestCase
                 new PercentageTaxRuleCalculator($taxRuleCalculator),
             ]
         );
-        $this->orderConverter = new OrderConverter($mappingService, $converterHelperService, $taxCalculator, $loggingService);
-        $this->customerConverter = new CustomerConverter($mappingService, $converterHelperService, $loggingService);
+        $this->orderConverter = new OrderConverter($mappingService, $converterHelperService, $taxCalculator, $this->loggingService);
+        $this->customerConverter = new CustomerConverter($mappingService, $converterHelperService, $this->loggingService);
     }
 
     public function testSupports(): void
@@ -89,6 +91,7 @@ class OrderConverterTest extends TestCase
         static::assertArrayHasKey('deliveries', $converted);
         static::assertSame(Defaults::SALES_CHANNEL, $converted['salesChannelId']);
         static::assertSame('test@example.com', $converted['orderCustomer']['email']);
+        static::assertCount(0, $this->loggingService->getLoggingArray());
     }
 
     public function testConvertWithoutCustomer(): void
@@ -132,6 +135,7 @@ class OrderConverterTest extends TestCase
         static::assertSame(Defaults::SALES_CHANNEL, $converted['salesChannelId']);
         static::assertSame('mustermann@b2b.de', $converted['orderCustomer']['email']);
         static::assertTrue($converted['isNet']);
+        static::assertCount(0, $this->loggingService->getLoggingArray());
     }
 
     /**
@@ -162,6 +166,11 @@ class OrderConverterTest extends TestCase
         );
 
         static::assertNull($convertResult->getConverted());
+
+        $logs = $this->loggingService->getLoggingArray();
+        $description = sprintf('Order-Entity could not converted cause of empty necessary field(s): %s.', $missingProperty);
+        static::assertSame($description, $logs[0]['logEntry']['description']);
+        static::assertCount(1, $logs);
     }
 
     public function requiredProperties(): array
@@ -205,6 +214,7 @@ class OrderConverterTest extends TestCase
         static::assertArrayNotHasKey('transactions', $converted);
         static::assertSame(Defaults::SALES_CHANNEL, $converted['salesChannelId']);
         static::assertSame('test@example.com', $converted['orderCustomer']['email']);
+        static::assertCount(0, $this->loggingService->getLoggingArray());
     }
 
     public function testConvertWithoutShippingMethod(): void
@@ -238,6 +248,7 @@ class OrderConverterTest extends TestCase
         static::assertSame(Defaults::SALES_CHANNEL, $converted['salesChannelId']);
         static::assertSame('test@example.com', $converted['orderCustomer']['email']);
         static::assertSame([], $converted['deliveries']);
+        static::assertCount(0, $this->loggingService->getLoggingArray());
     }
 
     public function testConvertWithoutShippingAddress(): void
@@ -271,5 +282,6 @@ class OrderConverterTest extends TestCase
         static::assertSame(Defaults::SALES_CHANNEL, $converted['salesChannelId']);
         static::assertSame('test@example.com', $converted['orderCustomer']['email']);
         static::assertSame($converted['billingAddress'], $converted['deliveries'][0]['shippingOrderAddress']);
+        static::assertCount(0, $this->loggingService->getLoggingArray());
     }
 }

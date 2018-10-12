@@ -7,7 +7,6 @@ use Shopware\Core\Checkout\Customer\CustomerDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Struct\Uuid;
-use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagMigrationNext\Profile\Shopware55\Converter\CustomerConverter;
 use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
 use SwagMigrationNext\Test\Mock\Migration\Logging\DummyLoggingService;
@@ -15,19 +14,22 @@ use SwagMigrationNext\Test\Mock\Migration\Mapping\DummyMappingService;
 
 class CustomerConverterTest extends TestCase
 {
-    use IntegrationTestBehaviour;
-
     /**
      * @var CustomerConverter
      */
     private $customerConverter;
 
+    /**
+     * @var DummyLoggingService
+     */
+    private $loggingService;
+
     protected function setUp()
     {
-        $loggingService = new DummyLoggingService();
+        $this->loggingService = new DummyLoggingService();
         $mappingService = new DummyMappingService();
         $converterHelperService = new ConverterHelperService();
-        $this->customerConverter = new CustomerConverter($mappingService, $converterHelperService, $loggingService);
+        $this->customerConverter = new CustomerConverter($mappingService, $converterHelperService, $this->loggingService);
     }
 
     public function testSupports(): void
@@ -58,6 +60,7 @@ class CustomerConverterTest extends TestCase
         static::assertArrayHasKey('addresses', $converted);
         static::assertSame(Defaults::SALES_CHANNEL, $converted['salesChannelId']);
         static::assertSame('Mustermann', $converted['lastName']);
+        static::assertCount(0, $this->loggingService->getLoggingArray());
     }
 
     /**
@@ -77,8 +80,13 @@ class CustomerConverterTest extends TestCase
             Defaults::CATALOG,
             Defaults::SALES_CHANNEL
         );
-
         static::assertNull($convertResult->getConverted());
+
+        $logs = $this->loggingService->getLoggingArray();
+        static::assertCount(1, $logs);
+
+        $description = sprintf('Customer-Entity could not converted cause of empty necessary field(s): %s.', $property);
+        static::assertSame($description, $logs[0]['logEntry']['description']);
     }
 
     public function requiredProperties(): array
@@ -115,6 +123,7 @@ class CustomerConverterTest extends TestCase
         static::assertSame(Defaults::SALES_CHANNEL, $converted['salesChannelId']);
         static::assertSame('Test', $converted['lastName']);
         static::assertTrue($converted['guest']);
+        static::assertCount(0, $this->loggingService->getLoggingArray());
     }
 
     public function testConvertCustomerWithoutNumber(): void
@@ -141,6 +150,7 @@ class CustomerConverterTest extends TestCase
         static::assertSame(Defaults::SALES_CHANNEL, $converted['salesChannelId']);
         static::assertSame('Mustermann', $converted['lastName']);
         static::assertSame('number-test@example.com', $converted['customerNumber']);
+        static::assertCount(0, $this->loggingService->getLoggingArray());
     }
 
     public function testConvertCustomerWithoutPayment(): void
@@ -167,6 +177,7 @@ class CustomerConverterTest extends TestCase
         static::assertSame(Defaults::SALES_CHANNEL, $converted['salesChannelId']);
         static::assertSame('Mustermann', $converted['lastName']);
         static::assertSame(Defaults::PAYMENT_METHOD_SEPA, $converted['defaultPaymentMethodId']);
+        static::assertCount(0, $this->loggingService->getLoggingArray());
     }
 
     public function testConvertCustomerWithoutAddresses(): void
@@ -185,6 +196,12 @@ class CustomerConverterTest extends TestCase
         );
 
         static::assertNull($convertResult->getConverted());
+
+        $logs = $this->loggingService->getLoggingArray();
+        static::assertCount(1, $logs);
+
+        $description = 'Customer-Entity could not converted cause of empty address data.';
+        static::assertSame($description, $logs[0]['logEntry']['description']);
     }
 
     public function testConvertCustomerWithoutValidAddresses(): void
@@ -193,7 +210,7 @@ class CustomerConverterTest extends TestCase
         $customerData = $customerData[1];
 
         $customerData['addresses'][0]['firstname'] = '';
-        $customerData['addresses'][1]['firstname'] = '';
+        $customerData['addresses'][1]['lastname'] = '';
 
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
         $convertResult = $this->customerConverter->convert(
@@ -205,6 +222,18 @@ class CustomerConverterTest extends TestCase
         );
 
         static::assertNull($convertResult->getConverted());
+
+        $logs = $this->loggingService->getLoggingArray();
+        static::assertCount(3, $logs);
+
+        $description = 'Address-Entity could not converted cause of empty necessary field(s): firstname.';
+        static::assertSame($description, $logs[0]['logEntry']['description']);
+
+        $description = 'Address-Entity could not converted cause of empty necessary field(s): lastname.';
+        static::assertSame($description, $logs[1]['logEntry']['description']);
+
+        $description = 'Customer-Entity could not converted cause of empty address data.';
+        static::assertSame($description, $logs[2]['logEntry']['description']);
     }
 
     public function testConvertWithCustomerGroupDiscounts(): void
@@ -229,6 +258,7 @@ class CustomerConverterTest extends TestCase
         static::assertSame(Defaults::SALES_CHANNEL, $converted['salesChannelId']);
         static::assertSame('Kundengruppe-Netto', $converted['lastName']);
         static::assertSame(5.0, $converted['group']['discounts'][0]['percentageDiscount']);
+        static::assertCount(0, $this->loggingService->getLoggingArray());
     }
 
     public function requiredAddressProperties(): array
@@ -275,6 +305,16 @@ class CustomerConverterTest extends TestCase
         static::assertSame('Mustermannstraße 92', $converted['addresses'][0]['street']);
         static::assertSame($converted['addresses'][0]['id'], $converted['defaultBillingAddressId']);
         static::assertSame($converted['addresses'][0]['id'], $converted['defaultShippingAddressId']);
+
+        $logs = $this->loggingService->getLoggingArray();
+
+        $description = sprintf('Address-Entity could not converted cause of empty necessary field(s): %s.', $property);
+        static::assertSame($description, $logs[0]['logEntry']['description']);
+
+        $description = 'Default billing address of customer is empty and will set with the default shipping address';
+        static::assertSame($description, $logs[1]['logEntry']['description']);
+
+        static::assertCount(2, $logs);
     }
 
     /**
@@ -305,6 +345,16 @@ class CustomerConverterTest extends TestCase
         static::assertSame('Musterstr. 55', $converted['addresses'][0]['street']);
         static::assertSame($converted['addresses'][0]['id'], $converted['defaultBillingAddressId']);
         static::assertSame($converted['addresses'][0]['id'], $converted['defaultShippingAddressId']);
+
+        $logs = $this->loggingService->getLoggingArray();
+
+        $description = sprintf('Address-Entity could not converted cause of empty necessary field(s): %s.', $property);
+        static::assertSame($description, $logs[0]['logEntry']['description']);
+
+        $description = 'Default shipping address of customer is empty and will set with the default billing address';
+        static::assertSame($description, $logs[1]['logEntry']['description']);
+
+        static::assertCount(2, $logs);
     }
 
     /**
@@ -336,5 +386,16 @@ class CustomerConverterTest extends TestCase
         static::assertSame('Musterstraße 3', $converted['addresses'][0]['street']);
         static::assertSame($converted['addresses'][0]['id'], $converted['defaultBillingAddressId']);
         static::assertSame($converted['addresses'][0]['id'], $converted['defaultShippingAddressId']);
+
+        $logs = $this->loggingService->getLoggingArray();
+
+        $description = sprintf('Address-Entity could not converted cause of empty necessary field(s): %s.', $property);
+        static::assertSame($description, $logs[0]['logEntry']['description']);
+        static::assertSame($description, $logs[1]['logEntry']['description']);
+
+        $description = 'Default billing and shipping address of customer is empty and will set with the first address';
+        static::assertSame($description, $logs[2]['logEntry']['description']);
+
+        static::assertCount(3, $logs);
     }
 }

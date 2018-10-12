@@ -26,6 +26,7 @@ use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Mock\DummyCollection;
 use SwagMigrationNext\Test\Mock\Gateway\Dummy\Local\DummyLocalFactory;
+use SwagMigrationNext\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationNext\Test\Mock\Migration\Mapping\DummyMappingService;
 
 class MigrationEnvironmentServiceTest extends TestCase
@@ -39,21 +40,22 @@ class MigrationEnvironmentServiceTest extends TestCase
 
     protected function setUp()
     {
+        $loggingService = new DummyLoggingService();
         $mappingService = new DummyMappingService();
         $converterRegistry = new ConverterRegistry(
             new DummyCollection(
                 [
-                    new ProductConverter($mappingService, new ConverterHelperService()),
-                    new TranslationConverter($mappingService, new ConverterHelperService()),
-                    new CategoryConverter($mappingService, new ConverterHelperService()),
+                    new ProductConverter($mappingService, new ConverterHelperService(), $loggingService),
+                    new TranslationConverter($mappingService, new ConverterHelperService(), $loggingService),
+                    new CategoryConverter($mappingService, new ConverterHelperService(), $loggingService),
                     new AssetConverter($mappingService, new ConverterHelperService()),
-                    new CustomerConverter($mappingService, new ConverterHelperService()),
+                    new CustomerConverter($mappingService, new ConverterHelperService(), $loggingService),
                 ]
             )
         );
 
         $profileRegistry = new ProfileRegistry(new DummyCollection([
-            new Shopware55Profile($this->getContainer()->get('swag_migration_data.repository'), $converterRegistry),
+            new Shopware55Profile($this->getContainer()->get('swag_migration_data.repository'), $converterRegistry, $loggingService),
         ]));
         /** @var GatewayFactoryRegistryInterface $gatewayFactoryRegistry */
         $gatewayFactoryRegistry = new GatewayFactoryRegistry(new DummyCollection([

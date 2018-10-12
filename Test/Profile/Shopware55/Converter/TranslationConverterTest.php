@@ -6,8 +6,6 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Struct\Uuid;
-use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
-use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Profile\Shopware55\Converter\CategoryConverter;
 use SwagMigrationNext\Profile\Shopware55\Converter\ProductConverter;
 use SwagMigrationNext\Profile\Shopware55\Converter\TranslationConverter;
@@ -17,8 +15,6 @@ use SwagMigrationNext\Test\Mock\Migration\Mapping\DummyMappingService;
 
 class TranslationConverterTest extends TestCase
 {
-    use IntegrationTestBehaviour;
-
     /**
      * @var TranslationConverter
      */
@@ -30,7 +26,7 @@ class TranslationConverterTest extends TestCase
     private $mappingService;
 
     /**
-     * @var LoggingServiceInterface
+     * @var DummyLoggingService
      */
     private $loggingService;
 
@@ -54,8 +50,12 @@ class TranslationConverterTest extends TestCase
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
         $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
         $convertResult = $this->translationConverter->convert($translationData['invalid'], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
-
         static::assertNull($convertResult->getConverted());
+
+        $logs = $this->loggingService->getLoggingArray();
+        $description = 'Translation of object type "invalid" could not converted.';
+        static::assertSame($description, $logs[0]['logEntry']['description']);
+        static::assertCount(1, $logs);
     }
 
     public function testConvertProductTranslation(): void
@@ -64,13 +64,14 @@ class TranslationConverterTest extends TestCase
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
 
-        $productConverter = new ProductConverter($this->mappingService, new ConverterHelperService());
+        $productConverter = new ProductConverter($this->mappingService, new ConverterHelperService(), $this->loggingService);
         $productConverter->convert($productData[0], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
 
         $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
         $convertResult = $this->translationConverter->convert($translationData['product'], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
 
         static::assertNull($convertResult->getUnmapped());
+        static::assertCount(0, $this->loggingService->getLoggingArray());
     }
 
     public function testConvertManufacturerTranslation(): void
@@ -78,7 +79,7 @@ class TranslationConverterTest extends TestCase
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
 
-        $productConverter = new ProductConverter($this->mappingService, new ConverterHelperService());
+        $productConverter = new ProductConverter($this->mappingService, new ConverterHelperService(), $this->loggingService);
         $productConvertResult = $productConverter->convert($productData[0], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
 
         $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
@@ -90,6 +91,7 @@ class TranslationConverterTest extends TestCase
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
         static::assertSame($convertedProduct['manufacturer']['id'], $converted['productManufacturerId']);
+        static::assertCount(0, $this->loggingService->getLoggingArray());
     }
 
     public function testConvertManufacturerTranslationWithoutParent(): void
@@ -107,7 +109,7 @@ class TranslationConverterTest extends TestCase
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
 
-        $productConverter = new ProductConverter($this->mappingService, new ConverterHelperService());
+        $productConverter = new ProductConverter($this->mappingService, new ConverterHelperService(), $this->loggingService);
         $productConverter->convert($productData[0], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
 
         $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
@@ -116,6 +118,11 @@ class TranslationConverterTest extends TestCase
         $convertResult = $this->translationConverter->convert($translationData, $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
 
         static::assertNull($convertResult->getConverted());
+
+        $logs = $this->loggingService->getLoggingArray();
+        $description = 'Manufacturer-Translation-Entity could not converted cause of invalid unserialized object data.';
+        static::assertSame($description, $logs[0]['logEntry']['description']);
+        static::assertCount(1, $logs);
     }
 
     public function testConvertManufacturerTranslationWithUnhandledTranslations(): void
@@ -123,7 +130,7 @@ class TranslationConverterTest extends TestCase
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
 
-        $productConverter = new ProductConverter($this->mappingService, new ConverterHelperService());
+        $productConverter = new ProductConverter($this->mappingService, new ConverterHelperService(), $this->loggingService);
         $productConverter->convert($productData[0], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
 
         $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
@@ -134,6 +141,11 @@ class TranslationConverterTest extends TestCase
         $convertResult = $this->translationConverter->convert($translationData, $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
 
         static::assertNull($convertResult->getConverted());
+
+        $logs = $this->loggingService->getLoggingArray();
+        $description = 'Manufacturer-Translation-Entity could not converted cause of invalid unserialized object data.';
+        static::assertSame($description, $logs[0]['logEntry']['description']);
+        static::assertCount(1, $logs);
     }
 
     public function testConvertUnitTranslation(): void
@@ -141,7 +153,7 @@ class TranslationConverterTest extends TestCase
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
 
-        $productConverter = new ProductConverter($this->mappingService, new ConverterHelperService());
+        $productConverter = new ProductConverter($this->mappingService, new ConverterHelperService(), $this->loggingService);
         $productConvertResult = $productConverter->convert($productData[0], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
 
         $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
@@ -153,6 +165,7 @@ class TranslationConverterTest extends TestCase
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
         static::assertSame($convertedProduct['unit']['id'], $converted['unitId']);
+        static::assertCount(0, $this->loggingService->getLoggingArray());
     }
 
     public function testConvertUnitTranslationWithoutParent(): void
@@ -161,8 +174,12 @@ class TranslationConverterTest extends TestCase
 
         $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
         $convertResult = $this->translationConverter->convert($translationData['unit'], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
-
         static::assertNull($convertResult->getConverted());
+
+        $logs = $this->loggingService->getLoggingArray();
+        $description = 'Associated unit not found in mapping for translation entity.';
+        static::assertSame($description, $logs[0]['logEntry']['description']);
+        static::assertCount(1, $logs);
     }
 
     public function testConvertUnitTranslationWithInvalidTranslationObject(): void
@@ -170,7 +187,7 @@ class TranslationConverterTest extends TestCase
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
 
-        $productConverter = new ProductConverter($this->mappingService, new ConverterHelperService());
+        $productConverter = new ProductConverter($this->mappingService, new ConverterHelperService(), $this->loggingService);
         $productConverter->convert($productData[0], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
 
         $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
@@ -179,6 +196,11 @@ class TranslationConverterTest extends TestCase
         $convertResult = $this->translationConverter->convert($translationData, $context, Defaults::CATALOG);
 
         static::assertNull($convertResult->getConverted());
+
+        $logs = $this->loggingService->getLoggingArray();
+        $description = 'Unit-Translation-Entity could not converted cause of invalid unserialized object data.';
+        static::assertSame($description, $logs[0]['logEntry']['description']);
+        static::assertCount(1, $logs);
     }
 
     public function testConvertUnitTranslationWithUnhandledTranslations(): void
@@ -186,7 +208,7 @@ class TranslationConverterTest extends TestCase
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
 
-        $productConverter = new ProductConverter($this->mappingService, new ConverterHelperService());
+        $productConverter = new ProductConverter($this->mappingService, new ConverterHelperService(), $this->loggingService);
         $productConverter->convert($productData[0], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
 
         $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
@@ -197,6 +219,11 @@ class TranslationConverterTest extends TestCase
         $convertResult = $this->translationConverter->convert($translationData, $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
 
         static::assertNull($convertResult->getConverted());
+
+        $logs = $this->loggingService->getLoggingArray();
+        $description = 'Unit-Translation-Entity could not converted cause of invalid unserialized object data.';
+        static::assertSame($description, $logs[0]['logEntry']['description']);
+        static::assertCount(1, $logs);
     }
 
     public function testConvertCategoryTranslation(): void
@@ -216,6 +243,7 @@ class TranslationConverterTest extends TestCase
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
         static::assertSame($convertedCategory['id'], $converted['categoryId']);
+        static::assertCount(0, $this->loggingService->getLoggingArray());
     }
 
     public function testConvertCategoryTranslationWithoutParent(): void
@@ -224,8 +252,12 @@ class TranslationConverterTest extends TestCase
 
         $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
         $convertResult = $this->translationConverter->convert($translationData['category'], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
-
         static::assertNull($convertResult->getConverted());
+
+        $logs = $this->loggingService->getLoggingArray();
+        $description = 'Associated category not found in mapping for translation entity.';
+        static::assertSame($description, $logs[0]['logEntry']['description']);
+        static::assertCount(1, $logs);
     }
 
     public function testConvertCategoryTranslationWithInvalidTranslationObject(): void
@@ -240,8 +272,12 @@ class TranslationConverterTest extends TestCase
         $translationData = $translationData['category'];
         $translationData['objectdata'] = 's:19:"no serialized array";';
         $convertResult = $this->translationConverter->convert($translationData, $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
-
         static::assertNull($convertResult->getConverted());
+
+        $logs = $this->loggingService->getLoggingArray();
+        $description = 'Category-Translation-Entity could not converted cause of invalid unserialized object data.';
+        static::assertSame($description, $logs[0]['logEntry']['description']);
+        static::assertCount(1, $logs);
     }
 
     public function testConvertCategoryTranslationWithUnhandledTranslations(): void
@@ -258,7 +294,11 @@ class TranslationConverterTest extends TestCase
         $objectData['foo'] = 'bar';
         $translationData['objectdata'] = serialize($objectData);
         $convertResult = $this->translationConverter->convert($translationData, $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
-
         static::assertNull($convertResult->getConverted());
+
+        $logs = $this->loggingService->getLoggingArray();
+        $description = 'Category-Translation-Entity could not converted cause of invalid unserialized object data.';
+        static::assertSame($description, $logs[0]['logEntry']['description']);
+        static::assertCount(1, $logs);
     }
 }

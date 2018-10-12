@@ -20,12 +20,17 @@ class CategoryConverterTest extends TestCase
      */
     private $categoryConverter;
 
+    /**
+     * @var DummyLoggingService
+     */
+    private $loggingService;
+
     protected function setUp()
     {
         $mappingService = new DummyMappingService();
         $converterHelperService = new ConverterHelperService();
-        $loggingService = new DummyLoggingService();
-        $this->categoryConverter = new CategoryConverter($mappingService, $converterHelperService, $loggingService);
+        $this->loggingService = new DummyLoggingService();
+        $this->categoryConverter = new CategoryConverter($mappingService, $converterHelperService, $this->loggingService);
     }
 
     public function testSupports(): void
@@ -84,7 +89,11 @@ class CategoryConverterTest extends TestCase
 
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
         $convertResult = $this->categoryConverter->convert($categoryData, $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
-
         static::assertNull($convertResult->getConverted());
+
+        $logs = $this->loggingService->getLoggingArray();
+        $description = 'Category-Entity could not converted cause of empty locale.';
+        static::assertSame($description, $logs[0]['logEntry']['description']);
+        static::assertCount(1, $logs);
     }
 }

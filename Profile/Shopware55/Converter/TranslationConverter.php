@@ -131,8 +131,8 @@ class TranslationConverter implements ConverterInterface
         if (!isset($productTranslation['productId'])) {
             $this->loggingService->addWarning(
                 $this->runId,
-                'Empty necessary data',
-                'Product-Translation-Entity could not converted cause of empty necessary field "productId".',
+                'Associated product not found',
+                'Associated product not found in mapping for translation entity.',
                 ['data' => $data]
             );
 
@@ -215,8 +215,8 @@ class TranslationConverter implements ConverterInterface
         if (!isset($manufacturerTranslation['productManufacturerId'])) {
             $this->loggingService->addWarning(
                 $this->runId,
-                'Empty necessary data',
-                'Manufacturer-Translation-Entity could not converted cause of empty necessary field "productManufacturerId".',
+                'Associated manufacturer not found',
+                'Associated manufacturer not found in mapping for translation entity.',
                 ['data' => $data]
             );
 
@@ -313,8 +313,8 @@ class TranslationConverter implements ConverterInterface
         if (!isset($unitTranslation['unitId'])) {
             $this->loggingService->addWarning(
                 $this->runId,
-                'Empty necessary data',
-                'Manufacturer-Translation-Entity could not converted cause of empty necessary field "unitId".',
+                'Associated unit not found',
+                'Associated unit not found in mapping for translation entity.',
                 ['data' => $data]
             );
 
@@ -354,6 +354,13 @@ class TranslationConverter implements ConverterInterface
         if (empty($objectData)) {
             unset($data['objectdata']);
         } else {
+            $this->loggingService->addWarning(
+                $this->runId,
+                'Invalid unserialized data',
+                'Unit-Translation-Entity could not converted cause of invalid unserialized object data.',
+                ['data' => $data['objectdata']]
+            );
+
             return new ConvertStruct(null, $sourceData);
         }
 
@@ -400,8 +407,8 @@ class TranslationConverter implements ConverterInterface
         if (!isset($categoryTranslation['categoryId'])) {
             $this->loggingService->addWarning(
                 $this->runId,
-                'Empty necessary data',
-                'Category-Translation-Entity could not converted cause of empty necessary field "categoryId".',
+                'Associated category not found',
+                'Associated category not found in mapping for translation entity.',
                 ['data' => $data]
             );
 

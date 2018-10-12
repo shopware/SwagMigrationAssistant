@@ -10,16 +10,9 @@ class DummyLoggingService extends LoggingService
     {
     }
 
-    public function addInfo(string $runId, string $title, string $description, array $details = null): void
+    public function getLoggingArray(): array
     {
-    }
-
-    public function addWarning(string $runId, string $title, string $description, array $details = null): void
-    {
-    }
-
-    public function addError(string $runId, string $code, string $title, array $details = null): void
-    {
+        return $this->logging;
     }
 
     public function saveLogging(\Shopware\Core\Framework\Context $context): void

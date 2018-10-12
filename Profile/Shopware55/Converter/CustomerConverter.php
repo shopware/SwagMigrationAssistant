@@ -364,10 +364,10 @@ class CustomerConverter implements ConverterInterface
 
             $fields = [];
             if ($this->isEmpty('firstname', $address)) {
-                $fields[] = 'email';
+                $fields[] = 'firstname';
             }
             if ($this->isEmpty('lastname', $address)) {
-                $fields[] = 'firstname';
+                $fields[] = 'lastname';
             }
             if ($this->isEmpty('zipcode', $address)) {
                 $fields[] = 'zipcode';

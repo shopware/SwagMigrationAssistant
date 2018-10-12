@@ -14,7 +14,7 @@ class LoggingService implements LoggingServiceInterface
     /**
      * @var array
      */
-    private $logging = [];
+    protected $logging = [];
 
     /**
      * @var RepositoryInterface

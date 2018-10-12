@@ -17,6 +17,7 @@ use Shopware\Core\Framework\Rule\Container\AndRule;
 use Shopware\Core\System\Tax\TaxDefinition;
 use Shopware\Core\System\Unit\Aggregate\UnitTranslation\UnitTranslationDefinition;
 use Shopware\Core\System\Unit\UnitDefinition;
+use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\ConvertStruct;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
@@ -57,12 +58,24 @@ class ProductConverter implements ConverterInterface
      */
     private $catalogId;
 
+    /**
+     * @var string
+     */
+    private $runId;
+
+    /**
+     * @var LoggingServiceInterface
+     */
+    private $loggingService;
+
     public function __construct(
         Shopware55MappingService $mappingService,
-        ConverterHelperService $converterHelperService
+        ConverterHelperService $converterHelperService,
+        LoggingServiceInterface $loggingService
     ) {
         $this->mappingService = $mappingService;
         $this->helper = $converterHelperService;
+        $this->loggingService = $loggingService;
     }
 
     public function supports(): string
@@ -87,6 +100,7 @@ class ProductConverter implements ConverterInterface
     ): ConvertStruct {
         $this->profile = Shopware55Profile::PROFILE_NAME;
         $this->context = $context;
+        $this->runId = $runId;
         $this->catalogId = $catalogId;
         $this->oldProductId = $data['detail']['ordernumber'];
 
@@ -395,6 +409,16 @@ class ProductConverter implements ConverterInterface
         $cover = null;
         foreach ($assets as $asset) {
             if (!isset($asset['media']['id'])) {
+                $this->loggingService->addInfo(
+                    $this->runId,
+                    'Product-Media could not converted',
+                    'Product-Media could not converted',
+                    [
+                        'uuid' => $converted['id'],
+                        'id' => $this->oldProductId,
+                    ]
+                );
+
                 continue;
             }
 
