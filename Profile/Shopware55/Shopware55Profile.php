@@ -13,6 +13,7 @@ use Shopware\Core\Framework\ORM\Event\EntityWrittenContainerEvent;
 use Shopware\Core\Framework\ORM\RepositoryInterface;
 use SwagMigrationNext\Gateway\GatewayInterface;
 use SwagMigrationNext\Migration\Data\SwagMigrationDataDefinition;
+use SwagMigrationNext\Migration\EnvironmentInformation;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Profile\ProfileInterface;
 use SwagMigrationNext\Profile\Shopware55\Converter\AssociationEntityRequiredMissingException;
@@ -23,6 +24,8 @@ use SwagMigrationNext\Profile\Shopware55\Converter\ParentEntityForChildNotFoundE
 class Shopware55Profile implements ProfileInterface
 {
     public const PROFILE_NAME = 'shopware55';
+
+    public const SOURCE_SYSTEM_NAME = 'Shopware';
 
     /**
      * @var RepositoryInterface
@@ -74,43 +77,57 @@ class Shopware55Profile implements ProfileInterface
         return \count($event->getIds());
     }
 
-    public function readEnvironmentInformation(GatewayInterface $gateway): array
+    public function readEnvironmentInformation(GatewayInterface $gateway): EnvironmentInformation
     {
-        return $gateway->read('environment', 0, 0);
+        $environmentData =  $gateway->read('environment', 0, 0);
+        $environmentDataArray = $environmentData['environmentInformation'];
+        if (empty($environmentDataArray)) {
+            return new EnvironmentInformation(
+                self::SOURCE_SYSTEM_NAME,
+                '',
+                '',
+                0,
+                0,
+                0,
+                0,
+                0,
+                $environmentData['error']['code'],
+                $environmentData['error']['detail']
+            );
+        }
+
+        return new EnvironmentInformation(
+            self::SOURCE_SYSTEM_NAME,
+            $environmentDataArray['shopwareVersion'],
+            $environmentDataArray['structure'][0]['host'],
+            $environmentDataArray['categories'],
+            $environmentDataArray['products'],
+            $environmentDataArray['customers'],
+            $environmentDataArray['orders'],
+            $environmentDataArray['assets']
+        );
     }
 
     public function readEntityTotal(GatewayInterface $gateway, string $entityName): int
     {
-        $data = $this->readEnvironmentInformation($gateway);
+        $environmentInformation = $this->readEnvironmentInformation($gateway);
 
         switch ($entityName) {
-            case ProductDefinition::getEntityName():
-                $key = 'products';
-                break;
-            case CustomerDefinition::getEntityName():
-                $key = 'customers';
-                break;
             case CategoryDefinition::getEntityName():
-                $key = 'categories';
-                break;
-            case MediaDefinition::getEntityName():
-                $key = 'assets';
-                break;
-//            case 'translation': TODO revert, when the core could handle translations correctly
-//                $key = 'translations';
-//                break;
+                return $environmentInformation->getCategoryTotal();
+            case ProductDefinition::getEntityName():
+                return $environmentInformation->getProductTotal();
+            case CustomerDefinition::getEntityName():
+                return $environmentInformation->getCustomerTotal();
             case OrderDefinition::getEntityName():
-                $key = 'orders';
-                break;
-            default:
-                throw new InvalidArgumentException('No valid entity provided');
+                return $environmentInformation->getOrderTotal();
+            case MediaDefinition::getEntityName():
+                return $environmentInformation->getAssetTotal();
+//            case 'translation': TODO revert, when the core could handle translations correctly
+//                return $environmentInformation->getTranslationTotal();
         }
 
-        if (!isset($data['environmentInformation'][$key])) {
-            return 0;
-        }
-
-        return $data['environmentInformation'][$key];
+        throw new InvalidArgumentException('No valid entity provided');
     }
 
     private function convertData(

@@ -75,26 +75,15 @@ Component.register('swag-migration-index', {
 
     computed: {
         shopDomain() {
-            if (this.environmentInformation.structure) {
-                return this.environmentInformation.structure[0].host;
-            }
-
-            return '';
+            return this.environmentInformation.sourceSystemDomain;
         },
 
         shopVersion() {
-            if (
-                this.environmentInformation.shopwareVersion &&
-                this.environmentInformation.shopwareVersion !== '___VERSION___'
-            ) {
-                return this.environmentInformation.shopwareVersion;
-            }
-
-            return this.$tc('swag-migration.index.shopVersionFallback');
+            return this.environmentInformation.sourceSystemVersion;
         },
 
         shopFirstLetter() {
-            return this.shopVersion[0];
+            return this.environmentInformation.sourceSystemName[0];
         },
 
         catalogStore() {
@@ -163,14 +152,11 @@ Component.register('swag-migration-index', {
                 // Do connection check
                 this.migrationService.checkConnection(this.profile.id).then((connectionCheckResponse) => {
                     if (!connectionCheckResponse) {
+                        this.$router.push({ name: 'swag.migration.wizard.credentials' });
                         return;
                     }
 
-                    if (!connectionCheckResponse.environmentInformation) {
-                        this.$router.push({ name: 'swag.migration.wizard.credentials' });
-                    }
-
-                    this.environmentInformation = connectionCheckResponse.environmentInformation;
+                    this.environmentInformation = connectionCheckResponse;
                     this.normalizeEnvironmentInformation();
                     this.calculateProgressMaxValues();
 
@@ -254,11 +240,11 @@ Component.register('swag-migration-index', {
         },
 
         normalizeEnvironmentInformation() {
-            this.entityCounts.customer = this.environmentInformation.customers;
-            this.entityCounts.order = this.environmentInformation.orders;
-            this.entityCounts.category = this.environmentInformation.categories;
-            this.entityCounts.product = this.environmentInformation.products;
-            this.entityCounts.media = this.environmentInformation.assets;
+            this.entityCounts.customer = this.environmentInformation.customerTotal;
+            this.entityCounts.order = this.environmentInformation.orderTotal;
+            this.entityCounts.category = this.environmentInformation.categoryTotal;
+            this.entityCounts.product = this.environmentInformation.productTotal;
+            this.entityCounts.media = this.environmentInformation.assetTotal;
             this.entityCounts.translation = 10;
         },
 

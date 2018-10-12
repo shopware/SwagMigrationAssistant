@@ -4,6 +4,7 @@ namespace SwagMigrationNext\Profile;
 
 use Shopware\Core\Framework\Context;
 use SwagMigrationNext\Gateway\GatewayInterface;
+use SwagMigrationNext\Migration\EnvironmentInformation;
 use SwagMigrationNext\Migration\MigrationContext;
 
 interface ProfileInterface
@@ -22,7 +23,7 @@ interface ProfileInterface
     /**
      * Reads environment information from the given gateway
      */
-    public function readEnvironmentInformation(GatewayInterface $gateway): array;
+    public function readEnvironmentInformation(GatewayInterface $gateway): EnvironmentInformation;
 
     /**
      * Reads the total amount from the given gateway for the given entity name

@@ -3,6 +3,7 @@
 namespace SwagMigrationNext\Migration\Service;
 
 use SwagMigrationNext\Gateway\GatewayFactoryRegistryInterface;
+use SwagMigrationNext\Migration\EnvironmentInformation;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Profile\ProfileRegistryInterface;
 
@@ -34,7 +35,7 @@ class MigrationEnvironmentService implements MigrationEnvironmentServiceInterfac
         return $profile->readEntityTotal($gateway, $migrationContext->getEntity());
     }
 
-    public function getEnvironmentInformation(MigrationContext $migrationContext): array
+    public function getEnvironmentInformation(MigrationContext $migrationContext): EnvironmentInformation
     {
         $profile = $this->profileRegistry->getProfile($migrationContext->getProfile());
         $gateway = $this->gatewayFactoryRegistry->createGateway($migrationContext);
