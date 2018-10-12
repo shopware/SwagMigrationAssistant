@@ -2,6 +2,10 @@
 
 namespace SwagMigrationNext\Test;
 
+use Shopware\Core\Checkout\Cart\Price\PriceRounding;
+use Shopware\Core\Checkout\Cart\Tax\PercentageTaxRuleCalculator;
+use Shopware\Core\Checkout\Cart\Tax\TaxCalculator;
+use Shopware\Core\Checkout\Cart\Tax\TaxRuleCalculator;
 use Shopware\Core\Framework\ORM\RepositoryInterface;
 use SwagMigrationNext\Gateway\GatewayFactoryRegistry;
 use SwagMigrationNext\Gateway\Shopware55\Api\Shopware55ApiFactory;
@@ -12,6 +16,7 @@ use SwagMigrationNext\Profile\Shopware55\Converter\AssetConverter;
 use SwagMigrationNext\Profile\Shopware55\Converter\CategoryConverter;
 use SwagMigrationNext\Profile\Shopware55\Converter\ConverterRegistry;
 use SwagMigrationNext\Profile\Shopware55\Converter\CustomerConverter;
+use SwagMigrationNext\Profile\Shopware55\Converter\OrderConverter;
 use SwagMigrationNext\Profile\Shopware55\Converter\ProductConverter;
 use SwagMigrationNext\Profile\Shopware55\Converter\TranslationConverter;
 use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
@@ -26,6 +31,8 @@ trait MigrationServicesTrait
         RepositoryInterface $migrationDataRepo,
         Shopware55MappingService $mappingService
     ): MigrationCollectServiceInterface {
+        $priceRounding = new PriceRounding(2);
+        $taxRuleCalculator = new TaxRuleCalculator($priceRounding);
         $converterRegistry = new ConverterRegistry(
             new DummyCollection(
                 [
@@ -34,6 +41,17 @@ trait MigrationServicesTrait
                     new CategoryConverter($mappingService, new ConverterHelperService()),
                     new AssetConverter($mappingService, new ConverterHelperService()),
                     new CustomerConverter($mappingService, new ConverterHelperService()),
+                    new OrderConverter(
+                        $mappingService,
+                        new ConverterHelperService(),
+                        new TaxCalculator(
+                            $priceRounding,
+                            [
+                                new PercentageTaxRuleCalculator($taxRuleCalculator),
+                                $taxRuleCalculator,
+                            ]
+                        )
+                    ),
                 ]
             )
         );
