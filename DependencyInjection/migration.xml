@@ -96,6 +96,7 @@
         <service id="SwagMigrationNext\Migration\Service\MigrationEnvironmentService"
                  class="SwagMigrationNext\Migration\Service\MigrationEnvironmentService"
                  public="true">
+            <argument type="service" id="SwagMigrationNext\Profile\ProfileRegistry"/>
             <argument type="service" id="SwagMigrationNext\Gateway\GatewayFactoryRegistry"/>
         </service>
 

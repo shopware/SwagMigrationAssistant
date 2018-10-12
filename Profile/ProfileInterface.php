@@ -18,4 +18,14 @@ interface ProfileInterface
      * Returns the count of the imported data
      */
     public function collectData(GatewayInterface $gateway, MigrationContext $migrationContext, Context $context): int;
+
+    /**
+     * Reads environment information from the given gateway
+     */
+    public function readEnvironmentInformation(GatewayInterface $gateway): array;
+
+    /**
+     * Reads the total amount from the given gateway for the given entity name
+     */
+    public function readEntityTotal(GatewayInterface $gateway, string $entityName): int;
 }
