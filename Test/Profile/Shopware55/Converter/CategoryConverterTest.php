@@ -6,9 +6,11 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Struct\Uuid;
 use SwagMigrationNext\Profile\Shopware55\Converter\CategoryConverter;
 use SwagMigrationNext\Profile\Shopware55\Converter\ParentEntityForChildNotFoundException;
 use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
+use SwagMigrationNext\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationNext\Test\Mock\Migration\Mapping\DummyMappingService;
 
 class CategoryConverterTest extends TestCase
@@ -18,11 +20,17 @@ class CategoryConverterTest extends TestCase
      */
     private $categoryConverter;
 
+    /**
+     * @var DummyLoggingService
+     */
+    private $loggingService;
+
     protected function setUp()
     {
         $mappingService = new DummyMappingService();
         $converterHelperService = new ConverterHelperService();
-        $this->categoryConverter = new CategoryConverter($mappingService, $converterHelperService);
+        $this->loggingService = new DummyLoggingService();
+        $this->categoryConverter = new CategoryConverter($mappingService, $converterHelperService, $this->loggingService);
     }
 
     public function testSupports(): void
@@ -37,7 +45,7 @@ class CategoryConverterTest extends TestCase
         $categoryData = require __DIR__ . '/../../../_fixtures/category_data.php';
 
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
-        $convertResult = $this->categoryConverter->convert($categoryData[0], $context, Defaults::CATALOG);
+        $convertResult = $this->categoryConverter->convert($categoryData[0], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
 
         $converted = $convertResult->getConverted();
 
@@ -52,8 +60,8 @@ class CategoryConverterTest extends TestCase
         $categoryData = require __DIR__ . '/../../../_fixtures/category_data.php';
 
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
-        $this->categoryConverter->convert($categoryData[0], $context, Defaults::CATALOG);
-        $convertResult = $this->categoryConverter->convert($categoryData[3], $context, Defaults::CATALOG);
+        $this->categoryConverter->convert($categoryData[0], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
+        $convertResult = $this->categoryConverter->convert($categoryData[3], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
 
         $converted = $convertResult->getConverted();
 
@@ -70,7 +78,7 @@ class CategoryConverterTest extends TestCase
 
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
         $this->expectException(ParentEntityForChildNotFoundException::class);
-        $this->categoryConverter->convert($categoryData[4], $context, Defaults::CATALOG);
+        $this->categoryConverter->convert($categoryData[4], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
     }
 
     public function testConvertWithoutLocale(): void
@@ -80,8 +88,12 @@ class CategoryConverterTest extends TestCase
         unset($categoryData['_locale']);
 
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
-        $convertResult = $this->categoryConverter->convert($categoryData, $context, Defaults::CATALOG);
-
+        $convertResult = $this->categoryConverter->convert($categoryData, $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
         static::assertNull($convertResult->getConverted());
+
+        $logs = $this->loggingService->getLoggingArray();
+        $description = 'Category-Entity could not converted cause of empty locale.';
+        static::assertSame($description, $logs[0]['logEntry']['description']);
+        static::assertCount(1, $logs);
     }
 }

@@ -27,6 +27,7 @@ class SwagMigrationNext extends Plugin
         parent::build($container);
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/DependencyInjection/'));
+        $loader->load('entity.xml');
         $loader->load('gateway.xml');
         $loader->load('migration.xml');
         $loader->load('profile.xml');

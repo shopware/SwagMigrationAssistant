@@ -18,10 +18,14 @@ use Shopware\Core\Framework\ORM\RepositoryInterface;
 use Shopware\Core\Framework\ORM\Search\Criteria;
 use Shopware\Core\Framework\ORM\Search\Query\TermsQuery;
 use SwagMigrationNext\Exception\NoFileSystemPermissionsException;
+use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\Mapping\SwagMigrationMappingStruct;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
 {
+    private const ASSET_ERROR_THRESHOLD = 3;
+
     /**
      * @var RepositoryInterface
      */
@@ -35,14 +39,21 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
      */
     private $fileSaver;
 
+    /**
+     * @var LoggingServiceInterface
+     */
+    private $loggingService;
+
     public function __construct(
         RepositoryInterface $migrationMappingRepository,
         Connection $connection,
-        FileSaver $fileSaver
+        FileSaver $fileSaver,
+        LoggingServiceInterface $loggingService
     ) {
         $this->migrationMappingRepository = $migrationMappingRepository;
         $this->connection = $connection;
         $this->fileSaver = $fileSaver;
+        $this->loggingService = $loggingService;
     }
 
     public function fetchMediaUuids(Context $context, string $profile, int $offset, int $limit): array
@@ -69,14 +80,19 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
      */
     public function downloadAssets(Context $context, array $workload, int $fileChunkByteSize): array
     {
-        if (!is_dir('_temp') && !mkdir('_temp') && !is_dir('_temp')) {
-            throw new NoFileSystemPermissionsException();
-        }
-
         //Map workload with uuids as keys
         $mappedWorkload = [];
         foreach ($workload as $work) {
             $mappedWorkload[$work['uuid']] = $work;
+            $runId = $work['runId'];
+        }
+
+        if (!is_dir('_temp') && !mkdir('_temp') && !is_dir('_temp')) {
+            $exception = new NoFileSystemPermissionsException();
+            $this->loggingService->addError($runId, (string) $exception->getCode(), $exception->getMessage());
+            $this->loggingService->saveLogging($context);
+
+            return $workload;
         }
 
         //Fetch assets from database
@@ -120,6 +136,18 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
                     $mappedWorkload[$uuid]['errorCount'] = 1;
                 }
 
+                if ($mappedWorkload[$uuid]['errorCount'] > self::ASSET_ERROR_THRESHOLD) {
+                    $mappedWorkload[$uuid]['state'] = 'error';
+                    $this->loggingService->addError(
+                        $mappedWorkload[$uuid]['runId'],
+                        (string) SymfonyResponse::HTTP_REQUEST_TIMEOUT,
+                        'Cannot download media.',
+                        [
+                            'uri' => $mappedWorkload[$uuid]['additionalData']['uri'],
+                        ]
+                    );
+                }
+
                 continue;
             }
 
@@ -142,6 +170,8 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
                 unset($mappedWorkload[$uuid]['errorCount']);
             }
         }
+
+        $this->loggingService->saveLogging($context);
 
         return array_values($mappedWorkload);
     }

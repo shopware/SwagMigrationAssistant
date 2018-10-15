@@ -6,10 +6,12 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Struct\Uuid;
 use SwagMigrationNext\Profile\Shopware55\Converter\CategoryConverter;
 use SwagMigrationNext\Profile\Shopware55\Converter\ParentEntityForChildNotFoundException;
 use SwagMigrationNext\Profile\Shopware55\Converter\ProductConverter;
 use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
+use SwagMigrationNext\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationNext\Test\Mock\Migration\Mapping\DummyMappingService;
 
 class ProductConverterTest extends TestCase
@@ -24,11 +26,17 @@ class ProductConverterTest extends TestCase
      */
     private $mappingService;
 
+    /**
+     * @var DummyLoggingService
+     */
+    private $loggingService;
+
     protected function setUp()
     {
         $this->mappingService = new DummyMappingService();
         $converterHelperService = new ConverterHelperService();
-        $this->productConverter = new ProductConverter($this->mappingService, $converterHelperService);
+        $this->loggingService = new DummyLoggingService();
+        $this->productConverter = new ProductConverter($this->mappingService, $converterHelperService, $this->loggingService);
     }
 
     public function testSupports(): void
@@ -43,7 +51,7 @@ class ProductConverterTest extends TestCase
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
 
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
-        $convertResult = $this->productConverter->convert($productData[0], $context, Defaults::CATALOG);
+        $convertResult = $this->productConverter->convert($productData[0], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
 
         $converted = $convertResult->getConverted();
 
@@ -57,20 +65,21 @@ class ProductConverterTest extends TestCase
             $converted['translations'][Defaults::LANGUAGE]['name']
         );
         static::assertSame([], $converted['categories']);
+        static::assertCount(0, $this->loggingService->getLoggingArray());
     }
 
     public function testConvertWithCategory(): void
     {
         $converterHelperService = new ConverterHelperService();
-        $categoryConverter = new CategoryConverter($this->mappingService, $converterHelperService);
+        $categoryConverter = new CategoryConverter($this->mappingService, $converterHelperService, $this->loggingService);
         $categoryData = require __DIR__ . '/../../../_fixtures/category_data.php';
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
 
-        $categoryConverter->convert($categoryData[1], $context, Defaults::CATALOG);
-        $categoryConverter->convert($categoryData[7], $context, Defaults::CATALOG);
+        $categoryConverter->convert($categoryData[1], $context, Uuid::uuid4()->getHex(), Uuid::uuid4()->getHex(), Defaults::CATALOG);
+        $categoryConverter->convert($categoryData[7], $context, Uuid::uuid4()->getHex(), Uuid::uuid4()->getHex(), Defaults::CATALOG);
 
-        $convertResult = $this->productConverter->convert($productData[0], $context, Defaults::CATALOG);
+        $convertResult = $this->productConverter->convert($productData[0], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
 
         $converted = $convertResult->getConverted();
 
@@ -84,6 +93,7 @@ class ProductConverterTest extends TestCase
             $converted['translations'][Defaults::LANGUAGE]['name']
         );
         static::assertArrayHasKey('id', $converted['categories'][0]);
+        static::assertCount(0, $this->loggingService->getLoggingArray());
     }
 
     public function testConvertMainProduct(): void
@@ -92,7 +102,7 @@ class ProductConverterTest extends TestCase
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
 
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
-        $convertResult = $this->productConverter->convert($productData[1], $context, Defaults::CATALOG);
+        $convertResult = $this->productConverter->convert($productData[1], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
 
         $converted = $convertResult->getConverted();
 
@@ -104,6 +114,7 @@ class ProductConverterTest extends TestCase
         static::assertSame($converted['translations'][Defaults::LANGUAGE]['name'], $converted['children'][0]['translations'][Defaults::LANGUAGE]['name']);
         static::assertSame($converted['id'], $converted['children'][0]['parentId']);
         static::assertSame([], $converted['categories']);
+        static::assertCount(0, $this->loggingService->getLoggingArray());
     }
 
     public function testConvertVariantProduct(): void
@@ -112,8 +123,8 @@ class ProductConverterTest extends TestCase
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
 
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
-        $convertResultContainer = $this->productConverter->convert($productData[1], $context, Defaults::CATALOG);
-        $convertResult = $this->productConverter->convert($productData[15], $context, Defaults::CATALOG);
+        $convertResultContainer = $this->productConverter->convert($productData[1], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
+        $convertResult = $this->productConverter->convert($productData[15], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
 
         $converted = $convertResult->getConverted();
         $convertedContainer = $convertResultContainer->getConverted();
@@ -124,6 +135,7 @@ class ProductConverterTest extends TestCase
         static::assertArrayHasKey('price', $converted);
         static::assertSame(Defaults::CATALOG, $converted['catalogId']);
         static::assertSame($convertedContainer['id'], $converted['parentId']);
+        static::assertCount(0, $this->loggingService->getLoggingArray());
     }
 
     public function testConvertVariantProductWithoutParent(): void
@@ -135,7 +147,8 @@ class ProductConverterTest extends TestCase
 
         $this->expectException(ParentEntityForChildNotFoundException::class);
         $this->expectExceptionMessage('Parent entity for "product: SW10007.1" child not found');
-        $this->productConverter->convert($productData[15], $context, Defaults::CATALOG);
+        $this->productConverter->convert($productData[15], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
+        static::assertCount(0, $this->loggingService->getLoggingArray());
     }
 
     public function testConvertWithInvalidAsset(): void
@@ -145,7 +158,7 @@ class ProductConverterTest extends TestCase
         unset($productData['assets'][0]['media']['id']);
 
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
-        $convertResult = $this->productConverter->convert($productData, $context, Defaults::CATALOG);
+        $convertResult = $this->productConverter->convert($productData, $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
 
         $converted = $convertResult->getConverted();
 
@@ -156,5 +169,10 @@ class ProductConverterTest extends TestCase
         static::assertSame(Defaults::CATALOG, $converted['catalogId']);
         static::assertArrayNotHasKey('cover', $converted);
         static::assertArrayNotHasKey('media', $converted);
+
+        $logs = $this->loggingService->getLoggingArray();
+        $description = 'Product-Media could not converted';
+        static::assertSame($description, $logs[0]['logEntry']['description']);
+        static::assertCount(1, $logs);
     }
 }

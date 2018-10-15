@@ -69,6 +69,7 @@ class AssetDownloadServiceTest extends TestCase
         $this->productRepo = $this->getContainer()->get('product.repository');
         $this->migrationCollectService = $this->getMigrationCollectService(
             $this->getContainer()->get('swag_migration_data.repository'),
+            $this->getContainer()->get('swag_migration_logging.repository'),
             $this->getContainer()->get(Shopware55MappingService::class)
         );
 

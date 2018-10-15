@@ -15,6 +15,8 @@ use Shopware\Core\Framework\ORM\Search\EntitySearchResult;
 use Shopware\Core\Framework\ORM\Search\Query\TermQuery;
 use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
+use SwagMigrationNext\Migration\Logging\LoggingService;
+use SwagMigrationNext\Migration\Logging\SwagMigrationLoggingStruct;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Service\MigrationCollectServiceInterface;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
@@ -42,6 +44,11 @@ class MigrationCollectServiceTest extends TestCase
     private $productRepo;
 
     /**
+     * @var RepositoryInterface
+     */
+    private $loggingRepo;
+
+    /**
      * @var string
      */
     private $runUuid;
@@ -60,9 +67,11 @@ class MigrationCollectServiceTest extends TestCase
             Context::createDefaultContext(Defaults::TENANT_ID)
         );
 
+        $this->loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
         $this->migrationDataRepo = $this->getContainer()->get('swag_migration_data.repository');
         $this->migrationCollectService = $this->getMigrationCollectService(
             $this->migrationDataRepo,
+            $this->loggingRepo,
             $this->getContainer()->get(Shopware55MappingService::class)
         );
         $this->productRepo = $this->getContainer()->get('product.repository');
@@ -224,5 +233,52 @@ class MigrationCollectServiceTest extends TestCase
         /** @var EntitySearchResult $result */
         $result = $this->migrationDataRepo->search($criteria, $context);
         self::assertSame(37, $result->getTotal());
+    }
+
+    public function testFetchInvalidCustomerData(): void
+    {
+        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $migrationContext = new MigrationContext(
+            $this->runUuid,
+            Shopware55Profile::PROFILE_NAME,
+            'local',
+            CustomerDefinition::getEntityName() . 'Invalid',
+            [],
+            0,
+            250,
+            null,
+            Defaults::SALES_CHANNEL
+        );
+
+        $this->migrationCollectService->fetchData($migrationContext, $context);
+        $result = $this->loggingRepo->search(new Criteria(), $context);
+
+        self::assertSame(5, $result->getTotal());
+
+        $countValidLogging = 0;
+        $countInvalidLogging = 0;
+        /**
+         * @var SwagMigrationLoggingStruct
+         */
+        foreach ($result->getElements() as $log) {
+            $type = $log->getType();
+            $logEntry = $log->getLogEntry();
+
+            if (
+                ($type === LoggingService::WARNING_TYPE && $logEntry['title'] === 'Empty necessary data fields for address') ||
+                ($type === LoggingService::WARNING_TYPE && $logEntry['title'] === 'Empty necessary data fields') ||
+                ($type === LoggingService::INFO_TYPE && $logEntry['title'] === 'No default shipping address') ||
+                ($type === LoggingService::INFO_TYPE && $logEntry['title'] === 'No default billing and shipping address') ||
+                ($type === LoggingService::WARNING_TYPE && $logEntry['title'] === 'No address data')
+            ) {
+                ++$countValidLogging;
+                continue;
+            }
+
+            ++$countInvalidLogging;
+        }
+
+        self::assertSame(5, $countValidLogging);
+        self::assertSame(0, $countInvalidLogging);
     }
 }

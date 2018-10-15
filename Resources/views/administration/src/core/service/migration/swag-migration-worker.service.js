@@ -17,7 +17,6 @@ class MigrationService {
             FINISHED: 3
         };
 
-        this._ASSET_ERROR_THRESHOLD = 3;
         this._ASSET_UUID_CHUNK = 100; // Amount of uuids we fetch with one request
         this._ASSET_WORKLOAD_COUNT = 5; // The amount of assets we download per request in parallel
         // The maximum amount of bytes we download per file in one request
@@ -464,6 +463,7 @@ class MigrationService {
         const uuids = this._assetUuidPool.splice(0, assetCount);
         uuids.forEach((uuid) => {
             this._assetWorkload.push({
+                runId: this._runId,
                 uuid,
                 currentOffset: 0,
                 state: 'inProgress'
@@ -484,30 +484,27 @@ class MigrationService {
     _updateWorkload(newWorkload, requestTime) {
         const finishedAssets = newWorkload.filter((asset) => asset.state === 'finished');
         let assetsRemovedCount = finishedAssets.length;
-        this._assetWorkload = newWorkload.filter((asset) => asset.state === 'inProgress');
 
         // check for errorCount
-        this._assetWorkload = this._assetWorkload.filter((asset) => {
-            if (!asset.errorCount || (asset.errorCount && asset.errorCount <= this._ASSET_ERROR_THRESHOLD)) {
-                return true;
+        newWorkload.forEach((asset) => {
+            if (asset.state === 'error') {
+                assetsRemovedCount += 1;
+                this._addError({
+                    code: '0',
+                    status: '408',
+                    title: this.applicationRoot.$i18n.tc('swag-migration.index.error.canNotDownloadAsset.title'),
+                    detail: this.applicationRoot.$i18n.tc('swag-migration.index.error.canNotDownloadAsset.detail'),
+                    information: this.applicationRoot.$i18n.t(
+                        'swag-migration.index.error.canNotDownloadAsset.information',
+                        { path: asset.additionalData.uri }
+                    ),
+                    path: asset.additionalData.uri,
+                    trace: []
+                });
             }
-
-            assetsRemovedCount += 1;
-            this._addError({
-                code: '0',
-                status: '444',
-                title: this.applicationRoot.$i18n.tc('swag-migration.index.error.canNotDownloadAsset.title'),
-                detail: this.applicationRoot.$i18n.tc('swag-migration.index.error.canNotDownloadAsset.detail'),
-                information: this.applicationRoot.$i18n.t(
-                    'swag-migration.index.error.canNotDownloadAsset.information',
-                    { path: asset.additionalData.uri }
-                ),
-                path: asset.additionalData.uri,
-                trace: []
-            });
-
-            return false;
         });
+
+        this._assetWorkload = newWorkload.filter((asset) => asset.state === 'inProgress');
 
         // Get the assets that have utilized the full amount of fileByteChunkSize
         const assetsWithoutAnyErrors = this._assetWorkload.filter((asset) => !asset.errorCount);

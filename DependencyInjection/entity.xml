@@ -1,0 +1,71 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <service id="SwagMigrationNext\Migration\Logging\SwagMigrationLoggingDefinition"
+                 class="SwagMigrationNext\Migration\Logging\SwagMigrationLoggingDefinition">
+            <tag name="shopware.entity.definition" entity="swag_migration_logging"/>
+        </service>
+
+        <service id="swag_migration_logging.repository"
+                 class="Shopware\Core\Framework\ORM\EntityRepository"
+                 public="true">
+            <argument>SwagMigrationNext\Migration\Logging\SwagMigrationLoggingDefinition</argument>
+            <argument type="service" id="Shopware\Core\Framework\ORM\Read\EntityReaderInterface"/>
+            <argument type="service" id="Shopware\Core\Framework\ORM\VersionManager"/>
+            <argument type="service" id="Shopware\Core\Framework\ORM\Search\EntitySearcherInterface"/>
+            <argument type="service" id="Shopware\Core\Framework\ORM\Search\EntityAggregatorInterface"/>
+            <argument type="service" id="event_dispatcher"/>
+        </service>
+
+        <service id="SwagMigrationNext\Migration\Run\SwagMigrationRunDefinition"
+                 class="SwagMigrationNext\Migration\Run\SwagMigrationRunDefinition">
+            <tag name="shopware.entity.definition" entity="swag_migration_run"/>
+        </service>
+
+        <service id="swag_migration_run.repository"
+                 class="Shopware\Core\Framework\ORM\EntityRepository"
+                 public="true">
+            <argument>SwagMigrationNext\Migration\Run\SwagMigrationRunDefinition</argument>
+            <argument type="service" id="Shopware\Core\Framework\ORM\Read\EntityReaderInterface"/>
+            <argument type="service" id="Shopware\Core\Framework\ORM\VersionManager"/>
+            <argument type="service" id="Shopware\Core\Framework\ORM\Search\EntitySearcherInterface"/>
+            <argument type="service" id="Shopware\Core\Framework\ORM\Search\EntityAggregatorInterface"/>
+            <argument type="service" id="event_dispatcher"/>
+        </service>
+
+        <service id="SwagMigrationNext\Migration\Data\SwagMigrationDataDefinition"
+                 class="SwagMigrationNext\Migration\Data\SwagMigrationDataDefinition">
+            <tag name="shopware.entity.definition" entity="swag_migration_data"/>
+        </service>
+
+        <service id="swag_migration_data.repository"
+                 class="Shopware\Core\Framework\ORM\EntityRepository"
+                 public="true">
+            <argument>SwagMigrationNext\Migration\Data\SwagMigrationDataDefinition</argument>
+            <argument type="service" id="Shopware\Core\Framework\ORM\Read\EntityReaderInterface"/>
+            <argument type="service" id="Shopware\Core\Framework\ORM\VersionManager"/>
+            <argument type="service" id="Shopware\Core\Framework\ORM\Search\EntitySearcherInterface"/>
+            <argument type="service" id="Shopware\Core\Framework\ORM\Search\EntityAggregatorInterface"/>
+            <argument type="service" id="event_dispatcher"/>
+        </service>
+
+        <service id="SwagMigrationNext\Migration\Mapping\SwagMigrationMappingDefinition"
+                 class="SwagMigrationNext\Migration\Mapping\SwagMigrationMappingDefinition">
+            <tag name="shopware.entity.definition" entity="swag_migration_mapping"/>
+        </service>
+
+        <service id="swag_migration_mapping.repository"
+                 class="Shopware\Core\Framework\ORM\EntityRepository"
+                 public="true">
+            <argument>SwagMigrationNext\Migration\Mapping\SwagMigrationMappingDefinition</argument>
+            <argument type="service" id="Shopware\Core\Framework\ORM\Read\EntityReaderInterface"/>
+            <argument type="service" id="Shopware\Core\Framework\ORM\VersionManager"/>
+            <argument type="service" id="Shopware\Core\Framework\ORM\Search\EntitySearcherInterface"/>
+            <argument type="service" id="Shopware\Core\Framework\ORM\Search\EntityAggregatorInterface"/>
+            <argument type="service" id="event_dispatcher"/>
+        </service>
+    </services>
+</container>

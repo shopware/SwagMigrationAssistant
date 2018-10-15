@@ -37,6 +37,11 @@ class DummyLocalGateway implements GatewayInterface
             case 'environment':
                 return require __DIR__ . '/../../../../_fixtures/environment_data.php';
                 break;
+
+                //Invalid data
+            case CustomerDefinition::getEntityName() . 'Invalid':
+                return require __DIR__ . '/../../../../_fixtures/invalid/customer_data.php';
+                break;
         }
     }
 }
