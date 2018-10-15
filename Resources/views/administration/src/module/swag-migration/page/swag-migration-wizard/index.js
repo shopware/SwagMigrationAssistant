@@ -128,26 +128,28 @@ Component.register('swag-migration-wizard', {
                 if (response.errors.length === 0) {
                     this.migrationService.checkConnection(this.profileId).then((connectionCheckResponse) => {
                         this.isLoading = false;
-                        if (connectionCheckResponse.environmentInformation) {
-                            if (connectionCheckResponse.error) {
-                                switch (connectionCheckResponse.error.code) {
-                                case 0: // SSL certificate is not verified
-                                    this.errorMessage = this.$tc(
-                                        'swag-migration.wizard.pages.credentials.success.connectionInsecureMsg'
-                                    );
-                                    break;
-                                default: // Something else
-                                    this.errorMessage = this.$tc(
-                                        'swag-migration.wizard.pages.credentials.success.undefinedErrorMsg'
-                                    );
-                                    break;
-                                }
-                            }
 
-                            this.navigateToRoute(this.routes[this.routeSuccessIndex]);
-                        } else {
+                        if (!connectionCheckResponse) {
                             this.onResponseError(-1);
+                            return;
                         }
+
+                        if (connectionCheckResponse.errorCode) {
+                            switch (connectionCheckResponse.errorCode) {
+                            case 0: // SSL certificate is not verified
+                                this.errorMessage = this.$tc(
+                                    'swag-migration.wizard.pages.credentials.success.connectionInsecureMsg'
+                                );
+                                break;
+                            default: // Something else
+                                this.errorMessage = this.$tc(
+                                    'swag-migration.wizard.pages.credentials.success.undefinedErrorMsg'
+                                );
+                                break;
+                            }
+                        }
+
+                        this.navigateToRoute(this.routes[this.routeSuccessIndex]);
                     }).catch((error) => {
                         this.isLoading = false;
                         this.onResponseError(error.response.data.errors[0].code);

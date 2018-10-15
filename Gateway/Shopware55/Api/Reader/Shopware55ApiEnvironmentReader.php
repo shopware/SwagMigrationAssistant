@@ -20,9 +20,6 @@ class Shopware55ApiEnvironmentReader
         $this->apiClientOptions = $apiClientOptions;
     }
 
-    /**
-     * @throws GatewayReadException
-     */
     public function read(Client $apiClient): array
     {
         $verifiedOptions = $this->apiClientOptions;
@@ -34,19 +31,27 @@ class Shopware55ApiEnvironmentReader
                 'environmentInformation' => $this->getData($apiClientVerified),
                 'error' => false,
             ];
-
-            return $information;
         } catch (Exception $e) {
-            $information = [
-                'environmentInformation' => $this->getData($apiClient),
-                'error' => [
-                    'code' => $e->getCode(),
-                    'detail' => $e->getMessage(),
-                ],
-            ];
-
-            return $information;
+            try {
+                $information = [
+                    'environmentInformation' => $this->getData($apiClient),
+                    'error' => [
+                        'code' => $e->getCode(),
+                        'detail' => $e->getMessage(),
+                    ],
+                ];
+            } catch (Exception $e) {
+                $information = [
+                    'environmentInformation' => [],
+                    'error' => [
+                        'code' => $e->getCode(),
+                        'detail' => $e->getMessage(),
+                    ],
+                ];
+            }
         }
+
+        return $information;
     }
 
     /**

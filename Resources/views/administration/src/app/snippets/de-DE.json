@@ -59,7 +59,6 @@
       "migrateButton": "Importieren",
       "finishButton": "Fertig",
       "backButton": "Zurück zur Übersicht",
-      "shopVersionFallback": "Shopware",
       "browserClosingHint": "Möchtest Du den Datenimport wirklich abbrechen?",
       "migrationAlreadyRunning": "Der Datenimport wurde bereits gestartet.",
       "shopInfoCard": {
