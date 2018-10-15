@@ -5,6 +5,7 @@ namespace SwagMigrationNext\Test\Migration;
 use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Customer\CustomerDefinition;
+use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
@@ -12,8 +13,10 @@ use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\ORM\RepositoryInterface;
 use Shopware\Core\Framework\ORM\Search\Criteria;
+use Shopware\Core\Framework\ORM\Search\Query\TermQuery;
 use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
+use Shopware\Core\System\Currency\CurrencyStruct;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Service\MigrationCollectServiceInterface;
 use SwagMigrationNext\Migration\Service\MigrationWriteService;
@@ -58,6 +61,16 @@ class MigrationWriteServiceTest extends TestCase
     private $discountRepo;
 
     /**
+     * @var RepositoryInterface
+     */
+    private $orderRepo;
+
+    /**
+     * @var RepositoryInterface
+     */
+    private $currencyRepo;
+
+    /**
      * @var MigrationCollectServiceInterface
      */
     private $migrationCollectService;
@@ -97,6 +110,8 @@ class MigrationWriteServiceTest extends TestCase
         $this->productTranslationRepo = $this->getContainer()->get('product_translation.repository');
         $this->customerRepo = $this->getContainer()->get('customer.repository');
         $this->discountRepo = $this->getContainer()->get('customer_group_discount.repository');
+        $this->orderRepo = $this->getContainer()->get('order.repository');
+        $this->currencyRepo = $this->getContainer()->get('currency.repository');
     }
 
     public function testWriteCustomerData(): void
@@ -122,6 +137,64 @@ class MigrationWriteServiceTest extends TestCase
         $customerTotalAfter = $this->customerRepo->search($criteria, $context)->getTotal();
 
         self::assertSame(3, $customerTotalAfter - $customerTotalBefore);
+    }
+
+    public function testWriteOrderData(): void
+    {
+        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+
+        // Add users, who have ordered
+        $userMigrationContext = new MigrationContext(
+            $this->runUuid,
+            Shopware55Profile::PROFILE_NAME,
+            'local',
+            CustomerDefinition::getEntityName(),
+            [],
+            0,
+            250,
+            null,
+            Defaults::SALES_CHANNEL
+        );
+        $this->migrationCollectService->fetchData($userMigrationContext, $context);
+        $this->migrationWriteService->writeData($userMigrationContext, $context);
+
+        // Add orders
+        $migrationContext = new MigrationContext(
+            $this->runUuid,
+            Shopware55Profile::PROFILE_NAME,
+            'local',
+            OrderDefinition::getEntityName(),
+            [],
+            0,
+            250,
+            null,
+            Defaults::SALES_CHANNEL
+        );
+
+        $criteria = new Criteria();
+        $usdFactorCriteria = (new Criteria())->addFilter(new TermQuery('shortName', 'USD'));
+        $jpyInvalidCriteria = (new Criteria())->addFilter(new TermQuery('symbol', '&yen;'));
+
+        // Get data before writing
+        $this->migrationCollectService->fetchData($migrationContext, $context);
+        $orderTotalBefore = $this->orderRepo->search($criteria, $context)->getTotal();
+        $currencyTotalBefore = $this->currencyRepo->search($criteria, $context)->getTotal();
+        /** @var CurrencyStruct $usdResultBefore */
+        $usdResultBefore = $this->currencyRepo->search($usdFactorCriteria, $context)->first();
+        $jpyInvalidTotalBefore = $this->currencyRepo->search($jpyInvalidCriteria, $context)->getTotal();
+
+        // Get data after writing
+        $this->migrationWriteService->writeData($migrationContext, $context);
+        $orderTotalAfter = $this->orderRepo->search($criteria, $context)->getTotal();
+        $currencyTotalAfter = $this->currencyRepo->search($criteria, $context)->getTotal();
+        /** @var CurrencyStruct $usdResultAfter */
+        $usdResultAfter = $this->currencyRepo->search($usdFactorCriteria, $context)->first();
+        $jpyInvalidTotalAfter = $this->currencyRepo->search($jpyInvalidCriteria, $context)->getTotal();
+
+        self::assertSame(2, $orderTotalAfter - $orderTotalBefore);
+        self::assertSame(1, $currencyTotalAfter - $currencyTotalBefore);
+        self::assertSame(0.2, $usdResultAfter->getFactor() - $usdResultBefore->getFactor());
+        self::assertSame(0, $jpyInvalidTotalAfter - $jpyInvalidTotalBefore);
     }
 
     public function testWriteCustomerGroupDiscounts(): void

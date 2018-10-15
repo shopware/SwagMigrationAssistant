@@ -3,6 +3,7 @@
 namespace SwagMigrationNext\Test\Mock\Gateway\Dummy\Local;
 
 use Shopware\Core\Checkout\Customer\CustomerDefinition;
+use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
@@ -29,6 +30,9 @@ class DummyLocalGateway implements GatewayInterface
                 break;
             case CustomerDefinition::getEntityName():
                 return require __DIR__ . '/../../../../_fixtures/customer_data.php';
+                break;
+            case OrderDefinition::getEntityName():
+                return require __DIR__ . '/../../../../_fixtures/order_data.php';
                 break;
             case 'environment':
                 return require __DIR__ . '/../../../../_fixtures/environment_data.php';
