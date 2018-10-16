@@ -18,7 +18,6 @@ use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagMigrationNext\Migration\Asset\MediaFileService;
 use SwagMigrationNext\Migration\Logging\LoggingService;
 use SwagMigrationNext\Migration\Logging\SwagMigrationLoggingStruct;
-use SwagMigrationNext\Migration\Asset\MediaFileService;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Service\MigrationCollectServiceInterface;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
@@ -64,7 +63,6 @@ class MigrationCollectServiceTest extends TestCase
     protected function setUp()
     {
         $this->runUuid = Uuid::uuid4()->getHex();
-        $this->profileUuidService = new MigrationProfileUuidService($this->getContainer()->get('swag_migration_profile.repository'));
         $runRepo = $this->getContainer()->get('swag_migration_run.repository');
         $runRepo->create(
             [
@@ -76,6 +74,7 @@ class MigrationCollectServiceTest extends TestCase
             Context::createDefaultContext(Defaults::TENANT_ID)
         );
 
+        $this->profileUuidService = new MigrationProfileUuidService($this->getContainer()->get('swag_migration_profile.repository'));
         $this->loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
         $this->migrationDataRepo = $this->getContainer()->get('swag_migration_data.repository');
         $this->migrationCollectService = $this->getMigrationCollectService(

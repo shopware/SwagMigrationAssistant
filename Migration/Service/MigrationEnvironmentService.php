@@ -29,7 +29,7 @@ class MigrationEnvironmentService implements MigrationEnvironmentServiceInterfac
 
     public function getEntityTotal(MigrationContext $migrationContext): int
     {
-        $profile = $this->profileRegistry->getProfile($migrationContext->getProfile());
+        $profile = $this->profileRegistry->getProfile($migrationContext->getProfileName());
         $gateway = $this->gatewayFactoryRegistry->createGateway($migrationContext);
 
         return $profile->readEntityTotal($gateway, $migrationContext->getEntity());
@@ -37,7 +37,7 @@ class MigrationEnvironmentService implements MigrationEnvironmentServiceInterfac
 
     public function getEnvironmentInformation(MigrationContext $migrationContext): EnvironmentInformation
     {
-        $profile = $this->profileRegistry->getProfile($migrationContext->getProfile());
+        $profile = $this->profileRegistry->getProfile($migrationContext->getProfileName());
         $gateway = $this->gatewayFactoryRegistry->createGateway($migrationContext);
 
         return $profile->readEnvironmentInformation($gateway);

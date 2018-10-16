@@ -3,6 +3,7 @@
 namespace SwagMigrationNext\Test\Mock\Migration\Mapping;
 
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Struct\Uuid;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 
 class DummyMappingService extends Shopware55MappingService
@@ -24,7 +25,15 @@ class DummyMappingService extends Shopware55MappingService
         Context $context,
         array $additionalData = null
     ): string {
-        return '';
+        $uuid = $this->getUuid($profileId, $entityName, $oldId, $context);
+
+        if ($uuid === null) {
+            $uuid = Uuid::uuid4()->getHex();
+        }
+
+        $this->uuids[$profileId][$entityName][$oldId] = $uuid;
+
+        return $uuid;
     }
 
     public function saveMapping(array $mapping): void

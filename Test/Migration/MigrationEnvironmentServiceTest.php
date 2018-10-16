@@ -12,6 +12,7 @@ use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagMigrationNext\Gateway\GatewayFactoryRegistry;
 use SwagMigrationNext\Gateway\GatewayFactoryRegistryInterface;
 use SwagMigrationNext\Gateway\Shopware55\Api\Shopware55ApiFactory;
+use SwagMigrationNext\Migration\Asset\MediaFileService;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Service\MigrationEnvironmentService;
 use SwagMigrationNext\Migration\Service\MigrationEnvironmentServiceInterface;
@@ -46,22 +47,23 @@ class MigrationEnvironmentServiceTest extends TestCase
 
     protected function setUp()
     {
+        $mediaFileService = $this->getContainer()->get(MediaFileService::class);
         $loggingService = new DummyLoggingService();
         $mappingService = new DummyMappingService();
         $converterRegistry = new ConverterRegistry(
             new DummyCollection(
                 [
-                    new ProductConverter($mappingService, new ConverterHelperService(), $loggingService),
+                    new ProductConverter($mappingService, new ConverterHelperService(), $mediaFileService, $loggingService),
                     new TranslationConverter($mappingService, new ConverterHelperService(), $loggingService),
                     new CategoryConverter($mappingService, new ConverterHelperService(), $loggingService),
-                    new AssetConverter($mappingService, new ConverterHelperService()),
+                    new AssetConverter($mappingService, new ConverterHelperService(), $mediaFileService),
                     new CustomerConverter($mappingService, new ConverterHelperService(), $loggingService),
                 ]
             )
         );
 
         $profileRegistry = new ProfileRegistry(new DummyCollection([
-            new Shopware55Profile($this->getContainer()->get('swag_migration_data.repository'), $converterRegistry, $loggingService),
+            new Shopware55Profile($this->getContainer()->get('swag_migration_data.repository'), $converterRegistry, $mediaFileService, $loggingService),
         ]));
         /** @var GatewayFactoryRegistryInterface $gatewayFactoryRegistry */
         $gatewayFactoryRegistry = new GatewayFactoryRegistry(new DummyCollection([
@@ -70,6 +72,7 @@ class MigrationEnvironmentServiceTest extends TestCase
         ]));
 
         $this->migrationEnvironmentService = new MigrationEnvironmentService($profileRegistry, $gatewayFactoryRegistry);
+        $this->profileUuidService = new MigrationProfileUuidService($this->getContainer()->get('swag_migration_profile.repository'));
     }
 
     public function testGetEntityTotal(): void

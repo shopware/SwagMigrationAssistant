@@ -16,8 +16,8 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
-use SwagMigrationNext\Migration\Asset\MediaFileService;
 use Shopware\Core\System\Currency\CurrencyStruct;
+use SwagMigrationNext\Gateway\Shopware55\Local\Shopware55LocalGateway;
 use SwagMigrationNext\Migration\Asset\MediaFileService;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Service\MigrationCollectServiceInterface;
@@ -107,7 +107,11 @@ class MigrationWriteServiceTest extends TestCase
             Context::createDefaultContext(Defaults::TENANT_ID)
         );
 
-        $this->profileUuidService = new MigrationProfileUuidService($this->getContainer()->get('swag_migration_profile.repository'));
+        $this->profileUuidService = new MigrationProfileUuidService(
+            $this->getContainer()->get('swag_migration_profile.repository'),
+            Shopware55Profile::PROFILE_NAME,
+            Shopware55LocalGateway::GATEWAY_TYPE
+        );
 
         $this->migrationCollectService = $this->getMigrationCollectService(
             $this->getContainer()->get('swag_migration_data.repository'),
@@ -159,6 +163,7 @@ class MigrationWriteServiceTest extends TestCase
         // Add users, who have ordered
         $userMigrationContext = new MigrationContext(
             $this->runUuid,
+            $this->profileUuidService->getProfileUuid(),
             Shopware55Profile::PROFILE_NAME,
             'local',
             CustomerDefinition::getEntityName(),
@@ -174,8 +179,8 @@ class MigrationWriteServiceTest extends TestCase
         // Add orders
         $migrationContext = new MigrationContext(
             $this->runUuid,
+            $this->profileUuidService->getProfileUuid(),
             Shopware55Profile::PROFILE_NAME,
-
             'local',
             OrderDefinition::getEntityName(),
             [],

@@ -48,6 +48,7 @@ class CustomerConverterTest extends TestCase
             $customerData[0],
             $context,
             Uuid::uuid4()->getHex(),
+            Uuid::uuid4()->getHex(),
             Defaults::CATALOG,
             Defaults::SALES_CHANNEL
         );
@@ -76,6 +77,7 @@ class CustomerConverterTest extends TestCase
         $convertResult = $this->customerConverter->convert(
             $customerData,
             $context,
+            Uuid::uuid4()->getHex(),
             Uuid::uuid4()->getHex(),
             Defaults::CATALOG,
             Defaults::SALES_CHANNEL
@@ -110,6 +112,7 @@ class CustomerConverterTest extends TestCase
             $customerData[2],
             $context,
             Uuid::uuid4()->getHex(),
+            Uuid::uuid4()->getHex(),
             Defaults::CATALOG,
             Defaults::SALES_CHANNEL
         );
@@ -136,6 +139,7 @@ class CustomerConverterTest extends TestCase
         $convertResult = $this->customerConverter->convert(
             $customerData,
             $context,
+            Uuid::uuid4()->getHex(),
             Uuid::uuid4()->getHex(),
             Defaults::CATALOG,
             Defaults::SALES_CHANNEL
@@ -164,6 +168,7 @@ class CustomerConverterTest extends TestCase
             $customerData,
             $context,
             Uuid::uuid4()->getHex(),
+            Uuid::uuid4()->getHex(),
             Defaults::CATALOG,
             Defaults::SALES_CHANNEL
         );
@@ -191,6 +196,7 @@ class CustomerConverterTest extends TestCase
             $customerData,
             $context,
             Uuid::uuid4()->getHex(),
+            Uuid::uuid4()->getHex(),
             Defaults::CATALOG,
             Defaults::SALES_CHANNEL
         );
@@ -216,6 +222,7 @@ class CustomerConverterTest extends TestCase
         $convertResult = $this->customerConverter->convert(
             $customerData,
             $context,
+            Uuid::uuid4()->getHex(),
             Uuid::uuid4()->getHex(),
             Defaults::CATALOG,
             Defaults::SALES_CHANNEL
@@ -244,6 +251,7 @@ class CustomerConverterTest extends TestCase
         $convertResult = $this->customerConverter->convert(
             $customerData[1],
             $context,
+            Uuid::uuid4()->getHex(),
             Uuid::uuid4()->getHex(),
             Defaults::CATALOG,
             Defaults::SALES_CHANNEL
@@ -291,6 +299,7 @@ class CustomerConverterTest extends TestCase
             $customerData,
             $context,
             Uuid::uuid4()->getHex(),
+            Uuid::uuid4()->getHex(),
             Defaults::CATALOG,
             Defaults::SALES_CHANNEL
         );
@@ -330,6 +339,7 @@ class CustomerConverterTest extends TestCase
         $convertResult = $this->customerConverter->convert(
             $customerData,
             $context,
+            Uuid::uuid4()->getHex(),
             Uuid::uuid4()->getHex(),
             Defaults::CATALOG,
             Defaults::SALES_CHANNEL
@@ -371,6 +381,7 @@ class CustomerConverterTest extends TestCase
         $convertResult = $this->customerConverter->convert(
             $customerData,
             $context,
+            Uuid::uuid4()->getHex(),
             Uuid::uuid4()->getHex(),
             Defaults::CATALOG,
             Defaults::SALES_CHANNEL

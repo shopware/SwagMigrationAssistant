@@ -364,7 +364,6 @@ Component.register('swag-migration-index', {
                 // show data selection again
                 this.isMigrating = false;
                 this.componentIndex = this.components.dataSelector;
-                console.log(this.$tc('swag-migration.index.migrationAlreadyRunning')); // TODO: Replace - Design?
             });
         },
 
@@ -507,10 +506,6 @@ Component.register('swag-migration-index', {
             });
 
             this.errorList.sort((a, b) => { return a.detail.toLowerCase() > b.detail.toLowerCase(); });
-            this.errorList.forEach((error) => {
-                console.log(error);
-            });
-
             this.errorList = this.errorList.map((item) => item.information);
             this.errorList = [...new Set(this.errorList)];
 

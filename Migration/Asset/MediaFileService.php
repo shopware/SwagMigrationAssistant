@@ -30,11 +30,12 @@ class MediaFileService implements MediaFileServiceInterface
 
     public function writeMediaFile(Context $context): void
     {
+        $this->checkMediaIdsForDuplicates($context);
+
         if (empty($this->writeArray)) {
             return;
         }
 
-        $this->checkMediaIdsForDuplicates($context);
         $this->mediaFileRepo->create($this->writeArray, $context);
         $this->writeArray = [];
         $this->uuids = [];
@@ -85,6 +86,10 @@ class MediaFileService implements MediaFileServiceInterface
 
     private function checkMediaIdsForDuplicates(Context $context): void
     {
+        if (empty($this->writeArray)) {
+            return;
+        }
+
         $runId = null;
         $files = [];
         $mediaIds = [];
@@ -95,6 +100,10 @@ class MediaFileService implements MediaFileServiceInterface
 
             $files[$mediaFile['mediaId']] = $mediaFile;
             $mediaIds[] = $mediaFile['mediaId'];
+        }
+
+        if (empty($mediaIds)) {
+            return;
         }
 
         $criteria = new Criteria();
