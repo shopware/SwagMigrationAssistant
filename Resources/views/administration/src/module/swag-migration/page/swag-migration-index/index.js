@@ -119,6 +119,10 @@ Component.register('swag-migration-index', {
         },
 
         rightButtonDisabled() {
+            if (this.statusIndex !== this.migrationWorkerService.MIGRATION_STATUS.FETCH_DATA && this.isMigrating) {
+                return false;
+            }
+
             if (this.statusIndex === this.migrationWorkerService.MIGRATION_STATUS.FETCH_DATA && this.isMigrating) {
                 return true;
             }
@@ -166,7 +170,7 @@ Component.register('swag-migration-index', {
 
     methods: {
         async createdComponent() {
-            if (this.migrationWorkerService.isMigrating === false && this.migrationWorkerService.status === null) {
+            if (this.migrationWorkerService.isMigrating === false) {
                 await this.migrationWorkerService.checkForRunningMigration().then((running) => {
                     this.isPaused = running;
                     if (this.isPaused) {

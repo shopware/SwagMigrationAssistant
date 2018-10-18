@@ -3,7 +3,13 @@ import CriteriaFactory from 'src/core/factory/criteria.factory';
 import StorageBroadcastService from '../storage-broadcaster.service';
 
 class MigrationService {
-    constructor(migrationService, migrationDataService, migrationRunService, migrationMediaFileService) {
+    constructor(
+        migrationService,
+        migrationDataService,
+        migrationRunService,
+        migrationMediaFileService,
+        migrationLoggingService
+    ) {
         this._MAX_REQUEST_TIME = 10000; // in ms
         this._DEFAULT_CHUNK_SIZE = 50; // in data sets
         this._CHUNK_INCREMENT = 5; // in data sets
@@ -37,6 +43,7 @@ class MigrationService {
         this._migrationDataService = migrationDataService;
         this._migrationMediaFileService = migrationMediaFileService;
         this._migrationRunService = migrationRunService;
+        this._migrationLoggingService = migrationLoggingService;
         this._chunkSize = this._DEFAULT_CHUNK_SIZE;
 
         // state variables
@@ -148,9 +155,11 @@ class MigrationService {
                 return Promise.resolve();
             }).then(() => {
                 // step 4 - finish -> show results
-                this._migrateFinish();
-                this._isMigrating = false;
-            });
+                return this._migrateFinish();
+            })
+                .then(() => {
+                    this._isMigrating = false;
+                });
         } else if (this._status === this.MIGRATION_STATUS.WRITE_DATA) {
             this._migrateProcess(
                 'writeData',
@@ -170,9 +179,11 @@ class MigrationService {
                 return Promise.resolve();
             }).then(() => {
                 // step 4 - finish -> show results
-                this._migrateFinish();
-                this._isMigrating = false;
-            });
+                return this._migrateFinish();
+            })
+                .then(() => {
+                    this._isMigrating = false;
+                });
         } else if (this._status === this.MIGRATION_STATUS.DOWNLOAD_DATA) {
             // step 3 - download data
             this._getAssetTotalCount().then(() => { // after this we have the asset count that is not downloaded as total
@@ -184,9 +195,11 @@ class MigrationService {
                 return this._downloadProcess();
             }).then(() => {
                 // step 4 - finish -> show results
-                this._migrateFinish();
-                this._isMigrating = false;
-            });
+                return this._migrateFinish();
+            })
+                .then(() => {
+                    this._isMigrating = false;
+                });
         }
     }
 
@@ -246,49 +259,56 @@ class MigrationService {
      * @returns {Promise}
      */
     startMigration(runId, profile, entityGroups, statusCallback, progressCallback, updateEntityCountCallback) {
-        return new Promise(async (resolve, reject) => {
+        return new Promise((resolve, reject) => {
             if (this._isMigrating) {
                 reject();
                 return;
             }
 
             // Wait for the 'migrationWanted' request and response to allow or deny the migration
-            this._isMigrationRunningInOtherTab().then((isRunningInOtherTab) => {
-                if (isRunningInOtherTab) {
-                    reject();
-                    return;
-                }
-
-                this._isMigrating = true;
-                this._runId = runId;
-                this._profile = profile;
-                this._entityGroups = entityGroups;
-                this._errors = [];
-                this.subscribeStatus(statusCallback);
-                this.subscribeProgress(progressCallback);
-                this.subscribeUpdateEntityCount(updateEntityCountCallback);
-
-                // step 1 - read/fetch
-                this._fetchData().then(() => {
-                    // step 2 - write data
-                    return this._writeData();
-                }).then(() => {
-                    // step 3 - download data
-                    const containsMediaGroup = this._entityGroups.find((group) => {
-                        return group.id === 'media' || group.id === 'categories_products';
-                    });
-                    if (containsMediaGroup !== undefined) {
-                        return this._downloadData();
+            this._isMigrationRunningInOtherTab()
+                .then((isRunningInOtherTab) => {
+                    if (isRunningInOtherTab) {
+                        reject();
+                        return;
                     }
 
-                    return Promise.resolve();
-                }).then(() => {
-                    // step 4 - finish -> show results
-                    this._migrateFinish();
-                    this._isMigrating = false;
-                    resolve(this._errors);
+                    this._isMigrating = true;
+                    this._runId = runId;
+                    this._profile = profile;
+                    this._entityGroups = entityGroups;
+                    this._errors = [];
+                    this.subscribeStatus(statusCallback);
+                    this.subscribeProgress(progressCallback);
+                    this.subscribeUpdateEntityCount(updateEntityCountCallback);
+
+                    // step 1 - read/fetch
+                    this._fetchData()
+                        .then(() => {
+                            // step 2 - write data
+                            return this._writeData();
+                        })
+                        .then(() => {
+                            // step 3 - download data
+                            const containsMediaGroup = this._entityGroups.find((group) => {
+                                return group.id === 'media' || group.id === 'categories_products';
+                            });
+
+                            if (containsMediaGroup !== undefined) {
+                                return this._downloadData();
+                            }
+
+                            return Promise.resolve();
+                        })
+                        .then(() => {
+                            // step 4 - finish -> show results
+                            return this._migrateFinish();
+                        })
+                        .then(() => {
+                            this._isMigrating = false;
+                            resolve(this._errors);
+                        });
                 });
-            });
         });
     }
 
@@ -421,13 +441,40 @@ class MigrationService {
 
     _migrateFinish() {
         if (!this._isMigrating) {
-            return;
+            return Promise.resolve();
         }
 
-        this._migrationRunService.updateById(this._runId, { status: 'finished' });
-        this._resetProgress();
-        this._status = this.MIGRATION_STATUS.FINISHED;
-        this._callStatusSubscriber({ status: this.status });
+        return this._getErrors().then(() => {
+            this._migrationRunService.updateById(this._runId, { status: 'finished' });
+            this._resetProgress();
+            this._status = this.MIGRATION_STATUS.FINISHED;
+            this._callStatusSubscriber({ status: this.status });
+
+            return Promise.resolve();
+        });
+    }
+
+    _getErrors() {
+        return new Promise((resolve) => {
+            const criteria = CriteriaFactory.term('runId', this._runId);
+            const params = {
+                criteria: criteria
+            };
+
+            this._migrationLoggingService.getList(params).then((response) => {
+                const logs = response.data;
+                logs.forEach((log) => {
+                    if (log.type === 'warning' || log.type === 'error') {
+                        this._addError({
+                            code: log.logEntry.code,
+                            detail: log.logEntry.description
+                        });
+                    }
+                });
+
+                resolve();
+            });
+        });
     }
 
     _resetProgress() {

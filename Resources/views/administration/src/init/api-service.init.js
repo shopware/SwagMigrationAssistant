@@ -4,6 +4,7 @@ import RunService from '../../src/core/service/api/swag-migration-run.api.servic
 import DataService from '../../src/core/service/api/swag-migration-data.api.service';
 import MediaFileService from '../../src/core/service/api/swag-migration-media-file.api.service';
 import ProfileService from '../../src/core/service/api/swag-migration-profile.api.service';
+import LoggingService from '../core/service/api/swag-migration-logging.api.service';
 
 Application.addServiceProvider('migrationService', (container) => {
     const initContainer = Application.getContainer('init');
@@ -28,4 +29,9 @@ Application.addServiceProvider('swagMigrationMediaFileService', (container) => {
 Application.addServiceProvider('swagMigrationProfileService', (container) => {
     const initContainer = Application.getContainer('init');
     return new ProfileService(initContainer.httpClient, container.loginService);
+});
+
+Application.addServiceProvider('swagMigrationLoggingService', (container) => {
+    const initContainer = Application.getContainer('init');
+    return new LoggingService(initContainer.httpClient, container.loginService);
 });

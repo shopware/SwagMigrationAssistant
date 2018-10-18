@@ -60,6 +60,7 @@ class LoggingService implements LoggingServiceInterface
             'logEntry' => [
                 'code' => $code,
                 'title' => $title,
+                'description' => $title,
                 'details' => $details,
             ],
         ];
