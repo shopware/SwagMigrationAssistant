@@ -11,7 +11,7 @@
       "buttonPrev": "Back",
       "buttonNext": "Next",
       "buttonFinish": "Finish",
-      "pathTarget": "Shopware 5 backend:",
+      "pathTarget": "Shopware 5:",
       "pathSettings": "Configuration",
       "pathUserManagement": "User administration",
       "pathPluginManagement": "Plugin Manager",
@@ -20,11 +20,12 @@
       "pages": {
         "introduction": {
           "contentTitle": "Launch Shopware Playground with your own data.",
-          "contentInformation": "Import your data from Shopware 5 to Shopware Playground and create your own experiments. Explore the possibilities of Shopware Playground with real data."
+          "contentInformation": "Import your data from Shopware 5 to Shopware Playground and create your own experiments. Explore the possibilities of Shopware Playground with real data.",
+          "documentationLink": "Read more"
         },
         "pluginInformation": {
           "contentTitle": "Plugin installation - Shopware 5 backend",
-          "contentInformation": "Use your access data to log in to the Shopware 5 backend and open the plugin manager. To get started, download and activate the free plugin “Shopware Playground Connector”. No additional input or settings are required.",
+          "contentInformation": "Use your access data to log in to the Shopware 5 backend and open the plugin manager. To get started, download and activate the free plugin “Shopware Playground Connector”.",
           "pluginLink": "More information about the plugin"
         },
         "credentials": {

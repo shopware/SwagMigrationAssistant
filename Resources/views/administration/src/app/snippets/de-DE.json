@@ -11,7 +11,7 @@
       "buttonPrev": "Zurück",
       "buttonNext": "Weiter",
       "buttonFinish": "Fertig",
-      "pathTarget": "Shopware 5 Backend:",
+      "pathTarget": "Shopware 5: ",
       "pathSettings": "Einstellungen",
       "pathUserManagement": "Benutzerverwaltung",
       "pathPluginManagement": "Plugin Manager",
@@ -19,17 +19,18 @@
       "pathEditUser": "„Diesen Benutzer editieren“",
       "pages": {
         "introduction": {
-          "contentTitle": "Starte Shopware Playground mit eigenen Daten.",
-          "contentInformation": "Importiere Deine Daten aus Shopware 5 zu Shopware Playground und lege eigene Experimente an. Erkunde die Möglichkeiten von Shopware Playground mit echten Daten."
+          "contentTitle": "Verbindung für den Import herstellen",
+          "contentInformation": "In den nächsten zwei Schritten wirst Du mithilfe des  „Shopware Playground Connector” Plugins eine sichere Verbindung zu Deinem Shopware 5-Shop herstellen.",
+          "documentationLink": "Mehr zu diesem Thema lesen"
         },
         "pluginInformation": {
-          "contentTitle": "Plugin-Installation - Shopware 5 Backend",
-          "contentInformation": "Logge dich mit Deinen Zugangsdaten in das Shopware 5 Backend ein und rufe den Plugin-Manager auf. Das Plugin „Shopware Playground Connector“ ist kostenlos und wird für den Datenimport benötigt. Bitte installiere und aktiviere das Plugin.",
+          "contentTitle": "Plugin-Installation in Shopware 5",
+          "contentInformation": "Melde Dich in Deinem Shop an und rufe den Plugin-Manager auf. Installiere und aktiviere das Plugin „Shopware Playground Connector”.",
           "pluginLink": "Mehr Infos zum Plugin"
         },
         "credentials": {
-          "contentTitle": "Verbindung zu Shopware 5 herstellen",
-          "contentInformation": "Den API-Schlüssel findest Du in der Benutzerverwaltung in Deinen Benutzerdaten. Bitte aktiviere den API-Zugang, kopiere den API-Schlüssel in die Zwischenablage und bestätige mit Speichern.",
+          "contentTitle": "Zugang aktivieren in Shopware 5",
+          "contentInformation": "Den API-Zugang aktivierst Du in der Benutzerverwaltung in deinem Admin-Benutzer Account. Kopiere den API-Schlüssel in die Zwischenablage und bestätige mit Speichern.",
           "apiKeyLabel": "API-Schlüssel",
           "apiKeyPlaceholder": "Schlüssel einfügen ...",
           "apiUserLabel": "Benutzername (API-User)",
@@ -38,14 +39,14 @@
           "endpointPlaceholder": "https://www.demoshop.com",
           "success": {
             "contentTitle": "Erfolgreich verbunden!",
-            "contentInformation": "Gehe auf „Fertig“ und wähle in dem Datenimport-Modul die jeweiligen Datensätze aus, die übertragen werden sollen. Die Daten können komplett, Schritt für Schritt oder nachträglich importiert werden.",
+            "contentInformation": "Lass uns beginnen, Deine Daten zu importieren.",
             "alertErrorTitle": "Achtung",
             "undefinedErrorMsg": "Bei der Prüfung des SSL-Zertifikats von der angegebenen Shop-Domain ist ein unbekannter Fehler aufgetreten.",
             "connectionInsecureMsg": "Das SSL-Zertifikat der angegebenen Shop-Domain ist nicht sicher. Wir empfehlen eine Überprüfung des Zertifikats zur eigenen Sicherheit."
           },
           "error": {
             "contentTitle": "Verbindung nicht hergestellt.",
-            "contentInformation": "Die Verbindung konnte leider nicht hergestellt werden. Bitte prüfe die Meldungen und behebe das Problem.",
+            "contentInformation": "Die Verbindung konnte nicht hergestellt werden.",
             "alertErrorTitle": "Achtung",
             "connectionErrorMsg": "Es konnte keine Verbindung zum angegebenen Server hergestellt werden. Bitte überprüfe die angegebene Shop-Domain.",
             "authenticationErrorMsg": "Deine Zugangsdaten sind nicht korrekt. Bitte überprüfe sie und versuche es erneut.",
@@ -68,8 +69,8 @@
       },
       "selectDataCard": {
         "cardTitle": "Datenauswahl",
-        "hintTitle": "Information zum Datenimport",
-        "hint": "Die ausgewählten Daten werden mit Sprachinformationen übertragen und haben relevante Abhängigkeiten, die für die Vollständigkeit des Datenimports notwendig sind.",
+        "hintTitle": "Dokumentation & Information",
+        "hint": "Alle Antworten zum Thema „Shopware Playground Connector“ sind <a target=\"_blank\" href=\"https://docs.shopware.com/de/shopware-playground-de/swpgconnector\">hier für Dich</a> dokumentiert. ",
         "infoTitle": "Über die neuen Kataloge und Verkaufskanäle",
         "infoText": "Kataloge und Verkaufskanäle sind neue Elemente für Shopware Playground, die Dir helfen Deine Daten ohne Sub- und Sprachshops zu struktieren. Für mehr Informationen zum Thema empfehlen wir Dir die Artikel in unserer Dokumentation zu <a target=\"_blank\" href=\"https://docs.shopware.com/de/shopware-playground-de/admin/kataloge\">Katalogen</a> und <a target=\"_blank\" href=\"https://docs.shopware.com/de/shopware-playground-de/admin/verkaufskanaele\">Verkaufskanälen</a>.",
         "dataHeader": "Daten",
@@ -96,26 +97,26 @@
             "short": "Daten schreiben"
           },
           "downloadMedia": {
-            "long": "Download der Medien nach Shopware Playground ...",
-            "short": "Medien-Download"
+            "long": "Herunterladen der Medien zu Shopware Playground ...",
+            "short": "Medien herunterladen"
           }
         },
         "hintTitle": "Hinweis:",
-        "hint": "Bitte bleibe angemeldet und lösche keine Daten in dem anderen Shopsystem solange der Prozess nicht abgeschlossen ist. Du kannst aber im System arbeiten, der Prozess läuft im Hintergrund weiter.",
+        "hint": "Endtecke Shopware Playground, der Prozess läuft im Hintergrund weiter. Den Playground-Connector findest du unter „Einstellungen“ im Hauptmenü links." ,
         "result": {
           "success": {
             "title": "Abgeschlossen",
-            "contentTitle": "Datenimport abgeschlossen!",
+            "contentTitle": "Datenimport erfolgreich abgeschlossen!",
             "hintTitle": "Erkunde Shopware Playground!",
-            "hintContent": "Ab jetzt kannst du mit Deinen Daten unsere Experimente entdecken oder einfach Deine eigenen entwickeln."
+            "hintContent": "Ab jetzt kannst Du mit Deinen Daten unsere Experimente entdecken oder einfach Deine eigenen entwickeln."
           },
           "warning": {
             "title": "Abgeschlossen",
-            "contentTitle": "Datenimport nicht vollständig abgeschlossen!",
+            "contentTitle": "Datenimport abgeschlossen!",
             "hintTitle": "Achtung:",
             "hintContent": "Der Import konnte nicht vollständig abgeschlossen werden. Möglicherweise sind Daten fehlerhaft oder unvollständig importiert worden.",
-            "warningListTitle": "Es sind keine Fehler aufgetreten | Folgender Fehler ist aufgetreten | Folgende Fehler sind aufgetreten",
-            "warningListHint": "Für weitere Informationen kannst du in die Konsolenlogs der Entwicklertools deines Browser schauen."
+            "warningListTitle": "Es sind keine Fehler aufgetreten | Folgender Fehler ist aufgetreten | {count} Fehler sind aufgetreten",
+            "warningListHint": "Für weitere Informationen kannst Du in die Konsolenlogs der Entwicklertools Deines Browser schauen."
           },
           "failure": {
             "title": "Fehlgeschlagen",
@@ -139,7 +140,7 @@
           "information": "Authorisierungsfehler. Deine Zugangsdaten sind nicht korrekt. Bitte überprüfe sie und versuche es erneut."
         },
         "canNotDownloadAsset": {
-          "title": "Medien-Download fehlgeschlagen",
+          "title": "Herunterladen der Medien fehlgeschlagen",
           "detail": "Medien-Datei konnte nicht heruntergeladen werden",
           "information": "Medien-Datei konnte nicht heruntergeladen werden. Betroffene Datei: {path}"
         },
@@ -167,7 +168,7 @@
           "information": "Erforderliche Eigenschaft „{notFoundProperty}“ konnte für den Import-Workload nicht gefunden werden."
         },
         "noFileSystemPermissions": {
-          "information": "Du besitzt keine Rechte um Datein oder Ordner zu erstellen oder zu schreiben. Bitte überprüfe deine Berechtigungen."
+          "information": "Du besitzt keine Rechte um Datein oder Ordner zu erstellen oder zu schreiben. Bitte überprüfe Deine Berechtigungen."
         },
         "parentEntityNotFound": {
           "information": "Eltern-Entität für das „{entity}“-Kind konnte nicht gefunden werden."
@@ -181,10 +182,10 @@
         "undefinedIndex" : {
           "title": "Unidentifizierter Index",
           "detail": "Unidentifizierter Index konnte nicht importiert werden.",
-          "information": "Index „{unidentifiedIndex}“ konnte nicht identifiziert werden. Bitte prüfe deine Daten."
+          "information": "Index „{unidentifiedIndex}“ konnte nicht identifiziert werden. Bitte prüfe Deine Daten."
         },
         "unknownError": {
-          "information": "Unbekannter Fehlertyp. Für weitere Informationen kannst du in die Konsolenlogs der Entwicklertools deines Browser schauen."
+          "information": "Unbekannter Fehlertyp. Für weitere Informationen kannst Du in die Konsolenlogs der Entwicklertools Deines Browser schauen."
         }
       }
     }

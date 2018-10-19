@@ -22,7 +22,7 @@
                                 {% block swag_migration_loading_screen_warning_hint_errors %}
                                     <div v-if="errorList.length > 0">
                                         {% block swag_migration_loading_screen_warning_hint_errors_title %}
-                                            <p class="information__list-header">{{ $tc('swag-migration.index.loadingScreenCard.result.warning.warningListTitle', errorList.length) }}:</p>
+                                            <p class="information__list-header">{{ $tc('swag-migration.index.loadingScreenCard.result.warning.warningListTitle', errorList.length, { count: errorList.length }) }}:</p>
                                         {% endblock %}
                                         {% block swag_migration_loading_screen_warning_hint_errors_list %}
                                             <ul class="information__list">

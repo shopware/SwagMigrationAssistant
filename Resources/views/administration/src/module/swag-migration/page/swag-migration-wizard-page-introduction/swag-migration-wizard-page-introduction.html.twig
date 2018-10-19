@@ -10,13 +10,20 @@
                             </h3>
                         {% endblock %}
 
+                        {% block swag_migration_wizard_page_introduction_api_hint %}
+                            {{ $tc('swag-migration.wizard.pages.introduction.contentInformation') }}
+                        {% endblock %}
+
+                        {% block swag_migration_wizard_page_plugin_information_plugin_link %}
+                        <div class="swag-migration-wizard__documentation-link">
+                            <a target="_blank" href="https://docs.shopware.com/de/shopware-playground-de/swpgconnector">{{ $tc('swag-migration.wizard.pages.introduction.documentationLink') }}</a>
+                        </div>
+                        {% endblock %}
+
                         {% block swag_migration_wizard_page_introduction_svg %}
                             <img class="swag-wizard-svg" :src="'/swagmigrationnext/static/img/step-1-start.png' | asset">
                         {% endblock %}
 
-                        {% block swag_migration_wizard_page_introduction_api_hint %}
-                            {{ $tc('swag-migration.wizard.pages.introduction.contentInformation') }}
-                        {% endblock %}
                     </div>
                 {% endblock %}
             </div>
