@@ -80,6 +80,7 @@ class CategoryConverter implements ConverterInterface
         if (!isset($data['_locale'])) {
             $this->loggingService->addWarning(
                 $runId,
+                'SWAG-MIGRATION-SHOPWARE55-EMPTY-LOCALE',
                 'Empty locale',
                 'Category-Entity could not converted cause of empty locale.',
                 ['id' => $this->oldCategoryId]

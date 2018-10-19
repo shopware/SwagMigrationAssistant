@@ -94,9 +94,13 @@ class TranslationConverter implements ConverterInterface
 
         $this->loggingService->addWarning(
             $this->runId,
+            'SWAG-MIGRATION-SHOPWARE55-NOT-CONVERT-ABLE-OBJECT-TYPE',
             'Not convert able object type',
             sprintf('Translation of object type "%s" could not converted.', $data['objecttype']),
-            ['data' => $data]
+            [
+                'objecttype' => $data['objecttype'],
+                'data' => $data,
+            ]
         );
 
         return new ConvertStruct(null, $data);
@@ -131,8 +135,9 @@ class TranslationConverter implements ConverterInterface
         if (!isset($productTranslation['productId'])) {
             $this->loggingService->addWarning(
                 $this->runId,
+                'SWAG-MIGRATION-SHOPWARE55-ASSOCIATION-REQUIRED-MISSING',
                 'Associated product not found',
-                'Associated product not found in mapping for translation entity.',
+                'Mapping of "product" is missing, but it is a required association for "translation". Import "product" first.',
                 ['data' => $data]
             );
 
@@ -147,9 +152,13 @@ class TranslationConverter implements ConverterInterface
         if (!\is_array($objectData)) {
             $this->loggingService->addWarning(
                 $this->runId,
+                'SWAG-MIGRATION-SHOPWARE55-INVALID-UNSERIALIZED-DATA',
                 'Invalid unserialized data',
                 'Product-Translation-Entity could not converted cause of invalid unserialized object data.',
-                ['data' => $data['objectdata']]
+                [
+                    'entity' => 'Product',
+                    'data' => $data['objectdata'],
+                ]
             );
 
             return new ConvertStruct(null, $sourceData);
@@ -215,8 +224,9 @@ class TranslationConverter implements ConverterInterface
         if (!isset($manufacturerTranslation['productManufacturerId'])) {
             $this->loggingService->addWarning(
                 $this->runId,
+                'SWAG-MIGRATION-SHOPWARE55-ASSOCIATION-REQUIRED-MISSING',
                 'Associated manufacturer not found',
-                'Associated manufacturer not found in mapping for translation entity.',
+                'Mapping of "manufacturer" is missing, but it is a required association for "translation". Import "product" first.',
                 ['data' => $data]
             );
 
@@ -231,9 +241,13 @@ class TranslationConverter implements ConverterInterface
         if (!\is_array($objectData)) {
             $this->loggingService->addWarning(
                 $this->runId,
+                'SWAG-MIGRATION-SHOPWARE55-INVALID-UNSERIALIZED-DATA',
                 'Invalid unserialized data',
                 'Manufacturer-Translation-Entity could not converted cause of invalid unserialized object data.',
-                ['data' => $data['objectdata']]
+                [
+                    'entity' => 'Manufacturer',
+                    'data' => $data['objectdata'],
+                ]
             );
 
             return new ConvertStruct(null, $sourceData);
@@ -262,9 +276,13 @@ class TranslationConverter implements ConverterInterface
         } else {
             $this->loggingService->addWarning(
                 $this->runId,
+                'SWAG-MIGRATION-SHOPWARE55-INVALID-UNSERIALIZED-DATA',
                 'Invalid unserialized data',
                 'Manufacturer-Translation-Entity could not converted cause of invalid unserialized object data.',
-                ['data' => $data['objectdata']]
+                [
+                    'entity' => 'Manufacturer',
+                    'data' => $data['objectdata'],
+                ]
             );
 
             return new ConvertStruct(null, $sourceData);
@@ -313,8 +331,9 @@ class TranslationConverter implements ConverterInterface
         if (!isset($unitTranslation['unitId'])) {
             $this->loggingService->addWarning(
                 $this->runId,
+                'SWAG-MIGRATION-SHOPWARE55-ASSOCIATION-REQUIRED-MISSING',
                 'Associated unit not found',
-                'Associated unit not found in mapping for translation entity.',
+                'Mapping of "unit" is missing, but it is a required association for "translation". Import "product" first.',
                 ['data' => $data]
             );
 
@@ -328,9 +347,13 @@ class TranslationConverter implements ConverterInterface
         if (!\is_array($objectData)) {
             $this->loggingService->addWarning(
                 $this->runId,
+                'SWAG-MIGRATION-SHOPWARE55-INVALID-UNSERIALIZED-DATA',
                 'Invalid unserialized data',
                 'Unit-Translation-Entity could not converted cause of invalid unserialized object data.',
-                ['data' => $data['objectdata']]
+                [
+                    'entity' => 'Unit',
+                    'data' => $data['objectdata'],
+                ]
             );
 
             return new ConvertStruct(null, $sourceData);
@@ -356,9 +379,13 @@ class TranslationConverter implements ConverterInterface
         } else {
             $this->loggingService->addWarning(
                 $this->runId,
+                'SWAG-MIGRATION-SHOPWARE55-INVALID-UNSERIALIZED-DATA',
                 'Invalid unserialized data',
                 'Unit-Translation-Entity could not converted cause of invalid unserialized object data.',
-                ['data' => $data['objectdata']]
+                [
+                    'entity' => 'Unit',
+                    'data' => $data['objectdata'],
+                ]
             );
 
             return new ConvertStruct(null, $sourceData);
@@ -407,8 +434,9 @@ class TranslationConverter implements ConverterInterface
         if (!isset($categoryTranslation['categoryId'])) {
             $this->loggingService->addWarning(
                 $this->runId,
+                'SWAG-MIGRATION-SHOPWARE55-ASSOCIATION-REQUIRED-MISSING',
                 'Associated category not found',
-                'Associated category not found in mapping for translation entity.',
+                'Mapping of "category" is missing, but it is a required association for "translation". Import "category" first.',
                 ['data' => $data]
             );
 
@@ -422,9 +450,13 @@ class TranslationConverter implements ConverterInterface
         if (!\is_array($objectData)) {
             $this->loggingService->addWarning(
                 $this->runId,
+                'SWAG-MIGRATION-SHOPWARE55-INVALID-UNSERIALIZED-DATA',
                 'Invalid unserialized data',
                 'Category-Translation-Entity could not converted cause of invalid unserialized object data.',
-                ['data' => $data['objectdata']]
+                [
+                    'entity' => 'Category',
+                    'data' => $data['objectdata'],
+                ]
             );
 
             return new ConvertStruct(null, $sourceData);
@@ -461,9 +493,13 @@ class TranslationConverter implements ConverterInterface
         } else {
             $this->loggingService->addWarning(
                 $this->runId,
+                'SWAG-MIGRATION-SHOPWARE55-INVALID-UNSERIALIZED-DATA',
                 'Invalid unserialized data',
                 'Category-Translation-Entity could not converted cause of invalid unserialized object data.',
-                ['data' => $data['objectdata']]
+                [
+                    'entity' => 'category',
+                    'data' => $data['objectdata'],
+                ]
             );
 
             return new ConvertStruct(null, $sourceData);

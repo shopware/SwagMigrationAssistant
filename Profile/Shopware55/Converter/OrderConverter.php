@@ -140,9 +140,14 @@ class OrderConverter implements ConverterInterface
         if (!empty($fields)) {
             $this->loggingService->addWarning(
                 $this->runId,
+                'SWAG-MIGRATION-SHOPWARE55-EMPTY-NECESSARY-DATA-FIELDS',
                 'Empty necessary data',
                 sprintf('Order-Entity could not converted cause of empty necessary field(s): %s.', implode(', ', $fields)),
-                ['id' => $this->oldId]
+                [
+                    'id' => $this->oldId,
+                    'entity' => 'Order',
+                    'fields' => $fields,
+                ]
             );
 
             return new ConvertStruct(null, $data);

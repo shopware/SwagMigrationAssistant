@@ -320,7 +320,7 @@ class CustomerConverterTest extends TestCase
         $description = sprintf('Address-Entity could not converted cause of empty necessary field(s): %s.', $property);
         static::assertSame($description, $logs[0]['logEntry']['description']);
 
-        $description = 'Default billing address of customer is empty and will set with the default shipping address';
+        $description = 'Default billing address of customer is empty and will set with the default shipping address.';
         static::assertSame($description, $logs[1]['logEntry']['description']);
 
         static::assertCount(2, $logs);
@@ -361,7 +361,7 @@ class CustomerConverterTest extends TestCase
         $description = sprintf('Address-Entity could not converted cause of empty necessary field(s): %s.', $property);
         static::assertSame($description, $logs[0]['logEntry']['description']);
 
-        $description = 'Default shipping address of customer is empty and will set with the default billing address';
+        $description = 'Default shipping address of customer is empty and will set with the default billing address.';
         static::assertSame($description, $logs[1]['logEntry']['description']);
 
         static::assertCount(2, $logs);
@@ -404,7 +404,7 @@ class CustomerConverterTest extends TestCase
         static::assertSame($description, $logs[0]['logEntry']['description']);
         static::assertSame($description, $logs[1]['logEntry']['description']);
 
-        $description = 'Default billing and shipping address of customer is empty and will set with the first address';
+        $description = 'Default billing and shipping address of customer is empty and will set with the first address.';
         static::assertSame($description, $logs[2]['logEntry']['description']);
 
         static::assertCount(3, $logs);

@@ -110,9 +110,14 @@ class CustomerConverter implements ConverterInterface
         if (!empty($fields)) {
             $this->loggingService->addWarning(
                 $this->runId,
+                'SWAG-MIGRATION-SHOPWARE55-EMPTY-NECESSARY-DATA-FIELDS',
                 'Empty necessary data fields',
                 sprintf('Customer-Entity could not converted cause of empty necessary field(s): %s.', implode(', ', $fields)),
-                ['id' => $data['id']]
+                [
+                    'id' => $data['id'],
+                    'entity' => 'Customer',
+                    'fields' => $fields,
+                ]
             );
 
             return new ConvertStruct(null, $oldData);
@@ -213,6 +218,7 @@ class CustomerConverter implements ConverterInterface
 
             $this->loggingService->addWarning(
                 $this->runId,
+                'SWAG-MIGRATION-SHOPWARE55-NO-ADDRESS-DATA',
                 'No address data',
                 'Customer-Entity could not converted cause of empty address data.',
                 ['id' => $this->oldCustomerId]
@@ -382,11 +388,14 @@ class CustomerConverter implements ConverterInterface
             if (!empty($fields)) {
                 $this->loggingService->addWarning(
                     $this->runId,
+                    'SWAG-MIGRATION-SHOPWARE55-EMPTY-NECESSARY-DATA-FIELDS',
                     'Empty necessary data fields for address',
                     sprintf('Address-Entity could not converted cause of empty necessary field(s): %s.', implode(', ', $fields)),
                     [
                         'id' => $this->oldCustomerId,
                         'uuid' => $customerUuid,
+                        'entity' => 'Address',
+                        'fields' => $fields,
                     ]
                 );
 
@@ -446,8 +455,9 @@ class CustomerConverter implements ConverterInterface
 
             $this->loggingService->addInfo(
                 $this->runId,
+                'SWAG-MIGRATION-SHOPWARE55-NO-DEFAULT-SHIPPING-ADDRESS',
                 'No default shipping address',
-                'Default shipping address of customer is empty and will set with the default billing address',
+                'Default shipping address of customer is empty and will set with the default billing address.',
                 [
                     'id' => $this->oldCustomerId,
                     'uuid' => $customerUuid,
@@ -462,8 +472,9 @@ class CustomerConverter implements ConverterInterface
 
             $this->loggingService->addInfo(
                 $this->runId,
+                'SWAG-MIGRATION-SHOPWARE55-NO-DEFAULT-BILLING-ADDRESS',
                 'No default billing address',
-                'Default billing address of customer is empty and will set with the default shipping address',
+                'Default billing address of customer is empty and will set with the default shipping address.',
                 [
                     'id' => $this->oldCustomerId,
                     'uuid' => $customerUuid,
@@ -479,8 +490,9 @@ class CustomerConverter implements ConverterInterface
 
             $this->loggingService->addInfo(
                 $this->runId,
+                'SWAG-MIGRATION-SHOPWARE55-NO-DEFAULT-BILLING-AND-SHIPPING-ADDRESS',
                 'No default billing and shipping address',
-                'Default billing and shipping address of customer is empty and will set with the first address',
+                'Default billing and shipping address of customer is empty and will set with the first address.',
                 [
                     'id' => $this->oldCustomerId,
                     'uuid' => $customerUuid,

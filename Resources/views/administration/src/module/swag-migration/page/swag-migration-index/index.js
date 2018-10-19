@@ -350,11 +350,6 @@ Component.register('swag-migration-index', {
             this.isPaused = false;
             this.isMigrating = false;
             this.componentIndex = this.components.dataSelector;
-            console.log(this.migrationWorkerService.runId);
-            // const migrationRun = this.migrationRunStore.getById(this.migrationWorkerService.runId);
-            // console.log(migrationRun);
-            // migrationRun.status = 'aborted';
-            // migrationRun.save();
             this.swagMigrationRunService.updateById(this.migrationWorkerService.runId, { status: 'aborted' });
         },
 
@@ -525,6 +520,13 @@ Component.register('swag-migration-index', {
                         snippet = this.$t('swag-migration.index.error.authorizationError.information');
                         break;
 
+                    case '408':
+                        snippet = this.$t(
+                            'swag-migration.index.error.canNotDownloadAsset.information',
+                            { path: error.details.uri }
+                        );
+                        break;
+
                     // GatewayNotFoundException
                     case 'SWAG-MIGRATION-GATEWAY-NOT-FOUND':
                         snippet = this.$t('swag-migration.index.error.gatewayNotFound.information', {
@@ -592,7 +594,6 @@ Component.register('swag-migration-index', {
                         snippet = this.$t('swag-migration.index.error.associationRequiredMissing.information', {
                             missingEntity: argument,
                             requiredFor: error.detail.substring(secondParamStart, secondParamStop)
-
                         });
                         break;
 
@@ -600,6 +601,49 @@ Component.register('swag-migration-index', {
                     case 'SWAG-MIGRATION-SHOPWARE55-CUSTOMER-EXISTS':
                         snippet = this.$t('swag-migration.index.error.customerExists.information', {
                             mail: argument
+                        });
+                        break;
+
+                    case 'SWAG-MIGRATION-SHOPWARE55-EMPTY-NECESSARY-DATA-FIELDS':
+                        snippet = this.$t('swag-migration.index.error.emptyNecessaryDataFields.information', {
+                            entity: error.details.entity,
+                            fields: error.details.fields.join()
+                        });
+                        break;
+
+                    case 'SWAG-MIGRATION-SHOPWARE55-NO-DEFAULT-SHIPPING-ADDRESS':
+                        snippet = this.$t('swag-migration.index.error.noDefaultShippingAddress.information');
+                        break;
+
+                    case 'SWAG-MIGRATION-SHOPWARE55-NO-DEFAULT-BILLING-ADDRESS':
+                        snippet = this.$t('swag-migration.index.error.noDefaultBillingAddress.information');
+                        break;
+
+                    case 'SWAG-MIGRATION-SHOPWARE55-NO-DEFAULT-BILLING-AND-SHIPPING-ADDRESS':
+                        snippet = this.$t('swag-migration.index.error.noDefaultBillingAndShippingAddress.information');
+                        break;
+
+                    case 'SWAG-MIGRATION-SHOPWARE55-PRODUCT-MEDIA-NOT-CONVERTED':
+                        snippet = this.$t('swag-migration.index.error.productMediaNotConverted.information');
+                        break;
+
+                    case 'SWAG-MIGRATION-SHOPWARE55-EMPTY-LOCALE':
+                        snippet = this.$t('swag-migration.index.error.emptyLocale.information');
+                        break;
+
+                    case 'SWAG-MIGRATION-SHOPWARE55-NO-ADDRESS-DATA':
+                        snippet = this.$t('swag-migration.index.error.noAddressData.information');
+                        break;
+
+                    case 'SWAG-MIGRATION-SHOPWARE55-NOT-CONVERT-ABLE-OBJECT-TYPE':
+                        snippet = this.$t('swag-migration.index.error.notConvertAbleObjectType.information', {
+                            objectType: error.details.objecttype
+                        });
+                        break;
+
+                    case 'SWAG-MIGRATION-SHOPWARE55-INVALID-UNSERIALIZED-DATA':
+                        snippet = this.$t('swag-migration.index.error.invalidUnserializedData.information', {
+                            entity: error.details.entity
                         });
                         break;
 

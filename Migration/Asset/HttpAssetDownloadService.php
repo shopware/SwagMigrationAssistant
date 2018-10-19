@@ -89,7 +89,7 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
 
         if (!is_dir('_temp') && !mkdir('_temp') && !is_dir('_temp')) {
             $exception = new NoFileSystemPermissionsException();
-            $this->loggingService->addError($runId, (string) $exception->getCode(), $exception->getMessage());
+            $this->loggingService->addError($runId, (string) $exception->getCode(), '', $exception->getMessage());
             $this->loggingService->saveLogging($context);
 
             return $workload;
@@ -151,6 +151,7 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
                     $this->loggingService->addError(
                         $mappedWorkload[$uuid]['runId'],
                         (string) SymfonyResponse::HTTP_REQUEST_TIMEOUT,
+                        '',
                         'Cannot download media.',
                         [
                             'uri' => $mappedWorkload[$uuid]['additionalData']['uri'],

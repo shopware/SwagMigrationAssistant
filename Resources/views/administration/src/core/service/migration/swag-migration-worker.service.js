@@ -133,7 +133,7 @@ class MigrationService {
             this._status = this.MIGRATION_STATUS.FETCH_DATA;
             break;
         }
-        this._errors = []; // TODO: Set the errors from this._restoreState
+        this._errors = [];
         this._resetAssetProgress();
 
         // Get current group and entity index
@@ -167,7 +167,6 @@ class MigrationService {
                 indicies.entityIndex,
                 this._restoreState.finishedCount
             ).then(() => {
-            // this._writeData(indicies.groupIndex, indicies.entityIndex, this._restoreState.finishedCount).then(() => {
                 // step 3 - download data
                 const containsMediaGroup = this._entityGroups.find((group) => {
                     return group.id === 'media' || group.id === 'categories_products';
@@ -467,7 +466,9 @@ class MigrationService {
                     if (log.type === 'warning' || log.type === 'error') {
                         this._addError({
                             code: log.logEntry.code,
-                            detail: log.logEntry.description
+                            detail: log.logEntry.description,
+                            description: log.logEntry.description,
+                            details: log.logEntry.details
                         });
                     }
                 });
@@ -722,18 +723,6 @@ class MigrationService {
         newWorkload.forEach((asset) => {
             if (asset.state === 'error') {
                 assetsRemovedCount += 1;
-                this._addError({
-                    code: '0',
-                    status: '408',
-                    title: this.applicationRoot.$i18n.tc('swag-migration.index.error.canNotDownloadAsset.title'),
-                    detail: this.applicationRoot.$i18n.tc('swag-migration.index.error.canNotDownloadAsset.detail'),
-                    information: this.applicationRoot.$i18n.t(
-                        'swag-migration.index.error.canNotDownloadAsset.information',
-                        { path: asset.additionalData.uri }
-                    ),
-                    path: asset.additionalData.uri,
-                    trace: []
-                });
             }
         });
 

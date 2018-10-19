@@ -75,7 +75,7 @@ class Shopware55Profile implements ProfileInterface
             /** @var array[] $data */
             $data = $gateway->read($entityName, $migrationContext->getOffset(), $migrationContext->getLimit());
         } catch (\Exception $exception) {
-            $this->loggingService->addError($runId, (string) $exception->getCode(), $exception->getMessage(), ['entity' => $entityName]);
+            $this->loggingService->addError($runId, (string) $exception->getCode(), '', $exception->getMessage(), ['entity' => $entityName]);
             $this->loggingService->saveLogging($context);
 
             return 0;
@@ -195,7 +195,16 @@ class Shopware55Profile implements ProfileInterface
             } catch (ParentEntityForChildNotFoundException |
             AssociationEntityRequiredMissingException $exception
             ) {
-                $this->loggingService->addError($runId, (string) $exception->getCode(), $exception->getMessage(), ['entity' => $entityName, 'raw' => $item]);
+                $this->loggingService->addError(
+                    $runId,
+                    (string) $exception->getCode(),
+                    '',
+                    $exception->getMessage(),
+                    [
+                        'entity' => $entityName,
+                        'raw' => $item,
+                    ]
+                );
 
                 $createData[] = [
                     'entity' => $entityName,

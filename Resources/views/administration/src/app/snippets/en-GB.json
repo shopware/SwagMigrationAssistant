@@ -212,6 +212,9 @@
         },
         "unknownError": {
           "information": "Unknown error. For more information, you can check the console logs of the developer tools in your browser."
+        },
+        "emptyNecessaryDataFields": {
+          "information": "{entity}-Entity could not converted cause of empty necessary field(s): {fields}."
         }
       }
     }

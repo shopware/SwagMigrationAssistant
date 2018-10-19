@@ -82,7 +82,7 @@ class MigrationWriteService implements MigrationWriteServiceInterface
         try {
             $currentWriter = $this->writerRegistry->getWriter($entity);
         } catch (\Exception $exception) {
-            $this->loggingService->addError($migrationContext->getRunUuid(), (string) $exception->getCode(), $exception->getMessage(), ['entity' => $entity]);
+            $this->loggingService->addError($migrationContext->getRunUuid(), (string) $exception->getCode(), '', $exception->getMessage(), ['entity' => $entity]);
             $this->loggingService->saveLogging($context);
 
             return;

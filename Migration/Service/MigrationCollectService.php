@@ -42,7 +42,7 @@ class MigrationCollectService implements MigrationCollectServiceInterface
             $gateway = $this->gatewayFactoryRegistry->createGateway($migrationContext);
             $returnCount = $profile->collectData($gateway, $migrationContext, $context);
         } catch (\Exception $exception) {
-            $this->loggingService->addError($migrationContext->getRunUuid(), (string) $exception->getCode(), $exception->getMessage(), ['entity' => $migrationContext->getEntity()]);
+            $this->loggingService->addError($migrationContext->getRunUuid(), (string) $exception->getCode(), '', $exception->getMessage(), ['entity' => $migrationContext->getEntity()]);
             $this->loggingService->saveLogging($context);
             $returnCount = 0;
         }

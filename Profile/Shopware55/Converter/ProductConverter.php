@@ -448,8 +448,9 @@ class ProductConverter implements ConverterInterface
             if (!isset($asset['media']['id'])) {
                 $this->loggingService->addInfo(
                     $this->runId,
+                    'SWAG-MIGRATION-SHOPWARE55-PRODUCT-MEDIA-NOT-CONVERTED',
                     'Product-Media could not converted',
-                    'Product-Media could not converted',
+                    'Product-Media could not converted.',
                     [
                         'uuid' => $converted['id'],
                         'id' => $this->oldProductId,

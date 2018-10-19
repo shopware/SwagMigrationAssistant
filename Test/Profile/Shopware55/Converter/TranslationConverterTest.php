@@ -178,7 +178,7 @@ class TranslationConverterTest extends TestCase
         static::assertNull($convertResult->getConverted());
 
         $logs = $this->loggingService->getLoggingArray();
-        $description = 'Associated unit not found in mapping for translation entity.';
+        $description = 'Mapping of "unit" is missing, but it is a required association for "translation". Import "product" first.';
         static::assertSame($description, $logs[0]['logEntry']['description']);
         static::assertCount(1, $logs);
     }
@@ -259,7 +259,7 @@ class TranslationConverterTest extends TestCase
         static::assertNull($convertResult->getConverted());
 
         $logs = $this->loggingService->getLoggingArray();
-        $description = 'Associated category not found in mapping for translation entity.';
+        $description = 'Mapping of "category" is missing, but it is a required association for "translation". Import "category" first.';
         static::assertSame($description, $logs[0]['logEntry']['description']);
         static::assertCount(1, $logs);
     }
