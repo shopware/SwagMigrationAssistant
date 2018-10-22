@@ -179,10 +179,9 @@ class MigrationService {
             }).then(() => {
                 // step 4 - finish -> show results
                 return this._migrateFinish();
-            })
-                .then(() => {
-                    this._isMigrating = false;
-                });
+            }).then(() => {
+                this._isMigrating = false;
+            });
         } else if (this._status === this.MIGRATION_STATUS.DOWNLOAD_DATA) {
             // step 3 - download data
             this._getAssetTotalCount().then(() => { // after this we have the asset count that is not downloaded as total
@@ -195,10 +194,9 @@ class MigrationService {
             }).then(() => {
                 // step 4 - finish -> show results
                 return this._migrateFinish();
-            })
-                .then(() => {
-                    this._isMigrating = false;
-                });
+            }).then(() => {
+                this._isMigrating = false;
+            });
         }
     }
 

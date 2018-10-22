@@ -6,5 +6,5 @@ use Shopware\Core\Framework\Context;
 
 interface MigrationProgressServiceInterface
 {
-    public function getProgress(Context $context): array;
+    public function getProgress(Context $context): ProgressState;
 }
