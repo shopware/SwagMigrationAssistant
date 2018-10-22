@@ -8,6 +8,7 @@ use Shopware\Core\Framework\Context;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\ConvertStruct;
+use SwagMigrationNext\Profile\Shopware55\Logging\LoggingType;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 
 class CategoryConverter implements ConverterInterface
@@ -80,7 +81,7 @@ class CategoryConverter implements ConverterInterface
         if (!isset($data['_locale'])) {
             $this->loggingService->addWarning(
                 $runId,
-                'SWAG-MIGRATION-SHOPWARE55-EMPTY-LOCALE',
+                LoggingType::EMPTY_LOCALE,
                 'Empty locale',
                 'Category-Entity could not converted cause of empty locale.',
                 ['id' => $this->oldCategoryId]

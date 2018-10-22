@@ -27,6 +27,7 @@ use Shopware\Core\System\Currency\CurrencyDefinition;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\ConvertStruct;
+use SwagMigrationNext\Profile\Shopware55\Logging\LoggingType;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 
 class OrderConverter implements ConverterInterface
@@ -140,7 +141,7 @@ class OrderConverter implements ConverterInterface
         if (!empty($fields)) {
             $this->loggingService->addWarning(
                 $this->runId,
-                'SWAG-MIGRATION-SHOPWARE55-EMPTY-NECESSARY-DATA-FIELDS',
+                LoggingType::EMPTY_NECESSARY_DATA_FIELDS,
                 'Empty necessary data',
                 sprintf('Order-Entity could not converted cause of empty necessary field(s): %s.', implode(', ', $fields)),
                 [

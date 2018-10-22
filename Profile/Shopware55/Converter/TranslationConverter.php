@@ -14,6 +14,7 @@ use Shopware\Core\System\Unit\UnitDefinition;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\ConvertStruct;
+use SwagMigrationNext\Profile\Shopware55\Logging\LoggingType;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 
 class TranslationConverter implements ConverterInterface
@@ -94,7 +95,7 @@ class TranslationConverter implements ConverterInterface
 
         $this->loggingService->addWarning(
             $this->runId,
-            'SWAG-MIGRATION-SHOPWARE55-NOT-CONVERT-ABLE-OBJECT-TYPE',
+            LoggingType::NOT_CONVERT_ABLE_OBJECT_TYPE,
             'Not convert able object type',
             sprintf('Translation of object type "%s" could not converted.', $data['objecttype']),
             [
@@ -135,7 +136,7 @@ class TranslationConverter implements ConverterInterface
         if (!isset($productTranslation['productId'])) {
             $this->loggingService->addWarning(
                 $this->runId,
-                'SWAG-MIGRATION-SHOPWARE55-ASSOCIATION-REQUIRED-MISSING',
+                LoggingType::ASSOCIATION_REQUIRED_MISSING,
                 'Associated product not found',
                 'Mapping of "product" is missing, but it is a required association for "translation". Import "product" first.',
                 ['data' => $data]
@@ -152,7 +153,7 @@ class TranslationConverter implements ConverterInterface
         if (!\is_array($objectData)) {
             $this->loggingService->addWarning(
                 $this->runId,
-                'SWAG-MIGRATION-SHOPWARE55-INVALID-UNSERIALIZED-DATA',
+                LoggingType::INVALID_UNSERIALIZED_DATA,
                 'Invalid unserialized data',
                 'Product-Translation-Entity could not converted cause of invalid unserialized object data.',
                 [
@@ -224,7 +225,7 @@ class TranslationConverter implements ConverterInterface
         if (!isset($manufacturerTranslation['productManufacturerId'])) {
             $this->loggingService->addWarning(
                 $this->runId,
-                'SWAG-MIGRATION-SHOPWARE55-ASSOCIATION-REQUIRED-MISSING',
+                LoggingType::ASSOCIATION_REQUIRED_MISSING,
                 'Associated manufacturer not found',
                 'Mapping of "manufacturer" is missing, but it is a required association for "translation". Import "product" first.',
                 ['data' => $data]
@@ -241,7 +242,7 @@ class TranslationConverter implements ConverterInterface
         if (!\is_array($objectData)) {
             $this->loggingService->addWarning(
                 $this->runId,
-                'SWAG-MIGRATION-SHOPWARE55-INVALID-UNSERIALIZED-DATA',
+                LoggingType::INVALID_UNSERIALIZED_DATA,
                 'Invalid unserialized data',
                 'Manufacturer-Translation-Entity could not converted cause of invalid unserialized object data.',
                 [
@@ -276,7 +277,7 @@ class TranslationConverter implements ConverterInterface
         } else {
             $this->loggingService->addWarning(
                 $this->runId,
-                'SWAG-MIGRATION-SHOPWARE55-INVALID-UNSERIALIZED-DATA',
+                LoggingType::INVALID_UNSERIALIZED_DATA,
                 'Invalid unserialized data',
                 'Manufacturer-Translation-Entity could not converted cause of invalid unserialized object data.',
                 [
@@ -331,7 +332,7 @@ class TranslationConverter implements ConverterInterface
         if (!isset($unitTranslation['unitId'])) {
             $this->loggingService->addWarning(
                 $this->runId,
-                'SWAG-MIGRATION-SHOPWARE55-ASSOCIATION-REQUIRED-MISSING',
+                LoggingType::ASSOCIATION_REQUIRED_MISSING,
                 'Associated unit not found',
                 'Mapping of "unit" is missing, but it is a required association for "translation". Import "product" first.',
                 ['data' => $data]
@@ -347,7 +348,7 @@ class TranslationConverter implements ConverterInterface
         if (!\is_array($objectData)) {
             $this->loggingService->addWarning(
                 $this->runId,
-                'SWAG-MIGRATION-SHOPWARE55-INVALID-UNSERIALIZED-DATA',
+                LoggingType::INVALID_UNSERIALIZED_DATA,
                 'Invalid unserialized data',
                 'Unit-Translation-Entity could not converted cause of invalid unserialized object data.',
                 [
@@ -379,7 +380,7 @@ class TranslationConverter implements ConverterInterface
         } else {
             $this->loggingService->addWarning(
                 $this->runId,
-                'SWAG-MIGRATION-SHOPWARE55-INVALID-UNSERIALIZED-DATA',
+                LoggingType::INVALID_UNSERIALIZED_DATA,
                 'Invalid unserialized data',
                 'Unit-Translation-Entity could not converted cause of invalid unserialized object data.',
                 [
@@ -434,7 +435,7 @@ class TranslationConverter implements ConverterInterface
         if (!isset($categoryTranslation['categoryId'])) {
             $this->loggingService->addWarning(
                 $this->runId,
-                'SWAG-MIGRATION-SHOPWARE55-ASSOCIATION-REQUIRED-MISSING',
+                LoggingType::ASSOCIATION_REQUIRED_MISSING,
                 'Associated category not found',
                 'Mapping of "category" is missing, but it is a required association for "translation". Import "category" first.',
                 ['data' => $data]
@@ -450,7 +451,7 @@ class TranslationConverter implements ConverterInterface
         if (!\is_array($objectData)) {
             $this->loggingService->addWarning(
                 $this->runId,
-                'SWAG-MIGRATION-SHOPWARE55-INVALID-UNSERIALIZED-DATA',
+                LoggingType::INVALID_UNSERIALIZED_DATA,
                 'Invalid unserialized data',
                 'Category-Translation-Entity could not converted cause of invalid unserialized object data.',
                 [
@@ -493,7 +494,7 @@ class TranslationConverter implements ConverterInterface
         } else {
             $this->loggingService->addWarning(
                 $this->runId,
-                'SWAG-MIGRATION-SHOPWARE55-INVALID-UNSERIALIZED-DATA',
+                LoggingType::INVALID_UNSERIALIZED_DATA,
                 'Invalid unserialized data',
                 'Category-Translation-Entity could not converted cause of invalid unserialized object data.',
                 [

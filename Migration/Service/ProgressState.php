@@ -1,6 +1,5 @@
 <?php declare(strict_types=1);
 
-
 namespace SwagMigrationNext\Migration\Service;
 
 use Shopware\Core\Framework\Struct\Struct;
@@ -56,10 +55,11 @@ class ProgressState extends Struct
 
     /**
      * ProgressStateStruct constructor.
+     *
      * @param string $status
-     * @param bool $isMigrationRunning
+     * @param bool   $isMigrationRunning
      * @param string $entity
-     * @param int $finishedCount
+     * @param int    $finishedCount
      */
     public function __construct(bool $isMigrationRunning, string $status = null, string $entity = null, int $finishedCount = null, int $entityCount = null)
     {

@@ -94,7 +94,7 @@ class MigrationProgressService implements MigrationProgressServiceInterface
         //check if we have finished fetching but not startet writing yet
         if (!isset($totals['toBeWritten'])) {
             reset($totals['toBeFetched']);
-            $progressState = new ProgressState( true, self::STATUS_WRITE_DATA, key($totals['toBeFetched']), 0);
+            $progressState = new ProgressState(true, self::STATUS_WRITE_DATA, key($totals['toBeFetched']), 0);
 
             return $this->buildState($run, $progressState, $fetchedEntityCounts);
         }
@@ -102,13 +102,13 @@ class MigrationProgressService implements MigrationProgressServiceInterface
         //compare written counts
         foreach ($totals['toBeWritten'] as $entity => $count) {
             if (!isset($writtenEntityCounts[$entity])) {
-                $progressState = new ProgressState( true, self::STATUS_WRITE_DATA, $entity, 0, $count);
+                $progressState = new ProgressState(true, self::STATUS_WRITE_DATA, $entity, 0, $count);
 
                 return $this->buildState($run, $progressState, $writtenEntityCounts);
             }
 
             if ($writtenEntityCounts[$entity] < $count) {
-                $progressState = new ProgressState( true, self::STATUS_WRITE_DATA, $entity, $writtenEntityCounts[$entity], $count);
+                $progressState = new ProgressState(true, self::STATUS_WRITE_DATA, $entity, $writtenEntityCounts[$entity], $count);
 
                 return $this->buildState($run, $progressState, $writtenEntityCounts);
             }
@@ -118,9 +118,9 @@ class MigrationProgressService implements MigrationProgressServiceInterface
         $downloadedMediaFileCount = $this->getMediaFileCounts($run->getId());
 
         if ($downloadedMediaFileCount < $totalMediaFileCount) {
-            $progressState = new ProgressState( true, self::STATUS_DOWNLOAD_DATA,'media', $downloadedMediaFileCount, $totalMediaFileCount);
+            $progressState = new ProgressState(true, self::STATUS_DOWNLOAD_DATA, 'media', $downloadedMediaFileCount, $totalMediaFileCount);
 
-            return $this->buildState($run, $progressState, [ 'media' => $downloadedMediaFileCount, ]);
+            return $this->buildState($run, $progressState, ['media' => $downloadedMediaFileCount]);
         }
 
         return new ProgressState(false);

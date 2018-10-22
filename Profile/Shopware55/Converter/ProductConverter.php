@@ -21,6 +21,7 @@ use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\Asset\MediaFileServiceInterface;
 use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\ConvertStruct;
+use SwagMigrationNext\Profile\Shopware55\Logging\LoggingType;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 
 class ProductConverter implements ConverterInterface
@@ -448,7 +449,7 @@ class ProductConverter implements ConverterInterface
             if (!isset($asset['media']['id'])) {
                 $this->loggingService->addInfo(
                     $this->runId,
-                    'SWAG-MIGRATION-SHOPWARE55-PRODUCT-MEDIA-NOT-CONVERTED',
+                    LoggingType::PRODUCT_MEDIA_NOT_CONVERTED,
                     'Product-Media could not converted',
                     'Product-Media could not converted.',
                     [
