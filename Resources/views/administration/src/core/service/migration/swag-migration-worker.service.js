@@ -141,22 +141,25 @@ class MigrationService {
 
         // TODO: Refactor this
         if (this._status === this.MIGRATION_STATUS.FETCH_DATA) {
-            this._fetchData(indicies.groupIndex, indicies.entityIndex, this._restoreState.finishedCount).then(() => {
-                return this._writeData();
-            }).then(() => {
-                // step 3 - download data
-                const containsMediaGroup = this._entityGroups.find((group) => {
-                    return group.id === 'media' || group.id === 'categories_products';
-                });
-                if (containsMediaGroup !== undefined) {
-                    return this._downloadData();
-                }
+            this._fetchData(indicies.groupIndex, indicies.entityIndex, this._restoreState.finishedCount)
+                .then(() => {
+                    return this._writeData();
+                })
+                .then(() => {
+                    // step 3 - download data
+                    const containsMediaGroup = this._entityGroups.find((group) => {
+                        return group.id === 'media' || group.id === 'categories_products';
+                    });
+                    if (containsMediaGroup !== undefined) {
+                        return this._downloadData();
+                    }
 
-                return Promise.resolve();
-            }).then(() => {
-                // step 4 - finish -> show results
-                return this._migrateFinish();
-            })
+                    return Promise.resolve();
+                })
+                .then(() => {
+                    // step 4 - finish -> show results
+                    return this._migrateFinish();
+                })
                 .then(() => {
                     this._isMigrating = false;
                 });

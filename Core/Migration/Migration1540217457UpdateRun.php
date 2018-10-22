@@ -1,15 +1,15 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Core\Version;
+namespace SwagMigrationNext\Core\Migration;
 
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Migration\MigrationStep;
 
-class Migration1537433357UpdateRun extends MigrationStep
+class Migration1540217457UpdateRun extends MigrationStep
 {
     public function getCreationTimestamp(): int
     {
-        return 1537433357;
+        return 1540217457;
     }
 
     public function update(Connection $connection): void
@@ -24,7 +24,7 @@ class Migration1537433357UpdateRun extends MigrationStep
         $this->dropProfileColumn($connection);
     }
 
-    private function addAdditionalData(Connection $connection)
+    private function addAdditionalData(Connection $connection): void
     {
         $sql = <<<SQL
 ALTER TABLE `swag_migration_run` ADD `additional_data` LONGTEXT AFTER `totals`;
@@ -32,7 +32,7 @@ SQL;
         $connection->executeQuery($sql);
     }
 
-    private function addProfileIdColumn(Connection $connection)
+    private function addProfileIdColumn(Connection $connection): void
     {
         // add profileId column
         $sql = <<<SQL
@@ -58,7 +58,7 @@ SQL;
 SELECT id FROM `swag_migration_profile` WHERE `profile`='shopware55' AND `gateway`='api';
 SQL;
         $results = $connection->fetchAll($sql);
-        if (count($results) === 0) {
+        if (\count($results) === 0) {
             return;
         }
 
@@ -73,20 +73,20 @@ SQL;
         ]);
     }
 
-    private function dropProfileColumn(Connection $connection)
-    {
-        // Drop profile column
-        $sql = <<<SQL
-ALTER TABLE `swag_migration_run` DROP `profile`;
-SQL;
-        $connection->exec($sql);
-    }
-
-    private function addStatusColumn(Connection $connection)
+    private function addStatusColumn(Connection $connection): void
     {
         // add status column
         $sql = <<<SQL
 ALTER TABLE `swag_migration_run` ADD `status` VARCHAR(255) NOT NULL DEFAULT 'finished' AFTER `additional_data`;
+SQL;
+        $connection->exec($sql);
+    }
+
+    private function dropProfileColumn(Connection $connection): void
+    {
+        // Drop profile column
+        $sql = <<<SQL
+ALTER TABLE `swag_migration_run` DROP `profile`;
 SQL;
         $connection->exec($sql);
     }

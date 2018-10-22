@@ -25,6 +25,7 @@ class SwagMigrationRunStruct extends Entity
      * @var string
      */
     public const STATUS_ABORTED = 'aborted';
+
     /**
      * @var string
      */
@@ -120,8 +121,7 @@ class SwagMigrationRunStruct extends Entity
      */
     public function setStatus(string $status): void
     {
-        if (
-            $status !== self::STATUS_RUNNING &&
+        if ($status !== self::STATUS_RUNNING &&
             $status !== self::STATUS_FINISHED &&
             $status !== self::STATUS_ABORTED
         ) {

@@ -141,7 +141,7 @@
         },
         "pauseScreen": {
           "title": "Pause.",
-          "message": "Der Import wurde pausiert.<br>Setze ihn fort oder breche den Prozess ab.<br><br>"
+          "message": "Der Import wurde pausiert.<br>Setze ihn fort oder brich den Prozess ab.<br><br>"
         }
       },
       "confirmDialog": {
@@ -152,11 +152,11 @@
       },
       "confirmAbortDialog": {
         "title": "Datenimport",
-        "message": "Den Datenimport jetzt Beenden?",
+        "message": "Den Datenimport jetzt beenden?",
         "cancelRunning": "Fortsetzen",
         "cancelPause": "Weiter pausieren",
         "confirm": "Beenden",
-        "hintContent": "Wenn der Prozess beendet wird, sind die Daten nicht vollständig und dadurch teilweise unbrauchbar."
+        "hintContent": "Wenn der Prozess beendet wird sind die Daten nicht vollständig und dadurch teilweise unbrauchbar."
       },
       "error": {
         "associationRequiredMissing": {

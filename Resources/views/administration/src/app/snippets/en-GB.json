@@ -214,7 +214,31 @@
           "information": "Unknown error. For more information, you can check the console logs of the developer tools in your browser."
         },
         "emptyNecessaryDataFields": {
-          "information": "{entity}-Entity could not converted cause of empty necessary field(s): {fields}."
+          "information": "{entity} entity could not be converted, because of empty, necessary field(s): {fields}."
+        },
+        "noDefaultShippingAddress": {
+          "information": "Default shipping address of customer is empty and will be set with the default billing address."
+        },
+        "noDefaultBillingAddress": {
+          "information": "Default billing address of customer is empty and will be set with the default shipping address."
+        },
+        "noDefaultBillingAndShippingAddress": {
+          "information": "Default billing and shipping address of customer are empty and will be set with the first address."
+        },
+        "productMediaNotConverted": {
+          "information": "Product media could not be converted."
+        },
+        "emptyLocale": {
+          "information": "Category entity could not be converted, because of empty locale."
+        },
+        "noAddressData": {
+          "information": "Category entity could not be converted, because of empty locale."
+        },
+        "notConvertAbleObjectType": {
+          "information": "Translation of object type “{objectType}“ could not be converted."
+        },
+        "invalidUnserializedData": {
+          "information": "{entity} translation entity could not be converted, because of invalid, unserialized object data."
         }
       }
     }

@@ -95,7 +95,7 @@ class TranslationConverter implements ConverterInterface
 
         $this->loggingService->addWarning(
             $this->runId,
-            LoggingType::NOT_CONVERT_ABLE_OBJECT_TYPE,
+            LoggingType::NOT_CONVERTABLE_OBJECT_TYPE,
             'Not convert able object type',
             sprintf('Translation of object type "%s" could not converted.', $data['objecttype']),
             [

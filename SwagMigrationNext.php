@@ -40,7 +40,7 @@ class SwagMigrationNext extends Plugin
      */
     public function getMigrationNamespace(): string
     {
-        return $this->getNamespace() . '\Core\Version';
+        return $this->getNamespace() . '\Core\Migration';
     }
 
     /**

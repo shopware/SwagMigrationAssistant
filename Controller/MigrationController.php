@@ -239,7 +239,7 @@ class MigrationController extends Controller
     /**
      * @Route("/api/v{version}/migration/get-state", name="api.admin.migration.get-state", methods={"GET"})
      */
-    public function getState(Request $request, Context $context): JsonResponse
+    public function getState(Context $context): JsonResponse
     {
         $state = $this->migrationProgressService->getProgress($context);
 
