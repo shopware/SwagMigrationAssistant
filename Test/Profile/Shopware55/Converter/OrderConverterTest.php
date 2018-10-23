@@ -179,6 +179,8 @@ class OrderConverterTest extends TestCase
             ['billingaddress'],
             ['payment'],
             ['customer'],
+            ['paymentcurrency'],
+            ['currency']
         ];
     }
 

@@ -130,6 +130,12 @@ class OrderConverter implements ConverterInterface
         if (!isset($data['currencyFactor'])) {
             $fields[] = 'currencyFactor';
         }
+        if (!isset($data['currency'])) {
+            $fields[] = 'currency';
+        }
+        if (!isset($data['paymentcurrency'])) {
+            $fields[] = 'paymentcurrency';
+        }
 
         if (!empty($fields)) {
             $this->loggingService->addWarning(
