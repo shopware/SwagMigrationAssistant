@@ -111,9 +111,15 @@ class Shopware55Profile implements ProfileInterface
                 0,
                 0,
                 0,
+                $environmentData['warning']['code'],
+                $environmentData['warning']['detail'],
                 $environmentData['error']['code'],
                 $environmentData['error']['detail']
             );
+        }
+        
+        if (!isset($environmentDataArray['translations'])) {
+            $environmentDataArray['translations'] = 0;
         }
 
         return new EnvironmentInformation(
@@ -125,7 +131,11 @@ class Shopware55Profile implements ProfileInterface
             $environmentDataArray['customers'],
             $environmentDataArray['orders'],
             $environmentDataArray['assets'],
-            $environmentDataArray['translations']
+            $environmentDataArray['translations'],
+            $environmentData['warning']['code'],
+            $environmentData['warning']['detail'],
+            $environmentData['error']['code'],
+            $environmentData['error']['detail']
         );
     }
 
