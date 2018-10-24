@@ -49,6 +49,11 @@ class EnvironmentInformation extends Struct
     /**
      * @var int
      */
+    protected $translationTotal;
+
+    /**
+     * @var int
+     */
     protected $errorCode;
 
     /**
@@ -65,6 +70,7 @@ class EnvironmentInformation extends Struct
         int $customerTotal = 0,
         int $orderTotal = 0,
         int $assetTotal = 0,
+        int $translationTotal = 0,
         int $errorCode = -1,
         string $errorMessage = ''
     ) {
@@ -76,6 +82,7 @@ class EnvironmentInformation extends Struct
         $this->customerTotal = $customerTotal;
         $this->orderTotal = $orderTotal;
         $this->assetTotal = $assetTotal;
+        $this->translationTotal = $translationTotal;
         $this->errorCode = $errorCode;
         $this->errorMessage = $errorMessage;
     }
@@ -118,6 +125,11 @@ class EnvironmentInformation extends Struct
     public function getOrderTotal(): int
     {
         return $this->orderTotal;
+    }
+
+    public function getTranslationTotal(): int
+    {
+        return $this->translationTotal;
     }
 
     public function getErrorCode(): int

@@ -98,13 +98,14 @@ class Shopware55Profile implements ProfileInterface
 
     public function readEnvironmentInformation(GatewayInterface $gateway): EnvironmentInformation
     {
-        $environmentData =  $gateway->read('environment', 0, 0);
+        $environmentData = $gateway->read('environment', 0, 0);
         $environmentDataArray = $environmentData['environmentInformation'];
         if (empty($environmentDataArray)) {
             return new EnvironmentInformation(
                 self::SOURCE_SYSTEM_NAME,
                 '',
                 '',
+                0,
                 0,
                 0,
                 0,
@@ -123,7 +124,8 @@ class Shopware55Profile implements ProfileInterface
             $environmentDataArray['products'],
             $environmentDataArray['customers'],
             $environmentDataArray['orders'],
-            $environmentDataArray['assets']
+            $environmentDataArray['assets'],
+            $environmentDataArray['translations']
         );
     }
 

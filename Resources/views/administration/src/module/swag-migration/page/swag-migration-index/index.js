@@ -245,7 +245,7 @@ Component.register('swag-migration-index', {
             this.entityCounts.category = this.environmentInformation.categoryTotal;
             this.entityCounts.product = this.environmentInformation.productTotal;
             this.entityCounts.media = this.environmentInformation.assetTotal;
-            this.entityCounts.translation = 10;
+            this.entityCounts.translation = this.environmentInformation.translationTotal;
         },
 
         calculateProgressMaxValues() {

@@ -122,7 +122,7 @@ class TranslationConverter implements ConverterInterface
         if (!isset($productTranslation['productId'])) {
             $productTranslation['productId'] = $this->mappingService->getUuid(
                 $this->profile,
-                ProductDefinition::getEntityName(),
+                ProductDefinition::getEntityName() . '_mainProduct',
                 $data['objectkey'],
                 $this->context
             );

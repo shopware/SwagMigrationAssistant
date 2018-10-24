@@ -257,9 +257,8 @@ class MigrationCollectServiceTest extends TestCase
 
         $countValidLogging = 0;
         $countInvalidLogging = 0;
-        /**
-         * @var SwagMigrationLoggingStruct
-         */
+
+        /** @var SwagMigrationLoggingStruct $log */
         foreach ($result->getElements() as $log) {
             $type = $log->getType();
             $logEntry = $log->getLogEntry();

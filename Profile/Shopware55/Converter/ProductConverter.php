@@ -208,6 +208,16 @@ class ProductConverter implements ConverterInterface
             $this->oldProductId,
             $this->context
         );
+
+        $this->mappingService->createNewUuid(
+            $this->profile,
+            ProductDefinition::getEntityName() . '_mainProduct',
+            $data['detail']['articleID'],
+            $this->context,
+            null,
+            $converted['id']
+        );
+
         unset($data['detail']['id'], $data['detail']['articleID']);
 
         return $converted;
