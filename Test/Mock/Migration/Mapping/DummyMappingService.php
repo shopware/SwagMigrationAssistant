@@ -23,12 +23,17 @@ class DummyMappingService extends Shopware55MappingService
         string $entityName,
         string $oldId,
         Context $context,
-        array $additionalData = null
+        array $additionalData = null,
+        string $newUuid = null
     ): string {
         $uuid = $this->getUuid($profileId, $entityName, $oldId, $context);
+        if ($uuid !== null) {
+            return $uuid;
+        }
 
-        if ($uuid === null) {
-            $uuid = Uuid::uuid4()->getHex();
+        $uuid = Uuid::uuid4()->getHex();
+        if ($newUuid !== null) {
+            $uuid = $newUuid;
         }
 
         $this->uuids[$profileId][$entityName][$oldId] = $uuid;
