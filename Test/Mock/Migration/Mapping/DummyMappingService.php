@@ -2,12 +2,13 @@
 
 namespace SwagMigrationNext\Test\Mock\Migration\Mapping;
 
-use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 
 class DummyMappingService extends Shopware55MappingService
 {
+    public const DEFAULT_LANGUAGE_UUID = '20080911ffff4fffafffffff19830531';
+
     public function __construct()
     {
     }
@@ -37,7 +38,7 @@ class DummyMappingService extends Shopware55MappingService
 
     public function getLanguageUuid(string $profile, string $localeCode, Context $context): array
     {
-        return ['uuid' => Defaults::LANGUAGE];
+        return ['uuid' => self::DEFAULT_LANGUAGE_UUID];
     }
 
     public function getPaymentUuid(string $technicalName, Context $context): ?string

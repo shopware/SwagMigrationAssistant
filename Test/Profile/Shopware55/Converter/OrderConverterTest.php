@@ -180,7 +180,7 @@ class OrderConverterTest extends TestCase
             ['payment'],
             ['customer'],
             ['paymentcurrency'],
-            ['currency']
+            ['currency'],
         ];
     }
 

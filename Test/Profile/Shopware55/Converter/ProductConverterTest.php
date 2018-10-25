@@ -62,7 +62,7 @@ class ProductConverterTest extends TestCase
         static::assertSame(Defaults::CATALOG, $converted['catalogId']);
         static::assertSame(
             'Hauptartikel mit Kennzeichnung Versandkostenfrei und Hervorhebung',
-            $converted['translations'][Defaults::LANGUAGE]['name']
+            $converted['translations'][DummyMappingService::DEFAULT_LANGUAGE_UUID]['name']
         );
         static::assertSame([], $converted['categories']);
         static::assertCount(0, $this->loggingService->getLoggingArray());
@@ -90,7 +90,7 @@ class ProductConverterTest extends TestCase
         static::assertSame(Defaults::CATALOG, $converted['catalogId']);
         static::assertSame(
             'Hauptartikel mit Kennzeichnung Versandkostenfrei und Hervorhebung',
-            $converted['translations'][Defaults::LANGUAGE]['name']
+            $converted['translations'][DummyMappingService::DEFAULT_LANGUAGE_UUID]['name']
         );
         static::assertArrayHasKey('id', $converted['categories'][0]);
         static::assertCount(0, $this->loggingService->getLoggingArray());
@@ -111,7 +111,7 @@ class ProductConverterTest extends TestCase
         static::assertArrayHasKey('manufacturer', $converted);
         static::assertArrayHasKey('price', $converted);
         static::assertSame(Defaults::CATALOG, $converted['catalogId']);
-        static::assertSame($converted['translations'][Defaults::LANGUAGE]['name'], $converted['children'][0]['translations'][Defaults::LANGUAGE]['name']);
+        static::assertSame($converted['translations'][DummyMappingService::DEFAULT_LANGUAGE_UUID]['name'], $converted['children'][0]['translations'][DummyMappingService::DEFAULT_LANGUAGE_UUID]['name']);
         static::assertSame($converted['id'], $converted['children'][0]['parentId']);
         static::assertSame([], $converted['categories']);
         static::assertCount(0, $this->loggingService->getLoggingArray());

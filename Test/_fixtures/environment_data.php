@@ -72,6 +72,7 @@ return [
         'assets' => 23,
         'orders' => 0,
         'shops' => 2,
+        'translations' => 0,
         'shoppingWorlds' => 1,
     ],
 ];

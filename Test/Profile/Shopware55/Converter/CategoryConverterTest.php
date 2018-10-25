@@ -52,7 +52,7 @@ class CategoryConverterTest extends TestCase
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
         static::assertSame(Defaults::CATALOG, $converted['catalogId']);
-        static::assertArrayHasKey(Defaults::LANGUAGE, $converted['translations']);
+        static::assertArrayHasKey(DummyMappingService::DEFAULT_LANGUAGE_UUID, $converted['translations']);
     }
 
     public function testConvertWithParent(): void
@@ -69,7 +69,7 @@ class CategoryConverterTest extends TestCase
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('parentId', $converted);
         static::assertSame(Defaults::CATALOG, $converted['catalogId']);
-        static::assertArrayHasKey(Defaults::LANGUAGE, $converted['translations']);
+        static::assertArrayHasKey(DummyMappingService::DEFAULT_LANGUAGE_UUID, $converted['translations']);
     }
 
     public function testConvertWithParentButParentNotConverted(): void
