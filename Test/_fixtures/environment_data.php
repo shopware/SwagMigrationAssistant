@@ -75,4 +75,12 @@ return [
         'translations' => 0,
         'shoppingWorlds' => 1,
     ],
+    'warning' => [
+        'code' => -1,
+        'detail' => 'No warning.',
+    ],
+    'error' => [
+        'code' => -1,
+        'detail' => 'No error.',
+    ]
 ];

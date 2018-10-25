@@ -29,20 +29,35 @@ class Shopware55ApiEnvironmentReader
         try {
             $information = [
                 'environmentInformation' => $this->getData($apiClientVerified),
-                'error' => false,
+                'warning' => [
+                    'code' => -1,
+                    'detail' => 'No warning.',
+                ],
+                'error' => [
+                    'code' => -1,
+                    'detail' => 'No error.',
+                ],
             ];
         } catch (Exception $e) {
             try {
                 $information = [
                     'environmentInformation' => $this->getData($apiClient),
-                    'error' => [
-                        'code' => $e->getCode(),
+                    'warning' => [
+                        'code' => $e->getCode(),    // Most likely SSL not possible warning (Code 0)
                         'detail' => $e->getMessage(),
+                    ],
+                    'error' => [
+                        'code' => -1,
+                        'detail' => 'No error.',
                     ],
                 ];
             } catch (Exception $e) {
                 $information = [
                     'environmentInformation' => [],
+                    'warning' => [
+                        'code' => -1,
+                        'detail' => 'No warning.',
+                    ],
                     'error' => [
                         'code' => $e->getCode(),
                         'detail' => $e->getMessage(),

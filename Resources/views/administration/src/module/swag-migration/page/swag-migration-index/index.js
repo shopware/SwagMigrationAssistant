@@ -151,7 +151,7 @@ Component.register('swag-migration-index', {
 
                 // Do connection check
                 this.migrationService.checkConnection(this.profile.id).then((connectionCheckResponse) => {
-                    if (!connectionCheckResponse) {
+                    if (!connectionCheckResponse || connectionCheckResponse.errorCode !== -1) {
                         this.$router.push({ name: 'swag.migration.wizard.credentials' });
                         return;
                     }

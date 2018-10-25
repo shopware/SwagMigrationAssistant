@@ -134,18 +134,18 @@ Component.register('swag-migration-wizard', {
                             return;
                         }
 
-                        if (connectionCheckResponse.errorCode) {
-                            switch (connectionCheckResponse.errorCode) {
-                            case 0: // SSL certificate is not verified
+                        if (connectionCheckResponse.errorCode !== undefined) {
+                            if (connectionCheckResponse.errorCode !== -1) {
+                                this.onResponseError(connectionCheckResponse.errorCode);
+                                return;
+                            }
+
+                            // create warning for success page
+                            this.errorMessage = '';
+                            if (connectionCheckResponse.warningCode === 0) {
                                 this.errorMessage = this.$tc(
                                     'swag-migration.wizard.pages.credentials.success.connectionInsecureMsg'
                                 );
-                                break;
-                            default: // Something else
-                                this.errorMessage = this.$tc(
-                                    'swag-migration.wizard.pages.credentials.success.undefinedErrorMsg'
-                                );
-                                break;
                             }
                         }
 
@@ -163,10 +163,10 @@ Component.register('swag-migration-wizard', {
 
         onResponseError(errorCode) {
             switch (errorCode) {
-            case '0': // can't connect to shop
+            case 0: // can't connect to shop
                 this.errorMessage = this.$tc('swag-migration.wizard.pages.credentials.error.connectionErrorMsg');
                 break;
-            case '401': // invalid access credentials
+            case 401: // invalid access credentials
                 this.errorMessage = this.$tc('swag-migration.wizard.pages.credentials.error.authenticationErrorMsg');
                 break;
             default: // something else
