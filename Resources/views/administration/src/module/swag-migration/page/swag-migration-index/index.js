@@ -115,10 +115,19 @@ Component.register('swag-migration-index', {
         },
 
         leftButtonText() {
+            if (this.componentIndex === this.components.resultWarning ||
+                this.componentIndex === this.components.resultSuccess) {
+                return this.$tc('swag-migration.index.backButton');
+            }
             return this.$tc('swag-migration.index.abortButton');
         },
 
         rightButtonDisabled() {
+            if (this.componentIndex === this.components.resultWarning ||
+                this.componentIndex === this.components.resultSuccess) {
+                return true;
+            }
+
             if (this.statusIndex !== this.migrationWorkerService.MIGRATION_STATUS.FETCH_DATA && this.isMigrating) {
                 return false;
             }
@@ -137,7 +146,9 @@ Component.register('swag-migration-index', {
         rightButtonText() {
             if (
                 (!this.isMigrating && !this.isPaused) ||
-                (this.statusIndex === this.migrationWorkerService.MIGRATION_STATUS.FETCH_DATA && this.isMigrating)
+                (this.statusIndex === this.migrationWorkerService.MIGRATION_STATUS.FETCH_DATA && this.isMigrating) ||
+                this.componentIndex === this.components.resultWarning ||
+                this.componentIndex === this.components.resultSuccess
             ) {
                 return this.$tc('swag-migration.index.migrateButton');
             }
@@ -304,8 +315,18 @@ Component.register('swag-migration-index', {
         },
 
         onLeftButtonClick() {
-            // abort
-            this.showAbortMigrationConfirmDialog = true;
+            if (
+                this.componentIndex === this.components.resultWarning ||
+                this.componentIndex === this.components.resultSuccess
+            ) {
+                // Back to data selector
+                this.isPaused = false;
+                this.isMigrating = false;
+                this.componentIndex = this.components.dataSelector;
+            } else {
+                // Abort
+                this.showAbortMigrationConfirmDialog = true;
+            }
         },
 
         onRightButtonClick() {
