@@ -1,8 +1,14 @@
 import { Application } from 'src/core/shopware';
 import CriteriaFactory from 'src/core/factory/criteria.factory';
 import StorageBroadcastService from '../storage-broadcaster.service';
+import { WorkerRequest } from './swag-migration-worker-request.service';
+import {
+    MIGRATION_STATUS,
+    WorkerStatusManager
+} from './swag-migration-worker-status-manager.service';
 
-class MigrationService {
+
+class MigrationWorkerService {
     constructor(
         migrationService,
         migrationDataService,
@@ -11,18 +17,6 @@ class MigrationService {
         migrationLoggingService
     ) {
         this._MAX_REQUEST_TIME = 10000; // in ms
-        this._DEFAULT_CHUNK_SIZE = 50; // in data sets
-        this._CHUNK_INCREMENT = 5; // in data sets
-        this.__MIN_INCREMENT = this._CHUNK_INCREMENT;
-
-        this.MIGRATION_STATUS = {
-            WAITING: -1,
-            FETCH_DATA: 0,
-            WRITE_DATA: 1,
-            DOWNLOAD_DATA: 2,
-            FINISHED: 3
-        };
-
         this._ASSET_UUID_CHUNK = 100; // Amount of uuids we fetch with one request
         this._ASSET_WORKLOAD_COUNT = 5; // The amount of assets we download per request in parallel
         // The maximum amount of bytes we download per file in one request
@@ -44,7 +38,8 @@ class MigrationService {
         this._migrationMediaFileService = migrationMediaFileService;
         this._migrationRunService = migrationRunService;
         this._migrationLoggingService = migrationLoggingService;
-        this._chunkSize = this._DEFAULT_CHUNK_SIZE;
+        this._workerStatusManager = new WorkerStatusManager(this._migrationRunService, this._migrationDataService);
+        this._workerRequest = null;
 
         // state variables
         this._isMigrating = false;
@@ -52,7 +47,6 @@ class MigrationService {
         this._entityGroups = [];
         this._progressSubscriber = null;
         this._statusSubscriber = null;
-        this._updateEntityCountSubscriber = null;
         this._runId = '';
         this._profile = null;
         this._status = null;
@@ -67,30 +61,54 @@ class MigrationService {
         });
     }
 
+    /**
+     * @returns {null|int}
+     */
     get status() {
         return this._status;
     }
 
+    /**
+     * @param {null|int} value
+     */
     set status(value) {
         this._status = value;
     }
 
+    /**
+     * @returns {string}
+     */
     get runId() {
         return this._runId;
     }
 
+    /**
+     * @returns {boolean}
+     */
     get isMigrating() {
         return this._isMigrating;
     }
 
+    /**
+     * @returns {Array}
+     */
     get entityGroups() {
         return this._entityGroups;
     }
 
+    /**
+     * @returns {Array}
+     */
     get errors() {
         return this._errors;
     }
 
+    /**
+     * Check if the last migration was not finished.
+     * Resolves with true or false.
+     *
+     * @returns {Promise}
+     */
     checkForRunningMigration() {
         return new Promise((resolve) => {
             this._migrationService.getState().then((state) => {
@@ -109,6 +127,9 @@ class MigrationService {
         });
     }
 
+    /**
+     * Continue the migration (possible after checkForRunningMigration resolved true).
+     */
     restoreRunningMigration() {
         if (this._restoreState === null || this._restoreState === {}) {
             return;
@@ -118,102 +139,46 @@ class MigrationService {
             return;
         }
 
-        this._isMigrating = this._restoreState.migrationRunning;
         this._runId = this._restoreState.runId;
         this._profile = this._restoreState.profile;
         this._entityGroups = this._restoreState.entityGroups;
-        switch (this._restoreState.status) {
-        case 'writeData':
-            this._status = this.MIGRATION_STATUS.WRITE_DATA;
-            break;
-        case 'downloadData':
-            this._status = this.MIGRATION_STATUS.DOWNLOAD_DATA;
-            break;
-        default:
-            this._status = this.MIGRATION_STATUS.FETCH_DATA;
-            break;
-        }
+        this._status = this._restoreState.status;
         this._errors = [];
         this._resetAssetProgress();
 
         // Get current group and entity index
         const indicies = this._getIndiciesByEntityName(this._restoreState.entity);
 
-        // TODO: Refactor this
-        if (this._status === this.MIGRATION_STATUS.FETCH_DATA) {
-            this._fetchData(indicies.groupIndex, indicies.entityIndex, this._restoreState.finishedCount)
-                .then(() => {
-                    return this._writeData();
-                })
-                .then(() => {
-                    // step 3 - download data
-                    const containsMediaGroup = this._entityGroups.find((group) => {
-                        return group.id === 'media' || group.id === 'categories_products';
-                    });
-                    if (containsMediaGroup !== undefined) {
-                        return this._downloadData();
-                    }
-
-                    return Promise.resolve();
-                })
-                .then(() => {
-                    // step 4 - finish -> show results
-                    return this._migrateFinish();
-                })
-                .then(() => {
-                    this._isMigrating = false;
-                });
-        } else if (this._status === this.MIGRATION_STATUS.WRITE_DATA) {
-            this._migrateProcess(
-                'writeData',
-                indicies.groupIndex,
-                indicies.entityIndex,
-                this._restoreState.finishedCount
-            ).then(() => {
-                // step 3 - download data
-                const containsMediaGroup = this._entityGroups.find((group) => {
-                    return group.id === 'media' || group.id === 'categories_products';
-                });
-                if (containsMediaGroup !== undefined) {
-                    return this._downloadData();
-                }
-
-                return Promise.resolve();
-            }).then(() => {
-                // step 4 - finish -> show results
-                return this._migrateFinish();
-            }).then(() => {
-                this._isMigrating = false;
-            });
-        } else if (this._status === this.MIGRATION_STATUS.DOWNLOAD_DATA) {
-            // step 3 - download data
-            this._getAssetTotalCount().then(() => { // after this we have the asset count that is not downloaded as total
-                this._assetTotalCount += this._restoreState.finishedCount; // we need to add the downloaded / finished count
-                this._assetProgress += this._restoreState.finishedCount;
-                this._assetUuidPool = [];
-                this._assetWorkload = [];
-                this._callStatusSubscriber({ status: this.status });
-                return this._downloadProcess();
-            }).then(() => {
-                // step 4 - finish -> show results
-                return this._migrateFinish();
-            }).then(() => {
-                this._isMigrating = false;
-            });
-        }
+        this.startMigration(
+            this._runId,
+            this._profile,
+            this._entityGroups,
+            this._status,
+            indicies.groupIndex,
+            indicies.entityIndex,
+            this._restoreState.finishedCount
+        );
     }
 
     stopMigration() {
+        this._workerRequest.interrupt = true;
         this._isMigrating = false;
     }
 
+    /**
+     * Get the groupIndex and the entityIndex from the entityGroups for the specified entityName.
+     *
+     * @param {string} entityName
+     * @returns {{groupIndex: number, entityIndex: number}}
+     * @private
+     */
     _getIndiciesByEntityName(entityName) {
-        for (let i = 0; i < this._entityGroups.length; i += 1) {
-            for (let j = 0; j < this._entityGroups[i].entities.length; j += 1) {
-                if (this._entityGroups[i].entities[j].entityName === entityName) {
+        for (let groupIndex = 0; groupIndex < this._entityGroups.length; groupIndex += 1) {
+            for (let entityIndex = 0; entityIndex < this._entityGroups[groupIndex].entities.length; entityIndex += 1) {
+                if (this._entityGroups[groupIndex].entities[entityIndex].entityName === entityName) {
                     return {
-                        groupIndex: i,
-                        entityIndex: j
+                        groupIndex,
+                        entityIndex
                     };
                 }
             }
@@ -225,6 +190,9 @@ class MigrationService {
         };
     }
 
+    /**
+     * @param {function} callback
+     */
     subscribeStatus(callback) {
         this._statusSubscriber = callback;
     }
@@ -233,6 +201,9 @@ class MigrationService {
         this._statusSubscriber = null;
     }
 
+    /**
+     * @param {function} callback
+     */
     subscribeProgress(callback) {
         this._progressSubscriber = callback;
     }
@@ -241,24 +212,43 @@ class MigrationService {
         this._progressSubscriber = null;
     }
 
-    subscribeUpdateEntityCount(callback) {
-        this._updateEntityCountSubscriber = callback;
+    _callStatusSubscriber(param) {
+        if (!this._isMigrating) {
+            return;
+        }
+        if (this._statusSubscriber !== null) {
+            this._statusSubscriber.call(null, param);
+        }
     }
 
-    unsubscribeUpdateEntityCount() {
-        this._updateEntityCountSubscriber = null;
+    _callProgressSubscriber(param) {
+        if (!this._isMigrating) {
+            return;
+        }
+        if (this._progressSubscriber !== null) {
+            this._progressSubscriber.call(null, param);
+        }
     }
 
     /**
      * @param {String} runId
      * @param {Object} profile
      * @param {Object} entityGroups
-     * @param statusCallback
-     * @param progressCallback
-     * @param updateEntityCountCallback
+     * @param {int} statusIndex
+     * @param {int} groupStartIndex
+     * @param {int} entityStartIndex
+     * @param {int} entityOffset
      * @returns {Promise}
      */
-    startMigration(runId, profile, entityGroups, statusCallback, progressCallback, updateEntityCountCallback) {
+    startMigration(
+        runId,
+        profile,
+        entityGroups,
+        statusIndex = 0,
+        groupStartIndex = 0,
+        entityStartIndex = 0,
+        entityOffset = 0
+    ) {
         return new Promise((resolve, reject) => {
             if (this._isMigrating) {
                 reject();
@@ -267,7 +257,7 @@ class MigrationService {
 
             // Wait for the 'migrationWanted' request and response to allow or deny the migration
             this._isMigrationRunningInOtherTab()
-                .then((isRunningInOtherTab) => {
+                .then(async (isRunningInOtherTab) => {
                     if (isRunningInOtherTab) {
                         reject();
                         return;
@@ -278,37 +268,104 @@ class MigrationService {
                     this._profile = profile;
                     this._entityGroups = entityGroups;
                     this._errors = [];
-                    this.subscribeStatus(statusCallback);
-                    this.subscribeProgress(progressCallback);
-                    this.subscribeUpdateEntityCount(updateEntityCountCallback);
 
-                    // step 1 - read/fetch
-                    this._fetchData()
-                        .then(() => {
-                            // step 2 - write data
-                            return this._writeData();
-                        })
-                        .then(() => {
-                            // step 3 - download data
-                            const containsMediaGroup = this._entityGroups.find((group) => {
-                                return group.id === 'media' || group.id === 'categories_products';
-                            });
+                    const requestParams = {
+                        runUuid: this._runId,
+                        profileId: this._profile.id,
+                        profileName: this._profile.profile,
+                        gateway: this._profile.gateway,
+                        credentialFields: this._profile.credentialFields
+                    };
+                    this._workerRequest = new WorkerRequest(
+                        MIGRATION_STATUS.FETCH_DATA,
+                        requestParams,
+                        this._workerStatusManager,
+                        this._migrationService,
+                        this._callProgressSubscriber.bind(this),
+                        this._addError.bind(this)
+                    );
 
-                            if (containsMediaGroup !== undefined) {
-                                return this._downloadData();
-                            }
+                    // fetch
+                    if (statusIndex <= MIGRATION_STATUS.FETCH_DATA) {
+                        await this._startWorkerRequest(
+                            MIGRATION_STATUS.FETCH_DATA,
+                            groupStartIndex,
+                            entityStartIndex,
+                            entityOffset
+                        );
 
-                            return Promise.resolve();
-                        })
-                        .then(() => {
-                            // step 4 - finish -> show results
-                            return this._migrateFinish();
-                        })
-                        .then(() => {
-                            this._isMigrating = false;
-                            resolve(this._errors);
-                        });
+                        groupStartIndex = 0;
+                        entityStartIndex = 0;
+                        entityOffset = 0;
+                    }
+
+                    // write
+                    if (statusIndex <= MIGRATION_STATUS.WRITE_DATA) {
+                        await this._startWorkerRequest(
+                            MIGRATION_STATUS.WRITE_DATA,
+                            groupStartIndex,
+                            entityStartIndex,
+                            entityOffset
+                        );
+
+                        groupStartIndex = 0;
+                        entityStartIndex = 0;
+                        entityOffset = 0;
+                    }
+
+                    // download
+                    if (statusIndex <= MIGRATION_STATUS.DOWNLOAD_DATA) {
+                        // this._status = MIGRATION_STATUS.DOWNLOAD_DATA;
+                        // this._callStatusSubscriber({ status: this.status });
+                        // TODO: Implement download worker
+                        await this._downloadData(entityOffset);
+
+                        groupStartIndex = 0;
+                        entityStartIndex = 0;
+                        entityOffset = 0;
+                    }
+
+                    // finish
+                    await this._migrateFinish();
+                    this._isMigrating = false;
+                    resolve(this._errors);
                 });
+        });
+    }
+
+    /**
+     * Start the WorkerRequest.
+     *
+     * @param {int} status
+     * @param {int} groupStartIndex
+     * @param {int} entityStartIndex
+     * @param {int} entityOffset
+     * @returns {Promise}
+     * @private
+     */
+    _startWorkerRequest(status, groupStartIndex, entityStartIndex, entityOffset) {
+        return new Promise(async (resolve) => {
+            if (!this._isMigrating) {
+                resolve();
+                return;
+            }
+
+            this._status = status;
+            this._workerRequest.status = this._status;
+
+            if (groupStartIndex === 0 && entityStartIndex === 0 && entityOffset === 0) {
+                this._resetProgress();
+                this._callStatusSubscriber({ status: this.status });
+            }
+
+            await this._workerRequest.migrateProcess(
+                this._entityGroups,
+                groupStartIndex,
+                entityStartIndex,
+                entityOffset
+            );
+
+            resolve();
         });
     }
 
@@ -359,81 +416,21 @@ class MigrationService {
         }
     }
 
-    _callProgressSubscriber(param) {
-        if (!this._isMigrating) {
-            return;
-        }
-        if (this._progressSubscriber !== null) {
-            this._progressSubscriber.call(null, param);
-        }
-    }
-
-    _callStatusSubscriber(param) {
-        if (!this._isMigrating) {
-            return;
-        }
-        if (this._statusSubscriber !== null) {
-            this._statusSubscriber.call(null, param);
-        }
-    }
-
-    _callUpdateEntityCountSubscriber(param) {
-        if (!this._isMigrating) {
-            return;
-        }
-        if (this._updateEntityCountSubscriber !== null) {
-            this._updateEntityCountSubscriber.call(null, param);
-        }
-    }
-
-    _fetchData(groupIndex = 0, entityIndex = 0, entityOffset = 0) {
-        if (!this._isMigrating) {
-            return Promise.resolve();
-        }
-        if (groupIndex === 0 && entityIndex === 0 && entityOffset === 0) {
-            this._resetProgress();
-        }
-        this._status = this.MIGRATION_STATUS.FETCH_DATA;
-        this._callStatusSubscriber({ status: this.status });
-        return this._migrateProcess('fetchData', groupIndex, entityIndex, entityOffset);
-    }
-
-    _writeData(groupIndex = 0, entityIndex = 0, entityOffset = 0) {
-        if (!this._isMigrating) {
-            return Promise.resolve();
-        }
-        if (groupIndex === 0 && entityIndex === 0 && entityOffset === 0) {
-            this._resetProgress();
-        }
-        this._status = this.MIGRATION_STATUS.WRITE_DATA;
-        this._callStatusSubscriber({ status: this.status });
-
-        return this._updateEntityCountForWrite().then(() => {
-            return this._migrationRunService.getById(this._runId).then((response) => {
-                const totals = response.data.totals;
-                const toBeWritten = {};
-                this._entityGroups.forEach((entityGroup) => {
-                    entityGroup.entities.forEach((entity) => {
-                        toBeWritten[entity.entityName] = entity.entityCount;
-                    });
-                });
-                totals.toBeWritten = toBeWritten;
-
-                return this._migrationRunService.updateById(this._runId, { totals: totals }).then(() => {
-                    return this._migrateProcess('writeData', groupIndex, entityIndex, entityOffset);
-                });
-            });
-        });
-    }
-
-    _downloadData() {
+    _downloadData(downloadFinishedCount = 0) {
         if (!this._isMigrating) {
             return Promise.resolve();
         }
         return this._getAssetTotalCount().then(() => {
-            this._resetProgress();
-            this._resetAssetProgress();
-            this._status = this.MIGRATION_STATUS.DOWNLOAD_DATA;
+            if (downloadFinishedCount === 0) {
+                this._resetProgress();
+                this._resetAssetProgress();
+            } else {
+                this._assetTotalCount += downloadFinishedCount; // we need to add the downloaded / finished count
+                this._assetProgress += downloadFinishedCount;
+                this._assetUuidPool = [];
+                this._assetWorkload = [];
+            }
+            this._status = MIGRATION_STATUS.DOWNLOAD_DATA;
             this._callStatusSubscriber({ status: this.status });
             return this._downloadProcess();
         });
@@ -447,7 +444,7 @@ class MigrationService {
         return this._getErrors().then(() => {
             this._migrationRunService.updateById(this._runId, { status: 'finished' });
             this._resetProgress();
-            this._status = this.MIGRATION_STATUS.FINISHED;
+            this._status = MIGRATION_STATUS.FINISHED;
             this._callStatusSubscriber({ status: this.status });
 
             return Promise.resolve();
@@ -483,97 +480,33 @@ class MigrationService {
         this._entityGroups.forEach((group) => {
             group.progress = 0;
         });
+
+        this._syncProgressWithUI();
+    }
+
+    /**
+     * Call the UI callback to update all the progress bar values.
+     *
+     * @private
+     */
+    _syncProgressWithUI() {
+        for (let groupIndex = 0; groupIndex < this._entityGroups.length; groupIndex += 1) {
+            const group = this._entityGroups[groupIndex];
+            if (group.entities[0] !== undefined) {
+                const entity = group.entities[0];
+                this._callProgressSubscriber({
+                    entityName: entity.entityName,
+                    entityGroupProgressValue: group.progress,
+                    entityCount: entity.entityCount
+                });
+            }
+        }
     }
 
     _resetAssetProgress() {
         this._assetUuidPool = [];
         this._assetWorkload = [];
         this._assetProgress = 0;
-    }
-
-    /**
-     * Do all the API requests for all entities with the given methodName
-     *
-     * @param methodName api endpoint name for example 'fetchData' or 'writeData'
-     * @returns {Promise}
-     * @private
-     */
-    async _migrateProcess(methodName, groupStartIndex = 0, entityStartIndex = 0, entityOffset = 0) {
-        /* eslint-disable no-await-in-loop */
-        return new Promise(async (resolve) => {
-            for (let groupIndex = groupStartIndex; groupIndex < this._entityGroups.length; groupIndex += 1) {
-                let groupProgress = 0;
-                for (let entityIndex = 0; entityIndex < this._entityGroups[groupIndex].entities.length; entityIndex += 1) {
-                    if (!this._isMigrating) {
-                        resolve();
-                        return;
-                    }
-
-                    const entityName = this._entityGroups[groupIndex].entities[entityIndex].entityName;
-                    const entityCount = this._entityGroups[groupIndex].entities[entityIndex].entityCount;
-
-                    if (entityIndex >= entityStartIndex) {
-                        await this._migrateEntity(
-                            entityName,
-                            entityCount,
-                            this._entityGroups[groupIndex],
-                            groupProgress,
-                            methodName,
-                            entityOffset
-                        );
-                        entityOffset = 0;
-                    }
-
-                    groupProgress += entityCount;
-                }
-                entityStartIndex = 0;
-            }
-
-            resolve();
-        });
-        /* eslint-enable no-await-in-loop */
-    }
-
-    _updateEntityCountForWrite() {
-        return new Promise((resolve) => {
-            const count = {
-                entityCount: {
-                    value_count: { field: 'swag_migration_data.entity' }
-                }
-            };
-            const criteria = CriteriaFactory.multi(
-                'AND',
-                CriteriaFactory.equals('runId', this._runId),
-                CriteriaFactory.not(
-                    'AND',
-                    CriteriaFactory.equals('converted', null)
-                )
-            );
-            const params = {
-                aggregations: count,
-                criteria: criteria,
-                limit: 1
-            };
-
-            this._migrationDataService.getList(params).then((response) => {
-                const entityCount = response.aggregations.entityCount;
-                this._entityGroups.forEach((entityGroup) => {
-                    let groupsCount = 0;
-                    entityGroup.entities.forEach((entity) => {
-                        entityCount.forEach((countedEntity) => {
-                            if (entity.entityName === countedEntity.key) {
-                                entity.entityCount = parseInt(countedEntity.count, 10);
-                            }
-                        });
-                        groupsCount += entity.entityCount;
-                    });
-                    entityGroup.count = groupsCount;
-                });
-
-                this._callUpdateEntityCountSubscriber(this._entityGroups);
-                resolve();
-            });
-        });
     }
 
     /**
@@ -767,146 +700,6 @@ class MigrationService {
     }
 
     /**
-     * Do all the API requests for one entity in chunks
-     *
-     * @param entityName
-     * @param entityCount
-     * @param group
-     * @param groupProgress
-     * @param methodName
-     * @returns {Promise<void>}
-     * @private
-     */
-    async _migrateEntity(entityName, entityCount, group, groupProgress, methodName, currentOffset = 0) {
-        /* eslint-disable no-await-in-loop */
-        while (currentOffset < entityCount) {
-            if (!this._isMigrating) {
-                return;
-            }
-
-            const oldChunkSize = this._chunkSize;
-            await this._migrateEntityRequest(entityName, group.targetId, group.target, methodName, currentOffset);
-            let newOffset = currentOffset + oldChunkSize;
-            if (newOffset > entityCount) {
-                newOffset = entityCount;
-            }
-
-            // update own state of progress
-            group.progress = groupProgress + newOffset;
-
-            // call event subscriber
-            this._callProgressSubscriber({
-                entityName,
-                entityGroupProgressValue: groupProgress + newOffset,
-                entityCount: group.count
-            });
-
-            currentOffset += oldChunkSize;
-        }
-        /* eslint-enable no-await-in-loop */
-
-        this._chunkSize = this._DEFAULT_CHUNK_SIZE;
-    }
-
-    /**
-     * Do a single API request for the given entity with given offset.
-     *
-     * @param entityName
-     * @param targetId
-     * @param target
-     * @param methodName
-     * @param offset
-     * @returns {Promise}
-     * @private
-     */
-    _migrateEntityRequest(entityName, targetId, target, methodName, offset) {
-        return new Promise((resolve) => {
-            const params = {
-                runUuid: this._runId,
-                profileId: this._profile.id,
-                profileName: this._profile.profile,
-                gateway: this._profile.gateway,
-                credentialFields: this._profile.credentialFields,
-                entity: entityName,
-                offset: offset,
-                limit: this._chunkSize
-            };
-
-            if (target === 'catalog') {
-                params.catalogId = targetId;
-            } else {
-                params.salesChannelId = targetId;
-            }
-
-            const beforeRequestTime = new Date();
-            this._migrationService[methodName](params).then((response) => {
-                if (!response) {
-                    this._addError({
-                        code: '0',
-                        detail: this.applicationRoot.$i18n.tc('swag-migration.index.error.canNotConnectToServer.detail'),
-                        status: '444',
-                        title: this.applicationRoot.$i18n.tc('swag-migration.index.error.canNotConnectToServer.title'),
-                        information: this.applicationRoot.$i18n.tc(
-                            'swag-migration.index.error.canNotConnectToServer.information'
-                        ),
-                        trace: []
-                    });
-                    resolve();
-                    return;
-                }
-
-                const afterRequestTime = new Date();
-                this._handleChunkSize(afterRequestTime.getTime() - beforeRequestTime.getTime());
-                resolve();
-            }).catch((response) => {
-                if (!response || !response.response) {
-                    this._addError({
-                        code: '0',
-                        detail: this.applicationRoot.$i18n.tc('swag-migration.index.error.canNotConnectToServer.detail'),
-                        status: '444',
-                        title: this.applicationRoot.$i18n.tc('swag-migration.index.error.canNotConnectToServer.title'),
-                        information: this.applicationRoot.$i18n.tc(
-                            'swag-migration.index.error.canNotConnectToServer.information'
-                        ),
-                        trace: []
-                    });
-                    resolve();
-                    return;
-                }
-
-                if (response.response.data && response.response.data.errors) {
-                    response.response.data.errors.forEach((error) => {
-                        this._addError(error);
-                    });
-                }
-
-                const afterRequestTime = new Date();
-                this._handleChunkSize(afterRequestTime.getTime() - beforeRequestTime.getTime());
-                resolve();
-            });
-        });
-    }
-
-    /**
-     * Update the chunkSize depending on the requestTime
-     *
-     * @param {int} requestTime Request time in milliseconds
-     * @private
-     */
-    _handleChunkSize(requestTime) {
-        if (requestTime < this._MAX_REQUEST_TIME) {
-            this._chunkSize += this._CHUNK_INCREMENT;
-        }
-
-        if (
-            requestTime > this._MAX_REQUEST_TIME &&
-            (this._chunkSize - this._CHUNK_INCREMENT) >= this.__MIN_INCREMENT
-        ) {
-            this._chunkSize -= this._CHUNK_INCREMENT;
-        }
-    }
-
-    /**
      * Update the ASSET_FILE_CHUNK_BYTE_SIZE depending on the requestTime
      *
      * @param {int} requestTime Request time in milliseconds
@@ -938,4 +731,4 @@ class MigrationService {
     }
 }
 
-export default MigrationService;
+export default MigrationWorkerService;

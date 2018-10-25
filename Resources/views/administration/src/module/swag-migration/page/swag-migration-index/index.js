@@ -2,6 +2,7 @@ import { Component, State } from 'src/core/shopware';
 import CriteriaFactory from 'src/core/factory/criteria.factory';
 import template from './swag-migration-index.html.twig';
 import './swag-migration-index.less';
+import { MIGRATION_STATUS } from '../../../../core/service/migration/swag-migration-worker-status-manager.service';
 
 Component.register('swag-migration-index', {
     template,
@@ -132,7 +133,7 @@ Component.register('swag-migration-index', {
                 return false;
             }
 
-            if (this.statusIndex === this.migrationWorkerService.MIGRATION_STATUS.FETCH_DATA && this.isMigrating) {
+            if (this.statusIndex === MIGRATION_STATUS.FETCH_DATA && this.isMigrating) {
                 return true;
             }
 
@@ -146,7 +147,7 @@ Component.register('swag-migration-index', {
         rightButtonText() {
             if (
                 (!this.isMigrating && !this.isPaused) ||
-                (this.statusIndex === this.migrationWorkerService.MIGRATION_STATUS.FETCH_DATA && this.isMigrating) ||
+                (this.statusIndex === MIGRATION_STATUS.FETCH_DATA && this.isMigrating) ||
                 this.componentIndex === this.components.resultWarning ||
                 this.componentIndex === this.components.resultSuccess
             ) {
@@ -176,7 +177,6 @@ Component.register('swag-migration-index', {
     beforeDestroy() {
         this.migrationWorkerService.unsubscribeProgress();
         this.migrationWorkerService.unsubscribeStatus();
-        this.migrationWorkerService.unsubscribeUpdateEntityCount();
     },
 
     methods: {
@@ -193,7 +193,7 @@ Component.register('swag-migration-index', {
 
             if (
                 this.migrationWorkerService.isMigrating ||
-                this.migrationWorkerService.status === this.migrationWorkerService.MIGRATION_STATUS.FINISHED
+                this.migrationWorkerService.status === MIGRATION_STATUS.FINISHED
             ) {
                 this.restoreRunningMigration();
             }
@@ -279,7 +279,7 @@ Component.register('swag-migration-index', {
 
             // Get current status
             this.onStatus({ status: this.migrationWorkerService.status });
-            if (this.migrationWorkerService.status === this.migrationWorkerService.MIGRATION_STATUS.FINISHED) {
+            if (this.migrationWorkerService.status === MIGRATION_STATUS.FINISHED) {
                 return;
             }
 
@@ -292,7 +292,7 @@ Component.register('swag-migration-index', {
 
                 if (group !== undefined) {
                     // found entity in group -> means it was selected
-                    if (this.statusIndex !== this.migrationWorkerService.MIGRATION_STATUS.DOWNLOAD_DATA) {
+                    if (this.statusIndex !== MIGRATION_STATUS.DOWNLOAD_DATA) {
                         data.selected = true;
                     }
 
@@ -309,9 +309,6 @@ Component.register('swag-migration-index', {
 
             // subscribe to the status event again
             this.migrationWorkerService.subscribeStatus(this.onStatus);
-
-            // subscribe to the update entity count event again
-            this.migrationWorkerService.subscribeUpdateEntityCount(this.onUpdateEntityCount);
         },
 
         onLeftButtonClick() {
@@ -462,7 +459,6 @@ Component.register('swag-migration-index', {
             this.checkSelectedData();
             this.statusIndex = 0;
             this.errorList = [];
-            this.resetProgress();
 
             // show loading screen
             this.componentIndex = this.components.loadingScreen;
@@ -488,13 +484,12 @@ Component.register('swag-migration-index', {
             migrationRun.status = 'running';
             migrationRun.save();
 
+            this.migrationWorkerService.subscribeStatus(this.onStatus.bind(this));
+            this.migrationWorkerService.subscribeProgress(this.onProgress.bind(this));
             this.migrationWorkerService.startMigration(
                 migrationRun.id,
                 this.profile,
-                entityGroups,
-                this.onStatus.bind(this),
-                this.onProgress.bind(this),
-                this.onUpdateEntityCount.bind(this)
+                entityGroups
             ).catch(() => {
                 // show data selection again
                 this.isMigrating = false;
@@ -503,14 +498,13 @@ Component.register('swag-migration-index', {
         },
 
         onStatus(statusData) {
-            this.resetProgress(false);
             this.statusIndex = statusData.status;
 
-            if (this.statusIndex === this.migrationWorkerService.MIGRATION_STATUS.DOWNLOAD_DATA) {
+            if (this.statusIndex === MIGRATION_STATUS.DOWNLOAD_DATA) {
                 this.tableData.forEach((data) => {
                     data.selected = (data.id === 'media');
                 });
-            } else if (this.statusIndex === this.migrationWorkerService.MIGRATION_STATUS.FINISHED) {
+            } else if (this.statusIndex === MIGRATION_STATUS.FINISHED) {
                 if (this.migrationWorkerService.errors.length > 0) {
                     this.onFinishWithErrors(this.migrationWorkerService.errors);
                 } else {
@@ -701,31 +695,11 @@ Component.register('swag-migration-index', {
                 return data.entityNames.includes(progressData.entityName);
             });
 
-            if (this.statusIndex === this.migrationWorkerService.MIGRATION_STATUS.DOWNLOAD_DATA &&
-                resultData.progressBar.maxValue !== progressData.entityCount
-            ) {
+            if (resultData.progressBar.maxValue !== progressData.entityCount) {
                 resultData.progressBar.maxValue = progressData.entityCount;
             }
 
             resultData.progressBar.value = progressData.entityGroupProgressValue;
-        },
-
-        onUpdateEntityCount(updateData) {
-            this.tableData.forEach((tableItem) => {
-                updateData.forEach((updateItem) => {
-                    if (tableItem.id === updateItem.id) {
-                        tableItem.progressBar.maxValue = updateItem.count;
-                    }
-                });
-            });
-        },
-
-        resetProgress(ignoreCurrentValue = true) {
-            this.tableData.forEach((data) => {
-                if (ignoreCurrentValue || data.progressBar.value >= data.progressBar.maxValue) {
-                    data.progressBar.value = 0;
-                }
-            });
         },
 
         addError(error) {
@@ -753,7 +727,7 @@ Component.register('swag-migration-index', {
         },
 
         onClickBack() {
-            this.migrationWorkerService.status = this.migrationWorkerService.MIGRATION_STATUS.WAITING;
+            this.migrationWorkerService.status = MIGRATION_STATUS.WAITING;
             this.componentIndex = this.components.dataSelector;
             this.isMigrating = false;
         },

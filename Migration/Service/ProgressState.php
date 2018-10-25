@@ -6,9 +6,9 @@ use Shopware\Core\Framework\Struct\Struct;
 
 class ProgressState extends Struct
 {
-    public const STATUS_FETCH_DATA = 'fetchData';
-    public const STATUS_WRITE_DATA = 'writeData';
-    public const STATUS_DOWNLOAD_DATA = 'downloadData';
+    public const STATUS_FETCH_DATA = 0;
+    public const STATUS_WRITE_DATA = 1;
+    public const STATUS_DOWNLOAD_DATA = 2;
 
     /**
      * @var string
@@ -21,7 +21,7 @@ class ProgressState extends Struct
     protected $profile;
 
     /**
-     * @var string
+     * @var int
      */
     protected $status;
 
@@ -54,7 +54,7 @@ class ProgressState extends Struct
         bool $isMigrationRunning,
         string $runId = null,
         array $profile = null,
-        string $status = null,
+        int $status = -1,
         string $entity = null,
         int $finishedCount = null,
         int $entityCount = null
@@ -83,7 +83,7 @@ class ProgressState extends Struct
         return $this->profile;
     }
 
-    public function getStatus(): string
+    public function getStatus(): int
     {
         return $this->status;
     }
