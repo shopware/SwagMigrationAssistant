@@ -28,6 +28,14 @@
             </sw-grid>
         {% endblock %}
 
+        {% block swag_migration_index_data_selector_plugin_version %}
+            <sw-alert variant="warning"
+                      class="swag-migration-index-data-selector__plugin-version"
+                      :title="$tc('swag-migration.index.selectDataCard.pluginVersionTitle')">
+                <p v-html="$tc('swag-migration.index.selectDataCard.pluginVersionText')"></p>
+            </sw-alert>
+        {% endblock %}
+
         {% block swag_migration_index_data_selector_gdpr %}
         <sw-alert variant="warning"
                   class="swag-migration-index-data-selector__tou"

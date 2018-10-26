@@ -80,7 +80,9 @@
         },
         "targetHeader": "Ziel",
         "gdprTitle": "Nutzungsbedingungen",
-        "gdprText": "Für den Import der Daten gelten die <a target=\"_blank\" href=\"https://playground.shopware.com/terms-of-use\">Allgemeinen Nutzungsbedingungen</a> von Shopware Playground. Der Importprozess nimmt keinen Einfluss auf die Daten des Quellsystems."
+        "gdprText": "Für den Import der Daten gelten die <a target=\"_blank\" href=\"https://playground.shopware.com/terms-of-use\">Allgemeinen Nutzungsbedingungen</a> von Shopware Playground. Der Importprozess nimmt keinen Einfluss auf die Daten des Quellsystems.",
+        "pluginVersionTitle": "Wichtig: Plugin-Update durchführen!",
+        "pluginVersionText": "Bitte stelle sicher, dass in Deinem Shopware 5 Backend die neuste Version vom Shopware Playground Connector Plugin im Einsatz ist."
       },
       "loadingScreenCard": {
         "cardTitle": "Schritt {step} von {total}",
