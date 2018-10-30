@@ -36,7 +36,8 @@
           "apiUserLabel": "Benutzername (API-User)",
           "apiUserPlaceholder": "Login-Benutzernamen eintragen ...",
           "endpointLabel": "Shop-Domain",
-          "endpointPlaceholder": "https://www.demoshop.com",
+          "endpointPlaceholder": "www.demoshop.com",
+          "endpointSSLLabel": "Mein Shop benutzt SSL",
           "success": {
             "contentTitle": "Erfolgreich verbunden!",
             "contentInformation": "Lass uns beginnen, Deine Daten zu importieren.",

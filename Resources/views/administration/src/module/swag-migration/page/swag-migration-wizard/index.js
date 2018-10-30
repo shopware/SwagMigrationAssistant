@@ -56,7 +56,12 @@ Component.register('swag-migration-wizard', {
             }
 
             if (this.routeIndex === this.routeApiCredentialsIndex) {
-                return !(this.credentials.endpoint && this.credentials.apiUser && this.credentials.apiKey);
+                return !(this.credentials.endpoint &&
+                        this.credentials.apiUser &&
+                        this.credentials.apiKey &&
+                        this.credentials.endpoint !== 'http://' &&
+                        this.credentials.endpoint !== 'https://'
+                );
             }
 
             return false;
