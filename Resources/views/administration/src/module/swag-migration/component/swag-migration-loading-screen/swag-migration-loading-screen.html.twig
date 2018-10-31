@@ -1,5 +1,10 @@
 {% block swag_migration_loading_screen %}
     <sw-card class="swag-migration-loading-screen" :title="title">
+        {% block swag_migration_index_loading_screen_alert %}
+            <sw-alert variant="info">
+                <strong>{{ $tc('swag-migration.index.loadingScreenCard.hintTitle') }} </strong>{{ $tc('swag-migration.index.loadingScreenCard.hint') }}
+            </sw-alert>
+        {% endblock %}
 
         {% block swag_migration_index_loading_screen_title %}
             <div class="swag-migration-loading-screen-title">
@@ -26,18 +31,6 @@
 
         {% block swag_migration_loading_screen_loader %}
             <sw-loader class="swag-migration-loading-screen-loader"></sw-loader>
-        {% endblock %}
-
-        {% block swag_migration_loading_screen_status %}
-            <div class="swag-migration-loading-screen-status">
-                {{ statusShort }}
-            </div>
-        {% endblock %}
-
-        {% block swag_migration_index_loading_screen_alert %}
-            <sw-alert variant="info">
-                <strong>{{ $tc('swag-migration.index.loadingScreenCard.hintTitle') }} </strong>{{ $tc('swag-migration.index.loadingScreenCard.hint') }}
-            </sw-alert>
         {% endblock %}
     </sw-card>
 {% endblock %}

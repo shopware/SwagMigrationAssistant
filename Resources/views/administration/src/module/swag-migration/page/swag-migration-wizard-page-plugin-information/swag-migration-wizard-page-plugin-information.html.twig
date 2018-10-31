@@ -10,12 +10,24 @@
                             </h3>
                         {% endblock %}
 
-                        {% block swag_migration_wizard_page_plugin_information_svg %}
-                            <img class="swag-wizard-svg" :src="'/swagmigrationnext/static/img/step-3-plugin.svg' | asset">
-                        {% endblock %}
-
                         {% block swag_migration_wizard_page_plugin_information_api_hint %}
                             {{ $tc('swag-migration.wizard.pages.pluginInformation.contentInformation') }}
+                        {% endblock %}
+
+                        {% block swag_migration_wizard_page_plugin_information_breadcrumb %}
+                            <div class="swag-migration-wizard__breadcrumb">
+                                {% block swag_migration_wizard_page_plugin_information_breadcrumb_content %}
+                                    {% block swag_migration_wizard_page_plugin_information_breadcrumb_icon %}
+                                        <sw-icon class="breadcrumb__icon" name="default-badge-info" size="16px"></sw-icon>
+                                    {% endblock %}
+
+                                    {% block swag_migration_wizard_page_plugin_information_breadcrumb_path %}
+                                        <swag-breadcrumb :description="breadcrumbDescription"
+                                                 :items="breadcrumbItems">
+                                        </swag-breadcrumb>
+                                    {% endblock %}
+                                {% endblock %}
+                            </div>
                         {% endblock %}
 
                         {% block swag_migration_wizard_page_plugin_information_plugin_link %}
@@ -23,25 +35,16 @@
                                 <a target="_blank" href="https://store.shopware.com/search?sSearch=Swag576192431929">{{ $tc('swag-migration.wizard.pages.pluginInformation.pluginLink') }}</a>
                             </div>
                         {% endblock %}
+
+                        {% block swag_migration_wizard_page_plugin_information_svg %}
+                            <img class="swag-wizard-svg" :src="'/swagmigrationnext/static/img/step-3-plugin.svg' | asset">
+                        {% endblock %}
+
                     </div>
                 {% endblock %}
             </div>
         {% endblock %}
 
-        {% block swag_migration_wizard_page_plugin_information_breadcrumb %}
-            <div class="swag-migration-wizard__breadcrumb">
-                {% block swag_migration_wizard_page_plugin_information_breadcrumb_content %}
-                    {% block swag_migration_wizard_page_plugin_information_breadcrumb_icon %}
-                        <sw-icon class="breadcrumb__icon" name="default-badge-info" size="19px"></sw-icon>
-                    {% endblock %}
 
-                    {% block swag_migration_wizard_page_plugin_information_breadcrumb_path %}
-                        <swag-breadcrumb :description="breadcrumbDescription"
-                                         :items="breadcrumbItems">
-                        </swag-breadcrumb>
-                    {% endblock %}
-                {% endblock %}
-            </div>
-        {% endblock %}
     </div>
 {% endblock %}

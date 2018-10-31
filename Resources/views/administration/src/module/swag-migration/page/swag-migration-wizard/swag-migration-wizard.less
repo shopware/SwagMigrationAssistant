@@ -1,38 +1,31 @@
 @import "~less/variables";
 
 .swag-migration-wizard {
+    min-height: 350px;
 
     .swag-migration-wizard__content {
         width: 500px;
-        margin: 30px auto;
+        margin: 35px auto 0 auto;
 
         .content__information {
-            margin-bottom: 40px;
             text-align: center;
-            font-weight: bold;
-            font-size: 12pt;
+            margin-bottom: 30px;
 
-            .information__header {
-                margin-bottom: 40px;
-                font-weight: normal;
-            }
-
-            .swag-migration-wizard__plugin-link {
+            .swag-migration-wizard__plugin-link,
+            .swag-migration-wizard__documentation-link {
                 margin-top: 20px;
-                font-weight: normal;
             }
         }
 
         a {
             color: @color-shopware-blue;
-            text-decoration: none;
         }
     }
 
     .swag-migration-wizard__breadcrumb {
-        margin-top: 40px;
-        margin-bottom: 30px;
+        margin: 20px 0 30px -5px;
         text-align: center;
+        font-size: @font-size-small;
     }
 
     .breadcrumb__icon {
@@ -41,21 +34,28 @@
         margin-right: 5px;
     }
 
-    .swag-migration-wizard__actions {
-        .sw-button {
-            padding-left: 25px;
-            padding-right: 25px;
-        }
-    }
-
     .sw-modal__footer {
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
         align-items: center;
     }
 
+    .swag-migration-wizard-page-introduction,
+    .swag-migration-wizard-page-credentials-error,
+    .swag-migration-wizard-page-credentials-success {
+
+        .swag-wizard-svg {
+            width: 100%;
+            margin-top: 60px;
+        }
+    }
+
     .swag-wizard-svg {
-        width: 100%;
-        margin-bottom: 30px;
+        width: 93%;
+        margin-top: 32px;
+    }
+
+    .content__credentials {
+        margin: 40px 0 30px 0;
     }
 }
