@@ -5,7 +5,7 @@ namespace SwagMigrationNext\Migration\Mapping;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Query\TermQuery;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\System\Country\CountryDefinition;
 use Shopware\Core\System\Country\CountryStruct;
@@ -67,9 +67,9 @@ class MappingService implements MappingServiceInterface
         }
 
         $criteria = new Criteria();
-        $criteria->addFilter(new TermQuery('profile', $profile));
-        $criteria->addFilter(new TermQuery('entity', $entityName));
-        $criteria->addFilter(new TermQuery('oldIdentifier', $oldId));
+        $criteria->addFilter(new EqualsFilter('profile', $profile));
+        $criteria->addFilter(new EqualsFilter('entity', $entityName));
+        $criteria->addFilter(new EqualsFilter('oldIdentifier', $oldId));
         $criteria->setLimit(1);
         $result = $this->migrationMappingRepo->search($criteria, $context);
 
@@ -158,8 +158,8 @@ class MappingService implements MappingServiceInterface
         }
 
         $criteria = new Criteria();
-        $criteria->addFilter(new TermQuery('iso', $iso));
-        $criteria->addFilter(new TermQuery('iso3', $iso3));
+        $criteria->addFilter(new EqualsFilter('iso', $iso));
+        $criteria->addFilter(new EqualsFilter('iso3', $iso3));
         $criteria->setLimit(1);
         $result = $this->countryRepository->search($criteria, $context);
 
@@ -187,7 +187,7 @@ class MappingService implements MappingServiceInterface
     public function getCurrencyUuid(string $oldShortName, Context $context): ?string
     {
         $criteria = new Criteria();
-        $criteria->addFilter(new TermQuery('shortName', $oldShortName));
+        $criteria->addFilter(new EqualsFilter('shortName', $oldShortName));
         $criteria->setLimit(1);
         $result = $this->currencyRepository->search($criteria, $context);
 
@@ -211,8 +211,8 @@ class MappingService implements MappingServiceInterface
         }
 
         $criteria = new Criteria();
-        $criteria->addFilter(new TermQuery('entityUuid', $entityUuid));
-        $criteria->addFilter(new TermQuery('profile', $profile));
+        $criteria->addFilter(new EqualsFilter('entityUuid', $entityUuid));
+        $criteria->addFilter(new EqualsFilter('profile', $profile));
         $criteria->setLimit(1);
         $result = $this->migrationMappingRepo->search($criteria, $context);
 
@@ -249,8 +249,8 @@ class MappingService implements MappingServiceInterface
     private function searchLanguageInMapping(string $localeCode, Context $context): ?string
     {
         $criteria = new Criteria();
-        $criteria->addFilter(new TermQuery('entity', LanguageDefinition::getEntityName()));
-        $criteria->addFilter(new TermQuery('oldIdentifier', $localeCode));
+        $criteria->addFilter(new EqualsFilter('entity', LanguageDefinition::getEntityName()));
+        $criteria->addFilter(new EqualsFilter('oldIdentifier', $localeCode));
         $criteria->setLimit(1);
         $result = $this->migrationMappingRepo->search($criteria, $context);
 
@@ -270,7 +270,7 @@ class MappingService implements MappingServiceInterface
     private function searchLocale(string $localeCode, Context $context): string
     {
         $criteria = new Criteria();
-        $criteria->addFilter(new TermQuery('code', $localeCode));
+        $criteria->addFilter(new EqualsFilter('code', $localeCode));
         $criteria->setLimit(1);
         $result = $this->localeRepository->search($criteria, $context);
 
@@ -287,7 +287,7 @@ class MappingService implements MappingServiceInterface
     private function searchLanguageByLocale(string $localeUuid, Context $context): ?string
     {
         $criteria = new Criteria();
-        $criteria->addFilter(new TermQuery('localeId', $localeUuid));
+        $criteria->addFilter(new EqualsFilter('localeId', $localeUuid));
         $criteria->setLimit(1);
         $result = $this->languageRepository->search($criteria, $context);
 

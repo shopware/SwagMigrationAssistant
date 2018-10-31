@@ -12,7 +12,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Query\TermQuery;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagMigrationNext\Migration\Logging\LoggingService;
@@ -97,8 +97,8 @@ class MigrationCollectServiceTest extends TestCase
         $this->migrationCollectService->fetchData($migrationContext, $context);
 
         $criteria = new Criteria();
-        $criteria->addFilter(new TermQuery('runId', $this->runUuid));
-        $criteria->addFilter(new TermQuery('entity', MediaDefinition::getEntityName()));
+        $criteria->addFilter(new EqualsFilter('runId', $this->runUuid));
+        $criteria->addFilter(new EqualsFilter('entity', MediaDefinition::getEntityName()));
         /** @var EntitySearchResult $result */
         $result = $this->migrationDataRepo->search($criteria, $context);
         self::assertSame(23, $result->getTotal());
@@ -124,8 +124,8 @@ class MigrationCollectServiceTest extends TestCase
         $this->migrationCollectService->fetchData($migrationContext, $context);
 
         $criteria = new Criteria();
-        $criteria->addFilter(new TermQuery('runId', $this->runUuid));
-        $criteria->addFilter(new TermQuery('entity', CategoryDefinition::getEntityName()));
+        $criteria->addFilter(new EqualsFilter('runId', $this->runUuid));
+        $criteria->addFilter(new EqualsFilter('entity', CategoryDefinition::getEntityName()));
         /** @var EntitySearchResult $result */
         $result = $this->migrationDataRepo->search($criteria, $context);
         self::assertSame(8, $result->getTotal());
@@ -151,8 +151,8 @@ class MigrationCollectServiceTest extends TestCase
         $this->migrationCollectService->fetchData($migrationContext, $context);
 
         $criteria = new Criteria();
-        $criteria->addFilter(new TermQuery('runId', $this->runUuid));
-        $criteria->addFilter(new TermQuery('entity', 'translation'));
+        $criteria->addFilter(new EqualsFilter('runId', $this->runUuid));
+        $criteria->addFilter(new EqualsFilter('entity', 'translation'));
         /** @var EntitySearchResult $result */
         $result = $this->migrationDataRepo->search($criteria, $context);
         self::assertSame(5, $result->getTotal());
@@ -178,8 +178,8 @@ class MigrationCollectServiceTest extends TestCase
         $this->migrationCollectService->fetchData($migrationContext, $context);
 
         $criteria = new Criteria();
-        $criteria->addFilter(new TermQuery('runId', $this->runUuid));
-        $criteria->addFilter(new TermQuery('entity', CustomerDefinition::getEntityName()));
+        $criteria->addFilter(new EqualsFilter('runId', $this->runUuid));
+        $criteria->addFilter(new EqualsFilter('entity', CustomerDefinition::getEntityName()));
         /** @var EntitySearchResult $result */
         $result = $this->migrationDataRepo->search($criteria, $context);
         self::assertSame(3, $result->getTotal());
@@ -205,8 +205,8 @@ class MigrationCollectServiceTest extends TestCase
         $this->migrationCollectService->fetchData($migrationContext, $context);
 
         $criteria = new Criteria();
-        $criteria->addFilter(new TermQuery('runId', $this->runUuid));
-        $criteria->addFilter(new TermQuery('entity', ProductDefinition::getEntityName()));
+        $criteria->addFilter(new EqualsFilter('runId', $this->runUuid));
+        $criteria->addFilter(new EqualsFilter('entity', ProductDefinition::getEntityName()));
         /** @var EntitySearchResult $result */
         $result = $this->migrationDataRepo->search($criteria, $context);
         self::assertSame(37, $result->getTotal());
@@ -228,8 +228,8 @@ class MigrationCollectServiceTest extends TestCase
         $this->migrationCollectService->fetchData($migrationContext, $context);
 
         $criteria = new Criteria();
-        $criteria->addFilter(new TermQuery('runId', $this->runUuid));
-        $criteria->addFilter(new TermQuery('entity', ProductDefinition::getEntityName()));
+        $criteria->addFilter(new EqualsFilter('runId', $this->runUuid));
+        $criteria->addFilter(new EqualsFilter('entity', ProductDefinition::getEntityName()));
         /** @var EntitySearchResult $result */
         $result = $this->migrationDataRepo->search($criteria, $context);
         self::assertSame(37, $result->getTotal());

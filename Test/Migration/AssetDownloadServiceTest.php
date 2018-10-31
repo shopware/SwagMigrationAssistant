@@ -10,8 +10,8 @@ use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Query\NotQuery;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Query\TermQuery;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagMigrationNext\Migration\Asset\CliAssetDownloadService;
 use SwagMigrationNext\Migration\MigrationContext;
@@ -98,13 +98,13 @@ class AssetDownloadServiceTest extends TestCase
         self::assertSame(42, $productTotalAfter - $productTotalBefore);
 
         $criteria = new Criteria();
-        $criteria->addFilter(new TermQuery('mimeType', null));
+        $criteria->addFilter(new EqualsFilter('mimeType', null));
         $totalBeforeAssetDownload = $this->mediaRepository->search($criteria, $context)->getTotal();
 
         $this->assetDownloadService->downloadAssets(Shopware55Profile::PROFILE_NAME, $context);
 
         $criteria = new Criteria();
-        $criteria->addFilter(new NotQuery([new TermQuery('mimeType', null)]));
+        $criteria->addFilter(new NotFilter(NotFilter::CONNECTION_AND, [new EqualsFilter('mimeType', null)]));
         $totalAfterAssetDownload = $this->mediaRepository->search($criteria, $context)->getTotal();
 
         self::assertSame(0, $totalBeforeAssetDownload - $totalAfterAssetDownload);

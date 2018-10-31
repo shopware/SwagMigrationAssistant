@@ -5,7 +5,7 @@ namespace SwagMigrationNext\Migration\Service;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Query\TermQuery;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use SwagMigrationNext\Migration\Data\SwagMigrationDataStruct;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
@@ -40,8 +40,8 @@ class MigrationWriteService implements MigrationWriteServiceInterface
     {
         $entity = $migrationContext->getEntity();
         $criteria = new Criteria();
-        $criteria->addFilter(new TermQuery('entity', $entity));
-        $criteria->addFilter(new TermQuery('runId', $migrationContext->getRunUuid()));
+        $criteria->addFilter(new EqualsFilter('entity', $entity));
+        $criteria->addFilter(new EqualsFilter('runId', $migrationContext->getRunUuid()));
         $criteria->setOffset($migrationContext->getOffset());
         $criteria->setLimit($migrationContext->getLimit());
         $criteria->addSorting(new FieldSorting('createdAt', FieldSorting::ASCENDING));

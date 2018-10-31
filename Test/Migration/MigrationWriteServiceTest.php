@@ -13,7 +13,7 @@ use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Query\TermQuery;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\System\Currency\CurrencyStruct;
@@ -173,8 +173,8 @@ class MigrationWriteServiceTest extends TestCase
         );
 
         $criteria = new Criteria();
-        $usdFactorCriteria = (new Criteria())->addFilter(new TermQuery('shortName', 'USD'));
-        $jpyInvalidCriteria = (new Criteria())->addFilter(new TermQuery('symbol', '&yen;'));
+        $usdFactorCriteria = (new Criteria())->addFilter(new EqualsFilter('shortName', 'USD'));
+        $jpyInvalidCriteria = (new Criteria())->addFilter(new EqualsFilter('symbol', '&yen;'));
 
         // Get data before writing
         $this->migrationCollectService->fetchData($migrationContext, $context);
