@@ -2,7 +2,7 @@
 
 namespace SwagMigrationNext\Migration\Mapping;
 
-use Shopware\Core\Framework\ORM\EntityCollection;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 
 class SwagMigrationMappingCollection extends EntityCollection
 {

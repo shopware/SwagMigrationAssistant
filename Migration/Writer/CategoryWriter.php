@@ -4,7 +4,7 @@ namespace SwagMigrationNext\Migration\Writer;
 
 use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\ORM\RepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
 
 class CategoryWriter implements WriterInterface
 {

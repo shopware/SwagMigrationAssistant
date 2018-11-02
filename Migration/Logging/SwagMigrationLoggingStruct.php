@@ -3,7 +3,7 @@
 namespace SwagMigrationNext\Migration\Logging;
 
 use DateTime;
-use Shopware\Core\Framework\ORM\Entity;
+use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 
 class SwagMigrationLoggingStruct extends Entity
 {

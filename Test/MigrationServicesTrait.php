@@ -6,7 +6,7 @@ use Shopware\Core\Checkout\Cart\Price\PriceRounding;
 use Shopware\Core\Checkout\Cart\Tax\PercentageTaxRuleCalculator;
 use Shopware\Core\Checkout\Cart\Tax\TaxCalculator;
 use Shopware\Core\Checkout\Cart\Tax\TaxRuleCalculator;
-use Shopware\Core\Framework\ORM\RepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
 use SwagMigrationNext\Gateway\GatewayFactoryRegistry;
 use SwagMigrationNext\Gateway\Shopware55\Api\Shopware55ApiFactory;
 use SwagMigrationNext\Migration\Logging\LoggingService;

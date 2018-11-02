@@ -2,7 +2,7 @@
 
 namespace SwagMigrationNext\Migration\Logging;
 
-use Shopware\Core\Framework\ORM\EntityCollection;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 
 class SwagMigrationLoggingCollection extends EntityCollection
 {

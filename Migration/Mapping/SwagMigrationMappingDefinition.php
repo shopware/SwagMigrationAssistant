@@ -2,16 +2,16 @@
 
 namespace SwagMigrationNext\Migration\Mapping;
 
-use Shopware\Core\Framework\ORM\EntityDefinition;
-use Shopware\Core\Framework\ORM\Field\CreatedAtField;
-use Shopware\Core\Framework\ORM\Field\IdField;
-use Shopware\Core\Framework\ORM\Field\JsonField;
-use Shopware\Core\Framework\ORM\Field\StringField;
-use Shopware\Core\Framework\ORM\Field\TenantIdField;
-use Shopware\Core\Framework\ORM\Field\UpdatedAtField;
-use Shopware\Core\Framework\ORM\FieldCollection;
-use Shopware\Core\Framework\ORM\Write\Flag\PrimaryKey;
-use Shopware\Core\Framework\ORM\Write\Flag\Required;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\CreatedAtField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\IdField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\JsonField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\StringField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\TenantIdField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\UpdatedAtField;
+use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
+use Shopware\Core\Framework\DataAbstractionLayer\Write\Flag\PrimaryKey;
+use Shopware\Core\Framework\DataAbstractionLayer\Write\Flag\Required;
 
 class SwagMigrationMappingDefinition extends EntityDefinition
 {

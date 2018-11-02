@@ -3,9 +3,9 @@
 namespace SwagMigrationNext\Migration\Mapping;
 
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\ORM\RepositoryInterface;
-use Shopware\Core\Framework\ORM\Search\Criteria;
-use Shopware\Core\Framework\ORM\Search\Query\TermQuery;
+use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Query\TermQuery;
 use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\System\Country\CountryDefinition;
 use Shopware\Core\System\Country\CountryStruct;
