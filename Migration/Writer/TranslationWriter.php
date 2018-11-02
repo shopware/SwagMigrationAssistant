@@ -3,8 +3,8 @@
 namespace SwagMigrationNext\Migration\Writer;
 
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\ORM\Write\EntityWriterInterface;
-use Shopware\Core\Framework\ORM\Write\WriteContext;
+use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
 
 class TranslationWriter implements WriterInterface
 {

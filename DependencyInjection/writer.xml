@@ -19,7 +19,7 @@
 
         <service id="SwagMigrationNext\Migration\Writer\TranslationWriter"
                  class="SwagMigrationNext\Migration\Writer\TranslationWriter">
-            <argument type="service" id="Shopware\Core\Framework\ORM\Write\EntityWriter"/>
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
             <tag name="shopware.migration.writer"/>
         </service>
 

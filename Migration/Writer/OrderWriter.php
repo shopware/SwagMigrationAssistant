@@ -4,7 +4,7 @@ namespace SwagMigrationNext\Migration\Writer;
 
 use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\ORM\RepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
 use Shopware\Core\Framework\Struct\Serializer\StructNormalizer;
 
 class OrderWriter implements WriterInterface

@@ -5,7 +5,7 @@ namespace SwagMigrationNext\Command;
 use InvalidArgumentException;
 use Shopware\Core\Content\Media\File\FileSaver;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\ORM\RepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
 use SwagMigrationNext\Command\Event\MigrationAssetDownloadAdvanceEvent;
 use SwagMigrationNext\Command\Event\MigrationAssetDownloadFinishEvent;
 use SwagMigrationNext\Command\Event\MigrationAssetDownloadStartEvent;

@@ -3,7 +3,7 @@
 namespace SwagMigrationNext\Migration\Run;
 
 use DateTime;
-use Shopware\Core\Framework\ORM\Entity;
+use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use SwagMigrationNext\Migration\Data\SwagMigrationDataStruct;
 
 class SwagMigrationRunStruct extends Entity

@@ -4,7 +4,7 @@ namespace SwagMigrationNext\Migration\Writer;
 
 use Shopware\Core\Checkout\Customer\CustomerDefinition;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\ORM\RepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
 
 class CustomerWriter implements WriterInterface
 {
