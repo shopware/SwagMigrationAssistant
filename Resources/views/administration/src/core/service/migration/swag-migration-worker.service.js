@@ -316,12 +316,12 @@ class MigrationService {
                     value_count: { field: 'swag_migration_data.entity' }
                 }
             };
-            const criteria = CriteriaFactory.nested(
+            const criteria = CriteriaFactory.multi(
                 'AND',
-                CriteriaFactory.term('runId', this._runId),
+                CriteriaFactory.equals('runId', this._runId),
                 CriteriaFactory.not(
                     'AND',
-                    CriteriaFactory.term('converted', null)
+                    CriteriaFactory.equals('converted', null)
                 )
             );
             const params = {
@@ -364,14 +364,14 @@ class MigrationService {
                     count: { field: 'swag_migration_data.entity' }
                 }
             };
-            const criteria = CriteriaFactory.nested(
+            const criteria = CriteriaFactory.multi(
                 'AND',
-                CriteriaFactory.term('runId', this._runId),
+                CriteriaFactory.equals('runId', this._runId),
                 CriteriaFactory.not(
                     'AND',
-                    CriteriaFactory.term('converted', null)
+                    CriteriaFactory.equals('converted', null)
                 ),
-                CriteriaFactory.term('entity', 'media')
+                CriteriaFactory.equals('entity', 'media')
             );
             const params = {
                 aggregations: count,

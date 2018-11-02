@@ -14,7 +14,7 @@ use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Query\TermQuery;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use SwagMigrationNext\Command\Event\MigrationAssetDownloadAdvanceEvent;
 use SwagMigrationNext\Command\Event\MigrationAssetDownloadFinishEvent;
 use SwagMigrationNext\Command\Event\MigrationAssetDownloadStartEvent;
@@ -79,8 +79,8 @@ class CliAssetDownloadService implements CliAssetDownloadServiceInterface
     {
         $client = new Client();
         $criteria = new Criteria();
-        $criteria->addFilter(new TermQuery('entity', MediaDefinition::getEntityName()));
-        $criteria->addFilter(new TermQuery('profile', $profile));
+        $criteria->addFilter(new EqualsFilter('entity', MediaDefinition::getEntityName()));
+        $criteria->addFilter(new EqualsFilter('profile', $profile));
 
         $entitySearchResult = $this->migrationMappingRepository->search($criteria, $context);
         /** @var SwagMigrationMappingStruct[] $assets */

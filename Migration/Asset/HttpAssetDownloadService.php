@@ -16,7 +16,7 @@ use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Query\TermsQuery;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use SwagMigrationNext\Exception\NoFileSystemPermissionsException;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\Mapping\SwagMigrationMappingStruct;
@@ -100,7 +100,7 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
             'verify' => false,
         ]);
         $criteria = new Criteria();
-        $criteria->addFilter(new TermsQuery('entityUuid', array_keys($mappedWorkload)));
+        $criteria->addFilter(new EqualsAnyFilter('entityUuid', array_keys($mappedWorkload)));
         $entitySearchResult = $this->migrationMappingRepository->search($criteria, $context);
         /** @var SwagMigrationMappingStruct[] $assets */
         $assets = $entitySearchResult->getElements();
