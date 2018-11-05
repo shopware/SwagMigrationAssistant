@@ -36,7 +36,8 @@
           "apiUserLabel": "User name (API user)",
           "apiUserPlaceholder": "Enter your login user name ...",
           "endpointLabel": "Shop domain",
-          "endpointPlaceholder": "https://www.demoshop.com",
+          "endpointPlaceholder": "www.demoshop.com",
+          "endpointSSLLabel": "My shop uses SSL",
           "success": {
             "contentTitle": "Successfully connected!",
             "contentInformation": "Click on “Finish” and select the data sets to be transferred in the import module. The data can be imported completely, step by step or subsequently.",
