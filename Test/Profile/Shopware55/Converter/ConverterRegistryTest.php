@@ -34,7 +34,7 @@ class ConverterRegistryTest extends TestCase
                     new ConverterHelperService(),
                     new MediaFileService($this->getContainer()->get('swag_migration_media_file.repository')),
                     new DummyLoggingService()
-                )
+                ),
             ])
         );
     }

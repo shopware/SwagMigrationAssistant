@@ -8,7 +8,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Query\TermQuery;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use SwagMigrationNext\Migration\Asset\MediaFileServiceInterface;
 use SwagMigrationNext\Migration\Data\SwagMigrationDataStruct;
@@ -52,6 +52,7 @@ class MigrationWriteService implements MigrationWriteServiceInterface
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('entity', $entity));
         $criteria->addFilter(new EqualsFilter('runId', $migrationContext->getRunUuid()));
+        $criteria->addFilter(new NotFilter([new EqualsFilter('converted', null)]));
         $criteria->setOffset($migrationContext->getOffset());
         $criteria->setLimit($migrationContext->getLimit());
         $criteria->addSorting(new FieldSorting('createdAt', FieldSorting::ASCENDING));
@@ -81,16 +82,16 @@ class MigrationWriteService implements MigrationWriteServiceInterface
 
         try {
             $currentWriter = $this->writerRegistry->getWriter($entity);
+            $currentWriter->writeData($converted, $context);
         } catch (\Exception $exception) {
             $this->loggingService->addError($migrationContext->getRunUuid(), (string) $exception->getCode(), '', $exception->getMessage(), ['entity' => $entity]);
             $this->loggingService->saveLogging($context);
 
             return;
+        } finally {
+            // Update written-Flag of the entity in the data table
+            $this->migrationDataRepo->update($updateWrittenData, $context);
         }
-        $currentWriter->writeData($converted, $context);
-
-        // Update written-Flag of the entity in the data table
-        $this->migrationDataRepo->update($updateWrittenData, $context);
 
         // Update written-Flag of the media file in the media file table
         if ($entity === MediaDefinition::getEntityName() || $entity === ProductDefinition::getEntityName()) {

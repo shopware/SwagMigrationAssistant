@@ -82,5 +82,5 @@ return [
     'error' => [
         'code' => -1,
         'detail' => 'No error.',
-    ]
+    ],
 ];
