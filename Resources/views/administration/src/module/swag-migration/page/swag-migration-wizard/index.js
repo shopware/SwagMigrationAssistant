@@ -1,4 +1,5 @@
 import { Component, State } from 'src/core/shopware';
+import CriteriaFactory from 'src/core/factory/criteria.factory';
 import template from './swag-migration-wizard.html.twig';
 import './swag-migration-wizard.less';
 
@@ -107,7 +108,7 @@ Component.register('swag-migration-wizard', {
             const params = {
                 offset: 0,
                 limit: 1,
-                term: { gateway: 'api' }
+                criteria: CriteriaFactory.equals('gateway', 'api')
             };
 
             this.migrationProfileStore.getList(params).then((response) => {
