@@ -1,4 +1,5 @@
 import { Component, State } from 'src/core/shopware';
+import CriteriaFactory from 'src/core/factory/criteria.factory';
 import template from './swag-migration-index.html.twig';
 import './swag-migration-index.less';
 
@@ -124,7 +125,7 @@ Component.register('swag-migration-index', {
 
             const params = {
                 limit: 1,
-                term: { gateway: 'api' }
+                criteria: CriteriaFactory.equals('gateway', 'api')
             };
 
             // Get profile with credentials from server
