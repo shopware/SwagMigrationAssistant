@@ -15,14 +15,21 @@ export const WORKER_API_OPERATION = Object.freeze({
 
 export class WorkerRequest {
     /**
-     * @param {int} status
+     * @param {number} status
      * @param {Object} requestParams
      * @param {WorkerStatusManager} workerStatusManager
      * @param {MigrationApiService} migrationService
      * @param {function} onProgressCB
      * @param {function} onErrorCB
      */
-    constructor(status, requestParams, workerStatusManager, migrationService, onProgressCB, onErrorCB) {
+    constructor(
+        status,
+        requestParams,
+        workerStatusManager,
+        migrationService,
+        onProgressCB,
+        onErrorCB
+    ) {
         this._MAX_REQUEST_TIME = 10000; // in ms
         this._DEFAULT_CHUNK_SIZE = 50; // in data sets
         this._CHUNK_INCREMENT = 5; // in data sets
@@ -42,14 +49,14 @@ export class WorkerRequest {
     }
 
     /**
-     * @returns {int}
+     * @returns {number}
      */
     get status() {
         return this._status;
     }
 
     /**
-     * @param {int} value
+     * @param {number} value
      */
     set status(value) {
         this._status = value;
@@ -90,12 +97,20 @@ export class WorkerRequest {
         this._onErrorCB = value;
     }
 
+    /**
+     * @param {Object} param
+     * @private
+     */
     _callProgressCB(param) {
         if (this._onProgressCB !== null) {
             this._onProgressCB(param);
         }
     }
 
+    /**
+     * @param {Object} param
+     * @private
+     */
     _callErrorCB(param) {
         if (this._onErrorCB !== null) {
             this._onErrorCB(param);
@@ -105,10 +120,10 @@ export class WorkerRequest {
     /**
      * Do all the API requests for all entities with the given methodName
      *
-     * @param {object} entityGroups
-     * @param {int} groupStartIndex
-     * @param {int} entityStartIndex
-     * @param {int} entityOffset
+     * @param {Object} entityGroups
+     * @param {number} groupStartIndex
+     * @param {number} entityStartIndex
+     * @param {number} entityOffset
      * @returns {Promise}
      */
     async migrateProcess(entityGroups, groupStartIndex = 0, entityStartIndex = 0, entityOffset = 0) {
@@ -118,7 +133,7 @@ export class WorkerRequest {
                 this._runId,
                 entityGroups,
                 this._status
-            ).then((newEntityGroups) => {
+            ).then(([newEntityGroups]) => {
                 entityGroups = newEntityGroups;
             });
 
@@ -159,10 +174,10 @@ export class WorkerRequest {
      * Do all the API requests for one entity in chunks
      *
      * @param {string} entityName
-     * @param {int} entityCount
-     * @param {object} group
-     * @param {int} groupProgress
-     * @param {int} currentOffset
+     * @param {number} entityCount
+     * @param {Object} group
+     * @param {number} groupProgress
+     * @param {number} currentOffset
      * @returns {Promise<void>}
      * @private
      */
@@ -201,7 +216,7 @@ export class WorkerRequest {
      * @param {string} entityName
      * @param {string} targetId
      * @param {string} target
-     * @param {int} offset
+     * @param {number} offset
      * @returns {Promise}
      * @private
      */
@@ -269,7 +284,7 @@ export class WorkerRequest {
     /**
      * Update the chunkSize depending on the requestTime
      *
-     * @param {int} requestTime Request time in milliseconds
+     * @param {number} requestTime Request time in milliseconds
      * @private
      */
     _handleChunkSize(requestTime) {

@@ -2,13 +2,18 @@ import { Application } from 'src/core/shopware';
 import CriteriaFactory from 'src/core/factory/criteria.factory';
 import StorageBroadcastService from '../storage-broadcaster.service';
 import { WorkerRequest } from './swag-migration-worker-request.service';
-import {
-    MIGRATION_STATUS,
-    WorkerStatusManager
-} from './swag-migration-worker-status-manager.service';
+import { WorkerDownload } from './swag-migration-worker-download';
+import { MIGRATION_STATUS, WorkerStatusManager } from './swag-migration-worker-status-manager.service';
 
 
 class MigrationWorkerService {
+    /**
+     * @param {MigrationApiService} migrationService
+     * @param {MigrationDataService} migrationDataService
+     * @param {MigrationRunService} migrationRunService
+     * @param {MigrationMediaFileService} migrationMediaFileService
+     * @param {MigrationLoggingService} migrationLoggingService
+     */
     constructor(
         migrationService,
         migrationDataService,
@@ -16,14 +21,6 @@ class MigrationWorkerService {
         migrationMediaFileService,
         migrationLoggingService
     ) {
-        this._MAX_REQUEST_TIME = 10000; // in ms
-        this._ASSET_UUID_CHUNK = 100; // Amount of uuids we fetch with one request
-        this._ASSET_WORKLOAD_COUNT = 5; // The amount of assets we download per request in parallel
-        // The maximum amount of bytes we download per file in one request
-        this._ASSET_FILE_CHUNK_BYTE_SIZE = 1000 * 1000 * 8; // 8 MB
-        this._CHUNK_SIZE_BYTE_INCREMENT = 250 * 1000; // 250 KB
-        this._ASSET_MIN_FILE_CHUNK_BYTE_SIZE = this._CHUNK_SIZE_BYTE_INCREMENT;
-
         // will be toggled when we receive a response for our 'migrationWanted' request
         this._broadcastResponseFlag = false;
 
@@ -38,8 +35,12 @@ class MigrationWorkerService {
         this._migrationMediaFileService = migrationMediaFileService;
         this._migrationRunService = migrationRunService;
         this._migrationLoggingService = migrationLoggingService;
-        this._workerStatusManager = new WorkerStatusManager(this._migrationRunService, this._migrationDataService);
-        this._workerRequest = null;
+        this._workerStatusManager = new WorkerStatusManager(
+            this._migrationRunService,
+            this._migrationDataService,
+            this._migrationMediaFileService
+        );
+        this._workRunner = null;
 
         // state variables
         this._isMigrating = false;
@@ -50,10 +51,6 @@ class MigrationWorkerService {
         this._runId = '';
         this._profile = null;
         this._status = null;
-        this._assetTotalCount = 0;
-        this._assetUuidPool = [];
-        this._assetWorkload = [];
-        this._assetProgress = 0;
         this._restoreState = {};
 
         this._broadcastService.sendMessage({
@@ -144,7 +141,6 @@ class MigrationWorkerService {
         this._entityGroups = this._restoreState.entityGroups;
         this._status = this._restoreState.status;
         this._errors = [];
-        this._resetAssetProgress();
 
         // Get current group and entity index
         const indicies = this._getIndiciesByEntityName(this._restoreState.entity);
@@ -161,7 +157,7 @@ class MigrationWorkerService {
     }
 
     stopMigration() {
-        this._workerRequest.interrupt = true;
+        this._workRunner.interrupt = true;
         this._isMigrating = false;
     }
 
@@ -212,6 +208,10 @@ class MigrationWorkerService {
         this._progressSubscriber = null;
     }
 
+    /**
+     * @param {Object} param
+     * @private
+     */
     _callStatusSubscriber(param) {
         if (!this._isMigrating) {
             return;
@@ -221,6 +221,10 @@ class MigrationWorkerService {
         }
     }
 
+    /**
+     * @param {Object} param
+     * @private
+     */
     _callProgressSubscriber(param) {
         if (!this._isMigrating) {
             return;
@@ -234,10 +238,10 @@ class MigrationWorkerService {
      * @param {String} runId
      * @param {Object} profile
      * @param {Object} entityGroups
-     * @param {int} statusIndex
-     * @param {int} groupStartIndex
-     * @param {int} entityStartIndex
-     * @param {int} entityOffset
+     * @param {number} statusIndex
+     * @param {number} groupStartIndex
+     * @param {number} entityStartIndex
+     * @param {number} entityOffset
      * @returns {Promise}
      */
     startMigration(
@@ -276,7 +280,12 @@ class MigrationWorkerService {
                         gateway: this._profile.gateway,
                         credentialFields: this._profile.credentialFields
                     };
-                    this._workerRequest = new WorkerRequest(
+
+                    const downloadParams = {
+                        runUuid: this._runId
+                    };
+
+                    this._workRunner = new WorkerRequest(
                         MIGRATION_STATUS.FETCH_DATA,
                         requestParams,
                         this._workerStatusManager,
@@ -287,7 +296,7 @@ class MigrationWorkerService {
 
                     // fetch
                     if (statusIndex <= MIGRATION_STATUS.FETCH_DATA) {
-                        await this._startWorkerRequest(
+                        await this._startWorkRunner(
                             MIGRATION_STATUS.FETCH_DATA,
                             groupStartIndex,
                             entityStartIndex,
@@ -301,7 +310,7 @@ class MigrationWorkerService {
 
                     // write
                     if (statusIndex <= MIGRATION_STATUS.WRITE_DATA) {
-                        await this._startWorkerRequest(
+                        await this._startWorkRunner(
                             MIGRATION_STATUS.WRITE_DATA,
                             groupStartIndex,
                             entityStartIndex,
@@ -315,10 +324,21 @@ class MigrationWorkerService {
 
                     // download
                     if (statusIndex <= MIGRATION_STATUS.DOWNLOAD_DATA) {
-                        // this._status = MIGRATION_STATUS.DOWNLOAD_DATA;
-                        // this._callStatusSubscriber({ status: this.status });
-                        // TODO: Implement download worker
-                        await this._downloadData(entityOffset);
+                        this._workRunner = new WorkerDownload(
+                            MIGRATION_STATUS.DOWNLOAD_DATA,
+                            downloadParams,
+                            this._workerStatusManager,
+                            this._migrationService,
+                            this._callProgressSubscriber.bind(this),
+                            this._addError.bind(this)
+                        );
+
+                        await this._startWorkRunner(
+                            MIGRATION_STATUS.DOWNLOAD_DATA,
+                            groupStartIndex,
+                            entityStartIndex,
+                            entityOffset
+                        );
 
                         groupStartIndex = 0;
                         entityStartIndex = 0;
@@ -334,16 +354,16 @@ class MigrationWorkerService {
     }
 
     /**
-     * Start the WorkerRequest.
+     * Start the WorkerRequest or WorkerDownload runner.
      *
-     * @param {int} status
-     * @param {int} groupStartIndex
-     * @param {int} entityStartIndex
-     * @param {int} entityOffset
+     * @param {number} status
+     * @param {number} groupStartIndex
+     * @param {number} entityStartIndex
+     * @param {number} entityOffset
      * @returns {Promise}
      * @private
      */
-    _startWorkerRequest(status, groupStartIndex, entityStartIndex, entityOffset) {
+    _startWorkRunner(status, groupStartIndex, entityStartIndex, entityOffset) {
         return new Promise(async (resolve) => {
             if (!this._isMigrating) {
                 resolve();
@@ -351,14 +371,14 @@ class MigrationWorkerService {
             }
 
             this._status = status;
-            this._workerRequest.status = this._status;
+            this._workRunner.status = this._status;
 
             if (groupStartIndex === 0 && entityStartIndex === 0 && entityOffset === 0) {
                 this._resetProgress();
                 this._callStatusSubscriber({ status: this.status });
             }
 
-            await this._workerRequest.migrateProcess(
+            await this._workRunner.migrateProcess(
                 this._entityGroups,
                 groupStartIndex,
                 entityStartIndex,
@@ -397,7 +417,7 @@ class MigrationWorkerService {
     /**
      * Gets called with data from another browser tab
      *
-     * @param data
+     * @param {Object} data
      * @private
      */
     _onBroadcastReceived(data) {
@@ -416,26 +436,10 @@ class MigrationWorkerService {
         }
     }
 
-    _downloadData(downloadFinishedCount = 0) {
-        if (!this._isMigrating) {
-            return Promise.resolve();
-        }
-        return this._getAssetTotalCount().then(() => {
-            if (downloadFinishedCount === 0) {
-                this._resetProgress();
-                this._resetAssetProgress();
-            } else {
-                this._assetTotalCount += downloadFinishedCount; // we need to add the downloaded / finished count
-                this._assetProgress += downloadFinishedCount;
-                this._assetUuidPool = [];
-                this._assetWorkload = [];
-            }
-            this._status = MIGRATION_STATUS.DOWNLOAD_DATA;
-            this._callStatusSubscriber({ status: this.status });
-            return this._downloadProcess();
-        });
-    }
-
+    /**
+     * @returns {Promise}
+     * @private
+     */
     _migrateFinish() {
         if (!this._isMigrating) {
             return Promise.resolve();
@@ -451,6 +455,12 @@ class MigrationWorkerService {
         });
     }
 
+    /**
+     * Update the local errors array with the errors from the backend.
+     *
+     * @returns {Promise}
+     * @private
+     */
     _getErrors() {
         return new Promise((resolve) => {
             const criteria = CriteriaFactory.term('runId', this._runId);
@@ -503,225 +513,13 @@ class MigrationWorkerService {
         }
     }
 
-    _resetAssetProgress() {
-        this._assetUuidPool = [];
-        this._assetWorkload = [];
-        this._assetProgress = 0;
-    }
-
-    /**
-     * Get the count of media objects that are available for the migration.
-     *
-     * @returns {Promise}
-     * @private
-     */
-    _getAssetTotalCount() {
-        return new Promise((resolve) => {
-            const count = {
-                mediaCount: {
-                    count: { field: 'swag_migration_media_file.mediaId' }
-                }
-            };
-            const criteria = CriteriaFactory.multi(
-                'AND',
-                CriteriaFactory.equals('runId', this._runId),
-                CriteriaFactory.equals('written', true),
-                CriteriaFactory.equals('downloaded', false)
-            );
-            const params = {
-                aggregations: count,
-                criteria: criteria,
-                limit: 1
-            };
-
-            this._migrationMediaFileService.getList(params).then((res) => {
-                this._assetTotalCount = parseInt(res.aggregations.mediaCount.count, 10);
-                resolve();
-            }).catch(() => {
-                this._assetTotalCount = 0;
-                resolve();
-            });
-        });
-    }
-
-    /**
-     * Get a chunk of asset uuids and put it into our pool.
-     *
-     * @returns {Promise}
-     * @private
-     */
-    _fetchAssetUuidsChunk() {
-        return new Promise((resolve) => {
-            if (this._assetUuidPool.length >= this._ASSET_WORKLOAD_COUNT) {
-                resolve();
-                return;
-            }
-
-            this._migrationService.fetchAssetUuids({
-                runId: this._runId,
-                limit: this._ASSET_UUID_CHUNK
-            }).then((res) => {
-                res.mediaUuids.forEach((uuid) => {
-                    let isInWorkload = false;
-                    this._assetWorkload.forEach((media) => {
-                        if (media.uuid === uuid) {
-                            isInWorkload = true;
-                        }
-                    });
-
-                    if (!isInWorkload && !this._assetUuidPool.includes(uuid)) {
-                        this._assetUuidPool.push(uuid);
-                    }
-                });
-                resolve();
-            });
-        });
-    }
-
-    /**
-     * Download all media files to filesystem
-     *
-     * @returns {Promise}
-     * @private
-     */
-    async _downloadProcess() {
-        /* eslint-disable no-await-in-loop */
-        return new Promise(async (resolve) => {
-            await this._fetchAssetUuidsChunk();
-
-            // make workload
-            this._makeWorkload(this._ASSET_WORKLOAD_COUNT);
-
-            while (this._assetProgress < this._assetTotalCount) {
-                if (!this._isMigrating) {
-                    resolve();
-                    return;
-                }
-                // send workload to api
-                let newWorkload;
-                const beforeRequestTime = new Date();
-
-                await this._downloadAssets().then((w) => {
-                    newWorkload = w;
-                });
-
-                const afterRequestTime = new Date();
-                // process response and update local workload
-                this._updateWorkload(newWorkload, afterRequestTime - beforeRequestTime);
-
-                await this._fetchAssetUuidsChunk();
-
-                if (this._assetUuidPool.length === 0 && newWorkload.length === 0) {
-                    break;
-                }
-            }
-
-            resolve();
-        });
-        /* eslint-enable no-await-in-loop */
-    }
-
-    /**
-     * Push asset uuids from the pool into the current workload
-     *
-     * @param assetCount the amount of uuids to add
-     * @private
-     */
-    _makeWorkload(assetCount) {
-        const uuids = this._assetUuidPool.splice(0, assetCount);
-        uuids.forEach((uuid) => {
-            this._assetWorkload.push({
-                runId: this._runId,
-                uuid,
-                currentOffset: 0,
-                state: 'inProgress'
-            });
-        });
-    }
-
-    /**
-     * Analyse the given workload and update our own workload.
-     * Remove finished assets from our workload and add new ones.
-     * Remove failed assets (errorCount >= this._ASSET_ERROR_THRESHOLD) and add errors for them.
-     * Make sure we have the asset amount in our workload that we specified (this._ASSET_WORKLOAD_COUNT).
-     *
-     * @param newWorkload
-     * @param requestTime
-     * @private
-     */
-    _updateWorkload(newWorkload, requestTime) {
-        const finishedAssets = newWorkload.filter((asset) => asset.state === 'finished');
-        let assetsRemovedCount = finishedAssets.length;
-
-        // check for errorCount
-        newWorkload.forEach((asset) => {
-            if (asset.state === 'error') {
-                assetsRemovedCount += 1;
-            }
-        });
-
-        this._assetWorkload = newWorkload.filter((asset) => asset.state === 'inProgress');
-
-        // Get the assets that have utilized the full amount of fileByteChunkSize
-        const assetsWithoutAnyErrors = this._assetWorkload.filter((asset) => !asset.errorCount);
-        if (assetsWithoutAnyErrors.length !== 0) {
-            this._handleAssetFileChunkByteSize(requestTime);
-        }
-
-        this._assetProgress += assetsRemovedCount;
-        // call event subscriber
-        this._callProgressSubscriber({
-            entityName: 'media',
-            entityGroupProgressValue: this._assetProgress,
-            entityCount: this._assetTotalCount
-        });
-
-        this._makeWorkload(assetsRemovedCount);
-    }
-
-    /**
-     * Send the asset download request with our workload and fileChunkByteSize.
-     *
-     * @returns {Promise}
-     * @private
-     */
-    _downloadAssets() {
-        return new Promise((resolve) => {
-            this._migrationService.downloadAssets({
-                runId: this._runId,
-                workload: this._assetWorkload,
-                fileChunkByteSize: this._ASSET_FILE_CHUNK_BYTE_SIZE
-            }).then((res) => {
-                resolve(res.workload);
-            }).catch(() => {
-                resolve(this._assetWorkload);
-            });
-        });
-    }
-
-    /**
-     * Update the ASSET_FILE_CHUNK_BYTE_SIZE depending on the requestTime
-     *
-     * @param {int} requestTime Request time in milliseconds
-     * @private
-     */
-    _handleAssetFileChunkByteSize(requestTime) {
-        if (requestTime < this._MAX_REQUEST_TIME) {
-            this._ASSET_FILE_CHUNK_BYTE_SIZE += this._CHUNK_SIZE_BYTE_INCREMENT;
-        }
-
-        if (
-            requestTime > this._MAX_REQUEST_TIME &&
-            (this._ASSET_FILE_CHUNK_BYTE_SIZE - this._CHUNK_SIZE_BYTE_INCREMENT) >= this._ASSET_MIN_FILE_CHUNK_BYTE_SIZE
-        ) {
-            this._ASSET_FILE_CHUNK_BYTE_SIZE -= this._CHUNK_SIZE_BYTE_INCREMENT;
-        }
-    }
-
     _addError(error) {
         this._errors.push(error);
     }
 
+    /**
+     * @returns {Boolean|Vue}
+     */
     get applicationRoot() {
         if (this._applicationRoot) {
             return this._applicationRoot;

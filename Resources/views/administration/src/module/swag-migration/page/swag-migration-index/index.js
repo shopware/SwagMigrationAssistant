@@ -129,7 +129,7 @@ Component.register('swag-migration-index', {
                 return true;
             }
 
-            if (this.statusIndex !== this.migrationWorkerService.MIGRATION_STATUS.FETCH_DATA && this.isMigrating) {
+            if (this.statusIndex !== MIGRATION_STATUS.FETCH_DATA && this.isMigrating) {
                 return false;
             }
 

@@ -14,9 +14,15 @@ export const MIGRATION_STATUS = Object.freeze({
 });
 
 export class WorkerStatusManager {
-    constructor(migrationRunService, migrationDataService) {
+    /**
+     * @param {MigrationRunService} migrationRunService
+     * @param {MigrationDataService} migrationDataService
+     * @param {MigrationMediaFileService} migrationMediaFileService
+     */
+    constructor(migrationRunService, migrationDataService, migrationMediaFileService) {
         this._migrationRunService = migrationRunService;
         this._migrationDataService = migrationDataService;
+        this._migrationMediaFileService = migrationMediaFileService;
     }
 
     /**
@@ -25,7 +31,7 @@ export class WorkerStatusManager {
      *
      * @param {string} runId
      * @param {Array} entityGroups
-     * @param {int} status MIGRATION_STATUS
+     * @param {number} status MIGRATION_STATUS
      * @returns {Promise}
      */
     onStatusChanged(runId, entityGroups, status) {
@@ -44,29 +50,18 @@ export class WorkerStatusManager {
                         totals.toBeWritten = toBeWritten;
 
                         this._migrationRunService.updateById(runId, { totals: totals }).then(() => {
-                            resolve(newEntityGroups);
+                            resolve([newEntityGroups]);
                         });
                     });
                 });
-                return;
+            } else if (status === MIGRATION_STATUS.DOWNLOAD_DATA) {
+                this._getAssetTotalCount(runId).then((assetTotalCount) => {
+                    resolve([entityGroups, assetTotalCount]);
+                });
+            } else {
+                resolve([entityGroups]);
             }
-
-            resolve(entityGroups);
         });
-    }
-
-    /**
-     * Set progress to 0 for every group.
-     *
-     * @param {Array} entityGroups
-     * @returns {Array}
-     */
-    static resetProgress(entityGroups) {
-        entityGroups.forEach((group) => {
-            group.progress = 0;
-        });
-
-        return entityGroups;
     }
 
     /**
@@ -115,6 +110,40 @@ export class WorkerStatusManager {
                 });
 
                 resolve(entityGroups);
+            });
+        });
+    }
+
+    /**
+     * Get the count of media objects that are available for the migration.
+     *
+     * @param {string} runId
+     * @returns {Promise}
+     * @private
+     */
+    _getAssetTotalCount(runId) {
+        return new Promise((resolve) => {
+            const count = {
+                mediaCount: {
+                    count: { field: 'swag_migration_media_file.mediaId' }
+                }
+            };
+            const criteria = CriteriaFactory.nested(
+                'AND',
+                CriteriaFactory.term('runId', runId),
+                CriteriaFactory.term('written', true),
+                CriteriaFactory.term('downloaded', false)
+            );
+            const params = {
+                aggregations: count,
+                criteria: criteria,
+                limit: 1
+            };
+
+            this._migrationMediaFileService.getList(params).then((res) => {
+                resolve(parseInt(res.aggregations.mediaCount.count, 10));
+            }).catch(() => {
+                resolve(0);
             });
         });
     }
