@@ -73,7 +73,7 @@
       "continueButton": "Continue",
       "abortButton": "Abort",
       "finishButton": "Finish",
-      "backButton": "Back to overview",
+      "backButton": "Overview",
       "browserClosingHint": "Do you really want to abort the data import?",
       "migrationAlreadyRunning": "Import already started.",
       "shopInfoCard": {

@@ -14,12 +14,6 @@
                         {% block swag_migration_loading_screen_success_svg %}
                             <img class="swag-index-svg" :src="'/swagmigrationnext/static/img/step-4-1.svg' | asset">
                         {% endblock %}
-
-                        {% block swag_migration_loading_screen_success_button_back %}
-                            <sw-button @click="$emit('onClickBack')">
-                                {{ $tc('swag-migration.index.finishButton') }}
-                            </sw-button>
-                        {% endblock %}
                     </div>
                 {% endblock %}
             </div>
