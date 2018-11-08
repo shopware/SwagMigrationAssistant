@@ -104,6 +104,25 @@ class ProductConverter implements ConverterInterface
         $this->catalogId = $catalogId;
         $this->oldProductId = $data['detail']['ordernumber'];
 
+        $fields = [];
+        if (!isset($data['tax'])) {
+            $fields[] = 'tax';
+        }
+        if (!isset($data['prices'])) {
+            $fields[] = 'prices';
+        }
+
+        if (!empty($fields)) {
+            $this->loggingService->addWarning(
+                $this->runId,
+                'Empty necessary data fields',
+                sprintf('Product-Entity could not converted cause of empty necessary field(s): %s.', implode(', ', $fields)),
+                ['id' => $this->oldProductId]
+            );
+
+            return new ConvertStruct(null, $data);
+        }
+
         $productType = (int) $data['detail']['kind'];
         unset($data['detail']['kind']);
         $isProductWithVariant = $data['configurator_set_id'] !== null;
