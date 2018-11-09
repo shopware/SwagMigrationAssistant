@@ -463,7 +463,7 @@ class MigrationWorkerService {
      */
     _getErrors() {
         return new Promise((resolve) => {
-            const criteria = CriteriaFactory.term('runId', this._runId);
+            const criteria = CriteriaFactory.equals('runId', this._runId);
             const params = {
                 criteria: criteria
             };

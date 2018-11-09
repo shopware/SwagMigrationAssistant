@@ -20,11 +20,11 @@ class Shopware55LocalFactory implements GatewayFactoryInterface
         $credentials = $context->getCredentials();
 
         return new Shopware55LocalGateway(
-            $credentials['dbHost']['value'],
-            $credentials['dbPort']['value'] === '' ? '3306' : $credentials['dbPort']['value'],
-            $credentials['dbName']['value'],
-            $credentials['dbUser']['value'],
-            $credentials['dbPassword']['value']
+            $credentials['dbHost'],
+            $credentials['dbPort'] ?? '3306',
+            $credentials['dbName'],
+            $credentials['dbUser'],
+            $credentials['dbPassword']
         );
     }
 }

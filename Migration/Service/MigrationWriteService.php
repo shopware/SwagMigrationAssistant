@@ -52,7 +52,7 @@ class MigrationWriteService implements MigrationWriteServiceInterface
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('entity', $entity));
         $criteria->addFilter(new EqualsFilter('runId', $migrationContext->getRunUuid()));
-        $criteria->addFilter(new NotFilter([new EqualsFilter('converted', null)]));
+        $criteria->addFilter(new NotFilter(NotFilter::CONNECTION_AND, [new EqualsFilter('converted', null)]));
         $criteria->setOffset($migrationContext->getOffset());
         $criteria->setLimit($migrationContext->getLimit());
         $criteria->addSorting(new FieldSorting('createdAt', FieldSorting::ASCENDING));

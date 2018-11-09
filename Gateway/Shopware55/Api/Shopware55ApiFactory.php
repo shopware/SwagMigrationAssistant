@@ -20,9 +20,9 @@ class Shopware55ApiFactory implements GatewayFactoryInterface
         $credentials = $context->getCredentials();
 
         return new Shopware55ApiGateway(
-            $credentials['endpoint']['value'],
-            $credentials['apiUser']['value'],
-            $credentials['apiKey']['value']
+            $credentials['endpoint'],
+            $credentials['apiUser'],
+            $credentials['apiKey']
         );
     }
 }

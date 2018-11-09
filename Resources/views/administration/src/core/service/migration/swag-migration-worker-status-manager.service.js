@@ -80,12 +80,12 @@ export class WorkerStatusManager {
                     value_count: { field: 'swag_migration_data.entity' }
                 }
             };
-            const criteria = CriteriaFactory.nested(
+            const criteria = CriteriaFactory.multi(
                 'AND',
-                CriteriaFactory.term('runId', runId),
+                CriteriaFactory.equals('runId', runId),
                 CriteriaFactory.not(
                     'AND',
-                    CriteriaFactory.term('converted', null)
+                    CriteriaFactory.equals('converted', null)
                 )
             );
             const params = {
@@ -128,11 +128,11 @@ export class WorkerStatusManager {
                     count: { field: 'swag_migration_media_file.mediaId' }
                 }
             };
-            const criteria = CriteriaFactory.nested(
+            const criteria = CriteriaFactory.multi(
                 'AND',
-                CriteriaFactory.term('runId', runId),
-                CriteriaFactory.term('written', true),
-                CriteriaFactory.term('downloaded', false)
+                CriteriaFactory.equals('runId', runId),
+                CriteriaFactory.equals('written', true),
+                CriteriaFactory.equals('downloaded', false)
             );
             const params = {
                 aggregations: count,

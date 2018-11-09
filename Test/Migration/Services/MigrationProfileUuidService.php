@@ -4,9 +4,9 @@ namespace SwagMigrationNext\Test\Migration\Services;
 
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\ORM\RepositoryInterface;
-use Shopware\Core\Framework\ORM\Search\Criteria;
-use Shopware\Core\Framework\ORM\Search\Query\TermQuery;
+use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use SwagMigrationNext\Gateway\Shopware55\Api\Shopware55ApiGateway;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
@@ -48,8 +48,8 @@ class MigrationProfileUuidService
     private function setProfileUuid()
     {
         $criteria = new Criteria();
-        $criteria->addFilter(new TermQuery('profile', $this->profile));
-        $criteria->addFilter(new TermQuery('gateway', $this->gateway));
+        $criteria->addFilter(new EqualsFilter('profile', $this->profile));
+        $criteria->addFilter(new EqualsFilter('gateway', $this->gateway));
         $profileResult = $this->profileRepository->search($criteria, Context::createDefaultContext(Defaults::TENANT_ID));
         $profileIds = $profileResult->getIds();
 

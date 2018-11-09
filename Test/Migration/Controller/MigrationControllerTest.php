@@ -6,9 +6,9 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\ORM\RepositoryInterface;
-use Shopware\Core\Framework\ORM\Search\Criteria;
-use Shopware\Core\Framework\ORM\Search\Query\TermQuery;
+use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagMigrationNext\Controller\MigrationController;
@@ -81,8 +81,8 @@ class MigrationControllerTest extends TestCase
         /** @var $profileRepo RepositoryInterface */
         $profileRepo = $this->getContainer()->get('swag_migration_profile.repository');
         $criteria = new Criteria();
-        $criteria->addFilter(new TermQuery('profile', 'shopware55'));
-        $criteria->addFilter(new TermQuery('gateway', 'api'));
+        $criteria->addFilter(new EqualsFilter('profile', 'shopware55'));
+        $criteria->addFilter(new EqualsFilter('gateway', 'api'));
         $profileResult = $profileRepo->search($criteria, $context);
         $profileIds = $profileResult->getIds();
 

@@ -7,18 +7,21 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Promise;
 use GuzzleHttp\Psr7\Response;
 use Shopware\Core\Content\Media\Exception\IllegalMimeTypeException;
+use Shopware\Core\Content\Media\Exception\MediaNotFoundException;
 use Shopware\Core\Content\Media\Exception\UploadException;
 use Shopware\Core\Content\Media\File\FileSaver;
 use Shopware\Core\Content\Media\File\MediaFile;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Query\TermQuery;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Query\TermsQuery;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use SwagMigrationNext\Exception\NoFileSystemPermissionsException;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\Mapping\SwagMigrationMappingStruct;
+use SwagMigrationNext\Profile\Shopware55\Logging\LoggingType;
+use Symfony\Component\Debug\Exception\FatalErrorException;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
@@ -53,9 +56,9 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
     public function fetchMediaUuids(Context $context, string $runId, int $limit): array
     {
         $criteria = new Criteria();
-        $criteria->addFilter(new TermQuery('runId', $runId));
-        $criteria->addFilter(new TermQuery('written', true));
-        $criteria->addFilter(new TermQuery('downloaded', false));
+        $criteria->addFilter(new EqualsFilter('runId', $runId));
+        $criteria->addFilter(new EqualsFilter('written', true));
+        $criteria->addFilter(new EqualsFilter('downloaded', false));
         $criteria->setLimit($limit);
         $criteria->addSorting(new FieldSorting('fileSize', FieldSorting::ASCENDING));
         $migrationData = $this->mediaFileRepo->search($criteria, $context);
@@ -227,6 +230,7 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
      *
      * @throws IllegalMimeTypeException
      * @throws UploadException
+     * @throws MediaNotFoundException
      */
     private function persistFileToMedia(string $filePath, string $uuid, int $fileSize, string $fileExtension, Context $context): void
     {
@@ -301,8 +305,8 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
     private function setDownloadedFlag(string $runId, Context $context, array $finishedUuids): void
     {
         $criteria = new Criteria();
-        $criteria->addFilter(new TermsQuery('mediaId', $finishedUuids));
-        $criteria->addFilter(new TermQuery('runId', $runId));
+        $criteria->addFilter(new EqualsAnyFilter('mediaId', $finishedUuids));
+        $criteria->addFilter(new EqualsFilter('runId', $runId));
         $mediaFiles = $this->mediaFileRepo->search($criteria, $context);
 
         $updateDownloadedMediaFiles = [];

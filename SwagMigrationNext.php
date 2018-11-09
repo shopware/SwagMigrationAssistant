@@ -60,23 +60,7 @@ class SwagMigrationNext extends Plugin
                 'tenant_id' => $tenantId,
                 'profile' => Shopware55Profile::PROFILE_NAME,
                 'gateway' => Shopware55ApiGateway::GATEWAY_TYPE,
-                'credential_fields' => json_encode([
-                    'endpoint' => [
-                        'value' => '',
-                        'type' => 'text',
-                        'required' => true,
-                    ],
-                    'apiUser' => [
-                        'value' => '',
-                        'type' => 'text',
-                        'required' => true,
-                    ],
-                    'apiKey' => [
-                        'value' => '',
-                        'type' => 'text',
-                        'required' => true,
-                    ],
-                ]),
+                'credential_fields' => json_encode(['endpoint' => '', 'apiUser' => '', 'apiKey' => '']),
                 'created_at' => $now,
             ]);
             $connection->insert('swag_migration_profile', [
@@ -84,33 +68,7 @@ class SwagMigrationNext extends Plugin
                 'tenant_id' => $tenantId,
                 'profile' => Shopware55Profile::PROFILE_NAME,
                 'gateway' => Shopware55LocalGateway::GATEWAY_TYPE,
-                'credential_fields' => json_encode([
-                    'dbHost' => [
-                        'value' => '',
-                        'type' => 'text',
-                        'required' => true,
-                    ],
-                    'dbPort' => [
-                        'value' => 3306,
-                        'type' => 'number',
-                        'required' => true,
-                    ],
-                    'dbName' => [
-                        'value' => '',
-                        'type' => 'text',
-                        'required' => true,
-                    ],
-                    'dbUser' => [
-                        'value' => '',
-                        'type' => 'text',
-                        'required' => true,
-                    ],
-                    'dbPassword' => [
-                        'value' => '',
-                        'type' => 'password',
-                        'required' => false,
-                    ],
-                ]),
+                'credential_fields' => json_encode(['dbHost' => '', 'dbPort' => '', 'dbName' => '', 'dbUser' => '', 'dbPassword' => '']),
                 'created_at' => $now,
             ]);
 

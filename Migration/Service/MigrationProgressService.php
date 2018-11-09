@@ -3,14 +3,14 @@
 namespace SwagMigrationNext\Migration\Service;
 
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\ORM\RepositoryInterface;
-use Shopware\Core\Framework\ORM\Search\Aggregation\CountAggregation;
-use Shopware\Core\Framework\ORM\Search\Aggregation\ValueCountAggregation;
-use Shopware\Core\Framework\ORM\Search\Criteria;
-use Shopware\Core\Framework\ORM\Search\Query\NestedQuery;
-use Shopware\Core\Framework\ORM\Search\Query\NotQuery;
-use Shopware\Core\Framework\ORM\Search\Query\TermQuery;
-use Shopware\Core\Framework\ORM\Search\Sorting\FieldSorting;
+use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\CountAggregation;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\ValueCountAggregation;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use SwagMigrationNext\Migration\Run\SwagMigrationRunStruct;
 
 class MigrationProgressService implements MigrationProgressServiceInterface
@@ -108,10 +108,10 @@ class MigrationProgressService implements MigrationProgressServiceInterface
     private function getEntityCounts(string $runId, bool $isWritten = true): array
     {
         $criteria = new Criteria();
-        $criteria->addFilter(new TermQuery('runId', $runId));
+        $criteria->addFilter(new EqualsFilter('runId', $runId));
         if ($isWritten) {
-            $criteria->addFilter(new NotQuery([new TermQuery('converted', null)]));
-            $criteria->addFilter(new TermQuery('written', true));
+            $criteria->addFilter(new NotFilter(NotFilter::CONNECTION_AND, [new EqualsFilter('converted', null)]));
+            $criteria->addFilter(new EqualsFilter('written', true));
         }
         $criteria->addAggregation(new ValueCountAggregation('entity', 'entityCount'));
         $result = $this->migrationDataRepository->search($criteria, $this->context);
@@ -124,10 +124,10 @@ class MigrationProgressService implements MigrationProgressServiceInterface
     private function getMediaFileCounts(string $runId, bool $onlyDownloaded = true): int
     {
         $criteria = new Criteria();
-        $criteria->addFilter(new TermQuery('runId', $runId));
-        $criteria->addFilter(new TermQuery('written', true));
+        $criteria->addFilter(new EqualsFilter('runId', $runId));
+        $criteria->addFilter(new EqualsFilter('written', true));
         if ($onlyDownloaded) {
-            $criteria->addFilter(new TermQuery('downloaded', true));
+            $criteria->addFilter(new EqualsFilter('downloaded', true));
         }
         $criteria->addAggregation(new CountAggregation('id', 'count'));
         $criteria->setLimit(1);
@@ -155,10 +155,10 @@ class MigrationProgressService implements MigrationProgressServiceInterface
             // Get totalCounts for write (database totals does not have the total count for every entity in 'toBeWritten'!)
             $criteria = new Criteria();
             $criteria->addAggregation(new ValueCountAggregation('entity', 'entityCount'));
-            $criteria->addFilter(new NestedQuery([
-                new TermQuery('runId', $run->getId()),
-                new NotQuery([
-                    new TermQuery('converted', null),
+            $criteria->addFilter(new MultiFilter(MultiFilter::CONNECTION_AND, [
+                new EqualsFilter('runId', $run->getId()),
+                new NotFilter(NotFilter::CONNECTION_AND, [
+                    new EqualsFilter('converted', null),
                 ]),
             ]));
             $result = $this->migrationDataRepository->search($criteria, $this->context);
