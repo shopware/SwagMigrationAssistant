@@ -61,11 +61,10 @@ class Shopware55Profile implements ProfileInterface
     public function collectData(GatewayInterface $gateway, MigrationContext $migrationContext, Context $context): int
     {
         $entityName = $migrationContext->getEntity();
-        /** @var array[] $data */
-        $data = $gateway->read($entityName, $migrationContext->getOffset(), $migrationContext->getLimit());
         $runId = $migrationContext->getRunUuid();
 
         try {
+            /** @var array[] $data */
             $data = $gateway->read($entityName, $migrationContext->getOffset(), $migrationContext->getLimit());
         } catch (\Exception $exception) {
             $this->loggingService->addError($runId, (string) $exception->getCode(), $exception->getMessage(), ['entity' => $entityName]);
