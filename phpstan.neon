@@ -1,0 +1,4 @@
+parameters:
+    reportUnmatchedIgnoredErrors: false
+    excludes_analyse:
+        - %currentWorkingDirectory%/Test/*
