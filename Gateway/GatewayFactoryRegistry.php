@@ -2,7 +2,6 @@
 
 namespace SwagMigrationNext\Gateway;
 
-use IteratorAggregate;
 use SwagMigrationNext\Exception\GatewayNotFoundException;
 use SwagMigrationNext\Migration\MigrationContext;
 
@@ -13,7 +12,7 @@ class GatewayFactoryRegistry implements GatewayFactoryRegistryInterface
      */
     private $gatewayFactories;
 
-    public function __construct(IteratorAggregate $gatewayFactories)
+    public function __construct(iterable $gatewayFactories)
     {
         $this->gatewayFactories = $gatewayFactories;
     }

@@ -157,7 +157,6 @@ class CliAssetDownloadService implements CliAssetDownloadServiceInterface
     }
 
     /**
-     * @throws GuzzleException
      * @throws IllegalMimeTypeException
      * @throws UploadException
      */

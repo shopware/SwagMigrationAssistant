@@ -2,7 +2,6 @@
 
 namespace SwagMigrationNext\Profile;
 
-use IteratorAggregate;
 use SwagMigrationNext\Exception\ProfileNotFoundException;
 
 class ProfileRegistry implements ProfileRegistryInterface
@@ -12,7 +11,7 @@ class ProfileRegistry implements ProfileRegistryInterface
      */
     private $profiles;
 
-    public function __construct(IteratorAggregate $profiles)
+    public function __construct(iterable $profiles)
     {
         $this->profiles = $profiles;
     }

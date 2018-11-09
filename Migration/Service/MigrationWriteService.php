@@ -25,7 +25,7 @@ class MigrationWriteService implements MigrationWriteServiceInterface
     private $migrationDataRepo;
 
     /**
-     * @var WriterRegistryInterface[]
+     * @var WriterRegistryInterface
      */
     private $writerRegistry;
 

@@ -2,8 +2,6 @@
 
 namespace SwagMigrationNext\Profile\Shopware55\Converter;
 
-use IteratorAggregate;
-
 class ConverterRegistry implements ConverterRegistryInterface
 {
     /**
@@ -11,7 +9,7 @@ class ConverterRegistry implements ConverterRegistryInterface
      */
     private $converters;
 
-    public function __construct(IteratorAggregate $converters)
+    public function __construct(iterable $converters)
     {
         $this->converters = $converters;
     }

@@ -2,7 +2,6 @@
 
 namespace SwagMigrationNext\Migration\Writer;
 
-use IteratorAggregate;
 use SwagMigrationNext\Exception\WriterNotFoundException;
 
 class WriterRegistry implements WriterRegistryInterface
@@ -12,7 +11,7 @@ class WriterRegistry implements WriterRegistryInterface
      */
     private $writers;
 
-    public function __construct(IteratorAggregate $writers)
+    public function __construct(iterable $writers)
     {
         $this->writers = $writers;
     }
