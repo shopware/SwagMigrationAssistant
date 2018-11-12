@@ -169,6 +169,7 @@ Component.register('swag-migration-wizard', {
 
         onResponseError(errorCode) {
             switch (errorCode) {
+            case 404:
             case 0: // can't connect to shop
                 this.errorMessage = this.$tc('swag-migration.wizard.pages.credentials.error.connectionErrorMsg');
                 break;

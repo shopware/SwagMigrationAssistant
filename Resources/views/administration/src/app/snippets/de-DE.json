@@ -130,7 +130,7 @@
             "hintTitle": "Achtung:",
             "hintContent": "Der Import konnte nicht vollständig abgeschlossen werden. Möglicherweise sind Daten fehlerhaft oder unvollständig importiert worden.",
             "warningListTitle": "Es sind keine Fehler aufgetreten | Folgender Fehler ist aufgetreten | {count} Fehler sind aufgetreten",
-            "warningListHint": "Für weitere Informationen kannst Du in die Konsolenlogs der Entwicklertools Deines Browser schauen."
+            "warningListHint": ""
           },
           "failure": {
             "title": "Fehlgeschlagen",

@@ -130,7 +130,7 @@
             "hintTitle": "Warning:",
             "hintContent": "The import could not be completed properly. Imported data may be incorrect or incomplete.",
             "warningListTitle": "No error occurred | The following error occurred | The following errors occurred",
-            "warningListHint": "For more information, you can check the console logs of the developer tools in your browser."
+            "warningListHint": ""
           },
           "failure": {
             "title": "Failed",

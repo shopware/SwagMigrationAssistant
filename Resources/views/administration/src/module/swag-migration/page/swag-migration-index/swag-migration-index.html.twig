@@ -52,7 +52,7 @@
                                             {% block swag_migration_index_card_shopInfo_actions %}
                                                 <div class="swag-migration-index__actions">
                                                     {% block swag_migration_index_card_shopInfo_actions_editSettings %}
-                                                        <sw-button size="small" @click="editSettings" :disabled="isMigrating">
+                                                        <sw-button size="small" @click="editSettings" :disabled="isMigrating || isPaused">
                                                             <sw-icon name="small-pencil" small></sw-icon>
                                                             {{ $tc('swag-migration.index.shopInfoCard.buttonEditSettings') }}
                                                         </sw-button>
