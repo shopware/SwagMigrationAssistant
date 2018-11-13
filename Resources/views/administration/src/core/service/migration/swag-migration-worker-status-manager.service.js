@@ -26,7 +26,7 @@ export class WorkerStatusManager {
     }
 
     /**
-     * This handles the nessecary things before we start working on the status.
+     * This handles the necessary things before we start working on the status.
      * For example it resets the progress and updates the counts before the 'WRITE_DATA' operation.
      *
      * @param {string} runId

@@ -97,7 +97,6 @@
             <argument type="service" id="order_state.repository"/>
             <argument type="service" id="order_transaction_state.repository"/>
             <argument type="service" id="currency.repository"/>
-            <argument type="service" id="SwagMigrationNext\Migration\Asset\MediaFileService"/>
         </service>
     </services>
 </container>

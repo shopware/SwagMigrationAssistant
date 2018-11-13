@@ -14,14 +14,12 @@ use Shopware\Core\Content\Media\File\MediaFile;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use SwagMigrationNext\Exception\NoFileSystemPermissionsException;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\Mapping\SwagMigrationMappingStruct;
-use SwagMigrationNext\Profile\Shopware55\Logging\LoggingType;
-use Symfony\Component\Debug\Exception\FatalErrorException;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
@@ -53,7 +51,7 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
         $this->loggingService = $loggingService;
     }
 
-    public function fetchMediaUuids(Context $context, string $runId, int $limit): array
+    public function fetchMediaUuids(string $runId, Context $context, int $limit): array
     {
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('runId', $runId));
@@ -96,14 +94,6 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
             $this->loggingService->saveLogging($context);
 
             return $workload;
-        }
-
-        //Map workload with uuids as keys
-        $mappedWorkload = [];
-        $mediaIds = [];
-        foreach ($workload as $work) {
-            $mappedWorkload[$work['uuid']] = $work;
-            $mediaIds[] = $work['uuid'];
         }
 
         //Fetch assets from database
@@ -226,10 +216,6 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
     }
 
     /**
-     * Persists the file to the flysystem.
-     *
-     * @throws IllegalMimeTypeException
-     * @throws UploadException
      * @throws MediaNotFoundException
      */
     private function persistFileToMedia(string $filePath, string $uuid, int $fileSize, string $fileExtension, Context $context): void

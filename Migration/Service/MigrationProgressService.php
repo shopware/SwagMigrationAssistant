@@ -7,9 +7,9 @@ use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\CountAggregation;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\ValueCountAggregation;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use SwagMigrationNext\Migration\Run\SwagMigrationRunStruct;
 
@@ -57,7 +57,6 @@ class MigrationProgressService implements MigrationProgressServiceInterface
         // Get the current entity counts
         $totals = $run->getTotals();
         $fetchedEntityCounts = $this->getEntityCounts($run->getId(), false);
-        $writtenEntityCounts = $this->getEntityCounts($run->getId());
 
         // Compare fetched counts
         $compareFetchCountResult = $this->compareFetchCount($run, $totals, $fetchedEntityCounts);
@@ -72,15 +71,14 @@ class MigrationProgressService implements MigrationProgressServiceInterface
         }
 
         // Compare written counts
+        $writtenEntityCounts = $this->getEntityCounts($run->getId());
         $compareWrittenCountResult = $this->compareWrittenCount($run, $totals, $writtenEntityCounts);
-
         if ($compareWrittenCountResult !== null) {
             return $compareWrittenCountResult;
         }
 
         // Compare media download counts
         $compareMediaDownloadCountResult = $this->compareMediaDownloadCount($run);
-
         if ($compareMediaDownloadCountResult !== null) {
             return $compareMediaDownloadCountResult;
         }
@@ -110,7 +108,7 @@ class MigrationProgressService implements MigrationProgressServiceInterface
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('runId', $runId));
         if ($isWritten) {
-            $criteria->addFilter(new NotFilter(NotFilter::CONNECTION_AND, [new EqualsFilter('converted', null)]));
+            $criteria->addFilter(new NotFilter(MultiFilter::CONNECTION_AND, [new EqualsFilter('converted', null)]));
             $criteria->addFilter(new EqualsFilter('written', true));
         }
         $criteria->addAggregation(new ValueCountAggregation('entity', 'entityCount'));
@@ -240,10 +238,10 @@ class MigrationProgressService implements MigrationProgressServiceInterface
                 continue;
             }
 
-            if (!isset($writtenEntityCounts[$entity])) {
-                $finishCount = 0;
-            } else {
+            if (isset($writtenEntityCounts[$entity])) {
                 $finishCount = $writtenEntityCounts[$entity];
+            } else {
+                $finishCount = 0;
             }
 
             $progressState = new ProgressState(
@@ -290,7 +288,7 @@ class MigrationProgressService implements MigrationProgressServiceInterface
     /**
      * Returns the ProgressState if all datasets are fetched, but the writing not started yet.
      */
-    private function isWriteNotStartedResult(SwagMigrationRunStruct $run, array &$totals, array $fetchedEntityCounts): ?ProgressState
+    private function isWriteNotStartedResult(SwagMigrationRunStruct $run, array $totals, array $fetchedEntityCounts): ?ProgressState
     {
         if (!isset($totals['toBeWritten'])) {
             reset($totals['toBeFetched']);

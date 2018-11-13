@@ -8,6 +8,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use SwagMigrationNext\Migration\Asset\MediaFileServiceInterface;
@@ -38,8 +39,12 @@ class MigrationWriteService implements MigrationWriteServiceInterface
      */
     private $mediaFileService;
 
-    public function __construct(RepositoryInterface $migrationDataRepo, WriterRegistryInterface $writerRegistry, MediaFileServiceInterface $mediaFileService, LoggingServiceInterface $loggingService)
-    {
+    public function __construct(
+        RepositoryInterface $migrationDataRepo,
+        WriterRegistryInterface $writerRegistry,
+        MediaFileServiceInterface $mediaFileService,
+        LoggingServiceInterface $loggingService
+    ) {
         $this->migrationDataRepo = $migrationDataRepo;
         $this->writerRegistry = $writerRegistry;
         $this->mediaFileService = $mediaFileService;
@@ -52,7 +57,7 @@ class MigrationWriteService implements MigrationWriteServiceInterface
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('entity', $entity));
         $criteria->addFilter(new EqualsFilter('runId', $migrationContext->getRunUuid()));
-        $criteria->addFilter(new NotFilter(NotFilter::CONNECTION_AND, [new EqualsFilter('converted', null)]));
+        $criteria->addFilter(new NotFilter(MultiFilter::CONNECTION_AND, [new EqualsFilter('converted', null)]));
         $criteria->setOffset($migrationContext->getOffset());
         $criteria->setLimit($migrationContext->getLimit());
         $criteria->addSorting(new FieldSorting('createdAt', FieldSorting::ASCENDING));

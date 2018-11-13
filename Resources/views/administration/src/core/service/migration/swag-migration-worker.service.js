@@ -2,7 +2,7 @@ import { Application } from 'src/core/shopware';
 import CriteriaFactory from 'src/core/factory/criteria.factory';
 import StorageBroadcastService from '../storage-broadcaster.service';
 import { WorkerRequest } from './swag-migration-worker-request.service';
-import { WorkerDownload } from './swag-migration-worker-download';
+import { WorkerDownload } from './swag-migration-worker-download.service';
 import { MIGRATION_STATUS, WorkerStatusManager } from './swag-migration-worker-status-manager.service';
 
 

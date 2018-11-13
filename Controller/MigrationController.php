@@ -194,7 +194,7 @@ class MigrationController extends Controller
             throw new MigrationWorkloadPropertyMissingException('runId');
         }
 
-        $mediaUuids = $this->assetDownloadService->fetchMediaUuids($context, $runId, $limit);
+        $mediaUuids = $this->assetDownloadService->fetchMediaUuids($runId, $context, $limit);
 
         return new JsonResponse(['mediaUuids' => $mediaUuids]);
     }

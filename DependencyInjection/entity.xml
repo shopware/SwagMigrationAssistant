@@ -67,5 +67,21 @@
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Search\EntityAggregatorInterface"/>
             <argument type="service" id="event_dispatcher"/>
         </service>
+
+        <service id="SwagMigrationNext\Migration\Asset\SwagMigrationMediaFileDefinition"
+                 class="SwagMigrationNext\Migration\Asset\SwagMigrationMediaFileDefinition">
+            <tag name="shopware.entity.definition" entity="swag_migration_media_file"/>
+        </service>
+
+        <service id="swag_migration_media_file.repository"
+                 class="Shopware\Core\Framework\DataAbstractionLayer\EntityRepository"
+                 public="true">
+            <argument>SwagMigrationNext\Migration\Asset\SwagMigrationMediaFileDefinition</argument>
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Read\EntityReaderInterface"/>
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\VersionManager"/>
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearcherInterface"/>
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Search\EntityAggregatorInterface"/>
+            <argument type="service" id="event_dispatcher"/>
+        </service>
     </services>
 </container>

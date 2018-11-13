@@ -140,7 +140,7 @@
           }
         },
         "pauseScreen": {
-          "title": "Pause.",
+          "title": "Pause",
           "message": "Der Import wurde pausiert.<br>Setze ihn fort oder brich den Prozess ab.<br><br>"
         }
       },

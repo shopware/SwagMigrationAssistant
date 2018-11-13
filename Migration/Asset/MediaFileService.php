@@ -5,10 +5,10 @@ namespace SwagMigrationNext\Migration\Asset;
 use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use SwagMigrationNext\Migration\MigrationContext;
 
 class MediaFileService implements MediaFileServiceInterface
@@ -16,6 +16,7 @@ class MediaFileService implements MediaFileServiceInterface
     protected $writeArray = [];
 
     protected $uuids = [];
+
     /**
      * @var RepositoryInterface
      */

@@ -1,4 +1,3 @@
-
 export class WorkerDownload {
     /**
      * @param {number} status
@@ -16,7 +15,7 @@ export class WorkerDownload {
         onProgressCB,
         onErrorCB
     ) {
-        this._MAX_REQUEST_TIME = 10000; // in ms
+        this._MAX_REQUEST_TIME_IN_MILLISECONDS = 10000;
         this._ASSET_UUID_CHUNK = 100; // Amount of uuids we fetch with one request
         this._ASSET_WORKLOAD_COUNT = 5; // The amount of assets we download per request in parallel
         // The maximum amount of bytes we download per file in one request
@@ -293,12 +292,12 @@ export class WorkerDownload {
      * @private
      */
     _handleAssetFileChunkByteSize(requestTime) {
-        if (requestTime < this._MAX_REQUEST_TIME) {
+        if (requestTime < this._MAX_REQUEST_TIME_IN_MILLISECONDS) {
             this._ASSET_FILE_CHUNK_BYTE_SIZE += this._CHUNK_SIZE_BYTE_INCREMENT;
         }
 
         if (
-            requestTime > this._MAX_REQUEST_TIME &&
+            requestTime > this._MAX_REQUEST_TIME_IN_MILLISECONDS &&
             (this._ASSET_FILE_CHUNK_BYTE_SIZE - this._CHUNK_SIZE_BYTE_INCREMENT) >= this._ASSET_MIN_FILE_CHUNK_BYTE_SIZE
         ) {
             this._ASSET_FILE_CHUNK_BYTE_SIZE -= this._CHUNK_SIZE_BYTE_INCREMENT;

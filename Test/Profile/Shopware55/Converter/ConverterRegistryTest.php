@@ -4,22 +4,19 @@ namespace SwagMigrationNext\Test\Profile\Shopware55\Converter;
 
 use Exception;
 use PHPUnit\Framework\TestCase;
-use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
-use SwagMigrationNext\Migration\Asset\MediaFileService;
 use SwagMigrationNext\Profile\Shopware55\Converter\ConverterNotFoundException;
 use SwagMigrationNext\Profile\Shopware55\Converter\ConverterRegistry;
 use SwagMigrationNext\Profile\Shopware55\Converter\ConverterRegistryInterface;
 use SwagMigrationNext\Profile\Shopware55\Converter\ProductConverter;
 use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
 use SwagMigrationNext\Test\Mock\DummyCollection;
+use SwagMigrationNext\Test\Mock\Migration\Asset\DummyMediaFileService;
 use SwagMigrationNext\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationNext\Test\Mock\Migration\Mapping\DummyMappingService;
 use Symfony\Component\HttpFoundation\Response;
 
 class ConverterRegistryTest extends TestCase
 {
-    use IntegrationTestBehaviour;
-
     /**
      * @var ConverterRegistryInterface
      */
@@ -32,7 +29,7 @@ class ConverterRegistryTest extends TestCase
                 new ProductConverter(
                     new DummyMappingService(),
                     new ConverterHelperService(),
-                    new MediaFileService($this->getContainer()->get('swag_migration_media_file.repository')),
+                    new DummyMediaFileService(),
                     new DummyLoggingService()
                 ),
             ])

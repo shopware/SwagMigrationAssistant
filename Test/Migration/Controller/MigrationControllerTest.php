@@ -19,6 +19,7 @@ use SwagMigrationNext\Migration\Service\MigrationProgressService;
 use SwagMigrationNext\Migration\Service\MigrationWriteService;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationNext\Profile\SwagMigrationProfileStruct;
 use SwagMigrationNext\Test\Migration\Services\MigrationProfileUuidService;
 use SwagMigrationNext\Test\MigrationServicesTrait;
 use Symfony\Component\HttpFoundation\Request;
@@ -84,11 +85,12 @@ class MigrationControllerTest extends TestCase
         $criteria->addFilter(new EqualsFilter('profile', 'shopware55'));
         $criteria->addFilter(new EqualsFilter('gateway', 'api'));
         $profileResult = $profileRepo->search($criteria, $context);
-        $profileIds = $profileResult->getIds();
+        /** @var $profile SwagMigrationProfileStruct */
+        $profile = $profileResult->first();
 
         $request = new Request([], [
             'profileName' => Shopware55Profile::PROFILE_NAME,
-            'profileId' => array_pop($profileIds),
+            'profileId' => $profile->getId(),
             'runUuid' => $this->runUuid,
             'gateway' => 'local',
             'entity' => ProductDefinition::getEntityName(),

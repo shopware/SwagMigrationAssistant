@@ -9,7 +9,6 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use SwagMigrationNext\Migration\Asset\MediaFileServiceInterface;
 use SwagMigrationNext\Migration\Mapping\MappingService;
 
 class Shopware55MappingService extends MappingService
@@ -37,10 +36,15 @@ class Shopware55MappingService extends MappingService
         RepositoryInterface $paymentRepository,
         RepositoryInterface $orderStateRepository,
         RepositoryInterface $transactionStateRepository,
-        RepositoryInterface $currencyRepository,
-        MediaFileServiceInterface $mediaFileService
+        RepositoryInterface $currencyRepository
     ) {
-        parent::__construct($migrationMappingRepo, $localeRepository, $languageRepository, $countryRepository, $currencyRepository, $mediaFileService);
+        parent::__construct(
+            $migrationMappingRepo,
+            $localeRepository,
+            $languageRepository,
+            $countryRepository,
+            $currencyRepository
+        );
 
         $this->paymentRepository = $paymentRepository;
         $this->orderStateRepository = $orderStateRepository;
