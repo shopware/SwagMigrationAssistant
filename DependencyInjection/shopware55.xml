@@ -10,6 +10,7 @@
                  class="SwagMigrationNext\Profile\Shopware55\Shopware55Profile">
             <argument type="service" id="swag_migration_data.repository"/>
             <argument type="service" id="SwagMigrationNext\Profile\Shopware55\Converter\ConverterRegistry"/>
+            <argument type="service" id="SwagMigrationNext\Migration\Asset\MediaFileService"/>
             <argument type="service" id="SwagMigrationNext\Migration\Logging\LoggingService"/>
             <tag name="shopware.migration.profile"/>
         </service>
@@ -28,6 +29,7 @@
                  class="SwagMigrationNext\Profile\Shopware55\Converter\ProductConverter">
             <argument type="service" id="SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService"/>
             <argument type="service" id="SwagMigrationNext\Profile\Shopware55\ConverterHelperService"/>
+            <argument type="service" id="SwagMigrationNext\Migration\Asset\MediaFileService"/>
             <argument type="service" id="SwagMigrationNext\Migration\Logging\LoggingService"/>
             <tag name="shopware.migration.shopware55.converter"/>
         </service>
@@ -52,6 +54,7 @@
                  class="SwagMigrationNext\Profile\Shopware55\Converter\AssetConverter">
             <argument type="service" id="SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService"/>
             <argument type="service" id="SwagMigrationNext\Profile\Shopware55\ConverterHelperService"/>
+            <argument type="service" id="SwagMigrationNext\Migration\Asset\MediaFileService"/>
             <tag name="shopware.migration.shopware55.converter"/>
         </service>
 

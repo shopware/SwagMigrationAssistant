@@ -17,12 +17,15 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\System\Currency\CurrencyStruct;
+use SwagMigrationNext\Gateway\Shopware55\Local\Shopware55LocalGateway;
+use SwagMigrationNext\Migration\Asset\MediaFileService;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Service\MigrationCollectServiceInterface;
 use SwagMigrationNext\Migration\Service\MigrationWriteService;
 use SwagMigrationNext\Migration\Service\MigrationWriteServiceInterface;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationNext\Test\Migration\Services\MigrationProfileUuidService;
 use SwagMigrationNext\Test\MigrationServicesTrait;
 
 class MigrationWriteServiceTest extends TestCase
@@ -85,15 +88,26 @@ class MigrationWriteServiceTest extends TestCase
      */
     private $runUuid;
 
+    /**
+     * @var MigrationProfileUuidService
+     */
+    private $profileUuidService;
+
     protected function setUp()
     {
+        $this->profileUuidService = new MigrationProfileUuidService(
+            $this->getContainer()->get('swag_migration_profile.repository'),
+            Shopware55Profile::PROFILE_NAME,
+            Shopware55LocalGateway::GATEWAY_TYPE
+        );
+
         $this->runUuid = Uuid::uuid4()->getHex();
         $runRepo = $this->getContainer()->get('swag_migration_run.repository');
         $runRepo->create(
             [
                 [
                     'id' => $this->runUuid,
-                    'profile' => Shopware55Profile::PROFILE_NAME,
+                    'profileId' => $this->profileUuidService->getProfileUuid(),
                 ],
             ],
             Context::createDefaultContext(Defaults::TENANT_ID)
@@ -101,8 +115,9 @@ class MigrationWriteServiceTest extends TestCase
 
         $this->migrationCollectService = $this->getMigrationCollectService(
             $this->getContainer()->get('swag_migration_data.repository'),
-            $this->getContainer()->get('swag_migration_logging.repository'),
-            $this->getContainer()->get(Shopware55MappingService::class)
+            $this->getContainer()->get(Shopware55MappingService::class),
+            $this->getContainer()->get(MediaFileService::class),
+            $this->getContainer()->get('swag_migration_logging.repository')
         );
         $this->migrationWriteService = $this->getContainer()->get(MigrationWriteService::class);
         $this->productRepo = $this->getContainer()->get('product.repository');
@@ -120,6 +135,7 @@ class MigrationWriteServiceTest extends TestCase
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
         $migrationContext = new MigrationContext(
             $this->runUuid,
+            $this->profileUuidService->getProfileUuid(),
             Shopware55Profile::PROFILE_NAME,
             'local',
             CustomerDefinition::getEntityName(),
@@ -147,6 +163,7 @@ class MigrationWriteServiceTest extends TestCase
         // Add users, who have ordered
         $userMigrationContext = new MigrationContext(
             $this->runUuid,
+            $this->profileUuidService->getProfileUuid(),
             Shopware55Profile::PROFILE_NAME,
             'local',
             CustomerDefinition::getEntityName(),
@@ -162,6 +179,7 @@ class MigrationWriteServiceTest extends TestCase
         // Add orders
         $migrationContext = new MigrationContext(
             $this->runUuid,
+            $this->profileUuidService->getProfileUuid(),
             Shopware55Profile::PROFILE_NAME,
             'local',
             OrderDefinition::getEntityName(),
@@ -203,6 +221,7 @@ class MigrationWriteServiceTest extends TestCase
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
         $migrationContext = new MigrationContext(
             $this->runUuid,
+            $this->profileUuidService->getProfileUuid(),
             Shopware55Profile::PROFILE_NAME,
             'local',
             CustomerDefinition::getEntityName(),
@@ -228,6 +247,7 @@ class MigrationWriteServiceTest extends TestCase
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
         $migrationContext = new MigrationContext(
             $this->runUuid,
+            $this->profileUuidService->getProfileUuid(),
             Shopware55Profile::PROFILE_NAME,
             'local',
             MediaDefinition::getEntityName(),
@@ -251,6 +271,7 @@ class MigrationWriteServiceTest extends TestCase
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
         $migrationContext = new MigrationContext(
             $this->runUuid,
+            $this->profileUuidService->getProfileUuid(),
             Shopware55Profile::PROFILE_NAME,
             'local',
             CategoryDefinition::getEntityName(),
@@ -274,6 +295,7 @@ class MigrationWriteServiceTest extends TestCase
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
         $migrationContext = new MigrationContext(
             $this->runUuid,
+            $this->profileUuidService->getProfileUuid(),
             Shopware55Profile::PROFILE_NAME,
             'local',
             ProductDefinition::getEntityName(),
@@ -298,6 +320,7 @@ class MigrationWriteServiceTest extends TestCase
 
         $migrationContext = new MigrationContext(
             $this->runUuid,
+            $this->profileUuidService->getProfileUuid(),
             Shopware55Profile::PROFILE_NAME,
             'local',
             ProductDefinition::getEntityName(),
@@ -313,6 +336,7 @@ class MigrationWriteServiceTest extends TestCase
 
         $migrationContext = new MigrationContext(
             $this->runUuid,
+            $this->profileUuidService->getProfileUuid(),
             Shopware55Profile::PROFILE_NAME,
             'local',
             'translation',
@@ -334,6 +358,7 @@ class MigrationWriteServiceTest extends TestCase
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
         $migrationContext = new MigrationContext(
             Uuid::uuid4()->getHex(),
+            $this->profileUuidService->getProfileUuid(),
             Shopware55Profile::PROFILE_NAME,
             'local',
             ProductDefinition::getEntityName(),

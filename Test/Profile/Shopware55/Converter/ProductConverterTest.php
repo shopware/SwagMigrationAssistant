@@ -11,6 +11,7 @@ use SwagMigrationNext\Profile\Shopware55\Converter\CategoryConverter;
 use SwagMigrationNext\Profile\Shopware55\Converter\ParentEntityForChildNotFoundException;
 use SwagMigrationNext\Profile\Shopware55\Converter\ProductConverter;
 use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
+use SwagMigrationNext\Test\Mock\Migration\Asset\DummyMediaFileService;
 use SwagMigrationNext\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationNext\Test\Mock\Migration\Mapping\DummyMappingService;
 
@@ -33,10 +34,11 @@ class ProductConverterTest extends TestCase
 
     protected function setUp()
     {
+        $mediaFileService = new DummyMediaFileService();
         $this->mappingService = new DummyMappingService();
         $converterHelperService = new ConverterHelperService();
         $this->loggingService = new DummyLoggingService();
-        $this->productConverter = new ProductConverter($this->mappingService, $converterHelperService, $this->loggingService);
+        $this->productConverter = new ProductConverter($this->mappingService, $converterHelperService, $mediaFileService, $this->loggingService);
     }
 
     public function testSupports(): void
@@ -51,7 +53,7 @@ class ProductConverterTest extends TestCase
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
 
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
-        $convertResult = $this->productConverter->convert($productData[0], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
+        $convertResult = $this->productConverter->convert($productData[0], $context, Uuid::uuid4()->getHex(), Uuid::uuid4()->getHex(), Defaults::CATALOG);
 
         $converted = $convertResult->getConverted();
 
@@ -76,10 +78,11 @@ class ProductConverterTest extends TestCase
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
 
-        $categoryConverter->convert($categoryData[1], $context, Uuid::uuid4()->getHex(), Uuid::uuid4()->getHex(), Defaults::CATALOG);
-        $categoryConverter->convert($categoryData[7], $context, Uuid::uuid4()->getHex(), Uuid::uuid4()->getHex(), Defaults::CATALOG);
+        $profileUuid = Uuid::uuid4()->getHex();
+        $categoryConverter->convert($categoryData[1], $context, Uuid::uuid4()->getHex(), $profileUuid, Defaults::CATALOG);
+        $categoryConverter->convert($categoryData[7], $context, Uuid::uuid4()->getHex(), $profileUuid, Defaults::CATALOG);
 
-        $convertResult = $this->productConverter->convert($productData[0], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
+        $convertResult = $this->productConverter->convert($productData[0], $context, Uuid::uuid4()->getHex(), $profileUuid, Defaults::CATALOG);
 
         $converted = $convertResult->getConverted();
 
@@ -102,7 +105,7 @@ class ProductConverterTest extends TestCase
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
 
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
-        $convertResult = $this->productConverter->convert($productData[1], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
+        $convertResult = $this->productConverter->convert($productData[1], $context, Uuid::uuid4()->getHex(), Uuid::uuid4()->getHex(), Defaults::CATALOG);
 
         $converted = $convertResult->getConverted();
 
@@ -123,8 +126,9 @@ class ProductConverterTest extends TestCase
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
 
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
-        $convertResultContainer = $this->productConverter->convert($productData[1], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
-        $convertResult = $this->productConverter->convert($productData[15], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
+        $profileId = Uuid::uuid4()->getHex();
+        $convertResultContainer = $this->productConverter->convert($productData[1], $context, Uuid::uuid4()->getHex(), $profileId, Defaults::CATALOG);
+        $convertResult = $this->productConverter->convert($productData[15], $context, Uuid::uuid4()->getHex(), $profileId, Defaults::CATALOG);
 
         $converted = $convertResult->getConverted();
         $convertedContainer = $convertResultContainer->getConverted();
@@ -147,7 +151,7 @@ class ProductConverterTest extends TestCase
 
         $this->expectException(ParentEntityForChildNotFoundException::class);
         $this->expectExceptionMessage('Parent entity for "product: SW10007.1" child not found');
-        $this->productConverter->convert($productData[15], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
+        $this->productConverter->convert($productData[15], $context, Uuid::uuid4()->getHex(), Uuid::uuid4()->getHex(), Defaults::CATALOG);
         static::assertCount(0, $this->loggingService->getLoggingArray());
     }
 
@@ -158,7 +162,7 @@ class ProductConverterTest extends TestCase
         unset($productData['assets'][0]['media']['id']);
 
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
-        $convertResult = $this->productConverter->convert($productData, $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
+        $convertResult = $this->productConverter->convert($productData, $context, Uuid::uuid4()->getHex(), Uuid::uuid4()->getHex(), Defaults::CATALOG);
 
         $converted = $convertResult->getConverted();
 
@@ -171,7 +175,7 @@ class ProductConverterTest extends TestCase
         static::assertArrayNotHasKey('media', $converted);
 
         $logs = $this->loggingService->getLoggingArray();
-        $description = 'Product-Media could not converted';
+        $description = 'Product-Media could not converted.';
         static::assertSame($description, $logs[0]['logEntry']['description']);
         static::assertCount(1, $logs);
     }

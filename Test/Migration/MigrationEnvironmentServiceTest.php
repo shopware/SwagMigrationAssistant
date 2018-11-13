@@ -12,6 +12,7 @@ use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagMigrationNext\Gateway\GatewayFactoryRegistry;
 use SwagMigrationNext\Gateway\GatewayFactoryRegistryInterface;
 use SwagMigrationNext\Gateway\Shopware55\Api\Shopware55ApiFactory;
+use SwagMigrationNext\Migration\Asset\MediaFileService;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Service\MigrationEnvironmentService;
 use SwagMigrationNext\Migration\Service\MigrationEnvironmentServiceInterface;
@@ -24,6 +25,7 @@ use SwagMigrationNext\Profile\Shopware55\Converter\ProductConverter;
 use SwagMigrationNext\Profile\Shopware55\Converter\TranslationConverter;
 use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationNext\Test\Migration\Services\MigrationProfileUuidService;
 use SwagMigrationNext\Test\Mock\DummyCollection;
 use SwagMigrationNext\Test\Mock\Gateway\Dummy\Local\DummyLocalFactory;
 use SwagMigrationNext\Test\Mock\Migration\Logging\DummyLoggingService;
@@ -38,24 +40,30 @@ class MigrationEnvironmentServiceTest extends TestCase
      */
     private $migrationEnvironmentService;
 
+    /**
+     * @var MigrationProfileUuidService
+     */
+    private $profileUuidService;
+
     protected function setUp()
     {
+        $mediaFileService = $this->getContainer()->get(MediaFileService::class);
         $loggingService = new DummyLoggingService();
         $mappingService = new DummyMappingService();
         $converterRegistry = new ConverterRegistry(
             new DummyCollection(
                 [
-                    new ProductConverter($mappingService, new ConverterHelperService(), $loggingService),
+                    new ProductConverter($mappingService, new ConverterHelperService(), $mediaFileService, $loggingService),
                     new TranslationConverter($mappingService, new ConverterHelperService(), $loggingService),
                     new CategoryConverter($mappingService, new ConverterHelperService(), $loggingService),
-                    new AssetConverter($mappingService, new ConverterHelperService()),
+                    new AssetConverter($mappingService, new ConverterHelperService(), $mediaFileService),
                     new CustomerConverter($mappingService, new ConverterHelperService(), $loggingService),
                 ]
             )
         );
 
         $profileRegistry = new ProfileRegistry(new DummyCollection([
-            new Shopware55Profile($this->getContainer()->get('swag_migration_data.repository'), $converterRegistry, $loggingService),
+            new Shopware55Profile($this->getContainer()->get('swag_migration_data.repository'), $converterRegistry, $mediaFileService, $loggingService),
         ]));
         /** @var GatewayFactoryRegistryInterface $gatewayFactoryRegistry */
         $gatewayFactoryRegistry = new GatewayFactoryRegistry(new DummyCollection([
@@ -64,12 +72,16 @@ class MigrationEnvironmentServiceTest extends TestCase
         ]));
 
         $this->migrationEnvironmentService = new MigrationEnvironmentService($profileRegistry, $gatewayFactoryRegistry);
+        $this->profileUuidService = new MigrationProfileUuidService($this->getContainer()->get('swag_migration_profile.repository'));
     }
 
     public function testGetEntityTotal(): void
     {
+        $this->profileUuidService = new MigrationProfileUuidService($this->getContainer()->get('swag_migration_profile.repository'));
+
         $migrationContext = new MigrationContext(
             Uuid::uuid4()->getHex(),
+            $this->profileUuidService->getProfileUuid(),
             Shopware55Profile::PROFILE_NAME,
             'local',
             CustomerDefinition::getEntityName(),
@@ -84,6 +96,7 @@ class MigrationEnvironmentServiceTest extends TestCase
 
         $migrationContext = new MigrationContext(
             '',
+            $this->profileUuidService->getProfileUuid(),
             Shopware55Profile::PROFILE_NAME,
             'local',
             ProductDefinition::getEntityName(),
@@ -98,6 +111,7 @@ class MigrationEnvironmentServiceTest extends TestCase
 
         $migrationContext = new MigrationContext(
             '',
+            $this->profileUuidService->getProfileUuid(),
             Shopware55Profile::PROFILE_NAME,
             'local',
             CategoryDefinition::getEntityName(),
@@ -112,6 +126,7 @@ class MigrationEnvironmentServiceTest extends TestCase
 
         $migrationContext = new MigrationContext(
             '',
+            $this->profileUuidService->getProfileUuid(),
             Shopware55Profile::PROFILE_NAME,
             'local',
             MediaDefinition::getEntityName(),

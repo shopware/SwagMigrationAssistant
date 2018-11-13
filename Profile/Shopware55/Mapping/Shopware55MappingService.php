@@ -38,7 +38,13 @@ class Shopware55MappingService extends MappingService
         RepositoryInterface $transactionStateRepository,
         RepositoryInterface $currencyRepository
     ) {
-        parent::__construct($migrationMappingRepo, $localeRepository, $languageRepository, $countryRepository, $currencyRepository);
+        parent::__construct(
+            $migrationMappingRepo,
+            $localeRepository,
+            $languageRepository,
+            $countryRepository,
+            $currencyRepository
+        );
 
         $this->paymentRepository = $paymentRepository;
         $this->orderStateRepository = $orderStateRepository;

@@ -6,7 +6,7 @@
     },
     "wizard": {
       "title": "Data import: Preparations",
-      "buttonAbort": "Cancel",
+      "buttonAbort": "Stop import",
       "buttonConnect": "Connect",
       "buttonPrev": "Back",
       "buttonNext": "Next",
@@ -38,6 +38,16 @@
           "endpointLabel": "Shop domain",
           "endpointPlaceholder": "www.demoshop.com",
           "endpointSSLLabel": "My shop uses SSL",
+          "dbHostLabel": "DB host",
+          "dbHostPlaceholder": "Insert database host ...",
+          "dbPortLabel": "DB port",
+          "dbPortPlaceholder": "Insert database port ...",
+          "dbNameLabel": "DB name",
+          "dbNamePlaceholder": "Insert database name ...",
+          "dbUserLabel": "DB user",
+          "dbUserPlaceholder": "Insert username ...",
+          "dbPasswordLabel": "DB password",
+          "dbPasswordPlaceholder": "Insert password ...",
           "success": {
             "contentTitle": "Successfully connected!",
             "contentInformation": "Click on “Finish” and select the data sets to be transferred in the import module. The data can be imported completely, step by step or subsequently.",
@@ -59,6 +69,9 @@
     "index": {
       "title": "Data import",
       "migrateButton": "Import",
+      "pauseButton": "Pause",
+      "continueButton": "Continue",
+      "abortButton": "Abort",
       "finishButton": "Finish",
       "backButton": "Back to overview",
       "browserClosingHint": "Do you really want to abort the data import?",
@@ -117,7 +130,7 @@
             "hintTitle": "Warning:",
             "hintContent": "The import could not be completed properly. Imported data may be incorrect or incomplete.",
             "warningListTitle": "No error occurred | The following error occurred | The following errors occurred",
-            "warningListHint": "For more information, you can check the console logs of the developer tools in your browser."
+            "warningListHint": ""
           },
           "failure": {
             "title": "Failed",
@@ -125,6 +138,10 @@
             "hintTitle": "Attention:",
             "hintContent": "The migration could not be completed."
           }
+        },
+        "pauseScreen": {
+          "title": "Pause",
+          "message": "The import was paused.<br>Continue it or abort the process.<br><br>"
         }
       },
       "confirmDialog": {
@@ -132,6 +149,14 @@
         "message": "Do you really want to import your data?",
         "cancel": "Cancel",
         "confirm": "Import"
+      },
+      "confirmAbortDialog": {
+        "title": "Data import",
+        "message": "Stop data import now?",
+        "cancelRunning": "Continue",
+        "cancelPause": "Pause further",
+        "confirm": "Stop import",
+        "hintContent": "When the process is finished, the data is not complete and therefore partially unusable."
       },
       "error": {
         "associationRequiredMissing": {
@@ -187,6 +212,33 @@
         },
         "unknownError": {
           "information": "Unknown error. For more information, you can check the console logs of the developer tools in your browser."
+        },
+        "emptyNecessaryDataFields": {
+          "information": "{entity} entity could not be converted, because of empty, necessary field(s): {fields}."
+        },
+        "noDefaultShippingAddress": {
+          "information": "Default shipping address of customer is empty and will be set with the default billing address."
+        },
+        "noDefaultBillingAddress": {
+          "information": "Default billing address of customer is empty and will be set with the default shipping address."
+        },
+        "noDefaultBillingAndShippingAddress": {
+          "information": "Default billing and shipping address of customer are empty and will be set with the first address."
+        },
+        "productMediaNotConverted": {
+          "information": "Product media could not be converted."
+        },
+        "emptyLocale": {
+          "information": "Category entity could not be converted, because of empty locale."
+        },
+        "noAddressData": {
+          "information": "Category entity could not be converted, because of empty locale."
+        },
+        "notConvertAbleObjectType": {
+          "information": "Translation of object type “{objectType}“ could not be converted."
+        },
+        "invalidUnserializedData": {
+          "information": "{entity} translation entity could not be converted, because of invalid, unserialized object data."
         }
       }
     }

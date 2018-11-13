@@ -5,12 +5,11 @@ namespace SwagMigrationNext\Profile\Shopware55\Converter;
 use Shopware\Core\Content\Category\Aggregate\CategoryTranslation\CategoryTranslationDefinition;
 use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\Struct\Uuid;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\ConvertStruct;
+use SwagMigrationNext\Profile\Shopware55\Logging\LoggingType;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
-use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
 class CategoryConverter implements ConverterInterface
 {
@@ -27,7 +26,7 @@ class CategoryConverter implements ConverterInterface
     /**
      * @var string
      */
-    private $profile;
+    private $profileId;
 
     /**
      * @var Context
@@ -71,16 +70,18 @@ class CategoryConverter implements ConverterInterface
         array $data,
         Context $context,
         string $runId,
+        string $profileId,
         ?string $catalogId = null,
         ?string $salesChannelId = null
     ): ConvertStruct {
-        $this->profile = Shopware55Profile::PROFILE_NAME;
+        $this->profileId = $profileId;
         $this->context = $context;
         $this->oldCategoryId = $data['id'];
 
         if (!isset($data['_locale'])) {
             $this->loggingService->addWarning(
                 $runId,
+                LoggingType::EMPTY_LOCALE,
                 'Empty locale',
                 'Category-Entity could not converted cause of empty locale.',
                 ['id' => $this->oldCategoryId]
@@ -108,7 +109,7 @@ class CategoryConverter implements ConverterInterface
 
         if (isset($data['parent'])) {
             $parentUuid = $this->mappingService->getUuid(
-                $this->profile,
+                $this->profileId,
                 CategoryDefinition::getEntityName(),
                 $data['parent'],
                 $this->context
@@ -123,7 +124,7 @@ class CategoryConverter implements ConverterInterface
         unset($data['parent']);
 
         $converted['id'] = $this->mappingService->createNewUuid(
-            $this->profile,
+            $this->profileId,
             CategoryDefinition::getEntityName(),
             $this->oldCategoryId,
             $this->context
@@ -161,7 +162,7 @@ class CategoryConverter implements ConverterInterface
     {
         $defaultTranslation = [];
         $defaultTranslation['id'] = $this->mappingService->createNewUuid(
-            $this->profile,
+            $this->profileId,
             CategoryTranslationDefinition::getEntityName(),
             $this->oldCategoryId . ':' . $data['_locale'],
             $this->context
@@ -175,7 +176,7 @@ class CategoryConverter implements ConverterInterface
         $this->helper->convertValue($defaultTranslation, 'cmsHeadline', $data, 'cmsheadline');
         $this->helper->convertValue($defaultTranslation, 'cmsDescription', $data, 'cmstext');
 
-        $languageData = $this->mappingService->getLanguageUuid($this->profile, $data['_locale'], $this->context);
+        $languageData = $this->mappingService->getLanguageUuid($this->profileId, $data['_locale'], $this->context);
 
         if (isset($languageData['createData']) && !empty($languageData['createData'])) {
             $defaultTranslation['language']['id'] = $languageData['uuid'];

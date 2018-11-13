@@ -6,12 +6,15 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\CreatedAtField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\IdField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\JsonField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\OneToManyAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\StringField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\TenantIdField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\UpdatedAtField;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\Flag\Required;
+use SwagMigrationNext\Migration\Mapping\SwagMigrationMappingDefinition;
+use SwagMigrationNext\Migration\Run\SwagMigrationRunDefinition;
 
 class SwagMigrationProfileDefinition extends EntityDefinition
 {
@@ -30,6 +33,8 @@ class SwagMigrationProfileDefinition extends EntityDefinition
             new JsonField('credential_fields', 'credentialFields'),
             new CreatedAtField(),
             new UpdatedAtField(),
+            new OneToManyAssociationField('runs', SwagMigrationRunDefinition::class, 'profile_id', false),
+            new OneToManyAssociationField('mappings', SwagMigrationMappingDefinition::class, 'profile_id', false),
         ]);
     }
 

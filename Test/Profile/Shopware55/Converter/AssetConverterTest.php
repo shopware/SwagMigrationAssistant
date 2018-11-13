@@ -9,6 +9,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Struct\Uuid;
 use SwagMigrationNext\Profile\Shopware55\Converter\AssetConverter;
 use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
+use SwagMigrationNext\Test\Mock\Migration\Asset\DummyMediaFileService;
 use SwagMigrationNext\Test\Mock\Migration\Mapping\DummyMappingService;
 
 class AssetConverterTest extends TestCase
@@ -20,9 +21,10 @@ class AssetConverterTest extends TestCase
 
     protected function setUp()
     {
+        $mediaFileService = new DummyMediaFileService();
         $mappingService = new DummyMappingService();
         $converterHelperService = new ConverterHelperService();
-        $this->assetConverter = new AssetConverter($mappingService, $converterHelperService);
+        $this->assetConverter = new AssetConverter($mappingService, $converterHelperService, $mediaFileService);
     }
 
     public function testSupports(): void
@@ -37,7 +39,7 @@ class AssetConverterTest extends TestCase
         $mediaData = require __DIR__ . '/../../../_fixtures/media_data.php';
 
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
-        $convertResult = $this->assetConverter->convert($mediaData[0], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
+        $convertResult = $this->assetConverter->convert($mediaData[0], $context, Uuid::uuid4()->getHex(), Uuid::uuid4()->getHex(), Defaults::CATALOG);
 
         $converted = $convertResult->getConverted();
 

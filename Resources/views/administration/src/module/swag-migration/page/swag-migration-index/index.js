@@ -2,11 +2,12 @@ import { Component, State } from 'src/core/shopware';
 import CriteriaFactory from 'src/core/factory/criteria.factory';
 import template from './swag-migration-index.html.twig';
 import './swag-migration-index.less';
+import { MIGRATION_STATUS } from '../../../../core/service/migration/swag-migration-worker-status-manager.service';
 
 Component.register('swag-migration-index', {
     template,
 
-    inject: ['migrationService', 'migrationWorkerService'],
+    inject: ['migrationService', 'migrationWorkerService', 'swagMigrationRunService'],
 
     data() {
         return {
@@ -20,13 +21,16 @@ Component.register('swag-migration-index', {
                 loadingScreen: 1,
                 resultSuccess: 2,
                 resultWarning: 3,
-                resultFailure: 4
+                resultFailure: 4,
+                pauseScreen: 5
             },
             errorList: [],
-            statusIndex: 0,
+            statusIndex: -1,
             isMigrating: false,
             isMigrationAllowed: false,
-            showConfirmDialog: false,
+            isPaused: false,
+            showMigrationConfirmDialog: false,
+            showAbortMigrationConfirmDialog: false,
             catalogs: [],
             salesChannels: [],
             tableData: [
@@ -101,6 +105,68 @@ Component.register('swag-migration-index', {
 
         migrationProfileStore() {
             return State.getStore('swag_migration_profile');
+        },
+
+        leftButtonVisible() {
+            return this.isPaused || (this.isMigrating && !this.isLoading);
+        },
+
+        leftButtonDisabled() {
+            return this.isLoading;
+        },
+
+        leftButtonText() {
+            if (this.componentIndex === this.components.resultWarning ||
+                this.componentIndex === this.components.resultSuccess) {
+                return this.$tc('swag-migration.index.backButton');
+            }
+            return this.$tc('swag-migration.index.abortButton');
+        },
+
+        rightButtonDisabled() {
+            if (this.componentIndex === this.components.resultWarning ||
+                this.componentIndex === this.components.resultSuccess) {
+                return true;
+            }
+
+            if (this.statusIndex !== MIGRATION_STATUS.FETCH_DATA && this.isMigrating) {
+                return false;
+            }
+
+            if (this.statusIndex === MIGRATION_STATUS.FETCH_DATA && this.isMigrating) {
+                return true;
+            }
+
+            if (!this.isMigrationAllowed && this.isPaused) {
+                return false;
+            }
+
+            return this.isLoading || !this.isMigrationAllowed;
+        },
+
+        rightButtonText() {
+            if (
+                (!this.isMigrating && !this.isPaused) ||
+                (this.statusIndex === MIGRATION_STATUS.FETCH_DATA && this.isMigrating) ||
+                this.componentIndex === this.components.resultWarning ||
+                this.componentIndex === this.components.resultSuccess
+            ) {
+                return this.$tc('swag-migration.index.migrateButton');
+            }
+
+            if (this.isPaused) {
+                return this.$tc('swag-migration.index.continueButton');
+            }
+
+            return this.$tc('swag-migration.index.pauseButton');
+        },
+
+        abortMigrationBackText() {
+            if (this.isPaused) {
+                return this.$tc('swag-migration.index.confirmAbortDialog.cancelPause');
+            }
+
+            return this.$tc('swag-migration.index.confirmAbortDialog.cancelRunning');
         }
     },
 
@@ -111,14 +177,23 @@ Component.register('swag-migration-index', {
     beforeDestroy() {
         this.migrationWorkerService.unsubscribeProgress();
         this.migrationWorkerService.unsubscribeStatus();
-        this.migrationWorkerService.unsubscribeUpdateEntityCount();
     },
 
     methods: {
-        createdComponent() {
+        async createdComponent() {
+            if (this.migrationWorkerService.isMigrating === false) {
+                await this.migrationWorkerService.checkForRunningMigration().then((running) => {
+                    this.isPaused = running;
+                    if (this.isPaused) {
+                        this.componentIndex = this.components.pauseScreen;
+                    }
+                });
+            }
+
+
             if (
                 this.migrationWorkerService.isMigrating ||
-                this.migrationWorkerService.status === this.migrationWorkerService.MIGRATION_STATUS.FINISHED
+                this.migrationWorkerService.status === MIGRATION_STATUS.FINISHED
             ) {
                 this.restoreRunningMigration();
             }
@@ -201,7 +276,7 @@ Component.register('swag-migration-index', {
 
             // Get current status
             this.onStatus({ status: this.migrationWorkerService.status });
-            if (this.migrationWorkerService.status === this.migrationWorkerService.MIGRATION_STATUS.FINISHED) {
+            if (this.migrationWorkerService.status === MIGRATION_STATUS.FINISHED) {
                 return;
             }
 
@@ -214,7 +289,7 @@ Component.register('swag-migration-index', {
 
                 if (group !== undefined) {
                     // found entity in group -> means it was selected
-                    if (this.statusIndex !== this.migrationWorkerService.MIGRATION_STATUS.DOWNLOAD_DATA) {
+                    if (this.statusIndex !== MIGRATION_STATUS.DOWNLOAD_DATA) {
                         data.selected = true;
                     }
 
@@ -231,13 +306,66 @@ Component.register('swag-migration-index', {
 
             // subscribe to the status event again
             this.migrationWorkerService.subscribeStatus(this.onStatus);
-
-            // subscribe to the update entity count event again
-            this.migrationWorkerService.subscribeUpdateEntityCount(this.onUpdateEntityCount);
         },
 
-        showMigrateConfirmDialog() {
-            this.showConfirmDialog = true;
+        onLeftButtonClick() {
+            if (
+                this.componentIndex === this.components.resultWarning ||
+                this.componentIndex === this.components.resultSuccess
+            ) {
+                // Back to data selector
+                this.isPaused = false;
+                this.isMigrating = false;
+                this.componentIndex = this.components.dataSelector;
+            } else {
+                // Abort
+                this.showAbortMigrationConfirmDialog = true;
+            }
+        },
+
+        onRightButtonClick() {
+            if (!this.isMigrating && !this.isPaused) {
+                // migrate
+                this.showMigrationConfirmDialog = true;
+                return;
+            }
+
+            if (this.isPaused) {
+                // continue
+                this.isLoading = true;
+                this.migrationWorkerService.checkForRunningMigration().then((running) => {
+                    this.isLoading = false;
+                    this.isPaused = false;
+                    if (running === false) {
+                        this.isMigrating = false;
+                        this.componentIndex = this.components.dataSelector;
+                        return;
+                    }
+
+                    this.migrationWorkerService.restoreRunningMigration();
+                    this.restoreRunningMigration();
+                });
+                return;
+            }
+
+            // pause
+            this.migrationWorkerService.stopMigration();
+            this.isMigrating = false;
+            this.isPaused = true;
+            this.componentIndex = this.components.pauseScreen;
+        },
+
+        onMigrationAbort() {
+            this.showAbortMigrationConfirmDialog = false;
+
+            if (this.isMigrating) {
+                this.migrationWorkerService.stopMigration();
+            }
+
+            this.isPaused = false;
+            this.isMigrating = false;
+            this.componentIndex = this.components.dataSelector;
+            this.swagMigrationRunService.updateById(this.migrationWorkerService.runId, { status: 'aborted' });
         },
 
         normalizeEnvironmentInformation() {
@@ -323,12 +451,11 @@ Component.register('swag-migration-index', {
         },
 
         onMigrate() {
-            this.showConfirmDialog = false;
+            this.showMigrationConfirmDialog = false;
             this.isMigrating = true;
             this.checkSelectedData();
             this.statusIndex = 0;
             this.errorList = [];
-            this.resetProgress();
 
             // show loading screen
             this.componentIndex = this.components.loadingScreen;
@@ -344,36 +471,37 @@ Component.register('swag-migration-index', {
             });
 
             const migrationRun = this.migrationRunStore.create();
-            migrationRun.profile = this.profile.profile;
+            migrationRun.profile = this.profile;
             migrationRun.totals = {
                 toBeFetched: toBeFetched
             };
+            migrationRun.additionalData = {
+                entityGroups
+            };
+            migrationRun.status = 'running';
             migrationRun.save();
 
+            this.migrationWorkerService.subscribeStatus(this.onStatus.bind(this));
+            this.migrationWorkerService.subscribeProgress(this.onProgress.bind(this));
             this.migrationWorkerService.startMigration(
                 migrationRun.id,
                 this.profile,
-                entityGroups,
-                this.onStatus.bind(this),
-                this.onProgress.bind(this),
-                this.onUpdateEntityCount.bind(this)
+                entityGroups
             ).catch(() => {
                 // show data selection again
                 this.isMigrating = false;
                 this.componentIndex = this.components.dataSelector;
-                console.log(this.$tc('swag-migration.index.migrationAlreadyRunning')); // TODO: Replace - Design?
             });
         },
 
         onStatus(statusData) {
-            this.resetProgress();
             this.statusIndex = statusData.status;
 
-            if (this.statusIndex === this.migrationWorkerService.MIGRATION_STATUS.DOWNLOAD_DATA) {
+            if (this.statusIndex === MIGRATION_STATUS.DOWNLOAD_DATA) {
                 this.tableData.forEach((data) => {
                     data.selected = (data.id === 'media');
                 });
-            } else if (this.statusIndex === this.migrationWorkerService.MIGRATION_STATUS.FINISHED) {
+            } else if (this.statusIndex === MIGRATION_STATUS.FINISHED) {
                 if (this.migrationWorkerService.errors.length > 0) {
                     this.onFinishWithErrors(this.migrationWorkerService.errors);
                 } else {
@@ -402,6 +530,13 @@ Component.register('swag-migration-index', {
                     // Authorization Error
                     case '401':
                         snippet = this.$t('swag-migration.index.error.authorizationError.information');
+                        break;
+
+                    case '408':
+                        snippet = this.$t(
+                            'swag-migration.index.error.canNotDownloadAsset.information',
+                            { path: error.details.uri }
+                        );
                         break;
 
                     // GatewayNotFoundException
@@ -471,7 +606,6 @@ Component.register('swag-migration-index', {
                         snippet = this.$t('swag-migration.index.error.associationRequiredMissing.information', {
                             missingEntity: argument,
                             requiredFor: error.detail.substring(secondParamStart, secondParamStop)
-
                         });
                         break;
 
@@ -479,6 +613,49 @@ Component.register('swag-migration-index', {
                     case 'SWAG-MIGRATION-SHOPWARE55-CUSTOMER-EXISTS':
                         snippet = this.$t('swag-migration.index.error.customerExists.information', {
                             mail: argument
+                        });
+                        break;
+
+                    case 'SWAG-MIGRATION-SHOPWARE55-EMPTY-NECESSARY-DATA-FIELDS':
+                        snippet = this.$t('swag-migration.index.error.emptyNecessaryDataFields.information', {
+                            entity: error.details.entity,
+                            fields: error.details.fields.join()
+                        });
+                        break;
+
+                    case 'SWAG-MIGRATION-SHOPWARE55-NO-DEFAULT-SHIPPING-ADDRESS':
+                        snippet = this.$t('swag-migration.index.error.noDefaultShippingAddress.information');
+                        break;
+
+                    case 'SWAG-MIGRATION-SHOPWARE55-NO-DEFAULT-BILLING-ADDRESS':
+                        snippet = this.$t('swag-migration.index.error.noDefaultBillingAddress.information');
+                        break;
+
+                    case 'SWAG-MIGRATION-SHOPWARE55-NO-DEFAULT-BILLING-AND-SHIPPING-ADDRESS':
+                        snippet = this.$t('swag-migration.index.error.noDefaultBillingAndShippingAddress.information');
+                        break;
+
+                    case 'SWAG-MIGRATION-SHOPWARE55-PRODUCT-MEDIA-NOT-CONVERTED':
+                        snippet = this.$t('swag-migration.index.error.productMediaNotConverted.information');
+                        break;
+
+                    case 'SWAG-MIGRATION-SHOPWARE55-EMPTY-LOCALE':
+                        snippet = this.$t('swag-migration.index.error.emptyLocale.information');
+                        break;
+
+                    case 'SWAG-MIGRATION-SHOPWARE55-NO-ADDRESS-DATA':
+                        snippet = this.$t('swag-migration.index.error.noAddressData.information');
+                        break;
+
+                    case 'SWAG-MIGRATION-SHOPWARE55-NOT-CONVERT-ABLE-OBJECT-TYPE':
+                        snippet = this.$t('swag-migration.index.error.notConvertAbleObjectType.information', {
+                            objectType: error.details.objecttype
+                        });
+                        break;
+
+                    case 'SWAG-MIGRATION-SHOPWARE55-INVALID-UNSERIALIZED-DATA':
+                        snippet = this.$t('swag-migration.index.error.invalidUnserializedData.information', {
+                            entity: error.details.entity
                         });
                         break;
 
@@ -504,10 +681,6 @@ Component.register('swag-migration-index', {
             });
 
             this.errorList.sort((a, b) => { return a.detail.toLowerCase() > b.detail.toLowerCase(); });
-            this.errorList.forEach((error) => {
-                console.log(error);
-            });
-
             this.errorList = this.errorList.map((item) => item.information);
             this.errorList = [...new Set(this.errorList)];
 
@@ -519,29 +692,11 @@ Component.register('swag-migration-index', {
                 return data.entityNames.includes(progressData.entityName);
             });
 
-            if (this.statusIndex === this.migrationWorkerService.MIGRATION_STATUS.DOWNLOAD_DATA &&
-                resultData.progressBar.maxValue !== progressData.entityCount
-            ) {
+            if (resultData.progressBar.maxValue !== progressData.entityCount) {
                 resultData.progressBar.maxValue = progressData.entityCount;
             }
 
             resultData.progressBar.value = progressData.entityGroupProgressValue;
-        },
-
-        onUpdateEntityCount(updateData) {
-            this.tableData.forEach((tableItem) => {
-                updateData.forEach((updateItem) => {
-                    if (tableItem.id === updateItem.id) {
-                        tableItem.progressBar.maxValue = updateItem.count;
-                    }
-                });
-            });
-        },
-
-        resetProgress() {
-            this.tableData.forEach((data) => {
-                data.progressBar.value = 0;
-            });
         },
 
         addError(error) {
@@ -560,12 +715,16 @@ Component.register('swag-migration-index', {
             });
         },
 
-        onCloseConfirmDialog() {
-            this.showConfirmDialog = false;
+        onCloseMigrationConfirmDialog() {
+            this.showMigrationConfirmDialog = false;
+        },
+
+        onCloseAbortMigrationConfirmDialog() {
+            this.showAbortMigrationConfirmDialog = false;
         },
 
         onClickBack() {
-            this.migrationWorkerService.status = this.migrationWorkerService.MIGRATION_STATUS.WAITING;
+            this.migrationWorkerService.status = MIGRATION_STATUS.WAITING;
             this.componentIndex = this.components.dataSelector;
             this.isMigrating = false;
         },

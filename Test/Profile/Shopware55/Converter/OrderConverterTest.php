@@ -67,10 +67,12 @@ class OrderConverterTest extends TestCase
         $orderData = require __DIR__ . '/../../../_fixtures/order_data.php';
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
 
+        $profileId = Uuid::uuid4()->getHex();
         $this->customerConverter->convert(
             $customerData[0],
             $context,
             Uuid::uuid4()->getHex(),
+            $profileId,
             Defaults::CATALOG,
             Defaults::SALES_CHANNEL
         );
@@ -79,6 +81,7 @@ class OrderConverterTest extends TestCase
             $orderData[0],
             $context,
             Uuid::uuid4()->getHex(),
+            $profileId,
             Defaults::CATALOG,
             Defaults::SALES_CHANNEL
         );
@@ -110,10 +113,12 @@ class OrderConverterTest extends TestCase
         $orderData = require __DIR__ . '/../../../_fixtures/order_data.php';
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
 
+        $profileId = Uuid::uuid4()->getHex();
         $this->customerConverter->convert(
             $customerData[1],
             $context,
             Uuid::uuid4()->getHex(),
+            $profileId,
             Defaults::CATALOG,
             Defaults::SALES_CHANNEL
         );
@@ -122,6 +127,7 @@ class OrderConverterTest extends TestCase
             $orderData[1],
             $context,
             Uuid::uuid4()->getHex(),
+            $profileId,
             Defaults::CATALOG,
             Defaults::SALES_CHANNEL
         );
@@ -149,10 +155,12 @@ class OrderConverterTest extends TestCase
         unset($orderData[$missingProperty]);
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
 
+        $profileId = Uuid::uuid4()->getHex();
         $this->customerConverter->convert(
             $customerData[0],
             $context,
             Uuid::uuid4()->getHex(),
+            $profileId,
             Defaults::CATALOG,
             Defaults::SALES_CHANNEL
         );
@@ -161,6 +169,7 @@ class OrderConverterTest extends TestCase
             $orderData,
             $context,
             Uuid::uuid4()->getHex(),
+            $profileId,
             Defaults::CATALOG,
             Defaults::SALES_CHANNEL
         );
@@ -192,10 +201,12 @@ class OrderConverterTest extends TestCase
         unset($orderData['details']);
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
 
+        $profileId = Uuid::uuid4()->getHex();
         $this->customerConverter->convert(
             $customerData[0],
             $context,
             Uuid::uuid4()->getHex(),
+            $profileId,
             Defaults::CATALOG,
             Defaults::SALES_CHANNEL
         );
@@ -204,6 +215,7 @@ class OrderConverterTest extends TestCase
             $orderData,
             $context,
             Uuid::uuid4()->getHex(),
+            $profileId,
             Defaults::CATALOG,
             Defaults::SALES_CHANNEL
         );
@@ -227,10 +239,12 @@ class OrderConverterTest extends TestCase
         unset($orderData['shippingMethod']);
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
 
+        $profileId = Uuid::uuid4()->getHex();
         $this->customerConverter->convert(
             $customerData[0],
             $context,
             Uuid::uuid4()->getHex(),
+            $profileId,
             Defaults::CATALOG,
             Defaults::SALES_CHANNEL
         );
@@ -239,6 +253,7 @@ class OrderConverterTest extends TestCase
             $orderData,
             $context,
             Uuid::uuid4()->getHex(),
+            $profileId,
             Defaults::CATALOG,
             Defaults::SALES_CHANNEL
         );
@@ -261,10 +276,12 @@ class OrderConverterTest extends TestCase
         unset($orderData['shippingaddress']);
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
 
+        $profileId = Uuid::uuid4()->getHex();
         $this->customerConverter->convert(
             $customerData[0],
             $context,
             Uuid::uuid4()->getHex(),
+            $profileId,
             Defaults::CATALOG,
             Defaults::SALES_CHANNEL
         );
@@ -273,6 +290,7 @@ class OrderConverterTest extends TestCase
             $orderData,
             $context,
             Uuid::uuid4()->getHex(),
+            $profileId,
             Defaults::CATALOG,
             Defaults::SALES_CHANNEL
         );

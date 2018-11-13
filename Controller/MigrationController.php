@@ -11,6 +11,7 @@ use SwagMigrationNext\Migration\Asset\HttpAssetDownloadServiceInterface;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Service\MigrationCollectServiceInterface;
 use SwagMigrationNext\Migration\Service\MigrationEnvironmentServiceInterface;
+use SwagMigrationNext\Migration\Service\MigrationProgressServiceInterface;
 use SwagMigrationNext\Migration\Service\MigrationWriteServiceInterface;
 use SwagMigrationNext\Profile\SwagMigrationProfileStruct;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -46,18 +47,25 @@ class MigrationController extends Controller
      */
     private $migrationProfileRepo;
 
+    /**
+     * @var MigrationProgressServiceInterface
+     */
+    private $migrationProgressService;
+
     public function __construct(
         MigrationCollectServiceInterface $migrationCollectService,
         MigrationWriteServiceInterface $migrationWriteService,
         HttpAssetDownloadServiceInterface $assetDownloadService,
         MigrationEnvironmentServiceInterface $environmentService,
-        RepositoryInterface $migrationProfileRepo
+        RepositoryInterface $migrationProfileRepo,
+        MigrationProgressServiceInterface $migrationProgressService
     ) {
         $this->migrationCollectService = $migrationCollectService;
         $this->migrationWriteService = $migrationWriteService;
         $this->assetDownloadService = $assetDownloadService;
         $this->environmentService = $environmentService;
         $this->migrationProfileRepo = $migrationProfileRepo;
+        $this->migrationProgressService = $migrationProgressService;
     }
 
     /**
@@ -82,7 +90,7 @@ class MigrationController extends Controller
         $gateway = $profile->getGateway();
         $credentials = $profile->getCredentialFields();
 
-        $migrationContext = new MigrationContext('', $profileName, $gateway, '', $credentials, 0, 0);
+        $migrationContext = new MigrationContext('', '', $profileName, $gateway, '', $credentials, 0, 0);
 
         $information = $this->environmentService->getEnvironmentInformation($migrationContext);
 
@@ -97,7 +105,8 @@ class MigrationController extends Controller
     public function fetchData(Request $request, Context $context): Response
     {
         $runUuid = $request->request->get('runUuid');
-        $profile = $request->request->get('profile');
+        $profileId = $request->request->get('profileId');
+        $profileName = $request->request->get('profileName');
         $gateway = $request->request->get('gateway');
         $entity = $request->request->get('entity');
         $offset = $request->request->getInt('offset');
@@ -110,8 +119,12 @@ class MigrationController extends Controller
             throw new MigrationContextPropertyMissingException('runUuid');
         }
 
-        if ($profile === null) {
-            throw new MigrationContextPropertyMissingException('profile');
+        if ($profileId === null) {
+            throw new MigrationContextPropertyMissingException('profileId');
+        }
+
+        if ($profileName === null) {
+            throw new MigrationContextPropertyMissingException('profileName');
         }
 
         if ($gateway === null) {
@@ -128,7 +141,8 @@ class MigrationController extends Controller
 
         $migrationContext = new MigrationContext(
             $runUuid,
-            $profile,
+            $profileId,
+            $profileName,
             $gateway,
             $entity,
             $credentials,
@@ -162,7 +176,7 @@ class MigrationController extends Controller
             throw new MigrationContextPropertyMissingException('entity');
         }
 
-        $migrationContext = new MigrationContext($runUuid, '', '', $entity, [], $offset, $limit);
+        $migrationContext = new MigrationContext($runUuid, '', '', '', $entity, [], $offset, $limit);
         $this->migrationWriteService->writeData($migrationContext, $context);
 
         return new Response();
@@ -173,15 +187,14 @@ class MigrationController extends Controller
      */
     public function fetchMediaUuids(Request $request, Context $context): JsonResponse
     {
-        $offset = $request->query->getInt('offset');
         $limit = $request->query->getInt('limit', 100);
-        $profile = $request->query->get('profile');
+        $runId = $request->query->get('runId');
 
-        if ($profile === null) {
-            throw new MigrationWorkloadPropertyMissingException('profile');
+        if ($runId === null) {
+            throw new MigrationWorkloadPropertyMissingException('runId');
         }
 
-        $mediaUuids = $this->assetDownloadService->fetchMediaUuids($context, $profile, $offset, $limit);
+        $mediaUuids = $this->assetDownloadService->fetchMediaUuids($runId, $context, $limit);
 
         return new JsonResponse(['mediaUuids' => $mediaUuids]);
     }
@@ -194,8 +207,13 @@ class MigrationController extends Controller
     public function downloadAssets(Request $request, Context $context): JsonResponse
     {
         /** @var array $workload */
+        $runId = $request->request->get('runId');
         $workload = $request->request->get('workload', []);
         $fileChunkByteSize = $request->request->getInt('fileChunkByteSize', 1000 * 1000);
+
+        if ($runId === null) {
+            throw new MigrationContextPropertyMissingException('runId');
+        }
 
         if (\count($workload) === 0) {
             return new JsonResponse(['workload' => []]);
@@ -213,8 +231,18 @@ class MigrationController extends Controller
             }
         }
 
-        $newWorkload = $this->assetDownloadService->downloadAssets($context, $workload, $fileChunkByteSize);
+        $newWorkload = $this->assetDownloadService->downloadAssets($runId, $context, $workload, $fileChunkByteSize);
 
         return new JsonResponse(['workload' => $newWorkload]);
+    }
+
+    /**
+     * @Route("/api/v{version}/migration/get-state", name="api.admin.migration.get-state", methods={"GET"})
+     */
+    public function getState(Context $context): JsonResponse
+    {
+        $state = $this->migrationProgressService->getProgress($context);
+
+        return new JsonResponse($state);
     }
 }

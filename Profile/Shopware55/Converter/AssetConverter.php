@@ -5,10 +5,10 @@ namespace SwagMigrationNext\Profile\Shopware55\Converter;
 use Shopware\Core\Content\Media\Aggregate\MediaTranslation\MediaTranslationDefinition;
 use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Framework\Context;
+use SwagMigrationNext\Migration\Asset\MediaFileServiceInterface;
 use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\ConvertStruct;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
-use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
 class AssetConverter implements ConverterInterface
 {
@@ -22,12 +22,19 @@ class AssetConverter implements ConverterInterface
      */
     private $helper;
 
+    /**
+     * @var MediaFileServiceInterface
+     */
+    private $mediaFileService;
+
     public function __construct(
         Shopware55MappingService $mappingService,
-        ConverterHelperService $converterHelperService
+        ConverterHelperService $converterHelperService,
+        MediaFileServiceInterface $mediaFileService
     ) {
         $this->mappingService = $mappingService;
         $this->helper = $converterHelperService;
+        $this->mediaFileService = $mediaFileService;
     }
 
     public function supports(): string
@@ -44,22 +51,27 @@ class AssetConverter implements ConverterInterface
         array $data,
         Context $context,
         string $runId,
+        string $profileId,
         ?string $catalogId = null,
         ?string $salesChannelId = null
     ): ConvertStruct {
-        $profile = Shopware55Profile::PROFILE_NAME;
         $locale = $data['_locale'];
         unset($data['_locale']);
 
         $converted = [];
         $converted['id'] = $this->mappingService->createNewUuid(
-            $profile,
+            $profileId,
             MediaDefinition::getEntityName(),
             $data['id'],
-            $context,
+            $context
+        );
+
+        $this->mediaFileService->saveMediaFile(
             [
+                'runId' => $runId,
                 'uri' => $data['uri'],
-                'file_size' => $data['file_size'],
+                'fileSize' => (int) $data['file_size'],
+                'mediaId' => $converted['id'],
             ]
         );
         unset($data['uri'], $data['file_size']);
@@ -69,7 +81,7 @@ class AssetConverter implements ConverterInterface
         }
 
         $translation['id'] = $this->mappingService->createNewUuid(
-            $profile,
+            $profileId,
             MediaTranslationDefinition::getEntityName(),
             $data['id'] . ':' . $locale,
             $context
@@ -79,7 +91,7 @@ class AssetConverter implements ConverterInterface
         $this->helper->convertValue($translation, 'name', $data, 'name');
         $this->helper->convertValue($translation, 'description', $data, 'description');
 
-        $languageData = $this->mappingService->getLanguageUuid($profile, $locale, $context);
+        $languageData = $this->mappingService->getLanguageUuid($profileId, $locale, $context);
 
         if (isset($languageData['createData']) && !empty($languageData['createData'])) {
             $translation['language']['id'] = $languageData['uuid'];

@@ -4,12 +4,35 @@ namespace SwagMigrationNext\Migration\Run;
 
 use DateTime;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
+use SwagMigrationNext\Exception\MigrationRunUndefinedStatusException;
+use SwagMigrationNext\Migration\Asset\SwagMigrationMediaFileStruct;
 use SwagMigrationNext\Migration\Data\SwagMigrationDataStruct;
+use SwagMigrationNext\Profile\SwagMigrationProfileStruct;
 
 class SwagMigrationRunStruct extends Entity
 {
     /**
      * @var string
+     */
+    public const STATUS_RUNNING = 'running';
+
+    /**
+     * @var string
+     */
+    public const STATUS_FINISHED = 'finished';
+
+    /**
+     * @var string
+     */
+    public const STATUS_ABORTED = 'aborted';
+
+    /**
+     * @var string
+     */
+    protected $profileId;
+
+    /**
+     * @var SwagMigrationProfileStruct
      */
     protected $profile;
 
@@ -17,6 +40,16 @@ class SwagMigrationRunStruct extends Entity
      * @var array
      */
     protected $totals;
+
+    /**
+     * @var array
+     */
+    protected $additionalData;
+
+    /**
+     * @var string
+     */
+    protected $status;
 
     /**
      * @var DateTime
@@ -33,12 +66,27 @@ class SwagMigrationRunStruct extends Entity
      */
     protected $data;
 
-    public function getProfile(): string
+    /**
+     * @var SwagMigrationMediaFileStruct[]
+     */
+    protected $mediaFiles;
+
+    public function getProfileId(): string
+    {
+        return $this->profileId;
+    }
+
+    public function setProfileId(string $profileId): void
+    {
+        $this->profileId = $profileId;
+    }
+
+    public function getProfile(): SwagMigrationProfileStruct
     {
         return $this->profile;
     }
 
-    public function setProfile(string $profile): void
+    public function setProfile(SwagMigrationProfileStruct $profile): void
     {
         $this->profile = $profile;
     }
@@ -51,6 +99,36 @@ class SwagMigrationRunStruct extends Entity
     public function setTotals(array $totals): void
     {
         $this->totals = $totals;
+    }
+
+    public function getAdditionalData(): array
+    {
+        return $this->additionalData;
+    }
+
+    public function setAdditionalData(array $additionalData): void
+    {
+        $this->additionalData = $additionalData;
+    }
+
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
+
+    /**
+     * @throws MigrationRunUndefinedStatusException
+     */
+    public function setStatus(string $status): void
+    {
+        if ($status !== self::STATUS_RUNNING &&
+            $status !== self::STATUS_FINISHED &&
+            $status !== self::STATUS_ABORTED
+        ) {
+            throw new MigrationRunUndefinedStatusException($status);
+        }
+
+        $this->status = $status;
     }
 
     public function getCreatedAt(): DateTime
@@ -87,5 +165,21 @@ class SwagMigrationRunStruct extends Entity
     public function setData(array $data): void
     {
         $this->data = $data;
+    }
+
+    /**
+     * @return SwagMigrationMediaFileStruct[]
+     */
+    public function getMediaFiles(): array
+    {
+        return $this->mediaFiles;
+    }
+
+    /**
+     * @param SwagMigrationMediaFileStruct[] $mediaFiles
+     */
+    public function setMediaFiles(array $mediaFiles): void
+    {
+        $this->mediaFiles = $mediaFiles;
     }
 }

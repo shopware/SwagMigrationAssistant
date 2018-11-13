@@ -45,7 +45,7 @@ class CategoryConverterTest extends TestCase
         $categoryData = require __DIR__ . '/../../../_fixtures/category_data.php';
 
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
-        $convertResult = $this->categoryConverter->convert($categoryData[0], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
+        $convertResult = $this->categoryConverter->convert($categoryData[0], $context, Uuid::uuid4()->getHex(), Uuid::uuid4()->getHex(), Defaults::CATALOG);
 
         $converted = $convertResult->getConverted();
 
@@ -60,8 +60,9 @@ class CategoryConverterTest extends TestCase
         $categoryData = require __DIR__ . '/../../../_fixtures/category_data.php';
 
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
-        $this->categoryConverter->convert($categoryData[0], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
-        $convertResult = $this->categoryConverter->convert($categoryData[3], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
+        $profileId = Uuid::uuid4()->getHex();
+        $this->categoryConverter->convert($categoryData[0], $context, Uuid::uuid4()->getHex(), $profileId, Defaults::CATALOG);
+        $convertResult = $this->categoryConverter->convert($categoryData[3], $context, Uuid::uuid4()->getHex(), $profileId, Defaults::CATALOG);
 
         $converted = $convertResult->getConverted();
 
@@ -78,7 +79,7 @@ class CategoryConverterTest extends TestCase
 
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
         $this->expectException(ParentEntityForChildNotFoundException::class);
-        $this->categoryConverter->convert($categoryData[4], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
+        $this->categoryConverter->convert($categoryData[4], $context, Uuid::uuid4()->getHex(), Uuid::uuid4()->getHex(), Defaults::CATALOG);
     }
 
     public function testConvertWithoutLocale(): void
@@ -88,7 +89,7 @@ class CategoryConverterTest extends TestCase
         unset($categoryData['_locale']);
 
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
-        $convertResult = $this->categoryConverter->convert($categoryData, $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
+        $convertResult = $this->categoryConverter->convert($categoryData, $context, Uuid::uuid4()->getHex(), Uuid::uuid4()->getHex(), Defaults::CATALOG);
         static::assertNull($convertResult->getConverted());
 
         $logs = $this->loggingService->getLoggingArray();

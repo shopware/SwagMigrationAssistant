@@ -2,21 +2,21 @@
 
 namespace SwagMigrationNext\Migration\Asset;
 
-use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\FetchMode;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Promise;
 use GuzzleHttp\Psr7\Response;
 use Shopware\Core\Content\Media\Exception\IllegalMimeTypeException;
+use Shopware\Core\Content\Media\Exception\MediaNotFoundException;
 use Shopware\Core\Content\Media\Exception\UploadException;
 use Shopware\Core\Content\Media\File\FileSaver;
 use Shopware\Core\Content\Media\File\MediaFile;
-use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use SwagMigrationNext\Exception\NoFileSystemPermissionsException;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\Mapping\SwagMigrationMappingStruct;
@@ -27,17 +27,14 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
     private const ASSET_ERROR_THRESHOLD = 3;
 
     /**
-     * @var RepositoryInterface
-     */
-    private $migrationMappingRepository;
-    /**
-     * @var Connection
-     */
-    private $connection;
-    /**
      * @var FileSaver
      */
     private $fileSaver;
+
+    /**
+     * @var RepositoryInterface
+     */
+    private $mediaFileRepo;
 
     /**
      * @var LoggingServiceInterface
@@ -45,30 +42,32 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
     private $loggingService;
 
     public function __construct(
-        RepositoryInterface $migrationMappingRepository,
-        Connection $connection,
+        RepositoryInterface $migrationMediaFileRepo,
         FileSaver $fileSaver,
         LoggingServiceInterface $loggingService
     ) {
-        $this->migrationMappingRepository = $migrationMappingRepository;
-        $this->connection = $connection;
+        $this->mediaFileRepo = $migrationMediaFileRepo;
         $this->fileSaver = $fileSaver;
         $this->loggingService = $loggingService;
     }
 
-    public function fetchMediaUuids(Context $context, string $profile, int $offset, int $limit): array
+    public function fetchMediaUuids(string $runId, Context $context, int $limit): array
     {
-        // TODO: Normalize additional data to use the orm system instead of JSON_EXTRACT (performance)
-        $queryBuilder = $this->connection->createQueryBuilder();
-        $queryBuilder->addSelect('LOWER(HEX(entity_uuid))')
-            ->from('swag_migration_mapping', 'mapping')
-            ->where('entity = :entity')
-            ->setParameter('entity', MediaDefinition::getEntityName())
-            ->setFirstResult($offset)
-            ->setMaxResults($limit)
-            ->orderBy('CONVERT(JSON_EXTRACT(`additional_data`, \'$.file_size\'), UNSIGNED INTEGER)');
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('runId', $runId));
+        $criteria->addFilter(new EqualsFilter('written', true));
+        $criteria->addFilter(new EqualsFilter('downloaded', false));
+        $criteria->setLimit($limit);
+        $criteria->addSorting(new FieldSorting('fileSize', FieldSorting::ASCENDING));
+        $migrationData = $this->mediaFileRepo->search($criteria, $context);
 
-        return $queryBuilder->execute()->fetchAll(FetchMode::COLUMN);
+        $mediaUuids = [];
+        foreach ($migrationData->getElements() as $mediaFile) {
+            /* @var SwagMigrationMediaFileStruct $mediaFile */
+            $mediaUuids[] = $mediaFile->getMediaId();
+        }
+
+        return $mediaUuids;
     }
 
     /**
@@ -78,18 +77,20 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
      * @throws NoFileSystemPermissionsException
      * @throws UploadException
      */
-    public function downloadAssets(Context $context, array $workload, int $fileChunkByteSize): array
+    public function downloadAssets(string $runId, Context $context, array $workload, int $fileChunkByteSize): array
     {
         //Map workload with uuids as keys
         $mappedWorkload = [];
+        $mediaIds = [];
         foreach ($workload as $work) {
             $mappedWorkload[$work['uuid']] = $work;
             $runId = $work['runId'];
+            $mediaIds[] = $work['uuid'];
         }
 
         if (!is_dir('_temp') && !mkdir('_temp') && !is_dir('_temp')) {
             $exception = new NoFileSystemPermissionsException();
-            $this->loggingService->addError($runId, (string) $exception->getCode(), $exception->getMessage());
+            $this->loggingService->addError($runId, (string) $exception->getCode(), '', $exception->getMessage());
             $this->loggingService->saveLogging($context);
 
             return $workload;
@@ -100,10 +101,10 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
             'verify' => false,
         ]);
         $criteria = new Criteria();
-        $criteria->addFilter(new EqualsAnyFilter('entityUuid', array_keys($mappedWorkload)));
-        $entitySearchResult = $this->migrationMappingRepository->search($criteria, $context);
+        $criteria->addFilter(new EqualsAnyFilter('mediaId', $mediaIds));
+        $assetSearchResult = $this->mediaFileRepo->search($criteria, $context);
         /** @var SwagMigrationMappingStruct[] $assets */
-        $assets = $entitySearchResult->getElements();
+        $assets = $assetSearchResult->getElements();
 
         //Do download requests and store the promises
         $promises = $this->doAssetDownloadRequests($assets, $fileChunkByteSize, $mappedWorkload, $client);
@@ -113,6 +114,7 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
         $results = Promise\settle($promises)->wait();
 
         //handle responses
+        $finishedUuids = [];
         foreach ($results as $uuid => $result) {
             /** @var Response $response */
             $state = $result['state'];
@@ -132,6 +134,7 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
 
                 if (isset($mappedWorkload[$uuid]['errorCount'])) {
                     ++$mappedWorkload[$uuid]['errorCount'];
+                    $finishedUuids[] = $uuid;
                 } else {
                     $mappedWorkload[$uuid]['errorCount'] = 1;
                 }
@@ -141,6 +144,7 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
                     $this->loggingService->addError(
                         $mappedWorkload[$uuid]['runId'],
                         (string) SymfonyResponse::HTTP_REQUEST_TIMEOUT,
+                        '',
                         'Cannot download media.',
                         [
                             'uri' => $mappedWorkload[$uuid]['additionalData']['uri'],
@@ -163,6 +167,7 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
                 //move asset to media system
                 $this->persistFileToMedia($filePath, $uuid, (int) $additionalData['file_size'], $fileExtension, $context);
                 unlink($filePath);
+                $finishedUuids[] = $uuid;
             }
 
             if (isset($mappedWorkload[$uuid]['errorCount'], $oldWorkload['errorCount']) &&
@@ -171,6 +176,7 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
             }
         }
 
+        $this->setDownloadedFlag($runId, $context, $finishedUuids);
         $this->loggingService->saveLogging($context);
 
         return array_values($mappedWorkload);
@@ -179,14 +185,16 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
     /**
      * Start all the download requests for the assets in parallel (async) and return the promise array.
      *
-     * @param SwagMigrationMappingStruct[] $assets
+     * @param SwagMigrationMediaFileStruct[] $assets
      */
     private function doAssetDownloadRequests(array $assets, int $fileChunkByteSize, array &$mappedWorkload, Client $client): array
     {
         $promises = [];
         foreach ($assets as $asset) {
-            $uuid = strtolower($asset->getEntityUuid());
-            $additionalData = $asset->getAdditionalData();
+            $uuid = strtolower($asset->getMediaId());
+            $additionalData = [];
+            $additionalData['file_size'] = $asset->getFileSize();
+            $additionalData['uri'] = $asset->getUri();
             $mappedWorkload[$uuid]['additionalData'] = $additionalData;
 
             /* Todo: Implement Chunkdownload
@@ -208,10 +216,7 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
     }
 
     /**
-     * Persists the file to the flysystem.
-     *
-     * @throws IllegalMimeTypeException
-     * @throws UploadException
+     * @throws MediaNotFoundException
      */
     private function persistFileToMedia(string $filePath, string $uuid, int $fileSize, string $fileExtension, Context $context): void
     {
@@ -281,5 +286,28 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
         }
 
         return $promise;
+    }
+
+    private function setDownloadedFlag(string $runId, Context $context, array $finishedUuids): void
+    {
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsAnyFilter('mediaId', $finishedUuids));
+        $criteria->addFilter(new EqualsFilter('runId', $runId));
+        $mediaFiles = $this->mediaFileRepo->search($criteria, $context);
+
+        $updateDownloadedMediaFiles = [];
+        foreach ($mediaFiles->getElements() as $data) {
+            /* @var SwagMigrationMediaFileStruct $data */
+            $updateDownloadedMediaFiles[] = [
+                'id' => $data->getId(),
+                'downloaded' => true,
+            ];
+        }
+
+        if (empty($updateDownloadedMediaFiles)) {
+            return;
+        }
+
+        $this->mediaFileRepo->update($updateDownloadedMediaFiles, $context);
     }
 }

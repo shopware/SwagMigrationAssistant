@@ -38,11 +38,11 @@ class MigrationCollectService implements MigrationCollectServiceInterface
     public function fetchData(MigrationContext $migrationContext, Context $context): int
     {
         try {
-            $profile = $this->profileRegistry->getProfile($migrationContext->getProfile());
+            $profile = $this->profileRegistry->getProfile($migrationContext->getProfileName());
             $gateway = $this->gatewayFactoryRegistry->createGateway($migrationContext);
             $returnCount = $profile->collectData($gateway, $migrationContext, $context);
         } catch (\Exception $exception) {
-            $this->loggingService->addError($migrationContext->getRunUuid(), (string) $exception->getCode(), $exception->getMessage(), ['entity' => $migrationContext->getEntity()]);
+            $this->loggingService->addError($migrationContext->getRunUuid(), (string) $exception->getCode(), '', $exception->getMessage(), ['entity' => $migrationContext->getEntity()]);
             $this->loggingService->saveLogging($context);
             $returnCount = 0;
         }

@@ -9,6 +9,11 @@
             <argument type="service" id="swag_migration_logging.repository"/>
         </service>
 
+        <service id="SwagMigrationNext\Migration\Asset\MediaFileService"
+                 class="SwagMigrationNext\Migration\Asset\MediaFileService">
+            <argument type="service" id="swag_migration_media_file.repository"/>
+        </service>
+
         <service id="SwagMigrationNext\Migration\Mapping\MappingService"
                  class="SwagMigrationNext\Migration\Mapping\MappingService">
             <argument type="service" id="swag_migration_mapping.repository"/>
@@ -31,6 +36,7 @@
                  public="true">
             <argument type="service" id="swag_migration_data.repository"/>
             <argument type="service" id="SwagMigrationNext\Migration\Writer\WriterRegistry"/>
+            <argument type="service" id="SwagMigrationNext\Migration\Asset\MediaFileService"/>
             <argument type="service" id="SwagMigrationNext\Migration\Logging\LoggingService"/>
         </service>
 
@@ -46,8 +52,7 @@
         <service id="SwagMigrationNext\Migration\Asset\HttpAssetDownloadService"
                  class="SwagMigrationNext\Migration\Asset\HttpAssetDownloadService"
                  public="true">
-            <argument type="service" id="swag_migration_mapping.repository"/>
-            <argument type="service" id="Doctrine\DBAL\Connection"/>
+            <argument type="service" id="swag_migration_media_file.repository"/>
             <argument type="service" id="Shopware\Core\Content\Media\File\FileSaver"/>
             <argument type="service" id="SwagMigrationNext\Migration\Logging\LoggingService"/>
         </service>
@@ -59,6 +64,14 @@
             <argument type="service" id="SwagMigrationNext\Gateway\GatewayFactoryRegistry"/>
         </service>
 
+        <service id="SwagMigrationNext\Migration\Service\MigrationProgressService"
+                 class="SwagMigrationNext\Migration\Service\MigrationProgressService"
+                 public="true">
+            <argument type="service" id="swag_migration_run.repository"/>
+            <argument type="service" id="swag_migration_data.repository"/>
+            <argument type="service" id="swag_migration_media_file.repository"/>
+        </service>
+
         <service id="SwagMigrationNext\Controller\MigrationController"
                  class="SwagMigrationNext\Controller\MigrationController"
                  public="true">
@@ -67,6 +80,7 @@
             <argument type="service" id="SwagMigrationNext\Migration\Asset\HttpAssetDownloadService"/>
             <argument type="service" id="SwagMigrationNext\Migration\Service\MigrationEnvironmentService"/>
             <argument type="service" id="swag_migration_profile.repository"/>
+            <argument type="service" id="SwagMigrationNext\Migration\Service\MigrationProgressService"/>
         </service>
 
         <service id="SwagMigrationNext\Command\MigrationFetchDataCommand"

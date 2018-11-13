@@ -8,9 +8,10 @@ use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagMigrationNext\Exception\LocaleNotFoundException;
+use SwagMigrationNext\Migration\Asset\MediaFileService;
 use SwagMigrationNext\Migration\Mapping\MappingService;
 use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
-use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationNext\Test\Migration\Services\MigrationProfileUuidService;
 use Symfony\Component\HttpFoundation\Response;
 
 class MappingServiceTest extends TestCase
@@ -22,14 +23,22 @@ class MappingServiceTest extends TestCase
      */
     private $mappingService;
 
+    /**
+     * @var MigrationProfileUuidService
+     */
+    private $profileUuidService;
+
     protected function setUp()
     {
+        $this->profileUuidService = new MigrationProfileUuidService($this->getContainer()->get('swag_migration_profile.repository'));
+
         $this->mappingService = new MappingService(
             $this->getContainer()->get('swag_migration_mapping.repository'),
             $this->getContainer()->get('locale.repository'),
             $this->getContainer()->get('language.repository'),
             $this->getContainer()->get('country.repository'),
-            $this->getContainer()->get('currency.repository')
+            $this->getContainer()->get('currency.repository'),
+            $this->getContainer()->get(MediaFileService::class)
         );
     }
 
@@ -37,17 +46,17 @@ class MappingServiceTest extends TestCase
     {
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
 
-        $uuid1 = $this->mappingService->createNewUuid(Shopware55Profile::PROFILE_NAME, 'product', '123', $context);
+        $uuid1 = $this->mappingService->createNewUuid($this->profileUuidService->getProfileUuid(), 'product', '123', $context);
         static::assertNotNull($uuid1);
 
-        $uuid2 = $this->mappingService->createNewUuid(Shopware55Profile::PROFILE_NAME, 'product', '123', $context);
+        $uuid2 = $this->mappingService->createNewUuid($this->profileUuidService->getProfileUuid(), 'product', '123', $context);
         static::assertSame($uuid1, $uuid2);
     }
 
     public function testReadExistingMappings(): void
     {
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
-        $uuid1 = $this->mappingService->createNewUuid(Shopware55Profile::PROFILE_NAME, 'product', '123', $context);
+        $uuid1 = $this->mappingService->createNewUuid($this->profileUuidService->getProfileUuid(), 'product', '123', $context);
 
         $this->mappingService->writeMapping($context);
 
@@ -56,10 +65,11 @@ class MappingServiceTest extends TestCase
             $this->getContainer()->get('locale.repository'),
             $this->getContainer()->get('language.repository'),
             $this->getContainer()->get('country.repository'),
-            $this->getContainer()->get('currency.repository')
+            $this->getContainer()->get('currency.repository'),
+            $this->getContainer()->get(MediaFileService::class)
         );
 
-        $uuid2 = $newMappingService->createNewUuid(Shopware55Profile::PROFILE_NAME, 'product', '123', $context);
+        $uuid2 = $newMappingService->createNewUuid($this->profileUuidService->getProfileUuid(), 'product', '123', $context);
 
         static::assertSame($uuid1, $uuid2);
     }
@@ -67,7 +77,7 @@ class MappingServiceTest extends TestCase
     public function testGetUuidReturnsNull(): void
     {
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
-        static::assertNull($this->mappingService->getUuid(Shopware55Profile::PROFILE_NAME, 'product', '12345', $context));
+        static::assertNull($this->mappingService->getUuid($this->profileUuidService->getProfileUuid(), 'product', '12345', $context));
     }
 
     public function testLocaleNotFoundException(): void
@@ -76,7 +86,7 @@ class MappingServiceTest extends TestCase
         $context = Context::createDefaultContext(Defaults::TENANT_ID);
 
         try {
-            $this->mappingService->getLanguageUuid(Shopware55Profile::PROFILE_NAME, 'foobar', $context);
+            $this->mappingService->getLanguageUuid($this->profileUuidService->getProfileUuid(), 'foobar', $context);
         } catch (Exception $e) {
             /* @var LocaleNotFoundException $e */
             self::assertInstanceOf(LocaleNotFoundException::class, $e);

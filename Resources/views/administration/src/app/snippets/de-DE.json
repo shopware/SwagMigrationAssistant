@@ -38,6 +38,16 @@
           "endpointLabel": "Shop-Domain",
           "endpointPlaceholder": "www.demoshop.com",
           "endpointSSLLabel": "Mein Shop benutzt SSL",
+          "dbHostLabel": "DB-Host",
+          "dbHostPlaceholder": "DB-Host eintragen ...",
+          "dbPortLabel": "DB-Port",
+          "dbPortPlaceholder": "DB-Port eintragen ...",
+          "dbNameLabel": "DB-Name",
+          "dbNamePlaceholder": "Datenbankname eintragen ...",
+          "dbUserLabel": "DB-Benutzer",
+          "dbUserPlaceholder": "Benutzername eintragen ...",
+          "dbPasswordLabel": "DB-Passwort",
+          "dbPasswordPlaceholder": "Passwort eintragen ...",
           "success": {
             "contentTitle": "Erfolgreich verbunden!",
             "contentInformation": "Lass uns beginnen, Deine Daten zu importieren.",
@@ -59,6 +69,9 @@
     "index": {
       "title": "Datenimport",
       "migrateButton": "Importieren",
+      "pauseButton": "Pausieren",
+      "continueButton": "Fortsetzen",
+      "abortButton": "Beenden",
       "finishButton": "Fertig",
       "backButton": "Zurück zur Übersicht",
       "browserClosingHint": "Möchtest Du den Datenimport wirklich abbrechen?",
@@ -117,7 +130,7 @@
             "hintTitle": "Achtung:",
             "hintContent": "Der Import konnte nicht vollständig abgeschlossen werden. Möglicherweise sind Daten fehlerhaft oder unvollständig importiert worden.",
             "warningListTitle": "Es sind keine Fehler aufgetreten | Folgender Fehler ist aufgetreten | {count} Fehler sind aufgetreten",
-            "warningListHint": "Für weitere Informationen kannst Du in die Konsolenlogs der Entwicklertools Deines Browser schauen."
+            "warningListHint": ""
           },
           "failure": {
             "title": "Fehlgeschlagen",
@@ -125,6 +138,10 @@
             "hintTitle": "Achtung:",
             "hintContent": "Die Migration konnte nicht durchgeführt werden."
           }
+        },
+        "pauseScreen": {
+          "title": "Pause",
+          "message": "Der Import wurde pausiert.<br>Setze ihn fort oder brich den Prozess ab.<br><br>"
         }
       },
       "confirmDialog": {
@@ -132,6 +149,14 @@
         "message": "Möchtest Du wirklich Deine Daten importieren?",
         "cancel": "Abbrechen",
         "confirm": "Importieren"
+      },
+      "confirmAbortDialog": {
+        "title": "Datenimport",
+        "message": "Den Datenimport jetzt beenden?",
+        "cancelRunning": "Fortsetzen",
+        "cancelPause": "Weiter pausieren",
+        "confirm": "Beenden",
+        "hintContent": "Wenn der Prozess beendet wird sind die Daten nicht vollständig und dadurch teilweise unbrauchbar."
       },
       "error": {
         "associationRequiredMissing": {
@@ -187,6 +212,33 @@
         },
         "unknownError": {
           "information": "Unbekannter Fehlertyp. Für weitere Informationen kannst Du in die Konsolenlogs der Entwicklertools Deines Browser schauen."
+        },
+        "emptyNecessaryDataFields": {
+          "information": "{entity}-Entity could not converted cause of empty necessary field(s): {fields}."
+        },
+        "noDefaultShippingAddress": {
+          "information": "Default shipping address of customer is empty and will set with the default billing address."
+        },
+        "noDefaultBillingAddress": {
+          "information": "Default billing address of customer is empty and will set with the default shipping address."
+        },
+        "noDefaultBillingAndShippingAddress": {
+          "information": "Default billing and shipping address of customer is empty and will set with the first address."
+        },
+        "productMediaNotConverted": {
+          "information": "Product-Media could not converted."
+        },
+        "emptyLocale": {
+          "information": "Category-Entity could not converted cause of empty locale."
+        },
+        "noAddressData": {
+          "information": "Category-Entity could not converted cause of empty locale."
+        },
+        "notConvertAbleObjectType": {
+          "information": "Translation of object type „{objectType}“ could not converted."
+        },
+        "invalidUnserializedData": {
+          "information": "{entity}-Translation-Entity could not converted cause of invalid unserialized object data."
         }
       }
     }
