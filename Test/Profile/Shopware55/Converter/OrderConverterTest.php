@@ -188,8 +188,10 @@ class OrderConverterTest extends TestCase
             ['billingaddress'],
             ['payment'],
             ['customer'],
+            ['currencyFactor'],
             ['paymentcurrency'],
             ['currency'],
+            ['status'],
         ];
     }
 
@@ -225,7 +227,7 @@ class OrderConverterTest extends TestCase
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
         static::assertArrayNotHasKey('lineItems', $converted);
-        static::assertArrayNotHasKey('transactions', $converted);
+        static::assertSame(count($converted['transactions']), 0);
         static::assertSame(Defaults::SALES_CHANNEL, $converted['salesChannelId']);
         static::assertSame('test@example.com', $converted['orderCustomer']['email']);
         static::assertCount(0, $this->loggingService->getLoggingArray());

@@ -87,6 +87,7 @@ class OrderConverter implements ConverterInterface
      */
     private $requiredDataFieldKeys = [
         'customer',
+        'currency',
         'currencyFactor',
         'payment',
         'paymentcurrency',
@@ -141,8 +142,11 @@ class OrderConverter implements ConverterInterface
         $this->runId = $runId;
 
         $fields = $this->helper->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
-        if (!isset($data['billingaddress']['id'])) {
+        if (empty($data['billingaddress']['id'])) {
             $fields[] = 'billingaddress';
+        }
+        if (isset($data['payment']) && empty($data['payment']['name'])) {
+            $fields[] = 'paymentMethod';
         }
 
         if (!empty($fields)) {
@@ -258,6 +262,22 @@ class OrderConverter implements ConverterInterface
         unset($data['trackingcode'], $data['shippingMethod'], $data['dispatchID'], $data['shippingaddress']);
 
         $converted['billingAddress'] = $this->getAddress($data['billingaddress']);
+        if (empty($converted['billingAddress'])) {
+            $fields = ['billingaddress'];
+            $this->loggingService->addWarning(
+                $this->runId,
+                LoggingType::EMPTY_NECESSARY_DATA_FIELDS,
+                'Empty necessary data',
+                sprintf('Order-Entity could not converted cause of empty necessary field(s): %s.', implode(', ', $fields)),
+                [
+                    'id' => $this->oldId,
+                    'entity' => 'Order',
+                    'fields' => $fields,
+                ]
+            );
+
+            return new ConvertStruct(null, $data);
+        }
         unset($data['billingaddress']);
 
         if (isset($data['details'])) {
@@ -465,6 +485,8 @@ class OrderConverter implements ConverterInterface
                     'fields' => $fields,
                 ]
             );
+
+            return [];
         }
 
         $address = [];

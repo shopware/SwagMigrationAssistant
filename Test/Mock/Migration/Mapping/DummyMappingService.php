@@ -90,7 +90,7 @@ class DummyMappingService extends Shopware55MappingService
 
     public function getOrderStateUuid(int $oldStateId, Context $context): ?string
     {
-        return null;
+        return Uuid::uuid4()->getHex();
     }
 
     public function getTransactionStateUuid(int $oldStateId, Context $context): ?string
