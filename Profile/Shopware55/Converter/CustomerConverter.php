@@ -449,6 +449,24 @@ class CustomerConverter implements ConverterInterface
 
         $converted['addresses'] = $addresses;
 
+        // No valid default billing and shipping address was converted, so use the first valid one as default
+        if (!isset($converted['defaultBillingAddressId']) && !isset($converted['defaultShippingAddressId'])) {
+            $converted['defaultBillingAddressId'] = $addresses[0]['id'];
+            $converted['defaultShippingAddressId'] = $addresses[0]['id'];
+            unset($originalData['default_billing_address_id'], $originalData['default_shipping_address_id']);
+
+            $this->loggingService->addInfo(
+                $this->runId,
+                LoggingType::NO_DEFAULT_SHIPPING_ADDRESS,
+                'No default billing and shipping address',
+                'Default billing and shipping address of customer is empty and will set with the first address.',
+                [
+                    'id' => $this->oldCustomerId,
+                    'uuid' => $customerUuid,
+                ]
+            );
+        }
+
         // No valid default shipping address was converted, but the default billing address is valid
         if (!isset($converted['defaultShippingAddressId']) && isset($converted['defaultBillingAddressId'])) {
             $converted['defaultShippingAddressId'] = $converted['defaultBillingAddressId'];
@@ -464,10 +482,8 @@ class CustomerConverter implements ConverterInterface
                     'uuid' => $customerUuid,
                 ]
             );
-        }
-
-        // No valid default billing address was converted, but the default shipping address is valid
-        if (!isset($converted['defaultBillingAddressId']) && isset($converted['defaultShippingAddressId'])) {
+        } elseif (!isset($converted['defaultBillingAddressId']) && isset($converted['defaultShippingAddressId'])) {
+            // No valid default billing address was converted, but the default shipping address is valid
             $converted['defaultBillingAddressId'] = $converted['defaultShippingAddressId'];
             unset($originalData['default_billing_address_id']);
 
@@ -476,24 +492,6 @@ class CustomerConverter implements ConverterInterface
                 LoggingType::NO_DEFAULT_BILLING_ADDRESS,
                 'No default billing address',
                 'Default billing address of customer is empty and will set with the default shipping address.',
-                [
-                    'id' => $this->oldCustomerId,
-                    'uuid' => $customerUuid,
-                ]
-            );
-        }
-
-        // No valid default billing and shipping address was converted, so use the first valid one as default
-        if (!isset($converted['defaultBillingAddressId']) && !isset($converted['defaultShippingAddressId'])) {
-            $converted['defaultBillingAddressId'] = $addresses[0]['id'];
-            $converted['defaultShippingAddressId'] = $addresses[0]['id'];
-            unset($originalData['default_billing_address_id'], $originalData['default_shipping_address_id']);
-
-            $this->loggingService->addInfo(
-                $this->runId,
-                LoggingType::NO_DEFAULT_BILLING_AND_SHIPPING_ADDRESS,
-                'No default billing and shipping address',
-                'Default billing and shipping address of customer is empty and will set with the first address.',
                 [
                     'id' => $this->oldCustomerId,
                     'uuid' => $customerUuid,

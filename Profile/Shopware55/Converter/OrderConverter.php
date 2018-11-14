@@ -456,9 +456,7 @@ class OrderConverter implements ConverterInterface
                 $this->context
             );
 
-            if (isset($address['countryStateId'], $originalData['state'])
-                && (isset($address['countryId']) || isset($address['country']['id']))
-            ) {
+            if (isset($address['countryStateId'], $originalData['state']) && ($address['countryId'] !== null || isset($address['country']['id']))) {
                 $address['countryState'] = $this->getCountryState($originalData['state'], $address['countryId'] ?? $address['country']['id']);
             }
         }

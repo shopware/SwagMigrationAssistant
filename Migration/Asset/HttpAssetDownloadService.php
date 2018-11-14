@@ -19,7 +19,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use SwagMigrationNext\Exception\NoFileSystemPermissionsException;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
-use SwagMigrationNext\Migration\Mapping\SwagMigrationMappingStruct;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
@@ -82,9 +81,9 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
         //Map workload with uuids as keys
         $mappedWorkload = [];
         $mediaIds = [];
+
         foreach ($workload as $work) {
             $mappedWorkload[$work['uuid']] = $work;
-            $runId = $work['runId'];
             $mediaIds[] = $work['uuid'];
         }
 
@@ -103,7 +102,7 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsAnyFilter('mediaId', $mediaIds));
         $assetSearchResult = $this->mediaFileRepo->search($criteria, $context);
-        /** @var SwagMigrationMappingStruct[] $assets */
+        /** @var SwagMigrationMediaFileStruct[] $assets */
         $assets = $assetSearchResult->getElements();
 
         //Do download requests and store the promises
