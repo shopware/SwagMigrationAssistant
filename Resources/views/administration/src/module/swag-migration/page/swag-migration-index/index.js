@@ -107,58 +107,49 @@ Component.register('swag-migration-index', {
             return State.getStore('swag_migration_profile');
         },
 
-        leftButtonVisible() {
-            return this.isPaused || (this.isMigrating && !this.isLoading);
-        },
-
-        leftButtonDisabled() {
-            return this.isLoading;
-        },
-
-        leftButtonText() {
-            if (this.componentIndex === this.components.resultWarning ||
-                this.componentIndex === this.components.resultSuccess) {
-                return this.$tc('swag-migration.index.backButton');
-            }
-            return this.$tc('swag-migration.index.abortButton');
-        },
-
-        rightButtonDisabled() {
-            if (this.componentIndex === this.components.resultWarning ||
-                this.componentIndex === this.components.resultSuccess) {
-                return true;
-            }
-
-            if (this.statusIndex !== MIGRATION_STATUS.FETCH_DATA && this.isMigrating) {
-                return false;
-            }
-
-            if (this.statusIndex === MIGRATION_STATUS.FETCH_DATA && this.isMigrating) {
-                return true;
-            }
-
-            if (!this.isMigrationAllowed && this.isPaused) {
-                return false;
-            }
-
-            return this.isLoading || !this.isMigrationAllowed;
-        },
-
-        rightButtonText() {
-            if (
-                (!this.isMigrating && !this.isPaused) ||
-                (this.statusIndex === MIGRATION_STATUS.FETCH_DATA && this.isMigrating) ||
+        componentIndexIsResult() {
+            return (this.componentIndex === this.components.resultSuccess ||
                 this.componentIndex === this.components.resultWarning ||
-                this.componentIndex === this.components.resultSuccess
-            ) {
-                return this.$tc('swag-migration.index.migrateButton');
-            }
+                this.componentIndex === this.components.resultFailure);
+        },
 
-            if (this.isPaused) {
-                return this.$tc('swag-migration.index.continueButton');
-            }
+        abortButtonVisible() {
+            return this.isPaused || (
+                this.isMigrating &&
+                !this.isLoading &&
+                !this.componentIndexIsResult
+            );
+        },
 
-            return this.$tc('swag-migration.index.pauseButton');
+        backButtonVisible() {
+            return this.componentIndexIsResult &&
+                    this.isMigrating;
+        },
+
+        migrateButtonVisible() {
+            return (!this.isMigrating && !this.isPaused) ||
+                (this.statusIndex === MIGRATION_STATUS.FETCH_DATA && this.isMigrating) ||
+                (
+                    this.componentIndexIsResult &&
+                    this.isMigrating
+                );
+        },
+
+        migrateButtonDisabled() {
+            return (this.statusIndex === MIGRATION_STATUS.FETCH_DATA && this.isMigrating) ||
+                !this.isMigrationAllowed ||
+                this.componentIndexIsResult;
+        },
+
+        pauseButtonVisible() {
+            return this.isMigrating &&
+                !this.isPaused &&
+                this.statusIndex !== MIGRATION_STATUS.FETCH_DATA &&
+                !this.componentIndexIsResult;
+        },
+
+        continueButtonVisible() {
+            return this.isPaused;
         },
 
         abortMigrationBackText() {
@@ -308,51 +299,41 @@ Component.register('swag-migration-index', {
             this.migrationWorkerService.subscribeStatus(this.onStatus);
         },
 
-        onLeftButtonClick() {
-            if (
-                this.componentIndex === this.components.resultWarning ||
-                this.componentIndex === this.components.resultSuccess
-            ) {
-                // Back to data selector
-                this.isPaused = false;
-                this.isMigrating = false;
-                this.componentIndex = this.components.dataSelector;
-            } else {
-                // Abort
-                this.showAbortMigrationConfirmDialog = true;
-            }
+        onAbortButtonClick() {
+            this.showAbortMigrationConfirmDialog = true;
         },
 
-        onRightButtonClick() {
-            if (!this.isMigrating && !this.isPaused) {
-                // migrate
-                this.showMigrationConfirmDialog = true;
-                return;
-            }
+        onBackButtonClick() {
+            this.migrationWorkerService.status = MIGRATION_STATUS.WAITING;
+            this.componentIndex = this.components.dataSelector;
+            this.isMigrating = false;
+        },
 
-            if (this.isPaused) {
-                // continue
-                this.isLoading = true;
-                this.migrationWorkerService.checkForRunningMigration().then((running) => {
-                    this.isLoading = false;
-                    this.isPaused = false;
-                    if (running === false) {
-                        this.isMigrating = false;
-                        this.componentIndex = this.components.dataSelector;
-                        return;
-                    }
+        onMigrateButtonClick() {
+            this.showMigrationConfirmDialog = true;
+        },
 
-                    this.migrationWorkerService.restoreRunningMigration();
-                    this.restoreRunningMigration();
-                });
-                return;
-            }
-
-            // pause
+        onPauseButtonClick() {
             this.migrationWorkerService.stopMigration();
             this.isMigrating = false;
             this.isPaused = true;
             this.componentIndex = this.components.pauseScreen;
+        },
+
+        onContinueButtonClick() {
+            this.isLoading = true;
+            this.migrationWorkerService.checkForRunningMigration().then((running) => {
+                this.isLoading = false;
+                this.isPaused = false;
+                if (running === false) {
+                    this.isMigrating = false;
+                    this.componentIndex = this.components.dataSelector;
+                    return;
+                }
+
+                this.migrationWorkerService.restoreRunningMigration();
+                this.restoreRunningMigration();
+            });
         },
 
         onMigrationAbort() {
@@ -721,12 +702,6 @@ Component.register('swag-migration-index', {
 
         onCloseAbortMigrationConfirmDialog() {
             this.showAbortMigrationConfirmDialog = false;
-        },
-
-        onClickBack() {
-            this.migrationWorkerService.status = MIGRATION_STATUS.WAITING;
-            this.componentIndex = this.components.dataSelector;
-            this.isMigrating = false;
         },
 
         onBrowserTabClosing(e) {

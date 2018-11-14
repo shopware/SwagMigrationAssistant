@@ -21,12 +21,6 @@
                                 {{ $tc('swag-migration.index.loadingScreenCard.result.failure.hintContent') }}
                             </sw-alert>
                         {% endblock %}
-
-                        {% block swag_migration_loading_screen_failure_button_back %}
-                            <sw-button @click="$emit('onClickBack')">
-                                {{ $tc('swag-migration.index.backButton') }}
-                            </sw-button>
-                        {% endblock %}
                     </div>
                 {% endblock %}
             </div>

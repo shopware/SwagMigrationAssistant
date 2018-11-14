@@ -12,11 +12,20 @@
 
         {% block swag_migration_index_smart_bar_actions %}
             <template slot="smart-bar-actions">
-                <sw-button v-if="leftButtonVisible" @click="onLeftButtonClick" :disabled="leftButtonDisabled">
-                    {{ leftButtonText }}
+                <sw-button v-if="abortButtonVisible" @click="onAbortButtonClick">
+                    {{ $tc('swag-migration.index.abortButton') }}
                 </sw-button>
-                <sw-button variant="primary" @click="onRightButtonClick" :disabled="rightButtonDisabled">
-                    {{ rightButtonText }}
+                <sw-button v-if="backButtonVisible" @click="onBackButtonClick">
+                    {{ $tc('swag-migration.index.backButton') }}
+                </sw-button>
+                <sw-button variant="primary" v-if="migrateButtonVisible" @click="onMigrateButtonClick" :disabled="migrateButtonDisabled">
+                    {{ $tc('swag-migration.index.migrateButton') }}
+                </sw-button>
+                <sw-button variant="primary" v-if="pauseButtonVisible" @click="onPauseButtonClick">
+                    {{ $tc('swag-migration.index.pauseButton') }}
+                </sw-button>
+                <sw-button variant="primary" v-if="continueButtonVisible" @click="onContinueButtonClick">
+                    {{ $tc('swag-migration.index.continueButton') }}
                 </sw-button>
             </template>
         {% endblock %}
@@ -90,21 +99,18 @@
                 {% endblock %}
 
                 {% block swag_migration_index_card_loadingScreen_success %}
-                    <swag-migration-loading-screen-success v-if="componentIndex === 2"
-                                                           @onClickBack="onClickBack">
+                    <swag-migration-loading-screen-success v-if="componentIndex === 2">
                     </swag-migration-loading-screen-success>
                 {% endblock %}
 
                 {% block swag_migration_index_card_loadingScreen_warning %}
                     <swag-migration-loading-screen-warning v-if="componentIndex === 3"
-                                                           @onClickBack="onClickBack"
                                                            :errorList="errorList">
                     </swag-migration-loading-screen-warning>
                 {% endblock %}
 
                 {% block swag_migration_index_card_loadingScreen_failure %}
-                    <swag-migration-loading-screen-failure v-if="componentIndex === 4"
-                                                           @onClickBack="onClickBack">
+                    <swag-migration-loading-screen-failure v-if="componentIndex === 4">
                     </swag-migration-loading-screen-failure>
                 {% endblock %}
 

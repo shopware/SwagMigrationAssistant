@@ -73,7 +73,7 @@
       "continueButton": "Fortsetzen",
       "abortButton": "Beenden",
       "finishButton": "Fertig",
-      "backButton": "Zurück zur Übersicht",
+      "backButton": "Übersicht",
       "browserClosingHint": "Möchtest Du den Datenimport wirklich abbrechen?",
       "migrationAlreadyRunning": "Der Datenimport wurde bereits gestartet.",
       "shopInfoCard": {
