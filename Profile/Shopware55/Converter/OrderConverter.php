@@ -82,6 +82,17 @@ class OrderConverter implements ConverterInterface
      */
     private $runId;
 
+    /**
+     * @var string[]
+     */
+    private $requiredDataFieldKeys = [
+        'customer',
+        'currencyFactor',
+        'payment',
+        'paymentcurrency',
+        'status',
+    ];
+
     public function __construct(
         Shopware55MappingService $mappingService,
         ConverterHelperService $converterHelperService,
@@ -118,24 +129,9 @@ class OrderConverter implements ConverterInterface
         $this->oldId = $data['id'];
         $this->runId = $runId;
 
-        $fields = [];
+        $fields = $this->helper->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
         if (!isset($data['billingaddress']['id'])) {
             $fields[] = 'billingaddress';
-        }
-        if (!isset($data['payment'])) {
-            $fields[] = 'payment';
-        }
-        if (!isset($data['customer'])) {
-            $fields[] = 'customer';
-        }
-        if (!isset($data['currencyFactor'])) {
-            $fields[] = 'currencyFactor';
-        }
-        if (!isset($data['currency'])) {
-            $fields[] = 'currency';
-        }
-        if (!isset($data['paymentcurrency'])) {
-            $fields[] = 'paymentcurrency';
         }
 
         if (!empty($fields)) {
@@ -231,6 +227,20 @@ class OrderConverter implements ConverterInterface
         $this->helper->convertValue($converted, 'date', $data, 'ordertime', $this->helper::TYPE_DATETIME);
 
         $converted['stateId'] = $this->mappingService->getOrderStateUuid((int) $data['status'], $this->context);
+        if (!isset($converted['stateId'])) {
+            $this->loggingService->addWarning(
+                $this->runId,
+                LoggingType::UNKNOWN_ORDER_STATE,
+                'Cannot find order state',
+                'Order-Entity could not converted cause of unknown order state',
+                [
+                    'id' => $this->oldId,
+                    'orderState' => $data['status'],
+                ]
+            );
+
+            return new ConvertStruct(null, $data);
+        }
         unset($data['status'], $data['orderstatus']);
 
         $converted['deliveries'] = $this->getDeliveries($data, $converted);
