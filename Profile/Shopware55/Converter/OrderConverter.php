@@ -93,6 +93,17 @@ class OrderConverter implements ConverterInterface
         'status',
     ];
 
+    /**
+     * @var string[]
+     */
+    private $requiredAddressDataFieldKeys = [
+        'firstname',
+        'lastname',
+        'zipcode',
+        'city',
+        'street',
+    ];
+
     public function __construct(
         Shopware55MappingService $mappingService,
         ConverterHelperService $converterHelperService,
@@ -440,6 +451,22 @@ class OrderConverter implements ConverterInterface
 
     private function getAddress(array $originalData): array
     {
+        $fields = $this->helper->checkForEmptyRequiredDataFields($originalData, $this->requiredAddressDataFieldKeys);
+        if (!empty($fields)) {
+            $this->loggingService->addInfo(
+                $this->runId,
+                LoggingType::EMPTY_NECESSARY_DATA_FIELDS,
+                'Empty necessary data fields for address',
+                sprintf('Address-Entity could not converted cause of empty necessary field(s): %s.', implode(', ', $fields)),
+                [
+                    'id' => $this->oldId,
+                    'uuid' => $this->uuid,
+                    'entity' => 'Address',
+                    'fields' => $fields,
+                ]
+            );
+        }
+
         $address = [];
         $address['id'] = $this->mappingService->createNewUuid(
             $this->profileId,
