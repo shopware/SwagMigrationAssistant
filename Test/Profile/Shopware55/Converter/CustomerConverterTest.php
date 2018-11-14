@@ -7,8 +7,8 @@ use Shopware\Core\Checkout\Customer\CustomerDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Struct\Uuid;
+use SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\Converter\CustomerConverter;
-use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
 use SwagMigrationNext\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationNext\Test\Mock\Migration\Mapping\DummyMappingService;
 

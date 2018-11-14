@@ -15,9 +15,9 @@ use Shopware\Core\System\Country\Aggregate\CountryState\CountryStateDefinition;
 use Shopware\Core\System\Country\Aggregate\CountryStateTranslation\CountryStateTranslationDefinition;
 use Shopware\Core\System\Country\Aggregate\CountryTranslation\CountryTranslationDefinition;
 use Shopware\Core\System\Country\CountryDefinition;
+use SwagMigrationNext\Migration\Converter\ConverterInterface;
+use SwagMigrationNext\Migration\Converter\ConvertStruct;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
-use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
-use SwagMigrationNext\Profile\Shopware55\ConvertStruct;
 use SwagMigrationNext\Profile\Shopware55\Logging\LoggingType;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 

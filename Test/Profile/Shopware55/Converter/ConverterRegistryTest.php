@@ -4,11 +4,11 @@ namespace SwagMigrationNext\Test\Profile\Shopware55\Converter;
 
 use Exception;
 use PHPUnit\Framework\TestCase;
-use SwagMigrationNext\Profile\Shopware55\Converter\ConverterNotFoundException;
-use SwagMigrationNext\Profile\Shopware55\Converter\ConverterRegistry;
-use SwagMigrationNext\Profile\Shopware55\Converter\ConverterRegistryInterface;
+use SwagMigrationNext\Exception\ConverterNotFoundException;
+use SwagMigrationNext\Migration\Converter\ConverterRegistry;
+use SwagMigrationNext\Migration\Converter\ConverterRegistryInterface;
+use SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\Converter\ProductConverter;
-use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
 use SwagMigrationNext\Test\Mock\DummyCollection;
 use SwagMigrationNext\Test\Mock\Migration\Asset\DummyMediaFileService;
 use SwagMigrationNext\Test\Mock\Migration\Logging\DummyLoggingService;

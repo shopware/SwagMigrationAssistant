@@ -5,9 +5,10 @@ namespace SwagMigrationNext\Profile\Shopware55\Converter;
 use Shopware\Core\Content\Category\Aggregate\CategoryTranslation\CategoryTranslationDefinition;
 use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Framework\Context;
+use SwagMigrationNext\Migration\Converter\ConverterInterface;
+use SwagMigrationNext\Migration\Converter\ConvertStruct;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
-use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
-use SwagMigrationNext\Profile\Shopware55\ConvertStruct;
+use SwagMigrationNext\Profile\Shopware55\Exception\ParentEntityForChildNotFoundException;
 use SwagMigrationNext\Profile\Shopware55\Logging\LoggingType;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 

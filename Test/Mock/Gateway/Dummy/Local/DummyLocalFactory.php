@@ -2,8 +2,8 @@
 
 namespace SwagMigrationNext\Test\Mock\Gateway\Dummy\Local;
 
-use SwagMigrationNext\Gateway\GatewayFactoryInterface;
-use SwagMigrationNext\Gateway\GatewayInterface;
+use SwagMigrationNext\Migration\Gateway\GatewayFactoryInterface;
+use SwagMigrationNext\Migration\Gateway\GatewayInterface;
 use SwagMigrationNext\Migration\MigrationContext;
 
 class DummyLocalFactory implements GatewayFactoryInterface

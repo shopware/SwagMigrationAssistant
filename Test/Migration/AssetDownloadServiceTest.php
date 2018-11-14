@@ -13,7 +13,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
-use SwagMigrationNext\Gateway\Shopware55\Local\Shopware55LocalGateway;
+use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationNext\Migration\Asset\CliAssetDownloadService;
 use SwagMigrationNext\Migration\Asset\MediaFileService;
 use SwagMigrationNext\Migration\MigrationContext;

@@ -16,7 +16,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Write\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\Flag\Required;
 use SwagMigrationNext\Migration\Asset\SwagMigrationMediaFileDefinition;
 use SwagMigrationNext\Migration\Data\SwagMigrationDataDefinition;
-use SwagMigrationNext\Profile\SwagMigrationProfileDefinition;
+use SwagMigrationNext\Migration\Profile\SwagMigrationProfileDefinition;
 
 class SwagMigrationRunDefinition extends EntityDefinition
 {

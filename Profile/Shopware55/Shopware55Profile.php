@@ -11,17 +11,17 @@ use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenContainerEvent;
 use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
-use SwagMigrationNext\Gateway\GatewayInterface;
 use SwagMigrationNext\Migration\Asset\MediaFileServiceInterface;
+use SwagMigrationNext\Migration\Converter\ConverterInterface;
+use SwagMigrationNext\Migration\Converter\ConverterRegistryInterface;
 use SwagMigrationNext\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationNext\Migration\EnvironmentInformation;
+use SwagMigrationNext\Migration\Gateway\GatewayInterface;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\MigrationContext;
-use SwagMigrationNext\Profile\ProfileInterface;
-use SwagMigrationNext\Profile\Shopware55\Converter\AssociationEntityRequiredMissingException;
-use SwagMigrationNext\Profile\Shopware55\Converter\ConverterInterface;
-use SwagMigrationNext\Profile\Shopware55\Converter\ConverterRegistryInterface;
-use SwagMigrationNext\Profile\Shopware55\Converter\ParentEntityForChildNotFoundException;
+use SwagMigrationNext\Migration\Profile\ProfileInterface;
+use SwagMigrationNext\Profile\Shopware55\Exception\AssociationEntityRequiredMissingException;
+use SwagMigrationNext\Profile\Shopware55\Exception\ParentEntityForChildNotFoundException;
 
 class Shopware55Profile implements ProfileInterface
 {

@@ -13,7 +13,7 @@ use SwagMigrationNext\Migration\Service\MigrationCollectServiceInterface;
 use SwagMigrationNext\Migration\Service\MigrationEnvironmentServiceInterface;
 use SwagMigrationNext\Migration\Service\MigrationProgressServiceInterface;
 use SwagMigrationNext\Migration\Service\MigrationWriteServiceInterface;
-use SwagMigrationNext\Profile\SwagMigrationProfileStruct;
+use SwagMigrationNext\Migration\Profile\SwagMigrationProfileStruct;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;

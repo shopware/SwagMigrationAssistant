@@ -18,9 +18,10 @@ use Shopware\Core\System\Tax\TaxDefinition;
 use Shopware\Core\System\Unit\Aggregate\UnitTranslation\UnitTranslationDefinition;
 use Shopware\Core\System\Unit\UnitDefinition;
 use SwagMigrationNext\Migration\Asset\MediaFileServiceInterface;
+use SwagMigrationNext\Migration\Converter\ConverterInterface;
+use SwagMigrationNext\Migration\Converter\ConvertStruct;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
-use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
-use SwagMigrationNext\Profile\Shopware55\ConvertStruct;
+use SwagMigrationNext\Profile\Shopware55\Exception\ParentEntityForChildNotFoundException;
 use SwagMigrationNext\Profile\Shopware55\Logging\LoggingType;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 

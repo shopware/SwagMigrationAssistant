@@ -2,10 +2,10 @@
 
 namespace SwagMigrationNext\Migration\Service;
 
-use SwagMigrationNext\Gateway\GatewayFactoryRegistryInterface;
+use SwagMigrationNext\Migration\Gateway\GatewayFactoryRegistryInterface;
 use SwagMigrationNext\Migration\EnvironmentInformation;
 use SwagMigrationNext\Migration\MigrationContext;
-use SwagMigrationNext\Profile\ProfileRegistryInterface;
+use SwagMigrationNext\Migration\Profile\ProfileRegistryInterface;
 
 class MigrationEnvironmentService implements MigrationEnvironmentServiceInterface
 {

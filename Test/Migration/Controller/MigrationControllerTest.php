@@ -21,7 +21,7 @@ use SwagMigrationNext\Migration\Service\MigrationWriteService;
 use SwagMigrationNext\Profile\ProfileRegistry;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
-use SwagMigrationNext\Profile\SwagMigrationProfileStruct;
+use SwagMigrationNext\Migration\Profile\SwagMigrationProfileStruct;
 use SwagMigrationNext\Test\Migration\Services\MigrationProfileUuidService;
 use SwagMigrationNext\Test\MigrationServicesTrait;
 use SwagMigrationNext\Test\Mock\DummyCollection;

@@ -27,9 +27,10 @@ use Shopware\Core\System\Country\Aggregate\CountryTranslation\CountryTranslation
 use Shopware\Core\System\Country\CountryDefinition;
 use Shopware\Core\System\Currency\Aggregate\CurrencyTranslation\CurrencyTranslationDefinition;
 use Shopware\Core\System\Currency\CurrencyDefinition;
+use SwagMigrationNext\Migration\Converter\ConverterInterface;
+use SwagMigrationNext\Migration\Converter\ConvertStruct;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
-use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
-use SwagMigrationNext\Profile\Shopware55\ConvertStruct;
+use SwagMigrationNext\Profile\Shopware55\Exception\AssociationEntityRequiredMissingException;
 use SwagMigrationNext\Profile\Shopware55\Logging\LoggingType;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 

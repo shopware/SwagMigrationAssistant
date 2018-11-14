@@ -14,6 +14,11 @@
             <argument type="service" id="swag_migration_media_file.repository"/>
         </service>
 
+        <service id="SwagMigrationNext\Migration\Converter\ConverterRegistry"
+                 class="SwagMigrationNext\Migration\Converter\ConverterRegistry">
+            <argument type="tagged" tag="shopware.migration.shopware55.converter"/>
+        </service>
+
         <service id="SwagMigrationNext\Migration\Mapping\MappingService"
                  class="SwagMigrationNext\Migration\Mapping\MappingService">
             <argument type="service" id="swag_migration_mapping.repository"/>
@@ -26,8 +31,8 @@
         <service id="SwagMigrationNext\Migration\Service\MigrationCollectService"
                  class="SwagMigrationNext\Migration\Service\MigrationCollectService"
                  public="true">
-            <argument type="service" id="SwagMigrationNext\Profile\ProfileRegistry"/>
-            <argument type="service" id="SwagMigrationNext\Gateway\GatewayFactoryRegistry"/>
+            <argument type="service" id="SwagMigrationNext\Migration\Profile\ProfileRegistry"/>
+            <argument type="service" id="SwagMigrationNext\Migration\Gateway\GatewayFactoryRegistry"/>
             <argument type="service" id="SwagMigrationNext\Migration\Logging\LoggingService"/>
         </service>
 
@@ -60,8 +65,8 @@
         <service id="SwagMigrationNext\Migration\Service\MigrationEnvironmentService"
                  class="SwagMigrationNext\Migration\Service\MigrationEnvironmentService"
                  public="true">
-            <argument type="service" id="SwagMigrationNext\Profile\ProfileRegistry"/>
-            <argument type="service" id="SwagMigrationNext\Gateway\GatewayFactoryRegistry"/>
+            <argument type="service" id="SwagMigrationNext\Migration\Profile\ProfileRegistry"/>
+            <argument type="service" id="SwagMigrationNext\Migration\Gateway\GatewayFactoryRegistry"/>
         </service>
 
         <service id="SwagMigrationNext\Migration\Service\MigrationProgressService"

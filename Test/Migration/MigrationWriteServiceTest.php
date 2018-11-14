@@ -18,7 +18,7 @@ use Shopware\Core\Framework\Struct\Serializer\StructNormalizer;
 use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\System\Currency\CurrencyStruct;
-use SwagMigrationNext\Gateway\Shopware55\Local\Shopware55LocalGateway;
+use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationNext\Migration\Asset\MediaFileService;
 use SwagMigrationNext\Migration\Data\SwagMigrationDataStruct;
 use SwagMigrationNext\Migration\MigrationContext;

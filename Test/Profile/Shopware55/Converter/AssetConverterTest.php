@@ -8,7 +8,7 @@ use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Struct\Uuid;
 use SwagMigrationNext\Profile\Shopware55\Converter\AssetConverter;
-use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
+use SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService;
 use SwagMigrationNext\Test\Mock\Migration\Asset\DummyMediaFileService;
 use SwagMigrationNext\Test\Mock\Migration\Mapping\DummyMappingService;
 

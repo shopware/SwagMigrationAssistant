@@ -3,10 +3,10 @@
 namespace SwagMigrationNext\Migration\Service;
 
 use Shopware\Core\Framework\Context;
-use SwagMigrationNext\Gateway\GatewayFactoryRegistryInterface;
+use SwagMigrationNext\Migration\Gateway\GatewayFactoryRegistryInterface;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\MigrationContext;
-use SwagMigrationNext\Profile\ProfileRegistryInterface;
+use SwagMigrationNext\Migration\Profile\ProfileRegistryInterface;
 
 class MigrationCollectService implements MigrationCollectServiceInterface
 {

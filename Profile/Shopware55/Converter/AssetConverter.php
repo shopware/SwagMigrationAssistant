@@ -6,8 +6,8 @@ use Shopware\Core\Content\Media\Aggregate\MediaTranslation\MediaTranslationDefin
 use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Framework\Context;
 use SwagMigrationNext\Migration\Asset\MediaFileServiceInterface;
-use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
-use SwagMigrationNext\Profile\Shopware55\ConvertStruct;
+use SwagMigrationNext\Migration\Converter\ConverterInterface;
+use SwagMigrationNext\Migration\Converter\ConvertStruct;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 
 class AssetConverter implements ConverterInterface

@@ -13,7 +13,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\UpdatedAtField;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\Flag\Required;
-use SwagMigrationNext\Profile\SwagMigrationProfileDefinition;
+use SwagMigrationNext\Migration\Profile\SwagMigrationProfileDefinition;
 
 class SwagMigrationMappingDefinition extends EntityDefinition
 {

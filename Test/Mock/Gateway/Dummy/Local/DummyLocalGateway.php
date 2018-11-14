@@ -7,7 +7,7 @@ use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
-use SwagMigrationNext\Gateway\GatewayInterface;
+use SwagMigrationNext\Migration\Gateway\GatewayInterface;
 
 class DummyLocalGateway implements GatewayInterface
 {

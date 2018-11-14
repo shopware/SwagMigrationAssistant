@@ -5,20 +5,20 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="SwagMigrationNext\Profile\ProfileRegistry"
-                 class="SwagMigrationNext\Profile\ProfileRegistry">
+        <service id="SwagMigrationNext\Migration\Profile\ProfileRegistry"
+                 class="SwagMigrationNext\Migration\Profile\ProfileRegistry">
             <argument type="tagged" tag="shopware.migration.profile"/>
         </service>
 
-        <service id="SwagMigrationNext\Profile\SwagMigrationProfileDefinition"
-                 class="SwagMigrationNext\Profile\SwagMigrationProfileDefinition">
+        <service id="SwagMigrationNext\Migration\Profile\SwagMigrationProfileDefinition"
+                 class="SwagMigrationNext\Migration\Profile\SwagMigrationProfileDefinition">
             <tag name="shopware.entity.definition" entity="swag_migration_profile"/>
         </service>
 
         <service id="swag_migration_profile.repository"
                  class="Shopware\Core\Framework\DataAbstractionLayer\EntityRepository"
                  public="true">
-            <argument>SwagMigrationNext\Profile\SwagMigrationProfileDefinition</argument>
+            <argument>SwagMigrationNext\Migration\Profile\SwagMigrationProfileDefinition</argument>
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Read\EntityReaderInterface"/>
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\VersionManager"/>
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearcherInterface"/>
