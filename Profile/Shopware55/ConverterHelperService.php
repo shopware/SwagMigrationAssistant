@@ -45,6 +45,23 @@ class ConverterHelperService
         unset($sourceData[$sourceKey]);
     }
 
+    /**
+     * @param string[] $requiredDataFieldKeys
+     *
+     * @return string[]
+     */
+    public function checkForEmptyRequiredDataFields(array $rawData, array $requiredDataFieldKeys): array
+    {
+        $emptyFields = [];
+        foreach ($requiredDataFieldKeys as $requiredDataFieldKey) {
+            if (!isset($rawData[$requiredDataFieldKey])) {
+                $emptyFields[] = $requiredDataFieldKey;
+            }
+        }
+
+        return $emptyFields;
+    }
+
     private function validDate(string $value): bool
     {
         try {

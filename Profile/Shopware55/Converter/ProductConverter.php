@@ -74,6 +74,15 @@ class ProductConverter implements ConverterInterface
      */
     private $loggingService;
 
+    /**
+     * @var string[]
+     */
+    private $requiredDataFieldKeys = [
+        'tax',
+        'prices',
+        'manufacturer',
+    ];
+
     public function __construct(
         Shopware55MappingService $mappingService,
         ConverterHelperService $converterHelperService,
@@ -113,20 +122,18 @@ class ProductConverter implements ConverterInterface
         $this->catalogId = $catalogId;
         $this->oldProductId = $data['detail']['ordernumber'];
 
-        $fields = [];
-        if (!isset($data['tax'])) {
-            $fields[] = 'tax';
-        }
-        if (!isset($data['prices'])) {
-            $fields[] = 'prices';
-        }
-
+        $fields = $this->helper->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
         if (!empty($fields)) {
             $this->loggingService->addWarning(
                 $this->runId,
+                LoggingType::EMPTY_NECESSARY_DATA_FIELDS,
                 'Empty necessary data fields',
                 sprintf('Product-Entity could not converted cause of empty necessary field(s): %s.', implode(', ', $fields)),
-                ['id' => $this->oldProductId]
+                [
+                    'id' => $this->oldProductId,
+                    'entity' => 'Product',
+                    'fields' => $fields,
+                ]
             );
 
             return new ConvertStruct(null, $data);
@@ -276,9 +283,7 @@ class ProductConverter implements ConverterInterface
             $data['attributes']
         );
 
-        if (isset($data['manufacturer'])) {
-            $converted['manufacturer'] = $this->getManufacturer($data['manufacturer'], $data['_locale']);
-        }
+        $converted['manufacturer'] = $this->getManufacturer($data['manufacturer'], $data['_locale']);
         unset($data['manufacturer'], $data['supplierID']);
 
         $converted['tax'] = $this->getTax($data['tax']);
