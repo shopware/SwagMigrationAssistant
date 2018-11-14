@@ -764,6 +764,7 @@ class OrderConverter implements ConverterInterface
             $this->helper->convertValue($lineItem, 'quantity', $originalLineItem, 'quantity', $this->helper::TYPE_INTEGER);
             $this->helper->convertValue($lineItem, 'label', $originalLineItem, 'name');
             $this->helper->convertValue($lineItem, 'unitPrice', $originalLineItem, 'price', $this->helper::TYPE_FLOAT);
+            $this->helper->convertValue($lineItem, 'taxRate', $originalLineItem, 'tax_rate', $this->helper::TYPE_FLOAT);
             $lineItem['totalPrice'] = $lineItem['quantity'] * $lineItem['unitPrice'];
 
             if (!isset($lineItem['identifier'])) {

@@ -66,6 +66,15 @@ class CustomerConverter implements ConverterInterface
     /**
      * @var string[]
      */
+    private $requiredDataFieldKeys = [
+        'firstname',
+        'lastname',
+        'email',
+    ];
+
+    /**
+     * @var string[]
+     */
     private $requiredAddressDataFieldKeys = [
         'firstname',
         'lastname',
@@ -105,16 +114,7 @@ class CustomerConverter implements ConverterInterface
         $oldData = $data;
         $this->runId = $runId;
 
-        $fields = [];
-        if ($this->isEmpty('email', $data)) {
-            $fields[] = 'email';
-        }
-        if ($this->isEmpty('firstname', $data)) {
-            $fields[] = 'firstname';
-        }
-        if ($this->isEmpty('lastname', $data)) {
-            $fields[] = 'lastname';
-        }
+        $fields = $this->helper->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
         if (!isset($data['group']['id'])) {
             $fields[] = 'group id';
         }
@@ -553,11 +553,6 @@ class CustomerConverter implements ConverterInterface
         return $state;
     }
 
-    private function isEmpty(string $key, array $array): bool
-    {
-        return !isset($array[$key]) || $array[$key] === '';
-    }
-
     private function checkUnsetDefaultShippingAndDefaultBillingAddress(array &$originalData, array &$converted, string $customerUuid, $addresses): void
     {
         if (!isset($converted['defaultBillingAddressId']) && !isset($converted['defaultShippingAddressId'])) {
@@ -578,11 +573,6 @@ class CustomerConverter implements ConverterInterface
         }
     }
 
-    /**
-     * @param array  $originalData
-     * @param array  $converted
-     * @param string $customerUuid
-     */
     private function checkUnsetDefaultShippingAddress(array &$originalData, array &$converted, string $customerUuid): void
     {
         if (!isset($converted['defaultShippingAddressId']) && isset($converted['defaultBillingAddressId'])) {
@@ -602,11 +592,6 @@ class CustomerConverter implements ConverterInterface
         }
     }
 
-    /**
-     * @param array  $originalData
-     * @param array  $converted
-     * @param string $customerUuid
-     */
     private function checkUnsetDefaultBillingAddress(array &$originalData, array &$converted, string $customerUuid): void
     {
         if (!isset($converted['defaultBillingAddressId']) && isset($converted['defaultShippingAddressId'])) {

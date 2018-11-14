@@ -54,7 +54,7 @@ class ConverterHelperService
     {
         $emptyFields = [];
         foreach ($requiredDataFieldKeys as $requiredDataFieldKey) {
-            if (!isset($rawData[$requiredDataFieldKey])) {
+            if (!isset($rawData[$requiredDataFieldKey]) || $rawData[$requiredDataFieldKey] === '') {
                 $emptyFields[] = $requiredDataFieldKey;
             }
         }
