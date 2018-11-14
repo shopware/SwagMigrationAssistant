@@ -717,6 +717,21 @@ class OrderConverter implements ConverterInterface
             $this->helper->convertValue($lineItem, 'unitPrice', $originalLineItem, 'price', $this->helper::TYPE_FLOAT);
             $lineItem['totalPrice'] = $lineItem['quantity'] * $lineItem['unitPrice'];
 
+            if (!isset($lineItem['identifier'])) {
+                $this->loggingService->addInfo(
+                    $this->runId,
+                    LoggingType::EMPTY_LINE_ITEM_IDENTIFIER,
+                    'Line item could not converted',
+                    'Order-Line-Item-Entity could not converted cause of empty identifier',
+                    [
+                        'orderId' => $this->oldId,
+                        'lineItemId' => $originalLineItem['id'],
+                    ]
+                );
+
+                continue;
+            }
+
             $lineItems[] = $lineItem;
         }
 
