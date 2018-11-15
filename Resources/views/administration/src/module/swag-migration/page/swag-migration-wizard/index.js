@@ -125,10 +125,20 @@ Component.register('swag-migration-wizard', {
             this.matchRouteWithIndex();
         },
 
+        /**
+         * Remove any whitespaces before or after the strings in the credentials object.
+         */
+        trimCredentials() {
+            Object.keys(this.credentials).forEach((field) => {
+                this.credentials[field] = this.credentials[field].trim();
+            });
+        },
+
         onConnect() {
             this.isLoading = true;
             this.errorMessage = '';
 
+            this.trimCredentials();
             this.profile.credentialFields = this.credentials;
             this.profile.save().then((response) => {
                 if (response.errors.length === 0) {

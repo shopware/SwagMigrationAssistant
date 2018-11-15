@@ -61,24 +61,44 @@ Component.register('swag-migration-wizard-page-credentials', {
     },
 
     methods: {
-        endpointChanged(input) {
-            if (input === null) {
-                this.endpointInput = '';
-                this.emitEndpoint();
+        endpointChanged(inputValue) {
+            if (inputValue === null) {
+                this.setEndpointInputValue('');
                 return;
             }
 
-            this.checkInput(input);
-            this.emitEndpoint();
+            this.checkInput(inputValue);
         },
 
-        checkInput(input) {
-            if (input.match(/^https?:\/\//) !== null) {
-                const sslFound = input.match(/^https:\/\//);
+        checkInput(inputValue) {
+            let newValue = inputValue;
+
+            if (newValue.match(/^\s*https?:\/\//) !== null) {
+                const sslFound = newValue.match(/^\s*https:\/\//);
                 this.sslActive = (sslFound !== null);
-                this.endpointInput = input.replace(/^https?:\/\//, '');
+                newValue = newValue.replace(/^\s*https?:\/\//, '');
+            }
+
+            this.setEndpointInputValue(newValue);
+        },
+
+        /**
+         * Set the endpointInput variable and also the current value inside the html input.
+         * The sw-field does not update the html if there is no change in the binding variable (endpointInput /
+         * because it gets watched), so it must be done manually (to replace / remove unwanted user input).
+         *
+         * @param newValue
+         */
+        setEndpointInputValue(newValue) {
+            this.endpointInput = newValue;
+            this.emitEndpoint();
+
+            if (this.$refs.endpointField !== undefined) {
+                this.$refs.endpointField.currentValue = this.endpointInput;
             } else {
-                this.endpointInput = input;
+                this.$nextTick(() => {
+                    this.$refs.endpointField.currentValue = this.endpointInput;
+                });
             }
         },
 
