@@ -10,6 +10,7 @@ use Shopware\Core\Checkout\Customer\CustomerDefinition;
 use Shopware\Core\Checkout\DiscountSurcharge\Cart\DiscountSurchargeCollector;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressDefinition;
 use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryDefinition;
+use Shopware\Core\Checkout\Order\Aggregate\OrderDeliveryPosition\OrderDeliveryPositionDefinition;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemDefinition;
 use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Checkout\Payment\Aggregate\PaymentMethodTranslation\PaymentMethodTranslationDefinition;
@@ -260,8 +261,16 @@ class OrderConverter implements ConverterInterface
         }
         unset($data['status'], $data['orderstatus']);
 
+        if (isset($data['details'])) {
+            $converted['lineItems'] = $this->getLineItems($data['details']);
+        }
+        unset($data['details']);
+
         $converted['deliveries'] = $this->getDeliveries($data, $converted);
         unset($data['trackingcode'], $data['shippingMethod'], $data['dispatchID'], $data['shippingaddress']);
+
+        $this->getTransactions($data, $converted);
+        unset($data['cleared'], $data['paymentstatus']);
 
         $converted['billingAddress'] = $this->getAddress($data['billingaddress']);
         if (empty($converted['billingAddress'])) {
@@ -281,14 +290,6 @@ class OrderConverter implements ConverterInterface
             return new ConvertStruct(null, $data);
         }
         unset($data['billingaddress']);
-
-        if (isset($data['details'])) {
-            $converted['lineItems'] = $this->getLineItems($data['details']);
-        }
-        unset($data['details']);
-
-        $this->getTransactions($data, $converted);
-        unset($data['cleared'], $data['paymentstatus']);
 
         $converted['salesChannelId'] = $salesChannelId;
 
@@ -670,6 +671,26 @@ class OrderConverter implements ConverterInterface
 
         if (isset($data['trackingcode']) && $data['trackingcode'] !== '') {
             $delivery['trackingCode'] = $data['trackingcode'];
+        }
+
+        if (isset($converted['lineItems'])) {
+            $positions = [];
+            foreach ($converted['lineItems'] as $lineItem) {
+                $positions[] = [
+                    'id' => $this->mappingService->createNewUuid(
+                        $this->profileId,
+                        OrderDeliveryPositionDefinition::getEntityName(),
+                        $lineItem['id'],
+                        $this->context
+                    ),
+                    'orderLineItemId' => $lineItem['id'],
+                    'unitPrice' => $lineItem['unitPrice'],
+                    'totalPrice' => $lineItem['totalPrice'],
+                    'quantity' => $lineItem['quantity'],
+                ];
+            }
+
+            $delivery['positions'] = $positions;
         }
 
         $deliveries[] = $delivery;
