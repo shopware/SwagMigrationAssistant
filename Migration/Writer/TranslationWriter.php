@@ -27,7 +27,7 @@ class TranslationWriter implements WriterInterface
     {
         $translationArray = [];
         foreach ($data as $translationData) {
-            $entityDefinitionClass = $translationData['entityDefinitionClass'];
+            $entityDefinitionClass = (string) $translationData['entityDefinitionClass'];
             unset($translationData['entityDefinitionClass']);
             $translationArray[$entityDefinitionClass][] = $translationData;
         }

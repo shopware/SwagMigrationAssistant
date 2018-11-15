@@ -110,7 +110,7 @@ class MediaFileService implements MediaFileServiceInterface
         $criteria->addFilter(new EqualsAnyFilter('mediaId', $mediaIds));
         $mediaFiles = $this->mediaFileRepo->search($criteria, $context);
 
-        /** @var $mediaFile SwagMigrationMediaFileStruct */
+        /** @var SwagMigrationMediaFileStruct $mediaFile */
         foreach ($mediaFiles->getElements() as $mediaFile) {
             unset($files[$mediaFile->getMediaId()]);
         }

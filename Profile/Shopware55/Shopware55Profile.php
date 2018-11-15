@@ -101,6 +101,10 @@ class Shopware55Profile implements ProfileInterface
 
         $event = $writtenEvent->getEventByDefinition(SwagMigrationDataDefinition::class);
 
+        if (!$event) {
+            return 0;
+        }
+
         return \count($event->getIds());
     }
 

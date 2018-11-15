@@ -103,7 +103,7 @@ class SwagMigrationProfileStruct extends Entity
     }
 
     /**
-     * @param SwagMigrationRunStruct[] $data
+     * @param SwagMigrationRunStruct[] $runs
      */
     public function setRuns(array $runs): void
     {
