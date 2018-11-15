@@ -9,6 +9,8 @@ use Shopware\Core\Checkout\Cart\Tax\TaxCalculator;
 use Shopware\Core\Checkout\Customer\CustomerDefinition;
 use Shopware\Core\Checkout\DiscountSurcharge\Cart\DiscountSurchargeCollector;
 use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressDefinition;
+use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryDefinition;
+use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemDefinition;
 use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Checkout\Payment\Aggregate\PaymentMethodTranslation\PaymentMethodTranslationDefinition;
 use Shopware\Core\Checkout\Payment\PaymentMethodDefinition;
@@ -641,7 +643,12 @@ class OrderConverter implements ConverterInterface
         $deliveries = [];
 
         $delivery = [
-            'id' => Uuid::uuid4()->getHex(),
+            'id' => $this->mappingService->createNewUuid(
+                $this->profileId,
+                OrderDeliveryDefinition::getEntityName(),
+                $this->oldId,
+                $this->context
+            ),
             'orderStateId' => $converted['stateId'],
             'shippingDateEarliest' => $converted['date'],
             'shippingDateLatest' => $converted['date'],
@@ -736,8 +743,14 @@ class OrderConverter implements ConverterInterface
 
         foreach ($originalData as $originalLineItem) {
             $isProduct = (int) $originalLineItem['modus'] === 0 && (int) $originalLineItem['articleID'] !== 0;
+
             $lineItem = [
-                'id' => Uuid::uuid4()->getHex(),
+                'id' => $this->mappingService->createNewUuid(
+                    $this->profileId,
+                    OrderLineItemDefinition::getEntityName(),
+                    $originalLineItem['id'],
+                    $this->context
+                ),
             ];
 
             if ($isProduct) {
