@@ -9,6 +9,7 @@ use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 class DummyMappingService extends Shopware55MappingService
 {
     public const DEFAULT_LANGUAGE_UUID = '20080911ffff4fffafffffff19830531';
+    public const DEFAULT_LOCAL_UUID = '20080911ffff4fffafffffff19830532';
 
     public function __construct()
     {
@@ -70,7 +71,13 @@ class DummyMappingService extends Shopware55MappingService
 
     public function getLanguageUuid(string $profileId, string $localeCode, Context $context): array
     {
-        return ['uuid' => self::DEFAULT_LANGUAGE_UUID];
+        return [
+            'uuid' => self::DEFAULT_LANGUAGE_UUID,
+            'createData' => [
+                'localeId' => self::DEFAULT_LOCAL_UUID,
+                'localeCode' => 'en_GB',
+            ],
+        ];
     }
 
     public function getPaymentUuid(string $technicalName, Context $context): ?string
@@ -90,7 +97,11 @@ class DummyMappingService extends Shopware55MappingService
 
     public function getOrderStateUuid(int $oldStateId, Context $context): ?string
     {
-        return null;
+        if ($oldStateId === 100) {
+            return null;
+        }
+
+        return Uuid::uuid4()->getHex();
     }
 
     public function getTransactionStateUuid(int $oldStateId, Context $context): ?string

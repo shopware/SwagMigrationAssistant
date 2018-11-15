@@ -280,7 +280,7 @@ class MigrationCollectServiceTest extends TestCase
             $logEntry = $log->getLogEntry();
 
             if (
-                ($type === LoggingService::WARNING_TYPE && $logEntry['title'] === 'Empty necessary data fields for address') ||
+                ($type === LoggingService::INFO_TYPE && $logEntry['title'] === 'Empty necessary data fields for address') ||
                 ($type === LoggingService::WARNING_TYPE && $logEntry['title'] === 'Empty necessary data fields') ||
                 ($type === LoggingService::INFO_TYPE && $logEntry['title'] === 'No default shipping address') ||
                 ($type === LoggingService::INFO_TYPE && $logEntry['title'] === 'No default billing and shipping address') ||

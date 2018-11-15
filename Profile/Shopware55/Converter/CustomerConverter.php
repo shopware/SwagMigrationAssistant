@@ -63,6 +63,26 @@ class CustomerConverter implements ConverterInterface
      */
     private $runId;
 
+    /**
+     * @var string[]
+     */
+    private $requiredDataFieldKeys = [
+        'firstname',
+        'lastname',
+        'email',
+    ];
+
+    /**
+     * @var string[]
+     */
+    private $requiredAddressDataFieldKeys = [
+        'firstname',
+        'lastname',
+        'zipcode',
+        'city',
+        'street',
+    ];
+
     public function __construct(
         Shopware55MappingService $mappingService,
         ConverterHelperService $converterHelperService,
@@ -94,16 +114,7 @@ class CustomerConverter implements ConverterInterface
         $oldData = $data;
         $this->runId = $runId;
 
-        $fields = [];
-        if ($this->isEmpty('email', $data)) {
-            $fields[] = 'email';
-        }
-        if ($this->isEmpty('firstname', $data)) {
-            $fields[] = 'firstname';
-        }
-        if ($this->isEmpty('lastname', $data)) {
-            $fields[] = 'lastname';
-        }
+        $fields = $this->helper->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
         if (!isset($data['group']['id'])) {
             $fields[] = 'group id';
         }
@@ -369,25 +380,9 @@ class CustomerConverter implements ConverterInterface
         foreach ($originalData['addresses'] as $address) {
             $newAddress = [];
 
-            $fields = [];
-            if ($this->isEmpty('firstname', $address)) {
-                $fields[] = 'firstname';
-            }
-            if ($this->isEmpty('lastname', $address)) {
-                $fields[] = 'lastname';
-            }
-            if ($this->isEmpty('zipcode', $address)) {
-                $fields[] = 'zipcode';
-            }
-            if ($this->isEmpty('city', $address)) {
-                $fields[] = 'city';
-            }
-            if ($this->isEmpty('street', $address)) {
-                $fields[] = 'street';
-            }
-
+            $fields = $this->helper->checkForEmptyRequiredDataFields($address, $this->requiredAddressDataFieldKeys);
             if (!empty($fields)) {
-                $this->loggingService->addWarning(
+                $this->loggingService->addInfo(
                     $this->runId,
                     LoggingType::EMPTY_NECESSARY_DATA_FIELDS,
                     'Empty necessary data fields for address',
@@ -450,54 +445,13 @@ class CustomerConverter implements ConverterInterface
         $converted['addresses'] = $addresses;
 
         // No valid default billing and shipping address was converted, so use the first valid one as default
-        if (!isset($converted['defaultBillingAddressId']) && !isset($converted['defaultShippingAddressId'])) {
-            $converted['defaultBillingAddressId'] = $addresses[0]['id'];
-            $converted['defaultShippingAddressId'] = $addresses[0]['id'];
-            unset($originalData['default_billing_address_id'], $originalData['default_shipping_address_id']);
-
-            $this->loggingService->addInfo(
-                $this->runId,
-                LoggingType::NO_DEFAULT_SHIPPING_ADDRESS,
-                'No default billing and shipping address',
-                'Default billing and shipping address of customer is empty and will set with the first address.',
-                [
-                    'id' => $this->oldCustomerId,
-                    'uuid' => $customerUuid,
-                ]
-            );
-        }
+        $this->checkUnsetDefaultShippingAndDefaultBillingAddress($originalData, $converted, $customerUuid, $addresses);
 
         // No valid default shipping address was converted, but the default billing address is valid
-        if (!isset($converted['defaultShippingAddressId']) && isset($converted['defaultBillingAddressId'])) {
-            $converted['defaultShippingAddressId'] = $converted['defaultBillingAddressId'];
-            unset($originalData['default_shipping_address_id']);
+        $this->checkUnsetDefaultShippingAddress($originalData, $converted, $customerUuid);
 
-            $this->loggingService->addInfo(
-                $this->runId,
-                LoggingType::NO_DEFAULT_SHIPPING_ADDRESS,
-                'No default shipping address',
-                'Default shipping address of customer is empty and will set with the default billing address.',
-                [
-                    'id' => $this->oldCustomerId,
-                    'uuid' => $customerUuid,
-                ]
-            );
-        } elseif (!isset($converted['defaultBillingAddressId']) && isset($converted['defaultShippingAddressId'])) {
-            // No valid default billing address was converted, but the default shipping address is valid
-            $converted['defaultBillingAddressId'] = $converted['defaultShippingAddressId'];
-            unset($originalData['default_billing_address_id']);
-
-            $this->loggingService->addInfo(
-                $this->runId,
-                LoggingType::NO_DEFAULT_BILLING_ADDRESS,
-                'No default billing address',
-                'Default billing address of customer is empty and will set with the default shipping address.',
-                [
-                    'id' => $this->oldCustomerId,
-                    'uuid' => $customerUuid,
-                ]
-            );
-        }
+        // No valid default billing address was converted, but the default shipping address is valid
+        $this->checkUnsetDefaultBillingAddress($originalData, $converted, $customerUuid);
     }
 
     private function getCountry(array $oldCountryData): array
@@ -599,8 +553,61 @@ class CustomerConverter implements ConverterInterface
         return $state;
     }
 
-    private function isEmpty(string $key, array $array): bool
+    private function checkUnsetDefaultShippingAndDefaultBillingAddress(array &$originalData, array &$converted, string $customerUuid, $addresses): void
     {
-        return !isset($array[$key]) || $array[$key] === '';
+        if (!isset($converted['defaultBillingAddressId']) && !isset($converted['defaultShippingAddressId'])) {
+            $converted['defaultBillingAddressId'] = $addresses[0]['id'];
+            $converted['defaultShippingAddressId'] = $addresses[0]['id'];
+            unset($originalData['default_billing_address_id'], $originalData['default_shipping_address_id']);
+
+            $this->loggingService->addInfo(
+                $this->runId,
+                LoggingType::NO_DEFAULT_BILLING_AND_SHIPPING_ADDRESS,
+                'No default billing and shipping address',
+                'Default billing and shipping address of customer is empty and will set with the first address.',
+                [
+                    'id' => $this->oldCustomerId,
+                    'uuid' => $customerUuid,
+                ]
+            );
+        }
+    }
+
+    private function checkUnsetDefaultShippingAddress(array &$originalData, array &$converted, string $customerUuid): void
+    {
+        if (!isset($converted['defaultShippingAddressId']) && isset($converted['defaultBillingAddressId'])) {
+            $converted['defaultShippingAddressId'] = $converted['defaultBillingAddressId'];
+            unset($originalData['default_shipping_address_id']);
+
+            $this->loggingService->addInfo(
+                $this->runId,
+                LoggingType::NO_DEFAULT_SHIPPING_ADDRESS,
+                'No default shipping address',
+                'Default shipping address of customer is empty and will set with the default billing address.',
+                [
+                    'id' => $this->oldCustomerId,
+                    'uuid' => $customerUuid,
+                ]
+            );
+        }
+    }
+
+    private function checkUnsetDefaultBillingAddress(array &$originalData, array &$converted, string $customerUuid): void
+    {
+        if (!isset($converted['defaultBillingAddressId']) && isset($converted['defaultShippingAddressId'])) {
+            $converted['defaultBillingAddressId'] = $converted['defaultShippingAddressId'];
+            unset($originalData['default_billing_address_id']);
+
+            $this->loggingService->addInfo(
+                $this->runId,
+                LoggingType::NO_DEFAULT_BILLING_ADDRESS,
+                'No default billing address',
+                'Default billing address of customer is empty and will set with the default shipping address.',
+                [
+                    'id' => $this->oldCustomerId,
+                    'uuid' => $customerUuid,
+                ]
+            );
+        }
     }
 }

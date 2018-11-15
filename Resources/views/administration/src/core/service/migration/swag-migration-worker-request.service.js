@@ -1,3 +1,5 @@
+import { Application } from 'src/core/shopware';
+
 /**
  * Describes the current API endpoint.
  * Can be easily used together with the MIGRATION_STATUS.
@@ -298,6 +300,17 @@ export class WorkerRequest {
         ) {
             this._chunkSize -= this._CHUNK_INCREMENT;
         }
+    }
+
+    /**
+     * @returns {Boolean|Vue}
+     */
+    get applicationRoot() {
+        if (this._applicationRoot) {
+            return this._applicationRoot;
+        }
+        this._applicationRoot = Application.getApplicationRoot();
+        return this._applicationRoot;
     }
 }
 

@@ -82,6 +82,29 @@ class OrderConverter implements ConverterInterface
      */
     private $runId;
 
+    /**
+     * @var string[]
+     */
+    private $requiredDataFieldKeys = [
+        'customer',
+        'currency',
+        'currencyFactor',
+        'payment',
+        'paymentcurrency',
+        'status',
+    ];
+
+    /**
+     * @var string[]
+     */
+    private $requiredAddressDataFieldKeys = [
+        'firstname',
+        'lastname',
+        'zipcode',
+        'city',
+        'street',
+    ];
+
     public function __construct(
         Shopware55MappingService $mappingService,
         ConverterHelperService $converterHelperService,
@@ -118,24 +141,12 @@ class OrderConverter implements ConverterInterface
         $this->oldId = $data['id'];
         $this->runId = $runId;
 
-        $fields = [];
-        if (!isset($data['billingaddress']['id'])) {
+        $fields = $this->helper->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
+        if (empty($data['billingaddress']['id'])) {
             $fields[] = 'billingaddress';
         }
-        if (!isset($data['payment'])) {
-            $fields[] = 'payment';
-        }
-        if (!isset($data['customer'])) {
-            $fields[] = 'customer';
-        }
-        if (!isset($data['currencyFactor'])) {
-            $fields[] = 'currencyFactor';
-        }
-        if (!isset($data['currency'])) {
-            $fields[] = 'currency';
-        }
-        if (!isset($data['paymentcurrency'])) {
-            $fields[] = 'paymentcurrency';
+        if (isset($data['payment']) && empty($data['payment']['name'])) {
+            $fields[] = 'paymentMethod';
         }
 
         if (!empty($fields)) {
@@ -231,12 +242,42 @@ class OrderConverter implements ConverterInterface
         $this->helper->convertValue($converted, 'date', $data, 'ordertime', $this->helper::TYPE_DATETIME);
 
         $converted['stateId'] = $this->mappingService->getOrderStateUuid((int) $data['status'], $this->context);
+        if (!isset($converted['stateId'])) {
+            $this->loggingService->addWarning(
+                $this->runId,
+                LoggingType::UNKNOWN_ORDER_STATE,
+                'Cannot find order state',
+                'Order-Entity could not converted cause of unknown order state',
+                [
+                    'id' => $this->oldId,
+                    'orderState' => $data['status'],
+                ]
+            );
+
+            return new ConvertStruct(null, $data);
+        }
         unset($data['status'], $data['orderstatus']);
 
         $converted['deliveries'] = $this->getDeliveries($data, $converted);
         unset($data['trackingcode'], $data['shippingMethod'], $data['dispatchID'], $data['shippingaddress']);
 
         $converted['billingAddress'] = $this->getAddress($data['billingaddress']);
+        if (empty($converted['billingAddress'])) {
+            $fields = ['billingaddress'];
+            $this->loggingService->addWarning(
+                $this->runId,
+                LoggingType::EMPTY_NECESSARY_DATA_FIELDS,
+                'Empty necessary data',
+                sprintf('Order-Entity could not converted cause of empty necessary field(s): %s.', implode(', ', $fields)),
+                [
+                    'id' => $this->oldId,
+                    'entity' => 'Order',
+                    'fields' => $fields,
+                ]
+            );
+
+            return new ConvertStruct(null, $data);
+        }
         unset($data['billingaddress']);
 
         if (isset($data['details'])) {
@@ -327,6 +368,7 @@ class OrderConverter implements ConverterInterface
 
     private function getTransactions(array $data, array &$converted): void
     {
+        $converted['transactions'] = [];
         if (!isset($converted['lineItems'])) {
             return;
         }
@@ -429,6 +471,24 @@ class OrderConverter implements ConverterInterface
 
     private function getAddress(array $originalData): array
     {
+        $fields = $this->helper->checkForEmptyRequiredDataFields($originalData, $this->requiredAddressDataFieldKeys);
+        if (!empty($fields)) {
+            $this->loggingService->addInfo(
+                $this->runId,
+                LoggingType::EMPTY_NECESSARY_DATA_FIELDS,
+                'Empty necessary data fields for address',
+                sprintf('Address-Entity could not converted cause of empty necessary field(s): %s.', implode(', ', $fields)),
+                [
+                    'id' => $this->oldId,
+                    'uuid' => $this->uuid,
+                    'entity' => 'Address',
+                    'fields' => $fields,
+                ]
+            );
+
+            return [];
+        }
+
         $address = [];
         $address['id'] = $this->mappingService->createNewUuid(
             $this->profileId,
@@ -704,7 +764,23 @@ class OrderConverter implements ConverterInterface
             $this->helper->convertValue($lineItem, 'quantity', $originalLineItem, 'quantity', $this->helper::TYPE_INTEGER);
             $this->helper->convertValue($lineItem, 'label', $originalLineItem, 'name');
             $this->helper->convertValue($lineItem, 'unitPrice', $originalLineItem, 'price', $this->helper::TYPE_FLOAT);
+            $this->helper->convertValue($lineItem, 'taxRate', $originalLineItem, 'tax_rate', $this->helper::TYPE_FLOAT);
             $lineItem['totalPrice'] = $lineItem['quantity'] * $lineItem['unitPrice'];
+
+            if (!isset($lineItem['identifier'])) {
+                $this->loggingService->addInfo(
+                    $this->runId,
+                    LoggingType::EMPTY_LINE_ITEM_IDENTIFIER,
+                    'Line item could not converted',
+                    'Order-Line-Item-Entity could not converted cause of empty identifier',
+                    [
+                        'orderId' => $this->oldId,
+                        'lineItemId' => $originalLineItem['id'],
+                    ]
+                );
+
+                continue;
+            }
 
             $lineItems[] = $lineItem;
         }
