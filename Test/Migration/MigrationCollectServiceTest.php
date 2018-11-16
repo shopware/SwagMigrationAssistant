@@ -72,7 +72,7 @@ class MigrationCollectServiceTest extends TestCase
                     'profileId' => $this->profileUuidService->getProfileUuid(),
                 ],
             ],
-            Context::createDefaultContext(Defaults::TENANT_ID)
+            Context::createDefaultContext()
         );
 
         $this->loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
@@ -88,7 +88,7 @@ class MigrationCollectServiceTest extends TestCase
 
     public function testFetchAssetDataApiGateway(): void
     {
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
             $this->runUuid,
             $this->profileUuidService->getProfileUuid(),
@@ -116,7 +116,7 @@ class MigrationCollectServiceTest extends TestCase
 
     public function testFetchCategoryDataApiGateway(): void
     {
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
             $this->runUuid,
             $this->profileUuidService->getProfileUuid(),
@@ -144,7 +144,7 @@ class MigrationCollectServiceTest extends TestCase
 
     public function testFetchTranslationDataApiGateway(): void
     {
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
             $this->runUuid,
             $this->profileUuidService->getProfileUuid(),
@@ -172,7 +172,7 @@ class MigrationCollectServiceTest extends TestCase
 
     public function testFetchCustomerDataApiGateway(): void
     {
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
             $this->runUuid,
             $this->profileUuidService->getProfileUuid(),
@@ -200,7 +200,7 @@ class MigrationCollectServiceTest extends TestCase
 
     public function testFetchProductDataApiGateway(): void
     {
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
             $this->runUuid,
             $this->profileUuidService->getProfileUuid(),
@@ -228,7 +228,7 @@ class MigrationCollectServiceTest extends TestCase
 
     public function testFetchProductDataLocalGateway(): void
     {
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
             $this->runUuid,
             $this->profileUuidService->getProfileUuid(),
@@ -252,7 +252,7 @@ class MigrationCollectServiceTest extends TestCase
 
     public function testFetchInvalidCustomerData(): void
     {
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
             $this->runUuid,
             $this->profileUuidService->getProfileUuid(),

@@ -3,7 +3,6 @@
 namespace SwagMigrationNext\Test\Migration\Logging;
 
 use PHPUnit\Framework\TestCase;
-use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -47,7 +46,7 @@ class LoggingServiceTest extends TestCase
 
     protected function setUp()
     {
-        $this->context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $this->context = Context::createDefaultContext();
         $this->loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
         $this->loggingService = new LoggingService($this->loggingRepo);
     }

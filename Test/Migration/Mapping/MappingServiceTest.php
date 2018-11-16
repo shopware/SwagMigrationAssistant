@@ -4,7 +4,6 @@ namespace SwagMigrationNext\Test\Migration\Mapping;
 
 use Exception;
 use PHPUnit\Framework\TestCase;
-use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagMigrationNext\Exception\LocaleNotFoundException;
@@ -44,7 +43,7 @@ class MappingServiceTest extends TestCase
 
     public function testCreateNewUuid(): void
     {
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
 
         $uuid1 = $this->mappingService->createNewUuid($this->profileUuidService->getProfileUuid(), 'product', '123', $context);
         static::assertNotNull($uuid1);
@@ -55,7 +54,7 @@ class MappingServiceTest extends TestCase
 
     public function testReadExistingMappings(): void
     {
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
         $uuid1 = $this->mappingService->createNewUuid($this->profileUuidService->getProfileUuid(), 'product', '123', $context);
 
         $this->mappingService->writeMapping($context);
@@ -76,14 +75,14 @@ class MappingServiceTest extends TestCase
 
     public function testGetUuidReturnsNull(): void
     {
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
         static::assertNull($this->mappingService->getUuid($this->profileUuidService->getProfileUuid(), 'product', '12345', $context));
     }
 
     public function testLocaleNotFoundException(): void
     {
         static::markTestSkipped('Remove when translation support is implemented');
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
 
         try {
             $this->mappingService->getLanguageUuid($this->profileUuidService->getProfileUuid(), 'foobar', $context);

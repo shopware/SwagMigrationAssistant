@@ -38,7 +38,7 @@ class AssetConverterTest extends TestCase
     {
         $mediaData = require __DIR__ . '/../../../_fixtures/media_data.php';
 
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
         $convertResult = $this->assetConverter->convert($mediaData[0], $context, Uuid::uuid4()->getHex(), Uuid::uuid4()->getHex(), Defaults::CATALOG);
 
         $converted = $convertResult->getConverted();

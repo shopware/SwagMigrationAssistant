@@ -102,8 +102,7 @@ class MigrationDownloadAssetsCommand extends Command implements EventSubscriberI
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $tenantId = $input->getOption('tenant-id');
-        $context = Context::createDefaultContext($tenantId);
+        $context = Context::createDefaultContext();
 
         $profile = $input->getOption('profile');
         if (!$profile) {
