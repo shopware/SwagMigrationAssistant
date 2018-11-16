@@ -52,7 +52,7 @@ class ProductConverterTest extends TestCase
     {
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
 
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
         $convertResult = $this->productConverter->convert($productData[0], $context, Uuid::uuid4()->getHex(), Uuid::uuid4()->getHex(), Defaults::CATALOG);
 
         $converted = $convertResult->getConverted();
@@ -76,7 +76,7 @@ class ProductConverterTest extends TestCase
         $categoryConverter = new CategoryConverter($this->mappingService, $converterHelperService, $this->loggingService);
         $categoryData = require __DIR__ . '/../../../_fixtures/category_data.php';
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
 
         $profileUuid = Uuid::uuid4()->getHex();
         $categoryConverter->convert($categoryData[1], $context, Uuid::uuid4()->getHex(), $profileUuid, Defaults::CATALOG);
@@ -104,7 +104,7 @@ class ProductConverterTest extends TestCase
         static::markTestSkipped('Remove when variant support is implemented again');
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
 
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
         $convertResult = $this->productConverter->convert($productData[1], $context, Uuid::uuid4()->getHex(), Uuid::uuid4()->getHex(), Defaults::CATALOG);
 
         $converted = $convertResult->getConverted();
@@ -125,7 +125,7 @@ class ProductConverterTest extends TestCase
         static::markTestSkipped('Remove when variant support is implemented again');
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
 
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
         $profileId = Uuid::uuid4()->getHex();
         $convertResultContainer = $this->productConverter->convert($productData[1], $context, Uuid::uuid4()->getHex(), $profileId, Defaults::CATALOG);
         $convertResult = $this->productConverter->convert($productData[15], $context, Uuid::uuid4()->getHex(), $profileId, Defaults::CATALOG);
@@ -147,7 +147,7 @@ class ProductConverterTest extends TestCase
         static::markTestSkipped('Remove when variant support is implemented again');
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
 
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
 
         $this->expectException(ParentEntityForChildNotFoundException::class);
         $this->expectExceptionMessage('Parent entity for "product: SW10007.1" child not found');
@@ -161,7 +161,7 @@ class ProductConverterTest extends TestCase
         $productData = $productData[0];
         unset($productData['assets'][0]['media']['id']);
 
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
         $convertResult = $this->productConverter->convert($productData, $context, Uuid::uuid4()->getHex(), Uuid::uuid4()->getHex(), Defaults::CATALOG);
 
         $converted = $convertResult->getConverted();

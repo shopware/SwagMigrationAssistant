@@ -50,14 +50,12 @@ class SwagMigrationNext extends Plugin
     {
         /** @var Connection $connection */
         $connection = $this->container->get(Connection::class);
-        $tenantId = Uuid::fromHexToBytes($installContext->getContext()->getTenantId());
         $now = (new DateTime())->format(Defaults::DATE_FORMAT);
 
         $connection->beginTransaction();
         try {
             $connection->insert('swag_migration_profile', [
                 'id' => Uuid::uuid4()->getBytes(),
-                'tenant_id' => $tenantId,
                 'profile' => Shopware55Profile::PROFILE_NAME,
                 'gateway' => Shopware55ApiGateway::GATEWAY_TYPE,
                 'credential_fields' => json_encode(['endpoint' => '', 'apiUser' => '', 'apiKey' => '']),
@@ -65,7 +63,6 @@ class SwagMigrationNext extends Plugin
             ]);
             $connection->insert('swag_migration_profile', [
                 'id' => Uuid::uuid4()->getBytes(),
-                'tenant_id' => $tenantId,
                 'profile' => Shopware55Profile::PROFILE_NAME,
                 'gateway' => Shopware55LocalGateway::GATEWAY_TYPE,
                 'credential_fields' => json_encode(['dbHost' => '', 'dbPort' => '', 'dbName' => '', 'dbUser' => '', 'dbPassword' => '']),
@@ -94,10 +91,11 @@ class SwagMigrationNext extends Plugin
         $connection = $this->container->get(Connection::class);
         $connection->exec('
 DROP TABLE IF EXISTS swag_migration_data;
+DROP TABLE IF EXISTS swag_migration_media_file;
 DROP TABLE IF EXISTS swag_migration_run;
 DROP TABLE IF EXISTS swag_migration_mapping;
 DROP TABLE IF EXISTS swag_migration_profile;
-DROP TABLE IF EXISTS swag_migration_media_file;
+DROP TABLE IF EXISTS swag_migration_logging;
 ');
 
         parent::uninstall($context);

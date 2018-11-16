@@ -110,7 +110,7 @@ class MigrationWriteServiceTest extends TestCase
                     'profileId' => $this->profileUuidService->getProfileUuid(),
                 ],
             ],
-            Context::createDefaultContext(Defaults::TENANT_ID)
+            Context::createDefaultContext()
         );
 
         $this->migrationCollectService = $this->getMigrationCollectService(
@@ -132,7 +132,7 @@ class MigrationWriteServiceTest extends TestCase
 
     public function testWriteCustomerData(): void
     {
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
             $this->runUuid,
             $this->profileUuidService->getProfileUuid(),
@@ -158,7 +158,7 @@ class MigrationWriteServiceTest extends TestCase
 
     public function testWriteOrderData(): void
     {
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
 
         // Add users, who have ordered
         $userMigrationContext = new MigrationContext(
@@ -218,7 +218,7 @@ class MigrationWriteServiceTest extends TestCase
 
     public function testWriteCustomerGroupDiscounts(): void
     {
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
             $this->runUuid,
             $this->profileUuidService->getProfileUuid(),
@@ -244,7 +244,7 @@ class MigrationWriteServiceTest extends TestCase
 
     public function testWriteAssetData(): void
     {
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
             $this->runUuid,
             $this->profileUuidService->getProfileUuid(),
@@ -268,7 +268,7 @@ class MigrationWriteServiceTest extends TestCase
 
     public function testWriteCategoryData(): void
     {
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
             $this->runUuid,
             $this->profileUuidService->getProfileUuid(),
@@ -292,7 +292,7 @@ class MigrationWriteServiceTest extends TestCase
 
     public function testWriteProductData(): void
     {
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
             $this->runUuid,
             $this->profileUuidService->getProfileUuid(),
@@ -316,7 +316,7 @@ class MigrationWriteServiceTest extends TestCase
 
     public function testWriteTranslationData(): void
     {
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
 
         $migrationContext = new MigrationContext(
             $this->runUuid,
@@ -355,7 +355,7 @@ class MigrationWriteServiceTest extends TestCase
 
     public function testWriteProductDataWithNoData(): void
     {
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
             Uuid::uuid4()->getHex(),
             $this->profileUuidService->getProfileUuid(),

@@ -43,7 +43,7 @@ class CustomerConverterTest extends TestCase
     {
         $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
 
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
         $convertResult = $this->customerConverter->convert(
             $customerData[0],
             $context,
@@ -73,7 +73,7 @@ class CustomerConverterTest extends TestCase
         $customerData = $customerData[0];
         $customerData[$property] = $value;
 
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
         $convertResult = $this->customerConverter->convert(
             $customerData,
             $context,
@@ -107,7 +107,7 @@ class CustomerConverterTest extends TestCase
     {
         $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
 
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
         $convertResult = $this->customerConverter->convert(
             $customerData[2],
             $context,
@@ -135,7 +135,7 @@ class CustomerConverterTest extends TestCase
         $customerData = $customerData[0];
         $customerData['customernumber'] = null;
 
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
         $convertResult = $this->customerConverter->convert(
             $customerData,
             $context,
@@ -163,7 +163,7 @@ class CustomerConverterTest extends TestCase
         $customerData = $customerData[0];
         unset($customerData['defaultpayment']);
 
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
         $convertResult = $this->customerConverter->convert(
             $customerData,
             $context,
@@ -191,7 +191,7 @@ class CustomerConverterTest extends TestCase
         $customerData = $customerData[0];
         unset($customerData['addresses']);
 
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
         $convertResult = $this->customerConverter->convert(
             $customerData,
             $context,
@@ -218,7 +218,7 @@ class CustomerConverterTest extends TestCase
         $customerData['addresses'][0]['firstname'] = '';
         $customerData['addresses'][1]['lastname'] = '';
 
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
         $convertResult = $this->customerConverter->convert(
             $customerData,
             $context,
@@ -247,7 +247,7 @@ class CustomerConverterTest extends TestCase
     {
         $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
 
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
         $convertResult = $this->customerConverter->convert(
             $customerData[1],
             $context,
@@ -294,7 +294,7 @@ class CustomerConverterTest extends TestCase
         $customerData = $customerData[0];
         $customerData['addresses'][0][$property] = $value;
 
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
         $convertResult = $this->customerConverter->convert(
             $customerData,
             $context,
@@ -335,7 +335,7 @@ class CustomerConverterTest extends TestCase
         $customerData = $customerData[0];
         $customerData['addresses'][1][$property] = $value;
 
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
         $convertResult = $this->customerConverter->convert(
             $customerData,
             $context,
@@ -377,7 +377,7 @@ class CustomerConverterTest extends TestCase
         $customerData['addresses'][0][$property] = $value;
         $customerData['addresses'][1][$property] = $value;
 
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
         $convertResult = $this->customerConverter->convert(
             $customerData,
             $context,

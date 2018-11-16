@@ -66,7 +66,7 @@ class OrderConverterTest extends TestCase
     {
         $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
         $orderData = require __DIR__ . '/../../../_fixtures/order_data.php';
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
 
         $profileId = Uuid::uuid4()->getHex();
         $this->customerConverter->convert(
@@ -102,7 +102,7 @@ class OrderConverterTest extends TestCase
     {
         $orderData = require __DIR__ . '/../../../_fixtures/order_data.php';
 
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
         $this->expectException(AssociationEntityRequiredMissingException::class);
         $this->expectExceptionMessage('Mapping of "customer" is missing, but it is a required association for "order". Import "customer" first');
         $this->orderConverter->convert($orderData[0], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG, Defaults::SALES_CHANNEL);
@@ -112,7 +112,7 @@ class OrderConverterTest extends TestCase
     {
         $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
         $orderData = require __DIR__ . '/../../../_fixtures/order_data.php';
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
 
         $profileId = Uuid::uuid4()->getHex();
         $this->customerConverter->convert(
@@ -154,7 +154,7 @@ class OrderConverterTest extends TestCase
         $orderData = require __DIR__ . '/../../../_fixtures/order_data.php';
         $orderData = $orderData[0];
         unset($orderData[$missingProperty]);
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
 
         $profileId = Uuid::uuid4()->getHex();
         $this->customerConverter->convert(
@@ -202,7 +202,7 @@ class OrderConverterTest extends TestCase
         $orderData = require __DIR__ . '/../../../_fixtures/order_data.php';
         $orderData = $orderData[0];
         unset($orderData['details']);
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
 
         $profileId = Uuid::uuid4()->getHex();
         $this->customerConverter->convert(
@@ -240,7 +240,7 @@ class OrderConverterTest extends TestCase
         $orderData = require __DIR__ . '/../../../_fixtures/order_data.php';
         $orderData = $orderData[0];
         unset($orderData['shippingMethod']);
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
 
         $profileId = Uuid::uuid4()->getHex();
         $this->customerConverter->convert(
@@ -277,7 +277,7 @@ class OrderConverterTest extends TestCase
         $orderData = require __DIR__ . '/../../../_fixtures/order_data.php';
         $orderData = $orderData[0];
         unset($orderData['shippingaddress']);
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
 
         $profileId = Uuid::uuid4()->getHex();
         $this->customerConverter->convert(
@@ -328,7 +328,7 @@ class OrderConverterTest extends TestCase
         $orderData = require __DIR__ . '/../../../_fixtures/order_data.php';
         $orderData = $orderData[0];
         unset($orderData['billingaddress'][$missingAddressProperty]);
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
 
         $profileId = Uuid::uuid4()->getHex();
         $this->customerConverter->convert(
@@ -373,7 +373,7 @@ class OrderConverterTest extends TestCase
         $orderData = require __DIR__ . '/../../../_fixtures/order_data.php';
         $orderData = $orderData[0];
         unset($orderData['shippingaddress'][$missingProperty]);
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
 
         $profileId = Uuid::uuid4()->getHex();
         $this->customerConverter->convert(
@@ -416,7 +416,7 @@ class OrderConverterTest extends TestCase
             $detail['modus'] = 1;
             $detail['articleordernumber'] = '';
         }
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
 
         $profileId = Uuid::uuid4()->getHex();
         $this->customerConverter->convert(
@@ -456,7 +456,7 @@ class OrderConverterTest extends TestCase
         $orderData = require __DIR__ . '/../../../_fixtures/order_data.php';
         $orderData = $orderData[0];
         unset($orderData['payment']['name']);
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
 
         $profileId = Uuid::uuid4()->getHex();
         $this->customerConverter->convert(
@@ -495,7 +495,7 @@ class OrderConverterTest extends TestCase
         $orderData = require __DIR__ . '/../../../_fixtures/order_data.php';
         $orderData = $orderData[0];
         $orderData['status'] = 100;
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
 
         $profileId = Uuid::uuid4()->getHex();
         $this->customerConverter->convert(

@@ -4,7 +4,6 @@ namespace SwagMigrationNext\Test\Migration\Controller;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Content\Product\ProductDefinition;
-use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -57,7 +56,7 @@ class MigrationControllerTest extends TestCase
                     'profileId' => $this->profileUuidService->getProfileUuid(),
                 ],
             ],
-            Context::createDefaultContext(Defaults::TENANT_ID)
+            Context::createDefaultContext()
         );
 
         $this->controller = new MigrationController(
@@ -77,7 +76,7 @@ class MigrationControllerTest extends TestCase
 
     public function testFetchData(): void
     {
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
 
         /** @var $profileRepo RepositoryInterface */
         $profileRepo = $this->getContainer()->get('swag_migration_profile.repository');
@@ -111,7 +110,7 @@ class MigrationControllerTest extends TestCase
             'runUuid' => $this->runUuid,
             'entity' => ProductDefinition::getEntityName(),
         ]);
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
         $result = $this->controller->writeData($request, $context);
 
         static::assertSame(Response::HTTP_OK, $result->getStatusCode());

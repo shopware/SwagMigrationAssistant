@@ -6,7 +6,6 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Content\Media\File\FileSaver;
 use Shopware\Core\Content\Product\ProductDefinition;
-use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -92,7 +91,7 @@ class AssetDownloadServiceTest extends TestCase
                     'profileId' => $this->profileUuidService->getProfileUuid(),
                 ],
             ],
-            Context::createDefaultContext(Defaults::TENANT_ID)
+            Context::createDefaultContext()
         );
 
         $this->migrationWriteService = $this->getContainer()->get(MigrationWriteService::class);
@@ -110,7 +109,7 @@ class AssetDownloadServiceTest extends TestCase
     public function testDownloadAssets(): void
     {
         static::markTestSkipped('needs an correct URL to download the assets from');
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
 
         $migrationContext = new MigrationContext(
             $this->runUuid,

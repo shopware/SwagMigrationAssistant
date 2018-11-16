@@ -62,8 +62,7 @@ class MigrationFetchDataCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $tenantId = $input->getOption('tenant-id');
-        $context = Context::createDefaultContext($tenantId);
+        $context = Context::createDefaultContext();
 
         $catalogId = $input->getOption('catalog-id');
         if ($catalogId !== null && !Uuid::isValid($catalogId)) {
@@ -105,7 +104,7 @@ class MigrationFetchDataCommand extends ContainerAwareCommand
 
         $output->writeln('Fetching data...');
 
-        $migrationContext = new MigrationContext('', $profile, $gateway, $entity, $credentials, 0, 0);
+        $migrationContext = new MigrationContext('', '', $profile, $gateway, $entity, $credentials, 0, 0);
         $total = $this->environmentService->getEntityTotal($migrationContext);
 
         $runUuid = Uuid::uuid4()->getHex();
@@ -123,6 +122,7 @@ class MigrationFetchDataCommand extends ContainerAwareCommand
         for ($offset = 0; $offset < $total; $offset += $limit) {
             $migrationContext = new MigrationContext(
                 $runUuid,
+                '',
                 $profile,
                 $gateway,
                 $entity,

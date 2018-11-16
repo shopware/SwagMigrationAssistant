@@ -39,8 +39,7 @@ class MigrationWriteDataCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $tenantId = $input->getOption('tenant-id');
-        $context = Context::createDefaultContext($tenantId);
+        $context = Context::createDefaultContext();
 
         $catalogId = $input->getOption('catalog-id');
         if ($catalogId !== null && Uuid::isValid($catalogId)) {
@@ -57,7 +56,7 @@ class MigrationWriteDataCommand extends ContainerAwareCommand
             throw new InvalidArgumentException('No entity provided');
         }
 
-        $migrationContext = new MigrationContext($runUuid, $runUuid, '', $entity, [], 0, 1000, $catalogId);
+        $migrationContext = new MigrationContext($runUuid, '', $runUuid, '', $entity, [], 0, 1000, $catalogId);
 
         $output->writeln('Writing data...');
 

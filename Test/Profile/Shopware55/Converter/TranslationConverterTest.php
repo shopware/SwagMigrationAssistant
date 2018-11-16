@@ -48,7 +48,7 @@ class TranslationConverterTest extends TestCase
 
     public function testConvertUnknownTranslationType(): void
     {
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
         $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
         $convertResult = $this->translationConverter->convert($translationData['invalid'], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
         static::assertNull($convertResult->getConverted());
@@ -63,7 +63,7 @@ class TranslationConverterTest extends TestCase
     {
         static::markTestSkipped('Reimplement when product translation works again');
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
 
         $productConverter = new ProductConverter($this->mappingService, new ConverterHelperService(), new DummyMediaFileService(), $this->loggingService);
         $productConverter->convert($productData[0], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
@@ -78,7 +78,7 @@ class TranslationConverterTest extends TestCase
     public function testConvertManufacturerTranslation(): void
     {
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
 
         $productConverter = new ProductConverter($this->mappingService, new ConverterHelperService(), new DummyMediaFileService(), $this->loggingService);
         $productConvertResult = $productConverter->convert($productData[0], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
@@ -97,7 +97,7 @@ class TranslationConverterTest extends TestCase
 
     public function testConvertManufacturerTranslationWithoutParent(): void
     {
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
 
         $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
         $convertResult = $this->translationConverter->convert($translationData['manufacturer'], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
@@ -108,7 +108,7 @@ class TranslationConverterTest extends TestCase
     public function testConvertManufacturerTranslationWithInvalidTranslationObject(): void
     {
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
 
         $productConverter = new ProductConverter($this->mappingService, new ConverterHelperService(), new DummyMediaFileService(), $this->loggingService);
         $productConverter->convert($productData[0], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
@@ -129,7 +129,7 @@ class TranslationConverterTest extends TestCase
     public function testConvertManufacturerTranslationWithUnhandledTranslations(): void
     {
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
 
         $productConverter = new ProductConverter($this->mappingService, new ConverterHelperService(), new DummyMediaFileService(), $this->loggingService);
         $productConverter->convert($productData[0], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
@@ -152,7 +152,7 @@ class TranslationConverterTest extends TestCase
     public function testConvertUnitTranslation(): void
     {
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
 
         $productConverter = new ProductConverter($this->mappingService, new ConverterHelperService(), new DummyMediaFileService(), $this->loggingService);
         $productConvertResult = $productConverter->convert($productData[0], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
@@ -171,7 +171,7 @@ class TranslationConverterTest extends TestCase
 
     public function testConvertUnitTranslationWithoutParent(): void
     {
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
 
         $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
         $convertResult = $this->translationConverter->convert($translationData['unit'], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
@@ -186,7 +186,7 @@ class TranslationConverterTest extends TestCase
     public function testConvertUnitTranslationWithInvalidTranslationObject(): void
     {
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
 
         $profileId = Uuid::uuid4()->getHex();
         $productConverter = new ProductConverter($this->mappingService, new ConverterHelperService(), new DummyMediaFileService(), $this->loggingService);
@@ -208,7 +208,7 @@ class TranslationConverterTest extends TestCase
     public function testConvertUnitTranslationWithUnhandledTranslations(): void
     {
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
 
         $profileId = Uuid::uuid4()->getHex();
         $productConverter = new ProductConverter($this->mappingService, new ConverterHelperService(), new DummyMediaFileService(), $this->loggingService);
@@ -232,7 +232,7 @@ class TranslationConverterTest extends TestCase
     public function testConvertCategoryTranslation(): void
     {
         $categoryData = require __DIR__ . '/../../../_fixtures/category_data.php';
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
 
         $profileId = Uuid::uuid4()->getHex();
         $categoryConverter = new CategoryConverter($this->mappingService, new ConverterHelperService(), $this->loggingService);
@@ -252,7 +252,7 @@ class TranslationConverterTest extends TestCase
 
     public function testConvertCategoryTranslationWithoutParent(): void
     {
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
 
         $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
         $convertResult = $this->translationConverter->convert($translationData['category'], $context, Uuid::uuid4()->getHex(), Uuid::uuid4()->getHex(), Defaults::CATALOG);
@@ -267,7 +267,7 @@ class TranslationConverterTest extends TestCase
     public function testConvertCategoryTranslationWithInvalidTranslationObject(): void
     {
         $categoryData = require __DIR__ . '/../../../_fixtures/category_data.php';
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
 
         $profileId = Uuid::uuid4()->getHex();
         $categoryConverter = new CategoryConverter($this->mappingService, new ConverterHelperService(), $this->loggingService);
@@ -288,7 +288,7 @@ class TranslationConverterTest extends TestCase
     public function testConvertCategoryTranslationWithUnhandledTranslations(): void
     {
         $categoryData = require __DIR__ . '/../../../_fixtures/category_data.php';
-        $context = Context::createDefaultContext(Defaults::TENANT_ID);
+        $context = Context::createDefaultContext();
 
         $profileId = Uuid::uuid4()->getHex();
         $categoryConverter = new CategoryConverter($this->mappingService, new ConverterHelperService(), $this->loggingService);
