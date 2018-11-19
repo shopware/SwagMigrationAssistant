@@ -14,6 +14,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\Struct\Serializer\StructNormalizer;
 use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\System\Currency\CurrencyStruct;
@@ -23,10 +24,15 @@ use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Service\MigrationCollectServiceInterface;
 use SwagMigrationNext\Migration\Service\MigrationWriteService;
 use SwagMigrationNext\Migration\Service\MigrationWriteServiceInterface;
+use SwagMigrationNext\Migration\Writer\ProductWriter;
+use SwagMigrationNext\Migration\Writer\WriterRegistry;
+use SwagMigrationNext\Profile\Shopware55\Logging\LoggingType;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Migration\Services\MigrationProfileUuidService;
 use SwagMigrationNext\Test\MigrationServicesTrait;
+use SwagMigrationNext\Test\Mock\Migration\Asset\DummyMediaFileService;
+use SwagMigrationNext\Test\Mock\Migration\Logging\DummyLoggingService;
 
 class MigrationWriteServiceTest extends TestCase
 {
@@ -93,6 +99,21 @@ class MigrationWriteServiceTest extends TestCase
      */
     private $profileUuidService;
 
+    /**
+     * @var MigrationWriteServiceInterface
+     */
+    private $dummyWriteService;
+
+    /**
+     * @var DummyLoggingService
+     */
+    private $loggingService;
+
+    /**
+     * @var RepositoryInterface
+     */
+    private $loggingRepo;
+
     protected function setUp()
     {
         $this->profileUuidService = new MigrationProfileUuidService(
@@ -113,14 +134,29 @@ class MigrationWriteServiceTest extends TestCase
             Context::createDefaultContext()
         );
 
+        $migrationDataRepo = $this->getContainer()->get('swag_migration_data.repository');
+        $this->loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
         $this->migrationCollectService = $this->getMigrationCollectService(
-            $this->getContainer()->get('swag_migration_data.repository'),
+            $migrationDataRepo,
             $this->getContainer()->get(Shopware55MappingService::class),
             $this->getContainer()->get(MediaFileService::class),
-            $this->getContainer()->get('swag_migration_logging.repository')
+            $this->loggingRepo
         );
         $this->migrationWriteService = $this->getContainer()->get(MigrationWriteService::class);
+
         $this->productRepo = $this->getContainer()->get('product.repository');
+        $this->loggingService = new DummyLoggingService();
+        $this->dummyWriteService = new MigrationWriteService(
+            $migrationDataRepo,
+            new WriterRegistry(
+                [
+                    new ProductWriter($this->productRepo, new StructNormalizer()),
+                ]
+            ),
+            new DummyMediaFileService(),
+            $this->loggingService
+        );
+
         $this->categoryRepo = $this->getContainer()->get('category.repository');
         $this->mediaRepo = $this->getContainer()->get('media.repository');
         $this->productTranslationRepo = $this->getContainer()->get('product_translation.repository');
@@ -353,25 +389,25 @@ class MigrationWriteServiceTest extends TestCase
         self::assertSame(0, $productTranslationTotalAfter - $productTranslationTotalBefore);  //TODO change back to 2 after translation support is implemented
     }
 
-    public function testWriteProductDataWithNoData(): void
+    public function testWriteDataWithUnknownWriter(): void
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
-            Uuid::uuid4()->getHex(),
+            $this->runUuid,
             $this->profileUuidService->getProfileUuid(),
             Shopware55Profile::PROFILE_NAME,
             'local',
-            ProductDefinition::getEntityName(),
+            MediaDefinition::getEntityName(),
             [],
             0,
             250
         );
-        $this->migrationWriteService->writeData($migrationContext, $context);
+        $this->migrationCollectService->fetchData($migrationContext, $context);
+        $this->dummyWriteService->writeData($migrationContext, $context);
 
-        $criteria = new Criteria();
-        $productTotalAfter = $this->productRepo->search($criteria, $context)->getTotal();
-
-        static::assertSame(0, $productTotalAfter);
+        $logs = $this->loggingService->getLoggingArray();
+        static::assertSame(LoggingType::WRITER_NOT_FOUND, $logs[0]['logEntry']['code']);
+        static::assertCount(1, $logs);
     }
 
     private function getTranslationTotal(): int

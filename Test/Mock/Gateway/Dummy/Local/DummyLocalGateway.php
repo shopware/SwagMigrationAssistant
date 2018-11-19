@@ -42,6 +42,10 @@ class DummyLocalGateway implements GatewayInterface
             case CustomerDefinition::getEntityName() . 'Invalid':
                 return require __DIR__ . '/../../../../_fixtures/invalid/customer_data.php';
                 break;
+
+            case 'unknown':
+                return [];
+                break;
         }
     }
 }
