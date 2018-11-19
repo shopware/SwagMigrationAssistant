@@ -116,7 +116,7 @@
           }
         },
         "hintTitle": "Hinweis:",
-        "hint": "Endtecke Shopware Playground, der Prozess läuft im Hintergrund weiter. Den Playground-Connector findest du unter „Einstellungen“ im Hauptmenü links." ,
+        "hint": "Entdecke Shopware Playground, der Prozess läuft im Hintergrund weiter. Den Playground-Connector findest du unter „Einstellungen“ im Hauptmenü links." ,
         "result": {
           "success": {
             "title": "Abgeschlossen",
