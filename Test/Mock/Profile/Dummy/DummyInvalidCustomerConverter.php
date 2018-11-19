@@ -7,8 +7,12 @@ use SwagMigrationNext\Profile\Shopware55\Converter\CustomerConverter;
 
 class DummyInvalidCustomerConverter extends CustomerConverter
 {
-    public function supports(): string
+    public function supports(string $profileName, string $entityName): bool
     {
-        return CustomerDefinition::getEntityName() . 'Invalid';
+        if ($entityName === CustomerDefinition::getEntityName() . 'Invalid') {
+            return true;
+        }
+
+        return false;
     }
 }

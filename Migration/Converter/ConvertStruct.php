@@ -7,12 +7,12 @@ use Shopware\Core\Framework\Struct\Struct;
 class ConvertStruct extends Struct
 {
     /**
-     * @var array
+     * @var array|null
      */
     private $converted;
 
     /**
-     * @var array
+     * @var array|null
      */
     private $unmapped;
 

@@ -3,6 +3,7 @@
 namespace SwagMigrationNext\Migration\Converter;
 
 use SwagMigrationNext\Exception\ConverterNotFoundException;
+use SwagMigrationNext\Migration\MigrationContext;
 
 class ConverterRegistry implements ConverterRegistryInterface
 {
@@ -19,14 +20,14 @@ class ConverterRegistry implements ConverterRegistryInterface
     /**
      * @throws ConverterNotFoundException
      */
-    public function getConverter(string $entity): ConverterInterface
+    public function getConverter(MigrationContext $context): ConverterInterface
     {
         foreach ($this->converters as $converter) {
-            if ($converter->supports() === $entity) {
+            if ($converter->supports($context->getProfileName(), $context->getEntity())) {
                 return $converter;
             }
         }
 
-        throw new ConverterNotFoundException($entity);
+        throw new ConverterNotFoundException($context->getEntity());
     }
 }

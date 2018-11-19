@@ -7,15 +7,18 @@ use Shopware\Core\Checkout\Cart\Price\PriceRounding;
 use Shopware\Core\Checkout\Cart\Tax\PercentageTaxRuleCalculator;
 use Shopware\Core\Checkout\Cart\Tax\TaxCalculator;
 use Shopware\Core\Checkout\Cart\Tax\TaxRuleCalculator;
+use Shopware\Core\Checkout\Customer\CustomerDefinition;
 use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Struct\Uuid;
+use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\Converter\CustomerConverter;
 use SwagMigrationNext\Profile\Shopware55\Converter\OrderConverter;
 use SwagMigrationNext\Profile\Shopware55\Exception\AssociationEntityRequiredMissingException;
 use SwagMigrationNext\Profile\Shopware55\Logging\LoggingType;
+use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationNext\Test\Mock\Migration\Mapping\DummyMappingService;
 
@@ -36,6 +39,26 @@ class OrderConverterTest extends TestCase
      */
     private $loggingService;
 
+    /**
+     * @var string
+     */
+    private $runId;
+
+    /**
+     * @var string
+     */
+    private $profileId;
+
+    /**
+     * @var MigrationContext
+     */
+    private $migrationContext;
+
+    /**
+     * @var MigrationContext
+     */
+    private $customerMigrationContext;
+
     protected function setUp()
     {
         $this->loggingService = new DummyLoggingService();
@@ -53,13 +76,42 @@ class OrderConverterTest extends TestCase
         );
         $this->orderConverter = new OrderConverter($mappingService, $converterHelperService, $taxCalculator, $this->loggingService);
         $this->customerConverter = new CustomerConverter($mappingService, $converterHelperService, $this->loggingService);
+
+        $this->runId = Uuid::uuid4()->getHex();
+        $this->profileId = Uuid::uuid4()->getHex();
+
+        $this->migrationContext = new MigrationContext(
+            $this->runId,
+            $this->profileId,
+            Shopware55Profile::PROFILE_NAME,
+            'local',
+            OrderDefinition::getEntityName(),
+            [],
+            0,
+            250,
+            Defaults::CATALOG,
+            Defaults::SALES_CHANNEL
+        );
+
+        $this->customerMigrationContext = new MigrationContext(
+            $this->runId,
+            $this->profileId,
+            Shopware55Profile::PROFILE_NAME,
+            'local',
+            CustomerDefinition::getEntityName(),
+            [],
+            0,
+            250,
+            Defaults::CATALOG,
+            Defaults::SALES_CHANNEL
+        );
     }
 
     public function testSupports(): void
     {
-        $supportsDefinition = $this->orderConverter->supports();
+        $supportsDefinition = $this->orderConverter->supports(Shopware55Profile::PROFILE_NAME, OrderDefinition::getEntityName());
 
-        static::assertSame(OrderDefinition::getEntityName(), $supportsDefinition);
+        static::assertTrue($supportsDefinition);
     }
 
     public function testConvert(): void
@@ -68,23 +120,16 @@ class OrderConverterTest extends TestCase
         $orderData = require __DIR__ . '/../../../_fixtures/order_data.php';
         $context = Context::createDefaultContext();
 
-        $profileId = Uuid::uuid4()->getHex();
         $this->customerConverter->convert(
             $customerData[0],
             $context,
-            Uuid::uuid4()->getHex(),
-            $profileId,
-            Defaults::CATALOG,
-            Defaults::SALES_CHANNEL
+            $this->customerMigrationContext
         );
 
         $convertResult = $this->orderConverter->convert(
             $orderData[0],
             $context,
-            Uuid::uuid4()->getHex(),
-            $profileId,
-            Defaults::CATALOG,
-            Defaults::SALES_CHANNEL
+            $this->migrationContext
         );
 
         $converted = $convertResult->getConverted();
@@ -105,7 +150,7 @@ class OrderConverterTest extends TestCase
         $context = Context::createDefaultContext();
         $this->expectException(AssociationEntityRequiredMissingException::class);
         $this->expectExceptionMessage('Mapping of "customer" is missing, but it is a required association for "order". Import "customer" first');
-        $this->orderConverter->convert($orderData[0], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG, Defaults::SALES_CHANNEL);
+        $this->orderConverter->convert($orderData[0], $context, $this->migrationContext);
     }
 
     public function testConvertNetOrder(): void
@@ -114,23 +159,16 @@ class OrderConverterTest extends TestCase
         $orderData = require __DIR__ . '/../../../_fixtures/order_data.php';
         $context = Context::createDefaultContext();
 
-        $profileId = Uuid::uuid4()->getHex();
         $this->customerConverter->convert(
             $customerData[1],
             $context,
-            Uuid::uuid4()->getHex(),
-            $profileId,
-            Defaults::CATALOG,
-            Defaults::SALES_CHANNEL
+            $this->customerMigrationContext
         );
 
         $convertResult = $this->orderConverter->convert(
             $orderData[1],
             $context,
-            Uuid::uuid4()->getHex(),
-            $profileId,
-            Defaults::CATALOG,
-            Defaults::SALES_CHANNEL
+            $this->migrationContext
         );
 
         $converted = $convertResult->getConverted();
@@ -156,23 +194,16 @@ class OrderConverterTest extends TestCase
         unset($orderData[$missingProperty]);
         $context = Context::createDefaultContext();
 
-        $profileId = Uuid::uuid4()->getHex();
         $this->customerConverter->convert(
             $customerData[0],
             $context,
-            Uuid::uuid4()->getHex(),
-            $profileId,
-            Defaults::CATALOG,
-            Defaults::SALES_CHANNEL
+            $this->customerMigrationContext
         );
 
         $convertResult = $this->orderConverter->convert(
             $orderData,
             $context,
-            Uuid::uuid4()->getHex(),
-            $profileId,
-            Defaults::CATALOG,
-            Defaults::SALES_CHANNEL
+            $this->migrationContext
         );
 
         static::assertNull($convertResult->getConverted());
@@ -204,23 +235,16 @@ class OrderConverterTest extends TestCase
         unset($orderData['details']);
         $context = Context::createDefaultContext();
 
-        $profileId = Uuid::uuid4()->getHex();
         $this->customerConverter->convert(
             $customerData[0],
             $context,
-            Uuid::uuid4()->getHex(),
-            $profileId,
-            Defaults::CATALOG,
-            Defaults::SALES_CHANNEL
+            $this->customerMigrationContext
         );
 
         $convertResult = $this->orderConverter->convert(
             $orderData,
             $context,
-            Uuid::uuid4()->getHex(),
-            $profileId,
-            Defaults::CATALOG,
-            Defaults::SALES_CHANNEL
+            $this->migrationContext
         );
 
         $converted = $convertResult->getConverted();
@@ -242,23 +266,16 @@ class OrderConverterTest extends TestCase
         unset($orderData['shippingMethod']);
         $context = Context::createDefaultContext();
 
-        $profileId = Uuid::uuid4()->getHex();
         $this->customerConverter->convert(
             $customerData[0],
             $context,
-            Uuid::uuid4()->getHex(),
-            $profileId,
-            Defaults::CATALOG,
-            Defaults::SALES_CHANNEL
+            $this->customerMigrationContext
         );
 
         $convertResult = $this->orderConverter->convert(
             $orderData,
             $context,
-            Uuid::uuid4()->getHex(),
-            $profileId,
-            Defaults::CATALOG,
-            Defaults::SALES_CHANNEL
+            $this->migrationContext
         );
 
         $converted = $convertResult->getConverted();
@@ -279,23 +296,16 @@ class OrderConverterTest extends TestCase
         unset($orderData['shippingaddress']);
         $context = Context::createDefaultContext();
 
-        $profileId = Uuid::uuid4()->getHex();
         $this->customerConverter->convert(
             $customerData[0],
             $context,
-            Uuid::uuid4()->getHex(),
-            $profileId,
-            Defaults::CATALOG,
-            Defaults::SALES_CHANNEL
+            $this->customerMigrationContext
         );
 
         $convertResult = $this->orderConverter->convert(
             $orderData,
             $context,
-            Uuid::uuid4()->getHex(),
-            $profileId,
-            Defaults::CATALOG,
-            Defaults::SALES_CHANNEL
+            $this->migrationContext
         );
 
         $converted = $convertResult->getConverted();
@@ -330,23 +340,16 @@ class OrderConverterTest extends TestCase
         unset($orderData['billingaddress'][$missingAddressProperty]);
         $context = Context::createDefaultContext();
 
-        $profileId = Uuid::uuid4()->getHex();
         $this->customerConverter->convert(
             $customerData[0],
             $context,
-            Uuid::uuid4()->getHex(),
-            $profileId,
-            Defaults::CATALOG,
-            Defaults::SALES_CHANNEL
+            $this->customerMigrationContext
         );
 
         $convertResult = $this->orderConverter->convert(
             $orderData,
             $context,
-            Uuid::uuid4()->getHex(),
-            $profileId,
-            Defaults::CATALOG,
-            Defaults::SALES_CHANNEL
+            $this->migrationContext
         );
 
         $converted = $convertResult->getConverted();
@@ -379,19 +382,13 @@ class OrderConverterTest extends TestCase
         $this->customerConverter->convert(
             $customerData[0],
             $context,
-            Uuid::uuid4()->getHex(),
-            $profileId,
-            Defaults::CATALOG,
-            Defaults::SALES_CHANNEL
+            $this->customerMigrationContext
         );
 
         $convertResult = $this->orderConverter->convert(
             $orderData,
             $context,
-            Uuid::uuid4()->getHex(),
-            $profileId,
-            Defaults::CATALOG,
-            Defaults::SALES_CHANNEL
+            $this->migrationContext
         );
 
         $converted = $convertResult->getConverted();
@@ -418,23 +415,16 @@ class OrderConverterTest extends TestCase
         }
         $context = Context::createDefaultContext();
 
-        $profileId = Uuid::uuid4()->getHex();
         $this->customerConverter->convert(
             $customerData[0],
             $context,
-            Uuid::uuid4()->getHex(),
-            $profileId,
-            Defaults::CATALOG,
-            Defaults::SALES_CHANNEL
+            $this->customerMigrationContext
         );
 
         $convertResult = $this->orderConverter->convert(
             $orderData,
             $context,
-            Uuid::uuid4()->getHex(),
-            $profileId,
-            Defaults::CATALOG,
-            Defaults::SALES_CHANNEL
+            $this->migrationContext
         );
 
         $converted = $convertResult->getConverted();
@@ -458,23 +448,16 @@ class OrderConverterTest extends TestCase
         unset($orderData['payment']['name']);
         $context = Context::createDefaultContext();
 
-        $profileId = Uuid::uuid4()->getHex();
         $this->customerConverter->convert(
             $customerData[0],
             $context,
-            Uuid::uuid4()->getHex(),
-            $profileId,
-            Defaults::CATALOG,
-            Defaults::SALES_CHANNEL
+            $this->customerMigrationContext
         );
 
         $convertResult = $this->orderConverter->convert(
             $orderData,
             $context,
-            Uuid::uuid4()->getHex(),
-            $profileId,
-            Defaults::CATALOG,
-            Defaults::SALES_CHANNEL
+            $this->migrationContext
         );
 
         $converted = $convertResult->getConverted();
@@ -497,23 +480,16 @@ class OrderConverterTest extends TestCase
         $orderData['status'] = 100;
         $context = Context::createDefaultContext();
 
-        $profileId = Uuid::uuid4()->getHex();
         $this->customerConverter->convert(
             $customerData[0],
             $context,
-            Uuid::uuid4()->getHex(),
-            $profileId,
-            Defaults::CATALOG,
-            Defaults::SALES_CHANNEL
+            $this->customerMigrationContext
         );
 
         $convertResult = $this->orderConverter->convert(
             $orderData,
             $context,
-            Uuid::uuid4()->getHex(),
-            $profileId,
-            Defaults::CATALOG,
-            Defaults::SALES_CHANNEL
+            $this->migrationContext
         );
 
         $converted = $convertResult->getConverted();

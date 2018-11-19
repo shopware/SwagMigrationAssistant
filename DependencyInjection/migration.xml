@@ -16,7 +16,7 @@
 
         <service id="SwagMigrationNext\Migration\Converter\ConverterRegistry"
                  class="SwagMigrationNext\Migration\Converter\ConverterRegistry">
-            <argument type="tagged" tag="shopware.migration.shopware55.converter"/>
+            <argument type="tagged" tag="shopware.migration.converter"/>
         </service>
 
         <service id="SwagMigrationNext\Migration\Mapping\MappingService"

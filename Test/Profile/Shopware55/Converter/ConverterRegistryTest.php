@@ -4,11 +4,15 @@ namespace SwagMigrationNext\Test\Profile\Shopware55\Converter;
 
 use Exception;
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Defaults;
+use Shopware\Core\Framework\Struct\Uuid;
 use SwagMigrationNext\Exception\ConverterNotFoundException;
 use SwagMigrationNext\Migration\Converter\ConverterRegistry;
 use SwagMigrationNext\Migration\Converter\ConverterRegistryInterface;
+use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\Converter\ProductConverter;
+use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Mock\DummyCollection;
 use SwagMigrationNext\Test\Mock\Migration\Asset\DummyMediaFileService;
 use SwagMigrationNext\Test\Mock\Migration\Logging\DummyLoggingService;
@@ -38,8 +42,19 @@ class ConverterRegistryTest extends TestCase
 
     public function testGetConverterNotFound(): void
     {
+        $migrationContext = new MigrationContext(
+            Uuid::uuid4()->getHex(),
+            Uuid::uuid4()->getHex(),
+            Shopware55Profile::PROFILE_NAME,
+            'local',
+            'foo',
+            [],
+            0,
+            250,
+            Defaults::CATALOG
+        );
         try {
-            $this->converterRegistry->getConverter('foo');
+            $this->converterRegistry->getConverter($migrationContext);
         } catch (Exception $e) {
             /* @var ConverterNotFoundException $e */
             self::assertInstanceOf(ConverterNotFoundException::class, $e);

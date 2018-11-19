@@ -85,7 +85,7 @@ class Shopware55Profile implements ProfileInterface
             return 0;
         }
 
-        $converter = $this->converterRegistry->getConverter($entityName);
+        $converter = $this->converterRegistry->getConverter($migrationContext);
         $createData = $this->convertData($context, $data, $converter, $migrationContext, $entityName);
 
         if (\count($createData) === 0) {
@@ -181,13 +181,11 @@ class Shopware55Profile implements ProfileInterface
         string $entityName
     ): array {
         $runId = $migrationContext->getRunUuid();
-        $catalogId = $migrationContext->getCatalogId();
-        $salesChannelId = $migrationContext->getSalesChannelId();
 
         $createData = [];
         foreach ($data as $item) {
             try {
-                $convertStruct = $converter->convert($item, $context, $runId, $migrationContext->getProfileId(), $catalogId, $salesChannelId);
+                $convertStruct = $converter->convert($item, $context, $migrationContext);
                 $convertFailureFlag = empty($convertStruct->getConverted());
 
                 $createData[] = [

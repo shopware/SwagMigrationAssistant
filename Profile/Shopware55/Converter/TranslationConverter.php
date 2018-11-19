@@ -11,13 +11,15 @@ use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\System\Unit\Aggregate\UnitTranslation\UnitTranslationDefinition;
 use Shopware\Core\System\Unit\UnitDefinition;
-use SwagMigrationNext\Migration\Converter\ConverterInterface;
+use SwagMigrationNext\Migration\Converter\AbstractConverter;
 use SwagMigrationNext\Migration\Converter\ConvertStruct;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Profile\Shopware55\Logging\LoggingType;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
+use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
-class TranslationConverter implements ConverterInterface
+class TranslationConverter extends AbstractConverter
 {
     /**
      * @var ConverterHelperService
@@ -59,9 +61,14 @@ class TranslationConverter implements ConverterInterface
         $this->loggingService = $loggingService;
     }
 
-    public function supports(): string
+    public function getSupportedEntityName(): string
     {
         return 'translation';
+    }
+
+    public function getSupportedProfileName(): string
+    {
+        return Shopware55Profile::PROFILE_NAME;
     }
 
     public function writeMapping(Context $context): void
@@ -72,14 +79,11 @@ class TranslationConverter implements ConverterInterface
     public function convert(
         array $data,
         Context $context,
-        string  $runId,
-        string $profileId,
-        ?string $catalogId = null,
-        ?string $salesChannelId = null
+        MigrationContext $migrationContext
     ): ConvertStruct {
-        $this->profileId = $profileId;
+        $this->profileId = $migrationContext->getProfileId();
         $this->context = $context;
-        $this->runId = $runId;
+        $this->runId = $migrationContext->getRunUuid();
 
         switch ($data['objecttype']) {
 //            Does not work currently, because products are mapped with the SKU

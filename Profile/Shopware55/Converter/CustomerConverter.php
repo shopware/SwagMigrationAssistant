@@ -15,13 +15,15 @@ use Shopware\Core\System\Country\Aggregate\CountryState\CountryStateDefinition;
 use Shopware\Core\System\Country\Aggregate\CountryStateTranslation\CountryStateTranslationDefinition;
 use Shopware\Core\System\Country\Aggregate\CountryTranslation\CountryTranslationDefinition;
 use Shopware\Core\System\Country\CountryDefinition;
-use SwagMigrationNext\Migration\Converter\ConverterInterface;
+use SwagMigrationNext\Migration\Converter\AbstractConverter;
 use SwagMigrationNext\Migration\Converter\ConvertStruct;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Profile\Shopware55\Logging\LoggingType;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
+use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
-class CustomerConverter implements ConverterInterface
+class CustomerConverter extends AbstractConverter
 {
     /**
      * @var Shopware55MappingService
@@ -93,9 +95,14 @@ class CustomerConverter implements ConverterInterface
         $this->loggingService = $loggingService;
     }
 
-    public function supports(): string
+    public function getSupportedEntityName(): string
     {
         return CustomerDefinition::getEntityName();
+    }
+
+    public function getSupportedProfileName(): string
+    {
+        return Shopware55Profile::PROFILE_NAME;
     }
 
     public function writeMapping(Context $context): void
@@ -106,13 +113,10 @@ class CustomerConverter implements ConverterInterface
     public function convert(
         array $data,
         Context $context,
-        string $runId,
-        string $profileId,
-        ?string $catalogId = null,
-        ?string $salesChannelId = null
+        MigrationContext $migrationContext
     ): ConvertStruct {
         $oldData = $data;
-        $this->runId = $runId;
+        $this->runId = $migrationContext->getRunUuid();
 
         $fields = $this->helper->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
         if (!isset($data['group']['id'])) {
@@ -135,7 +139,7 @@ class CustomerConverter implements ConverterInterface
             return new ConvertStruct(null, $oldData);
         }
 
-        $this->profileId = $profileId;
+        $this->profileId = $migrationContext->getProfileId();
         $this->context = $context;
         $this->mainLocale = $data['_locale'];
         unset($data['_locale']);
@@ -197,7 +201,7 @@ class CustomerConverter implements ConverterInterface
         }
         unset($data['addresses']);
 
-        $converted['salesChannelId'] = $salesChannelId;
+        $converted['salesChannelId'] = $migrationContext->getSalesChannelId();
 
         // Legacy data which don't need a mapping or there is no equivalent field
         unset(
