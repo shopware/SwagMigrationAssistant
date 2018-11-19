@@ -60,7 +60,7 @@
             "contentInformation": "Unfortunately, the connection could not be established. Please refer to the error messages and try again.",
             "alertErrorTitle": "Attention",
             "connectionErrorMsg": "Could not connect to the server. Please check the given shop domain.",
-            "authenticationErrorMsg": "Your access data is not correct. Please check it and try again.",
+            "authenticationErrorMsg": "Your credentials are incorrect. Please check them and try again.",
             "undefinedErrorMsg": "Internal server error. Please try again."
           }
         }
@@ -84,7 +84,7 @@
       "selectDataCard": {
         "cardTitle": "Data selection",
         "hintTitle": "Information on data import",
-        "hint": "The selected data is transferred with language information and has relevant dependencies that are necessary for the integrity of the data import.",
+        "hint": "The selected data is being transferred with language information and has relevant dependencies that are necessary for the integrity of the data import.",
         "infoTitle": "About the new catalogues and sales channels",
         "infoText": "Catalogues and sales channels are new elements for Shopware Playground that help you to structure your data without sub- and language shops. For more information on this topic, we recommend the articles in our documentation on <a target=\"_blank\" href=\"https://docs.shopware.com/en/shopware-playground-en/admin/catalogues\">catalogues</a> and <a target=\"_blank\" href=\"https://docs.shopware.com/en/shopware-playground-en/admin/saleschannels\">sales channels</a>.",
         "dataHeader": "Data",
@@ -122,7 +122,7 @@
             "title": "Done",
             "contentTitle": "Data import done!",
             "hintTitle": "Explore Shopware Playground!",
-            "hintContent": "From now on, you can discover our experiments with your data or simply develop your own."
+            "hintContent": "From now on, you can discover our experiments or simply develop one yourself with your own data."
           },
           "warning": {
             "title": "Done",
