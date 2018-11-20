@@ -78,8 +78,15 @@
       "migrationAlreadyRunning": "Import already started.",
       "shopInfoCard": {
         "cardTitle": "Shop system",
-        "buttonEditSettings": "Edit Settings",
-        "buttonMoreInfo": "Show more information"
+        "shopSystem": "Shop system:",
+        "buttonEditSettings": "Edit connection",
+        "connected": "Connected",
+        "customersAndOrders": "Customers & Orders:",
+        "categoriesAndProducts": "Categories & Products:",
+        "media": "Media:",
+        "lastMigration": "Last import:",
+        "lastMigrationDateTime": "{date} at {time}",
+        "gateway": "Gateway:"
       },
       "selectDataCard": {
         "cardTitle": "Data selection",

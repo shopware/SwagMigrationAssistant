@@ -78,8 +78,15 @@
       "migrationAlreadyRunning": "Der Datenimport wurde bereits gestartet.",
       "shopInfoCard": {
         "cardTitle": "Shopsystem",
-        "buttonEditSettings": "Einstellungen bearbeiten",
-        "buttonMoreInfo": "Mehr Infos einblenden"
+        "shopSystem": "Shopsystem:",
+        "buttonEditSettings": "Verbindung bearbeiten",
+        "connected": "Verbunden",
+        "customersAndOrders": "Kunden & Bestellungen:",
+        "categoriesAndProducts": "Kategorien & Produkte:",
+        "media": "Medien:",
+        "lastMigration": "Letzter Import:",
+        "lastMigrationDateTime": "{date} um {time} Uhr",
+        "gateway": "Gateway:"
       },
       "selectDataCard": {
         "cardTitle": "Datenauswahl",
