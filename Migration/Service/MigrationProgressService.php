@@ -109,7 +109,26 @@ class MigrationProgressService implements MigrationProgressServiceInterface
         $criteria->addFilter(new EqualsFilter('runId', $runId));
         if ($isWritten) {
             $criteria->addFilter(new NotFilter(MultiFilter::CONNECTION_AND, [new EqualsFilter('converted', null)]));
-            $criteria->addFilter(new EqualsFilter('written', true));
+            $criteria->addFilter(new MultiFilter(
+                MultiFilter::CONNECTION_OR,
+               [
+                   new MultiFilter(
+                       MultiFilter::CONNECTION_AND,
+                        [
+                            new EqualsFilter('written', true),
+                            new EqualsFilter('writeFailure', false),
+                        ]
+                    ),
+
+                   new MultiFilter(
+                       MultiFilter::CONNECTION_AND,
+                       [
+                           new EqualsFilter('written', false),
+                           new EqualsFilter('writeFailure', true),
+                       ]
+                   ),
+               ]
+            ));
         }
         $criteria->addAggregation(new ValueCountAggregation('entity', 'entityCount'));
         $result = $this->migrationDataRepository->search($criteria, $this->context);

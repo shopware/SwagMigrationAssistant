@@ -83,6 +83,7 @@ export class WorkerStatusManager {
             const criteria = CriteriaFactory.multi(
                 'AND',
                 CriteriaFactory.equals('runId', runId),
+                CriteriaFactory.equals('convertFailure', false),
                 CriteriaFactory.not(
                     'AND',
                     CriteriaFactory.equals('converted', null)
