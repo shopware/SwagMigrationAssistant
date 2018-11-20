@@ -159,8 +159,7 @@
                               @closeModal="onCloseAbortMigrationConfirmDialog"
                               variant="small">
 
-                        <sw-alert v-if="statusIndex !== 0"
-                                  variant="warning"
+                        <sw-alert variant="warning"
                                   class="swag-migration-index-data-selector__tou">
                             <p v-html="$tc('swag-migration.index.confirmAbortDialog.hintContent')"></p>
                         </sw-alert>
