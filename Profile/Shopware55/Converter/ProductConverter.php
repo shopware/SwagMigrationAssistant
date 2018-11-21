@@ -270,6 +270,7 @@ class ProductConverter implements ConverterInterface
             $data['main_detail_id'],
             $data['available_from'],
             $data['available_to'],
+            $data['pseudosales'],
 
             // TODO check how to handle these
             $data['configurator_set_id'],
@@ -325,7 +326,6 @@ class ProductConverter implements ConverterInterface
         $this->helper->convertValue($converted, 'active', $data, 'active', $this->helper::TYPE_BOOLEAN);
         $this->helper->convertValue($converted, 'minDeliveryTime', $data, 'shippingtime', $this->helper::TYPE_INTEGER);
         $this->helper->convertValue($converted, 'isCloseout', $data, 'laststock', $this->helper::TYPE_BOOLEAN);
-        $this->helper->convertValue($converted, 'pseudoSales', $data, 'pseudosales', $this->helper::TYPE_INTEGER);
         $this->helper->convertValue($converted, 'markAsTopseller', $data, 'topseller', $this->helper::TYPE_BOOLEAN);
         $this->helper->convertValue($converted, 'allowNotification', $data, 'notification', $this->helper::TYPE_BOOLEAN);
 
