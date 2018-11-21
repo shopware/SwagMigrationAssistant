@@ -20,10 +20,12 @@ use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\System\Currency\CurrencyStruct;
 use SwagMigrationNext\Gateway\Shopware55\Local\Shopware55LocalGateway;
 use SwagMigrationNext\Migration\Asset\MediaFileService;
+use SwagMigrationNext\Migration\Data\SwagMigrationDataStruct;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Service\MigrationCollectServiceInterface;
 use SwagMigrationNext\Migration\Service\MigrationWriteService;
 use SwagMigrationNext\Migration\Service\MigrationWriteServiceInterface;
+use SwagMigrationNext\Migration\Writer\CustomerWriter;
 use SwagMigrationNext\Migration\Writer\ProductWriter;
 use SwagMigrationNext\Migration\Writer\WriterRegistry;
 use SwagMigrationNext\Profile\Shopware55\Logging\LoggingType;
@@ -114,6 +116,11 @@ class MigrationWriteServiceTest extends TestCase
      */
     private $loggingRepo;
 
+    /**
+     * @var RepositoryInterface
+     */
+    private $migrationDataRepo;
+
     protected function setUp()
     {
         $this->profileUuidService = new MigrationProfileUuidService(
@@ -134,10 +141,10 @@ class MigrationWriteServiceTest extends TestCase
             Context::createDefaultContext()
         );
 
-        $migrationDataRepo = $this->getContainer()->get('swag_migration_data.repository');
+        $this->migrationDataRepo = $this->getContainer()->get('swag_migration_data.repository');
         $this->loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
         $this->migrationCollectService = $this->getMigrationCollectService(
-            $migrationDataRepo,
+            $this->migrationDataRepo,
             $this->getContainer()->get(Shopware55MappingService::class),
             $this->getContainer()->get(MediaFileService::class),
             $this->loggingRepo
@@ -145,12 +152,14 @@ class MigrationWriteServiceTest extends TestCase
         $this->migrationWriteService = $this->getContainer()->get(MigrationWriteService::class);
 
         $this->productRepo = $this->getContainer()->get('product.repository');
+        $this->customerRepo = $this->getContainer()->get('customer.repository');
         $this->loggingService = new DummyLoggingService();
         $this->dummyWriteService = new MigrationWriteService(
-            $migrationDataRepo,
+            $this->migrationDataRepo,
             new WriterRegistry(
                 [
                     new ProductWriter($this->productRepo, new StructNormalizer()),
+                    new CustomerWriter($this->customerRepo),
                 ]
             ),
             new DummyMediaFileService(),
@@ -160,10 +169,63 @@ class MigrationWriteServiceTest extends TestCase
         $this->categoryRepo = $this->getContainer()->get('category.repository');
         $this->mediaRepo = $this->getContainer()->get('media.repository');
         $this->productTranslationRepo = $this->getContainer()->get('product_translation.repository');
-        $this->customerRepo = $this->getContainer()->get('customer.repository');
         $this->discountRepo = $this->getContainer()->get('customer_group_discount.repository');
         $this->orderRepo = $this->getContainer()->get('order.repository');
         $this->currencyRepo = $this->getContainer()->get('currency.repository');
+    }
+
+    public function requiredProperties(): array
+    {
+        return [
+            ['email'],
+            ['firstName'],
+            ['lastName'],
+        ];
+    }
+
+    /**
+     * @dataProvider requiredProperties
+     */
+    public function testWriteInvalidData(string $missingProperty): void
+    {
+        $context = Context::createDefaultContext();
+        $migrationContext = new MigrationContext(
+            $this->runUuid,
+            $this->profileUuidService->getProfileUuid(),
+            Shopware55Profile::PROFILE_NAME,
+            'local',
+            CustomerDefinition::getEntityName(),
+            [],
+            0,
+            250,
+            null,
+            Defaults::SALES_CHANNEL
+        );
+
+        $this->migrationCollectService->fetchData($migrationContext, $context);
+        $criteria = new Criteria();
+        $customerData = $this->migrationDataRepo->search($criteria, $context);
+
+        /** @var $data SwagMigrationDataStruct */
+        $data = $customerData->first();
+        $customer = $data->jsonSerialize();
+        $customer['id'] = $data->getId();
+        unset($customer['run']);
+        unset($customer['converted'][$missingProperty]);
+
+        $this->migrationDataRepo->update([$customer], $context);
+        $customerTotalBefore = $this->customerRepo->search($criteria, $context)->getTotal();
+        $this->dummyWriteService->writeData($migrationContext, $context);
+        $customerTotalAfter = $this->customerRepo->search($criteria, $context)->getTotal();
+
+        self::assertSame(0, $customerTotalAfter - $customerTotalBefore);
+        self::assertCount(1, $this->loggingService->getLoggingArray());
+        $this->loggingService->resetLogging();
+
+        $failureConvertCriteria = new Criteria();
+        $failureConvertCriteria->addFilter(new EqualsFilter('writeFailure', true));
+        $result = $this->migrationDataRepo->search($failureConvertCriteria, $context);
+        self::assertSame(3, $result->getTotal());
     }
 
     public function testWriteCustomerData(): void

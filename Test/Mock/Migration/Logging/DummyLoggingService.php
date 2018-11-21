@@ -18,4 +18,9 @@ class DummyLoggingService extends LoggingService
     public function saveLogging(\Shopware\Core\Framework\Context $context): void
     {
     }
+
+    public function resetLogging(): void
+    {
+        $this->logging = [];
+    }
 }

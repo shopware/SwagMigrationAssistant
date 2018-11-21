@@ -336,9 +336,14 @@ class MigrationCollectServiceTest extends TestCase
 
         self::assertSame(5, $countValidLogging);
         self::assertSame(0, $countInvalidLogging);
+
+        $failureConvertCriteria = new Criteria();
+        $failureConvertCriteria->addFilter(new EqualsFilter('convertFailure', true));
+        $result = $this->migrationDataRepo->search($failureConvertCriteria, $context);
+        self::assertSame(2, $result->getTotal());
     }
 
-    public function testFetchWithUnknownConverter()
+    public function testFetchWithUnknownConverter(): void
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
