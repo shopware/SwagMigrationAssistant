@@ -329,7 +329,7 @@ class ProductConverter implements ConverterInterface
         $this->helper->convertValue($converted, 'markAsTopseller', $data, 'topseller', $this->helper::TYPE_BOOLEAN);
         $this->helper->convertValue($converted, 'allowNotification', $data, 'notification', $this->helper::TYPE_BOOLEAN);
 
-        $this->helper->convertValue($converted, 'supplierNumber', $data['detail'], 'suppliernumber');
+        $this->helper->convertValue($converted, 'manufacturerNumber', $data['detail'], 'suppliernumber');
         $this->helper->convertValue($converted, 'active', $data['detail'], 'active', $this->helper::TYPE_BOOLEAN);
         $this->helper->convertValue($converted, 'sales', $data['detail'], 'sales', $this->helper::TYPE_INTEGER);
         $this->helper->convertValue($converted, 'stock', $data['detail'], 'instock', $this->helper::TYPE_INTEGER);
