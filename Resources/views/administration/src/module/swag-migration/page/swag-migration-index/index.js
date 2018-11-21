@@ -300,7 +300,16 @@ Component.register('swag-migration-index', {
         },
 
         onAbortButtonClick() {
-            this.showAbortMigrationConfirmDialog = true;
+            if (this.statusIndex === MIGRATION_STATUS.FETCH_DATA) {
+                this.onMigrationAbort();
+            } else {
+                this.showAbortMigrationConfirmDialog = true;
+
+                if (!this.isPaused) {
+                    this.migrationWorkerService.stopMigration();
+                    this.componentIndex = this.components.pauseScreen;
+                }
+            }
         },
 
         onBackButtonClick() {
@@ -702,6 +711,12 @@ Component.register('swag-migration-index', {
 
         onCloseAbortMigrationConfirmDialog() {
             this.showAbortMigrationConfirmDialog = false;
+
+            if (!this.isPaused) {
+                this.$nextTick(() => {
+                    this.onContinueButtonClick();
+                });
+            }
         },
 
         onBrowserTabClosing(e) {
