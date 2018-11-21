@@ -184,6 +184,7 @@ class Shopware55Profile implements ProfileInterface
         foreach ($data as $item) {
             try {
                 $convertStruct = $converter->convert($item, $context, $runId, $migrationContext->getProfileId(), $catalogId, $salesChannelId);
+                $convertFailureFlag = empty($convertStruct->getConverted());
 
                 $createData[] = [
                     'entity' => $entityName,
@@ -191,6 +192,7 @@ class Shopware55Profile implements ProfileInterface
                     'raw' => $item,
                     'converted' => $convertStruct->getConverted(),
                     'unmapped' => $convertStruct->getUnmapped(),
+                    'convertFailure' => $convertFailureFlag,
                 ];
             } catch (ParentEntityForChildNotFoundException |
             AssociationEntityRequiredMissingException $exception
@@ -212,6 +214,7 @@ class Shopware55Profile implements ProfileInterface
                     'raw' => $item,
                     'converted' => null,
                     'unmapped' => $item,
+                    'convertFailure' => true,
                 ];
                 continue;
             }

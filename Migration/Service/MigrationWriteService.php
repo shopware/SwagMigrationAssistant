@@ -77,6 +77,7 @@ class MigrationWriteService implements MigrationWriteServiceInterface
                 $updateWrittenData[] = [
                     'id' => $data->getId(),
                     'written' => true,
+                    'writeFailure' => false,
                 ];
             }
         }
@@ -91,6 +92,11 @@ class MigrationWriteService implements MigrationWriteServiceInterface
         } catch (\Exception $exception) {
             $this->loggingService->addError($migrationContext->getRunUuid(), (string) $exception->getCode(), '', $exception->getMessage(), ['entity' => $entity]);
             $this->loggingService->saveLogging($context);
+
+            foreach ($updateWrittenData as &$dataset) {
+                $dataset['written'] = false;
+                $dataset['writeFailure'] = true;
+            }
 
             return;
         } finally {
