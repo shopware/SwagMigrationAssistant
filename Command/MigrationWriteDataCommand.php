@@ -4,10 +4,17 @@ namespace SwagMigrationNext\Command;
 
 use InvalidArgumentException;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 use Shopware\Core\Framework\Struct\Uuid;
 use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Migration\Run\SwagMigrationRunStruct;
 use SwagMigrationNext\Migration\Service\MigrationDataWriterInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -21,10 +28,51 @@ class MigrationWriteDataCommand extends ContainerAwareCommand
      */
     private $migrationWriteService;
 
-    public function __construct(MigrationDataWriterInterface $migrationWriteService, ?string $name = null)
-    {
+    /**
+     * @var RepositoryInterface
+     */
+    private $migrationRunRepo;
+
+    /**
+     * @var RepositoryInterface
+     */
+    private $migrationDataRepo;
+
+    /**
+     * @var string
+     */
+    private $catalogId;
+
+    /**
+     * @var string
+     */
+    private $runId;
+
+    /**
+     * @var bool
+     */
+    private $startedRunFlag;
+
+    /**
+     * @var string
+     */
+    private $entityName;
+
+    /**
+     * @var Context
+     */
+    private $context;
+
+    public function __construct(
+        MigrationDataWriterInterface $migrationWriteService,
+        RepositoryInterface $migrationRunRepo,
+        RepositoryInterface $migrationDataRepo,
+        ?string $name = null
+    ) {
         parent::__construct($name);
         $this->migrationWriteService = $migrationWriteService;
+        $this->migrationRunRepo = $migrationRunRepo;
+        $this->migrationDataRepo = $migrationDataRepo;
     }
 
     protected function configure(): void
@@ -33,35 +81,128 @@ class MigrationWriteDataCommand extends ContainerAwareCommand
             ->setDescription('Writes data with the given profile')
             ->addOption('catalog-id', 'c', InputOption::VALUE_REQUIRED)
             ->addOption('run-id', 'r', InputOption::VALUE_REQUIRED)
+            ->addOption('started-run', 's', InputOption::VALUE_NONE)
             ->addOption('entity', 'y', InputOption::VALUE_REQUIRED)
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $context = Context::createDefaultContext();
+        $this->context = Context::createDefaultContext();
 
-        $catalogId = $input->getOption('catalog-id');
-        if ($catalogId !== null && Uuid::isValid($catalogId)) {
-            $context = $context->createWithCatalogIds(array_merge($context->getCatalogIds(), [$catalogId]));
-        }
+        $this->catalogId = $input->getOption('catalog-id');
+        $this->runId = $input->getOption('run-id');
+        $this->startedRunFlag = $input->getOption('started-run');
+        $this->entityName = $input->getOption('entity');
 
-        $runUuid = $input->getOption('run-id');
-        if (!$runUuid) {
-            throw new InvalidArgumentException('No run-id provided');
-        }
-
-        $entity = $input->getOption('entity');
-        if (!$entity) {
-            throw new InvalidArgumentException('No entity provided');
-        }
-
-        $migrationContext = new MigrationContext($runUuid, '', $runUuid, '', $entity, [], 0, 1000, $catalogId);
+        $this->checkOptions();
+        $totalConvertedCount = $this->getConvertedCount();
 
         $output->writeln('Writing data...');
 
-        $this->migrationWriteService->writeData($migrationContext, $context);
+        $this->writeData($output, $totalConvertedCount, $this->context);
+        $totalWrittenCount = $this->getWrittenCount();
+        $this->finishRun();
 
+        $output->writeln('');
         $output->writeln('Writing done.');
+        $output->writeln('');
+        $output->writeln('Written: ' . $totalWrittenCount);
+        $output->writeln('Skipped: ' . ($totalConvertedCount - $totalWrittenCount));
+    }
+
+    private function writeData(OutputInterface $output, $total, $context): void
+    {
+        $progressBar = new ProgressBar($output, $total);
+        $progressBar->start();
+
+        $limit = 50;
+        for ($offset = 0; $offset < $total; $offset += $limit) {
+            $migrationContext = new MigrationContext(
+                $this->runId,
+                '',
+                '',
+                '',
+                $this->entityName,
+                [],
+                $offset,
+                $limit,
+                $this->catalogId
+            );
+            $this->migrationWriteService->writeData($migrationContext, $context);
+
+            if ($offset + $limit > $total) {
+                $progressBar->finish();
+            } else {
+                $progressBar->advance($limit);
+            }
+        }
+    }
+
+    private function checkOptions(): void
+    {
+        if ($this->catalogId !== null && Uuid::isValid($this->catalogId)) {
+            $this->context = $this->context->createWithCatalogIds(
+                array_merge(
+                    $this->context->getCatalogIds(),
+                    [$this->catalogId]
+                )
+            );
+        }
+
+        if (!$this->runId && !$this->startedRunFlag) {
+            throw new InvalidArgumentException('No run-id provided or started run flag set');
+        }
+
+        if (!$this->entityName) {
+            throw new InvalidArgumentException('No entity provided');
+        }
+
+        if ($this->startedRunFlag) {
+            $startedRunCriteria = new Criteria();
+            $startedRunCriteria->addFilter(new EqualsFilter('status', 'running'));
+            $startedRunCriteria->setLimit(1);
+            $startedRunStruct = $this->migrationRunRepo->search($startedRunCriteria, $this->context)->first();
+
+            if ($startedRunStruct === null) {
+                throw new InvalidArgumentException('No running migration found');
+            }
+
+            /* @var SwagMigrationRunStruct $startedRunStruct */
+            $this->runId = $startedRunStruct->getId();
+        }
+    }
+
+    private function getConvertedCount(): int
+    {
+        $convertedCriteria = new Criteria();
+        $convertedCriteria->addFilter(new EqualsFilter('runId', $this->runId));
+        $convertedCriteria->addFilter(new EqualsFilter('entity', $this->entityName));
+        $convertedCriteria->addFilter(new EqualsFilter('convertFailure', false));
+        $convertedCriteria->addFilter(new NotFilter(MultiFilter::CONNECTION_AND, [new EqualsFilter('converted', null)]));
+
+        return $this->migrationDataRepo->search($convertedCriteria, $this->context)->getTotal();
+    }
+
+    private function getWrittenCount(): int
+    {
+        $writtenCriteria = new Criteria();
+        $writtenCriteria->addFilter(new EqualsFilter('runId', $this->runId));
+        $writtenCriteria->addFilter(new EqualsFilter('entity', $this->entityName));
+        $writtenCriteria->addFilter(new EqualsFilter('convertFailure', false));
+        $writtenCriteria->addFilter(new EqualsFilter('writeFailure', false));
+        $writtenCriteria->addFilter(new NotFilter(MultiFilter::CONNECTION_AND, [new EqualsFilter('converted', null)]));
+
+        return $this->migrationDataRepo->search($writtenCriteria, $this->context)->getTotal();
+    }
+
+    private function finishRun(): void
+    {
+        $this->migrationRunRepo->update([
+            [
+                'id' => $this->runId,
+                'status' => 'finished',
+            ],
+        ], $this->context);
     }
 }

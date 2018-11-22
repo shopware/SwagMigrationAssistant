@@ -84,6 +84,8 @@
                  class="SwagMigrationNext\Command\MigrationFetchDataCommand">
             <argument type="service" id="SwagMigrationNext\Migration\Service\MigrationDataFetcher"/>
             <argument type="service" id="swag_migration_run.repository"/>
+            <argument type="service" id="swag_migration_profile.repository"/>
+            <argument type="service" id="swag_migration_data.repository"/>
             <argument>migration:fetch:data</argument>
             <tag name="console.command" command="migration:fetch:data"/>
         </service>
@@ -91,6 +93,8 @@
         <service id="SwagMigrationNext\Command\MigrationWriteDataCommand"
                  class="SwagMigrationNext\Command\MigrationWriteDataCommand">
             <argument type="service" id="SwagMigrationNext\Migration\Service\MigrationDataWriter"/>
+            <argument type="service" id="swag_migration_run.repository"/>
+            <argument type="service" id="swag_migration_data.repository"/>
             <argument>migration:write:data</argument>
             <tag name="console.command" command="migration:write:data"/>
         </service>
