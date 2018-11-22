@@ -10,13 +10,13 @@ class DummyLocalFactory implements GatewayFactoryInterface
 {
     public const GATEWAY_NAME = 'shopware55local';
 
-    public function getName(): string
+    public function supports(string $gatewayIdentifier): bool
     {
-        return self::GATEWAY_NAME;
+        return $gatewayIdentifier === self::GATEWAY_NAME;
     }
 
     public function create(MigrationContext $context): GatewayInterface
     {
-        return new DummyLocalGateway();
+        return new DummyLocalGateway($context);
     }
 }

@@ -15,18 +15,18 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
-use SwagMigrationNext\Gateway\GatewayFactoryRegistry;
-use SwagMigrationNext\Gateway\Shopware55\Api\Shopware55ApiFactory;
 use SwagMigrationNext\Migration\Asset\MediaFileService;
+use SwagMigrationNext\Migration\Converter\ConverterRegistry;
+use SwagMigrationNext\Migration\Gateway\GatewayFactoryRegistry;
 use SwagMigrationNext\Migration\Logging\LoggingService;
+use SwagMigrationNext\Migration\Logging\LogType;
 use SwagMigrationNext\Migration\Logging\SwagMigrationLoggingStruct;
 use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Migration\Profile\ProfileRegistry;
 use SwagMigrationNext\Migration\Service\MigrationCollectService;
 use SwagMigrationNext\Migration\Service\MigrationCollectServiceInterface;
-use SwagMigrationNext\Profile\ProfileRegistry;
-use SwagMigrationNext\Profile\Shopware55\Converter\ConverterRegistry;
 use SwagMigrationNext\Profile\Shopware55\Converter\ProductConverter;
-use SwagMigrationNext\Profile\Shopware55\Logging\LoggingType;
+use SwagMigrationNext\Profile\Shopware55\Gateway\Api\Shopware55ApiFactory;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Migration\Services\MigrationProfileUuidService;
@@ -362,6 +362,6 @@ class MigrationCollectServiceTest extends TestCase
         $this->dummyCollectService->fetchData($migrationContext, $context);
         $logs = $this->loggingService->getLoggingArray();
         self::assertCount(1, $logs);
-        self::assertSame(LoggingType::CONVERTER_NOT_FOUND, $logs[0]['logEntry']['code']);
+        self::assertSame(LogType::CONVERTER_NOT_FOUND, $logs[0]['logEntry']['code']);
     }
 }

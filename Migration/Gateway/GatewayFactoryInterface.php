@@ -9,7 +9,7 @@ interface GatewayFactoryInterface
     /**
      * Identifier for a gateway factory
      */
-    public function getName(): string;
+    public function supports(string $gatewayIdentifier): bool;
 
     /**
      * Creates an instance of gateway. The context contains possible credentials to set up the connection

@@ -2,77 +2,51 @@
 
 namespace SwagMigrationNext\Profile\Shopware55\Gateway\Local;
 
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Shopware\Core\Content\Product\ProductDefinition;
-use SwagMigrationNext\Migration\Gateway\GatewayInterface;
+use SwagMigrationNext\Migration\Gateway\AbstractGateway;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalProductReader;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalReaderNotFoundException;
 
-class Shopware55LocalGateway implements GatewayInterface
+class Shopware55LocalGateway extends AbstractGateway
 {
     public const GATEWAY_TYPE = 'local';
 
-    /**
-     * @var string
-     */
-    private $dbHost;
+    public function read(): array
+    {
+        $connection = $this->getConnection();
 
-    /**
-     * @var string
-     */
-    private $dbName;
+        switch ($this->migrationContext->getEntity()) {
+            case ProductDefinition::getEntityName():
+                $reader = new Shopware55LocalProductReader($connection, $this->migrationContext);
 
-    /**
-     * @var string
-     */
-    private $dbPort;
+                return $reader->read();
 
-    /**
-     * @var string
-     */
-    private $dbUser;
-
-    /**
-     * @var string
-     */
-    private $dbPassword;
-
-    public function __construct(
-        string $dbHost,
-        string $dbPort,
-        string $dbName,
-        string $dbUser,
-        string $dbPassword
-    ) {
-        $this->dbHost = $dbHost;
-        $this->dbPort = $dbPort;
-        $this->dbName = $dbName;
-        $this->dbUser = $dbUser;
-        $this->dbPassword = $dbPassword;
+            default:
+                throw new Shopware55LocalReaderNotFoundException($this->migrationContext->getEntity());
+        }
     }
 
-    public function read(string $entityName, int $offset, int $limit): array
+    public function readEnvironmentInformation(): array
     {
+        return [];
+    }
+
+    private function getConnection(): Connection
+    {
+        $credentials = $this->migrationContext->getCredentials();
+
         $connectionParams = [
-            'dbname' => $this->dbName,
-            'user' => $this->dbUser,
-            'password' => $this->dbPassword,
-            'host' => $this->dbHost,
-            'port' => $this->dbPort,
+            'dbname' => $credentials['dbName'],
+            'user' => $credentials['dbUser'],
+            'password' => $credentials['dbPassword'],
+            'host' => $credentials['dbHost'],
+            'port' => $credentials['dbPort'],
             'driver' => 'pdo_mysql',
             'charset' => 'utf8mb4',
         ];
 
-        $connection = DriverManager::getConnection($connectionParams);
-
-        switch ($entityName) {
-            case ProductDefinition::getEntityName():
-                $reader = new Shopware55LocalProductReader();
-
-                return $reader->read($connection);
-
-            default:
-                throw new Shopware55LocalReaderNotFoundException($entityName);
-        }
+        return DriverManager::getConnection($connectionParams);
     }
 }

@@ -19,7 +19,7 @@ use SwagMigrationNext\Migration\Converter\AbstractConverter;
 use SwagMigrationNext\Migration\Converter\ConvertStruct;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\MigrationContext;
-use SwagMigrationNext\Profile\Shopware55\Logging\LoggingType;
+use SwagMigrationNext\Profile\Shopware55\Logging\Shopware55LogTypes;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
@@ -126,7 +126,7 @@ class CustomerConverter extends AbstractConverter
         if (!empty($fields)) {
             $this->loggingService->addWarning(
                 $this->runId,
-                LoggingType::EMPTY_NECESSARY_DATA_FIELDS,
+                Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
                 'Empty necessary data fields',
                 sprintf('Customer-Entity could not converted cause of empty necessary field(s): %s.', implode(', ', $fields)),
                 [
@@ -234,7 +234,7 @@ class CustomerConverter extends AbstractConverter
 
             $this->loggingService->addWarning(
                 $this->runId,
-                LoggingType::NO_ADDRESS_DATA,
+                Shopware55LogTypes::NO_ADDRESS_DATA,
                 'No address data',
                 'Customer-Entity could not converted cause of empty address data.',
                 ['id' => $this->oldCustomerId]
@@ -388,7 +388,7 @@ class CustomerConverter extends AbstractConverter
             if (!empty($fields)) {
                 $this->loggingService->addInfo(
                     $this->runId,
-                    LoggingType::EMPTY_NECESSARY_DATA_FIELDS,
+                    Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
                     'Empty necessary data fields for address',
                     sprintf('Address-Entity could not converted cause of empty necessary field(s): %s.', implode(', ', $fields)),
                     [
@@ -566,7 +566,7 @@ class CustomerConverter extends AbstractConverter
 
             $this->loggingService->addInfo(
                 $this->runId,
-                LoggingType::NO_DEFAULT_BILLING_AND_SHIPPING_ADDRESS,
+                Shopware55LogTypes::NO_DEFAULT_BILLING_AND_SHIPPING_ADDRESS,
                 'No default billing and shipping address',
                 'Default billing and shipping address of customer is empty and will set with the first address.',
                 [
@@ -585,7 +585,7 @@ class CustomerConverter extends AbstractConverter
 
             $this->loggingService->addInfo(
                 $this->runId,
-                LoggingType::NO_DEFAULT_SHIPPING_ADDRESS,
+                Shopware55LogTypes::NO_DEFAULT_SHIPPING_ADDRESS,
                 'No default shipping address',
                 'Default shipping address of customer is empty and will set with the default billing address.',
                 [
@@ -604,7 +604,7 @@ class CustomerConverter extends AbstractConverter
 
             $this->loggingService->addInfo(
                 $this->runId,
-                LoggingType::NO_DEFAULT_BILLING_ADDRESS,
+                Shopware55LogTypes::NO_DEFAULT_BILLING_ADDRESS,
                 'No default billing address',
                 'Default billing address of customer is empty and will set with the default shipping address.',
                 [

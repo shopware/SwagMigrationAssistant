@@ -23,7 +23,7 @@ use SwagMigrationNext\Migration\Converter\ConvertStruct;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Profile\Shopware55\Exception\ParentEntityForChildNotFoundException;
-use SwagMigrationNext\Profile\Shopware55\Logging\LoggingType;
+use SwagMigrationNext\Profile\Shopware55\Logging\Shopware55LogTypes;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
@@ -131,7 +131,7 @@ class ProductConverter extends AbstractConverter
         if (!empty($fields)) {
             $this->loggingService->addWarning(
                 $this->runId,
-                LoggingType::EMPTY_NECESSARY_DATA_FIELDS,
+                Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
                 'Empty necessary data fields',
                 sprintf('Product-Entity could not converted cause of empty necessary field(s): %s.', implode(', ', $fields)),
                 [
@@ -459,7 +459,7 @@ class ProductConverter extends AbstractConverter
             if (!isset($asset['media']['id'])) {
                 $this->loggingService->addInfo(
                     $this->runId,
-                    LoggingType::PRODUCT_MEDIA_NOT_CONVERTED,
+                    Shopware55LogTypes::PRODUCT_MEDIA_NOT_CONVERTED,
                     'Product-Media could not converted',
                     'Product-Media could not converted.',
                     [

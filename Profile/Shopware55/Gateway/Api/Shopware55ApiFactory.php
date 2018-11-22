@@ -10,19 +10,13 @@ class Shopware55ApiFactory implements GatewayFactoryInterface
 {
     public const GATEWAY_NAME = 'shopware55api';
 
-    public function getName(): string
+    public function supports(string $gatewayIdentifier): bool
     {
-        return self::GATEWAY_NAME;
+        return $gatewayIdentifier === self::GATEWAY_NAME;
     }
 
     public function create(MigrationContext $context): GatewayInterface
     {
-        $credentials = $context->getCredentials();
-
-        return new Shopware55ApiGateway(
-            $credentials['endpoint'],
-            $credentials['apiUser'],
-            $credentials['apiKey']
-        );
+        return new Shopware55ApiGateway($context);
     }
 }

@@ -10,7 +10,7 @@ use SwagMigrationNext\Migration\Converter\ConvertStruct;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Profile\Shopware55\Exception\ParentEntityForChildNotFoundException;
-use SwagMigrationNext\Profile\Shopware55\Logging\LoggingType;
+use SwagMigrationNext\Profile\Shopware55\Logging\Shopware55LogTypes;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
@@ -86,7 +86,7 @@ class CategoryConverter extends AbstractConverter
         if (!isset($data['_locale'])) {
             $this->loggingService->addWarning(
                 $migrationContext->getRunUuid(),
-                LoggingType::EMPTY_LOCALE,
+                Shopware55LogTypes::EMPTY_LOCALE,
                 'Empty locale',
                 'Category-Entity could not converted cause of empty locale.',
                 ['id' => $this->oldCategoryId]

@@ -73,7 +73,7 @@ class Shopware55Profile implements ProfileInterface
 
         try {
             /** @var array[] $data */
-            $data = $gateway->read($entityName, $migrationContext->getOffset(), $migrationContext->getLimit());
+            $data = $gateway->read();
         } catch (\Exception $exception) {
             $this->loggingService->addError($runId, (string) $exception->getCode(), '', $exception->getMessage(), ['entity' => $entityName]);
             $this->loggingService->saveLogging($context);
@@ -110,7 +110,7 @@ class Shopware55Profile implements ProfileInterface
 
     public function readEnvironmentInformation(GatewayInterface $gateway): EnvironmentInformation
     {
-        $environmentData = $gateway->read('environment', 0, 0);
+        $environmentData = $gateway->readEnvironmentInformation();
         $environmentDataArray = $environmentData['environmentInformation'];
         if (empty($environmentDataArray)) {
             return new EnvironmentInformation(

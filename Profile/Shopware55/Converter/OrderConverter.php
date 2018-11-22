@@ -32,7 +32,7 @@ use SwagMigrationNext\Migration\Converter\ConvertStruct;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Profile\Shopware55\Exception\AssociationEntityRequiredMissingException;
-use SwagMigrationNext\Profile\Shopware55\Logging\LoggingType;
+use SwagMigrationNext\Profile\Shopware55\Logging\Shopware55LogTypes;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
@@ -160,7 +160,7 @@ class OrderConverter extends AbstractConverter
         if (!empty($fields)) {
             $this->loggingService->addWarning(
                 $this->runId,
-                LoggingType::EMPTY_NECESSARY_DATA_FIELDS,
+                Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
                 'Empty necessary data',
                 sprintf('Order-Entity could not converted cause of empty necessary field(s): %s.', implode(', ', $fields)),
                 [
@@ -253,7 +253,7 @@ class OrderConverter extends AbstractConverter
         if (!isset($converted['stateId'])) {
             $this->loggingService->addWarning(
                 $this->runId,
-                LoggingType::UNKNOWN_ORDER_STATE,
+                Shopware55LogTypes::UNKNOWN_ORDER_STATE,
                 'Cannot find order state',
                 'Order-Entity could not converted cause of unknown order state',
                 [
@@ -282,7 +282,7 @@ class OrderConverter extends AbstractConverter
             $fields = ['billingaddress'];
             $this->loggingService->addWarning(
                 $this->runId,
-                LoggingType::EMPTY_NECESSARY_DATA_FIELDS,
+                Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
                 'Empty necessary data',
                 sprintf('Order-Entity could not converted cause of empty necessary field(s): %s.', implode(', ', $fields)),
                 [
@@ -483,7 +483,7 @@ class OrderConverter extends AbstractConverter
         if (!empty($fields)) {
             $this->loggingService->addInfo(
                 $this->runId,
-                LoggingType::EMPTY_NECESSARY_DATA_FIELDS,
+                Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
                 'Empty necessary data fields for address',
                 sprintf('Address-Entity could not converted cause of empty necessary field(s): %s.', implode(', ', $fields)),
                 [
@@ -809,7 +809,7 @@ class OrderConverter extends AbstractConverter
             if (!isset($lineItem['identifier'])) {
                 $this->loggingService->addInfo(
                     $this->runId,
-                    LoggingType::EMPTY_LINE_ITEM_IDENTIFIER,
+                    Shopware55LogTypes::EMPTY_LINE_ITEM_IDENTIFIER,
                     'Line item could not converted',
                     'Order-Line-Item-Entity could not converted cause of empty identifier',
                     [

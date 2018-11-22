@@ -18,9 +18,9 @@ use Shopware\Core\Framework\Struct\Serializer\StructNormalizer;
 use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\System\Currency\CurrencyStruct;
-use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationNext\Migration\Asset\MediaFileService;
 use SwagMigrationNext\Migration\Data\SwagMigrationDataStruct;
+use SwagMigrationNext\Migration\Logging\LogType;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Service\MigrationCollectServiceInterface;
 use SwagMigrationNext\Migration\Service\MigrationWriteService;
@@ -28,7 +28,7 @@ use SwagMigrationNext\Migration\Service\MigrationWriteServiceInterface;
 use SwagMigrationNext\Migration\Writer\CustomerWriter;
 use SwagMigrationNext\Migration\Writer\ProductWriter;
 use SwagMigrationNext\Migration\Writer\WriterRegistry;
-use SwagMigrationNext\Profile\Shopware55\Logging\LoggingType;
+use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Migration\Services\MigrationProfileUuidService;
@@ -468,7 +468,7 @@ class MigrationWriteServiceTest extends TestCase
         $this->dummyWriteService->writeData($migrationContext, $context);
 
         $logs = $this->loggingService->getLoggingArray();
-        static::assertSame(LoggingType::WRITER_NOT_FOUND, $logs[0]['logEntry']['code']);
+        static::assertSame(LogType::WRITER_NOT_FOUND, $logs[0]['logEntry']['code']);
         static::assertCount(1, $logs);
     }
 

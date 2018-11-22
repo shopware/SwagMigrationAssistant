@@ -17,7 +17,7 @@ use SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\Converter\CustomerConverter;
 use SwagMigrationNext\Profile\Shopware55\Converter\OrderConverter;
 use SwagMigrationNext\Profile\Shopware55\Exception\AssociationEntityRequiredMissingException;
-use SwagMigrationNext\Profile\Shopware55\Logging\LoggingType;
+use SwagMigrationNext\Profile\Shopware55\Logging\Shopware55LogTypes;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationNext\Test\Mock\Migration\Mapping\DummyMappingService;
@@ -358,7 +358,7 @@ class OrderConverterTest extends TestCase
         static::assertCount(2, $this->loggingService->getLoggingArray());
 
         foreach ($this->loggingService->getLoggingArray() as $log) {
-            static::assertSame(LoggingType::EMPTY_NECESSARY_DATA_FIELDS, $log['logEntry']['code']);
+            static::assertSame(Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS, $log['logEntry']['code']);
             static::assertCount(1, $log['logEntry']['details']['fields']);
             static::assertTrue(
                 $log['logEntry']['details']['fields'][0] === 'billingaddress' ||
@@ -400,7 +400,7 @@ class OrderConverterTest extends TestCase
         static::assertCount(1, $this->loggingService->getLoggingArray());
 
         foreach ($this->loggingService->getLoggingArray() as $log) {
-            static::assertSame(LoggingType::EMPTY_NECESSARY_DATA_FIELDS, $log['logEntry']['code']);
+            static::assertSame(Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS, $log['logEntry']['code']);
         }
     }
 
@@ -436,7 +436,7 @@ class OrderConverterTest extends TestCase
         static::assertCount(3, $this->loggingService->getLoggingArray());
 
         foreach ($this->loggingService->getLoggingArray() as $log) {
-            static::assertSame(LoggingType::EMPTY_LINE_ITEM_IDENTIFIER, $log['logEntry']['code']);
+            static::assertSame(Shopware55LogTypes::EMPTY_LINE_ITEM_IDENTIFIER, $log['logEntry']['code']);
         }
     }
 
@@ -466,7 +466,7 @@ class OrderConverterTest extends TestCase
         static::assertCount(1, $this->loggingService->getLoggingArray());
 
         foreach ($this->loggingService->getLoggingArray() as $log) {
-            static::assertSame(LoggingType::EMPTY_NECESSARY_DATA_FIELDS, $log['logEntry']['code']);
+            static::assertSame(Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS, $log['logEntry']['code']);
             static::assertCount(1, $log['logEntry']['details']['fields']);
             static::assertSame($log['logEntry']['details']['fields']['0'], 'paymentMethod');
         }
@@ -498,7 +498,7 @@ class OrderConverterTest extends TestCase
         static::assertCount(1, $this->loggingService->getLoggingArray());
 
         foreach ($this->loggingService->getLoggingArray() as $log) {
-            static::assertSame(LoggingType::UNKNOWN_ORDER_STATE, $log['logEntry']['code']);
+            static::assertSame(Shopware55LogTypes::UNKNOWN_ORDER_STATE, $log['logEntry']['code']);
         }
     }
 }

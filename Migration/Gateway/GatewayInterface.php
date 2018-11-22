@@ -5,7 +5,9 @@ namespace SwagMigrationNext\Migration\Gateway;
 interface GatewayInterface
 {
     /**
-     * Reads the given entity type from its connection and returns the data
+     * Reads the given entity type from via context from its connection and returns the data
      */
-    public function read(string $entityName, int $offset, int $limit): array;
+    public function read(): array;
+
+    public function readEnvironmentInformation(): array;
 }

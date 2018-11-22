@@ -8,61 +8,33 @@ use GuzzleHttp\Psr7\Response as GuzzleResponse;
 use SwagMigrationNext\Exception\GatewayReadException;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
-class Shopware55ApiEnvironmentReader
+class Shopware55ApiEnvironmentReader extends Shopware55ApiReader
 {
-    /**
-     * @var array
-     */
-    private $apiClientOptions;
-
-    public function __construct(array $apiClientOptions)
+    public function read(): array
     {
-        $this->apiClientOptions = $apiClientOptions;
-    }
-
-    public function read(Client $apiClient): array
-    {
-        $verifiedOptions = $this->apiClientOptions;
-        $verifiedOptions['verify'] = true;
-        $apiClientVerified = new Client($verifiedOptions);
+        $verfiedApiClient = $this->getVerifiedClient();
+        $information = [
+            'environmentInformation' => [],
+            'warning' => [
+                'code' => -1,
+                'detail' => 'No warning.',
+            ],
+            'error' => [
+                'code' => -1,
+                'detail' => 'No error.',
+            ],
+        ];
 
         try {
-            $information = [
-                'environmentInformation' => $this->getData($apiClientVerified),
-                'warning' => [
-                    'code' => -1,
-                    'detail' => 'No warning.',
-                ],
-                'error' => [
-                    'code' => -1,
-                    'detail' => 'No error.',
-                ],
-            ];
+            $information['environmentInformation'] = $this->readData($verfiedApiClient);
         } catch (Exception $e) {
             try {
-                $information = [
-                    'environmentInformation' => $this->getData($apiClient),
-                    'warning' => [
-                        'code' => $e->getCode(),    // Most likely SSL not possible warning (Code 0)
-                        'detail' => $e->getMessage(),
-                    ],
-                    'error' => [
-                        'code' => -1,
-                        'detail' => 'No error.',
-                    ],
-                ];
+                $information['environmentInformation'] = $this->readData($this->client);
+                $information['warning']['code'] = $e->getCode();
+                $information['warning']['detail'] = $e->getMessage();
             } catch (Exception $e) {
-                $information = [
-                    'environmentInformation' => [],
-                    'warning' => [
-                        'code' => -1,
-                        'detail' => 'No warning.',
-                    ],
-                    'error' => [
-                        'code' => $e->getCode(),
-                        'detail' => $e->getMessage(),
-                    ],
-                ];
+                $information['error']['code'] = $e->getCode();
+                $information['error']['detail'] = $e->getMessage();
             }
         }
 
@@ -72,7 +44,7 @@ class Shopware55ApiEnvironmentReader
     /**
      * @throws GatewayReadException
      */
-    private function getData(Client $apiClient)
+    private function readData(Client $apiClient): array
     {
         /** @var GuzzleResponse $result */
         $result = $apiClient->get(
@@ -86,5 +58,18 @@ class Shopware55ApiEnvironmentReader
         $arrayResult = json_decode($result->getBody()->getContents(), true);
 
         return $arrayResult['data'];
+    }
+
+    private function getVerifiedClient(): Client
+    {
+        $credentials = $this->migrationContext->getCredentials();
+
+        $options = [
+            'base_uri' => $credentials['endpoint'] . '/api/',
+            'auth' => [$credentials['apiUser'], $credentials['apiKey'], 'digest'],
+            'verify' => true,
+        ];
+
+        return new Client($options);
     }
 }

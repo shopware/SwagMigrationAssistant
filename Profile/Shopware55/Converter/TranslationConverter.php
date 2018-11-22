@@ -15,7 +15,7 @@ use SwagMigrationNext\Migration\Converter\AbstractConverter;
 use SwagMigrationNext\Migration\Converter\ConvertStruct;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\MigrationContext;
-use SwagMigrationNext\Profile\Shopware55\Logging\LoggingType;
+use SwagMigrationNext\Profile\Shopware55\Logging\Shopware55LogTypes;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
@@ -99,7 +99,7 @@ class TranslationConverter extends AbstractConverter
 
         $this->loggingService->addWarning(
             $this->runId,
-            LoggingType::NOT_CONVERTABLE_OBJECT_TYPE,
+            Shopware55LogTypes::NOT_CONVERTABLE_OBJECT_TYPE,
             'Not convert able object type',
             sprintf('Translation of object type "%s" could not converted.', $data['objecttype']),
             [
@@ -140,7 +140,7 @@ class TranslationConverter extends AbstractConverter
         if (!isset($productTranslation['productId'])) {
             $this->loggingService->addWarning(
                 $this->runId,
-                LoggingType::ASSOCIATION_REQUIRED_MISSING,
+                Shopware55LogTypes::ASSOCIATION_REQUIRED_MISSING,
                 'Associated product not found',
                 'Mapping of "product" is missing, but it is a required association for "translation". Import "product" first.',
                 ['data' => $data]
@@ -157,7 +157,7 @@ class TranslationConverter extends AbstractConverter
         if (!\is_array($objectData)) {
             $this->loggingService->addWarning(
                 $this->runId,
-                LoggingType::INVALID_UNSERIALIZED_DATA,
+                Shopware55LogTypes::INVALID_UNSERIALIZED_DATA,
                 'Invalid unserialized data',
                 'Product-Translation-Entity could not converted cause of invalid unserialized object data.',
                 [
@@ -229,7 +229,7 @@ class TranslationConverter extends AbstractConverter
         if (!isset($manufacturerTranslation['productManufacturerId'])) {
             $this->loggingService->addWarning(
                 $this->runId,
-                LoggingType::ASSOCIATION_REQUIRED_MISSING,
+                Shopware55LogTypes::ASSOCIATION_REQUIRED_MISSING,
                 'Associated manufacturer not found',
                 'Mapping of "manufacturer" is missing, but it is a required association for "translation". Import "product" first.',
                 ['data' => $data]
@@ -246,7 +246,7 @@ class TranslationConverter extends AbstractConverter
         if (!\is_array($objectData)) {
             $this->loggingService->addWarning(
                 $this->runId,
-                LoggingType::INVALID_UNSERIALIZED_DATA,
+                Shopware55LogTypes::INVALID_UNSERIALIZED_DATA,
                 'Invalid unserialized data',
                 'Manufacturer-Translation-Entity could not converted cause of invalid unserialized object data.',
                 [
@@ -281,7 +281,7 @@ class TranslationConverter extends AbstractConverter
         } else {
             $this->loggingService->addWarning(
                 $this->runId,
-                LoggingType::INVALID_UNSERIALIZED_DATA,
+                Shopware55LogTypes::INVALID_UNSERIALIZED_DATA,
                 'Invalid unserialized data',
                 'Manufacturer-Translation-Entity could not converted cause of invalid unserialized object data.',
                 [
@@ -336,7 +336,7 @@ class TranslationConverter extends AbstractConverter
         if (!isset($unitTranslation['unitId'])) {
             $this->loggingService->addWarning(
                 $this->runId,
-                LoggingType::ASSOCIATION_REQUIRED_MISSING,
+                Shopware55LogTypes::ASSOCIATION_REQUIRED_MISSING,
                 'Associated unit not found',
                 'Mapping of "unit" is missing, but it is a required association for "translation". Import "product" first.',
                 ['data' => $data]
@@ -352,7 +352,7 @@ class TranslationConverter extends AbstractConverter
         if (!\is_array($objectData)) {
             $this->loggingService->addWarning(
                 $this->runId,
-                LoggingType::INVALID_UNSERIALIZED_DATA,
+                Shopware55LogTypes::INVALID_UNSERIALIZED_DATA,
                 'Invalid unserialized data',
                 'Unit-Translation-Entity could not converted cause of invalid unserialized object data.',
                 [
@@ -384,7 +384,7 @@ class TranslationConverter extends AbstractConverter
         } else {
             $this->loggingService->addWarning(
                 $this->runId,
-                LoggingType::INVALID_UNSERIALIZED_DATA,
+                Shopware55LogTypes::INVALID_UNSERIALIZED_DATA,
                 'Invalid unserialized data',
                 'Unit-Translation-Entity could not converted cause of invalid unserialized object data.',
                 [
@@ -439,7 +439,7 @@ class TranslationConverter extends AbstractConverter
         if (!isset($categoryTranslation['categoryId'])) {
             $this->loggingService->addWarning(
                 $this->runId,
-                LoggingType::ASSOCIATION_REQUIRED_MISSING,
+                Shopware55LogTypes::ASSOCIATION_REQUIRED_MISSING,
                 'Associated category not found',
                 'Mapping of "category" is missing, but it is a required association for "translation". Import "category" first.',
                 ['data' => $data]
@@ -455,7 +455,7 @@ class TranslationConverter extends AbstractConverter
         if (!\is_array($objectData)) {
             $this->loggingService->addWarning(
                 $this->runId,
-                LoggingType::INVALID_UNSERIALIZED_DATA,
+                Shopware55LogTypes::INVALID_UNSERIALIZED_DATA,
                 'Invalid unserialized data',
                 'Category-Translation-Entity could not converted cause of invalid unserialized object data.',
                 [
@@ -498,7 +498,7 @@ class TranslationConverter extends AbstractConverter
         } else {
             $this->loggingService->addWarning(
                 $this->runId,
-                LoggingType::INVALID_UNSERIALIZED_DATA,
+                Shopware55LogTypes::INVALID_UNSERIALIZED_DATA,
                 'Invalid unserialized data',
                 'Category-Translation-Entity could not converted cause of invalid unserialized object data.',
                 [

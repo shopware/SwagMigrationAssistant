@@ -10,21 +10,13 @@ class Shopware55LocalFactory implements GatewayFactoryInterface
 {
     public const GATEWAY_NAME = 'shopware55local';
 
-    public function getName(): string
+    public function supports(string $gatewayIdentifier): bool
     {
-        return self::GATEWAY_NAME;
+        return $gatewayIdentifier === self::GATEWAY_NAME;
     }
 
     public function create(MigrationContext $context): GatewayInterface
     {
-        $credentials = $context->getCredentials();
-
-        return new Shopware55LocalGateway(
-            $credentials['dbHost'],
-            $credentials['dbPort'] ?? '3306',
-            $credentials['dbName'],
-            $credentials['dbUser'],
-            $credentials['dbPassword']
-        );
+        return new Shopware55LocalGateway($context);
     }
 }
