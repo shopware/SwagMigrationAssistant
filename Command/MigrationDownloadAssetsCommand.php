@@ -29,7 +29,7 @@ class MigrationDownloadAssetsCommand extends Command implements EventSubscriberI
     /**
      * @var RepositoryInterface
      */
-    private $migrationMappingRepository;
+    private $mediaFileRepo;
 
     /**
      * @var FileSaver
@@ -42,13 +42,13 @@ class MigrationDownloadAssetsCommand extends Command implements EventSubscriberI
     private $event;
 
     public function __construct(
-        RepositoryInterface $migrationMappingRepository,
+        RepositoryInterface $mediaFileRepo,
         FileSaver $fileSaver,
         EventDispatcherInterface $event
     ) {
         parent::__construct();
 
-        $this->migrationMappingRepository = $migrationMappingRepository;
+        $this->mediaFileRepo = $mediaFileRepo;
         $this->fileSaver = $fileSaver;
         $this->event = $event;
     }
@@ -95,7 +95,7 @@ class MigrationDownloadAssetsCommand extends Command implements EventSubscriberI
         $this
             ->setName('migration:assets:download')
             ->setDescription('Downloads all assets')
-            ->addOption('profile', 'p', InputOption::VALUE_REQUIRED)
+            ->addOption('run-id', 'r', InputOption::VALUE_REQUIRED)
             ->addOption('catalog-id', 'c', InputOption::VALUE_REQUIRED)
         ;
     }
@@ -104,9 +104,9 @@ class MigrationDownloadAssetsCommand extends Command implements EventSubscriberI
     {
         $context = Context::createDefaultContext();
 
-        $profile = $input->getOption('profile');
-        if (!$profile) {
-            throw new InvalidArgumentException('No profile provided');
+        $rundId = $input->getOption('run-id');
+        if (!$rundId) {
+            throw new InvalidArgumentException('No run-id provided');
         }
 
         $this->io = new SymfonyStyle($input, $output);
@@ -115,12 +115,12 @@ class MigrationDownloadAssetsCommand extends Command implements EventSubscriberI
         $output->writeln('Downloading assets...');
 
         $assetDownloadService = new CliAssetDownloadService(
-            $this->migrationMappingRepository,
+            $this->mediaFileRepo,
             $this->fileSaver,
             $this->event,
             $logger
         );
-        $assetDownloadService->downloadAssets($profile, $context);
+        $assetDownloadService->downloadAssets($rundId, $context);
 
         $output->writeln('Downloading done.');
     }

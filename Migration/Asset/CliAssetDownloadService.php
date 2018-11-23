@@ -6,19 +6,18 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
 use Psr\Log\LoggerInterface;
-use Shopware\Core\Content\Media\Exception\IllegalMimeTypeException;
-use Shopware\Core\Content\Media\Exception\UploadException;
+use Shopware\Core\Content\Media\Exception\MediaNotFoundException;
 use Shopware\Core\Content\Media\File\FileSaver;
 use Shopware\Core\Content\Media\File\MediaFile;
-use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use SwagMigrationNext\Command\Event\MigrationAssetDownloadAdvanceEvent;
 use SwagMigrationNext\Command\Event\MigrationAssetDownloadFinishEvent;
 use SwagMigrationNext\Command\Event\MigrationAssetDownloadStartEvent;
-use SwagMigrationNext\Migration\Mapping\SwagMigrationMappingStruct;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class CliAssetDownloadService implements CliAssetDownloadServiceInterface
@@ -41,7 +40,7 @@ class CliAssetDownloadService implements CliAssetDownloadServiceInterface
     /**
      * @var RepositoryInterface
      */
-    private $migrationMappingRepository;
+    private $mediaFileRepo;
 
     /**
      * @var int
@@ -63,41 +62,84 @@ class CliAssetDownloadService implements CliAssetDownloadServiceInterface
      */
     private $logger;
 
+    /**
+     * @var int
+     */
+    private $skippedAssetCount = 0;
+
     public function __construct(
-        RepositoryInterface $migrationMappingRepository,
+        RepositoryInterface $mediaFileRepo,
         FileSaver $fileSaver,
         EventDispatcherInterface $event,
         LoggerInterface $logger
     ) {
-        $this->migrationMappingRepository = $migrationMappingRepository;
+        $this->mediaFileRepo = $mediaFileRepo;
         $this->fileSaver = $fileSaver;
         $this->event = $event;
         $this->logger = $logger;
     }
 
-    public function downloadAssets(string $profile, Context $context): void
+    public function downloadAssets(string $runId, Context $context): void
     {
         $client = new Client();
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('entity', MediaDefinition::getEntityName()));
-        $criteria->addFilter(new EqualsFilter('profile', $profile));
 
-        $entitySearchResult = $this->migrationMappingRepository->search($criteria, $context);
-        /** @var SwagMigrationMappingStruct[] $assets */
-        $assets = $entitySearchResult->getElements();
+        $assetCount = 0;
+        $this->dispatchStartEvent($runId, $context);
+        $assets = $this->fetchMediaFiles($runId, $context, 10);
+        while (\count($assets) > 0) {
+            $assetCount += \count($assets);
+            $mediaUuids = [];
 
-        $this->event->dispatch(MigrationAssetDownloadStartEvent::EVENT_NAME, new MigrationAssetDownloadStartEvent($entitySearchResult->getTotal()));
-        foreach ($assets as $asset) {
-            /** @var string $uuid */
-            $uuid = $asset->getEntityUuid();
-            $additionalData = $asset->getAdditionalData();
+            /** @var SwagMigrationMediaFileStruct $asset */
+            foreach ($assets as $asset) {
+                /** @var string $uuid */
+                $uuid = $asset->getMediaId();
+                $uri = $asset->getUri();
+                $fileSize = $asset->getFileSize();
+                $mediaUuids[] = $uuid;
 
-            if (\is_array($additionalData) && isset($additionalData['uri'])) {
-                $this->event->dispatch(MigrationAssetDownloadAdvanceEvent::EVENT_NAME, new MigrationAssetDownloadAdvanceEvent($additionalData['uri']));
-                $this->download($client, $uuid, $additionalData['uri'], (int) $additionalData['file_size'], $context);
+                if ($uri !== null) {
+                    $this->event->dispatch(MigrationAssetDownloadAdvanceEvent::EVENT_NAME, new MigrationAssetDownloadAdvanceEvent($uri));
+                    $this->download($client, $uuid, $uri, $fileSize, $context);
+                }
             }
+            $this->setDownloadedFlag($runId, $context, $mediaUuids);
+
+            $assets = $this->fetchMediaFiles($runId, $context, 10);
         }
-        $this->event->dispatch(MigrationAssetDownloadFinishEvent::EVENT_NAME, new MigrationAssetDownloadFinishEvent($entitySearchResult->getTotal()));
+        $this->event->dispatch(MigrationAssetDownloadFinishEvent::EVENT_NAME, new MigrationAssetDownloadFinishEvent($assetCount, $this->skippedAssetCount));
+    }
+
+    /**
+     * @return SwagMigrationMediaFileStruct[]
+     */
+    private function fetchMediaFiles(string $runId, Context $context, int $limit): array
+    {
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('runId', $runId));
+        $criteria->addFilter(new EqualsFilter('written', true));
+        $criteria->addFilter(new EqualsFilter('downloaded', false));
+        $criteria->setLimit($limit);
+        $criteria->addSorting(new FieldSorting('fileSize', FieldSorting::ASCENDING));
+        $migrationData = $this->mediaFileRepo->search($criteria, $context);
+
+        if ($migrationData->getTotal() === 0) {
+            return [];
+        }
+
+        return $migrationData->getElements();
+    }
+
+    private function dispatchStartEvent(string $runId, Context $context): void
+    {
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('runId', $runId));
+        $criteria->addFilter(new EqualsFilter('written', true));
+        $criteria->addFilter(new EqualsFilter('downloaded', false));
+        $criteria->addSorting(new FieldSorting('fileSize', FieldSorting::ASCENDING));
+        $migrationData = $this->mediaFileRepo->search($criteria, $context);
+
+        $this->event->dispatch(MigrationAssetDownloadStartEvent::EVENT_NAME, new MigrationAssetDownloadStartEvent($migrationData->getTotal()));
     }
 
     private function download(Client $client, string $uuid, string $uri, int $fileSize, Context $context): void
@@ -113,6 +155,7 @@ class CliAssetDownloadService implements CliAssetDownloadServiceInterface
                 $this->normalDownload($client, $uuid, $uri, $fileSize, $context);
             }
         } catch (GuzzleException $exception) {
+            ++$this->skippedAssetCount;
             $this->logger->error('HTTP-Error: ' . $exception->getMessage(), ['uri' => $uri, 'uuid' => $uuid]);
 
             return;
@@ -120,8 +163,7 @@ class CliAssetDownloadService implements CliAssetDownloadServiceInterface
     }
 
     /**
-     * @throws IllegalMimeTypeException
-     * @throws UploadException
+     * @throws MediaNotFoundException
      */
     private function chunkDownload(Client $client, string $uuid, string $uri, int $fileSize, Context $context): void
     {
@@ -157,8 +199,7 @@ class CliAssetDownloadService implements CliAssetDownloadServiceInterface
     }
 
     /**
-     * @throws IllegalMimeTypeException
-     * @throws UploadException
+     * @throws MediaNotFoundException
      */
     private function normalDownload(Client $client, string $uuid, string $uri, int $fileSize, Context $context): void
     {
@@ -173,7 +214,7 @@ class CliAssetDownloadService implements CliAssetDownloadServiceInterface
             ]
         );
 
-        $fileHandle = fopen($filePath, 'wb');
+        $fileHandle = fopen($filePath, 'ab');
         fwrite($fileHandle, $response->getBody()->getContents());
         fclose($fileHandle);
 
@@ -181,13 +222,12 @@ class CliAssetDownloadService implements CliAssetDownloadServiceInterface
     }
 
     /**
-     * @throws IllegalMimeTypeException
-     * @throws UploadException
+     * @throws MediaNotFoundException
      */
     private function persistFileToMedia(string $filePath, string $fileExtension, string $uuid, int $fileSize, Context $context): void
     {
         $mimeType = mime_content_type($filePath);
-        $mediaFile = new MediaFile($uuid, $mimeType, $fileExtension, $fileSize);
+        $mediaFile = new MediaFile($filePath, $mimeType, $fileExtension, $fileSize);
         $this->fileSaver->persistFileToMedia($mediaFile, $uuid, $context);
     }
 
@@ -200,5 +240,28 @@ class CliAssetDownloadService implements CliAssetDownloadServiceInterface
         if ($requestTime > self::MAX_REQUEST_TIME && $this->chunkSizeBytes > self::CHUNK_INCREMENT) {
             $this->chunkSizeBytes -= self::CHUNK_INCREMENT;
         }
+    }
+
+    private function setDownloadedFlag(string $runId, Context $context, array $finishedUuids): void
+    {
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsAnyFilter('mediaId', $finishedUuids));
+        $criteria->addFilter(new EqualsFilter('runId', $runId));
+        $mediaFiles = $this->mediaFileRepo->search($criteria, $context);
+
+        $updateDownloadedMediaFiles = [];
+        foreach ($mediaFiles->getElements() as $data) {
+            /* @var SwagMigrationMediaFileStruct $data */
+            $updateDownloadedMediaFiles[] = [
+                'id' => $data->getId(),
+                'downloaded' => true,
+            ];
+        }
+
+        if (empty($updateDownloadedMediaFiles)) {
+            return;
+        }
+
+        $this->mediaFileRepo->update($updateDownloadedMediaFiles, $context);
     }
 }
