@@ -66,27 +66,10 @@ class Shopware55Profile implements ProfileInterface
         return self::PROFILE_NAME;
     }
 
-    public function collectData(GatewayInterface $gateway, MigrationContext $migrationContext, Context $context): int
+    public function convert(array $data, MigrationContext $migrationContext, Context $context): int
     {
-        $entityName = $migrationContext->getEntity();
-        $runId = $migrationContext->getRunUuid();
-
-        try {
-            /** @var array[] $data */
-            $data = $gateway->read();
-        } catch (\Exception $exception) {
-            $this->loggingService->addError($runId, (string) $exception->getCode(), '', $exception->getMessage(), ['entity' => $entityName]);
-            $this->loggingService->saveLogging($context);
-
-            return 0;
-        }
-
-        if (\count($data) === 0) {
-            return 0;
-        }
-
         $converter = $this->converterRegistry->getConverter($migrationContext);
-        $createData = $this->convertData($context, $data, $converter, $migrationContext, $entityName);
+        $createData = $this->convertData($context, $data, $converter, $migrationContext, $migrationContext->getEntity());
 
         if (\count($createData) === 0) {
             return 0;

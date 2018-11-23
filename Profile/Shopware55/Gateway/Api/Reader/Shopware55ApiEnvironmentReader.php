@@ -12,7 +12,7 @@ class Shopware55ApiEnvironmentReader extends Shopware55ApiReader
 {
     public function read(): array
     {
-        $verfiedApiClient = $this->getVerifiedClient();
+        $verifiedApiClient = $this->getVerifiedClient();
         $information = [
             'environmentInformation' => [],
             'warning' => [
@@ -26,7 +26,7 @@ class Shopware55ApiEnvironmentReader extends Shopware55ApiReader
         ];
 
         try {
-            $information['environmentInformation'] = $this->readData($verfiedApiClient);
+            $information['environmentInformation'] = $this->readData($verifiedApiClient);
         } catch (Exception $e) {
             try {
                 $information['environmentInformation'] = $this->readData($this->client);

@@ -12,8 +12,8 @@ use SwagMigrationNext\Migration\Converter\ConverterRegistry;
 use SwagMigrationNext\Migration\Gateway\GatewayFactoryRegistry;
 use SwagMigrationNext\Migration\Logging\LoggingService;
 use SwagMigrationNext\Migration\Profile\ProfileRegistry;
-use SwagMigrationNext\Migration\Service\MigrationCollectService;
-use SwagMigrationNext\Migration\Service\MigrationCollectServiceInterface;
+use SwagMigrationNext\Migration\Service\MigrationDataFetcher;
+use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationNext\Profile\Shopware55\Converter\AssetConverter;
 use SwagMigrationNext\Profile\Shopware55\Converter\CategoryConverter;
 use SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService;
@@ -30,12 +30,12 @@ use SwagMigrationNext\Test\Mock\Profile\Dummy\DummyInvalidCustomerConverter;
 
 trait MigrationServicesTrait
 {
-    protected function getMigrationCollectService(
+    protected function getMigrationDataFetcher(
         RepositoryInterface $migrationDataRepo,
         Shopware55MappingService $mappingService,
         MediaFileServiceInterface $mediaFileService,
         RepositoryInterface $loggingRepo
-    ): MigrationCollectServiceInterface {
+    ): MigrationDataFetcherInterface {
         $loggingService = new LoggingService($loggingRepo);
         $priceRounding = new PriceRounding(2);
         $taxRuleCalculator = new TaxRuleCalculator($priceRounding);
@@ -79,6 +79,6 @@ trait MigrationServicesTrait
             new DummyLocalFactory(),
         ]));
 
-        return new MigrationCollectService($profileRegistry, $gatewayFactoryRegistry, $loggingService);
+        return new MigrationDataFetcher($profileRegistry, $gatewayFactoryRegistry, $loggingService);
     }
 }

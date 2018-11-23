@@ -378,7 +378,6 @@ class OrderConverterTest extends TestCase
         unset($orderData['shippingaddress'][$missingProperty]);
         $context = Context::createDefaultContext();
 
-        $profileId = Uuid::uuid4()->getHex();
         $this->customerConverter->convert(
             $customerData[0],
             $context,

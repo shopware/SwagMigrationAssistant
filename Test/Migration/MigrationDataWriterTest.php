@@ -22,9 +22,9 @@ use SwagMigrationNext\Migration\Asset\MediaFileService;
 use SwagMigrationNext\Migration\Data\SwagMigrationDataStruct;
 use SwagMigrationNext\Migration\Logging\LogType;
 use SwagMigrationNext\Migration\MigrationContext;
-use SwagMigrationNext\Migration\Service\MigrationCollectServiceInterface;
-use SwagMigrationNext\Migration\Service\MigrationWriteService;
-use SwagMigrationNext\Migration\Service\MigrationWriteServiceInterface;
+use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
+use SwagMigrationNext\Migration\Service\MigrationDataWriter;
+use SwagMigrationNext\Migration\Service\MigrationDataWriterInterface;
 use SwagMigrationNext\Migration\Writer\CustomerWriter;
 use SwagMigrationNext\Migration\Writer\ProductWriter;
 use SwagMigrationNext\Migration\Writer\WriterRegistry;
@@ -36,7 +36,7 @@ use SwagMigrationNext\Test\MigrationServicesTrait;
 use SwagMigrationNext\Test\Mock\Migration\Asset\DummyMediaFileService;
 use SwagMigrationNext\Test\Mock\Migration\Logging\DummyLoggingService;
 
-class MigrationWriteServiceTest extends TestCase
+class MigrationDataWriterTest extends TestCase
 {
     use MigrationServicesTrait,
         IntegrationTestBehaviour;
@@ -82,14 +82,14 @@ class MigrationWriteServiceTest extends TestCase
     private $currencyRepo;
 
     /**
-     * @var MigrationCollectServiceInterface
+     * @var MigrationDataFetcherInterface
      */
-    private $migrationCollectService;
+    private $migrationDataFetcher;
 
     /**
-     * @var MigrationWriteServiceInterface
+     * @var MigrationDataWriterInterface
      */
-    private $migrationWriteService;
+    private $migrationDataWriter;
 
     /**
      * @var string
@@ -102,9 +102,9 @@ class MigrationWriteServiceTest extends TestCase
     private $profileUuidService;
 
     /**
-     * @var MigrationWriteServiceInterface
+     * @var MigrationDataWriterInterface
      */
-    private $dummyWriteService;
+    private $dummyDataWriter;
 
     /**
      * @var DummyLoggingService
@@ -143,18 +143,18 @@ class MigrationWriteServiceTest extends TestCase
 
         $this->migrationDataRepo = $this->getContainer()->get('swag_migration_data.repository');
         $this->loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
-        $this->migrationCollectService = $this->getMigrationCollectService(
+        $this->migrationDataFetcher = $this->getMigrationDataFetcher(
             $this->migrationDataRepo,
             $this->getContainer()->get(Shopware55MappingService::class),
             $this->getContainer()->get(MediaFileService::class),
             $this->loggingRepo
         );
-        $this->migrationWriteService = $this->getContainer()->get(MigrationWriteService::class);
+        $this->migrationDataWriter = $this->getContainer()->get(MigrationDataWriter::class);
 
         $this->productRepo = $this->getContainer()->get('product.repository');
         $this->customerRepo = $this->getContainer()->get('customer.repository');
         $this->loggingService = new DummyLoggingService();
-        $this->dummyWriteService = new MigrationWriteService(
+        $this->dummyDataWriter = new MigrationDataWriter(
             $this->migrationDataRepo,
             new WriterRegistry(
                 [
@@ -202,7 +202,7 @@ class MigrationWriteServiceTest extends TestCase
             Defaults::SALES_CHANNEL
         );
 
-        $this->migrationCollectService->fetchData($migrationContext, $context);
+        $this->migrationDataFetcher->fetchData($migrationContext, $context);
         $criteria = new Criteria();
         $customerData = $this->migrationDataRepo->search($criteria, $context);
 
@@ -215,7 +215,7 @@ class MigrationWriteServiceTest extends TestCase
 
         $this->migrationDataRepo->update([$customer], $context);
         $customerTotalBefore = $this->customerRepo->search($criteria, $context)->getTotal();
-        $this->dummyWriteService->writeData($migrationContext, $context);
+        $this->dummyDataWriter->writeData($migrationContext, $context);
         $customerTotalAfter = $this->customerRepo->search($criteria, $context)->getTotal();
 
         self::assertSame(0, $customerTotalAfter - $customerTotalBefore);
@@ -244,11 +244,11 @@ class MigrationWriteServiceTest extends TestCase
             Defaults::SALES_CHANNEL
         );
 
-        $this->migrationCollectService->fetchData($migrationContext, $context);
+        $this->migrationDataFetcher->fetchData($migrationContext, $context);
         $criteria = new Criteria();
         $customerTotalBefore = $this->customerRepo->search($criteria, $context)->getTotal();
 
-        $this->migrationWriteService->writeData($migrationContext, $context);
+        $this->migrationDataWriter->writeData($migrationContext, $context);
         $customerTotalAfter = $this->customerRepo->search($criteria, $context)->getTotal();
 
         self::assertSame(3, $customerTotalAfter - $customerTotalBefore);
@@ -271,8 +271,8 @@ class MigrationWriteServiceTest extends TestCase
             null,
             Defaults::SALES_CHANNEL
         );
-        $this->migrationCollectService->fetchData($userMigrationContext, $context);
-        $this->migrationWriteService->writeData($userMigrationContext, $context);
+        $this->migrationDataFetcher->fetchData($userMigrationContext, $context);
+        $this->migrationDataWriter->writeData($userMigrationContext, $context);
 
         // Add orders
         $migrationContext = new MigrationContext(
@@ -293,7 +293,7 @@ class MigrationWriteServiceTest extends TestCase
         $jpyInvalidCriteria = (new Criteria())->addFilter(new EqualsFilter('symbol', '&yen;'));
 
         // Get data before writing
-        $this->migrationCollectService->fetchData($migrationContext, $context);
+        $this->migrationDataFetcher->fetchData($migrationContext, $context);
         $orderTotalBefore = $this->orderRepo->search($criteria, $context)->getTotal();
         $currencyTotalBefore = $this->currencyRepo->search($criteria, $context)->getTotal();
         /** @var CurrencyStruct $usdResultBefore */
@@ -301,7 +301,7 @@ class MigrationWriteServiceTest extends TestCase
         $jpyInvalidTotalBefore = $this->currencyRepo->search($jpyInvalidCriteria, $context)->getTotal();
 
         // Get data after writing
-        $this->migrationWriteService->writeData($migrationContext, $context);
+        $this->migrationDataWriter->writeData($migrationContext, $context);
         $orderTotalAfter = $this->orderRepo->search($criteria, $context)->getTotal();
         $currencyTotalAfter = $this->currencyRepo->search($criteria, $context)->getTotal();
         /** @var CurrencyStruct $usdResultAfter */
@@ -330,11 +330,11 @@ class MigrationWriteServiceTest extends TestCase
             Defaults::SALES_CHANNEL
         );
 
-        $this->migrationCollectService->fetchData($migrationContext, $context);
+        $this->migrationDataFetcher->fetchData($migrationContext, $context);
         $criteria = new Criteria();
         $discountTotalBefore = $this->discountRepo->search($criteria, $context)->getTotal();
 
-        $this->migrationWriteService->writeData($migrationContext, $context);
+        $this->migrationDataWriter->writeData($migrationContext, $context);
         $discountTotalAfter = $this->discountRepo->search($criteria, $context)->getTotal();
 
         self::assertSame(1, $discountTotalAfter - $discountTotalBefore);
@@ -354,11 +354,11 @@ class MigrationWriteServiceTest extends TestCase
             250
         );
 
-        $this->migrationCollectService->fetchData($migrationContext, $context);
+        $this->migrationDataFetcher->fetchData($migrationContext, $context);
         $criteria = new Criteria();
         $totalBefore = $this->mediaRepo->search($criteria, $context)->getTotal();
 
-        $this->migrationWriteService->writeData($migrationContext, $context);
+        $this->migrationDataWriter->writeData($migrationContext, $context);
         $totalAfter = $this->mediaRepo->search($criteria, $context)->getTotal();
 
         self::assertSame(23, $totalAfter - $totalBefore);
@@ -378,11 +378,11 @@ class MigrationWriteServiceTest extends TestCase
             250
         );
 
-        $this->migrationCollectService->fetchData($migrationContext, $context);
+        $this->migrationDataFetcher->fetchData($migrationContext, $context);
         $criteria = new Criteria();
         $totalBefore = $this->categoryRepo->search($criteria, $context)->getTotal();
 
-        $this->migrationWriteService->writeData($migrationContext, $context);
+        $this->migrationDataWriter->writeData($migrationContext, $context);
         $totalAfter = $this->categoryRepo->search($criteria, $context)->getTotal();
 
         self::assertSame(8, $totalAfter - $totalBefore);
@@ -402,11 +402,11 @@ class MigrationWriteServiceTest extends TestCase
             250
         );
 
-        $this->migrationCollectService->fetchData($migrationContext, $context);
+        $this->migrationDataFetcher->fetchData($migrationContext, $context);
         $criteria = new Criteria();
         $productTotalBefore = $this->productRepo->search($criteria, $context)->getTotal();
 
-        $this->migrationWriteService->writeData($migrationContext, $context);
+        $this->migrationDataWriter->writeData($migrationContext, $context);
         $productTotalAfter = $this->productRepo->search($criteria, $context)->getTotal();
 
         self::assertSame(14, $productTotalAfter - $productTotalBefore); //TODO change back to 42 after variant support is implemented
@@ -428,8 +428,8 @@ class MigrationWriteServiceTest extends TestCase
         );
         $criteria = new Criteria();
         $productTotalBefore = $this->productRepo->search($criteria, $context)->getTotal();
-        $this->migrationCollectService->fetchData($migrationContext, $context);
-        $this->migrationWriteService->writeData($migrationContext, $context);
+        $this->migrationDataFetcher->fetchData($migrationContext, $context);
+        $this->migrationDataWriter->writeData($migrationContext, $context);
         $productTotalAfter = $this->productRepo->search($criteria, $context)->getTotal();
 
         $migrationContext = new MigrationContext(
@@ -443,8 +443,8 @@ class MigrationWriteServiceTest extends TestCase
             250
         );
         $productTranslationTotalBefore = $this->getTranslationTotal();
-        $this->migrationCollectService->fetchData($migrationContext, $context);
-        $this->migrationWriteService->writeData($migrationContext, $context);
+        $this->migrationDataFetcher->fetchData($migrationContext, $context);
+        $this->migrationDataWriter->writeData($migrationContext, $context);
         $productTranslationTotalAfter = $this->getTranslationTotal();
 
         self::assertSame(14, $productTotalAfter - $productTotalBefore); //TODO change back to 42 after variant support is implemented
@@ -464,8 +464,8 @@ class MigrationWriteServiceTest extends TestCase
             0,
             250
         );
-        $this->migrationCollectService->fetchData($migrationContext, $context);
-        $this->dummyWriteService->writeData($migrationContext, $context);
+        $this->migrationDataFetcher->fetchData($migrationContext, $context);
+        $this->dummyDataWriter->writeData($migrationContext, $context);
 
         $logs = $this->loggingService->getLoggingArray();
         static::assertSame(LogType::WRITER_NOT_FOUND, $logs[0]['logEntry']['code']);

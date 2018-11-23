@@ -9,10 +9,6 @@ class DummyInvalidCustomerConverter extends CustomerConverter
 {
     public function supports(string $profileName, string $entityName): bool
     {
-        if ($entityName === CustomerDefinition::getEntityName() . 'Invalid') {
-            return true;
-        }
-
-        return false;
+        return $entityName === CustomerDefinition::getEntityName() . 'Invalid';
     }
 }

@@ -23,8 +23,8 @@ use SwagMigrationNext\Migration\Logging\LogType;
 use SwagMigrationNext\Migration\Logging\SwagMigrationLoggingStruct;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Profile\ProfileRegistry;
-use SwagMigrationNext\Migration\Service\MigrationCollectService;
-use SwagMigrationNext\Migration\Service\MigrationCollectServiceInterface;
+use SwagMigrationNext\Migration\Service\MigrationDataFetcher;
+use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationNext\Profile\Shopware55\Converter\ProductConverter;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Api\Shopware55ApiFactory;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
@@ -35,15 +35,15 @@ use SwagMigrationNext\Test\Mock\DummyCollection;
 use SwagMigrationNext\Test\Mock\Gateway\Dummy\Local\DummyLocalFactory;
 use SwagMigrationNext\Test\Mock\Migration\Logging\DummyLoggingService;
 
-class MigrationCollectServiceTest extends TestCase
+class MigrationDataFetcherTest extends TestCase
 {
     use MigrationServicesTrait,
         IntegrationTestBehaviour;
 
     /**
-     * @var MigrationCollectServiceInterface
+     * @var MigrationDataFetcherInterface
      */
-    private $migrationCollectService;
+    private $migrationDataFetcher;
 
     /**
      * @var RepositoryInterface
@@ -71,9 +71,9 @@ class MigrationCollectServiceTest extends TestCase
     private $profileUuidService;
 
     /**
-     * @var MigrationCollectServiceInterface
+     * @var MigrationDataFetcherInterface
      */
-    private $dummyCollectService;
+    private $dummyDataFetcher;
 
     /**
      * @var DummyLoggingService
@@ -97,7 +97,7 @@ class MigrationCollectServiceTest extends TestCase
 
         $this->loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
         $this->migrationDataRepo = $this->getContainer()->get('swag_migration_data.repository');
-        $this->migrationCollectService = $this->getMigrationCollectService(
+        $this->migrationDataFetcher = $this->getMigrationDataFetcher(
             $this->migrationDataRepo,
             $this->getContainer()->get(Shopware55MappingService::class),
             $this->getContainer()->get(MediaFileService::class),
@@ -105,7 +105,7 @@ class MigrationCollectServiceTest extends TestCase
         );
 
         $this->loggingService = new DummyLoggingService();
-        $this->dummyCollectService = new MigrationCollectService(
+        $this->dummyDataFetcher = new MigrationDataFetcher(
             new ProfileRegistry(new DummyCollection([
                 new Shopware55Profile(
                     $this->migrationDataRepo,
@@ -117,7 +117,7 @@ class MigrationCollectServiceTest extends TestCase
                 ),
             ])),
 
-           new GatewayFactoryRegistry(new DummyCollection([
+            new GatewayFactoryRegistry(new DummyCollection([
                 new Shopware55ApiFactory(),
                 new DummyLocalFactory(),
             ])),
@@ -145,7 +145,7 @@ class MigrationCollectServiceTest extends TestCase
             250
         );
 
-        $this->migrationCollectService->fetchData($migrationContext, $context);
+        $this->migrationDataFetcher->fetchData($migrationContext, $context);
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('runId', $this->runUuid));
@@ -173,7 +173,7 @@ class MigrationCollectServiceTest extends TestCase
             250
         );
 
-        $this->migrationCollectService->fetchData($migrationContext, $context);
+        $this->migrationDataFetcher->fetchData($migrationContext, $context);
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('runId', $this->runUuid));
@@ -201,7 +201,7 @@ class MigrationCollectServiceTest extends TestCase
             250
         );
 
-        $this->migrationCollectService->fetchData($migrationContext, $context);
+        $this->migrationDataFetcher->fetchData($migrationContext, $context);
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('runId', $this->runUuid));
@@ -229,7 +229,7 @@ class MigrationCollectServiceTest extends TestCase
             250
         );
 
-        $this->migrationCollectService->fetchData($migrationContext, $context);
+        $this->migrationDataFetcher->fetchData($migrationContext, $context);
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('runId', $this->runUuid));
@@ -257,7 +257,7 @@ class MigrationCollectServiceTest extends TestCase
             250
         );
 
-        $this->migrationCollectService->fetchData($migrationContext, $context);
+        $this->migrationDataFetcher->fetchData($migrationContext, $context);
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('runId', $this->runUuid));
@@ -281,7 +281,7 @@ class MigrationCollectServiceTest extends TestCase
             250
         );
 
-        $this->migrationCollectService->fetchData($migrationContext, $context);
+        $this->migrationDataFetcher->fetchData($migrationContext, $context);
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('runId', $this->runUuid));
@@ -307,7 +307,7 @@ class MigrationCollectServiceTest extends TestCase
             Defaults::SALES_CHANNEL
         );
 
-        $this->migrationCollectService->fetchData($migrationContext, $context);
+        $this->migrationDataFetcher->fetchData($migrationContext, $context);
         $result = $this->loggingRepo->search(new Criteria(), $context);
 
         self::assertSame(5, $result->getTotal());
@@ -359,9 +359,74 @@ class MigrationCollectServiceTest extends TestCase
             Defaults::SALES_CHANNEL
         );
 
-        $this->dummyCollectService->fetchData($migrationContext, $context);
+        $this->dummyDataFetcher->fetchData($migrationContext, $context);
         $logs = $this->loggingService->getLoggingArray();
         self::assertCount(1, $logs);
         self::assertSame(LogType::CONVERTER_NOT_FOUND, $logs[0]['logEntry']['code']);
+    }
+
+    public function testGetEntityTotal(): void
+    {
+        $this->profileUuidService = new MigrationProfileUuidService($this->getContainer()->get('swag_migration_profile.repository'));
+
+        $migrationContext = new MigrationContext(
+            Uuid::uuid4()->getHex(),
+            $this->profileUuidService->getProfileUuid(),
+            Shopware55Profile::PROFILE_NAME,
+            'local',
+            CustomerDefinition::getEntityName(),
+            [],
+            0,
+            250
+        );
+
+        $total = $this->migrationDataFetcher->getEntityTotal($migrationContext);
+
+        self::assertSame(2, $total);
+
+        $migrationContext = new MigrationContext(
+            '',
+            $this->profileUuidService->getProfileUuid(),
+            Shopware55Profile::PROFILE_NAME,
+            'local',
+            ProductDefinition::getEntityName(),
+            [],
+            0,
+            250
+        );
+
+        $total = $this->migrationDataFetcher->getEntityTotal($migrationContext);
+
+        self::assertSame(37, $total);
+
+        $migrationContext = new MigrationContext(
+            '',
+            $this->profileUuidService->getProfileUuid(),
+            Shopware55Profile::PROFILE_NAME,
+            'local',
+            CategoryDefinition::getEntityName(),
+            [],
+            0,
+            250
+        );
+
+        $total = $this->migrationDataFetcher->getEntityTotal($migrationContext);
+
+        self::assertSame(8, $total);
+
+        $migrationContext = new MigrationContext(
+            '',
+            $this->profileUuidService->getProfileUuid(),
+            Shopware55Profile::PROFILE_NAME,
+            'local',
+            MediaDefinition::getEntityName(),
+            [],
+            0,
+            250
+        );
+
+        $total = $this->migrationDataFetcher->getEntityTotal($migrationContext);
+
+        self::assertSame(23, $total);
     }
 }

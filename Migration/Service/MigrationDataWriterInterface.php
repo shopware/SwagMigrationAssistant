@@ -5,7 +5,7 @@ namespace SwagMigrationNext\Migration\Service;
 use Shopware\Core\Framework\Context;
 use SwagMigrationNext\Migration\MigrationContext;
 
-interface MigrationWriteServiceInterface
+interface MigrationDataWriterInterface
 {
     /**
      * Writes the converted data into the database

@@ -7,7 +7,6 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagMigrationNext\Exception\LocaleNotFoundException;
-use SwagMigrationNext\Migration\Asset\MediaFileService;
 use SwagMigrationNext\Migration\Mapping\MappingService;
 use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationNext\Test\Migration\Services\MigrationProfileUuidService;
@@ -36,8 +35,7 @@ class MappingServiceTest extends TestCase
             $this->getContainer()->get('locale.repository'),
             $this->getContainer()->get('language.repository'),
             $this->getContainer()->get('country.repository'),
-            $this->getContainer()->get('currency.repository'),
-            $this->getContainer()->get(MediaFileService::class)
+            $this->getContainer()->get('currency.repository')
         );
     }
 
@@ -64,8 +62,7 @@ class MappingServiceTest extends TestCase
             $this->getContainer()->get('locale.repository'),
             $this->getContainer()->get('language.repository'),
             $this->getContainer()->get('country.repository'),
-            $this->getContainer()->get('currency.repository'),
-            $this->getContainer()->get(MediaFileService::class)
+            $this->getContainer()->get('currency.repository')
         );
 
         $uuid2 = $newMappingService->createNewUuid($this->profileUuidService->getProfileUuid(), 'product', '123', $context);

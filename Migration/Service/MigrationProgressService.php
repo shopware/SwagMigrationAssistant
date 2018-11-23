@@ -210,6 +210,8 @@ class MigrationProgressService implements MigrationProgressServiceInterface
                     $groupFinishedCount += $finishedCount[$entityName];
                 }
             }
+            unset($entity);
+
             $group['count'] = $groupTotalsCount;
             $group['progress'] = $groupFinishedCount;
         }

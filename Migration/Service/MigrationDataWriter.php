@@ -17,7 +17,7 @@ use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Writer\WriterRegistryInterface;
 
-class MigrationWriteService implements MigrationWriteServiceInterface
+class MigrationDataWriter implements MigrationDataWriterInterface
 {
     /**
      * @var RepositoryInterface

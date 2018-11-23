@@ -28,16 +28,16 @@
             <argument type="service" id="currency.repository"/>
         </service>
 
-        <service id="SwagMigrationNext\Migration\Service\MigrationCollectService"
-                 class="SwagMigrationNext\Migration\Service\MigrationCollectService"
+        <service id="SwagMigrationNext\Migration\Service\MigrationDataFetcher"
+                 class="SwagMigrationNext\Migration\Service\MigrationDataFetcher"
                  public="true">
             <argument type="service" id="SwagMigrationNext\Migration\Profile\ProfileRegistry"/>
             <argument type="service" id="SwagMigrationNext\Migration\Gateway\GatewayFactoryRegistry"/>
             <argument type="service" id="SwagMigrationNext\Migration\Logging\LoggingService"/>
         </service>
 
-        <service id="SwagMigrationNext\Migration\Service\MigrationWriteService"
-                 class="SwagMigrationNext\Migration\Service\MigrationWriteService"
+        <service id="SwagMigrationNext\Migration\Service\MigrationDataWriter"
+                 class="SwagMigrationNext\Migration\Service\MigrationDataWriter"
                  public="true">
             <argument type="service" id="swag_migration_data.repository"/>
             <argument type="service" id="SwagMigrationNext\Migration\Writer\WriterRegistry"/>
@@ -62,13 +62,6 @@
             <argument type="service" id="SwagMigrationNext\Migration\Logging\LoggingService"/>
         </service>
 
-        <service id="SwagMigrationNext\Migration\Service\MigrationEnvironmentService"
-                 class="SwagMigrationNext\Migration\Service\MigrationEnvironmentService"
-                 public="true">
-            <argument type="service" id="SwagMigrationNext\Migration\Profile\ProfileRegistry"/>
-            <argument type="service" id="SwagMigrationNext\Migration\Gateway\GatewayFactoryRegistry"/>
-        </service>
-
         <service id="SwagMigrationNext\Migration\Service\MigrationProgressService"
                  class="SwagMigrationNext\Migration\Service\MigrationProgressService"
                  public="true">
@@ -80,18 +73,16 @@
         <service id="SwagMigrationNext\Controller\MigrationController"
                  class="SwagMigrationNext\Controller\MigrationController"
                  public="true">
-            <argument type="service" id="SwagMigrationNext\Migration\Service\MigrationCollectService"/>
-            <argument type="service" id="SwagMigrationNext\Migration\Service\MigrationWriteService"/>
+            <argument type="service" id="SwagMigrationNext\Migration\Service\MigrationDataFetcher"/>
+            <argument type="service" id="SwagMigrationNext\Migration\Service\MigrationDataWriter"/>
             <argument type="service" id="SwagMigrationNext\Migration\Asset\HttpAssetDownloadService"/>
-            <argument type="service" id="SwagMigrationNext\Migration\Service\MigrationEnvironmentService"/>
             <argument type="service" id="swag_migration_profile.repository"/>
             <argument type="service" id="SwagMigrationNext\Migration\Service\MigrationProgressService"/>
         </service>
 
         <service id="SwagMigrationNext\Command\MigrationFetchDataCommand"
                  class="SwagMigrationNext\Command\MigrationFetchDataCommand">
-            <argument type="service" id="SwagMigrationNext\Migration\Service\MigrationCollectService"/>
-            <argument type="service" id="SwagMigrationNext\Migration\Service\MigrationEnvironmentService"/>
+            <argument type="service" id="SwagMigrationNext\Migration\Service\MigrationDataFetcher"/>
             <argument type="service" id="swag_migration_run.repository"/>
             <argument>migration:fetch:data</argument>
             <tag name="console.command" command="migration:fetch:data"/>
@@ -99,7 +90,7 @@
 
         <service id="SwagMigrationNext\Command\MigrationWriteDataCommand"
                  class="SwagMigrationNext\Command\MigrationWriteDataCommand">
-            <argument type="service" id="SwagMigrationNext\Migration\Service\MigrationWriteService"/>
+            <argument type="service" id="SwagMigrationNext\Migration\Service\MigrationDataWriter"/>
             <argument>migration:write:data</argument>
             <tag name="console.command" command="migration:write:data"/>
         </service>

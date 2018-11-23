@@ -6,7 +6,7 @@ use InvalidArgumentException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Struct\Uuid;
 use SwagMigrationNext\Migration\MigrationContext;
-use SwagMigrationNext\Migration\Service\MigrationWriteServiceInterface;
+use SwagMigrationNext\Migration\Service\MigrationDataWriterInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -17,11 +17,11 @@ class MigrationWriteDataCommand extends ContainerAwareCommand
     // example call: bin/console migration:write:data -y product -r 0c5ca6049b9a46a987b510e1c5bde36a
 
     /**
-     * @var MigrationWriteServiceInterface
+     * @var MigrationDataWriterInterface
      */
     private $migrationWriteService;
 
-    public function __construct(MigrationWriteServiceInterface $migrationWriteService, ?string $name = null)
+    public function __construct(MigrationDataWriterInterface $migrationWriteService, ?string $name = null)
     {
         parent::__construct($name);
         $this->migrationWriteService = $migrationWriteService;

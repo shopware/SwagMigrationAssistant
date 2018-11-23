@@ -3,12 +3,13 @@
 namespace SwagMigrationNext\Migration\Service;
 
 use Shopware\Core\Framework\Context;
+use SwagMigrationNext\Migration\EnvironmentInformation;
 use SwagMigrationNext\Migration\Gateway\GatewayFactoryRegistryInterface;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Profile\ProfileRegistryInterface;
 
-class MigrationCollectService implements MigrationCollectServiceInterface
+class MigrationDataFetcher implements MigrationDataFetcherInterface
 {
     /**
      * @var ProfileRegistryInterface
@@ -37,16 +38,39 @@ class MigrationCollectService implements MigrationCollectServiceInterface
 
     public function fetchData(MigrationContext $migrationContext, Context $context): int
     {
+        $returnCount = 0;
         try {
             $profile = $this->profileRegistry->getProfile($migrationContext->getProfileName());
             $gateway = $this->gatewayFactoryRegistry->createGateway($migrationContext);
-            $returnCount = $profile->collectData($gateway, $migrationContext, $context);
+
+            /** @var array[] $data */
+            $data = $gateway->read();
+
+            if (\count($data) === 0) {
+                return $returnCount;
+            }
+            $returnCount = $profile->convert($data, $migrationContext, $context);
         } catch (\Exception $exception) {
             $this->loggingService->addError($migrationContext->getRunUuid(), (string) $exception->getCode(), '', $exception->getMessage(), ['entity' => $migrationContext->getEntity()]);
             $this->loggingService->saveLogging($context);
-            $returnCount = 0;
         }
 
         return $returnCount;
+    }
+
+    public function getEntityTotal(MigrationContext $migrationContext): int
+    {
+        $profile = $this->profileRegistry->getProfile($migrationContext->getProfileName());
+        $gateway = $this->gatewayFactoryRegistry->createGateway($migrationContext);
+
+        return $profile->readEntityTotal($gateway, $migrationContext->getEntity());
+    }
+
+    public function getEnvironmentInformation(MigrationContext $migrationContext): EnvironmentInformation
+    {
+        $profile = $this->profileRegistry->getProfile($migrationContext->getProfileName());
+        $gateway = $this->gatewayFactoryRegistry->createGateway($migrationContext);
+
+        return $profile->readEnvironmentInformation($gateway);
     }
 }

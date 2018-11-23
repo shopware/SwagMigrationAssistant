@@ -3,8 +3,8 @@
 namespace SwagMigrationNext\Migration\Profile;
 
 use Shopware\Core\Framework\Context;
-use SwagMigrationNext\Migration\Gateway\GatewayInterface;
 use SwagMigrationNext\Migration\EnvironmentInformation;
+use SwagMigrationNext\Migration\Gateway\GatewayInterface;
 use SwagMigrationNext\Migration\MigrationContext;
 
 interface ProfileInterface
@@ -18,7 +18,7 @@ interface ProfileInterface
      * Collects the data from the given gateway and converts it into the internal structure
      * Returns the count of the imported data
      */
-    public function collectData(GatewayInterface $gateway, MigrationContext $migrationContext, Context $context): int;
+    public function convert(array $data, MigrationContext $migrationContext, Context $context): int;
 
     /**
      * Reads environment information from the given gateway
