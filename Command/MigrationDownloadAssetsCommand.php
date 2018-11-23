@@ -3,20 +3,20 @@
 namespace SwagMigrationNext\Command;
 
 use InvalidArgumentException;
-use Shopware\Core\Content\Media\File\FileSaver;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use SwagMigrationNext\Command\Event\MigrationAssetDownloadAdvanceEvent;
 use SwagMigrationNext\Command\Event\MigrationAssetDownloadFinishEvent;
 use SwagMigrationNext\Command\Event\MigrationAssetDownloadStartEvent;
-use SwagMigrationNext\Migration\Asset\CliAssetDownloadService;
+use SwagMigrationNext\Migration\Asset\CliAssetDownloadServiceInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class MigrationDownloadAssetsCommand extends Command implements EventSubscriberInterface
@@ -27,30 +27,40 @@ class MigrationDownloadAssetsCommand extends Command implements EventSubscriberI
     private $io;
 
     /**
+     * @var CliAssetDownloadServiceInterface
+     */
+    private $assetDownloadService;
+
+    /**
+     * @var RepositoryInterface
+     */
+    private $migrationRunRepo;
+
+    /**
      * @var RepositoryInterface
      */
     private $mediaFileRepo;
 
     /**
-     * @var FileSaver
+     * @var string
      */
-    private $fileSaver;
+    private $rundId;
 
     /**
-     * @var EventDispatcherInterface
+     * @var Context
      */
-    private $event;
+    private $context;
 
     public function __construct(
-        RepositoryInterface $mediaFileRepo,
-        FileSaver $fileSaver,
-        EventDispatcherInterface $event
+        CliAssetDownloadServiceInterface $cliAssetDownloadService,
+        RepositoryInterface $migrationRunRepo,
+        RepositoryInterface $mediaFileRepo
     ) {
         parent::__construct();
 
+        $this->assetDownloadService = $cliAssetDownloadService;
+        $this->migrationRunRepo = $migrationRunRepo;
         $this->mediaFileRepo = $mediaFileRepo;
-        $this->fileSaver = $fileSaver;
-        $this->event = $event;
     }
 
     public static function getSubscribedEvents(): array
@@ -102,10 +112,10 @@ class MigrationDownloadAssetsCommand extends Command implements EventSubscriberI
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $context = Context::createDefaultContext();
+        $this->context = Context::createDefaultContext();
 
-        $rundId = $input->getOption('run-id');
-        if (!$rundId) {
+        $this->rundId = $input->getOption('run-id');
+        if (!$this->rundId) {
             throw new InvalidArgumentException('No run-id provided');
         }
 
@@ -114,14 +124,31 @@ class MigrationDownloadAssetsCommand extends Command implements EventSubscriberI
 
         $output->writeln('Downloading assets...');
 
-        $assetDownloadService = new CliAssetDownloadService(
-            $this->mediaFileRepo,
-            $this->fileSaver,
-            $this->event,
-            $logger
-        );
-        $assetDownloadService->downloadAssets($rundId, $context);
+        $this->assetDownloadService->setLogger($logger);
+        $this->assetDownloadService->downloadAssets($this->rundId, $this->context);
+        $this->finishRun();
 
         $output->writeln('Downloading done.');
+    }
+
+    private function finishRun(): void
+    {
+        if (!$this->hasUndownloadedMediaFiles()) {
+            $this->migrationRunRepo->update([
+                [
+                    'id' => $this->rundId,
+                    'status' => 'finished',
+                ],
+            ], $this->context);
+        }
+    }
+
+    private function hasUndownloadedMediaFiles(): bool
+    {
+        $writtenCriteria = new Criteria();
+        $writtenCriteria->addFilter(new EqualsFilter('runId', $this->rundId));
+        $writtenCriteria->addFilter(new EqualsFilter('downloaded', false));
+
+        return $this->mediaFileRepo->search($writtenCriteria, $this->context)->getTotal() > 0;
     }
 }

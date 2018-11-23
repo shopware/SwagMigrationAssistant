@@ -11,8 +11,8 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 use Shopware\Core\Framework\Struct\Uuid;
 use SwagMigrationNext\Migration\MigrationContext;
-use SwagMigrationNext\Migration\Service\MigrationCollectServiceInterface;
-use SwagMigrationNext\Migration\Service\MigrationEnvironmentServiceInterface;
+use SwagMigrationNext\Migration\Profile\SwagMigrationProfileStruct;
+use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
@@ -24,14 +24,9 @@ class MigrationFetchDataCommand extends ContainerAwareCommand
     // example call: bin/console migration:fetch:data -p shopware55 -g api -y product
 
     /**
-     * @var MigrationCollectServiceInterface
+     * @var MigrationDataFetcherInterface
      */
-    private $migrationCollectService;
-
-    /**
-     * @var MigrationEnvironmentServiceInterface
-     */
-    private $environmentService;
+    private $migrationDataFetcher;
 
     /**
      * @var RepositoryInterface
@@ -83,17 +78,20 @@ class MigrationFetchDataCommand extends ContainerAwareCommand
      */
     private $profileId;
 
+    /**
+     * @var int
+     */
+    private $limit = 100;
+
     public function __construct(
-        MigrationCollectServiceInterface $migrationCollectService,
-        MigrationEnvironmentServiceInterface $environmentService,
+        MigrationDataFetcherInterface $migrationCollectService,
         RepositoryInterface $migrationRunRepo,
         RepositoryInterface $migrationProfileRepo,
         RepositoryInterface $migrationDataRepo,
         ?string $name = null
     ) {
         parent::__construct($name);
-        $this->migrationCollectService = $migrationCollectService;
-        $this->environmentService = $environmentService;
+        $this->migrationDataFetcher = $migrationCollectService;
         $this->migrationRunRepo = $migrationRunRepo;
         $this->migrationProfileRepo = $migrationProfileRepo;
         $this->migrationDataRepo = $migrationDataRepo;
@@ -108,6 +106,7 @@ class MigrationFetchDataCommand extends ContainerAwareCommand
             ->addOption('entity', 'y', InputOption::VALUE_REQUIRED)
             ->addOption('catalog-id', 'c', InputOption::VALUE_REQUIRED)
             ->addOption('sales-channel-id', 's', InputOption::VALUE_REQUIRED)
+            ->addOption('limit', 'l', InputOption::VALUE_OPTIONAL)
         ;
     }
 
@@ -160,6 +159,11 @@ class MigrationFetchDataCommand extends ContainerAwareCommand
         if (!$this->entityName) {
             throw new InvalidArgumentException('No entity provided');
         }
+
+        $limit = $input->getOption('limit');
+        if ($limit !== null) {
+            $this->limit = (int) $limit;
+        }
     }
 
     private function getProfile($context): void
@@ -173,9 +177,7 @@ class MigrationFetchDataCommand extends ContainerAwareCommand
             throw new InvalidArgumentException('No valid profile found');
         }
 
-        /*
-         * @var SwagMigrationProfileStruct $profileStruct
-         */
+        /* @var SwagMigrationProfileStruct $profileStruct */
         $this->credentials = $profileStruct->getCredentialFields();
         $this->profileId = $profileStruct->getId();
     }
@@ -201,8 +203,7 @@ class MigrationFetchDataCommand extends ContainerAwareCommand
         $progressBar = new ProgressBar($output, $total);
         $progressBar->start();
 
-        $limit = 100;
-        for ($offset = 0; $offset < $total; $offset += $limit) {
+        for ($offset = 0; $offset < $total; $offset += $this->limit) {
             $migrationContext = new MigrationContext(
                 $runUuid,
                 $this->profileId,
@@ -211,11 +212,11 @@ class MigrationFetchDataCommand extends ContainerAwareCommand
                 $this->entityName,
                 $this->credentials,
                 $offset,
-                $limit,
+                $this->limit,
                 $this->catalogId,
                 $this->salesChannelId
             );
-            $importedCount = $this->migrationCollectService->fetchData($migrationContext, $context);
+            $importedCount = $this->migrationDataFetcher->fetchData($migrationContext, $context);
             $progressBar->advance($importedCount);
         }
 
@@ -263,6 +264,6 @@ class MigrationFetchDataCommand extends ContainerAwareCommand
             0
         );
 
-        return $this->environmentService->getEntityTotal($migrationContext);
+        return $this->migrationDataFetcher->getEntityTotal($migrationContext);
     }
 }

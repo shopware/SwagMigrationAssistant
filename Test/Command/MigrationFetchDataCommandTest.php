@@ -8,8 +8,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagMigrationNext\Command\MigrationFetchDataCommand;
 use SwagMigrationNext\Migration\Asset\MediaFileService;
-use SwagMigrationNext\Migration\Service\MigrationCollectService;
-use SwagMigrationNext\Migration\Service\MigrationEnvironmentService;
+use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 use SwagMigrationNext\Test\MigrationServicesTrait;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
@@ -21,14 +20,9 @@ class MigrationFetchDataCommandTest extends TestCase
         IntegrationTestBehaviour;
 
     /**
-     * @var MigrationCollectService
+     * @var MigrationDataFetcherInterface
      */
-    private $migrationCollectService;
-
-    /**
-     * @var MigrationEnvironmentService
-     */
-    private $environmentService;
+    private $migrationDataFetcher;
 
     /**
      * @var RepositoryInterface
@@ -54,19 +48,13 @@ class MigrationFetchDataCommandTest extends TestCase
     {
         $this->loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
         $this->migrationDataRepo = $this->getContainer()->get('swag_migration_data.repository');
-        $this->migrationCollectService = $this->getMigrationCollectService(
+        $this->migrationDataFetcher = $this->getMigrationDataFetcher(
             $this->migrationDataRepo,
             $this->getContainer()->get(Shopware55MappingService::class),
             $this->getContainer()->get(MediaFileService::class),
             $this->loggingRepo
         );
 
-        $this->environmentService = $this->getMigrationEnvironmentService(
-            $this->migrationDataRepo,
-            $this->getContainer()->get(Shopware55MappingService::class),
-            $this->getContainer()->get(MediaFileService::class),
-            $this->loggingRepo
-        );
         $this->migrationRunRepo = $this->getContainer()->get('swag_migration_run.repository');
         $this->migrationProfileRepo = $this->getContainer()->get('swag_migration_profile.repository');
     }
@@ -90,26 +78,12 @@ class MigrationFetchDataCommandTest extends TestCase
 
     public function testFetchData(): void
     {
-        $kernel = $this->getKernel();
-        $application = new Application($kernel);
-        $application->add(new MigrationFetchDataCommand(
-            $this->migrationCollectService,
-            $this->environmentService,
-            $this->migrationRunRepo,
-            $this->migrationProfileRepo,
-            $this->migrationDataRepo,
-            'migration:fetch:data'
-        ));
-
-        $command = $application->find('migration:fetch:data');
-        $commandTester = new CommandTester($command);
-        $commandTester->execute([
+        $output = $this->runFetchCommand([
             '--profile' => 'shopware55',
             '--gateway' => 'local',
             '--entity' => 'product',
+            '--limit' => 100,
         ]);
-
-        $output = $commandTester->getDisplay();
 
         $this->assertContains('Imported: 14', $output);
         $this->assertContains('Skipped: 23', $output);
@@ -120,17 +94,6 @@ class MigrationFetchDataCommandTest extends TestCase
      */
     public function testFetchDataWithoutRequiredOption(array $missingOption): void
     {
-        $kernel = $this->getKernel();
-        $application = new Application($kernel);
-        $application->add(new MigrationFetchDataCommand(
-            $this->migrationCollectService,
-            $this->environmentService,
-            $this->migrationRunRepo,
-            $this->migrationProfileRepo,
-            $this->migrationDataRepo,
-            'migration:fetch:data'
-        ));
-
         $options = [
             '--profile' => 'shopware55',
             '--gateway' => 'local',
@@ -141,9 +104,7 @@ class MigrationFetchDataCommandTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(sprintf('No %s provided', $missingOption['optionName']));
 
-        $command = $application->find('migration:fetch:data');
-        $commandTester = new CommandTester($command);
-        $commandTester->execute($options);
+        $this->runFetchCommand($options);
     }
 
     /**
@@ -151,17 +112,6 @@ class MigrationFetchDataCommandTest extends TestCase
      */
     public function testFetchDataWithInvalidOption(array $option): void
     {
-        $kernel = $this->getKernel();
-        $application = new Application($kernel);
-        $application->add(new MigrationFetchDataCommand(
-            $this->migrationCollectService,
-            $this->environmentService,
-            $this->migrationRunRepo,
-            $this->migrationProfileRepo,
-            $this->migrationDataRepo,
-            'migration:fetch:data'
-        ));
-
         $options = [
             '--profile' => 'shopware55',
             '--gateway' => 'local',
@@ -172,24 +122,11 @@ class MigrationFetchDataCommandTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(sprintf('Invalid %s uuid provided', $option['optionName']));
 
-        $command = $application->find('migration:fetch:data');
-        $commandTester = new CommandTester($command);
-        $commandTester->execute($options);
+        $this->runFetchCommand($options);
     }
 
     public function testFetchDataWithInvalidUnknown(): void
     {
-        $kernel = $this->getKernel();
-        $application = new Application($kernel);
-        $application->add(new MigrationFetchDataCommand(
-            $this->migrationCollectService,
-            $this->environmentService,
-            $this->migrationRunRepo,
-            $this->migrationProfileRepo,
-            $this->migrationDataRepo,
-            'migration:fetch:data'
-        ));
-
         $options = [
             '--profile' => 'foo',
             '--gateway' => 'local',
@@ -199,8 +136,25 @@ class MigrationFetchDataCommandTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('No valid profile found');
 
+        $this->runFetchCommand($options);
+    }
+
+    private function runFetchCommand(array $options): string
+    {
+        $kernel = $this->getKernel();
+        $application = new Application($kernel);
+        $application->add(new MigrationFetchDataCommand(
+            $this->migrationDataFetcher,
+            $this->migrationRunRepo,
+            $this->migrationProfileRepo,
+            $this->migrationDataRepo,
+            'migration:fetch:data'
+        ));
+
         $command = $application->find('migration:fetch:data');
         $commandTester = new CommandTester($command);
         $commandTester->execute($options);
+
+        return $commandTester->getDisplay();
     }
 }

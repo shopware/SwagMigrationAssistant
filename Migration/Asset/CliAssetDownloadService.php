@@ -110,6 +110,70 @@ class CliAssetDownloadService implements CliAssetDownloadServiceInterface
         $this->event->dispatch(MigrationAssetDownloadFinishEvent::EVENT_NAME, new MigrationAssetDownloadFinishEvent($assetCount, $this->skippedAssetCount));
     }
 
+    public function setLogger(LoggerInterface $logger): void
+    {
+        $this->logger = $logger;
+    }
+
+    /**
+     * @throws MediaNotFoundException
+     */
+    protected function chunkDownload(Client $client, string $uuid, string $uri, int $fileSize, Context $context): void
+    {
+        $fileExtension = pathinfo($uri, PATHINFO_EXTENSION);
+        $filePath = sprintf('_temp/%s.%s', $uuid, $fileExtension);
+
+        $chunkStart = 0;
+
+        $fileHandle = fopen($filePath, 'wb');
+        while ($chunkStart < $fileSize) {
+            $chunkEnd = $chunkStart + $this->chunkSizeBytes;
+
+            $startTime = microtime(true);
+            /** @var GuzzleResponse $result */
+            $response = $client->get(
+                $uri,
+                [
+                    'query' => ['alt' => 'media'],
+                    'headers' => [
+                        'Range' => sprintf('bytes=%s-%s', $chunkStart, $chunkEnd),
+                    ],
+                ]
+            );
+            $chunkStart = $chunkEnd + 1;
+            $requestTime = microtime(true) - $startTime;
+            $this->handleChunkSize($requestTime);
+
+            fwrite($fileHandle, $response->getBody()->getContents());
+        }
+        fclose($fileHandle);
+
+        $this->persistFileToMedia($filePath, $fileExtension, $uuid, $fileSize, $context);
+    }
+
+    /**
+     * @throws MediaNotFoundException
+     */
+    protected function normalDownload(Client $client, string $uuid, string $uri, int $fileSize, Context $context): void
+    {
+        $fileExtension = pathinfo($uri, PATHINFO_EXTENSION);
+        $filePath = sprintf('_temp/%s.%s', $uuid, $fileExtension);
+
+        $response = $client->request(
+            'GET',
+            $uri,
+            [
+                'query' => ['alt' => 'media'],
+            ]
+        );
+
+        $fileHandle = fopen($filePath, 'ab');
+        fwrite($fileHandle, $response->getBody()->getContents());
+        fclose($fileHandle);
+
+        $this->persistFileToMedia($filePath, $fileExtension, $uuid, $fileSize, $context);
+    }
+
     /**
      * @return SwagMigrationMediaFileStruct[]
      */
@@ -160,65 +224,6 @@ class CliAssetDownloadService implements CliAssetDownloadServiceInterface
 
             return;
         }
-    }
-
-    /**
-     * @throws MediaNotFoundException
-     */
-    private function chunkDownload(Client $client, string $uuid, string $uri, int $fileSize, Context $context): void
-    {
-        $fileExtension = pathinfo($uri, PATHINFO_EXTENSION);
-        $filePath = sprintf('_temp/%s.%s', $uuid, $fileExtension);
-
-        $chunkStart = 0;
-
-        $fileHandle = fopen($filePath, 'wb');
-        while ($chunkStart < $fileSize) {
-            $chunkEnd = $chunkStart + $this->chunkSizeBytes;
-
-            $startTime = microtime(true);
-            /** @var GuzzleResponse $result */
-            $response = $client->get(
-                $uri,
-                [
-                    'query' => ['alt' => 'media'],
-                    'headers' => [
-                        'Range' => sprintf('bytes=%s-%s', $chunkStart, $chunkEnd),
-                    ],
-                ]
-            );
-            $chunkStart = $chunkEnd + 1;
-            $requestTime = microtime(true) - $startTime;
-            $this->handleChunkSize($requestTime);
-
-            fwrite($fileHandle, $response->getBody()->getContents());
-        }
-        fclose($fileHandle);
-
-        $this->persistFileToMedia($filePath, $fileExtension, $uuid, $fileSize, $context);
-    }
-
-    /**
-     * @throws MediaNotFoundException
-     */
-    private function normalDownload(Client $client, string $uuid, string $uri, int $fileSize, Context $context): void
-    {
-        $fileExtension = pathinfo($uri, PATHINFO_EXTENSION);
-        $filePath = sprintf('_temp/%s.%s', $uuid, $fileExtension);
-
-        $response = $client->request(
-            'GET',
-            $uri,
-            [
-                'query' => ['alt' => 'media'],
-            ]
-        );
-
-        $fileHandle = fopen($filePath, 'ab');
-        fwrite($fileHandle, $response->getBody()->getContents());
-        fclose($fileHandle);
-
-        $this->persistFileToMedia($filePath, $fileExtension, $uuid, $fileSize, $context);
     }
 
     /**

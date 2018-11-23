@@ -4,33 +4,49 @@ namespace SwagMigrationNext\Test\Command;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use Shopware\Core\Framework\Context;
+use Shopware\Core\Content\Media\File\FileSaver;
 use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use Shopware\Core\Framework\Struct\Serializer\StructNormalizer;
 use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
+use SwagMigrationNext\Command\MigrationDownloadAssetsCommand;
 use SwagMigrationNext\Command\MigrationFetchDataCommand;
 use SwagMigrationNext\Command\MigrationWriteDataCommand;
+use SwagMigrationNext\Migration\Asset\CliAssetDownloadService;
 use SwagMigrationNext\Migration\Asset\MediaFileService;
 use SwagMigrationNext\Migration\Logging\LoggingService;
-use SwagMigrationNext\Migration\Run\SwagMigrationRunStruct;
 use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationNext\Migration\Service\MigrationDataWriter;
 use SwagMigrationNext\Migration\Service\MigrationDataWriterInterface;
-use SwagMigrationNext\Migration\Writer\CategoryWriter;
-use SwagMigrationNext\Migration\Writer\ProductWriter;
+use SwagMigrationNext\Migration\Writer\AssetWriter;
 use SwagMigrationNext\Migration\Writer\WriterRegistry;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 use SwagMigrationNext\Test\MigrationServicesTrait;
+use SwagMigrationNext\Test\Mock\Migration\Asset\DummyCliAssetDownloadService;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Component\Console\Logger\ConsoleLogger;
+use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
-class MigrationWriteDataCommandTest extends TestCase
+class MigrationDownloadAssetsCommandTest extends TestCase
 {
     use MigrationServicesTrait,
         IntegrationTestBehaviour;
+
+    /**
+     * @var RepositoryInterface
+     */
+    private $loggingRepo;
+
+    /**
+     * @var RepositoryInterface
+     */
+    private $productRepo;
+
+    /**
+     * @var RepositoryInterface
+     */
+    private $migrationProfileRepo;
 
     /**
      * @var RepositoryInterface
@@ -45,17 +61,7 @@ class MigrationWriteDataCommandTest extends TestCase
     /**
      * @var RepositoryInterface
      */
-    private $productRepo;
-
-    /**
-     * @var RepositoryInterface
-     */
-    private $loggingRepo;
-
-    /**
-     * @var RepositoryInterface
-     */
-    private $migrationProfileRepo;
+    private $mediaRepo;
 
     /**
      * @var RepositoryInterface
@@ -73,19 +79,37 @@ class MigrationWriteDataCommandTest extends TestCase
     private $migrationWriteService;
 
     /**
+     * @var FileSaver
+     */
+    private $fileSaver;
+
+    /**
+     * @var EventDispatcher
+     */
+    private $eventDispatcher;
+
+    /**
+     * @var CliAssetDownloadService
+     */
+    private $cliAssetDownloadService;
+
+    /**
      * @var Application
      */
     private $application;
 
     protected function setUp(): void
     {
+        $this->fileSaver = $this->getContainer()->get(FileSaver::class);
+        $this->eventDispatcher = new EventDispatcher();
+
         $this->loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
         $this->productRepo = $this->getContainer()->get('product.repository');
-        $categoryRepo = $this->getContainer()->get('category.repository');
+        $this->mediaRepo = $this->getContainer()->get('media.repository');
+        $this->mediaFileRepo = $this->getContainer()->get('swag_migration_media_file.repository');
         $this->migrationProfileRepo = $this->getContainer()->get('swag_migration_profile.repository');
         $this->migrationDataRepo = $this->getContainer()->get('swag_migration_data.repository');
         $this->migrationRunRepo = $this->getContainer()->get('swag_migration_run.repository');
-        $this->mediaFileRepo = $this->getContainer()->get('swag_migration_media_file.repository');
 
         $this->migrationDataFetcher = $this->getMigrationDataFetcher(
             $this->migrationDataRepo,
@@ -98,12 +122,18 @@ class MigrationWriteDataCommandTest extends TestCase
             $this->migrationDataRepo,
             new WriterRegistry(
                 [
-                    new ProductWriter($this->productRepo, $this->getContainer()->get(StructNormalizer::class)),
-                    new CategoryWriter($categoryRepo),
+                    new AssetWriter($this->mediaRepo),
                 ]
             ),
             $this->getContainer()->get(MediaFileService::class),
             $this->getContainer()->get(LoggingService::class)
+        );
+
+        $this->cliAssetDownloadService = new DummyCliAssetDownloadService(
+            $this->mediaFileRepo,
+            $this->fileSaver,
+            new EventDispatcher(),
+            new ConsoleLogger(new ConsoleOutput())
         );
     }
 
@@ -117,6 +147,11 @@ class MigrationWriteDataCommandTest extends TestCase
         return $this->executeCommand($options, 'migration:write:data');
     }
 
+    public function executeDownloadCommand(array $options): string
+    {
+        return $this->executeCommand($options, 'migration:assets:download');
+    }
+
     public function executeCommand(array $options, string $commandName): string
     {
         $command = $this->application->find($commandName);
@@ -126,15 +161,14 @@ class MigrationWriteDataCommandTest extends TestCase
         return $commandTester->getDisplay();
     }
 
-    public function testWriteData(): void
+    public function testDownloadData(): void
     {
-        $context = Context::createDefaultContext();
-
         $this->createCommands();
+
         $output = $this->executeFetchCommand([
             '--profile' => 'shopware55',
             '--gateway' => 'local',
-            '--entity' => 'product',
+            '--entity' => 'media',
         ]);
 
         preg_match('/Run created: ([a-z,0-9]*)/', $output, $matches);
@@ -142,79 +176,37 @@ class MigrationWriteDataCommandTest extends TestCase
 
         $output = $this->executeWriteCommand([
             '--run-id' => $runId,
-            '--entity' => 'product',
+            '--entity' => 'media',
             '--catalog-id' => Uuid::uuid4()->getHex(),
-            '--limit' => 100,
         ]);
 
-        $this->assertContains('Written: 14', $output);
+        $this->assertContains('Written: 23', $output);
         $this->assertContains('Skipped: 0', $output);
 
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('id', $runId));
-        /** @var SwagMigrationRunStruct $run */
-        $run = $this->migrationRunRepo->search($criteria, $context)->first();
-        self::assertSame($run->getStatus(), SwagMigrationRunStruct::STATUS_RUNNING);
-    }
-
-    public function testWriteDataWithRunningMigration(): void
-    {
-        $context = Context::createDefaultContext();
-        $this->createCommands();
-
-        $this->executeFetchCommand([
-            '--profile' => 'shopware55',
-            '--gateway' => 'local',
-            '--entity' => 'category',
+        $output = $this->executeDownloadCommand([
+            '--run-id' => $runId,
         ]);
 
-        $output = $this->executeWriteCommand([
-            '--started-run' => 1,
-            '--entity' => 'category',
-        ]);
-
-        $this->assertContains('Written: 8', $output);
-        $this->assertContains('Skipped: 0', $output);
-
-        /** @var SwagMigrationRunStruct $run */
-        $run = $this->migrationRunRepo->search(new Criteria(), $context)->first();
-        self::assertSame($run->getStatus(), SwagMigrationRunStruct::STATUS_FINISHED);
+        self::assertContains('Downloading done.', $output);
     }
 
-    public function testWriteDataWithNoRunningMigration(): void
+    public function testDownloadDataWithoutRunId(): void
     {
-        $this->createCommands();
+        $kernel = $this->getKernel();
+        $application = new Application($kernel);
+
+        $application->add(new MigrationDownloadAssetsCommand(
+            $this->cliAssetDownloadService,
+            $this->migrationRunRepo,
+            $this->mediaFileRepo
+        ));
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('No running migration found');
+        $this->expectExceptionMessage('No run-id provided');
 
-        $this->executeWriteCommand([
-            '--started-run' => 1,
-            '--entity' => 'product',
-        ]);
-    }
-
-    public function testWriteDataWithNoRunInformation(): void
-    {
-        $this->createCommands();
-
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('No run-id provided or started run flag set');
-
-        $this->executeWriteCommand([
-            '--entity' => 'product',
-        ]);
-    }
-
-    public function testWriteDataWithNoEntity(): void
-    {
-        $this->createCommands();
-
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('No entity provided');
-
-        $this->executeWriteCommand([
-            '--started-run' => 1,
+        $command = $application->find('migration:assets:download');
+        $commandTester = new CommandTester($command);
+        $commandTester->execute([
         ]);
     }
 
@@ -235,6 +227,11 @@ class MigrationWriteDataCommandTest extends TestCase
             $this->migrationDataRepo,
             $this->mediaFileRepo,
             'migration:write:data'
+        ));
+        $this->application->add(new MigrationDownloadAssetsCommand(
+            $this->cliAssetDownloadService,
+            $this->migrationRunRepo,
+            $this->mediaFileRepo
         ));
     }
 }

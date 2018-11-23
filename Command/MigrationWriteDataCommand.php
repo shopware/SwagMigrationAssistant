@@ -39,6 +39,11 @@ class MigrationWriteDataCommand extends ContainerAwareCommand
     private $migrationDataRepo;
 
     /**
+     * @var RepositoryInterface
+     */
+    private $mediaFileRepo;
+
+    /**
      * @var string
      */
     private $catalogId;
@@ -63,16 +68,23 @@ class MigrationWriteDataCommand extends ContainerAwareCommand
      */
     private $context;
 
+    /**
+     * @var int
+     */
+    private $limit = 100;
+
     public function __construct(
         MigrationDataWriterInterface $migrationWriteService,
         RepositoryInterface $migrationRunRepo,
         RepositoryInterface $migrationDataRepo,
+        RepositoryInterface $mediaFileRepo,
         ?string $name = null
     ) {
         parent::__construct($name);
         $this->migrationWriteService = $migrationWriteService;
         $this->migrationRunRepo = $migrationRunRepo;
         $this->migrationDataRepo = $migrationDataRepo;
+        $this->mediaFileRepo = $mediaFileRepo;
     }
 
     protected function configure(): void
@@ -83,19 +95,14 @@ class MigrationWriteDataCommand extends ContainerAwareCommand
             ->addOption('run-id', 'r', InputOption::VALUE_REQUIRED)
             ->addOption('started-run', 's', InputOption::VALUE_NONE)
             ->addOption('entity', 'y', InputOption::VALUE_REQUIRED)
+            ->addOption('limit', 'l', InputOption::VALUE_OPTIONAL)
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->context = Context::createDefaultContext();
-
-        $this->catalogId = $input->getOption('catalog-id');
-        $this->runId = $input->getOption('run-id');
-        $this->startedRunFlag = $input->getOption('started-run');
-        $this->entityName = $input->getOption('entity');
-
-        $this->checkOptions();
+        $this->checkOptions($input);
         $totalConvertedCount = $this->getConvertedCount();
 
         $output->writeln('Writing data...');
@@ -116,8 +123,7 @@ class MigrationWriteDataCommand extends ContainerAwareCommand
         $progressBar = new ProgressBar($output, $total);
         $progressBar->start();
 
-        $limit = 50;
-        for ($offset = 0; $offset < $total; $offset += $limit) {
+        for ($offset = 0; $offset < $total; $offset += $this->limit) {
             $migrationContext = new MigrationContext(
                 $this->runId,
                 '',
@@ -126,21 +132,22 @@ class MigrationWriteDataCommand extends ContainerAwareCommand
                 $this->entityName,
                 [],
                 $offset,
-                $limit,
+                $this->limit,
                 $this->catalogId
             );
             $this->migrationWriteService->writeData($migrationContext, $context);
 
-            if ($offset + $limit > $total) {
+            if ($offset + $this->limit > $total) {
                 $progressBar->finish();
             } else {
-                $progressBar->advance($limit);
+                $progressBar->advance($this->limit);
             }
         }
     }
 
-    private function checkOptions(): void
+    private function checkOptions(InputInterface $input): void
     {
+        $this->catalogId = $input->getOption('catalog-id');
         if ($this->catalogId !== null && Uuid::isValid($this->catalogId)) {
             $this->context = $this->context->createWithCatalogIds(
                 array_merge(
@@ -150,10 +157,13 @@ class MigrationWriteDataCommand extends ContainerAwareCommand
             );
         }
 
+        $this->runId = $input->getOption('run-id');
+        $this->startedRunFlag = $input->getOption('started-run');
         if (!$this->runId && !$this->startedRunFlag) {
             throw new InvalidArgumentException('No run-id provided or started run flag set');
         }
 
+        $this->entityName = $input->getOption('entity');
         if (!$this->entityName) {
             throw new InvalidArgumentException('No entity provided');
         }
@@ -170,6 +180,11 @@ class MigrationWriteDataCommand extends ContainerAwareCommand
 
             /* @var SwagMigrationRunStruct $startedRunStruct */
             $this->runId = $startedRunStruct->getId();
+        }
+
+        $limit = $input->getOption('limit');
+        if ($limit !== null) {
+            $this->limit = (int) $limit;
         }
     }
 
@@ -198,11 +213,22 @@ class MigrationWriteDataCommand extends ContainerAwareCommand
 
     private function finishRun(): void
     {
-        $this->migrationRunRepo->update([
-            [
-                'id' => $this->runId,
-                'status' => 'finished',
-            ],
-        ], $this->context);
+        if (!$this->hasUndownloadedMediaFiles()) {
+            $this->migrationRunRepo->update([
+                [
+                    'id' => $this->runId,
+                    'status' => 'finished',
+                ],
+            ], $this->context);
+        }
+    }
+
+    private function hasUndownloadedMediaFiles(): bool
+    {
+        $writtenCriteria = new Criteria();
+        $writtenCriteria->addFilter(new EqualsFilter('runId', $this->runId));
+        $writtenCriteria->addFilter(new EqualsFilter('downloaded', false));
+
+        return $this->mediaFileRepo->search($writtenCriteria, $this->context)->getTotal() > 0;
     }
 }
