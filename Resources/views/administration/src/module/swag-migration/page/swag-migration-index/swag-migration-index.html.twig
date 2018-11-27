@@ -32,55 +32,15 @@
 
         {% block swag_migration_index_content %}
             <sw-card-view slot="content"  v-if="!isLoading">
-                {% block swag_migration_index_card_shopInfo %}
-                    <sw-card :title="$tc('swag-migration.index.shopInfoCard.cardTitle')">
-                        {% block swag_migration_index_card_shopInfo_content %}
 
-                            {% block swag_migration_index_card_shopInfo_metaData %}
-                                <div class="swag-migration-index__metadata">
-                                    {% block swag_migration_index_card_shopInfo_metaData_avatar %}
-                                        <sw-avatar class="swag-migration-index__metadata_avatar"
-                                                   color="#189EFF"
-                                                   size="80px">{{ shopFirstLetter }}</sw-avatar>
-                                    {% endblock %}
-
-                                    {% block swag_migration_index_card_shopInfo_metaData_info %}
-                                        <div class="swag-migration-index__metadata_info">
-                                            {% block swag_migration_index_card_shopInfo_metaData_domain %}
-                                                <div class="swag-migration-index__metadata-shop-domain">
-                                                    {{ shopDomain }}
-                                                </div>
-                                            {% endblock %}
-
-                                            {% block swag_migration_index_card_shopInfo_metaData_version %}
-                                                <div class="swag-migration-index__metadata-shopware-version">
-                                                    {{ shopVersion }}
-                                                </div>
-                                            {% endblock %}
-
-                                            {% block swag_migration_index_card_shopInfo_actions %}
-                                                <div class="swag-migration-index__actions">
-                                                    {% block swag_migration_index_card_shopInfo_actions_editSettings %}
-                                                        <sw-button size="small" @click="editSettings" :disabled="isMigrating || isPaused">
-                                                            <sw-icon name="small-pencil" small></sw-icon>
-                                                            {{ $tc('swag-migration.index.shopInfoCard.buttonEditSettings') }}
-                                                        </sw-button>
-                                                    {% endblock %}
-
-                                                    {% block swag_migration_index_card_shopInfo_actions_moreInfo %}
-                                                        <sw-button size="small" disabled>
-                                                            <sw-icon name="small-pencil" small></sw-icon>
-                                                            {{ $tc('swag-migration.index.shopInfoCard.buttonMoreInfo') }}
-                                                        </sw-button>
-                                                    {% endblock %}
-                                                </div>
-                                            {% endblock %}
-                                        </div>
-                                    {% endblock %}
-                                </div>
-                            {% endblock %}
-                        {% endblock %}
-                    </sw-card>
+                {% block swag_migration_index_card_shopInformation %}
+                    <swag-migration-shop-information :environmentInformation="environmentInformation"
+                                                     :profile="profile"
+                                                     :lastMigrationDate="lastMigrationDate"
+                                                     :isMigrating="isMigrating"
+                                                     :isPaused="isPaused"
+                                                     @onClickEditSettings="editSettings">
+                    </swag-migration-shop-information>
                 {% endblock %}
 
                 {% block swag_migration_index_card_dataSelector %}

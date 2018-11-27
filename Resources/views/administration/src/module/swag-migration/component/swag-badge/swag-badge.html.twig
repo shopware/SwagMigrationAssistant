@@ -1,0 +1,13 @@
+{% block swag_badge %}
+    <div class="swag-badge" :class="variantClass">
+        {% block swag_badge__dot %}
+            <sw-color-badge class="swag-badge--dot" :variant="variant" rounded>
+            </sw-color-badge>
+        {% endblock %}
+        {% block swag_badge__text %}
+            <span class="swag-badge--text">
+                {{ label }}
+            </span>
+        {% endblock %}
+    </div>
+{% endblock %}

@@ -1,15 +1,23 @@
 @import "~less/variables";
 
-.swag-migration-index {
+.swag-migration-index--card-shopInfo {
 
     .swag-migration-index__metadata {
         display: grid;
-        grid-template-columns: 120px 1fr;
+        grid-template-columns: 120px 1fr min-content;
 
         .swag-migration-index__metadata-shop-domain {
             font-weight: 600;
             font-size: @font-size-default;
             margin-bottom: 8px;
+        }
+
+        .swag-migration-index__metadata-shop-domain--prefix {
+            color: @color-steam-cloud;
+
+            &.is--ssl {
+                color: @color-emerald;
+            }
         }
 
         .swag-migration-index__metadata-shopware-version {

@@ -1,7 +1,6 @@
 import { Component, State } from 'src/core/shopware';
 import CriteriaFactory from 'src/core/factory/criteria.factory';
 import template from './swag-migration-index.html.twig';
-import './swag-migration-index.less';
 import { MIGRATION_STATUS } from '../../../../core/service/migration/swag-migration-worker-status-manager.service';
 
 Component.register('swag-migration-index', {
@@ -14,6 +13,7 @@ Component.register('swag-migration-index', {
             isLoading: true,
             profile: {},
             environmentInformation: {},
+            lastMigrationDate: '-',
             entityCounts: {},
             componentIndex: 0,
             components: {
@@ -79,18 +79,6 @@ Component.register('swag-migration-index', {
     },
 
     computed: {
-        shopDomain() {
-            return this.environmentInformation.sourceSystemDomain;
-        },
-
-        shopVersion() {
-            return this.environmentInformation.sourceSystemVersion;
-        },
-
-        shopFirstLetter() {
-            return this.environmentInformation.sourceSystemName[0];
-        },
-
         catalogStore() {
             return State.getStore('catalog');
         },
@@ -172,6 +160,8 @@ Component.register('swag-migration-index', {
 
     methods: {
         async createdComponent() {
+            this.updateLastMigrationDate();
+
             if (this.migrationWorkerService.isMigrating === false) {
                 await this.migrationWorkerService.checkForRunningMigration().then((running) => {
                     this.isPaused = running;
@@ -492,12 +482,30 @@ Component.register('swag-migration-index', {
                     data.selected = (data.id === 'media');
                 });
             } else if (this.statusIndex === MIGRATION_STATUS.FINISHED) {
+                this.updateLastMigrationDate();
                 if (this.migrationWorkerService.errors.length > 0) {
                     this.onFinishWithErrors(this.migrationWorkerService.errors);
                 } else {
                     this.onFinishWithoutErrors();
                 }
             }
+        },
+
+        updateLastMigrationDate() {
+            const params = {
+                limit: 1,
+                criteria: CriteriaFactory.equals('status', 'finished'),
+                sortBy: 'createdAt',
+                sortDirection: 'desc'
+            };
+
+            this.migrationRunStore.getList(params).then((res) => {
+                if (res && res.items.length > 0) {
+                    this.lastMigrationDate = res.items[0].createdAt;
+                } else {
+                    this.lastMigrationDate = '-';
+                }
+            });
         },
 
         onFinishWithoutErrors() {
