@@ -45,7 +45,7 @@
 
                 {% block swag_migration_index_card_dataSelector %}
                     <swag-migration-data-selector ref="dataSelector"
-                                                  :tableData="tableData"
+                                                  :tableData="tableDataFiltered"
                                                   v-if="componentIndex === 0"
                                                   @swag-migration-data-selector-migration-allowed="onMigrationAllowed">
                     </swag-migration-data-selector>
@@ -53,7 +53,7 @@
 
                 {% block swag_migration_index_card_loadingScreen %}
                     <swag-migration-loading-screen v-if="componentIndex === 1" profileName="Shopware 5"
-                                                   :tableData="tableData"
+                                                   :tableData="tableDataFiltered"
                                                    :statusIndex="statusIndex">
                     </swag-migration-loading-screen>
                 {% endblock %}

@@ -101,6 +101,22 @@ Component.register('swag-migration-index', {
                 this.componentIndex === this.components.resultFailure);
         },
 
+        /**
+         * Returns the table data without datasets that don't have any entities.
+         *
+         * @returns {Array}
+         */
+        tableDataFiltered() {
+            const filtered = [];
+            this.tableData.forEach((data) => {
+                if (data.progressBar.maxValue > 0) {
+                    filtered.push(data);
+                }
+            });
+
+            return filtered;
+        },
+
         abortButtonVisible() {
             return this.isPaused || (
                 this.isMigrating &&
@@ -404,7 +420,7 @@ Component.register('swag-migration-index', {
          */
         getEntityGroups() {
             const entityGroups = [];
-            this.tableData.forEach((data) => {
+            this.tableDataFiltered.forEach((data) => {
                 if (data.selected) {
                     const entities = [];
                     let groupCount = 0;
