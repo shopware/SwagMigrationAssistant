@@ -11,13 +11,15 @@ use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\System\Unit\Aggregate\UnitTranslation\UnitTranslationDefinition;
 use Shopware\Core\System\Unit\UnitDefinition;
+use SwagMigrationNext\Migration\Converter\AbstractConverter;
+use SwagMigrationNext\Migration\Converter\ConvertStruct;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
-use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
-use SwagMigrationNext\Profile\Shopware55\ConvertStruct;
-use SwagMigrationNext\Profile\Shopware55\Logging\LoggingType;
+use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Profile\Shopware55\Logging\Shopware55LogTypes;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
+use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
-class TranslationConverter implements ConverterInterface
+class TranslationConverter extends AbstractConverter
 {
     /**
      * @var ConverterHelperService
@@ -59,9 +61,14 @@ class TranslationConverter implements ConverterInterface
         $this->loggingService = $loggingService;
     }
 
-    public function supports(): string
+    public function getSupportedEntityName(): string
     {
         return 'translation';
+    }
+
+    public function getSupportedProfileName(): string
+    {
+        return Shopware55Profile::PROFILE_NAME;
     }
 
     public function writeMapping(Context $context): void
@@ -72,14 +79,11 @@ class TranslationConverter implements ConverterInterface
     public function convert(
         array $data,
         Context $context,
-        string  $runId,
-        string $profileId,
-        ?string $catalogId = null,
-        ?string $salesChannelId = null
+        MigrationContext $migrationContext
     ): ConvertStruct {
-        $this->profileId = $profileId;
+        $this->profileId = $migrationContext->getProfileId();
         $this->context = $context;
-        $this->runId = $runId;
+        $this->runId = $migrationContext->getRunUuid();
 
         switch ($data['objecttype']) {
 //            Does not work currently, because products are mapped with the SKU
@@ -95,7 +99,7 @@ class TranslationConverter implements ConverterInterface
 
         $this->loggingService->addWarning(
             $this->runId,
-            LoggingType::NOT_CONVERTABLE_OBJECT_TYPE,
+            Shopware55LogTypes::NOT_CONVERTABLE_OBJECT_TYPE,
             'Not convert able object type',
             sprintf('Translation of object type "%s" could not converted.', $data['objecttype']),
             [
@@ -136,7 +140,7 @@ class TranslationConverter implements ConverterInterface
         if (!isset($productTranslation['productId'])) {
             $this->loggingService->addWarning(
                 $this->runId,
-                LoggingType::ASSOCIATION_REQUIRED_MISSING,
+                Shopware55LogTypes::ASSOCIATION_REQUIRED_MISSING,
                 'Associated product not found',
                 'Mapping of "product" is missing, but it is a required association for "translation". Import "product" first.',
                 ['data' => $data]
@@ -153,7 +157,7 @@ class TranslationConverter implements ConverterInterface
         if (!\is_array($objectData)) {
             $this->loggingService->addWarning(
                 $this->runId,
-                LoggingType::INVALID_UNSERIALIZED_DATA,
+                Shopware55LogTypes::INVALID_UNSERIALIZED_DATA,
                 'Invalid unserialized data',
                 'Product-Translation-Entity could not converted cause of invalid unserialized object data.',
                 [
@@ -225,7 +229,7 @@ class TranslationConverter implements ConverterInterface
         if (!isset($manufacturerTranslation['productManufacturerId'])) {
             $this->loggingService->addWarning(
                 $this->runId,
-                LoggingType::ASSOCIATION_REQUIRED_MISSING,
+                Shopware55LogTypes::ASSOCIATION_REQUIRED_MISSING,
                 'Associated manufacturer not found',
                 'Mapping of "manufacturer" is missing, but it is a required association for "translation". Import "product" first.',
                 ['data' => $data]
@@ -242,7 +246,7 @@ class TranslationConverter implements ConverterInterface
         if (!\is_array($objectData)) {
             $this->loggingService->addWarning(
                 $this->runId,
-                LoggingType::INVALID_UNSERIALIZED_DATA,
+                Shopware55LogTypes::INVALID_UNSERIALIZED_DATA,
                 'Invalid unserialized data',
                 'Manufacturer-Translation-Entity could not converted cause of invalid unserialized object data.',
                 [
@@ -277,7 +281,7 @@ class TranslationConverter implements ConverterInterface
         } else {
             $this->loggingService->addWarning(
                 $this->runId,
-                LoggingType::INVALID_UNSERIALIZED_DATA,
+                Shopware55LogTypes::INVALID_UNSERIALIZED_DATA,
                 'Invalid unserialized data',
                 'Manufacturer-Translation-Entity could not converted cause of invalid unserialized object data.',
                 [
@@ -332,7 +336,7 @@ class TranslationConverter implements ConverterInterface
         if (!isset($unitTranslation['unitId'])) {
             $this->loggingService->addWarning(
                 $this->runId,
-                LoggingType::ASSOCIATION_REQUIRED_MISSING,
+                Shopware55LogTypes::ASSOCIATION_REQUIRED_MISSING,
                 'Associated unit not found',
                 'Mapping of "unit" is missing, but it is a required association for "translation". Import "product" first.',
                 ['data' => $data]
@@ -348,7 +352,7 @@ class TranslationConverter implements ConverterInterface
         if (!\is_array($objectData)) {
             $this->loggingService->addWarning(
                 $this->runId,
-                LoggingType::INVALID_UNSERIALIZED_DATA,
+                Shopware55LogTypes::INVALID_UNSERIALIZED_DATA,
                 'Invalid unserialized data',
                 'Unit-Translation-Entity could not converted cause of invalid unserialized object data.',
                 [
@@ -380,7 +384,7 @@ class TranslationConverter implements ConverterInterface
         } else {
             $this->loggingService->addWarning(
                 $this->runId,
-                LoggingType::INVALID_UNSERIALIZED_DATA,
+                Shopware55LogTypes::INVALID_UNSERIALIZED_DATA,
                 'Invalid unserialized data',
                 'Unit-Translation-Entity could not converted cause of invalid unserialized object data.',
                 [
@@ -435,7 +439,7 @@ class TranslationConverter implements ConverterInterface
         if (!isset($categoryTranslation['categoryId'])) {
             $this->loggingService->addWarning(
                 $this->runId,
-                LoggingType::ASSOCIATION_REQUIRED_MISSING,
+                Shopware55LogTypes::ASSOCIATION_REQUIRED_MISSING,
                 'Associated category not found',
                 'Mapping of "category" is missing, but it is a required association for "translation". Import "category" first.',
                 ['data' => $data]
@@ -451,7 +455,7 @@ class TranslationConverter implements ConverterInterface
         if (!\is_array($objectData)) {
             $this->loggingService->addWarning(
                 $this->runId,
-                LoggingType::INVALID_UNSERIALIZED_DATA,
+                Shopware55LogTypes::INVALID_UNSERIALIZED_DATA,
                 'Invalid unserialized data',
                 'Category-Translation-Entity could not converted cause of invalid unserialized object data.',
                 [
@@ -494,7 +498,7 @@ class TranslationConverter implements ConverterInterface
         } else {
             $this->loggingService->addWarning(
                 $this->runId,
-                LoggingType::INVALID_UNSERIALIZED_DATA,
+                Shopware55LogTypes::INVALID_UNSERIALIZED_DATA,
                 'Invalid unserialized data',
                 'Category-Translation-Entity could not converted cause of invalid unserialized object data.',
                 [

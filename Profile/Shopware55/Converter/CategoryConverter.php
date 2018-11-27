@@ -5,13 +5,16 @@ namespace SwagMigrationNext\Profile\Shopware55\Converter;
 use Shopware\Core\Content\Category\Aggregate\CategoryTranslation\CategoryTranslationDefinition;
 use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Framework\Context;
+use SwagMigrationNext\Migration\Converter\AbstractConverter;
+use SwagMigrationNext\Migration\Converter\ConvertStruct;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
-use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
-use SwagMigrationNext\Profile\Shopware55\ConvertStruct;
-use SwagMigrationNext\Profile\Shopware55\Logging\LoggingType;
+use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Profile\Shopware55\Exception\ParentEntityForChildNotFoundException;
+use SwagMigrationNext\Profile\Shopware55\Logging\Shopware55LogTypes;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
+use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
-class CategoryConverter implements ConverterInterface
+class CategoryConverter extends AbstractConverter
 {
     /**
      * @var Shopware55MappingService
@@ -53,9 +56,14 @@ class CategoryConverter implements ConverterInterface
         $this->loggingService = $loggingService;
     }
 
-    public function supports(): string
+    public function getSupportedEntityName(): string
     {
         return CategoryDefinition::getEntityName();
+    }
+
+    public function getSupportedProfileName(): string
+    {
+        return Shopware55Profile::PROFILE_NAME;
     }
 
     public function writeMapping(Context $context): void
@@ -69,19 +77,16 @@ class CategoryConverter implements ConverterInterface
     public function convert(
         array $data,
         Context $context,
-        string $runId,
-        string $profileId,
-        ?string $catalogId = null,
-        ?string $salesChannelId = null
+        MigrationContext $migrationContext
     ): ConvertStruct {
-        $this->profileId = $profileId;
+        $this->profileId = $migrationContext->getProfileId();
         $this->context = $context;
         $this->oldCategoryId = $data['id'];
 
         if (!isset($data['_locale'])) {
             $this->loggingService->addWarning(
-                $runId,
-                LoggingType::EMPTY_LOCALE,
+                $migrationContext->getRunUuid(),
+                Shopware55LogTypes::EMPTY_LOCALE,
                 'Empty locale',
                 'Category-Entity could not converted cause of empty locale.',
                 ['id' => $this->oldCategoryId]
@@ -131,8 +136,8 @@ class CategoryConverter implements ConverterInterface
         );
         unset($data['id']);
 
-        if ($catalogId !== null) {
-            $converted['catalogId'] = $catalogId;
+        if ($migrationContext->getCatalogId() !== null) {
+            $converted['catalogId'] = $migrationContext->getCatalogId();
         }
 
         $this->helper->convertValue($converted, 'position', $data, 'position', $this->helper::TYPE_INTEGER);

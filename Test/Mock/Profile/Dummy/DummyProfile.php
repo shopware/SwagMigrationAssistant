@@ -3,7 +3,7 @@
 namespace SwagMigrationNext\Test\Mock\Profile\Dummy;
 
 use Shopware\Core\Framework\Context;
-use SwagMigrationNext\Gateway\GatewayInterface;
+use SwagMigrationNext\Migration\Gateway\GatewayInterface;
 use SwagMigrationNext\Migration\MigrationContext;
 
 class DummyProfile

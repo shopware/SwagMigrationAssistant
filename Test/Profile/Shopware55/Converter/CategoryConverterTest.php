@@ -7,9 +7,11 @@ use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Struct\Uuid;
+use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Profile\Shopware55\Converter\CategoryConverter;
-use SwagMigrationNext\Profile\Shopware55\Converter\ParentEntityForChildNotFoundException;
-use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
+use SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService;
+use SwagMigrationNext\Profile\Shopware55\Exception\ParentEntityForChildNotFoundException;
+use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationNext\Test\Mock\Migration\Mapping\DummyMappingService;
 
@@ -25,19 +27,49 @@ class CategoryConverterTest extends TestCase
      */
     private $loggingService;
 
+    /**
+     * @var string
+     */
+    private $runId;
+
+    /**
+     * @var string
+     */
+    private $profileId;
+
+    /**
+     * @var MigrationContext
+     */
+    private $migrationContext;
+
     protected function setUp()
     {
         $mappingService = new DummyMappingService();
         $converterHelperService = new ConverterHelperService();
         $this->loggingService = new DummyLoggingService();
         $this->categoryConverter = new CategoryConverter($mappingService, $converterHelperService, $this->loggingService);
+
+        $this->runId = Uuid::uuid4()->getHex();
+        $this->profileId = Uuid::uuid4()->getHex();
+
+        $this->migrationContext = new MigrationContext(
+            $this->runId,
+            $this->profileId,
+            Shopware55Profile::PROFILE_NAME,
+            'local',
+            CategoryDefinition::getEntityName(),
+            [],
+            0,
+            250,
+            Defaults::CATALOG
+        );
     }
 
     public function testSupports(): void
     {
-        $supportsDefinition = $this->categoryConverter->supports();
+        $supportsDefinition = $this->categoryConverter->supports(Shopware55Profile::PROFILE_NAME, CategoryDefinition::getEntityName());
 
-        static::assertSame(CategoryDefinition::getEntityName(), $supportsDefinition);
+        static::assertTrue($supportsDefinition);
     }
 
     public function testConvert(): void
@@ -45,7 +77,7 @@ class CategoryConverterTest extends TestCase
         $categoryData = require __DIR__ . '/../../../_fixtures/category_data.php';
 
         $context = Context::createDefaultContext();
-        $convertResult = $this->categoryConverter->convert($categoryData[0], $context, Uuid::uuid4()->getHex(), Uuid::uuid4()->getHex(), Defaults::CATALOG);
+        $convertResult = $this->categoryConverter->convert($categoryData[0], $context, $this->migrationContext);
 
         $converted = $convertResult->getConverted();
 
@@ -60,9 +92,8 @@ class CategoryConverterTest extends TestCase
         $categoryData = require __DIR__ . '/../../../_fixtures/category_data.php';
 
         $context = Context::createDefaultContext();
-        $profileId = Uuid::uuid4()->getHex();
-        $this->categoryConverter->convert($categoryData[0], $context, Uuid::uuid4()->getHex(), $profileId, Defaults::CATALOG);
-        $convertResult = $this->categoryConverter->convert($categoryData[3], $context, Uuid::uuid4()->getHex(), $profileId, Defaults::CATALOG);
+        $this->categoryConverter->convert($categoryData[0], $context, $this->migrationContext);
+        $convertResult = $this->categoryConverter->convert($categoryData[3], $context, $this->migrationContext);
 
         $converted = $convertResult->getConverted();
 
@@ -79,7 +110,7 @@ class CategoryConverterTest extends TestCase
 
         $context = Context::createDefaultContext();
         $this->expectException(ParentEntityForChildNotFoundException::class);
-        $this->categoryConverter->convert($categoryData[4], $context, Uuid::uuid4()->getHex(), Uuid::uuid4()->getHex(), Defaults::CATALOG);
+        $this->categoryConverter->convert($categoryData[4], $context, $this->migrationContext);
     }
 
     public function testConvertWithoutLocale(): void
@@ -89,7 +120,7 @@ class CategoryConverterTest extends TestCase
         unset($categoryData['_locale']);
 
         $context = Context::createDefaultContext();
-        $convertResult = $this->categoryConverter->convert($categoryData, $context, Uuid::uuid4()->getHex(), Uuid::uuid4()->getHex(), Defaults::CATALOG);
+        $convertResult = $this->categoryConverter->convert($categoryData, $context, $this->migrationContext);
         static::assertNull($convertResult->getConverted());
 
         $logs = $this->loggingService->getLoggingArray();

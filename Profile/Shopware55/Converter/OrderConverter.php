@@ -27,13 +27,16 @@ use Shopware\Core\System\Country\Aggregate\CountryTranslation\CountryTranslation
 use Shopware\Core\System\Country\CountryDefinition;
 use Shopware\Core\System\Currency\Aggregate\CurrencyTranslation\CurrencyTranslationDefinition;
 use Shopware\Core\System\Currency\CurrencyDefinition;
+use SwagMigrationNext\Migration\Converter\AbstractConverter;
+use SwagMigrationNext\Migration\Converter\ConvertStruct;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
-use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
-use SwagMigrationNext\Profile\Shopware55\ConvertStruct;
-use SwagMigrationNext\Profile\Shopware55\Logging\LoggingType;
+use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Profile\Shopware55\Exception\AssociationEntityRequiredMissingException;
+use SwagMigrationNext\Profile\Shopware55\Logging\Shopware55LogTypes;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
+use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
-class OrderConverter implements ConverterInterface
+class OrderConverter extends AbstractConverter
 {
     /**
      * @var Shopware55MappingService
@@ -120,9 +123,14 @@ class OrderConverter implements ConverterInterface
         $this->loggingService = $loggingService;
     }
 
-    public function supports(): string
+    public function getSupportedEntityName(): string
     {
         return OrderDefinition::getEntityName();
+    }
+
+    public function getSupportedProfileName(): string
+    {
+        return Shopware55Profile::PROFILE_NAME;
     }
 
     public function writeMapping(Context $context): void
@@ -136,13 +144,10 @@ class OrderConverter implements ConverterInterface
     public function convert(
         array $data,
         Context $context,
-        string $runId,
-        string $profileId,
-        ?string $catalogId = null,
-        ?string $salesChannelId = null
+        MigrationContext $migrationContext
     ): ConvertStruct {
         $this->oldId = $data['id'];
-        $this->runId = $runId;
+        $this->runId = $migrationContext->getRunUuid();
 
         $fields = $this->helper->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
         if (empty($data['billingaddress']['id'])) {
@@ -155,7 +160,7 @@ class OrderConverter implements ConverterInterface
         if (!empty($fields)) {
             $this->loggingService->addWarning(
                 $this->runId,
-                LoggingType::EMPTY_NECESSARY_DATA_FIELDS,
+                Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
                 'Empty necessary data',
                 sprintf('Order-Entity could not converted cause of empty necessary field(s): %s.', implode(', ', $fields)),
                 [
@@ -171,7 +176,7 @@ class OrderConverter implements ConverterInterface
         $this->mainLocale = $data['_locale'];
         unset($data['_locale']);
         $this->context = $context;
-        $this->profileId = $profileId;
+        $this->profileId = $migrationContext->getProfileId();
 
         $converted = [];
         $converted['id'] = $this->mappingService->createNewUuid(
@@ -248,7 +253,7 @@ class OrderConverter implements ConverterInterface
         if (!isset($converted['stateId'])) {
             $this->loggingService->addWarning(
                 $this->runId,
-                LoggingType::UNKNOWN_ORDER_STATE,
+                Shopware55LogTypes::UNKNOWN_ORDER_STATE,
                 'Cannot find order state',
                 'Order-Entity could not converted cause of unknown order state',
                 [
@@ -277,7 +282,7 @@ class OrderConverter implements ConverterInterface
             $fields = ['billingaddress'];
             $this->loggingService->addWarning(
                 $this->runId,
-                LoggingType::EMPTY_NECESSARY_DATA_FIELDS,
+                Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
                 'Empty necessary data',
                 sprintf('Order-Entity could not converted cause of empty necessary field(s): %s.', implode(', ', $fields)),
                 [
@@ -291,7 +296,7 @@ class OrderConverter implements ConverterInterface
         }
         unset($data['billingaddress']);
 
-        $converted['salesChannelId'] = $salesChannelId;
+        $converted['salesChannelId'] = $migrationContext->getSalesChannelId();
 
         // Legacy data which don't need a mapping or there is no equivalent field
         unset(
@@ -478,7 +483,7 @@ class OrderConverter implements ConverterInterface
         if (!empty($fields)) {
             $this->loggingService->addInfo(
                 $this->runId,
-                LoggingType::EMPTY_NECESSARY_DATA_FIELDS,
+                Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
                 'Empty necessary data fields for address',
                 sprintf('Address-Entity could not converted cause of empty necessary field(s): %s.', implode(', ', $fields)),
                 [
@@ -804,7 +809,7 @@ class OrderConverter implements ConverterInterface
             if (!isset($lineItem['identifier'])) {
                 $this->loggingService->addInfo(
                     $this->runId,
-                    LoggingType::EMPTY_LINE_ITEM_IDENTIFIER,
+                    Shopware55LogTypes::EMPTY_LINE_ITEM_IDENTIFIER,
                     'Line item could not converted',
                     'Order-Line-Item-Entity could not converted cause of empty identifier',
                     [

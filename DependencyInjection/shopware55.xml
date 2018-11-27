@@ -9,80 +9,75 @@
         <service id="SwagMigrationNext\Profile\Shopware55\Shopware55Profile"
                  class="SwagMigrationNext\Profile\Shopware55\Shopware55Profile">
             <argument type="service" id="swag_migration_data.repository"/>
-            <argument type="service" id="SwagMigrationNext\Profile\Shopware55\Converter\ConverterRegistry"/>
+            <argument type="service" id="SwagMigrationNext\Migration\Converter\ConverterRegistry"/>
             <argument type="service" id="SwagMigrationNext\Migration\Asset\MediaFileService"/>
             <argument type="service" id="SwagMigrationNext\Migration\Logging\LoggingService"/>
             <tag name="shopware.migration.profile"/>
         </service>
 
         <!-- Shopware 5.5 Profile Converter -->
-        <service id="SwagMigrationNext\Profile\Shopware55\ConverterHelperService"
-                 class="SwagMigrationNext\Profile\Shopware55\ConverterHelperService">
-        </service>
-
-        <service id="SwagMigrationNext\Profile\Shopware55\Converter\ConverterRegistry"
-                 class="SwagMigrationNext\Profile\Shopware55\Converter\ConverterRegistry">
-            <argument type="tagged" tag="shopware.migration.shopware55.converter"/>
+        <service id="SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService"
+                 class="SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService">
         </service>
 
         <service id="SwagMigrationNext\Profile\Shopware55\Converter\ProductConverter"
                  class="SwagMigrationNext\Profile\Shopware55\Converter\ProductConverter">
             <argument type="service" id="SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService"/>
-            <argument type="service" id="SwagMigrationNext\Profile\Shopware55\ConverterHelperService"/>
+            <argument type="service" id="SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService"/>
             <argument type="service" id="SwagMigrationNext\Migration\Asset\MediaFileService"/>
             <argument type="service" id="SwagMigrationNext\Migration\Logging\LoggingService"/>
-            <tag name="shopware.migration.shopware55.converter"/>
+            <tag name="shopware.migration.converter"/>
         </service>
 
         <service id="SwagMigrationNext\Profile\Shopware55\Converter\TranslationConverter"
                  class="SwagMigrationNext\Profile\Shopware55\Converter\TranslationConverter">
             <argument type="service" id="SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService"/>
-            <argument type="service" id="SwagMigrationNext\Profile\Shopware55\ConverterHelperService"/>
+            <argument type="service" id="SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService"/>
             <argument type="service" id="SwagMigrationNext\Migration\Logging\LoggingService"/>
-            <tag name="shopware.migration.shopware55.converter"/>
+            <tag name="shopware.migration.converter"/>
         </service>
 
         <service id="SwagMigrationNext\Profile\Shopware55\Converter\CategoryConverter"
                  class="SwagMigrationNext\Profile\Shopware55\Converter\CategoryConverter">
             <argument type="service" id="SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService"/>
-            <argument type="service" id="SwagMigrationNext\Profile\Shopware55\ConverterHelperService"/>
+            <argument type="service" id="SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService"/>
             <argument type="service" id="SwagMigrationNext\Migration\Logging\LoggingService"/>
-            <tag name="shopware.migration.shopware55.converter"/>
+            <tag name="shopware.migration.converter"/>
         </service>
 
         <service id="SwagMigrationNext\Profile\Shopware55\Converter\AssetConverter"
                  class="SwagMigrationNext\Profile\Shopware55\Converter\AssetConverter">
             <argument type="service" id="SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService"/>
-            <argument type="service" id="SwagMigrationNext\Profile\Shopware55\ConverterHelperService"/>
+            <argument type="service" id="SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService"/>
             <argument type="service" id="SwagMigrationNext\Migration\Asset\MediaFileService"/>
-            <tag name="shopware.migration.shopware55.converter"/>
+            <tag name="shopware.migration.converter"/>
         </service>
 
         <service id="SwagMigrationNext\Profile\Shopware55\Converter\CustomerConverter"
                  class="SwagMigrationNext\Profile\Shopware55\Converter\CustomerConverter">
             <argument type="service" id="SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService"/>
-            <argument type="service" id="SwagMigrationNext\Profile\Shopware55\ConverterHelperService"/>
+            <argument type="service" id="SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService"/>
             <argument type="service" id="SwagMigrationNext\Migration\Logging\LoggingService"/>
-            <tag name="shopware.migration.shopware55.converter"/>
+            <tag name="shopware.migration.converter"/>
         </service>
 
         <service id="SwagMigrationNext\Profile\Shopware55\Converter\OrderConverter"
                  class="SwagMigrationNext\Profile\Shopware55\Converter\OrderConverter">
             <argument type="service" id="SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService"/>
-            <argument type="service" id="SwagMigrationNext\Profile\Shopware55\ConverterHelperService"/>
+            <argument type="service" id="SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService"/>
             <argument type="service" id="Shopware\Core\Checkout\Cart\Tax\TaxCalculator"/>
             <argument type="service" id="SwagMigrationNext\Migration\Logging\LoggingService"/>
-            <tag name="shopware.migration.shopware55.converter"/>
+            <tag name="shopware.migration.converter"/>
         </service>
 
         <!-- Shopware 5.5 Gateway -->
-        <service id="SwagMigrationNext\Gateway\Shopware55\Api\Shopware55ApiFactory"
-                 class="SwagMigrationNext\Gateway\Shopware55\Api\Shopware55ApiFactory">
+        <service id="SwagMigrationNext\Profile\Shopware55\Gateway\Api\Shopware55ApiFactory"
+                 class="SwagMigrationNext\Profile\Shopware55\Gateway\Api\Shopware55ApiFactory">
             <tag name="shopware.migration.gateway_factory"/>
         </service>
 
-        <service id="SwagMigrationNext\Gateway\Shopware55\Local\Shopware55LocalFactory"
-                 class="SwagMigrationNext\Gateway\Shopware55\Local\Shopware55LocalFactory">
+        <service id="SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalFactory"
+                 class="SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalFactory">
             <tag name="shopware.migration.gateway_factory"/>
         </service>
 

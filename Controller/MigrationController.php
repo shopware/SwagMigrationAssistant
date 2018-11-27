@@ -9,11 +9,10 @@ use SwagMigrationNext\Exception\MigrationContextPropertyMissingException;
 use SwagMigrationNext\Exception\MigrationWorkloadPropertyMissingException;
 use SwagMigrationNext\Migration\Asset\HttpAssetDownloadServiceInterface;
 use SwagMigrationNext\Migration\MigrationContext;
-use SwagMigrationNext\Migration\Service\MigrationCollectServiceInterface;
-use SwagMigrationNext\Migration\Service\MigrationEnvironmentServiceInterface;
+use SwagMigrationNext\Migration\Profile\SwagMigrationProfileStruct;
+use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
+use SwagMigrationNext\Migration\Service\MigrationDataWriterInterface;
 use SwagMigrationNext\Migration\Service\MigrationProgressServiceInterface;
-use SwagMigrationNext\Migration\Service\MigrationWriteServiceInterface;
-use SwagMigrationNext\Profile\SwagMigrationProfileStruct;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,24 +22,19 @@ use Symfony\Component\Routing\Annotation\Route;
 class MigrationController extends Controller
 {
     /**
-     * @var MigrationCollectServiceInterface
+     * @var MigrationDataFetcherInterface
      */
-    private $migrationCollectService;
+    private $migrationDataFetcher;
 
     /**
-     * @var MigrationWriteServiceInterface
+     * @var MigrationDataWriterInterface
      */
-    private $migrationWriteService;
+    private $migrationDataWriter;
 
     /**
      * @var HttpAssetDownloadServiceInterface
      */
     private $assetDownloadService;
-
-    /**
-     * @var MigrationEnvironmentServiceInterface
-     */
-    private $environmentService;
 
     /**
      * @var RepositoryInterface
@@ -53,17 +47,15 @@ class MigrationController extends Controller
     private $migrationProgressService;
 
     public function __construct(
-        MigrationCollectServiceInterface $migrationCollectService,
-        MigrationWriteServiceInterface $migrationWriteService,
+        MigrationDataFetcherInterface $migrationDataFetcher,
+        MigrationDataWriterInterface $migrationDataWriter,
         HttpAssetDownloadServiceInterface $assetDownloadService,
-        MigrationEnvironmentServiceInterface $environmentService,
         RepositoryInterface $migrationProfileRepo,
         MigrationProgressServiceInterface $migrationProgressService
     ) {
-        $this->migrationCollectService = $migrationCollectService;
-        $this->migrationWriteService = $migrationWriteService;
+        $this->migrationDataFetcher = $migrationDataFetcher;
+        $this->migrationDataWriter = $migrationDataWriter;
         $this->assetDownloadService = $assetDownloadService;
-        $this->environmentService = $environmentService;
         $this->migrationProfileRepo = $migrationProfileRepo;
         $this->migrationProgressService = $migrationProgressService;
     }
@@ -90,9 +82,18 @@ class MigrationController extends Controller
         $gateway = $profile->getGateway();
         $credentials = $profile->getCredentialFields();
 
-        $migrationContext = new MigrationContext('', '', $profileName, $gateway, '', $credentials, 0, 0);
+        $migrationContext = new MigrationContext(
+            '',
+            '',
+            $profileName,
+            $gateway,
+            '',
+            $credentials,
+            0,
+            0
+        );
 
-        $information = $this->environmentService->getEnvironmentInformation($migrationContext);
+        $information = $this->migrationDataFetcher->getEnvironmentInformation($migrationContext);
 
         return new JsonResponse($information);
     }
@@ -151,7 +152,7 @@ class MigrationController extends Controller
             $catalogId,
             $salesChannelId
         );
-        $this->migrationCollectService->fetchData($migrationContext, $context);
+        $this->migrationDataFetcher->fetchData($migrationContext, $context);
 
         return new Response();
     }
@@ -177,7 +178,7 @@ class MigrationController extends Controller
         }
 
         $migrationContext = new MigrationContext($runUuid, '', '', '', $entity, [], $offset, $limit);
-        $this->migrationWriteService->writeData($migrationContext, $context);
+        $this->migrationDataWriter->writeData($migrationContext, $context);
 
         return new Response();
     }

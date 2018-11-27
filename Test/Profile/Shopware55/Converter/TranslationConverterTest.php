@@ -3,13 +3,17 @@
 namespace SwagMigrationNext\Test\Profile\Shopware55\Converter;
 
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Content\Category\CategoryDefinition;
+use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Struct\Uuid;
+use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Profile\Shopware55\Converter\CategoryConverter;
+use SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\Converter\ProductConverter;
 use SwagMigrationNext\Profile\Shopware55\Converter\TranslationConverter;
-use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
+use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Mock\Migration\Asset\DummyMediaFileService;
 use SwagMigrationNext\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationNext\Test\Mock\Migration\Mapping\DummyMappingService;
@@ -31,26 +35,93 @@ class TranslationConverterTest extends TestCase
      */
     private $loggingService;
 
+    /**
+     * @var string
+     */
+    private $runId;
+
+    /**
+     * @var string
+     */
+    private $profileId;
+
+    /**
+     * @var MigrationContext
+     */
+    private $migrationContext;
+
+    /**
+     * @var MigrationContext
+     */
+    private $productMigrationContext;
+
+    /**
+     * @var MigrationContext
+     */
+    private $categoryMigrationContext;
+
     protected function setUp()
     {
         $this->mappingService = new DummyMappingService();
         $converterHelperService = new ConverterHelperService();
         $this->loggingService = new DummyLoggingService();
         $this->translationConverter = new TranslationConverter($this->mappingService, $converterHelperService, $this->loggingService);
+
+        $this->runId = Uuid::uuid4()->getHex();
+        $this->profileId = Uuid::uuid4()->getHex();
+
+        $this->migrationContext = new MigrationContext(
+            $this->runId,
+            $this->profileId,
+            Shopware55Profile::PROFILE_NAME,
+            'local',
+            'translation',
+            [],
+            0,
+            250,
+            Defaults::CATALOG,
+            Defaults::SALES_CHANNEL
+        );
+
+        $this->productMigrationContext = new MigrationContext(
+            $this->runId,
+            $this->profileId,
+            Shopware55Profile::PROFILE_NAME,
+            'local',
+            ProductDefinition::getEntityName(),
+            [],
+            0,
+            250,
+            Defaults::CATALOG,
+            Defaults::SALES_CHANNEL
+        );
+
+        $this->categoryMigrationContext = new MigrationContext(
+            $this->runId,
+            $this->profileId,
+            Shopware55Profile::PROFILE_NAME,
+            'local',
+            CategoryDefinition::getEntityName(),
+            [],
+            0,
+            250,
+            Defaults::CATALOG,
+            Defaults::SALES_CHANNEL
+        );
     }
 
     public function testSupports(): void
     {
-        $supportsDefinition = $this->translationConverter->supports();
+        $supportsDefinition = $this->translationConverter->supports(Shopware55Profile::PROFILE_NAME, 'translation');
 
-        static::assertSame('translation', $supportsDefinition);
+        static::assertTrue($supportsDefinition);
     }
 
     public function testConvertUnknownTranslationType(): void
     {
         $context = Context::createDefaultContext();
         $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
-        $convertResult = $this->translationConverter->convert($translationData['invalid'], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
+        $convertResult = $this->translationConverter->convert($translationData['invalid'], $context, $this->migrationContext);
         static::assertNull($convertResult->getConverted());
 
         $logs = $this->loggingService->getLoggingArray();
@@ -66,10 +137,10 @@ class TranslationConverterTest extends TestCase
         $context = Context::createDefaultContext();
 
         $productConverter = new ProductConverter($this->mappingService, new ConverterHelperService(), new DummyMediaFileService(), $this->loggingService);
-        $productConverter->convert($productData[0], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
+        $productConverter->convert($productData[0], $context, $this->productMigrationContext);
 
         $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
-        $convertResult = $this->translationConverter->convert($translationData['product'], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
+        $convertResult = $this->translationConverter->convert($translationData['product'], $context, $this->migrationContext);
 
         static::assertNull($convertResult->getUnmapped());
         static::assertCount(0, $this->loggingService->getLoggingArray());
@@ -81,10 +152,10 @@ class TranslationConverterTest extends TestCase
         $context = Context::createDefaultContext();
 
         $productConverter = new ProductConverter($this->mappingService, new ConverterHelperService(), new DummyMediaFileService(), $this->loggingService);
-        $productConvertResult = $productConverter->convert($productData[0], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
+        $productConvertResult = $productConverter->convert($productData[0], $context, $this->productMigrationContext);
 
         $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
-        $convertResult = $this->translationConverter->convert($translationData['manufacturer'], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
+        $convertResult = $this->translationConverter->convert($translationData['manufacturer'], $context, $this->migrationContext);
 
         $converted = $convertResult->getConverted();
         $convertedProduct = $productConvertResult->getConverted();
@@ -100,7 +171,7 @@ class TranslationConverterTest extends TestCase
         $context = Context::createDefaultContext();
 
         $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
-        $convertResult = $this->translationConverter->convert($translationData['manufacturer'], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
+        $convertResult = $this->translationConverter->convert($translationData['manufacturer'], $context, $this->migrationContext);
 
         static::assertNull($convertResult->getConverted());
     }
@@ -111,12 +182,12 @@ class TranslationConverterTest extends TestCase
         $context = Context::createDefaultContext();
 
         $productConverter = new ProductConverter($this->mappingService, new ConverterHelperService(), new DummyMediaFileService(), $this->loggingService);
-        $productConverter->convert($productData[0], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
+        $productConverter->convert($productData[0], $context, $this->productMigrationContext);
 
         $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
         $translationData = $translationData['manufacturer'];
         $translationData['objectdata'] = 's:19:"no serialized array";';
-        $convertResult = $this->translationConverter->convert($translationData, $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
+        $convertResult = $this->translationConverter->convert($translationData, $context, $this->migrationContext);
 
         static::assertNull($convertResult->getConverted());
 
@@ -132,14 +203,14 @@ class TranslationConverterTest extends TestCase
         $context = Context::createDefaultContext();
 
         $productConverter = new ProductConverter($this->mappingService, new ConverterHelperService(), new DummyMediaFileService(), $this->loggingService);
-        $productConverter->convert($productData[0], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
+        $productConverter->convert($productData[0], $context, $this->productMigrationContext);
 
         $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
         $translationData = $translationData['manufacturer'];
         $objectData = unserialize($translationData['objectdata'], ['allowed_classes' => false]);
         $objectData['foo'] = 'bar';
         $translationData['objectdata'] = serialize($objectData);
-        $convertResult = $this->translationConverter->convert($translationData, $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
+        $convertResult = $this->translationConverter->convert($translationData, $context, $this->migrationContext);
 
         static::assertNull($convertResult->getConverted());
 
@@ -155,10 +226,10 @@ class TranslationConverterTest extends TestCase
         $context = Context::createDefaultContext();
 
         $productConverter = new ProductConverter($this->mappingService, new ConverterHelperService(), new DummyMediaFileService(), $this->loggingService);
-        $productConvertResult = $productConverter->convert($productData[0], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
+        $productConvertResult = $productConverter->convert($productData[0], $context, $this->productMigrationContext);
 
         $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
-        $convertResult = $this->translationConverter->convert($translationData['unit'], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
+        $convertResult = $this->translationConverter->convert($translationData['unit'], $context, $this->migrationContext);
 
         $converted = $convertResult->getConverted();
         $convertedProduct = $productConvertResult->getConverted();
@@ -174,7 +245,7 @@ class TranslationConverterTest extends TestCase
         $context = Context::createDefaultContext();
 
         $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
-        $convertResult = $this->translationConverter->convert($translationData['unit'], $context, Uuid::uuid4()->getHex(), Defaults::CATALOG);
+        $convertResult = $this->translationConverter->convert($translationData['unit'], $context, $this->migrationContext);
         static::assertNull($convertResult->getConverted());
 
         $logs = $this->loggingService->getLoggingArray();
@@ -188,14 +259,13 @@ class TranslationConverterTest extends TestCase
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
         $context = Context::createDefaultContext();
 
-        $profileId = Uuid::uuid4()->getHex();
         $productConverter = new ProductConverter($this->mappingService, new ConverterHelperService(), new DummyMediaFileService(), $this->loggingService);
-        $productConverter->convert($productData[0], $context, Uuid::uuid4()->getHex(), $profileId, Defaults::CATALOG);
+        $productConverter->convert($productData[0], $context, $this->productMigrationContext);
 
         $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
         $translationData = $translationData['unit'];
         $translationData['objectdata'] = 's:19:"no serialized array";';
-        $convertResult = $this->translationConverter->convert($translationData, $context, Uuid::uuid4()->getHex(), $profileId, Defaults::CATALOG);
+        $convertResult = $this->translationConverter->convert($translationData, $context, $this->migrationContext);
 
         static::assertNull($convertResult->getConverted());
 
@@ -210,16 +280,15 @@ class TranslationConverterTest extends TestCase
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
         $context = Context::createDefaultContext();
 
-        $profileId = Uuid::uuid4()->getHex();
         $productConverter = new ProductConverter($this->mappingService, new ConverterHelperService(), new DummyMediaFileService(), $this->loggingService);
-        $productConverter->convert($productData[0], $context, Uuid::uuid4()->getHex(), $profileId, Defaults::CATALOG);
+        $productConverter->convert($productData[0], $context, $this->productMigrationContext);
 
         $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
         $translationData = $translationData['unit'];
         $objectData = unserialize($translationData['objectdata'], ['allowed_classes' => false]);
         $objectData[9]['foo'] = 'bar';
         $translationData['objectdata'] = serialize($objectData);
-        $convertResult = $this->translationConverter->convert($translationData, $context, Uuid::uuid4()->getHex(), $profileId, Defaults::CATALOG);
+        $convertResult = $this->translationConverter->convert($translationData, $context, $this->migrationContext);
 
         static::assertNull($convertResult->getConverted());
 
@@ -234,12 +303,11 @@ class TranslationConverterTest extends TestCase
         $categoryData = require __DIR__ . '/../../../_fixtures/category_data.php';
         $context = Context::createDefaultContext();
 
-        $profileId = Uuid::uuid4()->getHex();
         $categoryConverter = new CategoryConverter($this->mappingService, new ConverterHelperService(), $this->loggingService);
-        $categoryConvertResult = $categoryConverter->convert($categoryData[1], $context, Uuid::uuid4()->getHex(), $profileId, Defaults::CATALOG);
+        $categoryConvertResult = $categoryConverter->convert($categoryData[1], $context, $this->categoryMigrationContext);
 
         $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
-        $convertResult = $this->translationConverter->convert($translationData['category'], $context, Uuid::uuid4()->getHex(), $profileId, Defaults::CATALOG);
+        $convertResult = $this->translationConverter->convert($translationData['category'], $context, $this->migrationContext);
 
         $converted = $convertResult->getConverted();
         $convertedCategory = $categoryConvertResult->getConverted();
@@ -255,7 +323,7 @@ class TranslationConverterTest extends TestCase
         $context = Context::createDefaultContext();
 
         $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
-        $convertResult = $this->translationConverter->convert($translationData['category'], $context, Uuid::uuid4()->getHex(), Uuid::uuid4()->getHex(), Defaults::CATALOG);
+        $convertResult = $this->translationConverter->convert($translationData['category'], $context, $this->migrationContext);
         static::assertNull($convertResult->getConverted());
 
         $logs = $this->loggingService->getLoggingArray();
@@ -269,14 +337,13 @@ class TranslationConverterTest extends TestCase
         $categoryData = require __DIR__ . '/../../../_fixtures/category_data.php';
         $context = Context::createDefaultContext();
 
-        $profileId = Uuid::uuid4()->getHex();
         $categoryConverter = new CategoryConverter($this->mappingService, new ConverterHelperService(), $this->loggingService);
-        $categoryConverter->convert($categoryData[1], $context, Uuid::uuid4()->getHex(), $profileId, Defaults::CATALOG);
+        $categoryConverter->convert($categoryData[1], $context, $this->categoryMigrationContext);
 
         $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
         $translationData = $translationData['category'];
         $translationData['objectdata'] = 's:19:"no serialized array";';
-        $convertResult = $this->translationConverter->convert($translationData, $context, Uuid::uuid4()->getHex(), $profileId, Defaults::CATALOG);
+        $convertResult = $this->translationConverter->convert($translationData, $context, $this->migrationContext);
         static::assertNull($convertResult->getConverted());
 
         $logs = $this->loggingService->getLoggingArray();
@@ -290,16 +357,15 @@ class TranslationConverterTest extends TestCase
         $categoryData = require __DIR__ . '/../../../_fixtures/category_data.php';
         $context = Context::createDefaultContext();
 
-        $profileId = Uuid::uuid4()->getHex();
         $categoryConverter = new CategoryConverter($this->mappingService, new ConverterHelperService(), $this->loggingService);
-        $categoryConverter->convert($categoryData[1], $context, Uuid::uuid4()->getHex(), $profileId, Defaults::CATALOG);
+        $categoryConverter->convert($categoryData[1], $context, $this->categoryMigrationContext);
 
         $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
         $translationData = $translationData['category'];
         $objectData = unserialize($translationData['objectdata'], ['allowed_classes' => false]);
         $objectData['foo'] = 'bar';
         $translationData['objectdata'] = serialize($objectData);
-        $convertResult = $this->translationConverter->convert($translationData, $context, Uuid::uuid4()->getHex(), $profileId, Defaults::CATALOG);
+        $convertResult = $this->translationConverter->convert($translationData, $context, $this->migrationContext);
         static::assertNull($convertResult->getConverted());
 
         $logs = $this->loggingService->getLoggingArray();

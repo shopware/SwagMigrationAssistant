@@ -13,19 +13,13 @@ use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagMigrationNext\Controller\MigrationController;
 use SwagMigrationNext\Exception\MigrationContextPropertyMissingException;
 use SwagMigrationNext\Exception\MigrationWorkloadPropertyMissingException;
-use SwagMigrationNext\Gateway\GatewayFactoryRegistry;
-use SwagMigrationNext\Gateway\Shopware55\Api\Shopware55ApiFactory;
 use SwagMigrationNext\Migration\Asset\MediaFileService;
-use SwagMigrationNext\Migration\Service\MigrationEnvironmentService;
-use SwagMigrationNext\Migration\Service\MigrationWriteService;
-use SwagMigrationNext\Profile\ProfileRegistry;
+use SwagMigrationNext\Migration\Profile\SwagMigrationProfileStruct;
+use SwagMigrationNext\Migration\Service\MigrationDataWriter;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
-use SwagMigrationNext\Profile\SwagMigrationProfileStruct;
 use SwagMigrationNext\Test\Migration\Services\MigrationProfileUuidService;
 use SwagMigrationNext\Test\MigrationServicesTrait;
-use SwagMigrationNext\Test\Mock\DummyCollection;
-use SwagMigrationNext\Test\Mock\Gateway\Dummy\Local\DummyLocalFactory;
 use SwagMigrationNext\Test\Mock\Migration\Asset\DummyHttpAssetDownloadService;
 use SwagMigrationNext\Test\Mock\Migration\Service\DummyProgressService;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -68,21 +62,14 @@ class MigrationControllerTest extends TestCase
         );
 
         $this->controller = new MigrationController(
-            $this->getMigrationCollectService(
+            $this->getMigrationDataFetcher(
                 $this->getContainer()->get('swag_migration_data.repository'),
                 $this->getContainer()->get(Shopware55MappingService::class),
                 $this->getContainer()->get(MediaFileService::class),
                 $this->getContainer()->get('swag_migration_logging.repository')
             ),
-            $this->getContainer()->get(MigrationWriteService::class),
+            $this->getContainer()->get(MigrationDataWriter::class),
             new DummyHttpAssetDownloadService(),
-            new MigrationEnvironmentService(
-                $this->getContainer()->get(ProfileRegistry::class),
-                new GatewayFactoryRegistry(new DummyCollection([
-                    new Shopware55ApiFactory(),
-                    new DummyLocalFactory(),
-                ]))
-            ),
             $this->getContainer()->get('swag_migration_profile.repository'),
             new DummyProgressService()
         );

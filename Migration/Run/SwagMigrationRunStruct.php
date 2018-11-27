@@ -7,7 +7,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use SwagMigrationNext\Exception\MigrationRunUndefinedStatusException;
 use SwagMigrationNext\Migration\Asset\SwagMigrationMediaFileStruct;
 use SwagMigrationNext\Migration\Data\SwagMigrationDataStruct;
-use SwagMigrationNext\Profile\SwagMigrationProfileStruct;
+use SwagMigrationNext\Migration\Profile\SwagMigrationProfileStruct;
 
 class SwagMigrationRunStruct extends Entity
 {

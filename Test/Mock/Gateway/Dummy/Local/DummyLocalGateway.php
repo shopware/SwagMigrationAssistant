@@ -7,45 +7,37 @@ use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
-use SwagMigrationNext\Gateway\GatewayInterface;
+use SwagMigrationNext\Migration\Gateway\AbstractGateway;
 
-class DummyLocalGateway implements GatewayInterface
+class DummyLocalGateway extends AbstractGateway
 {
     public const GATEWAY_TYPE = 'local';
 
-    public function read(string $entityName, int $offset, int $limit): array
+    public function read(): array
     {
-        switch ($entityName) {
+        switch ($this->migrationContext->getEntity()) {
             case ProductDefinition::getEntityName():
                 return require __DIR__ . '/../../../../_fixtures/product_data.php';
-            break;
             case 'translation':
                 return require __DIR__ . '/../../../../_fixtures/translation_data.php';
-                break;
             case CategoryDefinition::getEntityName():
                 return require __DIR__ . '/../../../../_fixtures/category_data.php';
-                break;
             case MediaDefinition::getEntityName():
                 return require __DIR__ . '/../../../../_fixtures/media_data.php';
-                break;
             case CustomerDefinition::getEntityName():
                 return require __DIR__ . '/../../../../_fixtures/customer_data.php';
-                break;
             case OrderDefinition::getEntityName():
                 return require __DIR__ . '/../../../../_fixtures/order_data.php';
-                break;
-            case 'environment':
-                return require __DIR__ . '/../../../../_fixtures/environment_data.php';
-                break;
-
-                //Invalid data
+            //Invalid data
             case CustomerDefinition::getEntityName() . 'Invalid':
                 return require __DIR__ . '/../../../../_fixtures/invalid/customer_data.php';
-                break;
-
-            case 'unknown':
+            default:
                 return [];
-                break;
         }
+    }
+
+    public function readEnvironmentInformation(): array
+    {
+        return require __DIR__ . '/../../../../_fixtures/environment_data.php';
     }
 }

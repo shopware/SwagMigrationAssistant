@@ -18,13 +18,16 @@ use Shopware\Core\System\Tax\TaxDefinition;
 use Shopware\Core\System\Unit\Aggregate\UnitTranslation\UnitTranslationDefinition;
 use Shopware\Core\System\Unit\UnitDefinition;
 use SwagMigrationNext\Migration\Asset\MediaFileServiceInterface;
+use SwagMigrationNext\Migration\Converter\AbstractConverter;
+use SwagMigrationNext\Migration\Converter\ConvertStruct;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
-use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
-use SwagMigrationNext\Profile\Shopware55\ConvertStruct;
-use SwagMigrationNext\Profile\Shopware55\Logging\LoggingType;
+use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Profile\Shopware55\Exception\ParentEntityForChildNotFoundException;
+use SwagMigrationNext\Profile\Shopware55\Logging\Shopware55LogTypes;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
+use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
-class ProductConverter implements ConverterInterface
+class ProductConverter extends AbstractConverter
 {
     public const MAIN_PRODUCT_TYPE = 1;
     public const VARIANT_PRODUCT_TYPE = 2;
@@ -95,9 +98,14 @@ class ProductConverter implements ConverterInterface
         $this->loggingService = $loggingService;
     }
 
-    public function supports(): string
+    public function getSupportedEntityName(): string
     {
         return ProductDefinition::getEntityName();
+    }
+
+    public function getSupportedProfileName(): string
+    {
+        return Shopware55Profile::PROFILE_NAME;
     }
 
     public function writeMapping(Context $context): void
@@ -111,22 +119,19 @@ class ProductConverter implements ConverterInterface
     public function convert(
         array $data,
         Context $context,
-        string $runId,
-        string $profileId,
-        ?string $catalogId = null,
-        ?string $salesChannelId = null
+        MigrationContext $migrationContext
     ): ConvertStruct {
         $this->context = $context;
-        $this->runId = $runId;
-        $this->profileId = $profileId;
-        $this->catalogId = $catalogId;
+        $this->runId = $migrationContext->getRunUuid();
+        $this->profileId = $migrationContext->getProfileId();
+        $this->catalogId = $migrationContext->getCatalogId();
         $this->oldProductId = $data['detail']['ordernumber'];
 
         $fields = $this->helper->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
         if (!empty($fields)) {
             $this->loggingService->addWarning(
                 $this->runId,
-                LoggingType::EMPTY_NECESSARY_DATA_FIELDS,
+                Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
                 'Empty necessary data fields',
                 sprintf('Product-Entity could not converted cause of empty necessary field(s): %s.', implode(', ', $fields)),
                 [
@@ -155,8 +160,8 @@ class ProductConverter implements ConverterInterface
         $converted = $this->getUuidForProduct($data);
         $converted = $this->getProductData($data, $converted);
 
-        if ($catalogId !== null) {
-            $converted['catalogId'] = $catalogId;
+        if ($this->catalogId !== null) {
+            $converted['catalogId'] = $this->catalogId;
         }
 
         if (empty($data)) {
@@ -454,7 +459,7 @@ class ProductConverter implements ConverterInterface
             if (!isset($asset['media']['id'])) {
                 $this->loggingService->addInfo(
                     $this->runId,
-                    LoggingType::PRODUCT_MEDIA_NOT_CONVERTED,
+                    Shopware55LogTypes::PRODUCT_MEDIA_NOT_CONVERTED,
                     'Product-Media could not converted',
                     'Product-Media could not converted.',
                     [

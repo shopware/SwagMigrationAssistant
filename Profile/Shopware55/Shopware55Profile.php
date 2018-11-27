@@ -11,17 +11,17 @@ use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenContainerEvent;
 use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
-use SwagMigrationNext\Gateway\GatewayInterface;
 use SwagMigrationNext\Migration\Asset\MediaFileServiceInterface;
+use SwagMigrationNext\Migration\Converter\ConverterInterface;
+use SwagMigrationNext\Migration\Converter\ConverterRegistryInterface;
 use SwagMigrationNext\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationNext\Migration\EnvironmentInformation;
+use SwagMigrationNext\Migration\Gateway\GatewayInterface;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\MigrationContext;
-use SwagMigrationNext\Profile\ProfileInterface;
-use SwagMigrationNext\Profile\Shopware55\Converter\AssociationEntityRequiredMissingException;
-use SwagMigrationNext\Profile\Shopware55\Converter\ConverterInterface;
-use SwagMigrationNext\Profile\Shopware55\Converter\ConverterRegistryInterface;
-use SwagMigrationNext\Profile\Shopware55\Converter\ParentEntityForChildNotFoundException;
+use SwagMigrationNext\Migration\Profile\ProfileInterface;
+use SwagMigrationNext\Profile\Shopware55\Exception\AssociationEntityRequiredMissingException;
+use SwagMigrationNext\Profile\Shopware55\Exception\ParentEntityForChildNotFoundException;
 
 class Shopware55Profile implements ProfileInterface
 {
@@ -66,27 +66,10 @@ class Shopware55Profile implements ProfileInterface
         return self::PROFILE_NAME;
     }
 
-    public function collectData(GatewayInterface $gateway, MigrationContext $migrationContext, Context $context): int
+    public function convert(array $data, MigrationContext $migrationContext, Context $context): int
     {
-        $entityName = $migrationContext->getEntity();
-        $runId = $migrationContext->getRunUuid();
-
-        try {
-            /** @var array[] $data */
-            $data = $gateway->read($entityName, $migrationContext->getOffset(), $migrationContext->getLimit());
-        } catch (\Exception $exception) {
-            $this->loggingService->addError($runId, (string) $exception->getCode(), '', $exception->getMessage(), ['entity' => $entityName]);
-            $this->loggingService->saveLogging($context);
-
-            return 0;
-        }
-
-        if (\count($data) === 0) {
-            return 0;
-        }
-
-        $converter = $this->converterRegistry->getConverter($entityName);
-        $createData = $this->convertData($context, $data, $converter, $migrationContext, $entityName);
+        $converter = $this->converterRegistry->getConverter($migrationContext);
+        $createData = $this->convertData($context, $data, $converter, $migrationContext, $migrationContext->getEntity());
 
         if (\count($createData) === 0) {
             return 0;
@@ -101,12 +84,16 @@ class Shopware55Profile implements ProfileInterface
 
         $event = $writtenEvent->getEventByDefinition(SwagMigrationDataDefinition::class);
 
+        if (!$event) {
+            return 0;
+        }
+
         return \count($event->getIds());
     }
 
     public function readEnvironmentInformation(GatewayInterface $gateway): EnvironmentInformation
     {
-        $environmentData = $gateway->read('environment', 0, 0);
+        $environmentData = $gateway->readEnvironmentInformation();
         $environmentDataArray = $environmentData['environmentInformation'];
         if (empty($environmentDataArray)) {
             return new EnvironmentInformation(
@@ -177,13 +164,11 @@ class Shopware55Profile implements ProfileInterface
         string $entityName
     ): array {
         $runId = $migrationContext->getRunUuid();
-        $catalogId = $migrationContext->getCatalogId();
-        $salesChannelId = $migrationContext->getSalesChannelId();
 
         $createData = [];
         foreach ($data as $item) {
             try {
-                $convertStruct = $converter->convert($item, $context, $runId, $migrationContext->getProfileId(), $catalogId, $salesChannelId);
+                $convertStruct = $converter->convert($item, $context, $migrationContext);
                 $convertFailureFlag = empty($convertStruct->getConverted());
 
                 $createData[] = [

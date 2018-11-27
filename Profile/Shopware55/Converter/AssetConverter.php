@@ -6,11 +6,13 @@ use Shopware\Core\Content\Media\Aggregate\MediaTranslation\MediaTranslationDefin
 use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Framework\Context;
 use SwagMigrationNext\Migration\Asset\MediaFileServiceInterface;
-use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
-use SwagMigrationNext\Profile\Shopware55\ConvertStruct;
+use SwagMigrationNext\Migration\Converter\AbstractConverter;
+use SwagMigrationNext\Migration\Converter\ConvertStruct;
+use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
+use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
-class AssetConverter implements ConverterInterface
+class AssetConverter extends AbstractConverter
 {
     /**
      * @var Shopware55MappingService
@@ -37,9 +39,14 @@ class AssetConverter implements ConverterInterface
         $this->mediaFileService = $mediaFileService;
     }
 
-    public function supports(): string
+    public function getSupportedEntityName(): string
     {
         return MediaDefinition::getEntityName();
+    }
+
+    public function getSupportedProfileName(): string
+    {
+        return Shopware55Profile::PROFILE_NAME;
     }
 
     public function writeMapping(Context $context): void
@@ -50,13 +57,11 @@ class AssetConverter implements ConverterInterface
     public function convert(
         array $data,
         Context $context,
-        string $runId,
-        string $profileId,
-        ?string $catalogId = null,
-        ?string $salesChannelId = null
+        MigrationContext $migrationContext
     ): ConvertStruct {
         $locale = $data['_locale'];
         unset($data['_locale']);
+        $profileId = $migrationContext->getProfileId();
 
         $converted = [];
         $converted['id'] = $this->mappingService->createNewUuid(
@@ -68,7 +73,7 @@ class AssetConverter implements ConverterInterface
 
         $this->mediaFileService->saveMediaFile(
             [
-                'runId' => $runId,
+                'runId' => $migrationContext->getRunUuid(),
                 'uri' => $data['uri'],
                 'fileSize' => (int) $data['file_size'],
                 'mediaId' => $converted['id'],
@@ -76,8 +81,8 @@ class AssetConverter implements ConverterInterface
         );
         unset($data['uri'], $data['file_size']);
 
-        if ($catalogId !== null) {
-            $converted['catalogId'] = $catalogId;
+        if ($migrationContext->getCatalogId() !== null) {
+            $converted['catalogId'] = $migrationContext->getCatalogId();
         }
 
         $translation['id'] = $this->mappingService->createNewUuid(

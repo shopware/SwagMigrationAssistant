@@ -7,8 +7,10 @@ use Shopware\Core\Checkout\Customer\CustomerDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Struct\Uuid;
+use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\Converter\CustomerConverter;
-use SwagMigrationNext\Profile\Shopware55\ConverterHelperService;
+use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationNext\Test\Mock\Migration\Mapping\DummyMappingService;
 
@@ -24,19 +26,50 @@ class CustomerConverterTest extends TestCase
      */
     private $loggingService;
 
+    /**
+     * @var string
+     */
+    private $runId;
+
+    /**
+     * @var string
+     */
+    private $profileId;
+
+    /**
+     * @var MigrationContext
+     */
+    private $migrationContext;
+
     protected function setUp()
     {
         $this->loggingService = new DummyLoggingService();
         $mappingService = new DummyMappingService();
         $converterHelperService = new ConverterHelperService();
         $this->customerConverter = new CustomerConverter($mappingService, $converterHelperService, $this->loggingService);
+
+        $this->runId = Uuid::uuid4()->getHex();
+        $this->profileId = Uuid::uuid4()->getHex();
+
+        $this->migrationContext = new MigrationContext(
+            $this->runId,
+            $this->profileId,
+            Shopware55Profile::PROFILE_NAME,
+            'local',
+            CustomerDefinition::getEntityName(),
+            [],
+            0,
+            250,
+            Defaults::CATALOG,
+            Defaults::SALES_CHANNEL
+        );
     }
 
     public function testSupports(): void
     {
-        $supportsDefinition = $this->customerConverter->supports();
+        $supportsDefinition = $this->customerConverter->supports(Shopware55Profile::PROFILE_NAME, CustomerDefinition::getEntityName());
 
-        static::assertSame(CustomerDefinition::getEntityName(), $supportsDefinition);
+        static::assertTrue($supportsDefinition);
     }
 
     public function testConvert(): void
@@ -47,10 +80,7 @@ class CustomerConverterTest extends TestCase
         $convertResult = $this->customerConverter->convert(
             $customerData[0],
             $context,
-            Uuid::uuid4()->getHex(),
-            Uuid::uuid4()->getHex(),
-            Defaults::CATALOG,
-            Defaults::SALES_CHANNEL
+            $this->migrationContext
         );
 
         $converted = $convertResult->getConverted();
@@ -77,10 +107,7 @@ class CustomerConverterTest extends TestCase
         $convertResult = $this->customerConverter->convert(
             $customerData,
             $context,
-            Uuid::uuid4()->getHex(),
-            Uuid::uuid4()->getHex(),
-            Defaults::CATALOG,
-            Defaults::SALES_CHANNEL
+            $this->migrationContext
         );
         static::assertNull($convertResult->getConverted());
 
@@ -111,10 +138,7 @@ class CustomerConverterTest extends TestCase
         $convertResult = $this->customerConverter->convert(
             $customerData[2],
             $context,
-            Uuid::uuid4()->getHex(),
-            Uuid::uuid4()->getHex(),
-            Defaults::CATALOG,
-            Defaults::SALES_CHANNEL
+            $this->migrationContext
         );
 
         $converted = $convertResult->getConverted();
@@ -139,10 +163,7 @@ class CustomerConverterTest extends TestCase
         $convertResult = $this->customerConverter->convert(
             $customerData,
             $context,
-            Uuid::uuid4()->getHex(),
-            Uuid::uuid4()->getHex(),
-            Defaults::CATALOG,
-            Defaults::SALES_CHANNEL
+            $this->migrationContext
         );
 
         $converted = $convertResult->getConverted();
@@ -167,10 +188,7 @@ class CustomerConverterTest extends TestCase
         $convertResult = $this->customerConverter->convert(
             $customerData,
             $context,
-            Uuid::uuid4()->getHex(),
-            Uuid::uuid4()->getHex(),
-            Defaults::CATALOG,
-            Defaults::SALES_CHANNEL
+            $this->migrationContext
         );
 
         $converted = $convertResult->getConverted();
@@ -195,10 +213,7 @@ class CustomerConverterTest extends TestCase
         $convertResult = $this->customerConverter->convert(
             $customerData,
             $context,
-            Uuid::uuid4()->getHex(),
-            Uuid::uuid4()->getHex(),
-            Defaults::CATALOG,
-            Defaults::SALES_CHANNEL
+            $this->migrationContext
         );
 
         static::assertNull($convertResult->getConverted());
@@ -222,10 +237,7 @@ class CustomerConverterTest extends TestCase
         $convertResult = $this->customerConverter->convert(
             $customerData,
             $context,
-            Uuid::uuid4()->getHex(),
-            Uuid::uuid4()->getHex(),
-            Defaults::CATALOG,
-            Defaults::SALES_CHANNEL
+            $this->migrationContext
         );
 
         static::assertNull($convertResult->getConverted());
@@ -251,10 +263,7 @@ class CustomerConverterTest extends TestCase
         $convertResult = $this->customerConverter->convert(
             $customerData[1],
             $context,
-            Uuid::uuid4()->getHex(),
-            Uuid::uuid4()->getHex(),
-            Defaults::CATALOG,
-            Defaults::SALES_CHANNEL
+            $this->migrationContext
         );
 
         $converted = $convertResult->getConverted();
@@ -298,10 +307,7 @@ class CustomerConverterTest extends TestCase
         $convertResult = $this->customerConverter->convert(
             $customerData,
             $context,
-            Uuid::uuid4()->getHex(),
-            Uuid::uuid4()->getHex(),
-            Defaults::CATALOG,
-            Defaults::SALES_CHANNEL
+            $this->migrationContext
         );
 
         $converted = $convertResult->getConverted();
@@ -339,10 +345,7 @@ class CustomerConverterTest extends TestCase
         $convertResult = $this->customerConverter->convert(
             $customerData,
             $context,
-            Uuid::uuid4()->getHex(),
-            Uuid::uuid4()->getHex(),
-            Defaults::CATALOG,
-            Defaults::SALES_CHANNEL
+            $this->migrationContext
         );
 
         $converted = $convertResult->getConverted();
@@ -381,10 +384,7 @@ class CustomerConverterTest extends TestCase
         $convertResult = $this->customerConverter->convert(
             $customerData,
             $context,
-            Uuid::uuid4()->getHex(),
-            Uuid::uuid4()->getHex(),
-            Defaults::CATALOG,
-            Defaults::SALES_CHANNEL
+            $this->migrationContext
         );
 
         $converted = $convertResult->getConverted();
