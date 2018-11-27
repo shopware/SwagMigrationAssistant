@@ -21,6 +21,15 @@ Component.register('swag-migration-data-selector', {
         this.mountedComponent();
     },
 
+    watch: {
+        tableData: {
+            immediate: true,
+            handler() {
+                this.checkIfMigrationIsAllowed();
+            }
+        }
+    },
+
     methods: {
         mountedComponent() {
             this.$refs.tableDataGrid.selectAll(true);
@@ -44,7 +53,7 @@ Component.register('swag-migration-data-selector', {
             this.checkIfMigrationIsAllowed();
         },
         checkIfMigrationIsAllowed() {
-            if (Object.keys(this.selection).length > 0) {
+            if (this.tableData.length > 0 && Object.keys(this.selection).length > 0) {
                 this.$emit('swag-migration-data-selector-migration-allowed', true);
             } else {
                 this.$emit('swag-migration-data-selector-migration-allowed', false);

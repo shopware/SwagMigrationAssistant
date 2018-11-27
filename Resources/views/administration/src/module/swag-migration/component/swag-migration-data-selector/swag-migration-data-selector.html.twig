@@ -13,7 +13,8 @@
             <sw-grid ref="tableDataGrid"
                      :items="tableData"
                      @sw-grid-select-item="onGridSelectItem"
-                     @sw-grid-select-all="onGridSelectItem">
+                     @sw-grid-select-all="onGridSelectItem"
+                     v-if="tableData.length > 0">
                 <template slot="columns" slot-scope="{ item }">
                     {% block swag_migration_index_data_selector_grid_column_data %}
                         <sw-grid-column flex="1fr" :label="$tc('swag-migration.index.selectDataCard.dataHeader')">
@@ -35,6 +36,11 @@
                     {% endblock %}
                 </template>
             </sw-grid>
+            <div class="swag-migration-index-data-selector__no-data" v-else>
+                <p class="swag-migration-index-data-selector__no-data--label">
+                    {{ $tc('swag-migration.index.selectDataCard.noData') }}
+                </p>
+            </div>
         {% endblock %}
 
         {% block swag_migration_index_data_selector_gdpr %}
