@@ -183,6 +183,7 @@ class MigrationProgressService implements MigrationProgressServiceInterface
             $totalCountsForWriting = $this->mapCounts($totalCountsForWriting);
 
             $entityGroups = $this->validateEntityGroupCounts($entityGroups, $finishedCount, $totalCountsForWriting);
+        //todo: Verify if this is necessary
         } elseif ($state->getStatus() === ProgressState::STATUS_FETCH_DATA) {
             $entityGroups = $this->validateEntityGroupCounts($entityGroups, $finishedCount, $run->getTotals()['toBeFetched']);
         } elseif ($state->getStatus() === ProgressState::STATUS_DOWNLOAD_DATA) {
