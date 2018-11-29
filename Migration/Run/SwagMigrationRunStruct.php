@@ -37,12 +37,12 @@ class SwagMigrationRunStruct extends Entity
     protected $profile;
 
     /**
-     * @var array
+     * @var array|null
      */
     protected $totals;
 
     /**
-     * @var array
+     * @var array|null
      */
     protected $additionalData;
 
@@ -50,6 +50,16 @@ class SwagMigrationRunStruct extends Entity
      * @var string
      */
     protected $status;
+
+    /**
+     * @var string|null
+     */
+    protected $userId;
+
+    /**
+     * @var string|null
+     */
+    protected $accessToken;
 
     /**
      * @var DateTime
@@ -91,7 +101,7 @@ class SwagMigrationRunStruct extends Entity
         $this->profile = $profile;
     }
 
-    public function getTotals(): array
+    public function getTotals(): ?array
     {
         return $this->totals;
     }
@@ -101,7 +111,7 @@ class SwagMigrationRunStruct extends Entity
         $this->totals = $totals;
     }
 
-    public function getAdditionalData(): array
+    public function getAdditionalData(): ?array
     {
         return $this->additionalData;
     }
@@ -129,6 +139,26 @@ class SwagMigrationRunStruct extends Entity
         }
 
         $this->status = $status;
+    }
+
+    public function getUserId(): ?string
+    {
+        return $this->userId;
+    }
+
+    public function setUserId(string $userId): void
+    {
+        $this->userId = $userId;
+    }
+
+    public function getAccessToken(): ?string
+    {
+        return $this->accessToken;
+    }
+
+    public function setAccessToken(string $accessToken): void
+    {
+        $this->accessToken = $accessToken;
     }
 
     public function getCreatedAt(): DateTime

@@ -15,6 +15,8 @@ use SwagMigrationNext\Exception\MigrationContextPropertyMissingException;
 use SwagMigrationNext\Exception\MigrationWorkloadPropertyMissingException;
 use SwagMigrationNext\Migration\Asset\MediaFileService;
 use SwagMigrationNext\Migration\Profile\SwagMigrationProfileStruct;
+use SwagMigrationNext\Migration\Run\SwagMigrationAccessTokenService;
+use SwagMigrationNext\Migration\Run\SwagMigrationRunStruct;
 use SwagMigrationNext\Migration\Service\MigrationDataWriter;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
@@ -46,16 +48,22 @@ class MigrationControllerTest extends TestCase
      */
     private $profileUuidService;
 
+    /**
+     * @var RepositoryInterface
+     */
+    private $runRepo;
+
     protected function setUp()
     {
         $this->profileUuidService = new MigrationProfileUuidService($this->getContainer()->get('swag_migration_profile.repository'));
         $this->runUuid = Uuid::uuid4()->getHex();
-        $runRepo = $this->getContainer()->get('swag_migration_run.repository');
-        $runRepo->create(
+        $this->runRepo = $this->getContainer()->get('swag_migration_run.repository');
+        $this->runRepo->create(
             [
                 [
                     'id' => $this->runUuid,
                     'profileId' => $this->profileUuidService->getProfileUuid(),
+                    'accessToken' => 'testToken',
                 ],
             ],
             Context::createDefaultContext()
@@ -71,8 +79,72 @@ class MigrationControllerTest extends TestCase
             $this->getContainer()->get(MigrationDataWriter::class),
             new DummyHttpAssetDownloadService(),
             $this->getContainer()->get('swag_migration_profile.repository'),
-            new DummyProgressService()
+            new DummyProgressService(),
+            new SwagMigrationAccessTokenService($this->runRepo)
         );
+    }
+
+    public function testWriteDataWithInvalidRunId(): void
+    {
+        $context = Context::createDefaultContext();
+        $params = [
+            'runUuid' => Uuid::uuid4()->getHex(),
+            'entity' => ProductDefinition::getEntityName(),
+        ];
+
+        $request = new Request([], $params);
+        $result = $this->controller->writeData($request, $context);
+        static::assertSame(['validToken' => true], json_decode($result->getContent(), true));
+    }
+
+    public function testTakeoverMigration(): void
+    {
+        $params = [
+            'runUuid' => $this->runUuid,
+        ];
+
+        $context = Context::createDefaultContext();
+        $customerId = Uuid::uuid4()->getHex();
+        $context->getSourceContext()->setUserId($customerId);
+        $request = new Request([], $params);
+        $result = $this->controller->takeoverMigration($request, $context);
+        $resultArray = json_decode($result->getContent(), true);
+        self::assertArrayHasKey('accessToken', $resultArray);
+
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('accessToken', $resultArray['accessToken']));
+        /** @var SwagMigrationRunStruct $run */
+        $run = $this->runRepo->search($criteria, $context)->first();
+        self::assertSame($run->getUserId(), mb_strtoupper($customerId));
+
+        $this->expectException(MigrationContextPropertyMissingException::class);
+        $this->expectExceptionMessage('Required property "runUuid" for migration context is missing');
+        $this->controller->takeoverMigration(new Request(), $context);
+    }
+
+    public function testStartMigration(): void
+    {
+        $params = [
+            'profileId' => $this->profileUuidService->getProfileUuid(),
+        ];
+
+        $context = Context::createDefaultContext();
+        $customerId = Uuid::uuid4()->getHex();
+        $context->getSourceContext()->setUserId($customerId);
+        $request = new Request([], $params);
+        $result = $this->controller->startMigration($request, $context);
+        $resultArray = json_decode($result->getContent(), true);
+        self::assertArrayHasKey('accessToken', $resultArray);
+
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('accessToken', $resultArray['accessToken']));
+        /** @var SwagMigrationRunStruct $run */
+        $run = $this->runRepo->search($criteria, $context)->first();
+        self::assertSame($run->getUserId(), mb_strtoupper($customerId));
+
+        $this->expectException(MigrationContextPropertyMissingException::class);
+        $this->expectExceptionMessage('Required property "profileId" for migration context is missing');
+        $this->controller->startMigration(new Request(), $context);
     }
 
     public function testCheckConnection(): void
@@ -130,7 +202,7 @@ class MigrationControllerTest extends TestCase
         /** @var $profile SwagMigrationProfileStruct */
         $profile = $profileResult->first();
 
-        $request = new Request([], [
+        $params = [
             'profileName' => Shopware55Profile::PROFILE_NAME,
             'profileId' => $profile->getId(),
             'runUuid' => $this->runUuid,
@@ -141,9 +213,18 @@ class MigrationControllerTest extends TestCase
                 'apiUser' => 'test',
                 'apiKey' => 'test',
             ],
-        ]);
+        ];
+        $request = new Request([], $params);
         $result = $this->controller->fetchData($request, $context);
 
+        static::assertSame(['validToken' => false], json_decode($result->getContent(), true));
+        static::assertSame(Response::HTTP_OK, $result->getStatusCode());
+
+        $params[SwagMigrationAccessTokenService::ACCESS_TOKEN_NAME] = 'testToken';
+        $request = new Request([], $params);
+        $result = $this->controller->fetchData($request, $context);
+
+        static::assertSame(['validToken' => true], json_decode($result->getContent(), true));
         static::assertSame(Response::HTTP_OK, $result->getStatusCode());
     }
 
@@ -225,13 +306,23 @@ class MigrationControllerTest extends TestCase
 
     public function testWriteData(): void
     {
-        $request = new Request([], [
+        $params = [
             'runUuid' => $this->runUuid,
             'entity' => ProductDefinition::getEntityName(),
-        ]);
+        ];
         $context = Context::createDefaultContext();
+
+        $request = new Request([], $params);
         $result = $this->controller->writeData($request, $context);
 
+        static::assertSame(['validToken' => false], json_decode($result->getContent(), true));
+        static::assertSame(Response::HTTP_OK, $result->getStatusCode());
+
+        $params[SwagMigrationAccessTokenService::ACCESS_TOKEN_NAME] = 'testToken';
+        $request = new Request([], $params);
+        $result = $this->controller->writeData($request, $context);
+
+        static::assertSame(['validToken' => true], json_decode($result->getContent(), true));
         static::assertSame(Response::HTTP_OK, $result->getStatusCode());
     }
 
@@ -276,12 +367,20 @@ class MigrationControllerTest extends TestCase
             ],
         ];
 
-        $request = new Request([], [
+        $params = [
             'runId' => $this->runUuid,
             'workload' => $inputWorkload,
             'fileChunkByteSize' => 1000,
-        ]);
+        ];
+
         $context = Context::createDefaultContext();
+        $request = new Request([], $params);
+        $result = $this->controller->downloadAssets($request, $context);
+
+        static::assertSame(['validToken' => false], json_decode($result->getContent(), true));
+
+        $params[SwagMigrationAccessTokenService::ACCESS_TOKEN_NAME] = 'testToken';
+        $request = new Request([], $params);
         $result = $this->controller->downloadAssets($request, $context);
         $result = json_decode($result->getContent(), true);
 
@@ -289,9 +388,11 @@ class MigrationControllerTest extends TestCase
 
         $request = new Request([], [
             'runId' => $this->runUuid,
+            SwagMigrationAccessTokenService::ACCESS_TOKEN_NAME => 'testToken',
         ]);
         $result = $this->controller->downloadAssets($request, $context);
         $result = json_decode($result->getContent(), true);
+
         self::assertSame([
             'workload' => [],
         ], $result);
@@ -360,7 +461,7 @@ class MigrationControllerTest extends TestCase
     public function testGetState(): void
     {
         $context = Context::createDefaultContext();
-        $result = $this->controller->getState($context);
+        $result = $this->controller->getState(new Request(), $context);
         $state = json_decode($result->getContent(), true);
         self::assertSame('SwagMigrationNext\Migration\Service\ProgressState', $state['_class']);
     }

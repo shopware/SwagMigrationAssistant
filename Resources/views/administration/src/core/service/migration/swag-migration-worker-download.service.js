@@ -6,6 +6,7 @@ export class WorkerDownload {
      * @param {MigrationApiService} migrationService
      * @param {function} onProgressCB
      * @param {function} onErrorCB
+     * @param {function} onInterruptCB
      */
     constructor(
         status,
@@ -13,7 +14,8 @@ export class WorkerDownload {
         workerStatusManager,
         migrationService,
         onProgressCB,
-        onErrorCB
+        onErrorCB,
+        onInterruptCB
     ) {
         this._MAX_REQUEST_TIME_IN_MILLISECONDS = 10000;
         this._ASSET_UUID_CHUNK = 100; // Amount of uuids we fetch with one request
@@ -24,6 +26,7 @@ export class WorkerDownload {
         this._ASSET_MIN_FILE_CHUNK_BYTE_SIZE = this._CHUNK_SIZE_BYTE_INCREMENT;
 
         this._runId = downloadParams.runUuid;
+        this._accessToken = downloadParams.swagMigrationAccessToken;
         this._status = status;
         this._downloadParams = downloadParams;
         this._workerStatusManager = workerStatusManager;
@@ -38,6 +41,7 @@ export class WorkerDownload {
         // callbacks
         this._onProgressCB = onProgressCB;
         this._onErrorCB = onErrorCB;
+        this._onInterruptCB = onInterruptCB;
     }
 
     /**
@@ -52,6 +56,9 @@ export class WorkerDownload {
      */
     set interrupt(value) {
         this._interrupt = value;
+        if (value === true) {
+            this._callInterruptCB();
+        }
     }
 
     /**
@@ -69,12 +76,28 @@ export class WorkerDownload {
     }
 
     /**
+     * @param {function} value
+     */
+    set onInterruptCB(value) {
+        this._callInterruptCB = value;
+    }
+
+    /**
      * @param {Object} param
      * @private
      */
     _callProgressCB(param) {
         if (this._onProgressCB !== null) {
             this._onProgressCB(param);
+        }
+    }
+
+    /**
+     * @private
+     */
+    _callInterruptCB() {
+        if (this._onInterruptCB !== null) {
+            this._onInterruptCB();
         }
     }
 
@@ -276,8 +299,15 @@ export class WorkerDownload {
             this._migrationService.downloadAssets({
                 runId: this._runId,
                 workload: this._assetWorkload,
-                fileChunkByteSize: this._ASSET_FILE_CHUNK_BYTE_SIZE
+                fileChunkByteSize: this._ASSET_FILE_CHUNK_BYTE_SIZE,
+                swagMigrationAccessToken: this._accessToken
             }).then((res) => {
+                if (!res.validToken) {
+                    this.interrupt = true;
+                    resolve(this._assetWorkload);
+                    return;
+                }
+
                 resolve(res.workload);
             }).catch(() => {
                 resolve(this._assetWorkload);

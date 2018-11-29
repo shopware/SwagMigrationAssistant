@@ -31,6 +31,11 @@ class ProgressState extends Struct
     protected $migrationRunning;
 
     /**
+     * @var bool
+     */
+    protected $validMigrationRunToken;
+
+    /**
      * @var string
      */
     protected $entity;
@@ -52,6 +57,7 @@ class ProgressState extends Struct
 
     public function __construct(
         bool $isMigrationRunning,
+        bool $validMigrationRunToken,
         string $runId = null,
         array $profile = null,
         int $status = -1,
@@ -60,6 +66,7 @@ class ProgressState extends Struct
         int $entityCount = null
     ) {
         $this->migrationRunning = $isMigrationRunning;
+        $this->validMigrationRunToken = $validMigrationRunToken;
         $this->runId = $runId;
         $this->profile = $profile;
         $this->status = $status;
@@ -71,6 +78,11 @@ class ProgressState extends Struct
     public function isMigrationRunning(): bool
     {
         return $this->migrationRunning;
+    }
+
+    public function isMigrationRunTokenValid(): bool
+    {
+        return $this->validMigrationRunToken;
     }
 
     public function getRunId(): string

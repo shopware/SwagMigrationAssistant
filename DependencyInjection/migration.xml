@@ -28,6 +28,11 @@
             <argument type="service" id="currency.repository"/>
         </service>
 
+        <service id="SwagMigrationNext\Migration\Run\SwagMigrationAccessTokenService"
+                 class="SwagMigrationNext\Migration\Run\SwagMigrationAccessTokenService">
+            <argument type="service" id="swag_migration_run.repository"/>
+        </service>
+
         <service id="SwagMigrationNext\Migration\Service\MigrationDataFetcher"
                  class="SwagMigrationNext\Migration\Service\MigrationDataFetcher"
                  public="true">
@@ -68,6 +73,7 @@
             <argument type="service" id="swag_migration_run.repository"/>
             <argument type="service" id="swag_migration_data.repository"/>
             <argument type="service" id="swag_migration_media_file.repository"/>
+            <argument type="service" id="SwagMigrationNext\Migration\Run\SwagMigrationAccessTokenService"/>
         </service>
 
         <service id="SwagMigrationNext\Controller\MigrationController"
@@ -78,6 +84,7 @@
             <argument type="service" id="SwagMigrationNext\Migration\Asset\HttpAssetDownloadService"/>
             <argument type="service" id="swag_migration_profile.repository"/>
             <argument type="service" id="SwagMigrationNext\Migration\Service\MigrationProgressService"/>
+            <argument type="service" id="SwagMigrationNext\Migration\Run\SwagMigrationAccessTokenService"/>
         </service>
 
         <service id="SwagMigrationNext\Command\MigrationFetchDataCommand"

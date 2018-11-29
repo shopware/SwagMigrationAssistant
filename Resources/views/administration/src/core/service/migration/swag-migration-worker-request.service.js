@@ -23,6 +23,7 @@ export class WorkerRequest {
      * @param {MigrationApiService} migrationService
      * @param {function} onProgressCB
      * @param {function} onErrorCB
+     * @param {function} onInterruptCB
      */
     constructor(
         status,
@@ -30,7 +31,8 @@ export class WorkerRequest {
         workerStatusManager,
         migrationService,
         onProgressCB,
-        onErrorCB
+        onErrorCB,
+        onInterruptCB
     ) {
         this._MAX_REQUEST_TIME = 10000; // in ms
         this._DEFAULT_CHUNK_SIZE = 50; // in data sets
@@ -48,6 +50,7 @@ export class WorkerRequest {
         // callbacks
         this._onProgressCB = onProgressCB;
         this._onErrorCB = onErrorCB;
+        this._onInterruptCB = onInterruptCB;
     }
 
     /**
@@ -83,6 +86,9 @@ export class WorkerRequest {
      */
     set interrupt(value) {
         this._interrupt = value;
+        if (value === true) {
+            this._callInterruptCB();
+        }
     }
 
     /**
@@ -97,6 +103,13 @@ export class WorkerRequest {
      */
     set onErrorCB(value) {
         this._onErrorCB = value;
+    }
+
+    /**
+     * @param {function} value
+     */
+    set onInterruptCB(value) {
+        this._callInterruptCB = value;
     }
 
     /**
@@ -116,6 +129,15 @@ export class WorkerRequest {
     _callErrorCB(param) {
         if (this._onErrorCB !== null) {
             this._onErrorCB(param);
+        }
+    }
+
+    /**
+     * @private
+     */
+    _callInterruptCB() {
+        if (this._onInterruptCB !== null) {
+            this._onInterruptCB();
         }
     }
 
@@ -247,6 +269,12 @@ export class WorkerRequest {
                         ),
                         trace: []
                     });
+                    resolve();
+                    return;
+                }
+
+                if (!response.validToken) {
+                    this.interrupt = true;
                     resolve();
                     return;
                 }
