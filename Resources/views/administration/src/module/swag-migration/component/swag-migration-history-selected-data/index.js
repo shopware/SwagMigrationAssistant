@@ -14,6 +14,10 @@ Component.register('swag-migration-history-selected-data', {
         entityGroups: {
             type: Array,
             default: []
+        },
+        profile: {
+            type: String,
+            default: ''
         }
     },
 
@@ -22,7 +26,7 @@ Component.register('swag-migration-history-selected-data', {
             const snippets = [];
             this.entityGroups.forEach((group) => {
                 const groupSnippetName = ENTITY_GROUP_SNIPPET_LOOKUP[group.id];
-                snippets.push(`swag-migration.index.selectDataCard.dataPossible.${groupSnippetName}`);
+                snippets.push(`swag-migration.index.selectDataCard.dataSelection.${this.profile}Profile.${groupSnippetName}`);
             });
 
             return snippets;

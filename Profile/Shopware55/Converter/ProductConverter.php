@@ -442,8 +442,8 @@ class ProductConverter extends AbstractConverter
                 $this->loggingService->addInfo(
                     $this->runId,
                     Shopware55LogTypes::PRODUCT_MEDIA_NOT_CONVERTED,
-                    'Product-Media could not converted',
-                    'Product-Media could not converted.',
+                    'Product-Media could not be converted',
+                    'Product-Media could not be converted.',
                     [
                         'uuid' => $converted['id'],
                         'id' => $this->oldProductId,
@@ -478,7 +478,7 @@ class ProductConverter extends AbstractConverter
             $this->mediaFileService->saveMediaFile(
                 [
                     'runId' => $this->runId,
-                    'uri' => $asset['media']['uri'],
+                    'uri' => isset($asset['media']['uri']) ? $asset['media']['uri'] : $asset['media']['path'],
                     'fileName' => $asset['media']['name'],
                     'fileSize' => (int) $asset['media']['file_size'],
                     'mediaId' => $newMedia['id'],

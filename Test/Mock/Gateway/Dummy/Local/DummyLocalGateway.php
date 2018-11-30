@@ -7,7 +7,9 @@ use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
+use SwagMigrationNext\Migration\EnvironmentInformation;
 use SwagMigrationNext\Migration\Gateway\AbstractGateway;
+use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
 class DummyLocalGateway extends AbstractGateway
 {
@@ -36,8 +38,50 @@ class DummyLocalGateway extends AbstractGateway
         }
     }
 
-    public function readEnvironmentInformation(): array
+    public function readEnvironmentInformation(): EnvironmentInformation
     {
-        return require __DIR__ . '/../../../../_fixtures/environment_data.php';
+        $environmentData = require __DIR__ . '/../../../../_fixtures/environment_data.php';
+
+        $environmentDataArray = $environmentData['environmentInformation'];
+
+        if (empty($environmentDataArray)) {
+            return new EnvironmentInformation(
+                Shopware55Profile::SOURCE_SYSTEM_NAME,
+                Shopware55Profile::SOURCE_SYSTEM_VERSION,
+                '',
+                [],
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                $environmentData['warning']['code'],
+                $environmentData['warning']['detail'],
+                $environmentData['error']['code'],
+                $environmentData['error']['detail']
+            );
+        }
+
+        if (!isset($environmentDataArray['translations'])) {
+            $environmentDataArray['translations'] = 0;
+        }
+
+        return new EnvironmentInformation(
+            Shopware55Profile::SOURCE_SYSTEM_NAME,
+            $environmentDataArray['shopwareVersion'],
+            $environmentDataArray['structure'][0]['host'],
+            $environmentDataArray['structure'],
+            $environmentDataArray['categories'],
+            $environmentDataArray['products'],
+            $environmentDataArray['customers'],
+            $environmentDataArray['orders'],
+            $environmentDataArray['assets'],
+            $environmentDataArray['translations'],
+            $environmentData['warning']['code'],
+            $environmentData['warning']['detail'],
+            $environmentData['error']['code'],
+            $environmentData['error']['detail']
+        );
     }
 }

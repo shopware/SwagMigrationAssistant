@@ -2,6 +2,8 @@
 
 namespace SwagMigrationNext\Migration\Gateway;
 
+use SwagMigrationNext\Migration\EnvironmentInformation;
+
 interface GatewayInterface
 {
     /**
@@ -9,5 +11,5 @@ interface GatewayInterface
      */
     public function read(): array;
 
-    public function readEnvironmentInformation(): array;
+    public function readEnvironmentInformation(): EnvironmentInformation;
 }

@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Profile\Shopware55\Processor;
+namespace SwagMigrationNext\Profile\Shopware55\Asset;
 
 use Exception;
 use GuzzleHttp\Client;
@@ -97,6 +97,7 @@ class HttpAssetDownloadService extends AbstractMediaFileProcessor
         ]);
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsAnyFilter('mediaId', $mediaIds));
+        $criteria->addFilter(new EqualsFilter('runId', $runId));
         $assetSearchResult = $this->mediaFileRepo->search($criteria, $context);
         /** @var SwagMigrationMediaFileEntity[] $assets */
         $assets = $assetSearchResult->getElements();
@@ -138,7 +139,7 @@ class HttpAssetDownloadService extends AbstractMediaFileProcessor
                     $mappedWorkload[$uuid]['state'] = 'error';
                     $this->loggingService->addError(
                         $mappedWorkload[$uuid]['runId'],
-                        Shopware55LogTypes::CANNNOT_DOWNLOAD_MEDIA,
+                        Shopware55LogTypes::CANNOT_DOWNLOAD_MEDIA,
                         '',
                         'Cannot download media.',
                         [

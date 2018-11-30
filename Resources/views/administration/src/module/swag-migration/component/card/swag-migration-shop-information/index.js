@@ -69,10 +69,9 @@ Component.register('swag-migration-shop-information', {
 
         shopUrl() {
             if (this.environmentInformation.sourceSystemDomain === undefined) {
-                return '';
+                return '-';
             }
-
-            return this.profile.credentialFields.endpoint.replace(/^\s*https?:\/\//, '');
+            return this.environmentInformation.sourceSystemDomain.replace(/^\s*https?:\/\//, '');
         },
 
         shopUrlPrefix() {
@@ -80,7 +79,7 @@ Component.register('swag-migration-shop-information', {
                 return '';
             }
 
-            const match = this.profile.credentialFields.endpoint.match(/^\s*https?:\/\//);
+            const match = this.environmentInformation.sourceSystemDomain.match(/^\s*https?:\/\//);
             if (match === null) {
                 return '';
             }
@@ -89,6 +88,9 @@ Component.register('swag-migration-shop-information', {
         },
 
         sslActive() {
+            if (this.environmentInformation.sourceSystemDomain === undefined) {
+                return false;
+            }
             return (this.shopUrlPrefix === 'https://');
         },
 
@@ -125,6 +127,9 @@ Component.register('swag-migration-shop-information', {
         },
 
         shopFirstLetter() {
+            if (this.environmentInformation.sourceSystemName === undefined) {
+                return 'S';
+            }
             return this.environmentInformation.sourceSystemName[0];
         },
 

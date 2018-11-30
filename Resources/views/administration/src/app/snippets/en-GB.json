@@ -64,6 +64,8 @@
               "endpointSSLLabel": "My shop uses SSL"
             },
             "local": {
+              "contentTitle": "Database connection to Shopware 5",
+              "contentInformation": "Insert your Shopware 5 database credentials to connect to the database",
               "dbHostLabel": "DB host",
               "dbHostPlaceholder": "Insert database host ...",
               "dbPortLabel": "DB port",
@@ -73,7 +75,8 @@
               "dbUserLabel": "DB user",
               "dbUserPlaceholder": "Insert username ...",
               "dbPasswordLabel": "DB password",
-              "dbPasswordPlaceholder": "Insert password ..."
+              "dbPasswordPlaceholder": "Insert password ...",
+              "installationRoot": "Installation root"
             }
           },
           "success": {
@@ -256,7 +259,7 @@
         "unknownError": "Unknown error. For more information, you can check the console logs of the developer tools in your browser.",
         "mediaProcessConnectionError": "A connection error occurred while copying the media data. Please check the connection.",
         "SWAG-MIGRATION-WRITER-NOT-FOUND": "File writer for \"{entity}\" entity not found.",
-        "SWAG-MIGRATION-SHOPWARE55-CANNNOT-DOWNLOAD-DATA": "Cannot download media. Affected file: {uri}",
+        "SWAG-MIGRATION-SHOPWARE55-CANNOT-DOWNLOAD-DATA": "Cannot download media. Affected file: {uri}",
         "SWAG-MIGRATION-SHOPWARE55-PARENT-ENTITY-NOT-FOUND": "Parent entity for \"{entity}\" child not found.",
         "SWAG-MIGRATION-SHOPWARE55-ASSOCIATION-REQUIRED-MISSING": "Mapping of \"{missingEntity}\" is missing, but it is a required association for \"{requiredFor}\". Please import \"{missingImportEntity}\" first to continue.",
         "SWAG-MIGRATION-SHOPWARE55-EMPTY-NECESSARY-DATA-FIELDS": "{entity} entity could not be converted, because of empty, necessary field(s): {fields}.",
@@ -267,7 +270,9 @@
         "SWAG-MIGRATION-SHOPWARE55-EMPTY-LOCALE": "Category entity could not be converted, because of empty locale.",
         "SWAG-MIGRATION-SHOPWARE55-NO-ADDRESS-DATA": "Category entity could not be converted, because of empty locale.",
         "SWAG-MIGRATION-SHOPWARE55-NOT-CONVERT-ABLE-OBJECT-TYPE": "Translation of object type “{objectType}“ could not be converted.",
-        "SWAG-MIGRATION-SHOPWARE55-INVALID-UNSERIALIZED-DATA": "{entity} translation entity could not be converted, because of invalid, unserialized object data."
+        "SWAG-MIGRATION-SHOPWARE55-INVALID-UNSERIALIZED-DATA": "{entity} translation entity could not be converted, because of invalid, unserialized object data.",
+        "SWAG-MIGRATION-SHOPWARE55-SOURCE-FILE-NOT-FOUND": "The source file could not be found. File: {path}",
+        "SWAG-MIGRATION-SHOPWARE55-CANNOT-COPY-DATA": "The source file could not be copied. File: {path}"
       }
     },
     "history": {

@@ -11,6 +11,7 @@ use SwagMigrationNext\Migration\DataSelection\DataSelectionRegistryInterface;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
 use SwagMigrationNext\Migration\Run\RunServiceInterface;
+use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationNext\Migration\Service\MediaFileProcessorServiceInterface;
 use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationNext\Migration\Service\MigrationDataWriterInterface;
@@ -50,6 +51,11 @@ class MigrationController extends AbstractController
     private $migrationProfileRepo;
 
     /**
+     * @var EntityRepositoryInterface
+     */
+    private $migrationRunRepository;
+
+    /**
      * @var SwagMigrationAccessTokenService
      */
     private $accessTokenService;
@@ -72,7 +78,8 @@ class MigrationController extends AbstractController
         SwagMigrationAccessTokenService $accessTokenService,
         RunServiceInterface $runService,
         EntityRepositoryInterface $migrationProfileRepo,
-        DataSelectionRegistryInterface $dataSelectionRegistry
+        DataSelectionRegistryInterface $dataSelectionRegistry,
+        EntityRepositoryInterface $migrationRunRepository
     ) {
         $this->migrationDataFetcher = $migrationDataFetcher;
         $this->migrationDataWriter = $migrationDataWriter;
@@ -82,6 +89,7 @@ class MigrationController extends AbstractController
         $this->runService = $runService;
         $this->migrationProfileRepo = $migrationProfileRepo;
         $this->dataSelectionRegistry = $dataSelectionRegistry;
+        $this->migrationRunRepository = $migrationRunRepository;
     }
 
     /**
@@ -308,6 +316,15 @@ class MigrationController extends AbstractController
             return new JsonResponse(['workload' => [], 'validToken' => true]);
         }
 
+        $runCollection = $this->migrationRunRepository->search(new Criteria([$runUuid]), $context);
+        /** @var SwagMigrationRunEntity $run */
+        $run = $runCollection->get($runUuid);
+
+        $credentials = [];
+        if ($run !== null && $run->getCredentialFields()) {
+            $credentials = $run->getCredentialFields();
+        }
+
         $migrationContext = new MigrationContext(
             $runUuid,
             $profileId,
@@ -315,7 +332,8 @@ class MigrationController extends AbstractController
             $gateway,
             '',
             0,
-            0
+            0,
+            $credentials
         );
 
         $newWorkload = $this->mediaFileProcessorService->processMediaFiles($migrationContext, $context, $workload, $fileChunkByteSize);

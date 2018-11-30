@@ -4,6 +4,7 @@ namespace SwagMigrationNext\Test\Profile\Shopware55\Gateway;
 
 use PHPUnit\Framework\TestCase;
 use SwagMigrationNext\Exception\GatewayReadException;
+use SwagMigrationNext\Migration\EnvironmentInformation;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Api\Shopware55ApiFactory;
 
@@ -51,9 +52,10 @@ class Shopware55ApiGatewayTest extends TestCase
 
         $factory = new Shopware55ApiFactory();
         $gateway = $factory->create($migrationContext);
+        /** @var EnvironmentInformation $response */
         $response = $gateway->readEnvironmentInformation();
 
-        $this->assertSame($response['environmentInformation'], []);
-        $this->assertSame($response['error']['code'], 0);
+        $this->assertSame($response->getProductTotal(), 0);
+        $this->assertSame($response->getErrorCode(), 0);
     }
 }

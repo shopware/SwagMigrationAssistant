@@ -65,7 +65,7 @@ class SwagMigrationNext extends Plugin
                 'id' => Uuid::uuid4()->getBytes(),
                 'profile' => Shopware55Profile::PROFILE_NAME,
                 'gateway' => Shopware55LocalGateway::GATEWAY_TYPE,
-                'credential_fields' => json_encode(['dbHost' => '', 'dbPort' => '', 'dbName' => '', 'dbUser' => '', 'dbPassword' => '']),
+                'credential_fields' => json_encode(['dbHost' => '', 'dbPort' => '3306', 'dbName' => '', 'dbUser' => '', 'dbPassword' => '', 'installationRoot' => '']),
                 'created_at' => $now,
             ]);
             $connection->insert('swag_migration_general_setting', [

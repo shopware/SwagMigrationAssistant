@@ -123,7 +123,8 @@ class MigrationControllerTest extends TestCase
                 $accessTokenService
             ),
             $this->profileRepo,
-            new DataSelectionRegistry([])
+            new DataSelectionRegistry([]),
+            $this->runRepo
         );
     }
 

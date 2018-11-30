@@ -31,7 +31,7 @@
                         {% block swag_migration_history_grid_columns_selectedData %}
                             <sw-grid-column flex="minmax(200px, 1fr)"
                                             :label="$tc('swag-migration.history.selectedData')">
-                                <swag-migration-history-selected-data :entityGroups="item.additionalData.entityGroups">
+                                <swag-migration-history-selected-data :entityGroups="item.additionalData.entityGroups" :profile="item.profile.profile">
                                 </swag-migration-history-selected-data>
                             </sw-grid-column>
                         {% endblock %}

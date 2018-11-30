@@ -197,7 +197,7 @@ class ProductConverterTest extends TestCase
         static::assertArrayNotHasKey('media', $converted);
 
         $logs = $this->loggingService->getLoggingArray();
-        $description = 'Product-Media could not converted.';
+        $description = 'Product-Media could not be converted.';
         static::assertSame($description, $logs[0]['logEntry']['description']);
         static::assertCount(1, $logs);
     }

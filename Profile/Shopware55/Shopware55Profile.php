@@ -29,6 +29,8 @@ class Shopware55Profile implements ProfileInterface
 
     public const SOURCE_SYSTEM_NAME = 'Shopware';
 
+    public const SOURCE_SYSTEM_VERSION = '5.5';
+
     /**
      * @var EntityRepositoryInterface
      */
@@ -93,47 +95,7 @@ class Shopware55Profile implements ProfileInterface
 
     public function readEnvironmentInformation(GatewayInterface $gateway): EnvironmentInformation
     {
-        $environmentData = $gateway->readEnvironmentInformation();
-        $environmentDataArray = $environmentData['environmentInformation'];
-        if (empty($environmentDataArray)) {
-            return new EnvironmentInformation(
-                self::SOURCE_SYSTEM_NAME,
-                '',
-                '',
-                [],
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                $environmentData['warning']['code'],
-                $environmentData['warning']['detail'],
-                $environmentData['error']['code'],
-                $environmentData['error']['detail']
-            );
-        }
-
-        if (!isset($environmentDataArray['translations'])) {
-            $environmentDataArray['translations'] = 0;
-        }
-
-        return new EnvironmentInformation(
-            self::SOURCE_SYSTEM_NAME,
-            $environmentDataArray['shopwareVersion'],
-            $environmentDataArray['structure'][0]['host'],
-            $environmentDataArray['structure'],
-            $environmentDataArray['categories'],
-            $environmentDataArray['products'],
-            $environmentDataArray['customers'],
-            $environmentDataArray['orders'],
-            $environmentDataArray['assets'],
-            $environmentDataArray['translations'],
-            $environmentData['warning']['code'],
-            $environmentData['warning']['detail'],
-            $environmentData['error']['code'],
-            $environmentData['error']['detail']
-        );
+        return $gateway->readEnvironmentInformation();
     }
 
     public function readEntityTotal(GatewayInterface $gateway, string $entityName): int

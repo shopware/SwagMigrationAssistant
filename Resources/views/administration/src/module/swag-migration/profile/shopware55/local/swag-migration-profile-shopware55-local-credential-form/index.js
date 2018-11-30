@@ -1,7 +1,7 @@
 import { Component } from 'src/core/shopware';
-import template from './swag-migration-profile-shopware55-api-credential-form.html.twig';
+import template from './swag-migration-profile-shopware55-local-credential-form.html.twig';
 
-Component.register('swag-migration-profile-shopware55-api-credential-form', {
+Component.register('swag-migration-profile-shopware55-local-credential-form', {
     template,
 
     props: {
@@ -46,11 +46,12 @@ Component.register('swag-migration-profile-shopware55-api-credential-form', {
 
     methods: {
         areCredentialsValid(newInputCredentials) {
-            return (newInputCredentials.endpoint &&
-                newInputCredentials.apiUser &&
-                newInputCredentials.apiKey &&
-                newInputCredentials.endpoint !== 'http://' &&
-                newInputCredentials.endpoint !== 'https://'
+            return (newInputCredentials.dbHost &&
+                newInputCredentials.dbPort &&
+                newInputCredentials.dbName &&
+                newInputCredentials.dbUser &&
+                newInputCredentials.dbPassword &&
+                newInputCredentials.installationRoot
             );
         },
 

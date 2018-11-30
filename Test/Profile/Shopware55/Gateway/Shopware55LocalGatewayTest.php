@@ -2,18 +2,19 @@
 
 namespace SwagMigrationNext\Test\Profile\Shopware55\Gateway;
 
+use Doctrine\DBAL\Exception\ConnectionException;
 use PHPUnit\Framework\TestCase;
+use SwagMigrationNext\Migration\EnvironmentInformation;
 use SwagMigrationNext\Migration\Gateway\GatewayFactoryRegistry;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalReaderNotFoundException;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalFactory;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
-use Symfony\Component\HttpFoundation\Response;
 
 class Shopware55LocalGatewayTest extends TestCase
 {
-    public function testReadFailed(): void
+    public function testReadFailedNoCredentials(): void
     {
         $migrationContext = new MigrationContext(
             '',
@@ -37,11 +38,12 @@ class Shopware55LocalGatewayTest extends TestCase
             $factory,
         ]);
         $gateway = $gatewayFactoryRegistry->createGateway($migrationContext);
-        $response = $gateway->read();
-        $this->assertSame($response, []);
+
+        $this->expectException(ConnectionException::class);
+        $gateway->read();
     }
 
-    public function testReadWithReaderNotFound(): void
+    public function testReadWithUnknownEntityThrowsException(): void
     {
         $migrationContext = new MigrationContext(
             '',
@@ -65,18 +67,13 @@ class Shopware55LocalGatewayTest extends TestCase
             $factory,
         ]);
 
-        try {
-            $gateway = $gatewayFactoryRegistry->createGateway($migrationContext);
-            $gateway->read();
-        } catch (\Exception $e) {
-            /* @var Shopware55LocalReaderNotFoundException $e */
-            self::assertInstanceOf(Shopware55LocalReaderNotFoundException::class, $e);
-            self::assertSame(Response::HTTP_NOT_FOUND, $e->getStatusCode());
-            self::assertSame('Shopware55 local reader for "foo" not found', $e->getMessage());
-        }
+        $gateway = $gatewayFactoryRegistry->createGateway($migrationContext);
+
+        $this->expectException(Shopware55LocalReaderNotFoundException::class);
+        $gateway->read();
     }
 
-    public function testReadEnvironmentInformationFailed(): void
+    public function testReadEnvironmentInformationHasEmptyResult(): void
     {
         $migrationContext = new MigrationContext(
             '',
@@ -92,6 +89,7 @@ class Shopware55LocalGatewayTest extends TestCase
         $gateway = $factory->create($migrationContext);
         $response = $gateway->readEnvironmentInformation();
 
-        $this->assertSame($response, []);
+        $this->assertInstanceOf(EnvironmentInformation::class, $response);
+        $this->assertSame($response->getProductTotal(), 0);
     }
 }
