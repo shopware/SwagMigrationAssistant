@@ -1,0 +1,100 @@
+{% block swag_migration_history %}
+    <sw-card class="swag-migration-history"
+             :isLoading="isLoading"
+             :large="true">
+        {% block swag_migration_history_grid %}
+            <sw-grid v-if="migrationRuns.length > 0"
+                     :items="migrationRuns"
+                     :selectable="false">
+                {% block swag_migration_history_grid_columns %}
+                    <template slot="columns" slot-scope="{ item }">
+                        {% block swag_migration_history_grid_columns_domain %}
+                            <sw-grid-column flex="minmax(100px, 1fr)"
+                                            :label="$tc('swag-migration.history.shopDomain')">
+                                {{ item.environmentInformation.sourceSystemDomain }}
+                            </sw-grid-column>
+                        {% endblock %}
+                        {% block swag_migration_history_grid_columns_shopSystem %}
+                            <sw-grid-column flex="minmax(100px, 1fr)"
+                                            :label="$tc('swag-migration.history.shopSystem')">
+                                {{ item.environmentInformation.sourceSystemName }}
+                                {{ item.environmentInformation.sourceSystemVersion }}
+                            </sw-grid-column>
+                        {% endblock %}
+                        {% block swag_migration_history_grid_columns_selectedData %}
+                            <sw-grid-column flex="minmax(200px, 1fr)"
+                                            :label="$tc('swag-migration.history.selectedData')">
+                                <swag-migration-history-selected-data :entityGroups="item.additionalData.entityGroups">
+                                </swag-migration-history-selected-data>
+                            </sw-grid-column>
+                        {% endblock %}
+                        {% block swag_migration_history_grid_columns_profile_gateway %}
+                            <sw-grid-column flex="minmax(120px, 1fr)"
+                                            :label="$tc('swag-migration.history.profileAndGateway')">
+                                {{ item.profile.profile }} /
+                                {{ item.profile.gateway }}
+                            </sw-grid-column>
+                        {% endblock %}
+                        {% block swag_migration_history_grid_columns_status %}
+                            <sw-grid-column flex="minmax(90px, 90px)"
+                                            :label="$tc('swag-migration.history.status')"
+                                            align="center">
+                                <sw-icon v-if="item.status === 'finished'"
+                                         name="default-basic-checkmark-line"
+                                         class="swag-migration-history-status-icon is--finished">
+                                </sw-icon>
+                                <sw-icon v-else-if="item.status === 'aborted'"
+                                         name="default-basic-x-line"
+                                         class="swag-migration-history-status-icon is--aborted">
+                                </sw-icon>
+                                <sw-icon v-else-if="item.status === 'running'"
+                                         name="default-basic-shape-circle"
+                                         class="swag-migration-history-status-icon is--loading">
+                                </sw-icon>
+                            </sw-grid-column>
+                        {% endblock %}
+                        {% block swag_migration_history_grid_columns_importStart %}
+                            <sw-grid-column flex="minmax(150px, 1fr)"
+                                            :label="$tc('swag-migration.history.importDateTime')">
+                                {{ item.createdAt | date }}
+                            </sw-grid-column>
+                        {% endblock %}
+                        {% block swag_migration_history_grid_columns_actions %}
+                            <sw-grid-column flex="minmax(100px, 100px)"
+                                            align="center">
+                                {% block swag_migration_history_grid_columns_actions_context_button %}
+                                    <sw-context-button>
+                                        {% block swag_migration_history_grid_columns_actions_details %}
+                                            <sw-context-menu-item :disabled="true">
+                                                {{ $tc('swag-migration.history.contextMenu.details') }}
+                                            </sw-context-menu-item>
+                                        {% endblock %}
+                                    </sw-context-button>
+                                {% endblock %}
+                            </sw-grid-column>
+                        {% endblock %}
+                    </template>
+                {% endblock %}
+
+                {% block swag_migration_history_grid_pagination %}
+                    <sw-pagination
+                            slot="pagination"
+                            :page="page"
+                            :limit="limit"
+                            :total="total"
+                            :total-visible="7"
+                            @page-change="onPageChange">
+                    </sw-pagination>
+                {% endblock %}
+            </sw-grid>
+        {% endblock %}
+
+        {% block swag_migration_history_no_data %}
+            <div class="swag-migration-history-no-data" v-else>
+                <p class="swag-migration-history-no-data__label">
+                    {{ $tc('swag-migration.history.noData') }}
+                </p>
+            </div>
+        {% endblock %}
+    </sw-card>
+{% endblock %}

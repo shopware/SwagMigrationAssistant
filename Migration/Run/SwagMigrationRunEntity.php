@@ -47,6 +47,11 @@ class SwagMigrationRunEntity extends Entity
     /**
      * @var array|null
      */
+    protected $environmentInformation;
+
+    /**
+     * @var array|null
+     */
     protected $additionalData;
 
     /**
@@ -112,6 +117,16 @@ class SwagMigrationRunEntity extends Entity
     public function setTotals(array $totals): void
     {
         $this->totals = $totals;
+    }
+
+    public function getEnvironmentInformation(): ?array
+    {
+        return $this->environmentInformation;
+    }
+
+    public function setEnvironmentInformation(array $environmentInformation): void
+    {
+        $this->environmentInformation = $environmentInformation;
     }
 
     public function getAdditionalData(): ?array

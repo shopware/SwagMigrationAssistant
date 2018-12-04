@@ -23,6 +23,9 @@
                     {% endblock %}
                 </template>
             </sw-grid>
+        {% endblock %}
+
+        {% block swag_migration_index_data_selector_no_data %}
             <div class="swag-migration-index-data-selector__no-data" v-else>
                 <p class="swag-migration-index-data-selector__no-data--label">
                     {{ $tc('swag-migration.index.selectDataCard.noData') }}

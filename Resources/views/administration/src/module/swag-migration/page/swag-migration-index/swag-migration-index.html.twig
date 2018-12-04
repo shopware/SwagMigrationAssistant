@@ -12,158 +12,50 @@
 
         {% block swag_migration_index_smart_bar_actions %}
             <template slot="smart-bar-actions">
-                <sw-button v-if="abortButtonVisible" @click="onAbortButtonClick">
+                <sw-button v-if="abortButtonVisible" @click="onActionButtonClick('onAbortButtonClick')">
                     {{ $tc('swag-migration.index.abortButton') }}
                 </sw-button>
-                <sw-button v-if="backButtonVisible" @click="onBackButtonClick">
+                <sw-button v-if="backButtonVisible" @click="onActionButtonClick('onBackButtonClick')">
                     {{ $tc('swag-migration.index.backButton') }}
                 </sw-button>
-                <sw-button variant="primary" v-if="migrateButtonVisible" @click="onMigrateButtonClick" :disabled="migrateButtonDisabled">
+                <sw-button variant="primary" v-if="migrateButtonVisible" @click="onActionButtonClick('onMigrateButtonClick')" :disabled="migrateButtonDisabled">
                     {{ $tc('swag-migration.index.migrateButton') }}
                 </sw-button>
-                <sw-button variant="primary" v-if="pauseButtonVisible" @click="onPauseButtonClick">
+                <sw-button variant="primary" v-if="pauseButtonVisible" @click="onActionButtonClick('onPauseButtonClick')">
                     {{ $tc('swag-migration.index.pauseButton') }}
                 </sw-button>
-                <sw-button variant="primary" v-if="continueButtonVisible" @click="onContinueButtonClick">
+                <sw-button variant="primary" v-if="continueButtonVisible" @click="onActionButtonClick('onContinueButtonClick')">
                     {{ $tc('swag-migration.index.continueButton') }}
                 </sw-button>
             </template>
         {% endblock %}
 
         {% block swag_migration_index_content %}
-            <sw-card-view slot="content"  v-if="!isLoading">
-
-                {% block swag_migration_index_card_shopInformation %}
-                    <swag-migration-shop-information :environmentInformation="environmentInformation"
-                                                     :profile="profile"
-                                                     :lastMigrationDate="lastMigrationDate"
-                                                     :isMigrating="isMigrating"
-                                                     :isPaused="isPaused"
-                                                     :isOtherMigrationRunning="isOtherMigrationRunning"
-                                                     @onClickEditSettings="editSettings">
-                    </swag-migration-shop-information>
-                {% endblock %}
-
-                {% block swag_migration_index_card_dataSelector %}
-                    <swag-migration-data-selector ref="dataSelector"
-                                                  :tableData="tableDataFiltered"
-                                                  v-if="componentIndex === 0"
-                                                  @swag-migration-data-selector-migration-allowed="onMigrationAllowed">
-                    </swag-migration-data-selector>
-                {% endblock %}
-
-                {% block swag_migration_index_card_loadingScreen %}
-                    <swag-migration-loading-screen v-if="componentIndex === 1" profileName="Shopware 5"
-                                                   :tableData="tableDataFiltered"
-                                                   :statusIndex="statusIndex">
-                    </swag-migration-loading-screen>
-                {% endblock %}
-
-                {% block swag_migration_index_card_loadingScreen_success %}
-                    <swag-migration-loading-screen-success v-if="componentIndex === 2">
-                    </swag-migration-loading-screen-success>
-                {% endblock %}
-
-                {% block swag_migration_index_card_loadingScreen_warning %}
-                    <swag-migration-loading-screen-warning v-if="componentIndex === 3"
-                                                           :errorList="errorList">
-                    </swag-migration-loading-screen-warning>
-                {% endblock %}
-
-                {% block swag_migration_index_card_loadingScreen_failure %}
-                    <swag-migration-loading-screen-failure v-if="componentIndex === 4">
-                    </swag-migration-loading-screen-failure>
-                {% endblock %}
-
-                {% block swag_migration_index_card_loadingScreen_pause %}
-                    <swag-migration-loading-screen-pause v-if="componentIndex === 5">
-                    </swag-migration-loading-screen-pause>
-                {% endblock %}
-
-                {% block swag_migration_index_card_loadingScreen_takeover %}
-                    <swag-migration-loading-screen-takeover v-if="componentIndex === 6"
-                                                            @onTakeoverMigration="onTakeoverMigration"
-                                                            :isOtherInstanceFetching="isOtherInstanceFetching"
-                                                            :isMigrationInterrupted="isMigrationInterrupted">
-                    </swag-migration-loading-screen-takeover>
-                {% endblock %}
-
-                {% block swag_migration_index_modal_migration_confirmDialog %}
-                    <sw-modal v-if="showMigrationConfirmDialog"
-                              :title="$tc('swag-migration.index.confirmDialog.title')"
-                              :isLoading="isMigrating"
-                              @closeModal="onCloseMigrationConfirmDialog"
-                              variant="small">
-
-                        {% block swag_migration_index_modal_migration_confirmDialog_message %}
-                            <p class="swag-migration-index-modal-migration-confirm-dialog-message">
-                                {{ $tc('swag-migration.index.confirmDialog.message') }}
-                            </p>
+            <sw-card-view slot="content">
+                {% block swag_migration_index_tabs %}
+                    <sw-tabs class="swag-migration-index-tabs">
+                        {% block swag_migration_index_tab_main %}
+                            <sw-tabs-item :route="{ name: 'swag.migration.index.main' }"
+                                          :title="$tc('swag-migration.general.tabMain')">
+                                {{ $tc('swag-migration.general.tabMain') }}
+                            </sw-tabs-item>
                         {% endblock %}
 
-                        {% block swag_migration_index_modal_migration_confirmDialog_footer %}
-                            <template slot="modal-footer">
-                                {% block swag_migration_index_modal_migration_confirmDialog_footer_cancelAction %}
-                                    <sw-button @click="onCloseMigrationConfirmDialog"
-                                               size="small">
-                                        {{ $tc('swag-migration.index.confirmDialog.cancel') }}
-                                    </sw-button>
-                                {% endblock %}
-
-                                {% block swag_migration_index_modal_migration_confirmDialog_footer_confirmAction %}
-                                    <sw-button @click="onMigrate"
-                                               variant="primary"
-                                               size="small">
-                                        {{ $tc('swag-migration.index.confirmDialog.confirm') }}
-                                    </sw-button>
-                                {% endblock %}
-                            </template>
+                        {% block swag_migration_index_tab_history %}
+                            <sw-tabs-item :route="{ name: 'swag.migration.index.history' }"
+                                          :title="$tc('swag-migration.general.tabHistory')">
+                                {{ $tc('swag-migration.general.tabHistory') }}
+                            </sw-tabs-item>
                         {% endblock %}
-                    </sw-modal>
+                    </sw-tabs>
                 {% endblock %}
 
-                {% block swag_migration_index_modal_abort_migration_confirmDialog %}
-                    <sw-modal v-if="showAbortMigrationConfirmDialog"
-                              :title="$tc('swag-migration.index.confirmAbortDialog.title')"
-                              @closeModal="onCloseAbortMigrationConfirmDialog"
-                              variant="small">
-
-                        <sw-alert variant="warning"
-                                  class="swag-migration-index-data-selector__tou">
-                            <p v-html="$tc('swag-migration.index.confirmAbortDialog.hintContent')"></p>
-                        </sw-alert>
-
-                        {% block swag_migration_index_modal_abort_migration_confirmDialog_message %}
-                        <p class="swag-migration-index-modal-abort-migration-confirm-dialog-message">
-                            {{ $tc('swag-migration.index.confirmAbortDialog.message') }}
-                        </p>
-                        {% endblock %}
-
-                        {% block swag_migration_index_modal_abort_migration_confirmDialog_footer %}
-                        <template slot="modal-footer">
-                            {% block swag_migration_index_modal_abort_migration_confirmDialog_footer_cancelAction %}
-                            <sw-button @click="onCloseAbortMigrationConfirmDialog"
-                                       size="small">
-                                {{ abortMigrationBackText }}
-                            </sw-button>
-                            {% endblock %}
-
-                            {% block swag_migration_index_modal_abort_migration_confirmDialog_footer_confirmAction %}
-                            <sw-button @click="onMigrationAbort"
-                                       variant="primary"
-                                       size="small">
-                                {{ $tc('swag-migration.index.confirmAbortDialog.confirm') }}
-                            </sw-button>
-                            {% endblock %}
-                        </template>
-                        {% endblock %}
-                    </sw-modal>
+                {% block swag_migration_index_content_view %}
+                    <router-view ref="contentComponent"
+                                 @buttonStateChanged="onActionButtonStateChanged">
+                    </router-view>
                 {% endblock %}
             </sw-card-view>
-        {% endblock %}
-
-        {% block swag_migration_index_loader %}
-        <sw-loader slot="content" v-if="isLoading"></sw-loader>
         {% endblock %}
     </sw-page>
 {% endblock %}

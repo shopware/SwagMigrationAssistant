@@ -4,10 +4,10 @@ namespace SwagMigrationNext\Controller;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use SwagMigrationNext\Exception\MigrationContextPropertyMissingException;
 use SwagMigrationNext\Exception\MigrationWorkloadPropertyMissingException;
 use SwagMigrationNext\Migration\Asset\HttpAssetDownloadServiceInterface;
+use SwagMigrationNext\Migration\EnvironmentInformation;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
 use SwagMigrationNext\Migration\Run\SwagMigrationAccessTokenService;
@@ -95,7 +95,11 @@ class MigrationController extends AbstractController
             throw new MigrationContextPropertyMissingException('profileId');
         }
 
-        $runTokenStruct = $this->migrationAccessTokenService->startMigrationRun($profileId, $context);
+        $runTokenStruct = $this->migrationAccessTokenService->startMigrationRun(
+            $profileId,
+            $context,
+            $this->getEnvironmentInformation($profileId, $context)
+        );
 
         return new JsonResponse($runTokenStruct);
     }
@@ -111,31 +115,7 @@ class MigrationController extends AbstractController
             throw new MigrationContextPropertyMissingException('profileId');
         }
 
-        $readCriteria = new Criteria([$profileId]);
-        $profileCollection = $this->migrationProfileRepo->search($readCriteria, $context);
-        /** @var SwagMigrationProfileEntity $profile */
-        $profile = $profileCollection->get($profileId);
-
-        /** @var string $profileName */
-        $profileName = $profile->getProfile();
-        /** @var string $gateway */
-        $gateway = $profile->getGateway();
-        $credentials = $profile->getCredentialFields();
-
-        $migrationContext = new MigrationContext(
-            '',
-            '',
-            $profileName,
-            $gateway,
-            '',
-            $credentials,
-            0,
-            0
-        );
-
-        $information = $this->migrationDataFetcher->getEnvironmentInformation($migrationContext);
-
-        return new JsonResponse($information);
+        return new JsonResponse($this->getEnvironmentInformation($profileId, $context));
     }
 
     /**
@@ -307,5 +287,29 @@ class MigrationController extends AbstractController
         $state = $this->migrationProgressService->getProgress($request, $context);
 
         return new JsonResponse($state);
+    }
+
+    private function getEnvironmentInformation($profileId, $context) : EnvironmentInformation {
+        $readCriteria = new ReadCriteria([$profileId]);
+        $profileCollection = $this->migrationProfileRepo->read($readCriteria, $context);
+        /** @var SwagMigrationProfileEntity $profile */
+        $profile = $profileCollection->get($profileId);
+
+        $profileName = $profile->getProfile();
+        $gateway = $profile->getGateway();
+        $credentials = $profile->getCredentialFields();
+
+        $migrationContext = new MigrationContext(
+            '',
+            '',
+            $profileName,
+            $gateway,
+            '',
+            $credentials,
+            0,
+            0
+        );
+
+        return $this->migrationDataFetcher->getEnvironmentInformation($migrationContext);
     }
 }

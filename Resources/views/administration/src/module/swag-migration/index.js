@@ -1,5 +1,7 @@
 import { Module } from 'src/core/shopware';
 import './page/swag-migration-index';
+import './page/swag-migration-main-page';
+import './page/swag-migration-history';
 import './page/swag-migration-wizard';
 import './page/swag-migration-wizard-page-introduction';
 import './page/swag-migration-wizard-page-plugin-information';
@@ -17,6 +19,7 @@ import './component/swag-migration-loading-screen-pause';
 import './component/swag-migration-loading-screen-takeover';
 import './component/swag-migration-shop-information';
 import './component/sw-progress-bar';
+import './component/swag-migration-history-selected-data';
 import './extension/sw-settings-index';
 
 Module.register('swag-migration', {
@@ -34,6 +37,17 @@ Module.register('swag-migration', {
             path: 'index',
             meta: {
                 parentPath: 'sw.settings.index'
+            },
+            redirect: { name: 'swag.migration.index.main' },
+            children: {
+                main: {
+                    path: 'main',
+                    component: 'swag-migration-main-page'
+                },
+                history: {
+                    path: 'history',
+                    component: 'swag-migration-history'
+                }
             }
         },
         wizard: {

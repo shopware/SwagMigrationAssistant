@@ -1,0 +1,37 @@
+@import "~less/variables";
+
+@swag-migration-history-color-finished: @color-emerald;
+@swag-migration-history-color-aborted: @color-crimson;
+@swag-migration-history-color-loading: #B3BFCC; //TODO: replace with default grey
+@swag-migration-history-color-background-no-data: @color-iron;
+
+.swag-migration-history {
+
+    .swag-migration-history-status-icon {
+        &.is--finished {
+            color: @swag-migration-history-color-finished;
+        }
+
+        &.is--aborted {
+            color: @swag-migration-history-color-aborted;
+        }
+
+        &.is--loading {
+            color: @swag-migration-history-color-loading;
+        }
+    }
+
+    .swag-migration-history__no-data {
+        background-color: @swag-migration-history-color-background-no-data;
+        height: 230px;
+        line-height: 230px;
+        text-align: center;
+        width: 100%;
+
+        .swag-migration-history__no-data--label {
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: 0.1px;
+        }
+    }
+}

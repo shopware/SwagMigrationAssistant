@@ -6,6 +6,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use SwagMigrationNext\Migration\EnvironmentInformation;
 use Symfony\Component\HttpFoundation\Request;
 
 class SwagMigrationAccessTokenService
@@ -30,10 +31,10 @@ class SwagMigrationAccessTokenService
         return $this->createMigrationAccessToken($runUuid, $userId, $context);
     }
 
-    public function startMigrationRun(string $profileId, Context $context): SwagMigrationAccessTokenStruct
+    public function startMigrationRun(string $profileId, Context $context, EnvironmentInformation $environmentInformation): SwagMigrationAccessTokenStruct
     {
         $userId = \mb_strtoupper($context->getSourceContext()->getUserId());
-        $runId = $this->createMigrationRun($profileId, $context);
+        $runId = $this->createMigrationRun($profileId, $context, $environmentInformation);
         $accessToken = $this->createMigrationAccessToken($runId, $userId, $context);
 
         return new SwagMigrationAccessTokenStruct($runId, $accessToken);
@@ -58,13 +59,14 @@ class SwagMigrationAccessTokenService
         return false;
     }
 
-    private function createMigrationRun(string $profileId, Context $context): string
+    private function createMigrationRun(string $profileId, Context $context, EnvironmentInformation $environmentInformation): string
     {
         $writtenEvent = $this->migrationRunRepo->create(
             [
                 [
                     'profileId' => $profileId,
                     'status' => SwagMigrationRunEntity::STATUS_RUNNING,
+                    'environmentInformation' => $environmentInformation->jsonSerialize()
                 ],
             ],
             $context

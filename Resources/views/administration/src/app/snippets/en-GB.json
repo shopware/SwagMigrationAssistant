@@ -2,7 +2,9 @@
   "swag-migration": {
     "general": {
       "mainMenuItemGeneral": "Playground Connector",
-      "descriptionTextModule": "Module to import data from Shopware 5"
+      "descriptionTextModule": "Module to import data from Shopware 5",
+      "tabMain": "Data import",
+      "tabHistory": "History"
     },
     "wizard": {
       "title": "Data import: Preparations",
@@ -264,6 +266,18 @@
           "information": "{entity} translation entity could not be converted, because of invalid, unserialized object data."
         }
       }
+    },
+    "history": {
+      "shopDomain": "Shop domain",
+      "shopSystem": "Shop system",
+      "selectedData": "Data",
+      "profileAndGateway": "Profile / Gateway",
+      "status": "Status",
+      "importDateTime": "Start time",
+      "contextMenu": {
+        "details": "Details"
+      },
+      "noData": "No imports were found."
     }
   }
 }
