@@ -3,29 +3,29 @@
 namespace SwagMigrationNext\Test\Mock\Migration\Asset;
 
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\Struct\Uuid;
-use SwagMigrationNext\Migration\Asset\HttpAssetDownloadServiceInterface;
+use SwagMigrationNext\Migration\Asset\AbstractMediaFileProcessor;
+use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Profile\Shopware55\Gateway\Api\Shopware55ApiGateway;
+use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
-class DummyHttpAssetDownloadService implements HttpAssetDownloadServiceInterface
+class DummyHttpAssetDownloadService extends AbstractMediaFileProcessor
 {
-    public function fetchMediaUuids(string $runId, Context $context, int $limit): array
+    public function getSupportedProfileName(): string
     {
-        return [
-            0 => Uuid::uuid4()->getHex(),
-            1 => Uuid::uuid4()->getHex(),
-            2 => Uuid::uuid4()->getHex(),
-            3 => Uuid::uuid4()->getHex(),
-            4 => Uuid::uuid4()->getHex(),
-            5 => Uuid::uuid4()->getHex(),
-            6 => Uuid::uuid4()->getHex(),
-            7 => Uuid::uuid4()->getHex(),
-            8 => Uuid::uuid4()->getHex(),
-            9 => Uuid::uuid4()->getHex(),
-        ];
+        return Shopware55Profile::PROFILE_NAME;
     }
 
-    public function downloadAssets(string $runId, Context $context, array $workload, int $fileChunkByteSize): array
+    public function getSupportedGatewayIdentifier(): string
     {
+        return Shopware55ApiGateway::GATEWAY_TYPE;
+    }
+
+    public function process(
+        MigrationContext $migrationContext,
+        Context $context,
+        array $workload,
+        int $fileChunkByteSize
+    ): array {
         return $workload;
     }
 }

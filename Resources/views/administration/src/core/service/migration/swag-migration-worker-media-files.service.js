@@ -1,4 +1,4 @@
-export class WorkerDownload {
+export class WorkerMediaFiles {
     /**
      * @param {number} status
      * @param {Object} downloadParams
@@ -140,7 +140,7 @@ export class WorkerDownload {
                 this._assetUuidPool = [];
                 this._assetWorkload = [];
             }
-            this._downloadProcess().then(() => {
+            this._processMediaFiles().then(() => {
                 resolve();
             });
         });
@@ -188,12 +188,12 @@ export class WorkerDownload {
     }
 
     /**
-     * Download all media files to filesystem
+     * Process all media files to filesystem
      *
      * @returns {Promise}
      * @private
      */
-    async _downloadProcess() {
+    async _processMediaFiles() {
         /* eslint-disable no-await-in-loop */
         return new Promise(async (resolve) => {
             await this._fetchAssetUuidsChunk();
@@ -210,7 +210,7 @@ export class WorkerDownload {
                 let newWorkload;
                 const beforeRequestTime = new Date();
 
-                await this._downloadAssets().then((w) => {
+                await this._processMediaFilesWorkload().then((w) => {
                     newWorkload = w;
                 });
 
@@ -289,15 +289,18 @@ export class WorkerDownload {
     }
 
     /**
-     * Send the asset download request with our workload and fileChunkByteSize.
+     * Send the asset process request with our workload and fileChunkByteSize.
      *
      * @returns {Promise}
      * @private
      */
-    _downloadAssets() {
+    _processMediaFilesWorkload() {
         return new Promise((resolve) => {
-            this._migrationService.downloadAssets({
+            this._migrationService.processAssets({
                 runId: this._runId,
+                profileId: this._downloadParams.profileId,
+                profileName: this._downloadParams.profileName,
+                gateway: this._downloadParams.gateway,
                 workload: this._assetWorkload,
                 fileChunkByteSize: this._ASSET_FILE_CHUNK_BYTE_SIZE,
                 swagMigrationAccessToken: this._accessToken
@@ -335,4 +338,4 @@ export class WorkerDownload {
     }
 }
 
-export default WorkerDownload;
+export default WorkerMediaFiles;

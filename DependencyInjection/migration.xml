@@ -50,21 +50,20 @@
             <argument type="service" id="SwagMigrationNext\Migration\Logging\LoggingService"/>
         </service>
 
-        <service id="SwagMigrationNext\Migration\Asset\CliAssetDownloadService"
-                 class="SwagMigrationNext\Migration\Asset\CliAssetDownloadService"
-                 public="true">
+        <service id="SwagMigrationNext\Migration\Service\MediaFileProcessorService" public="true">
+            <argument type="service" id="swag_migration_media_file.repository"/>
+            <argument type="service" id="SwagMigrationNext\Migration\Asset\MediaFileProcessorRegistry"/>
+        </service>
+
+        <service id="SwagMigrationNext\Migration\Asset\MediaFileProcessorRegistry">
+            <argument type="tagged" tag="shopware.migration.media_file_processor"/>
+        </service>
+
+        <service id="SwagMigrationNext\Migration\Asset\CliAssetDownloadService" public="true">
             <argument type="service" id="swag_migration_media_file.repository"/>
             <argument type="service" id="Shopware\Core\Content\Media\File\FileSaver"/>
             <argument type="service" id="event_dispatcher"/>
             <argument type="service" id="logger"/>
-        </service>
-
-        <service id="SwagMigrationNext\Migration\Asset\HttpAssetDownloadService"
-                 class="SwagMigrationNext\Migration\Asset\HttpAssetDownloadService"
-                 public="true">
-            <argument type="service" id="swag_migration_media_file.repository"/>
-            <argument type="service" id="Shopware\Core\Content\Media\File\FileSaver"/>
-            <argument type="service" id="SwagMigrationNext\Migration\Logging\LoggingService"/>
         </service>
 
         <service id="SwagMigrationNext\Migration\Service\MigrationProgressService"
@@ -79,7 +78,7 @@
         <service id="SwagMigrationNext\Controller\MigrationController" public="true">
             <argument type="service" id="SwagMigrationNext\Migration\Service\MigrationDataFetcher"/>
             <argument type="service" id="SwagMigrationNext\Migration\Service\MigrationDataWriter"/>
-            <argument type="service" id="SwagMigrationNext\Migration\Asset\HttpAssetDownloadService"/>
+            <argument type="service" id="SwagMigrationNext\Migration\Service\MediaFileProcessorService"/>
             <argument type="service" id="SwagMigrationNext\Migration\Service\MigrationProgressService"/>
             <argument type="service" id="SwagMigrationNext\Migration\Run\SwagMigrationAccessTokenService"/>
             <argument type="service" id="swag_migration_profile.repository"/>

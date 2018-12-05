@@ -2,7 +2,7 @@ import { Application } from 'src/core/shopware';
 import CriteriaFactory from 'src/core/factory/criteria.factory';
 import StorageBroadcastService from '../storage-broadcaster.service';
 import { WorkerRequest } from './swag-migration-worker-request.service';
-import { WorkerDownload } from './swag-migration-worker-download.service';
+import { WorkerMediaFiles } from './swag-migration-worker-media-files.service';
 import { MIGRATION_STATUS, WorkerStatusManager } from './swag-migration-worker-status-manager.service';
 
 export const MIGRATION_ACCESS_TOKEN_NAME = 'swagMigrationAccessToken';
@@ -349,7 +349,7 @@ class MigrationWorkerService {
                     this._entityGroups = entityGroups;
                     this._errors = [];
 
-                    const requestParams = {
+                    const params = {
                         swagMigrationAccessToken: MigrationWorkerService.migrationAccessToken,
                         runUuid: this._runId,
                         profileId: this._profile.id,
@@ -358,14 +358,9 @@ class MigrationWorkerService {
                         credentialFields: this._profile.credentialFields
                     };
 
-                    const downloadParams = {
-                        swagMigrationAccessToken: MigrationWorkerService.migrationAccessToken,
-                        runUuid: this._runId
-                    };
-
                     this._workRunner = new WorkerRequest(
                         MIGRATION_STATUS.FETCH_DATA,
-                        requestParams,
+                        params,
                         this._workerStatusManager,
                         this._migrationService,
                         this._callProgressSubscriber.bind(this),
@@ -402,10 +397,10 @@ class MigrationWorkerService {
                     }
 
                     // download
-                    if (statusIndex <= MIGRATION_STATUS.DOWNLOAD_DATA) {
-                        this._workRunner = new WorkerDownload(
-                            MIGRATION_STATUS.DOWNLOAD_DATA,
-                            downloadParams,
+                    if (statusIndex <= MIGRATION_STATUS.PROCESS_MEDIA_FILES) {
+                        this._workRunner = new WorkerMediaFiles(
+                            MIGRATION_STATUS.PROCESS_MEDIA_FILES,
+                            params,
                             this._workerStatusManager,
                             this._migrationService,
                             this._callProgressSubscriber.bind(this),
@@ -414,7 +409,7 @@ class MigrationWorkerService {
                         );
 
                         await this._startWorkRunner(
-                            MIGRATION_STATUS.DOWNLOAD_DATA,
+                            MIGRATION_STATUS.PROCESS_MEDIA_FILES,
                             groupStartIndex,
                             entityStartIndex,
                             entityOffset
@@ -434,7 +429,7 @@ class MigrationWorkerService {
     }
 
     /**
-     * Start the WorkerRequest or WorkerDownload runner.
+     * Start the WorkerRequest or WorkerMediaFiles runner.
      *
      * @param {number} status
      * @param {number} groupStartIndex

@@ -93,5 +93,13 @@
             <argument type="service" id="state_machine_state.repository"/>
             <argument type="service" id="currency.repository"/>
         </service>
+
+        <!-- Shopware 5.5 MediaFileProcessor -->
+        <service id="SwagMigrationNext\Profile\Shopware55\Processor\HttpAssetDownloadService" public="true">
+            <argument type="service" id="swag_migration_media_file.repository"/>
+            <argument type="service" id="Shopware\Core\Content\Media\File\FileSaver"/>
+            <argument type="service" id="SwagMigrationNext\Migration\Logging\LoggingService"/>
+            <tag name="shopware.migration.media_file_processor"/>
+        </service>
     </services>
 </container>

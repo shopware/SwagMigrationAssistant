@@ -78,12 +78,12 @@ class MigrationApiService extends ApiService {
             });
     }
 
-    downloadAssets(additionalParams = {}, additionalHeaders = {}) {
+    processAssets(additionalParams = {}, additionalHeaders = {}) {
         const params = additionalParams;
         const headers = this.getBasicHeaders(additionalHeaders);
 
         return this.httpClient
-            .post(`_action/${this.getApiBasePath()}/download-assets`, params, {
+            .post(`_action/${this.getApiBasePath()}/process-assets`, params, {
                 headers
             })
             .then((response) => {

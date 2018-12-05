@@ -369,7 +369,7 @@ Component.register('swag-migration-main-page', {
 
                 if (group !== undefined) {
                     // found entity in group -> means it was selected
-                    if (this.statusIndex !== MIGRATION_STATUS.DOWNLOAD_DATA) {
+                    if (this.statusIndex !== MIGRATION_STATUS.PROCESS_MEDIA_FILES) {
                         data.selected = true;
                     }
 
@@ -622,7 +622,7 @@ Component.register('swag-migration-main-page', {
         onStatus(statusData) {
             this.statusIndex = statusData.status;
 
-            if (this.statusIndex === MIGRATION_STATUS.DOWNLOAD_DATA) {
+            if (this.statusIndex === MIGRATION_STATUS.PROCESS_MEDIA_FILES) {
                 this.tableData.forEach((data) => {
                     data.selected = (data.id === 'media');
                 });

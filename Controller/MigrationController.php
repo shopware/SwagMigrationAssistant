@@ -7,10 +7,10 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use SwagMigrationNext\Exception\MigrationContextPropertyMissingException;
 use SwagMigrationNext\Exception\MigrationWorkloadPropertyMissingException;
-use SwagMigrationNext\Migration\Asset\HttpAssetDownloadServiceInterface;
 use SwagMigrationNext\Migration\EnvironmentInformation;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
+use SwagMigrationNext\Migration\Service\MediaFileProcessorServiceInterface;
 use SwagMigrationNext\Migration\Run\SwagMigrationAccessTokenService;
 use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationNext\Migration\Service\MigrationDataWriterInterface;
@@ -34,9 +34,9 @@ class MigrationController extends AbstractController
     private $migrationDataWriter;
 
     /**
-     * @var HttpAssetDownloadServiceInterface
+     * @var MediaFileProcessorServiceInterface
      */
-    private $assetDownloadService;
+    private $mediaFileProcessorService;
 
     /**
      * @var MigrationProgressServiceInterface
@@ -61,7 +61,7 @@ class MigrationController extends AbstractController
     public function __construct(
         MigrationDataFetcherInterface $migrationDataFetcher,
         MigrationDataWriterInterface $migrationDataWriter,
-        HttpAssetDownloadServiceInterface $assetDownloadService,
+        MediaFileProcessorServiceInterface $mediaFileProcessorService,
         MigrationProgressServiceInterface $migrationProgressService,
         SwagMigrationAccessTokenService $migrationAccessTokenService,
         EntityRepositoryInterface $migrationProfileRepo,
@@ -69,7 +69,7 @@ class MigrationController extends AbstractController
     ) {
         $this->migrationDataFetcher = $migrationDataFetcher;
         $this->migrationDataWriter = $migrationDataWriter;
-        $this->assetDownloadService = $assetDownloadService;
+        $this->mediaFileProcessorService = $mediaFileProcessorService;
         $this->migrationProgressService = $migrationProgressService;
         $this->migrationAccessTokenService = $migrationAccessTokenService;
         $this->migrationProfileRepo = $migrationProfileRepo;
@@ -264,6 +264,8 @@ class MigrationController extends AbstractController
 
     /**
      * @Route("/api/v{version}/_action/migration/fetch-media-uuids", name="api.admin.migration.fetch-media-uuids", methods={"GET"})
+     *
+     * @throws MigrationWorkloadPropertyMissingException
      */
     public function fetchMediaUuids(Request $request, Context $context): JsonResponse
     {
@@ -274,25 +276,41 @@ class MigrationController extends AbstractController
             throw new MigrationWorkloadPropertyMissingException('runId');
         }
 
-        $mediaUuids = $this->assetDownloadService->fetchMediaUuids($runUuid, $context, $limit);
+        $mediaUuids = $this->mediaFileProcessorService->fetchMediaUuids($runUuid, $context, $limit);
 
         return new JsonResponse(['mediaUuids' => $mediaUuids]);
     }
 
     /**
-     * @Route("/api/v{version}/_action/migration/download-assets", name="api.admin.migration.download-assets", methods={"POST"})
+     * @Route("/api/v{version}/_action/migration/process-assets", name="api.admin.migration.process-assets", methods={"POST"})
      *
      * @throws MigrationWorkloadPropertyMissingException
+     * @throws MigrationContextPropertyMissingException
      */
-    public function downloadAssets(Request $request, Context $context): JsonResponse
+    public function processAssets(Request $request, Context $context): JsonResponse
     {
         /** @var array $workload */
         $runUuid = $request->request->get('runId');
+        $profileId = $request->request->get('profileId');
+        $profileName = $request->request->get('profileName');
+        $gateway = $request->request->get('gateway');
         $workload = $request->request->get('workload', []);
         $fileChunkByteSize = $request->request->getInt('fileChunkByteSize', 1000 * 1000);
 
         if ($runUuid === null) {
             throw new MigrationContextPropertyMissingException('runId');
+        }
+
+        if ($profileId === null) {
+            throw new MigrationContextPropertyMissingException('profileId');
+        }
+
+        if ($profileName === null) {
+            throw new MigrationContextPropertyMissingException('profileName');
+        }
+
+        if ($gateway === null) {
+            throw new MigrationContextPropertyMissingException('gateway');
         }
 
         if (\count($workload) === 0) {
@@ -317,7 +335,18 @@ class MigrationController extends AbstractController
             ]);
         }
 
-        $newWorkload = $this->assetDownloadService->downloadAssets($runUuid, $context, $workload, $fileChunkByteSize);
+        $migrationContext = new MigrationContext(
+            $runUuid,
+            $profileId,
+            $profileName,
+            $gateway,
+            '',
+            [],
+            0,
+            0
+        );
+
+        $newWorkload = $this->mediaFileProcessorService->processMediaFiles($migrationContext, $context, $workload, $fileChunkByteSize);
 
         return new JsonResponse(['workload' => $newWorkload, 'validToken' => true]);
     }

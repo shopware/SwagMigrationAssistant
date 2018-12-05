@@ -13,6 +13,7 @@ use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagMigrationNext\Controller\MigrationController;
 use SwagMigrationNext\Exception\MigrationContextPropertyMissingException;
 use SwagMigrationNext\Exception\MigrationWorkloadPropertyMissingException;
+use SwagMigrationNext\Migration\Asset\MediaFileProcessorRegistry;
 use SwagMigrationNext\Migration\Asset\MediaFileService;
 use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
 use SwagMigrationNext\Migration\Run\SwagMigrationAccessTokenService;
@@ -23,6 +24,7 @@ use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Migration\Services\MigrationProfileUuidService;
 use SwagMigrationNext\Test\MigrationServicesTrait;
 use SwagMigrationNext\Test\Mock\Migration\Asset\DummyHttpAssetDownloadService;
+use SwagMigrationNext\Test\Mock\Migration\Service\DummyMediaFileProcessorService;
 use SwagMigrationNext\Test\Mock\Migration\Service\DummyProgressService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -77,7 +79,14 @@ class MigrationControllerTest extends TestCase
                 $this->getContainer()->get('swag_migration_logging.repository')
             ),
             $this->getContainer()->get(MigrationDataWriter::class),
-            new DummyHttpAssetDownloadService(),
+            new DummyMediaFileProcessorService(
+                $this->getContainer()->get('swag_migration_media_file.repository'),
+                new MediaFileProcessorRegistry(
+                    [
+                        new DummyHttpAssetDownloadService(),
+                    ]
+                )
+            ),
             new DummyProgressService(),
             new SwagMigrationAccessTokenService($this->runRepo),
             $this->getContainer()->get('swag_migration_profile.repository'),
@@ -348,6 +357,7 @@ class MigrationControllerTest extends TestCase
 
     public function testDownloadAssets(): void
     {
+        $context = Context::createDefaultContext();
         $inputWorkload = [
             [
                 'uuid' => Uuid::uuid4()->getHex(),
@@ -368,30 +378,45 @@ class MigrationControllerTest extends TestCase
             ],
         ];
 
+        /** @var $profileRepo RepositoryInterface */
+        $profileRepo = $this->getContainer()->get('swag_migration_profile.repository');
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('profile', 'shopware55'));
+        $criteria->addFilter(new EqualsFilter('gateway', 'api'));
+        $profileResult = $profileRepo->search($criteria, $context);
+        /** @var $profile SwagMigrationProfileStruct */
+        $profile = $profileResult->first();
+
         $params = [
             'runId' => $this->runUuid,
+            'profileName' => Shopware55Profile::PROFILE_NAME,
+            'profileId' => $profile->getId(),
+            'gateway' => 'local',
             'workload' => $inputWorkload,
             'fileChunkByteSize' => 1000,
         ];
 
         $context = Context::createDefaultContext();
         $request = new Request([], $params);
-        $result = $this->controller->downloadAssets($request, $context);
+        $result = $this->controller->processAssets($request, $context);
 
         static::assertSame(['validToken' => false], json_decode($result->getContent(), true));
 
         $params[SwagMigrationAccessTokenService::ACCESS_TOKEN_NAME] = 'testToken';
         $request = new Request([], $params);
-        $result = $this->controller->downloadAssets($request, $context);
+        $result = $this->controller->processAssets($request, $context);
         $result = json_decode($result->getContent(), true);
 
         self::assertSame($result['workload'], $inputWorkload);
 
         $request = new Request([], [
             'runId' => $this->runUuid,
+            'profileName' => Shopware55Profile::PROFILE_NAME,
+            'profileId' => $profile->getId(),
+            'gateway' => 'local',
             SwagMigrationAccessTokenService::ACCESS_TOKEN_NAME => 'testToken',
         ]);
-        $result = $this->controller->downloadAssets($request, $context);
+        $result = $this->controller->processAssets($request, $context);
         $result = json_decode($result->getContent(), true);
 
         self::assertSame([
@@ -406,6 +431,9 @@ class MigrationControllerTest extends TestCase
             ['uuid'],
             ['currentOffset'],
             ['state'],
+            ['profileName'],
+            ['profileId'],
+            ['gateway'],
         ];
     }
 
@@ -414,6 +442,7 @@ class MigrationControllerTest extends TestCase
      */
     public function testDownloadAssetsWithMissingProperty(string $missingProperty): void
     {
+        $context = Context::createDefaultContext();
         $inputWorkload = [
             [
                 'uuid' => Uuid::uuid4()->getHex(),
@@ -434,12 +463,31 @@ class MigrationControllerTest extends TestCase
             ],
         ];
 
+        /** @var $profileRepo RepositoryInterface */
+        $profileRepo = $this->getContainer()->get('swag_migration_profile.repository');
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('profile', 'shopware55'));
+        $criteria->addFilter(new EqualsFilter('gateway', 'api'));
+        $profileResult = $profileRepo->search($criteria, $context);
+        /** @var $profile SwagMigrationProfileStruct */
+        $profile = $profileResult->first();
+
         $properties = [
             'runId' => $this->runUuid,
+            'profileName' => Shopware55Profile::PROFILE_NAME,
+            'profileId' => $profile->getId(),
+            'gateway' => 'local',
             'fileChunkByteSize' => 1000,
         ];
 
-        if ($missingProperty !== 'runId') {
+        $requestParamKeys = [
+            'runId',
+            'profileName',
+            'profileId',
+            'gateway',
+        ];
+
+        if (!\in_array($missingProperty, $requestParamKeys, true)) {
             $this->expectException(MigrationWorkloadPropertyMissingException::class);
             $this->expectExceptionMessage(sprintf('Required property "%s" for migration workload is missing', $missingProperty));
 
@@ -456,7 +504,7 @@ class MigrationControllerTest extends TestCase
 
         $request = new Request([], $properties);
         $context = Context::createDefaultContext();
-        $this->controller->downloadAssets($request, $context);
+        $this->controller->processAssets($request, $context);
     }
 
     public function testGetState(): void

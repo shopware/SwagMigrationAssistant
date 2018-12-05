@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Migration\Asset;
+namespace SwagMigrationNext\Profile\Shopware55\Processor;
 
 use Exception;
 use GuzzleHttp\Client;
@@ -16,12 +16,16 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use SwagMigrationNext\Exception\NoFileSystemPermissionsException;
+use SwagMigrationNext\Migration\Asset\AbstractMediaFileProcessor;
+use SwagMigrationNext\Migration\Asset\SwagMigrationMediaFileStruct;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Profile\Shopware55\Gateway\Api\Shopware55ApiGateway;
+use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
-class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
+class HttpAssetDownloadService extends AbstractMediaFileProcessor
 {
     private const ASSET_ERROR_THRESHOLD = 3;
 
@@ -50,23 +54,14 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
         $this->loggingService = $loggingService;
     }
 
-    public function fetchMediaUuids(string $runId, Context $context, int $limit): array
+    public function getSupportedProfileName(): string
     {
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('runId', $runId));
-        $criteria->addFilter(new EqualsFilter('written', true));
-        $criteria->addFilter(new EqualsFilter('downloaded', false));
-        $criteria->setLimit($limit);
-        $criteria->addSorting(new FieldSorting('fileSize', FieldSorting::ASCENDING));
-        $migrationData = $this->mediaFileRepo->search($criteria, $context);
+        return Shopware55Profile::PROFILE_NAME;
+    }
 
-        $mediaUuids = [];
-        foreach ($migrationData->getElements() as $mediaFile) {
-            /* @var SwagMigrationMediaFileEntity $mediaFile */
-            $mediaUuids[] = $mediaFile->getMediaId();
-        }
-
-        return $mediaUuids;
+    public function getSupportedGatewayIdentifier(): string
+    {
+        return Shopware55ApiGateway::GATEWAY_TYPE;
     }
 
     /**
@@ -76,11 +71,12 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
      * @throws NoFileSystemPermissionsException
      * @throws UploadException
      */
-    public function downloadAssets(string $runId, Context $context, array $workload, int $fileChunkByteSize): array
+    public function process(MigrationContext $migrationContext, Context $context, array $workload, int $fileChunkByteSize): array
     {
         //Map workload with uuids as keys
         $mappedWorkload = [];
         $mediaIds = [];
+        $runId = $migrationContext->getRunUuid();
 
         foreach ($workload as $work) {
             $mappedWorkload[$work['uuid']] = $work;

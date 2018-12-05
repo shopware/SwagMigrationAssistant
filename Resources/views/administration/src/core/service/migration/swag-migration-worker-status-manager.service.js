@@ -3,13 +3,13 @@ import CriteriaFactory from 'src/core/factory/criteria.factory';
 /**
  * Describes the current step in the migration (status).
  *
- * @type {Readonly<{WAITING: number, FETCH_DATA: number, WRITE_DATA: number, DOWNLOAD_DATA: number, FINISHED: number}>}
+ * @type {Readonly<{WAITING: number, FETCH_DATA: number, WRITE_DATA: number, PROCESS_MEDIA_FILES: number, FINISHED: number}>}
  */
 export const MIGRATION_STATUS = Object.freeze({
     WAITING: -1,
     FETCH_DATA: 0,
     WRITE_DATA: 1,
-    DOWNLOAD_DATA: 2,
+    PROCESS_MEDIA_FILES: 2,
     FINISHED: 3
 });
 
@@ -54,7 +54,7 @@ export class WorkerStatusManager {
                         });
                     });
                 });
-            } else if (status === MIGRATION_STATUS.DOWNLOAD_DATA) {
+            } else if (status === MIGRATION_STATUS.PROCESS_MEDIA_FILES) {
                 this._getAssetTotalCount(runId).then((assetTotalCount) => {
                     resolve([entityGroups, assetTotalCount]);
                 });
