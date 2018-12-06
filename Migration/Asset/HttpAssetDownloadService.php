@@ -221,7 +221,7 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
     {
         $mimeType = mime_content_type($filePath);
         $mediaFile = new MediaFile($filePath, $mimeType, $fileExtension, $fileSize);
-        $this->fileSaver->persistFileToMedia($mediaFile, $uuid, $context);
+        $this->fileSaver->persistFileToMedia($mediaFile, $uuid, $uuid, $context);
     }
 
     private function doNormalDownloadRequest(array &$workload, Client $client): ?Promise\PromiseInterface
