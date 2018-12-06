@@ -33,9 +33,8 @@ export class WorkerRequest {
         onErrorCB
     ) {
         this._MAX_REQUEST_TIME = 10000; // in ms
-        this._DEFAULT_CHUNK_SIZE = 50; // in data sets
-        this._CHUNK_INCREMENT = 5; // in data sets
-        this.__MIN_INCREMENT = this._CHUNK_INCREMENT;
+        this._DEFAULT_CHUNK_SIZE = 25; // in data sets
+        this._CHUNK_PROPORTION_BUFFER = 0.8; // chunk buffer
 
         this._runId = requestParams.runUuid;
         this._status = status;
@@ -284,21 +283,24 @@ export class WorkerRequest {
     }
 
     /**
-     * Update the chunkSize depending on the requestTime
+     * Update the chunkSize depending on the requestTime / maxRequestTime proportion
      *
      * @param {number} requestTime Request time in milliseconds
      * @private
      */
     _handleChunkSize(requestTime) {
         if (requestTime < this._MAX_REQUEST_TIME) {
-            this._chunkSize += this._CHUNK_INCREMENT;
+            const factor = this._MAX_REQUEST_TIME / requestTime;
+            this._chunkSize = Math.ceil((this._chunkSize * factor) * this._CHUNK_PROPORTION_BUFFER);
         }
 
-        if (
-            requestTime > this._MAX_REQUEST_TIME &&
-            (this._chunkSize - this._CHUNK_INCREMENT) >= this.__MIN_INCREMENT
-        ) {
-            this._chunkSize -= this._CHUNK_INCREMENT;
+        if (requestTime > this._MAX_REQUEST_TIME) {
+            const ratio = 1 - requestTime / this._MAX_REQUEST_TIME;
+            this._chunkSize = Math.ceil(this._chunkSize * (1 + ratio));
+
+            if (this._chunkSize < this._DEFAULT_CHUNK_SIZE) {
+                this._chunkSize = this._DEFAULT_CHUNK_SIZE;
+            }
         }
     }
 
