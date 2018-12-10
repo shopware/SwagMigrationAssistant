@@ -12,7 +12,6 @@ class Shopware55ApiEnvironmentReader extends Shopware55ApiReader
 {
     public function read(): array
     {
-        $verifiedApiClient = $this->getVerifiedClient();
         $information = [
             'environmentInformation' => [],
             'warning' => [
@@ -26,7 +25,7 @@ class Shopware55ApiEnvironmentReader extends Shopware55ApiReader
         ];
 
         try {
-            $information['environmentInformation'] = $this->readData($verifiedApiClient);
+            $information['environmentInformation'] = $this->readData($this->client, true);
         } catch (Exception $e) {
             try {
                 $information['environmentInformation'] = $this->readData($this->client);
@@ -44,11 +43,20 @@ class Shopware55ApiEnvironmentReader extends Shopware55ApiReader
     /**
      * @throws GatewayReadException
      */
-    private function readData(Client $apiClient): array
+    private function readData(Client $apiClient, bool $verified = false): array
     {
+        $config = $apiClient->getConfig();
+
+        if ($verified) {
+            $config = array_merge($config, [
+                'verify' => $verified,
+            ]);
+        }
+
         /** @var GuzzleResponse $result */
         $result = $apiClient->get(
-            'SwagMigrationEnvironment'
+            'SwagMigrationEnvironment',
+            $config
         );
 
         if ($result->getStatusCode() !== SymfonyResponse::HTTP_OK) {
@@ -58,18 +66,5 @@ class Shopware55ApiEnvironmentReader extends Shopware55ApiReader
         $arrayResult = json_decode($result->getBody()->getContents(), true);
 
         return $arrayResult['data'];
-    }
-
-    private function getVerifiedClient(): Client
-    {
-        $credentials = $this->migrationContext->getCredentials();
-
-        $options = [
-            'base_uri' => $credentials['endpoint'] . '/api/',
-            'auth' => [$credentials['apiUser'], $credentials['apiKey'], 'digest'],
-            'verify' => true,
-        ];
-
-        return new Client($options);
     }
 }
