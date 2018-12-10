@@ -27,6 +27,10 @@ Component.register('swag-migration-shop-information', {
 
         isPaused: {
             type: Boolean
+        },
+
+        isOtherMigrationRunning: {
+            type: Boolean
         }
     },
 

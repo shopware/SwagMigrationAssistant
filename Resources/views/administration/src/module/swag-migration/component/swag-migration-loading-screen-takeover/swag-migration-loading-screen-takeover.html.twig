@@ -1,0 +1,61 @@
+{% block swag_migration_loading_screen_takeover %}
+    <sw-card class="swag-migration-loading-screen-takeover">
+        {% block swag_migration_loading_screen_takeover_content %}
+            <div class="swag_migration_loading_screen_takeover_content">
+                <p class="swag_migration_loading_screen_takeover_content--message" v-if="isMigrationInterrupted">
+                    {{ $tc('swag-migration.index.loadingScreenCard.takeoverInfoScreen.message') }}
+                </p>
+
+                <p class="swag_migration_loading_screen_takeover_content--message" v-else>
+                    {{ $tc('swag-migration.index.loadingScreenCard.takeoverScreen.message') }}
+                </p>
+            </div>
+
+            {% block swag_migration_loading_screen_takeover_content_hint %}
+                <p class="swag_migration_loading_screen_takeover--hint" v-if="!isOtherInstanceFetching">
+                    {{ $tc('swag-migration.index.loadingScreenCard.takeoverScreen.hint') }} <a @click="onTakeoverLinkClick">{{ $tc('swag-migration.index.loadingScreenCard.takeoverScreen.hintLink') }} <sw-icon name="small-arrow-medium-right" small></sw-icon></a>
+                </p>
+            {% endblock %}
+
+            {% block swag_migration_loading_screen_takeover_modal %}
+                <sw-modal v-if="showTakeoverModal"
+                          class="swag-migration-index-takeover-modal"
+                          :title="$tc('swag-migration.index.loadingScreenCard.takeoverModal.title')"
+                          @closeModal="onCloseTakeoverModal"
+                          variant="default">
+
+                    {% block swag_migration_loading_screen_takeover_modal_message %}
+                        <p class="swag-migration-index-takeover-modal-message">
+                            {{ $tc('swag-migration.index.loadingScreenCard.takeoverModal.message') }}
+                        </p>
+                    {% endblock %}
+
+                    {% block swag_migration_loading_screen_takeover_modal_hint %}
+                        <p class="swag-migration-index-takeover-modal-hint">
+                            {{ $tc('swag-migration.index.loadingScreenCard.takeoverModal.hint') }}
+                        </p>
+                    {% endblock %}
+
+                    {% block swag_migration_loading_screen_takeover_modal_footer %}
+                        <template slot="modal-footer">
+                            {% block swag_migration_loading_screen_takeover_modal_footer_cancelAction %}
+                                <sw-button @click="onCloseTakeoverModal"
+                                           size="small">
+                                    {{ $tc('swag-migration.index.loadingScreenCard.takeoverModal.cancel') }}
+                                </sw-button>
+                            {% endblock %}
+
+                            {% block swag_migration_loading_screen_takeover_modal_footer_confirmAction %}
+                                <sw-button @click="onTakeover"
+                                           variant="primary"
+                                           size="small">
+                                    {{ $tc('swag-migration.index.loadingScreenCard.takeoverModal.confirm') }}
+                                </sw-button>
+                            {% endblock %}
+                        </template>
+                    {% endblock %}
+                </sw-modal>
+            {% endblock %}
+        {% endblock %}
+    </sw-card>
+{% endblock %}

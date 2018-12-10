@@ -32,6 +32,8 @@ class SwagMigrationRunDefinition extends EntityDefinition
             (new FkField('profile_id', 'profileId', SwagMigrationProfileDefinition::class))->setFlags(new Required()),
             new JsonField('totals', 'totals'),
             new JsonField('additional_data', 'additionalData'),
+            new StringField('user_id', 'userId'),
+            new StringField('access_token', 'accessToken'),
             new StringField('status', 'status'),
             new CreatedAtField(),
             new UpdatedAtField(),

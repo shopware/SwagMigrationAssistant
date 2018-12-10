@@ -150,6 +150,21 @@
         "pauseScreen": {
           "title": "Pause",
           "message": "The import was paused.<br>Continue it or abort the process.<br><br>"
+        },
+        "takeoverScreen": {
+          "message": "The import is already active on another device or browser.",
+          "hint": "An import is already active, but you don't have access to it? Here, you can ",
+          "hintLink": "take over the active import."
+        },
+        "takeoverModal": {
+          "title": "Take over import",
+          "message": "Note that taking over an active import will revoke the administration rights from the original user as well.",
+          "hint": "Do you want to stop the active import here and take it over?",
+          "cancel": "Cancel",
+          "confirm": "Take over"
+        },
+        "takeoverInfoScreen": {
+          "message": "Your active import has been stopped and taken over by another device or browser."
         }
       },
       "confirmDialog": {

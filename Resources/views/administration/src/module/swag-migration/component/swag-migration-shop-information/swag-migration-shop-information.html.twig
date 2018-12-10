@@ -44,7 +44,7 @@
                                             {% block swag_migration_index_card_shopInfo_actions_editSettings %}
                                                 <sw-button size="small"
                                                            @click="$emit('onClickEditSettings')"
-                                                           :disabled="isMigrating || isPaused">
+                                                           :disabled="isMigrating || isPaused || isOtherMigrationRunning">
                                                     {{ $tc('swag-migration.index.shopInfoCard.buttonEditSettings') }}
                                                 </sw-button>
                                             {% endblock %}

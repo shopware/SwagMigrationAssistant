@@ -10,6 +10,7 @@ use SwagMigrationNext\Exception\MigrationWorkloadPropertyMissingException;
 use SwagMigrationNext\Migration\Asset\HttpAssetDownloadServiceInterface;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Profile\SwagMigrationProfileStruct;
+use SwagMigrationNext\Migration\Run\SwagMigrationAccessTokenService;
 use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationNext\Migration\Service\MigrationDataWriterInterface;
 use SwagMigrationNext\Migration\Service\MigrationProgressServiceInterface;
@@ -46,18 +47,57 @@ class MigrationController extends Controller
      */
     private $migrationProgressService;
 
+    /**
+     * @var SwagMigrationAccessTokenService
+     */
+    private $migrationAccessTokenService;
+
     public function __construct(
         MigrationDataFetcherInterface $migrationDataFetcher,
         MigrationDataWriterInterface $migrationDataWriter,
         HttpAssetDownloadServiceInterface $assetDownloadService,
         RepositoryInterface $migrationProfileRepo,
-        MigrationProgressServiceInterface $migrationProgressService
+        MigrationProgressServiceInterface $migrationProgressService,
+        SwagMigrationAccessTokenService $migrationAccessTokenService
     ) {
         $this->migrationDataFetcher = $migrationDataFetcher;
         $this->migrationDataWriter = $migrationDataWriter;
         $this->assetDownloadService = $assetDownloadService;
         $this->migrationProfileRepo = $migrationProfileRepo;
         $this->migrationProgressService = $migrationProgressService;
+        $this->migrationAccessTokenService = $migrationAccessTokenService;
+    }
+
+    /**
+     * @Route("/api/v{version}/migration/takeover-migration", name="api.admin.migration.takeover-migration", methods={"POST"})
+     */
+    public function takeoverMigration(Request $request, Context $context): JsonResponse
+    {
+        $runUuid = $request->request->get('runUuid');
+
+        if ($runUuid === null) {
+            throw new MigrationContextPropertyMissingException('runUuid');
+        }
+
+        $accessToken = $this->migrationAccessTokenService->takeoverMigration($runUuid, $context);
+
+        return new JsonResponse(['accessToken' => $accessToken]);
+    }
+
+    /**
+     * @Route("/api/v{version}/migration/start-migration", name="api.admin.migration.start-migration", methods={"POST"})
+     */
+    public function startMigration(Request $request, Context $context): JsonResponse
+    {
+        $profileId = $request->request->get('profileId');
+
+        if ($profileId === null) {
+            throw new MigrationContextPropertyMissingException('profileId');
+        }
+
+        $runTokenStruct = $this->migrationAccessTokenService->startMigrationRun($profileId, $context);
+
+        return new JsonResponse($runTokenStruct);
     }
 
     /**
@@ -103,7 +143,7 @@ class MigrationController extends Controller
      *
      * @throws MigrationContextPropertyMissingException
      */
-    public function fetchData(Request $request, Context $context): Response
+    public function fetchData(Request $request, Context $context): JsonResponse
     {
         $runUuid = $request->request->get('runUuid');
         $profileId = $request->request->get('profileId');
@@ -140,6 +180,12 @@ class MigrationController extends Controller
             throw new MigrationContextPropertyMissingException('credentialFields');
         }
 
+        if (!$this->migrationAccessTokenService->validateMigrationAccessToken($runUuid, $request, $context)) {
+            return new JsonResponse([
+                'validToken' => false,
+            ]);
+        }
+
         $migrationContext = new MigrationContext(
             $runUuid,
             $profileId,
@@ -154,7 +200,9 @@ class MigrationController extends Controller
         );
         $this->migrationDataFetcher->fetchData($migrationContext, $context);
 
-        return new Response();
+        return new JsonResponse([
+            'validToken' => true,
+        ]);
     }
 
     /**
@@ -177,10 +225,18 @@ class MigrationController extends Controller
             throw new MigrationContextPropertyMissingException('entity');
         }
 
+        if (!$this->migrationAccessTokenService->validateMigrationAccessToken($runUuid, $request, $context)) {
+            return new JsonResponse([
+                'validToken' => false,
+            ]);
+        }
+
         $migrationContext = new MigrationContext($runUuid, '', '', '', $entity, [], $offset, $limit);
         $this->migrationDataWriter->writeData($migrationContext, $context);
 
-        return new Response();
+        return new JsonResponse([
+            'validToken' => true,
+        ]);
     }
 
     /**
@@ -189,13 +245,13 @@ class MigrationController extends Controller
     public function fetchMediaUuids(Request $request, Context $context): JsonResponse
     {
         $limit = $request->query->getInt('limit', 100);
-        $runId = $request->query->get('runId');
+        $runUuid = $request->query->get('runId');
 
-        if ($runId === null) {
+        if ($runUuid === null) {
             throw new MigrationWorkloadPropertyMissingException('runId');
         }
 
-        $mediaUuids = $this->assetDownloadService->fetchMediaUuids($runId, $context, $limit);
+        $mediaUuids = $this->assetDownloadService->fetchMediaUuids($runUuid, $context, $limit);
 
         return new JsonResponse(['mediaUuids' => $mediaUuids]);
     }
@@ -208,11 +264,11 @@ class MigrationController extends Controller
     public function downloadAssets(Request $request, Context $context): JsonResponse
     {
         /** @var array $workload */
-        $runId = $request->request->get('runId');
+        $runUuid = $request->request->get('runId');
         $workload = $request->request->get('workload', []);
         $fileChunkByteSize = $request->request->getInt('fileChunkByteSize', 1000 * 1000);
 
-        if ($runId === null) {
+        if ($runUuid === null) {
             throw new MigrationContextPropertyMissingException('runId');
         }
 
@@ -232,17 +288,23 @@ class MigrationController extends Controller
             }
         }
 
-        $newWorkload = $this->assetDownloadService->downloadAssets($runId, $context, $workload, $fileChunkByteSize);
+        if (!$this->migrationAccessTokenService->validateMigrationAccessToken($runUuid, $request, $context)) {
+            return new JsonResponse([
+                'validToken' => false,
+            ]);
+        }
 
-        return new JsonResponse(['workload' => $newWorkload]);
+        $newWorkload = $this->assetDownloadService->downloadAssets($runUuid, $context, $workload, $fileChunkByteSize);
+
+        return new JsonResponse(['workload' => $newWorkload, 'validToken' => true]);
     }
 
     /**
-     * @Route("/api/v{version}/migration/get-state", name="api.admin.migration.get-state", methods={"GET"})
+     * @Route("/api/v{version}/migration/get-state", name="api.admin.migration.get-state", methods={"POST"})
      */
-    public function getState(Context $context): JsonResponse
+    public function getState(Request $request, Context $context): JsonResponse
     {
-        $state = $this->migrationProgressService->getProgress($context);
+        $state = $this->migrationProgressService->getProgress($request, $context);
 
         return new JsonResponse($state);
     }

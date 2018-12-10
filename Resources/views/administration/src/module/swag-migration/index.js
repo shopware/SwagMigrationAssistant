@@ -15,6 +15,7 @@ import './component/swag-migration-loading-screen-success';
 import './component/swag-migration-loading-screen-warning';
 import './component/swag-migration-loading-screen-failure';
 import './component/swag-migration-loading-screen-pause';
+import './component/swag-migration-loading-screen-takeover';
 import './component/swag-migration-shop-information';
 import './component/sw-progress-bar';
 import './extension/sw-settings-index';

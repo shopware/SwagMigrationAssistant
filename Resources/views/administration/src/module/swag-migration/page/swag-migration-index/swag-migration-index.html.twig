@@ -39,6 +39,7 @@
                                                      :lastMigrationDate="lastMigrationDate"
                                                      :isMigrating="isMigrating"
                                                      :isPaused="isPaused"
+                                                     :isOtherMigrationRunning="isOtherMigrationRunning"
                                                      @onClickEditSettings="editSettings">
                     </swag-migration-shop-information>
                 {% endblock %}
@@ -77,6 +78,14 @@
                 {% block swag_migration_index_card_loadingScreen_pause %}
                     <swag-migration-loading-screen-pause v-if="componentIndex === 5">
                     </swag-migration-loading-screen-pause>
+                {% endblock %}
+
+                {% block swag_migration_index_card_loadingScreen_takeover %}
+                    <swag-migration-loading-screen-takeover v-if="componentIndex === 6"
+                                                            @onTakeoverMigration="onTakeoverMigration"
+                                                            :isOtherInstanceFetching="isOtherInstanceFetching"
+                                                            :isMigrationInterrupted="isMigrationInterrupted">
+                    </swag-migration-loading-screen-takeover>
                 {% endblock %}
 
                 {% block swag_migration_index_modal_migration_confirmDialog %}

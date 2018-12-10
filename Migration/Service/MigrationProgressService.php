@@ -11,7 +11,9 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
+use SwagMigrationNext\Migration\Run\SwagMigrationAccessTokenService;
 use SwagMigrationNext\Migration\Run\SwagMigrationRunStruct;
+use Symfony\Component\HttpFoundation\Request;
 
 class MigrationProgressService implements MigrationProgressServiceInterface
 {
@@ -35,28 +37,46 @@ class MigrationProgressService implements MigrationProgressServiceInterface
      */
     private $context;
 
+    /**
+     * @var SwagMigrationAccessTokenService
+     */
+    private $migrationAccessTokenService;
+
+    /**
+     * @var bool
+     */
+    private $validMigrationAccessToken = false;
+
     public function __construct(
         RepositoryInterface $migrationRunRepository,
         RepositoryInterface $migrationDataRepository,
-        RepositoryInterface $migrationMediaFileRepository
+        RepositoryInterface $migrationMediaFileRepository,
+        SwagMigrationAccessTokenService $migrationAccessTokenService
     ) {
         $this->migrationRunRepository = $migrationRunRepository;
         $this->migrationDataRepository = $migrationDataRepository;
         $this->migrationMediaFileRepository = $migrationMediaFileRepository;
+        $this->migrationAccessTokenService = $migrationAccessTokenService;
     }
 
-    public function getProgress(Context $context): ProgressState
+    public function getProgress(Request $request, Context $context): ProgressState
     {
         $this->context = $context;
         $run = $this->getCurrentRun();
 
         if ($run === null || $run->getStatus() !== SwagMigrationRunStruct::STATUS_RUNNING) {
-            return new ProgressState(false);
+            return new ProgressState(false, true);
         }
+
+        $this->validMigrationAccessToken = $this->migrationAccessTokenService->validateMigrationAccessToken($run->getId(), $request, $context);
 
         // Get the current entity counts
         $totals = $run->getTotals();
         $fetchedEntityCounts = $this->getEntityCounts($run->getId(), false);
+
+        if ($totals === null || $fetchedEntityCounts == null) {
+            return new ProgressState(true, $this->validMigrationAccessToken);
+        }
 
         // Compare fetched counts
         $compareFetchCountResult = $this->compareFetchCount($run, $totals, $fetchedEntityCounts);
@@ -83,7 +103,7 @@ class MigrationProgressService implements MigrationProgressServiceInterface
             return $compareMediaDownloadCountResult;
         }
 
-        return new ProgressState(false);
+        return new ProgressState(false, $this->validMigrationAccessToken);
     }
 
     private function getCurrentRun(): ?SwagMigrationRunStruct
@@ -233,15 +253,7 @@ class MigrationProgressService implements MigrationProgressServiceInterface
             if (!isset($fetchedEntityCounts[$entity]) ||
                 (isset($fetchedEntityCounts[$entity]) && $fetchedEntityCounts[$entity] < $count)
             ) {
-                // If the run currently fetching data, discard that run and set the status to aborted
-                $this->migrationRunRepository->update([
-                    [
-                        'id' => $run->getId(),
-                        'status' => SwagMigrationRunStruct::STATUS_ABORTED,
-                    ],
-                ], $this->context);
-
-                return new ProgressState(false);
+                return new ProgressState(false, $this->validMigrationAccessToken, null, null, ProgressState::STATUS_FETCH_DATA);
             }
         }
 
@@ -268,6 +280,7 @@ class MigrationProgressService implements MigrationProgressServiceInterface
 
             $progressState = new ProgressState(
                 true,
+                $this->validMigrationAccessToken,
                 $run->getId(),
                 $run->getProfile()->jsonSerialize(),
                 ProgressState::STATUS_WRITE_DATA,
@@ -293,6 +306,7 @@ class MigrationProgressService implements MigrationProgressServiceInterface
         if ($downloadedMediaFileCount < $totalMediaFileCount) {
             $progressState = new ProgressState(
                 true,
+                $this->validMigrationAccessToken,
                 $run->getId(),
                 $run->getProfile()->jsonSerialize(),
                 ProgressState::STATUS_DOWNLOAD_DATA,
@@ -316,6 +330,7 @@ class MigrationProgressService implements MigrationProgressServiceInterface
             reset($totals['toBeFetched']);
             $progressState = new ProgressState(
                 true,
+                $this->validMigrationAccessToken,
                 $run->getId(),
                 $run->getProfile()->jsonSerialize(),
                 ProgressState::STATUS_WRITE_DATA,

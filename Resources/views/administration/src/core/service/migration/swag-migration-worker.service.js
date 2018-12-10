@@ -5,6 +5,7 @@ import { WorkerRequest } from './swag-migration-worker-request.service';
 import { WorkerDownload } from './swag-migration-worker-download.service';
 import { MIGRATION_STATUS, WorkerStatusManager } from './swag-migration-worker-status-manager.service';
 
+export const MIGRATION_ACCESS_TOKEN_NAME = 'swagMigrationAccessToken';
 
 class MigrationWorkerService {
     /**
@@ -48,6 +49,7 @@ class MigrationWorkerService {
         this._entityGroups = [];
         this._progressSubscriber = null;
         this._statusSubscriber = null;
+        this._interruptSubscriber = null;
         this._runId = '';
         this._profile = null;
         this._status = null;
@@ -101,25 +103,65 @@ class MigrationWorkerService {
     }
 
     /**
-     * Check if the last migration was not finished.
-     * Resolves with true or false.
+     * Returns the accessToken out of the local storage
+     *
+     * @returns {string}
+     */
+    static get migrationAccessToken() {
+        let token = localStorage.getItem(MIGRATION_ACCESS_TOKEN_NAME);
+
+        if (token === null) {
+            token = '';
+        }
+
+        return token;
+    }
+
+    _onInterrupt() {
+        this._isMigrating = false;
+        this._callInterruptSubscriber();
+    }
+
+    /**
+     * Check if the last migration was not finished and the accessToken is valid.
+     * Resolves with run state object:
+     * { isMigrationRunning: {bool}, isMigrationAccessTokenValid: {bool}, status: {object|null} }
      *
      * @returns {Promise}
      */
     checkForRunningMigration() {
         return new Promise((resolve) => {
-            this._migrationService.getState().then((state) => {
-                if (state.migrationRunning === true) {
-                    this._restoreState = state;
-                    this._runId = this._restoreState.runId;
-                    resolve(true);
+            const returnValue = { isMigrationRunning: false, isMigrationAccessTokenValid: false, status: null };
+            this._migrationService.getState({
+                swagMigrationAccessToken: MigrationWorkerService.migrationAccessToken
+            }).then((state) => {
+                this._restoreState = state;
+
+                if (state.validMigrationRunToken === false) {
+                    this._runId = state.runId;
+                    returnValue.isMigrationRunning = true;
+                    returnValue.status = state.status;
+
+                    resolve(returnValue);
                     return;
                 }
-                this._restoreState = {};
-                resolve(false);
+
+                if (state.migrationRunning === true) {
+                    this._runId = this._restoreState.runId;
+                    returnValue.isMigrationRunning = true;
+                    returnValue.isMigrationAccessTokenValid = true;
+                    returnValue.status = state.status;
+
+                    resolve(returnValue);
+                    return;
+                }
+
+                returnValue.isMigrationAccessTokenValid = true;
+                resolve(returnValue);
             }).catch(() => {
+                returnValue.isMigrationAccessTokenValid = true;
                 this._restoreState = {};
-                resolve(false);
+                resolve(returnValue);
             });
         });
     }
@@ -159,6 +201,20 @@ class MigrationWorkerService {
     stopMigration() {
         this._workRunner.interrupt = true;
         this._isMigrating = false;
+    }
+
+    /**
+     * Takeover the current migration and save the given accessToken into the localStorage.
+     *
+     * @return {Promise}
+     */
+    takeoverMigration() {
+        return new Promise((resolve) => {
+            this._migrationService.takeoverMigration(this.runId).then((migrationAccessToken) => {
+                localStorage.setItem(MIGRATION_ACCESS_TOKEN_NAME, migrationAccessToken.accessToken);
+                resolve();
+            });
+        });
     }
 
     /**
@@ -235,6 +291,26 @@ class MigrationWorkerService {
     }
 
     /**
+     * @param {function} callback
+     */
+    subscribeInterrupt(callback) {
+        this._interruptSubscriber = callback;
+    }
+
+    unsubscribeInterrupt() {
+        this._interruptSubscriber = null;
+    }
+
+    /**
+     * @private
+     */
+    _callInterruptSubscriber() {
+        if (this._interruptSubscriber !== null) {
+            this._interruptSubscriber.call(null);
+        }
+    }
+
+    /**
      * @param {String} runId
      * @param {Object} profile
      * @param {Object} entityGroups
@@ -260,7 +336,7 @@ class MigrationWorkerService {
             }
 
             // Wait for the 'migrationWanted' request and response to allow or deny the migration
-            this._isMigrationRunningInOtherTab()
+            this.isMigrationRunningInOtherTab()
                 .then(async (isRunningInOtherTab) => {
                     if (isRunningInOtherTab) {
                         reject();
@@ -274,6 +350,7 @@ class MigrationWorkerService {
                     this._errors = [];
 
                     const requestParams = {
+                        swagMigrationAccessToken: MigrationWorkerService.migrationAccessToken,
                         runUuid: this._runId,
                         profileId: this._profile.id,
                         profileName: this._profile.profile,
@@ -282,6 +359,7 @@ class MigrationWorkerService {
                     };
 
                     const downloadParams = {
+                        swagMigrationAccessToken: MigrationWorkerService.migrationAccessToken,
                         runUuid: this._runId
                     };
 
@@ -291,7 +369,8 @@ class MigrationWorkerService {
                         this._workerStatusManager,
                         this._migrationService,
                         this._callProgressSubscriber.bind(this),
-                        this._addError.bind(this)
+                        this._addError.bind(this),
+                        this._onInterrupt.bind(this)
                     );
 
                     // fetch
@@ -330,7 +409,8 @@ class MigrationWorkerService {
                             this._workerStatusManager,
                             this._migrationService,
                             this._callProgressSubscriber.bind(this),
-                            this._addError.bind(this)
+                            this._addError.bind(this),
+                            this._onInterrupt.bind(this)
                         );
 
                         await this._startWorkRunner(
@@ -396,7 +476,7 @@ class MigrationWorkerService {
      * @returns {Promise}
      * @private
      */
-    _isMigrationRunningInOtherTab() {
+    isMigrationRunningInOtherTab() {
         return new Promise(async (resolve) => {
             this._broadcastService.sendMessage({
                 migrationMessage: 'migrationWanted'

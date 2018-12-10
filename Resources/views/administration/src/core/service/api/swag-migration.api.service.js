@@ -18,7 +18,7 @@ class MigrationApiService extends ApiService {
             });
     }
 
-    writeData(additionalParams = {}, additionalHeaders = {}) {
+    writeData(additionalParams = {}, additionalHeaders = { }) {
         const params = additionalParams;
         const headers = this.getBasicHeaders(additionalHeaders);
 
@@ -31,11 +31,35 @@ class MigrationApiService extends ApiService {
             });
     }
 
+    takeoverMigration(runUuid) {
+        const headers = this.getBasicHeaders();
+
+        return this.httpClient
+            .post(`${this.getApiBasePath()}/takeover-migration`, { runUuid }, {
+                headers
+            })
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
+    startMigration(profileId) {
+        const headers = this.getBasicHeaders();
+
+        return this.httpClient
+            .post(`${this.getApiBasePath()}/start-migration`, { profileId }, {
+                headers
+            })
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
     checkConnection(profileId) {
         const headers = this.getBasicHeaders();
 
         return this.httpClient
-            .post(`${this.getApiBasePath()}/check-connection`, { profileId: profileId }, {
+            .post(`${this.getApiBasePath()}/check-connection`, { profileId }, {
                 headers
             })
             .then((response) => {
@@ -72,7 +96,9 @@ class MigrationApiService extends ApiService {
         const headers = this.getBasicHeaders(additionalHeaders);
 
         return this.httpClient
-            .get(`${this.getApiBasePath()}/get-state`, { params, headers })
+            .post(`${this.getApiBasePath()}/get-state`, params, {
+                headers
+            })
             .then((response) => {
                 return ApiService.handleResponse(response);
             });

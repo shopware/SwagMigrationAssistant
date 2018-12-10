@@ -11,6 +11,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
 use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagMigrationNext\Migration\Asset\MediaFileService;
+use SwagMigrationNext\Migration\Run\SwagMigrationAccessTokenService;
 use SwagMigrationNext\Migration\Run\SwagMigrationRunStruct;
 use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationNext\Migration\Service\MigrationProgressService;
@@ -20,6 +21,7 @@ use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\MigrationServicesTrait;
+use Symfony\Component\HttpFoundation\Request;
 
 class MigrationProgressServiceTest extends TestCase
 {
@@ -125,7 +127,8 @@ class MigrationProgressServiceTest extends TestCase
         $this->progressService = new MigrationProgressService(
             $this->runRepo,
             $this->dataRepo,
-            $this->mediaFileRepo
+            $this->mediaFileRepo,
+            new SwagMigrationAccessTokenService($this->runRepo)
         );
 
         $this->migrationDataFetcher = $this->getMigrationDataFetcher(
@@ -147,7 +150,7 @@ class MigrationProgressServiceTest extends TestCase
             $context
         );
 
-        $progress = $this->progressService->getProgress($context);
+        $progress = $this->progressService->getProgress(new Request(), $context);
 
         self::assertNotTrue($progress->isMigrationRunning());
     }
@@ -180,7 +183,7 @@ class MigrationProgressServiceTest extends TestCase
         ];
 
         $this->initAllDatasets($context);
-        $progress = $this->progressService->getProgress($context);
+        $progress = $this->progressService->getProgress(new Request(), $context);
 
         $expectedEntityGroups = $this->additionalData['additionalData']['entityGroups'];
         foreach ($expectedEntityGroups as &$entityGroup) {
@@ -225,7 +228,7 @@ class MigrationProgressServiceTest extends TestCase
 
         $this->updateWrittenFlag();
         $this->initAllDatasets($context);
-        $progress = $this->progressService->getProgress($context);
+        $progress = $this->progressService->getProgress(new Request(), $context);
 
         $expectedEntityGroups = $this->additionalData['additionalData']['entityGroups'];
         foreach ($expectedEntityGroups as &$entityGroup) {
@@ -273,7 +276,7 @@ class MigrationProgressServiceTest extends TestCase
 
         $this->updateWrittenFlag();
         $this->initAllDatasets($context);
-        $progress = $this->progressService->getProgress($context);
+        $progress = $this->progressService->getProgress(new Request(), $context);
 
         $expectedEntityGroups = $this->additionalData['additionalData']['entityGroups'];
         foreach ($expectedEntityGroups as &$entityGroup) {
@@ -326,7 +329,7 @@ class MigrationProgressServiceTest extends TestCase
         $this->updateWrittenFlag();
         $this->initAllDatasets($context);
         $this->insertMediaFiles($context, 23, 0);
-        $progress = $this->progressService->getProgress($context);
+        $progress = $this->progressService->getProgress(new Request(), $context);
 
         $expectedEntityGroups = $this->additionalData['additionalData']['entityGroups'];
         foreach ($expectedEntityGroups as &$entityGroup) {
@@ -373,7 +376,7 @@ class MigrationProgressServiceTest extends TestCase
         $this->updateWrittenFlag();
         $this->initAllDatasets($context);
         $this->insertMediaFiles($context, 23, 20);
-        $progress = $this->progressService->getProgress($context);
+        $progress = $this->progressService->getProgress(new Request(), $context);
 
         $expectedEntityGroups = $this->additionalData['additionalData']['entityGroups'];
         foreach ($expectedEntityGroups as &$entityGroup) {
@@ -425,7 +428,7 @@ class MigrationProgressServiceTest extends TestCase
         $this->updateWrittenFlag();
         $this->initAllDatasets($context);
         $this->insertMediaFiles($context, 23, 23);
-        $progress = $this->progressService->getProgress($context);
+        $progress = $this->progressService->getProgress(new Request(), $context);
 
         self::assertFalse($progress->isMigrationRunning());
     }
@@ -480,7 +483,7 @@ class MigrationProgressServiceTest extends TestCase
 
         $this->initAllDatasets($context);
         $this->insertMediaFiles($context, 23, 0);
-        $progress = $this->progressService->getProgress($context);
+        $progress = $this->progressService->getProgress(new Request(), $context);
 
         self::assertTrue($progress->isMigrationRunning());
         self::assertSame($progress->getFinishedCount(), 0);
@@ -502,7 +505,8 @@ class MigrationProgressServiceTest extends TestCase
             Context::createDefaultContext()
         );
 
-        $progress = $this->progressService->getProgress($context);
+        $request = new Request();
+        $progress = $this->progressService->getProgress($request, $context);
         self::assertNotTrue($progress->isMigrationRunning());
 
         $this->runRepo->delete([
@@ -511,7 +515,7 @@ class MigrationProgressServiceTest extends TestCase
             ],
         ], $context);
 
-        $progress = $this->progressService->getProgress($context);
+        $progress = $this->progressService->getProgress($request, $context);
         self::assertNotTrue($progress->isMigrationRunning());
     }
 

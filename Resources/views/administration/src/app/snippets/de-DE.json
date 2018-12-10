@@ -150,6 +150,21 @@
         "pauseScreen": {
           "title": "Pause",
           "message": "Der Import wurde pausiert.<br>Setze ihn fort oder brich den Prozess ab.<br><br>"
+        },
+        "takeoverScreen": {
+          "message": "Der Import ist bereits auf einem anderen Gerät oder Browser aktiv.",
+          "hint": "Ein Import ist bereits aktiv, Du hast aber keinen Zugriff auf diesen? Hier kannst Du den aktiven ",
+          "hintLink": "Import übernehmen."
+        },
+        "takeoverModal": {
+          "title": "Import übernehmen",
+          "message": "Beachte, dass bei der Übernahme eines aktiven Imports dem ursprünglichen Nutzer die Verwaltungsrechte entzogen werden.",
+          "hint": "Möchtest Du den aktiven Import stoppen und hier übernehmen?",
+          "cancel": "Abbrechen",
+          "confirm": "Übernehmen"
+        },
+        "takeoverInfoScreen": {
+          "message": "Dein aktiver Import wurde gestoppt und von einem anderen Gerät oder Browser übernommen."
         }
       },
       "confirmDialog": {
