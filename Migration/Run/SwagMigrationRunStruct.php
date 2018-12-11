@@ -4,6 +4,7 @@ namespace SwagMigrationNext\Migration\Run;
 
 use DateTime;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
 use SwagMigrationNext\Exception\MigrationRunUndefinedStatusException;
 use SwagMigrationNext\Migration\Asset\SwagMigrationMediaFileStruct;
 use SwagMigrationNext\Migration\Data\SwagMigrationDataStruct;
@@ -11,6 +12,8 @@ use SwagMigrationNext\Migration\Profile\SwagMigrationProfileStruct;
 
 class SwagMigrationRunStruct extends Entity
 {
+    use EntityIdTrait;
+
     /**
      * @var string
      */

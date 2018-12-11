@@ -4,10 +4,13 @@ namespace SwagMigrationNext\Migration\Mapping;
 
 use DateTime;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
 use SwagMigrationNext\Migration\Profile\SwagMigrationProfileStruct;
 
 class SwagMigrationMappingStruct extends Entity
 {
+    use EntityIdTrait;
+
     /**
      * @var string
      */
