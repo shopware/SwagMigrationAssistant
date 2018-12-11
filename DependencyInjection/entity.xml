@@ -83,5 +83,20 @@
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Search\EntityAggregatorInterface"/>
             <argument type="service" id="event_dispatcher"/>
         </service>
+
+        <service id="SwagMigrationNext\Migration\Setting\GeneralSettingDefinition">
+            <tag name="shopware.entity.definition" entity="swag_migration_general_setting"/>
+        </service>
+
+        <service id="swag_migration_general_setting.repository"
+                 class="Shopware\Core\Framework\DataAbstractionLayer\EntityRepository"
+                 public="true">
+            <argument>SwagMigrationNext\Migration\Setting\GeneralSettingDefinition</argument>
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Read\EntityReaderInterface"/>
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\VersionManager"/>
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearcherInterface"/>
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Search\EntityAggregatorInterface"/>
+            <argument type="service" id="event_dispatcher"/>
+        </service>
     </services>
 </container>

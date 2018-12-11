@@ -30,26 +30,39 @@
           "contentInformation": "Melde Dich in Deinem Shop an und rufe den Plugin-Manager auf. Installiere und aktiviere das Plugin „Shopware Playground Connector”.",
           "pluginLink": "Mehr Infos zum Plugin"
         },
+        "selectProfile": {
+          "profileLabel": "Profile:",
+          "profilePlaceholder": "Bitte Profile auswählen",
+          "gatewayLabel": "Gatway:",
+          "gatewayPlaceholder": "Bitte Gateway auswählen"
+        },
         "credentials": {
-          "contentTitle": "Zugang aktivieren in Shopware 5",
-          "contentInformation": "Den API-Zugang aktivierst Du in der Benutzerverwaltung in Deinem Admin-Benutzer Account. Kopiere den API-Schlüssel in die Zwischenablage und bestätige mit Speichern.",
-          "apiKeyLabel": "API-Schlüssel",
-          "apiKeyPlaceholder": "Schlüssel einfügen ...",
-          "apiUserLabel": "Benutzername (API-User)",
-          "apiUserPlaceholder": "Login-Benutzernamen eintragen ...",
-          "endpointLabel": "Shop-Domain",
-          "endpointPlaceholder": "www.demoshop.com",
-          "endpointSSLLabel": "Mein Shop benutzt SSL",
-          "dbHostLabel": "DB-Host",
-          "dbHostPlaceholder": "DB-Host eintragen ...",
-          "dbPortLabel": "DB-Port",
-          "dbPortPlaceholder": "DB-Port eintragen ...",
-          "dbNameLabel": "DB-Name",
-          "dbNamePlaceholder": "Datenbankname eintragen ...",
-          "dbUserLabel": "DB-Benutzer",
-          "dbUserPlaceholder": "Benutzername eintragen ...",
-          "dbPasswordLabel": "DB-Passwort",
-          "dbPasswordPlaceholder": "Passwort eintragen ...",
+          "emptyState": "Leider wurde kein enstprechendes Formular für dieses Profil gefunden.",
+          "shopware55": {
+            "api": {
+              "contentTitle": "Zugang aktivieren in Shopware 5",
+              "contentInformation": "Den API-Zugang aktivierst Du in der Benutzerverwaltung in Deinem Admin-Benutzer Account. Kopiere den API-Schlüssel in die Zwischenablage und bestätige mit Speichern.",
+              "apiKeyLabel": "API-Schlüssel",
+              "apiKeyPlaceholder": "Schlüssel einfügen ...",
+              "apiUserLabel": "Benutzername (API-User)",
+              "apiUserPlaceholder": "Login-Benutzernamen eintragen ...",
+              "endpointLabel": "Shop-Domain",
+              "endpointPlaceholder": "www.demoshop.com",
+              "endpointSSLLabel": "Mein Shop benutzt SSL"
+            },
+            "local": {
+              "dbHostLabel": "DB-Host",
+              "dbHostPlaceholder": "DB-Host eintragen ...",
+              "dbPortLabel": "DB-Port",
+              "dbPortPlaceholder": "DB-Port eintragen ...",
+              "dbNameLabel": "DB-Name",
+              "dbNamePlaceholder": "Datenbankname eintragen ...",
+              "dbUserLabel": "DB-Benutzer",
+              "dbUserPlaceholder": "Benutzername eintragen ...",
+              "dbPasswordLabel": "DB-Passwort",
+              "dbPasswordPlaceholder": "Passwort eintragen ..."
+            }
+          },
           "success": {
             "contentTitle": "Erfolgreich verbunden!",
             "contentInformation": "Lass uns beginnen, Deine Daten zu importieren.",

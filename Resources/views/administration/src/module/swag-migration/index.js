@@ -5,6 +5,7 @@ import './page/swag-migration-history';
 import './page/swag-migration-wizard';
 import './page/swag-migration-wizard-page-introduction';
 import './page/swag-migration-wizard-page-plugin-information';
+import './page/swag-migration-wizard-page-select-profile';
 import './page/swag-migration-wizard-page-credentials';
 import './page/swag-migration-wizard-page-credentials-success';
 import './page/swag-migration-wizard-page-credentials-error';
@@ -19,8 +20,10 @@ import './component/swag-migration-loading-screen-pause';
 import './component/swag-migration-loading-screen-takeover';
 import './component/swag-migration-shop-information';
 import './component/sw-progress-bar';
+import './component/sw-url-input';
 import './component/swag-migration-history-selected-data';
 import './extension/sw-settings-index';
+import './profile';
 
 Module.register('swag-migration', {
     type: 'plugin',
@@ -62,6 +65,10 @@ Module.register('swag-migration', {
                 plugin_information: {
                     path: 'plugin-information',
                     component: 'swag-migration-wizard-page-plugin-information'
+                },
+                select_profile: {
+                    path: 'select-profile',
+                    component: 'swag-migration-wizard-page-select-profile'
                 },
                 credentials: {
                     path: 'credentials',

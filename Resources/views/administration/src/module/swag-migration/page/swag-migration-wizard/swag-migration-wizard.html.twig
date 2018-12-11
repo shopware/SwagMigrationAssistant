@@ -9,12 +9,14 @@
 
             {% block swag_migration_router_view %}
                 <router-view
-                        :apiKey="credentials.apiKey"
-                        @apiKeyChanged="onApiKeyChanged"
-                        :apiUser="credentials.apiUser"
-                        @apiUserChanged="onApiUserChanged"
-                        :endpoint="credentials.endpoint"
-                        @endpointChanged="onEndpointChanged"
+                        @onProfileSelected="onProfileSelected"
+                        :profileName="profile.profile"
+                        :gatewayName="profile.gateway"
+                        @onCredentialsChanged="onCredentialsChanged"
+                        @onCredentialsValidationChanged="onCredentialsValidationChanged"
+                        @onProfileSelectionValidationChanged="onProfileSelectionValidationChanged"
+                        :credentials="profile.credentialFields"
+                        @onIsLoadingChanged="onIsLoadingChanged"
                         :errorMessage="errorMessage">
                 </router-view>
             {% endblock %}

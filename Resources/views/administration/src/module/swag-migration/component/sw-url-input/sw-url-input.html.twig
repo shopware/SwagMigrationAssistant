@@ -1,0 +1,48 @@
+{% block sw_url_input %}
+    <div class="sw-url-input">
+        {# TODO: Replace with sw-field prefix #}
+        <span class="sw-url-input__label">
+            {{ label }}
+        </span>
+
+        {% block sw_url_input_field %}
+            <div class="sw-url-input-field">
+                <span class="sw-url-input-field__prefix"
+                      :class="prefixClass">
+                    <sw-icon name="default-lock-closed"
+                             :small="true"
+                             class="sw-url-input-field__icon"
+                             v-if="sslActive">
+                    </sw-icon>
+                    <sw-icon name="default-lock-open"
+                             :small="true"
+                             class="sw-url-input-field__icon"
+                             v-else>
+                    </sw-icon>
+                        {{ urlPrefix }}
+                </span>
+
+                <sw-field name="sw-field--url"
+                          class="sw-url-input-field__input"
+                          :placeholder="placeholder"
+                          :value="urlInput"
+                          @input="urlChanged"
+                          ref="urlField">
+                    {% block sw_url_input_field_suffix %}
+                        <sw-icon name="default-web-link" slot="suffix"></sw-icon>
+                    {% endblock %}
+                </sw-field>
+            </div>
+        {% endblock %}
+
+        {% block sw_url_input_ssl_switch %}
+            <sw-field name="sw-field--url-ssl"
+                      class="sw-url-input-ssl-switch__field"
+                      type="switch"
+                      :label="switchLabel"
+                      :value="sslActive"
+                      @change="sslChanged">
+            </sw-field>
+        {% endblock %}
+    </div>
+{% endblock %}

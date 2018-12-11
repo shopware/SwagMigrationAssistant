@@ -30,26 +30,39 @@
           "contentInformation": "Use your access data to log in to the Shopware 5 backend and open the plugin manager. To get started, download and activate the free plugin “Shopware Playground Connector”.",
           "pluginLink": "More information about the plugin"
         },
+        "selectProfile": {
+          "profileLabel": "Profile:",
+          "profilePlaceholder": "Please select a profile",
+          "gatewayLabel": "Gatway:",
+          "gatewayPlaceholder": "Please select a gateway"
+        },
         "credentials": {
-          "contentTitle": "Create the connection with Shopware 5",
-          "contentInformation": "The API key can be found in the administration of your user data. Please activate the API access, copy the API key to your clipboard and confirm by clicking “Save”.",
-          "apiKeyLabel": "API key",
-          "apiKeyPlaceholder": "Insert API key ...",
-          "apiUserLabel": "User name (API user)",
-          "apiUserPlaceholder": "Enter your login user name ...",
-          "endpointLabel": "Shop domain",
-          "endpointPlaceholder": "www.demoshop.com",
-          "endpointSSLLabel": "My shop uses SSL",
-          "dbHostLabel": "DB host",
-          "dbHostPlaceholder": "Insert database host ...",
-          "dbPortLabel": "DB port",
-          "dbPortPlaceholder": "Insert database port ...",
-          "dbNameLabel": "DB name",
-          "dbNamePlaceholder": "Insert database name ...",
-          "dbUserLabel": "DB user",
-          "dbUserPlaceholder": "Insert username ...",
-          "dbPasswordLabel": "DB password",
-          "dbPasswordPlaceholder": "Insert password ...",
+          "emptyState": "Sorry no form for selected profile found.",
+          "shopware55": {
+            "api": {
+              "contentTitle": "Create the connection with Shopware 5",
+              "contentInformation": "The API key can be found in the administration of your user data. Please activate the API access, copy the API key to your clipboard and confirm by clicking “Save”.",
+              "apiKeyLabel": "API key",
+              "apiKeyPlaceholder": "Insert API key ...",
+              "apiUserLabel": "User name (API user)",
+              "apiUserPlaceholder": "Enter your login user name ...",
+              "endpointLabel": "Shop domain",
+              "endpointPlaceholder": "www.demoshop.com",
+              "endpointSSLLabel": "My shop uses SSL"
+            },
+            "local": {
+              "dbHostLabel": "DB host",
+              "dbHostPlaceholder": "Insert database host ...",
+              "dbPortLabel": "DB port",
+              "dbPortPlaceholder": "Insert database port ...",
+              "dbNameLabel": "DB name",
+              "dbNamePlaceholder": "Insert database name ...",
+              "dbUserLabel": "DB user",
+              "dbUserPlaceholder": "Insert username ...",
+              "dbPasswordLabel": "DB password",
+              "dbPasswordPlaceholder": "Insert password ..."
+            }
+          },
           "success": {
             "contentTitle": "Successfully connected!",
             "contentInformation": "Click on “Finish” and select the data sets to be transferred in the import module. The data can be imported completely, step by step or subsequently.",

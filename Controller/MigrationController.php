@@ -4,6 +4,7 @@ namespace SwagMigrationNext\Controller;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use SwagMigrationNext\Exception\MigrationContextPropertyMissingException;
 use SwagMigrationNext\Exception\MigrationWorkloadPropertyMissingException;
 use SwagMigrationNext\Migration\Asset\HttpAssetDownloadServiceInterface;
@@ -38,14 +39,19 @@ class MigrationController extends AbstractController
     private $assetDownloadService;
 
     /**
+     * @var MigrationProgressServiceInterface
+     */
+    private $migrationProgressService;
+
+    /**
      * @var EntityRepositoryInterface
      */
     private $migrationProfileRepo;
 
     /**
-     * @var MigrationProgressServiceInterface
+     * @var RepositoryInterface
      */
-    private $migrationProgressService;
+    private $migrationGeneralSetting;
 
     /**
      * @var SwagMigrationAccessTokenService
@@ -56,16 +62,18 @@ class MigrationController extends AbstractController
         MigrationDataFetcherInterface $migrationDataFetcher,
         MigrationDataWriterInterface $migrationDataWriter,
         HttpAssetDownloadServiceInterface $assetDownloadService,
-        EntityRepositoryInterface $migrationProfileRepo,
         MigrationProgressServiceInterface $migrationProgressService,
-        SwagMigrationAccessTokenService $migrationAccessTokenService
+        SwagMigrationAccessTokenService $migrationAccessTokenService,
+        EntityRepositoryInterface $migrationProfileRepo,
+        EntityRepositoryInterface $migrationGeneralSetting
     ) {
         $this->migrationDataFetcher = $migrationDataFetcher;
         $this->migrationDataWriter = $migrationDataWriter;
         $this->assetDownloadService = $assetDownloadService;
-        $this->migrationProfileRepo = $migrationProfileRepo;
         $this->migrationProgressService = $migrationProgressService;
         $this->migrationAccessTokenService = $migrationAccessTokenService;
+        $this->migrationProfileRepo = $migrationProfileRepo;
+        $this->migrationGeneralSetting = $migrationGeneralSetting;
     }
 
     /**
@@ -115,7 +123,42 @@ class MigrationController extends AbstractController
             throw new MigrationContextPropertyMissingException('profileId');
         }
 
-        return new JsonResponse($this->getEnvironmentInformation($profileId, $context));
+        $ids = $this->migrationGeneralSetting->searchIds(new Criteria(), $context)->getIds();
+        $this->migrationGeneralSetting->update(
+            [
+                [
+                    'id' => $ids[0],
+                    'selectedProfileId' => $profileId,
+                ],
+            ],
+            $context
+        );
+
+        $readCriteria = new ReadCriteria([$profileId]);
+        $profileCollection = $this->migrationProfileRepo->read($readCriteria, $context);
+        /** @var SwagMigrationProfileEntity $profile */
+        $profile = $profileCollection->get($profileId);
+
+        /** @var string $profileName */
+        $profileName = $profile->getProfile();
+        /** @var string $gateway */
+        $gateway = $profile->getGateway();
+        $credentials = $profile->getCredentialFields();
+
+        $migrationContext = new MigrationContext(
+            '',
+            '',
+            $profileName,
+            $gateway,
+            '',
+            $credentials,
+            0,
+            0
+        );
+
+        $information = $this->migrationDataFetcher->getEnvironmentInformation($migrationContext);
+
+        return new JsonResponse($information);
     }
 
     /**

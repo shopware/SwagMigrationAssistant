@@ -68,6 +68,10 @@ class SwagMigrationNext extends Plugin
                 'credential_fields' => json_encode(['dbHost' => '', 'dbPort' => '', 'dbName' => '', 'dbUser' => '', 'dbPassword' => '']),
                 'created_at' => $now,
             ]);
+            $connection->insert('swag_migration_general_setting', [
+                'id' => Uuid::uuid4()->getBytes(),
+                'created_at' => $now,
+            ]);
 
             $connection->commit();
         } catch (DBALException $e) {

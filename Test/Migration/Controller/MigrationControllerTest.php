@@ -78,9 +78,10 @@ class MigrationControllerTest extends TestCase
             ),
             $this->getContainer()->get(MigrationDataWriter::class),
             new DummyHttpAssetDownloadService(),
-            $this->getContainer()->get('swag_migration_profile.repository'),
             new DummyProgressService(),
-            new SwagMigrationAccessTokenService($this->runRepo)
+            new SwagMigrationAccessTokenService($this->runRepo),
+            $this->getContainer()->get('swag_migration_profile.repository'),
+            $this->getContainer()->get('swag_migration_general_setting.repository')
         );
     }
 

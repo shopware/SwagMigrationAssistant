@@ -20,16 +20,19 @@ Component.register('swag-migration-wizard', {
             routes: [
                 'swag.migration.wizard.introduction',
                 'swag.migration.wizard.plugin_information',
+                'swag.migration.wizard.select_profile',
                 'swag.migration.wizard.credentials',
                 'swag.migration.wizard.credentials_success',
                 'swag.migration.wizard.credentials_error'
             ],
-            routeCountVisible: 3, // only show 4 dots and allow navigation between them.
+            routeCountVisible: 4, // only show 4 dots and allow navigation between them.
             routeIndex: 0,
             routeIndexVisible: 0, // only count up to 3
             profile: {}, // state object
             profileId: '',
-            credentials: {}, // .endpoint .apiUser .apiKey
+            credentials: {},
+            credentialsValid: false,
+            profileSelectionValid: false,
             errorMessage: ''
         };
     },
@@ -39,16 +42,20 @@ Component.register('swag-migration-wizard', {
             return this.routes.length;
         },
 
-        routeApiCredentialsIndex() {
+        routeSelectProfileIndex() {
             return 2;
         },
 
-        routeSuccessIndex() {
+        routeCredentialsIndex() {
             return 3;
         },
 
-        routeErrorIndex() {
+        routeSuccessIndex() {
             return 4;
+        },
+
+        routeErrorIndex() {
+            return 5;
         },
 
         nextButtonDisabled() {
@@ -56,13 +63,12 @@ Component.register('swag-migration-wizard', {
                 return true;
             }
 
-            if (this.routeIndex === this.routeApiCredentialsIndex) {
-                return !(this.credentials.endpoint &&
-                        this.credentials.apiUser &&
-                        this.credentials.apiKey &&
-                        this.credentials.endpoint !== 'http://' &&
-                        this.credentials.endpoint !== 'https://'
-                );
+            if (this.routeIndex === this.routeCredentialsIndex) {
+                return !this.credentialsValid;
+            }
+
+            if (this.routeIndex === this.routeSelectProfileIndex) {
+                return !this.profileSelectionValid;
             }
 
             return false;
@@ -74,6 +80,10 @@ Component.register('swag-migration-wizard', {
 
         migrationProfileStore() {
             return State.getStore('swag_migration_profile');
+        },
+
+        migrationGeneralSettingStore() {
+            return State.getStore('swag_migration_general_setting');
         }
     },
 
@@ -104,25 +114,8 @@ Component.register('swag-migration-wizard', {
     methods: {
         createdComponent() {
             this.editMode = this.$route.params.editMode !== undefined ? this.$route.params.editMode : false;
-
-            const params = {
-                offset: 0,
-                limit: 1,
-                criteria: CriteriaFactory.equals('gateway', 'api')
-            };
-
-            this.migrationProfileStore.getList(params).then((response) => {
-                if (!response) {
-                    return;
-                }
-
-                this.profile = response.items[0];
-                this.credentials = response.items[0].credentialFields;
-                this.profileId = response.items[0].id;
-                this.isLoading = false;
-            });
-
             this.matchRouteWithIndex();
+            this.isLoading = false;
         },
 
         /**
@@ -142,7 +135,7 @@ Component.register('swag-migration-wizard', {
             this.profile.credentialFields = this.credentials;
             this.profile.save().then((response) => {
                 if (response.errors.length === 0) {
-                    this.migrationService.checkConnection(this.profileId).then((connectionCheckResponse) => {
+                    this.migrationService.checkConnection(this.profile.id).then((connectionCheckResponse) => {
                         this.isLoading = false;
 
                         if (!connectionCheckResponse) {
@@ -245,7 +238,8 @@ Component.register('swag-migration-wizard', {
             this.buttonPreviousText = this.$tc('swag-migration.wizard.buttonPrev');
 
             // Handle next button text
-            if (this.routeIndex === this.routeApiCredentialsIndex) {
+            if (this.routeIndex === this.routeCredentialsIndex) {
+                this.loadSelectedProfile();
                 this.buttonNextText = this.$tc('swag-migration.wizard.buttonConnect');
             } else if (this.routeIndex === this.routeSuccessIndex) {
                 this.buttonNextText = this.$tc('swag-migration.wizard.buttonFinish');
@@ -260,8 +254,51 @@ Component.register('swag-migration-wizard', {
                 this.buttonPreviousVisible = false;
             } else if (!this.editMode) {
                 this.buttonPreviousVisible = this.routeIndex !== 0;
+            } else if (this.routeIndex === this.routeCredentialsIndex) {
+                this.buttonPreviousVisible = true;
             } else {
                 this.buttonPreviousVisible = false;
+            }
+        },
+
+        loadSelectedProfile() {
+            this.credentialsValid = false;
+
+            // check for empty profile
+            if (!Object.keys(this.profile).length) {
+                let params = {
+                    offset: 0,
+                    limit: 1
+                };
+
+                this.migrationGeneralSettingStore.getList(params).then((response) => {
+                    if (!response) {
+                        this.navigateToRoute(this.routes[this.routeSelectProfileIndex]);
+                        return;
+                    }
+
+                    if (response.items[0].selectedProfileId === null) {
+                        this.navigateToRoute(this.routes[this.routeSelectProfileIndex]);
+                        return;
+                    }
+
+                    params = {
+                        offset: 0,
+                        limit: 1,
+                        criteria: CriteriaFactory.equals('id', response.items[0].selectedProfileId)
+                    };
+                    this.migrationProfileStore.getList(params).then((profileResponse) => {
+                        if (profileResponse.items[0].id === null) {
+                            this.navigateToRoute(this.routes[this.routeSelectProfileIndex]);
+                            return;
+                        }
+
+                        this.profile = profileResponse.items[0];
+                        this.credentials = profileResponse.items[0].credentialFields;
+                        this.profileId = profileResponse.items[0].id;
+                        this.isLoading = false;
+                    });
+                });
             }
         },
 
@@ -271,7 +308,6 @@ Component.register('swag-migration-wizard', {
 
         updateChildRoute() {
             this.navigateToRoute(this.routes[this.routeIndex]);
-            this.onChildRouteChanged();
         },
 
         onPrevious() {
@@ -283,7 +319,7 @@ Component.register('swag-migration-wizard', {
         },
 
         onNext() {
-            if (this.routeIndex === this.routeApiCredentialsIndex) {
+            if (this.routeIndex === this.routeCredentialsIndex) {
                 // we clicked connect.
                 this.onConnect();
                 return;
@@ -297,7 +333,7 @@ Component.register('swag-migration-wizard', {
 
             if (this.routeIndex === this.routeErrorIndex) {
                 // we clicked Back
-                this.navigateToRoute(this.routes[this.routeApiCredentialsIndex]);
+                this.navigateToRoute(this.routes[this.routeCredentialsIndex]);
                 return;
             }
 
@@ -308,16 +344,24 @@ Component.register('swag-migration-wizard', {
             }
         },
 
-        onApiKeyChanged(value) {
-            this.credentials.apiKey = value;
+        onCredentialsChanged(value) {
+            this.credentials = value;
         },
 
-        onApiUserChanged(value) {
-            this.credentials.apiUser = value;
+        onCredentialsValidationChanged(value) {
+            this.credentialsValid = value;
         },
 
-        onEndpointChanged(value) {
-            this.credentials.endpoint = value;
+        onProfileSelected(value) {
+            this.profile = value;
+        },
+
+        onProfileSelectionValidationChanged(value) {
+            this.profileSelectionValid = value;
+        },
+
+        onIsLoadingChanged(value) {
+            this.isLoading = value;
         }
     }
 });

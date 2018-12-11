@@ -100,6 +100,10 @@ Component.register('swag-migration-main-page', {
             return State.getStore('swag_migration_profile');
         },
 
+        migrationGeneralSettingStore() {
+            return State.getStore('swag_migration_general_setting');
+        },
+
         componentIndexIsResult() {
             return (this.componentIndex === this.components.resultSuccess ||
                 this.componentIndex === this.components.resultWarning ||
@@ -265,32 +269,39 @@ Component.register('swag-migration-main-page', {
                 this.restoreRunningMigration();
             }
 
+            // Get selected profile id
+            let profileId = null;
+            await this.migrationGeneralSettingStore.getList({ limit: 1 }).then((settings) => {
+                if (!settings || settings.items.length === 0) {
+                    return;
+                }
+
+                profileId = settings.items[0].selectedProfileId;
+            });
+
+            if (profileId === null) {
+                this.$router.push({ name: 'swag.migration.wizard.introduction' });
+                return;
+            }
+
             const params = {
                 limit: 1,
-                criteria: CriteriaFactory.equals('gateway', 'api')
+                criteria: CriteriaFactory.equals('id', profileId)
             };
 
             // Get profile with credentials from server
             this.migrationProfileStore.getList(params).then((response) => {
                 if (!response) {
+                    this.$router.push({ name: 'swag.migration.wizard.select_profile' });
                     return;
                 }
 
                 if (response.items.length === 0) {
+                    this.$router.push({ name: 'swag.migration.wizard.select_profile' });
                     return;
                 }
 
                 this.profile = response.items[0];
-
-                // check if credentials are given
-                if (
-                    !this.profile.credentialFields.endpoint ||
-                    !this.profile.credentialFields.apiUser ||
-                    !this.profile.credentialFields.apiKey
-                ) {
-                    this.$router.push({ name: 'swag.migration.wizard.introduction' });
-                    return;
-                }
 
                 // Do connection check
                 this.migrationService.checkConnection(this.profile.id).then((connectionCheckResponse) => {
@@ -309,7 +320,11 @@ Component.register('swag-migration-main-page', {
                 });
             });
 
-            // Get possible targets
+            this._getPossibleTargets();
+            window.addEventListener('beforeunload', this.onBrowserTabClosing.bind(this));
+        },
+
+        _getPossibleTargets() {
             const catalogPromise = this.catalogStore.getList({});
             const salesChannelPromise = this.salesChannelStore.getList({});
 
@@ -331,8 +346,6 @@ Component.register('swag-migration-main-page', {
                     }
                 });
             });
-
-            window.addEventListener('beforeunload', this.onBrowserTabClosing.bind(this));
         },
 
         restoreRunningMigration() {
