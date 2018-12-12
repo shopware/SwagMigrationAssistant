@@ -2,7 +2,7 @@
 
 namespace SwagMigrationNext\Profile\Shopware55\Converter;
 
-use Shopware\Core\Checkout\Cart\Price\Struct\Price;
+use Shopware\Core\Checkout\Cart\Price\Struct\CalculatedPrice;
 use Shopware\Core\Checkout\Cart\Tax\Struct\TaxRule;
 use Shopware\Core\Checkout\Cart\Tax\Struct\TaxRuleCollection;
 use Shopware\Core\Checkout\Cart\Tax\TaxCalculator;
@@ -401,7 +401,7 @@ class OrderConverter extends AbstractConverter
                 'id' => Uuid::uuid4()->getHex(),
                 'paymentMethodId' => $converted['paymentMethod']['id'],
                 'orderTransactionStateId' => $this->mappingService->getTransactionStateUuid((int) $data['cleared'], $this->context),
-                'amount' => new Price(
+                'amount' => new CalculatedPrice(
                     $converted['amountTotal'],
                     $converted['amountTotal'],
                     $calculatedTaxes,
