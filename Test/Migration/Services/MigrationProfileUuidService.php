@@ -6,9 +6,9 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use SwagMigrationNext\Migration\Profile\SwagMigrationProfileStruct;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Api\Shopware55ApiGateway;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
 
 class MigrationProfileUuidService
 {
@@ -54,7 +54,7 @@ class MigrationProfileUuidService
         $criteria->addFilter(new EqualsFilter('profile', $this->profile));
         $criteria->addFilter(new EqualsFilter('gateway', $this->gateway));
         $profileResult = $this->profileRepository->search($criteria, Context::createDefaultContext());
-        /** @var $profile SwagMigrationProfileStruct */
+        /** @var $profile SwagMigrationProfileEntity */
         $profile = $profileResult->first();
         $this->profileUuid = $profile->getId();
     }

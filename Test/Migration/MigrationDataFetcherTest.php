@@ -20,7 +20,7 @@ use SwagMigrationNext\Migration\Converter\ConverterRegistry;
 use SwagMigrationNext\Migration\Gateway\GatewayFactoryRegistry;
 use SwagMigrationNext\Migration\Logging\LoggingService;
 use SwagMigrationNext\Migration\Logging\LogType;
-use SwagMigrationNext\Migration\Logging\SwagMigrationLoggingStruct;
+use SwagMigrationNext\Migration\Logging\SwagMigrationLoggingEntity;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Profile\ProfileRegistry;
 use SwagMigrationNext\Migration\Service\MigrationDataFetcher;
@@ -315,7 +315,7 @@ class MigrationDataFetcherTest extends TestCase
         $countValidLogging = 0;
         $countInvalidLogging = 0;
 
-        /** @var SwagMigrationLoggingStruct $log */
+        /** @var SwagMigrationLoggingEntity $log */
         foreach ($result->getElements() as $log) {
             $type = $log->getType();
             $logEntry = $log->getLogEntry();

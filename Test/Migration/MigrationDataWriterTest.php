@@ -17,9 +17,9 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Struct\Serializer\StructNormalizer;
 use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
-use Shopware\Core\System\Currency\CurrencyStruct;
+use Shopware\Core\System\Currency\CurrencyEntity;
 use SwagMigrationNext\Migration\Asset\MediaFileService;
-use SwagMigrationNext\Migration\Data\SwagMigrationDataStruct;
+use SwagMigrationNext\Migration\Data\SwagMigrationDataEntity;
 use SwagMigrationNext\Migration\Logging\LogType;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
@@ -206,7 +206,7 @@ class MigrationDataWriterTest extends TestCase
         $criteria = new Criteria();
         $customerData = $this->migrationDataRepo->search($criteria, $context);
 
-        /** @var $data SwagMigrationDataStruct */
+        /** @var $data SwagMigrationDataEntity */
         $data = $customerData->first();
         $customer = $data->jsonSerialize();
         $customer['id'] = $data->getId();
@@ -296,7 +296,7 @@ class MigrationDataWriterTest extends TestCase
         $this->migrationDataFetcher->fetchData($migrationContext, $context);
         $orderTotalBefore = $this->orderRepo->search($criteria, $context)->getTotal();
         $currencyTotalBefore = $this->currencyRepo->search($criteria, $context)->getTotal();
-        /** @var CurrencyStruct $usdResultBefore */
+        /** @var CurrencyEntity $usdResultBefore */
         $usdResultBefore = $this->currencyRepo->search($usdFactorCriteria, $context)->first();
         $jpyInvalidTotalBefore = $this->currencyRepo->search($jpyInvalidCriteria, $context)->getTotal();
 
@@ -304,7 +304,7 @@ class MigrationDataWriterTest extends TestCase
         $this->migrationDataWriter->writeData($migrationContext, $context);
         $orderTotalAfter = $this->orderRepo->search($criteria, $context)->getTotal();
         $currencyTotalAfter = $this->currencyRepo->search($criteria, $context)->getTotal();
-        /** @var CurrencyStruct $usdResultAfter */
+        /** @var CurrencyEntity $usdResultAfter */
         $usdResultAfter = $this->currencyRepo->search($usdFactorCriteria, $context)->first();
         $jpyInvalidTotalAfter = $this->currencyRepo->search($jpyInvalidCriteria, $context)->getTotal();
 

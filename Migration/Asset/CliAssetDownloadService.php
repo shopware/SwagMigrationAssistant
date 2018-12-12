@@ -90,7 +90,7 @@ class CliAssetDownloadService implements CliAssetDownloadServiceInterface
             $assetCount += \count($assets);
             $mediaUuids = [];
 
-            /** @var SwagMigrationMediaFileStruct $asset */
+            /** @var SwagMigrationMediaFileEntity $asset */
             foreach ($assets as $asset) {
                 /** @var string $uuid */
                 $uuid = $asset->getMediaId();
@@ -175,7 +175,7 @@ class CliAssetDownloadService implements CliAssetDownloadServiceInterface
     }
 
     /**
-     * @return SwagMigrationMediaFileStruct[]
+     * @return SwagMigrationMediaFileEntity[]
      */
     private function fetchMediaFiles(string $runId, Context $context, int $limit): array
     {
@@ -256,7 +256,7 @@ class CliAssetDownloadService implements CliAssetDownloadServiceInterface
 
         $updateDownloadedMediaFiles = [];
         foreach ($mediaFiles->getElements() as $data) {
-            /* @var SwagMigrationMediaFileStruct $data */
+            /* @var SwagMigrationMediaFileEntity $data */
             $updateDownloadedMediaFiles[] = [
                 'id' => $data->getId(),
                 'downloaded' => true,

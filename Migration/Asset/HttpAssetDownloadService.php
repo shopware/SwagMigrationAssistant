@@ -62,7 +62,7 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
 
         $mediaUuids = [];
         foreach ($migrationData->getElements() as $mediaFile) {
-            /* @var SwagMigrationMediaFileStruct $mediaFile */
+            /* @var SwagMigrationMediaFileEntity $mediaFile */
             $mediaUuids[] = $mediaFile->getMediaId();
         }
 
@@ -102,7 +102,7 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsAnyFilter('mediaId', $mediaIds));
         $assetSearchResult = $this->mediaFileRepo->search($criteria, $context);
-        /** @var SwagMigrationMediaFileStruct[] $assets */
+        /** @var SwagMigrationMediaFileEntity[] $assets */
         $assets = $assetSearchResult->getElements();
 
         //Do download requests and store the promises
@@ -184,7 +184,7 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
     /**
      * Start all the download requests for the assets in parallel (async) and return the promise array.
      *
-     * @param SwagMigrationMediaFileStruct[] $assets
+     * @param SwagMigrationMediaFileEntity[] $assets
      */
     private function doAssetDownloadRequests(array $assets, int $fileChunkByteSize, array &$mappedWorkload, Client $client): array
     {
@@ -296,7 +296,7 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
 
         $updateDownloadedMediaFiles = [];
         foreach ($mediaFiles->getElements() as $data) {
-            /* @var SwagMigrationMediaFileStruct $data */
+            /* @var SwagMigrationMediaFileEntity $data */
             $updateDownloadedMediaFiles[] = [
                 'id' => $data->getId(),
                 'downloaded' => true,

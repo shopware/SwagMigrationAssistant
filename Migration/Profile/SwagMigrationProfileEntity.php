@@ -5,10 +5,10 @@ namespace SwagMigrationNext\Migration\Profile;
 use DateTime;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
-use SwagMigrationNext\Migration\Mapping\SwagMigrationMappingStruct;
-use SwagMigrationNext\Migration\Run\SwagMigrationRunStruct;
+use SwagMigrationNext\Migration\Mapping\SwagMigrationMappingEntity;
+use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
 
-class SwagMigrationProfileStruct extends Entity
+class SwagMigrationProfileEntity extends Entity
 {
     use EntityIdTrait;
 
@@ -38,12 +38,12 @@ class SwagMigrationProfileStruct extends Entity
     protected $updatedAt;
 
     /**
-     * @var SwagMigrationRunStruct[]
+     * @var SwagMigrationRunEntity[]
      */
     protected $runs;
 
     /**
-     * @var SwagMigrationMappingStruct[]
+     * @var SwagMigrationMappingEntity[]
      */
     protected $mappings;
 
@@ -98,7 +98,7 @@ class SwagMigrationProfileStruct extends Entity
     }
 
     /**
-     * @return SwagMigrationRunStruct[]
+     * @return SwagMigrationRunEntity[]
      */
     public function getRuns(): array
     {
@@ -106,7 +106,7 @@ class SwagMigrationProfileStruct extends Entity
     }
 
     /**
-     * @param SwagMigrationRunStruct[] $runs
+     * @param SwagMigrationRunEntity[] $runs
      */
     public function setRuns(array $runs): void
     {
@@ -114,7 +114,7 @@ class SwagMigrationProfileStruct extends Entity
     }
 
     /**
-     * @return SwagMigrationMappingStruct[]
+     * @return SwagMigrationMappingEntity[]
      */
     public function getMappings(): array
     {
@@ -122,7 +122,7 @@ class SwagMigrationProfileStruct extends Entity
     }
 
     /**
-     * @param SwagMigrationMappingStruct[] $mappings
+     * @param SwagMigrationMappingEntity[] $mappings
      */
     public function setMappings(array $mappings): void
     {

@@ -15,7 +15,7 @@ use SwagMigrationNext\Command\MigrationFetchDataCommand;
 use SwagMigrationNext\Command\MigrationWriteDataCommand;
 use SwagMigrationNext\Migration\Asset\MediaFileService;
 use SwagMigrationNext\Migration\Logging\LoggingService;
-use SwagMigrationNext\Migration\Run\SwagMigrationRunStruct;
+use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationNext\Migration\Service\MigrationDataWriter;
 use SwagMigrationNext\Migration\Service\MigrationDataWriterInterface;
@@ -152,9 +152,9 @@ class MigrationWriteDataCommandTest extends TestCase
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('id', $runId));
-        /** @var SwagMigrationRunStruct $run */
+        /** @var SwagMigrationRunEntity $run */
         $run = $this->migrationRunRepo->search($criteria, $context)->first();
-        self::assertSame($run->getStatus(), SwagMigrationRunStruct::STATUS_RUNNING);
+        self::assertSame($run->getStatus(), SwagMigrationRunEntity::STATUS_RUNNING);
     }
 
     public function testWriteDataWithRunningMigration(): void
@@ -176,9 +176,9 @@ class MigrationWriteDataCommandTest extends TestCase
         $this->assertContains('Written: 8', $output);
         $this->assertContains('Skipped: 0', $output);
 
-        /** @var SwagMigrationRunStruct $run */
+        /** @var SwagMigrationRunEntity $run */
         $run = $this->migrationRunRepo->search(new Criteria(), $context)->first();
-        self::assertSame($run->getStatus(), SwagMigrationRunStruct::STATUS_FINISHED);
+        self::assertSame($run->getStatus(), SwagMigrationRunEntity::STATUS_FINISHED);
     }
 
     public function testWriteDataWithNoRunningMigration(): void

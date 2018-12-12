@@ -64,7 +64,7 @@ class SwagMigrationAccessTokenService
             [
                 [
                     'profileId' => $profileId,
-                    'status' => SwagMigrationRunStruct::STATUS_RUNNING,
+                    'status' => SwagMigrationRunEntity::STATUS_RUNNING,
                 ],
             ],
             $context
@@ -100,7 +100,7 @@ class SwagMigrationAccessTokenService
     {
         $runCriteria = new Criteria();
         $runCriteria->addFilter(new EqualsFilter('id', $runId));
-        /* @var SwagMigrationRunStruct $run */
+        /* @var SwagMigrationRunEntity $run */
         $run = $this->migrationRunRepo->search($runCriteria, $context)->first();
 
         if ($run === null) {

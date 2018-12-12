@@ -11,7 +11,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 use Shopware\Core\Framework\Struct\Uuid;
 use SwagMigrationNext\Migration\MigrationContext;
-use SwagMigrationNext\Migration\Profile\SwagMigrationProfileStruct;
+use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
 use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -177,7 +177,7 @@ class MigrationFetchDataCommand extends ContainerAwareCommand
             throw new InvalidArgumentException('No valid profile found');
         }
 
-        /* @var SwagMigrationProfileStruct $profileStruct */
+        /* @var SwagMigrationProfileEntity $profileStruct */
         $this->credentials = $profileStruct->getCredentialFields();
         $this->profileId = $profileStruct->getId();
     }

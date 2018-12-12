@@ -5,9 +5,9 @@ namespace SwagMigrationNext\Migration\Asset;
 use DateTime;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
-use SwagMigrationNext\Migration\Run\SwagMigrationRunStruct;
+use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
 
-class SwagMigrationMediaFileStruct extends Entity
+class SwagMigrationMediaFileEntity extends Entity
 {
     use EntityIdTrait;
 
@@ -17,7 +17,7 @@ class SwagMigrationMediaFileStruct extends Entity
     protected $runId;
 
     /**
-     * @var SwagMigrationRunStruct
+     * @var SwagMigrationRunEntity
      */
     protected $run;
 
@@ -66,12 +66,12 @@ class SwagMigrationMediaFileStruct extends Entity
         $this->runId = $runId;
     }
 
-    public function getRun(): SwagMigrationRunStruct
+    public function getRun(): SwagMigrationRunEntity
     {
         return $this->run;
     }
 
-    public function setRun(SwagMigrationRunStruct $run): void
+    public function setRun(SwagMigrationRunEntity $run): void
     {
         $this->run = $run;
     }

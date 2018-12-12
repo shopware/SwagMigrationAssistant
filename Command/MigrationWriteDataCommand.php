@@ -11,7 +11,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 use Shopware\Core\Framework\Struct\Uuid;
 use SwagMigrationNext\Migration\MigrationContext;
-use SwagMigrationNext\Migration\Run\SwagMigrationRunStruct;
+use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationNext\Migration\Service\MigrationDataWriterInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -178,7 +178,7 @@ class MigrationWriteDataCommand extends ContainerAwareCommand
                 throw new InvalidArgumentException('No running migration found');
             }
 
-            /* @var SwagMigrationRunStruct $startedRunStruct */
+            /* @var SwagMigrationRunEntity $startedRunStruct */
             $this->runId = $startedRunStruct->getId();
         }
 

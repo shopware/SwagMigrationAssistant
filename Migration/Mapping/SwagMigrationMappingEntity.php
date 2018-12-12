@@ -4,10 +4,10 @@ namespace SwagMigrationNext\Migration\Mapping;
 
 use DateTime;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
+use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
-use SwagMigrationNext\Migration\Profile\SwagMigrationProfileStruct;
 
-class SwagMigrationMappingStruct extends Entity
+class SwagMigrationMappingEntity extends Entity
 {
     use EntityIdTrait;
 
@@ -17,7 +17,7 @@ class SwagMigrationMappingStruct extends Entity
     protected $profileId;
 
     /**
-     * @var SwagMigrationProfileStruct
+     * @var SwagMigrationProfileEntity
      */
     protected $profile;
 
@@ -51,12 +51,12 @@ class SwagMigrationMappingStruct extends Entity
      */
     protected $updatedAt;
 
-    public function getProfile(): SwagMigrationProfileStruct
+    public function getProfile(): SwagMigrationProfileEntity
     {
         return $this->profile;
     }
 
-    public function setProfile(SwagMigrationProfileStruct $profile): void
+    public function setProfile(SwagMigrationProfileEntity $profile): void
     {
         $this->profile = $profile;
     }

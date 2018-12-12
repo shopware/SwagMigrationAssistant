@@ -11,8 +11,8 @@ use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
 use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagMigrationNext\Migration\Asset\MediaFileService;
+use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationNext\Migration\Run\SwagMigrationAccessTokenService;
-use SwagMigrationNext\Migration\Run\SwagMigrationRunStruct;
 use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationNext\Migration\Service\MigrationProgressService;
 use SwagMigrationNext\Migration\Service\MigrationProgressServiceInterface;
@@ -118,7 +118,7 @@ class MigrationProgressServiceTest extends TestCase
                         'toBeFetched' => $this->toBeFetched,
                     ],
                     'additionalData' => $this->additionalData['additionalData'],
-                    'status' => SwagMigrationRunStruct::STATUS_RUNNING,
+                    'status' => SwagMigrationRunEntity::STATUS_RUNNING,
                 ],
             ],
             Context::createDefaultContext()
@@ -499,7 +499,7 @@ class MigrationProgressServiceTest extends TestCase
             [
                 [
                     'id' => $this->runUuid,
-                    'status' => SwagMigrationRunStruct::STATUS_FINISHED,
+                    'status' => SwagMigrationRunEntity::STATUS_FINISHED,
                 ],
             ],
             Context::createDefaultContext()
