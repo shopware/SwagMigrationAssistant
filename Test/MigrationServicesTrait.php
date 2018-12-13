@@ -3,7 +3,6 @@
 namespace SwagMigrationNext\Test;
 
 use Shopware\Core\Checkout\Cart\Price\PriceRounding;
-use Shopware\Core\Checkout\Cart\Tax\PercentageTaxRuleCalculator;
 use Shopware\Core\Checkout\Cart\Tax\TaxCalculator;
 use Shopware\Core\Checkout\Cart\Tax\TaxRuleCalculator;
 use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
@@ -38,7 +37,6 @@ trait MigrationServicesTrait
     ): MigrationDataFetcherInterface {
         $loggingService = new LoggingService($loggingRepo);
         $priceRounding = new PriceRounding(2);
-        $taxRuleCalculator = new TaxRuleCalculator($priceRounding);
         $converterRegistry = new ConverterRegistry(
             new DummyCollection(
                 [
@@ -53,10 +51,7 @@ trait MigrationServicesTrait
                         new ConverterHelperService(),
                         new TaxCalculator(
                             $priceRounding,
-                            [
-                                new PercentageTaxRuleCalculator($taxRuleCalculator),
-                                $taxRuleCalculator,
-                            ]
+                            new TaxRuleCalculator($priceRounding)
                         ),
                         $loggingService
                     ),

@@ -4,7 +4,6 @@ namespace SwagMigrationNext\Test\Profile\Shopware55\Converter;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Cart\Price\PriceRounding;
-use Shopware\Core\Checkout\Cart\Tax\PercentageTaxRuleCalculator;
 use Shopware\Core\Checkout\Cart\Tax\TaxCalculator;
 use Shopware\Core\Checkout\Cart\Tax\TaxRuleCalculator;
 use Shopware\Core\Checkout\Customer\CustomerDefinition;
@@ -69,10 +68,7 @@ class OrderConverterTest extends TestCase
 
         $taxCalculator = new TaxCalculator(
             $rounding,
-            [
-                $taxRuleCalculator,
-                new PercentageTaxRuleCalculator($taxRuleCalculator),
-            ]
+            $taxRuleCalculator
         );
         $this->orderConverter = new OrderConverter($mappingService, $converterHelperService, $taxCalculator, $this->loggingService);
         $this->customerConverter = new CustomerConverter($mappingService, $converterHelperService, $this->loggingService);
