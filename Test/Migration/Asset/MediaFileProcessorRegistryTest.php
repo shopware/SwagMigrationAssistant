@@ -10,6 +10,7 @@ use SwagMigrationNext\Migration\Logging\LogType;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Test\Mock\DummyCollection;
 use SwagMigrationNext\Test\Mock\Migration\Asset\DummyHttpAssetDownloadService;
+use Symfony\Component\HttpFoundation\Response;
 
 class MediaFileProcessorRegistryTest extends TestCase
 {
@@ -29,7 +30,7 @@ class MediaFileProcessorRegistryTest extends TestCase
         );
     }
 
-    public function testGetProcessorNotFount(): void
+    public function testGetProcessorNotFound(): void
     {
         $context = new MigrationContext(
             '',
@@ -41,9 +42,14 @@ class MediaFileProcessorRegistryTest extends TestCase
             0,
             0
         );
-        $this->expectException(ProcessorNotFoundException::class);
-        $this->expectExceptionCode(LogType::PROCESSOR_NOT_FOUND);
 
-        $this->processorRegistry->getProcessor($context);
+        try {
+            $this->processorRegistry->getProcessor($context);
+        } catch (\Exception $e) {
+            /* @var ProcessorNotFoundException $e */
+            self::assertInstanceOf(ProcessorNotFoundException::class, $e);
+            self::assertSame(Response::HTTP_NOT_FOUND, $e->getStatusCode());
+            self::assertSame(LogType::PROCESSOR_NOT_FOUND, $e->getCode());
+        }
     }
 }

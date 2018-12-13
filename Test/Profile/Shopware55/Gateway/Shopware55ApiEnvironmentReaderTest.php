@@ -7,6 +7,7 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
+use SwagMigrationNext\Exception\GatewayReadException;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiEnvironmentReader;
 
@@ -153,5 +154,40 @@ class Shopware55ApiEnvironmentReaderTest extends TestCase
         self::assertSame($response['environmentInformation'], []);
         self::assertSame($response['error'], $error);
         self::assertSame($response['warning'], $this->warning);
+    }
+
+    public function testEnvironmentReaderWithGatewayReadException(): void
+    {
+        $mock = new MockHandler([
+            new Response(404, [], $this->body),
+            new Response(300, [], $this->body),
+        ]);
+        $handler = HandlerStack::create($mock);
+
+        $options = [
+            'handler' => $handler,
+        ];
+
+        $client = new Client($options);
+
+        $environmentReader = new Shopware55ApiEnvironmentReader(
+            $client,
+            new MigrationContext(
+                '',
+                '',
+                '',
+                '',
+                '',
+                ['endpoint' => '', 'apiUser' => '', 'apiKey' => ''],
+                0,
+                0
+            )
+        );
+
+        $gatewayReadException = new GatewayReadException('Shopware 5.5 Api SwagMigrationEnvironment');
+        $response = $environmentReader->read();
+        self::assertSame($response['environmentInformation'], []);
+        self::assertSame($response['error']['code'], $gatewayReadException->getCode());
+        self::assertSame($response['error']['detail'], $gatewayReadException->getMessage());
     }
 }

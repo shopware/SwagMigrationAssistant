@@ -30,7 +30,13 @@
             <exclude>
                 <directory suffix=".php">./Test</directory>
                 <directory suffix=".php">./Core/Migration</directory>
-                <directory suffix=".php">./Gateway</directory>
+                <!-- Can only thrown, if permissions denied -->
+                <file>./Exception/NoFileSystemPermissionsException.php</file>
+
+                <!-- Structs and Collections -->
+                <directory suffix="Collection.php">./Migration</directory>
+                <directory suffix="Entity.php">./Migration</directory>
+                <file>./Migration/EnvironmentInformation.php</file>
 
                 <file>SwagMigrationNext.php</file>
             </exclude>

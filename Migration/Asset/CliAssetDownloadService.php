@@ -99,7 +99,7 @@ class CliAssetDownloadService implements CliAssetDownloadServiceInterface
                 $mediaUuids[] = $uuid;
 
                 if ($uri !== null) {
-                    $this->event->dispatch(MigrationAssetDownloadAdvanceEvent::EVENT_NAME, new MigrationAssetDownloadAdvanceEvent($uri));
+                    $this->event->dispatch(MigrationAssetDownloadAdvanceEvent::EVENT_NAME, new MigrationAssetDownloadAdvanceEvent());
                     $this->download($client, $uuid, $uri, $fileSize, $context);
                 }
             }

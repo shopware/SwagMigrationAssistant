@@ -21,6 +21,7 @@ use SwagMigrationNext\Profile\Shopware55\Logging\Shopware55LogTypes;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationNext\Test\Mock\Migration\Mapping\DummyMappingService;
+use Symfony\Component\HttpFoundation\Response;
 
 class OrderConverterTest extends TestCase
 {
@@ -145,9 +146,14 @@ class OrderConverterTest extends TestCase
         $orderData = require __DIR__ . '/../../../_fixtures/order_data.php';
 
         $context = Context::createDefaultContext();
-        $this->expectException(AssociationEntityRequiredMissingException::class);
-        $this->expectExceptionMessage('Mapping of "customer" is missing, but it is a required association for "order". Import "customer" first');
-        $this->orderConverter->convert($orderData[0], $context, $this->migrationContext);
+        try {
+            $this->orderConverter->convert($orderData[0], $context, $this->migrationContext);
+        } catch (\Exception $e) {
+            /* @var AssociationEntityRequiredMissingException $e */
+            self::assertInstanceOf(AssociationEntityRequiredMissingException::class, $e);
+            self::assertSame(Response::HTTP_NOT_FOUND, $e->getStatusCode());
+            self::assertSame('Mapping of "customer" is missing, but it is a required association for "order". Import "customer" first', $e->getMessage());
+        }
     }
 
     public function testConvertNetOrder(): void

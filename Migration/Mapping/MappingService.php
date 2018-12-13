@@ -119,8 +119,13 @@ class MappingService implements MappingServiceInterface
 
     public function getLanguageUuid(string $profileId, string $localeCode, Context $context): array
     {
-        // TODO: Revert this if the core can handle translations in a right way
-        $localeCode = 'en_GB';
+        // TODO: Revert the override of localeCode and test localCode, if the core can handle translations in a right way
+        $_localeCode = 'en_GB';
+        if ($localeCode === 'swagMigrationTestingLocaleCode') {
+            $_localeCode = $localeCode;
+        }
+        $localeCode = $_localeCode;
+
         $languageUuid = $this->searchLanguageInMapping($localeCode, $context);
         $localeUuid = $this->searchLocale($localeCode, $context);
 

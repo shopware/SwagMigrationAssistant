@@ -5,7 +5,10 @@ namespace SwagMigrationNext\Test\Migration\Mapping;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenEvent;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
+use Shopware\Core\System\Language\LanguageDefinition;
 use SwagMigrationNext\Exception\LocaleNotFoundException;
 use SwagMigrationNext\Migration\Mapping\MappingService;
 use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
@@ -26,13 +29,19 @@ class MappingServiceTest extends TestCase
      */
     private $profileUuidService;
 
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $localeRepo;
+
     protected function setUp(): void
     {
+        $this->localeRepo = $this->getContainer()->get('locale.repository');
         $this->profileUuidService = new MigrationProfileUuidService($this->getContainer()->get('swag_migration_profile.repository'));
 
         $this->mappingService = new MappingService(
             $this->getContainer()->get('swag_migration_mapping.repository'),
-            $this->getContainer()->get('locale.repository'),
+            $this->localeRepo,
             $this->getContainer()->get('language.repository'),
             $this->getContainer()->get('country.repository'),
             $this->getContainer()->get('currency.repository')
@@ -59,7 +68,7 @@ class MappingServiceTest extends TestCase
 
         $newMappingService = new MappingService(
             $this->getContainer()->get('swag_migration_mapping.repository'),
-            $this->getContainer()->get('locale.repository'),
+            $this->localeRepo,
             $this->getContainer()->get('language.repository'),
             $this->getContainer()->get('country.repository'),
             $this->getContainer()->get('currency.repository')
@@ -78,15 +87,84 @@ class MappingServiceTest extends TestCase
 
     public function testLocaleNotFoundException(): void
     {
-        static::markTestSkipped('Remove when translation support is implemented');
         $context = Context::createDefaultContext();
 
         try {
-            $this->mappingService->getLanguageUuid($this->profileUuidService->getProfileUuid(), 'foobar', $context);
+            $this->mappingService->getLanguageUuid($this->profileUuidService->getProfileUuid(), 'swagMigrationTestingLocaleCode', $context);
         } catch (Exception $e) {
             /* @var LocaleNotFoundException $e */
             self::assertInstanceOf(LocaleNotFoundException::class, $e);
             self::assertSame(Response::HTTP_NOT_FOUND, $e->getStatusCode());
         }
+    }
+
+    public function testGetLanguageUuid(): void
+    {
+        $context = Context::createDefaultContext();
+        $profileId = $this->profileUuidService->getProfileUuid();
+        $localeCode = 'en_GB';
+
+        $this->mappingService->writeMapping($context);
+        $languageUuid = $this->mappingService->createNewUuid($profileId, LanguageDefinition::getEntityName(), $localeCode, $context);
+        $this->mappingService->writeMapping($context);
+        $response = $this->mappingService->getLanguageUuid($profileId, '', $context);
+
+        self::assertSame($languageUuid, $response['uuid']);
+        self::assertSame($localeCode, $response['createData']['localeCode']);
+    }
+
+    public function testGetLanguageUuidWithNewLanguage(): void
+    {
+        $context = Context::createDefaultContext();
+        $profileId = $this->profileUuidService->getProfileUuid();
+        $localeCode = 'swagMigrationTestingLocaleCode';
+
+        $uuid = $this->localeRepo->create(
+            [
+                [
+                    'code' => $localeCode,
+                    'name' => 'Testing Locale Name',
+                    'territory' => 'Testing Locale Territory',
+                ],
+            ],
+            $context
+        );
+        /** @var EntityWrittenEvent $writtenEvent */
+        $writtenEvent = $uuid->getEvents()->first();
+        $localeId = $writtenEvent->getIds()[0];
+
+        $response = $this->mappingService->getLanguageUuid($profileId, 'swagMigrationTestingLocaleCode', $context);
+
+        self::assertSame($localeId, $response['createData']['localeId']);
+        self::assertSame($localeCode, $response['createData']['localeCode']);
+    }
+
+    public function testGetCountryUuidWithNoResult(): void
+    {
+        $context = Context::createDefaultContext();
+        $profileId = $this->profileUuidService->getProfileUuid();
+
+        $response = $this->mappingService->getCountryUuid('testId', 'testIso', 'testIso3', $profileId, $context);
+        self::assertNull($response);
+    }
+
+    public function testDeleteMapping(): void
+    {
+        $context = Context::createDefaultContext();
+        $profileId = $this->profileUuidService->getProfileUuid();
+        $localeCode = 'swagMigrationTestingLocaleCode';
+
+        $languageUuid = $this->mappingService->createNewUuid($profileId, LanguageDefinition::getEntityName(), $localeCode, $context);
+        $this->mappingService->writeMapping($context);
+        $uuid = $this->mappingService->getUuid($profileId, LanguageDefinition::getEntityName(), $localeCode, $context);
+        self::assertSame($languageUuid, $uuid);
+
+        $this->mappingService->createNewUuid($profileId, LanguageDefinition::getEntityName(), 'en_GB', $context);
+        $this->mappingService->writeMapping($context);
+
+        $this->mappingService->deleteMapping($languageUuid, $profileId, $context);
+        $uuid = $this->mappingService->getUuid($profileId, LanguageDefinition::getEntityName(), $localeCode, $context);
+
+        self::assertNull($uuid);
     }
 }

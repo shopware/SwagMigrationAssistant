@@ -12,6 +12,7 @@ use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagMigrationNext\Controller\MigrationController;
 use SwagMigrationNext\Exception\MigrationContextPropertyMissingException;
+use SwagMigrationNext\Exception\MigrationRunUndefinedStatusException;
 use SwagMigrationNext\Exception\MigrationWorkloadPropertyMissingException;
 use SwagMigrationNext\Migration\Asset\MediaFileProcessorRegistry;
 use SwagMigrationNext\Migration\Asset\MediaFileService;
@@ -19,6 +20,7 @@ use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
 use SwagMigrationNext\Migration\Run\SwagMigrationAccessTokenService;
 use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationNext\Migration\Service\MigrationDataWriter;
+use SwagMigrationNext\Migration\Setting\GeneralSettingEntity;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Migration\Services\MigrationProfileUuidService;
@@ -55,9 +57,15 @@ class MigrationControllerTest extends TestCase
      */
     private $runRepo;
 
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $generalSettingRepo;
+
     protected function setUp(): void
     {
         $this->profileUuidService = new MigrationProfileUuidService($this->getContainer()->get('swag_migration_profile.repository'));
+        $this->generalSettingRepo = $this->getContainer()->get('swag_migration_general_setting.repository');
         $this->runUuid = Uuid::uuid4()->getHex();
         $this->runRepo = $this->getContainer()->get('swag_migration_run.repository');
         $this->runRepo->create(
@@ -92,6 +100,19 @@ class MigrationControllerTest extends TestCase
             $this->getContainer()->get('swag_migration_profile.repository'),
             $this->getContainer()->get('swag_migration_general_setting.repository')
         );
+    }
+
+    public function testRunUndefinedStatus(): void
+    {
+        try {
+            $run = new SwagMigrationRunEntity();
+            $run->setStatus('invalidRunStatus');
+        } catch (\Exception $e) {
+            /* @var MigrationRunUndefinedStatusException $e */
+            self::assertInstanceOf(MigrationRunUndefinedStatusException::class, $e);
+            self::assertSame(Response::HTTP_BAD_REQUEST, $e->getStatusCode());
+            self::assertSame('Migration run status "invalidRunStatus" is not a valid status', $e->getMessage());
+        }
     }
 
     public function testWriteDataWithInvalidRunId(): void
@@ -180,6 +201,13 @@ class MigrationControllerTest extends TestCase
         $result = $this->controller->checkConnection($request, $context);
         $environmentInformation = json_decode($result->getContent(), true);
 
+        $result = $this->generalSettingRepo->search(new Criteria(), $context);
+        self::assertSame($result->getTotal(), 1);
+        /** @var GeneralSettingEntity $element */
+        foreach ($result->getElements() as $element) {
+            self::assertSame($element->getSelectedProfileId(), $profile->getId());
+        }
+
         self::assertSame($environmentInformation['productTotal'], 37);
         self::assertSame($environmentInformation['customerTotal'], 2);
         self::assertSame($environmentInformation['categoryTotal'], 8);
@@ -194,9 +222,14 @@ class MigrationControllerTest extends TestCase
         self::assertSame($environmentInformation['errorMessage'], 'No error.');
 
         $request = new Request();
-        $this->expectException(MigrationContextPropertyMissingException::class);
-        $this->expectExceptionMessage('Required property "profileId" for migration context is missing');
-        $this->controller->checkConnection($request, $context);
+        try {
+            $this->controller->checkConnection($request, $context);
+        } catch (\Exception $e) {
+            /* @var MigrationContextPropertyMissingException $e */
+            self::assertInstanceOf(MigrationContextPropertyMissingException::class, $e);
+            self::assertSame(Response::HTTP_BAD_REQUEST, $e->getStatusCode());
+            self::assertSame('Required property "profileId" for migration context is missing', $e->getMessage());
+        }
     }
 
     public function testFetchData(): void
@@ -384,7 +417,7 @@ class MigrationControllerTest extends TestCase
         $criteria->addFilter(new EqualsFilter('profile', 'shopware55'));
         $criteria->addFilter(new EqualsFilter('gateway', 'api'));
         $profileResult = $profileRepo->search($criteria, $context);
-        /** @var $profile SwagMigrationProfileStruct */
+        /** @var $profile SwagMigrationProfileEntity */
         $profile = $profileResult->first();
 
         $params = [
@@ -504,7 +537,12 @@ class MigrationControllerTest extends TestCase
 
         $request = new Request([], $properties);
         $context = Context::createDefaultContext();
-        $this->controller->processAssets($request, $context);
+        try {
+            $this->controller->processAssets($request, $context);
+        } catch (\Exception $e) {
+            self::assertSame(Response::HTTP_BAD_REQUEST, $e->getStatusCode());
+            throw $e;
+        }
     }
 
     public function testGetState(): void

@@ -13,6 +13,7 @@ use SwagMigrationNext\Profile\Shopware55\Exception\ParentEntityForChildNotFoundE
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationNext\Test\Mock\Migration\Mapping\DummyMappingService;
+use Symfony\Component\HttpFoundation\Response;
 
 class CategoryConverterTest extends TestCase
 {
@@ -106,8 +107,13 @@ class CategoryConverterTest extends TestCase
         $categoryData = require __DIR__ . '/../../../_fixtures/category_data.php';
 
         $context = Context::createDefaultContext();
-        $this->expectException(ParentEntityForChildNotFoundException::class);
-        $this->categoryConverter->convert($categoryData[4], $context, $this->migrationContext);
+        try {
+            $this->categoryConverter->convert($categoryData[4], $context, $this->migrationContext);
+        } catch (\Exception $e) {
+            /* @var ParentEntityForChildNotFoundException $e */
+            self::assertInstanceOf(ParentEntityForChildNotFoundException::class, $e);
+            self::assertSame(Response::HTTP_NOT_FOUND, $e->getStatusCode());
+        }
     }
 
     public function testConvertWithoutLocale(): void

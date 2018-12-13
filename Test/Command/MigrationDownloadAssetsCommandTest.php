@@ -128,11 +128,12 @@ class MigrationDownloadAssetsCommandTest extends TestCase
             $this->getContainer()->get(MediaFileService::class),
             $this->getContainer()->get(LoggingService::class)
         );
+        $this->eventDispatcher = new EventDispatcher();
 
         $this->cliAssetDownloadService = new DummyCliAssetDownloadService(
             $this->mediaFileRepo,
             $this->fileSaver,
-            new EventDispatcher(),
+            $this->eventDispatcher,
             new ConsoleLogger(new ConsoleOutput())
         );
     }
@@ -228,10 +229,18 @@ class MigrationDownloadAssetsCommandTest extends TestCase
             $this->mediaFileRepo,
             'migration:write:data'
         ));
-        $this->application->add(new MigrationDownloadAssetsCommand(
+
+        $downloadCommand = new MigrationDownloadAssetsCommand(
             $this->cliAssetDownloadService,
             $this->migrationRunRepo,
             $this->mediaFileRepo
-        ));
+        );
+
+        $events = MigrationDownloadAssetsCommand::getSubscribedEvents();
+        foreach ($events as $event => $method) {
+            $this->eventDispatcher->addListener($event, [$downloadCommand, $method]);
+        }
+
+        $this->application->add($downloadCommand);
     }
 }

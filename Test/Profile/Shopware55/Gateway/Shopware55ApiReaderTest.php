@@ -81,9 +81,6 @@ class Shopware55ApiReaderTest extends TestCase
 
     public function testReadGatewayException(): void
     {
-        $this->expectException(GatewayReadException::class);
-        $this->expectExceptionMessage('Shopware 5.5 Api product');
-
         $mock = new MockHandler([
             new Response(SymfonyResponse::HTTP_NO_CONTENT),
         ]);
@@ -110,6 +107,13 @@ class Shopware55ApiReaderTest extends TestCase
             )
         );
 
-        $apiReader->read();
+        try {
+            $apiReader->read();
+        } catch (\Exception $e) {
+            /* @var GatewayReadException $e */
+            self::assertInstanceOf(GatewayReadException::class, $e);
+            self::assertSame(SymfonyResponse::HTTP_NOT_FOUND, $e->getStatusCode());
+            self::assertSame('Could not read from gateway: "Shopware 5.5 Api product"', $e->getMessage());
+        }
     }
 }
