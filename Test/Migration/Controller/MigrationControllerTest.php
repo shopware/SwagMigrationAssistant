@@ -14,9 +14,9 @@ use SwagMigrationNext\Controller\MigrationController;
 use SwagMigrationNext\Exception\MigrationContextPropertyMissingException;
 use SwagMigrationNext\Exception\MigrationWorkloadPropertyMissingException;
 use SwagMigrationNext\Migration\Asset\MediaFileService;
-use SwagMigrationNext\Migration\Profile\SwagMigrationProfileStruct;
+use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
 use SwagMigrationNext\Migration\Run\SwagMigrationAccessTokenService;
-use SwagMigrationNext\Migration\Run\SwagMigrationRunStruct;
+use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationNext\Migration\Service\MigrationDataWriter;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
@@ -113,7 +113,7 @@ class MigrationControllerTest extends TestCase
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('accessToken', $resultArray['accessToken']));
-        /** @var SwagMigrationRunStruct $run */
+        /** @var SwagMigrationRunEntity $run */
         $run = $this->runRepo->search($criteria, $context)->first();
         self::assertSame($run->getUserId(), mb_strtoupper($customerId));
 
@@ -138,7 +138,7 @@ class MigrationControllerTest extends TestCase
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('accessToken', $resultArray['accessToken']));
-        /** @var SwagMigrationRunStruct $run */
+        /** @var SwagMigrationRunEntity $run */
         $run = $this->runRepo->search($criteria, $context)->first();
         self::assertSame($run->getUserId(), mb_strtoupper($customerId));
 
@@ -157,7 +157,7 @@ class MigrationControllerTest extends TestCase
         $criteria->addFilter(new EqualsFilter('profile', 'shopware55'));
         $criteria->addFilter(new EqualsFilter('gateway', 'local'));
         $profileResult = $profileRepo->search($criteria, $context);
-        /** @var $profile SwagMigrationProfileStruct */
+        /** @var $profile SwagMigrationProfileEntity */
         $profile = $profileResult->first();
 
         $request = new Request([], [
@@ -199,7 +199,7 @@ class MigrationControllerTest extends TestCase
         $criteria->addFilter(new EqualsFilter('profile', 'shopware55'));
         $criteria->addFilter(new EqualsFilter('gateway', 'api'));
         $profileResult = $profileRepo->search($criteria, $context);
-        /** @var $profile SwagMigrationProfileStruct */
+        /** @var $profile SwagMigrationProfileEntity */
         $profile = $profileResult->first();
 
         $params = [
@@ -253,7 +253,7 @@ class MigrationControllerTest extends TestCase
         $criteria->addFilter(new EqualsFilter('profile', 'shopware55'));
         $criteria->addFilter(new EqualsFilter('gateway', 'api'));
         $profileResult = $profileRepo->search($criteria, $context);
-        /** @var $profile SwagMigrationProfileStruct */
+        /** @var $profile SwagMigrationProfileEntity */
         $profile = $profileResult->first();
         $properties = [
             'profileName' => Shopware55Profile::PROFILE_NAME,

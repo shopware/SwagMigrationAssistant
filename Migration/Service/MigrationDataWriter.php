@@ -12,7 +12,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use SwagMigrationNext\Migration\Asset\MediaFileServiceInterface;
-use SwagMigrationNext\Migration\Data\SwagMigrationDataStruct;
+use SwagMigrationNext\Migration\Data\SwagMigrationDataEntity;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Writer\WriterRegistryInterface;
@@ -70,7 +70,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
         $converted = [];
         $updateWrittenData = [];
         foreach ($migrationData->getElements() as $data) {
-            /* @var SwagMigrationDataStruct $data */
+            /* @var SwagMigrationDataEntity $data */
             $value = $data->getConverted();
             if ($value !== null) {
                 $converted[] = $value;

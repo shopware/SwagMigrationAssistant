@@ -6,7 +6,7 @@ use DateTime;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
 
-class SwagMigrationLoggingStruct extends Entity
+class SwagMigrationLoggingEntity extends Entity
 {
     use EntityIdTrait;
 

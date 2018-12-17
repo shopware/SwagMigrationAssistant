@@ -4,10 +4,10 @@ namespace SwagMigrationNext\Migration\Data;
 
 use DateTime;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
+use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
-use SwagMigrationNext\Migration\Run\SwagMigrationRunStruct;
 
-class SwagMigrationDataStruct extends Entity
+class SwagMigrationDataEntity extends Entity
 {
     use EntityIdTrait;
 
@@ -52,7 +52,7 @@ class SwagMigrationDataStruct extends Entity
     protected $updatedAt;
 
     /**
-     * @var SwagMigrationRunStruct
+     * @var SwagMigrationRunEntity
      */
     protected $run;
 
@@ -136,12 +136,12 @@ class SwagMigrationDataStruct extends Entity
         $this->updatedAt = $updatedAt;
     }
 
-    public function getRun(): SwagMigrationRunStruct
+    public function getRun(): SwagMigrationRunEntity
     {
         return $this->run;
     }
 
-    public function setRun(SwagMigrationRunStruct $run): void
+    public function setRun(SwagMigrationRunEntity $run): void
     {
         $this->run = $run;
     }

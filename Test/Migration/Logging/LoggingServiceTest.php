@@ -9,7 +9,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagMigrationNext\Migration\Logging\LoggingService;
-use SwagMigrationNext\Migration\Logging\SwagMigrationLoggingStruct;
+use SwagMigrationNext\Migration\Logging\SwagMigrationLoggingEntity;
 
 class LoggingServiceTest extends TestCase
 {
@@ -100,7 +100,7 @@ class LoggingServiceTest extends TestCase
     }
 
     /**
-     * @param SwagMigrationLoggingStruct[] $loggins
+     * @param SwagMigrationLoggingEntity[] $loggins
      */
     private function areLoggingEntriesValid(array $loggins, string $type): bool
     {

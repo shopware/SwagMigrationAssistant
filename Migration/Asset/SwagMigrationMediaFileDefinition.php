@@ -44,8 +44,8 @@ class SwagMigrationMediaFileDefinition extends EntityDefinition
         return SwagMigrationMediaFileCollection::class;
     }
 
-    public static function getStructClass(): string
+    public static function getEntityClass(): string
     {
-        return SwagMigrationMediaFileStruct::class;
+        return SwagMigrationMediaFileEntity::class;
     }
 }

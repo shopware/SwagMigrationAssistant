@@ -6,11 +6,11 @@ use DateTime;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
 use SwagMigrationNext\Exception\MigrationRunUndefinedStatusException;
-use SwagMigrationNext\Migration\Asset\SwagMigrationMediaFileStruct;
-use SwagMigrationNext\Migration\Data\SwagMigrationDataStruct;
-use SwagMigrationNext\Migration\Profile\SwagMigrationProfileStruct;
+use SwagMigrationNext\Migration\Asset\SwagMigrationMediaFileEntity;
+use SwagMigrationNext\Migration\Data\SwagMigrationDataEntity;
+use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
 
-class SwagMigrationRunStruct extends Entity
+class SwagMigrationRunEntity extends Entity
 {
     use EntityIdTrait;
 
@@ -35,7 +35,7 @@ class SwagMigrationRunStruct extends Entity
     protected $profileId;
 
     /**
-     * @var SwagMigrationProfileStruct
+     * @var SwagMigrationProfileEntity
      */
     protected $profile;
 
@@ -75,12 +75,12 @@ class SwagMigrationRunStruct extends Entity
     protected $updatedAt;
 
     /**
-     * @var SwagMigrationDataStruct[]
+     * @var SwagMigrationDataEntity[]
      */
     protected $data;
 
     /**
-     * @var SwagMigrationMediaFileStruct[]
+     * @var SwagMigrationMediaFileEntity[]
      */
     protected $mediaFiles;
 
@@ -94,12 +94,12 @@ class SwagMigrationRunStruct extends Entity
         $this->profileId = $profileId;
     }
 
-    public function getProfile(): SwagMigrationProfileStruct
+    public function getProfile(): SwagMigrationProfileEntity
     {
         return $this->profile;
     }
 
-    public function setProfile(SwagMigrationProfileStruct $profile): void
+    public function setProfile(SwagMigrationProfileEntity $profile): void
     {
         $this->profile = $profile;
     }
@@ -185,7 +185,7 @@ class SwagMigrationRunStruct extends Entity
     }
 
     /**
-     * @return SwagMigrationDataStruct[]
+     * @return SwagMigrationDataEntity[]
      */
     public function getData(): array
     {
@@ -193,7 +193,7 @@ class SwagMigrationRunStruct extends Entity
     }
 
     /**
-     * @param SwagMigrationDataStruct[] $data
+     * @param SwagMigrationDataEntity[] $data
      */
     public function setData(array $data): void
     {
@@ -201,7 +201,7 @@ class SwagMigrationRunStruct extends Entity
     }
 
     /**
-     * @return SwagMigrationMediaFileStruct[]
+     * @return SwagMigrationMediaFileEntity[]
      */
     public function getMediaFiles(): array
     {
@@ -209,7 +209,7 @@ class SwagMigrationRunStruct extends Entity
     }
 
     /**
-     * @param SwagMigrationMediaFileStruct[] $mediaFiles
+     * @param SwagMigrationMediaFileEntity[] $mediaFiles
      */
     public function setMediaFiles(array $mediaFiles): void
     {

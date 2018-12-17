@@ -2,9 +2,9 @@
 
 namespace SwagMigrationNext\Profile\Shopware55\Mapping;
 
-use Shopware\Core\Checkout\Order\Aggregate\OrderState\OrderStateStruct;
-use Shopware\Core\Checkout\Order\Aggregate\OrderTransactionState\OrderTransactionStateStruct;
-use Shopware\Core\Checkout\Payment\PaymentMethodStruct;
+use Shopware\Core\Checkout\Order\Aggregate\OrderState\OrderStateEntity;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransactionState\OrderTransactionStateEntity;
+use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -59,7 +59,7 @@ class Shopware55MappingService extends MappingService
         $result = $this->paymentRepository->search($criteria, $context);
 
         if ($result->getTotal() > 0) {
-            /** @var PaymentMethodStruct $element */
+            /** @var PaymentMethodEntity $element */
             $element = $result->getEntities()->first();
 
             return $element->getId();
@@ -110,7 +110,7 @@ class Shopware55MappingService extends MappingService
         $result = $this->orderStateRepository->search($criteria, $context);
 
         if ($result->getTotal() > 0) {
-            /** @var OrderStateStruct $element */
+            /** @var OrderStateEntity $element */
             $element = $result->getEntities()->first();
 
             return $element->getId();
@@ -189,7 +189,7 @@ class Shopware55MappingService extends MappingService
         $result = $this->transactionStateRepository->search($criteria, $context);
 
         if ($result->getTotal() > 0) {
-            /** @var OrderTransactionStateStruct $element */
+            /** @var OrderTransactionStateEntity $element */
             $element = $result->getEntities()->first();
 
             return $element->getId();

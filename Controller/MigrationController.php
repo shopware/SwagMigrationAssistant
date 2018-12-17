@@ -9,7 +9,7 @@ use SwagMigrationNext\Exception\MigrationContextPropertyMissingException;
 use SwagMigrationNext\Exception\MigrationWorkloadPropertyMissingException;
 use SwagMigrationNext\Migration\Asset\HttpAssetDownloadServiceInterface;
 use SwagMigrationNext\Migration\MigrationContext;
-use SwagMigrationNext\Migration\Profile\SwagMigrationProfileStruct;
+use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
 use SwagMigrationNext\Migration\Run\SwagMigrationAccessTokenService;
 use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationNext\Migration\Service\MigrationDataWriterInterface;
@@ -113,7 +113,7 @@ class MigrationController extends Controller
 
         $readCriteria = new ReadCriteria([$profileId]);
         $profileCollection = $this->migrationProfileRepo->read($readCriteria, $context);
-        /** @var SwagMigrationProfileStruct $profile */
+        /** @var SwagMigrationProfileEntity $profile */
         $profile = $profileCollection->get($profileId);
 
         /** @var string $profileName */

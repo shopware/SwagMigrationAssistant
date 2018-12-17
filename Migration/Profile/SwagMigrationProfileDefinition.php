@@ -41,8 +41,8 @@ class SwagMigrationProfileDefinition extends EntityDefinition
         return SwagMigrationProfileCollection::class;
     }
 
-    public static function getStructClass(): string
+    public static function getEntityClass(): string
     {
-        return SwagMigrationProfileStruct::class;
+        return SwagMigrationProfileEntity::class;
     }
 }

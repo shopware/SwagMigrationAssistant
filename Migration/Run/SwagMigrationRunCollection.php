@@ -7,11 +7,11 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 class SwagMigrationRunCollection extends EntityCollection
 {
     /**
-     * @var SwagMigrationRunStruct[]
+     * @var SwagMigrationRunEntity[]
      */
     protected $elements = [];
 
-    public function first(): SwagMigrationRunStruct
+    public function first(): SwagMigrationRunEntity
     {
         return parent::first();
     }
