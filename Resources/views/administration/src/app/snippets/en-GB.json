@@ -197,16 +197,8 @@
         "hintContent": "When the process is finished, the data is not complete and therefore partially unusable."
       },
       "error": {
-        "associationRequiredMissing": {
-          "information": "Mapping of \"{missingEntity}\" is missing, but it is a required association for \"{requiredFor}\". Please import \"{missingEntity}\" first to continue."
-        },
         "authorizationError": {
           "information": "Authorization Error. Your access data is not correct. Please check it and try again."
-        },
-        "canNotDownloadAsset": {
-          "title": "Media download failed",
-          "detail": "Cannot download media",
-          "information": "Cannot download media. Affected file: {path}"
         },
         "canNotConnectToServer": {
           "title": "No connection",
@@ -234,50 +226,28 @@
         "noFileSystemPermissions": {
           "information": "No file system permissions to create or write files or directories. Please check your permissions."
         },
-        "parentEntityNotFound": {
-          "information": "Parent entity for \"{entity}\" child not found."
-        },
         "profileNotFound": {
           "information": "Migration profile \"{notFoundProfile}\" not found."
-        },
-        "writerNotFound": {
-          "information": "File writer for \"{notFoundWriter}\" entity not found."
         },
         "undefinedIndex" : {
           "title": "Unidentified index",
           "detail": "Unidentified index couldn't be found.",
           "information": "Index \"{unidentifiedIndex}\" could not be found. Please check your data."
         },
-        "unknownError": {
-          "information": "Unknown error. For more information, you can check the console logs of the developer tools in your browser."
-        },
-        "emptyNecessaryDataFields": {
-          "information": "{entity} entity could not be converted, because of empty, necessary field(s): {fields}."
-        },
-        "noDefaultShippingAddress": {
-          "information": "Default shipping address of customer is empty and will be set with the default billing address."
-        },
-        "noDefaultBillingAddress": {
-          "information": "Default billing address of customer is empty and will be set with the default shipping address."
-        },
-        "noDefaultBillingAndShippingAddress": {
-          "information": "Default billing and shipping address of customer are empty and will be set with the first address."
-        },
-        "productMediaNotConverted": {
-          "information": "Product media could not be converted."
-        },
-        "emptyLocale": {
-          "information": "Category entity could not be converted, because of empty locale."
-        },
-        "noAddressData": {
-          "information": "Category entity could not be converted, because of empty locale."
-        },
-        "notConvertAbleObjectType": {
-          "information": "Translation of object type “{objectType}“ could not be converted."
-        },
-        "invalidUnserializedData": {
-          "information": "{entity} translation entity could not be converted, because of invalid, unserialized object data."
-        }
+        "unknownError": "Unknown error. For more information, you can check the console logs of the developer tools in your browser.",
+        "SWAG-MIGRATION-WRITER-NOT-FOUND": "File writer for \"{entity}\" entity not found.",
+        "SWAG-MIGRATION-SHOPWARE55-CANNNOT-DOWNLOAD-DATA": "Cannot download media. Affected file: {uri}",
+        "SWAG-MIGRATION-SHOPWARE55-PARENT-ENTITY-NOT-FOUND": "Parent entity for \"{entity}\" child not found.",
+        "SWAG-MIGRATION-SHOPWARE55-ASSOCIATION-REQUIRED-MISSING": "Mapping of \"{missingEntity}\" is missing, but it is a required association for \"{requiredFor}\". Please import \"{missingImportEntity}\" first to continue.",
+        "SWAG-MIGRATION-SHOPWARE55-EMPTY-NECESSARY-DATA-FIELDS": "{entity} entity could not be converted, because of empty, necessary field(s): {fields}.",
+        "SWAG-MIGRATION-SHOPWARE55-NO-DEFAULT-SHIPPING-ADDRESS": "Default shipping address of customer is empty and will be set with the default billing address.",
+        "SWAG-MIGRATION-SHOPWARE55-NO-DEFAULT-BILLING-ADDRESS": "Default billing address of customer is empty and will be set with the default shipping address.",
+        "SWAG-MIGRATION-SHOPWARE55-NO-DEFAULT-BILLING-AND-SHIPPING-ADDRESS": "Default billing and shipping address of customer are empty and will be set with the first address.",
+        "SWAG-MIGRATION-SHOPWARE55-PRODUCT-MEDIA-NOT-CONVERTED": "Product media could not be converted.",
+        "SWAG-MIGRATION-SHOPWARE55-EMPTY-LOCALE": "Category entity could not be converted, because of empty locale.",
+        "SWAG-MIGRATION-SHOPWARE55-NO-ADDRESS-DATA": "Category entity could not be converted, because of empty locale.",
+        "SWAG-MIGRATION-SHOPWARE55-NOT-CONVERT-ABLE-OBJECT-TYPE": "Translation of object type “{objectType}“ could not be converted.",
+        "SWAG-MIGRATION-SHOPWARE55-INVALID-UNSERIALIZED-DATA": "{entity} translation entity could not be converted, because of invalid, unserialized object data."
       }
     },
     "history": {

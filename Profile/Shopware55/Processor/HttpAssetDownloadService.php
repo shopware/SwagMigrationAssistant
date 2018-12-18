@@ -18,10 +18,12 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use SwagMigrationNext\Exception\NoFileSystemPermissionsException;
 use SwagMigrationNext\Migration\Asset\AbstractMediaFileProcessor;
+use SwagMigrationNext\Migration\Asset\SwagMigrationMediaFileEntity;
 use SwagMigrationNext\Migration\Asset\SwagMigrationMediaFileStruct;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Api\Shopware55ApiGateway;
+use SwagMigrationNext\Profile\Shopware55\Logging\Shopware55LogTypes;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
@@ -138,7 +140,7 @@ class HttpAssetDownloadService extends AbstractMediaFileProcessor
                     $mappedWorkload[$uuid]['state'] = 'error';
                     $this->loggingService->addError(
                         $mappedWorkload[$uuid]['runId'],
-                        (string) SymfonyResponse::HTTP_REQUEST_TIMEOUT,
+                        Shopware55LogTypes::CANNNOT_DOWNLOAD_MEDIA,
                         '',
                         'Cannot download media.',
                         [

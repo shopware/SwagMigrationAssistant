@@ -103,7 +103,7 @@ class TranslationConverter extends AbstractConverter
             'Not convert able object type',
             sprintf('Translation of object type "%s" could not converted.', $data['objecttype']),
             [
-                'objecttype' => $data['objecttype'],
+                'objectType' => $data['objecttype'],
                 'data' => $data,
             ]
         );
@@ -143,7 +143,12 @@ class TranslationConverter extends AbstractConverter
                 Shopware55LogTypes::ASSOCIATION_REQUIRED_MISSING,
                 'Associated product not found',
                 'Mapping of "product" is missing, but it is a required association for "translation". Import "product" first.',
-                ['data' => $data]
+                [
+                    'data' => $data,
+                    'missingEntity' => 'product',
+                    'requiredFor' => 'translation',
+                    'missingImportEntity' => 'product',
+                ]
             );
 
             return new ConvertStruct(null, $sourceData);
@@ -232,7 +237,12 @@ class TranslationConverter extends AbstractConverter
                 Shopware55LogTypes::ASSOCIATION_REQUIRED_MISSING,
                 'Associated manufacturer not found',
                 'Mapping of "manufacturer" is missing, but it is a required association for "translation". Import "product" first.',
-                ['data' => $data]
+                [
+                    'data' => $data,
+                    'missingEntity' => 'manufacturer',
+                    'requiredFor' => 'translation',
+                    'missingImportEntity' => 'product',
+                ]
             );
 
             return new ConvertStruct(null, $sourceData);
@@ -339,7 +349,12 @@ class TranslationConverter extends AbstractConverter
                 Shopware55LogTypes::ASSOCIATION_REQUIRED_MISSING,
                 'Associated unit not found',
                 'Mapping of "unit" is missing, but it is a required association for "translation". Import "product" first.',
-                ['data' => $data]
+                [
+                    'data' => $data,
+                    'missingEntity' => 'unit',
+                    'requiredFor' => 'translation',
+                    'missingImportEntity' => 'product',
+                ]
             );
 
             return new ConvertStruct(null, $sourceData);
@@ -442,7 +457,12 @@ class TranslationConverter extends AbstractConverter
                 Shopware55LogTypes::ASSOCIATION_REQUIRED_MISSING,
                 'Associated category not found',
                 'Mapping of "category" is missing, but it is a required association for "translation". Import "category" first.',
-                ['data' => $data]
+                [
+                    'data' => $data,
+                    'missingEntity' => 'category',
+                    'requiredFor' => 'translation',
+                    'missingImportEntity' => 'category',
+                ]
             );
 
             return new ConvertStruct(null, $sourceData);

@@ -197,16 +197,8 @@
         "hintContent": "Wenn der Prozess beendet wird sind die Daten nicht vollständig und dadurch teilweise unbrauchbar."
       },
       "error": {
-        "associationRequiredMissing": {
-          "information": "Das Mapping von „{missingEntity}“ konnte nicht gefunden werden. Diese ist allerdings erforderlich für „{requiredFor}“. Bitte importiere zuerst „{missingEntity}“ um fortzufahren."
-        },
         "authorizationError": {
           "information": "Authorisierungsfehler. Deine Zugangsdaten sind nicht korrekt. Bitte überprüfe sie und versuche es erneut."
-        },
-        "canNotDownloadAsset": {
-          "title": "Herunterladen der Medien fehlgeschlagen",
-          "detail": "Medien-Datei konnte nicht heruntergeladen werden",
-          "information": "Medien-Datei konnte nicht heruntergeladen werden. Betroffene Datei: {path}"
         },
         "canNotConnectToServer": {
           "title": "Keine Verbindung",
@@ -234,50 +226,28 @@
         "noFileSystemPermissions": {
           "information": "Du besitzt keine Rechte um Dateien oder Ordner zu erstellen oder zu schreiben. Bitte überprüfe Deine Berechtigungen."
         },
-        "parentEntityNotFound": {
-          "information": "Eltern-Entität für das „{entity}“-Kind konnte nicht gefunden werden."
-        },
         "profileNotFound": {
           "information": "Importprofil „{notFoundProfile}“ konnte nicht gefunden werden."
-        },
-        "writerNotFound": {
-          "information": "Filewriter für die „{notFoundWriter}“-Entität konnte nicht gefunden werden."
         },
         "undefinedIndex" : {
           "title": "Unidentifizierter Index",
           "detail": "Unidentifizierter Index konnte nicht importiert werden.",
           "information": "Index „{unidentifiedIndex}“ konnte nicht identifiziert werden. Bitte prüfe Deine Daten."
         },
-        "unknownError": {
-          "information": "Unbekannter Fehlertyp. Für weitere Informationen kannst Du in die Konsolenlogs der Entwicklertools Deines Browser schauen."
-        },
-        "emptyNecessaryDataFields": {
-          "information": "{entity}-Entity could not be converted due to empty necessary field(s): {fields}."
-        },
-        "noDefaultShippingAddress": {
-          "information": "Default shipping address of customer is empty and will be set with the default billing address."
-        },
-        "noDefaultBillingAddress": {
-          "information": "Default billing address of customer is empty and will be set with the default shipping address."
-        },
-        "noDefaultBillingAndShippingAddress": {
-          "information": "Default billing and shipping address of customer is empty and will be set with the first address."
-        },
-        "productMediaNotConverted": {
-          "information": "Product-Media could not be converted."
-        },
-        "emptyLocale": {
-          "information": "Category-Entity could not be converted due to an empty locale."
-        },
-        "noAddressData": {
-          "information": "Category-Entity could not be converted due to an empty locale."
-        },
-        "notConvertAbleObjectType": {
-          "information": "Translation of object type „{objectType}“ could not be converted."
-        },
-        "invalidUnserializedData": {
-          "information": "{entity}-Translation-Entity could not converted cause of invalid unserialized object data."
-        }
+        "unknownError": "Unbekannter Fehlertyp. Für weitere Informationen kannst Du in die Konsolenlogs der Entwicklertools Deines Browser schauen.",
+        "SWAG-MIGRATION-WRITER-NOT-FOUND": "Filewriter für die „{entity}“-Entität konnte nicht gefunden werden.",
+        "SWAG-MIGRATION-SHOPWARE55-CANNNOT-DOWNLOAD-DATA": "Medien-Datei konnte nicht heruntergeladen werden. Betroffene Datei: {uri}",
+        "SWAG-MIGRATION-SHOPWARE55-PARENT-ENTITY-NOT-FOUND": "Eltern-Entität für das „{entity}“-Kind konnte nicht gefunden werden.",
+        "SWAG-MIGRATION-SHOPWARE55-ASSOCIATION-REQUIRED-MISSING": "Das Mapping von „{missingEntity}“ konnte nicht gefunden werden. Diese ist allerdings erforderlich für „{requiredFor}“. Bitte importiere zuerst „{missingImportEntity}“ um fortzufahren.",
+        "SWAG-MIGRATION-SHOPWARE55-EMPTY-NECESSARY-DATA-FIELDS": "{entity}-Entity could not be converted due to empty necessary field(s): {fields}.",
+        "SWAG-MIGRATION-SHOPWARE55-NO-DEFAULT-SHIPPING-ADDRESS": "Default shipping address of customer is empty and will be set with the default billing address.",
+        "SWAG-MIGRATION-SHOPWARE55-NO-DEFAULT-BILLING-ADDRESS": "Default billing address of customer is empty and will be set with the default shipping address.",
+        "SWAG-MIGRATION-SHOPWARE55-NO-DEFAULT-BILLING-AND-SHIPPING-ADDRESS": "Default billing and shipping address of customer is empty and will be set with the first address.",
+        "SWAG-MIGRATION-SHOPWARE55-PRODUCT-MEDIA-NOT-CONVERTED": "Product-Media could not be converted.",
+        "SWAG-MIGRATION-SHOPWARE55-EMPTY-LOCALE": "Category-Entity could not be converted due to an empty locale.",
+        "SWAG-MIGRATION-SHOPWARE55-NO-ADDRESS-DATA": "Category-Entity could not be converted due to an empty locale.",
+        "SWAG-MIGRATION-SHOPWARE55-NOT-CONVERT-ABLE-OBJECT-TYPE": "Translation of object type „{objectType}“ could not be converted.",
+        "SWAG-MIGRATION-SHOPWARE55-INVALID-UNSERIALIZED-DATA": "{entity}-Translation-Entity could not converted cause of invalid unserialized object data."
       }
     },
     "history": {
