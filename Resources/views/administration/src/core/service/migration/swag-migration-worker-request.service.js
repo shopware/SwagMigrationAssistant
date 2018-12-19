@@ -259,14 +259,8 @@ export class WorkerRequest {
             this._migrationService[this.operation](this._requestParams).then((response) => {
                 if (!response) {
                     this._callErrorCB({
-                        code: '0',
-                        detail: this.applicationRoot.$i18n.tc('swag-migration.index.error.canNotConnectToServer.detail'),
-                        status: '444',
-                        title: this.applicationRoot.$i18n.tc('swag-migration.index.error.canNotConnectToServer.title'),
-                        information: this.applicationRoot.$i18n.tc(
-                            'swag-migration.index.error.canNotConnectToServer.information'
-                        ),
-                        trace: []
+                        code: 'canNotConnectToServer',
+                        internalError: true
                     });
                     resolve();
                     return;
@@ -284,14 +278,8 @@ export class WorkerRequest {
             }).catch((response) => {
                 if (!response || !response.response) {
                     this._callErrorCB({
-                        code: '0',
-                        detail: this.applicationRoot.$i18n.tc('swag-migration.index.error.canNotConnectToServer.detail'),
-                        status: '444',
-                        title: this.applicationRoot.$i18n.tc('swag-migration.index.error.canNotConnectToServer.title'),
-                        information: this.applicationRoot.$i18n.tc(
-                            'swag-migration.index.error.canNotConnectToServer.information'
-                        ),
-                        trace: []
+                        code: 'canNotConnectToServer',
+                        internalError: true
                     });
                     resolve();
                     return;

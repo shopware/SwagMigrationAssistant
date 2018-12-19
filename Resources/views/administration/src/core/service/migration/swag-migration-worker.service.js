@@ -551,7 +551,8 @@ class MigrationWorkerService {
                             code: log.logEntry.code,
                             detail: log.logEntry.description,
                             description: log.logEntry.description,
-                            details: log.logEntry.details
+                            details: log.logEntry.details,
+                            internalError: false
                         });
                     }
                 });
@@ -589,7 +590,21 @@ class MigrationWorkerService {
     }
 
     _addError(error) {
+        if (error.internalError && this._errorCodeExists(error.code)) {
+            return;
+        }
+
         this._errors.push(error);
+    }
+
+    _errorCodeExists(errorCode) {
+        for (let index = 0; index < this._errors.length; index += 1) {
+            if (errorCode === this._errors[index].code) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

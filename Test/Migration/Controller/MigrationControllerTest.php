@@ -511,6 +511,7 @@ class MigrationControllerTest extends TestCase
 
         self::assertSame([
             'workload' => [],
+            'validToken' => true
         ], $result);
     }
 

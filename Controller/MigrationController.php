@@ -313,10 +313,6 @@ class MigrationController extends AbstractController
             throw new MigrationContextPropertyMissingException('gateway');
         }
 
-        if (\count($workload) === 0) {
-            return new JsonResponse(['workload' => []]);
-        }
-
         foreach ($workload as $work) {
             if (!isset($work['uuid'])) {
                 throw new MigrationWorkloadPropertyMissingException('uuid');
@@ -333,6 +329,10 @@ class MigrationController extends AbstractController
             return new JsonResponse([
                 'validToken' => false,
             ]);
+        }
+
+        if (\count($workload) === 0) {
+            return new JsonResponse(['workload' => [], 'validToken' => true]);
         }
 
         $migrationContext = new MigrationContext(

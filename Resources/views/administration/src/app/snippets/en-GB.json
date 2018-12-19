@@ -200,11 +200,7 @@
         "authorizationError": {
           "information": "Authorization Error. Your access data is not correct. Please check it and try again."
         },
-        "canNotConnectToServer": {
-          "title": "No connection",
-          "detail": "No connection to server",
-          "information": "No connection to server. Please check the connection for issues."
-        },
+        "canNotConnectToServer": "No connection to server. Please check the connection for issues.",
         "customerExists": {
           "information": "Customer with email \"{mail}\" already exists. You cannot add this user with that e-mail to your database."
         },
@@ -235,6 +231,7 @@
           "information": "Index \"{unidentifiedIndex}\" could not be found. Please check your data."
         },
         "unknownError": "Unknown error. For more information, you can check the console logs of the developer tools in your browser.",
+        "mediaProcessConnectionError": "A connection error occurred while copying the media data. Please check the connection.",
         "SWAG-MIGRATION-WRITER-NOT-FOUND": "File writer for \"{entity}\" entity not found.",
         "SWAG-MIGRATION-SHOPWARE55-CANNNOT-DOWNLOAD-DATA": "Cannot download media. Affected file: {uri}",
         "SWAG-MIGRATION-SHOPWARE55-PARENT-ENTITY-NOT-FOUND": "Parent entity for \"{entity}\" child not found.",

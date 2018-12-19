@@ -183,6 +183,12 @@ export class WorkerMediaFiles {
                     }
                 });
                 resolve();
+            }).catch(() => {
+                this._callErrorCB({
+                    code: 'mediaProcessConnectionError',
+                    internalError: true
+                });
+                resolve();
             });
         });
     }
@@ -259,6 +265,11 @@ export class WorkerMediaFiles {
      * @private
      */
     _updateWorkload(newWorkload, requestTime) {
+        if (newWorkload.length === 0) {
+            this._makeWorkload(this._ASSET_WORKLOAD_COUNT);
+            return;
+        }
+
         const finishedAssets = newWorkload.filter((asset) => asset.state === 'finished');
         let assetsRemovedCount = finishedAssets.length;
 
@@ -313,6 +324,10 @@ export class WorkerMediaFiles {
 
                 resolve(res.workload);
             }).catch(() => {
+                this._callErrorCB({
+                    code: 'mediaProcessConnectionError',
+                    internalError: true
+                });
                 resolve(this._assetWorkload);
             });
         });
