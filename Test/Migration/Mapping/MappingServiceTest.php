@@ -131,7 +131,8 @@ class MappingServiceTest extends TestCase
         );
         /** @var EntityWrittenEvent $writtenEvent */
         $writtenEvent = $uuid->getEvents()->first();
-        $localeId = $writtenEvent->getIds()[0];
+        $localeIds = $writtenEvent->getIds()[0];
+        $localeId = $localeIds['localeId'];
 
         $response = $this->mappingService->getLanguageUuid($profileId, 'swagMigrationTestingLocaleCode', $context);
 
