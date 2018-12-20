@@ -178,6 +178,63 @@ class MigrationControllerTest extends TestCase
         $this->controller->startMigration(new Request(), $context);
     }
 
+    public function testStartMigrationCheckAbortLastRun(): void
+    {
+        $context = Context::createDefaultContext();
+
+        $params = [
+            'profileId' => $this->profileUuidService->getProfileUuid(),
+        ];
+
+        $customerId = Uuid::uuid4()->getHex();
+        $context->getSourceContext()->setUserId($customerId);
+        $request = new Request([], $params);
+        $result = $this->controller->startMigration($request, $context);
+        $resultArray = json_decode($result->getContent(), true);
+        self::assertArrayHasKey('accessToken', $resultArray);
+
+        $totalBefore = $this->runRepo->search(new Criteria(), $context)->getTotal();
+        $this->controller->startMigration($request, $context);
+        $totalAfter = $this->runRepo->search(new Criteria(), $context)->getTotal();
+        self::assertSame(1, $totalAfter - $totalBefore);
+
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('status', SwagMigrationRunEntity::STATUS_ABORTED));
+        $totalAborted = $this->runRepo->search($criteria, $context)->getTotal();
+        self::assertSame(1, $totalAborted);
+
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('status', SwagMigrationRunEntity::STATUS_RUNNING));
+        $totalProcessing = $this->runRepo->search($criteria, $context)->getTotal();
+        self::assertSame(1, $totalProcessing);
+
+        $ids = $this->runRepo->searchIds($criteria, $context)->getIds();
+        $this->runRepo->update(
+            [
+                [
+                    'id' => $ids[0],
+                    'status' => SwagMigrationRunEntity::STATUS_FINISHED,
+                ]
+            ],
+            $context
+        );
+
+        $totalBefore = $this->runRepo->search(new Criteria(), $context)->getTotal();
+        $this->controller->startMigration($request, $context);
+        $totalAfter = $this->runRepo->search(new Criteria(), $context)->getTotal();
+        self::assertSame(1, $totalAfter - $totalBefore);
+
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('status', SwagMigrationRunEntity::STATUS_RUNNING));
+        $totalProcessing = $this->runRepo->search($criteria, $context)->getTotal();
+        self::assertSame(1, $totalProcessing);
+
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('status', SwagMigrationRunEntity::STATUS_ABORTED));
+        $totalAborted = $this->runRepo->search($criteria, $context)->getTotal();
+        self::assertSame(1, $totalAborted);
+    }
+
     public function testCheckConnection(): void
     {
         $context = Context::createDefaultContext();

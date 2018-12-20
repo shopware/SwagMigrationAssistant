@@ -6,6 +6,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use SwagMigrationNext\Migration\EnvironmentInformation;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -34,6 +35,7 @@ class SwagMigrationAccessTokenService
     public function startMigrationRun(string $profileId, Context $context, EnvironmentInformation $environmentInformation): SwagMigrationAccessTokenStruct
     {
         $userId = \mb_strtoupper($context->getSourceContext()->getUserId());
+        $this->abortProcessingRun($context);
         $runId = $this->createMigrationRun($profileId, $context, $environmentInformation);
         $accessToken = $this->createMigrationAccessToken($runId, $userId, $context);
 
@@ -57,6 +59,29 @@ class SwagMigrationAccessTokenService
         }
 
         return false;
+    }
+
+    private function abortProcessingRun(Context $context): void
+    {
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('status', SwagMigrationRunEntity::STATUS_RUNNING));
+        $criteria->addSorting(new FieldSorting('createdAt', FieldSorting::DESCENDING));
+        $criteria->setLimit(1);
+        $ids = $this->migrationRunRepo->searchIds($criteria, $context)->getIds();
+
+        if (empty($ids)) {
+            return;
+        }
+
+        $this->migrationRunRepo->update(
+            [
+                [
+                    'id' => $ids[0],
+                    'status' => SwagMigrationRunEntity::STATUS_ABORTED
+                ]
+            ],
+            $context
+        );
     }
 
     private function createMigrationRun(string $profileId, Context $context, EnvironmentInformation $environmentInformation): string
