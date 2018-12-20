@@ -6,13 +6,13 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 
 class SwagMigrationProfileCollection extends EntityCollection
 {
-    /**
-     * @var SwagMigrationProfileEntity[]
-     */
-    protected $elements = [];
-
     public function first(): SwagMigrationProfileEntity
     {
         return parent::first();
+    }
+
+    protected function getExpectedClass(): string
+    {
+        return SwagMigrationProfileEntity::class;
     }
 }
