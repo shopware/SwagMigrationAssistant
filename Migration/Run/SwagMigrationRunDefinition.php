@@ -38,7 +38,7 @@ class SwagMigrationRunDefinition extends EntityDefinition
             new StringField('status', 'status'),
             new CreatedAtField(),
             new UpdatedAtField(),
-            new ManyToOneAssociationField('profile', 'profile_id', SwagMigrationProfileDefinition::class, true),
+            new ManyToOneAssociationField('profile', 'profile_id', SwagMigrationProfileDefinition::class, false),
             new OneToManyAssociationField('data', SwagMigrationDataDefinition::class, 'run_id', false),
             new OneToManyAssociationField('mediaFiles', SwagMigrationMediaFileDefinition::class, 'run_id', false),
         ]);

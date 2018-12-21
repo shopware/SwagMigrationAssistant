@@ -28,6 +28,7 @@ Component.register('swag-migration-history', {
         getList() {
             this.isLoading = true;
             const params = this.getListingParams();
+            params.associations = { profile: { limit: 1 } };
 
             return this.migrationRunStore.getList(params).then((response) => {
                 this.total = response.total;
