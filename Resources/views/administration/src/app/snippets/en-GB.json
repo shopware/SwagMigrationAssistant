@@ -76,6 +76,7 @@
             "alertErrorTitle": "Attention",
             "connectionErrorMsg": "Could not connect to the server. Please check the given shop domain.",
             "authenticationErrorMsg": "Your credentials are incorrect. Please check them and try again.",
+            "invalidShopDomainErrorMsg": "The given URL is not valid shop domain. Please enter a valid shop domain.",
             "undefinedErrorMsg": "Internal server error. Please try again."
           }
         }

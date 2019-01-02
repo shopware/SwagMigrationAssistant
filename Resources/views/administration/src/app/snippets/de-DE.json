@@ -76,6 +76,7 @@
             "alertErrorTitle": "Achtung",
             "connectionErrorMsg": "Es konnte keine Verbindung zum angegebenen Server hergestellt werden. Bitte überprüfe die angegebene Shop-Domain.",
             "authenticationErrorMsg": "Deine Zugangsdaten sind nicht korrekt. Bitte überprüfe sie und versuche es erneut.",
+            "invalidShopDomainErrorMsg": "Die angegebene URL ist keine valide Shop-Domain. Bitte gib eine valide Shop-Domain ein.",
             "undefinedErrorMsg": "Interner Server Fehler. Bitte versuche es erneut."
           }
         }

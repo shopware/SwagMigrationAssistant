@@ -179,6 +179,9 @@ Component.register('swag-migration-wizard', {
             case 401: // invalid access credentials
                 this.errorMessage = this.$tc('swag-migration.wizard.pages.credentials.error.authenticationErrorMsg');
                 break;
+            case 466: // invalid shop domain
+                this.errorMessage = this.$tc('swag-migration.wizard.pages.credentials.error.invalidShopDomainErrorMsg');
+                break;
             default: // something else
                 this.errorMessage = this.$tc('swag-migration.wizard.pages.credentials.error.undefinedErrorMsg');
                 break;

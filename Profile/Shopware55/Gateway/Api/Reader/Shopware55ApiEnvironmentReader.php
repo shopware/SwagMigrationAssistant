@@ -60,10 +60,14 @@ class Shopware55ApiEnvironmentReader extends Shopware55ApiReader
         );
 
         if ($result->getStatusCode() !== SymfonyResponse::HTTP_OK) {
-            throw new GatewayReadException('Shopware 5.5 Api SwagMigrationEnvironment');
+            throw new GatewayReadException('Shopware 5.5 Api SwagMigrationEnvironment', 466);
         }
 
         $arrayResult = json_decode($result->getBody()->getContents(), true);
+
+        if (!isset($arrayResult['data'])) {
+            throw new GatewayReadException('Shopware 5.5 Api SwagMigrationEnvironment', 466);
+        }
 
         return $arrayResult['data'];
     }

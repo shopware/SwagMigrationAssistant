@@ -184,7 +184,42 @@ class Shopware55ApiEnvironmentReaderTest extends TestCase
             )
         );
 
-        $gatewayReadException = new GatewayReadException('Shopware 5.5 Api SwagMigrationEnvironment');
+        $gatewayReadException = new GatewayReadException('Shopware 5.5 Api SwagMigrationEnvironment', 466);
+        $response = $environmentReader->read();
+        self::assertSame($response['environmentInformation'], []);
+        self::assertSame($response['error']['code'], $gatewayReadException->getCode());
+        self::assertSame($response['error']['detail'], $gatewayReadException->getMessage());
+    }
+
+    public function testEnvironmentReaderWithInvalidJsonResponse(): void
+    {
+        $mock = new MockHandler([
+            new Response(404, [], $this->body),
+            new Response(200, [], 'invalid JSON Response'),
+        ]);
+        $handler = HandlerStack::create($mock);
+
+        $options = [
+            'handler' => $handler,
+        ];
+
+        $client = new Client($options);
+
+        $environmentReader = new Shopware55ApiEnvironmentReader(
+            $client,
+            new MigrationContext(
+                '',
+                '',
+                '',
+                '',
+                '',
+                ['endpoint' => '', 'apiUser' => '', 'apiKey' => ''],
+                0,
+                0
+            )
+        );
+
+        $gatewayReadException = new GatewayReadException('Shopware 5.5 Api SwagMigrationEnvironment', 466);
         $response = $environmentReader->read();
         self::assertSame($response['environmentInformation'], []);
         self::assertSame($response['error']['code'], $gatewayReadException->getCode());
