@@ -152,8 +152,7 @@
             "contentTitle": "Datenimport abgeschlossen!",
             "hintTitle": "Achtung:",
             "hintContent": "Der Import konnte nicht vollständig abgeschlossen werden. Möglicherweise sind Daten fehlerhaft oder unvollständig importiert worden.",
-            "warningListTitle": "Es sind keine Fehler aufgetreten | Folgender Fehler ist aufgetreten | {count} Fehler sind aufgetreten",
-            "warningListHint": ""
+            "warningListTitle": "Es sind keine Fehler aufgetreten | Folgender Fehler ist aufgetreten | {count} Fehler sind aufgetreten"
           },
           "failure": {
             "title": "Fehlgeschlagen",
