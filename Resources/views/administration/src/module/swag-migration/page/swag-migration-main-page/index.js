@@ -14,6 +14,7 @@ Component.register('swag-migration-main-page', {
             isLoading: true,
             profile: {},
             environmentInformation: {},
+            connectionEstablished: false,
             lastMigrationDate: '-',
             entityCounts: {},
             componentIndex: 0,
@@ -291,13 +292,11 @@ Component.register('swag-migration-main-page', {
 
             // Get profile with credentials from server
             this.migrationProfileStore.getList(params).then((response) => {
-                if (!response) {
-                    this.$router.push({ name: 'swag.migration.wizard.select_profile' });
-                    return;
-                }
-
-                if (response.items.length === 0) {
-                    this.$router.push({ name: 'swag.migration.wizard.select_profile' });
+                if (!response ||
+                    (response && response.items.length === 0)
+                ) {
+                    this.connectionEstablished = false;
+                    this.isLoading = false;
                     return;
                 }
 
@@ -305,18 +304,15 @@ Component.register('swag-migration-main-page', {
 
                 // Do connection check
                 this.migrationService.checkConnection(this.profile.id).then((connectionCheckResponse) => {
-                    if (!connectionCheckResponse || connectionCheckResponse.errorCode !== -1) {
-                        this.$router.push({ name: 'swag.migration.wizard.credentials' });
-                        return;
-                    }
-
                     this.environmentInformation = connectionCheckResponse;
                     this.normalizeEnvironmentInformation();
                     this.calculateProgressMaxValues();
 
+                    this.connectionEstablished = (connectionCheckResponse.errorCode === -1);
                     this.isLoading = false;
                 }).catch(() => {
-                    this.$router.push({ name: 'swag.migration.wizard.credentials' });
+                    this.connectionEstablished = false;
+                    this.isLoading = false;
                 });
             });
 

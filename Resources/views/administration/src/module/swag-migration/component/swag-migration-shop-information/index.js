@@ -2,6 +2,11 @@ import { Component, State } from 'src/core/shopware';
 import template from './swag-migration-shop-information.html.twig';
 import './swag-migration-shop-information.less';
 
+const BADGE_TYPE = Object.freeze({
+    SUCCESS: 'success',
+    DANGER: 'danger'
+});
+
 Component.register('swag-migration-shop-information', {
     template,
 
@@ -14,6 +19,11 @@ Component.register('swag-migration-shop-information', {
         profile: {
             type: Object,
             default: {}
+        },
+
+        connected: {
+            type: Boolean,
+            default: false
         },
 
         lastMigrationDate: {
@@ -76,6 +86,22 @@ Component.register('swag-migration-shop-information', {
             }
 
             return '';
+        },
+
+        connectionBadgeLabel() {
+            if (this.connected) {
+                return 'swag-migration.index.shopInfoCard.connected';
+            }
+
+            return 'swag-migration.index.shopInfoCard.notConnected';
+        },
+
+        connectionBadgeVariant() {
+            if (this.connected) {
+                return BADGE_TYPE.SUCCESS;
+            }
+
+            return BADGE_TYPE.DANGER;
         },
 
         shopSystem() {

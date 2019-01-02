@@ -55,11 +55,11 @@
 
                             {% block swag_migration_index_card_shopInfo_metaData_connection %}
                                 <div class="swag-migration-index__metadata_connection">
-                                    <sw-label class="swag-migration-connection-status" variant="success" pill>
-                                        <sw-color-badge class="swag-migration-connection-status--dot" variant="success" rounded>
+                                    <sw-label class="swag-migration-connection-status" :variant="connectionBadgeVariant" pill>
+                                        <sw-color-badge class="swag-migration-connection-status--dot" :variant="connectionBadgeVariant" rounded>
                                         </sw-color-badge>
                                         <span class="swag-migration-connection-status--text">
-                                            {{ $tc('swag-migration.index.shopInfoCard.connected') }}
+                                            {{ $tc(connectionBadgeLabel) }}
                                         </span>
                                     </sw-label>
                                 </div>

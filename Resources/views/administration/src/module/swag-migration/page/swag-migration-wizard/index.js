@@ -192,28 +192,15 @@ Component.register('swag-migration-wizard', {
                 return;
             }
 
-            const routeIndexCopy = this.routeIndex;
-
             this.showModal = false;
             this.routeIndex = 0;
             this.routeIndexVisible = 0;
 
-            if (routeIndexCopy === this.routeSuccessIndex) {
-                // navigate to module
-                this.$router.push({
-                    name: 'swag.migration.index',
-                    params: { profileId: this.profileId }
-                });
-            } else if (this.editMode && routeIndexCopy !== this.routeErrorIndex) {
-                this.$router.push({
-                    name: 'swag.migration.index',
-                    params: { profileId: this.profileId }
-                });
-            } else {
-                this.$router.push({
-                    name: 'sw.settings.index'
-                });
-            }
+            // navigate to module
+            this.$router.push({
+                name: 'swag.migration.index',
+                params: { profileId: this.profileId }
+            });
         },
 
         matchRouteWithIndex() {

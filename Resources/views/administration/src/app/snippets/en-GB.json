@@ -96,6 +96,7 @@
         "shopSystem": "Shop system:",
         "buttonEditSettings": "Edit connection",
         "connected": "Connected",
+        "notConnected": "Not connected",
         "customersAndOrders": "Customers & Orders:",
         "categoriesAndProducts": "Categories & Products:",
         "media": "Media:",
