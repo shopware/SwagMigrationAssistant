@@ -1,7 +1,7 @@
 {% block swag_migration_wizard_page_select_profile %}
     <div class="swag-migration-wizard swag-migration-wizard-page-select-profile">
         {% block swag_migration_wizard_page_select_profile_content %}
-            <div class="swag-migration-wizard__content">
+            <div class="swag-migration-wizard__content" v-if="!isLoading">
                 {% block swag_migration_wizard_page_select_profile_information %}
                     <div class="content__information">
                         {% block swag_migration_wizard_page_select_profile_title %}

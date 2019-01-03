@@ -49,7 +49,7 @@ class MigrationController extends AbstractController
     private $migrationProfileRepo;
 
     /**
-     * @var RepositoryInterface
+     * @var EntityRepositoryInterface
      */
     private $migrationGeneralSetting;
 
@@ -123,19 +123,8 @@ class MigrationController extends AbstractController
             throw new MigrationContextPropertyMissingException('profileId');
         }
 
-        $ids = $this->migrationGeneralSetting->searchIds(new Criteria(), $context)->getIds();
-        $this->migrationGeneralSetting->update(
-            [
-                [
-                    'id' => $ids[0],
-                    'selectedProfileId' => $profileId,
-                ],
-            ],
-            $context
-        );
-
-        $readCriteria = new ReadCriteria([$profileId]);
-        $profileCollection = $this->migrationProfileRepo->read($readCriteria, $context);
+        $criteria = new Criteria([$profileId]);
+        $profileCollection = $this->migrationProfileRepo->search($criteria, $context);
         /** @var SwagMigrationProfileEntity $profile */
         $profile = $profileCollection->get($profileId);
 
@@ -362,8 +351,8 @@ class MigrationController extends AbstractController
     }
 
     private function getEnvironmentInformation($profileId, $context) : EnvironmentInformation {
-        $readCriteria = new ReadCriteria([$profileId]);
-        $profileCollection = $this->migrationProfileRepo->read($readCriteria, $context);
+        $criteria = new Criteria([$profileId]);
+        $profileCollection = $this->migrationProfileRepo->search($criteria, $context);
         /** @var SwagMigrationProfileEntity $profile */
         $profile = $profileCollection->get($profileId);
 

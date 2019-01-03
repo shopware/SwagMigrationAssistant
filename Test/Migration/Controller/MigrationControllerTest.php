@@ -258,13 +258,6 @@ class MigrationControllerTest extends TestCase
         $result = $this->controller->checkConnection($request, $context);
         $environmentInformation = json_decode($result->getContent(), true);
 
-        $result = $this->generalSettingRepo->search(new Criteria(), $context);
-        self::assertSame($result->getTotal(), 1);
-        /** @var GeneralSettingEntity $element */
-        foreach ($result->getElements() as $element) {
-            self::assertSame($element->getSelectedProfileId(), $profile->getId());
-        }
-
         self::assertSame($environmentInformation['productTotal'], 37);
         self::assertSame($environmentInformation['customerTotal'], 2);
         self::assertSame($environmentInformation['categoryTotal'], 8);

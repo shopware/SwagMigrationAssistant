@@ -309,20 +309,25 @@ Component.register('swag-migration-wizard', {
         },
 
         onNext() {
+            if (this.routeIndex === this.routeSelectProfileIndex) {
+                // clicked next (save selected profile)
+                this.saveSelectedProfile();
+            }
+
             if (this.routeIndex === this.routeCredentialsIndex) {
-                // we clicked connect.
+                // clicked connect.
                 this.onConnect();
                 return;
             }
 
             if (this.routeIndex === this.routeSuccessIndex) {
-                // we clicked finish.
+                // clicked finish.
                 this.onCloseModal();
                 return;
             }
 
             if (this.routeIndex === this.routeErrorIndex) {
-                // we clicked Back
+                // clicked Back
                 this.navigateToRoute(this.routes[this.routeCredentialsIndex]);
                 return;
             }
@@ -332,6 +337,25 @@ Component.register('swag-migration-wizard', {
                 this.routeIndexVisible += 1;
                 this.updateChildRoute();
             }
+        },
+
+        saveSelectedProfile() {
+            const params = {
+                offset: 0,
+                limit: 1
+            };
+
+            this.migrationGeneralSettingStore.getList(params).then((response) => {
+                if (!response ||
+                    (response && response.items.length < 1)
+                ) {
+                    return;
+                }
+
+                const setting = response.items[0];
+                setting.selectedProfileId = this.profile.id;
+                setting.save();
+            });
         },
 
         onCredentialsChanged(value) {

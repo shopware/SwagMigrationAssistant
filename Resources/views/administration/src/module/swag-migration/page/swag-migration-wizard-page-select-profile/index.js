@@ -11,7 +11,7 @@ Component.register('swag-migration-wizard-page-select-profile', {
 
     data() {
         return {
-            isLoading: false,
+            isLoading: true,
             selection: {
                 profile: null,
                 gateway: null
@@ -75,7 +75,8 @@ Component.register('swag-migration-wizard-page-select-profile', {
         },
 
         setIsLoading(value) {
-            this.$emit('onIsLoadingChanged', value);
+            this.isLoading = value;
+            this.$emit('onIsLoadingChanged', this.isLoading);
         },
 
         onSelectProfile() {
