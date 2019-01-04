@@ -33,6 +33,11 @@ class MigrationProgressService implements MigrationProgressServiceInterface
     private $migrationMediaFileRepository;
 
     /**
+     * @var EntityRepositoryInterface
+     */
+    private $migrationProfileRepository;
+
+    /**
      * @var Context
      */
     private $context;
@@ -51,11 +56,13 @@ class MigrationProgressService implements MigrationProgressServiceInterface
         EntityRepositoryInterface $migrationRunRepository,
         EntityRepositoryInterface $migrationDataRepository,
         EntityRepositoryInterface $migrationMediaFileRepository,
+        EntityRepositoryInterface $migrationProfileRepository,
         SwagMigrationAccessTokenService $migrationAccessTokenService
     ) {
         $this->migrationRunRepository = $migrationRunRepository;
         $this->migrationDataRepository = $migrationDataRepository;
         $this->migrationMediaFileRepository = $migrationMediaFileRepository;
+        $this->migrationProfileRepository = $migrationProfileRepository;
         $this->migrationAccessTokenService = $migrationAccessTokenService;
     }
 
@@ -84,6 +91,9 @@ class MigrationProgressService implements MigrationProgressServiceInterface
             return $compareFetchCountResult;
         }
 
+        // Update profile credentials with run credentials, if fetching is done
+        $this->updateProfileCredentialsWithCurrentRunCredentials($run, $context);
+
         // Check if the run finished fetching, but not started writing yet
         $writeNotStartedResult = $this->isWriteNotStartedResult($run, $totals, $fetchedEntityCounts);
         if ($writeNotStartedResult !== null) {
@@ -104,6 +114,17 @@ class MigrationProgressService implements MigrationProgressServiceInterface
         }
 
         return new ProgressState(false, $this->validMigrationAccessToken);
+    }
+
+    private function updateProfileCredentialsWithCurrentRunCredentials(SwagMigrationRunEntity $run, Context $context): void
+    {
+        $this->migrationProfileRepository->update([
+            [
+                'id' => $run->getProfile()->getId(),
+                'credentialFields' => $run->getCredentialFields()
+            ]
+        ], $context);
+        $run->getProfile()->setCredentialFields($run->getCredentialFields());
     }
 
     private function getCurrentRun(): ?SwagMigrationRunEntity

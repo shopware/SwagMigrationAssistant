@@ -8,11 +8,14 @@ use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagMigrationNext\Migration\Asset\MediaFileService;
-use SwagMigrationNext\Migration\Run\SwagMigrationAccessTokenService;
+use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
 use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
+use SwagMigrationNext\Migration\Run\SwagMigrationAccessTokenService;
 use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationNext\Migration\Service\MigrationProgressService;
 use SwagMigrationNext\Migration\Service\MigrationProgressServiceInterface;
@@ -114,6 +117,10 @@ class MigrationProgressServiceTest extends TestCase
                 [
                     'id' => $this->runUuid,
                     'profileId' => $profileUuidService->getProfileUuid(),
+                    'credentialFields' => [
+                        'apiUser' => 'testUser',
+                        'apiKey' => 'testKey'
+                    ],
                     'totals' => [
                         'toBeFetched' => $this->toBeFetched,
                     ],
@@ -128,7 +135,8 @@ class MigrationProgressServiceTest extends TestCase
             $this->runRepo,
             $this->dataRepo,
             $this->mediaFileRepo,
-            new SwagMigrationAccessTokenService($this->runRepo)
+            $this->profileRepo,
+            new SwagMigrationAccessTokenService($this->runRepo, $this->profileRepo)
         );
 
         $this->migrationDataFetcher = $this->getMigrationDataFetcher(
@@ -142,6 +150,20 @@ class MigrationProgressServiceTest extends TestCase
     public function testGetProgressFetchInProgress(): void
     {
         $context = Context::createDefaultContext();
+        $newCredentialFields = [
+            'apiUser' => 'foooo',
+            'apiKey' => 'bar'
+        ];
+
+        $this->profileRepo->update(
+            [
+                [
+                    'id' => $this->profileId,
+                    'credentialFields' => $newCredentialFields
+                ]
+            ],
+            $context
+        );
 
         $datasets = [];
         $this->initEntity($datasets, CategoryDefinition::getEntityName(), 3, 0);
@@ -152,12 +174,33 @@ class MigrationProgressServiceTest extends TestCase
 
         $progress = $this->progressService->getProgress(new Request(), $context);
 
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('id', $this->profileId));
+        /** @var SwagMigrationProfileEntity $profile */
+        $profile = $this->profileRepo->search($criteria, $context)->first();
+        $credentialFields = $profile->getCredentialFields();
+
         self::assertNotTrue($progress->isMigrationRunning());
+        self::assertSame($newCredentialFields, $credentialFields);
     }
 
     public function testGetProgressWriteNotStarted(): void
     {
         $context = Context::createDefaultContext();
+        $newCredentialFields = [
+            'apiUser' => 'foooo',
+            'apiKey' => 'bar'
+        ];
+
+        $this->profileRepo->update(
+            [
+                [
+                    'id' => $this->profileId,
+                    'credentialFields' => $newCredentialFields
+                ]
+            ],
+            $context
+        );
 
         $this->writeArray = [
             'category' => [
@@ -190,6 +233,18 @@ class MigrationProgressServiceTest extends TestCase
             $entityGroup['progress'] = $entityGroup['count'];
         }
 
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('id', $this->profileId));
+        /** @var SwagMigrationProfileEntity $profile */
+        $profile = $this->profileRepo->search($criteria, $context)->first();
+        $credentialFields = $profile->getCredentialFields();
+
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('id', $this->runUuid));
+        /** @var SwagMigrationRunEntity $run */
+        $run = $this->runRepo->search($criteria, $context)->first();
+        $runCredentialFields = $run->getCredentialFields();
+
         self::assertSame($progress->getFinishedCount(), 0);
         self::assertTrue($progress->isMigrationRunning());
         self::assertSame($progress->getStatus(), ProgressState::STATUS_WRITE_DATA);
@@ -197,6 +252,7 @@ class MigrationProgressServiceTest extends TestCase
             $progress->getEntityGroups(),
             $expectedEntityGroups
         );
+        self::assertSame($runCredentialFields, $credentialFields);
     }
 
     public function testGetProgressWriteStartedWithFirstEntity(): void
