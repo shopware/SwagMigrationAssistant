@@ -8,6 +8,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
 use SwagMigrationNext\Exception\MigrationRunUndefinedStatusException;
 use SwagMigrationNext\Migration\Asset\SwagMigrationMediaFileEntity;
 use SwagMigrationNext\Migration\Data\SwagMigrationDataEntity;
+use SwagMigrationNext\Migration\Logging\SwagMigrationLoggingEntity;
 use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
 
 class SwagMigrationRunEntity extends Entity
@@ -88,6 +89,11 @@ class SwagMigrationRunEntity extends Entity
      * @var SwagMigrationMediaFileEntity[]
      */
     protected $mediaFiles;
+
+    /**
+     * @var SwagMigrationLoggingEntity[]
+     */
+    protected $logs;
 
     public function getProfileId(): string
     {
@@ -229,5 +235,21 @@ class SwagMigrationRunEntity extends Entity
     public function setMediaFiles(array $mediaFiles): void
     {
         $this->mediaFiles = $mediaFiles;
+    }
+
+    /**
+     * @return SwagMigrationLoggingEntity[]
+     */
+    public function getLogs(): array
+    {
+        return $this->logs;
+    }
+
+    /**
+     * @param SwagMigrationLoggingEntity[] $logs
+     */
+    public function setLogs(array $logs): void
+    {
+        $this->logs = $logs;
     }
 }

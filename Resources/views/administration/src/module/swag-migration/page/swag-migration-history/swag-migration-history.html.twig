@@ -79,7 +79,8 @@
                                 {% block swag_migration_history_grid_columns_actions_context_button %}
                                     <sw-context-button>
                                         {% block swag_migration_history_grid_columns_actions_details %}
-                                            <sw-context-menu-item :disabled="true">
+                                            <sw-context-menu-item
+                                                    :routerLink="{ name: 'swag.migration.index.history.detail', params:{ id:item.id } }">
                                                 {{ $tc('swag-migration.history.contextMenu.details') }}
                                             </sw-context-menu-item>
                                         {% endblock %}
@@ -110,5 +111,7 @@
                 </p>
             </div>
         {% endblock %}
+
+        <router-view></router-view>
     </sw-card>
 {% endblock %}

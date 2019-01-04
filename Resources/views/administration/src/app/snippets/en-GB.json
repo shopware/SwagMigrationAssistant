@@ -154,7 +154,7 @@
             "contentTitle": "Data import not completed!",
             "hintTitle": "Warning:",
             "hintContent": "The import could not be completed properly. Imported data may be incorrect or incomplete.",
-            "warningListTitle": "No error occurred | The following error occurred | The following errors occurred"
+            "warningListTitle": "No error occurred. | The following error occurred: | The following errors occurred:"
           },
           "failure": {
             "title": "Failed",

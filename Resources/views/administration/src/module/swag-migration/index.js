@@ -2,6 +2,7 @@ import { Module } from 'src/core/shopware';
 import './page/swag-migration-index';
 import './page/swag-migration-main-page';
 import './page/swag-migration-history';
+import './page/swag-migration-history-detail';
 import './page/swag-migration-wizard';
 import './page/swag-migration-wizard-page-introduction';
 import './page/swag-migration-wizard-page-plugin-information';
@@ -49,7 +50,13 @@ Module.register('swag-migration', {
                 },
                 history: {
                     path: 'history',
-                    component: 'swag-migration-history'
+                    component: 'swag-migration-history',
+                    children: {
+                        detail: {
+                            path: 'detail/:id',
+                            component: 'swag-migration-history-detail'
+                        }
+                    }
                 }
             }
         },

@@ -5,6 +5,8 @@ namespace SwagMigrationNext\Migration\Logging;
 use DateTime;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
+use SwagMigrationNext\Migration\Run\SwagMigrationRunDefinition;
+use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
 
 class SwagMigrationLoggingEntity extends Entity
 {
@@ -34,6 +36,11 @@ class SwagMigrationLoggingEntity extends Entity
      * @var DateTime|null
      */
     protected $updatedAt;
+
+    /**
+     * @var SwagMigrationRunEntity
+     */
+    protected $run;
 
     public function getRunId(): string
     {
@@ -83,5 +90,15 @@ class SwagMigrationLoggingEntity extends Entity
     public function setUpdatedAt(?DateTime $updatedAt): void
     {
         $this->updatedAt = $updatedAt;
+    }
+
+    public function getRun(): SwagMigrationRunEntity
+    {
+        return $this->run;
+    }
+
+    public function setRun(SwagMigrationRunEntity $run): void
+    {
+        $this->run = $run;
     }
 }

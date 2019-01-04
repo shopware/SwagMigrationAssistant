@@ -14,7 +14,8 @@ Component.register('swag-migration-history', {
             isLoading: false,
             migrationRuns: [],
             sortBy: 'createdAt',
-            sortDirection: 'DESC'
+            sortDirection: 'DESC',
+            oldParams: {}
         };
     },
 
@@ -29,13 +30,18 @@ Component.register('swag-migration-history', {
             this.isLoading = true;
             const params = this.getListingParams();
             params.associations = { profile: { limit: 1 } };
+            if (JSON.stringify(this.oldParams) === JSON.stringify(params)) {
+                // Do not request the data again if the parameters don't change.
+                // For example if the detail window (child route) is opened.
+                this.isLoading = false;
+                return Promise.resolve();
+            }
 
+            this.oldParams = params;
             return this.migrationRunStore.getList(params).then((response) => {
                 this.total = response.total;
                 this.migrationRuns = response.items;
                 this.isLoading = false;
-
-                return this.migrationRuns;
             });
         }
     }

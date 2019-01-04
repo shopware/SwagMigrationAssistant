@@ -16,6 +16,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Write\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\Flag\Required;
 use SwagMigrationNext\Migration\Asset\SwagMigrationMediaFileDefinition;
 use SwagMigrationNext\Migration\Data\SwagMigrationDataDefinition;
+use SwagMigrationNext\Migration\Logging\SwagMigrationLoggingDefinition;
 use SwagMigrationNext\Migration\Profile\SwagMigrationProfileDefinition;
 
 class SwagMigrationRunDefinition extends EntityDefinition
@@ -41,6 +42,7 @@ class SwagMigrationRunDefinition extends EntityDefinition
             new ManyToOneAssociationField('profile', 'profile_id', SwagMigrationProfileDefinition::class, false),
             new OneToManyAssociationField('data', SwagMigrationDataDefinition::class, 'run_id', false),
             new OneToManyAssociationField('mediaFiles', SwagMigrationMediaFileDefinition::class, 'run_id', false),
+            new OneToManyAssociationField('logs', SwagMigrationLoggingDefinition::class, 'run_id', false),
         ]);
     }
 
