@@ -20,14 +20,13 @@ use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
 use SwagMigrationNext\Migration\Run\SwagMigrationAccessTokenService;
 use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationNext\Migration\Service\MigrationDataWriter;
-use SwagMigrationNext\Migration\Setting\GeneralSettingEntity;
+use SwagMigrationNext\Migration\Service\MigrationProgressService;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Migration\Services\MigrationProfileUuidService;
 use SwagMigrationNext\Test\MigrationServicesTrait;
 use SwagMigrationNext\Test\Mock\Migration\Asset\DummyHttpAssetDownloadService;
 use SwagMigrationNext\Test\Mock\Migration\Service\DummyMediaFileProcessorService;
-use SwagMigrationNext\Test\Mock\Migration\Service\DummyProgressService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -62,9 +61,15 @@ class MigrationControllerTest extends TestCase
      */
     private $generalSettingRepo;
 
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $profileRepo;
+
     protected function setUp(): void
     {
-        $this->profileUuidService = new MigrationProfileUuidService($this->getContainer()->get('swag_migration_profile.repository'));
+        $this->profileRepo = $this->getContainer()->get('swag_migration_profile.repository');
+        $this->profileUuidService = new MigrationProfileUuidService($this->profileRepo);
         $this->generalSettingRepo = $this->getContainer()->get('swag_migration_general_setting.repository');
         $this->runUuid = Uuid::uuid4()->getHex();
         $this->runRepo = $this->getContainer()->get('swag_migration_run.repository');
@@ -79,13 +84,14 @@ class MigrationControllerTest extends TestCase
             Context::createDefaultContext()
         );
 
+        $dataFetcher = $this->getMigrationDataFetcher(
+            $this->getContainer()->get('swag_migration_data.repository'),
+            $this->getContainer()->get(Shopware55MappingService::class),
+            $this->getContainer()->get(MediaFileService::class),
+            $this->getContainer()->get('swag_migration_logging.repository')
+        );
         $this->controller = new MigrationController(
-            $this->getMigrationDataFetcher(
-                $this->getContainer()->get('swag_migration_data.repository'),
-                $this->getContainer()->get(Shopware55MappingService::class),
-                $this->getContainer()->get(MediaFileService::class),
-                $this->getContainer()->get('swag_migration_logging.repository')
-            ),
+            $dataFetcher,
             $this->getContainer()->get(MigrationDataWriter::class),
             new DummyMediaFileProcessorService(
                 $this->getContainer()->get('swag_migration_media_file.repository'),
@@ -95,10 +101,13 @@ class MigrationControllerTest extends TestCase
                     ]
                 )
             ),
-            new DummyProgressService(),
-            new SwagMigrationAccessTokenService($this->runRepo),
-            $this->getContainer()->get('swag_migration_profile.repository'),
-            $this->getContainer()->get('swag_migration_general_setting.repository')
+            $this->getContainer()->get(MigrationProgressService::class),
+            new SwagMigrationAccessTokenService(
+                $this->runRepo,
+                $this->profileRepo,
+                $dataFetcher
+            ),
+            $this->profileRepo
         );
     }
 
@@ -153,86 +162,69 @@ class MigrationControllerTest extends TestCase
         $this->controller->takeoverMigration(new Request(), $context);
     }
 
-    public function testStartMigration(): void
-    {
-        $params = [
-            'profileId' => $this->profileUuidService->getProfileUuid(),
-        ];
-
-        $context = Context::createDefaultContext();
-        $customerId = Uuid::uuid4()->getHex();
-        $context->getSourceContext()->setUserId($customerId);
-        $request = new Request([], $params);
-        $result = $this->controller->startMigration($request, $context);
-        $resultArray = json_decode($result->getContent(), true);
-        self::assertArrayHasKey('accessToken', $resultArray);
-
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('accessToken', $resultArray['accessToken']));
-        /** @var SwagMigrationRunEntity $run */
-        $run = $this->runRepo->search($criteria, $context)->first();
-        self::assertSame($run->getUserId(), mb_strtoupper($customerId));
-
-        $this->expectException(MigrationContextPropertyMissingException::class);
-        $this->expectExceptionMessage('Required property "profileId" for migration context is missing');
-        $this->controller->startMigration(new Request(), $context);
-    }
-
-    public function testStartMigrationCheckAbortLastRun(): void
+    public function testGetProgressWithStartMigration(): void
     {
         $context = Context::createDefaultContext();
-
-        $params = [
-            'profileId' => $this->profileUuidService->getProfileUuid(),
+        $credentialFields = [
+                'endpoint' => 'testEndpoint',
+                'apiUser' => 'testUser',
+                'apiKey' => 'testKey',
         ];
 
-        $customerId = Uuid::uuid4()->getHex();
-        $context->getSourceContext()->setUserId($customerId);
-        $request = new Request([], $params);
-        $result = $this->controller->startMigration($request, $context);
-        $resultArray = json_decode($result->getContent(), true);
-        self::assertArrayHasKey('accessToken', $resultArray);
-
-        $totalBefore = $this->runRepo->search(new Criteria(), $context)->getTotal();
-        $this->controller->startMigration($request, $context);
-        $totalAfter = $this->runRepo->search(new Criteria(), $context)->getTotal();
-        self::assertSame(1, $totalAfter - $totalBefore);
-
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('status', SwagMigrationRunEntity::STATUS_ABORTED));
-        $totalAborted = $this->runRepo->search($criteria, $context)->getTotal();
-        self::assertSame(1, $totalAborted);
-
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('status', SwagMigrationRunEntity::STATUS_RUNNING));
-        $totalProcessing = $this->runRepo->search($criteria, $context)->getTotal();
-        self::assertSame(1, $totalProcessing);
-
-        $ids = $this->runRepo->searchIds($criteria, $context)->getIds();
-        $this->runRepo->update(
+        $this->profileRepo->update(
             [
                 [
-                    'id' => $ids[0],
-                    'status' => SwagMigrationRunEntity::STATUS_FINISHED,
-                ]
+                    'id' => $this->profileUuidService->getProfileUuid(),
+                    'credentialFields' => $credentialFields,
+                ],
             ],
             $context
         );
 
-        $totalBefore = $this->runRepo->search(new Criteria(), $context)->getTotal();
-        $this->controller->startMigration($request, $context);
-        $totalAfter = $this->runRepo->search(new Criteria(), $context)->getTotal();
-        self::assertSame(1, $totalAfter - $totalBefore);
+        $params = [
+            'profileId' => $this->profileUuidService->getProfileUuid(),
+            'totals' => [
+                'toBeFetched' => [
+                    'product' => 5,
+                ],
+            ],
+            'additionalData' => require __DIR__ . '/../../_fixtures/run_additional_data.php',
+        ];
+
+        $context = Context::createDefaultContext();
+        $customerId = Uuid::uuid4()->getHex();
+        $context->getSourceContext()->setUserId($customerId);
+
+        // Start migration with send getState
+        $result = $this->controller->createMigration(new Request([], $params), $context);
+        $state = json_decode($result->getContent(), true);
+        self::assertSame('SwagMigrationNext\Migration\Service\ProgressState', $state['_class']);
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('status', SwagMigrationRunEntity::STATUS_RUNNING));
-        $totalProcessing = $this->runRepo->search($criteria, $context)->getTotal();
-        self::assertSame(1, $totalProcessing);
+        /** @var SwagMigrationRunEntity $run */
+        $run = $this->runRepo->search($criteria, $context)->first();
 
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('status', SwagMigrationRunEntity::STATUS_ABORTED));
-        $totalAborted = $this->runRepo->search($criteria, $context)->getTotal();
-        self::assertSame(1, $totalAborted);
+        self::assertSame($run->getId(), $state['runId']);
+        self::assertSame($run->getAccessToken(), $state['accessToken']);
+        self::assertFalse($state['migrationRunning']);
+        self::assertTrue($state['validMigrationRunToken']);
+
+        // Abort migration on resend getState with valid accessToken
+        $result = $this->controller->getState(new Request([], [
+            SwagMigrationAccessTokenService::ACCESS_TOKEN_NAME => $state['accessToken'],
+        ]), $context);
+        $state = json_decode($result->getContent(), true);
+        self::assertSame('SwagMigrationNext\Migration\Service\ProgressState', $state['_class']);
+
+        /** @var SwagMigrationRunEntity $run */
+        $total = $this->runRepo->search($criteria, $context)->getTotal();
+
+        self::assertSame(0, $total);
+        self::assertNull($state['runId']);
+        self::assertNull($state['accessToken']);
+        self::assertTrue($state['migrationRunning']);
+        self::assertTrue($state['validMigrationRunToken']);
     }
 
     public function testCheckConnection(): void
@@ -504,7 +496,7 @@ class MigrationControllerTest extends TestCase
 
         self::assertSame([
             'workload' => [],
-            'validToken' => true
+            'validToken' => true,
         ], $result);
     }
 

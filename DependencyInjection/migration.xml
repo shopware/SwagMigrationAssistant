@@ -31,6 +31,8 @@
         <service id="SwagMigrationNext\Migration\Run\SwagMigrationAccessTokenService"
                  class="SwagMigrationNext\Migration\Run\SwagMigrationAccessTokenService">
             <argument type="service" id="swag_migration_run.repository"/>
+            <argument type="service" id="swag_migration_profile.repository"/>
+            <argument type="service" id="SwagMigrationNext\Migration\Service\MigrationDataFetcher"/>
         </service>
 
         <service id="SwagMigrationNext\Migration\Service\MigrationDataFetcher"
@@ -83,7 +85,6 @@
             <argument type="service" id="SwagMigrationNext\Migration\Service\MigrationProgressService"/>
             <argument type="service" id="SwagMigrationNext\Migration\Run\SwagMigrationAccessTokenService"/>
             <argument type="service" id="swag_migration_profile.repository"/>
-            <argument type="service" id="swag_migration_general_setting.repository"/>
         </service>
 
         <service id="SwagMigrationNext\Command\MigrationFetchDataCommand"

@@ -64,10 +64,18 @@ Component.register('swag-migration-shop-information', {
         },
 
         shopUrl() {
+            if (this.environmentInformation.sourceSystemDomain === undefined) {
+                return '';
+            }
+
             return this.profile.credentialFields.endpoint.replace(/^\s*https?:\/\//, '');
         },
 
         shopUrlPrefix() {
+            if (this.environmentInformation.sourceSystemDomain === undefined) {
+                return '';
+            }
+
             const match = this.profile.credentialFields.endpoint.match(/^\s*https?:\/\//);
             if (match === null) {
                 return '';

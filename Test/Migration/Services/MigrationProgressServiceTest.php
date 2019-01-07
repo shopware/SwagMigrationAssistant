@@ -14,8 +14,8 @@ use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagMigrationNext\Migration\Asset\MediaFileService;
 use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
-use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationNext\Migration\Run\SwagMigrationAccessTokenService;
+use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationNext\Migration\Service\MigrationProgressService;
 use SwagMigrationNext\Migration\Service\MigrationProgressServiceInterface;
@@ -94,6 +94,8 @@ class MigrationProgressServiceTest extends TestCase
 
     private $writeArray;
 
+    private $credentialFields;
+
     protected function setUp(): void
     {
         $this->runRepo = $this->getContainer()->get('swag_migration_run.repository');
@@ -112,15 +114,17 @@ class MigrationProgressServiceTest extends TestCase
         $this->runUuid = Uuid::uuid4()->getHex();
         $this->additionalData = require __DIR__ . '/../../_fixtures/run_additional_data.php';
 
+        $this->credentialFields = [
+            'apiUser' => 'testUser',
+            'apiKey' => 'testKey',
+        ];
+
         $this->runRepo->create(
             [
                 [
                     'id' => $this->runUuid,
                     'profileId' => $profileUuidService->getProfileUuid(),
-                    'credentialFields' => [
-                        'apiUser' => 'testUser',
-                        'apiKey' => 'testKey'
-                    ],
+                    'credentialFields' => $this->credentialFields,
                     'totals' => [
                         'toBeFetched' => $this->toBeFetched,
                     ],
@@ -131,19 +135,23 @@ class MigrationProgressServiceTest extends TestCase
             Context::createDefaultContext()
         );
 
-        $this->progressService = new MigrationProgressService(
-            $this->runRepo,
-            $this->dataRepo,
-            $this->mediaFileRepo,
-            $this->profileRepo,
-            new SwagMigrationAccessTokenService($this->runRepo, $this->profileRepo)
-        );
-
         $this->migrationDataFetcher = $this->getMigrationDataFetcher(
             $this->dataRepo,
             $this->getContainer()->get(Shopware55MappingService::class),
             $this->getContainer()->get(MediaFileService::class),
             $this->loggingRepo
+        );
+
+        $this->progressService = new MigrationProgressService(
+            $this->runRepo,
+            $this->dataRepo,
+            $this->mediaFileRepo,
+            $this->profileRepo,
+            new SwagMigrationAccessTokenService(
+                $this->runRepo,
+                $this->profileRepo,
+                $this->migrationDataFetcher
+            )
         );
     }
 
@@ -152,15 +160,15 @@ class MigrationProgressServiceTest extends TestCase
         $context = Context::createDefaultContext();
         $newCredentialFields = [
             'apiUser' => 'foooo',
-            'apiKey' => 'bar'
+            'apiKey' => 'bar',
         ];
 
         $this->profileRepo->update(
             [
                 [
                     'id' => $this->profileId,
-                    'credentialFields' => $newCredentialFields
-                ]
+                    'credentialFields' => $newCredentialFields,
+                ],
             ],
             $context
         );
@@ -180,8 +188,14 @@ class MigrationProgressServiceTest extends TestCase
         $profile = $this->profileRepo->search($criteria, $context)->first();
         $credentialFields = $profile->getCredentialFields();
 
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('id', $this->runUuid));
+        /** @var SwagMigrationRunEntity $run */
+        $run = $this->runRepo->search($criteria, $context)->first();
+
         self::assertNotTrue($progress->isMigrationRunning());
-        self::assertSame($newCredentialFields, $credentialFields);
+        self::assertSame($this->credentialFields, $credentialFields);
+        self::assertSame($run->getStatus(), SwagMigrationRunEntity::STATUS_ABORTED);
     }
 
     public function testGetProgressWriteNotStarted(): void
@@ -189,15 +203,15 @@ class MigrationProgressServiceTest extends TestCase
         $context = Context::createDefaultContext();
         $newCredentialFields = [
             'apiUser' => 'foooo',
-            'apiKey' => 'bar'
+            'apiKey' => 'bar',
         ];
 
         $this->profileRepo->update(
             [
                 [
                     'id' => $this->profileId,
-                    'credentialFields' => $newCredentialFields
-                ]
+                    'credentialFields' => $newCredentialFields,
+                ],
             ],
             $context
         );

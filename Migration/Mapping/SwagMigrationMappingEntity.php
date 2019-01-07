@@ -4,8 +4,8 @@ namespace SwagMigrationNext\Migration\Mapping;
 
 use DateTime;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
-use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
+use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
 
 class SwagMigrationMappingEntity extends Entity
 {

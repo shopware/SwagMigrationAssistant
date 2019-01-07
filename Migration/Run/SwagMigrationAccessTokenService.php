@@ -6,8 +6,11 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use SwagMigrationNext\Migration\EnvironmentInformation;
+use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
+use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
+use SwagMigrationNext\Migration\Service\ProgressState;
 use Symfony\Component\HttpFoundation\Request;
 
 class SwagMigrationAccessTokenService
@@ -19,10 +22,24 @@ class SwagMigrationAccessTokenService
      */
     private $migrationRunRepo;
 
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $profileRepo;
+
+    /**
+     * @var MigrationDataFetcherInterface
+     */
+    private $migrationDataFetcher;
+
     public function __construct(
-        EntityRepositoryInterface $migrationRunRepo
+        EntityRepositoryInterface $migrationRunRepo,
+        EntityRepositoryInterface $profileRepo,
+        MigrationDataFetcherInterface $migrationDataFetcher
     ) {
         $this->migrationRunRepo = $migrationRunRepo;
+        $this->profileRepo = $profileRepo;
+        $this->migrationDataFetcher = $migrationDataFetcher;
     }
 
     public function takeoverMigration(string $runUuid, Context $context): string
@@ -32,14 +49,17 @@ class SwagMigrationAccessTokenService
         return $this->createMigrationAccessToken($runUuid, $userId, $context);
     }
 
-    public function startMigrationRun(string $profileId, Context $context, EnvironmentInformation $environmentInformation): SwagMigrationAccessTokenStruct
+    public function createMigrationRun(string $profileId, array $totals, array $additionalData, Context $context): ?ProgressState
     {
-        $userId = \mb_strtoupper($context->getSourceContext()->getUserId());
-        $this->abortProcessingRun($context);
-        $runId = $this->createMigrationRun($profileId, $context, $environmentInformation);
-        $accessToken = $this->createMigrationAccessToken($runId, $userId, $context);
+        if ($this->isMigrationRunning($context)) {
+            return null;
+        }
 
-        return new SwagMigrationAccessTokenStruct($runId, $accessToken);
+        $runId = $this->createPlainMigrationRun($profileId, $context);
+        $environmentInformation = $this->getEnvironmentInformation($profileId, $context);
+        $accessToken = $this->updateMigrationRun($runId, $profileId, $environmentInformation, $totals, $additionalData, $context);
+
+        return new ProgressState(false, true, $runId, $accessToken);
     }
 
     public function validateMigrationAccessToken(string $runId, Request $request, Context $context): bool
@@ -61,37 +81,38 @@ class SwagMigrationAccessTokenService
         return false;
     }
 
-    private function abortProcessingRun(Context $context): void
+    private function updateMigrationRun(
+        string $runId,
+        string $profileId,
+        EnvironmentInformation $environmentInformation,
+        array $totals,
+        array $additionalData,
+        Context $context
+    ): string {
+        $userId = \mb_strtoupper($context->getSourceContext()->getUserId());
+        $accessToken = $this->createMigrationAccessToken($runId, $userId, $context);
+        $credentials = $this->getProfileCredentials($profileId, $context);
+        $this->updateRunWithAdditionalData($runId, $credentials, $environmentInformation, $totals, $additionalData, $context);
+
+        return $accessToken;
+    }
+
+    private function isMigrationRunning(Context $context): bool
     {
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('status', SwagMigrationRunEntity::STATUS_RUNNING));
-        $criteria->addSorting(new FieldSorting('createdAt', FieldSorting::DESCENDING));
-        $criteria->setLimit(1);
-        $ids = $this->migrationRunRepo->searchIds($criteria, $context)->getIds();
+        $total = $this->migrationRunRepo->searchIds($criteria, $context)->getTotal();
 
-        if (empty($ids)) {
-            return;
-        }
-
-        $this->migrationRunRepo->update(
-            [
-                [
-                    'id' => $ids[0],
-                    'status' => SwagMigrationRunEntity::STATUS_ABORTED
-                ]
-            ],
-            $context
-        );
+        return $total > 0;
     }
 
-    private function createMigrationRun(string $profileId, Context $context, EnvironmentInformation $environmentInformation): string
+    private function createPlainMigrationRun(string $profileId, Context $context): string
     {
         $writtenEvent = $this->migrationRunRepo->create(
             [
                 [
                     'profileId' => $profileId,
                     'status' => SwagMigrationRunEntity::STATUS_RUNNING,
-                    'environmentInformation' => $environmentInformation->jsonSerialize()
                 ],
             ],
             $context
@@ -100,6 +121,40 @@ class SwagMigrationAccessTokenService
         $ids = $writtenEvent->getEventByDefinition(SwagMigrationRunDefinition::class)->getIds();
 
         return array_pop($ids);
+    }
+
+    private function updateRunWithAdditionalData(
+        string $runId,
+        array $credentials,
+        EnvironmentInformation $environmentInformation,
+        array $totals,
+        array $additionalData,
+        Context $context
+    ): void {
+        $this->migrationRunRepo->update(
+            [
+                [
+                    'id' => $runId,
+                    'totals' => $totals,
+                    'environmentInformation' => $environmentInformation->jsonSerialize(),
+                    'credentialFields' => $credentials,
+                    'additionalData' => $additionalData,
+                ],
+            ],
+            $context
+        );
+    }
+
+    private function getProfileCredentials(string $profileId, Context $context): array
+    {
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('id', $profileId));
+        $criteria->setLimit(1);
+
+        /** @var SwagMigrationProfileEntity $profile */
+        $profile = $this->profileRepo->search($criteria, $context)->first();
+
+        return $profile->getCredentialFields();
     }
 
     private function createMigrationAccessToken(string $runId, string $userId, Context $context): string
@@ -135,5 +190,30 @@ class SwagMigrationAccessTokenService
         }
 
         return $run->getAccessToken();
+    }
+
+    private function getEnvironmentInformation(string $profileId, Context $context): EnvironmentInformation
+    {
+        $criteria = new Criteria([$profileId]);
+        $profileCollection = $this->profileRepo->search($criteria, $context);
+        /** @var SwagMigrationProfileEntity $profile */
+        $profile = $profileCollection->get($profileId);
+
+        $profileName = $profile->getProfile();
+        $gateway = $profile->getGateway();
+        $credentials = $profile->getCredentialFields();
+
+        $migrationContext = new MigrationContext(
+            '',
+            '',
+            $profileName,
+            $gateway,
+            '',
+            $credentials,
+            0,
+            0
+        );
+
+        return $this->migrationDataFetcher->getEnvironmentInformation($migrationContext);
     }
 }

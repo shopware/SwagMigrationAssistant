@@ -43,11 +43,12 @@ class MigrationApiService extends ApiService {
             });
     }
 
-    startMigration(profileId) {
+    createMigration(additionalParams = {}) {
+        const params = additionalParams;
         const headers = this.getBasicHeaders();
 
         return this.httpClient
-            .post(`_action/${this.getApiBasePath()}/start-migration`, { profileId }, {
+            .post(`_action/${this.getApiBasePath()}/create-migration`, params, {
                 headers
             })
             .then((response) => {

@@ -236,21 +236,27 @@ Component.register('swag-migration-main-page', {
     },
 
     methods: {
+        setIsMigrating(value) {
+            this.isMigrating = value;
+            this.migrationWorkerService.isMigrating = value;
+        },
+
         async createdComponent() {
             this.updateLastMigrationDate();
 
-            if (this.migrationWorkerService.isMigrating === false) {
-                await this.migrationWorkerService.checkForRunningMigration().then((runState) => {
-                    if (runState.isMigrationAccessTokenValid === false && runState.isMigrationRunning === true) {
+            if (this.isMigrating === false) {
+                await this.migrationWorkerService.isMigrationRunningInOtherTab().then((isRunning) => {
+                    if (isRunning) {
+                        this.isOtherInstanceFetching = true;
                         this.onInvalidMigrationAccessToken();
-                        this.isOtherInstanceFetching = runState.status === MIGRATION_STATUS.FETCH_DATA;
-                        return;
                     }
+                });
 
-                    this.migrationWorkerService.isMigrationRunningInOtherTab().then((isRunning) => {
-                        if (isRunning) {
-                            this.isOtherInstanceFetching = true;
+                if (!this.isOtherInstanceFetching) {
+                    await this.migrationWorkerService.checkForRunningMigration().then((runState) => {
+                        if (runState.isMigrationAccessTokenValid === false && runState.isMigrationRunning === true) {
                             this.onInvalidMigrationAccessToken();
+                            this.isOtherInstanceFetching = runState.status === MIGRATION_STATUS.FETCH_DATA;
                             return;
                         }
 
@@ -259,12 +265,11 @@ Component.register('swag-migration-main-page', {
                             this.componentIndex = this.components.pauseScreen;
                         }
                     });
-                });
+                }
             }
 
-
             if (
-                this.migrationWorkerService.isMigrating ||
+                this.isMigrating ||
                 this.migrationWorkerService.status === MIGRATION_STATUS.FINISHED
             ) {
                 this.restoreRunningMigration();
@@ -345,7 +350,7 @@ Component.register('swag-migration-main-page', {
         },
 
         restoreRunningMigration() {
-            this.isMigrating = true;
+            this.setIsMigrating(true);
 
             // show loading screen
             this.componentIndex = this.components.loadingScreen;
@@ -404,7 +409,7 @@ Component.register('swag-migration-main-page', {
         onBackButtonClick() {
             this.migrationWorkerService.status = MIGRATION_STATUS.WAITING;
             this.componentIndex = this.components.dataSelector;
-            this.isMigrating = false;
+            this.setIsMigrating(false);
             this.isOtherMigrationRunning = false;
         },
 
@@ -414,42 +419,46 @@ Component.register('swag-migration-main-page', {
 
         onPauseButtonClick() {
             this.migrationWorkerService.stopMigration();
-            this.isMigrating = false;
+            this.setIsMigrating(false);
             this.isPaused = true;
             this.componentIndex = this.components.pauseScreen;
         },
 
-        onContinueButtonClick() {
+        async onContinueButtonClick() {
             this.isLoading = true;
             this.isOtherMigrationRunning = false;
-            this.migrationWorkerService.checkForRunningMigration().then((runState) => {
-                this.isLoading = false;
-                this.isPaused = false;
+            this.setIsMigrating(true);
 
-                if (runState.isMigrationAccessTokenValid === false) {
-                    this.onInterrupt();
-                    this.isOtherInstanceFetching = (runState.status === MIGRATION_STATUS.FETCH_DATA);
-                    return;
+            await this.migrationWorkerService.isMigrationRunningInOtherTab().then((isRunning) => {
+                if (isRunning) {
+                    this.isLoading = false;
+                    this.isOtherInstanceFetching = true;
+                    this.onInvalidMigrationAccessToken();
                 }
+            });
 
-                if (runState.isMigrationRunning === false) {
-                    this.isMigrating = false;
-                    this.isOtherInstanceFetching = runState.status === MIGRATION_STATUS.FETCH_DATA;
-                    this.componentIndex = this.components.dataSelector;
-                    return;
-                }
+            if (!this.isOtherInstanceFetching) {
+                await this.migrationWorkerService.checkForRunningMigration().then((runState) => {
+                    this.isLoading = false;
+                    this.isPaused = false;
 
-                this.migrationWorkerService.isMigrationRunningInOtherTab().then((isRunning) => {
-                    if (isRunning) {
-                        this.isOtherInstanceFetching = true;
-                        this.onInvalidMigrationAccessToken();
+                    if (runState.isMigrationAccessTokenValid === false) {
+                        this.onInterrupt();
+                        this.isOtherInstanceFetching = (runState.status === MIGRATION_STATUS.FETCH_DATA);
+                        return;
+                    }
+
+                    if (runState.isMigrationRunning === false) {
+                        this.setIsMigrating(false);
+                        this.isOtherInstanceFetching = runState.status === MIGRATION_STATUS.FETCH_DATA;
+                        this.componentIndex = this.components.dataSelector;
                         return;
                     }
 
                     this.migrationWorkerService.restoreRunningMigration();
                     this.restoreRunningMigration();
                 });
-            });
+            }
         },
 
         onMigrationAbort() {
@@ -460,7 +469,7 @@ Component.register('swag-migration-main-page', {
             }
 
             this.isPaused = false;
-            this.isMigrating = false;
+            this.setIsMigrating(false);
             this.componentIndex = this.components.dataSelector;
             this.swagMigrationRunService.updateById(this.migrationWorkerService.runId, { status: 'aborted' });
         },
@@ -547,15 +556,22 @@ Component.register('swag-migration-main-page', {
             return entityGroups;
         },
 
+        resetProgress() {
+            this.tableData.forEach((data) => {
+                data.progressBar.value = 0;
+            });
+        },
+
         async onMigrate() {
             this.isOtherMigrationRunning = false;
             this.showMigrationConfirmDialog = false;
-            this.isMigrating = true;
+            this.setIsMigrating(true);
             this.checkSelectedData();
             this.statusIndex = 0;
             this.errorList = [];
 
             // show loading screen
+            this.resetProgress();
             this.componentIndex = this.components.loadingScreen;
 
             // get all entities in order
@@ -568,18 +584,6 @@ Component.register('swag-migration-main-page', {
                 });
             });
 
-            await this.migrationWorkerService.checkForRunningMigration().then((runState) => {
-                this.isOtherInstanceFetching = runState.status === MIGRATION_STATUS.FETCH_DATA;
-
-                if (runState.isMigrationAccessTokenValid === false || runState.isMigrationRunning === true) {
-                    this.onInvalidMigrationAccessToken();
-                }
-            });
-
-            if (this.isMigrating === false) {
-                return;
-            }
-
             let isMigrationRunningInOtherTab = false;
             await this.migrationWorkerService.isMigrationRunningInOtherTab().then((isRunning) => {
                 isMigrationRunningInOtherTab = isRunning;
@@ -591,22 +595,34 @@ Component.register('swag-migration-main-page', {
                 return;
             }
 
-            this.migrationService.startMigration(this.profile.id).then((runData) => {
-                localStorage.setItem(MIGRATION_ACCESS_TOKEN_NAME, runData.accessToken);
-                this.swagMigrationRunService.updateById(runData.runUuid, {
-                    totals: {
-                        toBeFetched: toBeFetched
-                    },
-                    additionalData: {
-                        entityGroups
-                    }
-                });
+            await this.migrationWorkerService.createNewMigration(
+                this.profile.id,
+                {
+                    toBeFetched
+                },
+                {
+                    entityGroups
+                }
+            ).then((runState) => {
+                this.isOtherInstanceFetching = runState.status === MIGRATION_STATUS.FETCH_DATA;
+
+                if (
+                    runState.isMigrationAccessTokenValid === false ||
+                    runState.isMigrationRunning === true ||
+                    runState.runUuid === null ||
+                    runState.accessToken === null
+                ) {
+                    this.onInvalidMigrationAccessToken();
+                    return;
+                }
+
+                localStorage.setItem(MIGRATION_ACCESS_TOKEN_NAME, runState.accessToken);
 
                 this.migrationWorkerService.subscribeStatus(this.onStatus.bind(this));
                 this.migrationWorkerService.subscribeProgress(this.onProgress.bind(this));
                 this.migrationWorkerService.subscribeInterrupt(this.onInterrupt.bind(this));
                 this.migrationWorkerService.startMigration(
-                    runData.runUuid,
+                    runState.runUuid,
                     this.profile,
                     entityGroups
                 ).catch(() => {
@@ -725,22 +741,25 @@ Component.register('swag-migration-main-page', {
         /**
          * Check if a takeover is allowed, takeover migration and restore state
          */
-        onTakeoverMigration() {
+        async onTakeoverMigration() {
+            this.setIsMigrating(true);
             this.isLoading = true;
-            this.migrationWorkerService.checkForRunningMigration().then((runState) => {
-                if (runState.isMigrationRunning === false) {
-                    this.isMigrating = false;
-                    this.isLoading = false;
-                    this.isOtherMigrationRunning = false;
-                    this.componentIndex = this.components.dataSelector;
-                    return;
-                }
 
-                this.migrationWorkerService.isMigrationRunningInOtherTab().then((isRunning) => {
-                    if (isRunning) {
+            await this.migrationWorkerService.isMigrationRunningInOtherTab().then((isRunning) => {
+                if (isRunning) {
+                    this.isLoading = false;
+                    this.isOtherInstanceFetching = true;
+                    this.onInvalidMigrationAccessToken();
+                }
+            });
+
+            if (!this.isOtherInstanceFetching) {
+                await this.migrationWorkerService.checkForRunningMigration().then((runState) => {
+                    if (runState.isMigrationRunning === false) {
+                        this.setIsMigrating(false);
                         this.isLoading = false;
-                        this.isOtherInstanceFetching = true;
-                        this.onInvalidMigrationAccessToken();
+                        this.isOtherMigrationRunning = false;
+                        this.componentIndex = this.components.dataSelector;
                         return;
                     }
 
@@ -750,7 +769,7 @@ Component.register('swag-migration-main-page', {
                         this.restoreRunningMigration();
                     });
                 });
-            });
+            }
         },
 
         /**
@@ -759,7 +778,7 @@ Component.register('swag-migration-main-page', {
         onInterrupt() {
             this.componentIndex = this.components.takeover;
             this.isMigrationInterrupted = true;
-            this.isMigrating = false;
+            this.setIsMigrating(false);
             this.isPaused = false;
             this.isMigrationAllowed = false;
             this.isOtherMigrationRunning = true;
@@ -771,7 +790,7 @@ Component.register('swag-migration-main-page', {
         onInvalidMigrationAccessToken() {
             this.componentIndex = this.components.takeover;
             this.isMigrationInterrupted = false;
-            this.isMigrating = false;
+            this.setIsMigrating(false);
             this.isPaused = false;
             this.isMigrationAllowed = false;
             this.isOtherMigrationRunning = true;

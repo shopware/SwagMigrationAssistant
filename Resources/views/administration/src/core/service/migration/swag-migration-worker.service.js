@@ -44,7 +44,7 @@ class MigrationWorkerService {
         this._workRunner = null;
 
         // state variables
-        this._isMigrating = false;
+        this.isMigrating = false;
         this._errors = [];
         this._entityGroups = [];
         this._progressSubscriber = null;
@@ -82,13 +82,6 @@ class MigrationWorkerService {
     }
 
     /**
-     * @returns {boolean}
-     */
-    get isMigrating() {
-        return this._isMigrating;
-    }
-
-    /**
      * @returns {Array}
      */
     get entityGroups() {
@@ -118,52 +111,122 @@ class MigrationWorkerService {
     }
 
     _onInterrupt() {
-        this._isMigrating = false;
+        this.isMigrating = false;
         this._callInterruptSubscriber();
     }
 
     /**
-     * Check if the last migration was not finished and the accessToken is valid.
-     * Resolves with run state object:
-     * { isMigrationRunning: {bool}, isMigrationAccessTokenValid: {bool}, status: {object|null} }
+     * Check if the last migration was not finished, the accessToken is valid and set the restoreState.
      *
-     * @returns {Promise}
+     * @returns {Promise<{
+     *   runUuid: null,
+     *   isMigrationRunning: boolean,
+     *   isMigrationAccessTokenValid: boolean,
+     *   status: object|null,
+     *   accessToken: string|null
+     * }>}
      */
     checkForRunningMigration() {
         return new Promise((resolve) => {
-            const returnValue = { isMigrationRunning: false, isMigrationAccessTokenValid: false, status: null };
             this._migrationService.getState({
                 swagMigrationAccessToken: MigrationWorkerService.migrationAccessToken
             }).then((state) => {
-                this._restoreState = state;
-
-                if (state.validMigrationRunToken === false) {
-                    this._runId = state.runId;
-                    returnValue.isMigrationRunning = true;
-                    returnValue.status = state.status;
-
-                    resolve(returnValue);
-                    return;
-                }
-
-                if (state.migrationRunning === true) {
-                    this._runId = this._restoreState.runId;
-                    returnValue.isMigrationRunning = true;
-                    returnValue.isMigrationAccessTokenValid = true;
-                    returnValue.status = state.status;
-
-                    resolve(returnValue);
-                    return;
-                }
-
-                returnValue.isMigrationAccessTokenValid = true;
-                resolve(returnValue);
+                resolve(this.processStateResponse(state));
             }).catch(() => {
+                const returnValue = {
+                    runUuid: null,
+                    isMigrationRunning: false,
+                    isMigrationAccessTokenValid: false,
+                    status: null,
+                    accessToken: null
+                };
+
                 returnValue.isMigrationAccessTokenValid = true;
                 this._restoreState = {};
                 resolve(returnValue);
             });
         });
+    }
+
+    /**
+     * Try to create a new migration run and process the return state.
+     *
+     * @returns {Promise<{
+     *   runUuid: null,
+     *   isMigrationRunning: boolean,
+     *   isMigrationAccessTokenValid: boolean,
+     *   status: object|null,
+     *   accessToken: string|null
+     * }>}
+     */
+    createNewMigration(profileId = null, totals = null, additionalData = null) {
+        return new Promise((resolve) => {
+            this._migrationService.createMigration({
+                profileId,
+                totals,
+                additionalData,
+                swagMigrationAccessToken: MigrationWorkerService.migrationAccessToken
+            }).then((state) => {
+                resolve(this.processStateResponse(state));
+            }).catch(() => {
+                const returnValue = {
+                    runUuid: null,
+                    isMigrationRunning: false,
+                    isMigrationAccessTokenValid: true,
+                    status: null,
+                    accessToken: null
+                };
+
+                this._restoreState = {};
+                resolve(returnValue);
+            });
+        });
+    }
+
+    /**
+     * Check if the migration was not finished, the accessToken is valid and set the restoreState.
+     *
+     * @param {Object} state
+     * @return {{
+     *          runUuid: null,
+     *          isMigrationRunning: boolean,
+     *          isMigrationAccessTokenValid: boolean,
+     *          status: object|null,
+     *          accessToken: string|null
+     *          }}
+     */
+    processStateResponse(state) {
+        const returnValue = {
+            runUuid: null,
+            isMigrationRunning: false,
+            isMigrationAccessTokenValid: false,
+            status: null,
+            accessToken: null
+        };
+
+        this._restoreState = state;
+        returnValue.runUuid = state.runId;
+        returnValue.accessToken = state.accessToken;
+
+        if (state.validMigrationRunToken === false) {
+            this._runId = state.runId;
+            returnValue.isMigrationRunning = true;
+            returnValue.status = state.status;
+
+            return returnValue;
+        }
+
+        if (state.migrationRunning === true) {
+            this._runId = this._restoreState.runId;
+            returnValue.isMigrationRunning = true;
+            returnValue.isMigrationAccessTokenValid = true;
+            returnValue.status = state.status;
+
+            return returnValue;
+        }
+
+        returnValue.isMigrationAccessTokenValid = true;
+        return returnValue;
     }
 
     /**
@@ -200,7 +263,7 @@ class MigrationWorkerService {
 
     stopMigration() {
         this._workRunner.interrupt = true;
-        this._isMigrating = false;
+        this.isMigrating = false;
     }
 
     /**
@@ -269,7 +332,7 @@ class MigrationWorkerService {
      * @private
      */
     _callStatusSubscriber(param) {
-        if (!this._isMigrating) {
+        if (!this.isMigrating) {
             return;
         }
         if (this._statusSubscriber !== null) {
@@ -282,7 +345,7 @@ class MigrationWorkerService {
      * @private
      */
     _callProgressSubscriber(param) {
-        if (!this._isMigrating) {
+        if (!this.isMigrating) {
             return;
         }
         if (this._progressSubscriber !== null) {
@@ -329,102 +392,89 @@ class MigrationWorkerService {
         entityStartIndex = 0,
         entityOffset = 0
     ) {
-        return new Promise((resolve, reject) => {
-            if (this._isMigrating) {
-                reject();
-                return;
+        return new Promise(async (resolve) => {
+            // Wait for the 'migrationWanted' request and response to allow or deny the migration
+            this.isMigrating = true;
+            this._runId = runId;
+            this._profile = profile;
+            this._entityGroups = entityGroups;
+            this._errors = [];
+
+            const params = {
+                swagMigrationAccessToken: MigrationWorkerService.migrationAccessToken,
+                runUuid: this._runId,
+                profileId: this._profile.id,
+                profileName: this._profile.profile,
+                gateway: this._profile.gateway,
+                credentialFields: this._profile.credentialFields
+            };
+
+            this._workRunner = new WorkerRequest(
+                MIGRATION_STATUS.FETCH_DATA,
+                params,
+                this._workerStatusManager,
+                this._migrationService,
+                this._callProgressSubscriber.bind(this),
+                this._addError.bind(this),
+                this._onInterrupt.bind(this)
+            );
+
+            // fetch
+            if (statusIndex <= MIGRATION_STATUS.FETCH_DATA) {
+                await this._startWorkRunner(
+                    MIGRATION_STATUS.FETCH_DATA,
+                    groupStartIndex,
+                    entityStartIndex,
+                    entityOffset
+                );
+
+                groupStartIndex = 0;
+                entityStartIndex = 0;
+                entityOffset = 0;
             }
 
-            // Wait for the 'migrationWanted' request and response to allow or deny the migration
-            this.isMigrationRunningInOtherTab()
-                .then(async (isRunningInOtherTab) => {
-                    if (isRunningInOtherTab) {
-                        reject();
-                        return;
-                    }
+            // write
+            if (statusIndex <= MIGRATION_STATUS.WRITE_DATA) {
+                await this._startWorkRunner(
+                    MIGRATION_STATUS.WRITE_DATA,
+                    groupStartIndex,
+                    entityStartIndex,
+                    entityOffset
+                );
 
-                    this._isMigrating = true;
-                    this._runId = runId;
-                    this._profile = profile;
-                    this._entityGroups = entityGroups;
-                    this._errors = [];
+                groupStartIndex = 0;
+                entityStartIndex = 0;
+                entityOffset = 0;
+            }
 
-                    const params = {
-                        swagMigrationAccessToken: MigrationWorkerService.migrationAccessToken,
-                        runUuid: this._runId,
-                        profileId: this._profile.id,
-                        profileName: this._profile.profile,
-                        gateway: this._profile.gateway,
-                        credentialFields: this._profile.credentialFields
-                    };
+            // download
+            if (statusIndex <= MIGRATION_STATUS.PROCESS_MEDIA_FILES) {
+                this._workRunner = new WorkerMediaFiles(
+                    MIGRATION_STATUS.PROCESS_MEDIA_FILES,
+                    params,
+                    this._workerStatusManager,
+                    this._migrationService,
+                    this._callProgressSubscriber.bind(this),
+                    this._addError.bind(this),
+                    this._onInterrupt.bind(this)
+                );
 
-                    this._workRunner = new WorkerRequest(
-                        MIGRATION_STATUS.FETCH_DATA,
-                        params,
-                        this._workerStatusManager,
-                        this._migrationService,
-                        this._callProgressSubscriber.bind(this),
-                        this._addError.bind(this),
-                        this._onInterrupt.bind(this)
-                    );
+                await this._startWorkRunner(
+                    MIGRATION_STATUS.PROCESS_MEDIA_FILES,
+                    groupStartIndex,
+                    entityStartIndex,
+                    entityOffset
+                );
 
-                    // fetch
-                    if (statusIndex <= MIGRATION_STATUS.FETCH_DATA) {
-                        await this._startWorkRunner(
-                            MIGRATION_STATUS.FETCH_DATA,
-                            groupStartIndex,
-                            entityStartIndex,
-                            entityOffset
-                        );
+                groupStartIndex = 0;
+                entityStartIndex = 0;
+                entityOffset = 0;
+            }
 
-                        groupStartIndex = 0;
-                        entityStartIndex = 0;
-                        entityOffset = 0;
-                    }
-
-                    // write
-                    if (statusIndex <= MIGRATION_STATUS.WRITE_DATA) {
-                        await this._startWorkRunner(
-                            MIGRATION_STATUS.WRITE_DATA,
-                            groupStartIndex,
-                            entityStartIndex,
-                            entityOffset
-                        );
-
-                        groupStartIndex = 0;
-                        entityStartIndex = 0;
-                        entityOffset = 0;
-                    }
-
-                    // download
-                    if (statusIndex <= MIGRATION_STATUS.PROCESS_MEDIA_FILES) {
-                        this._workRunner = new WorkerMediaFiles(
-                            MIGRATION_STATUS.PROCESS_MEDIA_FILES,
-                            params,
-                            this._workerStatusManager,
-                            this._migrationService,
-                            this._callProgressSubscriber.bind(this),
-                            this._addError.bind(this),
-                            this._onInterrupt.bind(this)
-                        );
-
-                        await this._startWorkRunner(
-                            MIGRATION_STATUS.PROCESS_MEDIA_FILES,
-                            groupStartIndex,
-                            entityStartIndex,
-                            entityOffset
-                        );
-
-                        groupStartIndex = 0;
-                        entityStartIndex = 0;
-                        entityOffset = 0;
-                    }
-
-                    // finish
-                    await this._migrateFinish();
-                    this._isMigrating = false;
-                    resolve(this._errors);
-                });
+            // finish
+            await this._migrateFinish();
+            this.isMigrating = false;
+            resolve(this._errors);
         });
     }
 
@@ -440,7 +490,7 @@ class MigrationWorkerService {
      */
     _startWorkRunner(status, groupStartIndex, entityStartIndex, entityOffset) {
         return new Promise(async (resolve) => {
-            if (!this._isMigrating) {
+            if (!this.isMigrating) {
                 resolve();
                 return;
             }
@@ -516,7 +566,7 @@ class MigrationWorkerService {
      * @private
      */
     _migrateFinish() {
-        if (!this._isMigrating) {
+        if (!this.isMigrating) {
             return Promise.resolve();
         }
 

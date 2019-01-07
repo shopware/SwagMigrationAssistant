@@ -81,18 +81,32 @@ class MigrationProgressService implements MigrationProgressServiceInterface
         $totals = $run->getTotals();
         $fetchedEntityCounts = $this->getEntityCounts($run->getId(), false);
 
+        $this->updateProfileCredentialsWithCurrentRunCredentials($run, $context);
+
         if ($totals === null || $fetchedEntityCounts == null) {
-            return new ProgressState(true, $this->validMigrationAccessToken);
+            if ($this->validMigrationAccessToken) {
+                $this->abortProcessingRun($run, $context);
+            }
+
+            return new ProgressState(
+                true,
+                $this->validMigrationAccessToken,
+                null,
+                null,
+                null,
+                ProgressState::STATUS_FETCH_DATA
+            );
         }
 
         // Compare fetched counts
         $compareFetchCountResult = $this->compareFetchCount($run, $totals, $fetchedEntityCounts);
         if ($compareFetchCountResult !== null) {
+            if ($this->validMigrationAccessToken) {
+                $this->abortProcessingRun($run, $context);
+            }
+
             return $compareFetchCountResult;
         }
-
-        // Update profile credentials with run credentials, if fetching is done
-        $this->updateProfileCredentialsWithCurrentRunCredentials($run, $context);
 
         // Check if the run finished fetching, but not started writing yet
         $writeNotStartedResult = $this->isWriteNotStartedResult($run, $totals, $fetchedEntityCounts);
@@ -116,13 +130,26 @@ class MigrationProgressService implements MigrationProgressServiceInterface
         return new ProgressState(false, $this->validMigrationAccessToken);
     }
 
+    private function abortProcessingRun(SwagMigrationRunEntity $run, Context $context): void
+    {
+        $this->migrationRunRepository->update(
+            [
+                [
+                    'id' => $run->getId(),
+                    'status' => SwagMigrationRunEntity::STATUS_ABORTED,
+                ],
+            ],
+            $context
+        );
+    }
+
     private function updateProfileCredentialsWithCurrentRunCredentials(SwagMigrationRunEntity $run, Context $context): void
     {
         $this->migrationProfileRepository->update([
             [
                 'id' => $run->getProfile()->getId(),
-                'credentialFields' => $run->getCredentialFields()
-            ]
+                'credentialFields' => $run->getCredentialFields(),
+            ],
         ], $context);
         $run->getProfile()->setCredentialFields($run->getCredentialFields());
     }
@@ -274,7 +301,7 @@ class MigrationProgressService implements MigrationProgressServiceInterface
             if (!isset($fetchedEntityCounts[$entity]) ||
                 (isset($fetchedEntityCounts[$entity]) && $fetchedEntityCounts[$entity] < $count)
             ) {
-                return new ProgressState(false, $this->validMigrationAccessToken, null, null, ProgressState::STATUS_FETCH_DATA);
+                return new ProgressState(false, $this->validMigrationAccessToken, null, null, null, ProgressState::STATUS_FETCH_DATA);
             }
         }
 
@@ -303,6 +330,7 @@ class MigrationProgressService implements MigrationProgressServiceInterface
                 true,
                 $this->validMigrationAccessToken,
                 $run->getId(),
+                null,
                 $run->getProfile()->jsonSerialize(),
                 ProgressState::STATUS_WRITE_DATA,
                 $entity,
@@ -329,6 +357,7 @@ class MigrationProgressService implements MigrationProgressServiceInterface
                 true,
                 $this->validMigrationAccessToken,
                 $run->getId(),
+                null,
                 $run->getProfile()->jsonSerialize(),
                 ProgressState::STATUS_DOWNLOAD_DATA,
                 'media',
@@ -353,6 +382,7 @@ class MigrationProgressService implements MigrationProgressServiceInterface
                 true,
                 $this->validMigrationAccessToken,
                 $run->getId(),
+                null,
                 $run->getProfile()->jsonSerialize(),
                 ProgressState::STATUS_WRITE_DATA,
                 key($totals['toBeFetched']),

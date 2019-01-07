@@ -7,11 +7,10 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use SwagMigrationNext\Exception\MigrationContextPropertyMissingException;
 use SwagMigrationNext\Exception\MigrationWorkloadPropertyMissingException;
-use SwagMigrationNext\Migration\EnvironmentInformation;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
-use SwagMigrationNext\Migration\Service\MediaFileProcessorServiceInterface;
 use SwagMigrationNext\Migration\Run\SwagMigrationAccessTokenService;
+use SwagMigrationNext\Migration\Service\MediaFileProcessorServiceInterface;
 use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationNext\Migration\Service\MigrationDataWriterInterface;
 use SwagMigrationNext\Migration\Service\MigrationProgressServiceInterface;
@@ -49,11 +48,6 @@ class MigrationController extends AbstractController
     private $migrationProfileRepo;
 
     /**
-     * @var EntityRepositoryInterface
-     */
-    private $migrationGeneralSetting;
-
-    /**
      * @var SwagMigrationAccessTokenService
      */
     private $migrationAccessTokenService;
@@ -64,8 +58,7 @@ class MigrationController extends AbstractController
         MediaFileProcessorServiceInterface $mediaFileProcessorService,
         MigrationProgressServiceInterface $migrationProgressService,
         SwagMigrationAccessTokenService $migrationAccessTokenService,
-        EntityRepositoryInterface $migrationProfileRepo,
-        EntityRepositoryInterface $migrationGeneralSetting
+        EntityRepositoryInterface $migrationProfileRepo
     ) {
         $this->migrationDataFetcher = $migrationDataFetcher;
         $this->migrationDataWriter = $migrationDataWriter;
@@ -73,7 +66,6 @@ class MigrationController extends AbstractController
         $this->migrationProgressService = $migrationProgressService;
         $this->migrationAccessTokenService = $migrationAccessTokenService;
         $this->migrationProfileRepo = $migrationProfileRepo;
-        $this->migrationGeneralSetting = $migrationGeneralSetting;
     }
 
     /**
@@ -90,26 +82,6 @@ class MigrationController extends AbstractController
         $accessToken = $this->migrationAccessTokenService->takeoverMigration($runUuid, $context);
 
         return new JsonResponse(['accessToken' => $accessToken]);
-    }
-
-    /**
-     * @Route("/api/v{version}/_action/migration/start-migration", name="api.admin.migration.start-migration", methods={"POST"})
-     */
-    public function startMigration(Request $request, Context $context): JsonResponse
-    {
-        $profileId = $request->request->get('profileId');
-
-        if ($profileId === null) {
-            throw new MigrationContextPropertyMissingException('profileId');
-        }
-
-        $runTokenStruct = $this->migrationAccessTokenService->startMigrationRun(
-            $profileId,
-            $context,
-            $this->getEnvironmentInformation($profileId, $context)
-        );
-
-        return new JsonResponse($runTokenStruct);
     }
 
     /**
@@ -350,27 +322,24 @@ class MigrationController extends AbstractController
         return new JsonResponse($state);
     }
 
-    private function getEnvironmentInformation($profileId, $context) : EnvironmentInformation {
-        $criteria = new Criteria([$profileId]);
-        $profileCollection = $this->migrationProfileRepo->search($criteria, $context);
-        /** @var SwagMigrationProfileEntity $profile */
-        $profile = $profileCollection->get($profileId);
+    /**
+     * @Route("/api/v{version}/_action/migration/create-migration", name="api.admin.migration.create-migration", methods={"POST"})
+     */
+    public function createMigration(Request $request, Context $context): JsonResponse
+    {
+        $profileId = $request->request->get('profileId');
+        $totals = $request->request->get('totals');
+        $additionalData = $request->request->get('additionalData');
+        $state = null;
 
-        $profileName = $profile->getProfile();
-        $gateway = $profile->getGateway();
-        $credentials = $profile->getCredentialFields();
+        if ($profileId !== null && $totals !== null && $additionalData !== null) {
+            $state = $this->migrationAccessTokenService->createMigrationRun($profileId, $totals, $additionalData, $context);
+        }
 
-        $migrationContext = new MigrationContext(
-            '',
-            '',
-            $profileName,
-            $gateway,
-            '',
-            $credentials,
-            0,
-            0
-        );
+        if ($state === null) {
+            return $this->getState($request, $context);
+        }
 
-        return $this->migrationDataFetcher->getEnvironmentInformation($migrationContext);
+        return new JsonResponse($state);
     }
 }

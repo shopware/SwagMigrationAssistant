@@ -4,8 +4,8 @@ namespace SwagMigrationNext\Migration\Data;
 
 use DateTime;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
-use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
+use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
 
 class SwagMigrationDataEntity extends Entity
 {
