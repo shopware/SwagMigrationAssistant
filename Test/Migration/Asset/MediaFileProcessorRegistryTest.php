@@ -38,7 +38,6 @@ class MediaFileProcessorRegistryTest extends TestCase
             '',
             'bar',
             '',
-            [],
             0,
             0
         );

@@ -57,10 +57,10 @@ class CustomerConverterTest extends TestCase
             Shopware55Profile::PROFILE_NAME,
             'local',
             CustomerDefinition::getEntityName(),
-            [],
             0,
             250,
-            '',
+            [],
+            Defaults::CATALOG,
             Defaults::SALES_CHANNEL
         );
     }

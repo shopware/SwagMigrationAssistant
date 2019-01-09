@@ -58,10 +58,10 @@ class CategoryConverterTest extends TestCase
             Shopware55Profile::PROFILE_NAME,
             'local',
             CategoryDefinition::getEntityName(),
-            [],
             0,
             250,
-            ''
+            [],
+            Defaults::CATALOG
         );
     }
 

@@ -8,16 +8,16 @@ use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
 class GeneralSettingEntity extends Entity
 {
     /**
-     * @var string
+     * @var string|null
      */
     protected $selectedProfileId;
 
     /**
-     * @var SwagMigrationProfileEntity
+     * @var SwagMigrationProfileEntity|null
      */
     protected $selectedProfile;
 
-    public function getSelectedProfileId(): string
+    public function getSelectedProfileId(): ?string
     {
         return $this->selectedProfileId;
     }
@@ -27,7 +27,7 @@ class GeneralSettingEntity extends Entity
         $this->selectedProfileId = $selectedProfileId;
     }
 
-    public function getSelectedProfile(): SwagMigrationProfileEntity
+    public function getSelectedProfile(): ?SwagMigrationProfileEntity
     {
         return $this->selectedProfile;
     }

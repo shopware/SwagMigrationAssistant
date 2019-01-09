@@ -23,6 +23,7 @@ use SwagMigrationNext\Migration\Logging\LogType;
 use SwagMigrationNext\Migration\Logging\SwagMigrationLoggingEntity;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Profile\ProfileRegistry;
+use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationNext\Migration\Service\MigrationDataFetcher;
 use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationNext\Profile\Shopware55\Converter\ProductConverter;
@@ -89,6 +90,7 @@ class MigrationDataFetcherTest extends TestCase
             [
                 [
                     'id' => $this->runUuid,
+                    'status' => SwagMigrationRunEntity::STATUS_RUNNING,
                     'profileId' => $this->profileUuidService->getProfileUuid(),
                 ],
             ],
@@ -136,13 +138,13 @@ class MigrationDataFetcherTest extends TestCase
             Shopware55Profile::PROFILE_NAME,
             'local',
             MediaDefinition::getEntityName(),
+            0,
+            250,
             [
                 'endpoint' => 'test',
                 'apiUser' => 'test',
                 'apiKey' => 'test',
-            ],
-            0,
-            250
+            ]
         );
 
         $this->migrationDataFetcher->fetchData($migrationContext, $context);
@@ -164,13 +166,13 @@ class MigrationDataFetcherTest extends TestCase
             Shopware55Profile::PROFILE_NAME,
             'local',
             CategoryDefinition::getEntityName(),
+            0,
+            250,
             [
                 'endpoint' => 'test',
                 'apiUser' => 'test',
                 'apiKey' => 'test',
-            ],
-            0,
-            250
+            ]
         );
 
         $this->migrationDataFetcher->fetchData($migrationContext, $context);
@@ -192,13 +194,13 @@ class MigrationDataFetcherTest extends TestCase
             Shopware55Profile::PROFILE_NAME,
             'local',
             'translation',
+            0,
+            250,
             [
                 'endpoint' => 'test',
                 'apiUser' => 'test',
                 'apiKey' => 'test',
-            ],
-            0,
-            250
+            ]
         );
 
         $this->migrationDataFetcher->fetchData($migrationContext, $context);
@@ -220,13 +222,13 @@ class MigrationDataFetcherTest extends TestCase
             Shopware55Profile::PROFILE_NAME,
             'local',
             CustomerDefinition::getEntityName(),
+            0,
+            250,
             [
                 'endpoint' => 'test',
                 'apiUser' => 'test',
                 'apiKey' => 'test',
-            ],
-            0,
-            250
+            ]
         );
 
         $this->migrationDataFetcher->fetchData($migrationContext, $context);
@@ -248,13 +250,13 @@ class MigrationDataFetcherTest extends TestCase
             Shopware55Profile::PROFILE_NAME,
             'local',
             ProductDefinition::getEntityName(),
+            0,
+            250,
             [
                 'endpoint' => 'test',
                 'apiUser' => 'test',
                 'apiKey' => 'test',
-            ],
-            0,
-            250
+            ]
         );
 
         $this->migrationDataFetcher->fetchData($migrationContext, $context);
@@ -276,7 +278,6 @@ class MigrationDataFetcherTest extends TestCase
             Shopware55Profile::PROFILE_NAME,
             'local',
             ProductDefinition::getEntityName(),
-            [],
             0,
             250
         );
@@ -300,9 +301,9 @@ class MigrationDataFetcherTest extends TestCase
             Shopware55Profile::PROFILE_NAME,
             'local',
             CustomerDefinition::getEntityName() . 'Invalid',
-            [],
             0,
             250,
+            [],
             null,
             Defaults::SALES_CHANNEL
         );
@@ -352,9 +353,9 @@ class MigrationDataFetcherTest extends TestCase
             Shopware55Profile::PROFILE_NAME,
             'local',
             'order',
-            [],
             0,
             250,
+            [],
             null,
             Defaults::SALES_CHANNEL
         );
@@ -375,7 +376,6 @@ class MigrationDataFetcherTest extends TestCase
             Shopware55Profile::PROFILE_NAME,
             'local',
             CustomerDefinition::getEntityName(),
-            [],
             0,
             250
         );
@@ -390,7 +390,6 @@ class MigrationDataFetcherTest extends TestCase
             Shopware55Profile::PROFILE_NAME,
             'local',
             ProductDefinition::getEntityName(),
-            [],
             0,
             250
         );
@@ -405,7 +404,6 @@ class MigrationDataFetcherTest extends TestCase
             Shopware55Profile::PROFILE_NAME,
             'local',
             CategoryDefinition::getEntityName(),
-            [],
             0,
             250
         );
@@ -420,7 +418,6 @@ class MigrationDataFetcherTest extends TestCase
             Shopware55Profile::PROFILE_NAME,
             'local',
             MediaDefinition::getEntityName(),
-            [],
             0,
             250
         );

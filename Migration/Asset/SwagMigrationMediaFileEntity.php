@@ -44,7 +44,7 @@ class SwagMigrationMediaFileEntity extends Entity
     /**
      * @var bool
      */
-    protected $downloaded;
+    protected $processed;
 
     /**
      * @var DateTime
@@ -116,14 +116,14 @@ class SwagMigrationMediaFileEntity extends Entity
         $this->written = $written;
     }
 
-    public function getDownloaded(): bool
+    public function getProcessed(): bool
     {
-        return $this->downloaded;
+        return $this->processed;
     }
 
-    public function setDownloaded(bool $downloaded): void
+    public function setProcessed(bool $processed): void
     {
-        $this->downloaded = $downloaded;
+        $this->processed = $processed;
     }
 
     public function getCreatedAt(): DateTime

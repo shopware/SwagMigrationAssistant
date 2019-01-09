@@ -17,22 +17,22 @@ class SwagMigrationDataEntity extends Entity
     protected $runId;
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $entity;
 
     /**
-     * @var array
+     * @var array|null
      */
     protected $raw;
 
     /**
-     * @var array
+     * @var array|null
      */
     protected $converted;
 
     /**
-     * @var array
+     * @var array|null
      */
     protected $unmapped;
 
@@ -66,7 +66,7 @@ class SwagMigrationDataEntity extends Entity
         $this->runId = $runId;
     }
 
-    public function getEntity(): string
+    public function getEntity(): ?string
     {
         return $this->entity;
     }
@@ -81,7 +81,7 @@ class SwagMigrationDataEntity extends Entity
         return $this->raw;
     }
 
-    public function setRaw(?array $raw): void
+    public function setRaw(array $raw): void
     {
         $this->raw = $raw;
     }
@@ -91,7 +91,7 @@ class SwagMigrationDataEntity extends Entity
         return $this->converted;
     }
 
-    public function setConverted(?array $converted): void
+    public function setConverted(array $converted): void
     {
         $this->converted = $converted;
     }
@@ -101,7 +101,7 @@ class SwagMigrationDataEntity extends Entity
         return $this->unmapped;
     }
 
-    public function setUnmapped(?array $unmapped): void
+    public function setUnmapped(array $unmapped): void
     {
         $this->unmapped = $unmapped;
     }

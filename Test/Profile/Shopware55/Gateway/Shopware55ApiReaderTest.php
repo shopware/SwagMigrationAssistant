@@ -47,9 +47,9 @@ class Shopware55ApiReaderTest extends TestCase
                 '',
                 '',
                 ProductDefinition::getEntityName(),
-                ['endpoint' => '', 'apiUser' => '', 'apiKey' => ''],
                 0,
-                0
+                0,
+                ['endpoint' => '', 'apiUser' => '', 'apiKey' => '']
             )
         );
 
@@ -70,9 +70,9 @@ class Shopware55ApiReaderTest extends TestCase
                 '',
                 '',
                 'foo',
-                ['endpoint' => '', 'apiUser' => '', 'apiKey' => ''],
                 0,
-                0
+                0,
+                ['endpoint' => '', 'apiUser' => '', 'apiKey' => '']
             )
         );
 
@@ -101,9 +101,9 @@ class Shopware55ApiReaderTest extends TestCase
                 '',
                 '',
                 ProductDefinition::getEntityName(),
-                ['endpoint' => '', 'apiUser' => '', 'apiKey' => ''],
                 0,
-                0
+                0,
+                ['endpoint' => '', 'apiUser' => '', 'apiKey' => '']
             )
         );
 

@@ -122,7 +122,7 @@ class MigrationProgressService implements MigrationProgressServiceInterface
         }
 
         // Compare media download counts
-        $compareMediaDownloadCountResult = $this->compareMediaDownloadCount($run);
+        $compareMediaDownloadCountResult = $this->compareMediaProcessedCount($run);
         if ($compareMediaDownloadCountResult !== null) {
             return $compareMediaDownloadCountResult;
         }
@@ -151,7 +151,10 @@ class MigrationProgressService implements MigrationProgressServiceInterface
                 'credentialFields' => $run->getCredentialFields(),
             ],
         ], $context);
-        $run->getProfile()->setCredentialFields($run->getCredentialFields());
+
+        if (!empty($run->getCredentialFields())) {
+            $run->getProfile()->setCredentialFields($run->getCredentialFields());
+        }
     }
 
     private function getCurrentRun(): ?SwagMigrationRunEntity
@@ -206,13 +209,13 @@ class MigrationProgressService implements MigrationProgressServiceInterface
         return $this->mapCounts($counts);
     }
 
-    private function getMediaFileCounts(string $runId, bool $onlyDownloaded = true): int
+    private function getMediaFileCounts(string $runId, bool $onlyProcessed = true): int
     {
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('runId', $runId));
         $criteria->addFilter(new EqualsFilter('written', true));
-        if ($onlyDownloaded) {
-            $criteria->addFilter(new EqualsFilter('downloaded', true));
+        if ($onlyProcessed) {
+            $criteria->addFilter(new EqualsFilter('processed', true));
         }
         $criteria->addAggregation(new CountAggregation('id', 'count'));
         $criteria->setLimit(1);
@@ -347,12 +350,12 @@ class MigrationProgressService implements MigrationProgressServiceInterface
     /**
      * Compares the current download counts with the counts to download and returns the ProgressState if necessary
      */
-    private function compareMediaDownloadCount(SwagMigrationRunEntity $run): ?ProgressState
+    private function compareMediaProcessedCount(SwagMigrationRunEntity $run): ?ProgressState
     {
         $totalMediaFileCount = $this->getMediaFileCounts($run->getId(), false);
-        $downloadedMediaFileCount = $this->getMediaFileCounts($run->getId());
+        $processedMediaFileCount = $this->getMediaFileCounts($run->getId());
 
-        if ($downloadedMediaFileCount < $totalMediaFileCount) {
+        if ($processedMediaFileCount < $totalMediaFileCount) {
             $progressState = new ProgressState(
                 true,
                 $this->validMigrationAccessToken,
@@ -361,11 +364,11 @@ class MigrationProgressService implements MigrationProgressServiceInterface
                 $run->getProfile()->jsonSerialize(),
                 ProgressState::STATUS_DOWNLOAD_DATA,
                 'media',
-                $downloadedMediaFileCount,
+                $processedMediaFileCount,
                 $totalMediaFileCount
             );
 
-            return $this->buildEntityGroups($run, $progressState, ['media' => $downloadedMediaFileCount]);
+            return $this->buildEntityGroups($run, $progressState, ['media' => $processedMediaFileCount]);
         }
 
         return null;

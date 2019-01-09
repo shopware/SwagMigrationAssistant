@@ -22,17 +22,17 @@ class SwagMigrationMappingEntity extends Entity
     protected $profile;
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $entity;
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $oldIdentifier;
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $entityUuid;
 
@@ -71,7 +71,7 @@ class SwagMigrationMappingEntity extends Entity
         $this->profileId = $profileId;
     }
 
-    public function getEntity(): string
+    public function getEntity(): ?string
     {
         return $this->entity;
     }
@@ -81,7 +81,7 @@ class SwagMigrationMappingEntity extends Entity
         $this->entity = $entity;
     }
 
-    public function getOldIdentifier(): string
+    public function getOldIdentifier(): ?string
     {
         return $this->oldIdentifier;
     }
@@ -91,7 +91,7 @@ class SwagMigrationMappingEntity extends Entity
         $this->oldIdentifier = $oldIdentifier;
     }
 
-    public function getEntityUuid(): string
+    public function getEntityUuid(): ?string
     {
         return $this->entityUuid;
     }

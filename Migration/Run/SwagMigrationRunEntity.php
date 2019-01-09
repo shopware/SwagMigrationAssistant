@@ -31,12 +31,12 @@ class SwagMigrationRunEntity extends Entity
     public const STATUS_ABORTED = 'aborted';
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $profileId;
 
     /**
-     * @var SwagMigrationProfileEntity
+     * @var SwagMigrationProfileEntity|null
      */
     protected $profile;
 
@@ -56,7 +56,12 @@ class SwagMigrationRunEntity extends Entity
     protected $additionalData;
 
     /**
-     * @var string
+     * @var array|null
+     */
+    protected $credentialFields;
+
+    /**
+     * @var string|null
      */
     protected $status;
 
@@ -81,21 +86,21 @@ class SwagMigrationRunEntity extends Entity
     protected $updatedAt;
 
     /**
-     * @var SwagMigrationDataEntity[]
+     * @var SwagMigrationDataEntity[]|null
      */
     protected $data;
 
     /**
-     * @var SwagMigrationMediaFileEntity[]
+     * @var SwagMigrationMediaFileEntity[]|null
      */
     protected $mediaFiles;
 
     /**
-     * @var SwagMigrationLoggingEntity[]
+     * @var SwagMigrationLoggingEntity[]|null
      */
     protected $logs;
 
-    public function getProfileId(): string
+    public function getProfileId(): ?string
     {
         return $this->profileId;
     }
@@ -105,7 +110,7 @@ class SwagMigrationRunEntity extends Entity
         $this->profileId = $profileId;
     }
 
-    public function getProfile(): SwagMigrationProfileEntity
+    public function getProfile(): ?SwagMigrationProfileEntity
     {
         return $this->profile;
     }
@@ -145,7 +150,17 @@ class SwagMigrationRunEntity extends Entity
         $this->additionalData = $additionalData;
     }
 
-    public function getStatus(): string
+    public function getCredentialFields(): ?array
+    {
+        return $this->credentialFields;
+    }
+
+    public function setCredentialFields(array $credentialFields): void
+    {
+        $this->credentialFields = $credentialFields;
+    }
+
+    public function getStatus(): ?string
     {
         return $this->status;
     }
@@ -200,15 +215,15 @@ class SwagMigrationRunEntity extends Entity
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?DateTime $updatedAt): void
+    public function setUpdatedAt(DateTime $updatedAt): void
     {
         $this->updatedAt = $updatedAt;
     }
 
     /**
-     * @return SwagMigrationDataEntity[]
+     * @return SwagMigrationDataEntity[]|null
      */
-    public function getData(): array
+    public function getData(): ?array
     {
         return $this->data;
     }
@@ -222,9 +237,9 @@ class SwagMigrationRunEntity extends Entity
     }
 
     /**
-     * @return SwagMigrationMediaFileEntity[]
+     * @return SwagMigrationMediaFileEntity[]|null
      */
-    public function getMediaFiles(): array
+    public function getMediaFiles(): ?array
     {
         return $this->mediaFiles;
     }
@@ -238,9 +253,9 @@ class SwagMigrationRunEntity extends Entity
     }
 
     /**
-     * @return SwagMigrationLoggingEntity[]
+     * @return SwagMigrationLoggingEntity[]|null
      */
-    public function getLogs(): array
+    public function getLogs(): ?array
     {
         return $this->logs;
     }

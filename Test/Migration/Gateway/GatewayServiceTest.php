@@ -33,13 +33,13 @@ class GatewayServiceTest extends TestCase
             'foobar',
             'api',
             ProductDefinition::getEntityName(),
+            0,
+            250,
             [
                 'endpoint' => 'foo',
                 'apiUser' => 'foo',
                 'apiKey' => 'foo',
-            ],
-            0,
-            250
+            ]
         );
 
         try {

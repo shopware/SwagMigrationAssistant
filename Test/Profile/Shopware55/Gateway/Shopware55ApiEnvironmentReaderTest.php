@@ -60,9 +60,9 @@ class Shopware55ApiEnvironmentReaderTest extends TestCase
                 '',
                 '',
                 '',
-                ['endpoint' => '', 'apiUser' => '', 'apiKey' => ''],
                 0,
-                0
+                0,
+                ['endpoint' => '', 'apiUser' => '', 'apiKey' => '']
             )
         );
 
@@ -102,9 +102,9 @@ class Shopware55ApiEnvironmentReaderTest extends TestCase
                 '',
                 '',
                 '',
-                ['endpoint' => '', 'apiUser' => '', 'apiKey' => ''],
                 0,
-                0
+                0,
+                ['endpoint' => '', 'apiUser' => '', 'apiKey' => '']
             )
         );
 
@@ -144,9 +144,9 @@ class Shopware55ApiEnvironmentReaderTest extends TestCase
                 '',
                 '',
                 '',
-                ['endpoint' => '', 'apiUser' => '', 'apiKey' => ''],
                 0,
-                0
+                0,
+                ['endpoint' => '', 'apiUser' => '', 'apiKey' => '']
             )
         );
 
@@ -178,9 +178,9 @@ class Shopware55ApiEnvironmentReaderTest extends TestCase
                 '',
                 '',
                 '',
-                ['endpoint' => '', 'apiUser' => '', 'apiKey' => ''],
                 0,
-                0
+                0,
+                ['endpoint' => '', 'apiUser' => '', 'apiKey' => '']
             )
         );
 
@@ -213,9 +213,9 @@ class Shopware55ApiEnvironmentReaderTest extends TestCase
                 '',
                 '',
                 '',
-                ['endpoint' => '', 'apiUser' => '', 'apiKey' => ''],
                 0,
-                0
+                0,
+                ['endpoint' => '', 'apiUser' => '', 'apiKey' => '']
             )
         );
 

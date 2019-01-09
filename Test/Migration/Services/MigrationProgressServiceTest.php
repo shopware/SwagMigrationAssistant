@@ -369,7 +369,7 @@ class MigrationProgressServiceTest extends TestCase
         );
     }
 
-    public function testGetProgressDownloadNotStarted(): void
+    public function testGetProgressMediaProcessNotStarted(): void
     {
         $context = Context::createDefaultContext();
 
@@ -416,7 +416,7 @@ class MigrationProgressServiceTest extends TestCase
         );
     }
 
-    public function testGetProgressDownloadStarted(): void
+    public function testGetProgressMediaProcessStarted(): void
     {
         $context = Context::createDefaultContext();
 
@@ -468,7 +468,7 @@ class MigrationProgressServiceTest extends TestCase
         );
     }
 
-    public function testGetProgressDownloadDone(): void
+    public function testGetProgressMediaProcessDone(): void
     {
         $context = Context::createDefaultContext();
 
@@ -641,15 +641,15 @@ class MigrationProgressServiceTest extends TestCase
         );
     }
 
-    private function insertMediaFiles(Context $context, int $count, int $downloadedCount): void
+    private function insertMediaFiles(Context $context, int $count, int $processedCount): void
     {
         $datasets = [];
-        $currentDownloaded = 0;
+        $currentProcessed = 0;
         for ($i = 0; $i < $count; ++$i) {
-            $downloaded = false;
-            if ($currentDownloaded < $downloadedCount) {
-                $downloaded = true;
-                ++$currentDownloaded;
+            $processed = false;
+            if ($currentProcessed < $processedCount) {
+                $processed = true;
+                ++$currentProcessed;
             }
 
             $datasets[] = [
@@ -657,7 +657,7 @@ class MigrationProgressServiceTest extends TestCase
                 'uri' => 'meinMediaFileLink',
                 'fileSize' => 5,
                 'written' => true,
-                'downloaded' => $downloaded,
+                'processed' => $processed,
             ];
         }
 

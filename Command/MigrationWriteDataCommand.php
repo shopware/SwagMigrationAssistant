@@ -129,9 +129,9 @@ class MigrationWriteDataCommand extends Command
                 '',
                 '',
                 $this->entityName,
-                [],
                 $offset,
                 $this->limit,
+                [],
                 $this->catalogId
             );
             $this->migrationWriteService->writeData($migrationContext, $context);
@@ -204,7 +204,7 @@ class MigrationWriteDataCommand extends Command
 
     private function finishRun(): void
     {
-        if (!$this->hasUndownloadedMediaFiles()) {
+        if (!$this->hasUnprocessedMediaFiles()) {
             $this->migrationRunRepo->update([
                 [
                     'id' => $this->runId,
@@ -214,11 +214,11 @@ class MigrationWriteDataCommand extends Command
         }
     }
 
-    private function hasUndownloadedMediaFiles(): bool
+    private function hasUnprocessedMediaFiles(): bool
     {
         $writtenCriteria = new Criteria();
         $writtenCriteria->addFilter(new EqualsFilter('runId', $this->runId));
-        $writtenCriteria->addFilter(new EqualsFilter('downloaded', false));
+        $writtenCriteria->addFilter(new EqualsFilter('processed', false));
 
         return $this->mediaFileRepo->search($writtenCriteria, $this->context)->getTotal() > 0;
     }

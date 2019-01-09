@@ -133,7 +133,7 @@ class MigrationDownloadAssetsCommand extends Command implements EventSubscriberI
 
     private function finishRun(): void
     {
-        if (!$this->hasUndownloadedMediaFiles()) {
+        if (!$this->hasUnprocessedMediaFiles()) {
             $this->migrationRunRepo->update([
                 [
                     'id' => $this->rundId,
@@ -143,11 +143,11 @@ class MigrationDownloadAssetsCommand extends Command implements EventSubscriberI
         }
     }
 
-    private function hasUndownloadedMediaFiles(): bool
+    private function hasUnprocessedMediaFiles(): bool
     {
         $writtenCriteria = new Criteria();
         $writtenCriteria->addFilter(new EqualsFilter('runId', $this->rundId));
-        $writtenCriteria->addFilter(new EqualsFilter('downloaded', false));
+        $writtenCriteria->addFilter(new EqualsFilter('processed', false));
 
         return $this->mediaFileRepo->search($writtenCriteria, $this->context)->getTotal() > 0;
     }

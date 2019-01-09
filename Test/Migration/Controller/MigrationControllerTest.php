@@ -21,6 +21,7 @@ use SwagMigrationNext\Migration\Run\SwagMigrationAccessTokenService;
 use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationNext\Migration\Service\MigrationDataWriter;
 use SwagMigrationNext\Migration\Service\MigrationProgressService;
+use SwagMigrationNext\Migration\Service\ProgressState;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Migration\Services\MigrationProfileUuidService;
@@ -77,6 +78,12 @@ class MigrationControllerTest extends TestCase
             [
                 [
                     'id' => $this->runUuid,
+                    'credentialFields' => [
+                        'endpoint' => 'testEndpoint',
+                        'apiUser' => 'testUser',
+                        'apiKey' => 'testKey',
+                    ],
+                    'status' => SwagMigrationRunEntity::STATUS_RUNNING,
                     'profileId' => $this->profileUuidService->getProfileUuid(),
                     'accessToken' => 'testToken',
                 ],
@@ -162,9 +169,12 @@ class MigrationControllerTest extends TestCase
         $this->controller->takeoverMigration(new Request(), $context);
     }
 
-    public function testGetProgressWithStartMigration(): void
+    public function testGetProgressWithCreateMigration(): void
     {
         $context = Context::createDefaultContext();
+        $customerId = Uuid::uuid4()->getHex();
+        $context->getSourceContext()->setUserId($customerId);
+
         $credentialFields = [
                 'endpoint' => 'testEndpoint',
                 'apiUser' => 'testUser',
@@ -183,6 +193,7 @@ class MigrationControllerTest extends TestCase
 
         $params = [
             'profileId' => $this->profileUuidService->getProfileUuid(),
+            'credentialFields' => $credentialFields,
             'totals' => [
                 'toBeFetched' => [
                     'product' => 5,
@@ -190,41 +201,99 @@ class MigrationControllerTest extends TestCase
             ],
             'additionalData' => require __DIR__ . '/../../_fixtures/run_additional_data.php',
         ];
+        $requestWithoutToken = new Request([], $params);
+        $params[SwagMigrationAccessTokenService::ACCESS_TOKEN_NAME] = 'testToken';
+        $requestWithToken = new Request([], $params);
 
-        $context = Context::createDefaultContext();
-        $customerId = Uuid::uuid4()->getHex();
-        $context->getSourceContext()->setUserId($customerId);
+        $abortedCriteria = new Criteria();
+        $abortedCriteria->addFilter(new EqualsFilter('status', SwagMigrationRunEntity::STATUS_ABORTED));
 
-        // Start migration with send getState
-        $result = $this->controller->createMigration(new Request([], $params), $context);
+        $runningCriteria = new Criteria();
+        $runningCriteria->addFilter(new EqualsFilter('status', SwagMigrationRunEntity::STATUS_RUNNING));
+
+        // Get state migration with invalid accessToken
+        $totalAbortedBefore = $this->runRepo->search($abortedCriteria, $context)->getTotal();
+        $totalBefore = $this->runRepo->search(new Criteria(), $context)->getTotal();
+        $result = $this->controller->getState($requestWithoutToken, $context);
         $state = json_decode($result->getContent(), true);
+        $totalAfter = $this->runRepo->search(new Criteria(), $context)->getTotal();
+        $totalAbortedAfter = $this->runRepo->search($abortedCriteria, $context)->getTotal();
+        $totalProcessing = $this->runRepo->search($runningCriteria, $context)->getTotal();
         self::assertSame('SwagMigrationNext\Migration\Service\ProgressState', $state['_class']);
+        self::assertTrue($state['migrationRunning']);
+        self::assertFalse($state['validMigrationRunToken']);
+        self::assertSame(ProgressState::STATUS_FETCH_DATA, $state['status']);
+        self::assertSame(0, $totalAfter - $totalBefore);
+        self::assertSame(0, $totalAbortedAfter - $totalAbortedBefore);
+        self::assertSame(1, $totalProcessing);
 
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('status', SwagMigrationRunEntity::STATUS_RUNNING));
-        /** @var SwagMigrationRunEntity $run */
-        $run = $this->runRepo->search($criteria, $context)->first();
-
-        self::assertSame($run->getId(), $state['runId']);
-        self::assertSame($run->getAccessToken(), $state['accessToken']);
-        self::assertFalse($state['migrationRunning']);
-        self::assertTrue($state['validMigrationRunToken']);
-
-        // Abort migration on resend getState with valid accessToken
-        $result = $this->controller->getState(new Request([], [
-            SwagMigrationAccessTokenService::ACCESS_TOKEN_NAME => $state['accessToken'],
-        ]), $context);
+        // Get state migration with valid accessToken and abort running migration
+        $totalAbortedBefore = $this->runRepo->search($abortedCriteria, $context)->getTotal();
+        $totalBefore = $this->runRepo->search(new Criteria(), $context)->getTotal();
+        $result = $this->controller->getState($requestWithToken, $context);
         $state = json_decode($result->getContent(), true);
+        $totalAfter = $this->runRepo->search(new Criteria(), $context)->getTotal();
+        $totalAbortedAfter = $this->runRepo->search($abortedCriteria, $context)->getTotal();
+        $totalProcessing = $this->runRepo->search($runningCriteria, $context)->getTotal();
         self::assertSame('SwagMigrationNext\Migration\Service\ProgressState', $state['_class']);
-
-        /** @var SwagMigrationRunEntity $run */
-        $total = $this->runRepo->search($criteria, $context)->getTotal();
-
-        self::assertSame(0, $total);
-        self::assertNull($state['runId']);
-        self::assertNull($state['accessToken']);
         self::assertTrue($state['migrationRunning']);
         self::assertTrue($state['validMigrationRunToken']);
+        self::assertSame(ProgressState::STATUS_FETCH_DATA, $state['status']);
+        self::assertSame(0, $totalAfter - $totalBefore);
+        self::assertSame(1, $totalAbortedAfter - $totalAbortedBefore);
+        self::assertSame(0, $totalProcessing);
+
+        // Create new migration without abort a running migration
+        $totalAbortedBefore = $this->runRepo->search($abortedCriteria, $context)->getTotal();
+        $totalBefore = $this->runRepo->search(new Criteria(), $context)->getTotal();
+        $result = $this->controller->createMigration($requestWithToken, $context);
+        $state = json_decode($result->getContent(), true);
+        $totalAfter = $this->runRepo->search(new Criteria(), $context)->getTotal();
+        $totalAbortedAfter = $this->runRepo->search($abortedCriteria, $context)->getTotal();
+        $totalProcessing = $this->runRepo->search($runningCriteria, $context)->getTotal();
+        self::assertSame('SwagMigrationNext\Migration\Service\ProgressState', $state['_class']);
+        self::assertFalse($state['migrationRunning']);
+        self::assertTrue($state['validMigrationRunToken']);
+        self::assertSame(1, $totalAfter - $totalBefore);
+        self::assertSame(0, $totalAbortedAfter - $totalAbortedBefore);
+        self::assertSame(1, $totalProcessing);
+
+        // Call createMigration without accessToken and without abort running migration
+        $totalAbortedBefore = $this->runRepo->search($abortedCriteria, $context)->getTotal();
+        $totalBefore = $this->runRepo->search(new Criteria(), $context)->getTotal();
+        $result = $this->controller->createMigration($requestWithoutToken, $context);
+        $state = json_decode($result->getContent(), true);
+        $totalAfter = $this->runRepo->search(new Criteria(), $context)->getTotal();
+        $totalAbortedAfter = $this->runRepo->search($abortedCriteria, $context)->getTotal();
+        $totalProcessing = $this->runRepo->search($runningCriteria, $context)->getTotal();
+        self::assertSame('SwagMigrationNext\Migration\Service\ProgressState', $state['_class']);
+        self::assertTrue($state['migrationRunning']);
+        self::assertFalse($state['validMigrationRunToken']);
+        self::assertSame(0, $totalAfter - $totalBefore);
+        self::assertSame(0, $totalAbortedAfter - $totalAbortedBefore);
+        self::assertSame(1, $totalProcessing);
+
+        // Get current accessToken and refresh token in request
+        /** @var SwagMigrationRunEntity $currentRun */
+        $currentRun = $this->runRepo->search($runningCriteria, $context)->first();
+        $accessToken = $currentRun->getAccessToken();
+        $params[SwagMigrationAccessTokenService::ACCESS_TOKEN_NAME] = $accessToken;
+        $requestWithToken = new Request([], $params);
+
+        // Call createMigration with accessToken and with abort running migration
+        $totalAbortedBefore = $this->runRepo->search($abortedCriteria, $context)->getTotal();
+        $totalBefore = $this->runRepo->search(new Criteria(), $context)->getTotal();
+        $result = $this->controller->createMigration($requestWithToken, $context);
+        $state = json_decode($result->getContent(), true);
+        $totalAfter = $this->runRepo->search(new Criteria(), $context)->getTotal();
+        $totalAbortedAfter = $this->runRepo->search($abortedCriteria, $context)->getTotal();
+        $totalProcessing = $this->runRepo->search($runningCriteria, $context)->getTotal();
+        self::assertSame('SwagMigrationNext\Migration\Service\ProgressState', $state['_class']);
+        self::assertTrue($state['migrationRunning']);
+        self::assertTrue($state['validMigrationRunToken']);
+        self::assertSame(0, $totalAfter - $totalBefore);
+        self::assertSame(1, $totalAbortedAfter - $totalAbortedBefore);
+        self::assertSame(0, $totalProcessing);
     }
 
     public function testCheckConnection(): void

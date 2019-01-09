@@ -36,7 +36,7 @@ class SwagMigrationRunDefinition extends EntityDefinition
             new JsonField('additional_data', 'additionalData'),
             new StringField('user_id', 'userId'),
             new StringField('access_token', 'accessToken'),
-            new StringField('status', 'status'),
+            (new StringField('status', 'status'))->setFlags(new Required()),
             new CreatedAtField(),
             new UpdatedAtField(),
             new ManyToOneAssociationField('profile', 'profile_id', SwagMigrationProfileDefinition::class, false),

@@ -62,9 +62,9 @@ class MigrationContext extends Struct
         string $profileName,
         string $gateway,
         string $entity,
-        array $credentials,
         int $offset,
         int $limit,
+        array $credentials = [],
         ?string $catalogId = null,
         ?string $salesChannelId = null
     ) {

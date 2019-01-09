@@ -103,7 +103,7 @@ class CliAssetDownloadService implements CliAssetDownloadServiceInterface
                     $this->download($client, $uuid, $uri, $fileSize, $context);
                 }
             }
-            $this->setDownloadedFlag($runId, $context, $mediaUuids);
+            $this->setProcessedFlag($runId, $context, $mediaUuids);
 
             $assets = $this->fetchMediaFiles($runId, $context, 10);
         }
@@ -182,7 +182,7 @@ class CliAssetDownloadService implements CliAssetDownloadServiceInterface
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('runId', $runId));
         $criteria->addFilter(new EqualsFilter('written', true));
-        $criteria->addFilter(new EqualsFilter('downloaded', false));
+        $criteria->addFilter(new EqualsFilter('processed', false));
         $criteria->setLimit($limit);
         $criteria->addSorting(new FieldSorting('fileSize', FieldSorting::ASCENDING));
         $migrationData = $this->mediaFileRepo->search($criteria, $context);
@@ -199,7 +199,7 @@ class CliAssetDownloadService implements CliAssetDownloadServiceInterface
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('runId', $runId));
         $criteria->addFilter(new EqualsFilter('written', true));
-        $criteria->addFilter(new EqualsFilter('downloaded', false));
+        $criteria->addFilter(new EqualsFilter('processed', false));
         $criteria->addSorting(new FieldSorting('fileSize', FieldSorting::ASCENDING));
         $migrationData = $this->mediaFileRepo->search($criteria, $context);
 
@@ -247,26 +247,26 @@ class CliAssetDownloadService implements CliAssetDownloadServiceInterface
         }
     }
 
-    private function setDownloadedFlag(string $runId, Context $context, array $finishedUuids): void
+    private function setProcessedFlag(string $runId, Context $context, array $finishedUuids): void
     {
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsAnyFilter('mediaId', $finishedUuids));
         $criteria->addFilter(new EqualsFilter('runId', $runId));
         $mediaFiles = $this->mediaFileRepo->search($criteria, $context);
 
-        $updateDownloadedMediaFiles = [];
+        $updateProcessedMediaFiles = [];
         foreach ($mediaFiles->getElements() as $data) {
             /* @var SwagMigrationMediaFileEntity $data */
-            $updateDownloadedMediaFiles[] = [
+            $updateProcessedMediaFiles[] = [
                 'id' => $data->getId(),
-                'downloaded' => true,
+                'processed' => true,
             ];
         }
 
-        if (empty($updateDownloadedMediaFiles)) {
+        if (empty($updateProcessedMediaFiles)) {
             return;
         }
 
-        $this->mediaFileRepo->update($updateDownloadedMediaFiles, $context);
+        $this->mediaFileRepo->update($updateProcessedMediaFiles, $context);
     }
 }

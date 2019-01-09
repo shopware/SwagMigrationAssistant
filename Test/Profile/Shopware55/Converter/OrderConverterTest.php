@@ -84,10 +84,10 @@ class OrderConverterTest extends TestCase
             Shopware55Profile::PROFILE_NAME,
             'local',
             OrderDefinition::getEntityName(),
-            [],
             0,
             250,
-            '',
+            [],
+            Defaults::CATALOG,
             Defaults::SALES_CHANNEL
         );
 
@@ -97,10 +97,10 @@ class OrderConverterTest extends TestCase
             Shopware55Profile::PROFILE_NAME,
             'local',
             CustomerDefinition::getEntityName(),
-            [],
             0,
             250,
-            '',
+            [],
+            Defaults::CATALOG,
             Defaults::SALES_CHANNEL
         );
     }

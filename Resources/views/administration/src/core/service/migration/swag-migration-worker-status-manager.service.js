@@ -137,7 +137,7 @@ export class WorkerStatusManager {
                 'AND',
                 CriteriaFactory.equals('runId', runId),
                 CriteriaFactory.equals('written', true),
-                CriteriaFactory.equals('downloaded', false)
+                CriteriaFactory.equals('processed', false)
             );
             const params = {
                 aggregations: count,

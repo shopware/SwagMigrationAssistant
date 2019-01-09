@@ -12,6 +12,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 use Shopware\Core\Framework\Struct\Uuid;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
+use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -193,7 +194,7 @@ class MigrationFetchDataCommand extends Command
                     ],
                 ],
                 'profileId' => $this->profileId,
-                'status' => 'running',
+                'status' => SwagMigrationRunEntity::STATUS_RUNNING,
             ],
         ], $context);
     }
@@ -210,9 +211,9 @@ class MigrationFetchDataCommand extends Command
                 $this->profileName,
                 $this->gatewayName,
                 $this->entityName,
-                $this->credentials,
                 $offset,
                 $this->limit,
+                $this->credentials,
                 $this->catalogId,
                 $this->salesChannelId
             );
@@ -259,9 +260,9 @@ class MigrationFetchDataCommand extends Command
             $this->profileName,
             $this->gatewayName,
             $this->entityName,
-            $this->credentials,
             0,
-            0
+            0,
+            $this->credentials
         );
 
         return $this->migrationDataFetcher->getEntityTotal($migrationContext);

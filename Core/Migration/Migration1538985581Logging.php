@@ -17,14 +17,12 @@ class Migration1538985581Logging extends MigrationStep
         $sql = <<<SQL
 CREATE TABLE `swag_migration_logging` (
     `id`            BINARY(16)   NOT NULL,
-    `tenant_id`     BINARY(16)   NOT NULL,
     `run_id`        BINARY(16)   NOT NULL,
-    `run_tenant_id` BINARY(16)   NOT NULL,
-    `type`          VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+    `type`          VARCHAR(255) NOT NULL,
     `log_entry`     LONGTEXT     NOT NULL,
     `created_at`    DATETIME(3)  NOT NULL,
     `updated_at`    DATETIME(3),
-    PRIMARY KEY (`id`, `tenant_id`),
+    PRIMARY KEY (`id`),
     CHECK (JSON_VALID(`log_entry`))
 )
     ENGINE = InnoDB
@@ -36,6 +34,5 @@ SQL;
 
     public function updateDestructive(Connection $connection): void
     {
-        // implement update destructive
     }
 }

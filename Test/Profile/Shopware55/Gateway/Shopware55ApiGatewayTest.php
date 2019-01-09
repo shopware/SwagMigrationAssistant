@@ -17,13 +17,13 @@ class Shopware55ApiGatewayTest extends TestCase
             '',
             '',
             '',
+            0,
+            0,
             [
                 'endpoint' => '',
                 'apiUser' => '',
                 'apiKey' => '',
-            ],
-            0,
-            0
+            ]
         );
 
         $this->expectException(GatewayReadException::class);
@@ -40,13 +40,13 @@ class Shopware55ApiGatewayTest extends TestCase
             '',
             '',
             '',
+            0,
+            0,
             [
                 'endpoint' => '',
                 'apiUser' => '',
                 'apiKey' => '',
-            ],
-            0,
-            0
+            ]
         );
 
         $factory = new Shopware55ApiFactory();

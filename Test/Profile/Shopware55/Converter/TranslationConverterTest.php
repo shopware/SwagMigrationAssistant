@@ -76,10 +76,10 @@ class TranslationConverterTest extends TestCase
             Shopware55Profile::PROFILE_NAME,
             'local',
             'translation',
-            [],
             0,
             250,
-            '',
+            [],
+            Defaults::CATALOG,
             Defaults::SALES_CHANNEL
         );
 
@@ -89,10 +89,10 @@ class TranslationConverterTest extends TestCase
             Shopware55Profile::PROFILE_NAME,
             'local',
             ProductDefinition::getEntityName(),
-            [],
             0,
             250,
-            '',
+            [],
+            Defaults::CATALOG,
             Defaults::SALES_CHANNEL
         );
 
@@ -102,10 +102,10 @@ class TranslationConverterTest extends TestCase
             Shopware55Profile::PROFILE_NAME,
             'local',
             CategoryDefinition::getEntityName(),
-            [],
             0,
             250,
-            '',
+            [],
+            Defaults::CATALOG,
             Defaults::SALES_CHANNEL
         );
     }

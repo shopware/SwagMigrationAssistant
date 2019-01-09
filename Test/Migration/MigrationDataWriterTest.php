@@ -22,6 +22,7 @@ use SwagMigrationNext\Migration\Asset\MediaFileService;
 use SwagMigrationNext\Migration\Data\SwagMigrationDataEntity;
 use SwagMigrationNext\Migration\Logging\LogType;
 use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationNext\Migration\Service\MigrationDataWriter;
 use SwagMigrationNext\Migration\Service\MigrationDataWriterInterface;
@@ -135,6 +136,7 @@ class MigrationDataWriterTest extends TestCase
             [
                 [
                     'id' => $this->runUuid,
+                    'status' => SwagMigrationRunEntity::STATUS_RUNNING,
                     'profileId' => $this->profileUuidService->getProfileUuid(),
                 ],
             ],
@@ -195,9 +197,9 @@ class MigrationDataWriterTest extends TestCase
             Shopware55Profile::PROFILE_NAME,
             'local',
             CustomerDefinition::getEntityName(),
-            [],
             0,
             250,
+            [],
             null,
             Defaults::SALES_CHANNEL
         );
@@ -237,9 +239,9 @@ class MigrationDataWriterTest extends TestCase
             Shopware55Profile::PROFILE_NAME,
             'local',
             CustomerDefinition::getEntityName(),
-            [],
             0,
             250,
+            [],
             null,
             Defaults::SALES_CHANNEL
         );
@@ -265,9 +267,9 @@ class MigrationDataWriterTest extends TestCase
             Shopware55Profile::PROFILE_NAME,
             'local',
             CustomerDefinition::getEntityName(),
-            [],
             0,
             250,
+            [],
             null,
             Defaults::SALES_CHANNEL
         );
@@ -281,9 +283,9 @@ class MigrationDataWriterTest extends TestCase
             Shopware55Profile::PROFILE_NAME,
             'local',
             OrderDefinition::getEntityName(),
-            [],
             0,
             250,
+            [],
             null,
             Defaults::SALES_CHANNEL
         );
@@ -323,9 +325,9 @@ class MigrationDataWriterTest extends TestCase
             Shopware55Profile::PROFILE_NAME,
             'local',
             CustomerDefinition::getEntityName(),
-            [],
             0,
             250,
+            [],
             null,
             Defaults::SALES_CHANNEL
         );
@@ -349,7 +351,6 @@ class MigrationDataWriterTest extends TestCase
             Shopware55Profile::PROFILE_NAME,
             'local',
             MediaDefinition::getEntityName(),
-            [],
             0,
             250
         );
@@ -373,7 +374,6 @@ class MigrationDataWriterTest extends TestCase
             Shopware55Profile::PROFILE_NAME,
             'local',
             CategoryDefinition::getEntityName(),
-            [],
             0,
             250
         );
@@ -397,7 +397,6 @@ class MigrationDataWriterTest extends TestCase
             Shopware55Profile::PROFILE_NAME,
             'local',
             ProductDefinition::getEntityName(),
-            [],
             0,
             250
         );
@@ -422,7 +421,6 @@ class MigrationDataWriterTest extends TestCase
             Shopware55Profile::PROFILE_NAME,
             'local',
             ProductDefinition::getEntityName(),
-            [],
             0,
             250
         );
@@ -438,7 +436,6 @@ class MigrationDataWriterTest extends TestCase
             Shopware55Profile::PROFILE_NAME,
             'local',
             'translation',
-            [],
             0,
             250
         );
@@ -460,7 +457,6 @@ class MigrationDataWriterTest extends TestCase
             Shopware55Profile::PROFILE_NAME,
             'local',
             MediaDefinition::getEntityName(),
-            [],
             0,
             250
         );

@@ -51,10 +51,10 @@ class AssetConverterTest extends TestCase
             Shopware55Profile::PROFILE_NAME,
             'local',
             MediaDefinition::getEntityName(),
-            [],
             0,
             250,
-            ''
+            [],
+            Defaults::CATALOG
         );
     }
 

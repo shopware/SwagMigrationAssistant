@@ -112,9 +112,9 @@ class MigrationController extends AbstractController
             $profileName,
             $gateway,
             '',
-            $credentials,
             0,
-            0
+            0,
+            $credentials
         );
 
         $information = $this->migrationDataFetcher->getEnvironmentInformation($migrationContext);
@@ -176,9 +176,9 @@ class MigrationController extends AbstractController
             $profileName,
             $gateway,
             $entity,
-            $credentials,
             $offset,
             $limit,
+            $credentials,
             $catalogId,
             $salesChannelId
         );
@@ -215,7 +215,7 @@ class MigrationController extends AbstractController
             ]);
         }
 
-        $migrationContext = new MigrationContext($runUuid, '', '', '', $entity, [], $offset, $limit);
+        $migrationContext = new MigrationContext($runUuid, '', '', '', $entity, $offset, $limit);
         $this->migrationDataWriter->writeData($migrationContext, $context);
 
         return new JsonResponse([
@@ -302,7 +302,6 @@ class MigrationController extends AbstractController
             $profileName,
             $gateway,
             '',
-            [],
             0,
             0
         );

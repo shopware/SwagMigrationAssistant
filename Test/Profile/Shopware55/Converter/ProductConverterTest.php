@@ -66,10 +66,10 @@ class ProductConverterTest extends TestCase
             Shopware55Profile::PROFILE_NAME,
             'local',
             ProductDefinition::getEntityName(),
-            [],
             0,
             250,
-            '',
+            [],
+            Defaults::CATALOG,
             Defaults::SALES_CHANNEL
         );
     }

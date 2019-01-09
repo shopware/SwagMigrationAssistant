@@ -135,7 +135,7 @@ export class WorkerMediaFiles {
             if (entityOffset === 0) {
                 this._resetAssetProgress();
             } else {
-                this._assetTotalCount += entityOffset; // we need to add the downloaded / finished count
+                this._assetTotalCount += entityOffset; // we need to add the processed / finished count
                 this._assetProgress += entityOffset;
                 this._assetUuidPool = [];
                 this._assetWorkload = [];

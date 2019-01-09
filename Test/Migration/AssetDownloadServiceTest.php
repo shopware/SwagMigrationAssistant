@@ -16,6 +16,7 @@ use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagMigrationNext\Migration\Asset\CliAssetDownloadService;
 use SwagMigrationNext\Migration\Asset\MediaFileService;
 use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationNext\Migration\Service\MigrationDataWriter;
 use SwagMigrationNext\Migration\Service\MigrationDataWriterInterface;
@@ -88,6 +89,7 @@ class AssetDownloadServiceTest extends TestCase
             [
                 [
                     'id' => $this->runUuid,
+                    'status' => SwagMigrationRunEntity::STATUS_RUNNING,
                     'profileId' => $this->profileUuidService->getProfileUuid(),
                 ],
             ],
@@ -117,7 +119,6 @@ class AssetDownloadServiceTest extends TestCase
             Shopware55Profile::PROFILE_NAME,
             Shopware55LocalGateway::GATEWAY_TYPE,
             ProductDefinition::getEntityName(),
-            [],
             0,
             250
         );

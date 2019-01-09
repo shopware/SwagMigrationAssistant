@@ -92,6 +92,11 @@ class SwagMigrationAccessTokenService
         $userId = \mb_strtoupper($context->getSourceContext()->getUserId());
         $accessToken = $this->createMigrationAccessToken($runId, $userId, $context);
         $credentials = $this->getProfileCredentials($profileId, $context);
+
+        if (empty($credentials)) {
+            $credentials = [];
+        }
+
         $this->updateRunWithAdditionalData($runId, $credentials, $environmentInformation, $totals, $additionalData, $context);
 
         return $accessToken;
@@ -145,7 +150,7 @@ class SwagMigrationAccessTokenService
         );
     }
 
-    private function getProfileCredentials(string $profileId, Context $context): array
+    private function getProfileCredentials(string $profileId, Context $context): ?array
     {
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('id', $profileId));
@@ -203,15 +208,19 @@ class SwagMigrationAccessTokenService
         $gateway = $profile->getGateway();
         $credentials = $profile->getCredentialFields();
 
+        if (empty($credentials)) {
+            $credentials = [];
+        }
+
         $migrationContext = new MigrationContext(
             '',
             '',
             $profileName,
             $gateway,
             '',
-            $credentials,
             0,
-            0
+            0,
+            $credentials
         );
 
         return $this->migrationDataFetcher->getEnvironmentInformation($migrationContext);

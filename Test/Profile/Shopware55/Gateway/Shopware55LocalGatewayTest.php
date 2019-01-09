@@ -21,15 +21,15 @@ class Shopware55LocalGatewayTest extends TestCase
             Shopware55Profile::PROFILE_NAME,
             Shopware55LocalGateway::GATEWAY_TYPE,
             'product',
+            0,
+            0,
             [
                 'dbName' => '',
                 'dbUser' => '',
                 'dbPassword' => '',
                 'dbHost' => '',
                 'dbPort' => '',
-            ],
-            0,
-            0
+            ]
         );
 
         $factory = new Shopware55LocalFactory();
@@ -49,15 +49,15 @@ class Shopware55LocalGatewayTest extends TestCase
             Shopware55Profile::PROFILE_NAME,
             Shopware55LocalGateway::GATEWAY_TYPE,
             'foo',
+            0,
+            0,
             [
                 'dbName' => '',
                 'dbUser' => '',
                 'dbPassword' => '',
                 'dbHost' => '',
                 'dbPort' => '',
-            ],
-            0,
-            0
+            ]
         );
 
         $factory = new Shopware55LocalFactory();
@@ -84,7 +84,6 @@ class Shopware55LocalGatewayTest extends TestCase
             '',
             '',
             '',
-            [],
             0,
             0
         );

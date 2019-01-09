@@ -47,10 +47,10 @@ class ConverterRegistryTest extends TestCase
             Shopware55Profile::PROFILE_NAME,
             'local',
             'foo',
-            [],
             0,
             250,
-            ''
+            [],
+            Defaults::CATALOG
         );
         try {
             $this->converterRegistry->getConverter($migrationContext);

@@ -13,17 +13,17 @@ class SwagMigrationProfileEntity extends Entity
     use EntityIdTrait;
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $profile;
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $gateway;
 
     /**
-     * @var array
+     * @var array|null
      */
     protected $credentialFields;
 
@@ -38,16 +38,16 @@ class SwagMigrationProfileEntity extends Entity
     protected $updatedAt;
 
     /**
-     * @var SwagMigrationRunEntity[]
+     * @var SwagMigrationRunEntity[]|null
      */
     protected $runs;
 
     /**
-     * @var SwagMigrationMappingEntity[]
+     * @var SwagMigrationMappingEntity[]|null
      */
     protected $mappings;
 
-    public function getProfile(): string
+    public function getProfile(): ?string
     {
         return $this->profile;
     }
@@ -57,7 +57,7 @@ class SwagMigrationProfileEntity extends Entity
         $this->profile = $profile;
     }
 
-    public function getGateway(): string
+    public function getGateway(): ?string
     {
         return $this->gateway;
     }
@@ -67,7 +67,7 @@ class SwagMigrationProfileEntity extends Entity
         $this->gateway = $gateway;
     }
 
-    public function getCredentialFields(): array
+    public function getCredentialFields(): ?array
     {
         return $this->credentialFields;
     }
@@ -98,9 +98,9 @@ class SwagMigrationProfileEntity extends Entity
     }
 
     /**
-     * @return SwagMigrationRunEntity[]
+     * @return SwagMigrationRunEntity[]|null
      */
-    public function getRuns(): array
+    public function getRuns(): ?array
     {
         return $this->runs;
     }
@@ -114,9 +114,9 @@ class SwagMigrationProfileEntity extends Entity
     }
 
     /**
-     * @return SwagMigrationMappingEntity[]
+     * @return SwagMigrationMappingEntity[]|null
      */
-    public function getMappings(): array
+    public function getMappings(): ?array
     {
         return $this->mappings;
     }
