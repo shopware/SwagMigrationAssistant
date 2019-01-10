@@ -8,7 +8,6 @@ import './page/swag-migration-wizard-page-credentials-success';
 import './page/swag-migration-wizard-page-credentials-error';
 import './component/swag-breadcrumb';
 import './component/swag-dot-navigation';
-import './component/swag-badge';
 import './component/swag-migration-data-selector';
 import './component/swag-migration-loading-screen';
 import './component/swag-migration-loading-screen-success';

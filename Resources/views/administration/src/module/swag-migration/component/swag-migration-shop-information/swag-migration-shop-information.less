@@ -4,12 +4,18 @@
 
     .swag-migration-index__metadata {
         display: grid;
+        grid-gap: 8px;
         grid-template-columns: 120px 1fr min-content;
+
+        @media screen and (max-width: 650px) {
+            grid-template-columns: 1fr;
+        }
 
         .swag-migration-index__metadata-shop-domain {
             font-weight: 600;
             font-size: @font-size-default;
             margin-bottom: 8px;
+            white-space: nowrap;
         }
 
         .swag-migration-index__metadata-shop-domain--prefix {
@@ -34,6 +40,21 @@
                     margin-right: 0;
                 }
             }
+        }
+    }
+
+    .swag-migration-connection-status {
+        display: grid;
+        grid-template-columns: min-content 1fr;
+
+        .swag-migration-connection-status--dot {
+            margin: auto 6px auto auto;
+        }
+
+        .swag-migration-connection-status--text {
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 18px;
         }
     }
 }
