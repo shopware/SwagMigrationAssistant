@@ -129,12 +129,12 @@ class HttpAssetDownloadService extends AbstractMediaFileProcessor
 
                 if (isset($mappedWorkload[$uuid]['errorCount'])) {
                     ++$mappedWorkload[$uuid]['errorCount'];
-                    $finishedUuids[] = $uuid;
                 } else {
                     $mappedWorkload[$uuid]['errorCount'] = 1;
                 }
 
                 if ($mappedWorkload[$uuid]['errorCount'] > self::ASSET_ERROR_THRESHOLD) {
+                    $finishedUuids[] = $uuid;
                     $mappedWorkload[$uuid]['state'] = 'error';
                     $this->loggingService->addError(
                         $mappedWorkload[$uuid]['runId'],
