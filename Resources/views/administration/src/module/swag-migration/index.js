@@ -1,28 +1,7 @@
 import { Module } from 'src/core/shopware';
-import './page/swag-migration-index';
-import './page/swag-migration-main-page';
-import './page/swag-migration-history';
-import './page/swag-migration-history-detail';
-import './page/swag-migration-wizard';
-import './page/swag-migration-wizard-page-introduction';
-import './page/swag-migration-wizard-page-plugin-information';
-import './page/swag-migration-wizard-page-select-profile';
-import './page/swag-migration-wizard-page-credentials';
-import './page/swag-migration-wizard-page-credentials-success';
-import './page/swag-migration-wizard-page-credentials-error';
-import './component/swag-breadcrumb';
-import './component/swag-dot-navigation';
-import './component/swag-migration-data-selector';
-import './component/swag-migration-loading-screen';
-import './component/swag-migration-loading-screen-success';
-import './component/swag-migration-loading-screen-warning';
-import './component/swag-migration-loading-screen-failure';
-import './component/swag-migration-loading-screen-pause';
-import './component/swag-migration-loading-screen-takeover';
-import './component/swag-migration-shop-information';
-import './component/sw-progress-bar';
-import './component/sw-url-input';
-import './component/swag-migration-history-selected-data';
+
+import './component';
+import './page';
 import './extension/sw-settings-index';
 import './profile';
 
