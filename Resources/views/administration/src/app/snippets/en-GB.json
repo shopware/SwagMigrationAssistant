@@ -8,11 +8,15 @@
     },
     "wizard": {
       "title": "Data import: Preparations",
-      "buttonAbort": "Stop import",
+      "buttonAbort": "Abort",
+      "buttonLetsGo": "Let's go",
       "buttonConnect": "Connect",
-      "buttonPrev": "Back",
+      "buttonToStart": "Starting point",
+      "buttonToProfiles": "Profiles",
       "buttonNext": "Next",
       "buttonFinish": "Finish",
+      "buttonEdit": "Edit",
+      "buttonLater": "Later",
       "pathTarget": "Shopware 5:",
       "pathSettings": "Configuration",
       "pathUserManagement": "User administration",
@@ -21,20 +25,29 @@
       "pathEditUser": "“Edit user”",
       "pages": {
         "introduction": {
-          "contentTitle": "Launch Shopware Playground with your own data.",
-          "contentInformation": "Import your data from Shopware 5 to Shopware Playground and create your own experiments. Explore the possibilities of Shopware Playground with real data.",
-          "documentationLink": "Read more"
+          "contentTitle": "#PLACEHOLDER# Eine Headline Profil ändern",
+          "contentInformation": "#PLACEHOLDER# Lege ein neues Profil an oder wähle aus denen die Du schon angelegt hast."
+        },
+        "profile": {
+          "contentTitle": "#PLACEHOLDER# Eine Headline Startpunkt",
+          "contentInformation": "#PLACEHOLDER# Wähle einen Startpunkt aus um fortzufahren.",
+          "createTitle": "#PLACEHOLDER# Profil wählen",
+          "createDescription": "#PLACEHOLDER# Migrations-Profil auswählen und Verbindung herstellen.",
+          "selectTitle": "#PLACEHOLDER# Profil wechseln",
+          "selectDescription": "#PLACEHOLDER# Bestehendes Profil auswählen um Daten zu aktualisieren."
+        },
+        "profileSelect": {
+          "contentTitle": "#PLACEHOLDER# Eine Headline Profil konfigurieren",
+          "contentInformation": "#PLACEHOLDER# Wähle das System und die Schnittstelle aus, von der die Daten migriert werden sollen.",
+          "profileLabel": "#PLACEHOLDER# Profile:",
+          "profilePlaceholder": "#PLACEHOLDER# Bitte Profile auswählen",
+          "gatewayLabel": "#PLACEHOLDER# Gatway:",
+          "gatewayPlaceholder": "#PLACEHOLDER# Bitte Gateway auswählen"
         },
         "pluginInformation": {
           "contentTitle": "Plugin installation - Shopware 5 backend",
           "contentInformation": "Use your access data to log in to the Shopware 5 backend and open the plugin manager. To get started, download and activate the free plugin “Shopware Playground Connector”.",
           "pluginLink": "More information about the plugin"
-        },
-        "selectProfile": {
-          "profileLabel": "Profile:",
-          "profilePlaceholder": "Please select a profile",
-          "gatewayLabel": "Gatway:",
-          "gatewayPlaceholder": "Please select a gateway"
         },
         "credentials": {
           "emptyState": "Sorry no form for selected profile found.",
@@ -82,6 +95,11 @@
         }
       }
     },
+    "emptyScreen": {
+      "title": "#PLACEHOLDER# Keine Verbindung hergestellt",
+      "description": "#PLACEHOLDER# Stelle eine Verbindung der Systeme her, erst dann ist eine Migration möglich.<br>Weitere Informationen zum Thema findest du hier:<br><a href=\"#\">Dokumentation: Migration zu Shopware 6</a>",
+      "connectButton": "#PLACEHOLDER# Verbindung herstellen"
+    },
     "index": {
       "title": "Data import",
       "migrateButton": "Import",
@@ -96,6 +114,9 @@
         "cardTitle": "Shop system",
         "shopSystem": "Shop system:",
         "buttonEditSettings": "Edit connection",
+        "buttonCreateProfile": "Edit profile",
+        "buttonSelectProfile": "Change profile",
+        "buttonRemoveProfile": "Remove",
         "connected": "Connected",
         "notConnected": "Not connected",
         "customersAndOrders": "Customers & Orders:",

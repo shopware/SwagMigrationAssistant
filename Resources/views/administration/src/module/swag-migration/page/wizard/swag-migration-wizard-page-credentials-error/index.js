@@ -5,7 +5,7 @@ Component.register('swag-migration-wizard-page-credentials-error', {
     template,
 
     props: {
-        errorMessage: {
+        errorMessageSnippet: {
             type: String,
             default: '',
             required: false

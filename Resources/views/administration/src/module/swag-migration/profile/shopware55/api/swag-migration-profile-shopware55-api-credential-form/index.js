@@ -30,7 +30,9 @@ Component.register('swag-migration-profile-shopware55-api-credential-form', {
             immediate: true,
             handler(newCredentials) {
                 this.inputCredentials = newCredentials;
-                this.$emit('onCredentialsValidationChanged', this.areCredentialsValid(this.inputCredentials));
+                this.emitOnChildRouteReadyChanged(
+                    this.areCredentialsValid(this.inputCredentials)
+                );
             }
         },
 
@@ -52,9 +54,15 @@ Component.register('swag-migration-profile-shopware55-api-credential-form', {
             );
         },
 
+        emitOnChildRouteReadyChanged(isReady) {
+            this.$emit('onChildRouteReadyChanged', isReady);
+        },
+
         emitCredentials(newInputCredentials) {
             this.$emit('onCredentialsChanged', newInputCredentials);
-            this.$emit('onCredentialsValidationChanged', this.areCredentialsValid(newInputCredentials));
+            this.emitOnChildRouteReadyChanged(
+                this.areCredentialsValid(newInputCredentials)
+            );
         }
     }
 });

@@ -63,6 +63,10 @@ Component.register('swag-migration-shop-information', {
             return State.getStore('adminLocale');
         },
 
+        migrationGeneralSettingStore() {
+            return State.getStore('swag_migration_general_setting');
+        },
+
         shopUrl() {
             if (this.environmentInformation.sourceSystemDomain === undefined) {
                 return '';
@@ -162,6 +166,44 @@ Component.register('swag-migration-shop-information', {
                 date: this.lastMigrationDateString,
                 time: this.lastMigrationTimeString
             };
+        }
+    },
+
+    methods: {
+        onClickEditSettings() {
+            this.$router.push({
+                name: 'swag.migration.wizard.credentials',
+                params: {
+                    profile: this.profile
+                }
+            });
+        },
+
+        onClickCreateProfile() {
+            this.$router.push({
+                name: 'swag.migration.wizard.profileCreate'
+            });
+        },
+
+        onClickSelectProfile() {
+            this.$router.push({
+                name: 'swag.migration.wizard.profileSelect'
+            });
+        },
+
+        onClickRemoveProfile() {
+            this.migrationGeneralSettingStore.getList({ limit: 1 }).then((settings) => {
+                if (!settings || settings.items.length === 0) {
+                    return;
+                }
+
+                settings.items[0].selectedProfileId = null;
+                settings.items[0].save().then(() => {
+                    this.$router.push({
+                        name: 'swag.migration.emptyScreen'
+                    });
+                });
+            });
         }
     }
 });

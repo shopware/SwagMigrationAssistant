@@ -5,12 +5,9 @@ Component.register('swag-migration-wizard-page-credentials', {
     template,
 
     props: {
-        profileName: {
-            type: String
-        },
-
-        gatewayName: {
-            type: String
+        credentialsComponent: {
+            type: String,
+            default: ''
         },
 
         credentials: {
@@ -18,6 +15,12 @@ Component.register('swag-migration-wizard-page-credentials', {
             default() {
                 return {};
             }
+        }
+    },
+
+    computed: {
+        componentIsLoaded() {
+            return Component.getComponentRegistry().has(this.credentialsComponent);
         }
     }
 });

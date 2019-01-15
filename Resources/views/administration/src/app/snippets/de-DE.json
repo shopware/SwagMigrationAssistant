@@ -9,10 +9,14 @@
     "wizard": {
       "title": "Datenimport: Vorbereitung",
       "buttonAbort": "Abbrechen",
+      "buttonLetsGo": "Los geht's",
       "buttonConnect": "Verbinden",
-      "buttonPrev": "Zurück",
-      "buttonNext": "Weiter",
+      "buttonToStart": "Startpunkt",
+      "buttonToProfiles": "Profile",
+      "buttonNext": "Fortfahren",
       "buttonFinish": "Fertig",
+      "buttonEdit": "Bearbeiten",
+      "buttonLater": "Später",
       "pathTarget": "Shopware 5: ",
       "pathSettings": "Einstellungen",
       "pathUserManagement": "Benutzerverwaltung",
@@ -21,20 +25,29 @@
       "pathEditUser": "„Diesen Benutzer editieren“",
       "pages": {
         "introduction": {
-          "contentTitle": "Verbindung für den Import herstellen",
-          "contentInformation": "In den nächsten zwei Schritten wirst Du mithilfe des „Shopware Playground Connector” Plugins eine sichere Verbindung zu Deinem Shopware 5-Shop herstellen.",
-          "documentationLink": "Mehr zu diesem Thema lesen"
+          "contentTitle": "#PLATZHALTER# Eine Headline Profil ändern",
+          "contentInformation": "#PLATZHALTER# Lege ein neues Profil an oder wähle aus denen die Du schon angelegt hast."
+        },
+        "profile": {
+          "contentTitle": "#PLATZHALTER# Eine Headline Startpunkt",
+          "contentInformation": "#PLATZHALTER# Wähle einen Startpunkt aus um fortzufahren.",
+          "createTitle": "#PLATZHALTER# Profil wählen",
+          "createDescription": "#PLATZHALTER# Migrations-Profil auswählen und Verbindung herstellen.",
+          "selectTitle": "#PLATZHALTER# Profil wechseln",
+          "selectDescription": "#PLATZHALTER# Bestehendes Profil auswählen um Daten zu aktualisieren."
+        },
+        "profileSelect": {
+          "contentTitle": "#PLATZHALTER# Eine Headline Profil konfigurieren",
+          "contentInformation": "#PLATZHALTER# Wähle das System und die Schnittstelle aus, von der die Daten migriert werden sollen.",
+          "profileLabel": "#PLATZHALTER# Profile:",
+          "profilePlaceholder": "#PLATZHALTER# Bitte Profile auswählen",
+          "gatewayLabel": "#PLATZHALTER# Gatway:",
+          "gatewayPlaceholder": "#PLATZHALTER# Bitte Gateway auswählen"
         },
         "pluginInformation": {
           "contentTitle": "Plugin-Installation in Shopware 5",
           "contentInformation": "Melde Dich in Deinem Shop an und rufe den Plugin-Manager auf. Installiere und aktiviere das Plugin „Shopware Playground Connector”.",
           "pluginLink": "Mehr Infos zum Plugin"
-        },
-        "selectProfile": {
-          "profileLabel": "Profile:",
-          "profilePlaceholder": "Bitte Profile auswählen",
-          "gatewayLabel": "Gatway:",
-          "gatewayPlaceholder": "Bitte Gateway auswählen"
         },
         "credentials": {
           "emptyState": "Leider wurde kein enstprechendes Formular für dieses Profil gefunden.",
@@ -82,6 +95,11 @@
         }
       }
     },
+    "emptyScreen": {
+      "title": "#PLATZHALTER# Keine Verbindung hergestellt",
+      "description": "#PLATZHALTER# Stelle eine Verbindung der Systeme her, erst dann ist eine Migration möglich.<br>Weitere Informationen zum Thema findest du hier:<br><a href=\"#\">Dokumentation: Migration zu Shopware 6</a>",
+      "connectButton": "#PLATZHALTER# Verbindung herstellen"
+    },
     "index": {
       "title": "Datenimport",
       "migrateButton": "Importieren",
@@ -96,6 +114,9 @@
         "cardTitle": "Shopsystem",
         "shopSystem": "Shopsystem:",
         "buttonEditSettings": "Verbindung bearbeiten",
+        "buttonCreateProfile": "Profil konfigurieren",
+        "buttonSelectProfile": "Profil wechseln",
+        "buttonRemoveProfile": "Löschen",
         "connected": "Verbunden",
         "notConnected": "Nicht verbunden",
         "customersAndOrders": "Kunden & Bestellungen:",

@@ -7,44 +7,57 @@
                   :isLoading="isLoading"
                   @closeModal="onCloseModal">
 
+            {% block swag_migration_wizard_placeholder %}
+                <div class="swag-migration-wizard-placeholder" v-if="isLoading || childIsLoading"></div>
+            {% endblock %}
+
             {% block swag_migration_router_view %}
                 <router-view
+                        @onChildRouteReadyChanged="onChildRouteReadyChanged"
+                        :profileInformationComponent="profileInformationComponent"
+                        :profileSelection="profileSelection"
                         @onProfileSelected="onProfileSelected"
-                        :profileName="profile.profile"
-                        :gatewayName="profile.gateway"
-                        @onCredentialsChanged="onCredentialsChanged"
-                        @onCredentialsValidationChanged="onCredentialsValidationChanged"
-                        @onProfileSelectionValidationChanged="onProfileSelectionValidationChanged"
+                        @onProfileSelectionChanged="onProfileSelectionChanged"
+                        :credentialsComponent="credentialsComponent"
                         :credentials="profile.credentialFields"
-                        @onIsLoadingChanged="onIsLoadingChanged"
-                        :errorMessage="errorMessage">
+                        @onCredentialsChanged="onCredentialsChanged"
+                        @onIsLoadingChanged="onChildIsLoadingChanged"
+                        :errorMessageSnippet="errorMessageSnippet"
+                        v-show="!isLoading && !childIsLoading">
                 </router-view>
             {% endblock %}
 
             <template slot="modal-footer">
                 {% block swag_migration_wizard_footer %}
-                    <div></div>
 
-                    {% block swag_migration_wizard_navigation %}
-                        <swag-dot-navigation :navCount="routeCountVisible"
-                                             :navIndex="routeIndexVisible"
-                                             v-if="!editMode">
-                        </swag-dot-navigation>
-                        <div v-else></div>
+                    {% block swag_migration_wizard_arrow %}
+                        <div class="swag-migration-wizard__left-actions">
+                            <span class="swag-migration-wizard-arrow-link"
+                                  v-show="buttonArrowVisible"
+                                  @click="onButtonArrowClick">
+                                <sw-icon name="default-arrow-simple-left" small></sw-icon>
+                                <span>
+                                    {{ $tc(buttonArrowSnippet) }}
+                                </span>
+                            </span>
+                        </div>
                     {% endblock %}
 
                     {% block swag_migration_wizard_actions %}
-                        <div class="swag-migration-wizard__actions">
+                        <div class="swag-migration-wizard__right-actions">
                             {% block swag_migration_wizard_actions_previous %}
-                                <sw-button v-show="buttonPreviousVisible" size="small" @click="onPrevious"
-                                           :disabled="backButtonDisabled">
-                                    {{ buttonPreviousText }}
+                                <sw-button v-show="buttonSecondaryVisible"
+                                           size="small"
+                                           @click="onButtonSecondaryClick">
+                                    {{ $tc(buttonSecondarySnippet) }}
                                 </sw-button>
                             {% endblock %}
                             {% block swag_migration_wizard_actions_next %}
-                                <sw-button v-show="buttonNextVisible" size="small" variant="primary" @click="onNext"
-                                           :disabled="nextButtonDisabled">
-                                    {{ buttonNextText }}
+                                <sw-button size="small"
+                                           variant="primary"
+                                           @click="onButtonPrimaryClick"
+                                           :disabled="buttonPrimaryDisabled">
+                                    {{ $tc(buttonPrimarySnippet) }}
                                 </sw-button>
                             {% endblock %}
                         </div>

@@ -667,15 +667,6 @@ Component.register('swag-migration-main-page', {
             });
         },
 
-        editSettings() {
-            this.$router.push({
-                name: 'swag.migration.wizard.credentials',
-                params: {
-                    editMode: true
-                }
-            });
-        },
-
         onCloseMigrationConfirmDialog() {
             this.showMigrationConfirmDialog = false;
         },

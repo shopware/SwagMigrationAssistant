@@ -1,5 +1,6 @@
 import { Module } from 'src/core/shopware';
 
+import './mixin';
 import './component';
 import './page';
 import './extension/sw-settings-index';
@@ -15,6 +16,13 @@ Module.register('swag-migration', {
     icon: 'default-action-settings',
 
     routes: {
+        emptyScreen: {
+            component: 'swag-migration-empty-screen',
+            path: 'empty',
+            meta: {
+                parentPath: 'sw.settings.index'
+            }
+        },
         index: {
             component: 'swag-migration-index',
             path: 'index',
@@ -48,23 +56,31 @@ Module.register('swag-migration', {
                     path: 'introduction',
                     component: 'swag-migration-wizard-page-introduction'
                 },
-                plugin_information: {
-                    path: 'plugin-information',
-                    component: 'swag-migration-wizard-page-plugin-information'
+                profile: {
+                    path: 'profile',
+                    component: 'swag-migration-wizard-page-profile'
                 },
-                select_profile: {
-                    path: 'select-profile',
-                    component: 'swag-migration-wizard-page-select-profile'
+                profileCreate: {
+                    path: 'profile/create',
+                    component: 'swag-migration-wizard-page-profile-create'
+                },
+                profileSelect: {
+                    path: 'profile/select',
+                    component: 'swag-migration-wizard-page-profile-select'
+                },
+                profileInformation: {
+                    path: 'profile/information',
+                    component: 'swag-migration-wizard-page-profile-information'
                 },
                 credentials: {
                     path: 'credentials',
                     component: 'swag-migration-wizard-page-credentials'
                 },
-                credentials_success: {
+                credentialsSuccess: {
                     path: 'credentials/success',
                     component: 'swag-migration-wizard-page-credentials-success'
                 },
-                credentials_error: {
+                credentialsError: {
                     path: 'credentials/error',
                     component: 'swag-migration-wizard-page-credentials-error'
                 }

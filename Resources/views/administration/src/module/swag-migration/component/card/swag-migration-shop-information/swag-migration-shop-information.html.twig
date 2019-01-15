@@ -43,10 +43,27 @@
                                         <div class="swag-migration-index__actions">
                                             {% block swag_migration_index_card_shopInfo_actions_editSettings %}
                                                 <sw-button size="small"
-                                                           @click="$emit('onClickEditSettings')"
+                                                           @click="onClickEditSettings"
                                                            :disabled="isMigrating || isPaused || isOtherMigrationRunning">
                                                     {{ $tc('swag-migration.index.shopInfoCard.buttonEditSettings') }}
                                                 </sw-button>
+                                            {% endblock %}
+
+                                            {% block swag_migration_index_card_shopInfo_actions_contextMenu %}
+                                                <sw-context-button :disabled="isMigrating || isPaused || isOtherMigrationRunning">
+                                                    <sw-button size="small" square slot="button">
+                                                        <sw-icon name="small-more" small></sw-icon>
+                                                    </sw-button>
+                                                    <sw-context-menu-item @click="onClickCreateProfile">
+                                                        {{ $tc('swag-migration.index.shopInfoCard.buttonCreateProfile') }}
+                                                    </sw-context-menu-item>
+                                                    <sw-context-menu-item @click="onClickSelectProfile">
+                                                        {{ $tc('swag-migration.index.shopInfoCard.buttonSelectProfile') }}
+                                                    </sw-context-menu-item>
+                                                    <sw-context-menu-item variant="danger" @click="onClickRemoveProfile">
+                                                        {{ $tc('swag-migration.index.shopInfoCard.buttonRemoveProfile') }}
+                                                    </sw-context-menu-item>
+                                                </sw-context-button>
                                             {% endblock %}
                                         </div>
                                     {% endblock %}

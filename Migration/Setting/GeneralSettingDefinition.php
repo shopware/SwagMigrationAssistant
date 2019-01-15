@@ -34,7 +34,7 @@ class GeneralSettingDefinition extends EntityDefinition
     {
         return new FieldCollection([
             (new IdField('id', 'id'))->setFlags(new PrimaryKey(), new Required()),
-            (new FkField('selected_profile_id', 'selectedProfileId', SwagMigrationProfileDefinition::class))->setFlags(new Required()),
+            new FkField('selected_profile_id', 'selectedProfileId', SwagMigrationProfileDefinition::class),
             new CreatedAtField(),
             new UpdatedAtField(),
             new ManyToOneAssociationField('selectedProfile', 'selected_profile_id', SwagMigrationProfileDefinition::class, true),

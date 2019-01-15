@@ -1,0 +1,36 @@
+{% block swag_migration_wizard_page_profile %}
+    <div class="swag-migration-wizard swag-migration-wizard-page-profile">
+        {% block swag_migration_wizard_page_profile_content %}
+            <div class="swag-migration-wizard__content">
+                {% block swag_migration_wizard_page_profile_information %}
+                    <div class="content__information">
+                        {% block swag_migration_wizard_page_profile_title %}
+                            <h3 class="information__header">
+                                {{ $tc('swag-migration.wizard.pages.profile.contentTitle') }}
+                            </h3>
+                        {% endblock %}
+
+                        {% block swag_migration_wizard_page_profile_content_information %}
+                            {{ $tc('swag-migration.wizard.pages.profile.contentInformation') }}
+                        {% endblock %}
+
+                        <div class="swag-migration-wizard-page-profile__selection">
+                            <sw-radio-panel value="create-profile"
+                                            v-model="selection"
+                                            :title="$tc('swag-migration.wizard.pages.profile.createTitle')"
+                                            :description="$tc('swag-migration.wizard.pages.profile.createDescription')"
+                                            icon="default-badge-warning"
+                            ></sw-radio-panel>
+                            <sw-radio-panel value="select-profile"
+                                            v-model="selection"
+                                            :title="$tc('swag-migration.wizard.pages.profile.selectTitle')"
+                                            :description="$tc('swag-migration.wizard.pages.profile.selectDescription')"
+                                            icon="default-badge-warning">
+                            </sw-radio-panel>
+                        </div>
+                    </div>
+                {% endblock %}
+            </div>
+        {% endblock %}
+    </div>
+{% endblock %}

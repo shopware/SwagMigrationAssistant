@@ -1,8 +1,8 @@
 import { Component, State } from 'src/core/shopware';
 import CriteriaFactory from 'src/core/factory/criteria.factory';
-import template from './swag-migration-wizard-page-select-profile.html.twig';
+import template from './swag-migration-wizard-page-profile-create.html.twig';
 
-Component.register('swag-migration-wizard-page-select-profile', {
+Component.register('swag-migration-wizard-page-profile-create', {
     template,
 
     created() {
@@ -34,7 +34,7 @@ Component.register('swag-migration-wizard-page-select-profile', {
     methods: {
         createdComponent() {
             this.setIsLoading(true);
-            this.emitProfileSelectionValidation(false);
+            this.emitOnChildRouteReadyChanged(false);
 
             this.profileStore.getList({
                 aggregations: [
@@ -67,7 +67,7 @@ Component.register('swag-migration-wizard-page-select-profile', {
                         this.onSelectProfile().then(() => {
                             this.selection.gateway = profileResponse.gateway;
                             this.onSelectGateway().then(() => {
-                                this.emitProfileSelectionValidation(true);
+                                this.emitOnChildRouteReadyChanged(true);
                                 this.setIsLoading(false);
                             });
                         });
@@ -83,7 +83,7 @@ Component.register('swag-migration-wizard-page-select-profile', {
 
         onSelectProfile() {
             return new Promise((resolve) => {
-                this.emitProfileSelectionValidation(false);
+                this.emitOnChildRouteReadyChanged(false);
                 this.gateways = null;
 
                 if (this.selection.profile !== null) {
@@ -101,7 +101,7 @@ Component.register('swag-migration-wizard-page-select-profile', {
                     }).then((profiles) => {
                         this.gateways = profiles.aggregations.gatewayAgg;
                         this.selection.gateway = null;
-                        this.emitProfileSelectionValidation(false);
+                        this.emitOnChildRouteReadyChanged(false);
                         resolve();
                     });
                 }
@@ -110,7 +110,7 @@ Component.register('swag-migration-wizard-page-select-profile', {
 
         onSelectGateway() {
             return new Promise((resolve) => {
-                this.emitProfileSelectionValidation(false);
+                this.emitOnChildRouteReadyChanged(false);
 
                 const criteria = CriteriaFactory.multi(
                     'AND',
@@ -123,15 +123,15 @@ Component.register('swag-migration-wizard-page-select-profile', {
                 }).then((profile) => {
                     if (profile.total !== 0) {
                         this.$emit('onProfileSelected', profile.items[0]);
-                        this.emitProfileSelectionValidation(true);
+                        this.emitOnChildRouteReadyChanged(true);
                     }
                     resolve();
                 });
             });
         },
 
-        emitProfileSelectionValidation(validation) {
-            this.$emit('onProfileSelectionValidationChanged', validation);
+        emitOnChildRouteReadyChanged(isReady) {
+            this.$emit('onChildRouteReadyChanged', isReady);
         }
     }
 });

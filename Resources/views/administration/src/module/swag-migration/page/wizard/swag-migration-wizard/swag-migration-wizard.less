@@ -1,7 +1,10 @@
 @import "~less/variables";
 
 .swag-migration-wizard {
-    min-height: 350px;
+
+    .swag-migration-wizard-placeholder {
+        height: 500px;
+    }
 
     .swag-migration-wizard__content {
         max-width: 500px;
@@ -36,12 +39,27 @@
 
     .sw-modal__footer {
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-columns: 1fr 1fr;
         align-items: center;
         white-space: nowrap;
 
-        @media screen and (max-width: 600px) {
-            grid-template-columns: 0 1fr 1fr;
+        .swag-migration-wizard__left-actions {
+            text-align: left;
+
+            .swag-migration-wizard-arrow-link {
+                color: @color-shopware-blue;
+                padding: 6px 12px 6px 0;
+                cursor: pointer;
+                user-select: none;
+
+                &:hover {
+                    color: lighten(@color-shopware-blue, 10%);
+                }
+            }
+        }
+
+        .swag-migration-wizard__right-actions {
+            text-align: right;
         }
 
         .swag-migration-wizard__actions {
@@ -64,7 +82,7 @@
         margin-top: 32px;
     }
 
-    .content__credentials {
+    .content__credentials, .content__profileSelection {
         margin: 40px 0 30px 0;
     }
 }
