@@ -19,6 +19,7 @@ CREATE TABLE `swag_migration_media_file` (
     `id`              BINARY(16)  NOT NULL,
     `run_id`          BINARY(16)  NOT NULL,
     `uri`             LONGTEXT    NOT NULL,
+    `file_name`       LONGTEXT    NOT NULL,
     `file_size`       int(11)     UNSIGNED NOT NULL,
     `media_id`        BINARY(16)  NOT NULL,
     `written`         TINYINT(1)  NOT NULL DEFAULT '0',

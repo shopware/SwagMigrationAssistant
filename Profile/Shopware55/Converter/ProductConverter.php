@@ -489,10 +489,15 @@ class ProductConverter extends AbstractConverter
                 $this->context
             );
 
+            if (!isset($asset['media']['name'])) {
+                $asset['media']['name'] = $newMedia['id'];
+            }
+
             $this->mediaFileService->saveMediaFile(
                 [
                     'runId' => $this->runId,
                     'uri' => $asset['media']['uri'],
+                    'fileName' => $asset['media']['name'],
                     'fileSize' => (int) $asset['media']['file_size'],
                     'mediaId' => $newMedia['id'],
                 ]

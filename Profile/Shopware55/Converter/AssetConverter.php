@@ -71,10 +71,15 @@ class AssetConverter extends AbstractConverter
             $context
         );
 
+        if (!isset($data['name'])) {
+            $data['name'] = $converted['id'];
+        }
+
         $this->mediaFileService->saveMediaFile(
             [
                 'runId' => $migrationContext->getRunUuid(),
                 'uri' => $data['uri'],
+                'fileName' => $data['name'],
                 'fileSize' => (int) $data['file_size'],
                 'mediaId' => $converted['id'],
             ]

@@ -655,6 +655,7 @@ class MigrationProgressServiceTest extends TestCase
             $datasets[] = [
                 'runId' => $this->runUuid,
                 'uri' => 'meinMediaFileLink',
+                'fileName' => 'myFileName',
                 'fileSize' => 5,
                 'written' => true,
                 'processed' => $processed,

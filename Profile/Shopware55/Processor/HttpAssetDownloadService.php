@@ -160,7 +160,8 @@ class HttpAssetDownloadService extends AbstractMediaFileProcessor
 
             if ($mappedWorkload[$uuid]['state'] === 'finished') {
                 //move asset to media system
-                $this->persistFileToMedia($filePath, $uuid, (int) $additionalData['file_size'], $fileExtension, $context);
+                $filename = $this->getAssetName($assets, $uuid);
+                $this->persistFileToMedia($filePath, $uuid, $filename, (int) $additionalData['file_size'], $fileExtension, $context);
                 unlink($filePath);
                 $finishedUuids[] = $uuid;
             }
@@ -175,6 +176,20 @@ class HttpAssetDownloadService extends AbstractMediaFileProcessor
         $this->loggingService->saveLogging($context);
 
         return array_values($mappedWorkload);
+    }
+
+    /**
+     * @param SwagMigrationMediaFileEntity[] $assets
+     */
+    private function getAssetName(array $assets, string $mediaId): string
+    {
+        foreach ($assets as $asset) {
+            if ($asset->getMediaId() === $mediaId) {
+                return $asset->getFileName();
+            }
+        }
+
+        return '';
     }
 
     /**
@@ -213,11 +228,11 @@ class HttpAssetDownloadService extends AbstractMediaFileProcessor
     /**
      * @throws MediaNotFoundException
      */
-    private function persistFileToMedia(string $filePath, string $uuid, int $fileSize, string $fileExtension, Context $context): void
+    private function persistFileToMedia(string $filePath, string $uuid, string $name, int $fileSize, string $fileExtension, Context $context): void
     {
         $mimeType = mime_content_type($filePath);
         $mediaFile = new MediaFile($filePath, $mimeType, $fileExtension, $fileSize);
-        $this->fileSaver->persistFileToMedia($mediaFile, $uuid, $uuid, $context);
+        $this->fileSaver->persistFileToMedia($mediaFile, $name, $uuid, $context);
     }
 
     private function doNormalDownloadRequest(array &$workload, Client $client): ?Promise\PromiseInterface

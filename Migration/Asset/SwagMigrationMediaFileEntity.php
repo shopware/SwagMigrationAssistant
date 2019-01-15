@@ -24,6 +24,11 @@ class SwagMigrationMediaFileEntity extends Entity
     /**
      * @var string
      */
+    protected $fileName;
+
+    /**
+     * @var string
+     */
     protected $uri;
 
     /**
@@ -74,6 +79,16 @@ class SwagMigrationMediaFileEntity extends Entity
     public function setRun(SwagMigrationRunEntity $run): void
     {
         $this->run = $run;
+    }
+
+    public function getFileName(): string
+    {
+        return $this->fileName;
+    }
+
+    public function setFileName(string $fileName): void
+    {
+        $this->fileName = $fileName;
     }
 
     public function getUri(): string
