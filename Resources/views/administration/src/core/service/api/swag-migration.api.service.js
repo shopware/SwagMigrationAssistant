@@ -10,7 +10,7 @@ class MigrationApiService extends ApiService {
         const headers = this.getBasicHeaders(additionalHeaders);
 
         return this.httpClient
-            .post(`${this.getApiBasePath()}/fetch-data`, params, {
+            .post(`_action/${this.getApiBasePath()}/fetch-data`, params, {
                 headers
             })
             .then((response) => {
@@ -23,7 +23,7 @@ class MigrationApiService extends ApiService {
         const headers = this.getBasicHeaders(additionalHeaders);
 
         return this.httpClient
-            .post(`${this.getApiBasePath()}/write-data`, params, {
+            .post(`_action/${this.getApiBasePath()}/write-data`, params, {
                 headers
             })
             .then((response) => {
@@ -35,7 +35,7 @@ class MigrationApiService extends ApiService {
         const headers = this.getBasicHeaders();
 
         return this.httpClient
-            .post(`${this.getApiBasePath()}/takeover-migration`, { runUuid }, {
+            .post(`_action/${this.getApiBasePath()}/takeover-migration`, { runUuid }, {
                 headers
             })
             .then((response) => {
@@ -47,7 +47,7 @@ class MigrationApiService extends ApiService {
         const headers = this.getBasicHeaders();
 
         return this.httpClient
-            .post(`${this.getApiBasePath()}/start-migration`, { profileId }, {
+            .post(`_action/${this.getApiBasePath()}/start-migration`, { profileId }, {
                 headers
             })
             .then((response) => {
@@ -59,7 +59,7 @@ class MigrationApiService extends ApiService {
         const headers = this.getBasicHeaders();
 
         return this.httpClient
-            .post(`${this.getApiBasePath()}/check-connection`, { profileId }, {
+            .post(`_action/${this.getApiBasePath()}/check-connection`, { profileId }, {
                 headers
             })
             .then((response) => {
@@ -72,7 +72,7 @@ class MigrationApiService extends ApiService {
         const headers = this.getBasicHeaders(additionalHeaders);
 
         return this.httpClient
-            .get(`${this.getApiBasePath()}/fetch-media-uuids`, { params, headers })
+            .get(`_action/${this.getApiBasePath()}/fetch-media-uuids`, { params, headers })
             .then((response) => {
                 return ApiService.handleResponse(response);
             });
@@ -83,7 +83,7 @@ class MigrationApiService extends ApiService {
         const headers = this.getBasicHeaders(additionalHeaders);
 
         return this.httpClient
-            .post(`${this.getApiBasePath()}/download-assets`, params, {
+            .post(`_action/${this.getApiBasePath()}/download-assets`, params, {
                 headers
             })
             .then((response) => {
@@ -96,7 +96,7 @@ class MigrationApiService extends ApiService {
         const headers = this.getBasicHeaders(additionalHeaders);
 
         return this.httpClient
-            .post(`${this.getApiBasePath()}/get-state`, params, {
+            .post(`_action/${this.getApiBasePath()}/get-state`, params, {
                 headers
             })
             .then((response) => {

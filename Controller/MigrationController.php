@@ -69,7 +69,7 @@ class MigrationController extends Controller
     }
 
     /**
-     * @Route("/api/v{version}/migration/takeover-migration", name="api.admin.migration.takeover-migration", methods={"POST"})
+     * @Route("/api/v{version}/_action/migration/takeover-migration", name="api.admin.migration.takeover-migration", methods={"POST"})
      */
     public function takeoverMigration(Request $request, Context $context): JsonResponse
     {
@@ -85,7 +85,7 @@ class MigrationController extends Controller
     }
 
     /**
-     * @Route("/api/v{version}/migration/start-migration", name="api.admin.migration.start-migration", methods={"POST"})
+     * @Route("/api/v{version}/_action/migration/start-migration", name="api.admin.migration.start-migration", methods={"POST"})
      */
     public function startMigration(Request $request, Context $context): JsonResponse
     {
@@ -101,7 +101,7 @@ class MigrationController extends Controller
     }
 
     /**
-     * @Route("/api/v{version}/migration/check-connection", name="api.admin.migration.check-connection", methods={"POST"})
+     * @Route("/api/v{version}/_action/migration/check-connection", name="api.admin.migration.check-connection", methods={"POST"})
      */
     public function checkConnection(Request $request, Context $context): JsonResponse
     {
@@ -139,7 +139,7 @@ class MigrationController extends Controller
     }
 
     /**
-     * @Route("/api/v{version}/migration/fetch-data", name="api.admin.migration.fetch-data", methods={"POST"})
+     * @Route("/api/v{version}/_action/migration/fetch-data", name="api.admin.migration.fetch-data", methods={"POST"})
      *
      * @throws MigrationContextPropertyMissingException
      */
@@ -206,7 +206,7 @@ class MigrationController extends Controller
     }
 
     /**
-     * @Route("/api/v{version}/migration/write-data", name="api.admin.migration.write-data", methods={"POST"})
+     * @Route("/api/v{version}/_action/migration/write-data", name="api.admin.migration.write-data", methods={"POST"})
      *
      * @throws MigrationContextPropertyMissingException
      */
@@ -240,7 +240,7 @@ class MigrationController extends Controller
     }
 
     /**
-     * @Route("/api/v{version}/migration/fetch-media-uuids", name="api.admin.migration.fetch-media-uuids", methods={"GET"})
+     * @Route("/api/v{version}/_action/migration/fetch-media-uuids", name="api.admin.migration.fetch-media-uuids", methods={"GET"})
      */
     public function fetchMediaUuids(Request $request, Context $context): JsonResponse
     {
@@ -257,7 +257,7 @@ class MigrationController extends Controller
     }
 
     /**
-     * @Route("/api/v{version}/migration/download-assets", name="api.admin.migration.download-assets", methods={"POST"})
+     * @Route("/api/v{version}/_action/migration/download-assets", name="api.admin.migration.download-assets", methods={"POST"})
      *
      * @throws MigrationWorkloadPropertyMissingException
      */
@@ -300,7 +300,7 @@ class MigrationController extends Controller
     }
 
     /**
-     * @Route("/api/v{version}/migration/get-state", name="api.admin.migration.get-state", methods={"POST"})
+     * @Route("/api/v{version}/_action/migration/get-state", name="api.admin.migration.get-state", methods={"POST"})
      */
     public function getState(Request $request, Context $context): JsonResponse
     {
