@@ -11,6 +11,7 @@ Component.register('swag-migration-index', {
             migrateButtonVisible: false,
             migrateButtonDisabled: false,
             pauseButtonVisible: false,
+            pauseButtonDisabled: false,
             continueButtonVisible: false
         };
     },
@@ -29,6 +30,7 @@ Component.register('swag-migration-index', {
         this.migrateButtonVisible = false;
         this.migrateButtonDisabled = false;
         this.pauseButtonVisible = false;
+        this.pauseButtonDisabled = false;
         this.continueButtonVisible = false;
 
         next();

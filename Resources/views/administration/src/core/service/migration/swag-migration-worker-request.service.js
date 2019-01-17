@@ -1,4 +1,5 @@
 import { Application } from 'src/core/shopware';
+import { WORKER_INTERRUPT_TYPE } from './swag-migration-worker.service';
 
 /**
  * Describes the current API endpoint.
@@ -43,7 +44,7 @@ export class WorkerRequest {
         this._requestParams = requestParams;
         this._workerStatusManager = workerStatusManager;
         this._migrationService = migrationService;
-        this._interrupt = false;
+        this._interrupt = '';
         this._chunkSize = this._DEFAULT_CHUNK_SIZE;
 
         // callbacks
@@ -85,9 +86,6 @@ export class WorkerRequest {
      */
     set interrupt(value) {
         this._interrupt = value;
-        if (value === true) {
-            this._callInterruptCB();
-        }
     }
 
     /**
@@ -136,7 +134,7 @@ export class WorkerRequest {
      */
     _callInterruptCB() {
         if (this._onInterruptCB !== null) {
-            this._onInterruptCB();
+            this._onInterruptCB(this._interrupt);
         }
     }
 
@@ -163,11 +161,6 @@ export class WorkerRequest {
             for (let groupIndex = groupStartIndex; groupIndex < entityGroups.length; groupIndex += 1) {
                 let groupProgress = 0;
                 for (let entityIndex = 0; entityIndex < entityGroups[groupIndex].entities.length; entityIndex += 1) {
-                    if (this._interrupt) {
-                        resolve();
-                        return;
-                    }
-
                     const entityName = entityGroups[groupIndex].entities[entityIndex].entityName;
                     const entityCount = entityGroups[groupIndex].entities[entityIndex].entityCount;
 
@@ -179,6 +172,12 @@ export class WorkerRequest {
                             groupProgress,
                             entityOffset
                         );
+
+                        if (this._interrupt !== '') {
+                            this._callInterruptCB();
+                            resolve();
+                            return;
+                        }
 
                         entityOffset = 0;
                     }
@@ -207,7 +206,7 @@ export class WorkerRequest {
     async _migrateEntity(entityName, entityCount, group, groupProgress, currentOffset = 0) {
         /* eslint-disable no-await-in-loop */
         while (currentOffset < entityCount) {
-            if (this._interrupt) {
+            if (this._interrupt !== '') {
                 return;
             }
 
@@ -267,7 +266,7 @@ export class WorkerRequest {
                 }
 
                 if (!response.validToken) {
-                    this.interrupt = true;
+                    this.interrupt = WORKER_INTERRUPT_TYPE.TAKEOVER;
                     resolve();
                     return;
                 }

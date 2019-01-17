@@ -1,3 +1,5 @@
+import { WORKER_INTERRUPT_TYPE } from './swag-migration-worker.service';
+
 export class WorkerMediaFiles {
     /**
      * @param {number} status
@@ -32,7 +34,7 @@ export class WorkerMediaFiles {
         this._workerStatusManager = workerStatusManager;
         this._migrationService = migrationService;
 
-        this._interrupt = false;
+        this._interrupt = '';
         this._assetTotalCount = 0;
         this._assetUuidPool = [];
         this._assetWorkload = [];
@@ -56,9 +58,6 @@ export class WorkerMediaFiles {
      */
     set interrupt(value) {
         this._interrupt = value;
-        if (value === true) {
-            this._callInterruptCB();
-        }
     }
 
     /**
@@ -97,7 +96,7 @@ export class WorkerMediaFiles {
      */
     _callInterruptCB() {
         if (this._onInterruptCB !== null) {
-            this._onInterruptCB();
+            this._onInterruptCB(this._interrupt);
         }
     }
 
@@ -208,10 +207,6 @@ export class WorkerMediaFiles {
             this._makeWorkload(this._ASSET_WORKLOAD_COUNT);
 
             while (this._assetProgress < this._assetTotalCount) {
-                if (this._interrupt) {
-                    resolve();
-                    return;
-                }
                 // send workload to api
                 let newWorkload;
                 const beforeRequestTime = new Date();
@@ -219,6 +214,12 @@ export class WorkerMediaFiles {
                 await this._processMediaFilesWorkload().then((w) => {
                     newWorkload = w;
                 });
+
+                if (this._interrupt !== '') {
+                    this._callInterruptCB();
+                    resolve();
+                    return;
+                }
 
                 const afterRequestTime = new Date();
                 // process response and update local workload
@@ -317,7 +318,7 @@ export class WorkerMediaFiles {
                 swagMigrationAccessToken: this._accessToken
             }).then((res) => {
                 if (!res.validToken) {
-                    this.interrupt = true;
+                    this.interrupt = WORKER_INTERRUPT_TYPE.TAKEOVER;
                     resolve(this._assetWorkload);
                     return;
                 }

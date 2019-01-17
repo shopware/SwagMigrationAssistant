@@ -7,6 +7,12 @@ import { MIGRATION_STATUS, WorkerStatusManager } from './swag-migration-worker-s
 
 export const MIGRATION_ACCESS_TOKEN_NAME = 'swagMigrationAccessToken';
 
+export const WORKER_INTERRUPT_TYPE = Object.freeze({
+    TAKEOVER: 'takeover',
+    STOP: 'stop',
+    PAUSE: 'pause'
+});
+
 class MigrationWorkerService {
     /**
      * @param {MigrationApiService} migrationService
@@ -110,9 +116,9 @@ class MigrationWorkerService {
         return token;
     }
 
-    _onInterrupt() {
+    _onInterrupt(value) {
         this.isMigrating = false;
-        this._callInterruptSubscriber();
+        this._callInterruptSubscriber(value);
     }
 
     /**
@@ -262,8 +268,11 @@ class MigrationWorkerService {
     }
 
     stopMigration() {
-        this._workRunner.interrupt = true;
-        this.isMigrating = false;
+        this._workRunner.interrupt = WORKER_INTERRUPT_TYPE.STOP;
+    }
+
+    pauseMigration() {
+        this._workRunner.interrupt = WORKER_INTERRUPT_TYPE.PAUSE;
     }
 
     /**
@@ -367,9 +376,9 @@ class MigrationWorkerService {
     /**
      * @private
      */
-    _callInterruptSubscriber() {
+    _callInterruptSubscriber(value) {
         if (this._interruptSubscriber !== null) {
-            this._interruptSubscriber.call(null);
+            this._interruptSubscriber(value);
         }
     }
 
@@ -535,7 +544,7 @@ class MigrationWorkerService {
                 }
 
                 resolve(false);
-            }, 100);
+            }, 250);
         });
     }
 

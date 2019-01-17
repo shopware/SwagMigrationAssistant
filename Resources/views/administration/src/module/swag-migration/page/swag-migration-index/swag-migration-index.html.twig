@@ -21,7 +21,7 @@
                 <sw-button variant="primary" v-if="migrateButtonVisible" @click="onActionButtonClick('onMigrateButtonClick')" :disabled="migrateButtonDisabled">
                     {{ $tc('swag-migration.index.migrateButton') }}
                 </sw-button>
-                <sw-button variant="primary" v-if="pauseButtonVisible" @click="onActionButtonClick('onPauseButtonClick')">
+                <sw-button variant="primary" v-if="pauseButtonVisible" @click="onActionButtonClick('onPauseButtonClick')" :disabled="pauseButtonDisabled">
                     {{ $tc('swag-migration.index.pauseButton') }}
                 </sw-button>
                 <sw-button variant="primary" v-if="continueButtonVisible" @click="onActionButtonClick('onContinueButtonClick')">
