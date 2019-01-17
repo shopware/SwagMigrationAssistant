@@ -1,4 +1,4 @@
-import ApiService from 'src/core/service/api/api.service';
+import ApiService from 'src/core/service/api.service';
 
 class MigrationApiService extends ApiService {
     constructor(httpClient, loginService, apiEndpoint = 'migration') {
