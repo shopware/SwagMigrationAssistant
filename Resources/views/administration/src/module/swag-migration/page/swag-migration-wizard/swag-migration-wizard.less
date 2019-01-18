@@ -4,7 +4,7 @@
     min-height: 350px;
 
     .swag-migration-wizard__content {
-        width: 500px;
+        max-width: 500px;
         margin: 35px auto 0 auto;
 
         .content__information {
@@ -38,6 +38,11 @@
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
         align-items: center;
+        white-space: nowrap;
+
+        @media screen and (max-width: 600px) {
+            grid-template-columns: 0 1fr 1fr;
+        }
     }
 
     .swag-migration-wizard-page-introduction,

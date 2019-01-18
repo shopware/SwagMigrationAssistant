@@ -54,8 +54,15 @@
                             {% endblock %}
 
                             {% block swag_migration_index_card_shopInfo_metaData_connection %}
-                                <swag-badge :label="$tc('swag-migration.index.shopInfoCard.connected')" variant="success">
-                                </swag-badge>
+                                <div class="swag-migration-index__metadata_connection">
+                                    <sw-label class="swag-migration-connection-status" variant="success" pill>
+                                        <sw-color-badge class="swag-migration-connection-status--dot" variant="success" rounded>
+                                        </sw-color-badge>
+                                        <span class="swag-migration-connection-status--text">
+                                            {{ $tc('swag-migration.index.shopInfoCard.connected') }}
+                                        </span>
+                                    </sw-label>
+                                </div>
                             {% endblock %}
                         </div>
                     {% endblock %}
