@@ -31,6 +31,7 @@ use Shopware\Core\System\Country\Aggregate\CountryTranslation\CountryTranslation
 use Shopware\Core\System\Country\CountryDefinition;
 use Shopware\Core\System\Currency\Aggregate\CurrencyTranslation\CurrencyTranslationDefinition;
 use Shopware\Core\System\Currency\CurrencyDefinition;
+use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 use SwagMigrationNext\Migration\Converter\AbstractConverter;
 use SwagMigrationNext\Migration\Converter\ConvertStruct;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
@@ -313,11 +314,20 @@ class OrderConverter extends AbstractConverter
         $converted['addresses'][] = $billingAddress;
         unset($data['billingaddress']);
 
-        $salesChannel = $migrationContext->getSalesChannelId();
-        if ($salesChannel === null || $salesChannel === '') {
-            $salesChannel = Defaults::SALES_CHANNEL;
+        $converted['salesChannelId'] = Defaults::SALES_CHANNEL;
+        if (isset($data['subshopID'])) {
+            $salesChannelId = $this->mappingService->getUuid(
+                $this->profileId,
+                SalesChannelDefinition::getEntityName(),
+                $data['subshopID'],
+                $this->context
+            );
+
+            if ($salesChannelId !== null) {
+                $converted['salesChannelId'] = $salesChannelId;
+                unset($data['subshopID']);
+            }
         }
-        $converted['salesChannelId'] = $salesChannel;
 
         // Legacy data which don't need a mapping or there is no equivalent field
         unset(
@@ -338,7 +348,6 @@ class OrderConverter extends AbstractConverter
             // TODO check how to handle these
             $data['ordernumber'],
             $data['language'], // TODO use for sales channel information?
-            $data['subshopID'], // TODO use for sales channel information?
             $data['attributes'],
             $data['documents']
         );

@@ -45,11 +45,6 @@ class MigrationWriteDataCommand extends Command
     /**
      * @var string
      */
-    private $catalogId;
-
-    /**
-     * @var string
-     */
     private $runId;
 
     /**
@@ -90,7 +85,6 @@ class MigrationWriteDataCommand extends Command
     {
         $this
             ->setDescription('Writes data with the given profile')
-            ->addOption('catalog-id', 'c', InputOption::VALUE_REQUIRED)
             ->addOption('run-id', 'r', InputOption::VALUE_REQUIRED)
             ->addOption('started-run', 's', InputOption::VALUE_NONE)
             ->addOption('entity', 'y', InputOption::VALUE_REQUIRED)
@@ -131,8 +125,7 @@ class MigrationWriteDataCommand extends Command
                 $this->entityName,
                 $offset,
                 $this->limit,
-                [],
-                $this->catalogId
+                []
             );
             $this->migrationWriteService->writeData($migrationContext, $context);
 
@@ -146,8 +139,6 @@ class MigrationWriteDataCommand extends Command
 
     private function checkOptions(InputInterface $input): void
     {
-        $this->catalogId = $input->getOption('catalog-id');
-
         $this->runId = $input->getOption('run-id');
         $this->startedRunFlag = $input->getOption('started-run');
         if (!$this->runId && !$this->startedRunFlag) {

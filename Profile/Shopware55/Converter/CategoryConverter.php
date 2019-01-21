@@ -136,10 +136,6 @@ class CategoryConverter extends AbstractConverter
         );
         unset($data['id']);
 
-        if ($migrationContext->getCatalogId() !== null) {
-            $converted['catalogId'] = $migrationContext->getCatalogId();
-        }
-
         $this->helper->convertValue($converted, 'position', $data, 'position', $this->helper::TYPE_INTEGER);
         $this->helper->convertValue($converted, 'level', $data, 'level', $this->helper::TYPE_INTEGER);
         $this->helper->convertValue($converted, 'active', $data, 'active', $this->helper::TYPE_BOOLEAN);

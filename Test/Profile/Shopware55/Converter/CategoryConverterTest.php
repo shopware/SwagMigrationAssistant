@@ -59,9 +59,7 @@ class CategoryConverterTest extends TestCase
             'local',
             CategoryDefinition::getEntityName(),
             0,
-            250,
-            [],
-            Defaults::CATALOG
+            250
         );
     }
 

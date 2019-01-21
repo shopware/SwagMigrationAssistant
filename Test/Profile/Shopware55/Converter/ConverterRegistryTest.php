@@ -48,9 +48,7 @@ class ConverterRegistryTest extends TestCase
             'local',
             'foo',
             0,
-            250,
-            [],
-            Defaults::CATALOG
+            250
         );
         try {
             $this->converterRegistry->getConverter($migrationContext);

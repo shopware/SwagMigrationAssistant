@@ -9,11 +9,12 @@ use SwagMigrationNext\Exception\MigrationContextPropertyMissingException;
 use SwagMigrationNext\Exception\MigrationWorkloadPropertyMissingException;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
-use SwagMigrationNext\Migration\Run\SwagMigrationAccessTokenService;
+use SwagMigrationNext\Migration\Run\RunServiceInterface;
 use SwagMigrationNext\Migration\Service\MediaFileProcessorServiceInterface;
 use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationNext\Migration\Service\MigrationDataWriterInterface;
 use SwagMigrationNext\Migration\Service\MigrationProgressServiceInterface;
+use SwagMigrationNext\Migration\Service\SwagMigrationAccessTokenService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -50,21 +51,28 @@ class MigrationController extends AbstractController
     /**
      * @var SwagMigrationAccessTokenService
      */
-    private $migrationAccessTokenService;
+    private $accessTokenService;
+
+    /**
+     * @var RunServiceInterface
+     */
+    private $runService;
 
     public function __construct(
         MigrationDataFetcherInterface $migrationDataFetcher,
         MigrationDataWriterInterface $migrationDataWriter,
         MediaFileProcessorServiceInterface $mediaFileProcessorService,
         MigrationProgressServiceInterface $migrationProgressService,
-        SwagMigrationAccessTokenService $migrationAccessTokenService,
+        SwagMigrationAccessTokenService $accessTokenService,
+        RunServiceInterface $runService,
         EntityRepositoryInterface $migrationProfileRepo
     ) {
         $this->migrationDataFetcher = $migrationDataFetcher;
         $this->migrationDataWriter = $migrationDataWriter;
         $this->mediaFileProcessorService = $mediaFileProcessorService;
         $this->migrationProgressService = $migrationProgressService;
-        $this->migrationAccessTokenService = $migrationAccessTokenService;
+        $this->accessTokenService = $accessTokenService;
+        $this->runService = $runService;
         $this->migrationProfileRepo = $migrationProfileRepo;
     }
 
@@ -79,7 +87,7 @@ class MigrationController extends AbstractController
             throw new MigrationContextPropertyMissingException('runUuid');
         }
 
-        $accessToken = $this->migrationAccessTokenService->takeoverMigration($runUuid, $context);
+        $accessToken = $this->runService->takeoverMigration($runUuid, $context);
 
         return new JsonResponse(['accessToken' => $accessToken]);
     }
@@ -137,8 +145,6 @@ class MigrationController extends AbstractController
         $offset = $request->request->getInt('offset');
         $limit = $request->request->getInt('limit', 250);
         $credentials = $request->request->get('credentialFields', []);
-        $catalogId = $request->request->get('catalogId');
-        $salesChannelId = $request->request->get('salesChannelId');
 
         if ($runUuid === null) {
             throw new MigrationContextPropertyMissingException('runUuid');
@@ -164,7 +170,7 @@ class MigrationController extends AbstractController
             throw new MigrationContextPropertyMissingException('credentialFields');
         }
 
-        if (!$this->migrationAccessTokenService->validateMigrationAccessToken($runUuid, $request, $context)) {
+        if (!$this->accessTokenService->validateMigrationAccessToken($runUuid, $request, $context)) {
             return new JsonResponse([
                 'validToken' => false,
             ]);
@@ -178,9 +184,7 @@ class MigrationController extends AbstractController
             $entity,
             $offset,
             $limit,
-            $credentials,
-            $catalogId,
-            $salesChannelId
+            $credentials
         );
         $this->migrationDataFetcher->fetchData($migrationContext, $context);
 
@@ -209,7 +213,7 @@ class MigrationController extends AbstractController
             throw new MigrationContextPropertyMissingException('entity');
         }
 
-        if (!$this->migrationAccessTokenService->validateMigrationAccessToken($runUuid, $request, $context)) {
+        if (!$this->accessTokenService->validateMigrationAccessToken($runUuid, $request, $context)) {
             return new JsonResponse([
                 'validToken' => false,
             ]);
@@ -286,7 +290,7 @@ class MigrationController extends AbstractController
             }
         }
 
-        if (!$this->migrationAccessTokenService->validateMigrationAccessToken($runUuid, $request, $context)) {
+        if (!$this->accessTokenService->validateMigrationAccessToken($runUuid, $request, $context)) {
             return new JsonResponse([
                 'validToken' => false,
             ]);
@@ -332,7 +336,7 @@ class MigrationController extends AbstractController
         $state = null;
 
         if ($profileId !== null && $totals !== null && $additionalData !== null) {
-            $state = $this->migrationAccessTokenService->createMigrationRun($profileId, $totals, $additionalData, $context);
+            $state = $this->runService->createMigrationRun($profileId, $totals, $additionalData, $context);
         }
 
         if ($state === null) {

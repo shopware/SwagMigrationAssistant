@@ -12,6 +12,7 @@ use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Struct\Uuid;
+use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\Converter\CustomerConverter;
@@ -85,10 +86,7 @@ class OrderConverterTest extends TestCase
             'local',
             OrderDefinition::getEntityName(),
             0,
-            250,
-            [],
-            Defaults::CATALOG,
-            Defaults::SALES_CHANNEL
+            250
         );
 
         $this->customerMigrationContext = new MigrationContext(
@@ -98,9 +96,16 @@ class OrderConverterTest extends TestCase
             'local',
             CustomerDefinition::getEntityName(),
             0,
-            250,
-            [],
-            Defaults::CATALOG,
+            250
+        );
+
+        $context = Context::createDefaultContext();
+        $mappingService->createNewUuid(
+            $this->profileId,
+            SalesChannelDefinition::getEntityName(),
+            '1',
+            $context,
+            null,
             Defaults::SALES_CHANNEL
         );
     }

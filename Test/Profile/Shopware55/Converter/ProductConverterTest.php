@@ -4,7 +4,6 @@ namespace SwagMigrationNext\Test\Profile\Shopware55\Converter;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Content\Product\ProductDefinition;
-use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Struct\Uuid;
 use SwagMigrationNext\Migration\MigrationContext;
@@ -67,10 +66,7 @@ class ProductConverterTest extends TestCase
             'local',
             ProductDefinition::getEntityName(),
             0,
-            250,
-            [],
-            Defaults::CATALOG,
-            Defaults::SALES_CHANNEL
+            250
         );
     }
 

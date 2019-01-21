@@ -58,11 +58,6 @@ class ProductConverter extends AbstractConverter
     private $profileId;
 
     /**
-     * @var string|null
-     */
-    private $catalogId;
-
-    /**
      * @var string
      */
     private $runId;
@@ -124,7 +119,6 @@ class ProductConverter extends AbstractConverter
         $this->context = $context;
         $this->runId = $migrationContext->getRunUuid();
         $this->profileId = $migrationContext->getProfileId();
-        $this->catalogId = $migrationContext->getCatalogId();
         $this->oldProductId = $data['detail']['ordernumber'];
 
         $fields = $this->helper->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
@@ -160,10 +154,6 @@ class ProductConverter extends AbstractConverter
         $converted = $this->getUuidForProduct($data);
         $converted = $this->getProductData($data, $converted);
 
-        if ($this->catalogId !== null) {
-            $converted['catalogId'] = $this->catalogId;
-        }
-
         if (empty($data)) {
             $data = null;
         }
@@ -198,10 +188,6 @@ class ProductConverter extends AbstractConverter
             unset($data['detail']);
         }
 
-        if ($this->catalogId !== null) {
-            $converted['catalogId'] = $this->catalogId;
-        }
-
         if (empty($data)) {
             $data = null;
         }
@@ -228,10 +214,6 @@ class ProductConverter extends AbstractConverter
         $converted = $this->getUuidForProduct($data);
         $converted['parentId'] = $parentUuid;
         $converted = $this->getProductData($data, $converted);
-
-        if ($this->catalogId !== null) {
-            $converted['catalogId'] = $this->catalogId;
-        }
 
         if (empty($data)) {
             $data = null;

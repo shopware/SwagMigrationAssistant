@@ -7,16 +7,15 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use SwagMigrationNext\Migration\EnvironmentInformation;
+use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
 use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationNext\Migration\Service\ProgressState;
-use Symfony\Component\HttpFoundation\Request;
+use SwagMigrationNext\Migration\Service\SwagMigrationAccessTokenService;
 
-class SwagMigrationAccessTokenService
+class RunService implements RunServiceInterface
 {
-    public const ACCESS_TOKEN_NAME = 'swagMigrationAccessToken';
-
     /**
      * @var EntityRepositoryInterface
      */
@@ -32,21 +31,33 @@ class SwagMigrationAccessTokenService
      */
     private $migrationDataFetcher;
 
+    /**
+     * @var MappingServiceInterface
+     */
+    private $mappingService;
+
+    /**
+     * @var SwagMigrationAccessTokenService
+     */
+    private $accessTokenService;
+
     public function __construct(
         EntityRepositoryInterface $migrationRunRepo,
         EntityRepositoryInterface $profileRepo,
-        MigrationDataFetcherInterface $migrationDataFetcher
+        MigrationDataFetcherInterface $migrationDataFetcher,
+        MappingServiceInterface $mappingService,
+        SwagMigrationAccessTokenService $accessTokenService
     ) {
         $this->migrationRunRepo = $migrationRunRepo;
         $this->profileRepo = $profileRepo;
         $this->migrationDataFetcher = $migrationDataFetcher;
+        $this->accessTokenService = $accessTokenService;
+        $this->mappingService = $mappingService;
     }
 
     public function takeoverMigration(string $runUuid, Context $context): string
     {
-        $userId = \mb_strtoupper($context->getSourceContext()->getUserId());
-
-        return $this->createMigrationAccessToken($runUuid, $userId, $context);
+        return $this->accessTokenService->updateRunAccessToken($runUuid, $context);
     }
 
     public function createMigrationRun(string $profileId, array $totals, array $additionalData, Context $context): ?ProgressState
@@ -55,51 +66,30 @@ class SwagMigrationAccessTokenService
             return null;
         }
 
-        $runId = $this->createPlainMigrationRun($profileId, $context);
+        $runUuid = $this->createPlainMigrationRun($profileId, $context);
         $environmentInformation = $this->getEnvironmentInformation($profileId, $context);
-        $accessToken = $this->updateMigrationRun($runId, $profileId, $environmentInformation, $totals, $additionalData, $context);
+        $accessToken = $this->accessTokenService->updateRunAccessToken($runUuid, $context);
+        $this->mappingService->createSalesChannelMapping($profileId, $environmentInformation->getStructure(), $context);
+        $this->updateMigrationRun($runUuid, $profileId, $environmentInformation, $totals, $additionalData, $context);
 
-        return new ProgressState(false, true, $runId, $accessToken);
-    }
-
-    public function validateMigrationAccessToken(string $runId, Request $request, Context $context): bool
-    {
-        $databaseToken = $this->getDatabaseToken($runId, $context);
-
-        if ($databaseToken === null) {
-            return true;
-        }
-
-        if ($request->request->has(self::ACCESS_TOKEN_NAME)) {
-            $requestToken = $request->request->get(self::ACCESS_TOKEN_NAME);
-
-            if ($requestToken === $databaseToken) {
-                return true;
-            }
-        }
-
-        return false;
+        return new ProgressState(false, true, $runUuid, $accessToken);
     }
 
     private function updateMigrationRun(
-        string $runId,
+        string $runUuid,
         string $profileId,
         EnvironmentInformation $environmentInformation,
         array $totals,
         array $additionalData,
         Context $context
-    ): string {
-        $userId = \mb_strtoupper($context->getSourceContext()->getUserId());
-        $accessToken = $this->createMigrationAccessToken($runId, $userId, $context);
+    ): void {
         $credentials = $this->getProfileCredentials($profileId, $context);
 
         if (empty($credentials)) {
             $credentials = [];
         }
 
-        $this->updateRunWithAdditionalData($runId, $credentials, $environmentInformation, $totals, $additionalData, $context);
-
-        return $accessToken;
+        $this->updateRunWithAdditionalData($runUuid, $credentials, $environmentInformation, $totals, $additionalData, $context);
     }
 
     private function isMigrationRunning(Context $context): bool
@@ -126,75 +116,6 @@ class SwagMigrationAccessTokenService
         $ids = $writtenEvent->getEventByDefinition(SwagMigrationRunDefinition::class)->getIds();
 
         return array_pop($ids);
-    }
-
-    private function updateRunWithAdditionalData(
-        string $runId,
-        array $credentials,
-        EnvironmentInformation $environmentInformation,
-        array $totals,
-        array $additionalData,
-        Context $context
-    ): void {
-        $this->migrationRunRepo->update(
-            [
-                [
-                    'id' => $runId,
-                    'totals' => $totals,
-                    'environmentInformation' => $environmentInformation->jsonSerialize(),
-                    'credentialFields' => $credentials,
-                    'additionalData' => $additionalData,
-                ],
-            ],
-            $context
-        );
-    }
-
-    private function getProfileCredentials(string $profileId, Context $context): ?array
-    {
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('id', $profileId));
-        $criteria->setLimit(1);
-
-        /** @var SwagMigrationProfileEntity $profile */
-        $profile = $this->profileRepo->search($criteria, $context)->first();
-
-        return $profile->getCredentialFields();
-    }
-
-    private function createMigrationAccessToken(string $runId, string $userId, Context $context): string
-    {
-        $token = hash(
-            'sha256',
-            sprintf('%s_%s_%s', $runId, $userId, time())
-        );
-
-        $this->migrationRunRepo->update(
-          [
-            [
-                'id' => $runId,
-                'accessToken' => $token,
-                'userId' => $userId,
-            ],
-          ],
-          $context
-        );
-
-        return $token;
-    }
-
-    private function getDatabaseToken(string $runId, Context $context): ?string
-    {
-        $runCriteria = new Criteria();
-        $runCriteria->addFilter(new EqualsFilter('id', $runId));
-        /* @var SwagMigrationRunEntity $run */
-        $run = $this->migrationRunRepo->search($runCriteria, $context)->first();
-
-        if ($run === null) {
-            return null;
-        }
-
-        return $run->getAccessToken();
     }
 
     private function getEnvironmentInformation(string $profileId, Context $context): EnvironmentInformation
@@ -224,5 +145,39 @@ class SwagMigrationAccessTokenService
         );
 
         return $this->migrationDataFetcher->getEnvironmentInformation($migrationContext);
+    }
+
+    private function getProfileCredentials(string $profileId, Context $context): ?array
+    {
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('id', $profileId));
+        $criteria->setLimit(1);
+
+        /** @var SwagMigrationProfileEntity $profile */
+        $profile = $this->profileRepo->search($criteria, $context)->first();
+
+        return $profile->getCredentialFields();
+    }
+
+    private function updateRunWithAdditionalData(
+        string $runId,
+        array $credentials,
+        EnvironmentInformation $environmentInformation,
+        array $totals,
+        array $additionalData,
+        Context $context
+    ): void {
+        $this->migrationRunRepo->update(
+            [
+                [
+                    'id' => $runId,
+                    'totals' => $totals,
+                    'environmentInformation' => $environmentInformation->jsonSerialize(),
+                    'credentialFields' => $credentials,
+                    'additionalData' => $additionalData,
+                ],
+            ],
+            $context
+        );
     }
 }

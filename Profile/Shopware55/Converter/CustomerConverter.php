@@ -15,6 +15,7 @@ use Shopware\Core\System\Country\Aggregate\CountryState\CountryStateDefinition;
 use Shopware\Core\System\Country\Aggregate\CountryStateTranslation\CountryStateTranslationDefinition;
 use Shopware\Core\System\Country\Aggregate\CountryTranslation\CountryTranslationDefinition;
 use Shopware\Core\System\Country\CountryDefinition;
+use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 use SwagMigrationNext\Migration\Converter\AbstractConverter;
 use SwagMigrationNext\Migration\Converter\ConvertStruct;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
@@ -161,6 +162,21 @@ class CustomerConverter extends AbstractConverter
         $converted['id'] = $customerUuid;
         unset($data['id']);
 
+        $converted['salesChannelId'] = Defaults::SALES_CHANNEL;
+        if (isset($data['subshopID'])) {
+            $salesChannelId = $this->mappingService->getUuid(
+                $this->profileId,
+                SalesChannelDefinition::getEntityName(),
+                $data['subshopID'],
+                $this->context
+            );
+
+            if ($salesChannelId !== null) {
+                $converted['salesChannelId'] = $salesChannelId;
+                unset($data['subshopID']);
+            }
+        }
+
         $this->helper->convertValue($converted, 'password', $data, 'password');
         $this->helper->convertValue($converted, 'active', $data, 'active', $this->helper::TYPE_BOOLEAN);
         $this->helper->convertValue($converted, 'email', $data, 'email');
@@ -199,16 +215,11 @@ class CustomerConverter extends AbstractConverter
         if (isset($data['addresses'])) {
             $this->getAddresses($data, $converted, $customerUuid);
         }
-        unset($data['addresses']);
 
-        $salesChannel = $migrationContext->getSalesChannelId();
-        if ($salesChannel === null || $salesChannel === '') {
-            $salesChannel = Defaults::SALES_CHANNEL;
-        }
-        $converted['salesChannelId'] = $salesChannel;
-
-        // Legacy data which don't need a mapping or there is no equivalent field
         unset(
+            $data['addresses'],
+
+            // Legacy data which don't need a mapping or there is no equivalent field
             $data['doubleOptinRegister'],
             $data['doubleOptinEmailSentDate'],
             $data['doubleOptinConfirmDate'],
@@ -223,7 +234,6 @@ class CustomerConverter extends AbstractConverter
 
             // TODO check how to handle these
             $data['shop'], // TODO use for sales channel information?
-            $data['subshopID'], // TODO use for sales channel information?
             $data['language'], // TODO use for sales channel information?
             $data['customerlanguage'], // TODO use for sales channel information?
             $data['attributes']

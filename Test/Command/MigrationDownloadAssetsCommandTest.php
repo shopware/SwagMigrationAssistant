@@ -6,7 +6,6 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Content\Media\File\FileSaver;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagMigrationNext\Command\MigrationDownloadAssetsCommand;
 use SwagMigrationNext\Command\MigrationFetchDataCommand;
@@ -178,7 +177,6 @@ class MigrationDownloadAssetsCommandTest extends TestCase
         $output = $this->executeWriteCommand([
             '--run-id' => $runId,
             '--entity' => 'media',
-            '--catalog-id' => Uuid::uuid4()->getHex(),
         ]);
 
         $this->assertStringContainsString('Written: 23', $output);

@@ -7,7 +7,6 @@ use Shopware\Core\Checkout\Customer\CustomerDefinition;
 use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
-use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -304,8 +303,7 @@ class MigrationDataFetcherTest extends TestCase
             0,
             250,
             [],
-            null,
-            Defaults::SALES_CHANNEL
+            null
         );
 
         $this->migrationDataFetcher->fetchData($migrationContext, $context);
@@ -354,10 +352,7 @@ class MigrationDataFetcherTest extends TestCase
             'local',
             'order',
             0,
-            250,
-            [],
-            null,
-            Defaults::SALES_CHANNEL
+            250
         );
 
         $this->dummyDataFetcher->fetchData($migrationContext, $context);

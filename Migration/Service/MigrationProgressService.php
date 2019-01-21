@@ -11,7 +11,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
-use SwagMigrationNext\Migration\Run\SwagMigrationAccessTokenService;
 use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
 use Symfony\Component\HttpFoundation\Request;
 

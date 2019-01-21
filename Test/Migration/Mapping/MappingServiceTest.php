@@ -44,7 +44,9 @@ class MappingServiceTest extends TestCase
             $this->localeRepo,
             $this->getContainer()->get('language.repository'),
             $this->getContainer()->get('country.repository'),
-            $this->getContainer()->get('currency.repository')
+            $this->getContainer()->get('currency.repository'),
+            $this->getContainer()->get('sales_channel.repository'),
+            $this->getContainer()->get('sales_channel_type.repository')
         );
     }
 
@@ -71,7 +73,9 @@ class MappingServiceTest extends TestCase
             $this->localeRepo,
             $this->getContainer()->get('language.repository'),
             $this->getContainer()->get('country.repository'),
-            $this->getContainer()->get('currency.repository')
+            $this->getContainer()->get('currency.repository'),
+            $this->getContainer()->get('sales_channel.repository'),
+            $this->getContainer()->get('sales_channel_type.repository')
         );
 
         $uuid2 = $newMappingService->createNewUuid($this->profileUuidService->getProfileUuid(), 'product', '123', $context);

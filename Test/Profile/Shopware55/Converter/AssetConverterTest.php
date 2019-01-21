@@ -52,9 +52,7 @@ class AssetConverterTest extends TestCase
             'local',
             MediaDefinition::getEntityName(),
             0,
-            250,
-            [],
-            Defaults::CATALOG
+            250
         );
     }
 

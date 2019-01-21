@@ -47,16 +47,6 @@ class MigrationFetchDataCommand extends Command
     /**
      * @var string
      */
-    private $catalogId;
-
-    /**
-     * @var string
-     */
-    private $salesChannelId;
-
-    /**
-     * @var string
-     */
     private $profileName;
 
     /**
@@ -105,8 +95,6 @@ class MigrationFetchDataCommand extends Command
             ->addOption('profile', 'p', InputOption::VALUE_REQUIRED)
             ->addOption('gateway', 'g', InputOption::VALUE_REQUIRED)
             ->addOption('entity', 'y', InputOption::VALUE_REQUIRED)
-            ->addOption('catalog-id', 'c', InputOption::VALUE_REQUIRED)
-            ->addOption('sales-channel-id', 's', InputOption::VALUE_REQUIRED)
             ->addOption('limit', 'l', InputOption::VALUE_OPTIONAL)
         ;
     }
@@ -136,16 +124,6 @@ class MigrationFetchDataCommand extends Command
 
     private function checkOptions(InputInterface $input): void
     {
-        $this->catalogId = $input->getOption('catalog-id');
-        if ($this->catalogId !== null && !Uuid::isValid($this->catalogId)) {
-            throw new InvalidArgumentException('Invalid catalog uuid provided');
-        }
-
-        $this->salesChannelId = $input->getOption('sales-channel-id');
-        if ($this->salesChannelId !== null && !Uuid::isValid($this->salesChannelId)) {
-            throw new InvalidArgumentException('Invalid sales channel uuid provided');
-        }
-
         $this->profileName = $input->getOption('profile');
         if (!$this->profileName) {
             throw new InvalidArgumentException('No profile provided');
@@ -213,9 +191,7 @@ class MigrationFetchDataCommand extends Command
                 $this->entityName,
                 $offset,
                 $this->limit,
-                $this->credentials,
-                $this->catalogId,
-                $this->salesChannelId
+                $this->credentials
             );
             $importedCount = $this->migrationDataFetcher->fetchData($migrationContext, $context);
             $progressBar->advance($importedCount);

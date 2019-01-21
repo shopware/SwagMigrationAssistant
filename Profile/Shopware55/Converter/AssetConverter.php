@@ -86,10 +86,6 @@ class AssetConverter extends AbstractConverter
         );
         unset($data['uri'], $data['file_size']);
 
-        if ($migrationContext->getCatalogId() !== null) {
-            $converted['catalogId'] = $migrationContext->getCatalogId();
-        }
-
         $translation['id'] = $this->mappingService->createNewUuid(
             $profileId,
             MediaTranslationDefinition::getEntityName(),

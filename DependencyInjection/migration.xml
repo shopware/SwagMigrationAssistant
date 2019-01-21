@@ -26,13 +26,20 @@
             <argument type="service" id="language.repository"/>
             <argument type="service" id="country.repository"/>
             <argument type="service" id="currency.repository"/>
+            <argument type="service" id="sales_channel.repository"/>
+            <argument type="service" id="sales_channel_type.repository"/>
         </service>
 
-        <service id="SwagMigrationNext\Migration\Run\SwagMigrationAccessTokenService"
-                 class="SwagMigrationNext\Migration\Run\SwagMigrationAccessTokenService">
+        <service id="SwagMigrationNext\Migration\Run\RunService">
             <argument type="service" id="swag_migration_run.repository"/>
             <argument type="service" id="swag_migration_profile.repository"/>
             <argument type="service" id="SwagMigrationNext\Migration\Service\MigrationDataFetcher"/>
+            <argument type="service" id="SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService"/>
+            <argument type="service" id="SwagMigrationNext\Migration\Service\SwagMigrationAccessTokenService"/>
+        </service>
+
+        <service id="SwagMigrationNext\Migration\Service\SwagMigrationAccessTokenService">
+            <argument type="service" id="swag_migration_run.repository"/>
         </service>
 
         <service id="SwagMigrationNext\Migration\Service\MigrationDataFetcher"
@@ -75,7 +82,7 @@
             <argument type="service" id="swag_migration_data.repository"/>
             <argument type="service" id="swag_migration_media_file.repository"/>
             <argument type="service" id="swag_migration_profile.repository"/>
-            <argument type="service" id="SwagMigrationNext\Migration\Run\SwagMigrationAccessTokenService"/>
+            <argument type="service" id="SwagMigrationNext\Migration\Service\SwagMigrationAccessTokenService"/>
         </service>
 
         <service id="SwagMigrationNext\Controller\MigrationController" public="true">
@@ -83,7 +90,8 @@
             <argument type="service" id="SwagMigrationNext\Migration\Service\MigrationDataWriter"/>
             <argument type="service" id="SwagMigrationNext\Migration\Service\MediaFileProcessorService"/>
             <argument type="service" id="SwagMigrationNext\Migration\Service\MigrationProgressService"/>
-            <argument type="service" id="SwagMigrationNext\Migration\Run\SwagMigrationAccessTokenService"/>
+            <argument type="service" id="SwagMigrationNext\Migration\Service\SwagMigrationAccessTokenService"/>
+            <argument type="service" id="SwagMigrationNext\Migration\Run\RunService"/>
             <argument type="service" id="swag_migration_profile.repository"/>
         </service>
 

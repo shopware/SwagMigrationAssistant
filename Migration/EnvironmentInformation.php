@@ -22,6 +22,11 @@ class EnvironmentInformation extends Struct
     protected $sourceSystemDomain;
 
     /**
+     * @var array
+     */
+    protected $structure;
+
+    /**
      * @var int
      */
     protected $categoryTotal;
@@ -75,6 +80,7 @@ class EnvironmentInformation extends Struct
         string $sourceSystemName,
         string $sourceSystemVersion,
         string $sourceSystemDomain,
+        array $structure = [],
         int $categoryTotal = 0,
         int $productTotal = 0,
         int $customerTotal = 0,
@@ -89,6 +95,7 @@ class EnvironmentInformation extends Struct
         $this->sourceSystemName = $sourceSystemName;
         $this->sourceSystemVersion = $sourceSystemVersion;
         $this->sourceSystemDomain = $sourceSystemDomain;
+        $this->structure = $structure;
         $this->categoryTotal = $categoryTotal;
         $this->productTotal = $productTotal;
         $this->customerTotal = $customerTotal;
@@ -114,6 +121,11 @@ class EnvironmentInformation extends Struct
     public function getSourceSystemDomain(): string
     {
         return $this->sourceSystemDomain;
+    }
+
+    public function getStructure(): array
+    {
+        return $this->structure;
     }
 
     public function getProductTotal(): int

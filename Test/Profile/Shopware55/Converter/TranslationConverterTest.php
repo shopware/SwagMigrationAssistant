@@ -5,7 +5,6 @@ namespace SwagMigrationNext\Test\Profile\Shopware55\Converter;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
-use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Struct\Uuid;
 use SwagMigrationNext\Migration\MigrationContext;
@@ -77,10 +76,7 @@ class TranslationConverterTest extends TestCase
             'local',
             'translation',
             0,
-            250,
-            [],
-            Defaults::CATALOG,
-            Defaults::SALES_CHANNEL
+            250
         );
 
         $this->productMigrationContext = new MigrationContext(
@@ -90,10 +86,7 @@ class TranslationConverterTest extends TestCase
             'local',
             ProductDefinition::getEntityName(),
             0,
-            250,
-            [],
-            Defaults::CATALOG,
-            Defaults::SALES_CHANNEL
+            250
         );
 
         $this->categoryMigrationContext = new MigrationContext(
@@ -103,10 +96,7 @@ class TranslationConverterTest extends TestCase
             'local',
             CategoryDefinition::getEntityName(),
             0,
-            250,
-            [],
-            Defaults::CATALOG,
-            Defaults::SALES_CHANNEL
+            250
         );
     }
 

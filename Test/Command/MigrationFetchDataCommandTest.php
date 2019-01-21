@@ -68,14 +68,6 @@ class MigrationFetchDataCommandTest extends TestCase
         ];
     }
 
-    public function getOption(): array
-    {
-        return [
-            [['optionName' => 'catalog', 'value' => '--catalog-id']],
-            [['optionName' => 'sales channel', 'value' => '--sales-channel-id']],
-        ];
-    }
-
     public function testFetchData(): void
     {
         $output = $this->runFetchCommand([
@@ -103,24 +95,6 @@ class MigrationFetchDataCommandTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(sprintf('No %s provided', $missingOption['optionName']));
-
-        $this->runFetchCommand($options);
-    }
-
-    /**
-     * @dataProvider getOption
-     */
-    public function testFetchDataWithInvalidOption(array $option): void
-    {
-        $options = [
-            '--profile' => 'shopware55',
-            '--gateway' => 'local',
-            '--entity' => 'product',
-            $option['value'] => 'invalid-uuid',
-        ];
-
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('Invalid %s uuid provided', $option['optionName']));
 
         $this->runFetchCommand($options);
     }

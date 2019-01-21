@@ -17,11 +17,12 @@ use SwagMigrationNext\Exception\MigrationWorkloadPropertyMissingException;
 use SwagMigrationNext\Migration\Asset\MediaFileProcessorRegistry;
 use SwagMigrationNext\Migration\Asset\MediaFileService;
 use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
-use SwagMigrationNext\Migration\Run\SwagMigrationAccessTokenService;
+use SwagMigrationNext\Migration\Run\RunService;
 use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationNext\Migration\Service\MigrationDataWriter;
 use SwagMigrationNext\Migration\Service\MigrationProgressService;
 use SwagMigrationNext\Migration\Service\ProgressState;
+use SwagMigrationNext\Migration\Service\SwagMigrationAccessTokenService;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Migration\Services\MigrationProfileUuidService;
@@ -91,6 +92,9 @@ class MigrationControllerTest extends TestCase
             Context::createDefaultContext()
         );
 
+        $accessTokenService = new SwagMigrationAccessTokenService(
+            $this->runRepo
+        );
         $dataFetcher = $this->getMigrationDataFetcher(
             $this->getContainer()->get('swag_migration_data.repository'),
             $this->getContainer()->get(Shopware55MappingService::class),
@@ -109,10 +113,13 @@ class MigrationControllerTest extends TestCase
                 )
             ),
             $this->getContainer()->get(MigrationProgressService::class),
-            new SwagMigrationAccessTokenService(
+            $accessTokenService,
+            new RunService(
                 $this->runRepo,
                 $this->profileRepo,
-                $dataFetcher
+                $dataFetcher,
+                $this->getContainer()->get(Shopware55MappingService::class),
+                $accessTokenService
             ),
             $this->profileRepo
         );
@@ -219,7 +226,7 @@ class MigrationControllerTest extends TestCase
         $totalAfter = $this->runRepo->search(new Criteria(), $context)->getTotal();
         $totalAbortedAfter = $this->runRepo->search($abortedCriteria, $context)->getTotal();
         $totalProcessing = $this->runRepo->search($runningCriteria, $context)->getTotal();
-        self::assertSame('SwagMigrationNext\Migration\Service\ProgressState', $state['_class']);
+        self::assertSame(ProgressState::class, $state['_class']);
         self::assertTrue($state['migrationRunning']);
         self::assertFalse($state['validMigrationRunToken']);
         self::assertSame(ProgressState::STATUS_FETCH_DATA, $state['status']);
@@ -235,7 +242,7 @@ class MigrationControllerTest extends TestCase
         $totalAfter = $this->runRepo->search(new Criteria(), $context)->getTotal();
         $totalAbortedAfter = $this->runRepo->search($abortedCriteria, $context)->getTotal();
         $totalProcessing = $this->runRepo->search($runningCriteria, $context)->getTotal();
-        self::assertSame('SwagMigrationNext\Migration\Service\ProgressState', $state['_class']);
+        self::assertSame(ProgressState::class, $state['_class']);
         self::assertTrue($state['migrationRunning']);
         self::assertTrue($state['validMigrationRunToken']);
         self::assertSame(ProgressState::STATUS_FETCH_DATA, $state['status']);
@@ -251,7 +258,7 @@ class MigrationControllerTest extends TestCase
         $totalAfter = $this->runRepo->search(new Criteria(), $context)->getTotal();
         $totalAbortedAfter = $this->runRepo->search($abortedCriteria, $context)->getTotal();
         $totalProcessing = $this->runRepo->search($runningCriteria, $context)->getTotal();
-        self::assertSame('SwagMigrationNext\Migration\Service\ProgressState', $state['_class']);
+        self::assertSame(ProgressState::class, $state['_class']);
         self::assertFalse($state['migrationRunning']);
         self::assertTrue($state['validMigrationRunToken']);
         self::assertSame(1, $totalAfter - $totalBefore);
@@ -266,7 +273,7 @@ class MigrationControllerTest extends TestCase
         $totalAfter = $this->runRepo->search(new Criteria(), $context)->getTotal();
         $totalAbortedAfter = $this->runRepo->search($abortedCriteria, $context)->getTotal();
         $totalProcessing = $this->runRepo->search($runningCriteria, $context)->getTotal();
-        self::assertSame('SwagMigrationNext\Migration\Service\ProgressState', $state['_class']);
+        self::assertSame(ProgressState::class, $state['_class']);
         self::assertTrue($state['migrationRunning']);
         self::assertFalse($state['validMigrationRunToken']);
         self::assertSame(0, $totalAfter - $totalBefore);
@@ -288,7 +295,7 @@ class MigrationControllerTest extends TestCase
         $totalAfter = $this->runRepo->search(new Criteria(), $context)->getTotal();
         $totalAbortedAfter = $this->runRepo->search($abortedCriteria, $context)->getTotal();
         $totalProcessing = $this->runRepo->search($runningCriteria, $context)->getTotal();
-        self::assertSame('SwagMigrationNext\Migration\Service\ProgressState', $state['_class']);
+        self::assertSame(ProgressState::class, $state['_class']);
         self::assertTrue($state['migrationRunning']);
         self::assertTrue($state['validMigrationRunToken']);
         self::assertSame(0, $totalAfter - $totalBefore);
@@ -522,7 +529,7 @@ class MigrationControllerTest extends TestCase
             ],
         ];
 
-        /** @var $profileRepo RepositoryInterface */
+        /** @var $profileRepo EntityRepositoryInterface */
         $profileRepo = $this->getContainer()->get('swag_migration_profile.repository');
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('profile', 'shopware55'));
@@ -608,13 +615,13 @@ class MigrationControllerTest extends TestCase
             ],
         ];
 
-        /** @var $profileRepo RepositoryInterface */
+        /** @var $profileRepo EntityRepositoryInterface */
         $profileRepo = $this->getContainer()->get('swag_migration_profile.repository');
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('profile', 'shopware55'));
         $criteria->addFilter(new EqualsFilter('gateway', 'api'));
         $profileResult = $profileRepo->search($criteria, $context);
-        /** @var $profile SwagMigrationProfileStruct */
+        /** @var $profile SwagMigrationProfileEntity */
         $profile = $profileResult->first();
 
         $properties = [
@@ -662,6 +669,6 @@ class MigrationControllerTest extends TestCase
         $context = Context::createDefaultContext();
         $result = $this->controller->getState(new Request(), $context);
         $state = json_decode($result->getContent(), true);
-        self::assertSame('SwagMigrationNext\Migration\Service\ProgressState', $state['_class']);
+        self::assertSame(ProgressState::class, $state['_class']);
     }
 }

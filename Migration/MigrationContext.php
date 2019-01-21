@@ -46,16 +46,6 @@ class MigrationContext extends Struct
      */
     private $limit;
 
-    /**
-     * @var string
-     */
-    private $catalogId;
-
-    /**
-     * @var string
-     */
-    private $salesChannelId;
-
     public function __construct(
         string $runUuid,
         string $profileId,
@@ -64,9 +54,7 @@ class MigrationContext extends Struct
         string $entity,
         int $offset,
         int $limit,
-        array $credentials = [],
-        ?string $catalogId = null,
-        ?string $salesChannelId = null
+        array $credentials = []
     ) {
         $this->runUuid = $runUuid;
         $this->profileId = $profileId;
@@ -76,8 +64,6 @@ class MigrationContext extends Struct
         $this->credentials = $credentials;
         $this->offset = $offset;
         $this->limit = $limit;
-        $this->catalogId = $catalogId;
-        $this->salesChannelId = $salesChannelId;
     }
 
     public function getRunUuid(): string
@@ -123,15 +109,5 @@ class MigrationContext extends Struct
     public function getLimit(): int
     {
         return $this->limit;
-    }
-
-    public function getCatalogId(): ?string
-    {
-        return $this->catalogId;
-    }
-
-    public function getSalesChannelId(): ?string
-    {
-        return $this->salesChannelId;
     }
 }

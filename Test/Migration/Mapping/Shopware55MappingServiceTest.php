@@ -61,7 +61,9 @@ class Shopware55MappingServiceTest extends TestCase
             $this->getContainer()->get('payment_method.repository'),
             $this->orderStateRepo,
             $this->transactionStateRepo,
-            $this->getContainer()->get('currency.repository')
+            $this->getContainer()->get('currency.repository'),
+            $this->getContainer()->get('sales_channel.repository'),
+            $this->getContainer()->get('sales_channel_type.repository')
         );
     }
 

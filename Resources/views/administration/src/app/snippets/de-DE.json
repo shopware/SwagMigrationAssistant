@@ -118,7 +118,6 @@
           "media": "Medien"
         },
         "noData": "Es wurden keine Daten zum Importieren gefunden.",
-        "targetHeader": "Ziel",
         "gdprTitle": "Nutzungsbedingungen",
         "gdprText": "Für den Import der Daten gelten die <a target=\"_blank\" href=\"https://playground.shopware.com/terms-of-use\">Allgemeinen Nutzungsbedingungen</a> von Shopware Playground. Der Importprozess nimmt keinen Einfluss auf die Daten des Quellsystems.",
         "pluginVersionTitle": "Wichtig: Plugin-Update durchführen!",

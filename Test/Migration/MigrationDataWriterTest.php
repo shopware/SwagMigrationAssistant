@@ -9,7 +9,6 @@ use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
-use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -198,10 +197,7 @@ class MigrationDataWriterTest extends TestCase
             'local',
             CustomerDefinition::getEntityName(),
             0,
-            250,
-            [],
-            null,
-            Defaults::SALES_CHANNEL
+            250
         );
 
         $this->migrationDataFetcher->fetchData($migrationContext, $context);
@@ -240,10 +236,7 @@ class MigrationDataWriterTest extends TestCase
             'local',
             CustomerDefinition::getEntityName(),
             0,
-            250,
-            [],
-            null,
-            Defaults::SALES_CHANNEL
+            250
         );
 
         $this->migrationDataFetcher->fetchData($migrationContext, $context);
@@ -268,10 +261,7 @@ class MigrationDataWriterTest extends TestCase
             'local',
             CustomerDefinition::getEntityName(),
             0,
-            250,
-            [],
-            null,
-            Defaults::SALES_CHANNEL
+            250
         );
         $this->migrationDataFetcher->fetchData($userMigrationContext, $context);
         $this->migrationDataWriter->writeData($userMigrationContext, $context);
@@ -284,10 +274,7 @@ class MigrationDataWriterTest extends TestCase
             'local',
             OrderDefinition::getEntityName(),
             0,
-            250,
-            [],
-            null,
-            Defaults::SALES_CHANNEL
+            250
         );
 
         $criteria = new Criteria();
@@ -326,10 +313,7 @@ class MigrationDataWriterTest extends TestCase
             'local',
             CustomerDefinition::getEntityName(),
             0,
-            250,
-            [],
-            null,
-            Defaults::SALES_CHANNEL
+            250
         );
 
         $this->migrationDataFetcher->fetchData($migrationContext, $context);

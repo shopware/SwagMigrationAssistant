@@ -14,12 +14,12 @@ use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagMigrationNext\Migration\Asset\MediaFileService;
 use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
-use SwagMigrationNext\Migration\Run\SwagMigrationAccessTokenService;
 use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationNext\Migration\Service\MigrationProgressService;
 use SwagMigrationNext\Migration\Service\MigrationProgressServiceInterface;
 use SwagMigrationNext\Migration\Service\ProgressState;
+use SwagMigrationNext\Migration\Service\SwagMigrationAccessTokenService;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
@@ -148,9 +148,7 @@ class MigrationProgressServiceTest extends TestCase
             $this->mediaFileRepo,
             $this->profileRepo,
             new SwagMigrationAccessTokenService(
-                $this->runRepo,
-                $this->profileRepo,
-                $this->migrationDataFetcher
+                $this->runRepo
             )
         );
     }

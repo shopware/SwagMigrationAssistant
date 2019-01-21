@@ -50,9 +50,6 @@ Component.register('swag-migration-main-page', {
                     entityNames: ['category', 'product'], // 'translation'],
                     data: this.$tc('swag-migration.index.selectDataCard.dataPossible.categoriesAndProducts'),
                     selected: false,
-                    target: 'catalog',
-                    targets: [],
-                    targetId: '',
                     progressBar: {
                         value: 0,
                         maxValue: 0
@@ -63,9 +60,6 @@ Component.register('swag-migration-main-page', {
                     entityNames: ['customer', 'order'],
                     data: this.$tc('swag-migration.index.selectDataCard.dataPossible.customersAndOrders'),
                     selected: false,
-                    target: 'salesChannel',
-                    targets: [],
-                    targetId: '',
                     progressBar: {
                         value: 0,
                         maxValue: 0
@@ -76,9 +70,6 @@ Component.register('swag-migration-main-page', {
                     entityNames: ['media'],
                     data: this.$tc('swag-migration.index.selectDataCard.dataPossible.media'),
                     selected: false,
-                    target: 'catalog',
-                    targets: [],
-                    targetId: '',
                     progressBar: {
                         value: 0,
                         maxValue: 0
@@ -338,32 +329,7 @@ Component.register('swag-migration-main-page', {
                 });
             });
 
-            this._getPossibleTargets();
             window.addEventListener('beforeunload', this.onBrowserTabClosing.bind(this));
-        },
-
-        _getPossibleTargets() {
-            const catalogPromise = this.catalogStore.getList({});
-            const salesChannelPromise = this.salesChannelStore.getList({});
-
-            Promise.all([catalogPromise, salesChannelPromise]).then((responses) => {
-                this.catalogs = responses[0].items;
-                this.salesChannels = responses[1].items;
-
-                this.tableData.forEach((tableItem) => {
-                    if (tableItem.target === 'catalog') {
-                        tableItem.targets = this.catalogs;
-                    } else if (tableItem.target === 'salesChannel') {
-                        tableItem.targets = this.salesChannels;
-                    } else {
-                        tableItem.targets = [];
-                    }
-
-                    if (tableItem.targets.length !== 0) {
-                        tableItem.targetId = tableItem.targets[0].id;
-                    }
-                });
-            });
         },
 
         restoreRunningMigration() {
@@ -461,7 +427,7 @@ Component.register('swag-migration-main-page', {
                     this.isPaused = false;
 
                     if (runState.isMigrationAccessTokenValid === false) {
-                        this.onInterrupt();
+                        this.onInterrupt(WORKER_INTERRUPT_TYPE.TAKEOVER);
                         this.isOtherInstanceFetching = (runState.status === MIGRATION_STATUS.FETCH_DATA);
                         return;
                     }
@@ -523,8 +489,6 @@ Component.register('swag-migration-main-page', {
          *                  entityCount: 4
          *              }
          *          ],
-         *          targetId: "20080911ffff4fffafffffff19830531",
-         *          target: "salesChannel"
          *          count: 6
          *          progress: 6
          *      },
@@ -551,9 +515,7 @@ Component.register('swag-migration-main-page', {
                         id: data.id,
                         entities: entities,
                         progress: 0,
-                        count: groupCount,
-                        targetId: data.targetId,
-                        target: data.target
+                        count: groupCount
                     });
                 }
             });
@@ -572,7 +534,7 @@ Component.register('swag-migration-main-page', {
             this.showMigrationConfirmDialog = false;
             this.setIsMigrating(true);
             this.checkSelectedData();
-            this.statusIndex = 0;
+            this.statusIndex = MIGRATION_STATUS.PREMAPPING;
             this.errorList = [];
 
             // show loading screen
@@ -622,7 +584,6 @@ Component.register('swag-migration-main-page', {
                 }
 
                 localStorage.setItem(MIGRATION_ACCESS_TOKEN_NAME, runState.accessToken);
-
                 this.migrationWorkerService.subscribeStatus(this.onStatus.bind(this));
                 this.migrationWorkerService.subscribeProgress(this.onProgress.bind(this));
                 this.migrationWorkerService.subscribeInterrupt(this.onInterrupt.bind(this));

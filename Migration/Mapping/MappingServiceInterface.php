@@ -26,4 +26,6 @@ interface MappingServiceInterface
     public function deleteMapping(string $entityUuid, string $profileId, Context $context): void;
 
     public function writeMapping(Context $context): void;
+
+    public function createSalesChannelMapping(string $profileId, array $structure, Context $context): void;
 }

@@ -108,4 +108,9 @@ class DummyMappingService extends Shopware55MappingService
     {
         return null;
     }
+
+    public function getPrivateUuidArray(): array
+    {
+        return $this->uuids;
+    }
 }

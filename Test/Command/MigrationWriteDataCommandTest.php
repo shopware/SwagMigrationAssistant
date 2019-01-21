@@ -9,7 +9,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Struct\Serializer\StructNormalizer;
-use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagMigrationNext\Command\MigrationFetchDataCommand;
 use SwagMigrationNext\Command\MigrationWriteDataCommand;
@@ -143,7 +142,6 @@ class MigrationWriteDataCommandTest extends TestCase
         $output = $this->executeWriteCommand([
             '--run-id' => $runId,
             '--entity' => 'product',
-            '--catalog-id' => Uuid::uuid4()->getHex(),
             '--limit' => 100,
         ]);
 
