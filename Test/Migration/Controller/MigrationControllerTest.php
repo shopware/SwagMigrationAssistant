@@ -5,7 +5,7 @@ namespace SwagMigrationNext\Test\Migration\Controller;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Struct\Uuid;
@@ -49,7 +49,7 @@ class MigrationControllerTest extends TestCase
     private $profileUuidService;
 
     /**
-     * @var RepositoryInterface
+     * @var EntityRepositoryInterface
      */
     private $runRepo;
 
@@ -151,7 +151,7 @@ class MigrationControllerTest extends TestCase
     {
         $context = Context::createDefaultContext();
 
-        /** @var $profileRepo RepositoryInterface */
+        /** @var $profileRepo EntityRepositoryInterface */
         $profileRepo = $this->getContainer()->get('swag_migration_profile.repository');
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('profile', 'shopware55'));
@@ -193,7 +193,7 @@ class MigrationControllerTest extends TestCase
     {
         $context = Context::createDefaultContext();
 
-        /** @var $profileRepo RepositoryInterface */
+        /** @var $profileRepo EntityRepositoryInterface */
         $profileRepo = $this->getContainer()->get('swag_migration_profile.repository');
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('profile', 'shopware55'));
@@ -247,7 +247,7 @@ class MigrationControllerTest extends TestCase
     {
         $context = Context::createDefaultContext();
 
-        /** @var $profileRepo RepositoryInterface */
+        /** @var $profileRepo EntityRepositoryInterface */
         $profileRepo = $this->getContainer()->get('swag_migration_profile.repository');
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('profile', 'shopware55'));

@@ -5,7 +5,7 @@ namespace SwagMigrationNext\Migration\Service;
 use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
@@ -20,7 +20,7 @@ use SwagMigrationNext\Migration\Writer\WriterRegistryInterface;
 class MigrationDataWriter implements MigrationDataWriterInterface
 {
     /**
-     * @var RepositoryInterface
+     * @var EntityRepositoryInterface
      */
     private $migrationDataRepo;
 
@@ -40,7 +40,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
     private $mediaFileService;
 
     public function __construct(
-        RepositoryInterface $migrationDataRepo,
+        EntityRepositoryInterface $migrationDataRepo,
         WriterRegistryInterface $writerRegistry,
         MediaFileServiceInterface $mediaFileService,
         LoggingServiceInterface $loggingService

@@ -4,16 +4,16 @@ namespace SwagMigrationNext\Migration\Writer;
 
 use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 
 class CategoryWriter implements WriterInterface
 {
     /**
-     * @var RepositoryInterface
+     * @var EntityRepositoryInterface
      */
     private $categoryRepository;
 
-    public function __construct(RepositoryInterface $categoryRepository)
+    public function __construct(EntityRepositoryInterface $categoryRepository)
     {
         $this->categoryRepository = $categoryRepository;
     }

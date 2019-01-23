@@ -6,7 +6,7 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderState\OrderStateEntity;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransactionState\OrderTransactionStateEntity;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use SwagMigrationNext\Migration\Mapping\MappingService;
@@ -14,29 +14,29 @@ use SwagMigrationNext\Migration\Mapping\MappingService;
 class Shopware55MappingService extends MappingService
 {
     /**
-     * @var RepositoryInterface
+     * @var EntityRepositoryInterface
      */
     private $paymentRepository;
 
     /**
-     * @var RepositoryInterface
+     * @var EntityRepositoryInterface
      */
     private $orderStateRepository;
 
     /**
-     * @var RepositoryInterface
+     * @var EntityRepositoryInterface
      */
     private $transactionStateRepository;
 
     public function __construct(
-        RepositoryInterface $migrationMappingRepo,
-        RepositoryInterface $localeRepository,
-        RepositoryInterface $languageRepository,
-        RepositoryInterface $countryRepository,
-        RepositoryInterface $paymentRepository,
-        RepositoryInterface $orderStateRepository,
-        RepositoryInterface $transactionStateRepository,
-        RepositoryInterface $currencyRepository
+        EntityRepositoryInterface $migrationMappingRepo,
+        EntityRepositoryInterface $localeRepository,
+        EntityRepositoryInterface $languageRepository,
+        EntityRepositoryInterface $countryRepository,
+        EntityRepositoryInterface $paymentRepository,
+        EntityRepositoryInterface $orderStateRepository,
+        EntityRepositoryInterface $transactionStateRepository,
+        EntityRepositoryInterface $currencyRepository
     ) {
         parent::__construct(
             $migrationMappingRepo,

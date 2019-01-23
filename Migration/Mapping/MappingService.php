@@ -3,7 +3,7 @@
 namespace SwagMigrationNext\Migration\Mapping;
 
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Struct\Uuid;
@@ -18,22 +18,22 @@ use SwagMigrationNext\Exception\LocaleNotFoundException;
 class MappingService implements MappingServiceInterface
 {
     /**
-     * @var RepositoryInterface
+     * @var EntityRepositoryInterface
      */
     protected $migrationMappingRepo;
 
     /**
-     * @var RepositoryInterface
+     * @var EntityRepositoryInterface
      */
     protected $localeRepository;
 
     /**
-     * @var RepositoryInterface
+     * @var EntityRepositoryInterface
      */
     protected $languageRepository;
 
     /**
-     * @var RepositoryInterface
+     * @var EntityRepositoryInterface
      */
     protected $countryRepository;
 
@@ -42,16 +42,16 @@ class MappingService implements MappingServiceInterface
     protected $writeArray = [];
 
     /**
-     * @var RepositoryInterface
+     * @var EntityRepositoryInterface
      */
     private $currencyRepository;
 
     public function __construct(
-        RepositoryInterface $migrationMappingRepo,
-        RepositoryInterface $localeRepository,
-        RepositoryInterface $languageRepository,
-        RepositoryInterface $countryRepository,
-        RepositoryInterface $currencyRepository
+        EntityRepositoryInterface $migrationMappingRepo,
+        EntityRepositoryInterface $localeRepository,
+        EntityRepositoryInterface $languageRepository,
+        EntityRepositoryInterface $countryRepository,
+        EntityRepositoryInterface $currencyRepository
     ) {
         $this->migrationMappingRepo = $migrationMappingRepo;
         $this->localeRepository = $localeRepository;

@@ -7,12 +7,12 @@ use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagMigrationNext\Migration\Asset\MediaFileService;
-use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationNext\Migration\Run\SwagMigrationAccessTokenService;
+use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationNext\Migration\Service\MigrationProgressService;
 use SwagMigrationNext\Migration\Service\MigrationProgressServiceInterface;
@@ -29,27 +29,27 @@ class MigrationProgressServiceTest extends TestCase
         IntegrationTestBehaviour;
 
     /**
-     * @var RepositoryInterface
+     * @var EntityRepositoryInterface
      */
     private $runRepo;
 
     /**
-     * @var RepositoryInterface
+     * @var EntityRepositoryInterface
      */
     private $profileRepo;
 
     /**
-     * @var RepositoryInterface
+     * @var EntityRepositoryInterface
      */
     private $dataRepo;
 
     /**
-     * @var RepositoryInterface
+     * @var EntityRepositoryInterface
      */
     private $loggingRepo;
 
     /**
-     * @var RepositoryInterface
+     * @var EntityRepositoryInterface
      */
     private $mediaFileRepo;
 
