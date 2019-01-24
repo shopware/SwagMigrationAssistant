@@ -5,7 +5,7 @@ namespace SwagMigrationNext\Test;
 use Shopware\Core\Checkout\Cart\Price\PriceRounding;
 use Shopware\Core\Checkout\Cart\Tax\TaxCalculator;
 use Shopware\Core\Checkout\Cart\Tax\TaxRuleCalculator;
-use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use SwagMigrationNext\Migration\Asset\MediaFileServiceInterface;
 use SwagMigrationNext\Migration\Converter\ConverterRegistry;
 use SwagMigrationNext\Migration\Gateway\GatewayFactoryRegistry;
@@ -30,10 +30,10 @@ use SwagMigrationNext\Test\Mock\Profile\Dummy\DummyInvalidCustomerConverter;
 trait MigrationServicesTrait
 {
     protected function getMigrationDataFetcher(
-        RepositoryInterface $migrationDataRepo,
+        EntityRepositoryInterface $migrationDataRepo,
         Shopware55MappingService $mappingService,
         MediaFileServiceInterface $mediaFileService,
-        RepositoryInterface $loggingRepo
+        EntityRepositoryInterface $loggingRepo
     ): MigrationDataFetcherInterface {
         $loggingService = new LoggingService($loggingRepo);
         $priceRounding = new PriceRounding(2);

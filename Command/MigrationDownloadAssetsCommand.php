@@ -4,7 +4,7 @@ namespace SwagMigrationNext\Command;
 
 use InvalidArgumentException;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use SwagMigrationNext\Command\Event\MigrationAssetDownloadAdvanceEvent;
@@ -32,12 +32,12 @@ class MigrationDownloadAssetsCommand extends Command implements EventSubscriberI
     private $assetDownloadService;
 
     /**
-     * @var RepositoryInterface
+     * @var EntityRepositoryInterface
      */
     private $migrationRunRepo;
 
     /**
-     * @var RepositoryInterface
+     * @var EntityRepositoryInterface
      */
     private $mediaFileRepo;
 
@@ -53,8 +53,8 @@ class MigrationDownloadAssetsCommand extends Command implements EventSubscriberI
 
     public function __construct(
         CliAssetDownloadServiceInterface $cliAssetDownloadService,
-        RepositoryInterface $migrationRunRepo,
-        RepositoryInterface $mediaFileRepo
+        EntityRepositoryInterface $migrationRunRepo,
+        EntityRepositoryInterface $mediaFileRepo
     ) {
         parent::__construct();
 

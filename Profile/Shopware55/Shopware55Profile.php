@@ -9,8 +9,8 @@ use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenContainerEvent;
-use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
 use SwagMigrationNext\Migration\Asset\MediaFileServiceInterface;
 use SwagMigrationNext\Migration\Converter\ConverterInterface;
 use SwagMigrationNext\Migration\Converter\ConverterRegistryInterface;
@@ -30,7 +30,7 @@ class Shopware55Profile implements ProfileInterface
     public const SOURCE_SYSTEM_NAME = 'Shopware';
 
     /**
-     * @var RepositoryInterface
+     * @var EntityRepositoryInterface
      */
     private $migrationDataRepo;
 
@@ -50,7 +50,7 @@ class Shopware55Profile implements ProfileInterface
     private $loggingService;
 
     public function __construct(
-        RepositoryInterface $migrationDataRepo,
+        EntityRepositoryInterface $migrationDataRepo,
         ConverterRegistryInterface $converterRegistry,
         MediaFileServiceInterface $mediaFileService,
         LoggingServiceInterface $loggingService

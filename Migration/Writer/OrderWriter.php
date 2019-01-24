@@ -4,13 +4,13 @@ namespace SwagMigrationNext\Migration\Writer;
 
 use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Struct\Serializer\StructNormalizer;
 
 class OrderWriter implements WriterInterface
 {
     /**
-     * @var RepositoryInterface
+     * @var EntityRepositoryInterface
      */
     private $orderRepository;
 
@@ -19,7 +19,7 @@ class OrderWriter implements WriterInterface
      */
     private $structNormalizer;
 
-    public function __construct(RepositoryInterface $orderRepository, StructNormalizer $structNormalizer)
+    public function __construct(EntityRepositoryInterface $orderRepository, StructNormalizer $structNormalizer)
     {
         $this->orderRepository = $orderRepository;
         $this->structNormalizer = $structNormalizer;

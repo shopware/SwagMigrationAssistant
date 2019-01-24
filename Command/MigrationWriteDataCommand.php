@@ -4,7 +4,7 @@ namespace SwagMigrationNext\Command;
 
 use InvalidArgumentException;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
@@ -29,17 +29,17 @@ class MigrationWriteDataCommand extends ContainerAwareCommand
     private $migrationWriteService;
 
     /**
-     * @var RepositoryInterface
+     * @var EntityRepositoryInterface
      */
     private $migrationRunRepo;
 
     /**
-     * @var RepositoryInterface
+     * @var EntityRepositoryInterface
      */
     private $migrationDataRepo;
 
     /**
-     * @var RepositoryInterface
+     * @var EntityRepositoryInterface
      */
     private $mediaFileRepo;
 
@@ -75,9 +75,9 @@ class MigrationWriteDataCommand extends ContainerAwareCommand
 
     public function __construct(
         MigrationDataWriterInterface $migrationWriteService,
-        RepositoryInterface $migrationRunRepo,
-        RepositoryInterface $migrationDataRepo,
-        RepositoryInterface $mediaFileRepo,
+        EntityRepositoryInterface $migrationRunRepo,
+        EntityRepositoryInterface $migrationDataRepo,
+        EntityRepositoryInterface $mediaFileRepo,
         ?string $name = null
     ) {
         parent::__construct($name);

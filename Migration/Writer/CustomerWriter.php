@@ -4,16 +4,16 @@ namespace SwagMigrationNext\Migration\Writer;
 
 use Shopware\Core\Checkout\Customer\CustomerDefinition;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 
 class CustomerWriter implements WriterInterface
 {
     /**
-     * @var RepositoryInterface
+     * @var EntityRepositoryInterface
      */
     private $customerRepository;
 
-    public function __construct(RepositoryInterface $customerRepository)
+    public function __construct(EntityRepositoryInterface $customerRepository)
     {
         $this->customerRepository = $customerRepository;
     }

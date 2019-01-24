@@ -3,7 +3,7 @@
 namespace SwagMigrationNext\Migration\Run;
 
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,12 +13,12 @@ class SwagMigrationAccessTokenService
     public const ACCESS_TOKEN_NAME = 'swagMigrationAccessToken';
 
     /**
-     * @var RepositoryInterface
+     * @var EntityRepositoryInterface
      */
     private $migrationRunRepo;
 
     public function __construct(
-        RepositoryInterface $migrationRunRepo
+        EntityRepositoryInterface $migrationRunRepo
     ) {
         $this->migrationRunRepo = $migrationRunRepo;
     }

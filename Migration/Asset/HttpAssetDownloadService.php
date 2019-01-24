@@ -12,7 +12,7 @@ use Shopware\Core\Content\Media\Exception\UploadException;
 use Shopware\Core\Content\Media\File\FileSaver;
 use Shopware\Core\Content\Media\File\MediaFile;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
@@ -31,7 +31,7 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
     private $fileSaver;
 
     /**
-     * @var RepositoryInterface
+     * @var EntityRepositoryInterface
      */
     private $mediaFileRepo;
 
@@ -41,7 +41,7 @@ class HttpAssetDownloadService implements HttpAssetDownloadServiceInterface
     private $loggingService;
 
     public function __construct(
-        RepositoryInterface $migrationMediaFileRepo,
+        EntityRepositoryInterface $migrationMediaFileRepo,
         FileSaver $fileSaver,
         LoggingServiceInterface $loggingService
     ) {

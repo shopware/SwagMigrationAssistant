@@ -3,7 +3,7 @@
 namespace SwagMigrationNext\Migration\Logging;
 
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 
 class LoggingService implements LoggingServiceInterface
 {
@@ -17,11 +17,11 @@ class LoggingService implements LoggingServiceInterface
     protected $logging = [];
 
     /**
-     * @var RepositoryInterface
+     * @var EntityRepositoryInterface
      */
     private $loggingRepo;
 
-    public function __construct(RepositoryInterface $loggingRepo)
+    public function __construct(EntityRepositoryInterface $loggingRepo)
     {
         $this->loggingRepo = $loggingRepo;
     }

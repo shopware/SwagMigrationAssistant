@@ -3,7 +3,7 @@
 namespace SwagMigrationNext\Migration\Service;
 
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\CountAggregation;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\ValueCountAggregation;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -12,23 +12,23 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use SwagMigrationNext\Migration\Run\SwagMigrationAccessTokenService;
-use Symfony\Component\HttpFoundation\Request;
 use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
+use Symfony\Component\HttpFoundation\Request;
 
 class MigrationProgressService implements MigrationProgressServiceInterface
 {
     /**
-     * @var RepositoryInterface
+     * @var EntityRepositoryInterface
      */
     private $migrationRunRepository;
 
     /**
-     * @var RepositoryInterface
+     * @var EntityRepositoryInterface
      */
     private $migrationDataRepository;
 
     /**
-     * @var RepositoryInterface
+     * @var EntityRepositoryInterface
      */
     private $migrationMediaFileRepository;
 
@@ -48,9 +48,9 @@ class MigrationProgressService implements MigrationProgressServiceInterface
     private $validMigrationAccessToken = false;
 
     public function __construct(
-        RepositoryInterface $migrationRunRepository,
-        RepositoryInterface $migrationDataRepository,
-        RepositoryInterface $migrationMediaFileRepository,
+        EntityRepositoryInterface $migrationRunRepository,
+        EntityRepositoryInterface $migrationDataRepository,
+        EntityRepositoryInterface $migrationMediaFileRepository,
         SwagMigrationAccessTokenService $migrationAccessTokenService
     ) {
         $this->migrationRunRepository = $migrationRunRepository;

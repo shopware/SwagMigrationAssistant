@@ -10,7 +10,7 @@ use Shopware\Core\Content\Media\Exception\MediaNotFoundException;
 use Shopware\Core\Content\Media\File\FileSaver;
 use Shopware\Core\Content\Media\File\MediaFile;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
@@ -38,7 +38,7 @@ class CliAssetDownloadService implements CliAssetDownloadServiceInterface
     private const CHUNK_INCREMENT = 256 * 1024;
 
     /**
-     * @var RepositoryInterface
+     * @var EntityRepositoryInterface
      */
     private $mediaFileRepo;
 
@@ -68,7 +68,7 @@ class CliAssetDownloadService implements CliAssetDownloadServiceInterface
     private $skippedAssetCount = 0;
 
     public function __construct(
-        RepositoryInterface $mediaFileRepo,
+        EntityRepositoryInterface $mediaFileRepo,
         FileSaver $fileSaver,
         EventDispatcherInterface $event,
         LoggerInterface $logger

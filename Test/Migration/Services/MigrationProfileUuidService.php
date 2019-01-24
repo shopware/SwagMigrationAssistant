@@ -3,12 +3,12 @@
 namespace SwagMigrationNext\Test\Migration\Services;
 
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Api\Shopware55ApiGateway;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
-use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
 
 class MigrationProfileUuidService
 {
@@ -18,7 +18,7 @@ class MigrationProfileUuidService
     private $profileUuid;
 
     /**
-     * @var RepositoryInterface
+     * @var EntityRepositoryInterface
      */
     private $profileRepository;
 
@@ -33,7 +33,7 @@ class MigrationProfileUuidService
     private $gateway;
 
     public function __construct(
-        RepositoryInterface $profileRepository,
+        EntityRepositoryInterface $profileRepository,
         $profile = Shopware55Profile::PROFILE_NAME,
         $gateway = Shopware55ApiGateway::GATEWAY_TYPE
     ) {

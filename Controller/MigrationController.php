@@ -3,8 +3,8 @@
 namespace SwagMigrationNext\Controller;
 
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\Read\ReadCriteria;
-use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use SwagMigrationNext\Exception\MigrationContextPropertyMissingException;
 use SwagMigrationNext\Exception\MigrationWorkloadPropertyMissingException;
 use SwagMigrationNext\Migration\Asset\HttpAssetDownloadServiceInterface;
@@ -38,7 +38,7 @@ class MigrationController extends Controller
     private $assetDownloadService;
 
     /**
-     * @var RepositoryInterface
+     * @var EntityRepositoryInterface
      */
     private $migrationProfileRepo;
 
@@ -56,7 +56,7 @@ class MigrationController extends Controller
         MigrationDataFetcherInterface $migrationDataFetcher,
         MigrationDataWriterInterface $migrationDataWriter,
         HttpAssetDownloadServiceInterface $assetDownloadService,
-        RepositoryInterface $migrationProfileRepo,
+        EntityRepositoryInterface $migrationProfileRepo,
         MigrationProgressServiceInterface $migrationProgressService,
         SwagMigrationAccessTokenService $migrationAccessTokenService
     ) {
@@ -111,8 +111,8 @@ class MigrationController extends Controller
             throw new MigrationContextPropertyMissingException('profileId');
         }
 
-        $readCriteria = new ReadCriteria([$profileId]);
-        $profileCollection = $this->migrationProfileRepo->read($readCriteria, $context);
+        $readCriteria = new Criteria([$profileId]);
+        $profileCollection = $this->migrationProfileRepo->search($readCriteria, $context);
         /** @var SwagMigrationProfileEntity $profile */
         $profile = $profileCollection->get($profileId);
 

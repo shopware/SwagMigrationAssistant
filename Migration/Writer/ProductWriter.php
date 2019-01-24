@@ -4,7 +4,7 @@ namespace SwagMigrationNext\Migration\Writer;
 
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Struct\Serializer\StructNormalizer;
 
 class ProductWriter implements WriterInterface
@@ -15,11 +15,11 @@ class ProductWriter implements WriterInterface
     private $structNormalizer;
 
     /**
-     * @var RepositoryInterface
+     * @var EntityRepositoryInterface
      */
     private $productRepository;
 
-    public function __construct(RepositoryInterface $productRepository, StructNormalizer $structNormalizer)
+    public function __construct(EntityRepositoryInterface $productRepository, StructNormalizer $structNormalizer)
     {
         $this->productRepository = $productRepository;
         $this->structNormalizer = $structNormalizer;
