@@ -40,11 +40,17 @@ class Shopware55MappingServiceTest extends TestCase
      */
     private $profileUuidService;
 
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $transactionStateTranslationRepo;
+
     protected function setUp()
     {
         $this->localeRepo = $this->getContainer()->get('locale.repository');
         $this->orderStateRepo = $this->getContainer()->get('order_state.repository');
         $this->transactionStateRepo = $this->getContainer()->get('order_transaction_state.repository');
+        $this->transactionStateTranslationRepo = $this->getContainer()->get('order_transaction_state_translation.repository');
         $this->profileUuidService = new MigrationProfileUuidService($this->getContainer()->get('swag_migration_profile.repository'));
 
         $this->shopware55MappingService = new Shopware55MappingService(
@@ -178,25 +184,6 @@ class Shopware55MappingServiceTest extends TestCase
         self::assertNotNull($response);
 
         $response = $this->shopware55MappingService->getTransactionStateUuid(666, $context);
-        self::assertNull($response);
-
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('position', 9));
-        $ids = $this->transactionStateRepo->searchIds(
-            $criteria,
-            $context
-        );
-        $ids = $ids->getIds();
-
-        $this->transactionStateRepo->delete(
-            [
-                [
-                    'id' => $ids[0],
-                ],
-            ],
-            $context
-        );
-        $response = $this->shopware55MappingService->getTransactionStateUuid(14, $context);
         self::assertNull($response);
     }
 }
