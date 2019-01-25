@@ -16,6 +16,7 @@ use SwagMigrationNext\Exception\MigrationRunUndefinedStatusException;
 use SwagMigrationNext\Exception\MigrationWorkloadPropertyMissingException;
 use SwagMigrationNext\Migration\Asset\MediaFileProcessorRegistry;
 use SwagMigrationNext\Migration\Asset\MediaFileService;
+use SwagMigrationNext\Migration\DataSelection\DataSelectionRegistry;
 use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
 use SwagMigrationNext\Migration\Run\RunService;
 use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
@@ -121,7 +122,8 @@ class MigrationControllerTest extends TestCase
                 $this->getContainer()->get(Shopware55MappingService::class),
                 $accessTokenService
             ),
-            $this->profileRepo
+            $this->profileRepo,
+            new DataSelectionRegistry([])
         );
     }
 

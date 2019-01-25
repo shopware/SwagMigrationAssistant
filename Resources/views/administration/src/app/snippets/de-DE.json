@@ -133,10 +133,12 @@
         "infoTitle": "Über die neuen Kataloge und Verkaufskanäle",
         "infoText": "Kataloge und Verkaufskanäle sind neue Elemente für Shopware Playground, die Dir helfen Deine Daten ohne Sub- und Sprachshops zu strukturieren. Für mehr Informationen zum Thema empfehlen wir Dir die Artikel in unserer Dokumentation zu <a target=\"_blank\" href=\"https://docs.shopware.com/de/shopware-playground-de/admin/kataloge\">Katalogen</a> und <a target=\"_blank\" href=\"https://docs.shopware.com/de/shopware-playground-de/admin/verkaufskanaele\">Verkaufskanälen</a>.",
         "dataHeader": "Daten",
-        "dataPossible": {
-          "customersAndOrders": "Kunden & Bestellungen",
-          "categoriesAndProducts": "Kategorien & Produkte",
-          "media": "Medien"
+        "dataSelection": {
+          "shopware55Profile": {
+            "customersAndOrders": "Kunden & Bestellungen",
+            "categoriesAndProducts": "Kategorien & Produkte",
+            "media": "Medien"
+          }
         },
         "noData": "Es wurden keine Daten zum Importieren gefunden.",
         "gdprTitle": "Nutzungsbedingungen",

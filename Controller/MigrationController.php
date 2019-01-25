@@ -7,6 +7,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use SwagMigrationNext\Exception\MigrationContextPropertyMissingException;
 use SwagMigrationNext\Exception\MigrationWorkloadPropertyMissingException;
+use SwagMigrationNext\Migration\DataSelection\DataSelectionRegistryInterface;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
 use SwagMigrationNext\Migration\Run\RunServiceInterface;
@@ -58,6 +59,11 @@ class MigrationController extends AbstractController
      */
     private $runService;
 
+    /**
+     * @var DataSelectionRegistryInterface
+     */
+    private $dataSelectionRegistry;
+
     public function __construct(
         MigrationDataFetcherInterface $migrationDataFetcher,
         MigrationDataWriterInterface $migrationDataWriter,
@@ -65,7 +71,8 @@ class MigrationController extends AbstractController
         MigrationProgressServiceInterface $migrationProgressService,
         SwagMigrationAccessTokenService $accessTokenService,
         RunServiceInterface $runService,
-        EntityRepositoryInterface $migrationProfileRepo
+        EntityRepositoryInterface $migrationProfileRepo,
+        DataSelectionRegistryInterface $dataSelectionRegistry
     ) {
         $this->migrationDataFetcher = $migrationDataFetcher;
         $this->migrationDataWriter = $migrationDataWriter;
@@ -74,6 +81,7 @@ class MigrationController extends AbstractController
         $this->accessTokenService = $accessTokenService;
         $this->runService = $runService;
         $this->migrationProfileRepo = $migrationProfileRepo;
+        $this->dataSelectionRegistry = $dataSelectionRegistry;
     }
 
     /**
@@ -344,5 +352,34 @@ class MigrationController extends AbstractController
         }
 
         return new JsonResponse($state);
+    }
+
+    /**
+     * @Route("/api/v{version}/_action/migration/data-selection", name="api.admin.migration.data-selection", methods={"GET"})
+     */
+    public function getDataSelection(Request $request): JsonResponse
+    {
+        $profileName = $request->query->get('profileName');
+        $gateway = $request->query->get('gateway');
+
+        if ($profileName === null) {
+            throw new MigrationContextPropertyMissingException('profileName');
+        }
+
+        if ($gateway === null) {
+            throw new MigrationContextPropertyMissingException('gateway');
+        }
+
+        $migrationContext = new MigrationContext(
+            '',
+            '',
+            $profileName,
+            $gateway,
+            '',
+            0,
+            0
+        );
+
+        return new JsonResponse($this->dataSelectionRegistry->getDataSelections($migrationContext)->getElements());
     }
 }

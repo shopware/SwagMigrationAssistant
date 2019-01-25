@@ -41,53 +41,11 @@ Component.register('swag-migration-main-page', {
             showMigrationConfirmDialog: false,
             showAbortMigrationConfirmDialog: false,
             isPausedBeforeAbortDialog: false,
-            catalogs: [],
-            salesChannels: [],
-            tableData: [
-                {
-                    id: 'categories_products',
-                    // TODO revert, when the core could handle translations correctly
-                    entityNames: ['category', 'product'], // 'translation'],
-                    data: this.$tc('swag-migration.index.selectDataCard.dataPossible.categoriesAndProducts'),
-                    selected: false,
-                    progressBar: {
-                        value: 0,
-                        maxValue: 0
-                    }
-                },
-                {
-                    id: 'customers_orders',
-                    entityNames: ['customer', 'order'],
-                    data: this.$tc('swag-migration.index.selectDataCard.dataPossible.customersAndOrders'),
-                    selected: false,
-                    progressBar: {
-                        value: 0,
-                        maxValue: 0
-                    }
-                },
-                {
-                    id: 'media',
-                    entityNames: ['media'],
-                    data: this.$tc('swag-migration.index.selectDataCard.dataPossible.media'),
-                    selected: false,
-                    progressBar: {
-                        value: 0,
-                        maxValue: 0
-                    }
-                }
-            ]
+            tableData: []
         };
     },
 
     computed: {
-        catalogStore() {
-            return State.getStore('catalog');
-        },
-
-        salesChannelStore() {
-            return State.getStore('sales_channel');
-        },
-
         migrationRunStore() {
             return State.getStore('swag_migration_run');
         },
@@ -276,13 +234,6 @@ Component.register('swag-migration-main-page', {
                 }
             }
 
-            if (
-                this.isMigrating ||
-                this.migrationWorkerService.status === MIGRATION_STATUS.FINISHED
-            ) {
-                this.restoreRunningMigration();
-            }
-
             // Get selected profile id
             let profileId = null;
             await this.migrationGeneralSettingStore.getList({ limit: 1 }).then((settings) => {
@@ -316,13 +267,26 @@ Component.register('swag-migration-main-page', {
                 this.profile = response.items[0];
 
                 // Do connection check
-                this.migrationService.checkConnection(this.profile.id).then((connectionCheckResponse) => {
+                this.migrationService.checkConnection(this.profile.id).then(async (connectionCheckResponse) => {
                     this.environmentInformation = connectionCheckResponse;
                     this.normalizeEnvironmentInformation();
-                    this.calculateProgressMaxValues();
 
-                    this.connectionEstablished = (connectionCheckResponse.errorCode === -1);
-                    this.isLoading = false;
+                    this.migrationService.getDataSelection({
+                        profileName: this.profile.profile,
+                        gateway: this.profile.gateway
+                    }).then((dataSelection) => {
+                        this.tableData = this.calculateProgressMaxValues(dataSelection);
+
+                        if (
+                            this.isMigrating ||
+                            this.migrationWorkerService.status === MIGRATION_STATUS.FINISHED
+                        ) {
+                            this.restoreRunningMigration();
+                        }
+
+                        this.connectionEstablished = (connectionCheckResponse.errorCode === -1);
+                        this.isLoading = false;
+                    });
                 }).catch(() => {
                     this.connectionEstablished = false;
                     this.isLoading = false;
@@ -454,8 +418,16 @@ Component.register('swag-migration-main-page', {
             this.entityCounts.translation = this.environmentInformation.translationTotal;
         },
 
-        calculateProgressMaxValues() {
-            this.tableData.forEach((data) => {
+        calculateProgressMaxValues(dataSelection) {
+            dataSelection.forEach((data) => {
+                if (data.progressBar === undefined) {
+                    data.progressBar = {
+                        minValue: 0,
+                        maxValue: 0,
+                        value: 0
+                    };
+                }
+
                 // Skip the calculation for maxValues that we have from our service (in case of restore)
                 if (data.progressBar.maxValue === 0) {
                     let totalCount = 0;
@@ -465,6 +437,8 @@ Component.register('swag-migration-main-page', {
                     data.progressBar.maxValue = totalCount;
                 }
             });
+
+            return dataSelection;
         },
 
         checkSelectedData() {

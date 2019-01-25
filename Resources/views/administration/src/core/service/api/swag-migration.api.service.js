@@ -104,6 +104,17 @@ class MigrationApiService extends ApiService {
                 return ApiService.handleResponse(response);
             });
     }
+
+    getDataSelection(additionalParams = {}, additionalHeaders = {}) {
+        const params = additionalParams;
+        const headers = this.getBasicHeaders(additionalHeaders);
+
+        return this.httpClient
+            .get(`_action/${this.getApiBasePath()}/data-selection`, { params, headers })
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
 }
 
 export default MigrationApiService;

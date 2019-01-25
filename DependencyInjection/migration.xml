@@ -93,6 +93,7 @@
             <argument type="service" id="SwagMigrationNext\Migration\Service\SwagMigrationAccessTokenService"/>
             <argument type="service" id="SwagMigrationNext\Migration\Run\RunService"/>
             <argument type="service" id="swag_migration_profile.repository"/>
+            <argument type="service" id="SwagMigrationNext\Migration\DataSelection\DataSelectionRegistry"/>
         </service>
 
         <service id="SwagMigrationNext\Command\MigrationFetchDataCommand"
@@ -122,6 +123,10 @@
             <argument type="service" id="swag_migration_media_file.repository"/>
             <tag name="console.command" command="migration:assets:download"/>
             <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="SwagMigrationNext\Migration\DataSelection\DataSelectionRegistry">
+            <argument type="tagged" tag="shopware.migration.data_selection"/>
         </service>
     </services>
 </container>

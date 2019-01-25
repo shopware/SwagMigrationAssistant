@@ -103,5 +103,18 @@
             <argument type="service" id="SwagMigrationNext\Migration\Logging\LoggingService"/>
             <tag name="shopware.migration.media_file_processor"/>
         </service>
+
+        <!-- Shopware 5.5 Dataselector -->
+        <service id="SwagMigrationNext\Profile\Shopware55\DataSelection\ProductCategoryTranslationDataSelection">
+            <tag name="shopware.migration.data_selection"/>
+        </service>
+
+        <service id="SwagMigrationNext\Profile\Shopware55\DataSelection\CustomerAndOrderDataSelection">
+            <tag name="shopware.migration.data_selection"/>
+        </service>
+
+        <service id="SwagMigrationNext\Profile\Shopware55\DataSelection\AssetDataSelection">
+            <tag name="shopware.migration.data_selection"/>
+        </service>
     </services>
 </container>

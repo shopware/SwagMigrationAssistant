@@ -18,7 +18,7 @@
                 <template slot="columns" slot-scope="{ item }">
                     {% block swag_migration_index_data_selector_grid_column_data %}
                         <sw-grid-column flex="1fr" :label="$tc('swag-migration.index.selectDataCard.dataHeader')">
-                            {{ item.data }}
+                            {{ $tc(item.snippet) }}
                         </sw-grid-column>
                     {% endblock %}
                 </template>
