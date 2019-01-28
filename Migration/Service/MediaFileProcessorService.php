@@ -37,6 +37,7 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
         $criteria->addFilter(new EqualsFilter('runId', $runUuid));
         $criteria->addFilter(new EqualsFilter('written', true));
         $criteria->addFilter(new EqualsFilter('processed', false));
+        $criteria->addFilter(new EqualsFilter('processFailure', false));
         $criteria->setLimit($limit);
         $criteria->addSorting(new FieldSorting('fileSize', FieldSorting::ASCENDING));
         $migrationData = $this->mediaFileRepo->search($criteria, $context);

@@ -52,6 +52,11 @@ class SwagMigrationMediaFileEntity extends Entity
     protected $processed;
 
     /**
+     * @var bool
+     */
+    protected $processFailure;
+
+    /**
      * @var DateTime
      */
     protected $createdAt;
@@ -139,6 +144,16 @@ class SwagMigrationMediaFileEntity extends Entity
     public function setProcessed(bool $processed): void
     {
         $this->processed = $processed;
+    }
+
+    public function getProcessFailure(): bool
+    {
+        return $this->processFailure;
+    }
+
+    public function setProcessFailure(bool $processFailure): void
+    {
+        $this->processFailure = $processFailure;
     }
 
     public function getCreatedAt(): DateTime

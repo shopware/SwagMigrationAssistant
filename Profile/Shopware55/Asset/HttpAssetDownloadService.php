@@ -110,6 +110,7 @@ class HttpAssetDownloadService extends AbstractMediaFileProcessor
         $results = Promise\settle($promises)->wait();
 
         //handle responses
+        $failureUuids = [];
         $finishedUuids = [];
         foreach ($results as $uuid => $result) {
             /** @var Response $response */
@@ -135,7 +136,7 @@ class HttpAssetDownloadService extends AbstractMediaFileProcessor
                 }
 
                 if ($mappedWorkload[$uuid]['errorCount'] > self::ASSET_ERROR_THRESHOLD) {
-                    $finishedUuids[] = $uuid;
+                    $failureUuids[] = $uuid;
                     $mappedWorkload[$uuid]['state'] = 'error';
                     $this->loggingService->addError(
                         $mappedWorkload[$uuid]['runId'],
@@ -173,7 +174,7 @@ class HttpAssetDownloadService extends AbstractMediaFileProcessor
             }
         }
 
-        $this->setProcessedFlag($runId, $context, $finishedUuids);
+        $this->setProcessedFlag($runId, $context, $finishedUuids, $failureUuids);
         $this->loggingService->saveLogging($context);
 
         return array_values($mappedWorkload);
@@ -299,7 +300,7 @@ class HttpAssetDownloadService extends AbstractMediaFileProcessor
         return $promise;
     }
 
-    private function setProcessedFlag(string $runId, Context $context, array $finishedUuids): void
+    private function setProcessedFlag(string $runId, Context $context, array $finishedUuids, array $failureUuids): void
     {
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsAnyFilter('mediaId', $finishedUuids));
@@ -313,6 +314,21 @@ class HttpAssetDownloadService extends AbstractMediaFileProcessor
                 'id' => $data->getId(),
                 'processed' => true,
             ];
+        }
+
+        if (!empty($failureUuids)) {
+            $criteria = new Criteria();
+            $criteria->addFilter(new EqualsAnyFilter('mediaId', $failureUuids));
+            $criteria->addFilter(new EqualsFilter('runId', $runId));
+            $mediaFiles = $this->mediaFileRepo->search($criteria, $context);
+
+            foreach ($mediaFiles->getElements() as $data) {
+                /* @var SwagMigrationMediaFileEntity $data */
+                $updateProcessedMediaFiles[] = [
+                    'id' => $data->getId(),
+                    'processFailure' => true,
+                ];
+            }
         }
 
         if (empty($updateProcessedMediaFiles)) {

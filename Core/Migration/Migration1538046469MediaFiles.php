@@ -24,6 +24,7 @@ CREATE TABLE `swag_migration_media_file` (
     `media_id`        BINARY(16)  NOT NULL,
     `written`         TINYINT(1)  NOT NULL DEFAULT '0',
     `processed`       TINYINT(1)  NOT NULL DEFAULT '0',
+    `process_failure` TINYINT(1)  NOT NULL DEFAULT '0',
     `created_at`      DATETIME(3) NOT NULL,
     `updated_at`      DATETIME(3),
     PRIMARY KEY (`id`),

@@ -106,8 +106,9 @@ class MediaFileService implements MediaFileServiceInterface
         }
 
         $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('runId', $runId));
         $criteria->addFilter(new EqualsAnyFilter('mediaId', $mediaIds));
+        $criteria->addFilter(new EqualsFilter('written', true));
+        $criteria->addFilter(new EqualsFilter('processed', true));
         $mediaFiles = $this->mediaFileRepo->search($criteria, $context);
 
         /** @var SwagMigrationMediaFileEntity $mediaFile */

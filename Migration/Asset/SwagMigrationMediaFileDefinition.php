@@ -34,6 +34,7 @@ class SwagMigrationMediaFileDefinition extends EntityDefinition
             (new IdField('media_id', 'mediaId'))->setFlags(new Required()),
             new BoolField('written', 'written'),
             new BoolField('processed', 'processed'),
+            new BoolField('process_failure', 'processFailure'),
             new CreatedAtField(),
             new UpdatedAtField(),
             new ManyToOneAssociationField('run', 'run_id', SwagMigrationRunDefinition::class, true),
