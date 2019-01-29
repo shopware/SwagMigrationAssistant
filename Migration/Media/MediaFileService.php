@@ -9,6 +9,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use SwagMigrationNext\Migration\MigrationContextInterface;
 
 class MediaFileService implements MediaFileServiceInterface
@@ -106,15 +107,31 @@ class MediaFileService implements MediaFileServiceInterface
         }
 
         $criteria = new Criteria();
-        $criteria->addFilter(new EqualsAnyFilter('mediaId', $mediaIds));
-        $criteria->addFilter(new EqualsFilter('written', true));
-        $criteria->addFilter(new EqualsFilter('processed', true));
+        $criteria->addFilter(new MultiFilter(MultiFilter::CONNECTION_OR,
+            [
+                new MultiFilter(MultiFilter::CONNECTION_AND,
+                    [
+                        new EqualsAnyFilter('mediaId', $mediaIds),
+                        new EqualsFilter('written', true),
+                        new EqualsFilter('processed', true),
+                    ]
+                ),
+
+                new MultiFilter(MultiFilter::CONNECTION_AND,
+                    [
+                        new EqualsAnyFilter('mediaId', $mediaIds),
+                        new EqualsFilter('runId', $runId),
+                    ]
+                ),
+            ]
+        ));
         $mediaFiles = $this->mediaFileRepo->search($criteria, $context);
 
         /** @var SwagMigrationMediaFileEntity $mediaFile */
         foreach ($mediaFiles->getElements() as $mediaFile) {
             unset($files[$mediaFile->getMediaId()]);
         }
+
         $this->writeArray = array_values($files);
     }
 

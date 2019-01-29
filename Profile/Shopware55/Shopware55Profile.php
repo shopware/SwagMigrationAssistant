@@ -127,7 +127,7 @@ class Shopware55Profile implements ProfileInterface
         MigrationContextInterface $migrationContext,
         string $entityName
     ): array {
-        $runId = $migrationContext->getRunUuid();
+        $runUuid = $migrationContext->getRunUuid();
 
         $createData = [];
         foreach ($data as $item) {
@@ -137,7 +137,7 @@ class Shopware55Profile implements ProfileInterface
 
                 $createData[] = [
                     'entity' => $entityName,
-                    'runId' => $runId,
+                    'runId' => $runUuid,
                     'raw' => $item,
                     'converted' => $convertStruct->getConverted(),
                     'unmapped' => $convertStruct->getUnmapped(),
@@ -147,7 +147,7 @@ class Shopware55Profile implements ProfileInterface
             AssociationEntityRequiredMissingException $exception
             ) {
                 $this->loggingService->addError(
-                    $runId,
+                    $runUuid,
                     (string) $exception->getCode(),
                     '',
                     $exception->getMessage(),
@@ -159,7 +159,7 @@ class Shopware55Profile implements ProfileInterface
 
                 $createData[] = [
                     'entity' => $entityName,
-                    'runId' => $runId,
+                    'runId' => $runUuid,
                     'raw' => $item,
                     'converted' => null,
                     'unmapped' => $item,

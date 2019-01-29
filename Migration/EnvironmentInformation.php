@@ -27,34 +27,9 @@ class EnvironmentInformation extends Struct
     protected $structure;
 
     /**
-     * @var int
+     * @var int[]
      */
-    protected $categoryTotal;
-
-    /**
-     * @var int
-     */
-    protected $productTotal;
-
-    /**
-     * @var int
-     */
-    protected $customerTotal;
-
-    /**
-     * @var int
-     */
-    protected $orderTotal;
-
-    /**
-     * @var int
-     */
-    protected $mediaTotal;
-
-    /**
-     * @var int
-     */
-    protected $translationTotal;
+    protected $totals;
 
     /**
      * @var int
@@ -76,17 +51,15 @@ class EnvironmentInformation extends Struct
      */
     protected $errorMessage;
 
+    /**
+     * @param int[] $totals
+     */
     public function __construct(
         string $sourceSystemName,
         string $sourceSystemVersion,
         string $sourceSystemDomain,
         array $structure = [],
-        int $categoryTotal = 0,
-        int $productTotal = 0,
-        int $customerTotal = 0,
-        int $orderTotal = 0,
-        int $mediaTotal = 0,
-        int $translationTotal = 0,
+        array $totals = [],
         int $warningCode = -1,
         string $warningMessage = '',
         int $errorCode = -1,
@@ -96,12 +69,7 @@ class EnvironmentInformation extends Struct
         $this->sourceSystemVersion = $sourceSystemVersion;
         $this->sourceSystemDomain = $sourceSystemDomain;
         $this->structure = $structure;
-        $this->categoryTotal = $categoryTotal;
-        $this->productTotal = $productTotal;
-        $this->customerTotal = $customerTotal;
-        $this->orderTotal = $orderTotal;
-        $this->mediaTotal = $mediaTotal;
-        $this->translationTotal = $translationTotal;
+        $this->totals = $totals;
         $this->warningCode = $warningCode;
         $this->warningMessage = $warningMessage;
         $this->errorCode = $errorCode;
@@ -128,34 +96,12 @@ class EnvironmentInformation extends Struct
         return $this->structure;
     }
 
-    public function getProductTotal(): int
+    /**
+     * @return int[]
+     */
+    public function getTotals(): array
     {
-        return $this->productTotal;
-    }
-
-    public function getCustomerTotal(): int
-    {
-        return $this->customerTotal;
-    }
-
-    public function getCategoryTotal(): int
-    {
-        return $this->categoryTotal;
-    }
-
-    public function getMediaTotal(): int
-    {
-        return $this->mediaTotal;
-    }
-
-    public function getOrderTotal(): int
-    {
-        return $this->orderTotal;
-    }
-
-    public function getTranslationTotal(): int
-    {
-        return $this->translationTotal;
+        return $this->totals;
     }
 
     public function getWarningCode(): int

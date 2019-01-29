@@ -9,10 +9,20 @@ interface RunServiceInterface
 {
     public function takeoverMigration(string $runUuid, Context $context): string;
 
+    /**
+     * @param int[] $dataSelectionIds
+     */
     public function createMigrationRun(
-        string $profileId,
-        array $totals,
-        array $additionalData,
+        string $connectionId,
+        array $dataSelectionIds,
         Context $context
     ): ?ProgressState;
+
+    public function calculateWriteProgress(SwagMigrationRunEntity $run, Context $context): array;
+
+    public function calculateMediaFilesProgress(SwagMigrationRunEntity $run, Context $context): array;
+
+    public function calculateCurrentTotals(string $runId, bool $isWritten, Context $context): array;
+
+    public function updateConnectionCredentials(Context $context, string $connectionUuid, array $credentialFields): void;
 }

@@ -3,9 +3,11 @@
 namespace SwagMigrationNext\Migration\Service;
 
 use Shopware\Core\Framework\Struct\Struct;
+use SwagMigrationNext\Migration\Run\RunProgress;
 
 class ProgressState extends Struct
 {
+    public const STATUS_WAITING = -1;
     public const STATUS_FETCH_DATA = 0;
     public const STATUS_WRITE_DATA = 1;
     public const STATUS_DOWNLOAD_DATA = 2;
@@ -21,16 +23,6 @@ class ProgressState extends Struct
     protected $accessToken;
 
     /**
-     * @var array
-     */
-    protected $profile;
-
-    /**
-     * @var int
-     */
-    protected $status;
-
-    /**
      * @var bool
      */
     protected $migrationRunning;
@@ -41,14 +33,14 @@ class ProgressState extends Struct
     protected $validMigrationRunToken;
 
     /**
+     * @var int
+     */
+    protected $status;
+
+    /**
      * @var string
      */
     protected $entity;
-
-    /**
-     * @var array
-     */
-    protected $entityGroups;
 
     /**
      * @var int
@@ -60,26 +52,34 @@ class ProgressState extends Struct
      */
     protected $finishedCount;
 
+    /**
+     * @var array
+     */
+    protected $runProgress;
+
+    /**
+     * @param array $runProgress
+     */
     public function __construct(
         bool $isMigrationRunning,
         bool $validMigrationRunToken,
         string $runId = null,
         string $accessToken = null,
-        array $profile = null,
-        int $status = -1,
+        int $status = ProgressState::STATUS_WAITING,
         string $entity = null,
-        int $finishedCount = null,
-        int $entityCount = null
+        int $finishedCount = 0,
+        int $entityCount = 0,
+        array $runProgress = []
     ) {
         $this->migrationRunning = $isMigrationRunning;
-        $this->validMigrationRunToken = $validMigrationRunToken;
         $this->runId = $runId;
+        $this->validMigrationRunToken = $validMigrationRunToken;
         $this->accessToken = $accessToken;
-        $this->profile = $profile;
         $this->status = $status;
         $this->entity = $entity;
         $this->finishedCount = $finishedCount;
         $this->entityCount = $entityCount;
+        $this->runProgress = $runProgress;
     }
 
     public function isMigrationRunning(): bool
@@ -102,11 +102,6 @@ class ProgressState extends Struct
         return $this->accessToken;
     }
 
-    public function getProfile(): array
-    {
-        return $this->profile;
-    }
-
     public function getStatus(): int
     {
         return $this->status;
@@ -127,13 +122,18 @@ class ProgressState extends Struct
         return $this->entityCount;
     }
 
-    public function getEntityGroups(): array
+    public function isValidMigrationRunToken(): bool
     {
-        return $this->entityGroups;
+        return $this->validMigrationRunToken;
     }
 
-    public function setEntityGroups(array $entityGroups): void
+    public function getRunProgress(): array
     {
-        $this->entityGroups = $entityGroups;
+        return $this->runProgress;
+    }
+
+    public function setRunProgress(array $runProgress): void
+    {
+        $this->runProgress = $runProgress;
     }
 }

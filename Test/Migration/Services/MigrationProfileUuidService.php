@@ -51,8 +51,8 @@ class MigrationProfileUuidService
     private function setProfileUuid(): void
     {
         $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('profile', $this->profile));
-        $criteria->addFilter(new EqualsFilter('gateway', $this->gateway));
+        $criteria->addFilter(new EqualsFilter('name', $this->profile));
+        $criteria->addFilter(new EqualsFilter('gatewayName', $this->gateway));
         $profileResult = $this->profileRepository->search($criteria, Context::createDefaultContext());
         /** @var $profile SwagMigrationProfileEntity */
         $profile = $profileResult->first();

@@ -34,7 +34,7 @@ class TranslationConverter extends AbstractConverter
     /**
      * @var string
      */
-    private $profileId;
+    private $connectionId;
 
     /**
      * @var Context
@@ -81,7 +81,7 @@ class TranslationConverter extends AbstractConverter
         Context $context,
         MigrationContextInterface $migrationContext
     ): ConvertStruct {
-        $this->profileId = $migrationContext->getProfileId();
+        $this->connectionId = $migrationContext->getConnection()->getId();
         $this->context = $context;
         $this->runId = $migrationContext->getRunUuid();
 
@@ -116,13 +116,13 @@ class TranslationConverter extends AbstractConverter
         $sourceData = $data;
         $productTranslation = [];
         $productTranslation['id'] = $this->mappingService->createNewUuid(
-            $this->profileId,
+            $this->connectionId,
             ProductTranslationDefinition::getEntityName(),
             $data['id'],
             $this->context
         );
         $productTranslation['productId'] = $this->mappingService->getUuid(
-            $this->profileId,
+            $this->connectionId,
             ProductDefinition::getEntityName() . '_container',
             $data['objectkey'],
             $this->context
@@ -130,7 +130,7 @@ class TranslationConverter extends AbstractConverter
 
         if (!isset($productTranslation['productId'])) {
             $productTranslation['productId'] = $this->mappingService->getUuid(
-                $this->profileId,
+                $this->connectionId,
                 ProductDefinition::getEntityName() . '_mainProduct',
                 $data['objectkey'],
                 $this->context
@@ -198,7 +198,7 @@ class TranslationConverter extends AbstractConverter
 
         unset($data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
 
-        $languageData = $this->mappingService->getLanguageUuid($this->profileId, $data['_locale'], $this->context);
+        $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $data['_locale'], $this->context);
 
         if (isset($languageData['createData'])) {
             $productTranslation['language']['id'] = $languageData['uuid'];
@@ -218,13 +218,13 @@ class TranslationConverter extends AbstractConverter
         $sourceData = $data;
         $manufacturerTranslation = [];
         $manufacturerTranslation['id'] = $this->mappingService->createNewUuid(
-            $this->profileId,
+            $this->connectionId,
             ProductManufacturerTranslationDefinition::getEntityName(),
             $data['id'],
             $this->context
         );
         $manufacturerTranslation['productManufacturerId'] = $this->mappingService->getUuid(
-            $this->profileId,
+            $this->connectionId,
             ProductManufacturerDefinition::getEntityName(),
             $data['objectkey'],
             $this->context
@@ -305,7 +305,7 @@ class TranslationConverter extends AbstractConverter
 
         unset($data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
 
-        $languageData = $this->mappingService->getLanguageUuid($this->profileId, $data['_locale'], $this->context);
+        $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $data['_locale'], $this->context);
 
         if (isset($languageData['createData'])) {
             $manufacturerTranslation['language']['id'] = $languageData['uuid'];
@@ -330,13 +330,13 @@ class TranslationConverter extends AbstractConverter
 
         $unitTranslation = [];
         $unitTranslation['id'] = $this->mappingService->createNewUuid(
-            $this->profileId,
+            $this->connectionId,
             UnitTranslationDefinition::getEntityName(),
             $data['id'],
             $this->context
         );
         $unitTranslation['unitId'] = $this->mappingService->getUuid(
-            $this->profileId,
+            $this->connectionId,
             UnitDefinition::getEntityName(),
             $data['objectkey'],
             $this->context
@@ -413,7 +413,7 @@ class TranslationConverter extends AbstractConverter
 
         unset($data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
 
-        $languageData = $this->mappingService->getLanguageUuid($this->profileId, $data['_locale'], $this->context);
+        $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $data['_locale'], $this->context);
 
         if (isset($languageData['createData'])) {
             $unitTranslation['language']['id'] = $languageData['uuid'];
@@ -438,13 +438,13 @@ class TranslationConverter extends AbstractConverter
 
         $categoryTranslation = [];
         $categoryTranslation['id'] = $this->mappingService->createNewUuid(
-            $this->profileId,
+            $this->connectionId,
             CategoryDefinition::getEntityName(),
             $data['id'],
             $this->context
         );
         $categoryTranslation['categoryId'] = $this->mappingService->getUuid(
-            $this->profileId,
+            $this->connectionId,
             CategoryDefinition::getEntityName(),
             $data['objectkey'],
             $this->context
@@ -532,7 +532,7 @@ class TranslationConverter extends AbstractConverter
 
         unset($data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
 
-        $languageData = $this->mappingService->getLanguageUuid($this->profileId, $data['_locale'], $this->context);
+        $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $data['_locale'], $this->context);
 
         if (isset($languageData['createData'])) {
             $categoryTranslation['language']['id'] = $languageData['uuid'];

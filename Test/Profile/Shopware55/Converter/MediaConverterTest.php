@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Struct\Uuid;
+use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\Converter\MediaConverter;
@@ -28,7 +29,7 @@ class MediaConverterTest extends TestCase
     /**
      * @var string
      */
-    private $profileId;
+    private $connection;
 
     /**
      * @var MigrationContext
@@ -43,14 +44,13 @@ class MediaConverterTest extends TestCase
         $this->mediaConverter = new MediaConverter($mappingService, $converterHelperService, $mediaFileService);
 
         $this->runId = Uuid::uuid4()->getHex();
-        $this->profileId = Uuid::uuid4()->getHex();
+        $this->connection = new SwagMigrationConnectionEntity();
+        $this->connection->setId(Uuid::uuid4()->getHex());
 
         $this->migrationContext = new MigrationContext(
             $this->runId,
-            $this->profileId,
+            $this->connection,
             Shopware55Profile::PROFILE_NAME,
-            'local',
-            MediaDefinition::getEntityName(),
             0,
             250
         );

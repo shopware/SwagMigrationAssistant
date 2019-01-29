@@ -1,8 +1,8 @@
 import { Component } from 'src/core/shopware';
-import template from './swag-migration-wizard-page-profile.html.twig';
-import './swag-migration-wizard-page-profile.less';
+import template from './swag-migration-wizard-page-choose-action.html.twig';
+import './swag-migration-wizard-page-choose-action.less';
 
-Component.register('swag-migration-wizard-page-profile', {
+Component.register('swag-migration-wizard-page-choose-action', {
     template,
 
     props: {

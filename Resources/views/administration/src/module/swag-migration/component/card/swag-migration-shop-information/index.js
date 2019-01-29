@@ -10,15 +10,17 @@ const BADGE_TYPE = Object.freeze({
 Component.register('swag-migration-shop-information', {
     template,
 
+    inject: ['migrationService'],
+
     props: {
         environmentInformation: {
             type: Object,
-            default: {}
+            required: true
         },
 
-        profile: {
+        connection: {
             type: Object,
-            default: {}
+            required: true
         },
 
         connected: {
@@ -46,7 +48,8 @@ Component.register('swag-migration-shop-information', {
 
     data() {
         return {
-            showMoreInformation: true
+            showMoreInformation: true,
+            showConfirmModal: false
         };
     },
 
@@ -119,10 +122,18 @@ Component.register('swag-migration-shop-information', {
         },
 
         shopSystem() {
+            if (this.environmentInformation.sourceSystemName === undefined) {
+                return '';
+            }
+
             return this.environmentInformation.sourceSystemName;
         },
 
         shopVersion() {
+            if (this.environmentInformation.sourceSystemVersion === undefined) {
+                return '';
+            }
+
             return this.environmentInformation.sourceSystemVersion;
         },
 
@@ -133,20 +144,8 @@ Component.register('swag-migration-shop-information', {
             return this.environmentInformation.sourceSystemName[0];
         },
 
-        categoryProductCount() {
-            return this.environmentInformation.categoryTotal + this.environmentInformation.productTotal;
-        },
-
-        customerOrderCount() {
-            return this.environmentInformation.customerTotal + this.environmentInformation.orderTotal;
-        },
-
-        mediaCount() {
-            return this.environmentInformation.mediaTotal;
-        },
-
         gateway() {
-            return this.profile.gateway;
+            return this.connection.profile.gatewayName;
         },
 
         lastMigrationDateString() {
@@ -175,39 +174,30 @@ Component.register('swag-migration-shop-information', {
     },
 
     methods: {
-        onClickEditSettings() {
+        onClickEditConnectionCredentials() {
             this.$router.push({
                 name: 'swag.migration.wizard.credentials',
                 params: {
-                    profile: this.profile
+                    connection: this.connection
                 }
             });
         },
 
-        onClickCreateProfile() {
+        onClickCreateConnection() {
             this.$router.push({
-                name: 'swag.migration.wizard.profileCreate'
+                name: 'swag.migration.wizard.connectionCreate'
             });
         },
 
-        onClickSelectProfile() {
+        onClickSelectConnection() {
             this.$router.push({
-                name: 'swag.migration.wizard.profileSelect'
+                name: 'swag.migration.wizard.connectionSelect'
             });
         },
 
-        onClickRemoveProfile() {
-            this.migrationGeneralSettingStore.getList({ limit: 1 }).then((settings) => {
-                if (!settings || settings.items.length === 0) {
-                    return;
-                }
-
-                settings.items[0].selectedProfileId = null;
-                settings.items[0].save().then(() => {
-                    this.$router.push({
-                        name: 'swag.migration.emptyScreen'
-                    });
-                });
+        onClickRemoveConnectionCredentials() {
+            this.migrationService.updateConnectionCredentials(this.connection.id, null).then(() => {
+                this.$router.go(); // Refresh the page
             });
         }
     }

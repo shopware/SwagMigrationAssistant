@@ -66,12 +66,7 @@ class Shopware55LocalGateway extends AbstractGateway
                 Shopware55Profile::SOURCE_SYSTEM_VERSION,
                 '-',
                 [],
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
+                [],
                 -1,
                 'No warning.',
                 404,
@@ -81,23 +76,27 @@ class Shopware55LocalGateway extends AbstractGateway
         $reader = new Shopware55LocalEnvironmentReader($connection, $this->migrationContext);
         $environmentData = $reader->read();
 
+        $totals = [
+            CategoryDefinition::getEntityName() => $environmentData['categories'],
+            ProductDefinition::getEntityName() => $environmentData['products'],
+            CustomerDefinition::getEntityName() => $environmentData['customers'],
+            OrderDefinition::getEntityName() => $environmentData['orders'],
+            MediaDefinition::getEntityName() => $environmentData['assets'],
+            'translation' => $environmentData['translations'],
+        ];
+
         return new EnvironmentInformation(
             Shopware55Profile::SOURCE_SYSTEM_NAME,
             Shopware55Profile::SOURCE_SYSTEM_VERSION,
             $environmentData['host'],
             [],
-            $environmentData['categories'],
-            $environmentData['products'],
-            $environmentData['customers'],
-            $environmentData['orders'],
-            $environmentData['assets'],
-            $environmentData['translations']
+            $totals
         );
     }
 
     private function getConnection(): Connection
     {
-        $credentials = $this->migrationContext->getCredentials();
+        $credentials = $this->migrationContext->getConnection()->getCredentialFields();
 
         $connectionParams = [
             'dbname' => $credentials['dbName'] ?? '',

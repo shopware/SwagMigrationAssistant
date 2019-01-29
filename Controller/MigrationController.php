@@ -5,11 +5,13 @@ namespace SwagMigrationNext\Controller;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use SwagMigrationNext\Exception\ConnectionCredentialsMissingException;
+use SwagMigrationNext\Exception\EntityNotExistsException;
 use SwagMigrationNext\Exception\MigrationContextPropertyMissingException;
 use SwagMigrationNext\Exception\MigrationWorkloadPropertyMissingException;
+use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\DataSelection\DataSelectionRegistryInterface;
 use SwagMigrationNext\Migration\MigrationContext;
-use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
 use SwagMigrationNext\Migration\Run\RunServiceInterface;
 use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationNext\Migration\Service\MediaFileProcessorServiceInterface;
@@ -48,12 +50,7 @@ class MigrationController extends AbstractController
     /**
      * @var EntityRepositoryInterface
      */
-    private $migrationProfileRepo;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $migrationRunRepository;
+    private $migrationConnectionRepo;
 
     /**
      * @var SwagMigrationAccessTokenService
@@ -70,6 +67,11 @@ class MigrationController extends AbstractController
      */
     private $dataSelectionRegistry;
 
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $migrationRunRepo;
+
     public function __construct(
         MigrationDataFetcherInterface $migrationDataFetcher,
         MigrationDataWriterInterface $migrationDataWriter,
@@ -77,9 +79,9 @@ class MigrationController extends AbstractController
         MigrationProgressServiceInterface $migrationProgressService,
         SwagMigrationAccessTokenService $accessTokenService,
         RunServiceInterface $runService,
-        EntityRepositoryInterface $migrationProfileRepo,
         DataSelectionRegistryInterface $dataSelectionRegistry,
-        EntityRepositoryInterface $migrationRunRepository
+        EntityRepositoryInterface $migrationConnectionRepo,
+        EntityRepositoryInterface $migrationRunRepo
     ) {
         $this->migrationDataFetcher = $migrationDataFetcher;
         $this->migrationDataWriter = $migrationDataWriter;
@@ -87,9 +89,9 @@ class MigrationController extends AbstractController
         $this->migrationProgressService = $migrationProgressService;
         $this->accessTokenService = $accessTokenService;
         $this->runService = $runService;
-        $this->migrationProfileRepo = $migrationProfileRepo;
         $this->dataSelectionRegistry = $dataSelectionRegistry;
-        $this->migrationRunRepository = $migrationRunRepository;
+        $this->migrationConnectionRepo = $migrationConnectionRepo;
+        $this->migrationRunRepo = $migrationRunRepo;
     }
 
     /**
@@ -113,32 +115,31 @@ class MigrationController extends AbstractController
      */
     public function checkConnection(Request $request, Context $context): JsonResponse
     {
-        $profileId = $request->get('profileId');
+        $connectionId = $request->request->get('connectionId');
 
-        if ($profileId === null) {
-            throw new MigrationContextPropertyMissingException('profileId');
+        if ($connectionId === null) {
+            throw new MigrationContextPropertyMissingException('connectionId');
         }
 
-        $criteria = new Criteria([$profileId]);
-        $profileCollection = $this->migrationProfileRepo->search($criteria, $context);
-        /** @var SwagMigrationProfileEntity $profile */
-        $profile = $profileCollection->get($profileId);
+        /** @var SwagMigrationConnectionEntity|null $connection */
+        $connection = $this->migrationConnectionRepo->search(new Criteria([$connectionId]), $context)->first();
 
-        /** @var string $profileName */
-        $profileName = $profile->getProfile();
-        /** @var string $gateway */
-        $gateway = $profile->getGateway();
-        $credentials = $profile->getCredentialFields();
+        if ($connection === null) {
+            throw new EntityNotExistsException(SwagMigrationConnectionEntity::class, $connectionId);
+        }
+
+        $credentials = $connection->getCredentialFields();
+
+        if ($credentials === null) {
+            throw new ConnectionCredentialsMissingException();
+        }
 
         $migrationContext = new MigrationContext(
             '',
-            '',
-            $profileName,
-            $gateway,
+            $connection,
             '',
             0,
-            0,
-            $credentials
+            0
         );
 
         $information = $this->migrationDataFetcher->getEnvironmentInformation($migrationContext);
@@ -147,43 +148,47 @@ class MigrationController extends AbstractController
     }
 
     /**
+     * @Route("/api/v{version}/_action/migration/update-connection-credentials", name="api.admin.migration.update-connection-credentials", methods={"POST"})
+     */
+    public function updateConnectionCredentials(Request $request, Context $context): JsonResponse
+    {
+        $connectionId = $request->request->get('connectionId');
+        $credentialFields = $request->request->get('credentialFields');
+
+        if ($connectionId === null) {
+            throw new MigrationContextPropertyMissingException('connectionId');
+        }
+
+        /** @var SwagMigrationConnectionEntity|null $connection */
+        $connection = $this->migrationConnectionRepo->search(new Criteria([$connectionId]), $context)->first();
+
+        if ($connection === null) {
+            throw new EntityNotExistsException(SwagMigrationConnectionEntity::class, $connectionId);
+        }
+
+        $this->runService->updateConnectionCredentials($context, $connectionId, $credentialFields);
+
+        return new JsonResponse([
+            'success' => 'true',
+        ]);
+    }
+
+    /**
      * @Route("/api/v{version}/_action/migration/fetch-data", name="api.admin.migration.fetch-data", methods={"POST"})
-     *
-     * @throws MigrationContextPropertyMissingException
      */
     public function fetchData(Request $request, Context $context): JsonResponse
     {
         $runUuid = $request->request->get('runUuid');
-        $profileId = $request->request->get('profileId');
-        $profileName = $request->request->get('profileName');
-        $gateway = $request->request->get('gateway');
         $entity = $request->request->get('entity');
         $offset = $request->request->getInt('offset');
         $limit = $request->request->getInt('limit', 250);
-        $credentials = $request->request->get('credentialFields', []);
 
         if ($runUuid === null) {
             throw new MigrationContextPropertyMissingException('runUuid');
         }
 
-        if ($profileId === null) {
-            throw new MigrationContextPropertyMissingException('profileId');
-        }
-
-        if ($profileName === null) {
-            throw new MigrationContextPropertyMissingException('profileName');
-        }
-
-        if ($gateway === null) {
-            throw new MigrationContextPropertyMissingException('gateway');
-        }
-
         if ($entity === null) {
             throw new MigrationContextPropertyMissingException('entity');
-        }
-
-        if (empty($credentials)) {
-            throw new MigrationContextPropertyMissingException('credentialFields');
         }
 
         if (!$this->accessTokenService->validateMigrationAccessToken($runUuid, $request, $context)) {
@@ -192,15 +197,23 @@ class MigrationController extends AbstractController
             ]);
         }
 
+        /* @var SwagMigrationRunEntity $run */
+        $run = $this->migrationRunRepo->search(new Criteria([$runUuid]), $context)->first();
+
+        if ($run === null) {
+            throw new EntityNotExistsException(SwagMigrationRunEntity::class, $runUuid);
+        }
+
+        if ($run->getConnection() === null) {
+            throw new EntityNotExistsException(SwagMigrationConnectionEntity::class, $runUuid);
+        }
+
         $migrationContext = new MigrationContext(
-            $runUuid,
-            $profileId,
-            $profileName,
-            $gateway,
+            $run->getId(),
+            $run->getConnection(),
             $entity,
             $offset,
-            $limit,
-            $credentials
+            $limit
         );
         $this->migrationDataFetcher->fetchData($migrationContext, $context);
 
@@ -211,8 +224,6 @@ class MigrationController extends AbstractController
 
     /**
      * @Route("/api/v{version}/_action/migration/write-data", name="api.admin.migration.write-data", methods={"POST"})
-     *
-     * @throws MigrationContextPropertyMissingException
      */
     public function writeData(Request $request, Context $context): Response
     {
@@ -235,7 +246,7 @@ class MigrationController extends AbstractController
             ]);
         }
 
-        $migrationContext = new MigrationContext($runUuid, '', '', '', $entity, $offset, $limit);
+        $migrationContext = new MigrationContext($runUuid, null, $entity, $offset, $limit);
         $this->migrationDataWriter->writeData($migrationContext, $context);
 
         return new JsonResponse([
@@ -245,16 +256,14 @@ class MigrationController extends AbstractController
 
     /**
      * @Route("/api/v{version}/_action/migration/fetch-media-uuids", name="api.admin.migration.fetch-media-uuids", methods={"GET"})
-     *
-     * @throws MigrationWorkloadPropertyMissingException
      */
     public function fetchMediaUuids(Request $request, Context $context): JsonResponse
     {
+        $runUuid = $request->query->get('runUuid');
         $limit = $request->query->getInt('limit', 100);
-        $runUuid = $request->query->get('runId');
 
         if ($runUuid === null) {
-            throw new MigrationWorkloadPropertyMissingException('runId');
+            throw new MigrationWorkloadPropertyMissingException('runUuid');
         }
 
         $mediaUuids = $this->mediaFileProcessorService->fetchMediaUuids($runUuid, $context, $limit);
@@ -264,34 +273,19 @@ class MigrationController extends AbstractController
 
     /**
      * @Route("/api/v{version}/_action/migration/process-media", name="api.admin.migration.process-media", methods={"POST"})
-     *
-     * @throws MigrationWorkloadPropertyMissingException
-     * @throws MigrationContextPropertyMissingException
      */
     public function processMedia(Request $request, Context $context): JsonResponse
     {
-        /** @var array $workload */
-        $runUuid = $request->request->get('runId');
-        $profileId = $request->request->get('profileId');
-        $profileName = $request->request->get('profileName');
-        $gateway = $request->request->get('gateway');
+        $runUuid = $request->request->get('runUuid');
         $workload = $request->request->get('workload', []);
         $fileChunkByteSize = $request->request->getInt('fileChunkByteSize', 1000 * 1000);
 
         if ($runUuid === null) {
-            throw new MigrationContextPropertyMissingException('runId');
+            throw new MigrationContextPropertyMissingException('runUuid');
         }
 
-        if ($profileId === null) {
-            throw new MigrationContextPropertyMissingException('profileId');
-        }
-
-        if ($profileName === null) {
-            throw new MigrationContextPropertyMissingException('profileName');
-        }
-
-        if ($gateway === null) {
-            throw new MigrationContextPropertyMissingException('gateway');
+        if (\count($workload) === 0) {
+            return new JsonResponse(['workload' => [], 'validToken' => true]);
         }
 
         foreach ($workload as $work) {
@@ -312,28 +306,23 @@ class MigrationController extends AbstractController
             ]);
         }
 
-        if (\count($workload) === 0) {
-            return new JsonResponse(['workload' => [], 'validToken' => true]);
+        /* @var SwagMigrationRunEntity $run */
+        $run = $this->migrationRunRepo->search(new Criteria([$runUuid]), $context)->first();
+
+        if ($run === null) {
+            throw new EntityNotExistsException(SwagMigrationRunEntity::class, $runUuid);
         }
 
-        $runCollection = $this->migrationRunRepository->search(new Criteria([$runUuid]), $context);
-        /** @var SwagMigrationRunEntity $run */
-        $run = $runCollection->get($runUuid);
-
-        $credentials = [];
-        if ($run !== null && $run->getCredentialFields()) {
-            $credentials = $run->getCredentialFields();
+        if ($run->getConnection() === null) {
+            throw new EntityNotExistsException(SwagMigrationConnectionEntity::class, $runUuid);
         }
 
         $migrationContext = new MigrationContext(
             $runUuid,
-            $profileId,
-            $profileName,
-            $gateway,
+            $run->getConnection(),
             '',
             0,
-            0,
-            $credentials
+            0
         );
 
         $newWorkload = $this->mediaFileProcessorService->processMediaFiles($migrationContext, $context, $workload, $fileChunkByteSize);
@@ -356,14 +345,19 @@ class MigrationController extends AbstractController
      */
     public function createMigration(Request $request, Context $context): JsonResponse
     {
-        $profileId = $request->request->get('profileId');
-        $totals = $request->request->get('totals');
-        $additionalData = $request->request->get('additionalData');
+        $connectionId = $request->request->get('connectionId');
+        $dataSelectionIds = $request->request->get('dataSelectionIds');
         $state = null;
 
-        if ($profileId !== null && $totals !== null && $additionalData !== null) {
-            $state = $this->runService->createMigrationRun($profileId, $totals, $additionalData, $context);
+        if ($connectionId === null) {
+            throw new MigrationContextPropertyMissingException('connectionId');
         }
+
+        if (empty($dataSelectionIds)) {
+            throw new MigrationContextPropertyMissingException('dataSelectionIds');
+        }
+
+        $state = $this->runService->createMigrationRun($connectionId, $dataSelectionIds, $context);
 
         if ($state === null) {
             return $this->getState($request, $context);
@@ -375,29 +369,89 @@ class MigrationController extends AbstractController
     /**
      * @Route("/api/v{version}/_action/migration/data-selection", name="api.admin.migration.data-selection", methods={"GET"})
      */
-    public function getDataSelection(Request $request): JsonResponse
+    public function getDataSelection(Request $request, Context $context): JsonResponse
     {
-        $profileName = $request->query->get('profileName');
-        $gateway = $request->query->get('gateway');
+        $connectionId = $request->query->get('connectionId');
 
-        if ($profileName === null) {
-            throw new MigrationContextPropertyMissingException('profileName');
+        if ($connectionId === null) {
+            throw new MigrationContextPropertyMissingException('connectionId');
         }
 
-        if ($gateway === null) {
-            throw new MigrationContextPropertyMissingException('gateway');
+        /** @var SwagMigrationConnectionEntity|null $connection */
+        $connection = $this->migrationConnectionRepo->search(new Criteria([$connectionId]), $context)->first();
+
+        if ($connection === null) {
+            throw new EntityNotExistsException(SwagMigrationConnectionEntity::class, $connectionId);
         }
 
         $migrationContext = new MigrationContext(
             '',
-            '',
-            $profileName,
-            $gateway,
+            $connection,
             '',
             0,
             0
         );
 
-        return new JsonResponse($this->dataSelectionRegistry->getDataSelections($migrationContext)->getElements());
+        return new JsonResponse(array_values($this->dataSelectionRegistry->getDataSelections($migrationContext)->getElements()));
+    }
+
+    /**
+     * @Route("/api/v{version}/_action/migration/update-write-progress", name="api.admin.migration.update-write-progress", methods={"POST"})
+     */
+    public function updateWriteProgress(Request $request, Context $context): JsonResponse
+    {
+        $runUuid = $request->request->get('runUuid');
+
+        if ($runUuid === null) {
+            throw new MigrationContextPropertyMissingException('runUuid');
+        }
+
+        /** @var SwagMigrationRunEntity|null $run */
+        $run = $this->migrationRunRepo->search(new Criteria([$runUuid]), $context)->first();
+
+        if ($run === null) {
+            throw new EntityNotExistsException(SwagMigrationRunEntity::class, $runUuid);
+        }
+
+        $writeProgress = $this->runService->calculateWriteProgress($run, $context);
+
+        $this->migrationRunRepo->update([
+            [
+                'id' => $run->getId(),
+                'progress' => $writeProgress,
+            ],
+        ], $context);
+
+        return new JsonResponse($writeProgress);
+    }
+
+    /**
+     * @Route("/api/v{version}/_action/migration/update-media-files-progress", name="api.admin.migration.update-media-files-progress", methods={"POST"})
+     */
+    public function updateMediaFilesProgress(Request $request, Context $context): JsonResponse
+    {
+        $runUuid = $request->request->get('runUuid');
+
+        if ($runUuid === null) {
+            throw new MigrationContextPropertyMissingException('runUuid');
+        }
+
+        /** @var SwagMigrationRunEntity|null $run */
+        $run = $this->migrationRunRepo->search(new Criteria([$runUuid]), $context)->first();
+
+        if ($run === null) {
+            throw new EntityNotExistsException(SwagMigrationRunEntity::class, $runUuid);
+        }
+
+        $mediaFilesProgress = $this->runService->calculateMediaFilesProgress($run, $context);
+
+        $this->migrationRunRepo->update([
+            [
+                'id' => $run->getId(),
+                'progress' => $mediaFilesProgress,
+            ],
+        ], $context);
+
+        return new JsonResponse($mediaFilesProgress);
     }
 }

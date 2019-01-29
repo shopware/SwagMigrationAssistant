@@ -10,6 +10,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 use Shopware\Core\Framework\Struct\Uuid;
+use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
 use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
@@ -148,8 +149,8 @@ class MigrationFetchDataCommand extends Command
     private function getProfile($context): void
     {
         $searchProfileCriteria = new Criteria();
-        $searchProfileCriteria->addFilter(new EqualsFilter('profile', $this->profileName));
-        $searchProfileCriteria->addFilter(new EqualsFilter('gateway', $this->gatewayName));
+        $searchProfileCriteria->addFilter(new EqualsFilter('name', $this->profileName));
+        $searchProfileCriteria->addFilter(new EqualsFilter('gatewayName', $this->gatewayName));
         $profileStruct = $this->migrationProfileRepo->search($searchProfileCriteria, $context)->first();
 
         if ($profileStruct === null) {
@@ -185,13 +186,10 @@ class MigrationFetchDataCommand extends Command
         for ($offset = 0; $offset < $total; $offset += $this->limit) {
             $migrationContext = new MigrationContext(
                 $runUuid,
-                $this->profileId,
-                $this->profileName,
-                $this->gatewayName,
+                new SwagMigrationConnectionEntity(),
                 $this->entityName,
                 $offset,
-                $this->limit,
-                $this->credentials
+                $this->limit
             );
             $importedCount = $this->migrationDataFetcher->fetchData($migrationContext, $context);
             $progressBar->advance($importedCount);
@@ -232,13 +230,10 @@ class MigrationFetchDataCommand extends Command
     {
         $migrationContext = new MigrationContext(
             '',
-            '',
-            $this->profileName,
-            $this->gatewayName,
+            new SwagMigrationConnectionEntity(),
             $this->entityName,
             0,
-            0,
-            $this->credentials
+            0
         );
 
         return $this->migrationDataFetcher->getEntityTotal($migrationContext);

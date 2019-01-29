@@ -6,11 +6,14 @@ use Exception;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Struct\Uuid;
 use SwagMigrationNext\Exception\ConverterNotFoundException;
+use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\Converter\ConverterRegistry;
 use SwagMigrationNext\Migration\Converter\ConverterRegistryInterface;
 use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
 use SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\Converter\ProductConverter;
+use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Mock\DummyCollection;
 use SwagMigrationNext\Test\Mock\Migration\Logging\DummyLoggingService;
@@ -41,11 +44,15 @@ class ConverterRegistryTest extends TestCase
 
     public function testGetConverterNotFound(): void
     {
+        $connection = new SwagMigrationConnectionEntity();
+        $profile = new SwagMigrationProfileEntity();
+        $profile->setName(Shopware55Profile::PROFILE_NAME);
+        $profile->setGatewayName(Shopware55LocalGateway::GATEWAY_TYPE);
+        $connection->setProfile($profile);
+
         $migrationContext = new MigrationContext(
             Uuid::uuid4()->getHex(),
-            Uuid::uuid4()->getHex(),
-            Shopware55Profile::PROFILE_NAME,
-            'local',
+            $connection,
             'foo',
             0,
             250

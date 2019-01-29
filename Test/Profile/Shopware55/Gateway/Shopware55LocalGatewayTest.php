@@ -4,8 +4,11 @@ namespace SwagMigrationNext\Test\Profile\Shopware55\Gateway;
 
 use Doctrine\DBAL\Exception\ConnectionException;
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Content\Product\ProductDefinition;
+use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\Gateway\GatewayFactoryRegistry;
 use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalReaderNotFoundException;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalFactory;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
@@ -15,14 +18,13 @@ class Shopware55LocalGatewayTest extends TestCase
 {
     public function testReadFailedNoCredentials(): void
     {
-        $migrationContext = new MigrationContext(
-            '',
-            '',
-            Shopware55Profile::PROFILE_NAME,
-            Shopware55LocalGateway::GATEWAY_TYPE,
-            'product',
-            0,
-            0,
+        $connection = new SwagMigrationConnectionEntity();
+        $profile = new SwagMigrationProfileEntity();
+        $profile->setName(Shopware55Profile::PROFILE_NAME);
+        $profile->setGatewayName(Shopware55LocalGateway::GATEWAY_TYPE);
+
+        $connection->setProfile($profile);
+        $connection->setCredentialFields(
             [
                 'dbName' => '',
                 'dbUser' => '',
@@ -30,6 +32,14 @@ class Shopware55LocalGatewayTest extends TestCase
                 'dbHost' => '',
                 'dbPort' => '',
             ]
+        );
+
+        $migrationContext = new MigrationContext(
+            '',
+            $connection,
+            ProductDefinition::getEntityName(),
+            0,
+            0
         );
 
         $factory = new Shopware55LocalFactory();
@@ -44,14 +54,13 @@ class Shopware55LocalGatewayTest extends TestCase
 
     public function testReadWithUnknownEntityThrowsException(): void
     {
-        $migrationContext = new MigrationContext(
-            '',
-            '',
-            Shopware55Profile::PROFILE_NAME,
-            Shopware55LocalGateway::GATEWAY_TYPE,
-            'foo',
-            0,
-            0,
+        $connection = new SwagMigrationConnectionEntity();
+        $profile = new SwagMigrationProfileEntity();
+        $profile->setName(Shopware55Profile::PROFILE_NAME);
+        $profile->setGatewayName(Shopware55LocalGateway::GATEWAY_TYPE);
+
+        $connection->setProfile($profile);
+        $connection->setCredentialFields(
             [
                 'dbName' => '',
                 'dbUser' => '',
@@ -59,6 +68,14 @@ class Shopware55LocalGatewayTest extends TestCase
                 'dbHost' => '',
                 'dbPort' => '',
             ]
+        );
+
+        $migrationContext = new MigrationContext(
+            '',
+            $connection,
+            'foo',
+            0,
+            0
         );
 
         $factory = new Shopware55LocalFactory();
@@ -74,11 +91,15 @@ class Shopware55LocalGatewayTest extends TestCase
 
     public function testReadEnvironmentInformationHasEmptyResult(): void
     {
+        $connection = new SwagMigrationConnectionEntity();
+        $profile = new SwagMigrationProfileEntity();
+
+        $connection->setProfile($profile);
+        $connection->setCredentialFields([]);
+
         $migrationContext = new MigrationContext(
             '',
-            '',
-            '',
-            '',
+            $connection,
             '',
             0,
             0

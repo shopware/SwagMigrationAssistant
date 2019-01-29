@@ -15,7 +15,14 @@ Component.register('swag-migration-profile-shopware55-local-credential-form', {
 
     data() {
         return {
-            inputCredentials: {},
+            inputCredentials: {
+                dbHost: '',
+                dbPort: '3306',
+                dbUser: '',
+                dbPassword: '',
+                dbName: '',
+                installationRoot: ''
+            },
             breadcrumbItems: [
                 this.$tc('swag-migration.wizard.pathSettings'),
                 this.$tc('swag-migration.wizard.pathUserManagement'),
@@ -29,6 +36,11 @@ Component.register('swag-migration-profile-shopware55-local-credential-form', {
         credentials: {
             immediate: true,
             handler(newCredentials) {
+                if (newCredentials === null) {
+                    this.emitCredentials(this.inputCredentials);
+                    return;
+                }
+
                 this.inputCredentials = newCredentials;
                 this.emitOnChildRouteReadyChanged(
                     this.areCredentialsValid(this.inputCredentials)
@@ -46,12 +58,12 @@ Component.register('swag-migration-profile-shopware55-local-credential-form', {
 
     methods: {
         areCredentialsValid(newInputCredentials) {
-            return (newInputCredentials.dbHost &&
-                newInputCredentials.dbPort &&
-                newInputCredentials.dbName &&
-                newInputCredentials.dbUser &&
-                newInputCredentials.dbPassword &&
-                newInputCredentials.installationRoot
+            return (newInputCredentials.dbHost !== '' &&
+                newInputCredentials.dbPort !== '' &&
+                newInputCredentials.dbName !== '' &&
+                newInputCredentials.dbUser !== '' &&
+                newInputCredentials.dbPassword !== '' &&
+                newInputCredentials.installationRoot !== ''
             );
         },
 

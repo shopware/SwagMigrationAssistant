@@ -155,14 +155,16 @@ export class WorkerRequest {
                 entityGroups,
                 this._status
             ).then(([newEntityGroups]) => {
-                entityGroups = newEntityGroups;
+                entityGroups = newEntityGroups.filter((group) => {
+                    return group.id !== 'processMediaFiles';
+                });
             });
 
             for (let groupIndex = groupStartIndex; groupIndex < entityGroups.length; groupIndex += 1) {
                 let groupProgress = 0;
                 for (let entityIndex = 0; entityIndex < entityGroups[groupIndex].entities.length; entityIndex += 1) {
                     const entityName = entityGroups[groupIndex].entities[entityIndex].entityName;
-                    const entityCount = entityGroups[groupIndex].entities[entityIndex].entityCount;
+                    const entityCount = entityGroups[groupIndex].entities[entityIndex].total;
 
                     if (entityIndex >= entityStartIndex) {
                         await this._migrateEntity(
@@ -211,18 +213,18 @@ export class WorkerRequest {
             }
 
             const oldChunkSize = this._chunkSize;
-            await this._migrateEntityRequest(entityName, group.targetId, group.target, currentOffset);
+            await this._migrateEntityRequest(entityName, currentOffset);
             let newOffset = currentOffset + oldChunkSize;
             if (newOffset > entityCount) {
                 newOffset = entityCount;
             }
 
             // call event subscriber
-            group.progress = groupProgress + newOffset;
+            group.currentCount = groupProgress + newOffset;
             this._callProgressCB({
                 entityName,
-                entityGroupProgressValue: group.progress,
-                entityCount: group.count
+                groupCurrentCount: group.currentCount,
+                groupTotal: group.total
             });
 
             currentOffset += oldChunkSize;
@@ -236,23 +238,15 @@ export class WorkerRequest {
      * Do a single API request for the given entity with given offset.
      *
      * @param {string} entityName
-     * @param {string} targetId
-     * @param {string} target
      * @param {number} offset
      * @returns {Promise}
      * @private
      */
-    _migrateEntityRequest(entityName, targetId, target, offset) {
+    _migrateEntityRequest(entityName, offset) {
         return new Promise((resolve) => {
             this._requestParams.entity = entityName;
             this._requestParams.offset = offset;
             this._requestParams.limit = this._chunkSize;
-
-            if (target === 'catalog') {
-                this._requestParams.catalogId = targetId;
-            } else {
-                this._requestParams.salesChannelId = targetId;
-            }
 
             const beforeRequestTime = new Date();
             this._migrationService[this.operation](this._requestParams).then((response) => {

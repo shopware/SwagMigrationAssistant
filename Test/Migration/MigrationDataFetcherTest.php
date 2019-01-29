@@ -14,6 +14,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
+use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\Converter\ConverterRegistry;
 use SwagMigrationNext\Migration\Gateway\GatewayFactoryRegistry;
 use SwagMigrationNext\Migration\Logging\LoggingService;
@@ -27,6 +28,7 @@ use SwagMigrationNext\Migration\Service\MigrationDataFetcher;
 use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationNext\Profile\Shopware55\Converter\ProductConverter;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Api\Shopware55ApiFactory;
+use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Migration\Services\MigrationProfileUuidService;
@@ -80,9 +82,45 @@ class MigrationDataFetcherTest extends TestCase
      */
     private $loggingService;
 
+    /**
+     * @var string
+     */
+    private $connectionId;
+
+    /**
+     * @var SwagMigrationConnectionEntity
+     */
+    private $connection;
+
     protected function setUp(): void
     {
-        $this->profileUuidService = new MigrationProfileUuidService($this->getContainer()->get('swag_migration_profile.repository'));
+        $context = Context::createDefaultContext();
+        $connectionRepo = $this->getContainer()->get('swag_migration_connection.repository');
+        $this->profileUuidService = new MigrationProfileUuidService(
+            $this->getContainer()->get('swag_migration_profile.repository'),
+            Shopware55Profile::PROFILE_NAME,
+            Shopware55LocalGateway::GATEWAY_TYPE
+        );
+
+        $context->getWriteProtection()->allow('MIGRATION_CONNECTION_CHECK_FOR_RUNNING_MIGRATION');
+        $this->connectionId = Uuid::uuid4()->getHex();
+        $connectionRepo->create(
+            [
+                [
+                    'id' => $this->connectionId,
+                    'name' => 'myConnection',
+                    'credentialFields' => [
+                        'endpoint' => 'testEndpoint',
+                        'apiUser' => 'testUser',
+                        'apiKey' => 'testKey',
+                    ],
+                    'profileId' => $this->profileUuidService->getProfileUuid(),
+                ],
+            ],
+            $context
+        );
+        $this->connection = $connectionRepo->search(new Criteria([$this->connectionId]), $context)->first();
+
         $this->runUuid = Uuid::uuid4()->getHex();
         $runRepo = $this->getContainer()->get('swag_migration_run.repository');
         $runRepo->create(
@@ -133,17 +171,10 @@ class MigrationDataFetcherTest extends TestCase
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
             $this->runUuid,
-            $this->profileUuidService->getProfileUuid(),
-            Shopware55Profile::PROFILE_NAME,
-            'local',
+            $this->connection,
             MediaDefinition::getEntityName(),
             0,
-            250,
-            [
-                'endpoint' => 'test',
-                'apiUser' => 'test',
-                'apiKey' => 'test',
-            ]
+            250
         );
 
         $this->migrationDataFetcher->fetchData($migrationContext, $context);
@@ -161,17 +192,10 @@ class MigrationDataFetcherTest extends TestCase
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
             $this->runUuid,
-            $this->profileUuidService->getProfileUuid(),
-            Shopware55Profile::PROFILE_NAME,
-            'local',
+            $this->connection,
             CategoryDefinition::getEntityName(),
             0,
-            250,
-            [
-                'endpoint' => 'test',
-                'apiUser' => 'test',
-                'apiKey' => 'test',
-            ]
+            250
         );
 
         $this->migrationDataFetcher->fetchData($migrationContext, $context);
@@ -189,17 +213,10 @@ class MigrationDataFetcherTest extends TestCase
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
             $this->runUuid,
-            $this->profileUuidService->getProfileUuid(),
-            Shopware55Profile::PROFILE_NAME,
-            'local',
+            $this->connection,
             'translation',
             0,
-            250,
-            [
-                'endpoint' => 'test',
-                'apiUser' => 'test',
-                'apiKey' => 'test',
-            ]
+            250
         );
 
         $this->migrationDataFetcher->fetchData($migrationContext, $context);
@@ -217,17 +234,10 @@ class MigrationDataFetcherTest extends TestCase
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
             $this->runUuid,
-            $this->profileUuidService->getProfileUuid(),
-            Shopware55Profile::PROFILE_NAME,
-            'local',
+            $this->connection,
             CustomerDefinition::getEntityName(),
             0,
-            250,
-            [
-                'endpoint' => 'test',
-                'apiUser' => 'test',
-                'apiKey' => 'test',
-            ]
+            250
         );
 
         $this->migrationDataFetcher->fetchData($migrationContext, $context);
@@ -245,17 +255,10 @@ class MigrationDataFetcherTest extends TestCase
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
             $this->runUuid,
-            $this->profileUuidService->getProfileUuid(),
-            Shopware55Profile::PROFILE_NAME,
-            'local',
+            $this->connection,
             ProductDefinition::getEntityName(),
             0,
-            250,
-            [
-                'endpoint' => 'test',
-                'apiUser' => 'test',
-                'apiKey' => 'test',
-            ]
+            250
         );
 
         $this->migrationDataFetcher->fetchData($migrationContext, $context);
@@ -273,9 +276,7 @@ class MigrationDataFetcherTest extends TestCase
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
             $this->runUuid,
-            $this->profileUuidService->getProfileUuid(),
-            Shopware55Profile::PROFILE_NAME,
-            'local',
+            $this->connection,
             ProductDefinition::getEntityName(),
             0,
             250
@@ -296,13 +297,10 @@ class MigrationDataFetcherTest extends TestCase
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
             $this->runUuid,
-            $this->profileUuidService->getProfileUuid(),
-            Shopware55Profile::PROFILE_NAME,
-            'local',
+            $this->connection,
             CustomerDefinition::getEntityName() . 'Invalid',
             0,
-            250,
-            []
+            250
         );
 
         $this->migrationDataFetcher->fetchData($migrationContext, $context);
@@ -346,9 +344,7 @@ class MigrationDataFetcherTest extends TestCase
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
             $this->runUuid,
-            $this->profileUuidService->getProfileUuid(),
-            Shopware55Profile::PROFILE_NAME,
-            'local',
+            $this->connection,
             'order',
             0,
             250
@@ -362,13 +358,12 @@ class MigrationDataFetcherTest extends TestCase
 
     public function testGetEntityTotal(): void
     {
+        $this->markTestSkipped('Function skipped, because of deprecated environment information totals (Only used for commands)');
         $this->profileUuidService = new MigrationProfileUuidService($this->getContainer()->get('swag_migration_profile.repository'));
 
         $migrationContext = new MigrationContext(
             Uuid::uuid4()->getHex(),
-            $this->profileUuidService->getProfileUuid(),
-            Shopware55Profile::PROFILE_NAME,
-            'local',
+            $this->connection,
             CustomerDefinition::getEntityName(),
             0,
             250
@@ -380,9 +375,7 @@ class MigrationDataFetcherTest extends TestCase
 
         $migrationContext = new MigrationContext(
             '',
-            $this->profileUuidService->getProfileUuid(),
-            Shopware55Profile::PROFILE_NAME,
-            'local',
+            $this->connection,
             ProductDefinition::getEntityName(),
             0,
             250
@@ -394,9 +387,7 @@ class MigrationDataFetcherTest extends TestCase
 
         $migrationContext = new MigrationContext(
             '',
-            $this->profileUuidService->getProfileUuid(),
-            Shopware55Profile::PROFILE_NAME,
-            'local',
+            $this->connection,
             CategoryDefinition::getEntityName(),
             0,
             250
@@ -408,9 +399,7 @@ class MigrationDataFetcherTest extends TestCase
 
         $migrationContext = new MigrationContext(
             '',
-            $this->profileUuidService->getProfileUuid(),
-            Shopware55Profile::PROFILE_NAME,
-            'local',
+            $this->connection,
             MediaDefinition::getEntityName(),
             0,
             250

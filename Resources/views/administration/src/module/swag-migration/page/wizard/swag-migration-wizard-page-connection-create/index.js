@@ -1,8 +1,8 @@
 import { Component, State } from 'src/core/shopware';
 import CriteriaFactory from 'src/core/factory/criteria.factory';
-import template from './swag-migration-wizard-page-profile-create.html.twig';
+import template from './swag-migration-wizard-page-connection-create.html.twig';
 
-Component.register('swag-migration-wizard-page-profile-create', {
+Component.register('swag-migration-wizard-page-connection-create', {
     template,
 
     created() {
@@ -14,7 +14,8 @@ Component.register('swag-migration-wizard-page-profile-create', {
             isLoading: true,
             selection: {
                 profile: null,
-                gateway: null
+                gateway: null,
+                connectionName: null
             },
             profiles: [],
             gateways: []
@@ -22,6 +23,15 @@ Component.register('swag-migration-wizard-page-profile-create', {
     },
 
     computed: {
+        isReady() {
+            return (
+                this.selection.profile !== null &&
+                this.selection.gateway !== null &&
+                this.selection.connectionName !== null &&
+                this.selection.connectionName.length > 5
+            );
+        },
+
         profileStore() {
             return State.getStore('swag_migration_profile');
         },
@@ -40,7 +50,7 @@ Component.register('swag-migration-wizard-page-profile-create', {
                 aggregations: [
                     {
                         name: 'profileAgg',
-                        field: 'profile',
+                        field: 'name',
                         type: 'value'
                     }
                 ]
@@ -63,9 +73,9 @@ Component.register('swag-migration-wizard-page-profile-create', {
                             return;
                         }
 
-                        this.selection.profile = profileResponse.profile;
+                        this.selection.profile = profileResponse.name;
                         this.onSelectProfile().then(() => {
-                            this.selection.gateway = profileResponse.gateway;
+                            this.selection.gateway = profileResponse.gatewayName;
                             this.onSelectGateway().then(() => {
                                 this.emitOnChildRouteReadyChanged(true);
                                 this.setIsLoading(false);
@@ -87,7 +97,7 @@ Component.register('swag-migration-wizard-page-profile-create', {
                 this.gateways = null;
 
                 if (this.selection.profile !== null) {
-                    const criteria = CriteriaFactory.equals('profile', this.selection.profile);
+                    const criteria = CriteriaFactory.equals('name', this.selection.profile);
 
                     this.profileStore.getList({
                         criteria: criteria,
@@ -95,13 +105,13 @@ Component.register('swag-migration-wizard-page-profile-create', {
                             {
                                 name: 'gatewayAgg',
                                 type: 'value',
-                                field: 'gateway'
+                                field: 'gatewayName'
                             }
                         ]
                     }).then((profiles) => {
                         this.gateways = profiles.aggregations.gatewayAgg;
                         this.selection.gateway = null;
-                        this.emitOnChildRouteReadyChanged(false);
+                        this.emitOnChildRouteReadyChanged(this.isReady);
                         resolve();
                     });
                 }
@@ -114,8 +124,8 @@ Component.register('swag-migration-wizard-page-profile-create', {
 
                 const criteria = CriteriaFactory.multi(
                     'AND',
-                    CriteriaFactory.equals('profile', this.selection.profile),
-                    CriteriaFactory.equals('gateway', this.selection.gateway)
+                    CriteriaFactory.equals('name', this.selection.profile),
+                    CriteriaFactory.equals('gatewayName', this.selection.gateway)
                 );
 
                 this.profileStore.getList({
@@ -123,11 +133,16 @@ Component.register('swag-migration-wizard-page-profile-create', {
                 }).then((profile) => {
                     if (profile.total !== 0) {
                         this.$emit('onProfileSelected', profile.items[0]);
-                        this.emitOnChildRouteReadyChanged(true);
+                        this.emitOnChildRouteReadyChanged(this.isReady);
                     }
                     resolve();
                 });
             });
+        },
+
+        onChangeConnectionName(value) {
+            this.$emit('onChangeConnectionName', value);
+            this.emitOnChildRouteReadyChanged(this.isReady);
         },
 
         emitOnChildRouteReadyChanged(isReady) {

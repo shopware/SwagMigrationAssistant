@@ -5,11 +5,11 @@ namespace SwagMigrationNext\Core\Migration;
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Migration\MigrationStep;
 
-class Migration1536765936Data extends MigrationStep
+class Migration1536765937Data extends MigrationStep
 {
     public function getCreationTimestamp(): int
     {
-        return 1536765936;
+        return 1536765937;
     }
 
     public function update(Connection $connection): void

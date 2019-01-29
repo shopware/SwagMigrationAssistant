@@ -15,14 +15,14 @@
         {% block swag_migration_index_loading_screen_progress_bar_group %}
             <div class="swag-migration-loading-screen-progress-bar-group"
                  :style="{ 'grid-template-columns': progressBarContainerGridStyle }">
-                <div v-for="data in tableData" v-if="data.selected">
+                <div v-for="group in entityGroups">
                     {% block swag_migration_index_loading_screen_progress_bar %}
-                        <sw-progress-bar :value="data.progressBar.value" :maxValue="data.progressBar.maxValue"></sw-progress-bar>
+                        <sw-progress-bar :value="group.currentCount" :maxValue="group.total"></sw-progress-bar>
                     {% endblock %}
 
                     {% block swag_migration_index_loading_screen_progress_bar_title %}
                         <div class="swag-migration-loading-screen-progress-bar-title">
-                            {{ $tc(data.snippet) }}
+                            {{ $tc(group.snippet) }}
                         </div>
                     {% endblock %}
                 </div>

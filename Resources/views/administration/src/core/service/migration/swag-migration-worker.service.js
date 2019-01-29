@@ -18,14 +18,12 @@ class MigrationWorkerService {
      * @param {MigrationApiService} migrationService
      * @param {MigrationDataService} migrationDataService
      * @param {MigrationRunService} migrationRunService
-     * @param {MigrationMediaFileService} migrationMediaFileService
      * @param {MigrationLoggingService} migrationLoggingService
      */
     constructor(
         migrationService,
         migrationDataService,
         migrationRunService,
-        migrationMediaFileService,
         migrationLoggingService
     ) {
         // will be toggled when we receive a response for our 'migrationWanted' request
@@ -39,13 +37,12 @@ class MigrationWorkerService {
 
         this._migrationService = migrationService;
         this._migrationDataService = migrationDataService;
-        this._migrationMediaFileService = migrationMediaFileService;
         this._migrationRunService = migrationRunService;
         this._migrationLoggingService = migrationLoggingService;
         this._workerStatusManager = new WorkerStatusManager(
+            this._migrationService,
             this._migrationRunService,
-            this._migrationDataService,
-            this._migrationMediaFileService
+            this._migrationDataService
         );
         this._workRunner = null;
 
@@ -57,7 +54,6 @@ class MigrationWorkerService {
         this._statusSubscriber = null;
         this._interruptSubscriber = null;
         this._runId = '';
-        this._profile = null;
         this._status = null;
         this._restoreState = {};
 
@@ -165,13 +161,11 @@ class MigrationWorkerService {
      *   accessToken: string|null
      * }>}
      */
-    createNewMigration(profileId = null, totals = null, additionalData = null) {
+    createMigration(connectionId, dataSelectionIds) {
         return new Promise((resolve) => {
             this._migrationService.createMigration({
-                profileId,
-                totals,
-                additionalData,
-                swagMigrationAccessToken: MigrationWorkerService.migrationAccessToken
+                connectionId,
+                dataSelectionIds
             }).then((state) => {
                 resolve(this.processStateResponse(state));
             }).catch(() => {
@@ -207,12 +201,14 @@ class MigrationWorkerService {
             isMigrationRunning: false,
             isMigrationAccessTokenValid: false,
             status: null,
-            accessToken: null
+            accessToken: null,
+            runProgress: null
         };
 
         this._restoreState = state;
         returnValue.runUuid = state.runId;
         returnValue.accessToken = state.accessToken;
+        returnValue.runProgress = state.runProgress;
 
         if (state.validMigrationRunToken === false) {
             this._runId = state.runId;
@@ -248,8 +244,7 @@ class MigrationWorkerService {
         }
 
         this._runId = this._restoreState.runId;
-        this._profile = this._restoreState.profile;
-        this._entityGroups = this._restoreState.entityGroups;
+        this._entityGroups = this._restoreState.runProgress;
         this._status = this._restoreState.status;
         this._errors = [];
 
@@ -258,7 +253,6 @@ class MigrationWorkerService {
 
         this.startMigration(
             this._runId,
-            this._profile,
             this._entityGroups,
             this._status,
             indicies.groupIndex,
@@ -384,7 +378,6 @@ class MigrationWorkerService {
 
     /**
      * @param {String} runId
-     * @param {Object} profile
      * @param {Object} entityGroups
      * @param {number} statusIndex
      * @param {number} groupStartIndex
@@ -394,7 +387,6 @@ class MigrationWorkerService {
      */
     startMigration(
         runId,
-        profile,
         entityGroups,
         statusIndex = 0,
         groupStartIndex = 0,
@@ -405,17 +397,12 @@ class MigrationWorkerService {
             // Wait for the 'migrationWanted' request and response to allow or deny the migration
             this.isMigrating = true;
             this._runId = runId;
-            this._profile = profile;
-            this._entityGroups = entityGroups;
+            this._entityGroups = Array.from(entityGroups, group => Object.assign({}, group));
             this._errors = [];
 
             const params = {
                 swagMigrationAccessToken: MigrationWorkerService.migrationAccessToken,
-                runUuid: this._runId,
-                profileId: this._profile.id,
-                profileName: this._profile.profile,
-                gateway: this._profile.gateway,
-                credentialFields: this._profile.credentialFields
+                runUuid: this._runId
             };
 
             this._workRunner = new WorkerRequest(
@@ -623,7 +610,7 @@ class MigrationWorkerService {
 
     _resetProgress() {
         this._entityGroups.forEach((group) => {
-            group.progress = 0;
+            group.currentCount = 0;
         });
 
         this._syncProgressWithUI();
@@ -641,8 +628,8 @@ class MigrationWorkerService {
                 const entity = group.entities[0];
                 this._callProgressSubscriber({
                     entityName: entity.entityName,
-                    entityGroupProgressValue: group.progress,
-                    entityCount: entity.entityCount
+                    entityGroupProgressValue: group.currentCount,
+                    entityCount: entity.total
                 });
             }
         }

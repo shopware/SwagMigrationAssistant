@@ -7,4 +7,6 @@ use SwagMigrationNext\Migration\MigrationContextInterface;
 interface DataSelectionRegistryInterface
 {
     public function getDataSelections(MigrationContextInterface $migrationContext): DataSelectionCollection;
+
+    public function getDataSelectionsByIds(MigrationContextInterface $migrationContext, array $ids): DataSelectionCollection;
 }

@@ -18,12 +18,12 @@ class CustomerAndOrderDataSelection implements DataSelectionInterface
     public function getData(): DataSelectionStruct
     {
         return new DataSelectionStruct(
-            'customers_orders',
+            'customersOrders',
             [
                 CustomerDefinition::getEntityName(),
                 OrderDefinition::getEntityName(),
             ],
-            'swag-migration.index.selectDataCard.dataSelection.shopware55Profile.customersAndOrders',
+            'swag-migration.index.selectDataCard.dataSelection.customersOrders',
             200
         );
     }

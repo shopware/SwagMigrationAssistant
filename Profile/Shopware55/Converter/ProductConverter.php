@@ -55,7 +55,7 @@ class ProductConverter extends AbstractConverter
     /**
      * @var string
      */
-    private $profileId;
+    private $connectionId;
 
     /**
      * @var string
@@ -118,7 +118,7 @@ class ProductConverter extends AbstractConverter
     ): ConvertStruct {
         $this->context = $context;
         $this->runId = $migrationContext->getRunUuid();
-        $this->profileId = $migrationContext->getProfileId();
+        $this->connectionId = $migrationContext->getConnection()->getId();
         $this->oldProductId = $data['detail']['ordernumber'];
 
         $fields = $this->helper->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
@@ -165,7 +165,7 @@ class ProductConverter extends AbstractConverter
     private function convertMainProduct(array $data): ConvertStruct
     {
         $containerUuid = $this->mappingService->createNewUuid(
-            $this->profileId,
+            $this->connectionId,
             ProductDefinition::getEntityName() . '_container',
             $data['id'],
             $this->context
@@ -177,7 +177,7 @@ class ProductConverter extends AbstractConverter
 
         $converted['children'][] = $converted;
         $converted['children'][0]['id'] = $this->mappingService->createNewUuid(
-            $this->profileId,
+            $this->connectionId,
             ProductDefinition::getEntityName(),
             $this->oldProductId,
             $this->context
@@ -202,7 +202,7 @@ class ProductConverter extends AbstractConverter
     private function convertVariantProduct(array $data): ConvertStruct
     {
         $parentUuid = $this->mappingService->getUuid(
-            $this->profileId,
+            $this->connectionId,
             ProductDefinition::getEntityName() . '_container',
             $data['detail']['articleID'],
             $this->context
@@ -226,14 +226,14 @@ class ProductConverter extends AbstractConverter
     private function getUuidForProduct(array &$data): array
     {
         $converted['id'] = $this->mappingService->createNewUuid(
-            $this->profileId,
+            $this->connectionId,
             ProductDefinition::getEntityName(),
             $this->oldProductId,
             $this->context
         );
 
         $this->mappingService->createNewUuid(
-            $this->profileId,
+            $this->connectionId,
             ProductDefinition::getEntityName() . '_mainProduct',
             $data['detail']['articleID'],
             $this->context,
@@ -349,7 +349,7 @@ class ProductConverter extends AbstractConverter
     private function getManufacturer(array $manufacturerData, string $locale): array
     {
         $manufacturerUuid = $this->mappingService->createNewUuid(
-            $this->profileId,
+            $this->connectionId,
             ProductManufacturerDefinition::getEntityName(),
             $manufacturerData['id'],
             $this->context
@@ -360,7 +360,7 @@ class ProductConverter extends AbstractConverter
 
         $translations = [];
         $translations['id'] = $this->mappingService->createNewUuid(
-            $this->profileId,
+            $this->connectionId,
             ProductManufacturerTranslationDefinition::getEntityName(),
             $manufacturerData['id'] . ':' . $locale,
             $this->context
@@ -372,7 +372,7 @@ class ProductConverter extends AbstractConverter
         $this->helper->convertValue($translations, 'metaDescription', $manufacturerData, 'meta_description');
         $this->helper->convertValue($translations, 'metaKeywords', $manufacturerData, 'meta_keywords');
 
-        $languageData = $this->mappingService->getLanguageUuid($this->profileId, $locale, $this->context);
+        $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $locale, $this->context);
 
         if (isset($languageData['createData']) && !empty($languageData['createData'])) {
             $translations['language']['id'] = $languageData['uuid'];
@@ -391,7 +391,7 @@ class ProductConverter extends AbstractConverter
     {
         return [
             'id' => $this->mappingService->createNewUuid(
-                $this->profileId,
+                $this->connectionId,
                 TaxDefinition::getEntityName(),
                 $taxData['id'],
                 $this->context
@@ -404,7 +404,7 @@ class ProductConverter extends AbstractConverter
     private function getUnit(array $unitData, string $locale): array
     {
         $translation['id'] = $this->mappingService->createNewUuid(
-            $this->profileId,
+            $this->connectionId,
             UnitTranslationDefinition::getEntityName(),
             $unitData['id'] . ':' . $locale,
             $this->context
@@ -413,7 +413,7 @@ class ProductConverter extends AbstractConverter
         $this->helper->convertValue($translation, 'shortCode', $unitData, 'unit');
         $this->helper->convertValue($translation, 'name', $unitData, 'description');
 
-        $languageData = $this->mappingService->getLanguageUuid($this->profileId, $locale, $this->context);
+        $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $locale, $this->context);
 
         if (isset($languageData['createData']) && !empty($languageData['createData'])) {
             $translation['language']['id'] = $languageData['uuid'];
@@ -425,7 +425,7 @@ class ProductConverter extends AbstractConverter
 
         return [
             'id' => $this->mappingService->createNewUuid(
-                $this->profileId,
+                $this->connectionId,
                 UnitDefinition::getEntityName(),
                 $unitData['id'],
                 $this->context
@@ -456,7 +456,7 @@ class ProductConverter extends AbstractConverter
 
             $newProductMedia = [];
             $newProductMedia['id'] = $this->mappingService->createNewUuid(
-                $this->profileId,
+                $this->connectionId,
                 ProductMediaDefinition::getEntityName(),
                 $mediaData['id'],
                 $this->context
@@ -466,7 +466,7 @@ class ProductConverter extends AbstractConverter
 
             $newMedia = [];
             $newMedia['id'] = $this->mappingService->createNewUuid(
-                $this->profileId,
+                $this->connectionId,
                 MediaDefinition::getEntityName(),
                 $mediaData['media']['id'],
                 $this->context
@@ -487,7 +487,7 @@ class ProductConverter extends AbstractConverter
             );
 
             $translation['id'] = $this->mappingService->createNewUuid(
-                $this->profileId,
+                $this->connectionId,
                 MediaTranslationDefinition::getEntityName(),
                 $mediaData['media']['id'] . ':' . $locale,
                 $this->context
@@ -495,7 +495,7 @@ class ProductConverter extends AbstractConverter
             $this->helper->convertValue($translation, 'name', $mediaData['media'], 'name');
             $this->helper->convertValue($translation, 'description', $mediaData['media'], 'description');
 
-            $languageData = $this->mappingService->getLanguageUuid($this->profileId, $locale, $this->context);
+            $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $locale, $this->context);
 
             if (isset($languageData['createData']) && !empty($languageData['createData'])) {
                 $translation['language']['id'] = $languageData['uuid'];
@@ -539,7 +539,7 @@ class ProductConverter extends AbstractConverter
                 'currencyId' => Defaults::CURRENCY,
                 'rule' => [
                     'id' => $this->mappingService->createNewUuid(
-                        $this->profileId,
+                        $this->connectionId,
                         RuleDefinition::getEntityName(),
                         $price['pricegroup'],
                         $this->context
@@ -560,7 +560,7 @@ class ProductConverter extends AbstractConverter
     private function setGivenProductTranslation(array &$data, array &$converted): void
     {
         $defaultTranslation['id'] = $this->mappingService->createNewUuid(
-            $this->profileId,
+            $this->connectionId,
             ProductTranslationDefinition::getEntityName(),
             $this->oldProductId . ':' . $data['_locale'],
             $this->context
@@ -574,7 +574,7 @@ class ProductConverter extends AbstractConverter
         $this->helper->convertValue($defaultTranslation, 'keywords', $data, 'keywords');
         $this->helper->convertValue($defaultTranslation, 'packUnit', $data['detail'], 'packunit');
 
-        $languageData = $this->mappingService->getLanguageUuid($this->profileId, $data['_locale'], $this->context);
+        $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $data['_locale'], $this->context);
 
         if (isset($languageData['createData']) && !empty($languageData['createData'])) {
             $defaultTranslation['language']['id'] = $languageData['uuid'];
@@ -593,7 +593,7 @@ class ProductConverter extends AbstractConverter
 
         foreach ($categories as $key => $category) {
             $categoryUuid = $this->mappingService->getUuid(
-                $this->profileId,
+                $this->connectionId,
                 CategoryDefinition::getEntityName(),
                 $category['id'],
                 $this->context

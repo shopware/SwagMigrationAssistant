@@ -7,12 +7,15 @@ use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Struct\Uuid;
+use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\MigrationContextInterface;
+use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
 use SwagMigrationNext\Profile\Shopware55\Converter\CategoryConverter;
 use SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\Converter\ProductConverter;
 use SwagMigrationNext\Profile\Shopware55\Converter\TranslationConverter;
+use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationNext\Test\Mock\Migration\Mapping\DummyMappingService;
@@ -67,14 +70,21 @@ class TranslationConverterTest extends TestCase
         $this->loggingService = new DummyLoggingService();
         $this->translationConverter = new TranslationConverter($this->mappingService, $converterHelperService, $this->loggingService);
 
+        $connection = new SwagMigrationConnectionEntity();
+        $connection->setId(Uuid::uuid4()->getHex());
+        $profile = new SwagMigrationProfileEntity();
+        $profile->setName(Shopware55Profile::PROFILE_NAME);
+        $profile->setGatewayName(Shopware55LocalGateway::GATEWAY_TYPE);
+
+        $connection->setProfile($profile);
+        $connection->setCredentialFields([]);
+
         $this->runId = Uuid::uuid4()->getHex();
         $this->profileId = Uuid::uuid4()->getHex();
 
         $this->migrationContext = new MigrationContext(
             $this->runId,
-            $this->profileId,
-            Shopware55Profile::PROFILE_NAME,
-            'local',
+            $connection,
             'translation',
             0,
             250
@@ -82,9 +92,7 @@ class TranslationConverterTest extends TestCase
 
         $this->productMigrationContext = new MigrationContext(
             $this->runId,
-            $this->profileId,
-            Shopware55Profile::PROFILE_NAME,
-            'local',
+            $connection,
             ProductDefinition::getEntityName(),
             0,
             250
@@ -92,9 +100,7 @@ class TranslationConverterTest extends TestCase
 
         $this->categoryMigrationContext = new MigrationContext(
             $this->runId,
-            $this->profileId,
-            Shopware55Profile::PROFILE_NAME,
-            'local',
+            $connection,
             CategoryDefinition::getEntityName(),
             0,
             250

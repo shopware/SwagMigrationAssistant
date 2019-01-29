@@ -31,17 +31,17 @@
                         {% block swag_migration_history_grid_columns_selectedData %}
                             <sw-grid-column flex="minmax(200px, 1fr)"
                                             :label="$tc('swag-migration.history.selectedData')">
-                                <swag-migration-history-selected-data :entityGroups="item.additionalData.entityGroups" :profile="item.profile.profile">
+                                <swag-migration-history-selected-data :entityGroups="item.progress">
                                 </swag-migration-history-selected-data>
                             </sw-grid-column>
                         {% endblock %}
                         {% block swag_migration_history_grid_columns_profile_gateway %}
                             <sw-grid-column flex="minmax(120px, 1fr)"
                                             :label="$tc('swag-migration.history.profileAndGateway')"
-                                            dataIndex="profileId"
+                                            dataIndex="connection.profileId"
                                             sortable>
-                                {{ item.profile.profile }} /
-                                {{ item.profile.gateway }}
+                                {{ item.connection.profile.name }} /
+                                {{ item.connection.profile.gatewayName }}
                             </sw-grid-column>
                         {% endblock %}
                         {% block swag_migration_history_grid_columns_status %}
@@ -70,7 +70,7 @@
                                             dataIndex="createdAt"
                                             sortable
                                             truncate>
-                                {{ item.createdAt | date }}
+                                {{ item.createdAt | date({ hour: '2-digit', minute: '2-digit', second: '2-digit' }) }}
                             </sw-grid-column>
                         {% endblock %}
                         {% block swag_migration_history_grid_columns_actions %}

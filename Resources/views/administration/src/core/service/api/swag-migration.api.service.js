@@ -5,12 +5,14 @@ class MigrationApiService extends ApiService {
         super(httpClient, loginService, apiEndpoint);
     }
 
-    fetchData(additionalParams = {}, additionalHeaders = {}) {
-        const params = additionalParams;
+    updateConnectionCredentials(connectionId, credentialFields, additionalHeaders = {}) {
         const headers = this.getBasicHeaders(additionalHeaders);
 
         return this.httpClient
-            .post(`_action/${this.getApiBasePath()}/fetch-data`, params, {
+            .post(`_action/${this.getApiBasePath()}/update-connection-credentials`, {
+                connectionId,
+                credentialFields
+            }, {
                 headers
             })
             .then((response) => {
@@ -18,12 +20,11 @@ class MigrationApiService extends ApiService {
             });
     }
 
-    writeData(additionalParams = {}, additionalHeaders = { }) {
-        const params = additionalParams;
+    checkConnection(connectionId, additionalHeaders = {}) {
         const headers = this.getBasicHeaders(additionalHeaders);
 
         return this.httpClient
-            .post(`_action/${this.getApiBasePath()}/write-data`, params, {
+            .post(`_action/${this.getApiBasePath()}/check-connection`, { connectionId }, {
                 headers
             })
             .then((response) => {
@@ -31,11 +32,14 @@ class MigrationApiService extends ApiService {
             });
     }
 
-    takeoverMigration(runUuid) {
-        const headers = this.getBasicHeaders();
+    getDataSelection(connectionId, additionalHeaders = {}) {
+        const headers = this.getBasicHeaders(additionalHeaders);
 
         return this.httpClient
-            .post(`_action/${this.getApiBasePath()}/takeover-migration`, { runUuid }, {
+            .get(`_action/${this.getApiBasePath()}/data-selection`, {
+                params: {
+                    connectionId
+                },
                 headers
             })
             .then((response) => {
@@ -56,11 +60,53 @@ class MigrationApiService extends ApiService {
             });
     }
 
-    checkConnection(profileId) {
-        const headers = this.getBasicHeaders();
+    fetchData(additionalParams = {}, additionalHeaders = {}) {
+        const params = additionalParams;
+        const headers = this.getBasicHeaders(additionalHeaders);
 
         return this.httpClient
-            .post(`_action/${this.getApiBasePath()}/check-connection`, { profileId }, {
+            .post(`_action/${this.getApiBasePath()}/fetch-data`, params, {
+                headers
+            })
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
+    updateWriteProgress(runUuid, additionalHeaders = {}) {
+        const headers = this.getBasicHeaders(additionalHeaders);
+
+        return this.httpClient
+            .post(`_action/${this.getApiBasePath()}/update-write-progress`, {
+                runUuid
+            }, {
+                headers
+            })
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
+    updateMediaFilesProgress(runUuid, additionalHeaders = {}) {
+        const headers = this.getBasicHeaders(additionalHeaders);
+
+        return this.httpClient
+            .post(`_action/${this.getApiBasePath()}/update-media-files-progress`, {
+                runUuid
+            }, {
+                headers
+            })
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
+    writeData(additionalParams = {}, additionalHeaders = { }) {
+        const params = additionalParams;
+        const headers = this.getBasicHeaders(additionalHeaders);
+
+        return this.httpClient
+            .post(`_action/${this.getApiBasePath()}/write-data`, params, {
                 headers
             })
             .then((response) => {
@@ -105,12 +151,13 @@ class MigrationApiService extends ApiService {
             });
     }
 
-    getDataSelection(additionalParams = {}, additionalHeaders = {}) {
-        const params = additionalParams;
-        const headers = this.getBasicHeaders(additionalHeaders);
+    takeoverMigration(runUuid) {
+        const headers = this.getBasicHeaders();
 
         return this.httpClient
-            .get(`_action/${this.getApiBasePath()}/data-selection`, { params, headers })
+            .post(`_action/${this.getApiBasePath()}/takeover-migration`, { runUuid }, {
+                headers
+            })
             .then((response) => {
                 return ApiService.handleResponse(response);
             });

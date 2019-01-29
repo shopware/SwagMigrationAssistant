@@ -12,8 +12,12 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
+use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationNext\Migration\DataSelection\DataSelectionRegistry;
+use SwagMigrationNext\Migration\Run\EntityProgress;
+use SwagMigrationNext\Migration\Run\RunProgress;
+use SwagMigrationNext\Migration\Run\RunService;
 use SwagMigrationNext\Migration\Media\MediaFileService;
-use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
 use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationNext\Migration\Service\MigrationProgressService;
@@ -77,9 +81,9 @@ class MigrationProgressServiceTest extends TestCase
     private $migrationDataFetcher;
 
     /**
-     * @var array
+     * @var RunProgress
      */
-    private $additionalData;
+    private $runProgress;
 
     /**
      * @var array
@@ -96,8 +100,25 @@ class MigrationProgressServiceTest extends TestCase
 
     private $credentialFields;
 
+    /**
+     * @var string
+     */
+    private $connectionId;
+
+    /**
+     * @var SwagMigrationConnectionEntity
+     */
+    private $connection;
+
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $connectionRepo;
+
     protected function setUp(): void
     {
+        $context = Context::createDefaultContext();
+        $this->connectionRepo = $this->getContainer()->get('swag_migration_connection.repository');
         $this->runRepo = $this->getContainer()->get('swag_migration_run.repository');
         $this->dataRepo = $this->getContainer()->get('swag_migration_data.repository');
         $this->profileRepo = $this->getContainer()->get('swag_migration_profile.repository');
@@ -112,23 +133,38 @@ class MigrationProgressServiceTest extends TestCase
         $this->profileId = $profileUuidService->getProfileUuid();
 
         $this->runUuid = Uuid::uuid4()->getHex();
-        $this->additionalData = require __DIR__ . '/../../_fixtures/run_additional_data.php';
+        $this->runProgress = require __DIR__ . '/../../_fixtures/run_progress_data.php';
 
         $this->credentialFields = [
             'apiUser' => 'testUser',
             'apiKey' => 'testKey',
         ];
 
+        $context->getWriteProtection()->allow('MIGRATION_CONNECTION_CHECK_FOR_RUNNING_MIGRATION');
+        $this->connectionId = Uuid::uuid4()->getHex();
+        $this->connectionRepo->create(
+            [
+                [
+                    'id' => $this->connectionId,
+                    'name' => 'myConnection',
+                    'credentialFields' => [
+                        'apiUser' => 'testUser',
+                        'apiKey' => 'testKey',
+                    ],
+                    'profileId' => $profileUuidService->getProfileUuid(),
+                ],
+            ],
+            $context
+        );
+        $this->connection = $this->connectionRepo->search(new Criteria([$this->connectionId]), $context)->first();
+
         $this->runRepo->create(
             [
                 [
                     'id' => $this->runUuid,
-                    'profileId' => $profileUuidService->getProfileUuid(),
+                    'connectionId' => $this->connectionId,
                     'credentialFields' => $this->credentialFields,
-                    'totals' => [
-                        'toBeFetched' => $this->toBeFetched,
-                    ],
-                    'additionalData' => $this->additionalData['additionalData'],
+                    'progress' => $this->runProgress,
                     'status' => SwagMigrationRunEntity::STATUS_RUNNING,
                 ],
             ],
@@ -146,9 +182,18 @@ class MigrationProgressServiceTest extends TestCase
             $this->runRepo,
             $this->dataRepo,
             $this->mediaFileRepo,
-            $this->profileRepo,
             new SwagMigrationAccessTokenService(
                 $this->runRepo
+            ),
+            new RunService(
+                $this->runRepo,
+                $this->connectionRepo,
+                $this->migrationDataFetcher,
+                $this->getContainer()->get(Shopware55MappingService::class),
+                $this->getContainer()->get(SwagMigrationAccessTokenService::class),
+                new DataSelectionRegistry([]),
+                $this->dataRepo,
+                $this->mediaFileRepo
             )
         );
     }
@@ -180,11 +225,7 @@ class MigrationProgressServiceTest extends TestCase
 
         $progress = $this->progressService->getProgress(new Request(), $context);
 
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('id', $this->profileId));
-        /** @var SwagMigrationProfileEntity $profile */
-        $profile = $this->profileRepo->search($criteria, $context)->first();
-        $credentialFields = $profile->getCredentialFields();
+        $credentialFields = $this->connection->getCredentialFields();
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('id', $this->runUuid));
@@ -240,32 +281,13 @@ class MigrationProgressServiceTest extends TestCase
         $this->initAllDatasets($context);
         $progress = $this->progressService->getProgress(new Request(), $context);
 
-        $expectedEntityGroups = $this->additionalData['additionalData']['entityGroups'];
-        foreach ($expectedEntityGroups as &$entityGroup) {
-            $entityGroup['progress'] = $entityGroup['count'];
-        }
-        unset($entityGroup);
-
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('id', $this->profileId));
-        /** @var SwagMigrationProfileEntity $profile */
-        $profile = $this->profileRepo->search($criteria, $context)->first();
-        $credentialFields = $profile->getCredentialFields();
-
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('id', $this->runUuid));
-        /** @var SwagMigrationRunEntity $run */
-        $run = $this->runRepo->search($criteria, $context)->first();
-        $runCredentialFields = $run->getCredentialFields();
-
         self::assertSame($progress->getFinishedCount(), 0);
         self::assertTrue($progress->isMigrationRunning());
         self::assertSame($progress->getStatus(), ProgressState::STATUS_WRITE_DATA);
         self::assertSame(
-            $progress->getEntityGroups(),
-            $expectedEntityGroups
+            $progress->getRunProgress(),
+            $this->serializeRunProgressForCompare()
         );
-        self::assertSame($runCredentialFields, $credentialFields);
     }
 
     public function testGetProgressWriteStartedWithFirstEntity(): void
@@ -299,10 +321,15 @@ class MigrationProgressServiceTest extends TestCase
         $this->initAllDatasets($context);
         $progress = $this->progressService->getProgress(new Request(), $context);
 
-        $expectedEntityGroups = $this->additionalData['additionalData']['entityGroups'];
-        foreach ($expectedEntityGroups as &$entityGroup) {
-            if ($entityGroup['id'] === 'categories_products') {
-                $entityGroup['progress'] = $this->writeArray['category']['write'];
+        $runProgress = $this->serializeRunProgressForCompare();
+        foreach ($runProgress as &$currentProgress) {
+            if ($currentProgress['id'] === 'categories_products') {
+                foreach ($currentProgress['entities'] as &$currentEntityProgress) {
+                    if ($currentEntityProgress['entityName'] === 'category') {
+                        $currentEntityProgress['currentCount'] = $this->writeArray['category']['write'];
+                    }
+                }
+                $currentProgress['currentCount'] = $this->writeArray['category']['write'];
             }
         }
         unset($entityGroup);
@@ -312,8 +339,8 @@ class MigrationProgressServiceTest extends TestCase
         self::assertSame($progress->getEntity(), CategoryDefinition::getEntityName());
         self::assertSame($progress->getStatus(), ProgressState::STATUS_WRITE_DATA);
         self::assertSame(
-            $progress->getEntityGroups(),
-            $expectedEntityGroups
+            $progress->getRunProgress(),
+            $runProgress
         );
     }
 
@@ -348,14 +375,32 @@ class MigrationProgressServiceTest extends TestCase
         $this->initAllDatasets($context);
         $progress = $this->progressService->getProgress(new Request(), $context);
 
-        $expectedEntityGroups = $this->additionalData['additionalData']['entityGroups'];
-        foreach ($expectedEntityGroups as &$entityGroup) {
-            if ($entityGroup['id'] === 'categories_products') {
-                $entityGroup['progress'] = $this->writeArray['category']['write'] + $this->writeArray['product']['write'];
+        $runProgress = $this->serializeRunProgressForCompare();
+        foreach ($runProgress as &$currentProgress) {
+            if ($currentProgress['id'] === 'categories_products') {
+                foreach ($currentProgress['entities'] as &$currentEntityProgress) {
+                    if ($currentEntityProgress['entityName'] === 'category') {
+                        $currentEntityProgress['currentCount'] = $this->writeArray['category']['write'];
+                    }
+
+                    if ($currentEntityProgress['entityName'] === 'product') {
+                        $currentEntityProgress['currentCount'] = $this->writeArray['product']['write'];
+                    }
+                }
+                $currentProgress['currentCount'] = $this->writeArray['category']['write'] + $this->writeArray['product']['write'];
             }
 
-            if ($entityGroup['id'] === 'customers_orders') {
-                $entityGroup['progress'] = $this->writeArray['customer']['write'] + $this->writeArray['order']['write'];
+            if ($currentProgress['id'] === 'customers_orders') {
+                foreach ($currentProgress['entities'] as &$currentEntityProgress) {
+                    if ($currentEntityProgress['entityName'] === 'customer') {
+                        $currentEntityProgress['currentCount'] = $this->writeArray['customer']['write'];
+                    }
+
+                    if ($currentEntityProgress['entityName'] === 'order') {
+                        $currentEntityProgress['currentCount'] = $this->writeArray['order']['write'];
+                    }
+                }
+                $currentProgress['currentCount'] = $this->writeArray['customer']['write'] + $this->writeArray['order']['write'];
             }
         }
         unset($entityGroup);
@@ -365,8 +410,8 @@ class MigrationProgressServiceTest extends TestCase
         self::assertSame($progress->getEntity(), OrderDefinition::getEntityName());
         self::assertSame($progress->getStatus(), ProgressState::STATUS_WRITE_DATA);
         self::assertSame(
-            $progress->getEntityGroups(),
-            $expectedEntityGroups
+            $progress->getRunProgress(),
+            $runProgress
         );
     }
 
@@ -402,19 +447,13 @@ class MigrationProgressServiceTest extends TestCase
         $this->insertMediaFiles($context, 23, 0);
         $progress = $this->progressService->getProgress(new Request(), $context);
 
-        $expectedEntityGroups = $this->additionalData['additionalData']['entityGroups'];
-        foreach ($expectedEntityGroups as &$entityGroup) {
-            $entityGroup['progress'] = 0;
-        }
-        unset($entityGroup);
-
         self::assertTrue($progress->isMigrationRunning());
         self::assertSame($progress->getFinishedCount(), 0);
         self::assertSame($progress->getEntity(), MediaDefinition::getEntityName());
         self::assertSame($progress->getStatus(), ProgressState::STATUS_DOWNLOAD_DATA);
         self::assertSame(
-            $progress->getEntityGroups(),
-            $expectedEntityGroups
+            $progress->getRunProgress(),
+            $this->serializeRunProgressForCompare()
         );
     }
 
@@ -450,11 +489,15 @@ class MigrationProgressServiceTest extends TestCase
         $this->insertMediaFiles($context, 23, 20);
         $progress = $this->progressService->getProgress(new Request(), $context);
 
-        $expectedEntityGroups = $this->additionalData['additionalData']['entityGroups'];
-        foreach ($expectedEntityGroups as &$entityGroup) {
-            $entityGroup['progress'] = 0;
-            if ($entityGroup['id'] === 'media') {
-                $entityGroup['progress'] = 20;
+        $runProgress = $this->serializeRunProgressForCompare();
+        foreach ($runProgress as &$currentProgress) {
+            if ($currentProgress['id'] === 'processMediaFiles') {
+                foreach ($currentProgress['entities'] as &$currentEntityProgress) {
+                    if ($currentEntityProgress['entityName'] === 'media') {
+                        $currentEntityProgress['currentCount'] = 20;
+                    }
+                }
+                $currentProgress['currentCount'] = 20;
             }
         }
         unset($entityGroup);
@@ -462,12 +505,12 @@ class MigrationProgressServiceTest extends TestCase
         self::assertTrue($progress->isMigrationRunning());
         self::assertSame($progress->getFinishedCount(), 20);
         self::assertSame($progress->getRunId(), $this->runUuid);
-        self::assertSame($progress->getProfile()['id'], $this->profileId);
+        self::assertSame($progress->getRunId(), $this->runUuid);
         self::assertSame($progress->getEntity(), MediaDefinition::getEntityName());
         self::assertSame($progress->getStatus(), ProgressState::STATUS_DOWNLOAD_DATA);
         self::assertSame(
-            $progress->getEntityGroups(),
-            $expectedEntityGroups
+            $progress->getRunProgress(),
+            $runProgress
         );
     }
 
@@ -533,11 +576,16 @@ class MigrationProgressServiceTest extends TestCase
             ],
         ];
 
-        $this->toBeFetched['customer'] = 0;
-        foreach ($this->additionalData['additionalData']['entityGroups'] as &$entityGroup) {
-            if ($entityGroup['id'] === 'customers_orders') {
-                $entityGroup['count'] = 2;
-                $entityGroup['entities'][0]['entityCount'] = 0;
+        /** @var RunProgress $progress */
+        foreach ($this->runProgress as $progress) {
+            if ($progress->getId() === 'customers_orders') {
+                /** @var EntityProgress $entityProgress */
+                foreach ($progress->getEntities() as $entityProgress) {
+                    if ($entityProgress->getEntityName() === 'customer') {
+                        $entityProgress->setTotal(0);
+                    }
+                }
+                $progress->setTotal(2);
             }
         }
         unset($entityGroup);
@@ -546,10 +594,7 @@ class MigrationProgressServiceTest extends TestCase
             [
                 [
                     'id' => $this->runUuid,
-                    'totals' => [
-                        'toBeFetched' => $this->toBeFetched,
-                    ],
-                    'additionalData' => $this->additionalData['additionalData'],
+                    'progress' => $this->runProgress,
                 ],
             ],
             Context::createDefaultContext()
@@ -670,5 +715,25 @@ class MigrationProgressServiceTest extends TestCase
             $datasets,
             $context
         );
+    }
+
+    private function serializeRunProgressForCompare(): array
+    {
+        $runProgress = [];
+        foreach ($this->runProgress as $currentProgress) {
+            $entites = $currentProgress->getEntities();
+            $currentProgress->setEntities([]);
+            $currentProgress = $currentProgress->jsonSerialize();
+
+            $serializedEntities = [];
+            foreach ($entites as $entity) {
+                $serializedEntities[] = $entity->jsonSerialize();
+            }
+            $currentProgress['entities'] = $serializedEntities;
+
+            $runProgress[] = $currentProgress;
+        }
+
+        return $runProgress;
     }
 }

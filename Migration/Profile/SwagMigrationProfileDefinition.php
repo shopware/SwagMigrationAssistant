@@ -5,15 +5,13 @@ namespace SwagMigrationNext\Migration\Profile;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\CreatedAtField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\IdField;
-use Shopware\Core\Framework\DataAbstractionLayer\Field\JsonField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\OneToManyAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\StringField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\UpdatedAtField;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\Flag\Required;
-use SwagMigrationNext\Migration\Mapping\SwagMigrationMappingDefinition;
-use SwagMigrationNext\Migration\Run\SwagMigrationRunDefinition;
+use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionDefinition;
 
 class SwagMigrationProfileDefinition extends EntityDefinition
 {
@@ -26,13 +24,11 @@ class SwagMigrationProfileDefinition extends EntityDefinition
     {
         return new FieldCollection([
             (new IdField('id', 'id'))->setFlags(new PrimaryKey(), new Required()),
-            (new StringField('profile', 'profile'))->setFlags(new Required()),
-            (new StringField('gateway', 'gateway'))->setFlags(new Required()),
-            new JsonField('credential_fields', 'credentialFields'),
+            (new StringField('name', 'name'))->setFlags(new Required()),
+            (new StringField('gateway_name', 'gatewayName'))->setFlags(new Required()),
             new CreatedAtField(),
             new UpdatedAtField(),
-            new OneToManyAssociationField('runs', SwagMigrationRunDefinition::class, 'profile_id', false),
-            new OneToManyAssociationField('mappings', SwagMigrationMappingDefinition::class, 'profile_id', false),
+            new OneToManyAssociationField('connections', SwagMigrationConnectionDefinition::class, 'profile_id', false),
         ]);
     }
 

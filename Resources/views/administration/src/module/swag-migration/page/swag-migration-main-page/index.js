@@ -15,7 +15,7 @@ Component.register('swag-migration-main-page', {
     data() {
         return {
             isLoading: true,
-            profile: {},
+            connection: {},
             environmentInformation: {},
             connectionEstablished: false,
             lastMigrationDate: '-',
@@ -41,7 +41,9 @@ Component.register('swag-migration-main-page', {
             showMigrationConfirmDialog: false,
             showAbortMigrationConfirmDialog: false,
             isPausedBeforeAbortDialog: false,
-            tableData: []
+            tableData: [],
+            entityGroups: [],
+            originEntityGroups: []
         };
     },
 
@@ -50,8 +52,8 @@ Component.register('swag-migration-main-page', {
             return State.getStore('swag_migration_run');
         },
 
-        migrationProfileStore() {
-            return State.getStore('swag_migration_profile');
+        migrationConnectionStore() {
+            return State.getStore('swag_migration_connection');
         },
 
         migrationGeneralSettingStore() {
@@ -71,9 +73,16 @@ Component.register('swag-migration-main-page', {
          */
         tableDataFiltered() {
             const filtered = [];
-            this.tableData.forEach((data) => {
-                if (data.progressBar.maxValue > 0) {
-                    filtered.push(data);
+            this.tableData.forEach((group) => {
+                let containtsData = false;
+                group.entityNames.forEach((name) => {
+                    if (this.environmentInformation.totals[name] > 0) {
+                        containtsData = true;
+                    }
+                });
+
+                if (containtsData) {
+                    filtered.push(group);
                 }
             });
 
@@ -234,28 +243,28 @@ Component.register('swag-migration-main-page', {
                 }
             }
 
-            // Get selected profile id
-            let profileId = null;
+            // Get selected connection
+            let connectionId = null;
             await this.migrationGeneralSettingStore.getList({ limit: 1 }).then((settings) => {
                 if (!settings || settings.items.length === 0) {
                     return;
                 }
 
-                profileId = settings.items[0].selectedProfileId;
+                connectionId = settings.items[0].selectedConnectionId;
             });
 
-            if (profileId === null) {
+            if (connectionId === null) {
                 this.$router.push({ name: 'swag.migration.wizard.introduction' });
                 return;
             }
 
             const params = {
                 limit: 1,
-                criteria: CriteriaFactory.equals('id', profileId)
+                criteria: CriteriaFactory.equals('id', connectionId)
             };
 
-            // Get profile with credentials from server
-            this.migrationProfileStore.getList(params).then((response) => {
+            // Get connection with credentials from server
+            this.migrationConnectionStore.getList(params).then((response) => {
                 if (!response ||
                     (response && response.items.length === 0)
                 ) {
@@ -264,18 +273,15 @@ Component.register('swag-migration-main-page', {
                     return;
                 }
 
-                this.profile = response.items[0];
+                this.connection = response.items[0];
 
                 // Do connection check
-                this.migrationService.checkConnection(this.profile.id).then(async (connectionCheckResponse) => {
+                this.migrationService.checkConnection(this.connection.id).then(async (connectionCheckResponse) => {
                     this.environmentInformation = connectionCheckResponse;
-                    this.normalizeEnvironmentInformation();
+                    this.entityCounts = this.environmentInformation.totals;
 
-                    this.migrationService.getDataSelection({
-                        profileName: this.profile.profile,
-                        gateway: this.profile.gateway
-                    }).then((dataSelection) => {
-                        this.tableData = this.calculateProgressMaxValues(dataSelection);
+                    this.migrationService.getDataSelection(this.connection.id).then((dataSelection) => {
+                        this.tableData = dataSelection;
 
                         if (
                             this.isMigrating ||
@@ -302,32 +308,15 @@ Component.register('swag-migration-main-page', {
             // show loading screen
             this.componentIndex = this.components.loadingScreen;
 
+            // Get data to migrate (selected table data + progress)
+            this.entityGroups = this.migrationWorkerService.entityGroups;
+            this.originEntityGroups = this.migrationWorkerService.entityGroups;
+
             // Get current status
             this.onStatus({ status: this.migrationWorkerService.status });
             if (this.migrationWorkerService.status === MIGRATION_STATUS.FINISHED) {
                 return;
             }
-
-            // Get data to migrate (selected table data + progress)
-            const selectedEntityGroups = this.migrationWorkerService.entityGroups;
-            this.tableData.forEach((data) => {
-                const group = selectedEntityGroups.find((g) => {
-                    return g.id === data.id;
-                });
-
-                if (group !== undefined) {
-                    // found entity in group -> means it was selected
-                    if (this.statusIndex !== MIGRATION_STATUS.PROCESS_MEDIA_FILES) {
-                        data.selected = true;
-                    }
-
-                    // set the progress max value from our service
-                    data.progressBar.maxValue = group.count;
-
-                    // set the progress for the group
-                    data.progressBar.value = group.progress;
-                }
-            });
 
             // subscribe to the progress event again
             this.migrationWorkerService.subscribeProgress(this.onProgress);
@@ -409,121 +398,26 @@ Component.register('swag-migration-main-page', {
             }
         },
 
-        normalizeEnvironmentInformation() {
-            this.entityCounts.customer = this.environmentInformation.customerTotal;
-            this.entityCounts.order = this.environmentInformation.orderTotal;
-            this.entityCounts.category = this.environmentInformation.categoryTotal;
-            this.entityCounts.product = this.environmentInformation.productTotal;
-            this.entityCounts.media = this.environmentInformation.mediaTotal;
-            this.entityCounts.translation = this.environmentInformation.translationTotal;
-        },
-
-        calculateProgressMaxValues(dataSelection) {
-            dataSelection.forEach((data) => {
-                if (data.progressBar === undefined) {
-                    data.progressBar = {
-                        minValue: 0,
-                        maxValue: 0,
-                        value: 0
-                    };
-                }
-
-                // Skip the calculation for maxValues that we have from our service (in case of restore)
-                if (data.progressBar.maxValue === 0) {
-                    let totalCount = 0;
-                    data.entityNames.forEach((currentEntityName) => {
-                        totalCount += this.entityCounts[currentEntityName];
-                    });
-                    data.progressBar.maxValue = totalCount;
-                }
-            });
-
-            return dataSelection;
-        },
-
-        checkSelectedData() {
-            const selectedObject = this.$refs.dataSelector.getSelectedData();
-            this.tableData.forEach((data) => {
-                data.selected = data.id in selectedObject;
-            });
-        },
-
-        /**
-         * Creates an data array similar to the following:
-         * [
-         *      {
-         *          id: "customers_orders"
-         *          entities: [
-         *              {
-         *                  entityName: "customer",
-         *                  entityCount: 2
-         *              },
-         *              {
-         *                  entityName: "order",
-         *                  entityCount: 4
-         *              }
-         *          ],
-         *          count: 6
-         *          progress: 6
-         *      },
-         *      ...
-         *  ]
-         *
-         * @returns {Array}
-         */
-        getEntityGroups() {
-            const entityGroups = [];
-            this.tableDataFiltered.forEach((data) => {
-                if (data.selected) {
-                    const entities = [];
-                    let groupCount = 0;
-                    data.entityNames.forEach((name) => {
-                        entities.push({
-                            entityName: name,
-                            entityCount: this.entityCounts[name]
-                        });
-                        groupCount += this.entityCounts[name];
-                    });
-
-                    entityGroups.push({
-                        id: data.id,
-                        entities: entities,
-                        progress: 0,
-                        count: groupCount
-                    });
-                }
-            });
-
-            return entityGroups;
+        getDataSelectionIds() {
+            return Object.keys(this.$refs.dataSelector.getSelectedData());
         },
 
         resetProgress() {
-            this.tableData.forEach((data) => {
-                data.progressBar.value = 0;
+            this.entityGroups.forEach((data) => {
+                data.currentCount = 0;
             });
         },
 
         async onMigrate() {
             this.isOtherMigrationRunning = false;
             this.showMigrationConfirmDialog = false;
+            const dataSelectionIds = this.getDataSelectionIds();
             this.setIsMigrating(true);
-            this.checkSelectedData();
-            this.statusIndex = MIGRATION_STATUS.PREMAPPING;
             this.errorList = [];
 
             // show loading screen
             this.resetProgress();
             this.componentIndex = this.components.loadingScreen;
-
-            // get all entities in order
-            const entityGroups = this.getEntityGroups();
-
-            const toBeFetched = {};
-            entityGroups.forEach((entityGroup) => {
-                entityGroup.entities.forEach((entity) => {
-                    toBeFetched[entity.entityName] = entity.entityCount;
-                });
-            });
 
             let isMigrationRunningInOtherTab = false;
             await this.migrationWorkerService.isMigrationRunningInOtherTab().then((isRunning) => {
@@ -536,15 +430,12 @@ Component.register('swag-migration-main-page', {
                 return;
             }
 
-            await this.migrationWorkerService.createNewMigration(
-                this.profile.id,
-                {
-                    toBeFetched
-                },
-                {
-                    entityGroups
-                }
+            await this.migrationWorkerService.createMigration(
+                this.connection.id,
+                dataSelectionIds
             ).then((runState) => {
+                this.entityGroups = runState.runProgress;
+                this.originEntityGroups = runState.runProgress;
                 this.isOtherInstanceFetching = runState.status === MIGRATION_STATUS.FETCH_DATA;
 
                 if (
@@ -563,8 +454,7 @@ Component.register('swag-migration-main-page', {
                 this.migrationWorkerService.subscribeInterrupt(this.onInterrupt.bind(this));
                 this.migrationWorkerService.startMigration(
                     runState.runUuid,
-                    this.profile,
-                    entityGroups
+                    this.entityGroups
                 ).catch(() => {
                     this.onInvalidMigrationAccessToken();
                 });
@@ -575,8 +465,8 @@ Component.register('swag-migration-main-page', {
             this.statusIndex = statusData.status;
 
             if (this.statusIndex === MIGRATION_STATUS.PROCESS_MEDIA_FILES) {
-                this.tableData.forEach((data) => {
-                    data.selected = (data.id === 'media');
+                this.entityGroups = this.originEntityGroups.filter((group) => {
+                    return group.id === 'processMediaFiles';
                 });
             } else if (this.statusIndex === MIGRATION_STATUS.FINISHED) {
                 this.isOtherMigrationRunning = false;
@@ -586,6 +476,10 @@ Component.register('swag-migration-main-page', {
                 } else {
                     this.onFinishWithoutErrors();
                 }
+            } else {
+                this.entityGroups = this.originEntityGroups.filter((group) => {
+                    return group.id !== 'processMediaFiles';
+                });
             }
         },
 
@@ -623,15 +517,25 @@ Component.register('swag-migration-main-page', {
         },
 
         onProgress(progressData) {
-            const resultData = this.tableData.find((data) => {
-                return data.entityNames.includes(progressData.entityName);
+            const resultData = this.entityGroups.find((group) => {
+                for (let i = 0; i < group.entities.length; i += 1) {
+                    if (group.entities[i].entityName === progressData.entityName) {
+                        return true;
+                    }
+                }
+
+                return false;
             });
 
-            if (resultData.progressBar.maxValue !== progressData.entityCount) {
-                resultData.progressBar.maxValue = progressData.entityCount;
+            if (resultData === undefined) {
+                return;
             }
 
-            resultData.progressBar.value = progressData.entityGroupProgressValue;
+            if (resultData.total !== progressData.groupTotal) {
+                resultData.total = progressData.groupTotal;
+            }
+
+            resultData.currentCount = progressData.groupCurrentCount;
         },
 
         addError(error) {

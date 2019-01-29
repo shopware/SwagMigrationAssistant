@@ -18,14 +18,15 @@ class ProductCategoryTranslationDataSelection implements DataSelectionInterface
     public function getData(): DataSelectionStruct
     {
         return new DataSelectionStruct(
-            'categories_products',
+            'categoriesProducts',
             [
                 CategoryDefinition::getEntityName(),
                 ProductDefinition::getEntityName(),
                 //'translation',
             ],
-            'swag-migration.index.selectDataCard.dataSelection.shopware55Profile.categoriesAndProducts',
-            100
+            'swag-migration.index.selectDataCard.dataSelection.categoriesProducts',
+            100,
+            true
         );
     }
 }

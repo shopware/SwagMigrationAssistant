@@ -5,7 +5,7 @@ namespace SwagMigrationNext\Migration\Mapping;
 use DateTime;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
-use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
+use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 
 class SwagMigrationMappingEntity extends Entity
 {
@@ -14,12 +14,12 @@ class SwagMigrationMappingEntity extends Entity
     /**
      * @var string
      */
-    protected $profileId;
+    protected $connectionId;
 
     /**
-     * @var SwagMigrationProfileEntity
+     * @var SwagMigrationConnectionEntity
      */
-    protected $profile;
+    protected $connection;
 
     /**
      * @var string|null
@@ -51,24 +51,24 @@ class SwagMigrationMappingEntity extends Entity
      */
     protected $updatedAt;
 
-    public function getProfile(): SwagMigrationProfileEntity
+    public function getConnectionId(): string
     {
-        return $this->profile;
+        return $this->connectionId;
     }
 
-    public function setProfile(SwagMigrationProfileEntity $profile): void
+    public function setConnectionId(string $connectionId): void
     {
-        $this->profile = $profile;
+        $this->connectionId = $connectionId;
     }
 
-    public function getProfileId(): string
+    public function getConnection(): SwagMigrationConnectionEntity
     {
-        return $this->profileId;
+        return $this->connection;
     }
 
-    public function setProfileId(string $profileId): void
+    public function setConnection(SwagMigrationConnectionEntity $connection): void
     {
-        $this->profileId = $profileId;
+        $this->connection = $connection;
     }
 
     public function getEntity(): ?string

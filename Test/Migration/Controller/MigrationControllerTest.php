@@ -17,13 +17,13 @@ use SwagMigrationNext\Exception\MigrationWorkloadPropertyMissingException;
 use SwagMigrationNext\Migration\DataSelection\DataSelectionRegistry;
 use SwagMigrationNext\Migration\Media\MediaFileProcessorRegistry;
 use SwagMigrationNext\Migration\Media\MediaFileService;
-use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
 use SwagMigrationNext\Migration\Run\RunService;
 use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationNext\Migration\Service\MigrationDataWriter;
 use SwagMigrationNext\Migration\Service\MigrationProgressService;
 use SwagMigrationNext\Migration\Service\ProgressState;
 use SwagMigrationNext\Migration\Service\SwagMigrationAccessTokenService;
+use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Migration\Services\MigrationProfileUuidService;
@@ -69,24 +69,53 @@ class MigrationControllerTest extends TestCase
      */
     private $profileRepo;
 
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $connectionRepo;
+
+    /**
+     * @var string
+     */
+    private $connectionId;
+
     protected function setUp(): void
     {
+        $context = Context::createDefaultContext();
+        $mediaFileRepo = $this->getContainer()->get('swag_migration_media_file.repository');
+        $dataRepo = $this->getContainer()->get('swag_migration_data.repository');
         $this->profileRepo = $this->getContainer()->get('swag_migration_profile.repository');
-        $this->profileUuidService = new MigrationProfileUuidService($this->profileRepo);
+        $this->connectionRepo = $this->getContainer()->get('swag_migration_connection.repository');
+        $this->profileUuidService = new MigrationProfileUuidService($this->profileRepo, Shopware55Profile::PROFILE_NAME, Shopware55LocalGateway::GATEWAY_TYPE);
         $this->generalSettingRepo = $this->getContainer()->get('swag_migration_general_setting.repository');
-        $this->runUuid = Uuid::uuid4()->getHex();
         $this->runRepo = $this->getContainer()->get('swag_migration_run.repository');
-        $this->runRepo->create(
+
+        $context->getWriteProtection()->allow('MIGRATION_CONNECTION_CHECK_FOR_RUNNING_MIGRATION');
+        $this->connectionId = Uuid::uuid4()->getHex();
+        $this->connectionRepo->create(
             [
                 [
-                    'id' => $this->runUuid,
+                    'id' => $this->connectionId,
+                    'name' => 'myConnection',
                     'credentialFields' => [
                         'endpoint' => 'testEndpoint',
                         'apiUser' => 'testUser',
                         'apiKey' => 'testKey',
                     ],
-                    'status' => SwagMigrationRunEntity::STATUS_RUNNING,
                     'profileId' => $this->profileUuidService->getProfileUuid(),
+                ],
+            ],
+            $context
+        );
+
+        $this->runUuid = Uuid::uuid4()->getHex();
+        $this->runRepo->create(
+            [
+                [
+                    'id' => $this->runUuid,
+                    'connectionId' => $this->connectionId,
+                    'progress' => require __DIR__ . '/../../_fixtures/run_progress_data.php',
+                    'status' => SwagMigrationRunEntity::STATUS_RUNNING,
                     'accessToken' => 'testToken',
                 ],
             ],
@@ -97,7 +126,7 @@ class MigrationControllerTest extends TestCase
             $this->runRepo
         );
         $dataFetcher = $this->getMigrationDataFetcher(
-            $this->getContainer()->get('swag_migration_data.repository'),
+            $dataRepo,
             $this->getContainer()->get(Shopware55MappingService::class),
             $this->getContainer()->get(MediaFileService::class),
             $this->getContainer()->get('swag_migration_logging.repository')
@@ -106,7 +135,7 @@ class MigrationControllerTest extends TestCase
             $dataFetcher,
             $this->getContainer()->get(MigrationDataWriter::class),
             new DummyMediaFileProcessorService(
-                $this->getContainer()->get('swag_migration_media_file.repository'),
+                $mediaFileRepo,
                 new MediaFileProcessorRegistry(
                     [
                         new DummyHttpMediaDownloadService(),
@@ -117,13 +146,16 @@ class MigrationControllerTest extends TestCase
             $accessTokenService,
             new RunService(
                 $this->runRepo,
-                $this->profileRepo,
+                $this->connectionRepo,
                 $dataFetcher,
                 $this->getContainer()->get(Shopware55MappingService::class),
-                $accessTokenService
+                $accessTokenService,
+                new DataSelectionRegistry([]),
+                $dataRepo,
+                $mediaFileRepo
             ),
-            $this->profileRepo,
             new DataSelectionRegistry([]),
+            $this->connectionRepo,
             $this->runRepo
         );
     }
@@ -185,31 +217,13 @@ class MigrationControllerTest extends TestCase
         $customerId = Uuid::uuid4()->getHex();
         $context->getSourceContext()->setUserId($customerId);
 
-        $credentialFields = [
-                'endpoint' => 'testEndpoint',
-                'apiUser' => 'testUser',
-                'apiKey' => 'testKey',
-        ];
-
-        $this->profileRepo->update(
-            [
-                [
-                    'id' => $this->profileUuidService->getProfileUuid(),
-                    'credentialFields' => $credentialFields,
-                ],
-            ],
-            $context
-        );
-
         $params = [
-            'profileId' => $this->profileUuidService->getProfileUuid(),
-            'credentialFields' => $credentialFields,
-            'totals' => [
-                'toBeFetched' => [
-                    'product' => 5,
-                ],
+            'connectionId' => $this->connectionId,
+            'dataSelectionIds' => [
+                'categories_products',
+                'customers_orders',
+                'media',
             ],
-            'additionalData' => require __DIR__ . '/../../_fixtures/run_additional_data.php',
         ];
         $requestWithoutToken = new Request([], $params);
         $params[SwagMigrationAccessTokenService::ACCESS_TOKEN_NAME] = 'testToken';
@@ -310,17 +324,8 @@ class MigrationControllerTest extends TestCase
     {
         $context = Context::createDefaultContext();
 
-        /** @var $profileRepo EntityRepositoryInterface */
-        $profileRepo = $this->getContainer()->get('swag_migration_profile.repository');
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('profile', 'shopware55'));
-        $criteria->addFilter(new EqualsFilter('gateway', 'local'));
-        $profileResult = $profileRepo->search($criteria, $context);
-        /** @var $profile SwagMigrationProfileEntity */
-        $profile = $profileResult->first();
-
         $request = new Request([], [
-            'profileId' => $profile->getId(),
+            'connectionId' => $this->connectionId,
         ]);
 
         /**
@@ -329,12 +334,12 @@ class MigrationControllerTest extends TestCase
         $result = $this->controller->checkConnection($request, $context);
         $environmentInformation = json_decode($result->getContent(), true);
 
-        self::assertSame($environmentInformation['productTotal'], 37);
-        self::assertSame($environmentInformation['customerTotal'], 2);
-        self::assertSame($environmentInformation['categoryTotal'], 8);
-        self::assertSame($environmentInformation['mediaTotal'], 23);
-        self::assertSame($environmentInformation['orderTotal'], 0);
-        self::assertSame($environmentInformation['translationTotal'], 0);
+        self::assertSame($environmentInformation['totals']['product'], 37);
+        self::assertSame($environmentInformation['totals']['customer'], 2);
+        self::assertSame($environmentInformation['totals']['category'], 8);
+        self::assertSame($environmentInformation['totals']['media'], 23);
+        self::assertSame($environmentInformation['totals']['order'], 0);
+        self::assertSame($environmentInformation['totals']['translation'], 0);
 
         self::assertSame($environmentInformation['warningCode'], -1);
         self::assertSame($environmentInformation['warningMessage'], 'No warning.');
@@ -349,7 +354,7 @@ class MigrationControllerTest extends TestCase
             /* @var MigrationContextPropertyMissingException $e */
             self::assertInstanceOf(MigrationContextPropertyMissingException::class, $e);
             self::assertSame(Response::HTTP_BAD_REQUEST, $e->getStatusCode());
-            self::assertSame('Required property "profileId" for migration context is missing', $e->getMessage());
+            self::assertSame('Required property "connectionId" for migration context is missing', $e->getMessage());
         }
     }
 
@@ -357,26 +362,9 @@ class MigrationControllerTest extends TestCase
     {
         $context = Context::createDefaultContext();
 
-        /** @var $profileRepo EntityRepositoryInterface */
-        $profileRepo = $this->getContainer()->get('swag_migration_profile.repository');
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('profile', 'shopware55'));
-        $criteria->addFilter(new EqualsFilter('gateway', 'api'));
-        $profileResult = $profileRepo->search($criteria, $context);
-        /** @var $profile SwagMigrationProfileEntity */
-        $profile = $profileResult->first();
-
         $params = [
-            'profileName' => Shopware55Profile::PROFILE_NAME,
-            'profileId' => $profile->getId(),
             'runUuid' => $this->runUuid,
-            'gateway' => 'local',
             'entity' => ProductDefinition::getEntityName(),
-            'credentialFields' => [
-                'endpoint' => 'test',
-                'apiUser' => 'test',
-                'apiKey' => 'test',
-            ],
         ];
         $request = new Request([], $params);
         $result = $this->controller->fetchData($request, $context);
@@ -396,11 +384,7 @@ class MigrationControllerTest extends TestCase
     {
         return [
             ['runUuid'],
-            ['profileId'],
-            ['profileName'],
-            ['gateway'],
             ['entity'],
-            ['credentialFields'],
         ];
     }
 
@@ -411,25 +395,9 @@ class MigrationControllerTest extends TestCase
     {
         $context = Context::createDefaultContext();
 
-        /** @var $profileRepo EntityRepositoryInterface */
-        $profileRepo = $this->getContainer()->get('swag_migration_profile.repository');
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('profile', 'shopware55'));
-        $criteria->addFilter(new EqualsFilter('gateway', 'api'));
-        $profileResult = $profileRepo->search($criteria, $context);
-        /** @var $profile SwagMigrationProfileEntity */
-        $profile = $profileResult->first();
         $properties = [
-            'profileName' => Shopware55Profile::PROFILE_NAME,
-            'profileId' => $profile->getId(),
             'runUuid' => $this->runUuid,
-            'gateway' => 'local',
             'entity' => ProductDefinition::getEntityName(),
-            'credentialFields' => [
-                'endpoint' => 'test',
-                'apiUser' => 'test',
-                'apiKey' => 'test',
-            ],
         ];
         unset($properties[$missingProperty]);
 
@@ -493,7 +461,7 @@ class MigrationControllerTest extends TestCase
     public function testFetchMediaUuids(): void
     {
         $request = new Request([
-            'runId' => $this->runUuid,
+            'runUuid' => $this->runUuid,
         ]);
         $context = Context::createDefaultContext();
         $result = $this->controller->fetchMediaUuids($request, $context);
@@ -503,7 +471,7 @@ class MigrationControllerTest extends TestCase
         self::assertCount(10, $mediaUuids['mediaUuids']);
 
         $this->expectException(MigrationWorkloadPropertyMissingException::class);
-        $this->expectExceptionMessage('Required property "runId" for migration workload is missing');
+        $this->expectExceptionMessage('Required property "runUuid" for migration workload is missing');
 
         $request = new Request();
         $this->controller->fetchMediaUuids($request, $context);
@@ -511,7 +479,6 @@ class MigrationControllerTest extends TestCase
 
     public function testDownloadMedia(): void
     {
-        $context = Context::createDefaultContext();
         $inputWorkload = [
             [
                 'uuid' => Uuid::uuid4()->getHex(),
@@ -532,20 +499,8 @@ class MigrationControllerTest extends TestCase
             ],
         ];
 
-        /** @var $profileRepo EntityRepositoryInterface */
-        $profileRepo = $this->getContainer()->get('swag_migration_profile.repository');
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('profile', 'shopware55'));
-        $criteria->addFilter(new EqualsFilter('gateway', 'api'));
-        $profileResult = $profileRepo->search($criteria, $context);
-        /** @var $profile SwagMigrationProfileEntity */
-        $profile = $profileResult->first();
-
         $params = [
-            'runId' => $this->runUuid,
-            'profileName' => Shopware55Profile::PROFILE_NAME,
-            'profileId' => $profile->getId(),
-            'gateway' => 'local',
+            'runUuid' => $this->runUuid,
             'workload' => $inputWorkload,
             'fileChunkByteSize' => 1000,
         ];
@@ -564,10 +519,7 @@ class MigrationControllerTest extends TestCase
         self::assertSame($result['workload'], $inputWorkload);
 
         $request = new Request([], [
-            'runId' => $this->runUuid,
-            'profileName' => Shopware55Profile::PROFILE_NAME,
-            'profileId' => $profile->getId(),
-            'gateway' => 'local',
+            'runUuid' => $this->runUuid,
             SwagMigrationAccessTokenService::ACCESS_TOKEN_NAME => 'testToken',
         ]);
         $result = $this->controller->processMedia($request, $context);
@@ -582,13 +534,10 @@ class MigrationControllerTest extends TestCase
     public function requiredDownloadMediaProperties(): array
     {
         return [
-            ['runId'],
+            ['runUuid'],
             ['uuid'],
             ['currentOffset'],
             ['state'],
-            ['profileName'],
-            ['profileId'],
-            ['gateway'],
         ];
     }
 
@@ -597,7 +546,6 @@ class MigrationControllerTest extends TestCase
      */
     public function testDownloadMediaWithMissingProperty(string $missingProperty): void
     {
-        $context = Context::createDefaultContext();
         $inputWorkload = [
             [
                 'uuid' => Uuid::uuid4()->getHex(),
@@ -618,28 +566,13 @@ class MigrationControllerTest extends TestCase
             ],
         ];
 
-        /** @var $profileRepo EntityRepositoryInterface */
-        $profileRepo = $this->getContainer()->get('swag_migration_profile.repository');
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('profile', 'shopware55'));
-        $criteria->addFilter(new EqualsFilter('gateway', 'api'));
-        $profileResult = $profileRepo->search($criteria, $context);
-        /** @var $profile SwagMigrationProfileEntity */
-        $profile = $profileResult->first();
-
         $properties = [
-            'runId' => $this->runUuid,
-            'profileName' => Shopware55Profile::PROFILE_NAME,
-            'profileId' => $profile->getId(),
-            'gateway' => 'local',
+            'runUuid' => $this->runUuid,
             'fileChunkByteSize' => 1000,
         ];
 
         $requestParamKeys = [
-            'runId',
-            'profileName',
-            'profileId',
-            'gateway',
+            'runUuid',
         ];
 
         if (!\in_array($missingProperty, $requestParamKeys, true)) {

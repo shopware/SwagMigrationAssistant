@@ -3,6 +3,7 @@
 namespace SwagMigrationNext\Migration;
 
 use Shopware\Core\Framework\Struct\Struct;
+use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 
 class MigrationContext extends Struct implements MigrationContextInterface
 {
@@ -12,29 +13,14 @@ class MigrationContext extends Struct implements MigrationContextInterface
     private $runUuid;
 
     /**
-     * @var string
+     * @var SwagMigrationConnectionEntity|null
      */
-    private $profileId;
-
-    /**
-     * @var string
-     */
-    private $profileName;
+    private $connection;
 
     /**
      * @var string
      */
     private $entity;
-
-    /**
-     * @var string
-     */
-    private $gateway;
-
-    /**
-     * @var array
-     */
-    private $credentials;
 
     /**
      * @var int
@@ -48,22 +34,16 @@ class MigrationContext extends Struct implements MigrationContextInterface
 
     public function __construct(
         string $runUuid,
-        string $profileId,
-        string $profileName,
-        string $gateway,
+        ?SwagMigrationConnectionEntity $connection,
         string $entity,
         int $offset,
-        int $limit,
-        array $credentials = []
+        int $limit
     ) {
         $this->runUuid = $runUuid;
-        $this->profileId = $profileId;
-        $this->profileName = $profileName;
-        $this->gateway = $gateway;
+        $this->connection = $connection;
         $this->entity = $entity;
         $this->offset = $offset;
         $this->limit = $limit;
-        $this->credentials = $credentials;
     }
 
     public function getRunUuid(): string
@@ -71,34 +51,14 @@ class MigrationContext extends Struct implements MigrationContextInterface
         return $this->runUuid;
     }
 
-    public function getProfileId(): string
+    public function getConnection(): ?SwagMigrationConnectionEntity
     {
-        return $this->profileId;
-    }
-
-    public function getProfileName(): string
-    {
-        return $this->profileName;
+        return $this->connection;
     }
 
     public function getEntity(): string
     {
         return $this->entity;
-    }
-
-    public function getGateway(): string
-    {
-        return $this->gateway;
-    }
-
-    public function getCredentials(): array
-    {
-        return $this->credentials;
-    }
-
-    public function getGatewayIdentifier(): string
-    {
-        return $this->getProfileName() . $this->getGateway();
     }
 
     public function getOffset(): int

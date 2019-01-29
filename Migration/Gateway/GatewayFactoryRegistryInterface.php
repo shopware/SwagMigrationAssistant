@@ -9,5 +9,5 @@ interface GatewayFactoryRegistryInterface
     /**
      * Selects the correct GatewayFactory to create a gateway by the given migration context
      */
-    public function createGateway(MigrationContextInterface $context): GatewayInterface;
+    public function createGateway(MigrationContextInterface $migrationContext): GatewayInterface;
 }

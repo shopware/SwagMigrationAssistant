@@ -32,10 +32,7 @@ Component.register('swag-migration-history-detail', {
         this.runId = this.$route.params.id;
         const params = {
             limit: 1,
-            criteria: CriteriaFactory.equals('id', this.runId),
-            associations: {
-                profile: { limit: 1 }
-            }
+            criteria: CriteriaFactory.equals('id', this.runId)
         };
 
         this.migrationRunStore.getList(params).then((response) => {

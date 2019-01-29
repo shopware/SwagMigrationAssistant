@@ -12,7 +12,6 @@
       "buttonLetsGo": "Let's go",
       "buttonConnect": "Connect",
       "buttonToStart": "Starting point",
-      "buttonToProfiles": "Profiles",
       "buttonNext": "Next",
       "buttonFinish": "Finish",
       "buttonEdit": "Edit",
@@ -37,12 +36,19 @@
           "selectDescription": "#PLACEHOLDER# Bestehendes Profil auswählen um Daten zu aktualisieren."
         },
         "profileSelect": {
+          "contentTitle": "#PLATZHALTER# Wähle ein bestehendes Profil aus der Liste aus, um Daten zu aktualisieren.",
+          "profileLabel": "#PLATZHALTER# Profilename:",
+          "profilePlaceholder": "#PLATZHALTER# Bitte Profile auswählen"
+        },
+        "profileCreate": {
           "contentTitle": "#PLACEHOLDER# Eine Headline Profil konfigurieren",
           "contentInformation": "#PLACEHOLDER# Wähle das System und die Schnittstelle aus, von der die Daten migriert werden sollen.",
           "profileLabel": "#PLACEHOLDER# Profile:",
           "profilePlaceholder": "#PLACEHOLDER# Bitte Profile auswählen",
           "gatewayLabel": "#PLACEHOLDER# Gatway:",
-          "gatewayPlaceholder": "#PLACEHOLDER# Bitte Gateway auswählen"
+          "gatewayPlaceholder": "#PLACEHOLDER# Bitte Gateway auswählen",
+          "connectionLabel": "#PLATZHALTER# Verbindungsname",
+          "connectionPlaceholder": "#PLATZHALTER# Meine Verbindung"
         },
         "pluginInformation": {
           "contentTitle": "Plugin installation - Shopware 5 backend",
@@ -93,7 +99,9 @@
             "connectionErrorMsg": "Could not connect to the server. Please check the given shop domain.",
             "authenticationErrorMsg": "Your credentials are incorrect. Please check them and try again.",
             "invalidShopDomainErrorMsg": "The given URL is not valid shop domain. Please enter a valid shop domain.",
-            "undefinedErrorMsg": "Internal server error. Please try again."
+            "undefinedErrorMsg": "Internal server error. Please try again.",
+            "credentialsMissing": "There are no credentials available, please enter them first.",
+            "migrationRunning": "A migration is currently in progress. Therefore, you cannot edit the credentials until the migration is complete."
           }
         }
       }
@@ -122,12 +130,23 @@
         "buttonRemoveProfile": "Remove",
         "connected": "Connected",
         "notConnected": "Not connected",
-        "customersAndOrders": "Customers & Orders:",
-        "categoriesAndProducts": "Categories & Products:",
-        "media": "Media:",
         "lastMigration": "Last import:",
         "lastMigrationDateTime": "{date} at {time}",
-        "gateway": "Gateway:"
+        "gateway": "Gateway:",
+        "confirmDialog": {
+          "title": "Delete Connection",
+          "content": "The connection will be terminated and the credentials deleted. The information about the migration process is still available in the history. You can re-establish a connection at any time. <br><br>Do you want to delete the connection?",
+          "abortButtonText": "Abort",
+          "confirmButtonText": "Yes, delete"
+        },
+        "entities": {
+          "category": "Categories:",
+          "product": "Products:",
+          "customer": "Customers:",
+          "order": "Orders:",
+          "media": "Media:",
+          "translation": "Translations:"
+        }
       },
       "selectDataCard": {
         "cardTitle": "Data selection",
@@ -137,11 +156,9 @@
         "infoText": "Catalogues and sales channels are new elements for Shopware Playground that help you to structure your data without sub- and language shops. For more information on this topic, we recommend the articles in our documentation on <a target=\"_blank\" href=\"https://docs.shopware.com/en/shopware-playground-en/admin/catalogues\">catalogues</a> and <a target=\"_blank\" href=\"https://docs.shopware.com/en/shopware-playground-en/admin/saleschannels\">sales channels</a>.",
         "dataHeader": "Data",
         "dataSelection": {
-          "shopware55Profile": {
-            "customersAndOrders": "Customers & Orders",
-            "categoriesAndProducts": "Categories & Products",
-            "media": "Media"
-          }
+          "customersOrders": "Customers & Orders",
+          "categoriesProducts": "Categories & Products",
+          "media": "Media"
         },
         "noData": "No data was found to import.",
         "gdprTitle": "Terms of use",

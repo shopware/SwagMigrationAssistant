@@ -43,13 +43,10 @@ class Shopware55ApiReaderTest extends TestCase
             $client,
             new MigrationContext(
                 '',
-                '',
-                '',
-                '',
+                null,
                 ProductDefinition::getEntityName(),
                 0,
-                0,
-                ['endpoint' => '', 'apiUser' => '', 'apiKey' => '']
+                0
             )
         );
 
@@ -66,13 +63,10 @@ class Shopware55ApiReaderTest extends TestCase
             new Client(),
             new MigrationContext(
                 '',
-                '',
-                '',
-                '',
+                null,
                 'foo',
                 0,
-                0,
-                ['endpoint' => '', 'apiUser' => '', 'apiKey' => '']
+                0
             )
         );
 
@@ -97,13 +91,10 @@ class Shopware55ApiReaderTest extends TestCase
             new Client($options),
             new MigrationContext(
                 '',
-                '',
-                '',
-                '',
+                null,
                 ProductDefinition::getEntityName(),
                 0,
-                0,
-                ['endpoint' => '', 'apiUser' => '', 'apiKey' => '']
+                0
             )
         );
 

@@ -3,6 +3,7 @@
 namespace SwagMigrationNext\Migration\Setting;
 
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
+use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
 
 class GeneralSettingEntity extends Entity
@@ -10,30 +11,30 @@ class GeneralSettingEntity extends Entity
     /**
      * @var string|null
      */
-    protected $selectedProfileId;
+    protected $selectedConnectionId;
 
     /**
-     * @var SwagMigrationProfileEntity|null
+     * @var SwagMigrationConnectionEntity|null
      */
-    protected $selectedProfile;
+    protected $selectedConnection;
 
-    public function getSelectedProfileId(): ?string
+    public function getSelectedConnectionId(): ?string
     {
-        return $this->selectedProfileId;
+        return $this->selectedConnectionId;
     }
 
-    public function setSelectedProfileId(string $selectedProfileId): void
+    public function setSelectedConnectionId(string $selectedConnectionId): void
     {
-        $this->selectedProfileId = $selectedProfileId;
+        $this->selectedConnectionId = $selectedConnectionId;
     }
 
-    public function getSelectedProfile(): ?SwagMigrationProfileEntity
+    public function getSelectedConnection(): ?SwagMigrationConnectionEntity
     {
-        return $this->selectedProfile;
+        return $this->selectedConnection;
     }
 
-    public function setSelectedProfile(SwagMigrationProfileEntity $selectedProfile): void
+    public function setSelectedConnection(SwagMigrationConnectionEntity $selectedConnection): void
     {
-        $this->selectedProfile = $selectedProfile;
+        $this->selectedConnection = $selectedConnection;
     }
 }

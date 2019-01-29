@@ -6,9 +6,12 @@ use Exception;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Content\Product\ProductDefinition;
 use SwagMigrationNext\Exception\GatewayNotFoundException;
+use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\Gateway\GatewayFactoryRegistry;
 use SwagMigrationNext\Migration\Gateway\GatewayFactoryRegistryInterface;
 use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
+use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationNext\Test\Mock\DummyCollection;
 use SwagMigrationNext\Test\Mock\Gateway\Dummy\Local\DummyLocalFactory;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,19 +30,20 @@ class GatewayServiceTest extends TestCase
 
     public function testGetGatewayNotFound(): void
     {
+        $connection = new SwagMigrationConnectionEntity();
+        $profile = new SwagMigrationProfileEntity();
+        $profile->setName('foobar');
+        $profile->setGatewayName(Shopware55LocalGateway::GATEWAY_TYPE);
+
+        $connection->setProfile($profile);
+        $connection->setCredentialFields([]);
+
         $migrationContext = new MigrationContext(
             '',
-            '',
-            'foobar',
-            'api',
+            $connection,
             ProductDefinition::getEntityName(),
             0,
-            250,
-            [
-                'endpoint' => 'foo',
-                'apiUser' => 'foo',
-                'apiKey' => 'foo',
-            ]
+            250
         );
 
         try {

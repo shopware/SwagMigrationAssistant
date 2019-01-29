@@ -126,15 +126,19 @@ export class WorkerMediaFiles {
                 this._runId,
                 entityGroups,
                 this._status
-            ).then(([newEntityGroups, mediaTotalCount]) => {
+            ).then(([newEntityGroups]) => {
                 entityGroups = newEntityGroups;
-                this._mediaTotalCount = mediaTotalCount;
+                this._mediaTotalCount = 0;
+                entityGroups.forEach((group) => {
+                    if (group.id === 'processMediaFiles') {
+                        this._mediaTotalCount = group.total;
+                    }
+                });
             });
 
             if (entityOffset === 0) {
                 this._resetMediaProgress();
             } else {
-                this._mediaTotalCount += entityOffset; // we need to add the processed / finished count
                 this._mediaProgress += entityOffset;
                 this._mediaUuidPool = [];
                 this._mediaWorkload = [];
@@ -166,7 +170,7 @@ export class WorkerMediaFiles {
             }
 
             this._migrationService.fetchMediaUuids({
-                runId: this._runId,
+                runUuid: this._runId,
                 limit: this._MEDIA_UUID_CHUNK
             }).then((res) => {
                 res.mediaUuids.forEach((uuid) => {
@@ -293,8 +297,8 @@ export class WorkerMediaFiles {
         // call event subscriber
         this._callProgressCB({
             entityName: 'media',
-            entityGroupProgressValue: this._mediaProgress,
-            entityCount: this._mediaTotalCount
+            groupCurrentCount: this._mediaProgress,
+            groupTotal: this._mediaTotalCount
         });
 
         this._makeWorkload(mediaRemovedCount);
@@ -309,10 +313,7 @@ export class WorkerMediaFiles {
     _processMediaFilesWorkload() {
         return new Promise((resolve) => {
             this._migrationService.processMedia({
-                runId: this._runId,
-                profileId: this._downloadParams.profileId,
-                profileName: this._downloadParams.profileName,
-                gateway: this._downloadParams.gateway,
+                runUuid: this._runId,
                 workload: this._mediaWorkload,
                 fileChunkByteSize: this._MEDIA_FILE_CHUNK_BYTE_SIZE,
                 swagMigrationAccessToken: this._accessToken

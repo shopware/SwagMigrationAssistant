@@ -71,7 +71,7 @@ class OrderConverter extends AbstractConverter
     /**
      * @var string
      */
-    private $profileId;
+    private $connectionId;
 
     /**
      * @var LoggingServiceInterface
@@ -182,11 +182,11 @@ class OrderConverter extends AbstractConverter
         $this->mainLocale = $data['_locale'];
         unset($data['_locale']);
         $this->context = $context;
-        $this->profileId = $migrationContext->getProfileId();
+        $this->connectionId = $migrationContext->getConnection()->getId();
 
         $converted = [];
         $converted['id'] = $this->mappingService->createNewUuid(
-            $this->profileId,
+            $this->connectionId,
             OrderDefinition::getEntityName(),
             $data['id'],
             $this->context
@@ -195,7 +195,7 @@ class OrderConverter extends AbstractConverter
         $this->uuid = $converted['id'];
 
         $customerId = $this->mappingService->getUuid(
-            $this->profileId,
+            $this->connectionId,
             CustomerDefinition::getEntityName(),
             $data['customer']['email'],
             $this->context
@@ -203,7 +203,7 @@ class OrderConverter extends AbstractConverter
 
         if ($customerId === null) {
             $customerId = $this->mappingService->getUuid(
-                $this->profileId,
+                $this->connectionId,
                 CustomerDefinition::getEntityName(),
                 $data['userID'],
                 $this->context
@@ -319,7 +319,7 @@ class OrderConverter extends AbstractConverter
         $converted['salesChannelId'] = Defaults::SALES_CHANNEL;
         if (isset($data['subshopID'])) {
             $salesChannelId = $this->mappingService->getUuid(
-                $this->profileId,
+                $this->connectionId,
                 SalesChannelDefinition::getEntityName(),
                 $data['subshopID'],
                 $this->context
@@ -368,7 +368,7 @@ class OrderConverter extends AbstractConverter
 
         if (!isset($currency['id'])) {
             $currency['id'] = $this->mappingService->createNewUuid(
-                $this->profileId,
+                $this->connectionId,
                 CurrencyDefinition::getEntityName(),
                 $originalData['id'],
                 $this->context
@@ -376,7 +376,7 @@ class OrderConverter extends AbstractConverter
         }
 
         $translation['id'] = $this->mappingService->createNewUuid(
-            $this->profileId,
+            $this->connectionId,
             CurrencyTranslationDefinition::getEntityName(),
             $originalData['id'] . ':' . $this->mainLocale,
             $this->context
@@ -391,7 +391,7 @@ class OrderConverter extends AbstractConverter
         $currency['symbol'] = html_entity_decode($originalData['templatechar']);
         $currency['placedInFront'] = ((int) $originalData['symbol_position']) > 16;
 
-        $languageData = $this->mappingService->getLanguageUuid($this->profileId, $this->mainLocale, $this->context);
+        $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);
 
         if (isset($languageData['createData']) && !empty($languageData['createData'])) {
             $translation['language']['id'] = $languageData['uuid'];
@@ -441,7 +441,7 @@ class OrderConverter extends AbstractConverter
             $paymentMethod['id'] = $paymentMethodUuid;
         } else {
             $paymentMethod['id'] = $this->mappingService->createNewUuid(
-                $this->profileId,
+                $this->connectionId,
                 PaymentMethodDefinition::getEntityName(),
                 $originalData['payment']['id'],
                 $this->context
@@ -449,7 +449,7 @@ class OrderConverter extends AbstractConverter
         }
 
         $translation['id'] = $this->mappingService->createNewUuid(
-            $this->profileId,
+            $this->connectionId,
             PaymentMethodTranslationDefinition::getEntityName(),
             $originalData['payment']['id'] . ':' . $this->mainLocale,
             $this->context
@@ -482,7 +482,7 @@ class OrderConverter extends AbstractConverter
         $this->helper->convertValue($paymentMethod, 'source', $originalData['payment'], 'source', $this->helper::TYPE_INTEGER);
         $this->helper->convertValue($paymentMethod, 'mobileInactive', $originalData['payment'], 'mobile_inactive', $this->helper::TYPE_BOOLEAN);
 
-        $languageData = $this->mappingService->getLanguageUuid($this->profileId, $this->mainLocale, $this->context);
+        $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);
 
         if (isset($languageData['createData']) && !empty($languageData['createData'])) {
             $translation['language']['id'] = $languageData['uuid'];
@@ -520,14 +520,14 @@ class OrderConverter extends AbstractConverter
 
         $address = [];
         $address['id'] = $this->mappingService->createNewUuid(
-            $this->profileId,
+            $this->connectionId,
             OrderAddressDefinition::getEntityName(),
             $originalData['id'],
             $this->context
         );
 
         $address['countryId'] = $this->mappingService->getUuid(
-            $this->profileId,
+            $this->connectionId,
             CountryDefinition::getEntityName(),
             $originalData['countryID'],
             $this->context
@@ -539,7 +539,7 @@ class OrderConverter extends AbstractConverter
 
         if (isset($originalData['stateID'])) {
             $address['countryStateId'] = $this->mappingService->getUuid(
-                $this->profileId,
+                $this->connectionId,
                 CountryStateDefinition::getEntityName(),
                 $originalData['stateID'],
                 $this->context
@@ -577,14 +577,14 @@ class OrderConverter extends AbstractConverter
                 $oldCountryData['id'],
                 $oldCountryData['countryiso'],
                 $oldCountryData['iso3'],
-                $this->profileId,
+                $this->connectionId,
                 $this->context
             );
         }
 
         if (!isset($country['id'])) {
             $country['id'] = $this->mappingService->createNewUuid(
-                $this->profileId,
+                $this->connectionId,
                 CountryDefinition::getEntityName(),
                 $oldCountryData['id'],
                 $this->context
@@ -592,7 +592,7 @@ class OrderConverter extends AbstractConverter
         }
 
         $translation['id'] = $this->mappingService->createNewUuid(
-            $this->profileId,
+            $this->connectionId,
             CountryTranslationDefinition::getEntityName(),
             $oldCountryData['id'] . ':' . $this->mainLocale,
             $this->context
@@ -611,7 +611,7 @@ class OrderConverter extends AbstractConverter
         $this->helper->convertValue($country, 'displayStateInRegistration', $oldCountryData, 'display_state_in_registration', $this->helper::TYPE_BOOLEAN);
         $this->helper->convertValue($country, 'forceStateInRegistration', $oldCountryData, 'force_state_in_registration', $this->helper::TYPE_BOOLEAN);
 
-        $languageData = $this->mappingService->getLanguageUuid($this->profileId, $this->mainLocale, $this->context);
+        $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);
 
         if (isset($languageData['createData']) && !empty($languageData['createData'])) {
             $translation['language']['id'] = $languageData['uuid'];
@@ -630,7 +630,7 @@ class OrderConverter extends AbstractConverter
     {
         $state = [];
         $state['id'] = $this->mappingService->createNewUuid(
-            $this->profileId,
+            $this->connectionId,
             CountryStateDefinition::getEntityName(),
             $oldStateData['id'],
             $this->context
@@ -638,7 +638,7 @@ class OrderConverter extends AbstractConverter
         $state['countryId'] = $newCountryId;
 
         $translation['id'] = $this->mappingService->createNewUuid(
-            $this->profileId,
+            $this->connectionId,
             CountryStateTranslationDefinition::getEntityName(),
             $oldStateData['id'] . ':' . $this->mainLocale,
             $this->context
@@ -650,7 +650,7 @@ class OrderConverter extends AbstractConverter
         $this->helper->convertValue($state, 'position', $oldStateData, 'position', $this->helper::TYPE_INTEGER);
         $this->helper->convertValue($state, 'active', $oldStateData, 'active', $this->helper::TYPE_BOOLEAN);
 
-        $languageData = $this->mappingService->getLanguageUuid($this->profileId, $this->mainLocale, $this->context);
+        $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);
 
         if (isset($languageData['createData']) && !empty($languageData['createData'])) {
             $translation['language']['id'] = $languageData['uuid'];
@@ -671,7 +671,7 @@ class OrderConverter extends AbstractConverter
 
         $delivery = [
             'id' => $this->mappingService->createNewUuid(
-                $this->profileId,
+                $this->connectionId,
                 OrderDeliveryDefinition::getEntityName(),
                 $this->oldId,
                 $this->context
@@ -704,7 +704,7 @@ class OrderConverter extends AbstractConverter
             foreach ($converted['lineItems'] as $lineItem) {
                 $positions[] = [
                     'id' => $this->mappingService->createNewUuid(
-                        $this->profileId,
+                        $this->connectionId,
                         OrderDeliveryPositionDefinition::getEntityName(),
                         $lineItem['id'],
                         $this->context
@@ -727,14 +727,14 @@ class OrderConverter extends AbstractConverter
     {
         $shippingMethod = [];
         $shippingMethod['id'] = $this->mappingService->createNewUuid(
-            $this->profileId,
+            $this->connectionId,
             ShippingMethodDefinition::getEntityName(),
             $originalData['id'],
             $this->context
         );
 
         $translation['id'] = $this->mappingService->createNewUuid(
-            $this->profileId,
+            $this->connectionId,
             ShippingMethodTranslationDefinition::getEntityName(),
             $originalData['id'] . ':' . $this->mainLocale,
             $this->context
@@ -745,7 +745,7 @@ class OrderConverter extends AbstractConverter
         $this->helper->convertValue($translation, 'description', $originalData, 'description');
         $this->helper->convertValue($translation, 'comment', $originalData, 'comment');
 
-        $languageData = $this->mappingService->getLanguageUuid($this->profileId, $this->mainLocale, $this->context);
+        $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);
 
         if (isset($languageData['createData']) && !empty($languageData['createData'])) {
             $translation['language']['id'] = $languageData['uuid'];
@@ -792,7 +792,7 @@ class OrderConverter extends AbstractConverter
 
             $lineItem = [
                 'id' => $this->mappingService->createNewUuid(
-                    $this->profileId,
+                    $this->connectionId,
                     OrderLineItemDefinition::getEntityName(),
                     $originalLineItem['id'],
                     $this->context
@@ -802,7 +802,7 @@ class OrderConverter extends AbstractConverter
             if ($isProduct) {
                 if ($originalLineItem['articleordernumber'] !== null) {
                     $lineItem['identifier'] = $this->mappingService->getUuid(
-                        $this->profileId,
+                        $this->connectionId,
                         ProductDefinition::getEntityName(),
                         $originalLineItem['articleordernumber'],
                         $this->context

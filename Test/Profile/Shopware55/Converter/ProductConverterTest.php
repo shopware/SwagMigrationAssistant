@@ -6,12 +6,15 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Struct\Uuid;
+use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\MigrationContextInterface;
+use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
 use SwagMigrationNext\Profile\Shopware55\Converter\CategoryConverter;
 use SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\Converter\ProductConverter;
 use SwagMigrationNext\Profile\Shopware55\Exception\ParentEntityForChildNotFoundException;
+use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationNext\Test\Mock\Migration\Mapping\DummyMappingService;
@@ -40,9 +43,9 @@ class ProductConverterTest extends TestCase
     private $runId;
 
     /**
-     * @var string
+     * @var SwagMigrationConnectionEntity
      */
-    private $profileId;
+    private $connection;
 
     /**
      * @var MigrationContextInterface
@@ -58,13 +61,16 @@ class ProductConverterTest extends TestCase
         $this->productConverter = new ProductConverter($this->mappingService, $converterHelperService, $mediaFileService, $this->loggingService);
 
         $this->runId = Uuid::uuid4()->getHex();
-        $this->profileId = Uuid::uuid4()->getHex();
+        $this->connection = new SwagMigrationConnectionEntity();
+        $profile = new SwagMigrationProfileEntity();
+        $profile->setName(Shopware55Profile::PROFILE_NAME);
+        $profile->setGatewayName(Shopware55LocalGateway::GATEWAY_TYPE);
+        $this->connection->setId(Uuid::uuid4()->getHex());
+        $this->connection->setProfile($profile);
 
         $this->migrationContext = new MigrationContext(
             $this->runId,
-            $this->profileId,
-            Shopware55Profile::PROFILE_NAME,
-            'local',
+            $this->connection,
             ProductDefinition::getEntityName(),
             0,
             250

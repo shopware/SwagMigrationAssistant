@@ -17,6 +17,7 @@ use Shopware\Core\Framework\Struct\Serializer\StructNormalizer;
 use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\System\Currency\CurrencyEntity;
+use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\Data\SwagMigrationDataEntity;
 use SwagMigrationNext\Migration\Logging\LogType;
 use SwagMigrationNext\Migration\Media\MediaFileService;
@@ -121,13 +122,44 @@ class MigrationDataWriterTest extends TestCase
      */
     private $migrationDataRepo;
 
+    /**
+     * @var string
+     */
+    private $connectionId;
+
+    /**
+     * @var SwagMigrationConnectionEntity
+     */
+    private $connection;
+
     protected function setUp(): void
     {
+        $context = Context::createDefaultContext();
+        $connectionRepo = $this->getContainer()->get('swag_migration_connection.repository');
         $this->profileUuidService = new MigrationProfileUuidService(
             $this->getContainer()->get('swag_migration_profile.repository'),
             Shopware55Profile::PROFILE_NAME,
             Shopware55LocalGateway::GATEWAY_TYPE
         );
+
+        $context->getWriteProtection()->allow('MIGRATION_CONNECTION_CHECK_FOR_RUNNING_MIGRATION');
+        $this->connectionId = Uuid::uuid4()->getHex();
+        $connectionRepo->create(
+            [
+                [
+                    'id' => $this->connectionId,
+                    'name' => 'myConnection',
+                    'credentialFields' => [
+                        'endpoint' => 'testEndpoint',
+                        'apiUser' => 'testUser',
+                        'apiKey' => 'testKey',
+                    ],
+                    'profileId' => $this->profileUuidService->getProfileUuid(),
+                ],
+            ],
+            $context
+        );
+        $this->connection = $connectionRepo->search(new Criteria([$this->connectionId]), $context)->first();
 
         $this->runUuid = Uuid::uuid4()->getHex();
         $runRepo = $this->getContainer()->get('swag_migration_run.repository');
@@ -192,9 +224,7 @@ class MigrationDataWriterTest extends TestCase
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
             $this->runUuid,
-            $this->profileUuidService->getProfileUuid(),
-            Shopware55Profile::PROFILE_NAME,
-            'local',
+            $this->connection,
             CustomerDefinition::getEntityName(),
             0,
             250
@@ -230,9 +260,7 @@ class MigrationDataWriterTest extends TestCase
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
             $this->runUuid,
-            $this->profileUuidService->getProfileUuid(),
-            Shopware55Profile::PROFILE_NAME,
-            'local',
+            $this->connection,
             CustomerDefinition::getEntityName(),
             0,
             250
@@ -255,9 +283,7 @@ class MigrationDataWriterTest extends TestCase
         // Add users, who have ordered
         $userMigrationContext = new MigrationContext(
             $this->runUuid,
-            $this->profileUuidService->getProfileUuid(),
-            Shopware55Profile::PROFILE_NAME,
-            'local',
+            $this->connection,
             CustomerDefinition::getEntityName(),
             0,
             250
@@ -268,9 +294,7 @@ class MigrationDataWriterTest extends TestCase
         // Add orders
         $migrationContext = new MigrationContext(
             $this->runUuid,
-            $this->profileUuidService->getProfileUuid(),
-            Shopware55Profile::PROFILE_NAME,
-            'local',
+            $this->connection,
             OrderDefinition::getEntityName(),
             0,
             250
@@ -307,9 +331,7 @@ class MigrationDataWriterTest extends TestCase
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
             $this->runUuid,
-            $this->profileUuidService->getProfileUuid(),
-            Shopware55Profile::PROFILE_NAME,
-            'local',
+            $this->connection,
             CustomerDefinition::getEntityName(),
             0,
             250
@@ -330,9 +352,7 @@ class MigrationDataWriterTest extends TestCase
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
             $this->runUuid,
-            $this->profileUuidService->getProfileUuid(),
-            Shopware55Profile::PROFILE_NAME,
-            'local',
+            $this->connection,
             MediaDefinition::getEntityName(),
             0,
             250
@@ -353,9 +373,7 @@ class MigrationDataWriterTest extends TestCase
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
             $this->runUuid,
-            $this->profileUuidService->getProfileUuid(),
-            Shopware55Profile::PROFILE_NAME,
-            'local',
+            $this->connection,
             CategoryDefinition::getEntityName(),
             0,
             250
@@ -376,9 +394,7 @@ class MigrationDataWriterTest extends TestCase
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
             $this->runUuid,
-            $this->profileUuidService->getProfileUuid(),
-            Shopware55Profile::PROFILE_NAME,
-            'local',
+            $this->connection,
             ProductDefinition::getEntityName(),
             0,
             250
@@ -400,9 +416,7 @@ class MigrationDataWriterTest extends TestCase
 
         $migrationContext = new MigrationContext(
             $this->runUuid,
-            $this->profileUuidService->getProfileUuid(),
-            Shopware55Profile::PROFILE_NAME,
-            'local',
+            $this->connection,
             ProductDefinition::getEntityName(),
             0,
             250
@@ -415,9 +429,7 @@ class MigrationDataWriterTest extends TestCase
 
         $migrationContext = new MigrationContext(
             $this->runUuid,
-            $this->profileUuidService->getProfileUuid(),
-            Shopware55Profile::PROFILE_NAME,
-            'local',
+            $this->connection,
             'translation',
             0,
             250
@@ -436,9 +448,7 @@ class MigrationDataWriterTest extends TestCase
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
             $this->runUuid,
-            $this->profileUuidService->getProfileUuid(),
-            Shopware55Profile::PROFILE_NAME,
-            'local',
+            $this->connection,
             MediaDefinition::getEntityName(),
             0,
             250

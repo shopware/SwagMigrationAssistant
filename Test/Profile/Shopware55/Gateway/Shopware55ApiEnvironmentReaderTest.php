@@ -8,6 +8,7 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 use SwagMigrationNext\Exception\GatewayReadException;
+use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiEnvironmentReader;
 
@@ -56,13 +57,10 @@ class Shopware55ApiEnvironmentReaderTest extends TestCase
             $client,
             new MigrationContext(
                 '',
-                '',
-                '',
-                '',
+                new SwagMigrationConnectionEntity(),
                 '',
                 0,
-                0,
-                ['endpoint' => '', 'apiUser' => '', 'apiKey' => '']
+                0
             )
         );
 
@@ -98,13 +96,10 @@ class Shopware55ApiEnvironmentReaderTest extends TestCase
             $client,
             new MigrationContext(
                 '',
-                '',
-                '',
-                '',
+                new SwagMigrationConnectionEntity(),
                 '',
                 0,
-                0,
-                ['endpoint' => '', 'apiUser' => '', 'apiKey' => '']
+                0
             )
         );
 
@@ -140,13 +135,10 @@ class Shopware55ApiEnvironmentReaderTest extends TestCase
             $client,
             new MigrationContext(
                 '',
-                '',
-                '',
-                '',
+                new SwagMigrationConnectionEntity(),
                 '',
                 0,
-                0,
-                ['endpoint' => '', 'apiUser' => '', 'apiKey' => '']
+                0
             )
         );
 
@@ -174,13 +166,10 @@ class Shopware55ApiEnvironmentReaderTest extends TestCase
             $client,
             new MigrationContext(
                 '',
-                '',
-                '',
-                '',
+                new SwagMigrationConnectionEntity(),
                 '',
                 0,
-                0,
-                ['endpoint' => '', 'apiUser' => '', 'apiKey' => '']
+                0
             )
         );
 
@@ -209,13 +198,10 @@ class Shopware55ApiEnvironmentReaderTest extends TestCase
             $client,
             new MigrationContext(
                 '',
-                '',
-                '',
-                '',
+                new SwagMigrationConnectionEntity(),
                 '',
                 0,
-                0,
-                ['endpoint' => '', 'apiUser' => '', 'apiKey' => '']
+                0
             )
         );
 

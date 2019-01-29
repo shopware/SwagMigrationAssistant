@@ -9,8 +9,9 @@ Component.register('swag-migration-loading-screen', {
         profileName: {
             type: String
         },
-        tableData: {
-            type: Array
+        entityGroups: {
+            type: Array,
+            required: true
         },
         statusIndex: {
             type: Number,
@@ -22,20 +23,12 @@ Component.register('swag-migration-loading-screen', {
     data() {
         return {
             status: ['fetchData', 'writeData', 'downloadMedia']
-
         };
     },
 
     computed: {
         progressBarCount() {
-            let count = 0;
-            this.tableData.forEach((data) => {
-                if (data.selected) {
-                    count += 1;
-                }
-            });
-
-            return count;
+            return this.entityGroups.length;
         },
 
         progressBarContainerGridStyle() {
@@ -52,16 +45,6 @@ Component.register('swag-migration-loading-screen', {
         },
 
         statusCount() {
-            const containsMediaGroup = this.tableData.find((data) => {
-                return (data.selected) && (
-                    data.id === 'media' ||
-                    data.id === 'categories_products'
-                );
-            });
-            if (containsMediaGroup !== undefined) {
-                return this.status.length;
-            }
-
             return this.status.length - 1;
         },
 

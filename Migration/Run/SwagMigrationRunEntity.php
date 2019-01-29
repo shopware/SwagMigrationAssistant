@@ -6,10 +6,9 @@ use DateTime;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
 use SwagMigrationNext\Exception\MigrationRunUndefinedStatusException;
-use SwagMigrationNext\Migration\Data\SwagMigrationDataEntity;
-use SwagMigrationNext\Migration\Logging\SwagMigrationLoggingEntity;
-use SwagMigrationNext\Migration\Media\SwagMigrationMediaFileEntity;
-use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
+use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationNext\Migration\Logging\SwagMigrationLoggingCollection;
+use SwagMigrationNext\Migration\Media\SwagMigrationMediaFileCollection;
 
 class SwagMigrationRunEntity extends Entity
 {
@@ -33,12 +32,12 @@ class SwagMigrationRunEntity extends Entity
     /**
      * @var string|null
      */
-    protected $profileId;
+    protected $connectionId;
 
     /**
-     * @var SwagMigrationProfileEntity|null
+     * @var SwagMigrationConnectionEntity|null
      */
-    protected $profile;
+    protected $connection;
 
     /**
      * @var array|null
@@ -49,16 +48,6 @@ class SwagMigrationRunEntity extends Entity
      * @var array|null
      */
     protected $environmentInformation;
-
-    /**
-     * @var array|null
-     */
-    protected $additionalData;
-
-    /**
-     * @var array|null
-     */
-    protected $credentialFields;
 
     /**
      * @var string|null
@@ -86,38 +75,38 @@ class SwagMigrationRunEntity extends Entity
     protected $updatedAt;
 
     /**
-     * @var SwagMigrationDataEntity[]|null
+     * @var RunProgress[]
      */
-    protected $data;
+    protected $progress;
 
     /**
-     * @var SwagMigrationMediaFileEntity[]|null
+     * @var SwagMigrationMediaFileCollection|null
      */
     protected $mediaFiles;
 
     /**
-     * @var SwagMigrationLoggingEntity[]|null
+     * @var SwagMigrationLoggingCollection|null
      */
     protected $logs;
 
-    public function getProfileId(): ?string
+    public function getConnectionId(): ?string
     {
-        return $this->profileId;
+        return $this->connectionId;
     }
 
-    public function setProfileId(string $profileId): void
+    public function setConnectionId(string $connectionId): void
     {
-        $this->profileId = $profileId;
+        $this->connectionId = $connectionId;
     }
 
-    public function getProfile(): ?SwagMigrationProfileEntity
+    public function getConnection(): ?SwagMigrationConnectionEntity
     {
-        return $this->profile;
+        return $this->connection;
     }
 
-    public function setProfile(SwagMigrationProfileEntity $profile): void
+    public function setConnection(SwagMigrationConnectionEntity $connection): void
     {
-        $this->profile = $profile;
+        $this->connection = $connection;
     }
 
     public function getTotals(): ?array
@@ -138,26 +127,6 @@ class SwagMigrationRunEntity extends Entity
     public function setEnvironmentInformation(array $environmentInformation): void
     {
         $this->environmentInformation = $environmentInformation;
-    }
-
-    public function getAdditionalData(): ?array
-    {
-        return $this->additionalData;
-    }
-
-    public function setAdditionalData(array $additionalData): void
-    {
-        $this->additionalData = $additionalData;
-    }
-
-    public function getCredentialFields(): ?array
-    {
-        return $this->credentialFields;
-    }
-
-    public function setCredentialFields(array $credentialFields): void
-    {
-        $this->credentialFields = $credentialFields;
     }
 
     public function getStatus(): ?string
@@ -217,50 +186,35 @@ class SwagMigrationRunEntity extends Entity
         $this->updatedAt = $updatedAt;
     }
 
-    /**
-     * @return SwagMigrationDataEntity[]|null
-     */
-    public function getData(): ?array
+    public function getProgress(): ?array
     {
-        return $this->data;
+        return $this->progress;
     }
 
     /**
-     * @param SwagMigrationDataEntity[] $data
+     * @param RunProgress[] $progress
      */
-    public function setData(array $data): void
+    public function setProgress(array $progress): void
     {
-        $this->data = $data;
+        $this->progress = $progress;
     }
 
-    /**
-     * @return SwagMigrationMediaFileEntity[]|null
-     */
-    public function getMediaFiles(): ?array
+    public function getMediaFiles(): ?SwagMigrationMediaFileCollection
     {
         return $this->mediaFiles;
     }
 
-    /**
-     * @param SwagMigrationMediaFileEntity[] $mediaFiles
-     */
-    public function setMediaFiles(array $mediaFiles): void
+    public function setMediaFiles(SwagMigrationMediaFileCollection $mediaFiles): void
     {
         $this->mediaFiles = $mediaFiles;
     }
 
-    /**
-     * @return SwagMigrationLoggingEntity[]|null
-     */
-    public function getLogs(): ?array
+    public function getLogs(): ?SwagMigrationLoggingCollection
     {
         return $this->logs;
     }
 
-    /**
-     * @param SwagMigrationLoggingEntity[] $logs
-     */
-    public function setLogs(array $logs): void
+    public function setLogs(SwagMigrationLoggingCollection $logs): void
     {
         $this->logs = $logs;
     }

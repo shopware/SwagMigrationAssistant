@@ -14,10 +14,10 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\UpdatedAtField;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\Flag\Required;
+use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionDefinition;
 use SwagMigrationNext\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationNext\Migration\Logging\SwagMigrationLoggingDefinition;
 use SwagMigrationNext\Migration\Media\SwagMigrationMediaFileDefinition;
-use SwagMigrationNext\Migration\Profile\SwagMigrationProfileDefinition;
 
 class SwagMigrationRunDefinition extends EntityDefinition
 {
@@ -30,16 +30,15 @@ class SwagMigrationRunDefinition extends EntityDefinition
     {
         return new FieldCollection([
             (new IdField('id', 'id'))->setFlags(new PrimaryKey(), new Required()),
-            (new FkField('profile_id', 'profileId', SwagMigrationProfileDefinition::class))->setFlags(new Required()),
-            new JsonField('totals', 'totals'),
+            new FkField('connection_id', 'connectionId', SwagMigrationConnectionDefinition::class),
             new JsonField('environment_information', 'environmentInformation'),
-            new JsonField('additional_data', 'additionalData'),
+            new JsonField('progress', 'progress'),
             new StringField('user_id', 'userId'),
             new StringField('access_token', 'accessToken'),
             (new StringField('status', 'status'))->setFlags(new Required()),
             new CreatedAtField(),
             new UpdatedAtField(),
-            new ManyToOneAssociationField('profile', 'profile_id', SwagMigrationProfileDefinition::class, false),
+            new ManyToOneAssociationField('connection', 'connection_id', SwagMigrationConnectionDefinition::class, true),
             new OneToManyAssociationField('data', SwagMigrationDataDefinition::class, 'run_id', false),
             new OneToManyAssociationField('mediaFiles', SwagMigrationMediaFileDefinition::class, 'run_id', false),
             new OneToManyAssociationField('logs', SwagMigrationLoggingDefinition::class, 'run_id', false),

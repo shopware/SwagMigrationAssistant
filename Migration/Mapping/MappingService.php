@@ -79,14 +79,14 @@ class MappingService implements MappingServiceInterface
         $this->salesChannelTypeRepo = $salesChannelTypeRepo;
     }
 
-    public function getUuid(string $profileId, string $entityName, string $oldId, Context $context): ?string
+    public function getUuid(string $connectionId, string $entityName, string $oldId, Context $context): ?string
     {
-        if (isset($this->uuids[$profileId][$entityName][$oldId])) {
-            return $this->uuids[$profileId][$entityName][$oldId];
+        if (isset($this->uuids[$connectionId][$entityName][$oldId])) {
+            return $this->uuids[$connectionId][$entityName][$oldId];
         }
 
         $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('profileId', $profileId));
+        $criteria->addFilter(new EqualsFilter('connectionId', $connectionId));
         $criteria->addFilter(new EqualsFilter('entity', $entityName));
         $criteria->addFilter(new EqualsFilter('oldIdentifier', $oldId));
         $criteria->setLimit(1);
@@ -97,7 +97,7 @@ class MappingService implements MappingServiceInterface
             $element = $result->getEntities()->first();
             $uuid = $element->getEntityUuid();
 
-            $this->uuids[$profileId][$entityName][$oldId] = $uuid;
+            $this->uuids[$connectionId][$entityName][$oldId] = $uuid;
 
             return $uuid;
         }
@@ -106,14 +106,14 @@ class MappingService implements MappingServiceInterface
     }
 
     public function createNewUuid(
-        string $profileId,
+        string $connectionId,
         string $entityName,
         string $oldId,
         Context $context,
         array $additionalData = null,
         string $newUuid = null
     ): string {
-        $uuid = $this->getUuid($profileId, $entityName, $oldId, $context);
+        $uuid = $this->getUuid($connectionId, $entityName, $oldId, $context);
         if ($uuid !== null) {
             return $uuid;
         }
@@ -125,7 +125,7 @@ class MappingService implements MappingServiceInterface
 
         $this->saveMapping(
             [
-                'profileId' => $profileId,
+                'connectionId' => $connectionId,
                 'entity' => $entityName,
                 'oldIdentifier' => $oldId,
                 'entityUuid' => $uuid,
@@ -136,7 +136,7 @@ class MappingService implements MappingServiceInterface
         return $uuid;
     }
 
-    public function getLanguageUuid(string $profileId, string $localeCode, Context $context): array
+    public function getLanguageUuid(string $connectionId, string $localeCode, Context $context): array
     {
         // TODO: Revert the override of localeCode and test localCode, if the core can handle translations in a right way
         $_localeCode = 'en_GB';
@@ -165,7 +165,7 @@ class MappingService implements MappingServiceInterface
         }
 
         return [
-            'uuid' => $this->createNewUuid($profileId, LanguageDefinition::getEntityName(), $localeCode, $context),
+            'uuid' => $this->createNewUuid($connectionId, LanguageDefinition::getEntityName(), $localeCode, $context),
             'createData' => [
                 'localeId' => $localeUuid,
                 'localeCode' => $localeCode,
@@ -173,9 +173,9 @@ class MappingService implements MappingServiceInterface
         ];
     }
 
-    public function getCountryUuid(string $oldId, string $iso, string $iso3, string $profileId, Context $context): ?string
+    public function getCountryUuid(string $oldId, string $iso, string $iso3, string $connectionId, Context $context): ?string
     {
-        $countryUuid = $this->getUuid($profileId, CountryDefinition::getEntityName(), $oldId, $context);
+        $countryUuid = $this->getUuid($connectionId, CountryDefinition::getEntityName(), $oldId, $context);
 
         if ($countryUuid !== null) {
             return $countryUuid;
@@ -195,7 +195,7 @@ class MappingService implements MappingServiceInterface
 
             $this->saveMapping(
                 [
-                    'profileId' => $profileId,
+                    'connectionId' => $connectionId,
                     'entity' => CountryDefinition::getEntityName(),
                     'oldIdentifier' => $oldId,
                     'entityUuid' => $countryUuid,
@@ -225,20 +225,20 @@ class MappingService implements MappingServiceInterface
         return null;
     }
 
-    public function deleteMapping(string $entityUuid, string $profileId, Context $context): void
+    public function deleteMapping(string $entityUuid, string $connectionId, Context $context): void
     {
         foreach ($this->writeArray as $writeMapping) {
-            if ($writeMapping['profileId'] === $profileId && $writeMapping['entityUuid'] === $entityUuid) {
+            if ($writeMapping['connectionId'] === $connectionId && $writeMapping['entityUuid'] === $entityUuid) {
                 unset($writeMapping);
                 break;
             }
         }
 
-        if (isset($this->uuids[$profileId])) {
-            foreach ($this->uuids[$profileId] as $entityName => $entityArray) {
+        if (isset($this->uuids[$connectionId])) {
+            foreach ($this->uuids[$connectionId] as $entityName => $entityArray) {
                 foreach ($entityArray as $oldId => $uuid) {
                     if ($uuid === $entityUuid) {
-                        unset($this->uuids[$profileId][$entityName][$oldId]);
+                        unset($this->uuids[$connectionId][$entityName][$oldId]);
                         break;
                     }
                 }
@@ -247,7 +247,7 @@ class MappingService implements MappingServiceInterface
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('entityUuid', $entityUuid));
-        $criteria->addFilter(new EqualsFilter('profileId', $profileId));
+        $criteria->addFilter(new EqualsFilter('connectionId', $connectionId));
         $criteria->setLimit(1);
         $result = $this->migrationMappingRepo->search($criteria, $context);
 
@@ -270,23 +270,23 @@ class MappingService implements MappingServiceInterface
         $this->uuids = [];
     }
 
-    public function createSalesChannelMapping(string $profileId, array $structure, Context $context): void
+    public function createSalesChannelMapping(string $connectionId, array $structure, Context $context): void
     {
         foreach ($structure as $structureItem) {
-            $uuid = $this->getStructureToSalesChannelMapping($structureItem['id'], $profileId, $context);
+            $uuid = $this->getStructureToSalesChannelMapping($structureItem['id'], $connectionId, $context);
 
             if ($uuid !== null && !$this->existsSalesChannel($uuid, $context)) {
-                $this->deleteMapping($uuid, $profileId, $context);
+                $this->deleteMapping($uuid, $connectionId, $context);
                 $uuid = null;
             }
 
             if ($uuid === null) {
                 $uuid = $this->createSalesChannel($structureItem, $context);
-                $this->insertSalesChannelMapping($structureItem['id'], $profileId, $uuid, $context);
+                $this->insertSalesChannelMapping($structureItem['id'], $connectionId, $uuid, $context);
             }
 
             if (isset($structureItem['children'])) {
-                $this->createChildrenMapping($profileId, $structureItem['children'], $uuid, $context);
+                $this->createChildrenMapping($connectionId, $structureItem['children'], $uuid, $context);
             }
         }
 
@@ -295,36 +295,36 @@ class MappingService implements MappingServiceInterface
 
     protected function saveMapping(array $mapping): void
     {
-        $profileId = $mapping['profileId'];
+        $connectionId = $mapping['connectionId'];
         $entity = $mapping['entity'];
         $oldId = $mapping['oldIdentifier'];
         $uuid = $mapping['entityUuid'];
 
-        $this->uuids[$profileId][$entity][$oldId] = $uuid;
+        $this->uuids[$connectionId][$entity][$oldId] = $uuid;
         $this->writeArray[] = $mapping;
     }
 
-    private function createChildrenMapping(string $profileId, array $children, string $uuid, Context $context): void
+    private function createChildrenMapping(string $connectionId, array $children, string $uuid, Context $context): void
     {
         foreach ($children as $child) {
-            $oldUuid = $this->getStructureToSalesChannelMapping($child['id'], $profileId, $context);
+            $oldUuid = $this->getStructureToSalesChannelMapping($child['id'], $connectionId, $context);
 
             if ($oldUuid !== null && $oldUuid === $uuid) {
                 continue;
             }
 
             if ($oldUuid !== null && $oldUuid !== $uuid) {
-                $this->deleteMapping($oldUuid, $profileId, $context);
+                $this->deleteMapping($oldUuid, $connectionId, $context);
             }
 
-            $this->insertSalesChannelMapping($child['id'], $profileId, $uuid, $context);
+            $this->insertSalesChannelMapping($child['id'], $connectionId, $uuid, $context);
         }
     }
 
-    private function getStructureToSalesChannelMapping(string $structureId, string $profileId, Context $context): ?string
+    private function getStructureToSalesChannelMapping(string $structureId, string $connectionId, Context $context): ?string
     {
         return $this->getUuid(
-            $profileId,
+            $connectionId,
             SalesChannelDefinition::getEntityName(),
             $structureId,
             $context
@@ -390,10 +390,10 @@ class MappingService implements MappingServiceInterface
         return $ids[0]['salesChannelId'];
     }
 
-    private function insertSalesChannelMapping(string $structureId, string $profileId, string $salesChannelUuid, Context $context): void
+    private function insertSalesChannelMapping(string $structureId, string $connectionId, string $salesChannelUuid, Context $context): void
     {
         $this->createNewUuid(
-            $profileId,
+            $connectionId,
             SalesChannelDefinition::getEntityName(),
             $structureId,
             $context,

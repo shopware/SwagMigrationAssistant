@@ -7,6 +7,7 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenEvent;
+use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\System\Language\LanguageDefinition;
 use SwagMigrationNext\Exception\LocaleNotFoundException;
@@ -34,10 +35,35 @@ class MappingServiceTest extends TestCase
      */
     private $localeRepo;
 
+    /**
+     * @var string
+     */
+    private $connectionId;
+
     protected function setUp(): void
     {
+        $context = Context::createDefaultContext();
+        $connectionRepo = $this->getContainer()->get('swag_migration_connection.repository');
         $this->localeRepo = $this->getContainer()->get('locale.repository');
         $this->profileUuidService = new MigrationProfileUuidService($this->getContainer()->get('swag_migration_profile.repository'));
+
+        $context->getWriteProtection()->allow('MIGRATION_CONNECTION_CHECK_FOR_RUNNING_MIGRATION');
+        $this->connectionId = Uuid::uuid4()->getHex();
+        $connectionRepo->create(
+            [
+                [
+                    'id' => $this->connectionId,
+                    'name' => 'myConnection',
+                    'credentialFields' => [
+                        'endpoint' => 'testEndpoint',
+                        'apiUser' => 'testUser',
+                        'apiKey' => 'testKey',
+                    ],
+                    'profileId' => $this->profileUuidService->getProfileUuid(),
+                ],
+            ],
+            $context
+        );
 
         $this->mappingService = new MappingService(
             $this->getContainer()->get('swag_migration_mapping.repository'),
@@ -64,7 +90,7 @@ class MappingServiceTest extends TestCase
     public function testReadExistingMappings(): void
     {
         $context = Context::createDefaultContext();
-        $uuid1 = $this->mappingService->createNewUuid($this->profileUuidService->getProfileUuid(), 'product', '123', $context);
+        $uuid1 = $this->mappingService->createNewUuid($this->connectionId, 'product', '123', $context);
 
         $this->mappingService->writeMapping($context);
 
@@ -78,7 +104,7 @@ class MappingServiceTest extends TestCase
             $this->getContainer()->get('sales_channel_type.repository')
         );
 
-        $uuid2 = $newMappingService->createNewUuid($this->profileUuidService->getProfileUuid(), 'product', '123', $context);
+        $uuid2 = $newMappingService->createNewUuid($this->connectionId, 'product', '123', $context);
 
         static::assertSame($uuid1, $uuid2);
     }
@@ -105,13 +131,12 @@ class MappingServiceTest extends TestCase
     public function testGetLanguageUuid(): void
     {
         $context = Context::createDefaultContext();
-        $profileId = $this->profileUuidService->getProfileUuid();
         $localeCode = 'en_GB';
 
         $this->mappingService->writeMapping($context);
-        $languageUuid = $this->mappingService->createNewUuid($profileId, LanguageDefinition::getEntityName(), $localeCode, $context);
+        $languageUuid = $this->mappingService->createNewUuid($this->connectionId, LanguageDefinition::getEntityName(), $localeCode, $context);
         $this->mappingService->writeMapping($context);
-        $response = $this->mappingService->getLanguageUuid($profileId, '', $context);
+        $response = $this->mappingService->getLanguageUuid($this->connectionId, '', $context);
 
         self::assertSame($languageUuid, $response['uuid']);
         self::assertSame($localeCode, $response['createData']['localeCode']);
@@ -156,19 +181,18 @@ class MappingServiceTest extends TestCase
     public function testDeleteMapping(): void
     {
         $context = Context::createDefaultContext();
-        $profileId = $this->profileUuidService->getProfileUuid();
         $localeCode = 'swagMigrationTestingLocaleCode';
 
-        $languageUuid = $this->mappingService->createNewUuid($profileId, LanguageDefinition::getEntityName(), $localeCode, $context);
+        $languageUuid = $this->mappingService->createNewUuid($this->connectionId, LanguageDefinition::getEntityName(), $localeCode, $context);
         $this->mappingService->writeMapping($context);
-        $uuid = $this->mappingService->getUuid($profileId, LanguageDefinition::getEntityName(), $localeCode, $context);
+        $uuid = $this->mappingService->getUuid($this->connectionId, LanguageDefinition::getEntityName(), $localeCode, $context);
         self::assertSame($languageUuid, $uuid);
 
-        $this->mappingService->createNewUuid($profileId, LanguageDefinition::getEntityName(), 'en_GB', $context);
+        $this->mappingService->createNewUuid($this->connectionId, LanguageDefinition::getEntityName(), 'en_GB', $context);
         $this->mappingService->writeMapping($context);
 
-        $this->mappingService->deleteMapping($languageUuid, $profileId, $context);
-        $uuid = $this->mappingService->getUuid($profileId, LanguageDefinition::getEntityName(), $localeCode, $context);
+        $this->mappingService->deleteMapping($languageUuid, $this->connectionId, $context);
+        $uuid = $this->mappingService->getUuid($this->connectionId, LanguageDefinition::getEntityName(), $localeCode, $context);
 
         self::assertNull($uuid);
     }

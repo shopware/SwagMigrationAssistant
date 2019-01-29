@@ -22,12 +22,13 @@ class ConverterRegistry implements ConverterRegistryInterface
      */
     public function getConverter(MigrationContextInterface $context): ConverterInterface
     {
+        $profileName = $context->getConnection()->getProfile()->getName();
         foreach ($this->converters as $converter) {
-            if ($converter->supports($context->getProfileName(), $context->getEntity())) {
+            if ($converter->supports($profileName, $context->getEntity())) {
                 return $converter;
             }
         }
 
-        throw new ConverterNotFoundException($context->getEntity());
+        throw new ConverterNotFoundException($profileName);
     }
 }

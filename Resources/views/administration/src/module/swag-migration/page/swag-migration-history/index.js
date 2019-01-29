@@ -29,7 +29,6 @@ Component.register('swag-migration-history', {
         getList() {
             this.isLoading = true;
             const params = this.getListingParams();
-            params.associations = { profile: { limit: 1 } };
             if (JSON.stringify(this.oldParams) === JSON.stringify(params)) {
                 // Do not request the data again if the parameters don't change.
                 // For example if the detail window (child route) is opened.

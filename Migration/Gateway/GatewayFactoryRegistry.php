@@ -20,14 +20,16 @@ class GatewayFactoryRegistry implements GatewayFactoryRegistryInterface
     /**
      * @throws GatewayNotFoundException
      */
-    public function createGateway(MigrationContextInterface $context): GatewayInterface
+    public function createGateway(MigrationContextInterface $migrationContext): GatewayInterface
     {
+        $gatewayIdentifier = $migrationContext->getConnection()->getProfile()->getName() . $migrationContext->getConnection()->getProfile()->getGatewayName();
+
         foreach ($this->gatewayFactories as $gatewayFactory) {
-            if ($gatewayFactory->supports($context->getGatewayIdentifier())) {
-                return $gatewayFactory->create($context);
+            if ($gatewayFactory->supports($gatewayIdentifier)) {
+                return $gatewayFactory->create($migrationContext);
             }
         }
 
-        throw new GatewayNotFoundException($context->getGatewayIdentifier());
+        throw new GatewayNotFoundException($gatewayIdentifier);
     }
 }

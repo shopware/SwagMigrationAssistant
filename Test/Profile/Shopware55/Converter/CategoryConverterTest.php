@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Struct\Uuid;
+use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\MigrationContextInterface;
 use SwagMigrationNext\Profile\Shopware55\Converter\CategoryConverter;
@@ -36,7 +37,7 @@ class CategoryConverterTest extends TestCase
     /**
      * @var string
      */
-    private $profileId;
+    private $connection;
 
     /**
      * @var MigrationContextInterface
@@ -51,13 +52,12 @@ class CategoryConverterTest extends TestCase
         $this->categoryConverter = new CategoryConverter($mappingService, $converterHelperService, $this->loggingService);
 
         $this->runId = Uuid::uuid4()->getHex();
-        $this->profileId = Uuid::uuid4()->getHex();
+        $this->connection = new SwagMigrationConnectionEntity();
+        $this->connection->setId(Uuid::uuid4()->getHex());
 
         $this->migrationContext = new MigrationContext(
             $this->runId,
-            $this->profileId,
-            Shopware55Profile::PROFILE_NAME,
-            'local',
+            $this->connection,
             CategoryDefinition::getEntityName(),
             0,
             250

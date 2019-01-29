@@ -15,7 +15,11 @@ Component.register('swag-migration-profile-shopware55-api-credential-form', {
 
     data() {
         return {
-            inputCredentials: {},
+            inputCredentials: {
+                endpoint: '',
+                apiUser: '',
+                apiKey: ''
+            },
             breadcrumbItems: [
                 this.$tc('swag-migration.wizard.pathSettings'),
                 this.$tc('swag-migration.wizard.pathUserManagement'),
@@ -29,6 +33,11 @@ Component.register('swag-migration-profile-shopware55-api-credential-form', {
         credentials: {
             immediate: true,
             handler(newCredentials) {
+                if (newCredentials === null) {
+                    this.emitCredentials(this.inputCredentials);
+                    return;
+                }
+
                 this.inputCredentials = newCredentials;
                 this.emitOnChildRouteReadyChanged(
                     this.areCredentialsValid(this.inputCredentials)
@@ -46,9 +55,9 @@ Component.register('swag-migration-profile-shopware55-api-credential-form', {
 
     methods: {
         areCredentialsValid(newInputCredentials) {
-            return (newInputCredentials.endpoint &&
-                newInputCredentials.apiUser &&
-                newInputCredentials.apiKey &&
+            return (newInputCredentials.endpoint !== '' &&
+                newInputCredentials.apiUser !== '' &&
+                newInputCredentials.apiKey !== '' &&
                 newInputCredentials.endpoint !== 'http://' &&
                 newInputCredentials.endpoint !== 'https://'
             );

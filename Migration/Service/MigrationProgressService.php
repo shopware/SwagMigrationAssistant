@@ -11,6 +11,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
+use SwagMigrationNext\Migration\Run\RunServiceInterface;
 use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -32,11 +33,6 @@ class MigrationProgressService implements MigrationProgressServiceInterface
     private $migrationMediaFileRepository;
 
     /**
-     * @var EntityRepositoryInterface
-     */
-    private $migrationProfileRepository;
-
-    /**
      * @var Context
      */
     private $context;
@@ -51,18 +47,23 @@ class MigrationProgressService implements MigrationProgressServiceInterface
      */
     private $validMigrationAccessToken = false;
 
+    /**
+     * @var RunServiceInterface
+     */
+    private $runService;
+
     public function __construct(
         EntityRepositoryInterface $migrationRunRepository,
         EntityRepositoryInterface $migrationDataRepository,
         EntityRepositoryInterface $migrationMediaFileRepository,
-        EntityRepositoryInterface $migrationProfileRepository,
-        SwagMigrationAccessTokenService $migrationAccessTokenService
+        SwagMigrationAccessTokenService $migrationAccessTokenService,
+        RunServiceInterface $runService
     ) {
         $this->migrationRunRepository = $migrationRunRepository;
         $this->migrationDataRepository = $migrationDataRepository;
         $this->migrationMediaFileRepository = $migrationMediaFileRepository;
-        $this->migrationProfileRepository = $migrationProfileRepository;
         $this->migrationAccessTokenService = $migrationAccessTokenService;
+        $this->runService = $runService;
     }
 
     public function getProgress(Request $request, Context $context): ProgressState
@@ -77,12 +78,10 @@ class MigrationProgressService implements MigrationProgressServiceInterface
         $this->validMigrationAccessToken = $this->migrationAccessTokenService->validateMigrationAccessToken($run->getId(), $request, $context);
 
         // Get the current entity counts
-        $totals = $run->getTotals();
-        $fetchedEntityCounts = $this->getEntityCounts($run->getId(), false);
+        $totals = $this->getTotals($run->getProgress());
+        $fetchedEntityCounts = $this->runService->calculateCurrentTotals($run->getId(), false, $context);
 
-        $this->updateProfileCredentialsWithCurrentRunCredentials($run, $context);
-
-        if ($totals === null || empty($fetchedEntityCounts)) {
+        if (empty($totals) || empty($fetchedEntityCounts)) {
             if ($this->validMigrationAccessToken) {
                 $this->abortProcessingRun($run, $context);
             }
@@ -90,10 +89,13 @@ class MigrationProgressService implements MigrationProgressServiceInterface
             return new ProgressState(
                 true,
                 $this->validMigrationAccessToken,
+                $run->getId(),
                 null,
+                ProgressState::STATUS_FETCH_DATA,
                 null,
-                null,
-                ProgressState::STATUS_FETCH_DATA
+                0,
+                0,
+                $run->getProgress()
             );
         }
 
@@ -107,14 +109,8 @@ class MigrationProgressService implements MigrationProgressServiceInterface
             return $compareFetchCountResult;
         }
 
-        // Check if the run finished fetching, but not started writing yet
-        $writeNotStartedResult = $this->isWriteNotStartedResult($run, $totals, $fetchedEntityCounts);
-        if ($writeNotStartedResult !== null) {
-            return $writeNotStartedResult;
-        }
-
         // Compare written counts
-        $writtenEntityCounts = $this->getEntityCounts($run->getId());
+        $writtenEntityCounts = $this->runService->calculateCurrentTotals($run->getId(), true, $context);
         $compareWrittenCountResult = $this->compareWrittenCount($run, $totals, $writtenEntityCounts);
         if ($compareWrittenCountResult !== null) {
             return $compareWrittenCountResult;
@@ -126,7 +122,17 @@ class MigrationProgressService implements MigrationProgressServiceInterface
             return $compareMediaDownloadCountResult;
         }
 
-        return new ProgressState(false, $this->validMigrationAccessToken);
+        return new ProgressState(
+            false,
+            $this->validMigrationAccessToken,
+            $run->getId(),
+            null,
+            ProgressState::STATUS_WAITING,
+            null,
+            0,
+            0,
+            $run->getProgress()
+        );
     }
 
     private function abortProcessingRun(SwagMigrationRunEntity $run, Context $context): void
@@ -142,27 +148,11 @@ class MigrationProgressService implements MigrationProgressServiceInterface
         );
     }
 
-    private function updateProfileCredentialsWithCurrentRunCredentials(SwagMigrationRunEntity $run, Context $context): void
-    {
-        $this->migrationProfileRepository->update([
-            [
-                'id' => $run->getProfile()->getId(),
-                'credentialFields' => $run->getCredentialFields(),
-            ],
-        ], $context);
-
-        if (!empty($run->getCredentialFields())) {
-            $run->getProfile()->setCredentialFields($run->getCredentialFields());
-        }
-    }
-
     private function getCurrentRun(): ?SwagMigrationRunEntity
     {
-        // Get the last migration run
         $criteria = new Criteria();
-        $criteria->addAssociation('profile');
         $criteria->addSorting(new FieldSorting('createdAt', FieldSorting::DESCENDING));
-        $criteria->setLimit(1); //TODO: maybe use this method for different runs to get the migration progress.
+        $criteria->setLimit(1);
         $result = $this->migrationRunRepository->search($criteria, $this->context);
 
         if ($result->getTotal() === 0) {
@@ -171,41 +161,6 @@ class MigrationProgressService implements MigrationProgressServiceInterface
 
         /* @var SwagMigrationRunEntity $run */
         return $result->first();
-    }
-
-    private function getEntityCounts(string $runId, bool $isWritten = true): array
-    {
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('runId', $runId));
-        if ($isWritten) {
-            $criteria->addFilter(new NotFilter(MultiFilter::CONNECTION_AND, [new EqualsFilter('converted', null)]));
-            $criteria->addFilter(new MultiFilter(
-                MultiFilter::CONNECTION_OR,
-               [
-                   new MultiFilter(
-                       MultiFilter::CONNECTION_AND,
-                        [
-                            new EqualsFilter('written', true),
-                            new EqualsFilter('writeFailure', false),
-                        ]
-                    ),
-
-                   new MultiFilter(
-                       MultiFilter::CONNECTION_AND,
-                       [
-                           new EqualsFilter('written', false),
-                           new EqualsFilter('writeFailure', true),
-                       ]
-                   ),
-               ]
-            ));
-        }
-        $criteria->addAggregation(new ValueCountAggregation('entity', 'entityCount'));
-        $result = $this->migrationDataRepository->search($criteria, $this->context);
-        $counts = $result->getAggregations()->first()->getResult();
-
-        // Convert counts from string to int
-        return $this->mapCounts($counts);
     }
 
     private function getMediaFileCounts(string $runId, bool $onlyProcessed = true): int
@@ -235,8 +190,7 @@ class MigrationProgressService implements MigrationProgressServiceInterface
 
     private function buildEntityGroups(SwagMigrationRunEntity $run, ProgressState $state, array $finishedCount): ProgressState
     {
-        $additionalData = $run->getAdditionalData();
-        $entityGroups = $additionalData['entityGroups'];
+        $runProgress = $run->getProgress();
 
         if ($state->getStatus() === ProgressState::STATUS_WRITE_DATA) {
             // Get totalCounts for write (database totals does not have the total count for every entity in 'toBeWritten'!)
@@ -252,42 +206,41 @@ class MigrationProgressService implements MigrationProgressServiceInterface
             $totalCountsForWriting = $result->getAggregations()->first()->getResult();
             $totalCountsForWriting = $this->mapCounts($totalCountsForWriting);
 
-            $entityGroups = $this->validateEntityGroupCounts($entityGroups, $finishedCount, $totalCountsForWriting);
-        //todo: Verify if this is necessary
-        } elseif ($state->getStatus() === ProgressState::STATUS_FETCH_DATA) {
-            $entityGroups = $this->validateEntityGroupCounts($entityGroups, $finishedCount, $run->getTotals()['toBeFetched']);
+            $runProgress = $this->validateEntityGroupCounts($runProgress, $finishedCount, $totalCountsForWriting);
         } elseif ($state->getStatus() === ProgressState::STATUS_DOWNLOAD_DATA) {
-            $entityGroups = $this->validateEntityGroupCounts($entityGroups, $finishedCount, ['media' => $state->getEntityCount()]);
+            $runProgress = $this->validateEntityGroupCounts($runProgress, $finishedCount, ['media' => $state->getEntityCount()]);
         }
 
-        $state->setEntityGroups($entityGroups);
+        $state->setRunProgress($runProgress);
 
         return $state;
     }
 
-    private function validateEntityGroupCounts(array $entityGroups, array $finishedCount, array $totalCount): array
+    private function validateEntityGroupCounts(array $runProgressArray, array $finishedCount, array $totalCount): array
     {
-        foreach ($entityGroups as &$group) {
+        foreach ($runProgressArray as &$runProgress) {
             $groupTotalsCount = 0;
             $groupFinishedCount = 0;
-            foreach ($group['entities'] as &$entity) {
+
+            foreach ($runProgress['entities'] as &$entity) {
                 $entityName = $entity['entityName'];
                 if (isset($totalCount[$entityName])) {
-                    $entity['entityCount'] = $totalCount[$entityName];
+                    $entity['total'] = $totalCount[$entityName];
                 }
 
-                $groupTotalsCount += $entity['entityCount'];
+                $groupTotalsCount += $entity['total'];
                 if (isset($finishedCount[$entityName])) {
+                    $entity['currentCount'] = $finishedCount[$entityName];
                     $groupFinishedCount += $finishedCount[$entityName];
                 }
             }
             unset($entity);
 
-            $group['count'] = $groupTotalsCount;
-            $group['progress'] = $groupFinishedCount;
+            $runProgress['total'] = $groupTotalsCount;
+            $runProgress['currentCount'] = $groupFinishedCount;
         }
 
-        return $entityGroups;
+        return $runProgressArray;
     }
 
     /**
@@ -295,7 +248,7 @@ class MigrationProgressService implements MigrationProgressServiceInterface
      */
     private function compareFetchCount(SwagMigrationRunEntity $run, array $totals, array $fetchedEntityCounts): ?ProgressState
     {
-        foreach ($totals['toBeFetched'] as $entity => $count) {
+        foreach ($totals as $entity => $count) {
             if ($count === 0) {
                 continue;
             }
@@ -303,7 +256,17 @@ class MigrationProgressService implements MigrationProgressServiceInterface
             if (!isset($fetchedEntityCounts[$entity]) ||
                 (isset($fetchedEntityCounts[$entity]) && $fetchedEntityCounts[$entity] < $count)
             ) {
-                return new ProgressState(false, $this->validMigrationAccessToken, null, null, null, ProgressState::STATUS_FETCH_DATA);
+                return new ProgressState(
+                    false,
+                    $this->validMigrationAccessToken,
+                    $run->getId(),
+                    null,
+                    ProgressState::STATUS_FETCH_DATA,
+                    null,
+                    0,
+                    0,
+                    $run->getProgress()
+                );
             }
         }
 
@@ -315,7 +278,7 @@ class MigrationProgressService implements MigrationProgressServiceInterface
      */
     private function compareWrittenCount(SwagMigrationRunEntity $run, array $totals, array $writtenEntityCounts): ?ProgressState
     {
-        foreach ($totals['toBeWritten'] as $entity => $count) {
+        foreach ($totals as $entity => $count) {
             if ($count === 0 ||
                 (isset($writtenEntityCounts[$entity]) && $writtenEntityCounts[$entity] >= $count)
             ) {
@@ -329,11 +292,11 @@ class MigrationProgressService implements MigrationProgressServiceInterface
                 $this->validMigrationAccessToken,
                 $run->getId(),
                 null,
-                $run->getProfile()->jsonSerialize(),
                 ProgressState::STATUS_WRITE_DATA,
                 $entity,
                 $finishCount,
-                $count
+                $count,
+                $run->getProgress()
             );
 
             return $this->buildEntityGroups($run, $progressState, $writtenEntityCounts);
@@ -356,11 +319,11 @@ class MigrationProgressService implements MigrationProgressServiceInterface
                 $this->validMigrationAccessToken,
                 $run->getId(),
                 null,
-                $run->getProfile()->jsonSerialize(),
                 ProgressState::STATUS_DOWNLOAD_DATA,
                 'media',
                 $processedMediaFileCount,
-                $totalMediaFileCount
+                $totalMediaFileCount,
+                $run->getProgress()
             );
 
             return $this->buildEntityGroups($run, $progressState, ['media' => $processedMediaFileCount]);
@@ -369,27 +332,21 @@ class MigrationProgressService implements MigrationProgressServiceInterface
         return null;
     }
 
-    /**
-     * Returns the ProgressState if all datasets are fetched, but the writing not started yet.
-     */
-    private function isWriteNotStartedResult(SwagMigrationRunEntity $run, array $totals, array $fetchedEntityCounts): ?ProgressState
+    private function getTotals(array $runProgressArray): array
     {
-        if (!isset($totals['toBeWritten'])) {
-            reset($totals['toBeFetched']);
-            $progressState = new ProgressState(
-                true,
-                $this->validMigrationAccessToken,
-                $run->getId(),
-                null,
-                $run->getProfile()->jsonSerialize(),
-                ProgressState::STATUS_WRITE_DATA,
-                key($totals['toBeFetched']),
-                0
-            );
+        $totals = [];
 
-            return $this->buildEntityGroups($run, $progressState, $fetchedEntityCounts);
+        foreach ($runProgressArray as &$runProgress) {
+            foreach ($runProgress['entities'] as &$entity) {
+                if ($runProgress['id'] === 'processMediaFiles') {
+                    continue;
+                }
+
+                $totals[$entity['entityName']] = $entity['total'];
+            }
+            unset($entity);
         }
 
-        return null;
+        return $totals;
     }
 }

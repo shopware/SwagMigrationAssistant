@@ -7,7 +7,8 @@ Component.register('swag-migration-data-selector', {
 
     props: {
         tableData: {
-            type: Array
+            type: Array,
+            required: true
         }
     },
 

@@ -56,16 +56,14 @@ class SwagMigrationNext extends Plugin
         try {
             $connection->insert('swag_migration_profile', [
                 'id' => Uuid::uuid4()->getBytes(),
-                'profile' => Shopware55Profile::PROFILE_NAME,
-                'gateway' => Shopware55ApiGateway::GATEWAY_TYPE,
-                'credential_fields' => json_encode(['endpoint' => '', 'apiUser' => '', 'apiKey' => '']),
+                'name' => Shopware55Profile::PROFILE_NAME,
+                'gateway_name' => Shopware55ApiGateway::GATEWAY_TYPE,
                 'created_at' => $now,
             ]);
             $connection->insert('swag_migration_profile', [
                 'id' => Uuid::uuid4()->getBytes(),
-                'profile' => Shopware55Profile::PROFILE_NAME,
-                'gateway' => Shopware55LocalGateway::GATEWAY_TYPE,
-                'credential_fields' => json_encode(['dbHost' => '', 'dbPort' => '3306', 'dbName' => '', 'dbUser' => '', 'dbPassword' => '', 'installationRoot' => '']),
+                'name' => Shopware55Profile::PROFILE_NAME,
+                'gateway_name' => Shopware55LocalGateway::GATEWAY_TYPE,
                 'created_at' => $now,
             ]);
             $connection->insert('swag_migration_general_setting', [
@@ -94,10 +92,12 @@ class SwagMigrationNext extends Plugin
         /** @var Connection $connection */
         $connection = $this->container->get(Connection::class);
         $connection->exec('
+DROP TABLE IF EXISTS swag_migration_general_setting;
 DROP TABLE IF EXISTS swag_migration_data;
 DROP TABLE IF EXISTS swag_migration_media_file;
 DROP TABLE IF EXISTS swag_migration_run;
 DROP TABLE IF EXISTS swag_migration_mapping;
+DROP TABLE IF EXISTS swag_migration_connection;
 DROP TABLE IF EXISTS swag_migration_profile;
 DROP TABLE IF EXISTS swag_migration_logging;
 ');

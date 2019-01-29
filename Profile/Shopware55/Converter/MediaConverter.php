@@ -61,11 +61,11 @@ class MediaConverter extends AbstractConverter
     ): ConvertStruct {
         $locale = $data['_locale'];
         unset($data['_locale']);
-        $profileId = $migrationContext->getProfileId();
+        $connectionId = $migrationContext->getConnection()->getId();
 
         $converted = [];
         $converted['id'] = $this->mappingService->createNewUuid(
-            $profileId,
+            $connectionId,
             MediaDefinition::getEntityName(),
             $data['id'],
             $context
@@ -87,7 +87,7 @@ class MediaConverter extends AbstractConverter
         unset($data['uri'], $data['file_size']);
 
         $translation['id'] = $this->mappingService->createNewUuid(
-            $profileId,
+            $connectionId,
             MediaTranslationDefinition::getEntityName(),
             $data['id'] . ':' . $locale,
             $context
@@ -97,7 +97,7 @@ class MediaConverter extends AbstractConverter
         $this->helper->convertValue($translation, 'name', $data, 'name');
         $this->helper->convertValue($translation, 'description', $data, 'description');
 
-        $languageData = $this->mappingService->getLanguageUuid($profileId, $locale, $context);
+        $languageData = $this->mappingService->getLanguageUuid($connectionId, $locale, $context);
 
         if (isset($languageData['createData']) && !empty($languageData['createData'])) {
             $translation['language']['id'] = $languageData['uuid'];

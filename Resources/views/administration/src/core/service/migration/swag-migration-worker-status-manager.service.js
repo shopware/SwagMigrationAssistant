@@ -1,5 +1,3 @@
-import CriteriaFactory from 'src/core/factory/criteria.factory';
-
 /**
  * Describes the current step in the migration (status).
  *
@@ -15,14 +13,14 @@ export const MIGRATION_STATUS = Object.freeze({
 
 export class WorkerStatusManager {
     /**
+     * @param {MigrationApiService} migrationService
      * @param {MigrationRunService} migrationRunService
      * @param {MigrationDataService} migrationDataService
-     * @param {MigrationMediaFileService} migrationMediaFileService
      */
-    constructor(migrationRunService, migrationDataService, migrationMediaFileService) {
+    constructor(migrationService, migrationRunService, migrationDataService) {
+        this._migrationService = migrationService;
         this._migrationRunService = migrationRunService;
         this._migrationDataService = migrationDataService;
-        this._migrationMediaFileService = migrationMediaFileService;
     }
 
     /**
@@ -36,120 +34,17 @@ export class WorkerStatusManager {
      */
     onStatusChanged(runId, entityGroups, status) {
         return new Promise((resolve) => {
-            // only for write
             if (status === MIGRATION_STATUS.WRITE_DATA) {
-                this._updateEntityCountForWrite(entityGroups, runId).then((newEntityGroups) => {
-                    this._migrationRunService.getById(runId).then((response) => {
-                        const totals = response.data.totals;
-                        const toBeWritten = {};
-                        entityGroups.forEach((entityGroup) => {
-                            entityGroup.entities.forEach((entity) => {
-                                toBeWritten[entity.entityName] = entity.entityCount;
-                            });
-                        });
-                        totals.toBeWritten = toBeWritten;
-
-                        this._migrationRunService.updateById(runId, { totals: totals }).then(() => {
-                            resolve([newEntityGroups]);
-                        });
-                    });
+                this._migrationService.updateWriteProgress(runId).then((response) => {
+                    resolve([response]);
                 });
             } else if (status === MIGRATION_STATUS.PROCESS_MEDIA_FILES) {
-                this._getMediaTotalCount(runId).then((mediaTotalCount) => {
-                    resolve([entityGroups, mediaTotalCount]);
+                this._migrationService.updateMediaFilesProgress(runId).then((response) => {
+                    resolve([response]);
                 });
             } else {
                 resolve([entityGroups]);
             }
-        });
-    }
-
-    /**
-     * Count fetched data and set the new entity count.
-     * It's necessary to do this, because of unconverted data.
-     *
-     * @param {Array} entityGroups
-     * @param {string} runId
-     * @returns {Promise}
-     * @private
-     */
-    _updateEntityCountForWrite(entityGroups, runId) {
-        return new Promise((resolve) => {
-            const count = [
-                {
-                    name: 'entityCount',
-                    type: 'value_count',
-                    field: 'swag_migration_data.entity'
-                }
-            ];
-            const criteria = CriteriaFactory.multi(
-                'AND',
-                CriteriaFactory.equals('runId', runId),
-                CriteriaFactory.equals('convertFailure', false),
-                CriteriaFactory.not(
-                    'AND',
-                    CriteriaFactory.equals('converted', null)
-                )
-            );
-            const params = {
-                aggregations: count,
-                criteria: criteria,
-                limit: 1
-            };
-
-            this._migrationDataService.getList(params).then((response) => {
-                const entityCount = response.aggregations.entityCount;
-                entityGroups.forEach((entityGroup) => {
-                    let groupsCount = 0;
-                    entityGroup.entities.forEach((entity) => {
-                        entityCount.forEach((countedEntity) => {
-                            if (entity.entityName === countedEntity.key) {
-                                entity.entityCount = parseInt(countedEntity.count, 10);
-                            }
-                        });
-                        groupsCount += entity.entityCount;
-                    });
-                    entityGroup.count = groupsCount;
-                });
-
-                resolve(entityGroups);
-            });
-        });
-    }
-
-    /**
-     * Get the count of media objects that are available for the migration.
-     *
-     * @param {string} runId
-     * @returns {Promise}
-     * @private
-     */
-    _getMediaTotalCount(runId) {
-        return new Promise((resolve) => {
-            const count = [
-                {
-                    name: 'mediaCount',
-                    type: 'count',
-                    field: 'swag_migration_media_file.mediaId'
-                }
-            ];
-            const criteria = CriteriaFactory.multi(
-                'AND',
-                CriteriaFactory.equals('runId', runId),
-                CriteriaFactory.equals('written', true),
-                CriteriaFactory.equals('processed', false)
-            );
-            const params = {
-                aggregations: count,
-                criteria: criteria,
-                limit: 1
-            };
-
-            this._migrationMediaFileService.getList(params).then((res) => {
-                resolve(parseInt(res.aggregations.mediaCount.count, 10));
-            }).catch(() => {
-                resolve(0);
-            });
         });
     }
 }

@@ -12,7 +12,6 @@
       "buttonLetsGo": "Los geht's",
       "buttonConnect": "Verbinden",
       "buttonToStart": "Startpunkt",
-      "buttonToProfiles": "Profile",
       "buttonNext": "Fortfahren",
       "buttonFinish": "Fertig",
       "buttonEdit": "Bearbeiten",
@@ -37,12 +36,19 @@
           "selectDescription": "#PLATZHALTER# Bestehendes Profil auswählen um Daten zu aktualisieren."
         },
         "profileSelect": {
+          "contentTitle": "#PLATZHALTER# Wähle ein bestehendes Profil aus der Liste aus, um Daten zu aktualisieren.",
+          "profileLabel": "#PLATZHALTER# Profilname:",
+          "profilePlaceholder": "#PLATZHALTER# Bitte Profil auswählen"
+        },
+        "profileCreate": {
           "contentTitle": "#PLATZHALTER# Eine Headline Profil konfigurieren",
           "contentInformation": "#PLATZHALTER# Wähle das System und die Schnittstelle aus, von der die Daten migriert werden sollen.",
           "profileLabel": "#PLATZHALTER# Profile:",
-          "profilePlaceholder": "#PLATZHALTER# Bitte Profile auswählen",
+          "profilePlaceholder": "#PLATZHALTER# Bitte Profil auswählen",
           "gatewayLabel": "#PLATZHALTER# Gatway:",
-          "gatewayPlaceholder": "#PLATZHALTER# Bitte Gateway auswählen"
+          "gatewayPlaceholder": "#PLATZHALTER# Bitte Gateway auswählen",
+          "connectionLabel": "#PLATZHALTER# Verbindungsname",
+          "connectionPlaceholder": "#PLATZHALTER# Meine Verbindung"
         },
         "pluginInformation": {
           "contentTitle": "Plugin-Installation in Shopware 5",
@@ -94,7 +100,9 @@
             "connectionErrorMsg": "Es konnte keine Verbindung zum angegebenen Server hergestellt werden. Bitte überprüfe die angegebene Shop-Domain.",
             "authenticationErrorMsg": "Deine Zugangsdaten sind nicht korrekt. Bitte überprüfe sie und versuche es erneut.",
             "invalidShopDomainErrorMsg": "Die angegebene URL ist keine valide Shop-Domain. Bitte gib eine valide Shop-Domain ein.",
-            "undefinedErrorMsg": "Interner Server Fehler. Bitte versuche es erneut."
+            "undefinedErrorMsg": "Interner Server Fehler. Bitte versuche es erneut.",
+            "credentialsMissing": "Es sind keine Zugangsdaten vorhanden, bitte trage zuerst welche ein.",
+            "migrationRunning": "Eine Migration ist zurzeit im Gange. Du kannst deshalb die Zugangsdaten nicht bearbeiten bis die Migration abgeschlossen ist."
           }
         }
       }
@@ -123,12 +131,23 @@
         "buttonRemoveProfile": "Löschen",
         "connected": "Verbunden",
         "notConnected": "Nicht verbunden",
-        "customersAndOrders": "Kunden & Bestellungen:",
-        "categoriesAndProducts": "Kategorien & Produkte:",
-        "media": "Medien:",
         "lastMigration": "Letzter Import:",
         "lastMigrationDateTime": "{date} um {time} Uhr",
-        "gateway": "Gateway:"
+        "gateway": "Gateway:",
+        "confirmDialog": {
+          "title": "Verbindung löschen",
+          "content": "Die Verbindung wird getrennt und die Zugangsdaten gelöscht. Die Informationen über den Migrationsprozess sind weiterhin in der Historie vorhanden. Du kannst eine Verbindung jederzeit erneut herstellen.<br><br>Möchtest Du die Verbindung löschen?",
+          "abortButtonText": "Abbrechen",
+          "confirmButtonText": "Ja, löschen"
+        },
+        "entities": {
+          "category": "Kategorien:",
+          "product": "Produkte:",
+          "customer": "Kunden:",
+          "order": "Bestellungen:",
+          "media": "Medien:",
+          "translation": "Übersetzungen:"
+        }
       },
       "selectDataCard": {
         "cardTitle": "Datenauswahl",
@@ -138,11 +157,9 @@
         "infoText": "Kataloge und Verkaufskanäle sind neue Elemente für Shopware Playground, die Dir helfen Deine Daten ohne Sub- und Sprachshops zu strukturieren. Für mehr Informationen zum Thema empfehlen wir Dir die Artikel in unserer Dokumentation zu <a target=\"_blank\" href=\"https://docs.shopware.com/de/shopware-playground-de/admin/kataloge\">Katalogen</a> und <a target=\"_blank\" href=\"https://docs.shopware.com/de/shopware-playground-de/admin/verkaufskanaele\">Verkaufskanälen</a>.",
         "dataHeader": "Daten",
         "dataSelection": {
-          "shopware55Profile": {
-            "customersAndOrders": "Kunden & Bestellungen",
-            "categoriesAndProducts": "Kategorien & Produkte",
-            "media": "Medien"
-          }
+          "customersOrders": "Kunden & Bestellungen",
+          "categoriesProducts": "Kategorien & Produkte",
+          "media": "Medien"
         },
         "noData": "Es wurden keine Daten zum Importieren gefunden.",
         "gdprTitle": "Nutzungsbedingungen",

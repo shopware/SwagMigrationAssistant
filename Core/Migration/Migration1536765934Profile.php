@@ -17,13 +17,12 @@ class Migration1536765934Profile extends MigrationStep
         $sql = <<<SQL
 CREATE TABLE `swag_migration_profile` (
     `id`                BINARY(16)  NOT NULL,
-    `profile`           VARCHAR(255),
-    `gateway`           VARCHAR(255),
-    `credential_fields` LONGTEXT,
+    `name`              VARCHAR(255),
+    `gateway_name`      VARCHAR(255),
     `created_at`        DATETIME(3) NOT NULL,
     `updated_at`        DATETIME(3),
     PRIMARY KEY (`id`),
-    CHECK (JSON_VALID(`credential_fields`))
+    UNIQUE KEY `profile_gateway` (`name`, `gateway_name`)
 )
     ENGINE = InnoDB
     DEFAULT CHARSET = utf8mb4

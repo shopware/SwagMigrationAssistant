@@ -43,7 +43,7 @@
                                         <div class="swag-migration-index__actions">
                                             {% block swag_migration_index_card_shopInfo_actions_editSettings %}
                                                 <sw-button size="small"
-                                                           @click="onClickEditSettings"
+                                                           @click="onClickEditConnectionCredentials"
                                                            :disabled="isMigrating || isPaused || isOtherMigrationRunning">
                                                     {{ $tc('swag-migration.index.shopInfoCard.buttonEditSettings') }}
                                                 </sw-button>
@@ -56,13 +56,13 @@
                                                                :disabled="isMigrating || isPaused || isOtherMigrationRunning">
                                                         <sw-icon name="small-more" small></sw-icon>
                                                     </sw-button>
-                                                    <sw-context-menu-item @click="onClickCreateProfile">
+                                                    <sw-context-menu-item @click="onClickCreateConnection">
                                                         {{ $tc('swag-migration.index.shopInfoCard.buttonCreateProfile') }}
                                                     </sw-context-menu-item>
-                                                    <sw-context-menu-item @click="onClickSelectProfile">
+                                                    <sw-context-menu-item @click="onClickSelectConnection">
                                                         {{ $tc('swag-migration.index.shopInfoCard.buttonSelectProfile') }}
                                                     </sw-context-menu-item>
-                                                    <sw-context-menu-item variant="danger" @click="onClickRemoveProfile">
+                                                    <sw-context-menu-item variant="danger" @click="showConfirmModal = true">
                                                         {{ $tc('swag-migration.index.shopInfoCard.buttonRemoveProfile') }}
                                                     </sw-context-menu-item>
                                                 </sw-context-button>
@@ -90,20 +90,12 @@
                 <sw-card-section secondary slim v-if="showMoreInformation">
                     <sw-container class="sw-customer-base-info" columns="repeat(auto-fit, minmax(250px, 1fr)" gap="0px 30px">
                         {% block swag_migration_index_card_shopInfo_advancedShopInfo %}
-                            <sw-description-list>
-                                {% block swag_migration_index_card_shopInfo_advancedShopInfo__categoryProductCount %}
-                                    <dt>{{ $tc('swag-migration.index.shopInfoCard.categoriesAndProducts') }}</dt>
-                                    <dd>{{ categoryProductCount | localizedNumberFormat }}</dd>
-                                {% endblock %}
-
-                                {% block swag_migration_index_card_shopInfo_advancedShopInfo__customerOrderCount %}
-                                    <dt>{{ $tc('swag-migration.index.shopInfoCard.customersAndOrders') }}</dt>
-                                    <dd>{{ customerOrderCount | localizedNumberFormat }}</dd>
-                                {% endblock %}
-
-                                {% block swag_migration_index_card_shopInfo_advancedShopInfo__mediaCount %}
-                                    <dt>{{ $tc('swag-migration.index.shopInfoCard.media') }}</dt>
-                                    <dd>{{ mediaCount | localizedNumberFormat }}</dd>
+                            <sw-description-list v-if="environmentInformation.totals">
+                                {% block swag_migration_index_card_shopInfo_advancedShopInfo__entityCounts %}
+                                    <template v-for="entityName in Object.keys(environmentInformation.totals)">
+                                        <dt>{{ $tc('swag-migration.index.shopInfoCard.entities.' + entityName) }}</dt>
+                                        <dd>{{ environmentInformation.totals[entityName] | localizedNumberFormat }}</dd>
+                                    </template>
                                 {% endblock %}
                             </sw-description-list>
                             <sw-description-list>
@@ -125,5 +117,32 @@
                 </sw-card-section>
             </sw-container>
         {% endblock %}
+
+        <sw-modal v-if="showConfirmModal"
+                  :title="$tc('swag-migration.index.shopInfoCard.confirmDialog.title')"
+                  @closeModal="showConfirmModal = false">
+
+            <p v-html="$tc('swag-migration.index.shopInfoCard.confirmDialog.content')">
+            </p>
+
+            <template slot="modal-footer">
+                {% block swag_migration_wizard_footer %}
+
+                    {% block swag_migration_wizard_actions_previous %}
+                    <sw-button size="small"
+                               @click="showConfirmModal = false">
+                        {{ $tc('swag-migration.index.shopInfoCard.confirmDialog.abortButtonText') }}
+                    </sw-button>
+                    {% endblock %}
+                    {% block swag_migration_wizard_actions_next %}
+                    <sw-button size="small"
+                               variant="primary"
+                               @click="onClickRemoveConnectionCredentials">
+                        {{ $tc('swag-migration.index.shopInfoCard.confirmDialog.confirmButtonText') }}
+                    </sw-button>
+                    {% endblock %}
+                {% endblock %}
+            </template>
+        </sw-modal>
     </sw-card>
 {% endblock %}

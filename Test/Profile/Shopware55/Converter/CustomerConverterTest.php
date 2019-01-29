@@ -8,10 +8,13 @@ use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
+use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\MigrationContextInterface;
+use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
 use SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\Converter\CustomerConverter;
+use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationNext\Test\Mock\Migration\Mapping\DummyMappingService;
@@ -34,9 +37,9 @@ class CustomerConverterTest extends TestCase
     private $runId;
 
     /**
-     * @var string
+     * @var SwagMigrationConnectionEntity
      */
-    private $profileId;
+    private $connection;
 
     /**
      * @var MigrationContextInterface
@@ -51,13 +54,16 @@ class CustomerConverterTest extends TestCase
         $this->customerConverter = new CustomerConverter($mappingService, $converterHelperService, $this->loggingService);
 
         $this->runId = Uuid::uuid4()->getHex();
-        $this->profileId = Uuid::uuid4()->getHex();
+        $this->connection = new SwagMigrationConnectionEntity();
+        $profile = new SwagMigrationProfileEntity();
+        $profile->setName(Shopware55Profile::PROFILE_NAME);
+        $profile->setGatewayName(Shopware55LocalGateway::GATEWAY_TYPE);
+        $this->connection->setId(Uuid::uuid4()->getHex());
+        $this->connection->setProfile($profile);
 
         $this->migrationContext = new MigrationContext(
             $this->runId,
-            $this->profileId,
-            Shopware55Profile::PROFILE_NAME,
-            'local',
+            $this->connection,
             CustomerDefinition::getEntityName(),
             0,
             250
@@ -65,7 +71,7 @@ class CustomerConverterTest extends TestCase
 
         $context = Context::createDefaultContext();
         $mappingService->createNewUuid(
-            $this->profileId,
+            $this->connection->getId(),
             SalesChannelDefinition::getEntityName(),
             '1',
             $context,

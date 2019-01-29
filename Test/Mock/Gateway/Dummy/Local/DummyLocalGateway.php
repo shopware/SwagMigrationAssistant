@@ -50,12 +50,7 @@ class DummyLocalGateway extends AbstractGateway
                 Shopware55Profile::SOURCE_SYSTEM_VERSION,
                 '',
                 [],
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
+                [],
                 $environmentData['warning']['code'],
                 $environmentData['warning']['detail'],
                 $environmentData['error']['code'],
@@ -67,17 +62,21 @@ class DummyLocalGateway extends AbstractGateway
             $environmentDataArray['translations'] = 0;
         }
 
+        $totals = [
+            CategoryDefinition::getEntityName() => $environmentDataArray['categories'],
+            ProductDefinition::getEntityName() => $environmentDataArray['products'],
+            CustomerDefinition::getEntityName() => $environmentDataArray['customers'],
+            OrderDefinition::getEntityName() => $environmentDataArray['orders'],
+            MediaDefinition::getEntityName() => $environmentDataArray['assets'],
+            'translation' => $environmentDataArray['translations'],
+        ];
+
         return new EnvironmentInformation(
             Shopware55Profile::SOURCE_SYSTEM_NAME,
             $environmentDataArray['shopwareVersion'],
             $environmentDataArray['structure'][0]['host'],
             $environmentDataArray['structure'],
-            $environmentDataArray['categories'],
-            $environmentDataArray['products'],
-            $environmentDataArray['customers'],
-            $environmentDataArray['orders'],
-            $environmentDataArray['assets'],
-            $environmentDataArray['translations'],
+            $totals,
             $environmentData['warning']['code'],
             $environmentData['warning']['detail'],
             $environmentData['error']['code'],

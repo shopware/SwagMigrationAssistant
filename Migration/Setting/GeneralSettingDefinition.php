@@ -11,6 +11,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\UpdatedAtField;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\Flag\Required;
+use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionDefinition;
 use SwagMigrationNext\Migration\Profile\SwagMigrationProfileDefinition;
 
 class GeneralSettingDefinition extends EntityDefinition
@@ -34,10 +35,10 @@ class GeneralSettingDefinition extends EntityDefinition
     {
         return new FieldCollection([
             (new IdField('id', 'id'))->setFlags(new PrimaryKey(), new Required()),
-            new FkField('selected_profile_id', 'selectedProfileId', SwagMigrationProfileDefinition::class),
+            new FkField('selected_connection_id', 'selectedConnectionId', SwagMigrationConnectionDefinition::class),
             new CreatedAtField(),
             new UpdatedAtField(),
-            new ManyToOneAssociationField('selectedProfile', 'selected_profile_id', SwagMigrationProfileDefinition::class, true),
+            new ManyToOneAssociationField('selectedConnection', 'selected_connection_id', SwagMigrationConnectionDefinition::class, true),
         ]);
     }
 }

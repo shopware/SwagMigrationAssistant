@@ -8,7 +8,9 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
+use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\Converter\ConverterRegistry;
+use SwagMigrationNext\Migration\DataSelection\DataSelectionRegistry;
 use SwagMigrationNext\Migration\Gateway\GatewayFactoryRegistry;
 use SwagMigrationNext\Migration\Logging\LoggingService;
 use SwagMigrationNext\Migration\Profile\ProfileRegistry;
@@ -43,7 +45,7 @@ class RunServiceTest extends TestCase
     /**
      * @var EntityRepositoryInterface
      */
-    private $profileRepo;
+    private $connectionRepo;
 
     /**
      * @var EntityRepositoryInterface
@@ -66,17 +68,19 @@ class RunServiceTest extends TestCase
     private $runServiceWithoutStructure;
 
     /**
-     * @var string
+     * @var SwagMigrationConnectionEntity
      */
-    private $profileId;
+    private $connection;
 
     protected function setUp()
     {
         $this->runRepo = $this->getContainer()->get('swag_migration_run.repository');
+        $profileRepo = $this->getContainer()->get('swag_migration_profile.repository');
         $this->dataRepo = $this->getContainer()->get('swag_migration_data.repository');
-        $this->profileRepo = $this->getContainer()->get('swag_migration_profile.repository');
+        $this->connectionRepo = $this->getContainer()->get('swag_migration_connection.repository');
         $this->mappingRepo = $this->getContainer()->get('swag_migration_mapping.repository');
         $loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
+        $mediaFileRepo = $this->getContainer()->get('swag_migration_media_file.repository');
 
         $this->mappingService = new Shopware55MappingService(
             $this->mappingRepo,
@@ -94,11 +98,29 @@ class RunServiceTest extends TestCase
         $mediaFileService = new DummyMediaFileService();
 
         $profileUuidService = new MigrationProfileUuidService(
-            $this->profileRepo,
+            $profileRepo,
             Shopware55Profile::PROFILE_NAME,
             Shopware55LocalGateway::GATEWAY_TYPE
         );
-        $this->profileId = $profileUuidService->getProfileUuid();
+
+        $context = $context = Context::createDefaultContext();
+        $context->getWriteProtection()->allow('MIGRATION_CONNECTION_CHECK_FOR_RUNNING_MIGRATION');
+        $connectionId = Uuid::uuid4()->getHex();
+        $this->connectionRepo->create(
+            [
+                [
+                    'id' => $connectionId,
+                    'name' => 'myConnection',
+                    'credentialFields' => [
+                        'apiUser' => 'testUser',
+                        'apiKey' => 'testKey',
+                    ],
+                    'profileId' => $profileUuidService->getProfileUuid(),
+                ],
+            ],
+            $context
+        );
+        $this->connection = $this->connectionRepo->search(new Criteria([$connectionId]), $context)->first();
 
         $converterRegistry = new ConverterRegistry(new DummyCollection([]));
 
@@ -118,7 +140,7 @@ class RunServiceTest extends TestCase
 
         $this->runService = new RunService(
             $this->runRepo,
-            $this->profileRepo,
+            $this->connectionRepo,
             $this->getMigrationDataFetcher(
                 $this->dataRepo,
                 $this->mappingService,
@@ -126,19 +148,25 @@ class RunServiceTest extends TestCase
                 $loggingRepo
             ),
             $this->mappingService,
-            new SwagMigrationAccessTokenService($this->runRepo)
+            new SwagMigrationAccessTokenService($this->runRepo),
+            new DataSelectionRegistry([]),
+            $this->dataRepo,
+            $mediaFileRepo
         );
 
         $this->runServiceWithoutStructure = new RunService(
             $this->runRepo,
-            $this->profileRepo,
+            $this->connectionRepo,
             new DummyMigrationDataFetcher(
                 $profileRegistry,
                 $gatewayFactoryRegistry,
                 $loggingService
             ),
             $this->mappingService,
-            new SwagMigrationAccessTokenService($this->runRepo)
+            new SwagMigrationAccessTokenService($this->runRepo),
+            new DataSelectionRegistry([]),
+            $this->dataRepo,
+            $mediaFileRepo
         );
     }
 
@@ -151,8 +179,7 @@ class RunServiceTest extends TestCase
         $beforeRunTotal = $this->runRepo->search(new Criteria(), $context)->getTotal();
         $beforeMappingTotal = $this->mappingRepo->search(new Criteria(), $context)->getTotal();
         $this->runServiceWithoutStructure->createMigrationRun(
-            $this->profileId,
-            [],
+            $this->connection->getId(),
             [],
             $context
         );
@@ -172,8 +199,7 @@ class RunServiceTest extends TestCase
         $beforeRunTotal = $this->runRepo->search(new Criteria(), $context)->getTotal();
         $beforeMappingTotal = $this->mappingRepo->search(new Criteria(), $context)->getTotal();
         $this->runService->createMigrationRun(
-            $this->profileId,
-            [],
+            $this->connection->getId(),
             [],
             $context
         );

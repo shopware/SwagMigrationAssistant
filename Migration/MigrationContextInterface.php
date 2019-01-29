@@ -2,21 +2,15 @@
 
 namespace SwagMigrationNext\Migration;
 
+use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
+
 interface MigrationContextInterface
 {
     public function getRunUuid(): string;
 
-    public function getProfileId(): string;
-
-    public function getProfileName(): string;
+    public function getConnection(): ?SwagMigrationConnectionEntity;
 
     public function getEntity(): string;
-
-    public function getGateway(): string;
-
-    public function getCredentials(): array;
-
-    public function getGatewayIdentifier(): string;
 
     public function getOffset(): int;
 

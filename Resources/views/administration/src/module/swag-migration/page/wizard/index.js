@@ -1,8 +1,8 @@
 import './swag-migration-wizard';
 import './swag-migration-wizard-page-introduction';
-import './swag-migration-wizard-page-profile';
-import './swag-migration-wizard-page-profile-select';
-import './swag-migration-wizard-page-profile-create';
+import './swag-migration-wizard-page-choose-action';
+import './swag-migration-wizard-page-connection-select';
+import './swag-migration-wizard-page-connection-create';
 import './swag-migration-wizard-page-profile-information';
 import './swag-migration-wizard-page-credentials';
 import './swag-migration-wizard-page-credentials-success';

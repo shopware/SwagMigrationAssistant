@@ -20,14 +20,14 @@ class DummyMappingService extends Shopware55MappingService
     }
 
     public function createNewUuid(
-        string $profileId,
+        string $connectionId,
         string $entityName,
         string $oldId,
         Context $context,
         array $additionalData = null,
         string $newUuid = null
     ): string {
-        $uuid = $this->getUuid($profileId, $entityName, $oldId, $context);
+        $uuid = $this->getUuid($connectionId, $entityName, $oldId, $context);
         if ($uuid !== null) {
             return $uuid;
         }
@@ -37,7 +37,7 @@ class DummyMappingService extends Shopware55MappingService
             $uuid = $newUuid;
         }
 
-        $this->uuids[$profileId][$entityName][$oldId] = $uuid;
+        $this->uuids[$connectionId][$entityName][$oldId] = $uuid;
 
         return $uuid;
     }
@@ -50,22 +50,22 @@ class DummyMappingService extends Shopware55MappingService
     {
     }
 
-    public function getUuid(string $profileId, string $entityName, string $oldId, Context $context): ?string
+    public function getUuid(string $connectionId, string $entityName, string $oldId, Context $context): ?string
     {
-        return $this->uuids[$profileId][$entityName][$oldId] ?? null;
+        return $this->uuids[$connectionId][$entityName][$oldId] ?? null;
     }
 
-    public function deleteMapping(string $entityUuid, string $profileId, Context $context): void
+    public function deleteMapping(string $entityUuid, string $connectionId, Context $context): void
     {
         foreach ($this->writeArray as $writeMapping) {
-            if ($writeMapping['profile'] === $profileId && $writeMapping['entityUuid'] === $entityUuid) {
+            if ($writeMapping['profile'] === $connectionId && $writeMapping['entityUuid'] === $entityUuid) {
                 unset($writeMapping);
                 break;
             }
         }
     }
 
-    public function getLanguageUuid(string $profileId, string $localeCode, Context $context): array
+    public function getLanguageUuid(string $connectionId, string $localeCode, Context $context): array
     {
         return [
             'uuid' => self::DEFAULT_LANGUAGE_UUID,
@@ -81,7 +81,7 @@ class DummyMappingService extends Shopware55MappingService
         return null;
     }
 
-    public function getCountryUuid(string $oldId, string $iso, string $iso3, string $profileId, Context $context): ?string
+    public function getCountryUuid(string $oldId, string $iso, string $iso3, string $connectionId, Context $context): ?string
     {
         return null;
     }

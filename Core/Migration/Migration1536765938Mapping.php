@@ -5,11 +5,11 @@ namespace SwagMigrationNext\Core\Migration;
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Migration\MigrationStep;
 
-class Migration1536765937Mapping extends MigrationStep
+class Migration1536765938Mapping extends MigrationStep
 {
     public function getCreationTimestamp(): int
     {
-        return 1536765937;
+        return 1536765938;
     }
 
     public function update(Connection $connection): void
@@ -17,7 +17,7 @@ class Migration1536765937Mapping extends MigrationStep
         $sql = <<<SQL
 CREATE TABLE `swag_migration_mapping` (
     `id`              BINARY(16)  NOT NULL,
-    `profile_id`      BINARY(16),
+    `connection_id`   BINARY(16) NOT NULL,
     `entity`          VARCHAR(255),
     `old_identifier`  VARCHAR(255),
     `entity_uuid`     BINARY(16),
@@ -27,9 +27,9 @@ CREATE TABLE `swag_migration_mapping` (
     KEY indexMapping (`entity`, `old_identifier`),
     CHECK (JSON_VALID(`additional_data`)),
     PRIMARY KEY (`id`),
-    CONSTRAINT `fk_swag_migration_mapping.profile_id` FOREIGN KEY (`profile_id`) REFERENCES `swag_migration_profile`(`id`)
-      ON DELETE SET NULL
-      ON UPDATE NO ACTION
+    CONSTRAINT `fk_swag_migration_mapping.connection_id` FOREIGN KEY (`connection_id`) REFERENCES `swag_migration_connection`(`id`)
+      ON DELETE CASCADE
+      ON UPDATE CASCADE
 )
     ENGINE = InnoDB
     DEFAULT CHARSET = utf8mb4

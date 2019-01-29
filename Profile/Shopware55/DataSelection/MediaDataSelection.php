@@ -21,8 +21,9 @@ class MediaDataSelection implements DataSelectionInterface
             [
                 MediaDefinition::getEntityName(),
             ],
-            'swag-migration.index.selectDataCard.dataSelection.shopware55Profile.media',
-            300
+            'swag-migration.index.selectDataCard.dataSelection.media',
+            300,
+            true
         );
     }
 }

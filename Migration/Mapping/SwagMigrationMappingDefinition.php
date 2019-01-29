@@ -13,7 +13,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\UpdatedAtField;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\Flag\Required;
-use SwagMigrationNext\Migration\Profile\SwagMigrationProfileDefinition;
+use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionDefinition;
 
 class SwagMigrationMappingDefinition extends EntityDefinition
 {
@@ -26,14 +26,14 @@ class SwagMigrationMappingDefinition extends EntityDefinition
     {
         return new FieldCollection([
             (new IdField('id', 'id'))->setFlags(new PrimaryKey(), new Required()),
-            (new FkField('profile_id', 'profileId', SwagMigrationProfileDefinition::class))->setFlags(new Required()),
+            (new FkField('connection_id', 'connectionId', SwagMigrationConnectionDefinition::class))->setFlags(new Required()),
             (new StringField('entity', 'entity'))->setFlags(new Required()),
             new StringField('old_identifier', 'oldIdentifier'),
             new IdField('entity_uuid', 'entityUuid'),
             new JsonField('additional_data', 'additionalData'),
             new CreatedAtField(),
             new UpdatedAtField(),
-            new ManyToOneAssociationField('profile', 'profile_id', SwagMigrationProfileDefinition::class, false),
+            new ManyToOneAssociationField('connection', 'connection_id', SwagMigrationConnectionDefinition::class, false),
         ]);
     }
 

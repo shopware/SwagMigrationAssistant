@@ -29,7 +29,7 @@ class CategoryConverter extends AbstractConverter
     /**
      * @var string
      */
-    private $profileId;
+    private $connectionId;
 
     /**
      * @var Context
@@ -79,7 +79,7 @@ class CategoryConverter extends AbstractConverter
         Context $context,
         MigrationContextInterface $migrationContext
     ): ConvertStruct {
-        $this->profileId = $migrationContext->getProfileId();
+        $this->connectionId = $migrationContext->getConnection()->getId();
         $this->context = $context;
         $this->oldCategoryId = $data['id'];
 
@@ -114,7 +114,7 @@ class CategoryConverter extends AbstractConverter
 
         if (isset($data['parent'])) {
             $parentUuid = $this->mappingService->getUuid(
-                $this->profileId,
+                $this->connectionId,
                 CategoryDefinition::getEntityName(),
                 $data['parent'],
                 $this->context
@@ -129,7 +129,7 @@ class CategoryConverter extends AbstractConverter
         unset($data['parent']);
 
         $converted['id'] = $this->mappingService->createNewUuid(
-            $this->profileId,
+            $this->connectionId,
             CategoryDefinition::getEntityName(),
             $this->oldCategoryId,
             $this->context
@@ -163,7 +163,7 @@ class CategoryConverter extends AbstractConverter
     {
         $defaultTranslation = [];
         $defaultTranslation['id'] = $this->mappingService->createNewUuid(
-            $this->profileId,
+            $this->connectionId,
             CategoryTranslationDefinition::getEntityName(),
             $this->oldCategoryId . ':' . $data['_locale'],
             $this->context
@@ -177,7 +177,7 @@ class CategoryConverter extends AbstractConverter
         $this->helper->convertValue($defaultTranslation, 'cmsHeadline', $data, 'cmsheadline');
         $this->helper->convertValue($defaultTranslation, 'cmsDescription', $data, 'cmstext');
 
-        $languageData = $this->mappingService->getLanguageUuid($this->profileId, $data['_locale'], $this->context);
+        $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $data['_locale'], $this->context);
 
         if (isset($languageData['createData']) && !empty($languageData['createData'])) {
             $defaultTranslation['language']['id'] = $languageData['uuid'];

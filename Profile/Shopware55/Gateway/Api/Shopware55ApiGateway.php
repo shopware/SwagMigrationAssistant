@@ -3,6 +3,11 @@
 namespace SwagMigrationNext\Profile\Shopware55\Gateway\Api;
 
 use GuzzleHttp\Client;
+use Shopware\Core\Checkout\Customer\CustomerDefinition;
+use Shopware\Core\Checkout\Order\OrderDefinition;
+use Shopware\Core\Content\Category\CategoryDefinition;
+use Shopware\Core\Content\Media\MediaDefinition;
+use Shopware\Core\Content\Product\ProductDefinition;
 use SwagMigrationNext\Migration\EnvironmentInformation;
 use SwagMigrationNext\Migration\Gateway\AbstractGateway;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiEnvironmentReader;
@@ -32,12 +37,7 @@ class Shopware55ApiGateway extends AbstractGateway
                 Shopware55Profile::SOURCE_SYSTEM_VERSION,
                 '',
                 [],
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
+                [],
                 $environmentData['warning']['code'],
                 $environmentData['warning']['detail'],
                 $environmentData['error']['code'],
@@ -49,17 +49,21 @@ class Shopware55ApiGateway extends AbstractGateway
             $environmentDataArray['translations'] = 0;
         }
 
+        $totals = [
+            CategoryDefinition::getEntityName() => $environmentDataArray['categories'],
+            ProductDefinition::getEntityName() => $environmentDataArray['products'],
+            CustomerDefinition::getEntityName() => $environmentDataArray['customers'],
+            OrderDefinition::getEntityName() => $environmentDataArray['orders'],
+            MediaDefinition::getEntityName() => $environmentDataArray['assets'],
+            'translation' => $environmentDataArray['translations'],
+        ];
+
         return new EnvironmentInformation(
             Shopware55Profile::SOURCE_SYSTEM_NAME,
             $environmentDataArray['shopwareVersion'],
             $environmentDataArray['structure'][0]['host'],
             $environmentDataArray['structure'],
-            $environmentDataArray['categories'],
-            $environmentDataArray['products'],
-            $environmentDataArray['customers'],
-            $environmentDataArray['orders'],
-            $environmentDataArray['assets'],
-            $environmentDataArray['translations'],
+            $totals,
             $environmentData['warning']['code'],
             $environmentData['warning']['detail'],
             $environmentData['error']['code'],
@@ -69,7 +73,7 @@ class Shopware55ApiGateway extends AbstractGateway
 
     private function getClient(): Client
     {
-        $credentials = $this->migrationContext->getCredentials();
+        $credentials = $this->migrationContext->getConnection()->getCredentialFields();
 
         $options = [
             'base_uri' => $credentials['endpoint'] . '/api/',

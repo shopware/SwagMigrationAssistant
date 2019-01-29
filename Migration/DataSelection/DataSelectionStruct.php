@@ -17,6 +17,11 @@ class DataSelectionStruct extends Struct
     protected $entityNames;
 
     /**
+     * @var bool
+     */
+    protected $processMediaFiles;
+
+    /**
      * @var string
      */
     protected $snippet;
@@ -26,12 +31,13 @@ class DataSelectionStruct extends Struct
      */
     protected $position;
 
-    public function __construct(string $id, array $entityName, string $snippet, int $position)
+    public function __construct(string $id, array $entityName, string $snippet, int $position, bool $processMediaFiles = false)
     {
         $this->id = $id;
         $this->entityNames = $entityName;
         $this->snippet = $snippet;
         $this->position = $position;
+        $this->processMediaFiles = $processMediaFiles;
     }
 
     public function getId(): string
@@ -42,6 +48,11 @@ class DataSelectionStruct extends Struct
     public function getEntityNames(): array
     {
         return $this->entityNames;
+    }
+
+    public function getProcessMediaFiles(): bool
+    {
+        return $this->processMediaFiles;
     }
 
     public function getSnippet(): string

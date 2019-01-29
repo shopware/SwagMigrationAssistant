@@ -56,17 +56,17 @@ Module.register('swag-migration', {
                     path: 'introduction',
                     component: 'swag-migration-wizard-page-introduction'
                 },
-                profile: {
-                    path: 'profile',
-                    component: 'swag-migration-wizard-page-profile'
+                chooseAction: {
+                    path: 'chooseAction',
+                    component: 'swag-migration-wizard-page-choose-action'
                 },
-                profileCreate: {
-                    path: 'profile/create',
-                    component: 'swag-migration-wizard-page-profile-create'
+                connectionCreate: {
+                    path: 'connection/create',
+                    component: 'swag-migration-wizard-page-connection-create'
                 },
-                profileSelect: {
-                    path: 'profile/select',
-                    component: 'swag-migration-wizard-page-profile-select'
+                connectionSelect: {
+                    path: 'connection/select',
+                    component: 'swag-migration-wizard-page-connection-select'
                 },
                 profileInformation: {
                     path: 'profile/information',
