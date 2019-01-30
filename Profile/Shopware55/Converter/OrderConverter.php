@@ -3,6 +3,9 @@
 namespace SwagMigrationNext\Profile\Shopware55\Converter;
 
 use Shopware\Core\Checkout\Cart\Price\Struct\CalculatedPrice;
+use Shopware\Core\Checkout\Cart\Price\Struct\CartPrice;
+use Shopware\Core\Checkout\Cart\Price\Struct\QuantityPriceDefinition;
+use Shopware\Core\Checkout\Cart\Tax\Struct\CalculatedTaxCollection;
 use Shopware\Core\Checkout\Cart\Tax\Struct\TaxRule;
 use Shopware\Core\Checkout\Cart\Tax\Struct\TaxRuleCollection;
 use Shopware\Core\Checkout\Cart\Tax\TaxCalculator;
@@ -222,24 +225,6 @@ class OrderConverter extends AbstractConverter
         $this->helper->convertValue($converted['orderCustomer'], 'customerNumber', $data['customer'], 'customernumber');
         unset($data['userID'], $data['customer']);
 
-        $this->helper->convertValue($converted, 'isNet', $data, 'net', $this->helper::TYPE_BOOLEAN);
-        $this->helper->convertValue($converted, 'isTaxFree', $data, 'taxfree', $this->helper::TYPE_BOOLEAN);
-
-        if ($converted['isNet']) {
-            $amount = (float) $data['invoice_amount_net'];
-            unset($data['invoice_amount_net'], $data['invoice_amount']);
-            $shipping = (float) $data['invoice_shipping_net'];
-            unset($data['invoice_shipping_net'], $data['invoice_shipping']);
-        } else {
-            $amount = (float) $data['invoice_amount'];
-            unset($data['invoice_amount'], $data['invoice_amount_net']);
-            $shipping = (float) $data['invoice_shipping'];
-            unset($data['invoice_shipping'], $data['invoice_shipping_net']);
-        }
-        $converted['amountTotal'] = $amount;
-        $converted['shippingTotal'] = $shipping;
-        $converted['positionPrice'] = $amount - $shipping;
-
         $this->helper->convertValue($converted, 'currencyFactor', $data, 'currencyFactor', $this->helper::TYPE_FLOAT);
         $converted['currency'] = $this->getCurrency($data['paymentcurrency']);
         unset($data['currency'], $data['currencyFactor'], $data['paymentcurrency']);
@@ -266,19 +251,48 @@ class OrderConverter extends AbstractConverter
         }
         unset($data['status'], $data['orderstatus']);
 
-        if (isset($data['details'])) {
-            $converted['lineItems'] = $this->getLineItems($data['details']);
-        }
-        unset($data['details']);
+        $shippingCosts = new CalculatedPrice(
+            (float) $data['invoice_shipping'],
+            (float) $data['invoice_shipping'],
+            new CalculatedTaxCollection(),
+            new TaxRuleCollection()
+        );
 
-        $converted['deliveries'] = $this->getDeliveries($data, $converted);
+        if (isset($data['details'])) {
+            $taxRules = $this->getTaxRules($data);
+            $taxStatus = $this->getTaxStatus($data);
+
+            $converted['lineItems'] = $this->getLineItems($data['details'], $converted, $taxRules, $taxStatus);
+
+            $converted['price'] = new CartPrice(
+                (float) $data['invoice_amount_net'],
+                (float) $data['invoice_amount'],
+                (float) $data['invoice_amount'] - (float) $data['invoice_shipping'],
+                new CalculatedTaxCollection([]),
+                $taxRules,
+                $taxStatus
+            );
+
+            $converted['shippingCosts'] = $shippingCosts;
+        }
+        unset(
+            $data['net'],
+            $data['taxfree'],
+            $data['invoice_amount_net'],
+            $data['invoice_amount'],
+            $data['invoice_shipping_net'],
+            $data['invoice_shipping'],
+            $data['details']
+        );
+
+        $converted['deliveries'] = $this->getDeliveries($data, $converted, $shippingCosts);
         unset($data['trackingcode'], $data['shippingMethod'], $data['dispatchID'], $data['shippingaddress']);
 
         $this->getTransactions($data, $converted);
         unset($data['cleared'], $data['paymentstatus']);
 
-        $converted['billingAddress'] = $this->getAddress($data['billingaddress']);
-        if (empty($converted['billingAddress'])) {
+        $billingAddress = $this->getAddress($data['billingaddress']);
+        if (empty($billingAddress)) {
             $fields = ['billingaddress'];
             $this->loggingService->addWarning(
                 $this->runId,
@@ -294,6 +308,8 @@ class OrderConverter extends AbstractConverter
 
             return new ConvertStruct(null, $data);
         }
+        $converted['billingAddressId'] = $billingAddress['id'];
+        $converted['addresses'][] = $billingAddress;
         unset($data['billingaddress']);
 
         $converted['salesChannelId'] = $migrationContext->getSalesChannelId();
@@ -381,20 +397,8 @@ class OrderConverter extends AbstractConverter
             return;
         }
 
-        $taxRates = array_unique(array_column($converted['lineItems'], 'taxRate'));
-
-        $taxRules = [];
-        foreach ($taxRates as $taxRate) {
-            $taxRules[] = new TaxRule($taxRate);
-        }
-
-        $taxRules = new TaxRuleCollection($taxRules);
-
-        if ($converted['isNet']) {
-            $calculatedTaxes = $this->taxCalculator->calculateNetTaxes($converted['amountTotal'], $taxRules);
-        } else {
-            $calculatedTaxes = $this->taxCalculator->calculateGrossTaxes($converted['amountTotal'], $taxRules);
-        }
+        /** @var CartPrice $cartPrice */
+        $cartPrice = $converted['price'];
 
         $transactions = [
             [
@@ -402,10 +406,10 @@ class OrderConverter extends AbstractConverter
                 'paymentMethodId' => $converted['paymentMethod']['id'],
                 'orderTransactionStateId' => $this->mappingService->getTransactionStateUuid((int) $data['cleared'], $this->context),
                 'amount' => new CalculatedPrice(
-                    $converted['amountTotal'],
-                    $converted['amountTotal'],
-                    $calculatedTaxes,
-                    $taxRules
+                    $cartPrice->getTotalPrice(),
+                    $cartPrice->getTotalPrice(),
+                    $cartPrice->getCalculatedTaxes(),
+                    $cartPrice->getTaxRules()
                 ),
             ],
         ];
@@ -644,7 +648,7 @@ class OrderConverter extends AbstractConverter
         return $state;
     }
 
-    private function getDeliveries(array $data, array $converted): array
+    private function getDeliveries(array $data, array $converted, CalculatedPrice $shippingCosts): array
     {
         $deliveries = [];
 
@@ -689,14 +693,13 @@ class OrderConverter extends AbstractConverter
                         $this->context
                     ),
                     'orderLineItemId' => $lineItem['id'],
-                    'unitPrice' => $lineItem['unitPrice'],
-                    'totalPrice' => $lineItem['totalPrice'],
-                    'quantity' => $lineItem['quantity'],
+                    'price' => $lineItem['price'],
                 ];
             }
 
             $delivery['positions'] = $positions;
         }
+        $delivery['shippingCosts'] = $shippingCosts;
 
         $deliveries[] = $delivery;
 
@@ -763,7 +766,7 @@ class OrderConverter extends AbstractConverter
         return $shippingMethod;
     }
 
-    private function getLineItems(array $originalData): array
+    private function getLineItems(array $originalData, array &$converted, TaxRuleCollection $taxRules, string $taxStatus): array
     {
         $lineItems = [];
 
@@ -802,9 +805,31 @@ class OrderConverter extends AbstractConverter
 
             $this->helper->convertValue($lineItem, 'quantity', $originalLineItem, 'quantity', $this->helper::TYPE_INTEGER);
             $this->helper->convertValue($lineItem, 'label', $originalLineItem, 'name');
-            $this->helper->convertValue($lineItem, 'unitPrice', $originalLineItem, 'price', $this->helper::TYPE_FLOAT);
-            $this->helper->convertValue($lineItem, 'taxRate', $originalLineItem, 'tax_rate', $this->helper::TYPE_FLOAT);
-            $lineItem['totalPrice'] = $lineItem['quantity'] * $lineItem['unitPrice'];
+
+            $calculatedTax = null;
+            $totalPrice = $lineItem['quantity'] * $originalLineItem['price'];
+            if ($taxStatus === CartPrice::TAX_STATE_NET) {
+                $calculatedTax = $this->taxCalculator->calculateNetTaxes($totalPrice, $taxRules);
+            }
+
+            if ($taxStatus === CartPrice::TAX_STATE_GROSS) {
+                $calculatedTax = $this->taxCalculator->calculateGrossTaxes($totalPrice, $taxRules);
+            }
+
+            if ($calculatedTax !== null) {
+                $lineItem['price'] = new CalculatedPrice(
+                    (float) $originalLineItem['price'],
+                    (float) $totalPrice,
+                    $calculatedTax,
+                    $taxRules,
+                    (int) $lineItem['quantity']
+                );
+
+                $lineItem['priceDefinition'] = new QuantityPriceDefinition(
+                    (float) $originalLineItem['price'],
+                    $taxRules
+                );
+            }
 
             if (!isset($lineItem['identifier'])) {
                 $this->loggingService->addInfo(
@@ -825,5 +850,30 @@ class OrderConverter extends AbstractConverter
         }
 
         return $lineItems;
+    }
+
+    private function getTaxRules(array $originalData): TaxRuleCollection
+    {
+        $taxRates = array_unique(array_column($originalData['details'], 'tax_rate'));
+
+        $taxRules = [];
+        foreach ($taxRates as $taxRate) {
+            $taxRules[] = new TaxRule((float) $taxRate);
+        }
+
+        return new TaxRuleCollection($taxRules);
+    }
+
+    private function getTaxStatus(array $originalData): string
+    {
+        $taxStatus = CartPrice::TAX_STATE_GROSS;
+        if (isset($originalData['net']) && (bool) $originalData['net']) {
+            $taxStatus = CartPrice::TAX_STATE_NET;
+        }
+        if (isset($originalData['isTaxFree']) && (bool) $originalData['isTaxFree']) {
+            $taxStatus = CartPrice::TAX_STATE_FREE;
+        }
+
+        return $taxStatus;
     }
 }
