@@ -404,7 +404,7 @@ class OrderConverter extends AbstractConverter
             [
                 'id' => Uuid::uuid4()->getHex(),
                 'paymentMethodId' => $converted['paymentMethod']['id'],
-                'orderTransactionStateId' => $this->mappingService->getTransactionStateUuid((int) $data['cleared'], $this->context),
+                'stateId' => $this->mappingService->getTransactionStateUuid((int) $data['cleared'], $this->context),
                 'amount' => new CalculatedPrice(
                     $cartPrice->getTotalPrice(),
                     $cartPrice->getTotalPrice(),
@@ -659,7 +659,7 @@ class OrderConverter extends AbstractConverter
                 $this->oldId,
                 $this->context
             ),
-            'orderStateId' => $converted['stateId'],
+            'stateId' => $converted['stateId'],
             'shippingDateEarliest' => $converted['date'],
             'shippingDateLatest' => $converted['date'],
         ];
