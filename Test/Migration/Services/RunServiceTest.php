@@ -84,8 +84,8 @@ class RunServiceTest extends TestCase
             $this->getContainer()->get('language.repository'),
             $this->getContainer()->get('country.repository'),
             $this->getContainer()->get('payment_method.repository'),
-            $this->getContainer()->get('order_state.repository'),
-            $this->getContainer()->get('order_transaction_state.repository'),
+            $this->getContainer()->get('state_machine.repository'),
+            $this->getContainer()->get('state_machine_state.repository'),
             $this->getContainer()->get('currency.repository'),
             $this->getContainer()->get('sales_channel.repository'),
             $this->getContainer()->get('sales_channel_type.repository')

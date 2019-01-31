@@ -4,9 +4,7 @@ namespace SwagMigrationNext\Test\Migration\Mapping;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 use SwagMigrationNext\Test\Migration\Services\MigrationProfileUuidService;
@@ -21,36 +19,30 @@ class Shopware55MappingServiceTest extends TestCase
     private $shopware55MappingService;
 
     /**
-     * @var RepositoryInterface
+     * @var EntityRepositoryInterface
      */
     private $localeRepo;
 
     /**
-     * @var RepositoryInterface
+     * @var EntityRepositoryInterface
      */
-    private $orderStateRepo;
+    private $stateMachineRepository;
 
     /**
-     * @var RepositoryInterface
+     * @var EntityRepositoryInterface
      */
-    private $transactionStateRepo;
+    private $stateMachineStateRepository;
 
     /**
      * @var MigrationProfileUuidService
      */
     private $profileUuidService;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $transactionStateTranslationRepo;
-
     protected function setUp()
     {
         $this->localeRepo = $this->getContainer()->get('locale.repository');
-        $this->orderStateRepo = $this->getContainer()->get('order_state.repository');
-        $this->transactionStateRepo = $this->getContainer()->get('order_transaction_state.repository');
-        $this->transactionStateTranslationRepo = $this->getContainer()->get('order_transaction_state_translation.repository');
+        $this->stateMachineRepository = $this->getContainer()->get('state_machine.repository');
+        $this->stateMachineStateRepository = $this->getContainer()->get('state_machine_state.repository');
         $this->profileUuidService = new MigrationProfileUuidService($this->getContainer()->get('swag_migration_profile.repository'));
 
         $this->shopware55MappingService = new Shopware55MappingService(
@@ -59,8 +51,8 @@ class Shopware55MappingServiceTest extends TestCase
             $this->getContainer()->get('language.repository'),
             $this->getContainer()->get('country.repository'),
             $this->getContainer()->get('payment_method.repository'),
-            $this->orderStateRepo,
-            $this->transactionStateRepo,
+            $this->stateMachineRepository,
+            $this->stateMachineStateRepository,
             $this->getContainer()->get('currency.repository'),
             $this->getContainer()->get('sales_channel.repository'),
             $this->getContainer()->get('sales_channel_type.repository')
@@ -99,25 +91,6 @@ class Shopware55MappingServiceTest extends TestCase
         self::assertNotNull($response);
 
         $response = $this->shopware55MappingService->getOrderStateUuid(10, $context);
-        self::assertNull($response);
-
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('position', 8));
-        $ids = $this->orderStateRepo->searchIds(
-            $criteria,
-            $context
-        );
-        $ids = $ids->getIds();
-
-        $this->orderStateRepo->delete(
-            [
-                [
-                    'id' => $ids[0],
-                ],
-            ],
-            $context
-        );
-        $response = $this->shopware55MappingService->getOrderStateUuid(6, $context);
         self::assertNull($response);
     }
 
