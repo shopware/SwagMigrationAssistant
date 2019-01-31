@@ -75,11 +75,13 @@ export class WorkerStatusManager {
      */
     _updateEntityCountForWrite(entityGroups, runId) {
         return new Promise((resolve) => {
-            const count = {
-                entityCount: {
-                    value_count: { field: 'swag_migration_data.entity' }
+            const count = [
+                {
+                    name: 'entityCount',
+                    type: 'value_count',
+                    field: 'swag_migration_data.entity'
                 }
-            };
+            ];
             const criteria = CriteriaFactory.multi(
                 'AND',
                 CriteriaFactory.equals('runId', runId),
@@ -124,11 +126,13 @@ export class WorkerStatusManager {
      */
     _getAssetTotalCount(runId) {
         return new Promise((resolve) => {
-            const count = {
-                mediaCount: {
-                    count: { field: 'swag_migration_media_file.mediaId' }
+            const count = [
+                {
+                    name: 'mediaCount',
+                    type: 'count',
+                    field: 'swag_migration_media_file.mediaId'
                 }
-            };
+            ];
             const criteria = CriteriaFactory.multi(
                 'AND',
                 CriteriaFactory.equals('runId', runId),

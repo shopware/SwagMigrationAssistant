@@ -4,6 +4,7 @@ namespace SwagMigrationNext\Test\Profile\Shopware55\Converter;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Cart\Price\PriceRounding;
+use Shopware\Core\Checkout\Cart\Price\Struct\CartPrice;
 use Shopware\Core\Checkout\Cart\Tax\TaxCalculator;
 use Shopware\Core\Checkout\Cart\Tax\TaxRuleCalculator;
 use Shopware\Core\Checkout\Customer\CustomerDefinition;
@@ -168,6 +169,8 @@ class OrderConverterTest extends TestCase
         );
 
         $converted = $convertResult->getConverted();
+        /** @var CartPrice $cartPrice */
+        $cartPrice = $converted['price'];
 
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
@@ -175,7 +178,7 @@ class OrderConverterTest extends TestCase
         static::assertArrayHasKey('deliveries', $converted);
         static::assertSame(Defaults::SALES_CHANNEL, $converted['salesChannelId']);
         static::assertSame('mustermann@b2b.de', $converted['orderCustomer']['email']);
-        static::assertTrue($converted['isNet']);
+        static::assertSame($cartPrice->getTaxStatus(), CartPrice::TAX_STATE_NET);
         static::assertCount(0, $this->loggingService->getLoggingArray());
     }
 
@@ -310,7 +313,7 @@ class OrderConverterTest extends TestCase
         static::assertArrayHasKey('id', $converted);
         static::assertSame(Defaults::SALES_CHANNEL, $converted['salesChannelId']);
         static::assertSame('test@example.com', $converted['orderCustomer']['email']);
-        static::assertSame($converted['billingAddress'], $converted['deliveries'][0]['shippingOrderAddress']);
+        static::assertSame($converted['addresses'][0], $converted['deliveries'][0]['shippingOrderAddress']);
         static::assertCount(0, $this->loggingService->getLoggingArray());
     }
 
