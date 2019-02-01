@@ -87,10 +87,7 @@ Component.register('swag-migration-wizard-page-select-profile', {
                 this.gateways = null;
 
                 if (this.selection.profile !== null) {
-                    const criteria = CriteriaFactory.multi(
-                        'AND',
-                        CriteriaFactory.equals('profile', this.selection.profile)
-                    );
+                    const criteria = CriteriaFactory.equals('profile', this.selection.profile);
 
                     this.profileStore.getList({
                         criteria: criteria,

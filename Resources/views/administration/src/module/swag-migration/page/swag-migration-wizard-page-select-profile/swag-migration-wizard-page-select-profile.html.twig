@@ -12,7 +12,7 @@
                                       :label="$tc('swag-migration.wizard.pages.selectProfile.profileLabel')"
                                       :placeholder="$tc('swag-migration.wizard.pages.selectProfile.profilePlaceholder')"
                                       v-model="selection.profile"
-                                      @change="onSelectProfile"
+                                      @input="onSelectProfile"
                                       validation="required">
                                 {% block swag_migration_wizard_page_select_profile_form_profile_field_options %}
                                     <option slot="options" v-for="profile in profiles" :value="profile">{{ profile }}</option>
@@ -23,7 +23,7 @@
                                       :label="$tc('swag-migration.wizard.pages.selectProfile.gatewayLabel')"
                                       :placeholder="$tc('swag-migration.wizard.pages.selectProfile.gatewayPlaceholder')"
                                       v-model="selection.gateway"
-                                      @change="onSelectGateway"
+                                      @input="onSelectGateway"
                                       validation="required">
                                 {% block swag_migration_wizard_page_select_profile_form_gateway_field_options %}
                                     <option slot="options" v-for="gateway in gateways" :value="gateway">{{ gateway }}</option>
