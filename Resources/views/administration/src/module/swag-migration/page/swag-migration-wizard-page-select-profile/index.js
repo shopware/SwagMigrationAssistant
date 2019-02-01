@@ -37,11 +37,13 @@ Component.register('swag-migration-wizard-page-select-profile', {
             this.emitProfileSelectionValidation(false);
 
             this.profileStore.getList({
-                aggregations: {
-                    profileAgg: {
-                        value: { field: 'profile' }
+                aggregations: [
+                    {
+                        name: 'profileAgg',
+                        field: 'profile',
+                        type: 'value'
                     }
-                }
+                ]
             }).then((profiles) => {
                 this.profiles = profiles.aggregations.profileAgg;
 
@@ -87,18 +89,18 @@ Component.register('swag-migration-wizard-page-select-profile', {
                 if (this.selection.profile !== null) {
                     const criteria = CriteriaFactory.multi(
                         'AND',
-                        CriteriaFactory.equals('profile', this.selection.profile),
-                        // Todo: Remove if not playground
-                        CriteriaFactory.equals('gateway', 'api')
+                        CriteriaFactory.equals('profile', this.selection.profile)
                     );
 
                     this.profileStore.getList({
                         criteria: criteria,
-                        aggregations: {
-                            gatewayAgg: {
-                                value: { field: 'gateway' }
+                        aggregations: [
+                            {
+                                name: 'gatewayAgg',
+                                type: 'value',
+                                field: 'gateway'
                             }
-                        }
+                        ]
                     }).then((profiles) => {
                         this.gateways = profiles.aggregations.gatewayAgg;
                         this.selection.gateway = null;
