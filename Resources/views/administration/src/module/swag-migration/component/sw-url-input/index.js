@@ -109,7 +109,7 @@ Component.register('sw-url-input', {
         },
 
         emitUrl() {
-            this.$emit('input', this.urlPrefix + this.urlInput);
+            this.$emit('input', this.urlPrefix + this.urlInput.trim());
         }
     }
 });

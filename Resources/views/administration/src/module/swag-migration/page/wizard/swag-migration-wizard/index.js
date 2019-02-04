@@ -23,7 +23,6 @@ Component.register('swag-migration-wizard', {
             showModal: true,
             isLoading: true,
             childIsLoading: false,
-            editMode: false, // Don't show dot navigation or back button if we come from the module
             routes: {
                 introduction: {
                     name: 'swag.migration.wizard.introduction',
@@ -63,7 +62,6 @@ Component.register('swag-migration-wizard', {
             profileSelection: 'create-profile',
             profile: {}, // state object
             selectedProfile: {},
-            credentials: {},
             childRouteReady: false, // child routes with forms will emit and change this value depending on their validation.
             errorMessageSnippet: ''
         };
@@ -185,8 +183,8 @@ Component.register('swag-migration-wizard', {
          * Remove any whitespaces before or after the strings in the credentials object.
          */
         trimCredentials() {
-            Object.keys(this.credentials).forEach((field) => {
-                this.credentials[field] = this.credentials[field].trim();
+            Object.keys(this.profile.credentialFields).forEach((field) => {
+                this.profile.credentialFields[field] = this.profile.credentialFields[field].trim();
             });
         },
 
@@ -196,7 +194,6 @@ Component.register('swag-migration-wizard', {
             this.errorMessageSnippet = '';
 
             this.trimCredentials();
-            this.profile.credentialFields = this.credentials;
             this.profile.save().then((response) => {
                 if (response.errors.length === 0) {
                     this.migrationService.checkConnection(this.profile.id).then((connectionCheckResponse) => {
@@ -405,7 +402,6 @@ Component.register('swag-migration-wizard', {
                         }
 
                         this.profile = profileResponse.items[0];
-                        this.credentials = profileResponse.items[0].credentialFields;
                         this.isLoading = false;
                         resolve();
                     });
@@ -464,7 +460,7 @@ Component.register('swag-migration-wizard', {
         },
 
         onCredentialsChanged(value) {
-            this.credentials = value;
+            this.profile.credentialFields = value;
         },
 
         onProfileSelected(value) {

@@ -14,10 +14,10 @@
             {% block swag_migration_router_view %}
                 <router-view
                         @onChildRouteReadyChanged="onChildRouteReadyChanged"
-                        :profileInformationComponent="profileInformationComponent"
                         :profileSelection="profileSelection"
-                        @onProfileSelected="onProfileSelected"
                         @onProfileSelectionChanged="onProfileSelectionChanged"
+                        @onProfileSelected="onProfileSelected"
+                        :profileInformationComponent="profileInformationComponent"
                         :credentialsComponent="credentialsComponent"
                         :credentials="profile.credentialFields"
                         @onCredentialsChanged="onCredentialsChanged"
