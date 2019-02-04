@@ -296,7 +296,7 @@ Component.register('swag-migration-wizard', {
 
             if (!this.profileInformationComponentIsLoaded) {
                 if (this.currentRoute === this.routes.profileInformation) {
-                    this.navigateToRoute(this.routes.profile);
+                    this.navigateToRoute(this.routes.credentials);
                 }
 
                 // make the profileInformation route a child if there is no component
