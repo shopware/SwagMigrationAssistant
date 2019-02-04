@@ -51,7 +51,9 @@
 
                                             {% block swag_migration_index_card_shopInfo_actions_contextMenu %}
                                                 <sw-context-button :disabled="isMigrating || isPaused || isOtherMigrationRunning">
-                                                    <sw-button size="small" square slot="button">
+                                                    <sw-button size="small"
+                                                               square slot="button"
+                                                               :disabled="isMigrating || isPaused || isOtherMigrationRunning">
                                                         <sw-icon name="small-more" small></sw-icon>
                                                     </sw-button>
                                                     <sw-context-menu-item @click="onClickCreateProfile">
