@@ -26,19 +26,19 @@ class LoggingService implements LoggingServiceInterface
         $this->loggingRepo = $loggingRepo;
     }
 
-    public function addInfo(string $runId, string $code, string $title, string $description, array $details = null): void
+    public function addInfo(string $runId, string $code, string $title, string $description, array $details = [], int $counting = 0): void
     {
-        $this->addLog($runId, self::INFO_TYPE, $code, $title, $description, $details);
+        $this->addLog($runId, self::INFO_TYPE, $code, $title, $description, $details, $counting);
     }
 
-    public function addWarning(string $runId, string $code, string $title, string $description, array $details = null): void
+    public function addWarning(string $runId, string $code, string $title, string $description, array $details = [], int $counting = 0): void
     {
-        $this->addLog($runId, self::WARNING_TYPE, $code, $title, $description, $details);
+        $this->addLog($runId, self::WARNING_TYPE, $code, $title, $description, $details, $counting);
     }
 
-    public function addError(string $runId, string $code, string $title, string $description, array $details = null): void
+    public function addError(string $runId, string $code, string $title, string $description, array $details = [], int $counting = 0): void
     {
-        $this->addLog($runId, self::ERROR_TYPE, $code, $title, $description, $details);
+        $this->addLog($runId, self::ERROR_TYPE, $code, $title, $description, $details, $counting);
     }
 
     public function saveLogging(Context $context): void
@@ -52,8 +52,10 @@ class LoggingService implements LoggingServiceInterface
         $this->logging = [];
     }
 
-    private function addLog(string $runId, string $type, string $code, string $title, string $description, array $details = null): void
+    private function addLog(string $runId, string $type, string $code, string $title, string $description, array $details = [], int $counting = 0): void
     {
+        $details['count'] = $counting;
+
         $this->logging[] = [
             'runId' => $runId,
             'type' => $type,

@@ -132,7 +132,8 @@ class ProductConverter extends AbstractConverter
                     'id' => $this->oldProductId,
                     'entity' => 'Product',
                     'fields' => $fields,
-                ]
+                ],
+                \count($fields)
             );
 
             return new ConvertStruct(null, $data);

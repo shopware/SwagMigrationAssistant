@@ -27,7 +27,7 @@
                                         {% block swag_migration_loading_screen_warning_hint_errors_list %}
                                             <ul class="information__list">
                                                 <li v-for="error in errorList">
-                                                    {{ (error.snippetName !== $t(error.snippetName, error.details)) ? $t(error.snippetName, error.details) : $t('swag-migration.index.error.unknownError') }}
+                                                    {{ (error.snippetName !== $tc(error.snippetName, error.details.count, error.details)) ? $tc(error.snippetName, error.details.count, error.details) : $t('swag-migration.index.error.unknownError') }}
                                                 </li>
                                             </ul>
                                         {% endblock %}

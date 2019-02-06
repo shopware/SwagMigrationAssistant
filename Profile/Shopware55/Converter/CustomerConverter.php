@@ -134,7 +134,8 @@ class CustomerConverter extends AbstractConverter
                     'id' => $data['id'],
                     'entity' => 'Customer',
                     'fields' => $fields,
-                ]
+                ],
+                \count($fields)
             );
 
             return new ConvertStruct(null, $oldData);
@@ -410,7 +411,8 @@ class CustomerConverter extends AbstractConverter
                         'uuid' => $customerUuid,
                         'entity' => 'Address',
                         'fields' => $fields,
-                    ]
+                    ],
+                    \count($fields)
                 );
 
                 continue;

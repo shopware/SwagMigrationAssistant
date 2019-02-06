@@ -172,7 +172,8 @@ class OrderConverter extends AbstractConverter
                     'id' => $this->oldId,
                     'entity' => 'Order',
                     'fields' => $fields,
-                ]
+                ],
+                \count($fields)
             );
 
             return new ConvertStruct(null, $data);
@@ -305,7 +306,8 @@ class OrderConverter extends AbstractConverter
                     'id' => $this->oldId,
                     'entity' => 'Order',
                     'fields' => $fields,
-                ]
+                ],
+                \count($fields)
             );
 
             return new ConvertStruct(null, $data);
@@ -509,7 +511,8 @@ class OrderConverter extends AbstractConverter
                     'uuid' => $this->uuid,
                     'entity' => 'Address',
                     'fields' => $fields,
-                ]
+                ],
+                \count($fields)
             );
 
             return [];
