@@ -17,10 +17,10 @@ use Shopware\Core\Framework\Rule\Container\AndRule;
 use Shopware\Core\System\Tax\TaxDefinition;
 use Shopware\Core\System\Unit\Aggregate\UnitTranslation\UnitTranslationDefinition;
 use Shopware\Core\System\Unit\UnitDefinition;
-use SwagMigrationNext\Migration\Asset\MediaFileServiceInterface;
 use SwagMigrationNext\Migration\Converter\AbstractConverter;
 use SwagMigrationNext\Migration\Converter\ConvertStruct;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationNext\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Profile\Shopware55\Exception\ParentEntityForChildNotFoundException;
 use SwagMigrationNext\Profile\Shopware55\Logging\Shopware55LogTypes;
@@ -289,7 +289,7 @@ class ProductConverter extends AbstractConverter
         unset($data['prices']);
 
         if (isset($data['assets'])) {
-            $convertedMedia = $this->getAssets($data['assets'], $converted, $data['_locale']);
+            $convertedMedia = $this->getMedia($data['assets'], $converted, $data['_locale']);
 
             if (!empty($convertedMedia['media'])) {
                 $converted['media'] = $convertedMedia['media'];
@@ -434,12 +434,12 @@ class ProductConverter extends AbstractConverter
         ];
     }
 
-    private function getAssets(array $assets, array $converted, $locale): array
+    private function getMedia(array $media, array $converted, $locale): array
     {
-        $media = [];
+        $mediaObjects = [];
         $cover = null;
-        foreach ($assets as $asset) {
-            if (!isset($asset['media']['id'])) {
+        foreach ($media as $mediaData) {
+            if (!isset($mediaData['media']['id'])) {
                 $this->loggingService->addInfo(
                     $this->runId,
                     Shopware55LogTypes::PRODUCT_MEDIA_NOT_CONVERTED,
@@ -458,30 +458,30 @@ class ProductConverter extends AbstractConverter
             $newProductMedia['id'] = $this->mappingService->createNewUuid(
                 $this->profileId,
                 ProductMediaDefinition::getEntityName(),
-                $asset['id'],
+                $mediaData['id'],
                 $this->context
             );
             $newProductMedia['productId'] = $converted['id'];
-            $this->helper->convertValue($newProductMedia, 'position', $asset, 'position', $this->helper::TYPE_INTEGER);
+            $this->helper->convertValue($newProductMedia, 'position', $mediaData, 'position', $this->helper::TYPE_INTEGER);
 
             $newMedia = [];
             $newMedia['id'] = $this->mappingService->createNewUuid(
                 $this->profileId,
                 MediaDefinition::getEntityName(),
-                $asset['media']['id'],
+                $mediaData['media']['id'],
                 $this->context
             );
 
-            if (!isset($asset['media']['name'])) {
-                $asset['media']['name'] = $newMedia['id'];
+            if (!isset($mediaData['media']['name'])) {
+                $mediaData['media']['name'] = $newMedia['id'];
             }
 
             $this->mediaFileService->saveMediaFile(
                 [
                     'runId' => $this->runId,
-                    'uri' => isset($asset['media']['uri']) ? $asset['media']['uri'] : $asset['media']['path'],
-                    'fileName' => $asset['media']['name'],
-                    'fileSize' => (int) $asset['media']['file_size'],
+                    'uri' => isset($mediaData['media']['uri']) ? $mediaData['media']['uri'] : $mediaData['media']['path'],
+                    'fileName' => $mediaData['media']['name'],
+                    'fileSize' => (int) $mediaData['media']['file_size'],
                     'mediaId' => $newMedia['id'],
                 ]
             );
@@ -489,11 +489,11 @@ class ProductConverter extends AbstractConverter
             $translation['id'] = $this->mappingService->createNewUuid(
                 $this->profileId,
                 MediaTranslationDefinition::getEntityName(),
-                $asset['media']['id'] . ':' . $locale,
+                $mediaData['media']['id'] . ':' . $locale,
                 $this->context
             );
-            $this->helper->convertValue($translation, 'name', $asset['media'], 'name');
-            $this->helper->convertValue($translation, 'description', $asset['media'], 'description');
+            $this->helper->convertValue($translation, 'name', $mediaData['media'], 'name');
+            $this->helper->convertValue($translation, 'description', $mediaData['media'], 'description');
 
             $languageData = $this->mappingService->getLanguageUuid($this->profileId, $locale, $this->context);
 
@@ -508,14 +508,14 @@ class ProductConverter extends AbstractConverter
             $newMedia['translations'][$languageData['uuid']] = $translation;
 
             $newProductMedia['media'] = $newMedia;
-            $media[] = $newProductMedia;
+            $mediaObjects[] = $newProductMedia;
 
-            if ($cover === null && (int) $asset['main'] === 1) {
+            if ($cover === null && (int) $mediaData['main'] === 1) {
                 $cover = $newProductMedia;
             }
         }
 
-        return ['media' => $media, 'cover' => $cover];
+        return ['media' => $mediaObjects, 'cover' => $cover];
     }
 
     private function getPrice(array $priceData, float $taxRate, bool $setInGross): array

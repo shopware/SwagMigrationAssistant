@@ -20,12 +20,12 @@ export class WorkerMediaFiles {
         onInterruptCB
     ) {
         this._MAX_REQUEST_TIME_IN_MILLISECONDS = 10000;
-        this._ASSET_UUID_CHUNK = 100; // Amount of uuids we fetch with one request
-        this._ASSET_WORKLOAD_COUNT = 5; // The amount of assets we download per request in parallel
+        this._MEDIA_UUID_CHUNK = 100; // Amount of uuids we fetch with one request
+        this._MEDIA_WORKLOAD_COUNT = 5; // The amount of media we download per request in parallel
         // The maximum amount of bytes we download per file in one request
-        this._ASSET_FILE_CHUNK_BYTE_SIZE = 1000 * 1000 * 8; // 8 MB
+        this._MEDIA_FILE_CHUNK_BYTE_SIZE = 1000 * 1000 * 8; // 8 MB
         this._CHUNK_SIZE_BYTE_INCREMENT = 250 * 1000; // 250 KB
-        this._ASSET_MIN_FILE_CHUNK_BYTE_SIZE = this._CHUNK_SIZE_BYTE_INCREMENT;
+        this._MEDIA_MIN_FILE_CHUNK_BYTE_SIZE = this._CHUNK_SIZE_BYTE_INCREMENT;
 
         this._runId = downloadParams.runUuid;
         this._accessToken = downloadParams.swagMigrationAccessToken;
@@ -35,10 +35,10 @@ export class WorkerMediaFiles {
         this._migrationService = migrationService;
 
         this._interrupt = '';
-        this._assetTotalCount = 0;
-        this._assetUuidPool = [];
-        this._assetWorkload = [];
-        this._assetProgress = 0;
+        this._mediaTotalCount = 0;
+        this._mediaUuidPool = [];
+        this._mediaWorkload = [];
+        this._mediaProgress = 0;
 
         // callbacks
         this._onProgressCB = onProgressCB;
@@ -126,18 +126,18 @@ export class WorkerMediaFiles {
                 this._runId,
                 entityGroups,
                 this._status
-            ).then(([newEntityGroups, assetTotalCount]) => {
+            ).then(([newEntityGroups, mediaTotalCount]) => {
                 entityGroups = newEntityGroups;
-                this._assetTotalCount = assetTotalCount;
+                this._mediaTotalCount = mediaTotalCount;
             });
 
             if (entityOffset === 0) {
-                this._resetAssetProgress();
+                this._resetMediaProgress();
             } else {
-                this._assetTotalCount += entityOffset; // we need to add the processed / finished count
-                this._assetProgress += entityOffset;
-                this._assetUuidPool = [];
-                this._assetWorkload = [];
+                this._mediaTotalCount += entityOffset; // we need to add the processed / finished count
+                this._mediaProgress += entityOffset;
+                this._mediaUuidPool = [];
+                this._mediaWorkload = [];
             }
             this._processMediaFiles().then(() => {
                 resolve();
@@ -146,39 +146,39 @@ export class WorkerMediaFiles {
     }
     /* eslint-enable no-unused-vars, no-await-in-loop */
 
-    _resetAssetProgress() {
-        this._assetUuidPool = [];
-        this._assetWorkload = [];
-        this._assetProgress = 0;
+    _resetMediaProgress() {
+        this._mediaUuidPool = [];
+        this._mediaWorkload = [];
+        this._mediaProgress = 0;
     }
 
     /**
-     * Get a chunk of asset uuids and put it into our pool.
+     * Get a chunk of media uuids and put it into our pool.
      *
      * @returns {Promise}
      * @private
      */
-    _fetchAssetUuidsChunk() {
+    _fetchMediaUuidsChunk() {
         return new Promise((resolve) => {
-            if (this._assetUuidPool.length >= this._ASSET_WORKLOAD_COUNT) {
+            if (this._mediaUuidPool.length >= this._MEDIA_WORKLOAD_COUNT) {
                 resolve();
                 return;
             }
 
-            this._migrationService.fetchAssetUuids({
+            this._migrationService.fetchMediaUuids({
                 runId: this._runId,
-                limit: this._ASSET_UUID_CHUNK
+                limit: this._MEDIA_UUID_CHUNK
             }).then((res) => {
                 res.mediaUuids.forEach((uuid) => {
                     let isInWorkload = false;
-                    this._assetWorkload.forEach((media) => {
+                    this._mediaWorkload.forEach((media) => {
                         if (media.uuid === uuid) {
                             isInWorkload = true;
                         }
                     });
 
-                    if (!isInWorkload && !this._assetUuidPool.includes(uuid)) {
-                        this._assetUuidPool.push(uuid);
+                    if (!isInWorkload && !this._mediaUuidPool.includes(uuid)) {
+                        this._mediaUuidPool.push(uuid);
                     }
                 });
                 resolve();
@@ -201,12 +201,12 @@ export class WorkerMediaFiles {
     async _processMediaFiles() {
         /* eslint-disable no-await-in-loop */
         return new Promise(async (resolve) => {
-            await this._fetchAssetUuidsChunk();
+            await this._fetchMediaUuidsChunk();
 
             // make workload
-            this._makeWorkload(this._ASSET_WORKLOAD_COUNT);
+            this._makeWorkload(this._MEDIA_WORKLOAD_COUNT);
 
-            while (this._assetProgress < this._assetTotalCount) {
+            while (this._mediaProgress < this._mediaTotalCount) {
                 // send workload to api
                 let newWorkload;
                 const beforeRequestTime = new Date();
@@ -225,9 +225,9 @@ export class WorkerMediaFiles {
                 // process response and update local workload
                 this._updateWorkload(newWorkload, afterRequestTime - beforeRequestTime);
 
-                await this._fetchAssetUuidsChunk();
+                await this._fetchMediaUuidsChunk();
 
-                if (this._assetUuidPool.length === 0 && newWorkload.length === 0) {
+                if (this._mediaUuidPool.length === 0 && newWorkload.length === 0) {
                     break;
                 }
             }
@@ -238,15 +238,15 @@ export class WorkerMediaFiles {
     }
 
     /**
-     * Push asset uuids from the pool into the current workload
+     * Push media uuids from the pool into the current workload
      *
-     * @param {number} assetCount the amount of uuids to add
+     * @param {number} mediaCount the amount of uuids to add
      * @private
      */
-    _makeWorkload(assetCount) {
-        const uuids = this._assetUuidPool.splice(0, assetCount);
+    _makeWorkload(mediaCount) {
+        const uuids = this._mediaUuidPool.splice(0, mediaCount);
         uuids.forEach((uuid) => {
-            this._assetWorkload.push({
+            this._mediaWorkload.push({
                 runId: this._runId,
                 uuid,
                 currentOffset: 0,
@@ -257,9 +257,9 @@ export class WorkerMediaFiles {
 
     /**
      * Analyse the given workload and update our own workload.
-     * Remove finished assets from our workload and add new ones.
-     * Remove failed assets (errorCount >= this._ASSET_ERROR_THRESHOLD) and add errors for them.
-     * Make sure we have the asset amount in our workload that we specified (this._ASSET_WORKLOAD_COUNT).
+     * Remove finished media from our workload and add new ones.
+     * Remove failed media (errorCount >= this._MEDIA_ERROR_THRESHOLD) and add errors for them.
+     * Make sure we have the media amount in our workload that we specified (this._MEDIA_WORKLOAD_COUNT).
      *
      * @param {Array<Object>} newWorkload
      * @param {number} requestTime
@@ -267,59 +267,59 @@ export class WorkerMediaFiles {
      */
     _updateWorkload(newWorkload, requestTime) {
         if (newWorkload.length === 0) {
-            this._makeWorkload(this._ASSET_WORKLOAD_COUNT);
+            this._makeWorkload(this._MEDIA_WORKLOAD_COUNT);
             return;
         }
 
-        const finishedAssets = newWorkload.filter((asset) => asset.state === 'finished');
-        let assetsRemovedCount = finishedAssets.length;
+        const finishedMedia = newWorkload.filter((media) => media.state === 'finished');
+        let mediaRemovedCount = finishedMedia.length;
 
         // check for errorCount
-        newWorkload.forEach((asset) => {
-            if (asset.state === 'error') {
-                assetsRemovedCount += 1;
+        newWorkload.forEach((media) => {
+            if (media.state === 'error') {
+                mediaRemovedCount += 1;
             }
         });
 
-        this._assetWorkload = newWorkload.filter((asset) => asset.state === 'inProgress');
+        this._mediaWorkload = newWorkload.filter((media) => media.state === 'inProgress');
 
-        // Get the assets that have utilized the full amount of fileByteChunkSize
-        const assetsWithoutAnyErrors = this._assetWorkload.filter((asset) => !asset.errorCount);
-        if (assetsWithoutAnyErrors.length !== 0) {
-            this._handleAssetFileChunkByteSize(requestTime);
+        // Get the media that have utilized the full amount of fileByteChunkSize
+        const mediaWithoutAnyErrors = this._mediaWorkload.filter((media) => !media.errorCount);
+        if (mediaWithoutAnyErrors.length !== 0) {
+            this._handleMediaFileChunkByteSize(requestTime);
         }
 
-        this._assetProgress += assetsRemovedCount;
+        this._mediaProgress += mediaRemovedCount;
         // call event subscriber
         this._callProgressCB({
             entityName: 'media',
-            entityGroupProgressValue: this._assetProgress,
-            entityCount: this._assetTotalCount
+            entityGroupProgressValue: this._mediaProgress,
+            entityCount: this._mediaTotalCount
         });
 
-        this._makeWorkload(assetsRemovedCount);
+        this._makeWorkload(mediaRemovedCount);
     }
 
     /**
-     * Send the asset process request with our workload and fileChunkByteSize.
+     * Send the media process request with our workload and fileChunkByteSize.
      *
      * @returns {Promise}
      * @private
      */
     _processMediaFilesWorkload() {
         return new Promise((resolve) => {
-            this._migrationService.processAssets({
+            this._migrationService.processMedia({
                 runId: this._runId,
                 profileId: this._downloadParams.profileId,
                 profileName: this._downloadParams.profileName,
                 gateway: this._downloadParams.gateway,
-                workload: this._assetWorkload,
-                fileChunkByteSize: this._ASSET_FILE_CHUNK_BYTE_SIZE,
+                workload: this._mediaWorkload,
+                fileChunkByteSize: this._MEDIA_FILE_CHUNK_BYTE_SIZE,
                 swagMigrationAccessToken: this._accessToken
             }).then((res) => {
                 if (!res.validToken) {
                     this.interrupt = WORKER_INTERRUPT_TYPE.TAKEOVER;
-                    resolve(this._assetWorkload);
+                    resolve(this._mediaWorkload);
                     return;
                 }
 
@@ -329,27 +329,27 @@ export class WorkerMediaFiles {
                     code: 'mediaProcessConnectionError',
                     internalError: true
                 });
-                resolve(this._assetWorkload);
+                resolve(this._mediaWorkload);
             });
         });
     }
 
     /**
-     * Update the ASSET_FILE_CHUNK_BYTE_SIZE depending on the requestTime
+     * Update the MEDIA_FILE_CHUNK_BYTE_SIZE depending on the requestTime
      *
      * @param {number} requestTime Request time in milliseconds
      * @private
      */
-    _handleAssetFileChunkByteSize(requestTime) {
+    _handleMediaFileChunkByteSize(requestTime) {
         if (requestTime < this._MAX_REQUEST_TIME_IN_MILLISECONDS) {
-            this._ASSET_FILE_CHUNK_BYTE_SIZE += this._CHUNK_SIZE_BYTE_INCREMENT;
+            this._MEDIA_FILE_CHUNK_BYTE_SIZE += this._CHUNK_SIZE_BYTE_INCREMENT;
         }
 
         if (
             requestTime > this._MAX_REQUEST_TIME_IN_MILLISECONDS &&
-            (this._ASSET_FILE_CHUNK_BYTE_SIZE - this._CHUNK_SIZE_BYTE_INCREMENT) >= this._ASSET_MIN_FILE_CHUNK_BYTE_SIZE
+            (this._MEDIA_FILE_CHUNK_BYTE_SIZE - this._CHUNK_SIZE_BYTE_INCREMENT) >= this._MEDIA_MIN_FILE_CHUNK_BYTE_SIZE
         ) {
-            this._ASSET_FILE_CHUNK_BYTE_SIZE -= this._CHUNK_SIZE_BYTE_INCREMENT;
+            this._MEDIA_FILE_CHUNK_BYTE_SIZE -= this._CHUNK_SIZE_BYTE_INCREMENT;
         }
     }
 }

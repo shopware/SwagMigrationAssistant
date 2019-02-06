@@ -414,7 +414,7 @@ Component.register('swag-migration-main-page', {
             this.entityCounts.order = this.environmentInformation.orderTotal;
             this.entityCounts.category = this.environmentInformation.categoryTotal;
             this.entityCounts.product = this.environmentInformation.productTotal;
-            this.entityCounts.media = this.environmentInformation.assetTotal;
+            this.entityCounts.media = this.environmentInformation.mediaTotal;
             this.entityCounts.translation = this.environmentInformation.translationTotal;
         },
 

@@ -6,8 +6,8 @@ use PHPUnit\Framework\TestCase;
 use SwagMigrationNext\Migration\DataSelection\DataSelectionRegistry;
 use SwagMigrationNext\Migration\DataSelection\DataSelectionStruct;
 use SwagMigrationNext\Migration\MigrationContext;
-use SwagMigrationNext\Profile\Shopware55\DataSelection\AssetDataSelection;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\CustomerAndOrderDataSelection;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\MediaDataSelection;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\ProductCategoryTranslationDataSelection;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Api\Shopware55ApiGateway;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
@@ -23,7 +23,7 @@ class DataSelectionRegistryTest extends TestCase
     protected function setUp(): void
     {
         $this->dataSelectionRegistry = new DataSelectionRegistry(new DummyCollection([
-            new AssetDataSelection(),
+            new MediaDataSelection(),
             new ProductCategoryTranslationDataSelection(),
             new CustomerAndOrderDataSelection(),
         ]));
@@ -44,7 +44,7 @@ class DataSelectionRegistryTest extends TestCase
         $expected = [
             0 => (new ProductCategoryTranslationDataSelection())->getData()->getId(),
             1 => (new CustomerAndOrderDataSelection())->getData()->getId(),
-            2 => (new AssetDataSelection())->getData()->getId(),
+            2 => (new MediaDataSelection())->getData()->getId(),
         ];
 
         $dataSelections = $this->dataSelectionRegistry->getDataSelections($migrationContext);
@@ -60,7 +60,7 @@ class DataSelectionRegistryTest extends TestCase
 
     public function testGetDataSelectionsWithOnlyOneDataSelection(): void
     {
-        $this->dataSelectionRegistry = new DataSelectionRegistry(new DummyCollection([new AssetDataSelection()]));
+        $this->dataSelectionRegistry = new DataSelectionRegistry(new DummyCollection([new MediaDataSelection()]));
         $migrationContext = new MigrationContext(
             '',
             '',
@@ -74,6 +74,6 @@ class DataSelectionRegistryTest extends TestCase
         $dataSelections = $this->dataSelectionRegistry->getDataSelections($migrationContext);
 
         self::assertCount(1, $dataSelections);
-        self::assertSame($dataSelections->first()->getId(), (new AssetDataSelection())->getData()->getId());
+        self::assertSame($dataSelections->first()->getId(), (new MediaDataSelection())->getData()->getId());
     }
 }

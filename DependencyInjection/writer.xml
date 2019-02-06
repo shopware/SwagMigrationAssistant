@@ -29,8 +29,8 @@
             <tag name="shopware.migration.writer"/>
         </service>
 
-        <service id="SwagMigrationNext\Migration\Writer\AssetWriter"
-                 class="SwagMigrationNext\Migration\Writer\AssetWriter">
+        <service id="SwagMigrationNext\Migration\Writer\MediaWriter"
+                 class="SwagMigrationNext\Migration\Writer\MediaWriter">
             <argument type="service" id="media.repository"/>
             <tag name="shopware.migration.writer"/>
         </service>

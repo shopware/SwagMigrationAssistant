@@ -11,13 +11,13 @@ use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenContainerEvent;
-use SwagMigrationNext\Migration\Asset\MediaFileServiceInterface;
 use SwagMigrationNext\Migration\Converter\ConverterInterface;
 use SwagMigrationNext\Migration\Converter\ConverterRegistryInterface;
 use SwagMigrationNext\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationNext\Migration\EnvironmentInformation;
 use SwagMigrationNext\Migration\Gateway\GatewayInterface;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationNext\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Profile\ProfileInterface;
 use SwagMigrationNext\Profile\Shopware55\Exception\AssociationEntityRequiredMissingException;
@@ -112,7 +112,7 @@ class Shopware55Profile implements ProfileInterface
             case OrderDefinition::getEntityName():
                 return $environmentInformation->getOrderTotal();
             case MediaDefinition::getEntityName():
-                return $environmentInformation->getAssetTotal();
+                return $environmentInformation->getMediaTotal();
 //            case 'translation': TODO revert, when the core could handle translations correctly
 //                return $environmentInformation->getTranslationTotal();
         }

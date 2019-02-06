@@ -13,9 +13,9 @@ use SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\Converter\ProductConverter;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Mock\DummyCollection;
-use SwagMigrationNext\Test\Mock\Migration\Asset\DummyMediaFileService;
 use SwagMigrationNext\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationNext\Test\Mock\Migration\Mapping\DummyMappingService;
+use SwagMigrationNext\Test\Mock\Migration\Media\DummyMediaFileService;
 use Symfony\Component\HttpFoundation\Response;
 
 class ConverterRegistryTest extends TestCase

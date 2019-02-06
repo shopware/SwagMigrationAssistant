@@ -142,7 +142,7 @@ Component.register('swag-migration-shop-information', {
         },
 
         mediaCount() {
-            return this.environmentInformation.assetTotal;
+            return this.environmentInformation.mediaTotal;
         },
 
         gateway() {

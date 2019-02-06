@@ -49,7 +49,7 @@ class EnvironmentInformation extends Struct
     /**
      * @var int
      */
-    protected $assetTotal;
+    protected $mediaTotal;
 
     /**
      * @var int
@@ -85,7 +85,7 @@ class EnvironmentInformation extends Struct
         int $productTotal = 0,
         int $customerTotal = 0,
         int $orderTotal = 0,
-        int $assetTotal = 0,
+        int $mediaTotal = 0,
         int $translationTotal = 0,
         int $warningCode = -1,
         string $warningMessage = '',
@@ -100,7 +100,7 @@ class EnvironmentInformation extends Struct
         $this->productTotal = $productTotal;
         $this->customerTotal = $customerTotal;
         $this->orderTotal = $orderTotal;
-        $this->assetTotal = $assetTotal;
+        $this->mediaTotal = $mediaTotal;
         $this->translationTotal = $translationTotal;
         $this->warningCode = $warningCode;
         $this->warningMessage = $warningMessage;
@@ -143,9 +143,9 @@ class EnvironmentInformation extends Struct
         return $this->categoryTotal;
     }
 
-    public function getAssetTotal(): int
+    public function getMediaTotal(): int
     {
-        return $this->assetTotal;
+        return $this->mediaTotal;
     }
 
     public function getOrderTotal(): int

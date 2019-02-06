@@ -6,17 +6,17 @@ use Shopware\Core\Checkout\Cart\Price\PriceRounding;
 use Shopware\Core\Checkout\Cart\Tax\TaxCalculator;
 use Shopware\Core\Checkout\Cart\Tax\TaxRuleCalculator;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use SwagMigrationNext\Migration\Asset\MediaFileServiceInterface;
 use SwagMigrationNext\Migration\Converter\ConverterRegistry;
 use SwagMigrationNext\Migration\Gateway\GatewayFactoryRegistry;
 use SwagMigrationNext\Migration\Logging\LoggingService;
+use SwagMigrationNext\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationNext\Migration\Profile\ProfileRegistry;
 use SwagMigrationNext\Migration\Service\MigrationDataFetcher;
 use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
-use SwagMigrationNext\Profile\Shopware55\Converter\AssetConverter;
 use SwagMigrationNext\Profile\Shopware55\Converter\CategoryConverter;
 use SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\Converter\CustomerConverter;
+use SwagMigrationNext\Profile\Shopware55\Converter\MediaConverter;
 use SwagMigrationNext\Profile\Shopware55\Converter\OrderConverter;
 use SwagMigrationNext\Profile\Shopware55\Converter\ProductConverter;
 use SwagMigrationNext\Profile\Shopware55\Converter\TranslationConverter;
@@ -43,7 +43,7 @@ trait MigrationServicesTrait
                     new ProductConverter($mappingService, new ConverterHelperService(), $mediaFileService, $loggingService),
                     new TranslationConverter($mappingService, new ConverterHelperService(), $loggingService),
                     new CategoryConverter($mappingService, new ConverterHelperService(), $loggingService),
-                    new AssetConverter($mappingService, new ConverterHelperService(), $mediaFileService),
+                    new MediaConverter($mappingService, new ConverterHelperService(), $mediaFileService),
                     new CustomerConverter($mappingService, new ConverterHelperService(), $loggingService),
                     new CustomerConverter($mappingService, new ConverterHelperService(), $loggingService),
                     new OrderConverter(

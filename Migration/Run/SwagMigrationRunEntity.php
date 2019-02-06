@@ -6,9 +6,9 @@ use DateTime;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
 use SwagMigrationNext\Exception\MigrationRunUndefinedStatusException;
-use SwagMigrationNext\Migration\Asset\SwagMigrationMediaFileEntity;
 use SwagMigrationNext\Migration\Data\SwagMigrationDataEntity;
 use SwagMigrationNext\Migration\Logging\SwagMigrationLoggingEntity;
+use SwagMigrationNext\Migration\Media\SwagMigrationMediaFileEntity;
 use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
 
 class SwagMigrationRunEntity extends Entity

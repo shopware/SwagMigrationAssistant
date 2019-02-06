@@ -14,12 +14,12 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
-use SwagMigrationNext\Migration\Asset\MediaFileService;
 use SwagMigrationNext\Migration\Converter\ConverterRegistry;
 use SwagMigrationNext\Migration\Gateway\GatewayFactoryRegistry;
 use SwagMigrationNext\Migration\Logging\LoggingService;
 use SwagMigrationNext\Migration\Logging\LogType;
 use SwagMigrationNext\Migration\Logging\SwagMigrationLoggingEntity;
+use SwagMigrationNext\Migration\Media\MediaFileService;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Profile\ProfileRegistry;
 use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
@@ -128,7 +128,7 @@ class MigrationDataFetcherTest extends TestCase
         $this->productRepo = $this->getContainer()->get('product.repository');
     }
 
-    public function testFetchAssetDataApiGateway(): void
+    public function testFetchMediaDataApiGateway(): void
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(

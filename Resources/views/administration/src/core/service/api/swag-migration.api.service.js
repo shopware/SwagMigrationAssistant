@@ -68,7 +68,7 @@ class MigrationApiService extends ApiService {
             });
     }
 
-    fetchAssetUuids(additionalParams = {}, additionalHeaders = {}) {
+    fetchMediaUuids(additionalParams = {}, additionalHeaders = {}) {
         const params = additionalParams;
         const headers = this.getBasicHeaders(additionalHeaders);
 
@@ -79,12 +79,12 @@ class MigrationApiService extends ApiService {
             });
     }
 
-    processAssets(additionalParams = {}, additionalHeaders = {}) {
+    processMedia(additionalParams = {}, additionalHeaders = {}) {
         const params = additionalParams;
         const headers = this.getBasicHeaders(additionalHeaders);
 
         return this.httpClient
-            .post(`_action/${this.getApiBasePath()}/process-assets`, params, {
+            .post(`_action/${this.getApiBasePath()}/process-media`, params, {
                 headers
             })
             .then((response) => {

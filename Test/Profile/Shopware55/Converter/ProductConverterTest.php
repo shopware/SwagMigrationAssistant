@@ -12,9 +12,9 @@ use SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\Converter\ProductConverter;
 use SwagMigrationNext\Profile\Shopware55\Exception\ParentEntityForChildNotFoundException;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
-use SwagMigrationNext\Test\Mock\Migration\Asset\DummyMediaFileService;
 use SwagMigrationNext\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationNext\Test\Mock\Migration\Mapping\DummyMappingService;
+use SwagMigrationNext\Test\Mock\Migration\Media\DummyMediaFileService;
 
 class ProductConverterTest extends TestCase
 {
@@ -178,7 +178,7 @@ class ProductConverterTest extends TestCase
         static::assertCount(0, $this->loggingService->getLoggingArray());
     }
 
-    public function testConvertWithInvalidAsset(): void
+    public function testConvertWithInvalidMedia(): void
     {
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
         $productData = $productData[0];

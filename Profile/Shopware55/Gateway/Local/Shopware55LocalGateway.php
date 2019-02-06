@@ -11,10 +11,10 @@ use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
 use SwagMigrationNext\Migration\EnvironmentInformation;
 use SwagMigrationNext\Migration\Gateway\AbstractGateway;
-use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalAssetReader;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalCategoryReader;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalCustomerReader;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalEnvironmentReader;
+use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalMediaReader;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalOrderReader;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalProductReader;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalReaderNotFoundException;
@@ -46,7 +46,7 @@ class Shopware55LocalGateway extends AbstractGateway
 
                 return $reader->read();
             case MediaDefinition::getEntityName():
-                $reader = new Shopware55LocalAssetReader($connection, $this->migrationContext);
+                $reader = new Shopware55LocalMediaReader($connection, $this->migrationContext);
 
                 return $reader->read();
             default:

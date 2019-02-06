@@ -9,8 +9,8 @@
             <argument type="service" id="swag_migration_logging.repository"/>
         </service>
 
-        <service id="SwagMigrationNext\Migration\Asset\MediaFileService"
-                 class="SwagMigrationNext\Migration\Asset\MediaFileService">
+        <service id="SwagMigrationNext\Migration\Media\MediaFileService"
+                 class="SwagMigrationNext\Migration\Media\MediaFileService">
             <argument type="service" id="swag_migration_media_file.repository"/>
         </service>
 
@@ -55,20 +55,20 @@
                  public="true">
             <argument type="service" id="swag_migration_data.repository"/>
             <argument type="service" id="SwagMigrationNext\Migration\Writer\WriterRegistry"/>
-            <argument type="service" id="SwagMigrationNext\Migration\Asset\MediaFileService"/>
+            <argument type="service" id="SwagMigrationNext\Migration\Media\MediaFileService"/>
             <argument type="service" id="SwagMigrationNext\Migration\Logging\LoggingService"/>
         </service>
 
         <service id="SwagMigrationNext\Migration\Service\MediaFileProcessorService" public="true">
             <argument type="service" id="swag_migration_media_file.repository"/>
-            <argument type="service" id="SwagMigrationNext\Migration\Asset\MediaFileProcessorRegistry"/>
+            <argument type="service" id="SwagMigrationNext\Migration\Media\MediaFileProcessorRegistry"/>
         </service>
 
-        <service id="SwagMigrationNext\Migration\Asset\MediaFileProcessorRegistry">
+        <service id="SwagMigrationNext\Migration\Media\MediaFileProcessorRegistry">
             <argument type="tagged" tag="shopware.migration.media_file_processor"/>
         </service>
 
-        <service id="SwagMigrationNext\Migration\Asset\CliAssetDownloadService" public="true">
+        <service id="SwagMigrationNext\Migration\Media\CliMediaDownloadService" public="true">
             <argument type="service" id="swag_migration_media_file.repository"/>
             <argument type="service" id="Shopware\Core\Content\Media\File\FileSaver"/>
             <argument type="service" id="event_dispatcher"/>
@@ -117,12 +117,11 @@
             <tag name="console.command" command="migration:write:data"/>
         </service>
 
-        <service id="SwagMigrationNext\Command\MigrationDownloadAssetsCommand"
-                 class="SwagMigrationNext\Command\MigrationDownloadAssetsCommand">
-            <argument type="service" id="SwagMigrationNext\Migration\Asset\CliAssetDownloadService"/>
+        <service id="SwagMigrationNext\Command\MigrationDownloadMediaCommand">
+            <argument type="service" id="SwagMigrationNext\Migration\Media\CliMediaDownloadService"/>
             <argument type="service" id="swag_migration_run.repository"/>
             <argument type="service" id="swag_migration_media_file.repository"/>
-            <tag name="console.command" command="migration:assets:download"/>
+            <tag name="console.command" command="migration:media:download"/>
             <tag name="kernel.event_subscriber"/>
         </service>
 

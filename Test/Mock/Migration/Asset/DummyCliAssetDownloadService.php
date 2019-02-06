@@ -1,12 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Test\Mock\Migration\Asset;
+namespace SwagMigrationNext\Test\Mock\Migration\Media;
 
 use GuzzleHttp\Client;
 use Shopware\Core\Framework\Context;
-use SwagMigrationNext\Migration\Asset\CliAssetDownloadService;
+use SwagMigrationNext\Migration\Media\CliMediaDownloadService;
 
-class DummyCliAssetDownloadService extends CliAssetDownloadService
+class DummyCliMediaDownloadService extends CliMediaDownloadService
 {
     protected function normalDownload(Client $client, string $uuid, string $uri, int $fileSize, Context $context): void
     {

@@ -17,9 +17,9 @@ use Shopware\Core\Framework\Struct\Serializer\StructNormalizer;
 use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\System\Currency\CurrencyEntity;
-use SwagMigrationNext\Migration\Asset\MediaFileService;
 use SwagMigrationNext\Migration\Data\SwagMigrationDataEntity;
 use SwagMigrationNext\Migration\Logging\LogType;
+use SwagMigrationNext\Migration\Media\MediaFileService;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
@@ -33,8 +33,8 @@ use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Migration\Services\MigrationProfileUuidService;
 use SwagMigrationNext\Test\MigrationServicesTrait;
-use SwagMigrationNext\Test\Mock\Migration\Asset\DummyMediaFileService;
 use SwagMigrationNext\Test\Mock\Migration\Logging\DummyLoggingService;
+use SwagMigrationNext\Test\Mock\Migration\Media\DummyMediaFileService;
 
 class MigrationDataWriterTest extends TestCase
 {
@@ -326,7 +326,7 @@ class MigrationDataWriterTest extends TestCase
         self::assertSame(1, $discountTotalAfter - $discountTotalBefore);
     }
 
-    public function testWriteAssetData(): void
+    public function testWriteMediaData(): void
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(

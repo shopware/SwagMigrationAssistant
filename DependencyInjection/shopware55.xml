@@ -9,7 +9,7 @@
         <service id="SwagMigrationNext\Profile\Shopware55\Shopware55Profile">
             <argument type="service" id="swag_migration_data.repository"/>
             <argument type="service" id="SwagMigrationNext\Migration\Converter\ConverterRegistry"/>
-            <argument type="service" id="SwagMigrationNext\Migration\Asset\MediaFileService"/>
+            <argument type="service" id="SwagMigrationNext\Migration\Media\MediaFileService"/>
             <argument type="service" id="SwagMigrationNext\Migration\Logging\LoggingService"/>
             <tag name="shopware.migration.profile"/>
         </service>
@@ -21,7 +21,7 @@
         <service id="SwagMigrationNext\Profile\Shopware55\Converter\ProductConverter">
             <argument type="service" id="SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService"/>
             <argument type="service" id="SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService"/>
-            <argument type="service" id="SwagMigrationNext\Migration\Asset\MediaFileService"/>
+            <argument type="service" id="SwagMigrationNext\Migration\Media\MediaFileService"/>
             <argument type="service" id="SwagMigrationNext\Migration\Logging\LoggingService"/>
             <tag name="shopware.migration.converter"/>
         </service>
@@ -40,10 +40,10 @@
             <tag name="shopware.migration.converter"/>
         </service>
 
-        <service id="SwagMigrationNext\Profile\Shopware55\Converter\AssetConverter">
+        <service id="SwagMigrationNext\Profile\Shopware55\Converter\MediaConverter">
             <argument type="service" id="SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService"/>
             <argument type="service" id="SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService"/>
-            <argument type="service" id="SwagMigrationNext\Migration\Asset\MediaFileService"/>
+            <argument type="service" id="SwagMigrationNext\Migration\Media\MediaFileService"/>
             <tag name="shopware.migration.converter"/>
         </service>
 
@@ -85,15 +85,15 @@
             <argument type="service" id="sales_channel_type.repository"/>
         </service>
 
-        <!-- Shopware 5.5 AssetHandler -->
-        <service id="SwagMigrationNext\Profile\Shopware55\Asset\HttpAssetDownloadService">
+        <!-- Shopware 5.5 MediaHandler -->
+        <service id="SwagMigrationNext\Profile\Shopware55\Media\HttpMediaDownloadService">
             <argument type="service" id="swag_migration_media_file.repository"/>
             <argument type="service" id="Shopware\Core\Content\Media\File\FileSaver"/>
             <argument type="service" id="SwagMigrationNext\Migration\Logging\LoggingService"/>
             <tag name="shopware.migration.media_file_processor"/>
         </service>
 
-        <service id="SwagMigrationNext\Profile\Shopware55\Asset\LocalMediaProcessor">
+        <service id="SwagMigrationNext\Profile\Shopware55\Media\LocalMediaProcessor">
             <argument type="service" id="swag_migration_media_file.repository"/>
             <argument type="service" id="Shopware\Core\Content\Media\File\FileSaver"/>
             <argument type="service" id="SwagMigrationNext\Migration\Logging\LoggingService"/>
@@ -101,11 +101,11 @@
             <tag name="shopware.migration.media_file_processor"/>
         </service>
 
-        <service id="SwagMigrationNext\Profile\Shopware55\Asset\Strategy\Md5StrategyResolver">
+        <service id="SwagMigrationNext\Profile\Shopware55\Media\Strategy\Md5StrategyResolver">
             <tag name="shopware.migration.media_strategy_resolver"/>
         </service>
 
-        <service id="SwagMigrationNext\Profile\Shopware55\Asset\Strategy\PlainStrategyResolver">
+        <service id="SwagMigrationNext\Profile\Shopware55\Media\Strategy\PlainStrategyResolver">
             <tag name="shopware.migration.media_strategy_resolver"/>
         </service>
 
@@ -118,7 +118,7 @@
             <tag name="shopware.migration.data_selection"/>
         </service>
 
-        <service id="SwagMigrationNext\Profile\Shopware55\DataSelection\AssetDataSelection">
+        <service id="SwagMigrationNext\Profile\Shopware55\DataSelection\MediaDataSelection">
             <tag name="shopware.migration.data_selection"/>
         </service>
     </services>

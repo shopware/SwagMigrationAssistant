@@ -55,8 +55,8 @@ export class WorkerStatusManager {
                     });
                 });
             } else if (status === MIGRATION_STATUS.PROCESS_MEDIA_FILES) {
-                this._getAssetTotalCount(runId).then((assetTotalCount) => {
-                    resolve([entityGroups, assetTotalCount]);
+                this._getMediaTotalCount(runId).then((mediaTotalCount) => {
+                    resolve([entityGroups, mediaTotalCount]);
                 });
             } else {
                 resolve([entityGroups]);
@@ -124,7 +124,7 @@ export class WorkerStatusManager {
      * @returns {Promise}
      * @private
      */
-    _getAssetTotalCount(runId) {
+    _getMediaTotalCount(runId) {
         return new Promise((resolve) => {
             const count = [
                 {

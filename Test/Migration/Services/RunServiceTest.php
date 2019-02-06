@@ -21,8 +21,8 @@ use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\MigrationServicesTrait;
 use SwagMigrationNext\Test\Mock\DummyCollection;
 use SwagMigrationNext\Test\Mock\Gateway\Dummy\Local\DummyLocalFactory;
-use SwagMigrationNext\Test\Mock\Migration\Asset\DummyMediaFileService;
 use SwagMigrationNext\Test\Mock\Migration\Mapping\DummyMappingService;
+use SwagMigrationNext\Test\Mock\Migration\Media\DummyMediaFileService;
 use SwagMigrationNext\Test\Mock\Migration\Service\DummyMigrationDataFetcher;
 
 class RunServiceTest extends TestCase

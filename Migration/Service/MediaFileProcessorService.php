@@ -3,18 +3,18 @@
 namespace SwagMigrationNext\Migration\Service;
 
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\RepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
-use SwagMigrationNext\Migration\Asset\MediaFileProcessorRegistryInterface;
-use SwagMigrationNext\Migration\Asset\SwagMigrationMediaFileStruct;
+use SwagMigrationNext\Migration\Media\MediaFileProcessorRegistryInterface;
+use SwagMigrationNext\Migration\Media\SwagMigrationMediaFileEntity;
 use SwagMigrationNext\Migration\MigrationContext;
 
 class MediaFileProcessorService implements MediaFileProcessorServiceInterface
 {
     /**
-     * @var RepositoryInterface
+     * @var EntityRepositoryInterface
      */
     private $mediaFileRepo;
 
@@ -24,7 +24,7 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
     private $mediaFileProcessorRegistry;
 
     public function __construct(
-        RepositoryInterface $mediaFileRepo,
+        EntityRepositoryInterface $mediaFileRepo,
         MediaFileProcessorRegistryInterface $mediaFileProcessorRegistry
     ) {
         $this->mediaFileRepo = $mediaFileRepo;
@@ -44,7 +44,7 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
 
         $mediaUuids = [];
         foreach ($migrationData->getElements() as $mediaFile) {
-            /* @var SwagMigrationMediaFileStruct $mediaFile */
+            /* @var SwagMigrationMediaFileEntity $mediaFile */
             $mediaUuids[] = $mediaFile->getMediaId();
         }
 

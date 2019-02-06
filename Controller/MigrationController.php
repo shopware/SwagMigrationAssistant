@@ -263,12 +263,12 @@ class MigrationController extends AbstractController
     }
 
     /**
-     * @Route("/api/v{version}/_action/migration/process-assets", name="api.admin.migration.process-assets", methods={"POST"})
+     * @Route("/api/v{version}/_action/migration/process-media", name="api.admin.migration.process-media", methods={"POST"})
      *
      * @throws MigrationWorkloadPropertyMissingException
      * @throws MigrationContextPropertyMissingException
      */
-    public function processAssets(Request $request, Context $context): JsonResponse
+    public function processMedia(Request $request, Context $context): JsonResponse
     {
         /** @var array $workload */
         $runUuid = $request->request->get('runId');

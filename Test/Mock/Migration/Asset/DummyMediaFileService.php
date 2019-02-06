@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Test\Mock\Migration\Asset;
+namespace SwagMigrationNext\Test\Mock\Migration\Media;
 
-use SwagMigrationNext\Migration\Asset\MediaFileService;
+use SwagMigrationNext\Migration\Media\MediaFileService;
 
 class DummyMediaFileService extends MediaFileService
 {

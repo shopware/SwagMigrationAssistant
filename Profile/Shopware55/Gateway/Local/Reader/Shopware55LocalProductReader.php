@@ -39,7 +39,7 @@ class Shopware55LocalProductReader extends Shopware55LocalAbstractReader
     {
         $categories = $this->getCategories();
         $prices = $this->getPrices();
-        $assets = $this->getAssets();
+        $media = $this->getMedia();
         $options = $this->getConfiguratorOptions();
 
         // represents the main language of the migrated shop
@@ -54,8 +54,8 @@ class Shopware55LocalProductReader extends Shopware55LocalAbstractReader
             if (isset($prices[$product['detail']['id']])) {
                 $product['prices'] = $prices[$product['detail']['id']];
             }
-            if (isset($assets[$product['id']])) {
-                $product['assets'] = $assets[$product['id']];
+            if (isset($media[$product['id']])) {
+                $product['assets'] = $media[$product['id']];
             }
             if (isset($options[$product['detail']['id']])) {
                 $product['configuratorOptions'] = $options[$product['detail']['id']];
@@ -63,7 +63,7 @@ class Shopware55LocalProductReader extends Shopware55LocalAbstractReader
         }
         unset(
             $product, $categories,
-            $prices, $assets, $options
+            $prices, $media, $options
         );
 
         $this->productMapping->replace([]);
@@ -148,7 +148,7 @@ class Shopware55LocalProductReader extends Shopware55LocalAbstractReader
         return $this->mapData($fetchedPrices, [], ['price']);
     }
 
-    private function getAssets(): array
+    private function getMedia(): array
     {
         $productIds = array_values(
             $this->productMapping->getIterator()->getArrayCopy()

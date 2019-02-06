@@ -14,9 +14,9 @@ use SwagMigrationNext\Controller\MigrationController;
 use SwagMigrationNext\Exception\MigrationContextPropertyMissingException;
 use SwagMigrationNext\Exception\MigrationRunUndefinedStatusException;
 use SwagMigrationNext\Exception\MigrationWorkloadPropertyMissingException;
-use SwagMigrationNext\Migration\Asset\MediaFileProcessorRegistry;
-use SwagMigrationNext\Migration\Asset\MediaFileService;
 use SwagMigrationNext\Migration\DataSelection\DataSelectionRegistry;
+use SwagMigrationNext\Migration\Media\MediaFileProcessorRegistry;
+use SwagMigrationNext\Migration\Media\MediaFileService;
 use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
 use SwagMigrationNext\Migration\Run\RunService;
 use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
@@ -28,7 +28,7 @@ use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Migration\Services\MigrationProfileUuidService;
 use SwagMigrationNext\Test\MigrationServicesTrait;
-use SwagMigrationNext\Test\Mock\Migration\Asset\DummyHttpAssetDownloadService;
+use SwagMigrationNext\Test\Mock\Migration\Media\DummyHttpMediaDownloadService;
 use SwagMigrationNext\Test\Mock\Migration\Service\DummyMediaFileProcessorService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -109,7 +109,7 @@ class MigrationControllerTest extends TestCase
                 $this->getContainer()->get('swag_migration_media_file.repository'),
                 new MediaFileProcessorRegistry(
                     [
-                        new DummyHttpAssetDownloadService(),
+                        new DummyHttpMediaDownloadService(),
                     ]
                 )
             ),
@@ -332,7 +332,7 @@ class MigrationControllerTest extends TestCase
         self::assertSame($environmentInformation['productTotal'], 37);
         self::assertSame($environmentInformation['customerTotal'], 2);
         self::assertSame($environmentInformation['categoryTotal'], 8);
-        self::assertSame($environmentInformation['assetTotal'], 23);
+        self::assertSame($environmentInformation['mediaTotal'], 23);
         self::assertSame($environmentInformation['orderTotal'], 0);
         self::assertSame($environmentInformation['translationTotal'], 0);
 
@@ -509,7 +509,7 @@ class MigrationControllerTest extends TestCase
         $this->controller->fetchMediaUuids($request, $context);
     }
 
-    public function testDownloadAssets(): void
+    public function testDownloadMedia(): void
     {
         $context = Context::createDefaultContext();
         $inputWorkload = [
@@ -552,13 +552,13 @@ class MigrationControllerTest extends TestCase
 
         $context = Context::createDefaultContext();
         $request = new Request([], $params);
-        $result = $this->controller->processAssets($request, $context);
+        $result = $this->controller->processMedia($request, $context);
 
         static::assertSame(['validToken' => false], json_decode($result->getContent(), true));
 
         $params[SwagMigrationAccessTokenService::ACCESS_TOKEN_NAME] = 'testToken';
         $request = new Request([], $params);
-        $result = $this->controller->processAssets($request, $context);
+        $result = $this->controller->processMedia($request, $context);
         $result = json_decode($result->getContent(), true);
 
         self::assertSame($result['workload'], $inputWorkload);
@@ -570,7 +570,7 @@ class MigrationControllerTest extends TestCase
             'gateway' => 'local',
             SwagMigrationAccessTokenService::ACCESS_TOKEN_NAME => 'testToken',
         ]);
-        $result = $this->controller->processAssets($request, $context);
+        $result = $this->controller->processMedia($request, $context);
         $result = json_decode($result->getContent(), true);
 
         self::assertSame([
@@ -579,7 +579,7 @@ class MigrationControllerTest extends TestCase
         ], $result);
     }
 
-    public function requiredDownloadAssetsProperties()
+    public function requiredDownloadMediaProperties()
     {
         return [
             ['runId'],
@@ -593,9 +593,9 @@ class MigrationControllerTest extends TestCase
     }
 
     /**
-     * @dataProvider requiredDownloadAssetsProperties
+     * @dataProvider requiredDownloadMediaProperties
      */
-    public function testDownloadAssetsWithMissingProperty(string $missingProperty): void
+    public function testDownloadMediaWithMissingProperty(string $missingProperty): void
     {
         $context = Context::createDefaultContext();
         $inputWorkload = [
@@ -660,7 +660,7 @@ class MigrationControllerTest extends TestCase
         $request = new Request([], $properties);
         $context = Context::createDefaultContext();
         try {
-            $this->controller->processAssets($request, $context);
+            $this->controller->processMedia($request, $context);
         } catch (\Exception $e) {
             self::assertSame(Response::HTTP_BAD_REQUEST, $e->getStatusCode());
             throw $e;
