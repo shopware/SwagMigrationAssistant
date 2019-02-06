@@ -26,7 +26,9 @@ Component.register('swag-migration-history-selected-data', {
             const snippets = [];
             this.entityGroups.forEach((group) => {
                 const groupSnippetName = ENTITY_GROUP_SNIPPET_LOOKUP[group.id];
-                snippets.push(`swag-migration.index.selectDataCard.dataSelection.${this.profile}Profile.${groupSnippetName}`);
+                snippets.push(
+                    `swag-migration.index.selectDataCard.dataSelection.${this.profile}Profile.${groupSnippetName}`
+                );
             });
 
             return snippets;
