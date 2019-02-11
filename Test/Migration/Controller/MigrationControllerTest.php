@@ -392,7 +392,7 @@ class MigrationControllerTest extends TestCase
         static::assertSame(Response::HTTP_OK, $result->getStatusCode());
     }
 
-    public function requiredFetchDataProperties()
+    public function requiredFetchDataProperties(): array
     {
         return [
             ['runUuid'],
@@ -440,7 +440,7 @@ class MigrationControllerTest extends TestCase
         $this->controller->fetchData($request, $context);
     }
 
-    public function requiredWriteDataProperties()
+    public function requiredWriteDataProperties(): array
     {
         return [
             ['runUuid'],
@@ -579,7 +579,7 @@ class MigrationControllerTest extends TestCase
         ], $result);
     }
 
-    public function requiredDownloadMediaProperties()
+    public function requiredDownloadMediaProperties(): array
     {
         return [
             ['runId'],
@@ -649,6 +649,7 @@ class MigrationControllerTest extends TestCase
             foreach ($inputWorkload as &$dataset) {
                 unset($dataset[$missingProperty]);
             }
+            unset($dataset);
         } else {
             $this->expectException(MigrationContextPropertyMissingException::class);
             $this->expectExceptionMessage(sprintf('Required property "%s" for migration context is missing', $missingProperty));

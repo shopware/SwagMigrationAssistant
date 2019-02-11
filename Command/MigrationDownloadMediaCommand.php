@@ -79,7 +79,7 @@ class MigrationDownloadMediaCommand extends Command implements EventSubscriberIn
         }
     }
 
-    public function onAdvance(MigrationMediaDownloadAdvanceEvent $event): void
+    public function onAdvance(): void
     {
         if ($this->io !== null) {
             $this->io->progressAdvance();

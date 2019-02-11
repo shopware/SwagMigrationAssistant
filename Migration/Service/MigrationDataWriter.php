@@ -14,7 +14,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use SwagMigrationNext\Migration\Data\SwagMigrationDataEntity;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\Media\MediaFileServiceInterface;
-use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Migration\MigrationContextInterface;
 use SwagMigrationNext\Migration\Writer\WriterRegistryInterface;
 
 class MigrationDataWriter implements MigrationDataWriterInterface
@@ -51,7 +51,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
         $this->loggingService = $loggingService;
     }
 
-    public function writeData(MigrationContext $migrationContext, Context $context): void
+    public function writeData(MigrationContextInterface $migrationContext, Context $context): void
     {
         $entity = $migrationContext->getEntity();
         $criteria = new Criteria();

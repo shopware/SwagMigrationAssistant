@@ -82,7 +82,7 @@ class MigrationProgressService implements MigrationProgressServiceInterface
 
         $this->updateProfileCredentialsWithCurrentRunCredentials($run, $context);
 
-        if ($totals === null || $fetchedEntityCounts == null) {
+        if ($totals === null || empty($fetchedEntityCounts)) {
             if ($this->validMigrationAccessToken) {
                 $this->abortProcessingRun($run, $context);
             }
@@ -322,11 +322,7 @@ class MigrationProgressService implements MigrationProgressServiceInterface
                 continue;
             }
 
-            if (isset($writtenEntityCounts[$entity])) {
-                $finishCount = $writtenEntityCounts[$entity];
-            } else {
-                $finishCount = 0;
-            }
+            $finishCount = $writtenEntityCounts[$entity] ?? 0;
 
             $progressState = new ProgressState(
                 true,

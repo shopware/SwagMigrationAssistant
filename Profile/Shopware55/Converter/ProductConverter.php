@@ -21,10 +21,10 @@ use SwagMigrationNext\Migration\Converter\AbstractConverter;
 use SwagMigrationNext\Migration\Converter\ConvertStruct;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\Media\MediaFileServiceInterface;
-use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Migration\MigrationContextInterface;
 use SwagMigrationNext\Profile\Shopware55\Exception\ParentEntityForChildNotFoundException;
 use SwagMigrationNext\Profile\Shopware55\Logging\Shopware55LogTypes;
-use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
+use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingServiceInterface;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
 class ProductConverter extends AbstractConverter
@@ -33,7 +33,7 @@ class ProductConverter extends AbstractConverter
     public const VARIANT_PRODUCT_TYPE = 2;
 
     /**
-     * @var Shopware55MappingService
+     * @var Shopware55MappingServiceInterface
      */
     private $mappingService;
 
@@ -82,7 +82,7 @@ class ProductConverter extends AbstractConverter
     ];
 
     public function __construct(
-        Shopware55MappingService $mappingService,
+        Shopware55MappingServiceInterface $mappingService,
         ConverterHelperService $converterHelperService,
         MediaFileServiceInterface $mediaFileService,
         LoggingServiceInterface $loggingService
@@ -114,7 +114,7 @@ class ProductConverter extends AbstractConverter
     public function convert(
         array $data,
         Context $context,
-        MigrationContext $migrationContext
+        MigrationContextInterface $migrationContext
     ): ConvertStruct {
         $this->context = $context;
         $this->runId = $migrationContext->getRunUuid();
@@ -143,9 +143,9 @@ class ProductConverter extends AbstractConverter
         unset($data['detail']['kind']);
         $isProductWithVariant = $data['configurator_set_id'] !== null;
 
-        if ($productType === self::MAIN_PRODUCT_TYPE && $isProductWithVariant) {
+//        if ($productType === self::MAIN_PRODUCT_TYPE && $isProductWithVariant) {
 //            return $this->convertMainProduct($data); TODO reimplement when variant handling is implemented in core
-        }
+//        }
 
         if ($productType === self::VARIANT_PRODUCT_TYPE && $isProductWithVariant) {
             return new ConvertStruct(null, $data);
@@ -479,7 +479,7 @@ class ProductConverter extends AbstractConverter
             $this->mediaFileService->saveMediaFile(
                 [
                     'runId' => $this->runId,
-                    'uri' => isset($mediaData['media']['uri']) ? $mediaData['media']['uri'] : $mediaData['media']['path'],
+                    'uri' => $mediaData['media']['uri'] ?? $mediaData['media']['path'],
                     'fileName' => $mediaData['media']['name'],
                     'fileSize' => (int) $mediaData['media']['file_size'],
                     'mediaId' => $newMedia['id'],
@@ -521,7 +521,7 @@ class ProductConverter extends AbstractConverter
     private function getPrice(array $priceData, float $taxRate, bool $setInGross): array
     {
         $gross = (float) $priceData['price'] * (1 + $taxRate / 100);
-        $gross = $setInGross === true ? round($gross, 4) : $gross;
+        $gross = $setInGross ? round($gross, 4) : $gross;
 
         return [
             'gross' => $gross,

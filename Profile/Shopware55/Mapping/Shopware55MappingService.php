@@ -12,7 +12,7 @@ use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachine
 use Shopware\Core\System\StateMachine\StateMachineEntity;
 use SwagMigrationNext\Migration\Mapping\MappingService;
 
-class Shopware55MappingService extends MappingService
+class Shopware55MappingService extends MappingService implements Shopware55MappingServiceInterface
 {
     /**
      * @var EntityRepositoryInterface
@@ -140,6 +140,7 @@ class Shopware55MappingService extends MappingService
         $stateMachine = $this->stateMachineRepository->search($criteria, $context)->first();
 
         $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('stateMachineId', $stateMachine->getId()));
         $criteria->setLimit(1);
         switch ($oldStateId) {
             case 9: // partially_invoiced

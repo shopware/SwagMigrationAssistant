@@ -9,7 +9,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Migration\MigrationContextInterface;
 
 class MediaFileService implements MediaFileServiceInterface
 {
@@ -51,7 +51,7 @@ class MediaFileService implements MediaFileServiceInterface
         $this->writeArray[] = $mediaFile;
     }
 
-    public function setWrittenFlag(array $converted, MigrationContext $migrationContext, Context $context): void
+    public function setWrittenFlag(array $converted, MigrationContextInterface $migrationContext, Context $context): void
     {
         $entity = $migrationContext->getEntity();
         $mediaUuids = [];
@@ -118,7 +118,7 @@ class MediaFileService implements MediaFileServiceInterface
         $this->writeArray = array_values($files);
     }
 
-    private function saveWrittenFlag(array $mediaUuids, MigrationContext $migrationContext, Context $context): void
+    private function saveWrittenFlag(array $mediaUuids, MigrationContextInterface $migrationContext, Context $context): void
     {
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsAnyFilter('mediaId', $mediaUuids));

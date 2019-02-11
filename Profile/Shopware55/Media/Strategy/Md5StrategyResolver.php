@@ -2,20 +2,20 @@
 
 namespace SwagMigrationNext\Profile\Shopware55\Media\Strategy;
 
-use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Migration\MigrationContextInterface;
 
 class Md5StrategyResolver implements StrategyResolverInterface
 {
-    const BLACKLIST = [
+    private const BLACKLIST = [
         '/ad/' => '/g0/',
     ];
 
-    public function supports(string $path, MigrationContext $migrationContext): bool
+    public function supports(string $path, MigrationContextInterface $migrationContext): bool
     {
         return file_exists($this->resolve($path, $migrationContext));
     }
 
-    public function resolve(string $path, MigrationContext $migrationContext): string
+    public function resolve(string $path, MigrationContextInterface $migrationContext): string
     {
         $installationRoot = $migrationContext->getCredentials()['installationRoot'];
         if (!$path || $this->isEncoded($path)) {
@@ -55,7 +55,7 @@ class Md5StrategyResolver implements StrategyResolverInterface
             return false;
         }
 
-        return (bool) preg_match("/.*(media\/(?:archive|image|model|music|pdf|temp|unknown|video|vector)(?:\/thumbnail)?\/(?:([0-9a-g]{2}\/[0-9a-g]{2}\/[0-9a-g]{2}\/))((.+)\.(.+)))/", $path);
+        return (bool) preg_match("/.*(media\/(?:archive|image|model|music|pdf|temp|unknown|video|vector)(?:\/thumbnail)?\/(?:([0-9a-f]{2}\/[0-9a-f]{2}\/[0-9a-f]{2}\/))((.+)\.(.+)))/", $path);
     }
 
     private function substringPath(string $path): ?string

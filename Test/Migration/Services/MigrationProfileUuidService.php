@@ -48,7 +48,7 @@ class MigrationProfileUuidService
         return $this->profileUuid;
     }
 
-    private function setProfileUuid()
+    private function setProfileUuid(): void
     {
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('profile', $this->profile));

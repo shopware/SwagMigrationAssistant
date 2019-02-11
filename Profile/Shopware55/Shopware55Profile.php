@@ -18,7 +18,7 @@ use SwagMigrationNext\Migration\EnvironmentInformation;
 use SwagMigrationNext\Migration\Gateway\GatewayInterface;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\Media\MediaFileServiceInterface;
-use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Migration\MigrationContextInterface;
 use SwagMigrationNext\Migration\Profile\ProfileInterface;
 use SwagMigrationNext\Profile\Shopware55\Exception\AssociationEntityRequiredMissingException;
 use SwagMigrationNext\Profile\Shopware55\Exception\ParentEntityForChildNotFoundException;
@@ -68,7 +68,7 @@ class Shopware55Profile implements ProfileInterface
         return self::PROFILE_NAME;
     }
 
-    public function convert(array $data, MigrationContext $migrationContext, Context $context): int
+    public function convert(array $data, MigrationContextInterface $migrationContext, Context $context): int
     {
         $converter = $this->converterRegistry->getConverter($migrationContext);
         $createData = $this->convertData($context, $data, $converter, $migrationContext, $migrationContext->getEntity());
@@ -124,7 +124,7 @@ class Shopware55Profile implements ProfileInterface
         Context $context,
         array $data,
         ConverterInterface $converter,
-        MigrationContext $migrationContext,
+        MigrationContextInterface $migrationContext,
         string $entityName
     ): array {
         $runId = $migrationContext->getRunUuid();

@@ -2,7 +2,7 @@
 
 namespace SwagMigrationNext\Migration\DataSelection;
 
-use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Migration\MigrationContextInterface;
 
 class DataSelectionRegistry implements DataSelectionRegistryInterface
 {
@@ -16,7 +16,7 @@ class DataSelectionRegistry implements DataSelectionRegistryInterface
         $this->dataSelections = $dataSelections;
     }
 
-    public function getDataSelections(MigrationContext $migrationContext): DataSelectionCollection
+    public function getDataSelections(MigrationContextInterface $migrationContext): DataSelectionCollection
     {
         $resultDataSelections = new DataSelectionCollection();
         foreach ($this->dataSelections as $dataSelection) {

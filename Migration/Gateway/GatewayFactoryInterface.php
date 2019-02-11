@@ -2,7 +2,7 @@
 
 namespace SwagMigrationNext\Migration\Gateway;
 
-use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Migration\MigrationContextInterface;
 
 interface GatewayFactoryInterface
 {
@@ -14,5 +14,5 @@ interface GatewayFactoryInterface
     /**
      * Creates an instance of gateway. The context contains possible credentials to set up the connection
      */
-    public function create(MigrationContext $context): GatewayInterface;
+    public function create(MigrationContextInterface $context): GatewayInterface;
 }

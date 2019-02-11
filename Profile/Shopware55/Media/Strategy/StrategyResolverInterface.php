@@ -2,11 +2,11 @@
 
 namespace SwagMigrationNext\Profile\Shopware55\Media\Strategy;
 
-use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Migration\MigrationContextInterface;
 
 interface StrategyResolverInterface
 {
-    public function supports(string $path, MigrationContext $migrationContext): bool;
+    public function supports(string $path, MigrationContextInterface $migrationContext): bool;
 
-    public function resolve(string $path, MigrationContext $migrationContext): string;
+    public function resolve(string $path, MigrationContextInterface $migrationContext): string;
 }

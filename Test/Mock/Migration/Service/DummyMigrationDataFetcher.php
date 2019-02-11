@@ -3,12 +3,12 @@
 namespace SwagMigrationNext\Test\Mock\Migration\Service;
 
 use SwagMigrationNext\Migration\EnvironmentInformation;
-use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Migration\MigrationContextInterface;
 use SwagMigrationNext\Migration\Service\MigrationDataFetcher;
 
 class DummyMigrationDataFetcher extends MigrationDataFetcher
 {
-    public function getEnvironmentInformation(MigrationContext $migrationContext): EnvironmentInformation
+    public function getEnvironmentInformation(MigrationContextInterface $migrationContext): EnvironmentInformation
     {
         $environmentInformation = parent::getEnvironmentInformation($migrationContext);
 

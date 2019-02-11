@@ -8,16 +8,16 @@ use Shopware\Core\Framework\Context;
 use SwagMigrationNext\Migration\Converter\AbstractConverter;
 use SwagMigrationNext\Migration\Converter\ConvertStruct;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
-use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Migration\MigrationContextInterface;
 use SwagMigrationNext\Profile\Shopware55\Exception\ParentEntityForChildNotFoundException;
 use SwagMigrationNext\Profile\Shopware55\Logging\Shopware55LogTypes;
-use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
+use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingServiceInterface;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
 class CategoryConverter extends AbstractConverter
 {
     /**
-     * @var Shopware55MappingService
+     * @var Shopware55MappingServiceInterface
      */
     private $mappingService;
 
@@ -47,7 +47,7 @@ class CategoryConverter extends AbstractConverter
     private $loggingService;
 
     public function __construct(
-        Shopware55MappingService $mappingService,
+        Shopware55MappingServiceInterface $mappingService,
         ConverterHelperService $converterHelperService,
         LoggingServiceInterface $loggingService
     ) {
@@ -77,7 +77,7 @@ class CategoryConverter extends AbstractConverter
     public function convert(
         array $data,
         Context $context,
-        MigrationContext $migrationContext
+        MigrationContextInterface $migrationContext
     ): ConvertStruct {
         $this->profileId = $migrationContext->getProfileId();
         $this->context = $context;

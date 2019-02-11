@@ -4,7 +4,7 @@ namespace SwagMigrationNext\Test\Mock\Migration\Media;
 
 use Shopware\Core\Framework\Context;
 use SwagMigrationNext\Migration\Media\AbstractMediaFileProcessor;
-use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Migration\MigrationContextInterface;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Api\Shopware55ApiGateway;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
@@ -21,7 +21,7 @@ class DummyHttpMediaDownloadService extends AbstractMediaFileProcessor
     }
 
     public function process(
-        MigrationContext $migrationContext,
+        MigrationContextInterface $migrationContext,
         Context $context,
         array $workload,
         int $fileChunkByteSize

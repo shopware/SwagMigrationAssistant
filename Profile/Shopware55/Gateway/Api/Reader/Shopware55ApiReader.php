@@ -10,7 +10,7 @@ use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
 use SwagMigrationNext\Exception\GatewayReadException;
-use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Migration\MigrationContextInterface;
 use SwagMigrationNext\Migration\Profile\ReaderInterface;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
@@ -22,7 +22,7 @@ class Shopware55ApiReader implements ReaderInterface
     protected $client;
 
     /**
-     * @var MigrationContext
+     * @var MigrationContextInterface
      */
     protected $migrationContext;
 
@@ -31,7 +31,7 @@ class Shopware55ApiReader implements ReaderInterface
      */
     protected $routeMapping;
 
-    public function __construct(Client $client, MigrationContext $migrationContext)
+    public function __construct(Client $client, MigrationContextInterface $migrationContext)
     {
         $this->client = $client;
         $this->migrationContext = $migrationContext;

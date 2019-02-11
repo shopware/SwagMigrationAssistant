@@ -2,16 +2,16 @@
 
 namespace SwagMigrationNext\Profile\Shopware55\Media\Strategy;
 
-use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Migration\MigrationContextInterface;
 
 class PlainStrategyResolver implements StrategyResolverInterface
 {
-    public function supports(string $path, MigrationContext $migrationContext): bool
+    public function supports(string $path, MigrationContextInterface $migrationContext): bool
     {
         return file_exists($this->resolve($path, $migrationContext));
     }
 
-    public function resolve(string $path, MigrationContext $migrationContext): string
+    public function resolve(string $path, MigrationContextInterface $migrationContext): string
     {
         $installationRoot = $migrationContext->getCredentials()['installationRoot'];
         $path = $this->normalize($path);

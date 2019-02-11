@@ -52,11 +52,7 @@ class DummyMappingService extends Shopware55MappingService
 
     public function getUuid(string $profileId, string $entityName, string $oldId, Context $context): ?string
     {
-        if (isset($this->uuids[$profileId][$entityName][$oldId])) {
-            return $this->uuids[$profileId][$entityName][$oldId];
-        }
-
-        return null;
+        return $this->uuids[$profileId][$entityName][$oldId] ?? null;
     }
 
     public function deleteMapping(string $entityUuid, string $profileId, Context $context): void

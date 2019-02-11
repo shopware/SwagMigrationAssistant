@@ -302,8 +302,7 @@ class MigrationDataFetcherTest extends TestCase
             CustomerDefinition::getEntityName() . 'Invalid',
             0,
             250,
-            [],
-            null
+            []
         );
 
         $this->migrationDataFetcher->fetchData($migrationContext, $context);

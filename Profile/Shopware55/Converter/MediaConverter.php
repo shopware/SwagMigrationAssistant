@@ -8,14 +8,14 @@ use Shopware\Core\Framework\Context;
 use SwagMigrationNext\Migration\Converter\AbstractConverter;
 use SwagMigrationNext\Migration\Converter\ConvertStruct;
 use SwagMigrationNext\Migration\Media\MediaFileServiceInterface;
-use SwagMigrationNext\Migration\MigrationContext;
-use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
+use SwagMigrationNext\Migration\MigrationContextInterface;
+use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingServiceInterface;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
 class MediaConverter extends AbstractConverter
 {
     /**
-     * @var Shopware55MappingService
+     * @var Shopware55MappingServiceInterface
      */
     private $mappingService;
 
@@ -30,7 +30,7 @@ class MediaConverter extends AbstractConverter
     private $mediaFileService;
 
     public function __construct(
-        Shopware55MappingService $mappingService,
+        Shopware55MappingServiceInterface $mappingService,
         ConverterHelperService $converterHelperService,
         MediaFileServiceInterface $mediaFileService
     ) {
@@ -57,7 +57,7 @@ class MediaConverter extends AbstractConverter
     public function convert(
         array $data,
         Context $context,
-        MigrationContext $migrationContext
+        MigrationContextInterface $migrationContext
     ): ConvertStruct {
         $locale = $data['_locale'];
         unset($data['_locale']);
@@ -78,7 +78,7 @@ class MediaConverter extends AbstractConverter
         $this->mediaFileService->saveMediaFile(
             [
                 'runId' => $migrationContext->getRunUuid(),
-                'uri' => isset($data['uri']) ? $data['uri'] : $data['path'],
+                'uri' => $data['uri'] ?? $data['path'],
                 'fileName' => $data['name'],
                 'fileSize' => (int) $data['file_size'],
                 'mediaId' => $converted['id'],

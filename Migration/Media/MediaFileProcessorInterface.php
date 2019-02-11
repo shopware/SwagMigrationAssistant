@@ -3,7 +3,7 @@
 namespace SwagMigrationNext\Migration\Media;
 
 use Shopware\Core\Framework\Context;
-use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Migration\MigrationContextInterface;
 
 interface MediaFileProcessorInterface
 {
@@ -13,5 +13,5 @@ interface MediaFileProcessorInterface
 
     public function getSupportedGatewayIdentifier(): string;
 
-    public function process(MigrationContext $migrationContext, Context $context, array $workload, int $fileChunkByteSize): array;
+    public function process(MigrationContextInterface $migrationContext, Context $context, array $workload, int $fileChunkByteSize): array;
 }

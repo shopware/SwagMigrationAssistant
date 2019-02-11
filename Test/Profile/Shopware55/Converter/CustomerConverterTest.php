@@ -9,6 +9,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Migration\MigrationContextInterface;
 use SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\Converter\CustomerConverter;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
@@ -38,7 +39,7 @@ class CustomerConverterTest extends TestCase
     private $profileId;
 
     /**
-     * @var MigrationContext
+     * @var MigrationContextInterface
      */
     private $migrationContext;
 

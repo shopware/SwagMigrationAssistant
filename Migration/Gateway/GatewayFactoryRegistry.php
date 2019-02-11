@@ -3,7 +3,7 @@
 namespace SwagMigrationNext\Migration\Gateway;
 
 use SwagMigrationNext\Exception\GatewayNotFoundException;
-use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Migration\MigrationContextInterface;
 
 class GatewayFactoryRegistry implements GatewayFactoryRegistryInterface
 {
@@ -20,7 +20,7 @@ class GatewayFactoryRegistry implements GatewayFactoryRegistryInterface
     /**
      * @throws GatewayNotFoundException
      */
-    public function createGateway(MigrationContext $context): GatewayInterface
+    public function createGateway(MigrationContextInterface $context): GatewayInterface
     {
         foreach ($this->gatewayFactories as $gatewayFactory) {
             if ($gatewayFactory->supports($context->getGatewayIdentifier())) {

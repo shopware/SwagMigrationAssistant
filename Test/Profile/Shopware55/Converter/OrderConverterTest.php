@@ -422,6 +422,7 @@ class OrderConverterTest extends TestCase
             $detail['modus'] = 1;
             $detail['articleordernumber'] = '';
         }
+        unset($detail);
         $context = Context::createDefaultContext();
 
         $this->customerConverter->convert(

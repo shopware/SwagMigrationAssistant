@@ -2,9 +2,9 @@
 
 namespace SwagMigrationNext\Migration\DataSelection;
 
-use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Migration\MigrationContextInterface;
 
 interface DataSelectionRegistryInterface
 {
-    public function getDataSelections(MigrationContext $migrationContext): DataSelectionCollection;
+    public function getDataSelections(MigrationContextInterface $migrationContext): DataSelectionCollection;
 }

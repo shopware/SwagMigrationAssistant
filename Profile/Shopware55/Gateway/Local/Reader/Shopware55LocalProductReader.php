@@ -3,7 +3,7 @@
 namespace SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader;
 
 use Doctrine\DBAL\Connection;
-use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Migration\MigrationContextInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 class Shopware55LocalProductReader extends Shopware55LocalAbstractReader
@@ -13,7 +13,7 @@ class Shopware55LocalProductReader extends Shopware55LocalAbstractReader
      */
     private $productMapping;
 
-    public function __construct(Connection $connection, MigrationContext $migrationContext)
+    public function __construct(Connection $connection, MigrationContextInterface $migrationContext)
     {
         parent::__construct($connection, $migrationContext);
 

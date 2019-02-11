@@ -9,7 +9,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use SwagMigrationNext\Migration\Media\MediaFileProcessorRegistryInterface;
 use SwagMigrationNext\Migration\Media\SwagMigrationMediaFileEntity;
-use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Migration\MigrationContextInterface;
 
 class MediaFileProcessorService implements MediaFileProcessorServiceInterface
 {
@@ -51,7 +51,7 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
         return $mediaUuids;
     }
 
-    public function processMediaFiles(MigrationContext $migrationContext, Context $context, array $workload, int $fileChunkByteSize): array
+    public function processMediaFiles(MigrationContextInterface $migrationContext, Context $context, array $workload, int $fileChunkByteSize): array
     {
         $processor = $this->mediaFileProcessorRegistry->getProcessor($migrationContext);
 

@@ -244,6 +244,7 @@ class MigrationProgressServiceTest extends TestCase
         foreach ($expectedEntityGroups as &$entityGroup) {
             $entityGroup['progress'] = $entityGroup['count'];
         }
+        unset($entityGroup);
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('id', $this->profileId));
@@ -304,6 +305,7 @@ class MigrationProgressServiceTest extends TestCase
                 $entityGroup['progress'] = $this->writeArray['category']['write'];
             }
         }
+        unset($entityGroup);
 
         self::assertTrue($progress->isMigrationRunning());
         self::assertSame($progress->getFinishedCount(), 5);
@@ -356,6 +358,7 @@ class MigrationProgressServiceTest extends TestCase
                 $entityGroup['progress'] = $this->writeArray['customer']['write'] + $this->writeArray['order']['write'];
             }
         }
+        unset($entityGroup);
 
         self::assertTrue($progress->isMigrationRunning());
         self::assertSame($progress->getFinishedCount(), 0);
@@ -403,6 +406,7 @@ class MigrationProgressServiceTest extends TestCase
         foreach ($expectedEntityGroups as &$entityGroup) {
             $entityGroup['progress'] = 0;
         }
+        unset($entityGroup);
 
         self::assertTrue($progress->isMigrationRunning());
         self::assertSame($progress->getFinishedCount(), 0);
@@ -453,6 +457,7 @@ class MigrationProgressServiceTest extends TestCase
                 $entityGroup['progress'] = 20;
             }
         }
+        unset($entityGroup);
 
         self::assertTrue($progress->isMigrationRunning());
         self::assertSame($progress->getFinishedCount(), 20);
@@ -535,6 +540,7 @@ class MigrationProgressServiceTest extends TestCase
                 $entityGroup['entities'][0]['entityCount'] = 0;
             }
         }
+        unset($entityGroup);
 
         $this->runRepo->update(
             [

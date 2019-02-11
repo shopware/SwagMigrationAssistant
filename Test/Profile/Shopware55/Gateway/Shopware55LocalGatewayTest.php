@@ -4,7 +4,6 @@ namespace SwagMigrationNext\Test\Profile\Shopware55\Gateway;
 
 use Doctrine\DBAL\Exception\ConnectionException;
 use PHPUnit\Framework\TestCase;
-use SwagMigrationNext\Migration\EnvironmentInformation;
 use SwagMigrationNext\Migration\Gateway\GatewayFactoryRegistry;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalReaderNotFoundException;
@@ -89,7 +88,6 @@ class Shopware55LocalGatewayTest extends TestCase
         $gateway = $factory->create($migrationContext);
         $response = $gateway->readEnvironmentInformation();
 
-        $this->assertInstanceOf(EnvironmentInformation::class, $response);
         $this->assertSame($response->getProductTotal(), 0);
     }
 }

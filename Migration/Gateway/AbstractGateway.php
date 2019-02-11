@@ -2,16 +2,16 @@
 
 namespace SwagMigrationNext\Migration\Gateway;
 
-use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Migration\MigrationContextInterface;
 
 abstract class AbstractGateway implements GatewayInterface
 {
     /**
-     * @var MigrationContext
+     * @var MigrationContextInterface
      */
     protected $migrationContext;
 
-    public function __construct(MigrationContext $migrationContext)
+    public function __construct(MigrationContextInterface $migrationContext)
     {
         $this->migrationContext = $migrationContext;
     }

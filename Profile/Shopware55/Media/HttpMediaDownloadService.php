@@ -20,7 +20,7 @@ use SwagMigrationNext\Exception\NoFileSystemPermissionsException;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\Media\AbstractMediaFileProcessor;
 use SwagMigrationNext\Migration\Media\SwagMigrationMediaFileEntity;
-use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Migration\MigrationContextInterface;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Api\Shopware55ApiGateway;
 use SwagMigrationNext\Profile\Shopware55\Logging\Shopware55LogTypes;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
@@ -71,7 +71,7 @@ class HttpMediaDownloadService extends AbstractMediaFileProcessor
      * @throws NoFileSystemPermissionsException
      * @throws UploadException
      */
-    public function process(MigrationContext $migrationContext, Context $context, array $workload, int $fileChunkByteSize): array
+    public function process(MigrationContextInterface $migrationContext, Context $context, array $workload, int $fileChunkByteSize): array
     {
         //Map workload with uuids as keys
         $mappedWorkload = [];

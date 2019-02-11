@@ -5,7 +5,7 @@ namespace SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\DBAL\Schema\Column;
-use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Migration\MigrationContextInterface;
 
 class Shopware55LocalAbstractReader
 {
@@ -15,11 +15,11 @@ class Shopware55LocalAbstractReader
     protected $connection;
 
     /**
-     * @var MigrationContext
+     * @var MigrationContextInterface
      */
     protected $migrationContext;
 
-    public function __construct(Connection $connection, MigrationContext $migrationContext)
+    public function __construct(Connection $connection, MigrationContextInterface $migrationContext)
     {
         $this->connection = $connection;
         $this->migrationContext = $migrationContext;
@@ -100,7 +100,7 @@ class Shopware55LocalAbstractReader
             ->fetch(\PDO::FETCH_COLUMN);
     }
 
-    protected function mapData(array $data, array $result = [], array $pathsToRemove = [])
+    protected function mapData(array $data, array $result = [], array $pathsToRemove = []): array
     {
         foreach ($data as $key => $value) {
             if (is_numeric($key)) {

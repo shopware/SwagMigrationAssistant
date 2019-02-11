@@ -4,7 +4,7 @@ namespace SwagMigrationNext\Test\Mock\Profile\Dummy;
 
 use Shopware\Core\Framework\Context;
 use SwagMigrationNext\Migration\Gateway\GatewayInterface;
-use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Migration\MigrationContextInterface;
 
 class DummyProfile
 {
@@ -15,7 +15,7 @@ class DummyProfile
         return self::PROFILE_NAME;
     }
 
-    public function collectData(GatewayInterface $gateway, MigrationContext $migrationContext, Context $context): void
+    public function collectData(GatewayInterface $gateway, MigrationContextInterface $migrationContext, Context $context): void
     {
     }
 }

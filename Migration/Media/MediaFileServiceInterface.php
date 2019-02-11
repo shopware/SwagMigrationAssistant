@@ -3,7 +3,7 @@
 namespace SwagMigrationNext\Migration\Media;
 
 use Shopware\Core\Framework\Context;
-use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Migration\MigrationContextInterface;
 
 interface MediaFileServiceInterface
 {
@@ -11,5 +11,5 @@ interface MediaFileServiceInterface
 
     public function saveMediaFile(array $mediaFile): void;
 
-    public function setWrittenFlag(array $converted, MigrationContext $migrationContext, Context $context): void;
+    public function setWrittenFlag(array $converted, MigrationContextInterface $migrationContext, Context $context): void;
 }

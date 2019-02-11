@@ -4,7 +4,7 @@ namespace SwagMigrationNext\Profile\Shopware55\Gateway\Local;
 
 use SwagMigrationNext\Migration\Gateway\GatewayFactoryInterface;
 use SwagMigrationNext\Migration\Gateway\GatewayInterface;
-use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Migration\MigrationContextInterface;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
 class Shopware55LocalFactory implements GatewayFactoryInterface
@@ -16,7 +16,7 @@ class Shopware55LocalFactory implements GatewayFactoryInterface
         return $gatewayIdentifier === self::GATEWAY_NAME;
     }
 
-    public function create(MigrationContext $context): GatewayInterface
+    public function create(MigrationContextInterface $context): GatewayInterface
     {
         return new Shopware55LocalGateway($context);
     }

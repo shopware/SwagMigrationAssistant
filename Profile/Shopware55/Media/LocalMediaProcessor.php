@@ -13,7 +13,7 @@ use SwagMigrationNext\Exception\NoFileSystemPermissionsException;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\Media\AbstractMediaFileProcessor;
 use SwagMigrationNext\Migration\Media\SwagMigrationMediaFileEntity;
-use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Migration\MigrationContextInterface;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationNext\Profile\Shopware55\Logging\Shopware55LogTypes;
 use SwagMigrationNext\Profile\Shopware55\Media\Strategy\StrategyResolverInterface;
@@ -63,7 +63,7 @@ class LocalMediaProcessor extends AbstractMediaFileProcessor
         return Shopware55LocalGateway::GATEWAY_TYPE;
     }
 
-    public function process(MigrationContext $migrationContext, Context $context, array $workload, int $fileChunkByteSize): array
+    public function process(MigrationContextInterface $migrationContext, Context $context, array $workload, int $fileChunkByteSize): array
     {
         $mappedWorkload = [];
         $runId = $migrationContext->getRunUuid();
@@ -97,7 +97,7 @@ class LocalMediaProcessor extends AbstractMediaFileProcessor
         return $mediaSearchResult->getElements();
     }
 
-    private function getMediaPathMapping(array $media, array $mappedWorkload, MigrationContext $migrationContext): array
+    private function getMediaPathMapping(array $media, array $mappedWorkload, MigrationContextInterface $migrationContext): array
     {
         /** @var SwagMigrationMediaFileEntity[] $media */
         foreach ($media as $mediaFile) {
@@ -115,10 +115,10 @@ class LocalMediaProcessor extends AbstractMediaFileProcessor
         return $mappedWorkload;
     }
 
-    private function getResolver(SwagMigrationMediaFileEntity $mediaFile, MigrationContext $migrationContext): ?StrategyResolverInterface
+    private function getResolver(SwagMigrationMediaFileEntity $mediaFile, MigrationContextInterface $migrationContext): ?StrategyResolverInterface
     {
         foreach ($this->resolver as $resolver) {
-            if ($resolver->supports($mediaFile->getUri(), $migrationContext) === true) {
+            if ($resolver->supports($mediaFile->getUri(), $migrationContext)) {
                 return $resolver;
             }
         }
@@ -129,7 +129,7 @@ class LocalMediaProcessor extends AbstractMediaFileProcessor
     private function copyMediaFiles(
         array $media,
         array $mappedWorkload,
-        MigrationContext $migrationContext,
+        MigrationContextInterface $migrationContext,
         Context $context
     ): array {
         $processedMedia = [];
@@ -161,7 +161,7 @@ class LocalMediaProcessor extends AbstractMediaFileProcessor
             $fileExtension = pathinfo($sourcePath, PATHINFO_EXTENSION);
             $filePath = sprintf('_temp/%s.%s', $mediaFile->getId(), $fileExtension);
 
-            if (copy($sourcePath, $filePath) === true) {
+            if (copy($sourcePath, $filePath)) {
                 $fileSize = filesize($filePath);
                 $mappedWorkload[$mediaFile->getMediaId()]['state'] = 'finished';
                 $this->persistFileToMedia($filePath, $mediaFile, $fileSize, $fileExtension, $context);

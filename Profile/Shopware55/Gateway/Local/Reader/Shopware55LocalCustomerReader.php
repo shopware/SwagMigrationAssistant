@@ -9,7 +9,7 @@ class Shopware55LocalCustomerReader extends Shopware55LocalAbstractReader
     /**
      * @var int
      */
-    const MAX_ADDRESS_COUNT = 100;
+    private const MAX_ADDRESS_COUNT = 100;
 
     public function read(): array
     {

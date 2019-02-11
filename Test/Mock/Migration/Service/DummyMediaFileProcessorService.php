@@ -4,7 +4,7 @@ namespace SwagMigrationNext\Test\Mock\Migration\Service;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Struct\Uuid;
-use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Migration\MigrationContextInterface;
 use SwagMigrationNext\Migration\Service\MediaFileProcessorService;
 
 class DummyMediaFileProcessorService extends MediaFileProcessorService
@@ -26,7 +26,7 @@ class DummyMediaFileProcessorService extends MediaFileProcessorService
     }
 
     public function processMediaFiles(
-        MigrationContext $migrationContext,
+        MigrationContextInterface $migrationContext,
         Context $context,
         array $workload,
         int $fileChunkByteSize

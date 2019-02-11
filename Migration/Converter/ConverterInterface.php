@@ -3,7 +3,7 @@
 namespace SwagMigrationNext\Migration\Converter;
 
 use Shopware\Core\Framework\Context;
-use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Migration\MigrationContextInterface;
 
 interface ConverterInterface
 {
@@ -25,7 +25,7 @@ interface ConverterInterface
     /**
      * Converts the given data into the internal structure
      */
-    public function convert(array $data, Context $context, MigrationContext $migrationContext): ConvertStruct;
+    public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct;
 
     public function writeMapping(Context $context): void;
 }

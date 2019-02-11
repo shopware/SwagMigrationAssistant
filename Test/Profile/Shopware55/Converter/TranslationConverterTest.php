@@ -8,6 +8,7 @@ use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Struct\Uuid;
 use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Migration\MigrationContextInterface;
 use SwagMigrationNext\Profile\Shopware55\Converter\CategoryConverter;
 use SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\Converter\ProductConverter;
@@ -45,17 +46,17 @@ class TranslationConverterTest extends TestCase
     private $profileId;
 
     /**
-     * @var MigrationContext
+     * @var MigrationContextInterface
      */
     private $migrationContext;
 
     /**
-     * @var MigrationContext
+     * @var MigrationContextInterface
      */
     private $productMigrationContext;
 
     /**
-     * @var MigrationContext
+     * @var MigrationContextInterface
      */
     private $categoryMigrationContext;
 

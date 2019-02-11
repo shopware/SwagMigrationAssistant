@@ -4,7 +4,7 @@ namespace SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader;
 
 class Shopware55LocalEnvironmentReader extends Shopware55LocalAbstractReader
 {
-    const TABLES_TO_COUNT = [
+    private const TABLES_TO_COUNT = [
         'products' => 's_articles_details',
         'customers' => 's_user',
         'categories' => 's_categories',

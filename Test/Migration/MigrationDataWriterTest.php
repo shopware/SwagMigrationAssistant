@@ -208,8 +208,7 @@ class MigrationDataWriterTest extends TestCase
         $data = $customerData->first();
         $customer = $data->jsonSerialize();
         $customer['id'] = $data->getId();
-        unset($customer['run']);
-        unset($customer['converted'][$missingProperty]);
+        unset($customer['run'], $customer['converted'][$missingProperty]);
 
         $this->migrationDataRepo->update([$customer], $context);
         $customerTotalBefore = $this->customerRepo->search($criteria, $context)->getTotal();

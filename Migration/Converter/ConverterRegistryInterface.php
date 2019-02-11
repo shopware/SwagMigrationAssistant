@@ -2,12 +2,12 @@
 
 namespace SwagMigrationNext\Migration\Converter;
 
-use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Migration\MigrationContextInterface;
 
 interface ConverterRegistryInterface
 {
     /**
      * Returns the converter which supports the given internal entity
      */
-    public function getConverter(MigrationContext $context): ConverterInterface;
+    public function getConverter(MigrationContextInterface $context): ConverterInterface;
 }

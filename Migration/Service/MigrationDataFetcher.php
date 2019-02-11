@@ -6,7 +6,7 @@ use Shopware\Core\Framework\Context;
 use SwagMigrationNext\Migration\EnvironmentInformation;
 use SwagMigrationNext\Migration\Gateway\GatewayFactoryRegistryInterface;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
-use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Migration\MigrationContextInterface;
 use SwagMigrationNext\Migration\Profile\ProfileRegistryInterface;
 
 class MigrationDataFetcher implements MigrationDataFetcherInterface
@@ -36,7 +36,7 @@ class MigrationDataFetcher implements MigrationDataFetcherInterface
         $this->loggingService = $loggingService;
     }
 
-    public function fetchData(MigrationContext $migrationContext, Context $context): int
+    public function fetchData(MigrationContextInterface $migrationContext, Context $context): int
     {
         $returnCount = 0;
         try {
@@ -58,7 +58,7 @@ class MigrationDataFetcher implements MigrationDataFetcherInterface
         return $returnCount;
     }
 
-    public function getEntityTotal(MigrationContext $migrationContext): int
+    public function getEntityTotal(MigrationContextInterface $migrationContext): int
     {
         $profile = $this->profileRegistry->getProfile($migrationContext->getProfileName());
         $gateway = $this->gatewayFactoryRegistry->createGateway($migrationContext);
@@ -66,7 +66,7 @@ class MigrationDataFetcher implements MigrationDataFetcherInterface
         return $profile->readEntityTotal($gateway, $migrationContext->getEntity());
     }
 
-    public function getEnvironmentInformation(MigrationContext $migrationContext): EnvironmentInformation
+    public function getEnvironmentInformation(MigrationContextInterface $migrationContext): EnvironmentInformation
     {
         $profile = $this->profileRegistry->getProfile($migrationContext->getProfileName());
         $gateway = $this->gatewayFactoryRegistry->createGateway($migrationContext);

@@ -4,7 +4,7 @@ namespace SwagMigrationNext\Migration;
 
 use Shopware\Core\Framework\Struct\Struct;
 
-class MigrationContext extends Struct
+class MigrationContext extends Struct implements MigrationContextInterface
 {
     /**
      * @var string
@@ -61,9 +61,9 @@ class MigrationContext extends Struct
         $this->profileName = $profileName;
         $this->gateway = $gateway;
         $this->entity = $entity;
-        $this->credentials = $credentials;
         $this->offset = $offset;
         $this->limit = $limit;
+        $this->credentials = $credentials;
     }
 
     public function getRunUuid(): string

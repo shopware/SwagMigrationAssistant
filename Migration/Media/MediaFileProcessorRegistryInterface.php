@@ -3,12 +3,12 @@
 namespace SwagMigrationNext\Migration\Media;
 
 use SwagMigrationNext\Exception\ProcessorNotFoundException;
-use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Migration\MigrationContextInterface;
 
 interface MediaFileProcessorRegistryInterface
 {
     /**
      * @throws ProcessorNotFoundException
      */
-    public function getProcessor(MigrationContext $context): MediaFileProcessorInterface;
+    public function getProcessor(MigrationContextInterface $context): MediaFileProcessorInterface;
 }

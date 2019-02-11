@@ -3,12 +3,12 @@
 namespace SwagMigrationNext\Migration\Service;
 
 use Shopware\Core\Framework\Context;
-use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Migration\MigrationContextInterface;
 
 interface MigrationDataWriterInterface
 {
     /**
      * Writes the converted data into the database
      */
-    public function writeData(MigrationContext $migrationContext, Context $context): void;
+    public function writeData(MigrationContextInterface $migrationContext, Context $context): void;
 }
