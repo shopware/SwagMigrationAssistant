@@ -35,7 +35,7 @@ class AssetConverterTest extends TestCase
      */
     private $migrationContext;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $mediaFileService = new DummyMediaFileService();
         $mappingService = new DummyMappingService();

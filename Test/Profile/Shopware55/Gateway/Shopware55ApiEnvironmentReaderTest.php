@@ -28,7 +28,7 @@ class Shopware55ApiEnvironmentReaderTest extends TestCase
         'detail' => 'No error.',
     ];
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->body = json_encode([
             'data' => $this->dataArray,

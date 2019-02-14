@@ -25,7 +25,7 @@ class ConverterRegistryTest extends TestCase
      */
     private $converterRegistry;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->converterRegistry = new ConverterRegistry(
             new DummyCollection([

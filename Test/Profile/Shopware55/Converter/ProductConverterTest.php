@@ -49,7 +49,7 @@ class ProductConverterTest extends TestCase
      */
     private $migrationContext;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $mediaFileService = new DummyMediaFileService();
         $this->mappingService = new DummyMappingService();

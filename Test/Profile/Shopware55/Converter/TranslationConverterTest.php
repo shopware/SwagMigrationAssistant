@@ -60,7 +60,7 @@ class TranslationConverterTest extends TestCase
      */
     private $categoryMigrationContext;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->mappingService = new DummyMappingService();
         $converterHelperService = new ConverterHelperService();

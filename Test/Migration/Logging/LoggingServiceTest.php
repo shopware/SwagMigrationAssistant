@@ -44,7 +44,7 @@ class LoggingServiceTest extends TestCase
         'name' => 'First-Name',
     ];
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->context = Context::createDefaultContext();
         $this->loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');

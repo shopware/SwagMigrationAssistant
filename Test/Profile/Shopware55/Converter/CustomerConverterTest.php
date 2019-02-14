@@ -41,7 +41,7 @@ class CustomerConverterTest extends TestCase
      */
     private $migrationContext;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->loggingService = new DummyLoggingService();
         $mappingService = new DummyMappingService();

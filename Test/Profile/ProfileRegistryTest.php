@@ -18,7 +18,7 @@ class ProfileRegistryTest extends TestCase
      */
     private $profileRegistry;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->profileRegistry = new ProfileRegistry(new DummyCollection([new DummyProfile()]));
     }

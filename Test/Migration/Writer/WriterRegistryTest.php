@@ -18,7 +18,7 @@ class WriterRegistryTest extends TestCase
      */
     private $writerRegistry;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->writerRegistry = new WriterRegistry(new DummyCollection([new DummyWriter()]));
     }

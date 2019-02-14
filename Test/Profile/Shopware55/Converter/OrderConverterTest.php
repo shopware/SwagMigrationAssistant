@@ -59,7 +59,7 @@ class OrderConverterTest extends TestCase
      */
     private $customerMigrationContext;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->loggingService = new DummyLoggingService();
         $mappingService = new DummyMappingService();

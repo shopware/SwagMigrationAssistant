@@ -121,7 +121,7 @@ class MigrationDataWriterTest extends TestCase
      */
     private $migrationDataRepo;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->profileUuidService = new MigrationProfileUuidService(
             $this->getContainer()->get('swag_migration_profile.repository'),

@@ -41,7 +41,7 @@ class CategoryConverterTest extends TestCase
      */
     private $migrationContext;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $mappingService = new DummyMappingService();
         $converterHelperService = new ConverterHelperService();
