@@ -4,7 +4,6 @@ namespace SwagMigrationNext\Test\Profile\Shopware55\Converter;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Content\Category\CategoryDefinition;
-use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Struct\Uuid;
 use SwagMigrationNext\Migration\MigrationContext;
@@ -61,7 +60,7 @@ class CategoryConverterTest extends TestCase
             [],
             0,
             250,
-            Defaults::CATALOG
+            ''
         );
     }
 
@@ -83,7 +82,6 @@ class CategoryConverterTest extends TestCase
 
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
-        static::assertSame(Defaults::CATALOG, $converted['catalogId']);
         static::assertArrayHasKey(DummyMappingService::DEFAULT_LANGUAGE_UUID, $converted['translations']);
     }
 
@@ -100,7 +98,6 @@ class CategoryConverterTest extends TestCase
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('parentId', $converted);
-        static::assertSame(Defaults::CATALOG, $converted['catalogId']);
         static::assertArrayHasKey(DummyMappingService::DEFAULT_LANGUAGE_UUID, $converted['translations']);
     }
 

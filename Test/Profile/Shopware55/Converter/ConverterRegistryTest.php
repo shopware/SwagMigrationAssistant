@@ -4,7 +4,6 @@ namespace SwagMigrationNext\Test\Profile\Shopware55\Converter;
 
 use Exception;
 use PHPUnit\Framework\TestCase;
-use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Struct\Uuid;
 use SwagMigrationNext\Exception\ConverterNotFoundException;
 use SwagMigrationNext\Migration\Converter\ConverterRegistry;
@@ -51,7 +50,7 @@ class ConverterRegistryTest extends TestCase
             [],
             0,
             250,
-            Defaults::CATALOG
+            ''
         );
         try {
             $this->converterRegistry->getConverter($migrationContext);

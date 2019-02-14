@@ -60,7 +60,7 @@ class CustomerConverterTest extends TestCase
             [],
             0,
             250,
-            Defaults::CATALOG,
+            '',
             Defaults::SALES_CHANNEL
         );
     }
