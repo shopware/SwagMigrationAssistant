@@ -70,7 +70,7 @@ class AssetDownloadServiceTest extends TestCase
      */
     private $runUuid;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $fileSaver = $this->getContainer()->get(FileSaver::class);
         $eventDispatcher = $this->getContainer()->get('event_dispatcher');
