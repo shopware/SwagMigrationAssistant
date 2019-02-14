@@ -201,7 +201,11 @@ class CustomerConverter extends AbstractConverter
         }
         unset($data['addresses']);
 
-        $converted['salesChannelId'] = $migrationContext->getSalesChannelId();
+        $salesChannel = $migrationContext->getSalesChannelId();
+        if ($salesChannel === null || $salesChannel === '') {
+            $salesChannel = Defaults::SALES_CHANNEL;
+        }
+        $converted['salesChannelId'] = $salesChannel;
 
         // Legacy data which don't need a mapping or there is no equivalent field
         unset(

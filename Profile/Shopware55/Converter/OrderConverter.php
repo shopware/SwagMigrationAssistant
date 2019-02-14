@@ -22,6 +22,7 @@ use Shopware\Core\Checkout\Shipping\Aggregate\ShippingMethodTranslation\Shipping
 use Shopware\Core\Checkout\Shipping\ShippingMethodDefinition;
 use Shopware\Core\Content\Product\Cart\ProductCollector;
 use Shopware\Core\Content\Product\ProductDefinition;
+use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\System\Country\Aggregate\CountryState\CountryStateDefinition;
@@ -312,7 +313,11 @@ class OrderConverter extends AbstractConverter
         $converted['addresses'][] = $billingAddress;
         unset($data['billingaddress']);
 
-        $converted['salesChannelId'] = $migrationContext->getSalesChannelId();
+        $salesChannel = $migrationContext->getSalesChannelId();
+        if ($salesChannel === null || $salesChannel === '') {
+            $salesChannel = Defaults::SALES_CHANNEL;
+        }
+        $converted['salesChannelId'] = $salesChannel;
 
         // Legacy data which don't need a mapping or there is no equivalent field
         unset(
