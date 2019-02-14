@@ -9,7 +9,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
-use Shopware\Core\Framework\Struct\Uuid;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationNext\Migration\Service\MigrationDataWriterInterface;
@@ -148,14 +147,6 @@ class MigrationWriteDataCommand extends Command
     private function checkOptions(InputInterface $input): void
     {
         $this->catalogId = $input->getOption('catalog-id');
-        if ($this->catalogId !== null && Uuid::isValid($this->catalogId)) {
-            $this->context = $this->context->createWithCatalogIds(
-                array_merge(
-                    $this->context->getCatalogIds(),
-                    [$this->catalogId]
-                )
-            );
-        }
 
         $this->runId = $input->getOption('run-id');
         $this->startedRunFlag = $input->getOption('started-run');

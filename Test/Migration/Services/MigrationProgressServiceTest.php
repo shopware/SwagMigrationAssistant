@@ -91,7 +91,7 @@ class MigrationProgressServiceTest extends TestCase
 
     private $writeArray;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->runRepo = $this->getContainer()->get('swag_migration_run.repository');
         $this->dataRepo = $this->getContainer()->get('swag_migration_data.repository');

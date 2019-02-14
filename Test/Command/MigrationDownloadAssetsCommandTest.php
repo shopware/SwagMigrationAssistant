@@ -180,14 +180,14 @@ class MigrationDownloadAssetsCommandTest extends TestCase
             '--catalog-id' => Uuid::uuid4()->getHex(),
         ]);
 
-        $this->assertContains('Written: 23', $output);
-        $this->assertContains('Skipped: 0', $output);
+        $this->assertStringContainsString('Written: 23', $output);
+        $this->assertStringContainsString('Skipped: 0', $output);
 
         $output = $this->executeDownloadCommand([
             '--run-id' => $runId,
         ]);
 
-        self::assertContains('Downloading done.', $output);
+        self::assertStringContainsString('Downloading done.', $output);
     }
 
     public function testDownloadDataWithoutRunId(): void

@@ -4,7 +4,6 @@ namespace SwagMigrationNext\Test\Profile\Shopware55\Converter;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Content\Media\MediaDefinition;
-use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Struct\Uuid;
 use SwagMigrationNext\Migration\MigrationContext;
@@ -36,7 +35,7 @@ class AssetConverterTest extends TestCase
      */
     private $migrationContext;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $mediaFileService = new DummyMediaFileService();
         $mappingService = new DummyMappingService();
@@ -55,7 +54,7 @@ class AssetConverterTest extends TestCase
             [],
             0,
             250,
-            Defaults::CATALOG
+            ''
         );
     }
 
@@ -77,6 +76,5 @@ class AssetConverterTest extends TestCase
 
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
-        static::assertSame(Defaults::CATALOG, $converted['catalogId']);
     }
 }

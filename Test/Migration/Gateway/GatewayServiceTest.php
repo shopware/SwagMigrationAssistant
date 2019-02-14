@@ -20,7 +20,7 @@ class GatewayServiceTest extends TestCase
      */
     private $gatewayFactoryRegistry;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->gatewayFactoryRegistry = new GatewayFactoryRegistry(new DummyCollection([new DummyLocalFactory()]));
     }

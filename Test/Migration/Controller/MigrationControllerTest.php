@@ -53,7 +53,7 @@ class MigrationControllerTest extends TestCase
      */
     private $runRepo;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->profileUuidService = new MigrationProfileUuidService($this->getContainer()->get('swag_migration_profile.repository'));
         $this->runUuid = Uuid::uuid4()->getHex();

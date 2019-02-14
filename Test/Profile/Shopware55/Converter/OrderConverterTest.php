@@ -59,7 +59,7 @@ class OrderConverterTest extends TestCase
      */
     private $customerMigrationContext;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->loggingService = new DummyLoggingService();
         $mappingService = new DummyMappingService();
@@ -86,7 +86,7 @@ class OrderConverterTest extends TestCase
             [],
             0,
             250,
-            Defaults::CATALOG,
+            '',
             Defaults::SALES_CHANNEL
         );
 
@@ -99,7 +99,7 @@ class OrderConverterTest extends TestCase
             [],
             0,
             250,
-            Defaults::CATALOG,
+            '',
             Defaults::SALES_CHANNEL
         );
     }

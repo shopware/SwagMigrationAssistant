@@ -60,7 +60,7 @@ class TranslationConverterTest extends TestCase
      */
     private $categoryMigrationContext;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->mappingService = new DummyMappingService();
         $converterHelperService = new ConverterHelperService();
@@ -79,7 +79,7 @@ class TranslationConverterTest extends TestCase
             [],
             0,
             250,
-            Defaults::CATALOG,
+            '',
             Defaults::SALES_CHANNEL
         );
 
@@ -92,7 +92,7 @@ class TranslationConverterTest extends TestCase
             [],
             0,
             250,
-            Defaults::CATALOG,
+            '',
             Defaults::SALES_CHANNEL
         );
 
@@ -105,7 +105,7 @@ class TranslationConverterTest extends TestCase
             [],
             0,
             250,
-            Defaults::CATALOG,
+            '',
             Defaults::SALES_CHANNEL
         );
     }
