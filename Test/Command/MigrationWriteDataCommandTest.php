@@ -147,14 +147,14 @@ class MigrationWriteDataCommandTest extends TestCase
             '--limit' => 100,
         ]);
 
-        $this->assertContains('Written: 14', $output);
-        $this->assertContains('Skipped: 0', $output);
+        $this->assertStringContainsString('Written: 14', $output);
+        $this->assertStringContainsString('Skipped: 0', $output);
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('id', $runId));
         /** @var SwagMigrationRunEntity $run */
         $run = $this->migrationRunRepo->search($criteria, $context)->first();
-        self::assertSame($run->getStatus(), SwagMigrationRunEntity::STATUS_RUNNING);
+        self::assertStringContainsString($run->getStatus(), SwagMigrationRunEntity::STATUS_RUNNING);
     }
 
     public function testWriteDataWithRunningMigration(): void
@@ -173,12 +173,12 @@ class MigrationWriteDataCommandTest extends TestCase
             '--entity' => 'category',
         ]);
 
-        $this->assertContains('Written: 8', $output);
-        $this->assertContains('Skipped: 0', $output);
+        $this->assertStringContainsString('Written: 8', $output);
+        $this->assertStringContainsString('Skipped: 0', $output);
 
         /** @var SwagMigrationRunEntity $run */
         $run = $this->migrationRunRepo->search(new Criteria(), $context)->first();
-        self::assertSame($run->getStatus(), SwagMigrationRunEntity::STATUS_FINISHED);
+        self::assertStringContainsString($run->getStatus(), SwagMigrationRunEntity::STATUS_FINISHED);
     }
 
     public function testWriteDataWithNoRunningMigration(): void

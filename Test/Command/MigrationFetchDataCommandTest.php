@@ -85,8 +85,8 @@ class MigrationFetchDataCommandTest extends TestCase
             '--limit' => 100,
         ]);
 
-        $this->assertContains('Imported: 14', $output);
-        $this->assertContains('Skipped: 23', $output);
+        $this->assertStringContainsString('Imported: 14', $output);
+        $this->assertStringContainsString('Skipped: 23', $output);
     }
 
     /**
