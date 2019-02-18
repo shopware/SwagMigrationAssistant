@@ -22,7 +22,7 @@ class GatewayFactoryRegistry implements GatewayFactoryRegistryInterface
      */
     public function createGateway(MigrationContextInterface $migrationContext): GatewayInterface
     {
-        $gatewayIdentifier = $migrationContext->getConnection()->getProfile()->getName() . $migrationContext->getConnection()->getProfile()->getGatewayName();
+        $gatewayIdentifier = $migrationContext->getProfileName() . $migrationContext->getGatewayName();
 
         foreach ($this->gatewayFactories as $gatewayFactory) {
             if ($gatewayFactory->supports($gatewayIdentifier)) {

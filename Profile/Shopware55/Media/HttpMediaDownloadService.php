@@ -61,7 +61,7 @@ class HttpMediaDownloadService extends AbstractMediaFileProcessor
 
     public function getSupportedGatewayIdentifier(): string
     {
-        return Shopware55ApiGateway::GATEWAY_TYPE;
+        return Shopware55ApiGateway::GATEWAY_NAME;
     }
 
     /**

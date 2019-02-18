@@ -86,7 +86,7 @@ class MigrationControllerTest extends TestCase
         $dataRepo = $this->getContainer()->get('swag_migration_data.repository');
         $this->profileRepo = $this->getContainer()->get('swag_migration_profile.repository');
         $this->connectionRepo = $this->getContainer()->get('swag_migration_connection.repository');
-        $this->profileUuidService = new MigrationProfileUuidService($this->profileRepo, Shopware55Profile::PROFILE_NAME, Shopware55LocalGateway::GATEWAY_TYPE);
+        $this->profileUuidService = new MigrationProfileUuidService($this->profileRepo, Shopware55Profile::PROFILE_NAME, Shopware55LocalGateway::GATEWAY_NAME);
         $this->generalSettingRepo = $this->getContainer()->get('swag_migration_general_setting.repository');
         $this->runRepo = $this->getContainer()->get('swag_migration_run.repository');
 

@@ -34,7 +34,7 @@ class DataSelectionRegistryTest extends TestCase
         $this->connection->setId(Uuid::uuid4()->getHex());
         $profile = new SwagMigrationProfileEntity();
         $profile->setName(Shopware55Profile::PROFILE_NAME);
-        $profile->setGatewayName(Shopware55LocalGateway::GATEWAY_TYPE);
+        $profile->setGatewayName(Shopware55LocalGateway::GATEWAY_NAME);
 
         $this->connection->setProfile($profile);
         $this->connection->setCredentialFields([]);

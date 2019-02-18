@@ -10,6 +10,10 @@ interface MigrationContextInterface
 
     public function getConnection(): ?SwagMigrationConnectionEntity;
 
+    public function getProfileName(): ?string;
+
+    public function getGatewayName(): ?string;
+
     public function getEntity(): string;
 
     public function getOffset(): int;

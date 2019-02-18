@@ -100,7 +100,7 @@ class RunServiceTest extends TestCase
         $profileUuidService = new MigrationProfileUuidService(
             $profileRepo,
             Shopware55Profile::PROFILE_NAME,
-            Shopware55LocalGateway::GATEWAY_TYPE
+            Shopware55LocalGateway::GATEWAY_NAME
         );
 
         $context = $context = Context::createDefaultContext();

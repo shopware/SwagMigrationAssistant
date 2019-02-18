@@ -40,7 +40,7 @@ class MigrationDataFetcher implements MigrationDataFetcherInterface
     {
         $returnCount = 0;
         try {
-            $profile = $this->profileRegistry->getProfile($migrationContext->getConnection()->getProfile()->getName());
+            $profile = $this->profileRegistry->getProfile($migrationContext->getProfileName());
             $gateway = $this->gatewayFactoryRegistry->createGateway($migrationContext);
             $data = $gateway->read();
 
@@ -58,7 +58,7 @@ class MigrationDataFetcher implements MigrationDataFetcherInterface
 
     public function getEntityTotal(MigrationContextInterface $migrationContext): int
     {
-        $profile = $this->profileRegistry->getProfile($migrationContext->getConnection()->getProfile()->getName());
+        $profile = $this->profileRegistry->getProfile($migrationContext->getProfileName());
         $gateway = $this->gatewayFactoryRegistry->createGateway($migrationContext);
 
         return $profile->readEntityTotal($gateway, $migrationContext->getEntity());
@@ -66,7 +66,7 @@ class MigrationDataFetcher implements MigrationDataFetcherInterface
 
     public function getEnvironmentInformation(MigrationContextInterface $migrationContext): EnvironmentInformation
     {
-        $profile = $this->profileRegistry->getProfile($migrationContext->getConnection()->getProfile()->getName());
+        $profile = $this->profileRegistry->getProfile($migrationContext->getProfileName());
         $gateway = $this->gatewayFactoryRegistry->createGateway($migrationContext);
 
         return $profile->readEnvironmentInformation($gateway);

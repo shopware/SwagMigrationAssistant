@@ -9,7 +9,7 @@ use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
 class Shopware55LocalFactory implements GatewayFactoryInterface
 {
-    public const GATEWAY_NAME = Shopware55Profile::PROFILE_NAME . Shopware55LocalGateway::GATEWAY_TYPE;
+    public const GATEWAY_NAME = Shopware55Profile::PROFILE_NAME . Shopware55LocalGateway::GATEWAY_NAME;
 
     public function supports(string $gatewayIdentifier): bool
     {

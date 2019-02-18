@@ -35,7 +35,7 @@ class MigrationProfileUuidService
     public function __construct(
         EntityRepositoryInterface $profileRepository,
         $profile = Shopware55Profile::PROFILE_NAME,
-        $gateway = Shopware55ApiGateway::GATEWAY_TYPE
+        $gateway = Shopware55ApiGateway::GATEWAY_NAME
     ) {
         $this->profileRepository = $profileRepository;
         $this->profile = $profile;

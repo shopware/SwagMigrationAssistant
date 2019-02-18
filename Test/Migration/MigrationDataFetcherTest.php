@@ -99,7 +99,7 @@ class MigrationDataFetcherTest extends TestCase
         $this->profileUuidService = new MigrationProfileUuidService(
             $this->getContainer()->get('swag_migration_profile.repository'),
             Shopware55Profile::PROFILE_NAME,
-            Shopware55LocalGateway::GATEWAY_TYPE
+            Shopware55LocalGateway::GATEWAY_NAME
         );
 
         $context->getWriteProtection()->allow('MIGRATION_CONNECTION_CHECK_FOR_RUNNING_MIGRATION');

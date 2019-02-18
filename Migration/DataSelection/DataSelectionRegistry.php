@@ -18,8 +18,8 @@ class DataSelectionRegistry implements DataSelectionRegistryInterface
 
     public function getDataSelections(MigrationContextInterface $migrationContext): DataSelectionCollection
     {
-        $profileName = $migrationContext->getConnection()->getProfile()->getName();
-        $gatewayName = $migrationContext->getConnection()->getProfile()->getGatewayName();
+        $profileName = $migrationContext->getProfileName();
+        $gatewayName = $migrationContext->getGatewayName();
 
         $resultDataSelections = new DataSelectionCollection();
         foreach ($this->dataSelections as $dataSelection) {
@@ -27,10 +27,7 @@ class DataSelectionRegistry implements DataSelectionRegistryInterface
                 $resultDataSelections->set($dataSelection->getData()->getId(), $dataSelection->getData());
             }
         }
-
-        $resultDataSelections->sort(function (DataSelectionStruct $first, DataSelectionStruct $second) {
-            return $first->getPosition() > $second->getPosition();
-        });
+        $resultDataSelections->sortByPosition();
 
         return $resultDataSelections;
     }
@@ -50,9 +47,7 @@ class DataSelectionRegistry implements DataSelectionRegistryInterface
             $resultDataSelections->set($id, $dataSelection);
         }
 
-        $resultDataSelections->sort(function (DataSelectionStruct $first, DataSelectionStruct $second) {
-            return $first->getPosition() > $second->getPosition();
-        });
+        $resultDataSelections->sortByPosition();
 
         return $resultDataSelections;
     }

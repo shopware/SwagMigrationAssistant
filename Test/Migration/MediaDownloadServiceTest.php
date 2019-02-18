@@ -82,7 +82,7 @@ class MediaDownloadServiceTest extends TestCase
         $this->profileUuidService = new MigrationProfileUuidService(
             $this->getContainer()->get('swag_migration_profile.repository'),
             Shopware55Profile::PROFILE_NAME,
-            Shopware55LocalGateway::GATEWAY_TYPE
+            Shopware55LocalGateway::GATEWAY_NAME
         );
         $this->runUuid = Uuid::uuid4()->getHex();
         $runRepository->create(
@@ -117,7 +117,7 @@ class MediaDownloadServiceTest extends TestCase
             $this->runUuid,
             $this->profileUuidService->getProfileUuid(),
             Shopware55Profile::PROFILE_NAME,
-            Shopware55LocalGateway::GATEWAY_TYPE,
+            Shopware55LocalGateway::GATEWAY_NAME,
             ProductDefinition::getEntityName(),
             0,
             250

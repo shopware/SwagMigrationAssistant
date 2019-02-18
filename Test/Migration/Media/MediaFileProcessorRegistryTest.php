@@ -39,7 +39,7 @@ class MediaFileProcessorRegistryTest extends TestCase
         $connection = new SwagMigrationConnectionEntity();
         $profile = new SwagMigrationProfileEntity();
         $profile->setName(Shopware55Profile::PROFILE_NAME);
-        $profile->setGatewayName(Shopware55LocalGateway::GATEWAY_TYPE);
+        $profile->setGatewayName(Shopware55LocalGateway::GATEWAY_NAME);
 
         $connection->setProfile($profile);
         $connection->setCredentialFields([]);

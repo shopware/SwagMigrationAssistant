@@ -16,7 +16,7 @@ use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
 class Shopware55ApiGateway extends AbstractGateway
 {
-    public const GATEWAY_TYPE = 'api';
+    public const GATEWAY_NAME = 'api';
 
     public function read(): array
     {

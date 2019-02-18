@@ -57,13 +57,13 @@ class SwagMigrationNext extends Plugin
             $connection->insert('swag_migration_profile', [
                 'id' => Uuid::uuid4()->getBytes(),
                 'name' => Shopware55Profile::PROFILE_NAME,
-                'gateway_name' => Shopware55ApiGateway::GATEWAY_TYPE,
+                'gateway_name' => Shopware55ApiGateway::GATEWAY_NAME,
                 'created_at' => $now,
             ]);
             $connection->insert('swag_migration_profile', [
                 'id' => Uuid::uuid4()->getBytes(),
                 'name' => Shopware55Profile::PROFILE_NAME,
-                'gateway_name' => Shopware55LocalGateway::GATEWAY_TYPE,
+                'gateway_name' => Shopware55LocalGateway::GATEWAY_NAME,
                 'created_at' => $now,
             ]);
             $connection->insert('swag_migration_general_setting', [

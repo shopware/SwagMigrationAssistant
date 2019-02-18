@@ -83,7 +83,7 @@ class OrderConverterTest extends TestCase
         $this->connection = new SwagMigrationConnectionEntity();
         $profile = new SwagMigrationProfileEntity();
         $profile->setName(Shopware55Profile::PROFILE_NAME);
-        $profile->setGatewayName(Shopware55LocalGateway::GATEWAY_TYPE);
+        $profile->setGatewayName(Shopware55LocalGateway::GATEWAY_NAME);
         $this->connection->setId(Uuid::uuid4()->getHex());
         $this->connection->setProfile($profile);
 

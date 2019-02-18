@@ -22,7 +22,7 @@ use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
 class Shopware55LocalGateway extends AbstractGateway
 {
-    public const GATEWAY_TYPE = 'local';
+    public const GATEWAY_NAME = 'local';
 
     public function read(): array
     {

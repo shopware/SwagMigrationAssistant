@@ -150,7 +150,7 @@ class MigrationController extends AbstractController
     /**
      * @Route("/api/v{version}/_action/migration/update-connection-credentials", name="api.admin.migration.update-connection-credentials", methods={"POST"})
      */
-    public function updateConnectionCredentials(Request $request, Context $context): JsonResponse
+    public function updateConnectionCredentials(Request $request, Context $context): Response
     {
         $connectionId = $request->request->get('connectionId');
         $credentialFields = $request->request->get('credentialFields');
@@ -168,9 +168,7 @@ class MigrationController extends AbstractController
 
         $this->runService->updateConnectionCredentials($context, $connectionId, $credentialFields);
 
-        return new JsonResponse([
-            'success' => 'true',
-        ]);
+        return new Response();
     }
 
     /**
@@ -225,7 +223,7 @@ class MigrationController extends AbstractController
     /**
      * @Route("/api/v{version}/_action/migration/write-data", name="api.admin.migration.write-data", methods={"POST"})
      */
-    public function writeData(Request $request, Context $context): Response
+    public function writeData(Request $request, Context $context): JsonResponse
     {
         $runUuid = $request->request->get('runUuid');
         $entity = $request->request->get('entity');

@@ -11,6 +11,15 @@ class DataSelectionCollection extends Collection
         return parent::first();
     }
 
+    public function sortByPosition(): void
+    {
+        $this->sort(
+            function (DataSelectionStruct $first, DataSelectionStruct $second) {
+                return $first->getPosition() > $second->getPosition();
+            }
+        );
+    }
+
     protected function getExpectedClass(): string
     {
         return DataSelectionStruct::class;

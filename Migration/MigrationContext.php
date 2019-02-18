@@ -61,6 +61,24 @@ class MigrationContext extends Struct implements MigrationContextInterface
         return $this->entity;
     }
 
+    public function getProfileName(): ?string
+    {
+        if ($this->connection === null) {
+            return null;
+        }
+
+        return $this->connection->getProfile()->getName();
+    }
+
+    public function getGatewayName(): ?string
+    {
+        if ($this->connection === null) {
+            return null;
+        }
+
+        return $this->connection->getProfile()->getGatewayName();
+    }
+
     public function getOffset(): int
     {
         return $this->offset;

@@ -60,7 +60,7 @@ class LocalMediaProcessor extends AbstractMediaFileProcessor
 
     public function getSupportedGatewayIdentifier(): string
     {
-        return Shopware55LocalGateway::GATEWAY_TYPE;
+        return Shopware55LocalGateway::GATEWAY_NAME;
     }
 
     public function process(MigrationContextInterface $migrationContext, Context $context, array $workload, int $fileChunkByteSize): array

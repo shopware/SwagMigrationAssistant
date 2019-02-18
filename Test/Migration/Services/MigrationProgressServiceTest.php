@@ -14,10 +14,10 @@ use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\DataSelection\DataSelectionRegistry;
+use SwagMigrationNext\Migration\Media\MediaFileService;
 use SwagMigrationNext\Migration\Run\EntityProgress;
 use SwagMigrationNext\Migration\Run\RunProgress;
 use SwagMigrationNext\Migration\Run\RunService;
-use SwagMigrationNext\Migration\Media\MediaFileService;
 use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationNext\Migration\Service\MigrationProgressService;
@@ -128,7 +128,7 @@ class MigrationProgressServiceTest extends TestCase
         $profileUuidService = new MigrationProfileUuidService(
             $this->profileRepo,
             Shopware55Profile::PROFILE_NAME,
-            Shopware55LocalGateway::GATEWAY_TYPE
+            Shopware55LocalGateway::GATEWAY_NAME
         );
         $this->profileId = $profileUuidService->getProfileUuid();
 

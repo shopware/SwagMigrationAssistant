@@ -33,7 +33,7 @@ class GatewayServiceTest extends TestCase
         $connection = new SwagMigrationConnectionEntity();
         $profile = new SwagMigrationProfileEntity();
         $profile->setName('foobar');
-        $profile->setGatewayName(Shopware55LocalGateway::GATEWAY_TYPE);
+        $profile->setGatewayName(Shopware55LocalGateway::GATEWAY_NAME);
 
         $connection->setProfile($profile);
         $connection->setCredentialFields([]);
