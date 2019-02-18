@@ -36,8 +36,6 @@ Component.register('swag-migration-index', {
             isOtherMigrationRunning: false,
             showMigrationConfirmDialog: false,
             showAbortMigrationConfirmDialog: false,
-            catalogs: [],
-            salesChannels: [],
             tableData: [
                 {
                     id: 'categories_products',
@@ -84,14 +82,6 @@ Component.register('swag-migration-index', {
     },
 
     computed: {
-        catalogStore() {
-            return State.getStore('catalog');
-        },
-
-        salesChannelStore() {
-            return State.getStore('sales_channel');
-        },
-
         migrationRunStore() {
             return State.getStore('swag_migration_run');
         },
@@ -256,29 +246,6 @@ Component.register('swag-migration-index', {
                     this.isLoading = false;
                 }).catch(() => {
                     this.$router.push({ name: 'swag.migration.wizard.credentials' });
-                });
-            });
-
-            // Get possible targets
-            const catalogPromise = this.catalogStore.getList({});
-            const salesChannelPromise = this.salesChannelStore.getList({});
-
-            Promise.all([catalogPromise, salesChannelPromise]).then((responses) => {
-                this.catalogs = responses[0].items;
-                this.salesChannels = responses[1].items;
-
-                this.tableData.forEach((tableItem) => {
-                    if (tableItem.target === 'catalog') {
-                        tableItem.targets = this.catalogs;
-                    } else if (tableItem.target === 'salesChannel') {
-                        tableItem.targets = this.salesChannels;
-                    } else {
-                        tableItem.targets = [];
-                    }
-
-                    if (tableItem.targets.length !== 0) {
-                        tableItem.targetId = tableItem.targets[0].id;
-                    }
                 });
             });
 
