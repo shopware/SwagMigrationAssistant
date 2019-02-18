@@ -3,19 +3,17 @@
         <sw-modal class="swag-migration-wizard"
                   size="800px"
                   v-if="showModal"
-                  :title="$tc('swag-migration.wizard.title')"
+                  :title="$tc(modalTitleSnippet)"
                   :isLoading="isLoading"
                   @closeModal="onCloseModal">
 
             {% block swag_migration_wizard_placeholder %}
-                <div class="swag-migration-wizard-placeholder" v-if="isLoading || childIsLoading"></div>
+                <div class="swag-migration-wizard-placeholder" v-show="isLoading || childIsLoading"></div>
             {% endblock %}
 
             {% block swag_migration_router_view %}
                 <router-view
                         @onChildRouteReadyChanged="onChildRouteReadyChanged"
-                        :profileSelection="profileSelection"
-                        @onProfileSelectionChanged="onProfileSelectionChanged"
                         @onProfileSelected="onProfileSelected"
                         @onChangeConnectionName="onChangeConnectionName"
                         @onConnectionSelected="onConnectionSelected"
@@ -35,14 +33,12 @@
 
                     {% block swag_migration_wizard_arrow %}
                         <div class="swag-migration-wizard__left-actions">
-                            <span class="swag-migration-wizard-arrow-link"
-                                  v-show="buttonArrowVisible"
-                                  @click="onButtonArrowClick">
-                                <sw-icon name="default-arrow-simple-left" small></sw-icon>
-                                <span>
-                                    {{ $tc(buttonArrowSnippet) }}
-                                </span>
-                            </span>
+                            <sw-button class="swag-migration-wizard__buttonBack"
+                                       size="small"
+                                       v-show="buttonBackVisible"
+                                       @click="onButtonBackClick">
+                                {{ $tc(buttonBackSnippet) }}
+                            </sw-button>
                         </div>
                     {% endblock %}
 

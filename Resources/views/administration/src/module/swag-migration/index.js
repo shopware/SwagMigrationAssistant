@@ -56,10 +56,6 @@ Module.register('swag-migration', {
                     path: 'introduction',
                     component: 'swag-migration-wizard-page-introduction'
                 },
-                chooseAction: {
-                    path: 'chooseAction',
-                    component: 'swag-migration-wizard-page-choose-action'
-                },
                 connectionCreate: {
                     path: 'connection/create',
                     component: 'swag-migration-wizard-page-connection-create'

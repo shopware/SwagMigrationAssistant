@@ -4,11 +4,6 @@ import template from './swag-migration-wizard.html.twig';
 import './swag-migration-wizard.less';
 
 
-const PROFILE_SELECTION = Object.freeze({
-    CREATE: 'create-profile',
-    SELECT: 'select-profile'
-});
-
 Component.register('swag-migration-wizard', {
     template,
 
@@ -26,40 +21,40 @@ Component.register('swag-migration-wizard', {
             routes: {
                 introduction: {
                     name: 'swag.migration.wizard.introduction',
-                    index: 0
-                },
-                chooseAction: {
-                    name: 'swag.migration.wizard.chooseAction',
-                    index: 1
+                    index: 0,
+                    titleSnippet: 'swag-migration.wizard.pages.introduction.title'
                 },
                 connectionCreate: {
                     name: 'swag.migration.wizard.connectionCreate',
-                    index: 1.1 // not available through nextRoute (child from profile)
+                    index: 0.1, // not available through nextRoute (child from profile)
+                    titleSnippet: 'swag-migration.wizard.pages.connectionCreate.title'
                 },
                 connectionSelect: {
                     name: 'swag.migration.wizard.connectionSelect',
-                    index: 1.1 // not available through nextRoute (child from profile)
+                    index: 0.1, // not available through nextRoute (child from profile)
+                    titleSnippet: 'swag-migration.wizard.pages.connectionSelect.title'
                 },
                 profileInformation: {
                     name: 'swag.migration.wizard.profileInformation',
-                    index: 2
+                    index: 1,
+                    titleSnippet: 'swag-migration.wizard.pages.profileInformation.title'
                 },
                 credentials: {
                     name: 'swag.migration.wizard.credentials',
-                    index: 3
+                    index: 2,
+                    titleSnippet: 'swag-migration.wizard.pages.credentials.title'
                 },
                 credentialsSuccess: {
                     name: 'swag.migration.wizard.credentialsSuccess',
-                    index: 3.1 // not available through nextRoute (child from credentials)
+                    index: 2.1, // not available through nextRoute (child from credentials)
+                    titleSnippet: 'swag-migration.wizard.pages.credentials.statusTitle'
                 },
                 credentialsError: {
                     name: 'swag.migration.wizard.credentialsError',
-                    index: 3.1 // not available through nextRoute (child from credentials)
+                    index: 2.1, // not available through nextRoute (child from credentials)
+                    titleSnippet: 'swag-migration.wizard.pages.credentials.statusTitle'
                 }
             },
-            buttonArrowVisible: true,
-            buttonSecondaryVisible: true,
-            profileSelection: 'create-profile',
             profile: {}, // state object
             connection: {},
             connectionName: '',
@@ -70,8 +65,20 @@ Component.register('swag-migration-wizard', {
     },
 
     computed: {
-        buttonArrowSnippet() {
-            return 'swag-migration.wizard.buttonToStart';
+        modalTitleSnippet() {
+            return this.currentRoute.titleSnippet;
+        },
+
+        buttonBackSnippet() {
+            return 'swag-migration.wizard.buttonToProfileInformation';
+        },
+
+        buttonBackVisible() {
+            return (
+                !this.isLoading &&
+                this.currentRoute === this.routes.credentials &&
+                this.profileInformationComponentIsLoaded
+            );
         },
 
         buttonSecondarySnippet() {
@@ -80,6 +87,10 @@ Component.register('swag-migration-wizard', {
             }
 
             return 'swag-migration.wizard.buttonAbort';
+        },
+
+        buttonSecondaryVisible() {
+            return (this.currentRoute !== this.routes.credentialsSuccess);
         },
 
         buttonPrimarySnippet() {
@@ -108,7 +119,7 @@ Component.register('swag-migration-wizard', {
                 this.routes.connectionCreate,
                 this.routes.connectionSelect
             ].includes(this.currentRoute)) {
-                return !this.childRouteReady;
+                return !this.childRouteReady || this.isLoading;
             }
 
             return this.isLoading;
@@ -195,7 +206,6 @@ Component.register('swag-migration-wizard', {
 
         onConnect() {
             this.isLoading = true;
-            this.buttonArrowVisible = false;
             this.errorMessageSnippet = '';
 
             this.trimCredentials();
@@ -216,6 +226,7 @@ Component.register('swag-migration-wizard', {
         },
 
         doConnectionCheck() {
+            this.isLoading = true;
             this.migrationService.checkConnection(this.connection.id).then((connectionCheckResponse) => {
                 this.isLoading = false;
 
@@ -292,17 +303,6 @@ Component.register('swag-migration-wizard', {
 
         onChildRouteChanged() {
             this.checkForDisabledRoute();
-
-            // Handle arrow button visibility
-            this.buttonArrowVisible = ![
-                this.routes.introduction,
-                this.routes.chooseAction,
-                this.routes.credentialsSuccess,
-                this.routes.credentialsError
-            ].includes(this.currentRoute);
-
-            // Handle secondary button visibility
-            this.buttonSecondaryVisible = (this.currentRoute !== this.routes.credentialsSuccess);
         },
 
         checkForDisabledRoute() {
@@ -319,12 +319,12 @@ Component.register('swag-migration-wizard', {
 
                 // make the profileInformation route a child if there is no component
                 // so navigation to this route is not possible for the user
-                this.routes.profileInformation.index = 1.1;
+                this.routes.profileInformation.index = 0.1;
             }
         },
 
-        onButtonArrowClick() {
-            this.navigateToRoute(this.routes.chooseAction);
+        onButtonBackClick() {
+            this.navigateToRoute(this.routes.profileInformation);
         },
 
         onButtonSecondaryClick() {
@@ -333,16 +333,6 @@ Component.register('swag-migration-wizard', {
         },
 
         onButtonPrimaryClick() {
-            if (this.currentRoute === this.routes.chooseAction) {
-                // depending on the selection navigate to the right route.
-                if (this.profileSelection === PROFILE_SELECTION.CREATE) {
-                    this.navigateToRoute(this.routes.connectionCreate);
-                    return;
-                }
-                this.navigateToRoute(this.routes.connectionSelect);
-                return;
-            }
-
             if (this.currentRoute === this.routes.connectionCreate) {
                 // clicked Next (save selected profile)
                 this.createNewConnection().then(() => {
@@ -447,9 +437,9 @@ Component.register('swag-migration-wizard', {
             const newConnection = this.migrationConnectionStore.create();
             newConnection.profileId = this.selectedProfile.id;
             newConnection.name = this.connectionName;
-            newConnection.save();
-
-            return this.saveSelectedConnection(newConnection);
+            return newConnection.save().then((savedConnection) => {
+                return this.saveSelectedConnection(savedConnection);
+            });
         },
 
         saveSelectedConnection(connection) {
@@ -505,10 +495,6 @@ Component.register('swag-migration-wizard', {
 
         onChildIsLoadingChanged(value) {
             this.childIsLoading = value;
-        },
-
-        onProfileSelectionChanged(value) {
-            this.profileSelection = value;
         },
 
         onConnectionSelected(value) {
