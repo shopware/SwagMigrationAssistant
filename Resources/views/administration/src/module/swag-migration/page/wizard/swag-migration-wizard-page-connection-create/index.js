@@ -47,6 +47,7 @@ Component.register('swag-migration-wizard-page-connection-create', {
             this.emitOnChildRouteReadyChanged(false);
 
             this.profileStore.getList({
+                limit: 100,
                 aggregations: [
                     {
                         name: 'profileAgg',
@@ -57,11 +58,7 @@ Component.register('swag-migration-wizard-page-connection-create', {
             }).then((profiles) => {
                 this.profiles = profiles.aggregations.profileAgg;
 
-                const params = {
-                    offset: 0,
-                    limit: 1
-                };
-                this.generalSettingStore.getList(params).then((response) => {
+                this.generalSettingStore.getList({ limit: 1 }).then((response) => {
                     if (!response || response.items[0].selectedProfileId === null) {
                         this.setIsLoading(false);
                         return;
@@ -101,6 +98,7 @@ Component.register('swag-migration-wizard-page-connection-create', {
 
                     this.profileStore.getList({
                         criteria: criteria,
+                        limit: 100,
                         aggregations: [
                             {
                                 name: 'gatewayAgg',
@@ -129,7 +127,8 @@ Component.register('swag-migration-wizard-page-connection-create', {
                 );
 
                 this.profileStore.getList({
-                    criteria: criteria
+                    criteria: criteria,
+                    limit: 100
                 }).then((profile) => {
                     if (profile.total !== 0) {
                         this.$emit('onProfileSelected', profile.items[0]);

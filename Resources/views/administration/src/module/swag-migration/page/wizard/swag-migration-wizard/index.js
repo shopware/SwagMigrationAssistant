@@ -388,12 +388,8 @@ Component.register('swag-migration-wizard', {
                 }
 
                 this.isLoading = true;
-                let params = {
-                    offset: 0,
-                    limit: 1
-                };
 
-                this.migrationGeneralSettingStore.getList(params).then((response) => {
+                this.migrationGeneralSettingStore.getList({ limit: 1 }).then((response) => {
                     if (!response) {
                         this.isLoading = false;
                         this.onNoConnectionSelected();
@@ -408,8 +404,7 @@ Component.register('swag-migration-wizard', {
                         return;
                     }
 
-                    params = {
-                        offset: 0,
+                    const params = {
                         limit: 1,
                         criteria: CriteriaFactory.equals('id', response.items[0].selectedConnectionId)
                     };
@@ -456,12 +451,7 @@ Component.register('swag-migration-wizard', {
             return new Promise((resolve) => {
                 this.isLoading = true;
 
-                const params = {
-                    offset: 0,
-                    limit: 1
-                };
-
-                this.migrationGeneralSettingStore.getList(params).then((response) => {
+                this.migrationGeneralSettingStore.getList({ limit: 1 }).then((response) => {
                     if (!response ||
                         (response && response.items.length < 1)
                     ) {

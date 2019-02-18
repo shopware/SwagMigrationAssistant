@@ -586,7 +586,8 @@ class MigrationWorkerService {
         return new Promise((resolve) => {
             const criteria = CriteriaFactory.equals('runId', this._runId);
             const params = {
-                criteria: criteria
+                criteria: criteria,
+                limit: 500
             };
 
             this._migrationLoggingService.getList(params).then((response) => {
