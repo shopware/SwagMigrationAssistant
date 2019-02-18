@@ -72,7 +72,7 @@ class RunServiceTest extends TestCase
      */
     private $connection;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->runRepo = $this->getContainer()->get('swag_migration_run.repository');
         $profileRepo = $this->getContainer()->get('swag_migration_profile.repository');

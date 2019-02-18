@@ -38,7 +38,7 @@ class Shopware55MappingServiceTest extends TestCase
      */
     private $profileUuidService;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->localeRepo = $this->getContainer()->get('locale.repository');
         $this->stateMachineRepository = $this->getContainer()->get('state_machine.repository');

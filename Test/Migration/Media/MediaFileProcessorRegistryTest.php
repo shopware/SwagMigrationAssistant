@@ -23,7 +23,7 @@ class MediaFileProcessorRegistryTest extends TestCase
      */
     private $processorRegistry;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->processorRegistry = new MediaFileProcessorRegistry(
             new DummyCollection(
