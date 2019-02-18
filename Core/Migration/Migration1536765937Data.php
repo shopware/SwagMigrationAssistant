@@ -27,12 +27,12 @@ CREATE TABLE `swag_migration_data` (
     `write_failure`   TINYINT(1)  NOT NULL DEFAULT '0',
     `created_at`      DATETIME(3) NOT NULL,
     `updated_at`      DATETIME(3),
-    KEY indexData (`entity`, `run_id`),
-    CHECK (JSON_VALID(`raw`)),
-    CHECK (JSON_VALID(`converted`)),
-    CHECK (JSON_VALID(`unmapped`)),
+    KEY `idx.swag_migration_data.entity__run_id` (`entity`, `run_id`),
+    CONSTRAINT `json.raw` CHECK (JSON_VALID(`raw`)),
+    CONSTRAINT `json.converted` CHECK (JSON_VALID(`converted`)),
+    CONSTRAINT `json.unmapped` CHECK (JSON_VALID(`unmapped`)),
     PRIMARY KEY (`id`),
-    CONSTRAINT `fk_swag_migration_run.run_id` FOREIGN KEY (`run_id`) REFERENCES `swag_migration_run` (`id`)
+    CONSTRAINT `fk.swag_migration_run.run_id` FOREIGN KEY (`run_id`) REFERENCES `swag_migration_run` (`id`)
       ON DELETE RESTRICT
       ON UPDATE CASCADE
 )

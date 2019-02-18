@@ -22,7 +22,7 @@ CREATE TABLE `swag_migration_profile` (
     `created_at`        DATETIME(3) NOT NULL,
     `updated_at`        DATETIME(3),
     PRIMARY KEY (`id`),
-    UNIQUE KEY `profile_gateway` (`name`, `gateway_name`)
+    CONSTRAINT `uniq.swag_migration_profile.name__gateway_name` UNIQUE (`name`, `gateway_name`)
 )
     ENGINE = InnoDB
     DEFAULT CHARSET = utf8mb4

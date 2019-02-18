@@ -5,7 +5,7 @@ namespace SwagMigrationNext\Core\Migration;
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Migration\MigrationStep;
 
-class Migration1538046469MediaFiles extends MigrationStep
+class Migration1538046469MediaFile extends MigrationStep
 {
     public function getCreationTimestamp(): int
     {
@@ -28,10 +28,10 @@ CREATE TABLE `swag_migration_media_file` (
     `created_at`      DATETIME(3) NOT NULL,
     `updated_at`      DATETIME(3),
     PRIMARY KEY (`id`),
-    KEY indexMedia (`media_id`, `run_id`),
-    KEY indexWritten (`written`, `run_id`),
-    KEY indexProcessed (`processed`, `run_id`),
-    CONSTRAINT `fk_swag_migration_file.run_id` FOREIGN KEY (`run_id`) REFERENCES `swag_migration_run` (`id`)
+    KEY `idx.swag_migration_media_file.media_id__run_id` (`media_id`, `run_id`),
+    KEY `idx.swag_migration_media_file.written__run_id` (`written`, `run_id`),
+    KEY `idx.swag_migration_media_file.processed__run_id` (`processed`, `run_id`),
+    CONSTRAINT `fk.swag_migration_media_file.run_id` FOREIGN KEY (`run_id`) REFERENCES `swag_migration_run` (`id`)
       ON DELETE RESTRICT
       ON UPDATE CASCADE
 )
