@@ -25,7 +25,9 @@ Component.register('swag-migration-wizard-page-connection-select', {
 
     created() {
         this.$emit('onChildRouteReadyChanged', false);
-        this.migrationConnectionStore.getList({}).then((res) => {
+        this.migrationConnectionStore.getList({
+            limit: 100
+        }).then((res) => {
             this.connections = res.items;
             this.onConnectionSelected();
         });
