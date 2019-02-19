@@ -7,11 +7,10 @@
       "tabHistory": "Verlauf"
     },
     "wizard": {
-      "title": "Datenimport: Vorbereitung",
       "buttonAbort": "Abbrechen",
       "buttonLetsGo": "Los geht's",
       "buttonConnect": "Verbinden",
-      "buttonToStart": "Startpunkt",
+      "buttonToProfileInformation": "Informationen",
       "buttonNext": "Fortfahren",
       "buttonFinish": "Fertig",
       "buttonEdit": "Bearbeiten",
@@ -19,52 +18,48 @@
       "pathTarget": "Shopware 5: ",
       "pathSettings": "Einstellungen",
       "pathUserManagement": "Benutzerverwaltung",
-      "pathPluginManagement": "Plugin Manager",
-      "pathExtensions": "Erweiterungen",
       "pathEditUser": "„Diesen Benutzer editieren“",
       "pages": {
         "introduction": {
-          "contentTitle": "#PLATZHALTER# Eine Headline Profil ändern",
-          "contentInformation": "#PLATZHALTER# Lege ein neues Profil an oder wähle aus denen die Du schon angelegt hast."
+          "title": "Willkommen in der Migration",
+          "contentInformation": "Vor dem Migrationsprozess werden wir eine Verbindung zu Deiner Datenquelle herstellen. Falls Du von einem Drittsystem migrieren willst, installiere und aktiviere die entsprechenden Plugins in Deinem System und in Deiner Shopware-6-Instanz.",
+          "documentationLink": "#TODO: PLACE LINK# Mehr zum Thema Migration lesen"
         },
-        "profile": {
-          "contentTitle": "#PLATZHALTER# Eine Headline Startpunkt",
-          "contentInformation": "#PLATZHALTER# Wähle einen Startpunkt aus um fortzufahren.",
-          "createTitle": "#PLATZHALTER# Profil wählen",
-          "createDescription": "#PLATZHALTER# Migrations-Profil auswählen und Verbindung herstellen.",
-          "selectTitle": "#PLATZHALTER# Profil wechseln",
-          "selectDescription": "#PLATZHALTER# Bestehendes Profil auswählen um Daten zu aktualisieren."
+        "connectionSelect": {
+          "title": "Migration - Verbindung wechseln",
+          "contentInformation": "Wähle eine bestehende Verbindung aus der Liste aus, um Daten zu aktualisieren.",
+          "connectionLabel": "Name der Verbindung",
+          "connectionPlaceholder": "Bitte Verbindung auswählen"
         },
-        "profileSelect": {
-          "contentTitle": "#PLATZHALTER# Wähle ein bestehendes Profil aus der Liste aus, um Daten zu aktualisieren.",
-          "profileLabel": "#PLATZHALTER# Profilname:",
-          "profilePlaceholder": "#PLATZHALTER# Bitte Profil auswählen"
+        "connectionCreate": {
+          "title": "Migration - Verbindung anlegen",
+          "contentInformation": "Gib die Daten an, die für die Migration benötigt werden.",
+          "profileLabel": "Profil",
+          "profilePlaceholder": "Bitte wählen",
+          "gatewayLabel": "Schnittstelle",
+          "gatewayPlaceholder": "Bitte wählen",
+          "connectionLabel": "Name",
+          "connectionPlaceholder": "Namen eintragen",
+          "connectionTooltip": "Gib einen eindeutigen Namen für die Verbindung ein. Wir empfehlen Dir, Deine Domain als Namen zu verwenden."
         },
-        "profileCreate": {
-          "contentTitle": "#PLATZHALTER# Eine Headline Profil konfigurieren",
-          "contentInformation": "#PLATZHALTER# Wähle das System und die Schnittstelle aus, von der die Daten migriert werden sollen.",
-          "profileLabel": "#PLATZHALTER# Profile:",
-          "profilePlaceholder": "#PLATZHALTER# Bitte Profil auswählen",
-          "gatewayLabel": "#PLATZHALTER# Gatway:",
-          "gatewayPlaceholder": "#PLATZHALTER# Bitte Gateway auswählen",
-          "connectionLabel": "#PLATZHALTER# Verbindungsname",
-          "connectionPlaceholder": "#PLATZHALTER# Meine Verbindung"
-        },
-        "pluginInformation": {
-          "contentTitle": "Plugin-Installation in Shopware 5",
-          "contentInformation": "Melde Dich in Deinem Shop an und rufe den Plugin-Manager auf. Installiere und aktiviere das Plugin „Shopware Playground Connector”.",
-          "pluginLink": "Mehr Infos zum Plugin"
+        "profileInformation": {
+          "title": "Migration - Verbindung vorbereiten",
+          "shopware55Api": {
+            "contentTitle": "Migration erfordert eine Plugin-Installation",
+            "contentInformation": "Für die Migration wird die Installation des kostenlosen Plugins „Shopware Playground Connector“ benötigt. Dieses findest Du in Deinem Shop-Backend (unter Shopware 5: Plugin Manager > Erweiterungen > Migrationstools). Bitte installiere und aktiviere das Plugin.",
+            "pluginLink": "Mehr Informationen zum Plugin"
+          }
         },
         "credentials": {
+          "title": "Migration - Verbindung bearbeiten",
           "emptyState": "Leider wurde kein enstprechendes Formular für dieses Profil gefunden.",
           "shopware55": {
             "api": {
-              "contentTitle": "Zugang aktivieren in Shopware 5",
-              "contentInformation": "Den API-Zugang aktivierst Du in der Benutzerverwaltung in Deinem Admin-Benutzer Account. Kopiere den API-Schlüssel in die Zwischenablage und bestätige mit Speichern.",
+              "contentInformation": "Für die Verbindung benötigst Du den API-Schlüssel und den Benutzernamen. Diese findest Du in der Benutzerverwaltung Deines Shop-Backends. Aktiviere da den API-Zugang und bestätige mit „Speichern“.",
               "apiKeyLabel": "API-Schlüssel",
-              "apiKeyPlaceholder": "Schlüssel einfügen ...",
+              "apiKeyPlaceholder": "Schlüssel einfügen",
               "apiUserLabel": "Benutzername (API-User)",
-              "apiUserPlaceholder": "Login-Benutzernamen eintragen ...",
+              "apiUserPlaceholder": "Login-Benutzernamen eintragen",
               "endpointLabel": "Shop-Domain",
               "endpointPlaceholder": "www.demoshop.com",
               "endpointSSLLabel": "Mein Shop benutzt SSL"
@@ -73,29 +68,30 @@
               "contentTitle": "Datenbankverbindung zu Shopware 5",
               "contentInformation": "Bitte hinterlege hier die Zugangsdaten zu Deiner Shopware 5 Datenbank",
               "dbHostLabel": "DB-Host",
-              "dbHostPlaceholder": "DB-Host eintragen ...",
+              "dbHostPlaceholder": "DB-Host eintragen",
               "dbPortLabel": "DB-Port",
-              "dbPortPlaceholder": "DB-Port eintragen ...",
+              "dbPortPlaceholder": "DB-Port eintragen",
               "dbNameLabel": "DB-Name",
-              "dbNamePlaceholder": "Datenbankname eintragen ...",
+              "dbNamePlaceholder": "Datenbankname eintragen",
               "dbUserLabel": "DB-Benutzer",
-              "dbUserPlaceholder": "Benutzername eintragen ...",
+              "dbUserPlaceholder": "Benutzername eintragen",
               "dbPasswordLabel": "DB-Passwort",
-              "dbPasswordPlaceholder": "Passwort eintragen ...",
+              "dbPasswordPlaceholder": "Passwort eintragen",
               "installationRoot": "Root Verzeichnis",
               "installationRootPlaceholder": "Installationsordner der Shopinstallation eingeben"
             }
           },
+          "statusTitle": "Migration - Status der Verbindung",
           "success": {
-            "contentTitle": "Erfolgreich verbunden!",
-            "contentInformation": "Lass uns beginnen, Deine Daten zu importieren.",
+            "contentTitle": "Erfolgreich verbunden",
+            "contentInformation": "Jetzt kannst Du mit der Datenmigration beginnen.",
             "alertErrorTitle": "Achtung",
             "undefinedErrorMsg": "Bei der Prüfung des SSL-Zertifikats der angegebenen Shop-Domain ist ein unbekannter Fehler aufgetreten.",
             "connectionInsecureMsg": "Das SSL-Zertifikat der angegebenen Shop-Domain ist nicht sicher. Wir empfehlen eine Überprüfung des Zertifikats zur eigenen Sicherheit."
           },
           "error": {
-            "contentTitle": "Verbindung nicht hergestellt.",
-            "contentInformation": "Die Verbindung konnte nicht hergestellt werden.",
+            "contentTitle": "Verbindung fehlgeschlagen",
+            "contentInformation": "Die Verbindung konnte nicht hergestellt werden. ",
             "alertErrorTitle": "Achtung",
             "connectionErrorMsg": "Es konnte keine Verbindung zum angegebenen Server hergestellt werden. Bitte überprüfe die angegebene Shop-Domain.",
             "authenticationErrorMsg": "Deine Zugangsdaten sind nicht korrekt. Bitte überprüfe sie und versuche es erneut.",
@@ -108,9 +104,9 @@
       }
     },
     "emptyScreen": {
-      "title": "#PLATZHALTER# Keine Verbindung hergestellt",
-      "description": "#PLATZHALTER# Stelle eine Verbindung der Systeme her, erst dann ist eine Migration möglich.<br>Weitere Informationen zum Thema findest du hier:<br><a href=\"#\">Dokumentation: Migration zu Shopware 6</a>",
-      "connectButton": "#PLATZHALTER# Verbindung herstellen"
+      "title": "Keine Verbindung ",
+      "description": "Stelle sicher, dass eine Verbindung zwischen den Systemen hergestellt ist. Erst dann ist eine Migration möglich. Mehr Informationen dazu findest Du hier:<br><a target=\"_blank\" href=\"#\">Dokumentation: Migration zu Shopware 6</a>",
+      "connectButton": "Verbindung herstellen"
     },
     "index": {
       "title": "Datenimport",
@@ -126,17 +122,17 @@
         "cardTitle": "Shopsystem",
         "shopSystem": "Shopsystem:",
         "buttonEditSettings": "Verbindung bearbeiten",
-        "buttonCreateProfile": "Profil konfigurieren",
-        "buttonSelectProfile": "Profil wechseln",
-        "buttonRemoveProfile": "Löschen",
+        "buttonCreateConnection": "Verbindung anlegen",
+        "buttonSelectConnection": "Verbindung wechseln",
+        "buttonRemoveCredentials": "Zugangsdaten löschen",
         "connected": "Verbunden",
         "notConnected": "Nicht verbunden",
         "lastMigration": "Letzter Import:",
         "lastMigrationDateTime": "{date} um {time} Uhr",
         "gateway": "Gateway:",
         "confirmDialog": {
-          "title": "Verbindung löschen",
-          "content": "Die Verbindung wird getrennt und die Zugangsdaten gelöscht. Die Informationen über den Migrationsprozess sind weiterhin in der Historie vorhanden. Du kannst eine Verbindung jederzeit erneut herstellen.<br><br>Möchtest Du die Verbindung löschen?",
+          "title": "Zugangsdaten löschen",
+          "content": "Deine aktuellen Zugangsdaten werden gelöscht. Somit besteht keine aktive Verbindung mehr, um weitere Daten zu migrieren. Die Verbindung kann jedoch jederzeit bearbeitet und mit neuen Zugangsdaten wiederhergestellt werden.<br><br>Möchtest Du die Zugangsdaten löschen?",
           "abortButtonText": "Abbrechen",
           "confirmButtonText": "Ja, löschen"
         },

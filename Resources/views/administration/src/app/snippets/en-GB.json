@@ -7,94 +7,91 @@
       "tabHistory": "History"
     },
     "wizard": {
-      "title": "Data import: Preparations",
-      "buttonAbort": "Abort",
-      "buttonLetsGo": "Let's go",
+      "buttonAbort": "Cancel",
+      "buttonLetsGo": "Start",
       "buttonConnect": "Connect",
-      "buttonToStart": "Starting point",
-      "buttonNext": "Next",
-      "buttonFinish": "Finish",
+      "buttonToProfileInformation": "Profile information",
+      "buttonNext": "Continue",
+      "buttonFinish": "Done",
       "buttonEdit": "Edit",
       "buttonLater": "Later",
       "pathTarget": "Shopware 5:",
       "pathSettings": "Configuration",
       "pathUserManagement": "User administration",
-      "pathPluginManagement": "Plugin Manager",
-      "pathExtensions": "Extensions",
       "pathEditUser": "“Edit user”",
       "pages": {
         "introduction": {
-          "contentTitle": "#PLACEHOLDER# Eine Headline Profil ändern",
-          "contentInformation": "#PLACEHOLDER# Lege ein neues Profil an oder wähle aus denen die Du schon angelegt hast."
+          "title": "Welcome to the migration process",
+          "contentInformation": "Before starting the migration process, we will create a connection to your data source. If you wish to migrate from a third party system, please install and activate all relevant plugins in your active system as well as your Shopware 6 instance.",
+          "documentationLink": "#TODO: PLACE LINK# Learn more about migrating to Shopware 6"
         },
-        "profile": {
-          "contentTitle": "#PLACEHOLDER# Eine Headline Startpunkt",
-          "contentInformation": "#PLACEHOLDER# Wähle einen Startpunkt aus um fortzufahren.",
-          "createTitle": "#PLACEHOLDER# Profil wählen",
-          "createDescription": "#PLACEHOLDER# Migrations-Profil auswählen und Verbindung herstellen.",
-          "selectTitle": "#PLACEHOLDER# Profil wechseln",
-          "selectDescription": "#PLACEHOLDER# Bestehendes Profil auswählen um Daten zu aktualisieren."
+        "connectionSelect": {
+          "title": "Migration – Changing the connection",
+          "contentInformation": "Select an existing connection from the list to update the data.",
+          "connectionLabel": "Name of the connection",
+          "connectionPlaceholder": "Please select a connection"
         },
-        "profileSelect": {
-          "contentTitle": "#PLATZHALTER# Wähle ein bestehendes Profil aus der Liste aus, um Daten zu aktualisieren.",
-          "profileLabel": "#PLATZHALTER# Profilename:",
-          "profilePlaceholder": "#PLATZHALTER# Bitte Profile auswählen"
+        "connectionCreate": {
+          "title": "Migration – Creating a connection",
+          "contentInformation": "Enter the data needed for the migration.",
+          "profileLabel": "Profile",
+          "profilePlaceholder": "Select profile",
+          "gatewayLabel": "Gateway",
+          "gatewayPlaceholder": "Select gateway",
+          "connectionLabel": "Name",
+          "connectionPlaceholder": "Enter name",
+          "connectionTooltip": "Enter a unique name for the connection. We recommend using the respective domain name for this."
         },
-        "profileCreate": {
-          "contentTitle": "#PLACEHOLDER# Eine Headline Profil konfigurieren",
-          "contentInformation": "#PLACEHOLDER# Wähle das System und die Schnittstelle aus, von der die Daten migriert werden sollen.",
-          "profileLabel": "#PLACEHOLDER# Profile:",
-          "profilePlaceholder": "#PLACEHOLDER# Bitte Profile auswählen",
-          "gatewayLabel": "#PLACEHOLDER# Gatway:",
-          "gatewayPlaceholder": "#PLACEHOLDER# Bitte Gateway auswählen",
-          "connectionLabel": "#PLATZHALTER# Verbindungsname",
-          "connectionPlaceholder": "#PLATZHALTER# Meine Verbindung"
-        },
-        "pluginInformation": {
-          "contentTitle": "Plugin installation - Shopware 5 backend",
-          "contentInformation": "Use your access data to log in to the Shopware 5 backend and open the plugin manager. To get started, download and activate the free plugin “Shopware Playground Connector”.",
-          "pluginLink": "More information about the plugin"
+        "profileInformation": {
+          "title": "Migration - Connection preparation",
+          "shopware55Api": {
+            "contentTitle": "Plugin required",
+            "contentInformation": "The required plugin “Shopware Playground Connector” is free and can be found in your Shopware 5 backend under Plugin Manager > Extensions > Migration tools. Please install and activate the plugin to proceed.",
+            "pluginLink": "More information on the plugin"
+          }
         },
         "credentials": {
-          "emptyState": "Sorry no form for selected profile found.",
+          "title": "Migration – Editing the connection",
+          "emptyState": "#PLACEHOLDER# Sorry no form for selected profile found.",
           "shopware55": {
             "api": {
-              "contentTitle": "Create the connection with Shopware 5",
-              "contentInformation": "The API key can be found in the administration of your user data. Please activate the API access, copy the API key to your clipboard and confirm by clicking “Save”.",
+              "contentInformation": "You need the API key and username to establish a connection. You can find these in your shop backend under “User administration”. Activate API access there and confirm with “Save”.",
               "apiKeyLabel": "API key",
-              "apiKeyPlaceholder": "Insert API key ...",
-              "apiUserLabel": "User name (API user)",
-              "apiUserPlaceholder": "Enter your login user name ...",
+              "apiKeyPlaceholder": "Insert key",
+              "apiUserLabel": "Username (API user)",
+              "apiUserPlaceholder": "Enter username",
               "endpointLabel": "Shop domain",
               "endpointPlaceholder": "www.demoshop.com",
               "endpointSSLLabel": "My shop uses SSL"
             },
             "local": {
-              "contentTitle": "Database connection to Shopware 5",
-              "contentInformation": "Insert your Shopware 5 database credentials to connect to the database",
-              "dbHostLabel": "DB host",
-              "dbHostPlaceholder": "Insert database host ...",
-              "dbPortLabel": "DB port",
-              "dbPortPlaceholder": "Insert database port ...",
-              "dbNameLabel": "DB name",
-              "dbNamePlaceholder": "Insert database name ...",
-              "dbUserLabel": "DB user",
-              "dbUserPlaceholder": "Insert username ...",
-              "dbPasswordLabel": "DB password",
-              "dbPasswordPlaceholder": "Insert password ...",
-              "installationRoot": "Installation root"
+              "contentTitle": "#PLACEHOLDER# Database connection to Shopware 5",
+              "contentInformation": "#PLACEHOLDER# Insert your Shopware 5 database credentials to connect to the database",
+              "dbHostLabel": "#PLACEHOLDER# DB host",
+              "dbHostPlaceholder": "#PLACEHOLDER# Insert database host",
+              "dbPortLabel": "#PLACEHOLDER# DB port",
+              "dbPortPlaceholder": "#PLACEHOLDER# Insert database port",
+              "dbNameLabel": "#PLACEHOLDER# DB name",
+              "dbNamePlaceholder": "#PLACEHOLDER# Insert database name",
+              "dbUserLabel": "#PLACEHOLDER# DB user",
+              "dbUserPlaceholder": "#PLACEHOLDER# Insert username",
+              "dbPasswordLabel": "#PLACEHOLDER# DB password",
+              "dbPasswordPlaceholder": "#PLACEHOLDER# Insert password",
+              "installationRoot": "#PLACEHOLDER# Installation root",
+              "installationRootPlaceholder": "#PLACEHOLDER# Installationsordner der Shopinstallation eingeben"
             }
           },
+          "statusTitle": "Migration – Connection status",
           "success": {
-            "contentTitle": "Successfully connected!",
-            "contentInformation": "Click on “Finish” and select the data sets to be transferred in the import module. The data can be imported completely, step by step or subsequently.",
+            "contentTitle": "Connection successful",
+            "contentInformation": "You can now start the data migration.",
             "alertErrorTitle": "Attention",
             "undefinedErrorMsg": "An unknown error occurred while checking the SSL certificate from the specified shop domain.",
             "connectionInsecureMsg": "The SSL certificate of the given shop domain is not secure. We recommend you to check the certificate for your own security."
           },
           "error": {
-            "contentTitle": "Unable to create a connection",
-            "contentInformation": "Unfortunately, the connection could not be established. Please refer to the error messages and try again.",
+            "contentTitle": "Connection failed",
+            "contentInformation": "The connection could not be established. ",
             "alertErrorTitle": "Attention",
             "connectionErrorMsg": "Could not connect to the server. Please check the given shop domain.",
             "authenticationErrorMsg": "Your credentials are incorrect. Please check them and try again.",
@@ -107,9 +104,9 @@
       }
     },
     "emptyScreen": {
-      "title": "#PLACEHOLDER# Keine Verbindung hergestellt",
-      "description": "#PLACEHOLDER# Stelle eine Verbindung der Systeme her, erst dann ist eine Migration möglich.<br>Weitere Informationen zum Thema findest du hier:<br><a href=\"#\">Dokumentation: Migration zu Shopware 6</a>",
-      "connectButton": "#PLACEHOLDER# Verbindung herstellen"
+      "title": "No connection",
+      "description": "Make sure that a connection has been established between the systems. This is required for the migration. You can find more information here:<br><a target=\"_blank\" href=\"#\">Documentation: Migration to Shopware 6</a>",
+      "connectButton": "Establish connection"
     },
     "index": {
       "title": "Data import",
@@ -125,18 +122,18 @@
         "cardTitle": "Shop system",
         "shopSystem": "Shop system:",
         "buttonEditSettings": "Edit connection",
-        "buttonCreateProfile": "Edit profile",
-        "buttonSelectProfile": "Change profile",
-        "buttonRemoveProfile": "Remove",
+        "buttonCreateConnection": "Create a new connection",
+        "buttonSelectConnection": "Change the connection",
+        "buttonRemoveCredentials": "Delete access data",
         "connected": "Connected",
         "notConnected": "Not connected",
         "lastMigration": "Last import:",
         "lastMigrationDateTime": "{date} at {time}",
         "gateway": "Gateway:",
         "confirmDialog": {
-          "title": "Delete Connection",
-          "content": "The connection will be terminated and the credentials deleted. The information about the migration process is still available in the history. You can re-establish a connection at any time. <br><br>Do you want to delete the connection?",
-          "abortButtonText": "Abort",
+          "title": "Delete access data",
+          "content": "Your current access data will be deleted. This will stop the active connection from working. However, the connection's access data can be edited at any time and the connection re-established using fresh/new access credentials.<br><br>Do you want to delete the access data?",
+          "abortButtonText": "Cancel",
           "confirmButtonText": "Yes, delete"
         },
         "entities": {

@@ -19,13 +19,7 @@ Component.register('swag-migration-profile-shopware55-api-credential-form', {
                 endpoint: '',
                 apiUser: '',
                 apiKey: ''
-            },
-            breadcrumbItems: [
-                this.$tc('swag-migration.wizard.pathSettings'),
-                this.$tc('swag-migration.wizard.pathUserManagement'),
-                this.$tc('swag-migration.wizard.pathEditUser')
-            ],
-            breadcrumbDescription: this.$tc('swag-migration.wizard.pathTarget')
+            }
         };
     },
 

@@ -4,10 +4,10 @@
             <div class="swag-migration-wizard__content">
                 {% block swag_migration_wizard_page_select_profile_information %}
                     <div class="content__information">
-                        {% block swag_migration_wizard_page_select_profile_title %}
-                            <h3 class="information__header">
-                                {{ $tc('swag-migration.wizard.pages.profileSelect.contentTitle') }}
-                            </h3>
+                        {% block swag_migration_wizard_page_select_profile_description %}
+                            <p class="swag-migration-wizard__description">
+                                {{ $tc('swag-migration.wizard.pages.connectionSelect.contentInformation') }}
+                            </p>
                         {% endblock %}
                     </div>
                 {% endblock %}
@@ -16,8 +16,8 @@
                         <sw-select-field :options="connections"
                                          v-model="selectedConnectionId"
                                          @input="onConnectionSelected"
-                                         :label="$tc('swag-migration.wizard.pages.profileSelect.profileLabel')"
-                                         :placeholder="$tc('swag-migration.wizard.pages.profileSelect.profilePlaceholder')">
+                                         :label="$tc('swag-migration.wizard.pages.connectionSelect.connectionLabel')"
+                                         :placeholder="$tc('swag-migration.wizard.pages.connectionSelect.connectionPlaceholder')">
                         </sw-select-field>
                     </div>
                 {% endblock %}
