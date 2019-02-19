@@ -24,10 +24,10 @@ CREATE TABLE `swag_migration_mapping` (
     `additional_data` LONGTEXT,
     `created_at`      DATETIME(3) NOT NULL,
     `updated_at`      DATETIME(3),
-    KEY indexMapping (`entity`, `old_identifier`),
-    CHECK (JSON_VALID(`additional_data`)),
+    KEY `idx.swag_migration_mapping.entity__old_identifier` (`entity`, `old_identifier`),
+    CONSTRAINT `json.additional_data` CHECK (JSON_VALID(`additional_data`)),
     PRIMARY KEY (`id`),
-    CONSTRAINT `fk_swag_migration_mapping.connection_id` FOREIGN KEY (`connection_id`) REFERENCES `swag_migration_connection`(`id`)
+    CONSTRAINT `fk.swag_migration_mapping.connection_id` FOREIGN KEY (`connection_id`) REFERENCES `swag_migration_connection`(`id`)
       ON DELETE CASCADE
       ON UPDATE CASCADE
 )

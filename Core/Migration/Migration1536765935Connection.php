@@ -23,9 +23,9 @@ CREATE TABLE `swag_migration_connection` (
     `created_at`            DATETIME(3)  NOT NULL,
     `updated_at`            DATETIME(3),
     PRIMARY KEY (`id`),
-    UNIQUE (`name`),
-    CHECK (JSON_VALID(`credential_fields`)),
-    CONSTRAINT `fk_swag_migration_connection.profile_id` FOREIGN KEY (`profile_id`) REFERENCES `swag_migration_profile`(`id`)
+    CONSTRAINT `uniq.swag_migration_connection.name` UNIQUE (`name`),
+    CONSTRAINT `json.credential_fields` CHECK (JSON_VALID(`credential_fields`)),
+    CONSTRAINT `fk.swag_migration_connection.profile_id` FOREIGN KEY (`profile_id`) REFERENCES `swag_migration_profile`(`id`)
       ON DELETE CASCADE
       ON UPDATE CASCADE
 )

@@ -21,7 +21,7 @@ CREATE TABLE `swag_migration_general_setting` (
     `created_at`              DATETIME(3)  NOT NULL,
     `updated_at`              DATETIME(3),
     PRIMARY KEY (`id`),
-    CONSTRAINT `fk_swag_migration_general_setting.selected_connection_id` FOREIGN KEY (selected_connection_id)
+    CONSTRAINT `fk.swag_migration_general_setting.selected_connection_id` FOREIGN KEY (selected_connection_id)
       REFERENCES swag_migration_connection (id)
       ON DELETE SET NULL
       ON UPDATE CASCADE
