@@ -74,7 +74,8 @@ class MappingServiceTest extends TestCase
             $this->getContainer()->get('country.repository'),
             $this->getContainer()->get('currency.repository'),
             $this->getContainer()->get('sales_channel.repository'),
-            $this->getContainer()->get('sales_channel_type.repository')
+            $this->getContainer()->get('sales_channel_type.repository'),
+            $this->getContainer()->get('payment_method.repository')
         );
     }
 
@@ -103,7 +104,8 @@ class MappingServiceTest extends TestCase
             $this->getContainer()->get('country.repository'),
             $this->getContainer()->get('currency.repository'),
             $this->getContainer()->get('sales_channel.repository'),
-            $this->getContainer()->get('sales_channel_type.repository')
+            $this->getContainer()->get('sales_channel_type.repository'),
+            $this->getContainer()->get('payment_method.repository')
         );
 
         $uuid2 = $newMappingService->createNewUuid($this->connectionId, 'product', '123', $context);
@@ -197,5 +199,14 @@ class MappingServiceTest extends TestCase
         $uuid = $this->mappingService->getUuid($this->connectionId, LanguageDefinition::getEntityName(), $localeCode, $context);
 
         self::assertNull($uuid);
+    }
+
+    public function testGetPaymentUuid(): void
+    {
+        $paymentUuid = $this->mappingService->getPaymentUuid('invoice', Context::createDefaultContext());
+        self::assertNotNull($paymentUuid);
+
+        $paymentUuid = $this->mappingService->getPaymentUuid('foobar', Context::createDefaultContext());
+        self::assertNull($paymentUuid);
     }
 }

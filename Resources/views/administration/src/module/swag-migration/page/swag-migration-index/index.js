@@ -10,6 +10,8 @@ Component.register('swag-migration-index', {
             backButtonVisible: false,
             migrateButtonVisible: false,
             migrateButtonDisabled: false,
+            startButtonVisible: false,
+            startButtonDisabled: false,
             pauseButtonVisible: false,
             pauseButtonDisabled: false,
             continueButtonVisible: false
@@ -29,6 +31,8 @@ Component.register('swag-migration-index', {
         this.backButtonVisible = false;
         this.migrateButtonVisible = false;
         this.migrateButtonDisabled = false;
+        this.startButtonVisible = false;
+        this.startButtonDisabled = false;
         this.pauseButtonVisible = false;
         this.pauseButtonDisabled = false;
         this.continueButtonVisible = false;

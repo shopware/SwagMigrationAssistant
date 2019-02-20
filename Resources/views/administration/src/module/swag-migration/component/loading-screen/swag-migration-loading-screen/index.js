@@ -1,6 +1,8 @@
 import { Component } from 'src/core/shopware';
 import template from './swag-migration-loading-screen.html.twig';
 import './swag-migration-loading-screen.less';
+import { MIGRATION_DISPLAY_STATUS } from
+    '../../../../../core/service/migration/swag-migration-worker-status-manager.service';
 
 Component.register('swag-migration-loading-screen', {
     template,
@@ -20,12 +22,6 @@ Component.register('swag-migration-loading-screen', {
         }
     },
 
-    data() {
-        return {
-            status: ['fetchData', 'writeData', 'downloadMedia']
-        };
-    },
-
     computed: {
         progressBarCount() {
             return this.entityGroups.length;
@@ -41,11 +37,25 @@ Component.register('swag-migration-loading-screen', {
         },
 
         currentStatus() {
-            return this.status[this.statusIndex];
+            return MIGRATION_DISPLAY_STATUS[this.statusIndex];
         },
 
         statusCount() {
-            return this.status.length - 1;
+            let statusCount = Object.keys(MIGRATION_DISPLAY_STATUS).length;
+            let processMediaFiles = false;
+            this.entityGroups.forEach((group) => {
+                if (group.processMediaFiles) {
+                    processMediaFiles = true;
+                }
+            });
+
+            if (!processMediaFiles) {
+                statusCount = Object.values(MIGRATION_DISPLAY_STATUS).filter((status) => {
+                    return (status !== 'PROCESS_MEDIA_FILES');
+                }).length;
+            }
+
+            return statusCount;
         },
 
         statusShort() {

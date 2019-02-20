@@ -15,17 +15,19 @@ use SwagMigrationNext\Exception\MigrationContextPropertyMissingException;
 use SwagMigrationNext\Exception\MigrationRunUndefinedStatusException;
 use SwagMigrationNext\Exception\MigrationWorkloadPropertyMissingException;
 use SwagMigrationNext\Migration\DataSelection\DataSelectionRegistry;
+use SwagMigrationNext\Migration\Mapping\MappingService;
 use SwagMigrationNext\Migration\Media\MediaFileProcessorRegistry;
 use SwagMigrationNext\Migration\Media\MediaFileService;
 use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Migration\Premapping\PremappingReaderRegistry;
 use SwagMigrationNext\Migration\Run\RunService;
 use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationNext\Migration\Service\MigrationDataWriter;
 use SwagMigrationNext\Migration\Service\MigrationProgressService;
+use SwagMigrationNext\Migration\Service\PremappingService;
 use SwagMigrationNext\Migration\Service\ProgressState;
 use SwagMigrationNext\Migration\Service\SwagMigrationAccessTokenService;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
-use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Migration\Services\MigrationProfileUuidService;
 use SwagMigrationNext\Test\MigrationServicesTrait;
@@ -124,12 +126,13 @@ class MigrationControllerTest extends TestCase
             Context::createDefaultContext()
         );
 
+        $mappingService = $this->getContainer()->get(MappingService::class);
         $accessTokenService = new SwagMigrationAccessTokenService(
             $this->runRepo
         );
         $dataFetcher = $this->getMigrationDataFetcher(
             $dataRepo,
-            $this->getContainer()->get(Shopware55MappingService::class),
+            $mappingService,
             $this->getContainer()->get(MediaFileService::class),
             $this->getContainer()->get('swag_migration_logging.repository')
         );
@@ -150,12 +153,13 @@ class MigrationControllerTest extends TestCase
                 $this->runRepo,
                 $this->connectionRepo,
                 $dataFetcher,
-                $this->getContainer()->get(Shopware55MappingService::class),
+                $mappingService,
                 $accessTokenService,
                 new DataSelectionRegistry([]),
                 $dataRepo,
                 $mediaFileRepo
             ),
+            new PremappingService(new PremappingReaderRegistry([]), $mappingService),
             new DataSelectionRegistry([]),
             $this->connectionRepo,
             $this->runRepo
@@ -246,7 +250,7 @@ class MigrationControllerTest extends TestCase
         $totalAbortedAfter = $this->runRepo->search($abortedCriteria, $context)->getTotal();
         $totalProcessing = $this->runRepo->search($runningCriteria, $context)->getTotal();
         self::assertSame(ProgressState::class, $state['_class']);
-        self::assertTrue($state['migrationRunning']);
+        self::assertFalse($state['migrationRunning']);
         self::assertFalse($state['validMigrationRunToken']);
         self::assertSame(ProgressState::STATUS_FETCH_DATA, $state['status']);
         self::assertSame(0, $totalAfter - $totalBefore);
@@ -262,7 +266,7 @@ class MigrationControllerTest extends TestCase
         $totalAbortedAfter = $this->runRepo->search($abortedCriteria, $context)->getTotal();
         $totalProcessing = $this->runRepo->search($runningCriteria, $context)->getTotal();
         self::assertSame(ProgressState::class, $state['_class']);
-        self::assertTrue($state['migrationRunning']);
+        self::assertFalse($state['migrationRunning']);
         self::assertTrue($state['validMigrationRunToken']);
         self::assertSame(ProgressState::STATUS_FETCH_DATA, $state['status']);
         self::assertSame(0, $totalAfter - $totalBefore);
@@ -293,7 +297,7 @@ class MigrationControllerTest extends TestCase
         $totalAbortedAfter = $this->runRepo->search($abortedCriteria, $context)->getTotal();
         $totalProcessing = $this->runRepo->search($runningCriteria, $context)->getTotal();
         self::assertSame(ProgressState::class, $state['_class']);
-        self::assertTrue($state['migrationRunning']);
+        self::assertFalse($state['migrationRunning']);
         self::assertFalse($state['validMigrationRunToken']);
         self::assertSame(0, $totalAfter - $totalBefore);
         self::assertSame(0, $totalAbortedAfter - $totalAbortedBefore);
@@ -315,7 +319,7 @@ class MigrationControllerTest extends TestCase
         $totalAbortedAfter = $this->runRepo->search($abortedCriteria, $context)->getTotal();
         $totalProcessing = $this->runRepo->search($runningCriteria, $context)->getTotal();
         self::assertSame(ProgressState::class, $state['_class']);
-        self::assertTrue($state['migrationRunning']);
+        self::assertFalse($state['migrationRunning']);
         self::assertTrue($state['validMigrationRunToken']);
         self::assertSame(0, $totalAfter - $totalBefore);
         self::assertSame(1, $totalAbortedAfter - $totalAbortedBefore);

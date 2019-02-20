@@ -13,18 +13,17 @@ use SwagMigrationNext\Migration\Converter\ConverterRegistry;
 use SwagMigrationNext\Migration\DataSelection\DataSelectionRegistry;
 use SwagMigrationNext\Migration\Gateway\GatewayFactoryRegistry;
 use SwagMigrationNext\Migration\Logging\LoggingService;
+use SwagMigrationNext\Migration\Mapping\MappingService;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Profile\ProfileRegistry;
 use SwagMigrationNext\Migration\Run\RunService;
 use SwagMigrationNext\Migration\Service\SwagMigrationAccessTokenService;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Api\Shopware55ApiFactory;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
-use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\MigrationServicesTrait;
 use SwagMigrationNext\Test\Mock\DummyCollection;
 use SwagMigrationNext\Test\Mock\Gateway\Dummy\Local\DummyLocalFactory;
-use SwagMigrationNext\Test\Mock\Migration\Mapping\DummyMappingService;
 use SwagMigrationNext\Test\Mock\Migration\Media\DummyMediaFileService;
 use SwagMigrationNext\Test\Mock\Migration\Service\DummyMigrationDataFetcher;
 
@@ -54,7 +53,7 @@ class RunServiceTest extends TestCase
     private $mappingRepo;
 
     /**
-     * @var DummyMappingService
+     * @var MappingService
      */
     private $mappingService;
 
@@ -83,17 +82,15 @@ class RunServiceTest extends TestCase
         $loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
         $mediaFileRepo = $this->getContainer()->get('swag_migration_media_file.repository');
 
-        $this->mappingService = new Shopware55MappingService(
+        $this->mappingService = new MappingService(
             $this->mappingRepo,
             $this->getContainer()->get('locale.repository'),
             $this->getContainer()->get('language.repository'),
             $this->getContainer()->get('country.repository'),
-            $this->getContainer()->get('payment_method.repository'),
-            $this->getContainer()->get('state_machine.repository'),
-            $this->getContainer()->get('state_machine_state.repository'),
             $this->getContainer()->get('currency.repository'),
             $this->getContainer()->get('sales_channel.repository'),
-            $this->getContainer()->get('sales_channel_type.repository')
+            $this->getContainer()->get('sales_channel_type.repository'),
+            $this->getContainer()->get('payment_method.repository')
         );
         $loggingService = new LoggingService($loggingRepo);
         $mediaFileService = new DummyMediaFileService();

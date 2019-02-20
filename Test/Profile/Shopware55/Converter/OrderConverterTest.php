@@ -22,13 +22,18 @@ use SwagMigrationNext\Profile\Shopware55\Converter\OrderConverter;
 use SwagMigrationNext\Profile\Shopware55\Exception\AssociationEntityRequiredMissingException;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationNext\Profile\Shopware55\Logging\Shopware55LogTypes;
+use SwagMigrationNext\Profile\Shopware55\Premapping\OrderStateReader;
+use SwagMigrationNext\Profile\Shopware55\Premapping\TransactionStateReader;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationNext\Test\MigrationServicesTrait;
 use SwagMigrationNext\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationNext\Test\Mock\Migration\Mapping\DummyMappingService;
 use Symfony\Component\HttpFoundation\Response;
 
 class OrderConverterTest extends TestCase
 {
+    use MigrationServicesTrait;
+
     /**
      * @var OrderConverter
      */
@@ -79,12 +84,13 @@ class OrderConverterTest extends TestCase
         $this->orderConverter = new OrderConverter($mappingService, $converterHelperService, $taxCalculator, $this->loggingService);
         $this->customerConverter = new CustomerConverter($mappingService, $converterHelperService, $this->loggingService);
 
+        $connectionId = Uuid::uuid4()->getHex();
         $this->runId = Uuid::uuid4()->getHex();
         $this->connection = new SwagMigrationConnectionEntity();
         $profile = new SwagMigrationProfileEntity();
         $profile->setName(Shopware55Profile::PROFILE_NAME);
         $profile->setGatewayName(Shopware55LocalGateway::GATEWAY_NAME);
-        $this->connection->setId(Uuid::uuid4()->getHex());
+        $this->connection->setId($connectionId);
         $this->connection->setProfile($profile);
 
         $this->migrationContext = new MigrationContext(
@@ -112,6 +118,9 @@ class OrderConverterTest extends TestCase
             null,
             Defaults::SALES_CHANNEL
         );
+
+        $mappingService->createNewUuid($connectionId, OrderStateReader::getMappingName(), '0', $context, [], Uuid::uuid4()->getHex());
+        $mappingService->createNewUuid($connectionId, TransactionStateReader::getMappingName(), '17', $context, [], Uuid::uuid4()->getHex());
     }
 
     public function testSupports(): void

@@ -4,9 +4,9 @@ namespace SwagMigrationNext\Test\Mock\Migration\Mapping;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Struct\Uuid;
-use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
+use SwagMigrationNext\Migration\Mapping\MappingService;
 
-class DummyMappingService extends Shopware55MappingService
+class DummyMappingService extends MappingService
 {
     public const DEFAULT_LANGUAGE_UUID = '20080911ffff4fffafffffff19830531';
     public const DEFAULT_LOCAL_UUID = '20080911ffff4fffafffffff19830532';
@@ -87,20 +87,6 @@ class DummyMappingService extends Shopware55MappingService
     }
 
     public function getCurrencyUuid(string $oldShortName, Context $context): ?string
-    {
-        return null;
-    }
-
-    public function getOrderStateUuid(int $oldStateId, Context $context): ?string
-    {
-        if ($oldStateId === 100) {
-            return null;
-        }
-
-        return Uuid::uuid4()->getHex();
-    }
-
-    public function getTransactionStateUuid(int $oldStateId, Context $context): ?string
     {
         return null;
     }

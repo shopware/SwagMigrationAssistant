@@ -13,6 +13,7 @@ use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagMigrationNext\Command\MigrationFetchDataCommand;
 use SwagMigrationNext\Command\MigrationWriteDataCommand;
 use SwagMigrationNext\Migration\Logging\LoggingService;
+use SwagMigrationNext\Migration\Mapping\MappingService;
 use SwagMigrationNext\Migration\Media\MediaFileService;
 use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
@@ -21,7 +22,6 @@ use SwagMigrationNext\Migration\Service\MigrationDataWriterInterface;
 use SwagMigrationNext\Migration\Writer\CategoryWriter;
 use SwagMigrationNext\Migration\Writer\ProductWriter;
 use SwagMigrationNext\Migration\Writer\WriterRegistry;
-use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 use SwagMigrationNext\Test\MigrationServicesTrait;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -88,7 +88,7 @@ class MigrationWriteDataCommandTest extends TestCase
 
         $this->migrationDataFetcher = $this->getMigrationDataFetcher(
             $this->migrationDataRepo,
-            $this->getContainer()->get(Shopware55MappingService::class),
+            $this->getContainer()->get(MappingService::class),
             $this->getContainer()->get(MediaFileService::class),
             $this->loggingRepo
         );

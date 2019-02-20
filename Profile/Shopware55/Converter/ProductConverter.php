@@ -20,11 +20,11 @@ use Shopware\Core\System\Unit\UnitDefinition;
 use SwagMigrationNext\Migration\Converter\AbstractConverter;
 use SwagMigrationNext\Migration\Converter\ConvertStruct;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationNext\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationNext\Migration\MigrationContextInterface;
 use SwagMigrationNext\Profile\Shopware55\Exception\ParentEntityForChildNotFoundException;
 use SwagMigrationNext\Profile\Shopware55\Logging\Shopware55LogTypes;
-use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingServiceInterface;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
 class ProductConverter extends AbstractConverter
@@ -33,7 +33,7 @@ class ProductConverter extends AbstractConverter
     public const VARIANT_PRODUCT_TYPE = 2;
 
     /**
-     * @var Shopware55MappingServiceInterface
+     * @var MappingServiceInterface
      */
     private $mappingService;
 
@@ -82,7 +82,7 @@ class ProductConverter extends AbstractConverter
     ];
 
     public function __construct(
-        Shopware55MappingServiceInterface $mappingService,
+        MappingServiceInterface $mappingService,
         ConverterHelperService $converterHelperService,
         MediaFileServiceInterface $mediaFileService,
         LoggingServiceInterface $loggingService

@@ -21,6 +21,7 @@ use Shopware\Core\System\Currency\CurrencyEntity;
 use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\Data\SwagMigrationDataEntity;
 use SwagMigrationNext\Migration\Logging\LogType;
+use SwagMigrationNext\Migration\Mapping\MappingService;
 use SwagMigrationNext\Migration\Media\MediaFileService;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
@@ -31,7 +32,8 @@ use SwagMigrationNext\Migration\Writer\CustomerWriter;
 use SwagMigrationNext\Migration\Writer\ProductWriter;
 use SwagMigrationNext\Migration\Writer\WriterRegistry;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
-use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
+use SwagMigrationNext\Profile\Shopware55\Premapping\OrderStateReader;
+use SwagMigrationNext\Profile\Shopware55\Premapping\TransactionStateReader;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Migration\Services\MigrationProfileUuidService;
 use SwagMigrationNext\Test\MigrationServicesTrait;
@@ -133,6 +135,16 @@ class MigrationDataWriterTest extends TestCase
      */
     private $connection;
 
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $stateMachineStateRepository;
+
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $stateMachineRepository;
+
     protected function setUp(): void
     {
         $context = Context::createDefaultContext();
@@ -176,15 +188,35 @@ class MigrationDataWriterTest extends TestCase
             Context::createDefaultContext()
         );
 
+        $mappingService = $this->getContainer()->get(MappingService::class);
         $this->migrationDataRepo = $this->getContainer()->get('swag_migration_data.repository');
         $this->loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
         $this->migrationDataFetcher = $this->getMigrationDataFetcher(
             $this->migrationDataRepo,
-            $this->getContainer()->get(Shopware55MappingService::class),
+            $mappingService,
             $this->getContainer()->get(MediaFileService::class),
             $this->loggingRepo
         );
         $this->migrationDataWriter = $this->getContainer()->get(MigrationDataWriter::class);
+
+        $this->stateMachineRepository = $this->getContainer()->get('state_machine.repository');
+        $this->stateMachineStateRepository = $this->getContainer()->get('state_machine_state.repository');
+
+        $orderStateUuid = $this->getOrderStateUuid(
+            $this->stateMachineRepository,
+            $this->stateMachineStateRepository,
+            0,
+            $context
+        );
+        $mappingService->createNewUuid($this->connectionId, OrderStateReader::getMappingName(), '0', $context, [], $orderStateUuid);
+
+        $transactionStateUuid = $this->getTransactionStateUuid(
+            $this->stateMachineRepository,
+            $this->stateMachineStateRepository,
+            17,
+            $context
+        );
+        $mappingService->createNewUuid($this->connectionId, TransactionStateReader::getMappingName(), '17', $context, [], $transactionStateUuid);
 
         $this->productRepo = $this->getContainer()->get('product.repository');
         $this->customerRepo = $this->getContainer()->get('customer.repository');

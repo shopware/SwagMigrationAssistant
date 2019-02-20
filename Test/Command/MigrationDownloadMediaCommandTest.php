@@ -11,6 +11,7 @@ use SwagMigrationNext\Command\MigrationDownloadMediaCommand;
 use SwagMigrationNext\Command\MigrationFetchDataCommand;
 use SwagMigrationNext\Command\MigrationWriteDataCommand;
 use SwagMigrationNext\Migration\Logging\LoggingService;
+use SwagMigrationNext\Migration\Mapping\MappingService;
 use SwagMigrationNext\Migration\Media\CliMediaDownloadService;
 use SwagMigrationNext\Migration\Media\MediaFileService;
 use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
@@ -18,7 +19,6 @@ use SwagMigrationNext\Migration\Service\MigrationDataWriter;
 use SwagMigrationNext\Migration\Service\MigrationDataWriterInterface;
 use SwagMigrationNext\Migration\Writer\MediaWriter;
 use SwagMigrationNext\Migration\Writer\WriterRegistry;
-use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 use SwagMigrationNext\Test\MigrationServicesTrait;
 use SwagMigrationNext\Test\Mock\Migration\Media\DummyCliMediaDownloadService;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
@@ -112,7 +112,7 @@ class MigrationDownloadMediaCommandTest extends TestCase
 
         $this->migrationDataFetcher = $this->getMigrationDataFetcher(
             $this->migrationDataRepo,
-            $this->getContainer()->get(Shopware55MappingService::class),
+            $this->getContainer()->get(MappingService::class),
             $this->getContainer()->get(MediaFileService::class),
             $this->loggingRepo
         );

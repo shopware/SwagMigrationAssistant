@@ -321,6 +321,7 @@ class RunService implements RunServiceInterface
             $runProgress->setCurrentCount(0);
             $runProgress->setTotal($sumTotal);
             $runProgress->setSnippet($dataSelection->getSnippet());
+            $runProgress->setProcessMediaFiles($dataSelection->getProcessMediaFiles());
 
             if ($dataSelection->getProcessMediaFiles()) {
                 $processMediaFiles = true;

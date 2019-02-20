@@ -56,6 +56,7 @@ class MigrationWorkerService {
         this._runId = '';
         this._status = null;
         this._restoreState = {};
+        this.premapping = [];
 
         this._broadcastService.sendMessage({
             migrationMessage: 'initialized'
@@ -167,7 +168,15 @@ class MigrationWorkerService {
                 connectionId,
                 dataSelectionIds
             }).then((state) => {
-                resolve(this.processStateResponse(state));
+                const returnState = this.processStateResponse(state);
+
+                if (returnState.isMigrationRunning === false && returnState.isMigrationAccessTokenValid === true) {
+                    this._status = MIGRATION_STATUS.PREMAPPING;
+                    this._callStatusSubscriber({ status: this._status });
+                }
+
+                this._runId = returnState.runUuid;
+                resolve(returnState);
             }).catch(() => {
                 const returnValue = {
                     runUuid: null,
@@ -262,6 +271,11 @@ class MigrationWorkerService {
     }
 
     stopMigration() {
+        if (this._workRunner === null) {
+            this._callInterruptSubscriber(WORKER_INTERRUPT_TYPE.STOP);
+            return;
+        }
+
         this._workRunner.interrupt = WORKER_INTERRUPT_TYPE.STOP;
     }
 
@@ -388,7 +402,7 @@ class MigrationWorkerService {
     startMigration(
         runId,
         entityGroups,
-        statusIndex = 0,
+        statusIndex = MIGRATION_STATUS.FETCH_DATA,
         groupStartIndex = 0,
         entityStartIndex = 0,
         entityOffset = 0
@@ -399,6 +413,13 @@ class MigrationWorkerService {
             this._runId = runId;
             this._entityGroups = Array.from(entityGroups, group => Object.assign({}, group));
             this._errors = [];
+
+            let processMediaFiles = false;
+            this._entityGroups.forEach((group) => {
+                if (group.processMediaFiles) {
+                    processMediaFiles = true;
+                }
+            });
 
             const params = {
                 swagMigrationAccessToken: MigrationWorkerService.migrationAccessToken,
@@ -444,7 +465,7 @@ class MigrationWorkerService {
             }
 
             // download
-            if (statusIndex <= MIGRATION_STATUS.PROCESS_MEDIA_FILES) {
+            if (statusIndex <= MIGRATION_STATUS.PROCESS_MEDIA_FILES && processMediaFiles) {
                 this._workRunner = new WorkerMediaFiles(
                     MIGRATION_STATUS.PROCESS_MEDIA_FILES,
                     params,

@@ -19,7 +19,7 @@
         </service>
 
         <service id="SwagMigrationNext\Profile\Shopware55\Converter\ProductConverter">
-            <argument type="service" id="SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService"/>
+            <argument type="service" id="SwagMigrationNext\Migration\Mapping\MappingService"/>
             <argument type="service" id="SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService"/>
             <argument type="service" id="SwagMigrationNext\Migration\Media\MediaFileService"/>
             <argument type="service" id="SwagMigrationNext\Migration\Logging\LoggingService"/>
@@ -27,35 +27,35 @@
         </service>
 
         <service id="SwagMigrationNext\Profile\Shopware55\Converter\TranslationConverter">
-            <argument type="service" id="SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService"/>
+            <argument type="service" id="SwagMigrationNext\Migration\Mapping\MappingService"/>
             <argument type="service" id="SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService"/>
             <argument type="service" id="SwagMigrationNext\Migration\Logging\LoggingService"/>
             <tag name="shopware.migration.converter"/>
         </service>
 
         <service id="SwagMigrationNext\Profile\Shopware55\Converter\CategoryConverter">
-            <argument type="service" id="SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService"/>
+            <argument type="service" id="SwagMigrationNext\Migration\Mapping\MappingService"/>
             <argument type="service" id="SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService"/>
             <argument type="service" id="SwagMigrationNext\Migration\Logging\LoggingService"/>
             <tag name="shopware.migration.converter"/>
         </service>
 
         <service id="SwagMigrationNext\Profile\Shopware55\Converter\MediaConverter">
-            <argument type="service" id="SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService"/>
+            <argument type="service" id="SwagMigrationNext\Migration\Mapping\MappingService"/>
             <argument type="service" id="SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService"/>
             <argument type="service" id="SwagMigrationNext\Migration\Media\MediaFileService"/>
             <tag name="shopware.migration.converter"/>
         </service>
 
         <service id="SwagMigrationNext\Profile\Shopware55\Converter\CustomerConverter">
-            <argument type="service" id="SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService"/>
+            <argument type="service" id="SwagMigrationNext\Migration\Mapping\MappingService"/>
             <argument type="service" id="SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService"/>
             <argument type="service" id="SwagMigrationNext\Migration\Logging\LoggingService"/>
             <tag name="shopware.migration.converter"/>
         </service>
 
         <service id="SwagMigrationNext\Profile\Shopware55\Converter\OrderConverter">
-            <argument type="service" id="SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService"/>
+            <argument type="service" id="SwagMigrationNext\Migration\Mapping\MappingService"/>
             <argument type="service" id="SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService"/>
             <argument type="service" id="Shopware\Core\Checkout\Cart\Tax\TaxCalculator"/>
             <argument type="service" id="SwagMigrationNext\Migration\Logging\LoggingService"/>
@@ -69,20 +69,6 @@
 
         <service id="SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalFactory">
             <tag name="shopware.migration.gateway_factory"/>
-        </service>
-
-        <!-- Shopware 5.5 Mapping -->
-        <service id="SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService">
-            <argument type="service" id="swag_migration_mapping.repository"/>
-            <argument type="service" id="locale.repository"/>
-            <argument type="service" id="language.repository"/>
-            <argument type="service" id="country.repository"/>
-            <argument type="service" id="payment_method.repository"/>
-            <argument type="service" id="state_machine.repository"/>
-            <argument type="service" id="state_machine_state.repository"/>
-            <argument type="service" id="currency.repository"/>
-            <argument type="service" id="sales_channel.repository"/>
-            <argument type="service" id="sales_channel_type.repository"/>
         </service>
 
         <!-- Shopware 5.5 MediaHandler -->
@@ -120,6 +106,19 @@
 
         <service id="SwagMigrationNext\Profile\Shopware55\DataSelection\MediaDataSelection">
             <tag name="shopware.migration.data_selection"/>
+        </service>
+
+        <!-- Shopware 5.5 PreMappingReader -->
+        <service id="SwagMigrationNext\Profile\Shopware55\Premapping\OrderStateReader">
+            <argument type="service" id="state_machine.repository"/>
+            <argument type="service" id="state_machine_state.repository"/>
+            <tag name="shopware.migration.pre_mapping_reader"/>
+        </service>
+
+        <service id="SwagMigrationNext\Profile\Shopware55\Premapping\TransactionStateReader">
+            <argument type="service" id="state_machine.repository"/>
+            <argument type="service" id="state_machine_state.repository"/>
+            <tag name="shopware.migration.pre_mapping_reader"/>
         </service>
     </services>
 </container>
