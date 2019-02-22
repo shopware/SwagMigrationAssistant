@@ -212,13 +212,14 @@ class RunService implements RunServiceInterface
             throw new MigrationIsRunningException();
         }
 
-        $context->getWriteProtection()->allow('MIGRATION_CONNECTION_CHECK_FOR_RUNNING_MIGRATION');
-        $this->connectionRepo->update([
-            [
-                'id' => $connectionUuid,
-                'credentialFields' => $credentialFields,
-            ],
-        ], $context);
+        $context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use ($connectionUuid, $credentialFields) {
+            $this->connectionRepo->update([
+                [
+                    'id' => $connectionUuid,
+                    'credentialFields' => $credentialFields,
+                ],
+            ], $context);
+        });
     }
 
     private function isMigrationRunningWithGivenConnection(Context $context, string $connectionUuid): bool

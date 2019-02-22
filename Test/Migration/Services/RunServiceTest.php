@@ -13,6 +13,7 @@ use SwagMigrationNext\Migration\Converter\ConverterRegistry;
 use SwagMigrationNext\Migration\DataSelection\DataSelectionRegistry;
 use SwagMigrationNext\Migration\Gateway\GatewayFactoryRegistry;
 use SwagMigrationNext\Migration\Logging\LoggingService;
+use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Profile\ProfileRegistry;
 use SwagMigrationNext\Migration\Run\RunService;
 use SwagMigrationNext\Migration\Service\SwagMigrationAccessTokenService;
@@ -103,23 +104,24 @@ class RunServiceTest extends TestCase
             Shopware55LocalGateway::GATEWAY_NAME
         );
 
-        $context = $context = Context::createDefaultContext();
-        $context->getWriteProtection()->allow('MIGRATION_CONNECTION_CHECK_FOR_RUNNING_MIGRATION');
         $connectionId = Uuid::uuid4()->getHex();
-        $this->connectionRepo->create(
-            [
+        $context = $context = Context::createDefaultContext();
+        $context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use ($connectionId, $profileUuidService) {
+            $this->connectionRepo->create(
                 [
-                    'id' => $connectionId,
-                    'name' => 'myConnection',
-                    'credentialFields' => [
-                        'apiUser' => 'testUser',
-                        'apiKey' => 'testKey',
+                    [
+                        'id' => $connectionId,
+                        'name' => 'myConnection',
+                        'credentialFields' => [
+                            'apiUser' => 'testUser',
+                            'apiKey' => 'testKey',
+                        ],
+                        'profileId' => $profileUuidService->getProfileUuid(),
                     ],
-                    'profileId' => $profileUuidService->getProfileUuid(),
                 ],
-            ],
-            $context
-        );
+                $context
+            );
+        });
         $this->connection = $this->connectionRepo->search(new Criteria([$connectionId]), $context)->first();
 
         $converterRegistry = new ConverterRegistry(new DummyCollection([]));

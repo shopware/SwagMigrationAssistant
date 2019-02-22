@@ -5,6 +5,7 @@ namespace SwagMigrationNext\Migration\Writer;
 use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\SourceContext;
 
 class CategoryWriter implements WriterInterface
 {
@@ -25,6 +26,8 @@ class CategoryWriter implements WriterInterface
 
     public function writeData(array $data, Context $context): void
     {
-        $this->categoryRepository->upsert($data, $context);
+        $context->scope(SourceContext::ORIGIN_SYSTEM, function (Context $context) use ($data) {
+            $this->categoryRepository->upsert($data, $context);
+        });
     }
 }

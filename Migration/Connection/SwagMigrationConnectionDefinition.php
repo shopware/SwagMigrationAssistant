@@ -16,6 +16,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Write\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\Flag\Required;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\Flag\WriteProtected;
 use SwagMigrationNext\Migration\Mapping\SwagMigrationMappingDefinition;
+use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Profile\SwagMigrationProfileDefinition;
 use SwagMigrationNext\Migration\Run\SwagMigrationRunDefinition;
 
@@ -41,7 +42,7 @@ class SwagMigrationConnectionDefinition extends EntityDefinition
         return new FieldCollection([
             (new IdField('id', 'id'))->setFlags(new PrimaryKey(), new Required()),
             (new StringField('name', 'name'))->setFlags(new Required()),
-            (new JsonField('credential_fields', 'credentialFields'))->setFlags(new WriteProtected('MIGRATION_CONNECTION_CHECK_FOR_RUNNING_MIGRATION')),
+            (new JsonField('credential_fields', 'credentialFields'))->setFlags(new WriteProtected(MigrationContext::SOURCE_CONTEXT)),
             (new FkField('profile_id', 'profileId', SwagMigrationProfileDefinition::class))->setFlags(new Required()),
             new CreatedAtField(),
             new UpdatedAtField(),
