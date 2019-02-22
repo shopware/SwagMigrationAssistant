@@ -7,6 +7,8 @@ use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 
 class MigrationContext extends Struct implements MigrationContextInterface
 {
+    public const SOURCE_CONTEXT = 'MIGRATION_CONNECTION_CHECK_FOR_RUNNING_MIGRATION';
+
     /**
      * @var string
      */

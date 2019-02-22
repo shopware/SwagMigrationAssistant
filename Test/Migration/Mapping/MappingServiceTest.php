@@ -13,6 +13,7 @@ use Shopware\Core\System\Language\LanguageDefinition;
 use SwagMigrationNext\Exception\LocaleNotFoundException;
 use SwagMigrationNext\Migration\Mapping\MappingService;
 use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
+use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Test\Migration\Services\MigrationProfileUuidService;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -47,23 +48,24 @@ class MappingServiceTest extends TestCase
         $this->localeRepo = $this->getContainer()->get('locale.repository');
         $this->profileUuidService = new MigrationProfileUuidService($this->getContainer()->get('swag_migration_profile.repository'));
 
-        $context->getWriteProtection()->allow('MIGRATION_CONNECTION_CHECK_FOR_RUNNING_MIGRATION');
-        $this->connectionId = Uuid::uuid4()->getHex();
-        $connectionRepo->create(
-            [
+        $context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use ($connectionRepo) {
+            $this->connectionId = Uuid::uuid4()->getHex();
+            $connectionRepo->create(
                 [
-                    'id' => $this->connectionId,
-                    'name' => 'myConnection',
-                    'credentialFields' => [
-                        'endpoint' => 'testEndpoint',
-                        'apiUser' => 'testUser',
-                        'apiKey' => 'testKey',
+                    [
+                        'id' => $this->connectionId,
+                        'name' => 'myConnection',
+                        'credentialFields' => [
+                            'endpoint' => 'testEndpoint',
+                            'apiUser' => 'testUser',
+                            'apiKey' => 'testKey',
+                        ],
+                        'profileId' => $this->profileUuidService->getProfileUuid(),
                     ],
-                    'profileId' => $this->profileUuidService->getProfileUuid(),
                 ],
-            ],
-            $context
-        );
+                $context
+            );
+        });
 
         $this->mappingService = new MappingService(
             $this->getContainer()->get('swag_migration_mapping.repository'),

@@ -102,23 +102,24 @@ class MigrationDataFetcherTest extends TestCase
             Shopware55LocalGateway::GATEWAY_NAME
         );
 
-        $context->getWriteProtection()->allow('MIGRATION_CONNECTION_CHECK_FOR_RUNNING_MIGRATION');
-        $this->connectionId = Uuid::uuid4()->getHex();
-        $connectionRepo->create(
-            [
+        $context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use ($connectionRepo) {
+            $this->connectionId = Uuid::uuid4()->getHex();
+            $connectionRepo->create(
                 [
-                    'id' => $this->connectionId,
-                    'name' => 'myConnection',
-                    'credentialFields' => [
-                        'endpoint' => 'testEndpoint',
-                        'apiUser' => 'testUser',
-                        'apiKey' => 'testKey',
+                    [
+                        'id' => $this->connectionId,
+                        'name' => 'myConnection',
+                        'credentialFields' => [
+                            'endpoint' => 'testEndpoint',
+                            'apiUser' => 'testUser',
+                            'apiKey' => 'testKey',
+                        ],
+                        'profileId' => $this->profileUuidService->getProfileUuid(),
                     ],
-                    'profileId' => $this->profileUuidService->getProfileUuid(),
                 ],
-            ],
-            $context
-        );
+                $context
+            );
+        });
         $this->connection = $connectionRepo->search(new Criteria([$this->connectionId]), $context)->first();
 
         $this->runUuid = Uuid::uuid4()->getHex();

@@ -15,6 +15,7 @@ use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\DataSelection\DataSelectionRegistry;
 use SwagMigrationNext\Migration\Media\MediaFileService;
+use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Run\EntityProgress;
 use SwagMigrationNext\Migration\Run\RunProgress;
 use SwagMigrationNext\Migration\Run\RunService;
@@ -140,22 +141,23 @@ class MigrationProgressServiceTest extends TestCase
             'apiKey' => 'testKey',
         ];
 
-        $context->getWriteProtection()->allow('MIGRATION_CONNECTION_CHECK_FOR_RUNNING_MIGRATION');
-        $this->connectionId = Uuid::uuid4()->getHex();
-        $this->connectionRepo->create(
-            [
+        $context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use ($profileUuidService) {
+            $this->connectionId = Uuid::uuid4()->getHex();
+            $this->connectionRepo->create(
                 [
-                    'id' => $this->connectionId,
-                    'name' => 'myConnection',
-                    'credentialFields' => [
-                        'apiUser' => 'testUser',
-                        'apiKey' => 'testKey',
+                    [
+                        'id' => $this->connectionId,
+                        'name' => 'myConnection',
+                        'credentialFields' => [
+                            'apiUser' => 'testUser',
+                            'apiKey' => 'testKey',
+                        ],
+                        'profileId' => $profileUuidService->getProfileUuid(),
                     ],
-                    'profileId' => $profileUuidService->getProfileUuid(),
                 ],
-            ],
-            $context
-        );
+                $context
+            );
+        });
         $this->connection = $this->connectionRepo->search(new Criteria([$this->connectionId]), $context)->first();
 
         $this->runRepo->create(

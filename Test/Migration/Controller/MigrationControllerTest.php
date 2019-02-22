@@ -17,6 +17,7 @@ use SwagMigrationNext\Exception\MigrationWorkloadPropertyMissingException;
 use SwagMigrationNext\Migration\DataSelection\DataSelectionRegistry;
 use SwagMigrationNext\Migration\Media\MediaFileProcessorRegistry;
 use SwagMigrationNext\Migration\Media\MediaFileService;
+use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Run\RunService;
 use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationNext\Migration\Service\MigrationDataWriter;
@@ -90,23 +91,24 @@ class MigrationControllerTest extends TestCase
         $this->generalSettingRepo = $this->getContainer()->get('swag_migration_general_setting.repository');
         $this->runRepo = $this->getContainer()->get('swag_migration_run.repository');
 
-        $context->getWriteProtection()->allow('MIGRATION_CONNECTION_CHECK_FOR_RUNNING_MIGRATION');
-        $this->connectionId = Uuid::uuid4()->getHex();
-        $this->connectionRepo->create(
-            [
+        $context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) {
+            $this->connectionId = Uuid::uuid4()->getHex();
+            $this->connectionRepo->create(
                 [
-                    'id' => $this->connectionId,
-                    'name' => 'myConnection',
-                    'credentialFields' => [
-                        'endpoint' => 'testEndpoint',
-                        'apiUser' => 'testUser',
-                        'apiKey' => 'testKey',
+                    [
+                        'id' => $this->connectionId,
+                        'name' => 'myConnection',
+                        'credentialFields' => [
+                            'endpoint' => 'testEndpoint',
+                            'apiUser' => 'testUser',
+                            'apiKey' => 'testKey',
+                        ],
+                        'profileId' => $this->profileUuidService->getProfileUuid(),
                     ],
-                    'profileId' => $this->profileUuidService->getProfileUuid(),
                 ],
-            ],
-            $context
-        );
+                $context
+            );
+        });
 
         $this->runUuid = Uuid::uuid4()->getHex();
         $this->runRepo->create(
