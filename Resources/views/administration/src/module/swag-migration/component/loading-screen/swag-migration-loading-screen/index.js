@@ -1,4 +1,4 @@
-import { Component } from 'src/core/shopware';
+import { Component, State } from 'src/core/shopware';
 import template from './swag-migration-loading-screen.html.twig';
 import './swag-migration-loading-screen.less';
 import { MIGRATION_DISPLAY_STATUS } from
@@ -10,21 +10,23 @@ Component.register('swag-migration-loading-screen', {
     props: {
         profileName: {
             type: String
-        },
-        entityGroups: {
-            type: Array,
-            required: true
-        },
-        statusIndex: {
-            type: Number,
-            default: 0,
-            required: false
         }
     },
 
+    data() {
+        return {
+            /** @type MigrationProcessStore */
+            migrationProcessStore: State.getStore('migrationProcess')
+        };
+    },
+
     computed: {
+        displayEntityGroups() {
+            return this.migrationProcessStore.getDisplayEntityGroups();
+        },
+
         progressBarCount() {
-            return this.entityGroups.length;
+            return this.displayEntityGroups.length;
         },
 
         progressBarContainerGridStyle() {
@@ -37,13 +39,13 @@ Component.register('swag-migration-loading-screen', {
         },
 
         currentStatus() {
-            return MIGRATION_DISPLAY_STATUS[this.statusIndex];
+            return MIGRATION_DISPLAY_STATUS[this.migrationProcessStore.state.statusIndex];
         },
 
         statusCount() {
             let statusCount = Object.keys(MIGRATION_DISPLAY_STATUS).length;
             let processMediaFiles = false;
-            this.entityGroups.forEach((group) => {
+            this.displayEntityGroups.forEach((group) => {
                 if (group.processMediaFiles) {
                     processMediaFiles = true;
                 }
@@ -60,7 +62,7 @@ Component.register('swag-migration-loading-screen', {
 
         statusShort() {
             return `${this.$t('swag-migration.index.loadingScreenCard.cardTitle', {
-                step: this.statusIndex + 1,
+                step: this.migrationProcessStore.state.statusIndex + 1,
                 total: this.statusCount
             })} - ${this.$t(`swag-migration.index.loadingScreenCard.status.${this.currentStatus}.short`)}`;
         },
@@ -74,7 +76,7 @@ Component.register('swag-migration-loading-screen', {
 
         title() {
             return this.$t('swag-migration.index.loadingScreenCard.cardTitle', {
-                step: this.statusIndex + 1,
+                step: this.migrationProcessStore.state.statusIndex + 1,
                 total: this.statusCount
             });
         }

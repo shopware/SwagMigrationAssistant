@@ -1,22 +1,17 @@
+import { State } from 'src/core/shopware';
 import { WORKER_INTERRUPT_TYPE } from './swag-migration-worker.service';
 
 export class WorkerMediaFiles {
     /**
-     * @param {number} status
      * @param {Object} downloadParams
      * @param {WorkerStatusManager} workerStatusManager
      * @param {MigrationApiService} migrationService
-     * @param {function} onProgressCB
-     * @param {function} onErrorCB
      * @param {function} onInterruptCB
      */
     constructor(
-        status,
         downloadParams,
         workerStatusManager,
         migrationService,
-        onProgressCB,
-        onErrorCB,
         onInterruptCB
     ) {
         this._MAX_REQUEST_TIME_IN_MILLISECONDS = 10000;
@@ -27,9 +22,10 @@ export class WorkerMediaFiles {
         this._CHUNK_SIZE_BYTE_INCREMENT = 250 * 1000; // 250 KB
         this._MEDIA_MIN_FILE_CHUNK_BYTE_SIZE = this._CHUNK_SIZE_BYTE_INCREMENT;
 
+        this._migrationProcessStore = State.getStore('migrationProcess');
+
         this._runId = downloadParams.runUuid;
         this._accessToken = downloadParams.swagMigrationAccessToken;
-        this._status = status;
         this._downloadParams = downloadParams;
         this._workerStatusManager = workerStatusManager;
         this._migrationService = migrationService;
@@ -41,8 +37,6 @@ export class WorkerMediaFiles {
         this._mediaProgress = 0;
 
         // callbacks
-        this._onProgressCB = onProgressCB;
-        this._onErrorCB = onErrorCB;
         this._onInterruptCB = onInterruptCB;
     }
 
@@ -63,32 +57,8 @@ export class WorkerMediaFiles {
     /**
      * @param {function} value
      */
-    set onProgressCB(value) {
-        this._onProgressCB = value;
-    }
-
-    /**
-     * @param {function} value
-     */
-    set onErrorCB(value) {
-        this._onErrorCB = value;
-    }
-
-    /**
-     * @param {function} value
-     */
     set onInterruptCB(value) {
         this._callInterruptCB = value;
-    }
-
-    /**
-     * @param {Object} param
-     * @private
-     */
-    _callProgressCB(param) {
-        if (this._onProgressCB !== null) {
-            this._onProgressCB(param);
-        }
     }
 
     /**
@@ -101,35 +71,19 @@ export class WorkerMediaFiles {
     }
 
     /**
-     * @param {Object} param
-     * @private
-     */
-    _callErrorCB(param) {
-        if (this._onErrorCB !== null) {
-            this._onErrorCB(param);
-        }
-    }
-
-    /**
      * Do all the API requests for all entities with the given methodName
      *
-     * @param {Object} entityGroups
      * @param {number} groupStartIndex
      * @param {number} entityStartIndex
      * @param {number} entityOffset
      * @returns {Promise}
      */
     /* eslint-disable no-unused-vars, no-await-in-loop */
-    async migrateProcess(entityGroups, groupStartIndex = 0, entityStartIndex = 0, entityOffset = 0) {
+    async migrateProcess(groupStartIndex = 0, entityStartIndex = 0, entityOffset = 0) {
         return new Promise(async (resolve) => {
-            await this._workerStatusManager.onStatusChanged(
-                this._runId,
-                entityGroups,
-                this._status
-            ).then(([newEntityGroups]) => {
-                entityGroups = newEntityGroups;
+            await this._workerStatusManager.onStatusChanged(this._runId).then(() => {
                 this._mediaTotalCount = 0;
-                entityGroups.forEach((group) => {
+                this._migrationProcessStore.state.entityGroups.forEach((group) => {
                     if (group.id === 'processMediaFiles') {
                         this._mediaTotalCount = group.total;
                     }
@@ -187,7 +141,7 @@ export class WorkerMediaFiles {
                 });
                 resolve();
             }).catch(() => {
-                this._callErrorCB({
+                this._migrationProcessStore.addError({
                     code: 'mediaProcessConnectionError',
                     internalError: true
                 });
@@ -265,7 +219,7 @@ export class WorkerMediaFiles {
      * Remove failed media (errorCount >= this._MEDIA_ERROR_THRESHOLD) and add errors for them.
      * Make sure we have the media amount in our workload that we specified (this._MEDIA_WORKLOAD_COUNT).
      *
-     * @param {Array<Object>} newWorkload
+     * @param {Object[]} newWorkload
      * @param {number} requestTime
      * @private
      */
@@ -295,11 +249,11 @@ export class WorkerMediaFiles {
 
         this._mediaProgress += mediaRemovedCount;
         // call event subscriber
-        this._callProgressCB({
-            entityName: 'media',
-            groupCurrentCount: this._mediaProgress,
-            groupTotal: this._mediaTotalCount
-        });
+        this._migrationProcessStore.setEntityProgress(
+            'media',
+            this._mediaProgress,
+            this._mediaTotalCount
+        );
 
         this._makeWorkload(mediaRemovedCount);
     }
@@ -326,7 +280,7 @@ export class WorkerMediaFiles {
 
                 resolve(res.workload);
             }).catch(() => {
-                this._callErrorCB({
+                this._migrationProcessStore.addError({
                     code: 'mediaProcessConnectionError',
                     internalError: true
                 });

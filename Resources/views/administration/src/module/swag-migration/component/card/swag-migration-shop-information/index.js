@@ -1,6 +1,9 @@
 import { Component, State } from 'src/core/shopware';
+import { format } from 'src/core/service/util.service';
+import CriteriaFactory from 'src/core/factory/criteria.factory';
 import template from './swag-migration-shop-information.html.twig';
 import './swag-migration-shop-information.less';
+import { MIGRATION_STATUS } from '../../../../../core/service/migration/swag-migration-worker-status-manager.service';
 
 const BADGE_TYPE = Object.freeze({
     SUCCESS: 'success',
@@ -10,35 +13,15 @@ const BADGE_TYPE = Object.freeze({
 Component.register('swag-migration-shop-information', {
     template,
 
-    inject: ['migrationService'],
+    inject: {
+        /** @var {MigrationApiService} migrationService */
+        migrationService: 'migrationService'
+    },
 
     props: {
-        environmentInformation: {
-            type: Object,
-            required: true
-        },
-
-        connection: {
-            type: Object,
-            required: true
-        },
-
         connected: {
             type: Boolean,
             default: false
-        },
-
-        lastMigrationDate: {
-            type: String,
-            default: '-'
-        },
-
-        isMigrating: {
-            type: Boolean
-        },
-
-        isPaused: {
-            type: Boolean
         },
 
         isOtherMigrationRunning: {
@@ -49,7 +32,17 @@ Component.register('swag-migration-shop-information', {
     data() {
         return {
             showMoreInformation: true,
-            showConfirmModal: false
+            showConfirmModal: false,
+            lastMigrationDate: '-',
+            connection: null,
+            /** @type ApiService */
+            migrationRunStore: State.getStore('swag_migration_run'),
+            /** @type ApiService */
+            migrationConnectionStore: State.getStore('swag_migration_connection'),
+            /** @type MigrationProcessStore */
+            migrationProcessStore: State.getStore('migrationProcess'),
+            /** @type MigrationUIStore */
+            migrationUIStore: State.getStore('migrationUI')
         };
     },
 
@@ -62,12 +55,20 @@ Component.register('swag-migration-shop-information', {
     },
 
     computed: {
-        localeStore() {
-            return State.getStore('adminLocale');
+        environmentInformation() {
+            if (this.migrationProcessStore.state.environmentInformation !== null) {
+                return this.migrationProcessStore.state.environmentInformation;
+            }
+
+            return {};
         },
 
-        migrationGeneralSettingStore() {
-            return State.getStore('swag_migration_general_setting');
+        totalEntityCounts() {
+            if (this.environmentInformation.totals !== undefined) {
+                return this.environmentInformation.totals;
+            }
+
+            return {};
         },
 
         shopUrl() {
@@ -145,23 +146,24 @@ Component.register('swag-migration-shop-information', {
         },
 
         gateway() {
+            if (!this.connection) {
+                return '';
+            }
+
             return this.connection.profile.gatewayName;
         },
 
         lastMigrationDateString() {
-            const dateObj = new Date(this.lastMigrationDate);
-            return dateObj.toLocaleString(this.localeStore.locale, {
-                day: 'numeric',
-                month: 'numeric',
-                year: 'numeric'
-            });
+            return format.date(this.lastMigrationDate);
         },
 
         lastMigrationTimeString() {
-            const dateObj = new Date(this.lastMigrationDate);
-            return dateObj.toLocaleString(this.localeStore.locale, {
+            return format.date(this.lastMigrationDate, {
+                day: undefined,
+                month: undefined,
+                year: undefined,
                 hour: 'numeric',
-                minute: 'numeric'
+                minute: '2-digit'
             });
         },
 
@@ -173,12 +175,65 @@ Component.register('swag-migration-shop-information', {
         }
     },
 
+    watch: {
+        'migrationProcessStore.state.statusIndex': {
+            /**
+             * @param {number} status
+             */
+            handler(status) {
+                if (status === MIGRATION_STATUS.FINISHED) {
+                    this.updateLastMigrationDate();
+                }
+            }
+        },
+        'migrationProcessStore.state.connectionId': {
+            immediate: true,
+            /**
+             * @param {string} newConnectionId
+             */
+            handler(newConnectionId) {
+                this.fetchConnection(newConnectionId);
+            }
+        }
+    },
+
+    created() {
+        this.updateLastMigrationDate();
+    },
+
     methods: {
+        updateLastMigrationDate() {
+            const params = {
+                limit: 1,
+                criteria: CriteriaFactory.equals('status', 'finished'),
+                sortBy: 'createdAt',
+                sortDirection: 'desc'
+            };
+
+            this.migrationRunStore.getList(params).then((res) => {
+                if (res && res.items.length > 0) {
+                    this.lastMigrationDate = res.items[0].createdAt;
+                } else {
+                    this.lastMigrationDate = '-';
+                }
+            });
+        },
+
+        /**
+         * @param {string} connectionId
+         */
+        fetchConnection(connectionId) {
+            this.migrationConnectionStore.getByIdAsync(connectionId).then((connection) => {
+                delete connection.credentialFields;
+                this.connection = connection;
+            });
+        },
+
         onClickEditConnectionCredentials() {
             this.$router.push({
                 name: 'swag.migration.wizard.credentials',
                 params: {
-                    connection: this.connection
+                    connectionId: this.migrationProcessStore.state.connectionId
                 }
             });
         },
@@ -196,7 +251,10 @@ Component.register('swag-migration-shop-information', {
         },
 
         onClickRemoveConnectionCredentials() {
-            this.migrationService.updateConnectionCredentials(this.connection.id, null).then(() => {
+            this.migrationService.updateConnectionCredentials(
+                this.migrationProcessStore.state.connectionId,
+                null
+            ).then(() => {
                 this.$router.go(); // Refresh the page
             });
         }

@@ -1,4 +1,4 @@
-import { Application } from 'src/core/shopware';
+import { Application, State } from 'src/core/shopware';
 import { WORKER_INTERRUPT_TYPE } from './swag-migration-worker.service';
 
 /**
@@ -18,29 +18,23 @@ export const WORKER_API_OPERATION = Object.freeze({
 
 export class WorkerRequest {
     /**
-     * @param {number} status
      * @param {Object} requestParams
      * @param {WorkerStatusManager} workerStatusManager
      * @param {MigrationApiService} migrationService
-     * @param {function} onProgressCB
-     * @param {function} onErrorCB
      * @param {function} onInterruptCB
      */
     constructor(
-        status,
         requestParams,
         workerStatusManager,
         migrationService,
-        onProgressCB,
-        onErrorCB,
         onInterruptCB
     ) {
         this._MAX_REQUEST_TIME = 10000; // in ms
         this._DEFAULT_CHUNK_SIZE = 25; // in data sets
         this._CHUNK_PROPORTION_BUFFER = 0.8; // chunk buffer
 
+        this._migrationProcessStore = State.getStore('migrationProcess');
         this._runId = requestParams.runUuid;
-        this._status = status;
         this._requestParams = requestParams;
         this._workerStatusManager = workerStatusManager;
         this._migrationService = migrationService;
@@ -48,30 +42,14 @@ export class WorkerRequest {
         this._chunkSize = this._DEFAULT_CHUNK_SIZE;
 
         // callbacks
-        this._onProgressCB = onProgressCB;
-        this._onErrorCB = onErrorCB;
         this._onInterruptCB = onInterruptCB;
-    }
-
-    /**
-     * @returns {number}
-     */
-    get status() {
-        return this._status;
-    }
-
-    /**
-     * @param {number} value
-     */
-    set status(value) {
-        this._status = value;
     }
 
     /**
      * @returns {string}
      */
     get operation() {
-        return WORKER_API_OPERATION[this._status];
+        return WORKER_API_OPERATION[this._migrationProcessStore.state.statusIndex];
     }
 
     /**
@@ -91,42 +69,8 @@ export class WorkerRequest {
     /**
      * @param {function} value
      */
-    set onProgressCB(value) {
-        this._onProgressCB = value;
-    }
-
-    /**
-     * @param {function} value
-     */
-    set onErrorCB(value) {
-        this._onErrorCB = value;
-    }
-
-    /**
-     * @param {function} value
-     */
     set onInterruptCB(value) {
         this._callInterruptCB = value;
-    }
-
-    /**
-     * @param {Object} param
-     * @private
-     */
-    _callProgressCB(param) {
-        if (this._onProgressCB !== null) {
-            this._onProgressCB(param);
-        }
-    }
-
-    /**
-     * @param {Object} param
-     * @private
-     */
-    _callErrorCB(param) {
-        if (this._onErrorCB !== null) {
-            this._onErrorCB(param);
-        }
     }
 
     /**
@@ -141,25 +85,18 @@ export class WorkerRequest {
     /**
      * Do all the API requests for all entities with the given methodName
      *
-     * @param {Object} entityGroups
      * @param {number} groupStartIndex
      * @param {number} entityStartIndex
      * @param {number} entityOffset
      * @returns {Promise}
      */
-    async migrateProcess(entityGroups, groupStartIndex = 0, entityStartIndex = 0, entityOffset = 0) {
+    async migrateProcess(groupStartIndex = 0, entityStartIndex = 0, entityOffset = 0) {
         /* eslint-disable no-await-in-loop */
         return new Promise(async (resolve) => {
-            await this._workerStatusManager.onStatusChanged(
-                this._runId,
-                entityGroups,
-                this._status
-            ).then(([newEntityGroups]) => {
-                entityGroups = newEntityGroups.filter((group) => {
-                    return group.id !== 'processMediaFiles';
-                });
-            });
+            await this._workerStatusManager.onStatusChanged(this._runId);
 
+            // Reference to store state, don't mutate this!
+            const entityGroups = this._migrationProcessStore.state.entityGroups;
             for (let groupIndex = groupStartIndex; groupIndex < entityGroups.length; groupIndex += 1) {
                 let groupProgress = 0;
                 for (let entityIndex = 0; entityIndex < entityGroups[groupIndex].entities.length; entityIndex += 1) {
@@ -219,13 +156,12 @@ export class WorkerRequest {
                 newOffset = entityCount;
             }
 
-            // call event subscriber
-            group.currentCount = groupProgress + newOffset;
-            this._callProgressCB({
+            // update State
+            this._migrationProcessStore.setEntityProgress(
                 entityName,
-                groupCurrentCount: group.currentCount,
-                groupTotal: group.total
-            });
+                groupProgress + newOffset,
+                group.total
+            );
 
             currentOffset += oldChunkSize;
         }
@@ -251,7 +187,7 @@ export class WorkerRequest {
             const beforeRequestTime = new Date();
             this._migrationService[this.operation](this._requestParams).then((response) => {
                 if (!response) {
-                    this._callErrorCB({
+                    this._migrationProcessStore.addError({
                         code: 'canNotConnectToServer',
                         internalError: true
                     });
@@ -270,7 +206,7 @@ export class WorkerRequest {
                 resolve();
             }).catch((response) => {
                 if (!response || !response.response) {
-                    this._callErrorCB({
+                    this._migrationProcessStore.addError({
                         code: 'canNotConnectToServer',
                         internalError: true
                     });
@@ -280,7 +216,7 @@ export class WorkerRequest {
 
                 if (response.response.data && response.response.data.errors) {
                     response.response.data.errors.forEach((error) => {
-                        this._callErrorCB(error);
+                        this._migrationProcessStore.addError(error);
                     });
                 }
 

@@ -11,10 +11,10 @@
 
         {% block swag_migration_index_data_selector_grid %}
             <sw-grid ref="tableDataGrid"
-                     :items="tableData"
+                     :items="tableDataFiltered"
                      @sw-grid-select-item="onGridSelectItem"
                      @sw-grid-select-all="onGridSelectItem"
-                     v-if="tableData.length > 0">
+                     v-if="tableDataFiltered.length > 0">
                 <template slot="columns" slot-scope="{ item }">
                     {% block swag_migration_index_data_selector_grid_column_data %}
                         <sw-grid-column flex="1fr" :label="$tc('swag-migration.index.selectDataCard.dataHeader')">

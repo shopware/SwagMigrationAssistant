@@ -1,5 +1,5 @@
 {% block swag_migration_index_card_shopInfo %}
-    <sw-card class="swag-migration-index--card-shopInfo" :title="$tc('swag-migration.index.shopInfoCard.cardTitle')">
+    <sw-card class="swag-migration-index-card-shopInfo" :title="$tc('swag-migration.index.shopInfoCard.cardTitle')">
         {% block swag_migration_index_card_shopInfo_content %}
             <sw-container slot="grid" rows="auto auto">
                 <sw-card-section :divider="showMoreInformation ? 'bottom' : ''">
@@ -44,16 +44,16 @@
                                             {% block swag_migration_index_card_shopInfo_actions_editSettings %}
                                                 <sw-button size="small"
                                                            @click="onClickEditConnectionCredentials"
-                                                           :disabled="isMigrating || isPaused || isOtherMigrationRunning">
+                                                           :disabled="migrationProcessStore.state.isMigrating || migrationUIStore.state.isPaused || isOtherMigrationRunning">
                                                     {{ $tc('swag-migration.index.shopInfoCard.buttonEditSettings') }}
                                                 </sw-button>
                                             {% endblock %}
 
                                             {% block swag_migration_index_card_shopInfo_actions_contextMenu %}
-                                                <sw-context-button :disabled="isMigrating || isPaused || isOtherMigrationRunning">
+                                                <sw-context-button :disabled="migrationProcessStore.state.isMigrating || migrationUIStore.state.isPaused || isOtherMigrationRunning">
                                                     <sw-button size="small"
                                                                square slot="button"
-                                                               :disabled="isMigrating || isPaused || isOtherMigrationRunning">
+                                                               :disabled="migrationProcessStore.state.isMigrating || migrationUIStore.state.isPaused || isOtherMigrationRunning">
                                                         <sw-icon name="small-more" small></sw-icon>
                                                     </sw-button>
                                                     <sw-context-menu-item @click="onClickCreateConnection">
@@ -88,30 +88,38 @@
                 </sw-card-section>
 
                 <sw-card-section secondary slim v-if="showMoreInformation">
-                    <sw-container class="sw-customer-base-info" columns="repeat(auto-fit, minmax(250px, 1fr)" gap="0px 30px">
+                    <sw-container class="swag-migration-index-card-shopInfo-more-information" columns="repeat(auto-fit, minmax(250px, 1fr)" gap="0px 15px">
                         {% block swag_migration_index_card_shopInfo_advancedShopInfo %}
-                            <sw-description-list v-if="environmentInformation.totals">
-                                {% block swag_migration_index_card_shopInfo_advancedShopInfo__entityCounts %}
-                                    <template v-for="entityName in Object.keys(environmentInformation.totals)">
-                                        <dt>{{ $tc('swag-migration.index.shopInfoCard.entities.' + entityName) }}</dt>
-                                        <dd>{{ environmentInformation.totals[entityName] | localizedNumberFormat }}</dd>
-                                    </template>
+                            <div class="swag-migration-index-card-shopInfo-more-information-columns"
+                                 v-if="Object.keys(totalEntityCounts).length > 0">
+                                {% block swag_migration_index_card_shopInfo_advancedShopInfo_left %}
+                                    <sw-description-list v-for="entityName in Object.keys(totalEntityCounts)" :key="entityName">
+                                        {% block swag_migration_index_card_shopInfo_advancedShopInfo__entityCounts %}
+                                            <dt>{{ $tc('swag-migration.index.shopInfoCard.entities.' + entityName) }}</dt>
+                                            <dd>{{ totalEntityCounts[entityName] | localizedNumberFormat }}</dd>
+                                        {% endblock %}
+                                    </sw-description-list>
                                 {% endblock %}
-                            </sw-description-list>
-                            <sw-description-list>
-                                {% block swag_migration_index_card_shopInfo_advancedShopInfo__lastMigration %}
-                                    <dt>{{ $tc('swag-migration.index.shopInfoCard.lastMigration') }}</dt>
-                                    <dd v-if="lastMigrationDate !== '-'">
-                                        {{ $t('swag-migration.index.shopInfoCard.lastMigrationDateTime', lastMigrationDateTimeParams) }}
-                                    </dd>
-                                    <dd v-else>-</dd>
+                            </div>
+                            <div class="swag-migration-index-card-shopInfo-more-information-columns">
+                                {% block swag_migration_index_card_shopInfo_advancedShopInfo_right %}
+                                    <sw-description-list>
+                                        {% block swag_migration_index_card_shopInfo_advancedShopInfo__lastMigration %}
+                                            <dt>{{ $tc('swag-migration.index.shopInfoCard.lastMigration') }}</dt>
+                                            <dd v-if="lastMigrationDate !== '-'">
+                                                {{ $t('swag-migration.index.shopInfoCard.lastMigrationDateTime', lastMigrationDateTimeParams) }}
+                                            </dd>
+                                            <dd v-else>-</dd>
+                                        {% endblock %}
+                                    </sw-description-list>
+                                    <sw-description-list>
+                                        {% block swag_migration_index_card_shopInfo_advancedShopInfo__gateway %}
+                                            <dt>{{ $tc('swag-migration.index.shopInfoCard.gateway') }}</dt>
+                                            <dd>{{ gateway.toUpperCase() }}</dd>
+                                        {% endblock %}
+                                    </sw-description-list>
                                 {% endblock %}
-
-                                {% block swag_migration_index_card_shopInfo_advancedShopInfo__gateway %}
-                                    <dt>{{ $tc('swag-migration.index.shopInfoCard.gateway') }}</dt>
-                                    <dd>{{ gateway.toUpperCase() }}</dd>
-                                {% endblock %}
-                            </sw-description-list>
+                            </div>
                         {% endblock %}
                     </sw-container>
                 </sw-card-section>

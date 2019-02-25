@@ -7,7 +7,10 @@ import './swag-migration-wizard.less';
 Component.register('swag-migration-wizard', {
     template,
 
-    inject: ['migrationService'],
+    inject: {
+        /** @var {MigrationApiService} migrationService */
+        migrationService: 'migrationService'
+    },
 
     mixins: [
         Mixin.getByName('swag-wizard')
@@ -181,15 +184,7 @@ Component.register('swag-migration-wizard', {
 
     methods: {
         createdComponent() {
-            // check for non empty given connection
-            if (this.$route.params.connection !== undefined && Object.keys(this.$route.params.connection).length) {
-                this.connection = this.$route.params.connection;
-                this.onChildRouteChanged(); // update strings for current child
-                this.isLoading = false;
-                return;
-            }
-
-            this.loadSelectedConnection().then(() => {
+            this.loadSelectedConnection(this.$route.params.connectionId).then(() => {
                 this.onChildRouteChanged(); // update strings for current child
                 this.isLoading = false;
             });
@@ -369,7 +364,7 @@ Component.register('swag-migration-wizard', {
             this.navigateToNext();
         },
 
-        loadSelectedConnection() {
+        loadSelectedConnection(connectionId) {
             return new Promise((resolve) => {
                 // resolve if connection is already loaded
                 if (Object.keys(this.connection).length) {
@@ -378,6 +373,13 @@ Component.register('swag-migration-wizard', {
                 }
 
                 this.isLoading = true;
+
+                if (connectionId !== undefined) {
+                    this.fetchConnection(connectionId).then(() => {
+                        resolve();
+                    });
+                    return;
+                }
 
                 this.migrationGeneralSettingStore.getList({ limit: 1 }).then((response) => {
                     if (!response) {
@@ -394,22 +396,28 @@ Component.register('swag-migration-wizard', {
                         return;
                     }
 
-                    const params = {
-                        limit: 1,
-                        criteria: CriteriaFactory.equals('id', response.items[0].selectedConnectionId)
-                    };
-                    this.migrationConnectionStore.getList(params).then((connectionResponse) => {
-                        if (connectionResponse.items[0].id === null) {
-                            this.isLoading = false;
-                            this.onNoConnectionSelected();
-                            resolve();
-                            return;
-                        }
+                    this.fetchConnection(response.items[0].selectedConnectionId);
+                });
+            });
+        },
 
-                        this.connection = connectionResponse.items[0];
+        fetchConnection(connectionId) {
+            return new Promise((resolve) => {
+                const params = {
+                    limit: 1,
+                    criteria: CriteriaFactory.equals('id', connectionId)
+                };
+                this.migrationConnectionStore.getList(params).then((connectionResponse) => {
+                    if (connectionResponse.items[0].id === null) {
                         this.isLoading = false;
+                        this.onNoConnectionSelected();
                         resolve();
-                    });
+                        return;
+                    }
+
+                    this.connection = connectionResponse.items[0];
+                    this.isLoading = false;
+                    resolve();
                 });
             });
         },

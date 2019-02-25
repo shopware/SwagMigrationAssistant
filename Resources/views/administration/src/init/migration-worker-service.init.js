@@ -4,7 +4,6 @@ import MigrationWorkerService from '../../src/core/service/migration/swag-migrat
 Application.addServiceProvider('migrationWorkerService', (container) => {
     return new MigrationWorkerService(
         container.migrationService,
-        container.swagMigrationDataService,
         container.swagMigrationRunService,
         container.swagMigrationLoggingService
     );

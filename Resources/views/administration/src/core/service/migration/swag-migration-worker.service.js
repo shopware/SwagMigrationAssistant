@@ -1,4 +1,4 @@
-import { Application } from 'src/core/shopware';
+import { Application, State } from 'src/core/shopware';
 import CriteriaFactory from 'src/core/factory/criteria.factory';
 import StorageBroadcastService from '../storage-broadcaster.service';
 import { WorkerRequest } from './swag-migration-worker-request.service';
@@ -16,13 +16,11 @@ export const WORKER_INTERRUPT_TYPE = Object.freeze({
 class MigrationWorkerService {
     /**
      * @param {MigrationApiService} migrationService
-     * @param {MigrationDataService} migrationDataService
      * @param {MigrationRunService} migrationRunService
      * @param {MigrationLoggingService} migrationLoggingService
      */
     constructor(
         migrationService,
-        migrationDataService,
         migrationRunService,
         migrationLoggingService
     ) {
@@ -36,66 +34,22 @@ class MigrationWorkerService {
         );
 
         this._migrationService = migrationService;
-        this._migrationDataService = migrationDataService;
         this._migrationRunService = migrationRunService;
         this._migrationLoggingService = migrationLoggingService;
         this._workerStatusManager = new WorkerStatusManager(
             this._migrationService,
-            this._migrationRunService,
-            this._migrationDataService
         );
         this._workRunner = null;
 
+        /** @type MigrationProcessStore */
+        this._migrationProcessStore = State.getStore('migrationProcess');
         // state variables
-        this.isMigrating = false;
-        this._errors = [];
-        this._entityGroups = [];
-        this._progressSubscriber = null;
-        this._statusSubscriber = null;
         this._interruptSubscriber = null;
-        this._runId = '';
-        this._status = null;
         this._restoreState = {};
-        this.premapping = [];
 
         this._broadcastService.sendMessage({
             migrationMessage: 'initialized'
         });
-    }
-
-    /**
-     * @returns {null|int}
-     */
-    get status() {
-        return this._status;
-    }
-
-    /**
-     * @param {null|int} value
-     */
-    set status(value) {
-        this._status = value;
-    }
-
-    /**
-     * @returns {string}
-     */
-    get runId() {
-        return this._runId;
-    }
-
-    /**
-     * @returns {Array}
-     */
-    get entityGroups() {
-        return this._entityGroups;
-    }
-
-    /**
-     * @returns {Array}
-     */
-    get errors() {
-        return this._errors;
     }
 
     /**
@@ -114,7 +68,7 @@ class MigrationWorkerService {
     }
 
     _onInterrupt(value) {
-        this.isMigrating = false;
+        this._migrationProcessStore.setIsMigrating(false);
         this._callInterruptSubscriber(value);
     }
 
@@ -162,20 +116,19 @@ class MigrationWorkerService {
      *   accessToken: string|null
      * }>}
      */
-    createMigration(connectionId, dataSelectionIds) {
+    createMigration(dataSelectionIds) {
         return new Promise((resolve) => {
-            this._migrationService.createMigration({
-                connectionId,
+            this._migrationService.createMigration(
+                this._migrationProcessStore.state.connectionId,
                 dataSelectionIds
-            }).then((state) => {
+            ).then((state) => {
                 const returnState = this.processStateResponse(state);
 
                 if (returnState.isMigrationRunning === false && returnState.isMigrationAccessTokenValid === true) {
-                    this._status = MIGRATION_STATUS.PREMAPPING;
-                    this._callStatusSubscriber({ status: this._status });
+                    this._migrationProcessStore.setStatusIndex(MIGRATION_STATUS.PREMAPPING);
                 }
 
-                this._runId = returnState.runUuid;
+                this._migrationProcessStore.setRunId(returnState.runUuid);
                 resolve(returnState);
             }).catch(() => {
                 const returnValue = {
@@ -220,7 +173,7 @@ class MigrationWorkerService {
         returnValue.runProgress = state.runProgress;
 
         if (state.validMigrationRunToken === false) {
-            this._runId = state.runId;
+            this._migrationProcessStore.setRunId(state.runId);
             returnValue.isMigrationRunning = true;
             returnValue.status = state.status;
 
@@ -228,7 +181,7 @@ class MigrationWorkerService {
         }
 
         if (state.migrationRunning === true) {
-            this._runId = this._restoreState.runId;
+            this._migrationProcessStore.setRunId(this._restoreState.runId);
             returnValue.isMigrationRunning = true;
             returnValue.isMigrationAccessTokenValid = true;
             returnValue.status = state.status;
@@ -252,18 +205,17 @@ class MigrationWorkerService {
             return;
         }
 
-        this._runId = this._restoreState.runId;
-        this._entityGroups = this._restoreState.runProgress;
-        this._status = this._restoreState.status;
-        this._errors = [];
+        this._migrationProcessStore.setRunId(this._restoreState.runId);
+        this._migrationProcessStore.setEntityGroups(this._restoreState.runProgress);
+        this._migrationProcessStore.setStatusIndex(this._restoreState.status);
+        this._migrationProcessStore.setErrors([]);
 
         // Get current group and entity index
         const indicies = this._getIndiciesByEntityName(this._restoreState.entity);
 
         this.startMigration(
-            this._runId,
-            this._entityGroups,
-            this._status,
+            this._migrationProcessStore.state.runId,
+            this._migrationProcessStore.state.statusIndex,
             indicies.groupIndex,
             indicies.entityIndex,
             this._restoreState.finishedCount
@@ -305,9 +257,12 @@ class MigrationWorkerService {
      * @private
      */
     _getIndiciesByEntityName(entityName) {
-        for (let groupIndex = 0; groupIndex < this._entityGroups.length; groupIndex += 1) {
-            for (let entityIndex = 0; entityIndex < this._entityGroups[groupIndex].entities.length; entityIndex += 1) {
-                if (this._entityGroups[groupIndex].entities[entityIndex].entityName === entityName) {
+        for (let groupIndex = 0; groupIndex < this._migrationProcessStore.state.entityGroups.length; groupIndex += 1) {
+            for (let entityIndex = 0;
+                entityIndex < this._migrationProcessStore.state.entityGroups[groupIndex].entities.length;
+                entityIndex += 1
+            ) {
+                if (this._migrationProcessStore.state.entityGroups[groupIndex].entities[entityIndex].entityName === entityName) {
                     return {
                         groupIndex,
                         entityIndex
@@ -320,54 +275,6 @@ class MigrationWorkerService {
             groupIndex: -1,
             entityIndex: -1
         };
-    }
-
-    /**
-     * @param {function} callback
-     */
-    subscribeStatus(callback) {
-        this._statusSubscriber = callback;
-    }
-
-    unsubscribeStatus() {
-        this._statusSubscriber = null;
-    }
-
-    /**
-     * @param {function} callback
-     */
-    subscribeProgress(callback) {
-        this._progressSubscriber = callback;
-    }
-
-    unsubscribeProgress() {
-        this._progressSubscriber = null;
-    }
-
-    /**
-     * @param {Object} param
-     * @private
-     */
-    _callStatusSubscriber(param) {
-        if (!this.isMigrating) {
-            return;
-        }
-        if (this._statusSubscriber !== null) {
-            this._statusSubscriber.call(null, param);
-        }
-    }
-
-    /**
-     * @param {Object} param
-     * @private
-     */
-    _callProgressSubscriber(param) {
-        if (!this.isMigrating) {
-            return;
-        }
-        if (this._progressSubscriber !== null) {
-            this._progressSubscriber.call(null, param);
-        }
     }
 
     /**
@@ -392,7 +299,6 @@ class MigrationWorkerService {
 
     /**
      * @param {String} runId
-     * @param {Object} entityGroups
      * @param {number} statusIndex
      * @param {number} groupStartIndex
      * @param {number} entityStartIndex
@@ -401,7 +307,6 @@ class MigrationWorkerService {
      */
     startMigration(
         runId,
-        entityGroups,
         statusIndex = MIGRATION_STATUS.FETCH_DATA,
         groupStartIndex = 0,
         entityStartIndex = 0,
@@ -409,13 +314,12 @@ class MigrationWorkerService {
     ) {
         return new Promise(async (resolve) => {
             // Wait for the 'migrationWanted' request and response to allow or deny the migration
-            this.isMigrating = true;
-            this._runId = runId;
-            this._entityGroups = Array.from(entityGroups, group => Object.assign({}, group));
-            this._errors = [];
+            this._migrationProcessStore.setErrors([]);
+            this._migrationProcessStore.setIsMigrating(true);
+            this._migrationProcessStore.setRunId(runId);
 
             let processMediaFiles = false;
-            this._entityGroups.forEach((group) => {
+            this._migrationProcessStore.state.entityGroups.forEach((group) => {
                 if (group.processMediaFiles) {
                     processMediaFiles = true;
                 }
@@ -423,16 +327,13 @@ class MigrationWorkerService {
 
             const params = {
                 swagMigrationAccessToken: MigrationWorkerService.migrationAccessToken,
-                runUuid: this._runId
+                runUuid: this._migrationProcessStore.state.runId
             };
 
             this._workRunner = new WorkerRequest(
-                MIGRATION_STATUS.FETCH_DATA,
                 params,
                 this._workerStatusManager,
                 this._migrationService,
-                this._callProgressSubscriber.bind(this),
-                this._addError.bind(this),
                 this._onInterrupt.bind(this)
             );
 
@@ -467,12 +368,9 @@ class MigrationWorkerService {
             // download
             if (statusIndex <= MIGRATION_STATUS.PROCESS_MEDIA_FILES && processMediaFiles) {
                 this._workRunner = new WorkerMediaFiles(
-                    MIGRATION_STATUS.PROCESS_MEDIA_FILES,
                     params,
                     this._workerStatusManager,
                     this._migrationService,
-                    this._callProgressSubscriber.bind(this),
-                    this._addError.bind(this),
                     this._onInterrupt.bind(this)
                 );
 
@@ -490,8 +388,8 @@ class MigrationWorkerService {
 
             // finish
             await this._migrateFinish();
-            this.isMigrating = false;
-            resolve(this._errors);
+            this._migrationProcessStore.setIsMigrating(false);
+            resolve(this._migrationProcessStore.state.errors);
         });
     }
 
@@ -507,21 +405,18 @@ class MigrationWorkerService {
      */
     _startWorkRunner(status, groupStartIndex, entityStartIndex, entityOffset) {
         return new Promise(async (resolve) => {
-            if (!this.isMigrating) {
+            if (!this._migrationProcessStore.state.isMigrating) {
                 resolve();
                 return;
             }
 
-            this._status = status;
-            this._workRunner.status = this._status;
+            this._migrationProcessStore.setStatusIndex(status);
 
             if (groupStartIndex === 0 && entityStartIndex === 0 && entityOffset === 0) {
                 this._resetProgress();
-                this._callStatusSubscriber({ status: this.status });
             }
 
             await this._workRunner.migrateProcess(
-                this._entityGroups,
                 groupStartIndex,
                 entityStartIndex,
                 entityOffset
@@ -565,7 +460,7 @@ class MigrationWorkerService {
     _onBroadcastReceived(data) {
         // answer incoming migration wanted request based on current migration state.
         if (data.migrationMessage === 'migrationWanted') {
-            if (this.isMigrating) {
+            if (this._migrationProcessStore.state.isMigrating) {
                 this._broadcastService.sendMessage({
                     migrationMessage: 'migrationDenied'
                 });
@@ -583,15 +478,14 @@ class MigrationWorkerService {
      * @private
      */
     _migrateFinish() {
-        if (!this.isMigrating) {
+        if (!this._migrationProcessStore.state.isMigrating) {
             return Promise.resolve();
         }
 
         return this._getErrors().then(() => {
-            this._migrationRunService.updateById(this._runId, { status: 'finished' });
+            this._migrationRunService.updateById(this._migrationProcessStore.state.runId, { status: 'finished' });
             this._resetProgress();
-            this._status = MIGRATION_STATUS.FINISHED;
-            this._callStatusSubscriber({ status: this.status });
+            this._migrationProcessStore.setStatusIndex(MIGRATION_STATUS.FINISHED);
 
             return Promise.resolve();
         });
@@ -605,7 +499,7 @@ class MigrationWorkerService {
      */
     _getErrors() {
         return new Promise((resolve) => {
-            const criteria = CriteriaFactory.equals('runId', this._runId);
+            const criteria = CriteriaFactory.equals('runId', this._migrationProcessStore.state.runId);
             const params = {
                 criteria: criteria,
                 limit: 500
@@ -631,30 +525,7 @@ class MigrationWorkerService {
     }
 
     _resetProgress() {
-        this._entityGroups.forEach((group) => {
-            group.currentCount = 0;
-        });
-
-        this._syncProgressWithUI();
-    }
-
-    /**
-     * Call the UI callback to update all the progress bar values.
-     *
-     * @private
-     */
-    _syncProgressWithUI() {
-        for (let groupIndex = 0; groupIndex < this._entityGroups.length; groupIndex += 1) {
-            const group = this._entityGroups[groupIndex];
-            if (group.entities[0] !== undefined) {
-                const entity = group.entities[0];
-                this._callProgressSubscriber({
-                    entityName: entity.entityName,
-                    entityGroupProgressValue: group.currentCount,
-                    entityCount: entity.total
-                });
-            }
-        }
+        this._migrationProcessStore.resetProgress();
     }
 
     _addError(error) {
@@ -662,12 +533,12 @@ class MigrationWorkerService {
             return;
         }
 
-        this._errors.push(error);
+        this._migrationProcessStore.addError(error);
     }
 
     _errorCodeExists(errorCode) {
-        for (let index = 0; index < this._errors.length; index += 1) {
-            if (errorCode === this._errors[index].code) {
+        for (let index = 0; index < this._migrationProcessStore.state.errors.length; index += 1) {
+            if (errorCode === this._migrationProcessStore.state.errors[index].code) {
                 return true;
             }
         }
