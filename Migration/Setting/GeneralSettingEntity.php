@@ -4,7 +4,6 @@ namespace SwagMigrationNext\Migration\Setting;
 
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
-use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
 
 class GeneralSettingEntity extends Entity
 {

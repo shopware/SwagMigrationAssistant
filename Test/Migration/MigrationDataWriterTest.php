@@ -281,14 +281,14 @@ class MigrationDataWriterTest extends TestCase
         });
         $customerTotalAfter = $this->customerRepo->search($criteria, $context)->getTotal();
 
-        self::assertSame(0, $customerTotalAfter - $customerTotalBefore);
-        self::assertCount(1, $this->loggingService->getLoggingArray());
+        static::assertSame(0, $customerTotalAfter - $customerTotalBefore);
+        static::assertCount(1, $this->loggingService->getLoggingArray());
         $this->loggingService->resetLogging();
 
         $failureConvertCriteria = new Criteria();
         $failureConvertCriteria->addFilter(new EqualsFilter('writeFailure', true));
         $result = $this->migrationDataRepo->search($failureConvertCriteria, $context);
-        self::assertSame(3, $result->getTotal());
+        static::assertSame(3, $result->getTotal());
     }
 
     public function testWriteCustomerData(): void
@@ -311,7 +311,7 @@ class MigrationDataWriterTest extends TestCase
         });
         $customerTotalAfter = $this->customerRepo->search($criteria, $context)->getTotal();
 
-        self::assertSame(3, $customerTotalAfter - $customerTotalBefore);
+        static::assertSame(3, $customerTotalAfter - $customerTotalBefore);
     }
 
     public function testWriteOrderData(): void
@@ -362,10 +362,10 @@ class MigrationDataWriterTest extends TestCase
         $usdResultAfter = $this->currencyRepo->search($usdFactorCriteria, $context)->first();
         $jpyInvalidTotalAfter = $this->currencyRepo->search($jpyInvalidCriteria, $context)->getTotal();
 
-        self::assertSame(2, $orderTotalAfter - $orderTotalBefore);
-        self::assertSame(1, $currencyTotalAfter - $currencyTotalBefore);
-        self::assertSame(0.2, $usdResultAfter->getFactor() - $usdResultBefore->getFactor());
-        self::assertSame(0, $jpyInvalidTotalAfter - $jpyInvalidTotalBefore);
+        static::assertSame(2, $orderTotalAfter - $orderTotalBefore);
+        static::assertSame(1, $currencyTotalAfter - $currencyTotalBefore);
+        static::assertSame(0.2, $usdResultAfter->getFactor() - $usdResultBefore->getFactor());
+        static::assertSame(0, $jpyInvalidTotalAfter - $jpyInvalidTotalBefore);
     }
 
     public function testWriteCustomerGroupDiscounts(): void
@@ -388,7 +388,7 @@ class MigrationDataWriterTest extends TestCase
         });
         $discountTotalAfter = $this->discountRepo->search($criteria, $context)->getTotal();
 
-        self::assertSame(1, $discountTotalAfter - $discountTotalBefore);
+        static::assertSame(1, $discountTotalAfter - $discountTotalBefore);
     }
 
     public function testWriteMediaData(): void
@@ -411,7 +411,7 @@ class MigrationDataWriterTest extends TestCase
         });
         $totalAfter = $this->mediaRepo->search($criteria, $context)->getTotal();
 
-        self::assertSame(23, $totalAfter - $totalBefore);
+        static::assertSame(23, $totalAfter - $totalBefore);
     }
 
     public function testWriteCategoryData(): void
@@ -434,7 +434,7 @@ class MigrationDataWriterTest extends TestCase
         });
         $totalAfter = $this->categoryRepo->search($criteria, $context)->getTotal();
 
-        self::assertSame(8, $totalAfter - $totalBefore);
+        static::assertSame(8, $totalAfter - $totalBefore);
     }
 
     public function testWriteProductData(): void
@@ -457,7 +457,7 @@ class MigrationDataWriterTest extends TestCase
         });
         $productTotalAfter = $this->productRepo->search($criteria, $context)->getTotal();
 
-        self::assertSame(14, $productTotalAfter - $productTotalBefore); //TODO change back to 42 after variant support is implemented
+        static::assertSame(14, $productTotalAfter - $productTotalBefore); //TODO change back to 42 after variant support is implemented
     }
 
     public function testWriteTranslationData(): void
@@ -492,8 +492,8 @@ class MigrationDataWriterTest extends TestCase
         });
         $productTranslationTotalAfter = $this->getTranslationTotal();
 
-        self::assertSame(14, $productTotalAfter - $productTotalBefore); //TODO change back to 42 after variant support is implemented
-        self::assertSame(0, $productTranslationTotalAfter - $productTranslationTotalBefore);  //TODO change back to 2 after translation support is implemented
+        static::assertSame(14, $productTotalAfter - $productTotalBefore); //TODO change back to 42 after variant support is implemented
+        static::assertSame(0, $productTranslationTotalAfter - $productTranslationTotalBefore);  //TODO change back to 2 after translation support is implemented
     }
 
     public function testWriteDataWithUnknownWriter(): void

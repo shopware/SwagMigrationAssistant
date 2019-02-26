@@ -139,7 +139,7 @@ class SwagMigrationRunEntity extends Entity
      */
     public function setStatus(string $status): void
     {
-        if (!in_array($status, [self::STATUS_RUNNING, self::STATUS_FINISHED, self::STATUS_ABORTED])) {
+        if (!in_array($status, [self::STATUS_RUNNING, self::STATUS_FINISHED, self::STATUS_ABORTED], true)) {
             throw new MigrationRunUndefinedStatusException($status);
         }
 

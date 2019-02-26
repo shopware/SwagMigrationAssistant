@@ -50,8 +50,8 @@ class GatewayServiceTest extends TestCase
             $this->gatewayFactoryRegistry->createGateway($migrationContext);
         } catch (Exception $e) {
             /* @var GatewayNotFoundException $e */
-            self::assertInstanceOf(GatewayNotFoundException::class, $e);
-            self::assertSame(Response::HTTP_NOT_FOUND, $e->getStatusCode());
+            static::assertInstanceOf(GatewayNotFoundException::class, $e);
+            static::assertSame(Response::HTTP_NOT_FOUND, $e->getStatusCode());
         }
     }
 }

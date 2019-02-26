@@ -51,7 +51,7 @@ class Shopware55ApiReaderTest extends TestCase
         );
 
         $response = $apiReader->read();
-        self::assertSame($response, $dataArray);
+        static::assertSame($response, $dataArray);
     }
 
     public function testReadNoRouteMapping(): void
@@ -102,9 +102,9 @@ class Shopware55ApiReaderTest extends TestCase
             $apiReader->read();
         } catch (\Exception $e) {
             /* @var GatewayReadException $e */
-            self::assertInstanceOf(GatewayReadException::class, $e);
-            self::assertSame(SymfonyResponse::HTTP_NOT_FOUND, $e->getStatusCode());
-            self::assertSame('Could not read from gateway: "Shopware 5.5 Api product"', $e->getMessage());
+            static::assertInstanceOf(GatewayReadException::class, $e);
+            static::assertSame(SymfonyResponse::HTTP_NOT_FOUND, $e->getStatusCode());
+            static::assertSame('Could not read from gateway: "Shopware 5.5 Api product"', $e->getMessage());
         }
     }
 }

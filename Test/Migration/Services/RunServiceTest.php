@@ -185,8 +185,8 @@ class RunServiceTest extends TestCase
         $afterRunTotal = $this->runRepo->search(new Criteria(), $context)->getTotal();
         $afterMappingTotal = $this->mappingRepo->search(new Criteria(), $context)->getTotal();
 
-        $this->assertSame(1, $afterRunTotal - $beforeRunTotal);
-        $this->assertSame(0, $afterMappingTotal - $beforeMappingTotal);
+        static::assertSame(1, $afterRunTotal - $beforeRunTotal);
+        static::assertSame(0, $afterMappingTotal - $beforeMappingTotal);
     }
 
     public function testCreateMigrationRunWithStructure(): void
@@ -205,7 +205,7 @@ class RunServiceTest extends TestCase
         $afterRunTotal = $this->runRepo->search(new Criteria(), $context)->getTotal();
         $afterMappingTotal = $this->mappingRepo->search(new Criteria(), $context)->getTotal();
 
-        $this->assertSame(1, $afterRunTotal - $beforeRunTotal);
-        $this->assertSame(2, $afterMappingTotal - $beforeMappingTotal);
+        static::assertSame(1, $afterRunTotal - $beforeRunTotal);
+        static::assertSame(2, $afterMappingTotal - $beforeMappingTotal);
     }
 }

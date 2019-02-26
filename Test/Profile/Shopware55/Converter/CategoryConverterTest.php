@@ -110,8 +110,8 @@ class CategoryConverterTest extends TestCase
             $this->categoryConverter->convert($categoryData[4], $context, $this->migrationContext);
         } catch (\Exception $e) {
             /* @var ParentEntityForChildNotFoundException $e */
-            self::assertInstanceOf(ParentEntityForChildNotFoundException::class, $e);
-            self::assertSame(Response::HTTP_NOT_FOUND, $e->getStatusCode());
+            static::assertInstanceOf(ParentEntityForChildNotFoundException::class, $e);
+            static::assertSame(Response::HTTP_NOT_FOUND, $e->getStatusCode());
         }
     }
 

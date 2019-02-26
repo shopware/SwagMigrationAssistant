@@ -29,8 +29,8 @@ class WriterRegistryTest extends TestCase
             $this->writerRegistry->getWriter('foo');
         } catch (Exception $e) {
             /* @var WriterNotFoundException $e */
-            self::assertInstanceOf(WriterNotFoundException::class, $e);
-            self::assertSame(Response::HTTP_NOT_FOUND, $e->getStatusCode());
+            static::assertInstanceOf(WriterNotFoundException::class, $e);
+            static::assertSame(Response::HTTP_NOT_FOUND, $e->getStatusCode());
         }
     }
 }

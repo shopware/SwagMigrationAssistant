@@ -173,9 +173,9 @@ class MigrationControllerTest extends TestCase
             $run->setStatus('invalidRunStatus');
         } catch (\Exception $e) {
             /* @var MigrationRunUndefinedStatusException $e */
-            self::assertInstanceOf(MigrationRunUndefinedStatusException::class, $e);
-            self::assertSame(Response::HTTP_BAD_REQUEST, $e->getStatusCode());
-            self::assertSame('Migration run status "invalidRunStatus" is not a valid status', $e->getMessage());
+            static::assertInstanceOf(MigrationRunUndefinedStatusException::class, $e);
+            static::assertSame(Response::HTTP_BAD_REQUEST, $e->getStatusCode());
+            static::assertSame('Migration run status "invalidRunStatus" is not a valid status', $e->getMessage());
         }
     }
 
@@ -204,13 +204,13 @@ class MigrationControllerTest extends TestCase
         $request = new Request([], $params);
         $result = $this->controller->takeoverMigration($request, $context);
         $resultArray = json_decode($result->getContent(), true);
-        self::assertArrayHasKey('accessToken', $resultArray);
+        static::assertArrayHasKey('accessToken', $resultArray);
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('accessToken', $resultArray['accessToken']));
         /** @var SwagMigrationRunEntity $run */
         $run = $this->runRepo->search($criteria, $context)->first();
-        self::assertSame($run->getUserId(), mb_strtoupper($customerId));
+        static::assertSame($run->getUserId(), mb_strtoupper($customerId));
 
         $this->expectException(MigrationContextPropertyMissingException::class);
         $this->expectExceptionMessage('Required property "runUuid" for migration context is missing');
@@ -249,13 +249,13 @@ class MigrationControllerTest extends TestCase
         $totalAfter = $this->runRepo->search(new Criteria(), $context)->getTotal();
         $totalAbortedAfter = $this->runRepo->search($abortedCriteria, $context)->getTotal();
         $totalProcessing = $this->runRepo->search($runningCriteria, $context)->getTotal();
-        self::assertSame(ProgressState::class, $state['_class']);
-        self::assertFalse($state['migrationRunning']);
-        self::assertFalse($state['validMigrationRunToken']);
-        self::assertSame(ProgressState::STATUS_FETCH_DATA, $state['status']);
-        self::assertSame(0, $totalAfter - $totalBefore);
-        self::assertSame(0, $totalAbortedAfter - $totalAbortedBefore);
-        self::assertSame(1, $totalProcessing);
+        static::assertSame(ProgressState::class, $state['_class']);
+        static::assertFalse($state['migrationRunning']);
+        static::assertFalse($state['validMigrationRunToken']);
+        static::assertSame(ProgressState::STATUS_FETCH_DATA, $state['status']);
+        static::assertSame(0, $totalAfter - $totalBefore);
+        static::assertSame(0, $totalAbortedAfter - $totalAbortedBefore);
+        static::assertSame(1, $totalProcessing);
 
         // Get state migration with valid accessToken and abort running migration
         $totalAbortedBefore = $this->runRepo->search($abortedCriteria, $context)->getTotal();
@@ -265,13 +265,13 @@ class MigrationControllerTest extends TestCase
         $totalAfter = $this->runRepo->search(new Criteria(), $context)->getTotal();
         $totalAbortedAfter = $this->runRepo->search($abortedCriteria, $context)->getTotal();
         $totalProcessing = $this->runRepo->search($runningCriteria, $context)->getTotal();
-        self::assertSame(ProgressState::class, $state['_class']);
-        self::assertFalse($state['migrationRunning']);
-        self::assertTrue($state['validMigrationRunToken']);
-        self::assertSame(ProgressState::STATUS_FETCH_DATA, $state['status']);
-        self::assertSame(0, $totalAfter - $totalBefore);
-        self::assertSame(1, $totalAbortedAfter - $totalAbortedBefore);
-        self::assertSame(0, $totalProcessing);
+        static::assertSame(ProgressState::class, $state['_class']);
+        static::assertFalse($state['migrationRunning']);
+        static::assertTrue($state['validMigrationRunToken']);
+        static::assertSame(ProgressState::STATUS_FETCH_DATA, $state['status']);
+        static::assertSame(0, $totalAfter - $totalBefore);
+        static::assertSame(1, $totalAbortedAfter - $totalAbortedBefore);
+        static::assertSame(0, $totalProcessing);
 
         // Create new migration without abort a running migration
         $totalAbortedBefore = $this->runRepo->search($abortedCriteria, $context)->getTotal();
@@ -281,12 +281,12 @@ class MigrationControllerTest extends TestCase
         $totalAfter = $this->runRepo->search(new Criteria(), $context)->getTotal();
         $totalAbortedAfter = $this->runRepo->search($abortedCriteria, $context)->getTotal();
         $totalProcessing = $this->runRepo->search($runningCriteria, $context)->getTotal();
-        self::assertSame(ProgressState::class, $state['_class']);
-        self::assertFalse($state['migrationRunning']);
-        self::assertTrue($state['validMigrationRunToken']);
-        self::assertSame(1, $totalAfter - $totalBefore);
-        self::assertSame(0, $totalAbortedAfter - $totalAbortedBefore);
-        self::assertSame(1, $totalProcessing);
+        static::assertSame(ProgressState::class, $state['_class']);
+        static::assertFalse($state['migrationRunning']);
+        static::assertTrue($state['validMigrationRunToken']);
+        static::assertSame(1, $totalAfter - $totalBefore);
+        static::assertSame(0, $totalAbortedAfter - $totalAbortedBefore);
+        static::assertSame(1, $totalProcessing);
 
         // Call createMigration without accessToken and without abort running migration
         $totalAbortedBefore = $this->runRepo->search($abortedCriteria, $context)->getTotal();
@@ -296,12 +296,12 @@ class MigrationControllerTest extends TestCase
         $totalAfter = $this->runRepo->search(new Criteria(), $context)->getTotal();
         $totalAbortedAfter = $this->runRepo->search($abortedCriteria, $context)->getTotal();
         $totalProcessing = $this->runRepo->search($runningCriteria, $context)->getTotal();
-        self::assertSame(ProgressState::class, $state['_class']);
-        self::assertFalse($state['migrationRunning']);
-        self::assertFalse($state['validMigrationRunToken']);
-        self::assertSame(0, $totalAfter - $totalBefore);
-        self::assertSame(0, $totalAbortedAfter - $totalAbortedBefore);
-        self::assertSame(1, $totalProcessing);
+        static::assertSame(ProgressState::class, $state['_class']);
+        static::assertFalse($state['migrationRunning']);
+        static::assertFalse($state['validMigrationRunToken']);
+        static::assertSame(0, $totalAfter - $totalBefore);
+        static::assertSame(0, $totalAbortedAfter - $totalAbortedBefore);
+        static::assertSame(1, $totalProcessing);
 
         // Get current accessToken and refresh token in request
         /** @var SwagMigrationRunEntity $currentRun */
@@ -318,12 +318,12 @@ class MigrationControllerTest extends TestCase
         $totalAfter = $this->runRepo->search(new Criteria(), $context)->getTotal();
         $totalAbortedAfter = $this->runRepo->search($abortedCriteria, $context)->getTotal();
         $totalProcessing = $this->runRepo->search($runningCriteria, $context)->getTotal();
-        self::assertSame(ProgressState::class, $state['_class']);
-        self::assertFalse($state['migrationRunning']);
-        self::assertTrue($state['validMigrationRunToken']);
-        self::assertSame(0, $totalAfter - $totalBefore);
-        self::assertSame(1, $totalAbortedAfter - $totalAbortedBefore);
-        self::assertSame(0, $totalProcessing);
+        static::assertSame(ProgressState::class, $state['_class']);
+        static::assertFalse($state['migrationRunning']);
+        static::assertTrue($state['validMigrationRunToken']);
+        static::assertSame(0, $totalAfter - $totalBefore);
+        static::assertSame(1, $totalAbortedAfter - $totalAbortedBefore);
+        static::assertSame(0, $totalProcessing);
     }
 
     public function testCheckConnection(): void
@@ -340,27 +340,27 @@ class MigrationControllerTest extends TestCase
         $result = $this->controller->checkConnection($request, $context);
         $environmentInformation = json_decode($result->getContent(), true);
 
-        self::assertSame($environmentInformation['totals']['product'], 37);
-        self::assertSame($environmentInformation['totals']['customer'], 2);
-        self::assertSame($environmentInformation['totals']['category'], 8);
-        self::assertSame($environmentInformation['totals']['media'], 23);
-        self::assertSame($environmentInformation['totals']['order'], 0);
-        self::assertSame($environmentInformation['totals']['translation'], 0);
+        static::assertSame($environmentInformation['totals']['product'], 37);
+        static::assertSame($environmentInformation['totals']['customer'], 2);
+        static::assertSame($environmentInformation['totals']['category'], 8);
+        static::assertSame($environmentInformation['totals']['media'], 23);
+        static::assertSame($environmentInformation['totals']['order'], 0);
+        static::assertSame($environmentInformation['totals']['translation'], 0);
 
-        self::assertSame($environmentInformation['warningCode'], -1);
-        self::assertSame($environmentInformation['warningMessage'], 'No warning.');
+        static::assertSame($environmentInformation['warningCode'], -1);
+        static::assertSame($environmentInformation['warningMessage'], 'No warning.');
 
-        self::assertSame($environmentInformation['errorCode'], -1);
-        self::assertSame($environmentInformation['errorMessage'], 'No error.');
+        static::assertSame($environmentInformation['errorCode'], -1);
+        static::assertSame($environmentInformation['errorMessage'], 'No error.');
 
         $request = new Request();
         try {
             $this->controller->checkConnection($request, $context);
         } catch (\Exception $e) {
             /* @var MigrationContextPropertyMissingException $e */
-            self::assertInstanceOf(MigrationContextPropertyMissingException::class, $e);
-            self::assertSame(Response::HTTP_BAD_REQUEST, $e->getStatusCode());
-            self::assertSame('Required property "connectionId" for migration context is missing', $e->getMessage());
+            static::assertInstanceOf(MigrationContextPropertyMissingException::class, $e);
+            static::assertSame(Response::HTTP_BAD_REQUEST, $e->getStatusCode());
+            static::assertSame('Required property "connectionId" for migration context is missing', $e->getMessage());
         }
     }
 
@@ -473,8 +473,8 @@ class MigrationControllerTest extends TestCase
         $result = $this->controller->fetchMediaUuids($request, $context);
         $mediaUuids = json_decode($result->getContent(), true);
 
-        self::assertArrayHasKey('mediaUuids', $mediaUuids);
-        self::assertCount(10, $mediaUuids['mediaUuids']);
+        static::assertArrayHasKey('mediaUuids', $mediaUuids);
+        static::assertCount(10, $mediaUuids['mediaUuids']);
 
         $this->expectException(MigrationWorkloadPropertyMissingException::class);
         $this->expectExceptionMessage('Required property "runUuid" for migration workload is missing');
@@ -522,7 +522,7 @@ class MigrationControllerTest extends TestCase
         $result = $this->controller->processMedia($request, $context);
         $result = json_decode($result->getContent(), true);
 
-        self::assertSame($result['workload'], $inputWorkload);
+        static::assertSame($result['workload'], $inputWorkload);
 
         $request = new Request([], [
             'runUuid' => $this->runUuid,
@@ -531,7 +531,7 @@ class MigrationControllerTest extends TestCase
         $result = $this->controller->processMedia($request, $context);
         $result = json_decode($result->getContent(), true);
 
-        self::assertSame([
+        static::assertSame([
             'workload' => [],
             'validToken' => true,
         ], $result);
@@ -602,7 +602,7 @@ class MigrationControllerTest extends TestCase
         try {
             $this->controller->processMedia($request, $context);
         } catch (\Exception $e) {
-            self::assertSame(Response::HTTP_BAD_REQUEST, $e->getStatusCode());
+            static::assertSame(Response::HTTP_BAD_REQUEST, $e->getStatusCode());
             throw $e;
         }
     }
@@ -612,6 +612,6 @@ class MigrationControllerTest extends TestCase
         $context = Context::createDefaultContext();
         $result = $this->controller->getState(new Request(), $context);
         $state = json_decode($result->getContent(), true);
-        self::assertSame(ProgressState::class, $state['_class']);
+        static::assertSame(ProgressState::class, $state['_class']);
     }
 }

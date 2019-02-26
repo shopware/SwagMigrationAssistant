@@ -185,7 +185,7 @@ class MigrationDataFetcherTest extends TestCase
         $criteria->addFilter(new EqualsFilter('entity', MediaDefinition::getEntityName()));
         /** @var EntitySearchResult $result */
         $result = $this->migrationDataRepo->search($criteria, $context);
-        self::assertSame(23, $result->getTotal());
+        static::assertSame(23, $result->getTotal());
     }
 
     public function testFetchCategoryDataApiGateway(): void
@@ -206,7 +206,7 @@ class MigrationDataFetcherTest extends TestCase
         $criteria->addFilter(new EqualsFilter('entity', CategoryDefinition::getEntityName()));
         /** @var EntitySearchResult $result */
         $result = $this->migrationDataRepo->search($criteria, $context);
-        self::assertSame(8, $result->getTotal());
+        static::assertSame(8, $result->getTotal());
     }
 
     public function testFetchTranslationDataApiGateway(): void
@@ -227,7 +227,7 @@ class MigrationDataFetcherTest extends TestCase
         $criteria->addFilter(new EqualsFilter('entity', 'translation'));
         /** @var EntitySearchResult $result */
         $result = $this->migrationDataRepo->search($criteria, $context);
-        self::assertSame(5, $result->getTotal());
+        static::assertSame(5, $result->getTotal());
     }
 
     public function testFetchCustomerDataApiGateway(): void
@@ -248,7 +248,7 @@ class MigrationDataFetcherTest extends TestCase
         $criteria->addFilter(new EqualsFilter('entity', CustomerDefinition::getEntityName()));
         /** @var EntitySearchResult $result */
         $result = $this->migrationDataRepo->search($criteria, $context);
-        self::assertSame(3, $result->getTotal());
+        static::assertSame(3, $result->getTotal());
     }
 
     public function testFetchProductDataApiGateway(): void
@@ -269,7 +269,7 @@ class MigrationDataFetcherTest extends TestCase
         $criteria->addFilter(new EqualsFilter('entity', ProductDefinition::getEntityName()));
         /** @var EntitySearchResult $result */
         $result = $this->migrationDataRepo->search($criteria, $context);
-        self::assertSame(37, $result->getTotal());
+        static::assertSame(37, $result->getTotal());
     }
 
     public function testFetchProductDataLocalGateway(): void
@@ -290,7 +290,7 @@ class MigrationDataFetcherTest extends TestCase
         $criteria->addFilter(new EqualsFilter('entity', ProductDefinition::getEntityName()));
         /** @var EntitySearchResult $result */
         $result = $this->migrationDataRepo->search($criteria, $context);
-        self::assertSame(37, $result->getTotal());
+        static::assertSame(37, $result->getTotal());
     }
 
     public function testFetchInvalidCustomerData(): void
@@ -307,7 +307,7 @@ class MigrationDataFetcherTest extends TestCase
         $this->migrationDataFetcher->fetchData($migrationContext, $context);
         $result = $this->loggingRepo->search(new Criteria(), $context);
 
-        self::assertSame(5, $result->getTotal());
+        static::assertSame(5, $result->getTotal());
 
         $countValidLogging = 0;
         $countInvalidLogging = 0;
@@ -331,13 +331,13 @@ class MigrationDataFetcherTest extends TestCase
             ++$countInvalidLogging;
         }
 
-        self::assertSame(5, $countValidLogging);
-        self::assertSame(0, $countInvalidLogging);
+        static::assertSame(5, $countValidLogging);
+        static::assertSame(0, $countInvalidLogging);
 
         $failureConvertCriteria = new Criteria();
         $failureConvertCriteria->addFilter(new EqualsFilter('convertFailure', true));
         $result = $this->migrationDataRepo->search($failureConvertCriteria, $context);
-        self::assertSame(2, $result->getTotal());
+        static::assertSame(2, $result->getTotal());
     }
 
     public function testFetchWithUnknownConverter(): void
@@ -353,13 +353,13 @@ class MigrationDataFetcherTest extends TestCase
 
         $this->dummyDataFetcher->fetchData($migrationContext, $context);
         $logs = $this->loggingService->getLoggingArray();
-        self::assertCount(1, $logs);
-        self::assertSame(LogType::CONVERTER_NOT_FOUND, $logs[0]['logEntry']['code']);
+        static::assertCount(1, $logs);
+        static::assertSame(LogType::CONVERTER_NOT_FOUND, $logs[0]['logEntry']['code']);
     }
 
     public function testGetEntityTotal(): void
     {
-        $this->markTestSkipped('Function skipped, because of deprecated environment information totals (Only used for commands)');
+        static::markTestSkipped('Function skipped, because of deprecated environment information totals (Only used for commands)');
         $this->profileUuidService = new MigrationProfileUuidService($this->getContainer()->get('swag_migration_profile.repository'));
 
         $migrationContext = new MigrationContext(
@@ -372,7 +372,7 @@ class MigrationDataFetcherTest extends TestCase
 
         $total = $this->migrationDataFetcher->getEntityTotal($migrationContext);
 
-        self::assertSame(2, $total);
+        static::assertSame(2, $total);
 
         $migrationContext = new MigrationContext(
             '',
@@ -384,7 +384,7 @@ class MigrationDataFetcherTest extends TestCase
 
         $total = $this->migrationDataFetcher->getEntityTotal($migrationContext);
 
-        self::assertSame(37, $total);
+        static::assertSame(37, $total);
 
         $migrationContext = new MigrationContext(
             '',
@@ -396,7 +396,7 @@ class MigrationDataFetcherTest extends TestCase
 
         $total = $this->migrationDataFetcher->getEntityTotal($migrationContext);
 
-        self::assertSame(8, $total);
+        static::assertSame(8, $total);
 
         $migrationContext = new MigrationContext(
             '',
@@ -408,6 +408,6 @@ class MigrationDataFetcherTest extends TestCase
 
         $total = $this->migrationDataFetcher->getEntityTotal($migrationContext);
 
-        self::assertSame(23, $total);
+        static::assertSame(23, $total);
     }
 }

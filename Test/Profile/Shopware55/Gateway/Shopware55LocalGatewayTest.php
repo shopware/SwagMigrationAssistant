@@ -109,6 +109,6 @@ class Shopware55LocalGatewayTest extends TestCase
         $gateway = $factory->create($migrationContext);
         $response = $gateway->readEnvironmentInformation();
 
-        $this->assertSame($response->getTotals(), []);
+        static::assertSame($response->getTotals(), []);
     }
 }

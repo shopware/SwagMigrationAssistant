@@ -61,8 +61,8 @@ class ConverterRegistryTest extends TestCase
             $this->converterRegistry->getConverter($migrationContext);
         } catch (Exception $e) {
             /* @var ConverterNotFoundException $e */
-            self::assertInstanceOf(ConverterNotFoundException::class, $e);
-            self::assertSame(Response::HTTP_NOT_FOUND, $e->getStatusCode());
+            static::assertInstanceOf(ConverterNotFoundException::class, $e);
+            static::assertSame(Response::HTTP_NOT_FOUND, $e->getStatusCode());
         }
     }
 }

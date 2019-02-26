@@ -29,8 +29,8 @@ class ProfileRegistryTest extends TestCase
             $this->profileRegistry->getProfile('foo');
         } catch (Exception $e) {
             /* @var ProfileNotFoundException $e */
-            self::assertInstanceOf(ProfileNotFoundException::class, $e);
-            self::assertSame(Response::HTTP_NOT_FOUND, $e->getStatusCode());
+            static::assertInstanceOf(ProfileNotFoundException::class, $e);
+            static::assertSame(Response::HTTP_NOT_FOUND, $e->getStatusCode());
         }
     }
 }

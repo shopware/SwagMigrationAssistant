@@ -63,12 +63,12 @@ class DataSelectionRegistryTest extends TestCase
         ];
 
         $dataSelections = $this->dataSelectionRegistry->getDataSelections($migrationContext);
-        self::assertCount(3, $dataSelections->getElements());
+        static::assertCount(3, $dataSelections->getElements());
 
         $i = 0;
         /** @var DataSelectionStruct $selection */
         foreach ($dataSelections->getIterator() as $selection) {
-            self::assertSame($expected[$i], $selection->getId());
+            static::assertSame($expected[$i], $selection->getId());
             ++$i;
         }
     }
@@ -86,7 +86,7 @@ class DataSelectionRegistryTest extends TestCase
 
         $dataSelections = $this->dataSelectionRegistry->getDataSelections($migrationContext);
 
-        self::assertCount(1, $dataSelections);
-        self::assertSame($dataSelections->first()->getId(), (new MediaDataSelection())->getData()->getId());
+        static::assertCount(1, $dataSelections);
+        static::assertSame($dataSelections->first()->getId(), (new MediaDataSelection())->getData()->getId());
     }
 }
