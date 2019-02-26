@@ -93,13 +93,22 @@
             <argument type="service" id="SwagMigrationNext\Migration\Service\MigrationDataFetcher"/>
             <argument type="service" id="SwagMigrationNext\Migration\Service\MigrationDataWriter"/>
             <argument type="service" id="SwagMigrationNext\Migration\Service\MediaFileProcessorService"/>
-            <argument type="service" id="SwagMigrationNext\Migration\Service\MigrationProgressService"/>
             <argument type="service" id="SwagMigrationNext\Migration\Service\SwagMigrationAccessTokenService"/>
             <argument type="service" id="SwagMigrationNext\Migration\Run\RunService"/>
+            <argument type="service" id="swag_migration_run.repository"/>
+        </service>
+
+        <service id="SwagMigrationNext\Controller\PremappingController" public="true">
             <argument type="service" id="SwagMigrationNext\Migration\Service\PremappingService"/>
+            <argument type="service" id="swag_migration_run.repository"/>
+        </service>
+
+        <service id="SwagMigrationNext\Controller\StatusController" public="true">
+            <argument type="service" id="SwagMigrationNext\Migration\Service\MigrationDataFetcher"/>
+            <argument type="service" id="SwagMigrationNext\Migration\Service\MigrationProgressService"/>
+            <argument type="service" id="SwagMigrationNext\Migration\Run\RunService"/>
             <argument type="service" id="SwagMigrationNext\Migration\DataSelection\DataSelectionRegistry"/>
             <argument type="service" id="swag_migration_connection.repository"/>
-            <argument type="service" id="swag_migration_run.repository"/>
         </service>
 
         <service id="SwagMigrationNext\Command\MigrationFetchDataCommand"
