@@ -49,7 +49,7 @@ class Shopware55LocalCategoryReader extends Shopware55LocalAbstractReader
             );
 
             $topMostParent = end($parentCategoryIds);
-            if (!in_array($topMostParent, $ids)) {
+            if (!in_array($topMostParent, $ids, true)) {
                 $ids[] = $topMostParent;
             }
         }
@@ -86,7 +86,7 @@ class Shopware55LocalCategoryReader extends Shopware55LocalAbstractReader
                 $ignoredCategories[] = $category['id'];
                 continue;
             }
-            if (in_array($category['parent'], $ignoredCategories)) {
+            if (in_array($category['parent'], $ignoredCategories, true)) {
                 $category['parent'] = null;
             }
             $parentCategoryIds = array_values(

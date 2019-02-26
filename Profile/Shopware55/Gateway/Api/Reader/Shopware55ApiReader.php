@@ -60,9 +60,10 @@ class Shopware55ApiReader implements ReaderInterface
         /** @var GuzzleResponse $result */
         $result = $this->client->get(
             'SwagMigration' . $route,
-            ['query' => [
-                'offset' => $this->migrationContext->getOffset(),
-                'limit' => $this->migrationContext->getLimit(),
+            [
+                'query' => [
+                    'offset' => $this->migrationContext->getOffset(),
+                    'limit' => $this->migrationContext->getLimit(),
                 ],
             ]
         );

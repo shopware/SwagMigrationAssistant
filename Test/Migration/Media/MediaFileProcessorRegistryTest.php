@@ -56,9 +56,9 @@ class MediaFileProcessorRegistryTest extends TestCase
             $this->processorRegistry->getProcessor($context);
         } catch (\Exception $e) {
             /* @var ProcessorNotFoundException $e */
-            self::assertInstanceOf(ProcessorNotFoundException::class, $e);
-            self::assertSame(Response::HTTP_NOT_FOUND, $e->getStatusCode());
-            self::assertSame(LogType::PROCESSOR_NOT_FOUND, $e->getCode());
+            static::assertInstanceOf(ProcessorNotFoundException::class, $e);
+            static::assertSame(Response::HTTP_NOT_FOUND, $e->getStatusCode());
+            static::assertSame(LogType::PROCESSOR_NOT_FOUND, $e->getCode());
         }
     }
 }

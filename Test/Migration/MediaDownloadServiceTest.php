@@ -128,7 +128,7 @@ class MediaDownloadServiceTest extends TestCase
         $this->migrationWriteService->writeData($migrationContext, $context);
         $productTotalAfter = $this->productRepo->search($criteria, $context)->getTotal();
 
-        self::assertEquals(14, $productTotalAfter - $productTotalBefore);
+        static::assertEquals(14, $productTotalAfter - $productTotalBefore);
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('mimeType', null));
@@ -140,6 +140,6 @@ class MediaDownloadServiceTest extends TestCase
         $criteria->addFilter(new NotFilter(NotFilter::CONNECTION_AND, [new EqualsFilter('mimeType', null)]));
         $totalAfterMediaDownload = $this->mediaRepository->search($criteria, $context)->getTotal();
 
-        self::assertEquals(21, $totalBeforeMediaDownload - $totalAfterMediaDownload);
+        static::assertEquals(21, $totalBeforeMediaDownload - $totalAfterMediaDownload);
     }
 }

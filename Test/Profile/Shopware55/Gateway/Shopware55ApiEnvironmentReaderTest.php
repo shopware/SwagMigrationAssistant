@@ -65,9 +65,9 @@ class Shopware55ApiEnvironmentReaderTest extends TestCase
         );
 
         $response = $environmentReader->read();
-        self::assertSame($response['environmentInformation'], $this->dataArray);
-        self::assertSame($response['warning'], $this->warning);
-        self::assertSame($response['error'], $this->error);
+        static::assertSame($response['environmentInformation'], $this->dataArray);
+        static::assertSame($response['warning'], $this->warning);
+        static::assertSame($response['error'], $this->error);
     }
 
     public function testEnvironmentReaderNotVerifiedTest(): void
@@ -104,9 +104,9 @@ class Shopware55ApiEnvironmentReaderTest extends TestCase
         );
 
         $response = $environmentReader->read();
-        self::assertSame($response['environmentInformation'], $this->dataArray);
-        self::assertSame($response['warning'], $warning);
-        self::assertSame($response['error'], $this->error);
+        static::assertSame($response['environmentInformation'], $this->dataArray);
+        static::assertSame($response['warning'], $warning);
+        static::assertSame($response['error'], $this->error);
     }
 
     public function testEnvironmentReaderNotConnectedTest(): void
@@ -143,9 +143,9 @@ class Shopware55ApiEnvironmentReaderTest extends TestCase
         );
 
         $response = $environmentReader->read();
-        self::assertSame($response['environmentInformation'], []);
-        self::assertSame($response['error'], $error);
-        self::assertSame($response['warning'], $this->warning);
+        static::assertSame($response['environmentInformation'], []);
+        static::assertSame($response['error'], $error);
+        static::assertSame($response['warning'], $this->warning);
     }
 
     public function testEnvironmentReaderWithGatewayReadException(): void
@@ -175,9 +175,9 @@ class Shopware55ApiEnvironmentReaderTest extends TestCase
 
         $gatewayReadException = new GatewayReadException('Shopware 5.5 Api SwagMigrationEnvironment', 466);
         $response = $environmentReader->read();
-        self::assertSame($response['environmentInformation'], []);
-        self::assertSame($response['error']['code'], $gatewayReadException->getCode());
-        self::assertSame($response['error']['detail'], $gatewayReadException->getMessage());
+        static::assertSame($response['environmentInformation'], []);
+        static::assertSame($response['error']['code'], $gatewayReadException->getCode());
+        static::assertSame($response['error']['detail'], $gatewayReadException->getMessage());
     }
 
     public function testEnvironmentReaderWithInvalidJsonResponse(): void
@@ -207,8 +207,8 @@ class Shopware55ApiEnvironmentReaderTest extends TestCase
 
         $gatewayReadException = new GatewayReadException('Shopware 5.5 Api SwagMigrationEnvironment', 466);
         $response = $environmentReader->read();
-        self::assertSame($response['environmentInformation'], []);
-        self::assertSame($response['error']['code'], $gatewayReadException->getCode());
-        self::assertSame($response['error']['detail'], $gatewayReadException->getMessage());
+        static::assertSame($response['environmentInformation'], []);
+        static::assertSame($response['error']['code'], $gatewayReadException->getCode());
+        static::assertSame($response['error']['detail'], $gatewayReadException->getMessage());
     }
 }

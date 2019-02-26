@@ -168,9 +168,9 @@ class OrderConverterTest extends TestCase
             $this->orderConverter->convert($orderData[0], $context, $this->migrationContext);
         } catch (\Exception $e) {
             /* @var AssociationEntityRequiredMissingException $e */
-            self::assertInstanceOf(AssociationEntityRequiredMissingException::class, $e);
-            self::assertSame(Response::HTTP_NOT_FOUND, $e->getStatusCode());
-            self::assertSame('Mapping of "customer" is missing, but it is a required association for "order". Import "customer" first', $e->getMessage());
+            static::assertInstanceOf(AssociationEntityRequiredMissingException::class, $e);
+            static::assertSame(Response::HTTP_NOT_FOUND, $e->getStatusCode());
+            static::assertSame('Mapping of "customer" is missing, but it is a required association for "order". Import "customer" first', $e->getMessage());
         }
     }
 

@@ -61,11 +61,11 @@ class SwagMigrationAccessTokenService
 
         $this->migrationRunRepo->update(
           [
-            [
-                'id' => $runId,
-                'accessToken' => $token,
-                'userId' => $userId,
-            ],
+              [
+                  'id' => $runId,
+                  'accessToken' => $token,
+                  'userId' => $userId,
+              ],
           ],
           $context
         );

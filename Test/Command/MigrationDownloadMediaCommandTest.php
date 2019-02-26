@@ -163,7 +163,7 @@ class MigrationDownloadMediaCommandTest extends TestCase
 
     public function testDownloadData(): void
     {
-        $this->markTestSkipped('Reason: New Run-Connection-Profile-Association');
+        static::markTestSkipped('Reason: New Run-Connection-Profile-Association');
         $this->createCommands();
 
         $output = $this->executeFetchCommand([
@@ -180,19 +180,19 @@ class MigrationDownloadMediaCommandTest extends TestCase
             '--entity' => 'media',
         ]);
 
-        $this->assertStringContainsString('Written: 23', $output);
-        $this->assertStringContainsString('Skipped: 0', $output);
+        static::assertStringContainsString('Written: 23', $output);
+        static::assertStringContainsString('Skipped: 0', $output);
 
         $output = $this->executeDownloadCommand([
             '--run-id' => $runId,
         ]);
 
-        self::assertStringContainsString('Downloading done.', $output);
+        static::assertStringContainsString('Downloading done.', $output);
     }
 
     public function testDownloadDataWithoutRunId(): void
     {
-        $this->markTestSkipped('Reason: New Run-Connection-Profile-Association');
+        static::markTestSkipped('Reason: New Run-Connection-Profile-Association');
         $kernel = $this->getKernel();
         $application = new Application($kernel);
 
@@ -213,7 +213,7 @@ class MigrationDownloadMediaCommandTest extends TestCase
 
     private function createCommands(): void
     {
-        $this->markTestSkipped('Reason: New Run-Connection-Profile-Association');
+        static::markTestSkipped('Reason: New Run-Connection-Profile-Association');
         $kernel = $this->getKernel();
         $this->application = new Application($kernel);
         $this->application->add(new MigrationFetchDataCommand(

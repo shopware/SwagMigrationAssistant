@@ -12,7 +12,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\Flag\Required;
 use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionDefinition;
-use SwagMigrationNext\Migration\Profile\SwagMigrationProfileDefinition;
 
 class GeneralSettingDefinition extends EntityDefinition
 {

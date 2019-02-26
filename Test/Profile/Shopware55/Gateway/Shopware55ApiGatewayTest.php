@@ -42,7 +42,7 @@ class Shopware55ApiGatewayTest extends TestCase
         /** @var EnvironmentInformation $response */
         $response = $gateway->readEnvironmentInformation();
 
-        $this->assertSame($response->getTotals(), []);
-        $this->assertSame($response->getErrorCode(), 0);
+        static::assertSame($response->getTotals(), []);
+        static::assertSame($response->getErrorCode(), 0);
     }
 }

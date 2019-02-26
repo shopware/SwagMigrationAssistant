@@ -70,7 +70,7 @@ class MigrationFetchDataCommandTest extends TestCase
 
     public function testFetchData(): void
     {
-        $this->markTestSkipped('Reason: New Run-Connection-Profile-Association');
+        static::markTestSkipped('Reason: New Run-Connection-Profile-Association');
         $output = $this->runFetchCommand([
             '--profile' => 'shopware55',
             '--gateway' => 'local',
@@ -78,8 +78,8 @@ class MigrationFetchDataCommandTest extends TestCase
             '--limit' => 100,
         ]);
 
-        $this->assertStringContainsString('Imported: 14', $output);
-        $this->assertStringContainsString('Skipped: 23', $output);
+        static::assertStringContainsString('Imported: 14', $output);
+        static::assertStringContainsString('Skipped: 23', $output);
     }
 
     /**
@@ -87,7 +87,7 @@ class MigrationFetchDataCommandTest extends TestCase
      */
     public function testFetchDataWithoutRequiredOption(array $missingOption): void
     {
-        $this->markTestSkipped('Reason: New Run-Connection-Profile-Association');
+        static::markTestSkipped('Reason: New Run-Connection-Profile-Association');
         $options = [
             '--profile' => 'shopware55',
             '--gateway' => 'local',
@@ -103,7 +103,7 @@ class MigrationFetchDataCommandTest extends TestCase
 
     public function testFetchDataWithInvalidUnknown(): void
     {
-        $this->markTestSkipped('Reason: New Run-Connection-Profile-Association');
+        static::markTestSkipped('Reason: New Run-Connection-Profile-Association');
         $options = [
             '--profile' => 'foo',
             '--gateway' => 'local',
@@ -118,7 +118,7 @@ class MigrationFetchDataCommandTest extends TestCase
 
     private function runFetchCommand(array $options): string
     {
-        $this->markTestSkipped('Reason: New Run-Connection-Profile-Association');
+        static::markTestSkipped('Reason: New Run-Connection-Profile-Association');
         $kernel = $this->getKernel();
         $application = new Application($kernel);
         $application->add(new MigrationFetchDataCommand(

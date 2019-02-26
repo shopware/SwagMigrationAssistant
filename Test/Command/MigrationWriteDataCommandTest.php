@@ -127,7 +127,7 @@ class MigrationWriteDataCommandTest extends TestCase
 
     public function testWriteData(): void
     {
-        $this->markTestSkipped('Reason: New Run-Connection-Profile-Association');
+        static::markTestSkipped('Reason: New Run-Connection-Profile-Association');
         $context = Context::createDefaultContext();
 
         $this->createCommands();
@@ -146,19 +146,19 @@ class MigrationWriteDataCommandTest extends TestCase
             '--limit' => 100,
         ]);
 
-        $this->assertStringContainsString('Written: 14', $output);
-        $this->assertStringContainsString('Skipped: 0', $output);
+        static::assertStringContainsString('Written: 14', $output);
+        static::assertStringContainsString('Skipped: 0', $output);
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('id', $runId));
         /** @var SwagMigrationRunEntity $run */
         $run = $this->migrationRunRepo->search($criteria, $context)->first();
-        self::assertStringContainsString($run->getStatus(), SwagMigrationRunEntity::STATUS_RUNNING);
+        static::assertStringContainsString($run->getStatus(), SwagMigrationRunEntity::STATUS_RUNNING);
     }
 
     public function testWriteDataWithRunningMigration(): void
     {
-        $this->markTestSkipped('Reason: New Run-Connection-Profile-Association');
+        static::markTestSkipped('Reason: New Run-Connection-Profile-Association');
         $context = Context::createDefaultContext();
         $this->createCommands();
 
@@ -173,17 +173,17 @@ class MigrationWriteDataCommandTest extends TestCase
             '--entity' => 'category',
         ]);
 
-        $this->assertStringContainsString('Written: 8', $output);
-        $this->assertStringContainsString('Skipped: 0', $output);
+        static::assertStringContainsString('Written: 8', $output);
+        static::assertStringContainsString('Skipped: 0', $output);
 
         /** @var SwagMigrationRunEntity $run */
         $run = $this->migrationRunRepo->search(new Criteria(), $context)->first();
-        self::assertStringContainsString($run->getStatus(), SwagMigrationRunEntity::STATUS_FINISHED);
+        static::assertStringContainsString($run->getStatus(), SwagMigrationRunEntity::STATUS_FINISHED);
     }
 
     public function testWriteDataWithNoRunningMigration(): void
     {
-        $this->markTestSkipped('Reason: New Run-Connection-Profile-Association');
+        static::markTestSkipped('Reason: New Run-Connection-Profile-Association');
         $this->createCommands();
 
         $this->expectException(InvalidArgumentException::class);
@@ -197,7 +197,7 @@ class MigrationWriteDataCommandTest extends TestCase
 
     public function testWriteDataWithNoRunInformation(): void
     {
-        $this->markTestSkipped('Reason: New Run-Connection-Profile-Association');
+        static::markTestSkipped('Reason: New Run-Connection-Profile-Association');
         $this->createCommands();
 
         $this->expectException(InvalidArgumentException::class);
@@ -210,7 +210,7 @@ class MigrationWriteDataCommandTest extends TestCase
 
     public function testWriteDataWithNoEntity(): void
     {
-        $this->markTestSkipped('Reason: New Run-Connection-Profile-Association');
+        static::markTestSkipped('Reason: New Run-Connection-Profile-Association');
         $this->createCommands();
 
         $this->expectException(InvalidArgumentException::class);

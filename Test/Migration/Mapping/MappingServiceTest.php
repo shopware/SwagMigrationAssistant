@@ -127,8 +127,8 @@ class MappingServiceTest extends TestCase
             $this->mappingService->getLanguageUuid($this->profileUuidService->getProfileUuid(), 'swagMigrationTestingLocaleCode', $context);
         } catch (Exception $e) {
             /* @var LocaleNotFoundException $e */
-            self::assertInstanceOf(LocaleNotFoundException::class, $e);
-            self::assertSame(Response::HTTP_NOT_FOUND, $e->getStatusCode());
+            static::assertInstanceOf(LocaleNotFoundException::class, $e);
+            static::assertSame(Response::HTTP_NOT_FOUND, $e->getStatusCode());
         }
     }
 
@@ -142,8 +142,8 @@ class MappingServiceTest extends TestCase
         $this->mappingService->writeMapping($context);
         $response = $this->mappingService->getLanguageUuid($this->connectionId, '', $context);
 
-        self::assertSame($languageUuid, $response['uuid']);
-        self::assertSame($localeCode, $response['createData']['localeCode']);
+        static::assertSame($languageUuid, $response['uuid']);
+        static::assertSame($localeCode, $response['createData']['localeCode']);
     }
 
     public function testGetLanguageUuidWithNewLanguage(): void
@@ -169,8 +169,8 @@ class MappingServiceTest extends TestCase
 
         $response = $this->mappingService->getLanguageUuid($profileId, 'swagMigrationTestingLocaleCode', $context);
 
-        self::assertSame($localeId, $response['createData']['localeId']);
-        self::assertSame($localeCode, $response['createData']['localeCode']);
+        static::assertSame($localeId, $response['createData']['localeId']);
+        static::assertSame($localeCode, $response['createData']['localeCode']);
     }
 
     public function testGetCountryUuidWithNoResult(): void
@@ -179,7 +179,7 @@ class MappingServiceTest extends TestCase
         $profileId = $this->profileUuidService->getProfileUuid();
 
         $response = $this->mappingService->getCountryUuid('testId', 'testIso', 'testIso3', $profileId, $context);
-        self::assertNull($response);
+        static::assertNull($response);
     }
 
     public function testDeleteMapping(): void
@@ -190,7 +190,7 @@ class MappingServiceTest extends TestCase
         $languageUuid = $this->mappingService->createNewUuid($this->connectionId, LanguageDefinition::getEntityName(), $localeCode, $context);
         $this->mappingService->writeMapping($context);
         $uuid = $this->mappingService->getUuid($this->connectionId, LanguageDefinition::getEntityName(), $localeCode, $context);
-        self::assertSame($languageUuid, $uuid);
+        static::assertSame($languageUuid, $uuid);
 
         $this->mappingService->createNewUuid($this->connectionId, LanguageDefinition::getEntityName(), 'en_GB', $context);
         $this->mappingService->writeMapping($context);
@@ -198,15 +198,15 @@ class MappingServiceTest extends TestCase
         $this->mappingService->deleteMapping($languageUuid, $this->connectionId, $context);
         $uuid = $this->mappingService->getUuid($this->connectionId, LanguageDefinition::getEntityName(), $localeCode, $context);
 
-        self::assertNull($uuid);
+        static::assertNull($uuid);
     }
 
     public function testGetPaymentUuid(): void
     {
         $paymentUuid = $this->mappingService->getPaymentUuid('invoice', Context::createDefaultContext());
-        self::assertNotNull($paymentUuid);
+        static::assertNotNull($paymentUuid);
 
         $paymentUuid = $this->mappingService->getPaymentUuid('foobar', Context::createDefaultContext());
-        self::assertNull($paymentUuid);
+        static::assertNull($paymentUuid);
     }
 }
