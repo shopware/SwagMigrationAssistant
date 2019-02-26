@@ -27,6 +27,11 @@ class RunProgress extends Struct
     protected $total;
 
     /**
+     * @var bool
+     */
+    protected $processMediaFiles;
+
+    /**
      * @var string
      */
     protected $snippet;
@@ -79,5 +84,15 @@ class RunProgress extends Struct
     public function setSnippet(string $snippet): void
     {
         $this->snippet = $snippet;
+    }
+
+    public function isProcessMediaFiles(): bool
+    {
+        return $this->processMediaFiles;
+    }
+
+    public function setProcessMediaFiles(bool $processMediaFiles): void
+    {
+        $this->processMediaFiles = $processMediaFiles;
     }
 }

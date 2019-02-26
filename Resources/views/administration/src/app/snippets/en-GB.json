@@ -111,6 +111,7 @@
     "index": {
       "title": "Data import",
       "migrateButton": "Import",
+      "startButton": "Start",
       "pauseButton": "Pause",
       "continueButton": "Continue",
       "abortButton": "Abort",
@@ -159,22 +160,30 @@
         },
         "noData": "No data was found to import.",
         "gdprTitle": "Terms of use",
-        "gdprText": "The general <a target=\"_blank\" href=\"https://playground.shopware.com/terms-of-use\">terms of use</a> of Shopware Playground applys to the import of data. The import process does not affect the data of the source system.",
+        "gdprText": "The general <a target=\"_blank\" href=\"https://playground.shopware.com/terms-of-use\">terms of use</a> of Shopware Playground applies to the import of data. The import process does not affect the data of the source system.",
         "pluginVersionTitle": "Attention: Check for plugin updates!",
         "pluginVersionText": "Please make sure your Shopware 5 backend is using the latest version of the Shopware Playground Connector Plugin."
+      },
+      "premappingCard": {
+        "placeholder": "Please choose",
+        "title": "Mapping - ",
+        "group": {
+          "order_state": "Order states",
+          "transaction_state": "Transaction states"
+        }
       },
       "loadingScreenCard": {
         "cardTitle": "Step {step} of {total}",
         "status": {
-          "fetchData": {
+          "FETCH_DATA": {
             "long": "Read data from {profileName} ...",
             "short": "Read data"
           },
-          "writeData": {
+          "WRITE_DATA": {
             "long": "Write data to Shopware Playground ...",
             "short": "Write data"
           },
-          "downloadMedia": {
+          "PROCESS_MEDIA_FILES": {
             "long": "Download media to Shopware Playground ...",
             "short": "Media download"
           }
@@ -286,7 +295,9 @@
         "SWAG-MIGRATION-SHOPWARE55-NOT-CONVERT-ABLE-OBJECT-TYPE": "Translation of object type “{objectType}“ could not be converted.",
         "SWAG-MIGRATION-SHOPWARE55-INVALID-UNSERIALIZED-DATA": "{entity} translation entity could not be converted, because of invalid, unserialized object data.",
         "SWAG-MIGRATION-SHOPWARE55-SOURCE-FILE-NOT-FOUND": "The source file could not be found. File: {path}",
-        "SWAG-MIGRATION-SHOPWARE55-CANNOT-COPY-DATA": "The source file could not be copied. File: {path}"
+        "SWAG-MIGRATION-SHOPWARE55-CANNOT-COPY-DATA": "The source file could not be copied. File: {path}",
+        "SWAG-MIGRATION-SHOPWARE55-UNKNOWN-ORDER-STATE": "Order entity could not be converted, because of unknown order state.",
+        "SWAG-MIGRATION-SHOPWARE55-UNKNOWN-TRANSACTION-STATE": "Transaction entity could not be converted, because of unknown transaction state."
       }
     },
     "history": {

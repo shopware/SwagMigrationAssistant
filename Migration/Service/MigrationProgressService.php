@@ -87,7 +87,7 @@ class MigrationProgressService implements MigrationProgressServiceInterface
             }
 
             return new ProgressState(
-                true,
+                false,
                 $this->validMigrationAccessToken,
                 $run->getId(),
                 null,

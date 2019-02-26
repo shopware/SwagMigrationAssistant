@@ -15,6 +15,7 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressDefinition;
 use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryDefinition;
 use Shopware\Core\Checkout\Order\Aggregate\OrderDeliveryPosition\OrderDeliveryPositionDefinition;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemDefinition;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionDefinition;
 use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Checkout\Payment\Aggregate\PaymentMethodTranslation\PaymentMethodTranslationDefinition;
 use Shopware\Core\Checkout\Payment\PaymentMethodDefinition;
@@ -24,7 +25,6 @@ use Shopware\Core\Content\Product\Cart\ProductCollector;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\System\Country\Aggregate\CountryState\CountryStateDefinition;
 use Shopware\Core\System\Country\Aggregate\CountryStateTranslation\CountryStateTranslationDefinition;
 use Shopware\Core\System\Country\Aggregate\CountryTranslation\CountryTranslationDefinition;
@@ -35,16 +35,18 @@ use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 use SwagMigrationNext\Migration\Converter\AbstractConverter;
 use SwagMigrationNext\Migration\Converter\ConvertStruct;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationNext\Migration\MigrationContextInterface;
 use SwagMigrationNext\Profile\Shopware55\Exception\AssociationEntityRequiredMissingException;
 use SwagMigrationNext\Profile\Shopware55\Logging\Shopware55LogTypes;
-use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingServiceInterface;
+use SwagMigrationNext\Profile\Shopware55\Premapping\OrderStateReader;
+use SwagMigrationNext\Profile\Shopware55\Premapping\TransactionStateReader;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
 class OrderConverter extends AbstractConverter
 {
     /**
-     * @var Shopware55MappingServiceInterface
+     * @var MappingServiceInterface
      */
     private $mappingService;
 
@@ -117,7 +119,7 @@ class OrderConverter extends AbstractConverter
     ];
 
     public function __construct(
-        Shopware55MappingServiceInterface $mappingService,
+        MappingServiceInterface $mappingService,
         ConverterHelperService $converterHelperService,
         TaxCalculator $taxCalculator,
         LoggingServiceInterface $loggingService
@@ -237,7 +239,13 @@ class OrderConverter extends AbstractConverter
 
         $this->helper->convertValue($converted, 'date', $data, 'ordertime', $this->helper::TYPE_DATETIME);
 
-        $converted['stateId'] = $this->mappingService->getOrderStateUuid((int) $data['status'], $this->context);
+        $converted['stateId'] = $this->mappingService->getUuid(
+            $this->connectionId,
+            OrderStateReader::getMappingName(),
+            (string) $data['status'],
+            $this->context
+        );
+
         if (!isset($converted['stateId'])) {
             $this->loggingService->addWarning(
                 $this->runId,
@@ -415,12 +423,40 @@ class OrderConverter extends AbstractConverter
 
         /** @var CartPrice $cartPrice */
         $cartPrice = $converted['price'];
+        $stateId = $this->mappingService->getUuid(
+            $this->connectionId,
+            TransactionStateReader::getMappingName(),
+            $data['cleared'],
+            $this->context
+        );
+
+        if ($stateId === null) {
+            $this->loggingService->addWarning(
+                $this->runId,
+                Shopware55LogTypes::UNKNOWN_TRANSACTION_STATE,
+                'Cannot find transaction state',
+                'Transaction-Order-Entity could not converted cause of unknown transaction state',
+                [
+                    'id' => $this->oldId,
+                    'transactionState' => $data['cleared'],
+                ]
+            );
+
+            return;
+        }
+
+        $id = $this->mappingService->createNewUuid(
+            $this->connectionId,
+            OrderTransactionDefinition::getEntityName(),
+            $this->oldId,
+            $this->context
+        );
 
         $transactions = [
             [
-                'id' => Uuid::uuid4()->getHex(),
+                'id' => $id,
                 'paymentMethodId' => $converted['paymentMethod']['id'],
-                'stateId' => $this->mappingService->getTransactionStateUuid((int) $data['cleared'], $this->context),
+                'stateId' => $stateId,
                 'amount' => new CalculatedPrice(
                     $cartPrice->getTotalPrice(),
                     $cartPrice->getTotalPrice(),

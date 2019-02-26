@@ -2,6 +2,7 @@
 
 namespace SwagMigrationNext\Migration\Mapping;
 
+use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Api\Util\AccessKeyHelper;
 use Shopware\Core\Framework\Context;
@@ -57,6 +58,11 @@ class MappingService implements MappingServiceInterface
      */
     protected $salesChannelTypeRepo;
 
+    /**
+     * @var EntityRepositoryInterface
+     */
+    protected $paymentRepository;
+
     protected $uuids = [];
 
     protected $writeArray = [];
@@ -68,7 +74,8 @@ class MappingService implements MappingServiceInterface
         EntityRepositoryInterface $countryRepository,
         EntityRepositoryInterface $currencyRepository,
         EntityRepositoryInterface $salesChannelRepo,
-        EntityRepositoryInterface $salesChannelTypeRepo
+        EntityRepositoryInterface $salesChannelTypeRepo,
+        EntityRepositoryInterface $paymentRepository
     ) {
         $this->migrationMappingRepo = $migrationMappingRepo;
         $this->localeRepository = $localeRepository;
@@ -77,6 +84,7 @@ class MappingService implements MappingServiceInterface
         $this->currencyRepository = $currencyRepository;
         $this->salesChannelRepo = $salesChannelRepo;
         $this->salesChannelTypeRepo = $salesChannelTypeRepo;
+        $this->paymentRepository = $paymentRepository;
     }
 
     public function getUuid(string $connectionId, string $entityName, string $oldId, Context $context): ?string
@@ -291,6 +299,24 @@ class MappingService implements MappingServiceInterface
         }
 
         $this->writeMapping($context);
+    }
+
+    // Todo: Replace with premapping option
+    public function getPaymentUuid(string $technicalName, Context $context): ?string
+    {
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('technicalName', $technicalName));
+        $criteria->setLimit(1);
+        $result = $this->paymentRepository->search($criteria, $context);
+
+        if ($result->getTotal() > 0) {
+            /** @var PaymentMethodEntity $element */
+            $element = $result->getEntities()->first();
+
+            return $element->getId();
+        }
+
+        return null;
     }
 
     protected function saveMapping(array $mapping): void

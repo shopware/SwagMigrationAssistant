@@ -111,6 +111,7 @@
     "index": {
       "title": "Datenimport",
       "migrateButton": "Importieren",
+      "startButton": "Start",
       "pauseButton": "Pausieren",
       "continueButton": "Fortsetzen",
       "abortButton": "Beenden",
@@ -163,18 +164,26 @@
         "pluginVersionTitle": "Wichtig: Plugin-Update durchführen!",
         "pluginVersionText": "Bitte stelle sicher, dass in Deinem Shopware 5 Backend die neuste Version vom Shopware Playground Connector Plugin im Einsatz ist."
       },
+      "premappingCard": {
+        "placeholder": "Bitte auswählen",
+        "title": "Zuordnung - ",
+        "group": {
+          "order_state": "Bestellstatus",
+          "transaction_state": "Zahlungsstatus"
+        }
+      },
       "loadingScreenCard": {
         "cardTitle": "Schritt {step} von {total}",
         "status": {
-          "fetchData": {
+          "FETCH_DATA": {
             "long": "Lesen der Daten von {profileName} ...",
             "short": "Daten lesen"
           },
-          "writeData": {
+          "WRITE_DATA": {
             "long": "Schreiben der Daten in Shopware Playground ...",
             "short": "Daten schreiben"
           },
-          "downloadMedia": {
+          "PROCESS_MEDIA_FILES": {
             "long": "Herunterladen der Medien zu Shopware Playground ...",
             "short": "Medien herunterladen"
           }
@@ -286,7 +295,9 @@
         "SWAG-MIGRATION-SHOPWARE55-NOT-CONVERT-ABLE-OBJECT-TYPE": "Die Übersetzung des Objekttyps „{objectType}“ konnte nicht konvertiert werden.",
         "SWAG-MIGRATION-SHOPWARE55-INVALID-UNSERIALIZED-DATA": "{entity}-Übersetzungsentität konnte aufgrund ungültiger Objektdaten nicht konvertiert werden.",
         "SWAG-MIGRATION-SHOPWARE55-SOURCE-FILE-NOT-FOUND": "Die Quelldatei konnte nicht gefunden werden. Betroffene Datei: {path}",
-        "SWAG-MIGRATION-SHOPWARE55-CANNOT-COPY-DATA": "Die Quelldatei konnte nicht kopiert werden. Betroffene Datei: {path}"
+        "SWAG-MIGRATION-SHOPWARE55-CANNOT-COPY-DATA": "Die Quelldatei konnte nicht kopiert werden. Betroffene Datei: {path}",
+        "SWAG-MIGRATION-SHOPWARE55-UNKNOWN-ORDER-STATE": "Bestellungsentität konnte aufgrund eines unbekannten Bestellstatus nicht konvertiert werden.",
+        "SWAG-MIGRATION-SHOPWARE55-UNKNOWN-TRANSACTION-STATE": "Zahlungsentität konnte aufgrund eines unbekannten Zahlungsstatus nicht konvertiert werden."
       }
     },
     "history": {

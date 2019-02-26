@@ -27,6 +27,9 @@
                 <sw-button variant="primary" v-if="continueButtonVisible" @click="onActionButtonClick('onContinueButtonClick')">
                     {{ $tc('swag-migration.index.continueButton') }}
                 </sw-button>
+                <sw-button variant="primary" v-if="startButtonVisible" @click="onActionButtonClick('onStartButtonClick')" :disabled="startButtonDisabled">
+                    {{ $tc('swag-migration.index.startButton') }}
+                </sw-button>
             </template>
         {% endblock %}
 

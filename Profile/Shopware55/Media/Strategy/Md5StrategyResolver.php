@@ -17,7 +17,7 @@ class Md5StrategyResolver implements StrategyResolverInterface
 
     public function resolve(string $path, MigrationContextInterface $migrationContext): string
     {
-        $installationRoot = $migrationContext->getCredentials()['installationRoot'];
+        $installationRoot = $migrationContext->getConnection()->getCredentialFields()['installationRoot'];
         if (!$path || $this->isEncoded($path)) {
             return rtrim($installationRoot) . '/' . $this->substringPath($path);
         }

@@ -14,9 +14,9 @@ use Shopware\Core\System\Unit\UnitDefinition;
 use SwagMigrationNext\Migration\Converter\AbstractConverter;
 use SwagMigrationNext\Migration\Converter\ConvertStruct;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationNext\Migration\MigrationContextInterface;
 use SwagMigrationNext\Profile\Shopware55\Logging\Shopware55LogTypes;
-use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingServiceInterface;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
 class TranslationConverter extends AbstractConverter
@@ -27,7 +27,7 @@ class TranslationConverter extends AbstractConverter
     private $helper;
 
     /**
-     * @var Shopware55MappingServiceInterface
+     * @var MappingServiceInterface
      */
     private $mappingService;
 
@@ -52,7 +52,7 @@ class TranslationConverter extends AbstractConverter
     private $loggingService;
 
     public function __construct(
-        Shopware55MappingServiceInterface $mappingService,
+        MappingServiceInterface $mappingService,
         ConverterHelperService $converterHelperService,
         LoggingServiceInterface $loggingService
     ) {

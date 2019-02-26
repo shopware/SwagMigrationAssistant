@@ -18,6 +18,7 @@ use SwagMigrationNext\Migration\Service\MediaFileProcessorServiceInterface;
 use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationNext\Migration\Service\MigrationDataWriterInterface;
 use SwagMigrationNext\Migration\Service\MigrationProgressServiceInterface;
+use SwagMigrationNext\Migration\Service\PremappingServiceInterface;
 use SwagMigrationNext\Migration\Service\SwagMigrationAccessTokenService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -63,6 +64,11 @@ class MigrationController extends AbstractController
     private $runService;
 
     /**
+     * @var PremappingServiceInterface
+     */
+    private $premappingService;
+
+    /**
      * @var DataSelectionRegistryInterface
      */
     private $dataSelectionRegistry;
@@ -79,6 +85,7 @@ class MigrationController extends AbstractController
         MigrationProgressServiceInterface $migrationProgressService,
         SwagMigrationAccessTokenService $accessTokenService,
         RunServiceInterface $runService,
+        PremappingServiceInterface $premappingService,
         DataSelectionRegistryInterface $dataSelectionRegistry,
         EntityRepositoryInterface $migrationConnectionRepo,
         EntityRepositoryInterface $migrationRunRepo
@@ -89,6 +96,7 @@ class MigrationController extends AbstractController
         $this->migrationProgressService = $migrationProgressService;
         $this->accessTokenService = $accessTokenService;
         $this->runService = $runService;
+        $this->premappingService = $premappingService;
         $this->dataSelectionRegistry = $dataSelectionRegistry;
         $this->migrationConnectionRepo = $migrationConnectionRepo;
         $this->migrationRunRepo = $migrationRunRepo;
@@ -451,5 +459,70 @@ class MigrationController extends AbstractController
         ], $context);
 
         return new JsonResponse($mediaFilesProgress);
+    }
+
+    /**
+     * @Route("/api/v{version}/_action/migration/generate-premapping", name="api.admin.migration.generate-premapping", methods={"POST"})
+     */
+    public function generatePremapping(Request $request, Context $context): JsonResponse
+    {
+        $runUuid = $request->request->get('runUuid');
+
+        if ($runUuid === null) {
+            throw new MigrationContextPropertyMissingException('runUuid');
+        }
+
+        /** @var SwagMigrationRunEntity|null $run */
+        $run = $this->migrationRunRepo->search(new Criteria([$runUuid]), $context)->first();
+
+        if ($run === null) {
+            throw new EntityNotExistsException(SwagMigrationRunEntity::class, $runUuid);
+        }
+
+        $migrationContext = new MigrationContext(
+            $runUuid,
+            $run->getConnection(),
+            '',
+            0,
+            0
+        );
+
+        return new JsonResponse($this->premappingService->generatePremapping($context, $migrationContext, $run));
+    }
+
+    /**
+     * @Route("/api/v{version}/_action/migration/write-premapping", name="api.admin.migration.write-premapping", methods={"POST"})
+     */
+    public function writePremapping(Request $request, Context $context): JsonResponse
+    {
+        $runUuid = $request->request->get('runUuid');
+        $premapping = $request->request->get('premapping');
+
+        if ($runUuid === null) {
+            throw new MigrationContextPropertyMissingException('runUuid');
+        }
+
+        if ($premapping === null) {
+            throw new MigrationContextPropertyMissingException('premapping');
+        }
+
+        /** @var SwagMigrationRunEntity|null $run */
+        $run = $this->migrationRunRepo->search(new Criteria([$runUuid]), $context)->first();
+
+        if ($run === null) {
+            throw new EntityNotExistsException(SwagMigrationRunEntity::class, $runUuid);
+        }
+
+        $migrationContext = new MigrationContext(
+            $runUuid,
+            $run->getConnection(),
+            '',
+            0,
+            0
+        );
+
+        $this->premappingService->writePremapping($context, $migrationContext, $premapping);
+
+        return new JsonResponse();
     }
 }

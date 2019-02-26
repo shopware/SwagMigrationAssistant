@@ -14,6 +14,7 @@ use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\DataSelection\DataSelectionRegistry;
+use SwagMigrationNext\Migration\Mapping\MappingService;
 use SwagMigrationNext\Migration\Media\MediaFileService;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Run\EntityProgress;
@@ -26,7 +27,6 @@ use SwagMigrationNext\Migration\Service\MigrationProgressServiceInterface;
 use SwagMigrationNext\Migration\Service\ProgressState;
 use SwagMigrationNext\Migration\Service\SwagMigrationAccessTokenService;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
-use SwagMigrationNext\Profile\Shopware55\Mapping\Shopware55MappingService;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\MigrationServicesTrait;
 use Symfony\Component\HttpFoundation\Request;
@@ -175,7 +175,7 @@ class MigrationProgressServiceTest extends TestCase
 
         $this->migrationDataFetcher = $this->getMigrationDataFetcher(
             $this->dataRepo,
-            $this->getContainer()->get(Shopware55MappingService::class),
+            $this->getContainer()->get(MappingService::class),
             $this->getContainer()->get(MediaFileService::class),
             $this->loggingRepo
         );
@@ -191,7 +191,7 @@ class MigrationProgressServiceTest extends TestCase
                 $this->runRepo,
                 $this->connectionRepo,
                 $this->migrationDataFetcher,
-                $this->getContainer()->get(Shopware55MappingService::class),
+                $this->getContainer()->get(MappingService::class),
                 $this->getContainer()->get(SwagMigrationAccessTokenService::class),
                 new DataSelectionRegistry([]),
                 $this->dataRepo,

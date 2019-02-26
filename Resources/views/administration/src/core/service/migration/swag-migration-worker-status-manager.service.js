@@ -1,15 +1,34 @@
 /**
  * Describes the current step in the migration (status).
  *
- * @type {Readonly<{WAITING: number, FETCH_DATA: number, WRITE_DATA: number, PROCESS_MEDIA_FILES: number, FINISHED: number}>}
+ * @type {Readonly<{
+ *                  WAITING: number,
+ *                  PREMAPPING:number,
+ *                  FETCH_DATA: number,
+ *                  WRITE_DATA: number,
+ *                  PROCESS_MEDIA_FILES: number,
+ *                  FINISHED: number
+*                  }>}
  */
 export const MIGRATION_STATUS = Object.freeze({
-    WAITING: -1,
+    WAITING: -2,
+    PREMAPPING: -1,
     FETCH_DATA: 0,
     WRITE_DATA: 1,
     PROCESS_MEDIA_FILES: 2,
     FINISHED: 3
 });
+
+const MIGRATION_DISPLAY_STATUS = {};
+Object.keys(MIGRATION_STATUS).forEach((key) => {
+    if (!(key === 'WAITING' || key === 'PREMAPPING' || key === 'FINISHED')) {
+        MIGRATION_DISPLAY_STATUS[MIGRATION_STATUS[key]] = key;
+    }
+});
+
+
+export { MIGRATION_DISPLAY_STATUS };
+
 
 export class WorkerStatusManager {
     /**

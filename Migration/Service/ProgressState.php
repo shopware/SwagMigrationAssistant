@@ -7,7 +7,8 @@ use SwagMigrationNext\Migration\Run\RunProgress;
 
 class ProgressState extends Struct
 {
-    public const STATUS_WAITING = -1;
+    public const STATUS_WAITING = -2;
+    public const STATUS_PREMAPPING = -1;
     public const STATUS_FETCH_DATA = 0;
     public const STATUS_WRITE_DATA = 1;
     public const STATUS_DOWNLOAD_DATA = 2;
