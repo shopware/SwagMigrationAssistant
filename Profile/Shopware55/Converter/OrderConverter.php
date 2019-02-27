@@ -17,8 +17,6 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderDeliveryPosition\OrderDeliveryPo
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemDefinition;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionDefinition;
 use Shopware\Core\Checkout\Order\OrderDefinition;
-use Shopware\Core\Checkout\Payment\Aggregate\PaymentMethodTranslation\PaymentMethodTranslationDefinition;
-use Shopware\Core\Checkout\Payment\PaymentMethodDefinition;
 use Shopware\Core\Checkout\Shipping\Aggregate\ShippingMethodTranslation\ShippingMethodTranslationDefinition;
 use Shopware\Core\Checkout\Shipping\ShippingMethodDefinition;
 use Shopware\Core\Content\Product\Cart\ProductCollector;
@@ -40,6 +38,7 @@ use SwagMigrationNext\Migration\MigrationContextInterface;
 use SwagMigrationNext\Profile\Shopware55\Exception\AssociationEntityRequiredMissingException;
 use SwagMigrationNext\Profile\Shopware55\Logging\Shopware55LogTypes;
 use SwagMigrationNext\Profile\Shopware55\Premapping\OrderStateReader;
+use SwagMigrationNext\Profile\Shopware55\Premapping\PaymentMethodReader;
 use SwagMigrationNext\Profile\Shopware55\Premapping\TransactionStateReader;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
@@ -234,7 +233,11 @@ class OrderConverter extends AbstractConverter
         $converted['currency'] = $this->getCurrency($data['paymentcurrency']);
         unset($data['currency'], $data['currencyFactor'], $data['paymentcurrency']);
 
-        $this->getPaymentMethod($data, $converted);
+        $paymentMethodUuid = $this->getPaymentMethod($data);
+        if ($paymentMethodUuid === null) {
+            return new ConvertStruct(null, $data);
+        }
+        $converted['paymentMethodId'] = $paymentMethodUuid;
         unset($data['payment'], $data['paymentID']);
 
         $this->helper->convertValue($converted, 'date', $data, 'ordertime', $this->helper::TYPE_DATETIME);
@@ -455,7 +458,7 @@ class OrderConverter extends AbstractConverter
         $transactions = [
             [
                 'id' => $id,
-                'paymentMethodId' => $converted['paymentMethod']['id'],
+                'paymentMethodId' => $converted['paymentMethodId'],
                 'stateId' => $stateId,
                 'amount' => new CalculatedPrice(
                     $cartPrice->getTotalPrice(),
@@ -469,68 +472,30 @@ class OrderConverter extends AbstractConverter
         $converted['transactions'] = $transactions;
     }
 
-    private function getPaymentMethod(array $originalData, array &$converted): void
+    private function getPaymentMethod(array $originalData): ?string
     {
-        $paymentMethodUuid = $this->mappingService->getPaymentUuid($originalData['payment']['name'], $this->context);
-
-        if ($paymentMethodUuid !== null) {
-            $paymentMethod['id'] = $paymentMethodUuid;
-        } else {
-            $paymentMethod['id'] = $this->mappingService->createNewUuid(
-                $this->connectionId,
-                PaymentMethodDefinition::getEntityName(),
-                $originalData['payment']['id'],
-                $this->context
-            );
-        }
-
-        $translation['id'] = $this->mappingService->createNewUuid(
+        $paymentMethodUuid = $this->mappingService->getUuid(
             $this->connectionId,
-            PaymentMethodTranslationDefinition::getEntityName(),
-            $originalData['payment']['id'] . ':' . $this->mainLocale,
+            PaymentMethodReader::getMappingName(),
+            $originalData['payment']['id'],
             $this->context
         );
 
-        // TODO: Delete this default value, if the Core deletes the require Flag of the PaymentMethodTranslation
-        if ($originalData['payment']['additionaldescription'] === '') {
-            $originalData['payment']['additionaldescription'] = '....';
+        if ($paymentMethodUuid === null) {
+            $this->loggingService->addWarning(
+                $this->runId,
+                Shopware55LogTypes::UNKNOWN_PAYMENT_METHOD,
+                'Cannot find payment method',
+                'Order-Entity could not converted cause of unknown payment method',
+                [
+                    'id' => $this->oldId,
+                    'entity' => OrderDefinition::getEntityName(),
+                    'paymentMethod' => $originalData['payment']['id'],
+                ]
+            );
         }
 
-        $translation['paymentMethodId'] = $paymentMethod['id'];
-        $this->helper->convertValue($translation, 'name', $originalData['payment'], 'description');
-        $this->helper->convertValue($translation, 'additionalDescription', $originalData['payment'], 'additionaldescription');
-
-        //todo: What about the PluginID?
-        $this->helper->convertValue($paymentMethod, 'technicalName', $originalData['payment'], 'name');
-        $this->helper->convertValue($paymentMethod, 'template', $originalData['payment'], 'template');
-        $this->helper->convertValue($paymentMethod, 'class', $originalData['payment'], 'class');
-        $this->helper->convertValue($paymentMethod, 'table', $originalData['payment'], 'table');
-        $this->helper->convertValue($paymentMethod, 'hide', $originalData['payment'], 'hide', $this->helper::TYPE_BOOLEAN);
-        $this->helper->convertValue($paymentMethod, 'percentageSurcharge', $originalData['payment'], 'debit_percent', $this->helper::TYPE_FLOAT);
-        $this->helper->convertValue($paymentMethod, 'absoluteSurcharge', $originalData['payment'], 'surcharge', $this->helper::TYPE_FLOAT);
-        $this->helper->convertValue($paymentMethod, 'surchargeString', $originalData['payment'], 'surchargestring');
-        $this->helper->convertValue($paymentMethod, 'position', $originalData['payment'], 'position', $this->helper::TYPE_INTEGER);
-        $this->helper->convertValue($paymentMethod, 'active', $originalData['payment'], 'active', $this->helper::TYPE_BOOLEAN);
-        $this->helper->convertValue($paymentMethod, 'allowEsd', $originalData['payment'], 'esdactive', $this->helper::TYPE_BOOLEAN);
-        $this->helper->convertValue($paymentMethod, 'usedIframe', $originalData['payment'], 'embediframe');
-        $this->helper->convertValue($paymentMethod, 'hideProspect', $originalData['payment'], 'hideprospect', $this->helper::TYPE_BOOLEAN);
-        $this->helper->convertValue($paymentMethod, 'action', $originalData['payment'], 'action');
-        $this->helper->convertValue($paymentMethod, 'source', $originalData['payment'], 'source', $this->helper::TYPE_INTEGER);
-        $this->helper->convertValue($paymentMethod, 'mobileInactive', $originalData['payment'], 'mobile_inactive', $this->helper::TYPE_BOOLEAN);
-
-        $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);
-
-        if (isset($languageData['createData']) && !empty($languageData['createData'])) {
-            $translation['language']['id'] = $languageData['uuid'];
-            $translation['language']['localeId'] = $languageData['createData']['localeId'];
-            $translation['language']['name'] = $languageData['createData']['localeCode'];
-        } else {
-            $translation['languageId'] = $languageData['uuid'];
-        }
-
-        $paymentMethod['translations'][$languageData['uuid']] = $translation;
-
-        $converted['paymentMethod'] = $paymentMethod;
+        return $paymentMethodUuid;
     }
 
     private function getAddress(array $originalData): array

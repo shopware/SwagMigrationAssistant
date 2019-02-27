@@ -169,7 +169,8 @@
         "title": "Zuordnung - ",
         "group": {
           "order_state": "Bestellstatus",
-          "transaction_state": "Zahlungsstatus"
+          "transaction_state": "Zahlungsstatus",
+          "payment_method": "Zahlungsmethoden"
         }
       },
       "loadingScreenCard": {

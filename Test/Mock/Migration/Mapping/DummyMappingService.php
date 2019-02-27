@@ -9,7 +9,7 @@ use SwagMigrationNext\Migration\Mapping\MappingService;
 class DummyMappingService extends MappingService
 {
     public const DEFAULT_LANGUAGE_UUID = '20080911ffff4fffafffffff19830531';
-    public const DEFAULT_LOCAL_UUID = '20080911ffff4fffafffffff19830532';
+    public const DEFAULT_LOCAL_UUID = '20080911ffff4fffafffffff19830531';
 
     public function __construct()
     {
@@ -74,11 +74,6 @@ class DummyMappingService extends MappingService
                 'localeCode' => 'en_GB',
             ],
         ];
-    }
-
-    public function getPaymentUuid(string $technicalName, Context $context): ?string
-    {
-        return null;
     }
 
     public function getCountryUuid(string $oldId, string $iso, string $iso3, string $connectionId, Context $context): ?string

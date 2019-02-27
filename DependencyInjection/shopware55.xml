@@ -120,5 +120,10 @@
             <argument type="service" id="state_machine_state.repository"/>
             <tag name="shopware.migration.pre_mapping_reader"/>
         </service>
+
+        <service id="SwagMigrationNext\Profile\Shopware55\Premapping\PaymentMethodReader">
+            <argument type="service" id="payment_method.repository"/>
+            <tag name="shopware.migration.pre_mapping_reader"/>
+        </service>
     </services>
 </container>

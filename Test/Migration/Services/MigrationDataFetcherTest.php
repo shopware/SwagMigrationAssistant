@@ -30,6 +30,7 @@ use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationNext\Profile\Shopware55\Converter\ProductConverter;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Api\Shopware55ApiFactory;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
+use SwagMigrationNext\Profile\Shopware55\Premapping\PaymentMethodReader;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Migration\Services\MigrationProfileUuidService;
 use SwagMigrationNext\Test\MigrationServicesTrait;
@@ -92,54 +93,51 @@ class MigrationDataFetcherTest extends TestCase
      */
     private $connection;
 
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $connectionRepo;
+
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $runRepo;
+
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $paymentRepo;
+
+    /**
+     * @var Context
+     */
+    private $context;
+
+    /**
+     * @var MappingService
+     */
+    private $mappingService;
+
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $profileRepo;
+
     protected function setUp(): void
     {
-        $context = Context::createDefaultContext();
-        $connectionRepo = $this->getContainer()->get('swag_migration_connection.repository');
-        $this->profileUuidService = new MigrationProfileUuidService(
-            $this->getContainer()->get('swag_migration_profile.repository'),
-            Shopware55Profile::PROFILE_NAME,
-            Shopware55LocalGateway::GATEWAY_NAME
-        );
+        $this->context = Context::createDefaultContext();
+        $this->initRepos();
+        $this->initConnectionAndRun();
+        $this->initServices();
+        $this->initMapping();
+    }
 
-        $context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use ($connectionRepo) {
-            $this->connectionId = Uuid::uuid4()->getHex();
-            $connectionRepo->create(
-                [
-                    [
-                        'id' => $this->connectionId,
-                        'name' => 'myConnection',
-                        'credentialFields' => [
-                            'endpoint' => 'testEndpoint',
-                            'apiUser' => 'testUser',
-                            'apiKey' => 'testKey',
-                        ],
-                        'profileId' => $this->profileUuidService->getProfileUuid(),
-                    ],
-                ],
-                $context
-            );
-        });
-        $this->connection = $connectionRepo->search(new Criteria([$this->connectionId]), $context)->first();
-
-        $this->runUuid = Uuid::uuid4()->getHex();
-        $runRepo = $this->getContainer()->get('swag_migration_run.repository');
-        $runRepo->create(
-            [
-                [
-                    'id' => $this->runUuid,
-                    'status' => SwagMigrationRunEntity::STATUS_RUNNING,
-                    'profileId' => $this->profileUuidService->getProfileUuid(),
-                ],
-            ],
-            Context::createDefaultContext()
-        );
-
-        $this->loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
-        $this->migrationDataRepo = $this->getContainer()->get('swag_migration_data.repository');
+    public function initServices(): void
+    {
+        $this->mappingService = $this->getContainer()->get(MappingService::class);
         $this->migrationDataFetcher = $this->getMigrationDataFetcher(
             $this->migrationDataRepo,
-            $this->getContainer()->get(MappingService::class),
+            $this->mappingService,
             $this->getContainer()->get(MediaFileService::class),
             $this->loggingRepo
         );
@@ -164,7 +162,20 @@ class MigrationDataFetcherTest extends TestCase
 
             $this->loggingService
         );
-        $this->productRepo = $this->getContainer()->get('product.repository');
+    }
+
+    public function initMapping(): void
+    {
+        $paymentUuid = $this->getPaymentUuid(
+            $this->paymentRepo,
+            'invoice',
+            $this->context
+        );
+
+        $this->mappingService->createNewUuid($this->connectionId, PaymentMethodReader::getMappingName(), '3', $this->context, [], $paymentUuid);
+        $this->mappingService->createNewUuid($this->connectionId, PaymentMethodReader::getMappingName(), '4', $this->context, [], $paymentUuid);
+        $this->mappingService->createNewUuid($this->connectionId, PaymentMethodReader::getMappingName(), '5', $this->context, [], $paymentUuid);
+        $this->mappingService->writeMapping($this->context);
     }
 
     public function testFetchMediaDataApiGateway(): void
@@ -409,5 +420,58 @@ class MigrationDataFetcherTest extends TestCase
         $total = $this->migrationDataFetcher->getEntityTotal($migrationContext);
 
         static::assertSame(23, $total);
+    }
+
+    private function initRepos(): void
+    {
+        $this->connectionRepo = $this->getContainer()->get('swag_migration_connection.repository');
+        $this->runRepo = $this->getContainer()->get('swag_migration_run.repository');
+        $this->loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
+        $this->migrationDataRepo = $this->getContainer()->get('swag_migration_data.repository');
+        $this->productRepo = $this->getContainer()->get('product.repository');
+        $this->paymentRepo = $this->getContainer()->get('payment_method.repository');
+        $this->profileRepo = $this->getContainer()->get('swag_migration_profile.repository');
+    }
+
+    private function initConnectionAndRun(): void
+    {
+        $this->connectionId = Uuid::uuid4()->getHex();
+        $this->runUuid = Uuid::uuid4()->getHex();
+
+        $this->profileUuidService = new MigrationProfileUuidService(
+            $this->profileRepo,
+            Shopware55Profile::PROFILE_NAME,
+            Shopware55LocalGateway::GATEWAY_NAME
+        );
+
+        $this->context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) {
+            $this->connectionRepo->create(
+                [
+                    [
+                        'id' => $this->connectionId,
+                        'name' => 'myConnection',
+                        'credentialFields' => [
+                            'endpoint' => 'testEndpoint',
+                            'apiUser' => 'testUser',
+                            'apiKey' => 'testKey',
+                        ],
+                        'profileId' => $this->profileUuidService->getProfileUuid(),
+                    ],
+                ],
+                $context
+            );
+        });
+        $this->connection = $this->connectionRepo->search(new Criteria([$this->connectionId]), $this->context)->first();
+
+        $this->runRepo->create(
+            [
+                [
+                    'id' => $this->runUuid,
+                    'status' => SwagMigrationRunEntity::STATUS_RUNNING,
+                    'profileId' => $this->profileUuidService->getProfileUuid(),
+                ],
+            ],
+            Context::createDefaultContext()
+        );
     }
 }

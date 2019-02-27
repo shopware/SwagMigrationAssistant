@@ -7,8 +7,6 @@ use Shopware\Core\Checkout\Customer\Aggregate\CustomerGroup\CustomerGroupDefinit
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerGroupDiscount\CustomerGroupDiscountDefinition;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerGroupTranslation\CustomerGroupTranslationDefinition;
 use Shopware\Core\Checkout\Customer\CustomerDefinition;
-use Shopware\Core\Checkout\Payment\Aggregate\PaymentMethodTranslation\PaymentMethodTranslationDefinition;
-use Shopware\Core\Checkout\Payment\PaymentMethodDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\System\Country\Aggregate\CountryState\CountryStateDefinition;
@@ -22,6 +20,7 @@ use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationNext\Migration\MigrationContextInterface;
 use SwagMigrationNext\Profile\Shopware55\Logging\Shopware55LogTypes;
+use SwagMigrationNext\Profile\Shopware55\Premapping\PaymentMethodReader;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
 class CustomerConverter extends AbstractConverter
@@ -206,7 +205,13 @@ class CustomerConverter extends AbstractConverter
         unset($data['group'], $data['customergroup']);
 
         if (isset($data['defaultpayment']['id'])) {
-            $this->getDefaultPaymentMethod($data['defaultpayment'], $converted);
+            $defaultPaymentMethodUuid = $this->getDefaultPaymentMethod($data['defaultpayment']);
+
+            if ($defaultPaymentMethodUuid === null) {
+                return new ConvertStruct(null, $oldData);
+            }
+
+            $converted['defaultPaymentMethodId'] = $defaultPaymentMethodUuid;
         }
         unset($data['defaultpayment'], $data['paymentpreset']);
         if (!isset($converted['defaultPaymentMethod'])) {
@@ -326,68 +331,30 @@ class CustomerConverter extends AbstractConverter
         return $discounts;
     }
 
-    private function getDefaultPaymentMethod(array $originalData, array &$converted): void
+    private function getDefaultPaymentMethod(array $originalData): ?string
     {
-        $defaultPaymentMethodUuid = $this->mappingService->getPaymentUuid($originalData['name'], $this->context);
-
-        if ($defaultPaymentMethodUuid !== null) {
-            $defaultPaymentMethod['id'] = $defaultPaymentMethodUuid;
-        } else {
-            $defaultPaymentMethod['id'] = $this->mappingService->createNewUuid(
-                $this->connectionId,
-                PaymentMethodDefinition::getEntityName(),
-                $originalData['id'],
-                $this->context
-            );
-        }
-
-        $translation['id'] = $this->mappingService->createNewUuid(
+        $paymentMethodUuid = $this->mappingService->getUuid(
             $this->connectionId,
-            PaymentMethodTranslationDefinition::getEntityName(),
-            $originalData['id'] . ':' . $this->mainLocale,
+            PaymentMethodReader::getMappingName(),
+            $originalData['id'],
             $this->context
         );
 
-        // TODO: Delete this default value, if the Core deletes the require Flag of the PaymentMethodTranslation
-        if (!isset($originalData['additionaldescription']) || $originalData['additionaldescription'] === '') {
-            $originalData['additionaldescription'] = '....';
+        if ($paymentMethodUuid === null) {
+            $this->loggingService->addWarning(
+                $this->runId,
+                Shopware55LogTypes::UNKNOWN_PAYMENT_METHOD,
+                'Cannot find payment method',
+                'Customer-Entity could not converted cause of unknown payment method',
+                [
+                    'id' => $this->oldCustomerId,
+                    'entity' => CustomerDefinition::getEntityName(),
+                    'paymentMethod' => $originalData['id'],
+                ]
+            );
         }
 
-        $translation['paymentMethodId'] = $defaultPaymentMethod['id'];
-        $this->helper->convertValue($translation, 'name', $originalData, 'description');
-        $this->helper->convertValue($translation, 'additionalDescription', $originalData, 'additionaldescription');
-
-        //todo: What about the PluginID?
-        $this->helper->convertValue($defaultPaymentMethod, 'technicalName', $originalData, 'name');
-        $this->helper->convertValue($defaultPaymentMethod, 'template', $originalData, 'template');
-        $this->helper->convertValue($defaultPaymentMethod, 'class', $originalData, 'class');
-        $this->helper->convertValue($defaultPaymentMethod, 'table', $originalData, 'table');
-        $this->helper->convertValue($defaultPaymentMethod, 'hide', $originalData, 'hide', $this->helper::TYPE_BOOLEAN);
-        $this->helper->convertValue($defaultPaymentMethod, 'percentageSurcharge', $originalData, 'debit_percent', $this->helper::TYPE_FLOAT);
-        $this->helper->convertValue($defaultPaymentMethod, 'absoluteSurcharge', $originalData, 'surcharge', $this->helper::TYPE_FLOAT);
-        $this->helper->convertValue($defaultPaymentMethod, 'surchargeString', $originalData, 'surchargestring');
-        $this->helper->convertValue($defaultPaymentMethod, 'position', $originalData, 'position', $this->helper::TYPE_INTEGER);
-        $this->helper->convertValue($defaultPaymentMethod, 'active', $originalData, 'active', $this->helper::TYPE_BOOLEAN);
-        $this->helper->convertValue($defaultPaymentMethod, 'allowEsd', $originalData, 'esdactive', $this->helper::TYPE_BOOLEAN);
-        $this->helper->convertValue($defaultPaymentMethod, 'usedIframe', $originalData, 'embediframe');
-        $this->helper->convertValue($defaultPaymentMethod, 'hideProspect', $originalData, 'hideprospect', $this->helper::TYPE_BOOLEAN);
-        $this->helper->convertValue($defaultPaymentMethod, 'action', $originalData, 'action');
-        $this->helper->convertValue($defaultPaymentMethod, 'source', $originalData, 'source', $this->helper::TYPE_INTEGER);
-        $this->helper->convertValue($defaultPaymentMethod, 'mobileInactive', $originalData, 'mobile_inactive', $this->helper::TYPE_BOOLEAN);
-
-        $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);
-
-        if (isset($languageData['createData']) && !empty($languageData['createData'])) {
-            $translation['language']['id'] = $languageData['uuid'];
-            $translation['language']['localeId'] = $languageData['createData']['localeId'];
-            $translation['language']['name'] = $languageData['createData']['localeCode'];
-        } else {
-            $translation['languageId'] = $languageData['uuid'];
-        }
-
-        $defaultPaymentMethod['translations'][$languageData['uuid']] = $translation;
-
-        $converted['defaultPaymentMethod'] = $defaultPaymentMethod;
+        return $paymentMethodUuid;
     }
 
     /**

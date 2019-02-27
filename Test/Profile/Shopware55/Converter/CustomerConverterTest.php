@@ -15,6 +15,7 @@ use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
 use SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\Converter\CustomerConverter;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
+use SwagMigrationNext\Profile\Shopware55\Premapping\PaymentMethodReader;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationNext\Test\Mock\Migration\Mapping\DummyMappingService;
@@ -53,12 +54,13 @@ class CustomerConverterTest extends TestCase
         $converterHelperService = new ConverterHelperService();
         $this->customerConverter = new CustomerConverter($mappingService, $converterHelperService, $this->loggingService);
 
+        $connectionId = Uuid::uuid4()->getHex();
         $this->runId = Uuid::uuid4()->getHex();
         $this->connection = new SwagMigrationConnectionEntity();
         $profile = new SwagMigrationProfileEntity();
         $profile->setName(Shopware55Profile::PROFILE_NAME);
         $profile->setGatewayName(Shopware55LocalGateway::GATEWAY_NAME);
-        $this->connection->setId(Uuid::uuid4()->getHex());
+        $this->connection->setId($connectionId);
         $this->connection->setProfile($profile);
 
         $this->migrationContext = new MigrationContext(
@@ -78,6 +80,10 @@ class CustomerConverterTest extends TestCase
             null,
             Defaults::SALES_CHANNEL
         );
+
+        $mappingService->createNewUuid($connectionId, PaymentMethodReader::getMappingName(), '3', $context, [], Uuid::uuid4()->getHex());
+        $mappingService->createNewUuid($connectionId, PaymentMethodReader::getMappingName(), '4', $context, [], Uuid::uuid4()->getHex());
+        $mappingService->createNewUuid($connectionId, PaymentMethodReader::getMappingName(), '5', $context, [], Uuid::uuid4()->getHex());
     }
 
     public function testSupports(): void

@@ -5,6 +5,7 @@ namespace SwagMigrationNext\Test;
 use Shopware\Core\Checkout\Cart\Price\PriceRounding;
 use Shopware\Core\Checkout\Cart\Tax\TaxCalculator;
 use Shopware\Core\Checkout\Cart\Tax\TaxRuleCalculator;
+use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -227,6 +228,23 @@ trait MigrationServicesTrait
 
         if ($result->getTotal() > 0) {
             /** @var StateMachineStateEntity $element */
+            $element = $result->getEntities()->first();
+
+            return $element->getId();
+        }
+
+        return null;
+    }
+
+    private function getPaymentUuid(EntityRepositoryInterface $paymentRepo, string $technicalName, Context $context): ?string
+    {
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('technicalName', $technicalName));
+        $criteria->setLimit(1);
+        $result = $paymentRepo->search($criteria, $context);
+
+        if ($result->getTotal() > 0) {
+            /** @var PaymentMethodEntity $element */
             $element = $result->getEntities()->first();
 
             return $element->getId();
