@@ -266,6 +266,20 @@ class MappingService implements MappingServiceInterface
         }
     }
 
+    public function bulkDeleteMapping(array $mappingUuids, Context $context): void
+    {
+        if (!empty($mappingUuids)) {
+            $deleteArray = [];
+            foreach ($mappingUuids as $uuid) {
+                $deleteArray[] = [
+                    'id' => $uuid,
+                ];
+            }
+
+            $this->migrationMappingRepo->delete($deleteArray, $context);
+        }
+    }
+
     public function writeMapping(Context $context): void
     {
         if (empty($this->writeArray)) {
@@ -298,6 +312,16 @@ class MappingService implements MappingServiceInterface
         }
 
         $this->writeMapping($context);
+    }
+
+    public function pushMapping(string $connectionId, string $entity, string $oldIdentifier, string $uuid)
+    {
+        $this->saveMapping([
+            'connectionId' => $connectionId,
+            'entity' => $entity,
+            'oldIdentifier' => $oldIdentifier,
+            'entityUuid' => $uuid,
+        ]);
     }
 
     protected function saveMapping(array $mapping): void

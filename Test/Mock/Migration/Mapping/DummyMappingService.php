@@ -65,6 +65,15 @@ class DummyMappingService extends MappingService
         }
     }
 
+    public function pushMapping(string $connectionId, string $entity, string $oldIdentifier, string $uuid)
+    {
+        $this->uuids[$connectionId][$entity][$oldIdentifier] = $uuid;
+    }
+
+    public function bulkDeleteMapping(array $mappingUuids, Context $context): void
+    {
+    }
+
     public function getLanguageUuid(string $connectionId, string $localeCode, Context $context): array
     {
         return [

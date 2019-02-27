@@ -214,8 +214,31 @@ class CustomerConverter extends AbstractConverter
             $converted['defaultPaymentMethodId'] = $defaultPaymentMethodUuid;
         }
         unset($data['defaultpayment'], $data['paymentpreset']);
-        if (!isset($converted['defaultPaymentMethod'])) {
-            $converted['defaultPaymentMethodId'] = Defaults::PAYMENT_METHOD_SEPA;
+
+        if (!isset($converted['defaultPaymentMethodId'])) {
+            $converted['defaultPaymentMethodId'] = $this->mappingService->getUuid(
+                $this->connectionId,
+                PaymentMethodReader::getMappingName(),
+                'default_payment_method',
+                $this->context
+            );
+
+            if (!isset($converted['defaultPaymentMethodId'])) {
+                $this->loggingService->addWarning(
+                    $this->runId,
+                    Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
+                    'Empty necessary data fields',
+                    'Customer-Entity could not converted cause of empty necessary field(s): defaultpayment.',
+                    [
+                        'id' => $this->oldCustomerId,
+                        'entity' => 'Customer',
+                        'fields' => ['defaultpayment'],
+                    ],
+                    1
+                );
+
+                return new ConvertStruct(null, $oldData);
+            }
         }
 
         if (isset($data['addresses'])) {

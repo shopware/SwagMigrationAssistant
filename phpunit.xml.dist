@@ -36,6 +36,7 @@
                 <!-- Structs and Collections -->
                 <directory suffix="Collection.php">./Migration</directory>
                 <directory suffix="Entity.php">./Migration</directory>
+                <directory suffix="Struct.php">./Migration</directory>
                 <file>./Migration/EnvironmentInformation.php</file>
 
                 <file>SwagMigrationNext.php</file>

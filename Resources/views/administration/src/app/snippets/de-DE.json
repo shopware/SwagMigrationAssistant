@@ -170,7 +170,7 @@
         "group": {
           "order_state": "Bestellstatus",
           "transaction_state": "Zahlungsstatus",
-          "payment_method": "Zahlungsmethoden"
+          "payment_method": "Zahlungsarten"
         }
       },
       "loadingScreenCard": {

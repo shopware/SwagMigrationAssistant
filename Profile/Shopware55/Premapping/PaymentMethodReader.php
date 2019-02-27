@@ -23,9 +23,8 @@ class PaymentMethodReader implements PremappingReaderInterface
      */
     protected $paymentMethodRepo;
 
-    public function __construct(
-        EntityRepositoryInterface $paymentMethodRepo
-    ) {
+    public function __construct(EntityRepositoryInterface $paymentMethodRepo)
+    {
         $this->paymentMethodRepo = $paymentMethodRepo;
     }
 
@@ -66,6 +65,8 @@ class PaymentMethodReader implements PremappingReaderInterface
         foreach ($preMappingData as $data) {
             $entityData[] = new PremappingEntityStruct($data['id'], $data['description'], '');
         }
+
+        $entityData[] = new PremappingEntityStruct('default_payment_method', 'Standard Payment Method', '');
 
         return $entityData;
     }

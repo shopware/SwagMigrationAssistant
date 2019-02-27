@@ -170,7 +170,7 @@
         "group": {
           "order_state": "Order states",
           "transaction_state": "Transaction states",
-          "payment_method": "Payment means"
+          "payment_method": "Payment methods"
         }
       },
       "loadingScreenCard": {

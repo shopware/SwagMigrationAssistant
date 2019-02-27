@@ -150,6 +150,7 @@
         <service id="SwagMigrationNext\Migration\Service\PremappingService">
             <argument type="service" id="SwagMigrationNext\Migration\Premapping\PremappingReaderRegistry"/>
             <argument type="service" id="SwagMigrationNext\Migration\Mapping\MappingService"/>
+            <argument type="service" id="swag_migration_mapping.repository"/>
         </service>
     </services>
 </container>
