@@ -25,6 +25,7 @@ use SwagMigrationNext\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationNext\Migration\MigrationContextInterface;
 use SwagMigrationNext\Profile\Shopware55\Exception\ParentEntityForChildNotFoundException;
 use SwagMigrationNext\Profile\Shopware55\Logging\Shopware55LogTypes;
+use SwagMigrationNext\Profile\Shopware55\Premapping\ProductManufacturerReader;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
 class ProductConverter extends AbstractConverter
@@ -78,7 +79,6 @@ class ProductConverter extends AbstractConverter
     private $requiredDataFieldKeys = [
         'tax',
         'prices',
-        'manufacturer',
     ];
 
     public function __construct(
@@ -120,6 +120,7 @@ class ProductConverter extends AbstractConverter
         $this->runId = $migrationContext->getRunUuid();
         $this->connectionId = $migrationContext->getConnection()->getId();
         $this->oldProductId = $data['detail']['ordernumber'];
+        $locale = $data['_locale'];
 
         $fields = $this->helper->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
         if (!empty($fields)) {
@@ -154,6 +155,39 @@ class ProductConverter extends AbstractConverter
 
         $converted = $this->getUuidForProduct($data);
         $converted = $this->getProductData($data, $converted);
+
+        if (isset($data['manufacturer'])) {
+            $converted['manufacturer'] = $this->getManufacturer($data['manufacturer'], $locale);
+            unset($data['manufacturer'], $data['supplierID']);
+        } else {
+            $manufacturerUuid = $this->mappingService->getUuid(
+                $this->connectionId,
+                ProductManufacturerReader::getMappingName(),
+                'default_manufacturer',
+                $this->context
+            );
+
+            if ($manufacturerUuid !== null) {
+                $converted['manufacturerId'] = $manufacturerUuid;
+
+                unset($data['supplierID']);
+            } else {
+                $this->loggingService->addWarning(
+                    $this->runId,
+                    Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
+                    'Empty necessary data fields',
+                    'Product-Entity could not converted cause of empty necessary field(s): manufacturer.',
+                    [
+                        'id' => $this->oldProductId,
+                        'entity' => ProductDefinition::getEntityName(),
+                        'fields' => ['manufacturer'],
+                    ],
+                    1
+                );
+
+                return new ConvertStruct(null, $data);
+            }
+        }
 
         if (empty($data)) {
             $data = null;
@@ -271,9 +305,6 @@ class ProductConverter extends AbstractConverter
             $data['detail']['additionaltext'],
             $data['attributes']
         );
-
-        $converted['manufacturer'] = $this->getManufacturer($data['manufacturer'], $data['_locale']);
-        unset($data['manufacturer'], $data['supplierID']);
 
         $converted['tax'] = $this->getTax($data['tax']);
         unset($data['tax'], $data['taxID']);
