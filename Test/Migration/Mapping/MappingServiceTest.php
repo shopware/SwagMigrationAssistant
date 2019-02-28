@@ -200,13 +200,4 @@ class MappingServiceTest extends TestCase
 
         static::assertNull($uuid);
     }
-
-    public function testGetPaymentUuid(): void
-    {
-        $paymentUuid = $this->mappingService->getPaymentUuid('invoice', Context::createDefaultContext());
-        static::assertNotNull($paymentUuid);
-
-        $paymentUuid = $this->mappingService->getPaymentUuid('foobar', Context::createDefaultContext());
-        static::assertNull($paymentUuid);
-    }
 }

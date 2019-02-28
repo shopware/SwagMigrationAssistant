@@ -2,7 +2,6 @@
 
 namespace SwagMigrationNext\Migration\Mapping;
 
-use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Api\Util\AccessKeyHelper;
 use Shopware\Core\Framework\Context;
@@ -267,6 +266,20 @@ class MappingService implements MappingServiceInterface
         }
     }
 
+    public function bulkDeleteMapping(array $mappingUuids, Context $context): void
+    {
+        if (!empty($mappingUuids)) {
+            $deleteArray = [];
+            foreach ($mappingUuids as $uuid) {
+                $deleteArray[] = [
+                    'id' => $uuid,
+                ];
+            }
+
+            $this->migrationMappingRepo->delete($deleteArray, $context);
+        }
+    }
+
     public function writeMapping(Context $context): void
     {
         if (empty($this->writeArray)) {
@@ -301,22 +314,14 @@ class MappingService implements MappingServiceInterface
         $this->writeMapping($context);
     }
 
-    // Todo: Replace with premapping option
-    public function getPaymentUuid(string $technicalName, Context $context): ?string
+    public function pushMapping(string $connectionId, string $entity, string $oldIdentifier, string $uuid)
     {
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('technicalName', $technicalName));
-        $criteria->setLimit(1);
-        $result = $this->paymentRepository->search($criteria, $context);
-
-        if ($result->getTotal() > 0) {
-            /** @var PaymentMethodEntity $element */
-            $element = $result->getEntities()->first();
-
-            return $element->getId();
-        }
-
-        return null;
+        $this->saveMapping([
+            'connectionId' => $connectionId,
+            'entity' => $entity,
+            'oldIdentifier' => $oldIdentifier,
+            'entityUuid' => $uuid,
+        ]);
     }
 
     protected function saveMapping(array $mapping): void

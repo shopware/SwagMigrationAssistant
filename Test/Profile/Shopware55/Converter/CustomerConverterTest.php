@@ -15,6 +15,7 @@ use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
 use SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\Converter\CustomerConverter;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
+use SwagMigrationNext\Profile\Shopware55\Premapping\PaymentMethodReader;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationNext\Test\Mock\Migration\Mapping\DummyMappingService;
@@ -46,19 +47,30 @@ class CustomerConverterTest extends TestCase
      */
     private $migrationContext;
 
+    /**
+     * @var DummyMappingService
+     */
+    private $mappingService;
+
+    /**
+     * @var string
+     */
+    private $connectionId;
+
     protected function setUp(): void
     {
         $this->loggingService = new DummyLoggingService();
-        $mappingService = new DummyMappingService();
+        $this->mappingService = new DummyMappingService();
         $converterHelperService = new ConverterHelperService();
-        $this->customerConverter = new CustomerConverter($mappingService, $converterHelperService, $this->loggingService);
+        $this->customerConverter = new CustomerConverter($this->mappingService, $converterHelperService, $this->loggingService);
 
+        $this->connectionId = Uuid::uuid4()->getHex();
         $this->runId = Uuid::uuid4()->getHex();
         $this->connection = new SwagMigrationConnectionEntity();
         $profile = new SwagMigrationProfileEntity();
         $profile->setName(Shopware55Profile::PROFILE_NAME);
         $profile->setGatewayName(Shopware55LocalGateway::GATEWAY_NAME);
-        $this->connection->setId(Uuid::uuid4()->getHex());
+        $this->connection->setId($this->connectionId);
         $this->connection->setProfile($profile);
 
         $this->migrationContext = new MigrationContext(
@@ -70,7 +82,7 @@ class CustomerConverterTest extends TestCase
         );
 
         $context = Context::createDefaultContext();
-        $mappingService->createNewUuid(
+        $this->mappingService->createNewUuid(
             $this->connection->getId(),
             SalesChannelDefinition::getEntityName(),
             '1',
@@ -78,6 +90,10 @@ class CustomerConverterTest extends TestCase
             null,
             Defaults::SALES_CHANNEL
         );
+
+        $this->mappingService->createNewUuid($this->connectionId, PaymentMethodReader::getMappingName(), '3', $context, [], Uuid::uuid4()->getHex());
+        $this->mappingService->createNewUuid($this->connectionId, PaymentMethodReader::getMappingName(), '4', $context, [], Uuid::uuid4()->getHex());
+        $this->mappingService->createNewUuid($this->connectionId, PaymentMethodReader::getMappingName(), '5', $context, [], Uuid::uuid4()->getHex());
     }
 
     public function testSupports(): void
@@ -142,6 +158,7 @@ class CustomerConverterTest extends TestCase
             ['firstname', ''],
             ['lastname', null],
             ['lastname', ''],
+            ['defaultpayment', null],
         ];
     }
 
@@ -193,13 +210,14 @@ class CustomerConverterTest extends TestCase
         static::assertCount(0, $this->loggingService->getLoggingArray());
     }
 
-    public function testConvertCustomerWithoutPayment(): void
+    public function testConvertCustomerWithoutPaymentAndWithDefaultPayment(): void
     {
         $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
         $customerData = $customerData[0];
         unset($customerData['defaultpayment']);
 
         $context = Context::createDefaultContext();
+        $uuid = $this->mappingService->createNewUuid($this->connectionId, PaymentMethodReader::getMappingName(), 'default_payment_method', $context, [], Uuid::uuid4()->getHex());
         $convertResult = $this->customerConverter->convert(
             $customerData,
             $context,
@@ -207,14 +225,17 @@ class CustomerConverterTest extends TestCase
         );
 
         $converted = $convertResult->getConverted();
+        $logs = $this->loggingService->getLoggingArray();
 
         static::assertNull($convertResult->getUnmapped());
+        static::assertNotNull($converted);
+        static::assertCount(0, $logs);
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('group', $converted);
         static::assertArrayHasKey('addresses', $converted);
         static::assertSame(Defaults::SALES_CHANNEL, $converted['salesChannelId']);
         static::assertSame('Mustermann', $converted['lastName']);
-        static::assertSame(Defaults::PAYMENT_METHOD_SEPA, $converted['defaultPaymentMethodId']);
+        static::assertSame($uuid, $converted['defaultPaymentMethodId']);
         static::assertCount(0, $this->loggingService->getLoggingArray());
     }
 

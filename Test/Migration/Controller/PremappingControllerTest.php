@@ -8,6 +8,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagMigrationNext\Controller\PremappingController;
+use SwagMigrationNext\Migration\Mapping\MappingService;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Premapping\PremappingEntityStruct;
 use SwagMigrationNext\Migration\Premapping\PremappingReaderRegistry;
@@ -20,7 +21,6 @@ use SwagMigrationNext\Profile\Shopware55\Premapping\TransactionStateReader;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Migration\Services\MigrationProfileUuidService;
 use SwagMigrationNext\Test\MigrationServicesTrait;
-use SwagMigrationNext\Test\Mock\Migration\Mapping\DummyMappingService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -45,7 +45,7 @@ class PremappingControllerTest extends TestCase
     private $premapping;
 
     /**
-     * @var DummyMappingService
+     * @var MappingService
      */
     private $mappingService;
 
@@ -82,8 +82,9 @@ class PremappingControllerTest extends TestCase
         $this->runRepo = $this->getContainer()->get('swag_migration_run.repository');
         $stateMachineRepo = $this->getContainer()->get('state_machine.repository');
         $stateMachineStateRepo = $this->getContainer()->get('state_machine_state.repository');
-        $this->mappingService = new DummyMappingService();
+        $this->mappingService = $this->getContainer()->get(MappingService::class);
         $profileUuidService = new MigrationProfileUuidService($profileRepo, Shopware55Profile::PROFILE_NAME, Shopware55LocalGateway::GATEWAY_NAME);
+        $mappingRepo = $this->getContainer()->get('swag_migration_mapping.repository');
 
         $this->controller = new PremappingController(
             new PremappingService(
@@ -93,7 +94,8 @@ class PremappingControllerTest extends TestCase
                         new TransactionStateReader($stateMachineRepo, $stateMachineStateRepo),
                     ]
                 ),
-                $this->mappingService
+                $this->mappingService,
+                $mappingRepo
             ),
             $this->runRepo
         );
@@ -168,5 +170,70 @@ class PremappingControllerTest extends TestCase
 
         static::assertSame($this->firstState->getDestinationUuid(), $firstUuid);
         static::assertSame($this->secondState->getDestinationUuid(), $secondUuid);
+    }
+
+    public function testWritePremappingTwice(): void
+    {
+        $request = new Request([], [
+            'runUuid' => $this->runUuid,
+            'premapping' => json_decode((new JsonResponse([$this->premapping]))->getContent(), true),
+        ]);
+
+        $this->controller->writePremapping(
+            $request,
+            $this->context
+        );
+
+        $firstUuid = $this->mappingService->getUuid(
+            $this->connectionId,
+            OrderStateReader::getMappingName(),
+            '0',
+            $this->context
+        );
+
+        $secondUuid = $this->mappingService->getUuid(
+            $this->connectionId,
+            OrderStateReader::getMappingName(),
+            '1',
+            $this->context
+        );
+
+        static::assertSame($this->firstState->getDestinationUuid(), $firstUuid);
+        static::assertSame($this->secondState->getDestinationUuid(), $secondUuid);
+
+        $firstStateUuid = Uuid::uuid4()->getHex();
+        $firstState = new PremappingEntityStruct('0', 'First State', $firstStateUuid);
+
+        $secondStateUuid = Uuid::uuid4()->getHex();
+        $secondState = new PremappingEntityStruct('1', 'Second State', $secondStateUuid);
+
+        $premapping = new PremappingStruct(OrderStateReader::getMappingName(), [$firstState, $secondState]);
+
+        $request = new Request([], [
+            'runUuid' => $this->runUuid,
+            'premapping' => json_decode((new JsonResponse([$premapping]))->getContent(), true),
+        ]);
+
+        $this->controller->writePremapping(
+            $request,
+            $this->context
+        );
+
+        $firstUuid = $this->mappingService->getUuid(
+            $this->connectionId,
+            OrderStateReader::getMappingName(),
+            '0',
+            $this->context
+        );
+
+        $secondUuid = $this->mappingService->getUuid(
+            $this->connectionId,
+            OrderStateReader::getMappingName(),
+            '1',
+            $this->context
+        );
+
+        static::assertSame($firstState->getDestinationUuid(), $firstUuid);
+        static::assertSame($secondState->getDestinationUuid(), $secondUuid);
     }
 }
