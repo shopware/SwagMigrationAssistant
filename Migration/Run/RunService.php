@@ -252,7 +252,7 @@ class RunService implements RunServiceInterface
         $criteria->setLimit(1);
         $result = $this->mediaFileRepository->search($criteria, $context);
 
-        return (int) $result->getAggregations()->first()->getResult()['count'];
+        return (int) $result->getAggregations()->first()->getResult()[0]['count'];
     }
 
     private function calculateFetchedTotals(string $runId, Context $context): array
@@ -265,8 +265,12 @@ class RunService implements RunServiceInterface
         $result = $this->migrationDataRepository->search($criteria, $context);
         $counts = $result->getAggregations()->first()->getResult();
 
+        if (!isset($counts[0]['values'])) {
+            return [];
+        }
+
         $mappedCounts = [];
-        foreach ($counts as $item) {
+        foreach ($counts[0]['values'] as $item) {
             $mappedCounts[$item['key']] = (int) $item['count'];
         }
 
