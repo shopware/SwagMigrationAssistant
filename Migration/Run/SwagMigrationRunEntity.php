@@ -8,6 +8,7 @@ use SwagMigrationNext\Exception\MigrationRunUndefinedStatusException;
 use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\Logging\SwagMigrationLoggingCollection;
 use SwagMigrationNext\Migration\Media\SwagMigrationMediaFileCollection;
+use SwagMigrationNext\Migration\Premapping\PremappingStruct;
 
 class SwagMigrationRunEntity extends Entity
 {
@@ -77,6 +78,11 @@ class SwagMigrationRunEntity extends Entity
      * @var RunProgress[]
      */
     protected $progress;
+
+    /**
+     * @var PremappingStruct[]
+     */
+    protected $premapping;
 
     /**
      * @var SwagMigrationMediaFileCollection|null
@@ -196,6 +202,19 @@ class SwagMigrationRunEntity extends Entity
     public function setProgress(array $progress): void
     {
         $this->progress = $progress;
+    }
+
+    public function getPremapping(): ?array
+    {
+        return $this->premapping;
+    }
+
+    /**
+     * @param PremappingStruct[] $premapping
+     */
+    public function setPremapping(array $premapping): void
+    {
+        $this->premapping = $premapping;
     }
 
     public function getMediaFiles(): ?SwagMigrationMediaFileCollection

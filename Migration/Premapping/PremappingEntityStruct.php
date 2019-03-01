@@ -42,4 +42,9 @@ class PremappingEntityStruct extends Struct
     {
         return $this->destinationUuid;
     }
+
+    public function setDestinationUuid(string $destinationUuid): void
+    {
+        $this->destinationUuid = $destinationUuid;
+    }
 }
