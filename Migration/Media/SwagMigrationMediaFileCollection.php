@@ -4,13 +4,17 @@ namespace SwagMigrationNext\Migration\Media;
 
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 
+/**
+ * @method void                              add(SwagMigrationMediaFileEntity $entity)
+ * @method void                              set(string $key, SwagMigrationMediaFileEntity $entity)
+ * @method SwagMigrationMediaFileEntity[]    getIterator()
+ * @method SwagMigrationMediaFileEntity[]    getElements()
+ * @method SwagMigrationMediaFileEntity|null get(string $key)
+ * @method SwagMigrationMediaFileEntity|null first()
+ * @method SwagMigrationMediaFileEntity|null last()
+ */
 class SwagMigrationMediaFileCollection extends EntityCollection
 {
-    public function first(): SwagMigrationMediaFileEntity
-    {
-        return parent::first();
-    }
-
     protected function getExpectedClass(): string
     {
         return SwagMigrationMediaFileEntity::class;

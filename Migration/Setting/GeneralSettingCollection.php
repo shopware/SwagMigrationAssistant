@@ -4,15 +4,19 @@ namespace SwagMigrationNext\Migration\Setting;
 
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 
+/**
+ * @method void                      add(GeneralSettingEntity $entity)
+ * @method void                      set(string $key, GeneralSettingEntity $entity)
+ * @method GeneralSettingEntity[]    getIterator()
+ * @method GeneralSettingEntity[]    getElements()
+ * @method GeneralSettingEntity|null get(string $key)
+ * @method GeneralSettingEntity|null first()
+ * @method GeneralSettingEntity|null last()
+ */
 class GeneralSettingCollection extends EntityCollection
 {
-    /**
-     * @var GeneralSettingEntity[]
-     */
-    protected $elements = [];
-
-    public function first(): GeneralSettingEntity
+    protected function getExpectedClass(): string
     {
-        return parent::first();
+        return GeneralSettingEntity::class;
     }
 }
