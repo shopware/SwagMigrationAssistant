@@ -2,7 +2,6 @@
 
 namespace SwagMigrationNext\Test\Migration\Profile;
 
-use Exception;
 use PHPUnit\Framework\TestCase;
 use SwagMigrationNext\Exception\ProfileNotFoundException;
 use SwagMigrationNext\Migration\Profile\ProfileRegistry;
@@ -27,7 +26,7 @@ class ProfileRegistryTest extends TestCase
     {
         try {
             $this->profileRegistry->getProfile('foo');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             /* @var ProfileNotFoundException $e */
             static::assertInstanceOf(ProfileNotFoundException::class, $e);
             static::assertSame(Response::HTTP_NOT_FOUND, $e->getStatusCode());

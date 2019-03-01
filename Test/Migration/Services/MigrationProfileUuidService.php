@@ -54,7 +54,7 @@ class MigrationProfileUuidService
         $criteria->addFilter(new EqualsFilter('name', $this->profile));
         $criteria->addFilter(new EqualsFilter('gatewayName', $this->gateway));
         $profileResult = $this->profileRepository->search($criteria, Context::createDefaultContext());
-        /** @var $profile SwagMigrationProfileEntity */
+        /** @var SwagMigrationProfileEntity $profile */
         $profile = $profileResult->first();
         $this->profileUuid = $profile->getId();
     }

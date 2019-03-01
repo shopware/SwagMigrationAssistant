@@ -2,7 +2,6 @@
 
 namespace SwagMigrationNext\Test\Command;
 
-use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
@@ -95,7 +94,7 @@ class MigrationFetchDataCommandTest extends TestCase
         ];
         unset($options[$missingOption['value']]);
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(sprintf('No %s provided', $missingOption['optionName']));
 
         $this->runFetchCommand($options);
@@ -110,7 +109,7 @@ class MigrationFetchDataCommandTest extends TestCase
             '--entity' => 'product',
         ];
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('No valid profile found');
 
         $this->runFetchCommand($options);

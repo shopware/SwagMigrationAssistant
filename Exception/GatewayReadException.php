@@ -4,13 +4,12 @@ namespace SwagMigrationNext\Exception;
 
 use Shopware\Core\Framework\ShopwareHttpException;
 use Symfony\Component\HttpFoundation\Response;
-use Throwable;
 
 class GatewayReadException extends ShopwareHttpException
 {
     protected $code = 'SWAG-MIGRATION-GATEWAY-READ';
 
-    public function __construct(string $gateway, $code = 0, Throwable $previous = null)
+    public function __construct(string $gateway, $code = 0, ?\Throwable $previous = null)
     {
         $message = sprintf('Could not read from gateway: "%s"', $gateway);
         parent::__construct($message, $code, $previous);

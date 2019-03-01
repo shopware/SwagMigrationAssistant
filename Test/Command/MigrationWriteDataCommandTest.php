@@ -2,7 +2,6 @@
 
 namespace SwagMigrationNext\Test\Command;
 
-use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -186,7 +185,7 @@ class MigrationWriteDataCommandTest extends TestCase
         static::markTestSkipped('Reason: New Run-Connection-Profile-Association');
         $this->createCommands();
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('No running migration found');
 
         $this->executeWriteCommand([
@@ -200,7 +199,7 @@ class MigrationWriteDataCommandTest extends TestCase
         static::markTestSkipped('Reason: New Run-Connection-Profile-Association');
         $this->createCommands();
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('No run-id provided or started run flag set');
 
         $this->executeWriteCommand([
@@ -213,7 +212,7 @@ class MigrationWriteDataCommandTest extends TestCase
         static::markTestSkipped('Reason: New Run-Connection-Profile-Association');
         $this->createCommands();
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('No entity provided');
 
         $this->executeWriteCommand([

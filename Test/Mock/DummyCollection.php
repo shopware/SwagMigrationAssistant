@@ -2,10 +2,7 @@
 
 namespace SwagMigrationNext\Test\Mock;
 
-use ArrayIterator;
-use IteratorAggregate;
-
-class DummyCollection implements IteratorAggregate
+class DummyCollection implements \IteratorAggregate
 {
     /**
      * @var array
@@ -19,6 +16,6 @@ class DummyCollection implements IteratorAggregate
 
     public function getIterator()
     {
-        return new ArrayIterator($this->data);
+        return new \ArrayIterator($this->data);
     }
 }

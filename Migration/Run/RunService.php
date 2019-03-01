@@ -234,7 +234,6 @@ class RunService implements RunServiceInterface
             new EqualsFilter('status', SwagMigrationRunEntity::STATUS_RUNNING)
         );
 
-        /** @var SwagMigrationRunCollection $runCollection */
         $runCount = $this->migrationRunRepo->search($criteria, $context)->getEntities()->count();
 
         return $runCount > 0;

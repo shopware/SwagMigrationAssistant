@@ -389,8 +389,8 @@ class OrderConverterTest extends TestCase
             static::assertSame(Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS, $log['logEntry']['code']);
             static::assertCount(1, $log['logEntry']['details']['fields']);
             static::assertTrue(
-                $log['logEntry']['details']['fields'][0] === 'billingaddress' ||
-                $missingAddressProperty === $log['logEntry']['details']['fields'][0]
+                $log['logEntry']['details']['fields'][0] === 'billingaddress'
+                || $missingAddressProperty === $log['logEntry']['details']['fields'][0]
             );
         }
     }

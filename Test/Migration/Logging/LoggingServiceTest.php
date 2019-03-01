@@ -110,8 +110,8 @@ class LoggingServiceTest extends TestCase
             $logEntry = $log->getLogEntry();
 
             if (
-                (isset($logEntry['title']) && $logEntry['title'] === self::$firstLog['title']) &&
-                (isset($logEntry['details']['name']) && self::$firstLog['name'] === $logEntry['details']['name'])
+                (isset($logEntry['title']) && $logEntry['title'] === self::$firstLog['title'])
+                && (isset($logEntry['details']['name']) && self::$firstLog['name'] === $logEntry['details']['name'])
             ) {
                 if (($type === LoggingService::INFO_TYPE || $type === LoggingService::WARNING_TYPE) && (isset($logEntry['description']) && $logEntry['description'] === self::$firstLog['description'])) {
                     $firstLogValid = true;
@@ -123,8 +123,8 @@ class LoggingServiceTest extends TestCase
             }
 
             if (
-                (isset($logEntry['title']) && $logEntry['title'] === self::$secondLog['title']) &&
-                (isset($logEntry['details']['name']) && self::$secondLog['name'] === $logEntry['details']['name'])
+                (isset($logEntry['title']) && $logEntry['title'] === self::$secondLog['title'])
+                && (isset($logEntry['details']['name']) && self::$secondLog['name'] === $logEntry['details']['name'])
             ) {
                 if (($type === LoggingService::INFO_TYPE || $type === LoggingService::WARNING_TYPE) && (isset($logEntry['description']) && $logEntry['description'] === self::$secondLog['description'])) {
                     $secondLogValid = true;

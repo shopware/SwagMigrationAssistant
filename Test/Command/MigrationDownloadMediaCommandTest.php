@@ -2,7 +2,6 @@
 
 namespace SwagMigrationNext\Test\Command;
 
-use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Content\Media\File\FileSaver;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -202,7 +201,7 @@ class MigrationDownloadMediaCommandTest extends TestCase
             $this->mediaFileRepo
         ));
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('No run-id provided');
 
         $command = $application->find('migration:media:download');

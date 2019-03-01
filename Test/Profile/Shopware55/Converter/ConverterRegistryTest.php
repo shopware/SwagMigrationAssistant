@@ -2,7 +2,6 @@
 
 namespace SwagMigrationNext\Test\Profile\Shopware55\Converter;
 
-use Exception;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Struct\Uuid;
 use SwagMigrationNext\Exception\ConverterNotFoundException;
@@ -59,7 +58,7 @@ class ConverterRegistryTest extends TestCase
         );
         try {
             $this->converterRegistry->getConverter($migrationContext);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             /* @var ConverterNotFoundException $e */
             static::assertInstanceOf(ConverterNotFoundException::class, $e);
             static::assertSame(Response::HTTP_NOT_FOUND, $e->getStatusCode());

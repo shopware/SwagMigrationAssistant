@@ -37,8 +37,8 @@ class ProductManufacturerReader implements PremappingReaderInterface
      */
     public function supports(string $profileName, string $gatewayIdentifier, array $entityGroupNames): bool
     {
-        return $profileName === Shopware55Profile::PROFILE_NAME &&
-            in_array('categoriesProducts', $entityGroupNames, true);
+        return $profileName === Shopware55Profile::PROFILE_NAME
+            && in_array('categoriesProducts', $entityGroupNames, true);
     }
 
     public function getPremapping(Context $context, MigrationContext $migrationContext): PremappingStruct

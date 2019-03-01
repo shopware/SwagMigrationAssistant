@@ -24,9 +24,4 @@ interface ProfileInterface
      * Reads environment information from the given gateway
      */
     public function readEnvironmentInformation(GatewayInterface $gateway): EnvironmentInformation;
-
-    /**
-     * Reads the total amount from the given gateway for the given entity name
-     */
-    public function readEntityTotal(GatewayInterface $gateway, string $entityName): int;
 }

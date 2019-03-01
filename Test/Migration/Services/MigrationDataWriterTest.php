@@ -237,7 +237,7 @@ class MigrationDataWriterTest extends TestCase
         $criteria = new Criteria();
         $customerData = $this->migrationDataRepo->search($criteria, $context);
 
-        /** @var $data SwagMigrationDataEntity */
+        /** @var SwagMigrationDataEntity $data */
         $data = $customerData->first();
         $customer = $data->jsonSerialize();
         $customer['id'] = $data->getId();

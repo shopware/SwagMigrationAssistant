@@ -4,13 +4,12 @@ namespace SwagMigrationNext\Exception;
 
 use Shopware\Core\Framework\ShopwareHttpException;
 use Symfony\Component\HttpFoundation\Response;
-use Throwable;
 
 class NoFileSystemPermissionsException extends ShopwareHttpException
 {
     protected $code = 'SWAG-MIGRATION-NO-FILE-SYSTEM-PERMISSIONS';
 
-    public function __construct($code = 0, Throwable $previous = null)
+    public function __construct($code = 0, ?\Throwable $previous = null)
     {
         parent::__construct('No file system permissions to create or write to files or directories', $code, $previous);
     }
