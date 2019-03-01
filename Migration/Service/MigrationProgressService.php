@@ -175,7 +175,7 @@ class MigrationProgressService implements MigrationProgressServiceInterface
         $criteria->setLimit(1);
         $result = $this->migrationMediaFileRepository->search($criteria, $this->context);
 
-        return (int) $result->getAggregations()->first()->getResult()['count'];
+        return (int) $result->getAggregations()->first()->getResult()[0]['count'];
     }
 
     private function mapCounts($counts): array
@@ -204,7 +204,7 @@ class MigrationProgressService implements MigrationProgressServiceInterface
             ]));
             $result = $this->migrationDataRepository->search($criteria, $this->context);
             $totalCountsForWriting = $result->getAggregations()->first()->getResult();
-            $totalCountsForWriting = $this->mapCounts($totalCountsForWriting);
+            $totalCountsForWriting = $this->mapCounts($totalCountsForWriting[0]['values']);
 
             $runProgress = $this->validateEntityGroupCounts($runProgress, $finishedCount, $totalCountsForWriting);
         } elseif ($state->getStatus() === ProgressState::STATUS_DOWNLOAD_DATA) {

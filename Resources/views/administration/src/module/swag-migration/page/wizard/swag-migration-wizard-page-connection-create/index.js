@@ -56,7 +56,7 @@ Component.register('swag-migration-wizard-page-connection-create', {
                     }
                 ]
             }).then((profiles) => {
-                this.profiles = profiles.aggregations.profileAgg;
+                this.profiles = profiles.aggregations.profileAgg[0].values;
 
                 this.generalSettingStore.getList({ limit: 1 }).then((response) => {
                     if (!response || response.items[0].selectedProfileId === null) {
@@ -107,7 +107,7 @@ Component.register('swag-migration-wizard-page-connection-create', {
                             }
                         ]
                     }).then((profiles) => {
-                        this.gateways = profiles.aggregations.gatewayAgg;
+                        this.gateways = profiles.aggregations.gatewayAgg[0].values;
                         this.selection.gateway = null;
                         this.emitOnChildRouteReadyChanged(this.isReady);
                         resolve();
