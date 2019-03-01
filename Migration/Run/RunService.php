@@ -193,8 +193,12 @@ class RunService implements RunServiceInterface
         $result = $this->migrationDataRepository->search($criteria, $context);
         $counts = $result->getAggregations()->first()->getResult();
 
+        if (!isset($counts[0]['values'])) {
+            return [];
+        }
+
         $mappedCounts = [];
-        foreach ($counts as $item) {
+        foreach ($counts[0]['values'] as $item) {
             $mappedCounts[$item['key']] = (int) $item['count'];
         }
 
