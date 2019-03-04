@@ -2,12 +2,6 @@
 
 namespace SwagMigrationNext\Profile\Shopware55;
 
-use InvalidArgumentException;
-use Shopware\Core\Checkout\Customer\CustomerDefinition;
-use Shopware\Core\Checkout\Order\OrderDefinition;
-use Shopware\Core\Content\Category\CategoryDefinition;
-use Shopware\Core\Content\Media\MediaDefinition;
-use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenContainerEvent;
@@ -98,28 +92,6 @@ class Shopware55Profile implements ProfileInterface
         return $gateway->readEnvironmentInformation();
     }
 
-    public function readEntityTotal(GatewayInterface $gateway, string $entityName): int
-    {
-        $environmentInformation = $this->readEnvironmentInformation($gateway);
-
-        switch ($entityName) {
-            case CategoryDefinition::getEntityName():
-                return $environmentInformation->getCategoryTotal();
-            case ProductDefinition::getEntityName():
-                return $environmentInformation->getProductTotal();
-            case CustomerDefinition::getEntityName():
-                return $environmentInformation->getCustomerTotal();
-            case OrderDefinition::getEntityName():
-                return $environmentInformation->getOrderTotal();
-            case MediaDefinition::getEntityName():
-                return $environmentInformation->getMediaTotal();
-//            case 'translation': TODO revert, when the core could handle translations correctly
-//                return $environmentInformation->getTranslationTotal();
-        }
-
-        throw new InvalidArgumentException('No valid entity provided');
-    }
-
     private function convertData(
         Context $context,
         array $data,
@@ -143,8 +115,8 @@ class Shopware55Profile implements ProfileInterface
                     'unmapped' => $convertStruct->getUnmapped(),
                     'convertFailure' => $convertFailureFlag,
                 ];
-            } catch (ParentEntityForChildNotFoundException |
-            AssociationEntityRequiredMissingException $exception
+            } catch (ParentEntityForChildNotFoundException
+            | AssociationEntityRequiredMissingException $exception
             ) {
                 $this->loggingService->addError(
                     $runUuid,

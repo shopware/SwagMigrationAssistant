@@ -2,7 +2,6 @@
 
 namespace SwagMigrationNext\Test\Migration\Writer;
 
-use Exception;
 use PHPUnit\Framework\TestCase;
 use SwagMigrationNext\Exception\WriterNotFoundException;
 use SwagMigrationNext\Migration\Writer\WriterRegistry;
@@ -27,7 +26,7 @@ class WriterRegistryTest extends TestCase
     {
         try {
             $this->writerRegistry->getWriter('foo');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             /* @var WriterNotFoundException $e */
             static::assertInstanceOf(WriterNotFoundException::class, $e);
             static::assertSame(Response::HTTP_NOT_FOUND, $e->getStatusCode());

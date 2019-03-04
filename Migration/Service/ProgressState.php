@@ -60,10 +60,10 @@ class ProgressState extends Struct
     public function __construct(
         bool $isMigrationRunning,
         bool $validMigrationRunToken,
-        string $runId = null,
-        string $accessToken = null,
+        ?string $runId = null,
+        ?string $accessToken = null,
         int $status = ProgressState::STATUS_WAITING,
-        string $entity = null,
+        ?string $entity = null,
         int $finishedCount = 0,
         int $entityCount = 0,
         array $runProgress = []

@@ -2,9 +2,6 @@
 
 namespace SwagMigrationNext\Profile\Shopware55\Converter;
 
-use DateTime;
-use Exception;
-
 class ConverterHelperService
 {
     public const TYPE_STRING = 'string';
@@ -65,10 +62,10 @@ class ConverterHelperService
     private function validDate(string $value): bool
     {
         try {
-            new DateTime($value);
+            new \DateTime($value);
 
             return true;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return false;
         }
     }

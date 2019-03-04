@@ -253,8 +253,8 @@ class MigrationProgressService implements MigrationProgressServiceInterface
                 continue;
             }
 
-            if (!isset($fetchedEntityCounts[$entity]) ||
-                (isset($fetchedEntityCounts[$entity]) && $fetchedEntityCounts[$entity] < $count)
+            if (!isset($fetchedEntityCounts[$entity])
+                || (isset($fetchedEntityCounts[$entity]) && $fetchedEntityCounts[$entity] < $count)
             ) {
                 return new ProgressState(
                     false,
@@ -279,8 +279,8 @@ class MigrationProgressService implements MigrationProgressServiceInterface
     private function compareWrittenCount(SwagMigrationRunEntity $run, array $totals, array $writtenEntityCounts): ?ProgressState
     {
         foreach ($totals as $entity => $count) {
-            if ($count === 0 ||
-                (isset($writtenEntityCounts[$entity]) && $writtenEntityCounts[$entity] >= $count)
+            if ($count === 0
+                || (isset($writtenEntityCounts[$entity]) && $writtenEntityCounts[$entity] >= $count)
             ) {
                 continue;
             }

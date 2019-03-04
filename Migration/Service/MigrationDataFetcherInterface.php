@@ -16,11 +16,6 @@ interface MigrationDataFetcherInterface
     public function fetchData(MigrationContextInterface $migrationContext, Context $context): int;
 
     /**
-     * Returns the total number of entities which should be imported
-     */
-    public function getEntityTotal(MigrationContextInterface $migrationContext): int;
-
-    /**
      * Reads the complete environment information from the source system
      */
     public function getEnvironmentInformation(MigrationContextInterface $migrationContext): EnvironmentInformation;

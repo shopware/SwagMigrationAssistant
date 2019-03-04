@@ -2,7 +2,6 @@
 
 namespace SwagMigrationNext\Test\Migration\Mapping;
 
-use Exception;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -125,7 +124,7 @@ class MappingServiceTest extends TestCase
 
         try {
             $this->mappingService->getLanguageUuid($this->profileUuidService->getProfileUuid(), 'swagMigrationTestingLocaleCode', $context);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             /* @var LocaleNotFoundException $e */
             static::assertInstanceOf(LocaleNotFoundException::class, $e);
             static::assertSame(Response::HTTP_NOT_FOUND, $e->getStatusCode());

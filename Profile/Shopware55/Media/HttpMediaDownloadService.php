@@ -2,10 +2,8 @@
 
 namespace SwagMigrationNext\Profile\Shopware55\Media;
 
-use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Promise;
-use GuzzleHttp\Psr7\Response;
 use Shopware\Core\Content\Media\Exception\IllegalMimeTypeException;
 use Shopware\Core\Content\Media\Exception\MediaNotFoundException;
 use Shopware\Core\Content\Media\Exception\UploadException;
@@ -113,7 +111,6 @@ class HttpMediaDownloadService extends AbstractMediaFileProcessor
         $failureUuids = [];
         $finishedUuids = [];
         foreach ($results as $uuid => $result) {
-            /** @var Response $response */
             $state = $result['state'];
             $additionalData = $mappedWorkload[$uuid]['additionalData'];
 
@@ -168,8 +165,8 @@ class HttpMediaDownloadService extends AbstractMediaFileProcessor
                 $finishedUuids[] = $uuid;
             }
 
-            if (isset($mappedWorkload[$uuid]['errorCount'], $oldWorkload['errorCount']) &&
-                $oldWorkload['errorCount'] === $mappedWorkload[$uuid]['errorCount']) {
+            if (isset($mappedWorkload[$uuid]['errorCount'], $oldWorkload['errorCount'])
+                && $oldWorkload['errorCount'] === $mappedWorkload[$uuid]['errorCount']) {
                 unset($mappedWorkload[$uuid]['errorCount']);
             }
         }
@@ -251,7 +248,7 @@ class HttpMediaDownloadService extends AbstractMediaFileProcessor
 
             $workload['currentOffset'] = $additionalData['file_size'];
             $workload['state'] = 'finished';
-        } catch (Exception $exception) {
+        } catch (\Exception $exception) {
             $promise = null;
             if (isset($workload['errorCount'])) {
                 ++$workload['errorCount'];
@@ -288,7 +285,7 @@ class HttpMediaDownloadService extends AbstractMediaFileProcessor
                 $workload['state'] = 'finished';
                 $workload['currentOffset'] = $additionalData['file_size'];
             }
-        } catch (Exception $exception) {
+        } catch (\Exception $exception) {
             $promise = null;
             if (isset($workload['errorCount'])) {
                 ++$workload['errorCount'];

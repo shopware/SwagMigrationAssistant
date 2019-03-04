@@ -2,7 +2,6 @@
 
 namespace SwagMigrationNext;
 
-use DateTime;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
 use Shopware\Core\Defaults;
@@ -50,7 +49,7 @@ class SwagMigrationNext extends Plugin
     {
         /** @var Connection $connection */
         $connection = $this->container->get(Connection::class);
-        $now = (new DateTime())->format(Defaults::DATE_FORMAT);
+        $now = (new \DateTime())->format(Defaults::DATE_FORMAT);
 
         $connection->beginTransaction();
         try {

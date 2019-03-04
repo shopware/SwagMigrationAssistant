@@ -13,8 +13,8 @@ interface MappingServiceInterface
         string $entityName,
         string $oldId,
         Context $context,
-        array $additionalData = null,
-        string $newUuid = null
+        ?array $additionalData = null,
+        ?string $newUuid = null
     ): string;
 
     public function getLanguageUuid(string $connectionId, string $localeCode, Context $context): array;

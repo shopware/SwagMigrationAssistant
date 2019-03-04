@@ -2,7 +2,6 @@
 
 namespace SwagMigrationNext\Command;
 
-use InvalidArgumentException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -107,7 +106,7 @@ class MigrationFetchDataCommand extends Command
         $this->checkOptions($input);
         $this->getProfile($context);
 
-        $total = $this->getEntityTotal();
+        $total = 0; // TODO FIX IT
         $this->createRun($runId, $total, $context);
         $output->writeln(sprintf('Run created: %s', $runId));
 
@@ -127,17 +126,17 @@ class MigrationFetchDataCommand extends Command
     {
         $this->profileName = $input->getOption('profile');
         if (!$this->profileName) {
-            throw new InvalidArgumentException('No profile provided');
+            throw new \InvalidArgumentException('No profile provided');
         }
 
         $this->gatewayName = $input->getOption('gateway');
         if (!$this->gatewayName) {
-            throw new InvalidArgumentException('No gateway provided');
+            throw new \InvalidArgumentException('No gateway provided');
         }
 
         $this->entityName = $input->getOption('entity');
         if (!$this->entityName) {
-            throw new InvalidArgumentException('No entity provided');
+            throw new \InvalidArgumentException('No entity provided');
         }
 
         $limit = $input->getOption('limit');
@@ -154,7 +153,7 @@ class MigrationFetchDataCommand extends Command
         $profileStruct = $this->migrationProfileRepo->search($searchProfileCriteria, $context)->first();
 
         if ($profileStruct === null) {
-            throw new InvalidArgumentException('No valid profile found');
+            throw new \InvalidArgumentException('No valid profile found');
         }
 
         /* @var SwagMigrationProfileEntity $profileStruct */
@@ -224,18 +223,5 @@ class MigrationFetchDataCommand extends Command
                 ],
             ],
         ], $context);
-    }
-
-    private function getEntityTotal(): int
-    {
-        $migrationContext = new MigrationContext(
-            '',
-            new SwagMigrationConnectionEntity(),
-            $this->entityName,
-            0,
-            0
-        );
-
-        return $this->migrationDataFetcher->getEntityTotal($migrationContext);
     }
 }

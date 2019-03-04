@@ -4,13 +4,12 @@ namespace SwagMigrationNext\Exception;
 
 use Shopware\Core\Framework\ShopwareHttpException;
 use Symfony\Component\HttpFoundation\Response;
-use Throwable;
 
 class ProcessorNotFoundException extends ShopwareHttpException
 {
     protected $code = 'SWAG-MIGRATION-PROCESSOR-NOT-FOUND';
 
-    public function __construct(string $profile, $gateway, $code = 0, Throwable $previous = null)
+    public function __construct(string $profile, $gateway, $code = 0, ?\Throwable $previous = null)
     {
         $message = sprintf('Processor for profile "%s" and gateway "%s" not found', $profile, $gateway);
         parent::__construct($message, $code, $previous);

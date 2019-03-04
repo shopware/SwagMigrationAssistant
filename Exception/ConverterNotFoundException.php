@@ -4,13 +4,12 @@ namespace SwagMigrationNext\Exception;
 
 use Shopware\Core\Framework\ShopwareHttpException;
 use Symfony\Component\HttpFoundation\Response;
-use Throwable;
 
 class ConverterNotFoundException extends ShopwareHttpException
 {
     protected $code = 'SWAG-MIGRATION-CONVERTER-NOT-FOUND';
 
-    public function __construct(string $entity, $code = 0, Throwable $previous = null)
+    public function __construct(string $entity, $code = 0, ?\Throwable $previous = null)
     {
         $message = sprintf('Converter for "%s" entity not found', $entity);
         parent::__construct($message, $code, $previous);

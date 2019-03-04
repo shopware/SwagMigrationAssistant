@@ -329,11 +329,11 @@ class MigrationDataFetcherTest extends TestCase
             $logEntry = $log->getLogEntry();
 
             if (
-                ($type === LoggingService::INFO_TYPE && $logEntry['title'] === 'Empty necessary data fields for address') ||
-                ($type === LoggingService::WARNING_TYPE && $logEntry['title'] === 'Empty necessary data fields') ||
-                ($type === LoggingService::INFO_TYPE && $logEntry['title'] === 'No default shipping address') ||
-                ($type === LoggingService::INFO_TYPE && $logEntry['title'] === 'No default billing and shipping address') ||
-                ($type === LoggingService::WARNING_TYPE && $logEntry['title'] === 'No address data')
+                ($type === LoggingService::INFO_TYPE && $logEntry['title'] === 'Empty necessary data fields for address')
+                || ($type === LoggingService::WARNING_TYPE && $logEntry['title'] === 'Empty necessary data fields')
+                || ($type === LoggingService::INFO_TYPE && $logEntry['title'] === 'No default shipping address')
+                || ($type === LoggingService::INFO_TYPE && $logEntry['title'] === 'No default billing and shipping address')
+                || ($type === LoggingService::WARNING_TYPE && $logEntry['title'] === 'No address data')
             ) {
                 ++$countValidLogging;
                 continue;
@@ -366,60 +366,6 @@ class MigrationDataFetcherTest extends TestCase
         $logs = $this->loggingService->getLoggingArray();
         static::assertCount(1, $logs);
         static::assertSame(LogType::CONVERTER_NOT_FOUND, $logs[0]['logEntry']['code']);
-    }
-
-    public function testGetEntityTotal(): void
-    {
-        static::markTestSkipped('Function skipped, because of deprecated environment information totals (Only used for commands)');
-        $this->profileUuidService = new MigrationProfileUuidService($this->getContainer()->get('swag_migration_profile.repository'));
-
-        $migrationContext = new MigrationContext(
-            Uuid::uuid4()->getHex(),
-            $this->connection,
-            CustomerDefinition::getEntityName(),
-            0,
-            250
-        );
-
-        $total = $this->migrationDataFetcher->getEntityTotal($migrationContext);
-
-        static::assertSame(2, $total);
-
-        $migrationContext = new MigrationContext(
-            '',
-            $this->connection,
-            ProductDefinition::getEntityName(),
-            0,
-            250
-        );
-
-        $total = $this->migrationDataFetcher->getEntityTotal($migrationContext);
-
-        static::assertSame(37, $total);
-
-        $migrationContext = new MigrationContext(
-            '',
-            $this->connection,
-            CategoryDefinition::getEntityName(),
-            0,
-            250
-        );
-
-        $total = $this->migrationDataFetcher->getEntityTotal($migrationContext);
-
-        static::assertSame(8, $total);
-
-        $migrationContext = new MigrationContext(
-            '',
-            $this->connection,
-            MediaDefinition::getEntityName(),
-            0,
-            250
-        );
-
-        $total = $this->migrationDataFetcher->getEntityTotal($migrationContext);
-
-        static::assertSame(23, $total);
     }
 
     private function initRepos(): void

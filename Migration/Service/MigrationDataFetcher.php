@@ -56,14 +56,6 @@ class MigrationDataFetcher implements MigrationDataFetcherInterface
         return $returnCount;
     }
 
-    public function getEntityTotal(MigrationContextInterface $migrationContext): int
-    {
-        $profile = $this->profileRegistry->getProfile($migrationContext->getProfileName());
-        $gateway = $this->gatewayFactoryRegistry->createGateway($migrationContext);
-
-        return $profile->readEntityTotal($gateway, $migrationContext->getEntity());
-    }
-
     public function getEnvironmentInformation(MigrationContextInterface $migrationContext): EnvironmentInformation
     {
         $profile = $this->profileRegistry->getProfile($migrationContext->getProfileName());

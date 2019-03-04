@@ -2,7 +2,6 @@
 
 namespace SwagMigrationNext\Command;
 
-use InvalidArgumentException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -116,7 +115,7 @@ class MigrationDownloadMediaCommand extends Command implements EventSubscriberIn
 
         $this->rundId = $input->getOption('run-id');
         if (!$this->rundId) {
-            throw new InvalidArgumentException('No run-id provided');
+            throw new \InvalidArgumentException('No run-id provided');
         }
 
         $this->io = new SymfonyStyle($input, $output);

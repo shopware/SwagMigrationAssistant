@@ -2,7 +2,6 @@
 
 namespace SwagMigrationNext\Test\Gateway;
 
-use Exception;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Content\Product\ProductDefinition;
 use SwagMigrationNext\Exception\GatewayNotFoundException;
@@ -48,7 +47,7 @@ class GatewayServiceTest extends TestCase
 
         try {
             $this->gatewayFactoryRegistry->createGateway($migrationContext);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             /* @var GatewayNotFoundException $e */
             static::assertInstanceOf(GatewayNotFoundException::class, $e);
             static::assertSame(Response::HTTP_NOT_FOUND, $e->getStatusCode());

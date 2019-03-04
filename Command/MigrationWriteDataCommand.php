@@ -2,13 +2,13 @@
 
 namespace SwagMigrationNext\Command;
 
-use InvalidArgumentException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
+use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationNext\Migration\Service\MigrationDataWriterInterface;
@@ -119,13 +119,10 @@ class MigrationWriteDataCommand extends Command
         for ($offset = 0; $offset < $total; $offset += $this->limit) {
             $migrationContext = new MigrationContext(
                 $this->runId,
+                new SwagMigrationConnectionEntity(), // TODO FIX IT
                 '',
-                '',
-                '',
-                $this->entityName,
                 $offset,
-                $this->limit,
-                []
+                $this->limit
             );
             $this->migrationWriteService->writeData($migrationContext, $context);
 
@@ -142,12 +139,12 @@ class MigrationWriteDataCommand extends Command
         $this->runId = $input->getOption('run-id');
         $this->startedRunFlag = $input->getOption('started-run');
         if (!$this->runId && !$this->startedRunFlag) {
-            throw new InvalidArgumentException('No run-id provided or started run flag set');
+            throw new \InvalidArgumentException('No run-id provided or started run flag set');
         }
 
         $this->entityName = $input->getOption('entity');
         if (!$this->entityName) {
-            throw new InvalidArgumentException('No entity provided');
+            throw new \InvalidArgumentException('No entity provided');
         }
 
         if ($this->startedRunFlag) {
@@ -157,7 +154,7 @@ class MigrationWriteDataCommand extends Command
             $startedRunStruct = $this->migrationRunRepo->search($startedRunCriteria, $this->context)->first();
 
             if ($startedRunStruct === null) {
-                throw new InvalidArgumentException('No running migration found');
+                throw new \InvalidArgumentException('No running migration found');
             }
 
             /* @var SwagMigrationRunEntity $startedRunStruct */

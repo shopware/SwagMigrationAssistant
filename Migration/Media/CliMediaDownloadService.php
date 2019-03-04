@@ -4,7 +4,6 @@ namespace SwagMigrationNext\Migration\Media;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Psr7\Response as GuzzleResponse;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Content\Media\Exception\MediaNotFoundException;
 use Shopware\Core\Content\Media\File\FileSaver;
@@ -130,7 +129,6 @@ class CliMediaDownloadService implements CliMediaDownloadServiceInterface
             $chunkEnd = $chunkStart + $this->chunkSizeBytes;
 
             $startTime = microtime(true);
-            /** @var GuzzleResponse $result */
             $response = $client->get(
                 $uri,
                 [

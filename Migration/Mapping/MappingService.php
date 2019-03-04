@@ -117,8 +117,8 @@ class MappingService implements MappingServiceInterface
         string $entityName,
         string $oldId,
         Context $context,
-        array $additionalData = null,
-        string $newUuid = null
+        ?array $additionalData = null,
+        ?string $newUuid = null
     ): string {
         $uuid = $this->getUuid($connectionId, $entityName, $oldId, $context);
         if ($uuid !== null) {

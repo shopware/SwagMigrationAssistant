@@ -32,7 +32,6 @@ use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Migration\Services\MigrationProfileUuidService;
 use SwagMigrationNext\Test\MigrationServicesTrait;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -367,7 +366,6 @@ class StatusControllerTest extends TestCase
             'connectionId' => $this->connectionId,
         ]);
 
-        /** @var JsonResponse */
         $result = $this->controller->checkConnection($request, $context);
         $environmentInformation = json_decode($result->getContent(), true);
 

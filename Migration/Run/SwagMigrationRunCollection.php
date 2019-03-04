@@ -4,13 +4,17 @@ namespace SwagMigrationNext\Migration\Run;
 
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 
+/**
+ * @method void                        add(SwagMigrationRunEntity $entity)
+ * @method void                        set(string $key, SwagMigrationRunEntity $entity)
+ * @method SwagMigrationRunEntity[]    getIterator()
+ * @method SwagMigrationRunEntity[]    getElements()
+ * @method SwagMigrationRunEntity|null get(string $key)
+ * @method SwagMigrationRunEntity|null first()
+ * @method SwagMigrationRunEntity|null last()
+ */
 class SwagMigrationRunCollection extends EntityCollection
 {
-    public function first(): SwagMigrationRunEntity
-    {
-        return parent::first();
-    }
-
     protected function getExpectedClass(): string
     {
         return SwagMigrationRunEntity::class;
