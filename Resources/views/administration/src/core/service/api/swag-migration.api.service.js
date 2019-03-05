@@ -47,8 +47,11 @@ class MigrationApiService extends ApiService {
             });
     }
 
-    createMigration(additionalParams = {}) {
-        const params = additionalParams;
+    createMigration(connectionId, dataSelectionIds) {
+        const params = {
+            connectionId,
+            dataSelectionIds
+        };
         const headers = this.getBasicHeaders();
 
         return this.httpClient

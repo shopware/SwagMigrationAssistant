@@ -1,58 +1,115 @@
-import { Component } from 'src/core/shopware';
+import { Component, State } from 'src/core/shopware';
 import template from './swag-migration-index.html.twig';
+import { MIGRATION_STATUS } from '../../../../core/service/migration/swag-migration-worker-status-manager.service';
+import { UI_COMPONENT_INDEX } from '../../../../core/data/MigrationUIStore';
 
 Component.register('swag-migration-index', {
     template,
 
     data() {
         return {
-            abortButtonVisible: false,
-            backButtonVisible: false,
-            migrateButtonVisible: false,
-            migrateButtonDisabled: false,
-            startButtonVisible: false,
-            startButtonDisabled: false,
-            pauseButtonVisible: false,
-            pauseButtonDisabled: false,
-            continueButtonVisible: false
+            /** @type MigrationUIStore */
+            migrationUIStore: State.getStore('migrationUI'),
+            /** @type MigrationProcessStore */
+            migrationProcessStore: State.getStore('migrationProcess')
         };
     },
 
-    /**
-     * If the URL changes every button is invisible until
-     * the child component says something else afterwards.
-     *
-     * @param to
-     * @param from
-     * @param next
-     */
-    beforeRouteUpdate(to, from, next) {
-        this.abortButtonVisible = false;
-        this.backButtonVisible = false;
-        this.migrateButtonVisible = false;
-        this.migrateButtonDisabled = false;
-        this.startButtonVisible = false;
-        this.startButtonDisabled = false;
-        this.pauseButtonVisible = false;
-        this.pauseButtonDisabled = false;
-        this.continueButtonVisible = false;
+    computed: {
+        /**
+         * @returns {boolean}
+         */
+        componentIndexIsResult() {
+            return (this.migrationUIStore.state.componentIndex === UI_COMPONENT_INDEX.RESULT_SUCCESS ||
+                this.migrationUIStore.state.componentIndex === UI_COMPONENT_INDEX.RESULT_WARNING ||
+                this.migrationUIStore.state.componentIndex === UI_COMPONENT_INDEX.RESULT_FAILURE);
+        },
 
-        next();
+        /**
+         * @returns {boolean}
+         */
+        abortButtonVisible() {
+            return this.migrationUIStore.state.isPaused || (
+                this.migrationProcessStore.state.isMigrating &&
+                !this.migrationUIStore.state.isLoading &&
+                !this.componentIndexIsResult
+            );
+        },
+
+        /**
+         * @returns {boolean}
+         */
+        backButtonVisible() {
+            return this.componentIndexIsResult;
+        },
+
+        /**
+         * @returns {boolean}
+         */
+        migrateButtonVisible() {
+            return (!this.migrationProcessStore.state.isMigrating && !this.migrationUIStore.state.isPaused) ||
+                (this.migrationProcessStore.state.statusIndex === MIGRATION_STATUS.FETCH_DATA &&
+                    this.migrationProcessStore.state.isMigrating) ||
+                (this.componentIndexIsResult && this.migrationProcessStore.state.isMigrating);
+        },
+
+        /**
+         * @returns {boolean}
+         */
+        migrateButtonDisabled() {
+            return this.migrationUIStore.state.isLoading ||
+                (this.migrationProcessStore.state.statusIndex === MIGRATION_STATUS.FETCH_DATA &&
+                    this.migrationProcessStore.state.isMigrating) ||
+                !this.migrationUIStore.state.isMigrationAllowed ||
+                this.componentIndexIsResult;
+        },
+
+        /**
+         * @returns {boolean}
+         */
+        startButtonVisible() {
+            return (!this.migrationUIStore.state.isLoading &&
+                this.migrationProcessStore.state.statusIndex === MIGRATION_STATUS.PREMAPPING &&
+                this.migrationProcessStore.state.isMigrating);
+        },
+
+        /**
+         * @returns {boolean}
+         */
+        startButtonDisabled() {
+            return this.migrationUIStore.state.isLoading ||
+                (this.migrationProcessStore.state.statusIndex === MIGRATION_STATUS.PREMAPPING &&
+                    this.migrationProcessStore.state.isMigrating && !this.migrationUIStore.state.isPremappingValid);
+        },
+
+        /**
+         * @returns {boolean}
+         */
+        pauseButtonVisible() {
+            return this.migrationProcessStore.state.isMigrating &&
+                !this.migrationUIStore.state.isPaused &&
+                this.migrationProcessStore.state.statusIndex !== MIGRATION_STATUS.WAITING &&
+                this.migrationProcessStore.state.statusIndex !== MIGRATION_STATUS.FETCH_DATA &&
+                this.migrationProcessStore.state.statusIndex !== MIGRATION_STATUS.PREMAPPING &&
+                !this.componentIndexIsResult;
+        },
+
+        /**
+         * @returns {boolean}
+         */
+        pauseButtonDisabled() {
+            return this.migrationUIStore.state.isLoading;
+        },
+
+        /**
+         * @returns {boolean}
+         */
+        continueButtonVisible() {
+            return this.migrationUIStore.state.isPaused;
+        }
     },
 
     methods: {
-        /**
-         * Sets the local data variable dynamically to a given value.
-         * This is used to allow the child router view component (contentComponent)
-         * to modify the visibility and interactivity of the action buttons via event.
-         *
-         * @param varName
-         * @param state
-         */
-        onActionButtonStateChanged(varName, state) {
-            this[varName] = state;
-        },
-
         /**
          * Calls methods on the child router view component (contentComponent) dynamically
          * if existing. This is used to trigger some method on the child via action button.

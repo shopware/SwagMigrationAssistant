@@ -1,3 +1,5 @@
+import { State } from 'src/core/shopware';
+
 /**
  * Describes the current step in the migration (status).
  *
@@ -33,13 +35,10 @@ export { MIGRATION_DISPLAY_STATUS };
 export class WorkerStatusManager {
     /**
      * @param {MigrationApiService} migrationService
-     * @param {MigrationRunService} migrationRunService
-     * @param {MigrationDataService} migrationDataService
      */
-    constructor(migrationService, migrationRunService, migrationDataService) {
+    constructor(migrationService) {
         this._migrationService = migrationService;
-        this._migrationRunService = migrationRunService;
-        this._migrationDataService = migrationDataService;
+        this._migrationProcessStore = State.getStore('migrationProcess');
     }
 
     /**
@@ -47,23 +46,30 @@ export class WorkerStatusManager {
      * For example it resets the progress and updates the counts before the 'WRITE_DATA' operation.
      *
      * @param {string} runId
-     * @param {Array} entityGroups
-     * @param {number} status MIGRATION_STATUS
      * @returns {Promise}
      */
-    onStatusChanged(runId, entityGroups, status) {
+    onStatusChanged(runId) {
         return new Promise((resolve) => {
-            if (status === MIGRATION_STATUS.WRITE_DATA) {
+            if (this._migrationProcessStore.state.statusIndex === MIGRATION_STATUS.WRITE_DATA) {
                 this._migrationService.updateWriteProgress(runId).then((response) => {
-                    resolve([response]);
+                    response = response.filter((group) => {
+                        return group.id !== 'processMediaFiles';
+                    });
+                    this._migrationProcessStore.setEntityGroups(response);
+                    resolve();
                 });
-            } else if (status === MIGRATION_STATUS.PROCESS_MEDIA_FILES) {
-                this._migrationService.updateMediaFilesProgress(runId).then((response) => {
-                    resolve([response]);
-                });
-            } else {
-                resolve([entityGroups]);
+                return;
             }
+
+            if (this._migrationProcessStore.state.statusIndex === MIGRATION_STATUS.PROCESS_MEDIA_FILES) {
+                this._migrationService.updateMediaFilesProgress(runId).then((response) => {
+                    this._migrationProcessStore.setEntityGroups(response);
+                    resolve();
+                });
+                return;
+            }
+
+            resolve();
         });
     }
 }

@@ -1,66 +1,94 @@
-import { Component } from 'src/core/shopware';
+import { Component, State } from 'src/core/shopware';
 import template from './swag-migration-data-selector.html.twig';
 import './swag-migration-data-selector.less';
 
 Component.register('swag-migration-data-selector', {
     template,
 
-    props: {
-        tableData: {
-            type: Array,
-            required: true
-        }
+    inject: {
+        /** @var {MigrationApiService} migrationService */
+        migrationService: 'migrationService'
     },
 
     data() {
         return {
-            selection: {}
+            tableData: [],
+            /** @type MigrationProcessStore */
+            migrationProcessStore: State.getStore('migrationProcess'),
+            /** @type MigrationUIStore */
+            migrationUIStore: State.getStore('migrationUI')
         };
     },
 
-    mounted() {
-        this.mountedComponent();
+    computed: {
+        /**
+         * Returns the table data without datasets that don't have any entities.
+         *
+         * @returns {Array}
+         */
+        tableDataFiltered() {
+            if (this.migrationProcessStore.state.environmentInformation === null) {
+                return [];
+            }
+
+            const filtered = [];
+            this.tableData.forEach((group) => {
+                let containtsData = false;
+                group.entityNames.forEach((name) => {
+                    if (this.migrationProcessStore.state.environmentInformation.totals[name] > 0) {
+                        containtsData = true;
+                    }
+                });
+
+                if (containtsData) {
+                    filtered.push(group);
+                }
+            });
+
+            return filtered;
+        }
     },
 
     watch: {
-        tableData: {
+        'migrationProcessStore.state.connectionId': {
             immediate: true,
-            handler() {
-                this.checkIfMigrationIsAllowed();
+            handler(newConnectionId) {
+                this.fetchTableData(newConnectionId);
             }
+        },
+
+        tableDataFiltered() {
+            this.$nextTick(() => {
+                this.selectDefault();
+            });
         }
     },
 
     methods: {
-        mountedComponent() {
-            if (this.tableData.length > 0) {
+        fetchTableData(connectionId) {
+            this.migrationService.getDataSelection(connectionId).then((dataSelection) => {
+                this.tableData = dataSelection;
+            });
+        },
+
+        selectDefault() {
+            if (this.tableDataFiltered.length > 0) {
                 this.$refs.tableDataGrid.selectAll(true);
                 this.onGridSelectItem(this.$refs.tableDataGrid.getSelection());
             }
         },
 
-        getSelectedData() {
-            return this.$refs.tableDataGrid.getSelection();
-        },
-
-        getTableData() {
-            return this.$refs.tableDataGrid.getSelection();
-        },
         onGridSelectItem(selection) {
-            this.selection = selection;
-            const oldShowGdpr = this.showGdpr;
-            this.showGdpr = !!this.selection.customers_orders;
-            if (this.showGdpr && oldShowGdpr !== this.showGdpr) {
-                this.gdprChecked = false;
-            }
+            this.migrationUIStore.setDataSelectionIds(Object.keys(selection));
             this.checkIfMigrationIsAllowed();
         },
+
         checkIfMigrationIsAllowed() {
-            if (this.tableData.length > 0 && Object.keys(this.selection).length > 0) {
-                this.$emit('swag-migration-data-selector-migration-allowed', true);
-            } else {
-                this.$emit('swag-migration-data-selector-migration-allowed', false);
-            }
+            const isMigrationAllowed = (
+                this.tableData.length > 0 &&
+                this.migrationUIStore.state.dataSelectionIds.length > 0
+            );
+            this.migrationUIStore.setIsMigrationAllowed(isMigrationAllowed);
         }
     }
 });
