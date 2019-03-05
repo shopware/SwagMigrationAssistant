@@ -45,7 +45,7 @@ Component.register('swag-migration-loading-screen', {
         statusCount() {
             let statusCount = Object.keys(MIGRATION_DISPLAY_STATUS).length;
             let processMediaFiles = false;
-            this.displayEntityGroups.forEach((group) => {
+            this.migrationProcessStore.state.entityGroups.forEach((group) => {
                 if (group.processMediaFiles) {
                     processMediaFiles = true;
                 }
