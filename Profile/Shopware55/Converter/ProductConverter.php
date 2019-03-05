@@ -2,6 +2,7 @@
 
 namespace SwagMigrationNext\Profile\Shopware55\Converter;
 
+use Shopware\Core\Checkout\Customer\Aggregate\CustomerGroup\CustomerGroupDefinition;
 use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Content\Media\Aggregate\MediaTranslation\MediaTranslationDefinition;
 use Shopware\Core\Content\Media\MediaDefinition;
@@ -14,6 +15,7 @@ use Shopware\Core\Content\Rule\RuleDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Rule\Container\AndRule;
+use Shopware\Core\Framework\Rule\Container\OrRule;
 use Shopware\Core\System\Tax\TaxDefinition;
 use Shopware\Core\System\Unit\Aggregate\UnitTranslation\UnitTranslationDefinition;
 use Shopware\Core\System\Unit\UnitDefinition;
@@ -564,20 +566,95 @@ class ProductConverter extends AbstractConverter
     {
         $newData = [];
         foreach ($priceData as $price) {
-            $setInGross = isset($price['customergroup']) ? (bool) $price['customergroup']['taxinput'] : false;
+            if (!isset($price['customergroup']['id'])) {
+                continue;
+            }
+
+            $customerGroupUuid = $this->mappingService->getUuid(
+                $this->connectionId,
+                CustomerGroupDefinition::getEntityName(),
+                $price['customergroup']['id'],
+                $this->context
+            );
+
+            if (!isset($customerGroupUuid)) {
+                continue;
+            }
+
+            $productPriceRuleUuid = $this->mappingService->createNewUuid(
+                $this->connectionId,
+                RuleDefinition::getEntityName(),
+                'customerGroupRule_productPriceRule_' . $price['id'] . '_' . $price['customergroup']['id'],
+                $this->context
+            );
+
+            $priceRuleUuid = $this->mappingService->createNewUuid(
+                $this->connectionId,
+                RuleDefinition::getEntityName(),
+                'customerGroupRule_' . $price['customergroup']['id'],
+                $this->context
+            );
+
+            $orContainerUuid = $this->mappingService->createNewUuid(
+                $this->connectionId,
+                RuleDefinition::getEntityName(),
+                'customerGroupRule_orContainer_' . $price['customergroup']['id'],
+                $this->context
+            );
+
+            $andContainerUuid = $this->mappingService->createNewUuid(
+                $this->connectionId,
+                RuleDefinition::getEntityName(),
+                'customerGroupRule_andContainer_' . $price['customergroup']['id'],
+                $this->context
+            );
+
+            $conditionUuid = $this->mappingService->createNewUuid(
+                $this->connectionId,
+                RuleDefinition::getEntityName(),
+                'customerGroupRule_condition_' . $price['customergroup']['id'],
+                $this->context
+            );
+
+            $setInGross = (bool) $price['customergroup']['taxinput'];
             $newData[] = [
+                'id' => $productPriceRuleUuid,
                 'productId' => $converted['id'],
                 'currencyId' => Defaults::CURRENCY,
                 'rule' => [
-                    'id' => $this->mappingService->createNewUuid(
-                        $this->connectionId,
-                        RuleDefinition::getEntityName(),
-                        $price['pricegroup'],
-                        $this->context
-                    ),
-                    'name' => $price['pricegroup'],
+                    'id' => $priceRuleUuid,
+                    'name' => $price['customergroup']['description'],
                     'priority' => 0,
-                    'payload' => new AndRule(),
+                    'moduleTypes' => [
+                        'types' => [
+                            'price',
+                        ],
+                    ],
+                    'conditions' => [
+                        [
+                            'id' => $orContainerUuid,
+                            'type' => (new OrRule())->getName(),
+                        ],
+
+                        [
+                            'id' => $andContainerUuid,
+                            'type' => (new AndRule())->getName(),
+                            'parentId' => $orContainerUuid,
+                        ],
+
+                        [
+                            'id' => $conditionUuid,
+                            'type' => 'customerCustomerGroup',
+                            'parentId' => $andContainerUuid,
+                            'position' => 1,
+                            'value' => [
+                                'customerGroupIds' => [
+                                    $customerGroupUuid,
+                                ],
+                                'operator' => '=',
+                            ],
+                        ],
+                    ],
                 ],
                 'price' => $this->getPrice($price, $converted['tax']['taxRate'], $setInGross),
                 'quantityStart' => (int) $price['from'],

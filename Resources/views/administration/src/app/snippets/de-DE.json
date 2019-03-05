@@ -143,7 +143,8 @@
           "customer": "Kunden:",
           "order": "Bestellungen:",
           "media": "Medien:",
-          "translation": "Übersetzungen:"
+          "translation": "Übersetzungen:",
+          "customer_group": "Kundengruppen:"
         }
       },
       "selectDataCard": {

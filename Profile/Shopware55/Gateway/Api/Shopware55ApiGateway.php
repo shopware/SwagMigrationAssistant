@@ -3,6 +3,7 @@
 namespace SwagMigrationNext\Profile\Shopware55\Gateway\Api;
 
 use GuzzleHttp\Client;
+use Shopware\Core\Checkout\Customer\Aggregate\CustomerGroup\CustomerGroupDefinition;
 use Shopware\Core\Checkout\Customer\CustomerDefinition;
 use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Content\Category\CategoryDefinition;
@@ -55,6 +56,7 @@ class Shopware55ApiGateway extends AbstractGateway
             CustomerDefinition::getEntityName() => $environmentDataArray['customers'],
             OrderDefinition::getEntityName() => $environmentDataArray['orders'],
             MediaDefinition::getEntityName() => $environmentDataArray['assets'],
+            CustomerGroupDefinition::getEntityName() => $environmentDataArray['customerGroups'],
             'translation' => $environmentDataArray['translations'],
         ];
 

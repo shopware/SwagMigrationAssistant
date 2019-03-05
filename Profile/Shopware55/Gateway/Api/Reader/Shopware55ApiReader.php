@@ -4,6 +4,7 @@ namespace SwagMigrationNext\Profile\Shopware55\Gateway\Api\Reader;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
+use Shopware\Core\Checkout\Customer\Aggregate\CustomerGroup\CustomerGroupDefinition;
 use Shopware\Core\Checkout\Customer\CustomerDefinition;
 use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Content\Category\CategoryDefinition;
@@ -42,6 +43,7 @@ class Shopware55ApiReader implements ReaderInterface
             CustomerDefinition::getEntityName() => 'Customers',
             OrderDefinition::getEntityName() => 'Orders',
             ProductDefinition::getEntityName() => 'Products',
+            CustomerGroupDefinition::getEntityName() => 'CustomerGroups',
         ];
     }
 
