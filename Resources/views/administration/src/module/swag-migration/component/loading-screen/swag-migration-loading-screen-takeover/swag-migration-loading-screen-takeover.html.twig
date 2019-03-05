@@ -1,37 +1,40 @@
 {% block swag_migration_loading_screen_takeover %}
     <sw-card class="swag-migration-loading-screen-takeover">
         {% block swag_migration_loading_screen_takeover_content %}
-            <div class="swag_migration_loading_screen_takeover_content">
-                <p class="swag_migration_loading_screen_takeover_content--message" v-if="isMigrationInterrupted">
-                    {{ $tc('swag-migration.index.loadingScreenCard.takeoverInfoScreen.message') }}
-                </p>
 
-                <p class="swag_migration_loading_screen_takeover_content--message" v-else>
-                    {{ $tc('swag-migration.index.loadingScreenCard.takeoverScreen.message') }}
-                </p>
+            <div class="swag-migration-loading-screen-takeover__content">
+                {% block swag_migration_loading_screen_takeover_content_message %}
+                    <p class="swag-migration-loading-screen-takeover__content-message" v-if="isMigrationInterrupted">
+                        {{ $tc('swag-migration.index.loadingScreenCard.takeoverInfoScreen.message') }}
+                    </p>
+
+                    <p class="swag-migration-loading-screen-takeover__content-message" v-else>
+                        {{ $tc('swag-migration.index.loadingScreenCard.takeoverScreen.message') }}
+                    </p>
+                {% endblock %}
             </div>
 
-            {% block swag_migration_loading_screen_takeover_content_hint %}
-                <p class="swag_migration_loading_screen_takeover--hint" v-if="!isOtherInstanceFetching">
-                    {{ $tc('swag-migration.index.loadingScreenCard.takeoverScreen.hint') }} <a @click="onTakeoverLinkClick">{{ $tc('swag-migration.index.loadingScreenCard.takeoverScreen.hintLink') }} <sw-icon name="small-arrow-medium-right" small></sw-icon></a>
+            {% block swag_migration_loading_screen_takeover_hint %}
+                <p class="swag-migration-loading-screen-takeover__hint" v-if="!isOtherInstanceFetching">
+                    {{ $tc('swag-migration.index.loadingScreenCard.takeoverScreen.hint') }} <a class="link" @click="onTakeoverLinkClick">{{ $tc('swag-migration.index.loadingScreenCard.takeoverScreen.hintLink') }} <sw-icon name="small-arrow-medium-right" small></sw-icon></a>
                 </p>
             {% endblock %}
 
             {% block swag_migration_loading_screen_takeover_modal %}
                 <sw-modal v-if="showTakeoverModal"
-                          class="swag-migration-index-takeover-modal"
+                          class="swag-migration-loading-screen-takeover__modal"
                           :title="$tc('swag-migration.index.loadingScreenCard.takeoverModal.title')"
                           @closeModal="onCloseTakeoverModal"
                           variant="default">
 
                     {% block swag_migration_loading_screen_takeover_modal_message %}
-                        <p class="swag-migration-index-takeover-modal-message">
+                        <p class="swag-migration-loading-screen-takeover__modal-message">
                             {{ $tc('swag-migration.index.loadingScreenCard.takeoverModal.message') }}
                         </p>
                     {% endblock %}
 
                     {% block swag_migration_loading_screen_takeover_modal_hint %}
-                        <p class="swag-migration-index-takeover-modal-hint">
+                        <p class="swag-migration-loading-screen-takeover__modal-hint">
                             {{ $tc('swag-migration.index.loadingScreenCard.takeoverModal.hint') }}
                         </p>
                     {% endblock %}

@@ -1,0 +1,46 @@
+@import "~scss/variables";
+
+.swag-migration-wizard__modal {
+
+    .swag-migration-wizard__placeholder {
+        height: 500px;
+    }
+
+    .swag-migration-wizard__content {
+        max-width: 500px;
+        margin: 35px auto 0 auto;
+    }
+
+    .swag-migration-wizard__content-information {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .swag-migration-wizard__link {
+        margin-top: 20px;
+    }
+
+    .swag-migration-wizard__illustration {
+        width: 100%;
+        margin-top: 60px;
+    }
+
+    .swag-migration-wizard__form {
+        margin: 40px 0 30px 0;
+    }
+
+    .sw-modal__footer {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        align-items: center;
+        white-space: nowrap;
+    }
+
+    .swag-migration-wizard__left-actions {
+        text-align: left;
+    }
+
+    .swag-migration-wizard__right-actions {
+        text-align: right;
+    }
+}

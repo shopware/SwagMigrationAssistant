@@ -15,10 +15,6 @@
       "buttonFinish": "Done",
       "buttonEdit": "Edit",
       "buttonLater": "Later",
-      "pathTarget": "Shopware 5:",
-      "pathSettings": "Configuration",
-      "pathUserManagement": "User administration",
-      "pathEditUser": "“Edit user”",
       "pages": {
         "introduction": {
           "title": "Welcome to the migration process",
@@ -105,7 +101,7 @@
     },
     "emptyScreen": {
       "title": "No connection",
-      "description": "Make sure that a connection has been established between the systems. This is required for the migration. You can find more information here:<br><a target=\"_blank\" href=\"#\">Documentation: Migration to Shopware 6</a>",
+      "description": "Make sure that a connection has been established between the systems. This is required for the migration. You can find more information here:{linebreak}{link}",
       "connectButton": "Establish connection"
     },
     "index": {
@@ -133,7 +129,7 @@
         "gateway": "Gateway:",
         "confirmDialog": {
           "title": "Delete access data",
-          "content": "Your current access data will be deleted. This will stop the active connection from working. However, the connection's access data can be edited at any time and the connection re-established using fresh/new access credentials.<br><br>Do you want to delete the access data?",
+          "content": "Your current access data will be deleted. This will stop the active connection from working. However, the connection's access data can be edited at any time and the connection re-established using fresh/new access credentials.{linebreak}{linebreak}Do you want to delete the access data?",
           "abortButtonText": "Cancel",
           "confirmButtonText": "Yes, delete"
         },
@@ -148,10 +144,6 @@
       },
       "selectDataCard": {
         "cardTitle": "Data selection",
-        "hintTitle": "Information on data import",
-        "hint": "The selected data is being transferred with language information and has relevant dependencies that are necessary for the integrity of the data import.",
-        "infoTitle": "About the new catalogues and sales channels",
-        "infoText": "Catalogues and sales channels are new elements for Shopware Playground that help you to structure your data without sub- and language shops. For more information on this topic, we recommend the articles in our documentation on <a target=\"_blank\" href=\"https://docs.shopware.com/en/shopware-playground-en/admin/catalogues\">catalogues</a> and <a target=\"_blank\" href=\"https://docs.shopware.com/en/shopware-playground-en/admin/saleschannels\">sales channels</a>.",
         "dataHeader": "Data",
         "dataSelection": {
           "customersOrders": "Customers & Orders",
@@ -159,8 +151,8 @@
           "media": "Media"
         },
         "noData": "No data was found to import.",
-        "gdprTitle": "Terms of use",
-        "gdprText": "The general <a target=\"_blank\" href=\"https://playground.shopware.com/terms-of-use\">terms of use</a> of Shopware Playground applies to the import of data. The import process does not affect the data of the source system.",
+        "touText": "The general {link} of Shopware Playground applies to the import of data. The import process does not affect the data of the source system.",
+        "touLinkText": "terms of use",
         "pluginVersionTitle": "Attention: Check for plugin updates!",
         "pluginVersionText": "Please make sure your Shopware 5 backend is using the latest version of the Shopware Playground Connector Plugin."
       },
@@ -205,17 +197,11 @@
             "hintTitle": "Warning:",
             "hintContent": "The import could not be completed properly. Imported data may be incorrect or incomplete.",
             "warningListTitle": "No error occurred. | The following error occurred: | The following errors occurred:"
-          },
-          "failure": {
-            "title": "Failed",
-            "contentTitle": "Data import not possible!",
-            "hintTitle": "Attention:",
-            "hintContent": "The migration could not be completed."
           }
         },
         "pauseScreen": {
           "title": "Pause",
-          "message": "The import was paused.<br>Continue it or abort the process.<br><br>"
+          "message": "The import was paused.{linebreak}Continue it or abort the process."
         },
         "takeoverScreen": {
           "message": "The import is already active on another device or browser.",

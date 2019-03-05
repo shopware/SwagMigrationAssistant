@@ -1,7 +1,7 @@
 import { Component, Mixin, State } from 'src/core/shopware';
 import CriteriaFactory from 'src/core/factory/criteria.factory';
 import template from './swag-migration-wizard.html.twig';
-import './swag-migration-wizard.less';
+import './swag-migration-wizard.scss';
 
 
 Component.register('swag-migration-wizard', {

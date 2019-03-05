@@ -2,7 +2,7 @@ import { Component, State } from 'src/core/shopware';
 import { format } from 'src/core/service/util.service';
 import CriteriaFactory from 'src/core/factory/criteria.factory';
 import template from './swag-migration-shop-information.html.twig';
-import './swag-migration-shop-information.less';
+import './swag-migration-shop-information.scss';
 import { MIGRATION_STATUS } from '../../../../../core/service/migration/swag-migration-worker-status-manager.service';
 
 const BADGE_TYPE = Object.freeze({
@@ -100,7 +100,7 @@ Component.register('swag-migration-shop-information', {
 
         shopUrlPrefixClass() {
             if (this.sslActive) {
-                return 'is--ssl';
+                return 'swag-migration-shop-information__shop-domain-prefix--is-ssl';
             }
 
             return '';

@@ -1,7 +1,7 @@
-{% block swag_migration_index_data_selector %}
+{% block swag_migration_data_selector %}
     <sw-card :title="$tc('swag-migration.index.selectDataCard.cardTitle')" class="swag-migration-data-selector">
 
-        {% block swag_migration_index_data_selector_plugin_version %}
+        {% block swag_migration_data_selector_plugin_version %}
             <sw-alert variant="warning"
                       class="swag-migration-index-data-selector__plugin-version"
                       :title="$tc('swag-migration.index.selectDataCard.pluginVersionTitle')">
@@ -9,14 +9,14 @@
             </sw-alert>
         {% endblock %}
 
-        {% block swag_migration_index_data_selector_grid %}
+        {% block swag_migration_data_selector_grid %}
             <sw-grid ref="tableDataGrid"
                      :items="tableDataFiltered"
                      @sw-grid-select-item="onGridSelectItem"
                      @sw-grid-select-all="onGridSelectItem"
                      v-if="tableDataFiltered.length > 0">
                 <template slot="columns" slot-scope="{ item }">
-                    {% block swag_migration_index_data_selector_grid_column_data %}
+                    {% block swag_migration_data_selector_grid_column_data %}
                         <sw-grid-column flex="1fr" :label="$tc('swag-migration.index.selectDataCard.dataHeader')">
                             {{ $tc(item.snippet) }}
                         </sw-grid-column>
@@ -25,18 +25,25 @@
             </sw-grid>
         {% endblock %}
 
-        {% block swag_migration_index_data_selector_no_data %}
+        {% block swag_migration_data_selector_no_data %}
             <div class="swag-migration-index-data-selector__no-data" v-else>
-                <p class="swag-migration-index-data-selector__no-data--label">
+                <p class="swag-migration-index-data-selector__no-data-label">
                     {{ $tc('swag-migration.index.selectDataCard.noData') }}
                 </p>
             </div>
         {% endblock %}
 
-        {% block swag_migration_index_data_selector_gdpr %}
-            <p class="swag-migration-index-data-selector__tou"
-               v-html="$tc('swag-migration.index.selectDataCard.gdprText')">
-            </p>
+        {% block swag_migration_data_selector_tou %}
+            <i18n class="swag-migration-index-data-selector__tou"
+                  path="swag-migration.index.selectDataCard.touText"
+                  tag="p">
+                <a class="link"
+                   place="link"
+                   target="_blank"
+                   href="https://playground.shopware.com/terms-of-use">
+                    {{ $tc('swag-migration.index.selectDataCard.touLinkText') }}
+                </a>
+            </i18n>
         {% endblock %}
     </sw-card>
 {% endblock %}

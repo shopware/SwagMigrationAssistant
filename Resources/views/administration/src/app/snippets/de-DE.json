@@ -15,10 +15,6 @@
       "buttonFinish": "Fertig",
       "buttonEdit": "Bearbeiten",
       "buttonLater": "Später",
-      "pathTarget": "Shopware 5: ",
-      "pathSettings": "Einstellungen",
-      "pathUserManagement": "Benutzerverwaltung",
-      "pathEditUser": "„Diesen Benutzer editieren“",
       "pages": {
         "introduction": {
           "title": "Willkommen in der Migration",
@@ -105,7 +101,8 @@
     },
     "emptyScreen": {
       "title": "Keine Verbindung ",
-      "description": "Stelle sicher, dass eine Verbindung zwischen den Systemen hergestellt ist. Erst dann ist eine Migration möglich. Mehr Informationen dazu findest Du hier:<br><a target=\"_blank\" href=\"#\">Dokumentation: Migration zu Shopware 6</a>",
+      "description": "Stelle sicher, dass eine Verbindung zwischen den Systemen hergestellt ist. Erst dann ist eine Migration möglich. Mehr Informationen dazu findest Du hier:{linebreak}{link}",
+      "link": "Dokumentation: Migration zu Shopware 6",
       "connectButton": "Verbindung herstellen"
     },
     "index": {
@@ -133,7 +130,7 @@
         "gateway": "Gateway:",
         "confirmDialog": {
           "title": "Zugangsdaten löschen",
-          "content": "Deine aktuellen Zugangsdaten werden gelöscht. Somit besteht keine aktive Verbindung mehr, um weitere Daten zu migrieren. Die Verbindung kann jedoch jederzeit bearbeitet und mit neuen Zugangsdaten wiederhergestellt werden.<br><br>Möchtest Du die Zugangsdaten löschen?",
+          "content": "Deine aktuellen Zugangsdaten werden gelöscht. Somit besteht keine aktive Verbindung mehr, um weitere Daten zu migrieren. Die Verbindung kann jedoch jederzeit bearbeitet und mit neuen Zugangsdaten wiederhergestellt werden.{linebreak}{linebreak}Möchtest Du die Zugangsdaten löschen?",
           "abortButtonText": "Abbrechen",
           "confirmButtonText": "Ja, löschen"
         },
@@ -148,10 +145,6 @@
       },
       "selectDataCard": {
         "cardTitle": "Datenauswahl",
-        "hintTitle": "Dokumentation & Information",
-        "hint": "Alle Antworten zum Thema „Shopware Playground Connector“ sind <a target=\"_blank\" href=\"https://docs.shopware.com/de/shopware-playground-de/swpgconnector\">hier für Dich</a> dokumentiert. ",
-        "infoTitle": "Über die neuen Kataloge und Verkaufskanäle",
-        "infoText": "Kataloge und Verkaufskanäle sind neue Elemente für Shopware Playground, die Dir helfen Deine Daten ohne Sub- und Sprachshops zu strukturieren. Für mehr Informationen zum Thema empfehlen wir Dir die Artikel in unserer Dokumentation zu <a target=\"_blank\" href=\"https://docs.shopware.com/de/shopware-playground-de/admin/kataloge\">Katalogen</a> und <a target=\"_blank\" href=\"https://docs.shopware.com/de/shopware-playground-de/admin/verkaufskanaele\">Verkaufskanälen</a>.",
         "dataHeader": "Daten",
         "dataSelection": {
           "customersOrders": "Kunden & Bestellungen",
@@ -159,8 +152,8 @@
           "media": "Medien"
         },
         "noData": "Es wurden keine Daten zum Importieren gefunden.",
-        "gdprTitle": "Nutzungsbedingungen",
-        "gdprText": "Für den Import der Daten gelten die <a target=\"_blank\" href=\"https://playground.shopware.com/terms-of-use\">Allgemeinen Nutzungsbedingungen</a> von Shopware Playground. Der Importprozess nimmt keinen Einfluss auf die Daten des Quellsystems.",
+        "touText": "Für den Import der Daten gelten die {link} von Shopware Playground. Der Importprozess nimmt keinen Einfluss auf die Daten des Quellsystems.",
+        "touLinkText": "Allgemeinen Nutzungsbedingungen",
         "pluginVersionTitle": "Wichtig: Plugin-Update durchführen!",
         "pluginVersionText": "Bitte stelle sicher, dass in Deinem Shopware 5 Backend die neuste Version vom Shopware Playground Connector Plugin im Einsatz ist."
       },
@@ -205,17 +198,11 @@
             "hintTitle": "Achtung:",
             "hintContent": "Der Import konnte nicht vollständig abgeschlossen werden. Möglicherweise sind Daten fehlerhaft oder unvollständig importiert worden.",
             "warningListTitle": "Es sind keine Fehler aufgetreten. | Folgender Fehler ist aufgetreten: | {count} Fehler sind aufgetreten:"
-          },
-          "failure": {
-            "title": "Fehlgeschlagen",
-            "contentTitle": "Datenimport nicht möglich!",
-            "hintTitle": "Achtung:",
-            "hintContent": "Die Migration konnte nicht durchgeführt werden."
           }
         },
         "pauseScreen": {
           "title": "Pause",
-          "message": "Der Import wurde pausiert.<br>Setze ihn fort oder brich den Prozess ab.<br><br>"
+          "message": "Der Import wurde pausiert.{linebreak}Setze ihn fort oder brich den Prozess ab."
         },
         "takeoverScreen": {
           "message": "Der Import ist bereits auf einem anderen Gerät oder Browser aktiv.",

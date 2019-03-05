@@ -1,0 +1,39 @@
+@import "~scss/variables";
+
+$swag-migration-loading-screen-takeover-color-content-background: $color-iron;
+$swag-migration-loading-screen-takeover-font-size-hint: $font-size-small;
+$swag-migration-loading-screen-takeover-font-size-modal: $font-size-small;
+
+.swag-migration-loading-screen-takeover {
+    .swag-migration-loading-screen-takeover__content {
+        background-color: $swag-migration-loading-screen-takeover-color-content-background;
+        height: 230px;
+        text-align: center;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .swag-migration-loading-screen-takeover__content-message {
+        font-size: 18px;
+        font-weight: 600;
+        letter-spacing: 0.1px;
+        width: 465px;
+    }
+
+    .swag-migration-loading-screen-takeover__hint {
+        font-size: $swag-migration-loading-screen-takeover-font-size-hint;
+    }
+}
+
+.swag-migration-loading-screen-takeover__modal {
+    font-size: $swag-migration-loading-screen-takeover-font-size-modal;
+}
+
+.swag-migration-loading-screen-takeover__modal-hint {
+    font-weight: bold;
+    padding-top: 28px;
+    padding-bottom: 28px;
+}

@@ -1,0 +1,35 @@
+@import "~scss/variables";
+
+$swag-migration-loading-screen-progress-bar-title-font-size: $font-size-small;
+
+.swag-migration-loading-screen {
+
+    .swag-migration-loading-screen__title {
+        text-align: center;
+        margin: 60px auto 50px auto;
+    }
+
+    .swag-migration-loading-screen__progress-bar-group {
+        display: grid;
+        margin: 0 10% 0 10%;
+
+        .sw-progress-bar {
+            padding: 0 10px 0 10px;
+        }
+    }
+
+    .swag-migration-loading-screen__progress-bar-title {
+        text-align: center;
+        margin: 15px auto 10px auto;
+        font-size: $swag-migration-loading-screen-progress-bar-title-font-size;
+    }
+
+    .sw-loader.swag-migration-loading-screen__loader {
+        position: relative;
+        margin: 50px auto 50px auto;
+
+        .sw-loader__container {
+            transform: translate(-50%);
+        }
+    }
+}

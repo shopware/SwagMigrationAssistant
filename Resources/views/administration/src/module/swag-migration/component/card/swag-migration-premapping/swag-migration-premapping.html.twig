@@ -1,8 +1,8 @@
-{% block swag_migration_index_premapping %}
-    <div class="swag-migration-card_premapping">
+{% block swag_migration_premapping %}
+    <div class="swag-migration-premapping">
         <sw-card :title="$tc('swag-migration.index.premappingCard.title') + $tc(`swag-migration.index.premappingCard.group.${currentGroup.entity}`)"
                  v-for="currentGroup in premappingInput" :key="currentGroup.entity">
-            {% block swag_migration_index_premapping_card_content %}
+            {% block swag_migration_premapping_card_content %}
                 <sw-field v-for="currentMappingKey in Object.keys(currentGroup.mapping)"
                           :key="currentMappingKey"
                           type="select"
