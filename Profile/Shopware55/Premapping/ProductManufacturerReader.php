@@ -6,14 +6,15 @@ use Shopware\Core\Content\Product\Aggregate\ProductManufacturer\ProductManufactu
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Migration\Premapping\AbstractPremappingReader;
 use SwagMigrationNext\Migration\Premapping\PremappingChoiceStruct;
 use SwagMigrationNext\Migration\Premapping\PremappingEntityStruct;
-use SwagMigrationNext\Migration\Premapping\PremappingReaderInterface;
 use SwagMigrationNext\Migration\Premapping\PremappingStruct;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
-class ProductManufacturerReader implements PremappingReaderInterface
+class ProductManufacturerReader extends AbstractPremappingReader
 {
     private const MAPPING_NAME = 'manufacturer';
 
@@ -21,6 +22,11 @@ class ProductManufacturerReader implements PremappingReaderInterface
      * @var EntityRepositoryInterface
      */
     private $manufacturerRepo;
+
+    /**
+     * @var string
+     */
+    private $connectionPremappingValue = '';
 
     public function __construct(EntityRepositoryInterface $manufacturerRepo)
     {
@@ -43,10 +49,26 @@ class ProductManufacturerReader implements PremappingReaderInterface
 
     public function getPremapping(Context $context, MigrationContext $migrationContext): PremappingStruct
     {
+        $this->fillConnectionPremappingValue($migrationContext);
         $mapping = $this->getMapping();
         $choices = $this->getChoices($context);
 
         return new PremappingStruct(self::getMappingName(), $mapping, $choices);
+    }
+
+    protected function fillConnectionPremappingValue(MigrationContext $migrationContext): void
+    {
+        if ($migrationContext->getConnection()->getPremapping() === null) {
+            return;
+        }
+
+        foreach ($migrationContext->getConnection()->getPremapping() as $premapping) {
+            if ($premapping['entity'] === self::MAPPING_NAME) {
+                foreach ($premapping['mapping'] as $mapping) {
+                    $this->connectionPremappingValue = $mapping['destinationUuid'];
+                }
+            }
+        }
     }
 
     /**
@@ -54,7 +76,7 @@ class ProductManufacturerReader implements PremappingReaderInterface
      */
     private function getMapping(): array
     {
-        $entityData[] = new PremappingEntityStruct('default_manufacturer', 'Standard manufacturer', '');
+        $entityData[] = new PremappingEntityStruct('default_manufacturer', 'Standard manufacturer', $this->connectionPremappingValue);
 
         return $entityData;
     }
@@ -64,7 +86,9 @@ class ProductManufacturerReader implements PremappingReaderInterface
      */
     private function getChoices(Context $context): array
     {
-        $manufacturers = $this->manufacturerRepo->search(new Criteria(), $context);
+        $criteria = new Criteria();
+        $criteria->addSorting(new FieldSorting('name'));
+        $manufacturers = $this->manufacturerRepo->search($criteria, $context);
 
         $choices = [];
         /** @var ProductManufacturerEntity $manufacturer */

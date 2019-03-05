@@ -151,6 +151,8 @@
             <argument type="service" id="SwagMigrationNext\Migration\Premapping\PremappingReaderRegistry"/>
             <argument type="service" id="SwagMigrationNext\Migration\Mapping\MappingService"/>
             <argument type="service" id="swag_migration_mapping.repository"/>
+            <argument type="service" id="swag_migration_run.repository"/>
+            <argument type="service" id="swag_migration_connection.repository"/>
         </service>
     </services>
 </container>

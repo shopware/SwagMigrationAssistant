@@ -12,7 +12,7 @@ Component.register('swag-migration-premapping', {
     },
 
     created() {
-        this.$emit('onPremappingValid', false);
+        this.validatePremapping();
     },
 
     methods: {
