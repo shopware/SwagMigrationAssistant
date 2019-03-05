@@ -32,7 +32,7 @@ class SimpleStateManagementStore {
      * @protected
      */
     _checkDebugging(currentValue, ...serializedStoreMethodArgs) {
-        if (process.env.NODE_ENV !== 'development' || process.env.DEBUG === 'false') {
+        if (process.env.NODE_ENV !== 'development') {
             return;
         }
 
@@ -51,7 +51,7 @@ class SimpleStateManagementStore {
         // Build method name with parameters that was called on the store
         const method = errorStack.shift().match(/(at\s[A-z]*\.?)?([A-z]+)/)[2]; // Remove the store method from stack
 
-        // Rebuild stack string (only show it with a deep of 3 calls)
+        // Rebuild stack string (only show it with a deep of {this._debugDepth} calls)
         let stackString = '';
         for (let i = 0; i < errorStack.length && i < this._debugDepth; i += 1) {
             if (errorStack[i] !== '') {
@@ -64,8 +64,9 @@ class SimpleStateManagementStore {
 
         // Output debug information
         this._debugStateMutationCounter += 1;
-        console.log(
-            `${this._debugStateMutationCounter}#${this.constructor.name}.${method}`,
+        console.debug(
+            '[store]',
+            `${this.constructor.name}.${method}#${this._debugStateMutationCounter}`,
             serializedStoreMethodArgs,
             '\n',
             'currentValue:',
