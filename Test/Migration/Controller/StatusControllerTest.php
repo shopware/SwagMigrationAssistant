@@ -3,6 +3,7 @@
 namespace SwagMigrationNext\Test\Migration\Controller;
 
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Checkout\Customer\Aggregate\CustomerGroup\CustomerGroupDefinition;
 use Shopware\Core\Checkout\Customer\CustomerDefinition;
 use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Content\Category\CategoryDefinition;
@@ -209,7 +210,8 @@ class StatusControllerTest extends TestCase
 
         static::assertSame($state[0]['id'], 'categoriesProducts');
         static::assertSame($state[0]['entityNames'][0], CategoryDefinition::getEntityName());
-        static::assertSame($state[0]['entityNames'][1], ProductDefinition::getEntityName());
+        static::assertSame($state[0]['entityNames'][1], CustomerGroupDefinition::getEntityName());
+        static::assertSame($state[0]['entityNames'][2], ProductDefinition::getEntityName());
 
         static::assertSame($state[1]['id'], 'customersOrders');
         static::assertSame($state[1]['entityNames'][0], CustomerDefinition::getEntityName());

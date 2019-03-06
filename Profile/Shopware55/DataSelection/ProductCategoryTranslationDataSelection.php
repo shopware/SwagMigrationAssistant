@@ -2,6 +2,7 @@
 
 namespace SwagMigrationNext\Profile\Shopware55\DataSelection;
 
+use Shopware\Core\Checkout\Customer\Aggregate\CustomerGroup\CustomerGroupDefinition;
 use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
 use SwagMigrationNext\Migration\DataSelection\DataSelectionInterface;
@@ -21,6 +22,7 @@ class ProductCategoryTranslationDataSelection implements DataSelectionInterface
             'categoriesProducts',
             [
                 CategoryDefinition::getEntityName(),
+                CustomerGroupDefinition::getEntityName(),
                 ProductDefinition::getEntityName(),
                 //'translation',
             ],

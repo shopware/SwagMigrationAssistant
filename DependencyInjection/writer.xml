@@ -13,7 +13,6 @@
         <service id="SwagMigrationNext\Migration\Writer\ProductWriter"
                  class="SwagMigrationNext\Migration\Writer\ProductWriter">
             <argument type="service" id="product.repository"/>
-            <argument type="service" id="Shopware\Core\Framework\Struct\Serializer\StructNormalizer"/>
             <tag name="shopware.migration.writer"/>
         </service>
 
@@ -45,6 +44,11 @@
                  class="SwagMigrationNext\Migration\Writer\OrderWriter">
             <argument type="service" id="order.repository"/>
             <argument type="service" id="Shopware\Core\Framework\Struct\Serializer\StructNormalizer"/>
+            <tag name="shopware.migration.writer"/>
+        </service>
+
+        <service id="SwagMigrationNext\Migration\Writer\CustomerGroupWriter">
+            <argument type="service" id="customer_group.repository"/>
             <tag name="shopware.migration.writer"/>
         </service>
     </services>
