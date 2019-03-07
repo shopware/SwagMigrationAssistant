@@ -559,6 +559,7 @@ class ProductConverter extends AbstractConverter
         return [
             'gross' => $gross,
             'net' => (float) $priceData['price'],
+            'linked' => true,
         ];
     }
 
