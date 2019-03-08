@@ -92,13 +92,12 @@
                 <sw-card-section secondary slim v-if="showMoreInformation">
                     <sw-container class="swag-migration-shop-information__metadata" columns="repeat(auto-fit, minmax(250px, 1fr)" gap="0px 15px">
                         {% block swag_migration_shop_information_metadata_columns %}
-                            <div class="swag-migration-shop-information__metadata-columns"
-                                 v-if="Object.keys(totalEntityCounts).length > 0">
+                            <div class="swag-migration-shop-information__metadata-columns">
                                 {% block swag_migration_shop_information_metadata_column_left %}
-                                    <sw-description-list v-for="entityName in Object.keys(totalEntityCounts)" :key="entityName">
-                                        {% block swag_migration_shop_information_metadata_entityCounts %}
-                                            <dt>{{ $tc('swag-migration.index.shopInfoCard.entities.' + entityName) }}</dt>
-                                            <dd>{{ totalEntityCounts[entityName] | localizedNumberFormat }}</dd>
+                                    <sw-description-list>
+                                        {% block swag_migration_shop_information_metadata_gateway %}
+                                            <dt>{{ $tc('swag-migration.index.shopInfoCard.gateway') }}</dt>
+                                            <dd>{{ gateway.toUpperCase() }}</dd>
                                         {% endblock %}
                                     </sw-description-list>
                                 {% endblock %}
@@ -112,12 +111,6 @@
                                                 {{ $t('swag-migration.index.shopInfoCard.lastMigrationDateTime', lastMigrationDateTimeParams) }}
                                             </dd>
                                             <dd v-else>-</dd>
-                                        {% endblock %}
-                                    </sw-description-list>
-                                    <sw-description-list>
-                                        {% block swag_migration_shop_information_metadata_gateway %}
-                                            <dt>{{ $tc('swag-migration.index.shopInfoCard.gateway') }}</dt>
-                                            <dd>{{ gateway.toUpperCase() }}</dd>
                                         {% endblock %}
                                     </sw-description-list>
                                 {% endblock %}

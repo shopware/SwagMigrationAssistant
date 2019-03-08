@@ -44,6 +44,10 @@ Module.register('swag-migration', {
                             component: 'swag-migration-history-detail'
                         }
                     }
+                },
+                dataSelector: {
+                    path: 'dataSelector',
+                    component: 'swag-migration-data-selector'
                 }
             }
         },

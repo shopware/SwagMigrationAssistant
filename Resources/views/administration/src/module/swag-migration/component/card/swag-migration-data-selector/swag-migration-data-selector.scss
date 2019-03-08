@@ -5,10 +5,14 @@ $swag-migration-data-selector-color-no-data-background: $color-iron;
 
 .swag-migration-data-selector {
 
+    .swag-migration-index-data-selector__plugin-version {
+        margin: 0px;
+    }
+
     .swag-migration-index-data-selector__tou {
         font-size: $swag-migration-data-selector-tou-font-size;
         display: block;
-        margin: 20px 0 0 0;
+        margin: 20px 38px 20px 38px;
     }
 
     .swag-migration-index-data-selector__no-data {

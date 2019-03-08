@@ -42,6 +42,10 @@ Component.register('swag-migration-history', {
                 this.migrationRuns = response.items;
                 this.isLoading = false;
             });
+        },
+
+        onMigrateButtonClick() {
+            this.$router.push({ name: 'swag.migration.index.main', params: { startMigration: true } });
         }
     }
 });

@@ -52,6 +52,11 @@ class EnvironmentInformation extends Struct
     protected $errorMessage;
 
     /**
+     * @var bool
+     */
+    protected $updateAvailable;
+
+    /**
      * @param int[] $totals
      */
     public function __construct(
@@ -63,7 +68,8 @@ class EnvironmentInformation extends Struct
         int $warningCode = -1,
         string $warningMessage = '',
         int $errorCode = -1,
-        string $errorMessage = ''
+        string $errorMessage = '',
+        bool $updateAvailable = false
     ) {
         $this->sourceSystemName = $sourceSystemName;
         $this->sourceSystemVersion = $sourceSystemVersion;
@@ -74,6 +80,7 @@ class EnvironmentInformation extends Struct
         $this->warningMessage = $warningMessage;
         $this->errorCode = $errorCode;
         $this->errorMessage = $errorMessage;
+        $this->updateAvailable = $updateAvailable;
     }
 
     public function getSourceSystemName(): string

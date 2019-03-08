@@ -20,11 +20,11 @@ class MigrationUIStore extends SimpleStateManagementStore {
         super();
         this.state = {
             componentIndex: UI_COMPONENT_INDEX.DATA_SELECTOR,
-            isLoading: true,
+            isLoading: false,
             isPaused: false,
-            isMigrationAllowed: false,
             isPremappingValid: false,
             dataSelectionIds: [],
+            dataSelectionTableData: [],
             premapping: []
         };
     }
@@ -56,14 +56,6 @@ class MigrationUIStore extends SimpleStateManagementStore {
     /**
      * @param {boolean} value
      */
-    setIsMigrationAllowed(value) {
-        this._checkDebugging(this.state.isMigrationAllowed, value);
-        this.state.isMigrationAllowed = value;
-    }
-
-    /**
-     * @param {boolean} value
-     */
     setIsPremappingValid(value) {
         this._checkDebugging(this.state.isPremappingValid, value);
         this.state.isPremappingValid = value;
@@ -79,12 +71,25 @@ class MigrationUIStore extends SimpleStateManagementStore {
     }
 
     /**
+     * @param {Object[]} newTableData
+     */
+    setDataSelectionTableData(newTableData) {
+        const newTableDataCopy = object.deepCopyObject(newTableData);
+        this._checkDebugging(this.state.dataSelectionTableData, newTableDataCopy);
+        this.state.dataSelectionTableData = newTableDataCopy;
+    }
+
+    /**
      * @param {Object[]} newPremapping
      */
     setPremapping(newPremapping) {
         const newPremappingCopy = object.deepCopyObject(newPremapping);
         this._checkDebugging(this.state.premapping, newPremappingCopy);
         this.state.premapping = newPremappingCopy;
+    }
+
+    getIsMigrationAllowed() {
+        return this.state.dataSelectionIds.length > 0;
     }
 }
 
