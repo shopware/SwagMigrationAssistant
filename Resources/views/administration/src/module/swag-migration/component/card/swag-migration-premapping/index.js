@@ -30,7 +30,7 @@ Component.register('swag-migration-premapping', {
         'migrationProcessStore.state.runId': {
             immediate: true,
             handler(newRunId) {
-                this.fetchPremapping(newRunId)
+                this.fetchPremapping(newRunId);
             }
         }
     },
