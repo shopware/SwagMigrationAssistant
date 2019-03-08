@@ -59,11 +59,12 @@ class Shopware55ApiGateway extends AbstractGateway
             CustomerGroupDefinition::getEntityName() => $environmentDataArray['customerGroups'],
             'translation' => $environmentDataArray['translations'],
         ];
+        $credentials = $this->migrationContext->getConnection()->getCredentialFields();
 
         return new EnvironmentInformation(
             Shopware55Profile::SOURCE_SYSTEM_NAME,
             $environmentDataArray['shopwareVersion'],
-            $environmentDataArray['structure'][0]['host'],
+            $credentials['endpoint'],
             $environmentDataArray['structure'],
             $totals,
             $environmentData['warning']['code'],
