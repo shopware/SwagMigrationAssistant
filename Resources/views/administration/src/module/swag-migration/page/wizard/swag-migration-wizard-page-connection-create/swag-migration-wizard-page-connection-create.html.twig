@@ -3,7 +3,7 @@
         {% block swag_migration_wizard_page_create_profile_content %}
             <div class="swag-migration-wizard__content" v-if="!isLoading">
                 {% block swag_migration_wizard_page_create_profile_information %}
-                    <div class="content__information">
+                    <div class="swag-migration-wizard__content-information">
                         {% block swag_migration_wizard_page_create_profile_content_information %}
                             <p class="swag-migration-wizard__description">
                                 {{ $tc('swag-migration.wizard.pages.connectionCreate.contentInformation') }}
@@ -12,7 +12,7 @@
                     </div>
                 {% endblock %}
                 {% block swag_migration_wizard_page_create_profile_selection %}
-                    <div class="content__profileCreation">
+                    <div class="swag-migration-wizard__form">
                         <sw-field type="select"
                                   :label="$tc('swag-migration.wizard.pages.connectionCreate.profileLabel')"
                                   :placeholder="$tc('swag-migration.wizard.pages.connectionCreate.profilePlaceholder')"

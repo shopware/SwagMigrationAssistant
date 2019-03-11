@@ -1,23 +1,13 @@
 {% block swag_migration_loading_screen_pause %}
-    <sw-card class="swag-migration-loading-screen-pause">
-        {% block swag_migration_loading_screen_pause_content %}
-            <div class="swag-migration-loading__content">
-                {% block swag_migration_loading_screen_pause_information %}
-                    <div class="content__information">
-                        {% block swag_migration_loading_screen_pause_title %}
-                            <h1 class="information__header">
-                                {{ $tc('swag-migration.index.loadingScreenCard.pauseScreen.title') }}
-                            </h1>
-                        {% endblock %}
-
-                        {% block swag_migration_loading_screen_pause_message %}
-                            <p class="information__message"
-                               v-html="$tc('swag-migration.index.loadingScreenCard.pauseScreen.message')">
-                            </p>
-                        {% endblock %}
-                    </div>
-                {% endblock %}
-            </div>
+    <swag-migration-result-screen class="swag-migration-loading-screen-pause"
+                                  cardTitle=""
+                                  :title="$tc('swag-migration.index.loadingScreenCard.pauseScreen.title')">
+        {% block swag_migration_loading_screen_pause_message %}
+            <i18n class="swag-migration-loading-screen-pause__message"
+                  path="swag-migration.index.loadingScreenCard.pauseScreen.message"
+                  tag="p">
+                <br place="linebreak">
+            </i18n>
         {% endblock %}
-    </sw-card>
+    </swag-migration-result-screen>
 {% endblock %}

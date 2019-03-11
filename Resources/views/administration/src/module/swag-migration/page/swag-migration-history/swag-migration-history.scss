@@ -1,0 +1,34 @@
+@import "~scss/variables";
+
+$swag-migration-history-color-finished: $color-emerald;
+$swag-migration-history-color-aborted: $color-crimson;
+$swag-migration-history-color-loading: #B3BFCC; //TODO: fix with PT-10247 (replace hardcoded color)
+$swag-migration-history-color-background-no-data: $color-iron;
+
+.swag-migration-history {
+    .swag-migration-history__status-icon--finished {
+        color: $swag-migration-history-color-finished;
+    }
+
+    .swag-migration-history__status-icon--aborted {
+        color: $swag-migration-history-color-aborted;
+    }
+
+    .swag-migration-history__status-icon--loading {
+        color: $swag-migration-history-color-loading;
+    }
+
+    .swag-migration-history__no-data {
+        background-color: $swag-migration-history-color-background-no-data;
+        height: 230px;
+        line-height: 230px;
+        text-align: center;
+        width: 100%;
+
+        .swag-migration-history__no-data-label {
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: 0.1px;
+        }
+    }
+}

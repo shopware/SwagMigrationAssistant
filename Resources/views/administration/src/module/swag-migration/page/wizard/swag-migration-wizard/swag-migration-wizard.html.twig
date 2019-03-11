@@ -1,6 +1,6 @@
 {% block swag_migration_wizard %}
     <div class="swag-migration-wizard">
-        <sw-modal class="swag-migration-wizard"
+        <sw-modal class="swag-migration-wizard__modal"
                   size="800px"
                   v-if="showModal"
                   :title="$tc(modalTitleSnippet)"
@@ -8,7 +8,7 @@
                   @closeModal="onCloseModal">
 
             {% block swag_migration_wizard_placeholder %}
-                <div class="swag-migration-wizard-placeholder" v-show="isLoading || childIsLoading"></div>
+                <div class="swag-migration-wizard__placeholder" v-show="isLoading || childIsLoading"></div>
             {% endblock %}
 
             {% block swag_migration_router_view %}
@@ -28,7 +28,7 @@
                 </router-view>
             {% endblock %}
 
-            <template slot="modal-footer">
+            <template slot="modal-footer" class="swag-migration-wizard__footer">
                 {% block swag_migration_wizard_footer %}
 
                     {% block swag_migration_wizard_arrow %}

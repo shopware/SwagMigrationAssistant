@@ -1,6 +1,6 @@
 import { Component, State } from 'src/core/shopware';
 import template from './swag-migration-data-selector.html.twig';
-import './swag-migration-data-selector.less';
+import './swag-migration-data-selector.scss';
 
 Component.register('swag-migration-data-selector', {
     template,

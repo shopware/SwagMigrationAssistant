@@ -22,13 +22,7 @@ Component.register('swag-migration-profile-shopware55-local-credential-form', {
                 dbPassword: '',
                 dbName: '',
                 installationRoot: ''
-            },
-            breadcrumbItems: [
-                this.$tc('swag-migration.wizard.pathSettings'),
-                this.$tc('swag-migration.wizard.pathUserManagement'),
-                this.$tc('swag-migration.wizard.pathEditUser')
-            ],
-            breadcrumbDescription: this.$tc('swag-migration.wizard.pathTarget')
+            }
         };
     },
 

@@ -1,0 +1,46 @@
+{% block swag_migration_result_screen %}
+    <sw-card :title="cardTitle"
+             class="swag-migration-result-screen">
+        {% block swag_migration_result_screen_content %}
+            <div class="swag-migration-result-screen__content">
+                {% block swag_migration_result_screen_title %}
+                    <h3 class="swag-migration-result-screen__title">
+                        {{ title }}
+                    </h3>
+                {% endblock %}
+
+                <slot>
+                    {% block swag_migration_result_screen_image %}
+                        <img class="swag-migration-result-screen__image"
+                             :class="svgClasses"
+                             v-if="imagePath !== ''"
+                             :src="imagePath | asset">
+                    {% endblock %}
+
+                    {% block swag_migration_result_screen_alert %}
+                        <sw-alert variant="warning"
+                                  class="swag-migration-result-screen__alert"
+                                  v-if="hasErrors">
+                            <p class="swag-migration-result-screen__alert-header">{{ $tc('swag-migration.index.loadingScreenCard.result.warning.hintTitle') }}</p>
+                            {{ $tc('swag-migration.index.loadingScreenCard.result.warning.hintContent') }}
+                            {% block swag_migration_result_screen_hint_errors %}
+                                <div v-if="errorList.length > 0">
+                                    {% block swag_migration_result_screen_hint_errors_header %}
+                                        <p class="swag-migration-result-screen__error-list-header">{{ $tc('swag-migration.index.loadingScreenCard.result.warning.warningListTitle', errorList.length, { count: errorList.length }) }}</p>
+                                    {% endblock %}
+                                    {% block swag_migration_result_screen_hint_errors_list %}
+                                        <ul class="swag-migration-result-screen__error-list">
+                                            <li v-for="error in errorList">
+                                                {{ (error.snippetName !== $tc(error.snippetName, error.details.count, error.details)) ? $tc(error.snippetName, error.details.count, error.details) : $t('swag-migration.index.error.unknownError') }}
+                                            </li>
+                                        </ul>
+                                    {% endblock %}
+                                </div>
+                            {% endblock %}
+                        </sw-alert>
+                    {% endblock %}
+                </slot>
+            </div>
+        {% endblock %}
+    </sw-card>
+{% endblock %}

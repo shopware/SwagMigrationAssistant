@@ -1,47 +1,47 @@
-{% block swag_migration_index_card_shopInfo %}
-    <sw-card class="swag-migration-index-card-shopInfo" :title="$tc('swag-migration.index.shopInfoCard.cardTitle')">
-        {% block swag_migration_index_card_shopInfo_content %}
+{% block swag_migration_shop_information %}
+    <sw-card class="swag-migration-shop-information" :title="$tc('swag-migration.index.shopInfoCard.cardTitle')">
+        {% block swag_migration_shop_information_content %}
             <sw-container slot="grid" rows="auto auto">
                 <sw-card-section :divider="showMoreInformation ? 'bottom' : ''">
-                    {% block swag_migration_index_card_shopInfo_metaData %}
-                        <div class="swag-migration-index__metadata">
-                            {% block swag_migration_index_card_shopInfo_metaData_avatar %}
-                                <sw-avatar class="swag-migration-index__metadata_avatar"
+                    {% block swag_migration_shop_information_connection %}
+                        <div class="swag-migration-shop-information__connection">
+                            {% block swag_migration_shop_information_connection_avatar %}
+                                <sw-avatar class="swag-migration-shop-information__connection-avatar"
                                            color="#189EFF"
                                            size="80px">{{ shopFirstLetter }}</sw-avatar>
                             {% endblock %}
 
-                            {% block swag_migration_index_card_shopInfo_metaData_info %}
-                                <div class="swag-migration-index__metadata_info">
-                                    {% block swag_migration_index_card_shopInfo_metaData_domain %}
-                                        <div class="swag-migration-index__metadata-shop-domain">
-                                            <span class="swag-migration-index__metadata-shop-domain--prefix"
+                            {% block swag_migration_shop_information_connection_info %}
+                                <div class="swag-migration-shop-information__connection-info">
+                                    {% block swag_migration_shop_information_shop_domain %}
+                                        <div class="swag-migration-shop-information__shop-domain">
+                                            <span class="swag-migration-shop-information__shop-domain-prefix"
                                                   :class="shopUrlPrefixClass">
                                                 <sw-icon name="small-lock-closed"
                                                          size="12px"
-                                                         class="swag-migration-index__metadata-shop-domain--prefix__icon"
+                                                         class="swag-migration-shop-information__shop-domain-prefix-icon"
                                                          v-if="sslActive">
                                                 </sw-icon>
                                                 <sw-icon name="small-lock-open"
                                                          size="12px"
-                                                         class="swag-migration-index__metadata-shop-domain--prefix__icon"
+                                                         class="swag-migration-shop-information__shop-domain-prefix-icon"
                                                          v-else>
                                                 </sw-icon>
                                                 {{ shopUrlPrefix }}</span>{{ shopUrl }}
                                         </div>
                                     {% endblock %}
 
-                                    {% block swag_migration_index_card_shopInfo_metaData_version %}
-                                        <div class="swag-migration-index__metadata-shopware-version">
+                                    {% block swag_migration_shop_information_shop_system %}
+                                        <div class="swag-migration-shop-information__shop-system">
                                             {{ $tc('swag-migration.index.shopInfoCard.shopSystem') }}
                                             {{ shopSystem }}
                                             {{ shopVersion }}
                                         </div>
                                     {% endblock %}
 
-                                    {% block swag_migration_index_card_shopInfo_actions %}
-                                        <div class="swag-migration-index__actions">
-                                            {% block swag_migration_index_card_shopInfo_actions_editSettings %}
+                                    {% block swag_migration_shop_information_actions %}
+                                        <div class="swag-migration-shop-information__actions">
+                                            {% block swag_migration_shop_information_actions_editSettings %}
                                                 <sw-button size="small"
                                                            @click="onClickEditConnectionCredentials"
                                                            :disabled="migrationProcessStore.state.isMigrating || migrationUIStore.state.isPaused || isOtherMigrationRunning">
@@ -49,7 +49,7 @@
                                                 </sw-button>
                                             {% endblock %}
 
-                                            {% block swag_migration_index_card_shopInfo_actions_contextMenu %}
+                                            {% block swag_migration_shop_information_actions_contextMenu %}
                                                 <sw-context-button :disabled="migrationProcessStore.state.isMigrating || migrationUIStore.state.isPaused || isOtherMigrationRunning">
                                                     <sw-button size="small"
                                                                square slot="button"
@@ -72,15 +72,17 @@
                                 </div>
                             {% endblock %}
 
-                            {% block swag_migration_index_card_shopInfo_metaData_connection %}
-                                <div class="swag-migration-index__metadata_connection">
-                                    <sw-label class="swag-migration-connection-status" :variant="connectionBadgeVariant" pill>
-                                        <sw-color-badge class="swag-migration-connection-status--dot" :variant="connectionBadgeVariant" rounded>
-                                        </sw-color-badge>
-                                        <span class="swag-migration-connection-status--text">
-                                            {{ $tc(connectionBadgeLabel) }}
-                                        </span>
-                                    </sw-label>
+                            {% block swag_migration_shop_information_connection %}
+                                <div class="swag-migration-shop-information__connection">
+                                    <div class="swag-migration-shop-information__connection-badge">
+                                        <sw-label class="swag-migration-shop-information__connection-status" :variant="connectionBadgeVariant" pill>
+                                            <sw-color-badge class="swag-migration-shop-information__connection-status-dot" :variant="connectionBadgeVariant" rounded>
+                                            </sw-color-badge>
+                                            <span class="swag-migration-shop-information__connection-status-text">
+                                                {{ $tc(connectionBadgeLabel) }}
+                                            </span>
+                                        </sw-label>
+                                    </div>
                                 </div>
                             {% endblock %}
                         </div>
@@ -88,23 +90,23 @@
                 </sw-card-section>
 
                 <sw-card-section secondary slim v-if="showMoreInformation">
-                    <sw-container class="swag-migration-index-card-shopInfo-more-information" columns="repeat(auto-fit, minmax(250px, 1fr)" gap="0px 15px">
-                        {% block swag_migration_index_card_shopInfo_advancedShopInfo %}
-                            <div class="swag-migration-index-card-shopInfo-more-information-columns"
+                    <sw-container class="swag-migration-shop-information__metadata" columns="repeat(auto-fit, minmax(250px, 1fr)" gap="0px 15px">
+                        {% block swag_migration_shop_information_metadata_columns %}
+                            <div class="swag-migration-shop-information__metadata-columns"
                                  v-if="Object.keys(totalEntityCounts).length > 0">
-                                {% block swag_migration_index_card_shopInfo_advancedShopInfo_left %}
+                                {% block swag_migration_shop_information_metadata_column_left %}
                                     <sw-description-list v-for="entityName in Object.keys(totalEntityCounts)" :key="entityName">
-                                        {% block swag_migration_index_card_shopInfo_advancedShopInfo__entityCounts %}
+                                        {% block swag_migration_shop_information_metadata_entityCounts %}
                                             <dt>{{ $tc('swag-migration.index.shopInfoCard.entities.' + entityName) }}</dt>
                                             <dd>{{ totalEntityCounts[entityName] | localizedNumberFormat }}</dd>
                                         {% endblock %}
                                     </sw-description-list>
                                 {% endblock %}
                             </div>
-                            <div class="swag-migration-index-card-shopInfo-more-information-columns">
-                                {% block swag_migration_index_card_shopInfo_advancedShopInfo_right %}
+                            <div class="swag-migration-shop-information__metadata-columns">
+                                {% block swag_migration_shop_information_column_right %}
                                     <sw-description-list>
-                                        {% block swag_migration_index_card_shopInfo_advancedShopInfo__lastMigration %}
+                                        {% block swag_migration_shop_information_metadata_lastMigration %}
                                             <dt>{{ $tc('swag-migration.index.shopInfoCard.lastMigration') }}</dt>
                                             <dd v-if="lastMigrationDate !== '-'">
                                                 {{ $t('swag-migration.index.shopInfoCard.lastMigrationDateTime', lastMigrationDateTimeParams) }}
@@ -113,7 +115,7 @@
                                         {% endblock %}
                                     </sw-description-list>
                                     <sw-description-list>
-                                        {% block swag_migration_index_card_shopInfo_advancedShopInfo__gateway %}
+                                        {% block swag_migration_shop_information_metadata_gateway %}
                                             <dt>{{ $tc('swag-migration.index.shopInfoCard.gateway') }}</dt>
                                             <dd>{{ gateway.toUpperCase() }}</dd>
                                         {% endblock %}
@@ -126,31 +128,37 @@
             </sw-container>
         {% endblock %}
 
-        <sw-modal v-if="showConfirmModal"
-                  :title="$tc('swag-migration.index.shopInfoCard.confirmDialog.title')"
-                  @closeModal="showConfirmModal = false">
+        {% block swag_migration_shop_information_confirm_modal %}
+            <sw-modal v-if="showConfirmModal"
+                      :title="$tc('swag-migration.index.shopInfoCard.confirmDialog.title')"
+                      @closeModal="showConfirmModal = false">
 
-            <p v-html="$tc('swag-migration.index.shopInfoCard.confirmDialog.content')">
-            </p>
-
-            <template slot="modal-footer">
-                {% block swag_migration_wizard_footer %}
-
-                    {% block swag_migration_wizard_actions_previous %}
-                    <sw-button size="small"
-                               @click="showConfirmModal = false">
-                        {{ $tc('swag-migration.index.shopInfoCard.confirmDialog.abortButtonText') }}
-                    </sw-button>
-                    {% endblock %}
-                    {% block swag_migration_wizard_actions_next %}
-                    <sw-button size="small"
-                               variant="primary"
-                               @click="onClickRemoveConnectionCredentials">
-                        {{ $tc('swag-migration.index.shopInfoCard.confirmDialog.confirmButtonText') }}
-                    </sw-button>
-                    {% endblock %}
+                {% block swag_migration_shop_information_confirm_modal_content %}
+                    <i18n path="swag-migration.index.shopInfoCard.confirmDialog.content"
+                          tag="p">
+                        <br place="linebreak">
+                    </i18n>
                 {% endblock %}
-            </template>
-        </sw-modal>
+
+                <template slot="modal-footer">
+                    {% block swag_migration_shop_information_confirm_modal_footer %}
+
+                        {% block swag_migration_shop_information_confirm_modal_abort %}
+                            <sw-button size="small"
+                                       @click="showConfirmModal = false">
+                                {{ $tc('swag-migration.index.shopInfoCard.confirmDialog.abortButtonText') }}
+                            </sw-button>
+                        {% endblock %}
+                        {% block swag_migration_shop_information_confirm_modal_confirm %}
+                            <sw-button size="small"
+                                       variant="primary"
+                                       @click="onClickRemoveConnectionCredentials">
+                                {{ $tc('swag-migration.index.shopInfoCard.confirmDialog.confirmButtonText') }}
+                            </sw-button>
+                        {% endblock %}
+                    {% endblock %}
+                </template>
+            </sw-modal>
+        {% endblock %}
     </sw-card>
 {% endblock %}

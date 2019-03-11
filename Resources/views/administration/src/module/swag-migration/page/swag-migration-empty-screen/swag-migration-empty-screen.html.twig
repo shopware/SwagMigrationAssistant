@@ -20,7 +20,17 @@
 
         {% block swag_migration_index_content %}
             <sw-empty-state :title="$tc('swag-migration.emptyScreen.title')" slot="content">
-                <p class="swag-migration-empty-screen__description" v-html="$tc('swag-migration.emptyScreen.description')"></p>
+                <i18n class="swag-migration-empty-screen__description"
+                      path="swag-migration.emptyScreen.description"
+                      tag="p">
+                    <br place="linebreak">
+                    <a class="link"
+                       place="link"
+                       href="#"
+                       target="_blank">
+                        {{ $tc('swag-migration.emptyScreen.link') }}
+                    </a>
+                </i18n>
                 <sw-button variant="primary"
                            @click="onConnectClick">
                     {{ $tc('swag-migration.emptyScreen.connectButton') }}

@@ -25,19 +25,18 @@
                 {% endblock %}
 
                 {% block swag_migration_index_main_page_card_loadingScreen_success %}
-                    <swag-migration-loading-screen-success v-if="migrationUIStore.state.componentIndex === UI_COMPONENT_INDEX.RESULT_SUCCESS">
-                    </swag-migration-loading-screen-success>
+                    <swag-migration-result-screen v-if="migrationUIStore.state.componentIndex === UI_COMPONENT_INDEX.RESULT_SUCCESS"
+                                                  :title="$tc('swag-migration.index.loadingScreenCard.result.success.contentTitle')"
+                                                  imagePath="/swagmigrationnext/static/img/success-illustration.svg">
+                    </swag-migration-result-screen>
                 {% endblock %}
 
                 {% block swag_migration_index_main_page_card_loadingScreen_warning %}
-                    <swag-migration-loading-screen-warning v-if="migrationUIStore.state.componentIndex === UI_COMPONENT_INDEX.RESULT_WARNING"
-                                                           :errorList="errorList">
-                    </swag-migration-loading-screen-warning>
-                {% endblock %}
-
-                {% block swag_migration_index_main_page_card_loadingScreen_failure %}
-                    <swag-migration-loading-screen-failure v-if="migrationUIStore.state.componentIndex === UI_COMPONENT_INDEX.RESULT_FAILURE">
-                    </swag-migration-loading-screen-failure>
+                    <swag-migration-result-screen v-if="migrationUIStore.state.componentIndex === UI_COMPONENT_INDEX.RESULT_WARNING"
+                                                  :title="$tc('swag-migration.index.loadingScreenCard.result.warning.contentTitle')"
+                                                  imagePath="/swagmigrationnext/static/img/warning-illustration.svg"
+                                                  :errorList="errorList">
+                    </swag-migration-result-screen>
                 {% endblock %}
 
                 {% block swag_migration_index_main_page_card_loadingScreen_pause %}

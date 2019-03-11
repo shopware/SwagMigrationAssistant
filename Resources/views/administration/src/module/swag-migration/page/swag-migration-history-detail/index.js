@@ -1,7 +1,7 @@
 import { Component, State } from 'src/core/shopware';
 import CriteriaFactory from 'src/core/factory/criteria.factory';
 import template from './swag-migration-history-detail.html.twig';
-import './swag-migration-history-detail.less';
+import './swag-migration-history-detail.scss';
 
 Component.register('swag-migration-history-detail', {
     template,

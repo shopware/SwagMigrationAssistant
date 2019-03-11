@@ -52,15 +52,15 @@
                                             align="center">
                                 <sw-icon v-if="item.status === 'finished'"
                                          name="default-basic-checkmark-line"
-                                         class="swag-migration-history-status-icon is--finished">
+                                         class="swag-migration-history__status-icon swag-migration-history__status-icon--finished">
                                 </sw-icon>
                                 <sw-icon v-else-if="item.status === 'aborted'"
                                          name="default-basic-x-line"
-                                         class="swag-migration-history-status-icon is--aborted">
+                                         class="swag-migration-history__status-icon swag-migration-history__status-icon--aborted">
                                 </sw-icon>
                                 <sw-icon v-else-if="item.status === 'running'"
                                          name="default-basic-shape-circle"
-                                         class="swag-migration-history-status-icon is--loading">
+                                         class="swag-migration-history__status-icon swag-migration-history__status-icon--loading">
                                 </sw-icon>
                             </sw-grid-column>
                         {% endblock %}
@@ -105,8 +105,8 @@
         {% endblock %}
 
         {% block swag_migration_history_no_data %}
-            <div class="swag-migration-history-no-data" v-else>
-                <p class="swag-migration-history-no-data__label">
+            <div class="swag-migration-history__no-data" v-else>
+                <p class="swag-migration-history__no-data-label">
                     {{ $tc('swag-migration.history.noData') }}
                 </p>
             </div>

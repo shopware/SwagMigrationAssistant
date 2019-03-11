@@ -1,19 +1,19 @@
 {% block swag_migration_loading_screen %}
     <sw-card class="swag-migration-loading-screen" :title="title">
         {% block swag_migration_index_loading_screen_alert %}
-            <sw-alert variant="info">
+            <sw-alert variant="info" class="swag-migration-loading-screen__hint">
                 <strong>{{ $tc('swag-migration.index.loadingScreenCard.hintTitle') }} </strong>{{ $tc('swag-migration.index.loadingScreenCard.hint') }}
             </sw-alert>
         {% endblock %}
 
         {% block swag_migration_index_loading_screen_title %}
-            <div class="swag-migration-loading-screen-title">
+            <div class="swag-migration-loading-screen__title">
                 {{ statusLong }}
             </div>
         {% endblock %}
 
         {% block swag_migration_index_loading_screen_progress_bar_group %}
-            <div class="swag-migration-loading-screen-progress-bar-group"
+            <div class="swag-migration-loading-screen__progress-bar-group"
                  :style="{ 'grid-template-columns': progressBarContainerGridStyle }">
                 <div v-for="group in displayEntityGroups">
                     {% block swag_migration_index_loading_screen_progress_bar %}
@@ -21,7 +21,7 @@
                     {% endblock %}
 
                     {% block swag_migration_index_loading_screen_progress_bar_title %}
-                        <div class="swag-migration-loading-screen-progress-bar-title">
+                        <div class="swag-migration-loading-screen__progress-bar-title">
                             {{ $tc(group.snippet) }}
                         </div>
                     {% endblock %}
@@ -30,7 +30,7 @@
         {% endblock %}
 
         {% block swag_migration_loading_screen_loader %}
-            <sw-loader class="swag-migration-loading-screen-loader"></sw-loader>
+            <sw-loader class="swag-migration-loading-screen__loader"></sw-loader>
         {% endblock %}
     </sw-card>
 {% endblock %}

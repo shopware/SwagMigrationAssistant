@@ -1,0 +1,44 @@
+.swag-migration-result-screen {
+
+    .swag-migration-result-screen__content {
+        text-align: center;
+        font-size: 12pt;
+    }
+
+    .swag-migration-result-screen__title {
+        margin-bottom: 40px;
+        margin-top: 30px;
+        font-weight: normal;
+    }
+
+    .swag-migration-result-screen__image {
+        height: 150px;
+        width: 100%;
+    }
+
+    .swag-migration-result-screen__image--is-last {
+        margin-bottom: 40px;
+    }
+
+    .swag-migration-result-screen__alert-header {
+        font-weight: bold;
+        display: inline;
+    }
+
+    .swag-migration-result-screen__error-list-header {
+        font-weight: bold;
+        padding-top: 10px;
+        display: block;
+    }
+
+    .swag-migration-result-screen__error-list {
+        padding-left: 20px;
+    }
+
+    .swag-migration-result-screen__alert {
+        margin-top: 50px;
+        margin-bottom: 30px;
+        max-height: 300px;
+        overflow: scroll;
+    }
+}
