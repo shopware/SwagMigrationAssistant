@@ -1,0 +1,106 @@
+@import '~scss/variables';
+
+$swag-migration-flow-item-color-default: #F0F2F5;
+$swag-migration-flow-item-color-icon-default: #E0E5EE;
+$swag-migration-flow-item-color-description-active: #52667A;
+$swag-migration-flow-item-color-description-inactive: #B3BFCC;
+
+//variants
+$swag-migration-flow-item-color-disabled: $swag-migration-flow-item-color-icon-default;
+$swag-migration-flow-item-color-disabled-bg: $swag-migration-flow-item-color-default;
+$swag-migration-flow-item-color-info: $color-shopware-blue;
+$swag-migration-flow-item-color-info-bg: #E3F3FF;
+$swag-migration-flow-item-color-success: $color-emerald;
+$swag-migration-flow-item-color-success-bg: #E7F9E9;
+$swag-migration-flow-item-color-error: $color-crimson;
+$swag-migration-flow-item-color-error-bg: #FBE5EA;
+
+.swag-migration-flow-item {
+    height: 32px;
+    margin: 20px 0;
+    display: flex;
+    align-items: center;
+    position: relative;
+
+    &:before {
+        content: "";
+        width: 1px;
+        height: 20px;
+        background-color: $swag-migration-flow-item-color-default;
+        border: 1px solid $swag-migration-flow-item-color-default;
+        position: absolute;
+        left: 16px - (3px / 2);
+        top: -20px;
+    }
+
+    &:first-child {
+        &:before {
+            display: none;
+        }
+    }
+
+    .swag-migration-flow-item__bubble {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background-color: $swag-migration-flow-item-color-default;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .swag-migration-flow-item__description {
+        padding-left: 10px;
+        font-size: $font-size-small;
+        font-weight: 600;
+        color: $swag-migration-flow-item-color-description-inactive;
+        line-height: $font-size-small;
+    }
+
+    &.swag-migration-flow-item--disabled {
+        .swag-migration-flow-item__bubble {
+            background-color: $swag-migration-flow-item-color-disabled-bg;
+        }
+
+        .swag-migration-flow-item__icon {
+            color: $swag-migration-flow-item-color-disabled;
+        }
+    }
+
+    &.swag-migration-flow-item--info {
+        .swag-migration-flow-item__bubble {
+            background-color: $swag-migration-flow-item-color-info-bg;
+        }
+
+        .swag-migration-flow-item__icon {
+            color: $swag-migration-flow-item-color-info;
+        }
+    }
+
+    &.swag-migration-flow-item--error {
+        .swag-migration-flow-item__bubble {
+            background-color: $swag-migration-flow-item-color-error-bg;
+        }
+
+        .swag-migration-flow-item__icon {
+            color: $swag-migration-flow-item-color-error;
+        }
+    }
+
+    &.swag-migration-flow-item--success {
+        .swag-migration-flow-item__bubble {
+            background-color: $swag-migration-flow-item-color-success-bg;
+        }
+
+        .swag-migration-flow-item__icon {
+            color: $swag-migration-flow-item-color-success;
+        }
+    }
+
+    &.swag-migration-flow-item--active {
+        .swag-migration-flow-item__description {
+            color: $swag-migration-flow-item-color-description-active;
+        }
+    }
+}
