@@ -18,37 +18,10 @@ class UiStoreInitService {
 
             this._migrationService.getDataSelection(connectionId).then((dataSelection) => {
                 this._migrationUiStore.setPremapping([]);
-                this._migrationUiStore.setDataSelectionTableData(this._filterTableData(dataSelection));
+                this._migrationUiStore.setDataSelectionTableData(dataSelection);
                 resolve();
             });
         });
-    }
-
-    _filterTableData(dataSelection) {
-        if (this._migrationProcessStore.state.environmentInformation === null) {
-            return [];
-        }
-
-        const filtered = [];
-        dataSelection.forEach((group) => {
-            let containsData = false;
-            group.total = 0;
-            group.entityTotals = {};
-            group.entityNames.forEach((name) => {
-                if (this._migrationProcessStore.state.environmentInformation.totals[name] > 0) {
-                    const entityTotal = this._migrationProcessStore.state.environmentInformation.totals[name];
-                    containsData = true;
-                    group.entityTotals[name] = entityTotal;
-                    group.total += entityTotal;
-                }
-            });
-
-            if (containsData) {
-                filtered.push(group);
-            }
-        });
-
-        return filtered;
     }
 }
 

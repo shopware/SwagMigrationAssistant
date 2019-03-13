@@ -3,9 +3,8 @@
         {% block swag_migration_index_main_page_content %}
             <div v-if="!migrationUIStore.state.isLoading">
                 {% block swag_migration_index_main_page_plugin_version %}
-                    <sw-alert variant="warning" v-if="isUpdateAvailable"
-                              class="swag-migration-index-main_page__plugin-version">
-                    {{ $tc('swag-migration.index.pluginVersionText') }}
+                    <sw-alert variant="warning" v-if="isUpdateAvailable" class="swag-migration-index-main_page__plugin-version">
+                        {{ $tc('swag-migration.index.pluginVersionText') }}
                     </sw-alert>
                 {% endblock %}
 
@@ -17,7 +16,7 @@
 
                 {% block swag_migration_index_card_main_information %}
                     <sw-card class="swag-migration-index-card-main-information" :title="$tc('swag-migration.index.mainInformationTitle')"
-                                                        v-if="migrationUIStore.state.componentIndex === UI_COMPONENT_INDEX.DATA_SELECTOR">
+                             v-if="migrationUIStore.state.componentIndex === UI_COMPONENT_INDEX.DATA_SELECTOR">
                         {% block swag_migration_index_card_mainInformation_content %}
                             {{ $tc('swag-migration.index.mainInformationContent') }}
                         {% endblock %}

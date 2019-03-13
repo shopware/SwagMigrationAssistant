@@ -42,8 +42,12 @@ Component.register('swag-migration-data-selector', {
             this.migrationUIStore.setDataSelectionIds(Object.keys(selection));
         },
 
+        showHelptext(entityTotals) {
+            return entityTotals !== undefined && Object.keys(entityTotals).length > 1;
+        },
+
         getHelptext(entityTotals) {
-            if (entityTotals === undefined || entityTotals.length === 0) {
+            if (entityTotals === undefined || Object.keys(entityTotals).length === 0) {
                 return '';
             }
 

@@ -20,6 +20,16 @@ class DataSelectionStruct extends Struct
     protected $entityNames;
 
     /**
+     * @var int[]
+     */
+    protected $entityTotals = [];
+
+    /**
+     * @var int
+     */
+    protected $total = 0;
+
+    /**
      * @var bool
      */
     protected $processMediaFiles;
@@ -83,5 +93,31 @@ class DataSelectionStruct extends Struct
     public function getDataType(): string
     {
         return $this->dataType;
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getEntityTotals(): array
+    {
+        return $this->entityTotals;
+    }
+
+    /**
+     * @param int[] $entityTotals
+     */
+    public function setEntityTotals(array $entityTotals): void
+    {
+        $this->entityTotals = $entityTotals;
+    }
+
+    public function getTotal(): int
+    {
+        return $this->total;
+    }
+
+    public function setTotal(int $total): void
+    {
+        $this->total = $total;
     }
 }

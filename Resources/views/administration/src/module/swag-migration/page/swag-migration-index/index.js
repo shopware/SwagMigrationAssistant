@@ -133,9 +133,7 @@ Component.register('swag-migration-index', {
             ) {
                 this.migrationProcessStoreInitService.initProcessStore().then(() => {
                     return this.migrationUiStoreInitService.initUiStore();
-                }).then(() => {
-                    this.storesInitializing = false;
-                }).catch(() => {
+                }).finally(() => {
                     this.storesInitializing = false;
                 });
             } else if (this.migrationUIStore.state.dataSelectionTableData.length === 0) {
