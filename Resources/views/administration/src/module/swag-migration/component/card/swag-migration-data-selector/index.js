@@ -10,9 +10,12 @@ Component.register('swag-migration-data-selector', {
         migrationService: 'migrationService'
     },
 
+    created() {
+        this.createdComponent();
+    },
+
     data() {
         return {
-            tableData: [],
             /** @type MigrationProcessStore */
             migrationProcessStore: State.getStore('migrationProcess'),
             /** @type MigrationUIStore */
@@ -20,75 +23,43 @@ Component.register('swag-migration-data-selector', {
         };
     },
 
-    computed: {
-        /**
-         * Returns the table data without datasets that don't have any entities.
-         *
-         * @returns {Array}
-         */
-        tableDataFiltered() {
-            if (this.migrationProcessStore.state.environmentInformation === null) {
-                return [];
-            }
-
-            const filtered = [];
-            this.tableData.forEach((group) => {
-                let containtsData = false;
-                group.entityNames.forEach((name) => {
-                    if (this.migrationProcessStore.state.environmentInformation.totals[name] > 0) {
-                        containtsData = true;
-                    }
-                });
-
-                if (containtsData) {
-                    filtered.push(group);
-                }
-            });
-
-            return filtered;
-        }
-    },
-
-    watch: {
-        'migrationProcessStore.state.connectionId': {
-            immediate: true,
-            handler(newConnectionId) {
-                this.fetchTableData(newConnectionId);
-            }
-        },
-
-        tableDataFiltered() {
-            this.$nextTick(() => {
-                this.selectDefault();
-            });
-        }
-    },
-
     methods: {
-        fetchTableData(connectionId) {
-            this.migrationService.getDataSelection(connectionId).then((dataSelection) => {
-                this.tableData = dataSelection;
-            });
+        async createdComponent() {
+            this.fetchTableData();
         },
 
-        selectDefault() {
-            if (this.tableDataFiltered.length > 0) {
-                this.$refs.tableDataGrid.selectAll(true);
-                this.onGridSelectItem(this.$refs.tableDataGrid.getSelection());
+        fetchTableData() {
+            if (this.migrationUIStore.state.dataSelectionTableData.length > 0) {
+                this.$nextTick(() => {
+                    this.migrationUIStore.state.dataSelectionIds.forEach((id) => {
+                        this.$refs.tableDataGrid.selectItem(true, { id });
+                    });
+                });
             }
         },
 
         onGridSelectItem(selection) {
             this.migrationUIStore.setDataSelectionIds(Object.keys(selection));
-            this.checkIfMigrationIsAllowed();
         },
 
-        checkIfMigrationIsAllowed() {
-            const isMigrationAllowed = (
-                this.tableData.length > 0 &&
-                this.migrationUIStore.state.dataSelectionIds.length > 0
-            );
-            this.migrationUIStore.setIsMigrationAllowed(isMigrationAllowed);
+        showHelptext(entityTotals) {
+            return entityTotals !== undefined && Object.keys(entityTotals).length > 1;
+        },
+
+        getHelptext(entityTotals) {
+            if (entityTotals === undefined || Object.keys(entityTotals).length === 0) {
+                return '';
+            }
+
+            let string = '';
+            Object.keys(entityTotals).forEach((key) => {
+                string += `${this.$tc(`swag-migration.index.selectDataCard.entities.${key}`)
+                } ${
+                    entityTotals[key]
+                }</br>`;
+            });
+
+            return string;
         }
     }
 });

@@ -101,8 +101,8 @@ class RunService implements RunServiceInterface
         $accessToken = $this->accessTokenService->updateRunAccessToken($runUuid, $context);
         $connection = $this->getConnection($connectionId, $context);
 
-        $dataSelectionCollection = $this->getDataSelectionCollection($connection, $dataSelectionIds);
         $environmentInformation = $this->getEnvironmentInformation($connection, $context);
+        $dataSelectionCollection = $this->getDataSelectionCollection($connection, $environmentInformation, $dataSelectionIds);
         $runProgress = $this->calculateRunProgress($environmentInformation, $dataSelectionCollection);
 
         $this->mappingService->createSalesChannelMapping($connectionId, $environmentInformation->getStructure(), $context);
@@ -427,7 +427,7 @@ class RunService implements RunServiceInterface
         );
     }
 
-    private function getDataSelectionCollection(SwagMigrationConnectionEntity $connection, array $dataSelectionIds): DataSelectionCollection
+    private function getDataSelectionCollection(SwagMigrationConnectionEntity $connection, EnvironmentInformation $environmentInformation, array $dataSelectionIds): DataSelectionCollection
     {
         $migrationContext = new MigrationContext(
             '',
@@ -437,7 +437,7 @@ class RunService implements RunServiceInterface
             0
         );
 
-        return $this->dataSelectionRegistry->getDataSelectionsByIds($migrationContext, $dataSelectionIds);
+        return $this->dataSelectionRegistry->getDataSelectionsByIds($migrationContext, $environmentInformation, $dataSelectionIds);
     }
 
     private function calculateToBeFetchedTotals(EnvironmentInformation $environmentInformation, DataSelectionCollection $dataSelectionCollection): array

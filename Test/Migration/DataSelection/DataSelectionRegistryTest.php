@@ -7,6 +7,7 @@ use Shopware\Core\Framework\Struct\Uuid;
 use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\DataSelection\DataSelectionRegistry;
 use SwagMigrationNext\Migration\DataSelection\DataSelectionStruct;
+use SwagMigrationNext\Migration\EnvironmentInformation;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\CustomerAndOrderDataSelection;
@@ -28,8 +29,24 @@ class DataSelectionRegistryTest extends TestCase
      */
     private $connection;
 
+    /**
+     * @var EnvironmentInformation
+     */
+    private $environmentInformation;
+
     protected function setUp(): void
     {
+        $this->environmentInformation = new EnvironmentInformation(
+            '',
+            '',
+            '',
+            [],
+            [
+                'product' => 100,
+                'customer' => 5,
+                'media' => 100,
+            ]
+        );
         $this->connection = new SwagMigrationConnectionEntity();
         $this->connection->setId(Uuid::uuid4()->getHex());
         $profile = new SwagMigrationProfileEntity();
@@ -62,7 +79,7 @@ class DataSelectionRegistryTest extends TestCase
             2 => (new MediaDataSelection())->getData()->getId(),
         ];
 
-        $dataSelections = $this->dataSelectionRegistry->getDataSelections($migrationContext);
+        $dataSelections = $this->dataSelectionRegistry->getDataSelections($migrationContext, $this->environmentInformation);
         static::assertCount(3, $dataSelections->getElements());
 
         $i = 0;
@@ -84,7 +101,7 @@ class DataSelectionRegistryTest extends TestCase
             0
         );
 
-        $dataSelections = $this->dataSelectionRegistry->getDataSelections($migrationContext);
+        $dataSelections = $this->dataSelectionRegistry->getDataSelections($migrationContext, $this->environmentInformation);
 
         static::assertCount(1, $dataSelections);
         static::assertSame($dataSelections->first()->getId(), (new MediaDataSelection())->getData()->getId());

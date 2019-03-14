@@ -50,6 +50,11 @@ class Shopware55ApiGateway extends AbstractGateway
             $environmentDataArray['translations'] = 0;
         }
 
+        $updateAvailable = false;
+        if (isset($environmentData['environmentInformation']['updateAvailable'])) {
+            $updateAvailable = $environmentData['environmentInformation']['updateAvailable'];
+        }
+
         $totals = [
             CategoryDefinition::getEntityName() => $environmentDataArray['categories'],
             ProductDefinition::getEntityName() => $environmentDataArray['products'],
@@ -70,7 +75,8 @@ class Shopware55ApiGateway extends AbstractGateway
             $environmentData['warning']['code'],
             $environmentData['warning']['detail'],
             $environmentData['error']['code'],
-            $environmentData['error']['detail']
+            $environmentData['error']['detail'],
+            $updateAvailable
         );
     }
 

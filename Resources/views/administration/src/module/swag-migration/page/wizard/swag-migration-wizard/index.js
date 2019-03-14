@@ -63,7 +63,9 @@ Component.register('swag-migration-wizard', {
             connectionName: '',
             selectedProfile: {},
             childRouteReady: false, // child routes with forms will emit and change this value depending on their validation.
-            errorMessageSnippet: ''
+            errorMessageSnippet: '',
+            migrationProcessStore: State.getStore('migrationProcess'),
+            migrationUIStore: State.getStore('migrationUI')
         };
     },
 
@@ -223,12 +225,19 @@ Component.register('swag-migration-wizard', {
         doConnectionCheck() {
             this.isLoading = true;
             this.migrationService.checkConnection(this.connection.id).then((connectionCheckResponse) => {
+                this.migrationProcessStore.setConnectionId(this.connection.id);
+                this.migrationProcessStore.setEntityGroups([]);
+                this.migrationProcessStore.setErrors([]);
                 this.isLoading = false;
 
                 if (!connectionCheckResponse) {
                     this.onResponseError(-1);
                     return;
                 }
+                this.migrationProcessStore.setEnvironmentInformation(connectionCheckResponse);
+                this.migrationUIStore.setDataSelectionIds([]);
+                this.migrationUIStore.setPremapping([]);
+                this.migrationUIStore.setDataSelectionTableData([]);
 
                 if (connectionCheckResponse.errorCode !== undefined) {
                     if (connectionCheckResponse.errorCode !== -1) {

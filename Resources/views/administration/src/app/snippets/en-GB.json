@@ -3,8 +3,9 @@
     "general": {
       "mainMenuItemGeneral": "Playground Connector",
       "descriptionTextModule": "Module to import data from Shopware 5",
-      "tabMain": "Data import",
-      "tabHistory": "History"
+      "tabMain": "Overview",
+      "tabHistory": "History",
+      "tabDataSelector": "Data selection"
     },
     "wizard": {
       "buttonAbort": "Cancel",
@@ -105,7 +106,7 @@
       "connectButton": "Establish connection"
     },
     "index": {
-      "title": "Data import",
+      "title": "Overview",
       "migrateButton": "Import",
       "startButton": "Start",
       "pauseButton": "Pause",
@@ -115,6 +116,9 @@
       "backButton": "Overview",
       "browserClosingHint": "Do you really want to abort the data import?",
       "migrationAlreadyRunning": "Import already started.",
+      "pluginVersionText": "Please make sure your Shopware 5 backend is using the latest version of the Shopware Playground Connector Plugin.",
+      "mainInformationTitle": "### Information Title PLACEHOLDER ###",
+      "mainInformationContent": "### Information Content PLACEHOLDER ###",
       "shopInfoCard": {
         "cardTitle": "Shop system",
         "shopSystem": "Shop system:",
@@ -132,6 +136,24 @@
           "content": "Your current access data will be deleted. This will stop the active connection from working. However, the connection's access data can be edited at any time and the connection re-established using fresh/new access credentials.{linebreak}{linebreak}Do you want to delete the access data?",
           "abortButtonText": "Cancel",
           "confirmButtonText": "Yes, delete"
+        }
+      },
+      "selectDataCard": {
+        "cardTitle": "Data selection",
+        "dataHeader": "Data",
+        "dataTypes": {
+          "basicData": "Shopdata",
+          "pluginData": "Plugindata"
+        },
+        "headers": {
+          "name": "Name",
+          "dateType": "Type",
+          "total": "Datasets"
+        },
+        "dataSelection": {
+          "customersOrders": "Customers & Orders",
+          "categoriesProducts": "Categories & Products",
+          "media": "Media"
         },
         "entities": {
           "category": "Categories:",
@@ -141,21 +163,10 @@
           "media": "Media:",
           "translation": "Translations:",
           "customer_group": "Customer groups:"
-        }
-      },
-      "selectDataCard": {
-        "cardTitle": "Data selection",
-        "dataHeader": "Data",
-        "dataSelection": {
-          "customersOrders": "Customers & Orders",
-          "categoriesProducts": "Categories & Products",
-          "media": "Media"
         },
         "noData": "No data was found to import.",
         "touText": "The general {link} of Shopware Playground applies to the import of data. The import process does not affect the data of the source system.",
-        "touLinkText": "terms of use",
-        "pluginVersionTitle": "Attention: Check for plugin updates!",
-        "pluginVersionText": "Please make sure your Shopware 5 backend is using the latest version of the Shopware Playground Connector Plugin."
+        "touLinkText": "terms of use"
       },
       "premappingCard": {
         "placeholder": "Please choose",

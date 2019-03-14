@@ -2,6 +2,7 @@
 
 namespace SwagMigrationNext\Migration\DataSelection;
 
+use SwagMigrationNext\Migration\EnvironmentInformation;
 use SwagMigrationNext\Migration\MigrationContextInterface;
 
 class DataSelectionRegistry implements DataSelectionRegistryInterface
@@ -16,7 +17,7 @@ class DataSelectionRegistry implements DataSelectionRegistryInterface
         $this->dataSelections = $dataSelections;
     }
 
-    public function getDataSelections(MigrationContextInterface $migrationContext): DataSelectionCollection
+    public function getDataSelections(MigrationContextInterface $migrationContext, EnvironmentInformation $environmentInformation): DataSelectionCollection
     {
         $profileName = $migrationContext->getProfileName();
         $gatewayName = $migrationContext->getGatewayName();
@@ -24,7 +25,12 @@ class DataSelectionRegistry implements DataSelectionRegistryInterface
         $resultDataSelections = new DataSelectionCollection();
         foreach ($this->dataSelections as $dataSelection) {
             if ($dataSelection->supports($profileName, $gatewayName)) {
-                $resultDataSelections->set($dataSelection->getData()->getId(), $dataSelection->getData());
+                $data = $dataSelection->getData();
+                $this->setTotals($data, $environmentInformation);
+
+                if ($data->getTotal() > 0) {
+                    $resultDataSelections->set($dataSelection->getData()->getId(), $data);
+                }
             }
         }
         $resultDataSelections->sortByPosition();
@@ -32,10 +38,10 @@ class DataSelectionRegistry implements DataSelectionRegistryInterface
         return $resultDataSelections;
     }
 
-    public function getDataSelectionsByIds(MigrationContextInterface $migrationContext, array $ids): DataSelectionCollection
+    public function getDataSelectionsByIds(MigrationContextInterface $migrationContext, EnvironmentInformation $environmentInformation, array $ids): DataSelectionCollection
     {
         $resultDataSelections = new DataSelectionCollection();
-        $profileDataSelections = $this->getDataSelections($migrationContext);
+        $profileDataSelections = $this->getDataSelections($migrationContext, $environmentInformation);
 
         foreach ($ids as $id) {
             $dataSelection = $profileDataSelections->get($id);
@@ -50,5 +56,23 @@ class DataSelectionRegistry implements DataSelectionRegistryInterface
         $resultDataSelections->sortByPosition();
 
         return $resultDataSelections;
+    }
+
+    private function setTotals(DataSelectionStruct $dataSelection, EnvironmentInformation $environmentInformation): void
+    {
+        $totals = $environmentInformation->getTotals();
+        $entityTotals = [];
+        $groupTotal = 0;
+        foreach ($dataSelection->getEntityNames() as $entityName) {
+            if (!isset($totals[$entityName])) {
+                continue;
+            }
+
+            $groupTotal += $totals[$entityName];
+            $entityTotals[$entityName] = $totals[$entityName];
+        }
+
+        $dataSelection->setTotal($groupTotal);
+        $dataSelection->setEntityTotals($entityTotals);
     }
 }
