@@ -1,6 +1,7 @@
 import { Component, State } from 'src/core/shopware';
 import template from './swag-migration-premapping.html.twig';
 import { UI_COMPONENT_INDEX } from '../../../../../core/data/MigrationUIStore';
+import './swag-migration-premapping.scss';
 
 Component.register('swag-migration-premapping', {
     template,
@@ -14,7 +15,9 @@ Component.register('swag-migration-premapping', {
 
     data() {
         return {
+            isLoading: false,
             premappingInput: [],
+            instantValid: false,
             /** @type MigrationProcessStore */
             migrationProcessStore: State.getStore('migrationProcess'),
             /** @type MigrationUIStore */
@@ -37,6 +40,19 @@ Component.register('swag-migration-premapping', {
 
     methods: {
         fetchPremapping(runId) {
+            this.isLoading = true;
+
+            if (this.migrationUIStore.state.premapping !== null && this.migrationUIStore.state.premapping.length > 0) {
+                this.migrationUIStore.setIsPremappingValid(false);
+                this.$nextTick(() => {
+                    this.premappingInput = this.migrationUIStore.state.premapping;
+                    this.validatePremapping();
+                    this.instantValid = this.migrationUIStore.state.isPremappingValid;
+                    this.isLoading = false;
+                });
+                return;
+            }
+
             this.migrationService.generatePremapping(runId).then((premapping) => {
                 if (premapping.length === 0) {
                     this.migrationUIStore.setComponentIndex(UI_COMPONENT_INDEX.LOADING_SCREEN);
@@ -48,6 +64,8 @@ Component.register('swag-migration-premapping', {
                 } else {
                     this.premappingInput = premapping;
                     this.validatePremapping();
+                    this.instantValid = this.migrationUIStore.state.isPremappingValid;
+                    this.isLoading = false;
                 }
             });
         },

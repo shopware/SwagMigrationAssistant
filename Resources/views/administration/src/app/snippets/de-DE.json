@@ -1,7 +1,7 @@
 {
   "swag-migration": {
     "general": {
-      "mainMenuItemGeneral": "Playground Connector",
+      "mainMenuItemGeneral": "Migration",
       "descriptionTextModule": "Modul zum Import der Daten aus Shopware 5",
       "tabMain": "Übersicht",
       "tabHistory": "Verlauf",
@@ -109,12 +109,12 @@
     "index": {
       "title": "Übersicht",
       "migrateButton": "Importieren",
-      "startButton": "Start",
+      "startButton": "Fortfahren",
       "pauseButton": "Pausieren",
       "continueButton": "Fortsetzen",
       "abortButton": "Beenden",
       "finishButton": "Fertig",
-      "backButton": "Übersicht",
+      "backButton": "Migration abschließen",
       "browserClosingHint": "Möchtest Du den Datenimport wirklich abbrechen?",
       "migrationAlreadyRunning": "Der Datenimport wurde bereits gestartet.",
       "pluginVersionText": "Wir haben festgestellt, dass ein Plugin-Update verfügbar ist. Bitte update das Plugin „Shopware Playground Connector“. Gegebenenfalls kann der Datenimport nicht vollständig durchgeführt werden.",
@@ -154,7 +154,8 @@
         "dataSelection": {
           "customersOrders": "Kunden & Bestellungen",
           "categoriesProducts": "Kategorien & Produkte",
-          "media": "Medien"
+          "media": "Medien",
+          "processMediaFiles": "Medien"
         },
         "entities": {
           "category": "Kategorien:",
@@ -170,6 +171,10 @@
         "touLinkText": "Allgemeinen Nutzungsbedingungen"
       },
       "premappingCard": {
+        "validTitle": "Der Datencheck ist abgeschlossen",
+        "validCaption": "Die Daten sind zum Fortfahren bereit",
+        "loadingTitle": "Der Datencheck wird durchgeführt",
+        "loadingCaption": "Die bisherigen Daten werden geprüft.",
         "placeholder": "Bitte auswählen",
         "title": "Zuordnung - ",
         "group": {
@@ -180,35 +185,42 @@
         }
       },
       "loadingScreenCard": {
-        "cardTitle": "Schritt {step} von {total}",
+        "flowChart": {
+          "premapping": "Datencheck",
+          "fetchData": "Lesen der Daten",
+          "writeData": "Schreiben der Daten",
+          "processMedia": "Medien Download",
+          "finish": "Fertig"
+        },
         "status": {
           "FETCH_DATA": {
-            "long": "Lesen der Daten von {profileName} ...",
-            "short": "Daten lesen"
+            "long": "Die Daten werden von Deinem System gelesen",
+            "caption": "Die neuen Zuordnungen werden verarbeitet.",
+            "short": "Lesen",
+            "hint": "Tipp: Die Migration läuft Schritt für Schritt im Hintergrund weiter, erkunde solange Shopware 6."
           },
           "WRITE_DATA": {
-            "long": "Schreiben der Daten in Shopware Playground ...",
-            "short": "Daten schreiben"
+            "long": "Die Daten werden in Shopware 6 geschrieben",
+            "caption": "Je nach Shopgröße kann es etwas länger dauern.",
+            "short": "Schreiben",
+            "hint": "Tipp: Dieser Schritt kann pausiert und fortgesetzt werden."
           },
           "PROCESS_MEDIA_FILES": {
-            "long": "Herunterladen der Medien zu Shopware Playground ...",
-            "short": "Medien herunterladen"
-          }
+            "long": "Die Medien werden heruntergeladen",
+            "caption": "Große Bilddaten können etwas Zeit in Anspurch nehmen.",
+            "short": "Medien laden",
+            "hint": "Tipp: Bei schlechter Verbindung den Download pausieren und später fortsetzen."
+          },
+          "finish": "Fertig"
         },
-        "hintTitle": "Hinweis:",
-        "hint": "Entdecke Shopware Playground, der Prozess läuft im Hintergrund weiter. Den Playground-Connector findest Du unter „Einstellungen“ im Hauptmenü links." ,
         "result": {
           "success": {
-            "title": "Abgeschlossen",
-            "contentTitle": "Datenimport erfolgreich abgeschlossen!",
-            "hintTitle": "Erkunde Shopware Playground!",
-            "hintContent": "Ab jetzt kannst Du mit Deinen Daten unsere Experimente entdecken oder einfach Deine eigenen entwickeln."
+            "title": "Die Migration war erfolgreich",
+            "caption": "Alle Details zum Prozess findest Du in der Historie"
           },
           "warning": {
-            "title": "Abgeschlossen",
-            "contentTitle": "Datenimport abgeschlossen!",
-            "hintTitle": "Achtung:",
-            "hintContent": "Der Import konnte nicht vollständig abgeschlossen werden. Möglicherweise sind Daten fehlerhaft oder unvollständig importiert worden.",
+            "title": "Die Migration war erfolgreich",
+            "caption": "Manche Daten konnten nicht migriert werden. Um welche Daten es sich handelt und welche Fehler aufgetreten ist, kannst Du in den Historie einsehen.",
             "warningListTitle": "Es sind keine Fehler aufgetreten. | Folgender Fehler ist aufgetreten: | {count} Fehler sind aufgetreten:"
           }
         },

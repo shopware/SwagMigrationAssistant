@@ -196,7 +196,7 @@ class MigrationWorkerService {
     /**
      * Continue the migration (possible after checkForRunningMigration resolved true).
      */
-    restoreRunningMigration() {
+    restoreRunningMigration(startMigration = true) {
         if (this._restoreState === null || this._restoreState === {}) {
             return;
         }
@@ -209,6 +209,10 @@ class MigrationWorkerService {
         this._migrationProcessStore.setEntityGroups(this._restoreState.runProgress);
         this._migrationProcessStore.setStatusIndex(this._restoreState.status);
         this._migrationProcessStore.setErrors([]);
+
+        if (!startMigration) {
+            return;
+        }
 
         // Get current group and entity index
         const indicies = this._getIndiciesByEntityName(this._restoreState.entity);
@@ -242,10 +246,11 @@ class MigrationWorkerService {
      */
     takeoverMigration() {
         return new Promise((resolve) => {
-            this._migrationService.takeoverMigration(this.runId).then((migrationAccessToken) => {
-                localStorage.setItem(MIGRATION_ACCESS_TOKEN_NAME, migrationAccessToken.accessToken);
-                resolve();
-            });
+            this._migrationService.takeoverMigration(this._migrationProcessStore.state.runId)
+                .then((migrationAccessToken) => {
+                    localStorage.setItem(MIGRATION_ACCESS_TOKEN_NAME, migrationAccessToken.accessToken);
+                    resolve();
+                });
         });
     }
 
@@ -262,7 +267,9 @@ class MigrationWorkerService {
                 entityIndex < this._migrationProcessStore.state.entityGroups[groupIndex].entities.length;
                 entityIndex += 1
             ) {
-                if (this._migrationProcessStore.state.entityGroups[groupIndex].entities[entityIndex].entityName === entityName) {
+                if (this._migrationProcessStore.state.entityGroups[groupIndex]
+                    .entities[entityIndex].entityName === entityName
+                ) {
                     return {
                         groupIndex,
                         entityIndex

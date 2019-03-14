@@ -33,7 +33,10 @@ Module.register('swag-migration', {
             children: {
                 main: {
                     path: 'main',
-                    component: 'swag-migration-main-page'
+                    component: 'swag-migration-main-page',
+                    meta: {
+                        parentPath: 'sw.settings.index'
+                    }
                 },
                 history: {
                     path: 'history',
@@ -41,14 +44,30 @@ Module.register('swag-migration', {
                     children: {
                         detail: {
                             path: 'detail/:id',
-                            component: 'swag-migration-history-detail'
+                            component: 'swag-migration-history-detail',
+                            meta: {
+                                parentPath: 'sw.settings.index'
+                            }
                         }
+                    },
+                    meta: {
+                        parentPath: 'sw.settings.index'
                     }
                 },
                 dataSelector: {
                     path: 'dataSelector',
-                    component: 'swag-migration-data-selector'
+                    component: 'swag-migration-data-selector',
+                    meta: {
+                        parentPath: 'sw.settings.index'
+                    }
                 }
+            }
+        },
+        processScreen: {
+            path: 'processScreen',
+            component: 'swag-migration-process-screen',
+            meta: {
+                parentPath: 'sw.settings.index'
             }
         },
         wizard: {

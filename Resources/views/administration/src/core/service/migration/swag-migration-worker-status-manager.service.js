@@ -13,12 +13,12 @@ import { State } from 'src/core/shopware';
 *                  }>}
  */
 export const MIGRATION_STATUS = Object.freeze({
-    WAITING: -2,
-    PREMAPPING: -1,
-    FETCH_DATA: 0,
-    WRITE_DATA: 1,
-    PROCESS_MEDIA_FILES: 2,
-    FINISHED: 3
+    WAITING: -1,
+    PREMAPPING: 0,
+    FETCH_DATA: 1,
+    WRITE_DATA: 2,
+    PROCESS_MEDIA_FILES: 3,
+    FINISHED: 4
 });
 
 const MIGRATION_DISPLAY_STATUS = {};

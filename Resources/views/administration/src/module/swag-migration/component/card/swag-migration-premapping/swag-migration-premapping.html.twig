@@ -1,6 +1,7 @@
 {% block swag_migration_premapping %}
     <div class="swag-migration-premapping">
         <sw-card :title="$tc('swag-migration.index.premappingCard.title') + $tc(`swag-migration.index.premappingCard.group.${currentGroup.entity}`)"
+                 v-if="!instantValid"
                  v-for="currentGroup in premappingInput" :key="currentGroup.entity">
             {% block swag_migration_premapping_card_content %}
                 <sw-field v-for="currentMappingKey in Object.keys(currentGroup.mapping)"
@@ -16,6 +17,50 @@
                         </option>
                 </sw-field>
             {% endblock %}
+        </sw-card>
+
+        <sw-card class="swag-migration-premapping__valid-card"
+                 v-if="!isLoading && instantValid">
+            <div>
+                {% block swag_migration_premapping_success_bubble %}
+                    <div class="swag-migration-premapping__success-bubble">
+                        <sw-icon size="36px" class="swag-migration-premapping__success-icon" name="default-basic-checkmark-line" decorative></sw-icon>
+                    </div>
+                {% endblock %}
+
+                {% block swag_migration_premapping_success_title %}
+                    <div class="swag-migration-premapping__success-title">
+                        {{ $t('swag-migration.index.premappingCard.validTitle') }}
+                    </div>
+                {% endblock %}
+
+                {% block swag_migration_premapping_success_caption %}
+                    <div class="swag-migration-premapping__success-caption">
+                        {{ $t('swag-migration.index.premappingCard.validCaption') }}
+                    </div>
+                {% endblock %}
+            </div>
+        </sw-card>
+
+        <sw-card class="swag-migration-premapping__loading-card"
+                 v-if="isLoading">
+            <div>
+                {% block swag_migration_premapping_loader %}
+                    <sw-loader class="swag-migration-premapping__loader"></sw-loader>
+                {% endblock %}
+
+                {% block swag_migration_premapping_loading_title %}
+                    <div class="swag-migration-premapping__loading-title">
+                        {{ $t('swag-migration.index.premappingCard.loadingTitle') }}
+                    </div>
+                {% endblock %}
+
+                {% block swag_migration_premapping_loading_caption %}
+                    <div class="swag-migration-premapping__loading-caption">
+                        {{ $t('swag-migration.index.premappingCard.loadingCaption') }}
+                    </div>
+                {% endblock %}
+            </div>
         </sw-card>
     </div>
 {% endblock %}

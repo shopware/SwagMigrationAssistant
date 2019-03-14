@@ -34,6 +34,8 @@ $swag-migration-flow-item-color-error-bg: #FBE5EA;
     }
 
     &:first-child {
+        margin-top: 0;
+
         &:before {
             display: none;
         }
