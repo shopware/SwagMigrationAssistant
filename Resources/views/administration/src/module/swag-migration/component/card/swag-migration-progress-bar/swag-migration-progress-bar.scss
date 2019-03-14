@@ -1,0 +1,79 @@
+@import "~scss/variables";
+
+$swag-migration-progress-bar-icon-color:            #E0E5EE;
+$swag-migration-progress-bar-active-bubble-color:   #E3F3FF;
+$swag-migration-progress-bar-disabled-bubble-color: #F0F2F5;
+$swag-migration-progress-bar-value-color:           $color-shopware-blue;
+
+.swag-migration-progress-bar {
+  .swag-migration-progress-bar__progress-bar-container {
+    position: relative;
+    width: 80%;
+    margin: 0 auto;
+  }
+
+  .swag-migration-progress-bar__progress-bar {
+    margin-top: 12px;
+  }
+
+  .swag-migration-progress-bar__bubble {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .swag-migration-progress-bar__point {
+    position: absolute;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    top: 0;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .swag-migration-progress-bar__left-point {
+    transform: translate(-50%,0);
+    left: 0;
+  }
+
+  .swag-migration-progress-bar__center-bar {
+    width: 100%;
+    display: inline-block;
+  }
+
+  .swag-migration-progress-bar__right-point {
+    transform: translate(50%,0);
+    right: 0;
+  }
+
+  .swag-migration-progress-bar__bubble--active {
+    background-color: $swag-migration-progress-bar-active-bubble-color;
+    color: $swag-migration-progress-bar-value-color;
+  }
+
+  .swag-migration-progress-bar__bubble--disabled {
+    background-color: $swag-migration-progress-bar-disabled-bubble-color;
+
+    .swag-migration-progress-bar__icon {
+      color: $swag-migration-progress-bar-icon-color;
+    }
+  }
+
+  .swag-migration-progress-bar__caption {
+    margin-top: 12px;
+    font-size: 14px;
+    text-align: center;
+  }
+
+  .swag-migration-progress-bar__heading {
+    margin-bottom: 5px;
+    font-size: 14px;
+    text-align: center;
+    font-weight: 600;
+  }
+}

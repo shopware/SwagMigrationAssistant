@@ -1,0 +1,62 @@
+{% block swag_migration_progress_bar %}
+    <div class="swag-migration-progress-bar">
+
+        {% block swag_migration_progress_bar_heading %}
+            <div class="swag-migration-progress-bar__heading">
+                {{ title }}
+            </div>
+        {% endblock %}
+
+        {% block swag_migration_progress_bar %}
+            <div class="swag-migration-progress-bar__progress-bar-container">
+
+                {% block swag_migration_progress_bar_left_point %}
+                    <div class="swag-migration-progress-bar__point swag-migration-progress-bar__left-point">
+
+                        {% block swag_migration_progress_bar_left_bubble %}
+                            <div class="swag-migration-progress-bar__bubble swag-migration-progress-bar__bubble--active">
+                                <sw-icon class="swag-migration-progress-bar__icon" name="small-default-circle-medium" size="16px" small></sw-icon>
+                            </div>
+                        {% endblock %}
+
+                        {% block swag_migration_progress_bar_left_description %}
+                            <div class="swag-migration-progress-bar__left-description">
+                                {{ leftPointDescription }}
+                            </div>
+                        {% endblock %}
+                    </div>
+                {% endblock %}
+
+                {% block swag_migration_progress_bar_center_bar %}
+                    <div class="swag-migration-progress-bar__center-bar">
+                        {% block swag_migration_progress_bar_progress_bar %}
+                            <sw-progress-bar class="swag-migration-progress-bar__progress-bar" :value="value" :maxValue="maxValue"></sw-progress-bar>
+                        {% endblock %}
+
+                        {% block swag_migration_progress_bar_caption %}
+                            <div class="swag-migration-progress-bar__caption">
+                                {{ value }} / {{ maxValue }}
+                            </div>
+                        {% endblock%}
+                    </div>
+                {% endblock %}
+
+                {% block swag_migration_progress_bar_right_point %}
+                    <div class="swag-migration-progress-bar__point swag-migration-progress-bar__right-point">
+                        {% block swag_migration_progress_bar_right_bubble %}
+                            <div :class="rightPointClasses">
+                                <sw-icon class="swag-migration-progress-bar__icon" name="small-default-checkmark-line-medium" size="16px" small></sw-icon>
+                            </div>
+                        {% endblock %}
+
+                        {% block swag_migration_progress_bar_right_description %}
+                            <div class="swag-migration-progress-bar__right-description">
+                                {{ rightPointDescription }}
+                            </div>
+                        {% endblock %}
+                    </div>
+                {% endblock %}
+            </div>
+        {% endblock %}
+    </div>
+{% endblock %}
