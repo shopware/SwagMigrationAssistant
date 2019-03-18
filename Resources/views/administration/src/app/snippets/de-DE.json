@@ -175,6 +175,8 @@
         "validCaption": "Die Daten sind zum Fortfahren bereit",
         "loadingTitle": "Der Datencheck wird durchgeführt",
         "loadingCaption": "Die bisherigen Daten werden geprüft.",
+        "previousTitle": "Bisher",
+        "newAssignmentTitle": "Neue Zuordnung",
         "placeholder": "Bitte auswählen",
         "title": "Zuordnung - ",
         "group": {
