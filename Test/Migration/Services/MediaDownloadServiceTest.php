@@ -5,7 +5,6 @@ namespace SwagMigrationNext\Test\Migration;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Content\Media\File\FileSaver;
-use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -21,6 +20,7 @@ use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationNext\Migration\Service\MigrationDataWriter;
 use SwagMigrationNext\Migration\Service\MigrationDataWriterInterface;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Migration\Services\MigrationProfileUuidService;
@@ -114,11 +114,9 @@ class MediaDownloadServiceTest extends TestCase
         $context = Context::createDefaultContext();
 
         $migrationContext = new MigrationContext(
+            null,
             $this->runUuid,
-            $this->profileUuidService->getProfileUuid(),
-            Shopware55Profile::PROFILE_NAME,
-            Shopware55LocalGateway::GATEWAY_NAME,
-            ProductDefinition::getEntityName(),
+            new ProductDataSet(),
             0,
             250
         );

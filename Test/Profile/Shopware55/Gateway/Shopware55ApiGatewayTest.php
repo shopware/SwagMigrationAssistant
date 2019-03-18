@@ -8,17 +8,16 @@ use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\EnvironmentInformation;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Api\Shopware55ApiFactory;
+use SwagMigrationNext\Test\Profile\Shopware55\DataSet\FooDataSet;
 
 class Shopware55ApiGatewayTest extends TestCase
 {
     public function testReadFailed(): void
     {
         $migrationContext = new MigrationContext(
-            '',
             new SwagMigrationConnectionEntity(),
             '',
-            0,
-            0
+            new FooDataSet()
         );
 
         $this->expectException(GatewayReadException::class);
@@ -30,11 +29,7 @@ class Shopware55ApiGatewayTest extends TestCase
     public function testReadEnvironmentInformationFailed(): void
     {
         $migrationContext = new MigrationContext(
-            '',
-            new SwagMigrationConnectionEntity(),
-            '',
-            0,
-            0
+            new SwagMigrationConnectionEntity()
         );
 
         $factory = new Shopware55ApiFactory();

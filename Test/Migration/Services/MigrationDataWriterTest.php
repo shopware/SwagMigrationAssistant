@@ -4,11 +4,6 @@ namespace SwagMigrationNext\Test\Migration;
 
 use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\TestCase;
-use Shopware\Core\Checkout\Customer\CustomerDefinition;
-use Shopware\Core\Checkout\Order\OrderDefinition;
-use Shopware\Core\Content\Category\CategoryDefinition;
-use Shopware\Core\Content\Media\MediaDefinition;
-use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -31,6 +26,12 @@ use SwagMigrationNext\Migration\Service\MigrationDataWriterInterface;
 use SwagMigrationNext\Migration\Writer\CustomerWriter;
 use SwagMigrationNext\Migration\Writer\ProductWriter;
 use SwagMigrationNext\Migration\Writer\WriterRegistry;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CategoryDataSet;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CustomerDataSet;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\MediaDataSet;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\OrderDataSet;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\TranslationDataSet;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationNext\Profile\Shopware55\Premapping\OrderStateReader;
 use SwagMigrationNext\Profile\Shopware55\Premapping\PaymentMethodReader;
@@ -221,9 +222,9 @@ class MigrationDataWriterTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
-            $this->runUuid,
             $this->connection,
-            CustomerDefinition::getEntityName(),
+            $this->runUuid,
+            new CustomerDataSet(),
             0,
             250
         );
@@ -259,9 +260,9 @@ class MigrationDataWriterTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
-            $this->runUuid,
             $this->connection,
-            CustomerDefinition::getEntityName(),
+            $this->runUuid,
+            new CustomerDataSet(),
             0,
             250
         );
@@ -281,12 +282,11 @@ class MigrationDataWriterTest extends TestCase
     public function testWriteOrderData(): void
     {
         $context = Context::createDefaultContext();
-
         // Add users, who have ordered
         $userMigrationContext = new MigrationContext(
-            $this->runUuid,
             $this->connection,
-            CustomerDefinition::getEntityName(),
+            $this->runUuid,
+            new CustomerDataSet(),
             0,
             250
         );
@@ -297,9 +297,9 @@ class MigrationDataWriterTest extends TestCase
 
         // Add orders
         $migrationContext = new MigrationContext(
-            $this->runUuid,
             $this->connection,
-            OrderDefinition::getEntityName(),
+            $this->runUuid,
+            new OrderDataSet(),
             0,
             250
         );
@@ -336,9 +336,9 @@ class MigrationDataWriterTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
-            $this->runUuid,
             $this->connection,
-            MediaDefinition::getEntityName(),
+            $this->runUuid,
+            new MediaDataSet(),
             0,
             250
         );
@@ -359,9 +359,9 @@ class MigrationDataWriterTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
-            $this->runUuid,
             $this->connection,
-            CategoryDefinition::getEntityName(),
+            $this->runUuid,
+            new CategoryDataSet(),
             0,
             250
         );
@@ -382,9 +382,9 @@ class MigrationDataWriterTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
-            $this->runUuid,
             $this->connection,
-            ProductDefinition::getEntityName(),
+            $this->runUuid,
+            new ProductDataSet(),
             0,
             250
         );
@@ -404,11 +404,10 @@ class MigrationDataWriterTest extends TestCase
     public function testWriteTranslationData(): void
     {
         $context = Context::createDefaultContext();
-
         $migrationContext = new MigrationContext(
-            $this->runUuid,
             $this->connection,
-            ProductDefinition::getEntityName(),
+            $this->runUuid,
+            new ProductDataSet(),
             0,
             250
         );
@@ -419,9 +418,9 @@ class MigrationDataWriterTest extends TestCase
         $productTotalAfter = $this->productRepo->search($criteria, $context)->getTotal();
 
         $migrationContext = new MigrationContext(
-            $this->runUuid,
             $this->connection,
-            'translation',
+            $this->runUuid,
+            new TranslationDataSet(),
             0,
             250
         );
@@ -441,9 +440,9 @@ class MigrationDataWriterTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
-            $this->runUuid,
             $this->connection,
-            MediaDefinition::getEntityName(),
+            $this->runUuid,
+            new MediaDataSet(),
             0,
             250
         );

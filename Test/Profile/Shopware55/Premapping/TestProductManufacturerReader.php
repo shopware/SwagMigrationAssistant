@@ -32,13 +32,7 @@ class TestProductManufacturerReader extends TestCase
 
     public function testGetMapping(): void
     {
-        $migrationContext = new MigrationContext(
-            '',
-            null,
-            '',
-            0,
-            0
-        );
+        $migrationContext = new MigrationContext();
 
         /** @var PremappingStruct $premapping */
         $premapping = $this->productManufacturerReader->getPremapping($this->context, $migrationContext);

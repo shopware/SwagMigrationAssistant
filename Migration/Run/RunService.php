@@ -2,7 +2,6 @@
 
 namespace SwagMigrationNext\Migration\Run;
 
-use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\CountAggregation;
@@ -22,6 +21,7 @@ use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationNext\Migration\Service\ProgressState;
 use SwagMigrationNext\Migration\Service\SwagMigrationAccessTokenService;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\MediaDataSelection;
 
 class RunService implements RunServiceInterface
@@ -347,7 +347,7 @@ class RunService implements RunServiceInterface
     private function calculateProcessMediaFileProgress(): RunProgress
     {
         $entityProgress = new EntityProgress();
-        $entityProgress->setEntityName(MediaDefinition::getEntityName());
+        $entityProgress->setEntityName(MediaDataSet::getEntity());
         $entityProgress->setCurrentCount(0);
         $entityProgress->setTotal(0);
 
@@ -390,11 +390,7 @@ class RunService implements RunServiceInterface
     private function getEnvironmentInformation(SwagMigrationConnectionEntity $connection, Context $context): EnvironmentInformation
     {
         $migrationContext = new MigrationContext(
-            '',
-            $connection,
-            '',
-            0,
-            0
+            $connection
         );
 
         return $this->migrationDataFetcher->getEnvironmentInformation($migrationContext);
@@ -430,11 +426,7 @@ class RunService implements RunServiceInterface
     private function getDataSelectionCollection(SwagMigrationConnectionEntity $connection, EnvironmentInformation $environmentInformation, array $dataSelectionIds): DataSelectionCollection
     {
         $migrationContext = new MigrationContext(
-            '',
-            $connection,
-            '',
-            0,
-            0
+            $connection
         );
 
         return $this->dataSelectionRegistry->getDataSelectionsByIds($migrationContext, $environmentInformation, $dataSelectionIds);

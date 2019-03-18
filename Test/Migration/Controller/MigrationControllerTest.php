@@ -3,16 +3,18 @@
 namespace SwagMigrationNext\Test\Migration\Controller;
 
 use PHPUnit\Framework\TestCase;
-use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagMigrationNext\Controller\MigrationController;
+use SwagMigrationNext\Exception\EntityNotExistsException;
 use SwagMigrationNext\Exception\MigrationContextPropertyMissingException;
 use SwagMigrationNext\Exception\MigrationRunUndefinedStatusException;
 use SwagMigrationNext\Exception\MigrationWorkloadPropertyMissingException;
 use SwagMigrationNext\Migration\DataSelection\DataSelectionRegistry;
+use SwagMigrationNext\Migration\DataSelection\DataSet\DataSetRegistry;
+use SwagMigrationNext\Migration\DataSelection\DataSet\DataSetRegistryInterface;
 use SwagMigrationNext\Migration\Mapping\MappingService;
 use SwagMigrationNext\Migration\Media\MediaFileProcessorRegistry;
 use SwagMigrationNext\Migration\Media\MediaFileService;
@@ -21,6 +23,7 @@ use SwagMigrationNext\Migration\Run\RunService;
 use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationNext\Migration\Service\MigrationDataWriter;
 use SwagMigrationNext\Migration\Service\SwagMigrationAccessTokenService;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Migration\Services\MigrationProfileUuidService;
@@ -75,6 +78,11 @@ class MigrationControllerTest extends TestCase
      */
     private $connectionId;
 
+    /**
+     * @var DataSetRegistryInterface
+     */
+    private $dataSetRegistry;
+
     protected function setUp(): void
     {
         $context = Context::createDefaultContext();
@@ -85,6 +93,7 @@ class MigrationControllerTest extends TestCase
         $this->profileUuidService = new MigrationProfileUuidService($this->profileRepo, Shopware55Profile::PROFILE_NAME, Shopware55LocalGateway::GATEWAY_NAME);
         $this->generalSettingRepo = $this->getContainer()->get('swag_migration_general_setting.repository');
         $this->runRepo = $this->getContainer()->get('swag_migration_run.repository');
+        $this->dataSetRegistry = $this->getContainer()->get(DataSetRegistry::class);
 
         $context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) {
             $this->connectionId = Uuid::uuid4()->getHex();
@@ -151,7 +160,8 @@ class MigrationControllerTest extends TestCase
                 $dataRepo,
                 $mediaFileRepo
             ),
-            $this->runRepo
+            $this->runRepo,
+            $this->dataSetRegistry
         );
     }
 
@@ -173,12 +183,13 @@ class MigrationControllerTest extends TestCase
         $context = Context::createDefaultContext();
         $params = [
             'runUuid' => Uuid::uuid4()->getHex(),
-            'entity' => ProductDefinition::getEntityName(),
+            'entity' => ProductDataSet::getEntity(),
         ];
 
         $request = new Request([], $params);
-        $result = $this->controller->writeData($request, $context);
-        static::assertSame(['validToken' => true], json_decode($result->getContent(), true));
+
+        $this->expectException(EntityNotExistsException::class);
+        $this->controller->writeData($request, $context);
     }
 
     public function testFetchData(): void
@@ -187,7 +198,7 @@ class MigrationControllerTest extends TestCase
 
         $params = [
             'runUuid' => $this->runUuid,
-            'entity' => ProductDefinition::getEntityName(),
+            'entity' => ProductDataSet::getEntity(),
         ];
         $request = new Request([], $params);
         $result = $this->controller->fetchData($request, $context);
@@ -220,7 +231,7 @@ class MigrationControllerTest extends TestCase
 
         $properties = [
             'runUuid' => $this->runUuid,
-            'entity' => ProductDefinition::getEntityName(),
+            'entity' => ProductDataSet::getEntity(),
         ];
         unset($properties[$missingProperty]);
 
@@ -246,7 +257,7 @@ class MigrationControllerTest extends TestCase
     {
         $properties = [
             'runUuid' => $this->runUuid,
-            'entity' => ProductDefinition::getEntityName(),
+            'entity' => ProductDataSet::getEntity(),
         ];
         unset($properties[$missingProperty]);
 
@@ -263,7 +274,7 @@ class MigrationControllerTest extends TestCase
     {
         $params = [
             'runUuid' => $this->runUuid,
-            'entity' => ProductDefinition::getEntityName(),
+            'entity' => ProductDataSet::getEntity(),
         ];
         $context = Context::createDefaultContext();
 
@@ -402,10 +413,10 @@ class MigrationControllerTest extends TestCase
             $this->expectException(MigrationWorkloadPropertyMissingException::class);
             $this->expectExceptionMessage(sprintf('Required property "%s" for migration workload is missing', $missingProperty));
 
-            foreach ($inputWorkload as &$dataset) {
-                unset($dataset[$missingProperty]);
+            foreach ($inputWorkload as &$workload) {
+                unset($workload[$missingProperty]);
             }
-            unset($dataset);
+            unset($workload);
         } else {
             $this->expectException(MigrationContextPropertyMissingException::class);
             $this->expectExceptionMessage(sprintf('Required property "%s" for migration context is missing', $missingProperty));

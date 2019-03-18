@@ -3,8 +3,6 @@
 namespace SwagMigrationNext\Test\Profile\Shopware55\Converter;
 
 use PHPUnit\Framework\TestCase;
-use Shopware\Core\Content\Category\CategoryDefinition;
-use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Struct\Uuid;
 use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
@@ -15,6 +13,9 @@ use SwagMigrationNext\Profile\Shopware55\Converter\CategoryConverter;
 use SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\Converter\ProductConverter;
 use SwagMigrationNext\Profile\Shopware55\Converter\TranslationConverter;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CategoryDataSet;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\TranslationDataSet;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Mock\Migration\Logging\DummyLoggingService;
@@ -83,25 +84,25 @@ class TranslationConverterTest extends TestCase
         $this->profileId = Uuid::uuid4()->getHex();
 
         $this->migrationContext = new MigrationContext(
-            $this->runId,
             $connection,
-            'translation',
+            $this->runId,
+            new TranslationDataSet(),
             0,
             250
         );
 
         $this->productMigrationContext = new MigrationContext(
-            $this->runId,
             $connection,
-            ProductDefinition::getEntityName(),
+            $this->runId,
+            new ProductDataSet(),
             0,
             250
         );
 
         $this->categoryMigrationContext = new MigrationContext(
-            $this->runId,
             $connection,
-            CategoryDefinition::getEntityName(),
+            $this->runId,
+            new CategoryDataSet(),
             0,
             250
         );
@@ -109,7 +110,7 @@ class TranslationConverterTest extends TestCase
 
     public function testSupports(): void
     {
-        $supportsDefinition = $this->translationConverter->supports(Shopware55Profile::PROFILE_NAME, 'translation');
+        $supportsDefinition = $this->translationConverter->supports(Shopware55Profile::PROFILE_NAME, new TranslationDataSet());
 
         static::assertTrue($supportsDefinition);
     }

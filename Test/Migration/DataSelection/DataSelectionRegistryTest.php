@@ -66,11 +66,7 @@ class DataSelectionRegistryTest extends TestCase
     public function testGetDataSelections(): void
     {
         $migrationContext = new MigrationContext(
-          '',
-          $this->connection,
-          '',
-            0,
-            0
+          $this->connection
         );
 
         $expected = [
@@ -94,11 +90,7 @@ class DataSelectionRegistryTest extends TestCase
     {
         $this->dataSelectionRegistry = new DataSelectionRegistry(new DummyCollection([new MediaDataSelection()]));
         $migrationContext = new MigrationContext(
-            '',
-            $this->connection,
-            '',
-            0,
-            0
+            $this->connection
         );
 
         $dataSelections = $this->dataSelectionRegistry->getDataSelections($migrationContext, $this->environmentInformation);

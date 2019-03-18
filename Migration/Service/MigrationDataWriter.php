@@ -53,9 +53,9 @@ class MigrationDataWriter implements MigrationDataWriterInterface
 
     public function writeData(MigrationContextInterface $migrationContext, Context $context): void
     {
-        $entity = $migrationContext->getEntity();
+        $dataSet = $migrationContext->getDataSet();
         $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('entity', $entity));
+        $criteria->addFilter(new EqualsFilter('entity', $dataSet::getEntity()));
         $criteria->addFilter(new EqualsFilter('runId', $migrationContext->getRunUuid()));
         $criteria->addFilter(new NotFilter(MultiFilter::CONNECTION_AND, [new EqualsFilter('converted', null)]));
         $criteria->setOffset($migrationContext->getOffset());
@@ -87,15 +87,15 @@ class MigrationDataWriter implements MigrationDataWriterInterface
         }
 
         try {
-            $currentWriter = $this->writerRegistry->getWriter($entity);
+            $currentWriter = $this->writerRegistry->getWriter($dataSet::getEntity());
             $currentWriter->writeData($converted, $context);
         } catch (\Exception $exception) {
-            $this->loggingService->addError($migrationContext->getRunUuid(), (string) $exception->getCode(), '', $exception->getMessage(), ['entity' => $entity]);
+            $this->loggingService->addError($migrationContext->getRunUuid(), (string) $exception->getCode(), '', $exception->getMessage(), ['entity' => $dataSet::getEntity()]);
             $this->loggingService->saveLogging($context);
 
-            foreach ($updateWrittenData as &$dataset) {
-                $dataset['written'] = false;
-                $dataset['writeFailure'] = true;
+            foreach ($updateWrittenData as &$writtenData) {
+                $writtenData['written'] = false;
+                $writtenData['writeFailure'] = true;
             }
 
             return;
@@ -105,7 +105,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
         }
 
         // Update written-Flag of the media file in the media file table
-        if ($entity === MediaDefinition::getEntityName() || $entity === ProductDefinition::getEntityName()) {
+        if ($dataSet::getEntity() === MediaDefinition::getEntityName() || $dataSet::getEntity() === ProductDefinition::getEntityName()) {
             $this->mediaFileService->setWrittenFlag($converted, $migrationContext, $context);
         }
     }

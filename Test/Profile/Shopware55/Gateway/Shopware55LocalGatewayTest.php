@@ -4,15 +4,16 @@ namespace SwagMigrationNext\Test\Profile\Shopware55\Gateway;
 
 use Doctrine\DBAL\Exception\ConnectionException;
 use PHPUnit\Framework\TestCase;
-use Shopware\Core\Content\Product\ProductDefinition;
 use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\Gateway\GatewayFactoryRegistry;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalReaderNotFoundException;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalFactory;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationNext\Test\Profile\Shopware55\DataSet\FooDataSet;
 
 class Shopware55LocalGatewayTest extends TestCase
 {
@@ -35,11 +36,9 @@ class Shopware55LocalGatewayTest extends TestCase
         );
 
         $migrationContext = new MigrationContext(
-            '',
             $connection,
-            ProductDefinition::getEntityName(),
-            0,
-            0
+            '',
+            new ProductDataSet()
         );
 
         $factory = new Shopware55LocalFactory();
@@ -71,11 +70,9 @@ class Shopware55LocalGatewayTest extends TestCase
         );
 
         $migrationContext = new MigrationContext(
-            '',
             $connection,
-            'foo',
-            0,
-            0
+            '',
+            new FooDataSet()
         );
 
         $factory = new Shopware55LocalFactory();
@@ -98,11 +95,7 @@ class Shopware55LocalGatewayTest extends TestCase
         $connection->setCredentialFields([]);
 
         $migrationContext = new MigrationContext(
-            '',
-            $connection,
-            '',
-            0,
-            0
+            $connection
         );
 
         $factory = new Shopware55LocalFactory();

@@ -24,7 +24,7 @@ class ConverterRegistry implements ConverterRegistryInterface
     {
         $profileName = $context->getProfileName();
         foreach ($this->converters as $converter) {
-            if ($converter->supports($profileName, $context->getEntity())) {
+            if ($converter->supports($profileName, $context->getDataSet())) {
                 return $converter;
             }
         }

@@ -51,14 +51,14 @@ class DataSelectionStruct extends Struct
 
     public function __construct(
         string $id,
-        array $entityName,
+        array $entityNames,
         string $snippet,
         int $position,
         bool $processMediaFiles = false,
         string $dataType = self::BASIC_DATA_TYPE
     ) {
         $this->id = $id;
-        $this->entityNames = $entityName;
+        $this->entityNames = $entityNames;
         $this->snippet = $snippet;
         $this->position = $position;
         $this->processMediaFiles = $processMediaFiles;

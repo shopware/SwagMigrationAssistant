@@ -56,11 +56,7 @@ class Shopware55ApiEnvironmentReaderTest extends TestCase
         $environmentReader = new Shopware55ApiEnvironmentReader(
             $client,
             new MigrationContext(
-                '',
-                new SwagMigrationConnectionEntity(),
-                '',
-                0,
-                0
+                new SwagMigrationConnectionEntity()
             )
         );
 
@@ -95,11 +91,7 @@ class Shopware55ApiEnvironmentReaderTest extends TestCase
         $environmentReader = new Shopware55ApiEnvironmentReader(
             $client,
             new MigrationContext(
-                '',
-                new SwagMigrationConnectionEntity(),
-                '',
-                0,
-                0
+                new SwagMigrationConnectionEntity()
             )
         );
 
@@ -134,11 +126,7 @@ class Shopware55ApiEnvironmentReaderTest extends TestCase
         $environmentReader = new Shopware55ApiEnvironmentReader(
             $client,
             new MigrationContext(
-                '',
-                new SwagMigrationConnectionEntity(),
-                '',
-                0,
-                0
+                new SwagMigrationConnectionEntity()
             )
         );
 
@@ -165,11 +153,7 @@ class Shopware55ApiEnvironmentReaderTest extends TestCase
         $environmentReader = new Shopware55ApiEnvironmentReader(
             $client,
             new MigrationContext(
-                '',
-                new SwagMigrationConnectionEntity(),
-                '',
-                0,
-                0
+                new SwagMigrationConnectionEntity()
             )
         );
 
@@ -197,11 +181,7 @@ class Shopware55ApiEnvironmentReaderTest extends TestCase
         $environmentReader = new Shopware55ApiEnvironmentReader(
             $client,
             new MigrationContext(
-                '',
-                new SwagMigrationConnectionEntity(),
-                '',
-                0,
-                0
+                new SwagMigrationConnectionEntity()
             )
         );
 

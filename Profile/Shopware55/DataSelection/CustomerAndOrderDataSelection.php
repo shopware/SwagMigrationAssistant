@@ -2,10 +2,10 @@
 
 namespace SwagMigrationNext\Profile\Shopware55\DataSelection;
 
-use Shopware\Core\Checkout\Customer\CustomerDefinition;
-use Shopware\Core\Checkout\Order\OrderDefinition;
 use SwagMigrationNext\Migration\DataSelection\DataSelectionInterface;
 use SwagMigrationNext\Migration\DataSelection\DataSelectionStruct;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CustomerDataSet;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\OrderDataSet;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
 class CustomerAndOrderDataSelection implements DataSelectionInterface
@@ -19,12 +19,20 @@ class CustomerAndOrderDataSelection implements DataSelectionInterface
     {
         return new DataSelectionStruct(
             'customersOrders',
-            [
-                CustomerDefinition::getEntityName(),
-                OrderDefinition::getEntityName(),
-            ],
+            $this->getEntityNames(),
             'swag-migration.index.selectDataCard.dataSelection.customersOrders',
             200
         );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getEntityNames(): array
+    {
+        return [
+            CustomerDataSet::getEntity(),
+            OrderDataSet::getEntity(),
+        ];
     }
 }

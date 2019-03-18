@@ -9,6 +9,7 @@ use SwagMigrationNext\Exception\EntityNotExistsException;
 use SwagMigrationNext\Exception\MigrationContextPropertyMissingException;
 use SwagMigrationNext\Exception\MigrationWorkloadPropertyMissingException;
 use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationNext\Migration\DataSelection\DataSet\DataSetRegistryInterface;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Run\RunServiceInterface;
 use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
@@ -53,13 +54,19 @@ class MigrationController extends AbstractController
      */
     private $migrationRunRepo;
 
+    /**
+     * @var DataSetRegistryInterface
+     */
+    private $dataSetRegistry;
+
     public function __construct(
         MigrationDataFetcherInterface $migrationDataFetcher,
         MigrationDataWriterInterface $migrationDataWriter,
         MediaFileProcessorServiceInterface $mediaFileProcessorService,
         SwagMigrationAccessTokenService $accessTokenService,
         RunServiceInterface $runService,
-        EntityRepositoryInterface $migrationRunRepo
+        EntityRepositoryInterface $migrationRunRepo,
+        DataSetRegistryInterface $dataSetRegistry
     ) {
         $this->migrationDataFetcher = $migrationDataFetcher;
         $this->migrationDataWriter = $migrationDataWriter;
@@ -67,6 +74,7 @@ class MigrationController extends AbstractController
         $this->accessTokenService = $accessTokenService;
         $this->runService = $runService;
         $this->migrationRunRepo = $migrationRunRepo;
+        $this->dataSetRegistry = $dataSetRegistry;
     }
 
     /**
@@ -104,10 +112,12 @@ class MigrationController extends AbstractController
             throw new EntityNotExistsException(SwagMigrationConnectionEntity::class, $runUuid);
         }
 
+        $dataSet = $this->dataSetRegistry->getDataSet($run->getConnection()->getProfile()->getName(), $entity);
+
         $migrationContext = new MigrationContext(
-            $run->getId(),
             $run->getConnection(),
-            $entity,
+            $run->getId(),
+            $dataSet,
             $offset,
             $limit
         );
@@ -172,7 +182,16 @@ class MigrationController extends AbstractController
             ]);
         }
 
-        $migrationContext = new MigrationContext($runUuid, null, $entity, $offset, $limit);
+        /* @var SwagMigrationRunEntity $run */
+        $run = $this->migrationRunRepo->search(new Criteria([$runUuid]), $context)->first();
+
+        if ($run === null) {
+            throw new EntityNotExistsException(SwagMigrationRunEntity::class, $runUuid);
+        }
+
+        $dataSet = $this->dataSetRegistry->getDataSet($run->getConnection()->getProfile()->getName(), $entity);
+
+        $migrationContext = new MigrationContext(null, $runUuid, $dataSet, $offset, $limit);
         $this->migrationDataWriter->writeData($migrationContext, $context);
 
         return new JsonResponse([
@@ -274,11 +293,8 @@ class MigrationController extends AbstractController
         }
 
         $migrationContext = new MigrationContext(
-            $runUuid,
             $run->getConnection(),
-            '',
-            0,
-            0
+            $runUuid
         );
 
         $newWorkload = $this->mediaFileProcessorService->processMediaFiles($migrationContext, $context, $workload, $fileChunkByteSize);

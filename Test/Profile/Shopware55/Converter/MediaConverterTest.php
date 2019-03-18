@@ -3,13 +3,13 @@
 namespace SwagMigrationNext\Test\Profile\Shopware55\Converter;
 
 use PHPUnit\Framework\TestCase;
-use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Struct\Uuid;
 use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\Converter\MediaConverter;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Mock\Migration\Mapping\DummyMappingService;
 use SwagMigrationNext\Test\Mock\Migration\Media\DummyMediaFileService;
@@ -48,9 +48,9 @@ class MediaConverterTest extends TestCase
         $this->connection->setId(Uuid::uuid4()->getHex());
 
         $this->migrationContext = new MigrationContext(
-            $this->runId,
             $this->connection,
-            Shopware55Profile::PROFILE_NAME,
+            $this->runId,
+            new MediaDataSet(),
             0,
             250
         );
@@ -58,7 +58,7 @@ class MediaConverterTest extends TestCase
 
     public function testSupports(): void
     {
-        $supportsDefinition = $this->mediaConverter->supports(Shopware55Profile::PROFILE_NAME, MediaDefinition::getEntityName());
+        $supportsDefinition = $this->mediaConverter->supports(Shopware55Profile::PROFILE_NAME, new MediaDataSet());
 
         static::assertTrue($supportsDefinition);
     }

@@ -18,6 +18,7 @@ use SwagMigrationNext\Test\Mock\DummyCollection;
 use SwagMigrationNext\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationNext\Test\Mock\Migration\Mapping\DummyMappingService;
 use SwagMigrationNext\Test\Mock\Migration\Media\DummyMediaFileService;
+use SwagMigrationNext\Test\Profile\Shopware55\DataSet\FooDataSet;
 use Symfony\Component\HttpFoundation\Response;
 
 class ConverterRegistryTest extends TestCase
@@ -50,9 +51,9 @@ class ConverterRegistryTest extends TestCase
         $connection->setProfile($profile);
 
         $migrationContext = new MigrationContext(
-            Uuid::uuid4()->getHex(),
             $connection,
-            'foo',
+            Uuid::uuid4()->getHex(),
+            new FooDataSet(),
             0,
             250
         );

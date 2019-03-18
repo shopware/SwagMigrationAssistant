@@ -3,7 +3,6 @@
 namespace SwagMigrationNext\Test\Profile\Shopware55\Converter;
 
 use PHPUnit\Framework\TestCase;
-use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Struct\Uuid;
 use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
@@ -11,6 +10,7 @@ use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\MigrationContextInterface;
 use SwagMigrationNext\Profile\Shopware55\Converter\CategoryConverter;
 use SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CategoryDataSet;
 use SwagMigrationNext\Profile\Shopware55\Exception\ParentEntityForChildNotFoundException;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Mock\Migration\Logging\DummyLoggingService;
@@ -56,9 +56,9 @@ class CategoryConverterTest extends TestCase
         $this->connection->setId(Uuid::uuid4()->getHex());
 
         $this->migrationContext = new MigrationContext(
-            $this->runId,
             $this->connection,
-            CategoryDefinition::getEntityName(),
+            $this->runId,
+            new CategoryDataSet(),
             0,
             250
         );
@@ -66,7 +66,7 @@ class CategoryConverterTest extends TestCase
 
     public function testSupports(): void
     {
-        $supportsDefinition = $this->categoryConverter->supports(Shopware55Profile::PROFILE_NAME, CategoryDefinition::getEntityName());
+        $supportsDefinition = $this->categoryConverter->supports(Shopware55Profile::PROFILE_NAME, new CategoryDataSet());
 
         static::assertTrue($supportsDefinition);
     }
