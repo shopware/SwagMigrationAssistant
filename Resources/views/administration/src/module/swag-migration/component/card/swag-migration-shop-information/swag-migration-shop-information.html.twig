@@ -43,17 +43,15 @@
                                         <div class="swag-migration-shop-information__actions">
                                             {% block swag_migration_shop_information_actions_editSettings %}
                                                 <sw-button size="small"
-                                                           @click="onClickEditConnectionCredentials"
-                                                           :disabled="migrationProcessStore.state.isMigrating || migrationUIStore.state.isPaused || isOtherMigrationRunning">
+                                                           @click="onClickEditConnectionCredentials">
                                                     {{ $tc('swag-migration.index.shopInfoCard.buttonEditSettings') }}
                                                 </sw-button>
                                             {% endblock %}
 
                                             {% block swag_migration_shop_information_actions_contextMenu %}
-                                                <sw-context-button :disabled="migrationProcessStore.state.isMigrating || migrationUIStore.state.isPaused || isOtherMigrationRunning">
+                                                <sw-context-button>
                                                     <sw-button size="small"
-                                                               square slot="button"
-                                                               :disabled="migrationProcessStore.state.isMigrating || migrationUIStore.state.isPaused || isOtherMigrationRunning">
+                                                               square slot="button">
                                                         <sw-icon name="small-more" small></sw-icon>
                                                     </sw-button>
                                                     <sw-context-menu-item @click="onClickCreateConnection">

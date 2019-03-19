@@ -1,14 +1,32 @@
-.swag-migration-result-screen {
+@import "~scss/variables";
 
+$swag-migration-result-screen-caption-color: #B3BFCC;
+$swag-migration-result-screen-link-color: $color-shopware-blue;
+$swag-migration-result-screen-bubble-background-color: #E7F9E9;
+$swag-migration-result-screen-icon-color: $color-emerald;
+
+.swag-migration-result-screen {
     .swag-migration-result-screen__content {
         text-align: center;
         font-size: 12pt;
     }
 
     .swag-migration-result-screen__title {
-        margin-bottom: 40px;
-        margin-top: 30px;
-        font-weight: normal;
+        margin-bottom: 5px;
+        font-size: 18px;
+        font-weight: 600;
+    }
+
+    .swag-migration-result-screen__caption {
+        margin: 0 135px 28px 135px;
+        font-size: 14px;
+        color: $swag-migration-result-screen-caption-color;
+    }
+
+    .swag-migration-result-screen__link a {
+        font-size: 12px;
+        font-weight: 600;
+        color: $swag-migration-result-screen-link-color;
     }
 
     .swag-migration-result-screen__image {
@@ -40,5 +58,21 @@
         margin-bottom: 30px;
         max-height: 300px;
         overflow: scroll;
+    }
+
+    .swag-migration-result-screen__bubble {
+        margin: 12px auto 20px auto;
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        background-color: $swag-migration-result-screen-bubble-background-color;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .swag-migration-result-screen__icon {
+        color: $swag-migration-result-screen-icon-color;
     }
 }

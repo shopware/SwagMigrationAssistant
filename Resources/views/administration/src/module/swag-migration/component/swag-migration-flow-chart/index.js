@@ -72,14 +72,18 @@ Component.register('swag-migration-flow-chart', {
         itemVariant(newVariant) {
             this.setVariantForCurrentItem(newVariant);
         },
-        initialItemVariants(newItemVariants) {
-            this.setItemVariants(newItemVariants);
+        initialItemVariants: {
+            deep: true,
+            handler(newItemVariants) {
+                this.setItemVariants(newItemVariants);
+            }
         }
     },
 
     methods: {
         setItemVariants(itemVariants) {
-            for (let i = 0; i < itemVariants.length; i++) {
+            const max = Math.min(this.items.length, itemVariants.length);
+            for (let i = 0; i < max; i += 1) {
                 this.items[i].setVariant(itemVariants[i]);
             }
         },

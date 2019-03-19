@@ -2,34 +2,19 @@
     <sw-page class="swag-migration-index">
         {% block swag_migration_index_smart_bar_header %}
             <template slot="smart-bar-header">
-            <h2>
-                {{ $tc('sw-settings.index.title') }}
-                <sw-icon name="small-arrow-medium-right" small></sw-icon>
-                {{ $tc('swag-migration.general.mainMenuItemGeneral') }}
-            </h2>
+                <h2>
+                    {{ $tc('sw-settings.index.title') }}
+                    <sw-icon name="small-arrow-medium-right" small></sw-icon>
+                    {{ $tc('swag-migration.general.mainMenuItemGeneral') }}
+                </h2>
             </template>
         {% endblock %}
 
         <template v-if="!storesInitializing">
             {% block swag_migration_index_smart_bar_actions %}
                 <template slot="smart-bar-actions">
-                    <sw-button v-if="abortButtonVisible" @click="onActionButtonClick('onAbortButtonClick')">
-                        {{ $tc('swag-migration.index.abortButton') }}
-                    </sw-button>
-                    <sw-button v-if="backButtonVisible" @click="onActionButtonClick('onBackButtonClick')">
-                        {{ $tc('swag-migration.index.backButton') }}
-                    </sw-button>
-                    <sw-button variant="primary" v-if="migrateButtonVisible" @click="onMigrateButtonClick" :disabled="migrateButtonDisabled">
+                    <sw-button variant="primary" @click="onMigrateButtonClick" :disabled="migrateButtonDisabled">
                         {{ $tc('swag-migration.index.migrateButton') }}
-                    </sw-button>
-                    <sw-button variant="primary" v-if="pauseButtonVisible" @click="onActionButtonClick('onPauseButtonClick')" :disabled="pauseButtonDisabled">
-                        {{ $tc('swag-migration.index.pauseButton') }}
-                    </sw-button>
-                    <sw-button variant="primary" v-if="continueButtonVisible" @click="onActionButtonClick('onContinueButtonClick')">
-                        {{ $tc('swag-migration.index.continueButton') }}
-                    </sw-button>
-                    <sw-button variant="primary" v-if="startButtonVisible" @click="onActionButtonClick('onStartButtonClick')" :disabled="startButtonDisabled">
-                        {{ $tc('swag-migration.index.startButton') }}
                     </sw-button>
                 </template>
             {% endblock %}

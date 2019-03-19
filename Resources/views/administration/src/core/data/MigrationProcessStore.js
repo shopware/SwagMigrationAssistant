@@ -15,6 +15,7 @@ class MigrationProcessStore extends SimpleStateManagementStore {
             runId: null,
             isMigrating: false,
             entityGroups: [],
+            currentEntityGroupId: '',
             statusIndex: MIGRATION_STATUS.WAITING,
             errors: []
         };
@@ -62,6 +63,11 @@ class MigrationProcessStore extends SimpleStateManagementStore {
         this.state.statusIndex = newIndex;
     }
 
+    setCurrentEntityGroupId(newId) {
+        this._checkDebugging(this.state.currentEntityGroupId, newId);
+        this.state.currentEntityGroupId = newId;
+    }
+
     /**
      * @param {Object[]} entityGroups
      */
@@ -97,6 +103,7 @@ class MigrationProcessStore extends SimpleStateManagementStore {
         }
 
         targetGroup.currentCount = groupCurrentCount;
+        this.setCurrentEntityGroupId(targetGroup.id);
     }
 
     resetProgress() {

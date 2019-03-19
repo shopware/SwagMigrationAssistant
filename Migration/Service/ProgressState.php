@@ -6,11 +6,11 @@ use Shopware\Core\Framework\Struct\Struct;
 
 class ProgressState extends Struct
 {
-    public const STATUS_WAITING = -2;
-    public const STATUS_PREMAPPING = -1;
-    public const STATUS_FETCH_DATA = 0;
-    public const STATUS_WRITE_DATA = 1;
-    public const STATUS_DOWNLOAD_DATA = 2;
+    public const STATUS_WAITING = -1;
+    public const STATUS_PREMAPPING = 0;
+    public const STATUS_FETCH_DATA = 1;
+    public const STATUS_WRITE_DATA = 2;
+    public const STATUS_DOWNLOAD_DATA = 3;
 
     /**
      * @var string

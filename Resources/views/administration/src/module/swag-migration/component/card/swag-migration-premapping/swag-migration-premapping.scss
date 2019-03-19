@@ -1,0 +1,64 @@
+@import "~scss/variables";
+
+$swag-migration-premapping-bubble-background-color: #E7F9E9;
+$swag-migration-premapping-success-icon-color: $color-emerald;
+$swag-migration-premapping-caption-color: #B3BFCC;
+
+.swag-migration-premapping {
+    .swag-migration-premapping__valid-card {
+        text-align: center;
+        font-size: 14px;
+    }
+
+    .swag-migration-premapping__success-bubble {
+        margin: 12px auto 20px auto;
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        background-color: $swag-migration-premapping-bubble-background-color;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .swag-migration-premapping__success-icon {
+        color: $swag-migration-premapping-success-icon-color;
+    }
+
+    .swag-migration-premapping__success-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+
+    .swag-migration-premapping__success-caption {
+        color: $swag-migration-premapping-caption-color;
+        margin-bottom: 45px;
+    }
+
+    .swag-migration-premapping__loading-card {
+        text-align: center;
+        font-size: 14px;
+    }
+
+    .swag-migration-premapping__loading-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+
+    .swag-migration-premapping__loading-caption {
+        color: $swag-migration-premapping-caption-color;
+        margin-bottom: 45px;
+    }
+
+    .sw-loader.swag-migration-premapping__loader {
+        position: relative;
+        margin: 12px auto 42px auto;
+
+        .sw-loader__container {
+            transform: translate(-50%);
+        }
+    }
+}

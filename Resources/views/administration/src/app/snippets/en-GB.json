@@ -1,7 +1,7 @@
 {
   "swag-migration": {
     "general": {
-      "mainMenuItemGeneral": "Playground Connector",
+      "mainMenuItemGeneral": "Migration",
       "descriptionTextModule": "Module to import data from Shopware 5",
       "tabMain": "Overview",
       "tabHistory": "History",
@@ -108,12 +108,12 @@
     "index": {
       "title": "Overview",
       "migrateButton": "Import",
-      "startButton": "Start",
+      "startButton": "Continue",
       "pauseButton": "Pause",
       "continueButton": "Continue",
       "abortButton": "Abort",
       "finishButton": "Finish",
-      "backButton": "Overview",
+      "backButton": "Finish migration",
       "browserClosingHint": "Do you really want to abort the data import?",
       "migrationAlreadyRunning": "Import already started.",
       "pluginVersionText": "Please make sure your Shopware 5 backend is using the latest version of the Shopware Playground Connector Plugin.",
@@ -147,13 +147,14 @@
         },
         "headers": {
           "name": "Name",
-          "dateType": "Type",
+          "dataType": "Type",
           "total": "Datasets"
         },
         "dataSelection": {
           "customersOrders": "Customers & Orders",
           "categoriesProducts": "Categories & Products",
-          "media": "Media"
+          "media": "Media",
+          "processMediaFiles": "Media"
         },
         "entities": {
           "category": "Categories:",
@@ -169,6 +170,10 @@
         "touLinkText": "terms of use"
       },
       "premappingCard": {
+        "validTitle": "The data check is completed",
+        "validCaption": "The data is ready to proceed",
+        "loadingTitle": "The data check is running",
+        "loadingCaption": "The existing data is checked.",
         "placeholder": "Please choose",
         "title": "Mapping - ",
         "group": {
@@ -179,36 +184,44 @@
         }
       },
       "loadingScreenCard": {
-        "cardTitle": "Step {step} of {total}",
+        "flowChart": {
+          "premapping": "Data check",
+          "fetchData": "Reading data",
+          "writeData": "Writing data",
+          "processMedia": "Media download",
+          "finish": "Finish"
+        },
         "status": {
           "FETCH_DATA": {
-            "long": "Read data from {profileName} ...",
-            "short": "Read data"
+            "long": "The data will be read from your system",
+            "caption": "The new assignments are processed.",
+            "short": "Reading",
+            "hint": "Hint: The migration continues step by step in the background, explore Shopware 6."
           },
           "WRITE_DATA": {
-            "long": "Write data to Shopware Playground ...",
-            "short": "Write data"
+            "long": "The data is written in Shopware 6",
+            "caption": "Depending on the shop size it may take a bit longer.",
+            "short": "Writing",
+            "hint": "Hint: This step can be paused and continued."
           },
           "PROCESS_MEDIA_FILES": {
-            "long": "Download media to Shopware Playground ...",
-            "short": "Media download"
-          }
+            "long": "The media will be downloaded",
+            "caption": "Large image data can take some time to process.",
+            "short": "Download Media",
+            "hint": "Hint: If the connection is bad, pause the download and continue later."
+          },
+          "finish": "Finish"
         },
         "hintTitle": "Note:",
         "hint": "Please remain logged in and do not delete any data in the other shop system until the process is complete. You can work in the system, the process continues in the background.",
         "result": {
           "success": {
-            "title": "Done",
-            "contentTitle": "Data import done!",
-            "hintTitle": "Explore Shopware Playground!",
-            "hintContent": "From now on, you can discover our experiments or simply develop one yourself with your own data."
+            "title": "The migration was successful",
+            "caption": "You can find all details about the process in the history"
           },
           "warning": {
-            "title": "Done",
-            "contentTitle": "Data import not completed!",
-            "hintTitle": "Warning:",
-            "hintContent": "The import could not be completed properly. Imported data may be incorrect or incomplete.",
-            "warningListTitle": "No error occurred. | The following error occurred: | The following errors occurred:"
+            "title": "The migration was successful",
+            "caption": "Some data could not be migrated. You can see which data was migrated and which errors occurred in the history."
           }
         },
         "pauseScreen": {

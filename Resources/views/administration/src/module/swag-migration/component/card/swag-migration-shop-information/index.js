@@ -3,7 +3,6 @@ import { format } from 'src/core/service/util.service';
 import CriteriaFactory from 'src/core/factory/criteria.factory';
 import template from './swag-migration-shop-information.html.twig';
 import './swag-migration-shop-information.scss';
-import { MIGRATION_STATUS } from '../../../../../core/service/migration/swag-migration-worker-status-manager.service';
 
 const BADGE_TYPE = Object.freeze({
     SUCCESS: 'success',
@@ -22,10 +21,6 @@ Component.register('swag-migration-shop-information', {
         connected: {
             type: Boolean,
             default: false
-        },
-
-        isOtherMigrationRunning: {
-            type: Boolean
         }
     },
 
@@ -176,16 +171,6 @@ Component.register('swag-migration-shop-information', {
     },
 
     watch: {
-        'migrationProcessStore.state.statusIndex': {
-            /**
-             * @param {number} status
-             */
-            handler(status) {
-                if (status === MIGRATION_STATUS.FINISHED) {
-                    this.updateLastMigrationDate();
-                }
-            }
-        },
         'migrationProcessStore.state.connectionId': {
             immediate: true,
             /**

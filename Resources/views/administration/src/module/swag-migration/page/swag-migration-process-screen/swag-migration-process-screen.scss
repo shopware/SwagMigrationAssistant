@@ -1,0 +1,23 @@
+.swag-migration-process-screen {
+    .swag-migration-process-screen__flow-chart {
+        position: absolute;
+        padding-right: 56px;
+        top: 40px;
+        left: calc(50% - 800px / 2);
+        transform: translate(-100%, 0);
+    }
+
+    .sw-card {
+        .sw-card__title {
+            margin-bottom: 12px;
+            font-size: 18px;
+            line-height: 24px;
+
+            width: unset;
+            position: unset;
+            left: unset;
+            top: unset;
+            text-align: unset;
+        }
+    }
+}

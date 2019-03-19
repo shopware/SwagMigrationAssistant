@@ -1,12 +1,25 @@
 @import "~scss/variables";
 
-$swag-migration-loading-screen-progress-bar-title-font-size: $font-size-small;
+$sw-alert-color-success:                                        $color-emerald;
+$swag-migration-loading-screen-caption-color:                   #B3BFCC;
+$swag-migration-loading-screen-progress-bar-title-font-size:    $font-size-small;
 
 .swag-migration-loading-screen {
 
-    .swag-migration-loading-screen__title {
+    .swag-migration-loading-screen__header {
         text-align: center;
-        margin: 60px auto 50px auto;
+        margin: 5px auto 50px auto;
+    }
+
+    .swag-migration-loading-screen__title {
+        font-size: 18px;
+        font-weight: 600;
+        padding-bottom: 5px;
+    }
+
+    .swag-migration-loading-screen__caption {
+        font-size: 14px;
+        color: $swag-migration-loading-screen-caption-color;
     }
 
     .swag-migration-loading-screen__progress-bar-group {
@@ -31,5 +44,21 @@ $swag-migration-loading-screen-progress-bar-title-font-size: $font-size-small;
         .sw-loader__container {
             transform: translate(-50%);
         }
+    }
+
+    .swag-migration-loading-screen__hint {
+        margin-top: 59px;
+    }
+
+    .swag-migration-loading-screen__alert-icon {
+        color: $sw-alert-color-success;
+        position: absolute;
+        display: block;
+        left: 15px;
+        top: 22px;
+    }
+
+    .sw-alert {
+        padding: 22px 15px 22px 55px;
     }
 }

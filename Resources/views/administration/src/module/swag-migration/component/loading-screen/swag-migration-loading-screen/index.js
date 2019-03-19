@@ -7,16 +7,12 @@ import { MIGRATION_DISPLAY_STATUS } from
 Component.register('swag-migration-loading-screen', {
     template,
 
-    props: {
-        profileName: {
-            type: String
-        }
-    },
-
     data() {
         return {
             /** @type MigrationProcessStore */
-            migrationProcessStore: State.getStore('migrationProcess')
+            migrationProcessStore: State.getStore('migrationProcess'),
+            /** @type MigrationUIStore */
+            migrationUIStore: State.getStore('migrationUI')
         };
     },
 
@@ -25,60 +21,42 @@ Component.register('swag-migration-loading-screen', {
             return this.migrationProcessStore.getDisplayEntityGroups();
         },
 
-        progressBarCount() {
-            return this.displayEntityGroups.length;
-        },
-
-        progressBarContainerGridStyle() {
-            let style = '';
-            for (let i = 0; i < this.progressBarCount; i += 1) {
-                style = `${style} 1fr`;
-            }
-
-            return style;
-        },
-
         currentStatus() {
             return MIGRATION_DISPLAY_STATUS[this.migrationProcessStore.state.statusIndex];
         },
 
-        statusCount() {
-            let statusCount = Object.keys(MIGRATION_DISPLAY_STATUS).length;
-            let processMediaFiles = false;
-            this.migrationProcessStore.state.entityGroups.forEach((group) => {
-                if (group.processMediaFiles) {
-                    processMediaFiles = true;
-                }
-            });
-
-            if (!processMediaFiles) {
-                statusCount = Object.values(MIGRATION_DISPLAY_STATUS).filter((status) => {
-                    return (status !== 'PROCESS_MEDIA_FILES');
-                }).length;
-            }
-
-            return statusCount;
+        progressBarValue() {
+            return this.displayEntityGroups.reduce((sum, group) => sum + group.currentCount, 0);
         },
 
-        statusShort() {
-            return `${this.$t('swag-migration.index.loadingScreenCard.cardTitle', {
-                step: this.migrationProcessStore.state.statusIndex + 1,
-                total: this.statusCount
-            })} - ${this.$t(`swag-migration.index.loadingScreenCard.status.${this.currentStatus}.short`)}`;
+        progressBarMaxValue() {
+            return this.displayEntityGroups.reduce((sum, group) => sum + group.total, 0);
+        },
+
+        progressBarTitle() {
+            if (this.migrationProcessStore.state.currentEntityGroupId === '') {
+                return '';
+            }
+
+            return `${this.$t(
+                `swag-migration.index.selectDataCard.dataSelection.${this.migrationProcessStore.state.currentEntityGroupId}`
+            )}`;
+        },
+
+        progressBarLeftPointDescription() {
+            return `${this.$t(`swag-migration.index.loadingScreenCard.status.${this.currentStatus}.short`)}`;
+        },
+
+        caption() {
+            return this.$t(`swag-migration.index.loadingScreenCard.status.${this.currentStatus}.caption`);
         },
 
         statusLong() {
-            return this.$t(
-                `swag-migration.index.loadingScreenCard.status.${this.currentStatus}.long`,
-                { profileName: this.profileName }
-            );
+            return this.$t(`swag-migration.index.loadingScreenCard.status.${this.currentStatus}.long`);
         },
 
-        title() {
-            return this.$t('swag-migration.index.loadingScreenCard.cardTitle', {
-                step: this.migrationProcessStore.state.statusIndex + 1,
-                total: this.statusCount
-            });
+        hint() {
+            return this.$t(`swag-migration.index.loadingScreenCard.status.${this.currentStatus}.hint`);
         }
     }
 });

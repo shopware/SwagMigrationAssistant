@@ -6,25 +6,6 @@ Component.register('swag-migration-result-screen', {
     template,
 
     props: {
-        title: {
-            type: String,
-            required: true
-        },
-
-        cardTitle: {
-            type: String,
-            default() {
-                return this.$tc('swag-migration.index.loadingScreenCard.result.warning.title');
-            },
-            required: false
-        },
-
-        imagePath: {
-            type: String,
-            default: '',
-            required: false
-        },
-
         errorList: {
             type: Array,
             default() {
@@ -39,10 +20,20 @@ Component.register('swag-migration-result-screen', {
             return this.errorList.length > 0;
         },
 
-        svgClasses() {
-            return {
-                'swag-migration-result-screen__image--is-last': !this.hasErrors
-            };
+        title() {
+            if (this.hasErrors) {
+                return this.$t('swag-migration.index.loadingScreenCard.result.warning.title');
+            }
+
+            return this.$t('swag-migration.index.loadingScreenCard.result.success.title');
+        },
+
+        caption() {
+            if (this.hasErrors) {
+                return this.$t('swag-migration.index.loadingScreenCard.result.warning.caption');
+            }
+
+            return this.$t('swag-migration.index.loadingScreenCard.result.success.caption');
         }
     }
 });

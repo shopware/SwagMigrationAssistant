@@ -11,9 +11,9 @@ import { WORKER_INTERRUPT_TYPE } from './swag-migration-worker.service';
  * @type {Readonly<{"0": string, "1": string, "2": string}>}
  */
 export const WORKER_API_OPERATION = Object.freeze({
-    0: 'fetchData',
-    1: 'writeData',
-    2: 'downloadMedia'
+    1: 'fetchData',
+    2: 'writeData',
+    3: 'downloadMedia'
 });
 
 export class WorkerRequest {
