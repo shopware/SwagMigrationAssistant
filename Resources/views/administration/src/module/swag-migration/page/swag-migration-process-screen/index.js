@@ -286,6 +286,10 @@ Component.register('swag-migration-process-screen', {
                 this.flowChartItemVariant = 'success';
             }
 
+            if (currentStatus === MIGRATION_STATUS.PREMAPPING && this.migrationUIStore.state.unfilledPremapping.length > 0) {
+                this.flowChartItemVariant = 'error';
+            }
+
             this.flowChartInitialItemVariants = [];
             for (let i = 0; i < currentStatus; i += 1) {
                 this.flowChartInitialItemVariants.push('success');
@@ -587,6 +591,10 @@ Component.register('swag-migration-process-screen', {
             this.isOtherMigrationRunning = true;
             this.migrationUIStore.setComponentIndex(UI_COMPONENT_INDEX.TAKEOVER);
             this.migrationUIStore.setIsLoading(false);
+        },
+
+        onUnfilledPremapping() {
+            this.flowChartItemVariant = 'error';
         }
     }
 });

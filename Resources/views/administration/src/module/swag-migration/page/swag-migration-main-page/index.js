@@ -83,10 +83,15 @@ Component.register('swag-migration-main-page', {
         },
 
         async onMigrate() {
-            this.$nextTick().then(async () => {
+            this.$nextTick().then(() => {
                 this.migrationProcessStore.setIsMigrating(true);
+                /**
+                 * reset the premapping because it does not get fetched again if not empty
+                 * this will ensure that the user can navigate outside of the module and keep the premapping
+                 */
+                this.migrationUIStore.setPremapping([]);
 
-                // show loading screen
+                // navigate to process screen
                 this.migrationUIStore.setIsLoading(true);
                 this.$router.push({ name: 'swag.migration.processScreen', params: { startMigration: true } });
             });

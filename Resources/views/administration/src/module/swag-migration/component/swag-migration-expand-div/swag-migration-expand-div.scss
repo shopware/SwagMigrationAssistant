@@ -1,0 +1,25 @@
+$swag-migration-expand-div-title-color: #189EFF;
+$swag-migration-expand-div-line-color: #D1D9E0;
+
+.swag-migration-expand-div {
+    .swag-migration-expand-div__title {
+        margin: 0 auto;
+        max-width: 800px;
+        text-align: center;
+        font-size: 14px;
+        line-height: 0.5;
+        color: $swag-migration-expand-div-title-color;
+        cursor: pointer;
+        display:grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-column-gap: 20px;
+        white-space: nowrap;
+
+        &::before, &::after {
+            content: '';
+            height: 5px;
+            border-bottom: 1px solid $swag-migration-expand-div-line-color;
+            width: 100%;
+        }
+    }
+}

@@ -44,19 +44,23 @@ Component.register('swag-migration-loading-screen', {
         },
 
         progressBarLeftPointDescription() {
-            return `${this.$t(`swag-migration.index.loadingScreenCard.status.${this.currentStatus}.short`)}`;
+            return this.currentStatus === undefined ? '' :
+                `${this.$t(`swag-migration.index.loadingScreenCard.status.${this.currentStatus}.short`)}`;
         },
 
         caption() {
-            return this.$t(`swag-migration.index.loadingScreenCard.status.${this.currentStatus}.caption`);
+            return this.currentStatus === undefined ? '' :
+                this.$t(`swag-migration.index.loadingScreenCard.status.${this.currentStatus}.caption`);
         },
 
         statusLong() {
-            return this.$t(`swag-migration.index.loadingScreenCard.status.${this.currentStatus}.long`);
+            return this.currentStatus === undefined ? '' :
+                this.$t(`swag-migration.index.loadingScreenCard.status.${this.currentStatus}.long`);
         },
 
         hint() {
-            return this.$t(`swag-migration.index.loadingScreenCard.status.${this.currentStatus}.hint`);
+            return this.currentStatus === undefined ? '' :
+                this.$t(`swag-migration.index.loadingScreenCard.status.${this.currentStatus}.hint`);
         }
     }
 });

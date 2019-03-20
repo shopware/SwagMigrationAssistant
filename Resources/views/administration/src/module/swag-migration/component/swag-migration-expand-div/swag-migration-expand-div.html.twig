@@ -1,0 +1,31 @@
+{% block swag_migration_expand_div %}
+    <div class="swag-migration-expand-div">
+        <div class="swag-migration-expand-div__title">
+            <div class="swag-migration-expand-div__link"
+                 @click="onClick">
+                <div v-if="isExpanded">
+                    {{ expandTitle }}
+                    <sw-icon size="16px"
+                             name="default-arrow-circle-up"
+                             class="swag-migration-expand-div__icon" >
+                    </sw-icon>
+                </div>
+                <div v-else>
+                    {{ collapseTitle }}
+                    <sw-icon size="16px"
+                             name="default-arrow-circle-down"
+                             class="swag-migration-expand-div__icon" >
+                    </sw-icon>
+                </div>
+            </div>
+        </div>
+
+        <div class="swag-migration-expand-div__slot"
+             v-show="isExpanded">
+            <slot>
+                {% block swag_migration_expand_div_slot %}
+                {% endblock %}
+            </slot>
+        </div>
+    </div>
+{% endblock %}

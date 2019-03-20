@@ -33,8 +33,20 @@ Component.register('swag-migration-premapping', {
         'migrationProcessStore.state.runId': {
             immediate: true,
             handler(newRunId) {
-                this.fetchPremapping(newRunId);
+                if (newRunId.length > 0) {
+                    this.fetchPremapping(newRunId);
+                }
             }
+        }
+    },
+
+    computed: {
+        displayUnfilledPremapping() {
+            return this.migrationUIStore.state.unfilledPremapping.length > 0;
+        },
+
+        displayFilledPremapping() {
+            return this.migrationUIStore.state.filledPremapping.length > 0;
         }
     },
 
@@ -45,9 +57,8 @@ Component.register('swag-migration-premapping', {
             if (this.migrationUIStore.state.premapping !== null && this.migrationUIStore.state.premapping.length > 0) {
                 this.migrationUIStore.setIsPremappingValid(false);
                 this.$nextTick(() => {
-                    this.premappingInput = this.migrationUIStore.state.premapping;
                     this.validatePremapping();
-                    this.instantValid = this.migrationUIStore.state.isPremappingValid;
+                    this.instantValid = this.migrationUIStore.state.unfilledPremapping.length === 0;
                     this.isLoading = false;
                 });
                 return;
@@ -62,25 +73,26 @@ Component.register('swag-migration-premapping', {
                         this.onInvalidMigrationAccessToken();
                     });
                 } else {
-                    this.premappingInput = premapping;
+                    this.migrationUIStore.setPremapping(premapping);
                     this.validatePremapping();
-                    this.instantValid = this.migrationUIStore.state.isPremappingValid;
+                    this.instantValid = this.migrationUIStore.state.unfilledPremapping.length === 0;
+
+                    if (!this.instantValid) {
+                        this.$emit('unfilledPremapping');
+                    }
+
                     this.isLoading = false;
                 }
             });
         },
 
         validatePremapping() {
-            let isValid = true;
-            this.premappingInput.forEach((group) => {
-                group.mapping.forEach((mapping) => {
-                    if (mapping.destinationUuid === null || mapping.destinationUuid.length === 0) {
-                        isValid = false;
-                    }
+            const isValid = !this.migrationUIStore.state.premapping.some((group) => {
+                return group.mapping.some((mapping) => {
+                    return mapping.destinationUuid === null || mapping.destinationUuid.length === 0;
                 });
             });
 
-            this.migrationUIStore.setPremapping(this.premappingInput);
             this.migrationUIStore.setIsPremappingValid(isValid);
         }
     }

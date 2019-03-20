@@ -57,7 +57,8 @@
                 {% endblock %}
 
                 {% block swag_migration_index_main_page_card_premapping %}
-                    <swag-migration-premapping v-if="migrationUIStore.state.componentIndex === UI_COMPONENT_INDEX.PREMAPPING">
+                    <swag-migration-premapping v-if="migrationUIStore.state.componentIndex === UI_COMPONENT_INDEX.PREMAPPING"
+                                               @unfilledPremapping="onUnfilledPremapping">
                     </swag-migration-premapping>
                 {% endblock %}
 
