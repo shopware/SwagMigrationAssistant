@@ -55,6 +55,7 @@
               "contentInformation": "Für die Verbindung benötigst Du den API-Schlüssel und den Benutzernamen. Diese findest Du in der Benutzerverwaltung Deines Shop-Backends. Aktiviere da den API-Zugang und bestätige mit „Speichern“.",
               "apiKeyLabel": "API-Schlüssel",
               "apiKeyPlaceholder": "Schlüssel einfügen",
+              "apiKeyInvalid": "Der API-Schlüssel hat nicht die richtige Länge ({length}/40 Zeichen).",
               "apiUserLabel": "Benutzername (API-User)",
               "apiUserPlaceholder": "Login-Benutzernamen eintragen",
               "endpointLabel": "Shop-Domain",
