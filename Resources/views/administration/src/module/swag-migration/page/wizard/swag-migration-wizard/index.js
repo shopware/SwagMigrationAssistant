@@ -65,7 +65,8 @@ Component.register('swag-migration-wizard', {
             childRouteReady: false, // child routes with forms will emit and change this value depending on their validation.
             errorMessageSnippet: '',
             migrationProcessStore: State.getStore('migrationProcess'),
-            migrationUIStore: State.getStore('migrationUI')
+            migrationUIStore: State.getStore('migrationUI'),
+            connectionNameErrorSnippet: ''
         };
     },
 
@@ -341,6 +342,10 @@ Component.register('swag-migration-wizard', {
                 // clicked Next (save selected profile)
                 this.createNewConnection().then(() => {
                     this.navigateToNext();
+                }).catch(() => {
+                    this.connectionNameErrorSnippet =
+                        'swag-migration.wizard.pages.connectionCreate.connectionNameExistsError';
+                    this.isLoading = false;
                 });
                 return;
             }
@@ -445,17 +450,32 @@ Component.register('swag-migration-wizard', {
 
         createNewConnection() {
             this.isLoading = true;
+            return this.checkConnectionName(this.connectionName).then((valid) => {
+                if (!valid) {
+                    this.isLoading = false;
+                    return Promise.reject();
+                }
 
-            const newConnection = this.migrationConnectionStore.create();
-            newConnection.profileId = this.selectedProfile.id;
-            newConnection.name = this.connectionName;
-            return newConnection.save().then((savedConnection) => {
-                return this.saveSelectedConnection(savedConnection);
+                this.connectionNameErrorSnippet = '';
+                const newConnection = this.migrationConnectionStore.create();
+                newConnection.profileId = this.selectedProfile.id;
+                newConnection.name = this.connectionName;
+                return newConnection.save().then((savedConnection) => {
+                    return this.saveSelectedConnection(savedConnection);
+                });
+            });
+        },
+
+        checkConnectionName(name) {
+            return this.migrationConnectionStore.getList({
+                criteria: CriteriaFactory.equals('name', name)
+            }).then((res) => {
+                return res.items.length === 0;
             });
         },
 
         saveSelectedConnection(connection) {
-            return new Promise((resolve) => {
+            return new Promise((resolve, reject) => {
                 this.isLoading = true;
 
                 this.migrationGeneralSettingStore.getList({ limit: 1 }).then((response) => {
@@ -463,7 +483,7 @@ Component.register('swag-migration-wizard', {
                         (response && response.items.length < 1)
                     ) {
                         this.isLoading = false;
-                        resolve();
+                        reject();
                         return;
                     }
 
@@ -475,11 +495,11 @@ Component.register('swag-migration-wizard', {
                         resolve();
                     }).catch(() => {
                         this.isLoading = false;
-                        resolve();
+                        reject();
                     });
                 }).catch(() => {
                     this.isLoading = false;
-                    resolve();
+                    reject();
                 });
             });
         },

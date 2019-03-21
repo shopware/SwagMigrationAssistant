@@ -37,7 +37,8 @@
           "gatewayPlaceholder": "Bitte wählen",
           "connectionLabel": "Name",
           "connectionPlaceholder": "Namen eintragen",
-          "connectionTooltip": "Gib einen eindeutigen Namen für die Verbindung ein. Wir empfehlen Dir, Deine Domain als Namen zu verwenden."
+          "connectionTooltip": "Gib einen einzigartigen Namen für die Verbindung ein. Wir empfehlen Dir, Deine Domain als Namen zu verwenden.",
+          "connectionNameExistsError": "Verbindungsname existiert bereits."
         },
         "profileInformation": {
           "title": "Migration - Verbindung vorbereiten",

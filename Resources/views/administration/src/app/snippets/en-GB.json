@@ -37,7 +37,8 @@
           "gatewayPlaceholder": "Select gateway",
           "connectionLabel": "Name",
           "connectionPlaceholder": "Enter name",
-          "connectionTooltip": "Enter a unique name for the connection. We recommend using the respective domain name for this."
+          "connectionTooltip": "Enter a unique name for the connection. We recommend using the respective domain name for this.",
+          "connectionNameExistsError": "Connection name already exists."
         },
         "profileInformation": {
           "title": "Migration - Connection preparation",

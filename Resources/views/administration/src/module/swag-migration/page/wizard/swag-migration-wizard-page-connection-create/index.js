@@ -5,6 +5,14 @@ import template from './swag-migration-wizard-page-connection-create.html.twig';
 Component.register('swag-migration-wizard-page-connection-create', {
     template,
 
+    props: {
+        connectionNameErrorSnippet: {
+            type: String,
+            default: '',
+            required: false
+        }
+    },
+
     created() {
         this.createdComponent();
     },
