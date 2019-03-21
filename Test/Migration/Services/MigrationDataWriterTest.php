@@ -74,11 +74,6 @@ class MigrationDataWriterTest extends TestCase
     /**
      * @var EntityRepositoryInterface
      */
-    private $discountRepo;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
     private $orderRepo;
 
     /**
@@ -337,29 +332,6 @@ class MigrationDataWriterTest extends TestCase
         static::assertSame(0, $jpyInvalidTotalAfter - $jpyInvalidTotalBefore);
     }
 
-    public function testWriteCustomerGroupDiscounts(): void
-    {
-        $context = Context::createDefaultContext();
-        $migrationContext = new MigrationContext(
-            $this->runUuid,
-            $this->connection,
-            CustomerDefinition::getEntityName(),
-            0,
-            250
-        );
-
-        $this->migrationDataFetcher->fetchData($migrationContext, $context);
-        $criteria = new Criteria();
-        $discountTotalBefore = $this->discountRepo->search($criteria, $context)->getTotal();
-
-        $context->scope(SourceContext::ORIGIN_API, function (Context $context) use ($migrationContext) {
-            $this->migrationDataWriter->writeData($migrationContext, $context);
-        });
-        $discountTotalAfter = $this->discountRepo->search($criteria, $context)->getTotal();
-
-        static::assertSame(1, $discountTotalAfter - $discountTotalBefore);
-    }
-
     public function testWriteMediaData(): void
     {
         $context = Context::createDefaultContext();
@@ -499,7 +471,6 @@ class MigrationDataWriterTest extends TestCase
         $this->stateMachineRepository = $this->getContainer()->get('state_machine.repository');
         $this->stateMachineStateRepository = $this->getContainer()->get('state_machine_state.repository');
         $this->productTranslationRepo = $this->getContainer()->get('product_translation.repository');
-        $this->discountRepo = $this->getContainer()->get('customer_group_discount.repository');
         $this->currencyRepo = $this->getContainer()->get('currency.repository');
     }
 

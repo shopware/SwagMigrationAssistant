@@ -291,29 +291,6 @@ class CustomerConverterTest extends TestCase
         static::assertSame($description, $logs[2]['logEntry']['description']);
     }
 
-    public function testConvertWithCustomerGroupDiscounts(): void
-    {
-        $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
-
-        $context = Context::createDefaultContext();
-        $convertResult = $this->customerConverter->convert(
-            $customerData[1],
-            $context,
-            $this->migrationContext
-        );
-
-        $converted = $convertResult->getConverted();
-
-        static::assertNull($convertResult->getUnmapped());
-        static::assertArrayHasKey('id', $converted);
-        static::assertArrayHasKey('group', $converted);
-        static::assertArrayHasKey('addresses', $converted);
-        static::assertSame(Defaults::SALES_CHANNEL, $converted['salesChannelId']);
-        static::assertSame('Kundengruppe-Netto', $converted['lastName']);
-        static::assertSame(5.0, $converted['group']['discounts'][0]['percentageDiscount']);
-        static::assertCount(0, $this->loggingService->getLoggingArray());
-    }
-
     public function requiredAddressProperties(): array
     {
         return [

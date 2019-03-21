@@ -3,7 +3,6 @@
 namespace SwagMigrationNext\Profile\Shopware55\Converter;
 
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerGroup\CustomerGroupDefinition;
-use Shopware\Core\Checkout\Customer\Aggregate\CustomerGroupDiscount\CustomerGroupDiscountDefinition;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerGroupTranslation\CustomerGroupTranslationDefinition;
 use Shopware\Core\Framework\Context;
 use SwagMigrationNext\Migration\Converter\AbstractConverter;
@@ -82,12 +81,7 @@ class CustomerGroupConverter extends AbstractConverter
         $this->helper->convertValue($converted, 'minimumOrderAmount', $data, 'minimumorder', $this->helper::TYPE_FLOAT);
         $this->helper->convertValue($converted, 'minimumOrderAmountSurcharge', $data, 'minimumordersurcharge', $this->helper::TYPE_FLOAT);
 
-        if (isset($data['discounts'])) {
-            $converted['discounts'] = $this->getCustomerGroupDiscount($data['discounts'], $converted['id']);
-            unset($data['discounts']);
-        }
         $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $locale, $context);
-
         if (isset($languageData['createData']) && !empty($languageData['createData'])) {
             $translation['language']['id'] = $languageData['uuid'];
             $translation['language']['localeId'] = $languageData['createData']['localeId'];
@@ -108,26 +102,5 @@ class CustomerGroupConverter extends AbstractConverter
     public function writeMapping(Context $context): void
     {
         $this->mappingService->writeMapping($context);
-    }
-
-    private function getCustomerGroupDiscount(array $oldDiscounts, $groupId): array
-    {
-        $discounts = [];
-        foreach ($oldDiscounts as $oldDiscount) {
-            $discount['id'] = $this->mappingService->createNewUuid(
-                $this->connectionId,
-                CustomerGroupDiscountDefinition::getEntityName(),
-                (string) $oldDiscount['id'],
-                $this->context
-            );
-
-            $discount['customerGroupId'] = $groupId;
-            $this->helper->convertValue($discount, 'percentageDiscount', $oldDiscount, 'basketdiscount', $this->helper::TYPE_FLOAT);
-            $this->helper->convertValue($discount, 'minimumCartAmount', $oldDiscount, 'basketdiscountstart', $this->helper::TYPE_FLOAT);
-
-            $discounts[] = $discount;
-        }
-
-        return $discounts;
     }
 }
