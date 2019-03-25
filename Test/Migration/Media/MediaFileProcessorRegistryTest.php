@@ -14,6 +14,7 @@ use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Mock\DummyCollection;
 use SwagMigrationNext\Test\Mock\Migration\Media\DummyHttpMediaDownloadService;
+use SwagMigrationNext\Test\Profile\Shopware55\DataSet\FooDataSet;
 use Symfony\Component\HttpFoundation\Response;
 
 class MediaFileProcessorRegistryTest extends TestCase
@@ -45,11 +46,9 @@ class MediaFileProcessorRegistryTest extends TestCase
         $connection->setCredentialFields([]);
 
         $context = new MigrationContext(
-            '',
             $connection,
-            'foo',
-            0,
-            0
+            '',
+            new FooDataSet()
         );
 
         try {

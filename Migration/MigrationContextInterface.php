@@ -3,6 +3,7 @@
 namespace SwagMigrationNext\Migration;
 
 use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationNext\Migration\DataSelection\DataSet\DataSet;
 
 interface MigrationContextInterface
 {
@@ -14,7 +15,7 @@ interface MigrationContextInterface
 
     public function getGatewayName(): ?string;
 
-    public function getEntity(): string;
+    public function getDataSet(): ?DataSet;
 
     public function getOffset(): int;
 

@@ -54,15 +54,16 @@ class MediaFileService implements MediaFileServiceInterface
 
     public function setWrittenFlag(array $converted, MigrationContextInterface $migrationContext, Context $context): void
     {
-        $entity = $migrationContext->getEntity();
+        $dataSet = $migrationContext->getDataSet();
+
         $mediaUuids = [];
         foreach ($converted as $data) {
-            if ($entity === MediaDefinition::getEntityName()) {
+            if ($dataSet::getEntity() === MediaDefinition::getEntityName()) {
                 $mediaUuids[] = $data['id'];
                 continue;
             }
 
-            if ($entity === ProductDefinition::getEntityName()) {
+            if ($dataSet::getEntity() === ProductDefinition::getEntityName()) {
                 if (!isset($data['media'])) {
                     continue;
                 }

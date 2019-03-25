@@ -104,11 +104,7 @@ class StatusController extends AbstractController
         }
 
         $migrationContext = new MigrationContext(
-            '',
-            $connection,
-            '',
-            0,
-            0
+            $connection
         );
         $environmentInformation = $this->migrationDataFetcher->getEnvironmentInformation($migrationContext);
 
@@ -140,11 +136,7 @@ class StatusController extends AbstractController
         }
 
         $migrationContext = new MigrationContext(
-            '',
-            $connection,
-            '',
-            0,
-            0
+            $connection
         );
 
         $information = $this->migrationDataFetcher->getEnvironmentInformation($migrationContext);

@@ -10,6 +10,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 use Shopware\Core\Framework\Struct\Uuid;
 use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationNext\Migration\DataSelection\DataSet\DataSetRegistryInterface;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
 use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
@@ -43,6 +44,11 @@ class MigrationFetchDataCommand extends Command
      * @var EntityRepositoryInterface
      */
     private $migrationDataRepo;
+
+    /**
+     * @var DataSetRegistryInterface
+     */
+    private $dataSetRegistry;
 
     /**
      * @var string
@@ -79,6 +85,7 @@ class MigrationFetchDataCommand extends Command
         EntityRepositoryInterface $migrationRunRepo,
         EntityRepositoryInterface $migrationProfileRepo,
         EntityRepositoryInterface $migrationDataRepo,
+        DataSetRegistryInterface $dataSetRegistry,
         ?string $name = null
     ) {
         parent::__construct($name);
@@ -86,6 +93,7 @@ class MigrationFetchDataCommand extends Command
         $this->migrationRunRepo = $migrationRunRepo;
         $this->migrationProfileRepo = $migrationProfileRepo;
         $this->migrationDataRepo = $migrationDataRepo;
+        $this->dataSetRegistry = $dataSetRegistry;
     }
 
     protected function configure(): void
@@ -182,11 +190,13 @@ class MigrationFetchDataCommand extends Command
         $progressBar = new ProgressBar($output, $total);
         $progressBar->start();
 
+        $dataSet = $this->dataSetRegistry->getDataSet($this->profileName, $this->entityName);
+
         for ($offset = 0; $offset < $total; $offset += $this->limit) {
             $migrationContext = new MigrationContext(
-                $runUuid,
                 new SwagMigrationConnectionEntity(),
-                $this->entityName,
+                $runUuid,
+                $dataSet,
                 $offset,
                 $this->limit
             );

@@ -49,7 +49,8 @@ class MigrationDataFetcher implements MigrationDataFetcherInterface
             }
             $returnCount = $profile->convert($data, $migrationContext, $context);
         } catch (\Exception $exception) {
-            $this->loggingService->addError($migrationContext->getRunUuid(), (string) $exception->getCode(), '', $exception->getMessage(), ['entity' => $migrationContext->getEntity()]);
+            $dataSet = $migrationContext->getDataSet();
+            $this->loggingService->addError($migrationContext->getRunUuid(), (string) $exception->getCode(), '', $exception->getMessage(), ['entity' => $dataSet::getEntity()]);
             $this->loggingService->saveLogging($context);
         }
 

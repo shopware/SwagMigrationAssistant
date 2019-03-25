@@ -3,7 +3,6 @@
 namespace SwagMigrationNext\Test\Profile\Shopware55\Converter;
 
 use PHPUnit\Framework\TestCase;
-use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Struct\Uuid;
 use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
@@ -13,6 +12,7 @@ use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
 use SwagMigrationNext\Profile\Shopware55\Converter\CategoryConverter;
 use SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\Converter\ProductConverter;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
 use SwagMigrationNext\Profile\Shopware55\Exception\ParentEntityForChildNotFoundException;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
@@ -69,9 +69,9 @@ class ProductConverterTest extends TestCase
         $this->connection->setProfile($profile);
 
         $this->migrationContext = new MigrationContext(
-            $this->runId,
             $this->connection,
-            ProductDefinition::getEntityName(),
+            $this->runId,
+            new ProductDataSet(),
             0,
             250
         );
@@ -79,7 +79,7 @@ class ProductConverterTest extends TestCase
 
     public function testSupports(): void
     {
-        $supportsDefinition = $this->productConverter->supports(Shopware55Profile::PROFILE_NAME, ProductDefinition::getEntityName());
+        $supportsDefinition = $this->productConverter->supports(Shopware55Profile::PROFILE_NAME, new ProductDataSet());
 
         static::assertTrue($supportsDefinition);
     }

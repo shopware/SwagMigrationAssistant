@@ -3,7 +3,6 @@
 namespace SwagMigrationNext\Test\Profile\Shopware55\Converter;
 
 use PHPUnit\Framework\TestCase;
-use Shopware\Core\Checkout\Customer\CustomerDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Struct\Uuid;
@@ -14,6 +13,7 @@ use SwagMigrationNext\Migration\MigrationContextInterface;
 use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
 use SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\Converter\CustomerConverter;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CustomerDataSet;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationNext\Profile\Shopware55\Premapping\PaymentMethodReader;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
@@ -74,9 +74,9 @@ class CustomerConverterTest extends TestCase
         $this->connection->setProfile($profile);
 
         $this->migrationContext = new MigrationContext(
-            $this->runId,
             $this->connection,
-            CustomerDefinition::getEntityName(),
+            $this->runId,
+            new CustomerDataSet(),
             0,
             250
         );
@@ -98,7 +98,7 @@ class CustomerConverterTest extends TestCase
 
     public function testSupports(): void
     {
-        $supportsDefinition = $this->customerConverter->supports(Shopware55Profile::PROFILE_NAME, CustomerDefinition::getEntityName());
+        $supportsDefinition = $this->customerConverter->supports(Shopware55Profile::PROFILE_NAME, new CustomerDataSet());
 
         static::assertTrue($supportsDefinition);
     }

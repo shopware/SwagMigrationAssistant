@@ -2,9 +2,9 @@
 
 namespace SwagMigrationNext\Profile\Shopware55\DataSelection;
 
-use Shopware\Core\Content\Media\MediaDefinition;
 use SwagMigrationNext\Migration\DataSelection\DataSelectionInterface;
 use SwagMigrationNext\Migration\DataSelection\DataSelectionStruct;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
 class MediaDataSelection implements DataSelectionInterface
@@ -18,12 +18,20 @@ class MediaDataSelection implements DataSelectionInterface
     {
         return new DataSelectionStruct(
             'media',
-            [
-                MediaDefinition::getEntityName(),
-            ],
+            $this->getEntityNames(),
             'swag-migration.index.selectDataCard.dataSelection.media',
             300,
             true
         );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getEntityNames(): array
+    {
+        return [
+            MediaDataSet::getEntity(),
+        ];
     }
 }

@@ -118,9 +118,9 @@ class MigrationWriteDataCommand extends Command
 
         for ($offset = 0; $offset < $total; $offset += $this->limit) {
             $migrationContext = new MigrationContext(
-                $this->runId,
                 new SwagMigrationConnectionEntity(), // TODO FIX IT
-                '',
+                $this->runId,
+                null,
                 $offset,
                 $this->limit
             );

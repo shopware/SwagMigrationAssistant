@@ -7,10 +7,11 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
-use Shopware\Core\Content\Product\ProductDefinition;
 use SwagMigrationNext\Exception\GatewayReadException;
 use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiReader;
+use SwagMigrationNext\Test\Profile\Shopware55\DataSet\FooDataSet;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class Shopware55ApiReaderTest extends TestCase
@@ -42,11 +43,9 @@ class Shopware55ApiReaderTest extends TestCase
         $apiReader = new Shopware55ApiReader(
             $client,
             new MigrationContext(
-                '',
                 null,
-                ProductDefinition::getEntityName(),
-                0,
-                0
+                '',
+                new ProductDataSet()
             )
         );
 
@@ -62,9 +61,9 @@ class Shopware55ApiReaderTest extends TestCase
         $apiReader = new Shopware55ApiReader(
             new Client(),
             new MigrationContext(
-                '',
                 null,
-                'foo',
+                '',
+                new FooDataSet(),
                 0,
                 0
             )
@@ -90,11 +89,9 @@ class Shopware55ApiReaderTest extends TestCase
         $apiReader = new Shopware55ApiReader(
             new Client($options),
             new MigrationContext(
-                '',
                 null,
-                ProductDefinition::getEntityName(),
-                0,
-                0
+                '',
+                new ProductDataSet()
             )
         );
 

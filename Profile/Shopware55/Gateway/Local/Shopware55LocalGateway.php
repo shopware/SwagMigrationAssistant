@@ -11,6 +11,11 @@ use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
 use SwagMigrationNext\Migration\EnvironmentInformation;
 use SwagMigrationNext\Migration\Gateway\AbstractGateway;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CategoryDataSet;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CustomerDataSet;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\MediaDataSet;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\OrderDataSet;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalCategoryReader;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalCustomerReader;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalEnvironmentReader;
@@ -27,30 +32,31 @@ class Shopware55LocalGateway extends AbstractGateway
     public function read(): array
     {
         $connection = $this->getConnection();
+        $dataSet = $this->migrationContext->getDataSet();
 
-        switch ($this->migrationContext->getEntity()) {
-            case ProductDefinition::getEntityName():
+        switch ($dataSet::getEntity()) {
+            case ProductDataSet::getEntity():
                 $reader = new Shopware55LocalProductReader($connection, $this->migrationContext);
 
                 return $reader->read();
-            case CategoryDefinition::getEntityName():
+            case CategoryDataSet::getEntity():
                 $reader = new Shopware55LocalCategoryReader($connection, $this->migrationContext);
 
                 return $reader->read();
-            case CustomerDefinition::getEntityName():
+            case CustomerDataSet::getEntity():
                 $reader = new Shopware55LocalCustomerReader($connection, $this->migrationContext);
 
                 return $reader->read();
-            case OrderDefinition::getEntityName():
+            case OrderDataSet::getEntity():
                 $reader = new Shopware55LocalOrderReader($connection, $this->migrationContext);
 
                 return $reader->read();
-            case MediaDefinition::getEntityName():
+            case MediaDataSet::getEntity():
                 $reader = new Shopware55LocalMediaReader($connection, $this->migrationContext);
 
                 return $reader->read();
             default:
-                throw new Shopware55LocalReaderNotFoundException($this->migrationContext->getEntity());
+                throw new Shopware55LocalReaderNotFoundException($dataSet::getEntity());
         }
     }
 

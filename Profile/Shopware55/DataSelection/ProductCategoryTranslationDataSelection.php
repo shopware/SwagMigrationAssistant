@@ -2,11 +2,11 @@
 
 namespace SwagMigrationNext\Profile\Shopware55\DataSelection;
 
-use Shopware\Core\Checkout\Customer\Aggregate\CustomerGroup\CustomerGroupDefinition;
-use Shopware\Core\Content\Category\CategoryDefinition;
-use Shopware\Core\Content\Product\ProductDefinition;
 use SwagMigrationNext\Migration\DataSelection\DataSelectionInterface;
 use SwagMigrationNext\Migration\DataSelection\DataSelectionStruct;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CategoryDataSet;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CustomerGroupDataSet;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
 class ProductCategoryTranslationDataSelection implements DataSelectionInterface
@@ -20,15 +20,23 @@ class ProductCategoryTranslationDataSelection implements DataSelectionInterface
     {
         return new DataSelectionStruct(
             'categoriesProducts',
-            [
-                CategoryDefinition::getEntityName(),
-                CustomerGroupDefinition::getEntityName(),
-                ProductDefinition::getEntityName(),
-                //'translation',
-            ],
+            $this->getEntityNames(),
             'swag-migration.index.selectDataCard.dataSelection.categoriesProducts',
             100,
             true
         );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getEntityNames(): array
+    {
+        return [
+            CategoryDataSet::getEntity(),
+            CustomerGroupDataSet::getEntity(),
+            ProductDataSet::getEntity(),
+            //'translation',
+        ];
     }
 }

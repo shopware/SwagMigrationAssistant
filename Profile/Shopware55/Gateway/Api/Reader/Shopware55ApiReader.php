@@ -4,15 +4,11 @@ namespace SwagMigrationNext\Profile\Shopware55\Gateway\Api\Reader;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
-use Shopware\Core\Checkout\Customer\Aggregate\CustomerGroup\CustomerGroupDefinition;
-use Shopware\Core\Checkout\Customer\CustomerDefinition;
-use Shopware\Core\Checkout\Order\OrderDefinition;
-use Shopware\Core\Content\Category\CategoryDefinition;
-use Shopware\Core\Content\Media\MediaDefinition;
-use Shopware\Core\Content\Product\ProductDefinition;
 use SwagMigrationNext\Exception\GatewayReadException;
+use SwagMigrationNext\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationNext\Migration\MigrationContextInterface;
 use SwagMigrationNext\Migration\Profile\ReaderInterface;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\Shopware55DataSet;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class Shopware55ApiReader implements ReaderInterface
@@ -36,15 +32,6 @@ class Shopware55ApiReader implements ReaderInterface
     {
         $this->client = $client;
         $this->migrationContext = $migrationContext;
-
-        $this->routeMapping = [
-            MediaDefinition::getEntityName() => 'Assets',
-            CategoryDefinition::getEntityName() => 'Categories',
-            CustomerDefinition::getEntityName() => 'Customers',
-            OrderDefinition::getEntityName() => 'Orders',
-            ProductDefinition::getEntityName() => 'Products',
-            CustomerGroupDefinition::getEntityName() => 'CustomerGroups',
-        ];
     }
 
     /**
@@ -52,26 +39,30 @@ class Shopware55ApiReader implements ReaderInterface
      */
     public function read(): array
     {
-        $entity = $this->migrationContext->getEntity();
+        /** @var Shopware55DataSet $dataSet */
+        $dataSet = $this->migrationContext->getDataSet();
 
-        if (!isset($this->routeMapping[$entity])) {
-            throw new GatewayReadException('No endpoint for entity ' . $entity . ' available.');
+        if (empty($dataSet->getApiRoute())) {
+            throw new GatewayReadException('No endpoint for entity ' . $dataSet::getEntity() . ' available.');
         }
-        $route = $this->routeMapping[$entity];
+
+        $queryParams = [
+            'offset' => $this->migrationContext->getOffset(),
+            'limit' => $this->migrationContext->getLimit(),
+        ];
+
+        $queryParams = array_merge($queryParams, $dataSet->getExtraQueryParameters());
 
         /** @var GuzzleResponse $result */
         $result = $this->client->get(
-            'SwagMigration' . $route,
+            $dataSet->getApiRoute(),
             [
-                'query' => [
-                    'offset' => $this->migrationContext->getOffset(),
-                    'limit' => $this->migrationContext->getLimit(),
-                ],
+                'query' => $queryParams,
             ]
         );
 
         if ($result->getStatusCode() !== SymfonyResponse::HTTP_OK) {
-            throw new GatewayReadException('Shopware 5.5 Api ' . $entity);
+            throw new GatewayReadException('Shopware 5.5 Api ' . $dataSet::getEntity());
         }
 
         $arrayResult = json_decode($result->getBody()->getContents(), true);

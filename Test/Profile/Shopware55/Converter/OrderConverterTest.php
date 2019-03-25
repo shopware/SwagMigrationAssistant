@@ -7,8 +7,6 @@ use Shopware\Core\Checkout\Cart\Price\PriceRounding;
 use Shopware\Core\Checkout\Cart\Price\Struct\CartPrice;
 use Shopware\Core\Checkout\Cart\Tax\TaxCalculator;
 use Shopware\Core\Checkout\Cart\Tax\TaxRuleCalculator;
-use Shopware\Core\Checkout\Customer\CustomerDefinition;
-use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Struct\Uuid;
@@ -19,6 +17,8 @@ use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
 use SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\Converter\CustomerConverter;
 use SwagMigrationNext\Profile\Shopware55\Converter\OrderConverter;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CustomerDataSet;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\OrderDataSet;
 use SwagMigrationNext\Profile\Shopware55\Exception\AssociationEntityRequiredMissingException;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationNext\Profile\Shopware55\Logging\Shopware55LogTypes;
@@ -95,17 +95,17 @@ class OrderConverterTest extends TestCase
         $this->connection->setProfile($profile);
 
         $this->migrationContext = new MigrationContext(
-            $this->runId,
             $this->connection,
-            OrderDefinition::getEntityName(),
+            $this->runId,
+            new OrderDataSet(),
             0,
             250
         );
 
         $this->customerMigrationContext = new MigrationContext(
-            $this->runId,
             $this->connection,
-            CustomerDefinition::getEntityName(),
+            $this->runId,
+            new CustomerDataSet(),
             0,
             250
         );
@@ -130,7 +130,7 @@ class OrderConverterTest extends TestCase
 
     public function testSupports(): void
     {
-        $supportsDefinition = $this->orderConverter->supports(Shopware55Profile::PROFILE_NAME, OrderDefinition::getEntityName());
+        $supportsDefinition = $this->orderConverter->supports(Shopware55Profile::PROFILE_NAME, new OrderDataSet());
 
         static::assertTrue($supportsDefinition);
     }

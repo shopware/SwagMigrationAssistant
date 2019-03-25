@@ -8,6 +8,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenContainerEve
 use SwagMigrationNext\Migration\Converter\ConverterInterface;
 use SwagMigrationNext\Migration\Converter\ConverterRegistryInterface;
 use SwagMigrationNext\Migration\Data\SwagMigrationDataDefinition;
+use SwagMigrationNext\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationNext\Migration\EnvironmentInformation;
 use SwagMigrationNext\Migration\Gateway\GatewayInterface;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
@@ -65,7 +66,7 @@ class Shopware55Profile implements ProfileInterface
     public function convert(array $data, MigrationContextInterface $migrationContext, Context $context): int
     {
         $converter = $this->converterRegistry->getConverter($migrationContext);
-        $createData = $this->convertData($context, $data, $converter, $migrationContext, $migrationContext->getEntity());
+        $createData = $this->convertData($context, $data, $converter, $migrationContext, $migrationContext->getDataSet());
 
         if (\count($createData) === 0) {
             return 0;
@@ -97,7 +98,7 @@ class Shopware55Profile implements ProfileInterface
         array $data,
         ConverterInterface $converter,
         MigrationContextInterface $migrationContext,
-        string $entityName
+        DataSet $dataSet
     ): array {
         $runUuid = $migrationContext->getRunUuid();
 
@@ -108,7 +109,7 @@ class Shopware55Profile implements ProfileInterface
                 $convertFailureFlag = empty($convertStruct->getConverted());
 
                 $createData[] = [
-                    'entity' => $entityName,
+                    'entity' => $dataSet::getEntity(),
                     'runId' => $runUuid,
                     'raw' => $item,
                     'converted' => $convertStruct->getConverted(),
@@ -124,13 +125,13 @@ class Shopware55Profile implements ProfileInterface
                     '',
                     $exception->getMessage(),
                     [
-                        'entity' => $entityName,
+                        'entity' => $dataSet::getEntity(),
                         'raw' => $item,
                     ]
                 );
 
                 $createData[] = [
-                    'entity' => $entityName,
+                    'entity' => $dataSet::getEntity(),
                     'runId' => $runUuid,
                     'raw' => $item,
                     'converted' => null,

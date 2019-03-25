@@ -4,6 +4,7 @@ namespace SwagMigrationNext\Migration;
 
 use Shopware\Core\Framework\Struct\Struct;
 use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationNext\Migration\DataSelection\DataSet\DataSet;
 
 class MigrationContext extends Struct implements MigrationContextInterface
 {
@@ -20,9 +21,9 @@ class MigrationContext extends Struct implements MigrationContextInterface
     private $connection;
 
     /**
-     * @var string
+     * @var DataSet
      */
-    private $entity;
+    private $dataSet;
 
     /**
      * @var int
@@ -35,15 +36,15 @@ class MigrationContext extends Struct implements MigrationContextInterface
     private $limit;
 
     public function __construct(
-        string $runUuid,
         ?SwagMigrationConnectionEntity $connection,
-        string $entity,
-        int $offset,
-        int $limit
+        string $runUuid = '',
+        ?DataSet $dataSet = null,
+        int $offset = 0,
+        int $limit = 0
     ) {
         $this->runUuid = $runUuid;
         $this->connection = $connection;
-        $this->entity = $entity;
+        $this->dataSet = $dataSet;
         $this->offset = $offset;
         $this->limit = $limit;
     }
@@ -58,9 +59,9 @@ class MigrationContext extends Struct implements MigrationContextInterface
         return $this->connection;
     }
 
-    public function getEntity(): string
+    public function getDataSet(): ?DataSet
     {
-        return $this->entity;
+        return $this->dataSet;
     }
 
     public function getProfileName(): ?string

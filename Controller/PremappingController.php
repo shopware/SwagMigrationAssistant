@@ -54,11 +54,8 @@ class PremappingController extends AbstractController
         }
 
         $migrationContext = new MigrationContext(
-            $runUuid,
             $run->getConnection(),
-            '',
-            0,
-            0
+            $runUuid
         );
 
         return new JsonResponse($this->premappingService->generatePremapping($context, $migrationContext, $run));
@@ -88,11 +85,8 @@ class PremappingController extends AbstractController
         }
 
         $migrationContext = new MigrationContext(
-            $runUuid,
             $run->getConnection(),
-            '',
-            0,
-            0
+            $runUuid
         );
 
         $this->premappingService->writePremapping($context, $migrationContext, $premapping);

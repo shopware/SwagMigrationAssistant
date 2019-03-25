@@ -28,12 +28,19 @@ use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationNext\Migration\Service\MigrationDataFetcher;
 use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationNext\Profile\Shopware55\Converter\ProductConverter;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CategoryDataSet;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CustomerDataSet;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\MediaDataSet;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\OrderDataSet;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\TranslationDataSet;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Api\Shopware55ApiFactory;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationNext\Profile\Shopware55\Premapping\PaymentMethodReader;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Migration\Services\MigrationProfileUuidService;
 use SwagMigrationNext\Test\MigrationServicesTrait;
+use SwagMigrationNext\Test\Mock\DataSet\InvalidCustomerDataSet;
 use SwagMigrationNext\Test\Mock\DummyCollection;
 use SwagMigrationNext\Test\Mock\Gateway\Dummy\Local\DummyLocalFactory;
 use SwagMigrationNext\Test\Mock\Migration\Logging\DummyLoggingService;
@@ -182,9 +189,9 @@ class MigrationDataFetcherTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
-            $this->runUuid,
             $this->connection,
-            MediaDefinition::getEntityName(),
+            $this->runUuid,
+            new MediaDataSet(),
             0,
             250
         );
@@ -203,9 +210,9 @@ class MigrationDataFetcherTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
-            $this->runUuid,
             $this->connection,
-            CategoryDefinition::getEntityName(),
+            $this->runUuid,
+            new CategoryDataSet(),
             0,
             250
         );
@@ -224,9 +231,9 @@ class MigrationDataFetcherTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
-            $this->runUuid,
             $this->connection,
-            'translation',
+            $this->runUuid,
+            new TranslationDataSet(),
             0,
             250
         );
@@ -245,9 +252,9 @@ class MigrationDataFetcherTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
-            $this->runUuid,
             $this->connection,
-            CustomerDefinition::getEntityName(),
+            $this->runUuid,
+            new CustomerDataSet(),
             0,
             250
         );
@@ -266,9 +273,9 @@ class MigrationDataFetcherTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
-            $this->runUuid,
             $this->connection,
-            ProductDefinition::getEntityName(),
+            $this->runUuid,
+            new ProductDataSet(),
             0,
             250
         );
@@ -287,9 +294,9 @@ class MigrationDataFetcherTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
-            $this->runUuid,
             $this->connection,
-            ProductDefinition::getEntityName(),
+            $this->runUuid,
+            new ProductDataSet(),
             0,
             250
         );
@@ -308,9 +315,9 @@ class MigrationDataFetcherTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
-            $this->runUuid,
             $this->connection,
-            CustomerDefinition::getEntityName() . 'Invalid',
+            $this->runUuid,
+            new InvalidCustomerDataSet(),
             0,
             250
         );
@@ -355,9 +362,9 @@ class MigrationDataFetcherTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
-            $this->runUuid,
             $this->connection,
-            'order',
+            $this->runUuid,
+            new OrderDataSet(),
             0,
             250
         );

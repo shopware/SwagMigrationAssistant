@@ -218,10 +218,10 @@ class MigrationProgressServiceTest extends TestCase
             $context
         );
 
-        $datasets = [];
-        $this->initEntity($datasets, CategoryDefinition::getEntityName(), 3, 0);
+        $entities = [];
+        $this->initEntity($entities, CategoryDefinition::getEntityName(), 3, 0);
         $this->dataRepo->create(
-            $datasets,
+            $entities,
             $context
         );
 
@@ -280,7 +280,7 @@ class MigrationProgressServiceTest extends TestCase
             ],
         ];
 
-        $this->initAllDatasets($context);
+        $this->initAllEntities($context);
         $progress = $this->progressService->getProgress(new Request(), $context);
 
         static::assertSame($progress->getFinishedCount(), 0);
@@ -320,7 +320,7 @@ class MigrationProgressServiceTest extends TestCase
         ];
 
         $this->updateWrittenFlag();
-        $this->initAllDatasets($context);
+        $this->initAllEntities($context);
         $progress = $this->progressService->getProgress(new Request(), $context);
 
         $runProgress = $this->serializeRunProgressForCompare();
@@ -374,7 +374,7 @@ class MigrationProgressServiceTest extends TestCase
         ];
 
         $this->updateWrittenFlag();
-        $this->initAllDatasets($context);
+        $this->initAllEntities($context);
         $progress = $this->progressService->getProgress(new Request(), $context);
 
         $runProgress = $this->serializeRunProgressForCompare();
@@ -445,7 +445,7 @@ class MigrationProgressServiceTest extends TestCase
         ];
 
         $this->updateWrittenFlag();
-        $this->initAllDatasets($context);
+        $this->initAllEntities($context);
         $this->insertMediaFiles($context, 23, 0);
         $progress = $this->progressService->getProgress(new Request(), $context);
 
@@ -487,7 +487,7 @@ class MigrationProgressServiceTest extends TestCase
         ];
 
         $this->updateWrittenFlag();
-        $this->initAllDatasets($context);
+        $this->initAllEntities($context);
         $this->insertMediaFiles($context, 23, 20);
         $progress = $this->progressService->getProgress(new Request(), $context);
 
@@ -544,7 +544,7 @@ class MigrationProgressServiceTest extends TestCase
         ];
 
         $this->updateWrittenFlag();
-        $this->initAllDatasets($context);
+        $this->initAllEntities($context);
         $this->insertMediaFiles($context, 23, 23);
         $progress = $this->progressService->getProgress(new Request(), $context);
 
@@ -602,7 +602,7 @@ class MigrationProgressServiceTest extends TestCase
             Context::createDefaultContext()
         );
 
-        $this->initAllDatasets($context);
+        $this->initAllEntities($context);
         $this->insertMediaFiles($context, 23, 0);
         $progress = $this->progressService->getProgress(new Request(), $context);
 
@@ -640,22 +640,22 @@ class MigrationProgressServiceTest extends TestCase
         static::assertNotTrue($progress->isMigrationRunning());
     }
 
-    private function initAllDatasets(Context $context): void
+    private function initAllEntities(Context $context): void
     {
-        $datasets = [];
+        $entities = [];
         foreach ($this->writeArray as $entityName => $counts) {
             $fetchCount = $counts['fetch'];
             $writeCount = $counts['write'];
-            $this->initEntity($datasets, $entityName, $fetchCount, $writeCount);
+            $this->initEntity($entities, $entityName, $fetchCount, $writeCount);
         }
 
         $this->dataRepo->create(
-            $datasets,
+            $entities,
             $context
         );
     }
 
-    private function initEntity(array &$datasets, string $entityName, int $fetchCount, int $writeCount): void
+    private function initEntity(array &$entities, string $entityName, int $fetchCount, int $writeCount): void
     {
         $currentWriteCount = 0;
         for ($i = 0; $i < $fetchCount; ++$i) {
@@ -665,7 +665,7 @@ class MigrationProgressServiceTest extends TestCase
                 ++$currentWriteCount;
             }
 
-            $datasets[] = [
+            $entities[] = [
                 'runId' => $this->runUuid,
                 'entity' => $entityName,
                 'converted' => [
@@ -694,7 +694,7 @@ class MigrationProgressServiceTest extends TestCase
 
     private function insertMediaFiles(Context $context, int $count, int $processedCount): void
     {
-        $datasets = [];
+        $entities = [];
         $currentProcessed = 0;
         for ($i = 0; $i < $count; ++$i) {
             $processed = false;
@@ -703,7 +703,7 @@ class MigrationProgressServiceTest extends TestCase
                 ++$currentProcessed;
             }
 
-            $datasets[] = [
+            $entities[] = [
                 'runId' => $this->runUuid,
                 'uri' => 'meinMediaFileLink',
                 'fileName' => 'myFileName',
@@ -714,7 +714,7 @@ class MigrationProgressServiceTest extends TestCase
         }
 
         $this->mediaFileRepo->create(
-            $datasets,
+            $entities,
             $context
         );
     }

@@ -114,6 +114,35 @@
             <tag name="shopware.migration.data_selection"/>
         </service>
 
+        <!-- Shopware 5.5 DataSets -->
+        <service id="SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ProductDataSet">
+            <tag name="shopware.migration.data_set" />
+        </service>
+
+        <service id="SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CustomerDataSet">
+            <tag name="shopware.migration.data_set" />
+        </service>
+
+        <service id="SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\OrderDataSet">
+            <tag name="shopware.migration.data_set" />
+        </service>
+
+        <service id="SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CategoryDataSet">
+            <tag name="shopware.migration.data_set" />
+        </service>
+
+        <service id="SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CustomerGroupDataSet">
+            <tag name="shopware.migration.data_set" />
+        </service>
+
+        <service id="SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\MediaDataSet">
+            <tag name="shopware.migration.data_set" />
+        </service>
+
+        <service id="SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\TranslationDataSet">
+            <tag name="shopware.migration.data_set" />
+        </service>
+
         <!-- Shopware 5.5 PreMappingReader -->
         <service id="SwagMigrationNext\Profile\Shopware55\Premapping\OrderStateReader">
             <argument type="service" id="state_machine.repository"/>

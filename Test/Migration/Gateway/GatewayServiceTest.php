@@ -3,13 +3,13 @@
 namespace SwagMigrationNext\Test\Gateway;
 
 use PHPUnit\Framework\TestCase;
-use Shopware\Core\Content\Product\ProductDefinition;
 use SwagMigrationNext\Exception\GatewayNotFoundException;
 use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\Gateway\GatewayFactoryRegistry;
 use SwagMigrationNext\Migration\Gateway\GatewayFactoryRegistryInterface;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationNext\Test\Mock\DummyCollection;
 use SwagMigrationNext\Test\Mock\Gateway\Dummy\Local\DummyLocalFactory;
@@ -38,9 +38,9 @@ class GatewayServiceTest extends TestCase
         $connection->setCredentialFields([]);
 
         $migrationContext = new MigrationContext(
-            '',
             $connection,
-            ProductDefinition::getEntityName(),
+            '',
+            new ProductDataSet(),
             0,
             250
         );

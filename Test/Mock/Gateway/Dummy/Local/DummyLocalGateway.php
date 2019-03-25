@@ -9,7 +9,14 @@ use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
 use SwagMigrationNext\Migration\EnvironmentInformation;
 use SwagMigrationNext\Migration\Gateway\AbstractGateway;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CategoryDataSet;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CustomerDataSet;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\MediaDataSet;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\OrderDataSet;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\TranslationDataSet;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationNext\Test\Mock\DataSet\InvalidCustomerDataSet;
 
 class DummyLocalGateway extends AbstractGateway
 {
@@ -17,21 +24,23 @@ class DummyLocalGateway extends AbstractGateway
 
     public function read(): array
     {
-        switch ($this->migrationContext->getEntity()) {
-            case ProductDefinition::getEntityName():
+        $dataSet = $this->migrationContext->getDataSet();
+
+        switch ($dataSet::getEntity()) {
+            case ProductDataSet::getEntity():
                 return require __DIR__ . '/../../../../_fixtures/product_data.php';
-            case 'translation':
+            case TranslationDataSet::getEntity():
                 return require __DIR__ . '/../../../../_fixtures/translation_data.php';
-            case CategoryDefinition::getEntityName():
+            case CategoryDataSet::getEntity():
                 return require __DIR__ . '/../../../../_fixtures/category_data.php';
-            case MediaDefinition::getEntityName():
+            case MediaDataSet::getEntity():
                 return require __DIR__ . '/../../../../_fixtures/media_data.php';
-            case CustomerDefinition::getEntityName():
+            case CustomerDataSet::getEntity():
                 return require __DIR__ . '/../../../../_fixtures/customer_data.php';
-            case OrderDefinition::getEntityName():
+            case OrderDataSet::getEntity():
                 return require __DIR__ . '/../../../../_fixtures/order_data.php';
             //Invalid data
-            case CustomerDefinition::getEntityName() . 'Invalid':
+            case InvalidCustomerDataSet::getEntity():
                 return require __DIR__ . '/../../../../_fixtures/invalid/customer_data.php';
             default:
                 return [];
