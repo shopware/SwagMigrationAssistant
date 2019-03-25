@@ -276,7 +276,7 @@ class OrderConverter extends AbstractConverter
             $taxRules = $this->getTaxRules($data);
             $taxStatus = $this->getTaxStatus($data);
 
-            $converted['lineItems'] = $this->getLineItems($data['details'], $converted, $taxRules, $taxStatus);
+            $converted['lineItems'] = $this->getLineItems($data['details'], $converted, $taxRules, $taxStatus, $context);
 
             $converted['price'] = new CartPrice(
                 (float) $data['invoice_amount_net'],
@@ -784,7 +784,7 @@ class OrderConverter extends AbstractConverter
         return $shippingMethod;
     }
 
-    private function getLineItems(array $originalData, array &$converted, TaxRuleCollection $taxRules, string $taxStatus): array
+    private function getLineItems(array $originalData, array &$converted, TaxRuleCollection $taxRules, string $taxStatus, Context $context): array
     {
         $lineItems = [];
 
@@ -827,11 +827,11 @@ class OrderConverter extends AbstractConverter
             $calculatedTax = null;
             $totalPrice = $lineItem['quantity'] * $originalLineItem['price'];
             if ($taxStatus === CartPrice::TAX_STATE_NET) {
-                $calculatedTax = $this->taxCalculator->calculateNetTaxes($totalPrice, $taxRules);
+                $calculatedTax = $this->taxCalculator->calculateNetTaxes($totalPrice, $context->getCurrencyPrecision(), $taxRules);
             }
 
             if ($taxStatus === CartPrice::TAX_STATE_GROSS) {
-                $calculatedTax = $this->taxCalculator->calculateGrossTaxes($totalPrice, $taxRules);
+                $calculatedTax = $this->taxCalculator->calculateGrossTaxes($totalPrice, $context->getCurrencyPrecision(), $taxRules);
             }
 
             if ($calculatedTax !== null) {
@@ -845,7 +845,8 @@ class OrderConverter extends AbstractConverter
 
                 $lineItem['priceDefinition'] = new QuantityPriceDefinition(
                     (float) $originalLineItem['price'],
-                    $taxRules
+                    $taxRules,
+                    $context->getCurrencyPrecision()
                 );
             }
 
