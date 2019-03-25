@@ -374,6 +374,8 @@ class MappingService implements MappingServiceInterface
             [
                 'typeId' => $salesChannelType->getId(),
 
+                'customerGroupId' => Defaults::FALLBACK_CUSTOMER_GROUP,
+
                 'languageId' => Defaults::LANGUAGE_SYSTEM,
                 'languages' => [
                     [
