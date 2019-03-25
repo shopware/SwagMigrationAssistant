@@ -40,7 +40,8 @@
                                   v-model="selection.connectionName"
                                   @input="onChangeConnectionName"
                                   validation="required"
-                                  :tooltipText="$tc('swag-migration.wizard.pages.connectionCreate.connectionTooltip')">
+                                  :tooltipText="$tc('swag-migration.wizard.pages.connectionCreate.connectionTooltip')"
+                                  :errorMessage="$tc(connectionNameErrorSnippet)">
                         </sw-field>
                     </div>
                 {% endblock %}

@@ -24,6 +24,7 @@
                         @onCredentialsChanged="onCredentialsChanged"
                         @onIsLoadingChanged="onChildIsLoadingChanged"
                         :errorMessageSnippet="errorMessageSnippet"
+                        :connectionNameErrorSnippet="connectionNameErrorSnippet"
                         v-show="!isLoading && !childIsLoading">
                 </router-view>
             {% endblock %}
