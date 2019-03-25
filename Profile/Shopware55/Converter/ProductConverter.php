@@ -9,6 +9,7 @@ use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Content\Product\Aggregate\ProductManufacturer\ProductManufacturerDefinition;
 use Shopware\Core\Content\Product\Aggregate\ProductManufacturerTranslation\ProductManufacturerTranslationDefinition;
 use Shopware\Core\Content\Product\Aggregate\ProductMedia\ProductMediaDefinition;
+use Shopware\Core\Content\Product\Aggregate\ProductPrice\ProductPriceDefinition;
 use Shopware\Core\Content\Product\Aggregate\ProductTranslation\ProductTranslationDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Content\Rule\RuleDefinition;
@@ -308,8 +309,7 @@ class ProductConverter extends AbstractConverter
             $data['pricegroupActive'],
             $data['filtergroupID'],
             $data['template'],
-            $data['detail']['additionaltext'],
-            $data['attributes']
+            $data['detail']['additionaltext']
         );
 
         $converted['tax'] = $this->getTax($data['tax']);
@@ -347,6 +347,11 @@ class ProductConverter extends AbstractConverter
             $converted['categories'] = $this->getCategoryMapping($data['categories']);
         }
         unset($data['categories']);
+
+        if (isset($data['attributes'])) {
+            $converted['attributes'] = $this->getAttributes($data['attributes'], ProductDefinition::getEntityName(), ['id', 'articleID', 'articledetailsID']);
+        }
+        unset($data['attributes']);
 
         $this->helper->convertValue($converted, 'productNumber', $data['detail'], 'ordernumber', $this->helper::TYPE_STRING);
 
@@ -401,6 +406,10 @@ class ProductConverter extends AbstractConverter
 
         if (isset($data['media'])) {
             $manufacturer['media'] = $this->getManufacturerMedia($data['media']);
+        }
+
+        if (isset($data['attributes'])) {
+            $manufacturer['attributes'] = $this->getAttributes($data['attributes'], ProductManufacturerDefinition::getEntityName(), ['id', 'supplierID']);
         }
 
         return $manufacturer;
@@ -699,7 +708,8 @@ class ProductConverter extends AbstractConverter
             );
 
             $setInGross = (bool) $price['customergroup']['taxinput'];
-            $newData[] = [
+
+            $data = [
                 'id' => $productPriceRuleUuid,
                 'productId' => $converted['id'],
                 'currencyId' => Defaults::CURRENCY,
@@ -742,6 +752,12 @@ class ProductConverter extends AbstractConverter
                 'quantityStart' => (int) $price['from'],
                 'quantityEnd' => $price['to'] !== 'beliebig' ? (int) $price['to'] : null,
             ];
+
+            if (isset($price['attributes'])) {
+                $data['attributes'] = $this->getAttributes($price, ProductPriceDefinition::getEntityName(), ['id', 'priceID']);
+            }
+
+            $newData[] = $data;
         }
 
         return $newData;
@@ -811,5 +827,19 @@ class ProductConverter extends AbstractConverter
         }
 
         return $categoryMapping;
+    }
+
+    private function getAttributes(array $attributes, string $entityName, array $blacklist = []): array
+    {
+        $result = [];
+
+        foreach ($attributes as $attribute => $value) {
+            if (in_array($attribute, $blacklist, true)) {
+                continue;
+            }
+            $result[$entityName . '_' . $attribute] = $value;
+        }
+
+        return $result;
     }
 }

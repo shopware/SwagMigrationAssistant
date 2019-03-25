@@ -12,14 +12,21 @@ use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
 use SwagMigrationNext\Migration\EnvironmentInformation;
 use SwagMigrationNext\Migration\Gateway\AbstractGateway;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CategoryAttributeDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CategoryDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CustomerDataSet;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CustomerGroupAttributeDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CustomerGroupDataSet;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ManufacturerAttributeDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\OrderDataSet;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ProductAttributeDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ProductPriceAttributeDataSet;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\Shopware55DataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\TranslationDataSet;
 use SwagMigrationNext\Profile\Shopware55\Exception\DatabaseConnectionException;
+use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalAttributeReader;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalCategoryReader;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalCustomerGroupReader;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalCustomerReader;
@@ -38,6 +45,7 @@ class Shopware55LocalGateway extends AbstractGateway
     public function read(): array
     {
         $connection = $this->getConnection();
+        /** @var Shopware55DataSet $dataSet */
         $dataSet = $this->migrationContext->getDataSet();
 
         switch ($dataSet::getEntity()) {
@@ -69,6 +77,14 @@ class Shopware55LocalGateway extends AbstractGateway
                 $reader = new Shopware55LocalTranslationReader($connection, $this->migrationContext);
 
                 return $reader->read();
+            case CategoryAttributeDataSet::getEntity():
+            case CustomerGroupAttributeDataSet::getEntity():
+            case ManufacturerAttributeDataSet::getEntity():
+            case ProductAttributeDataSet::getEntity():
+            case ProductPriceAttributeDataSet::getEntity():
+                $reader = new Shopware55LocalAttributeReader($connection, $this->migrationContext);
+
+                return $reader->read($dataSet->getExtraQueryParameters());
             default:
                 throw new Shopware55LocalReaderNotFoundException($dataSet::getEntity());
         }

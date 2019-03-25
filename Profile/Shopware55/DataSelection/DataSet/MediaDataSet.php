@@ -2,14 +2,14 @@
 
 namespace SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet;
 
-use Shopware\Core\Content\Media\MediaDefinition;
+use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
 class MediaDataSet extends Shopware55DataSet
 {
     public static function getEntity(): string
     {
-        return MediaDefinition::getEntityName();
+        return DefaultEntities::MEDIA;
     }
 
     public function supports(string $profileName, string $entity): bool

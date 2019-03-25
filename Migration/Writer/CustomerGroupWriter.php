@@ -2,9 +2,9 @@
 
 namespace SwagMigrationNext\Migration\Writer;
 
-use Shopware\Core\Checkout\Customer\Aggregate\CustomerGroup\CustomerGroupDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 
 class CustomerGroupWriter implements WriterInterface
 {
@@ -20,7 +20,7 @@ class CustomerGroupWriter implements WriterInterface
 
     public function supports(): string
     {
-        return CustomerGroupDefinition::getEntityName();
+        return DefaultEntities::CUSTOMER_GROUP;
     }
 
     public function writeData(array $data, Context $context): void

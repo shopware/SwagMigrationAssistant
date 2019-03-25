@@ -6,25 +6,25 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 
-class CustomerWriter implements WriterInterface
+class ProductPriceAttributeWriter implements WriterInterface
 {
     /**
      * @var EntityRepositoryInterface
      */
-    private $customerRepository;
+    private $attributeSetRepository;
 
-    public function __construct(EntityRepositoryInterface $customerRepository)
+    public function __construct(EntityRepositoryInterface $attributeSetRepository)
     {
-        $this->customerRepository = $customerRepository;
+        $this->attributeSetRepository = $attributeSetRepository;
     }
 
     public function supports(): string
     {
-        return DefaultEntities::CUSTOMER;
+        return DefaultEntities::PRODUCT_PRICE_ATTRIBUTE;
     }
 
     public function writeData(array $data, Context $context): void
     {
-        $this->customerRepository->upsert($data, $context);
+        $this->attributeSetRepository->upsert($data, $context);
     }
 }

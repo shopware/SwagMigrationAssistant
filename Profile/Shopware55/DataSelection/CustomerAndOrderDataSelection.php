@@ -4,7 +4,9 @@ namespace SwagMigrationNext\Profile\Shopware55\DataSelection;
 
 use SwagMigrationNext\Migration\DataSelection\DataSelectionInterface;
 use SwagMigrationNext\Migration\DataSelection\DataSelectionStruct;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CustomerAttributeDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CustomerDataSet;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\OrderAttributeDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\OrderDataSet;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
@@ -31,7 +33,9 @@ class CustomerAndOrderDataSelection implements DataSelectionInterface
     public function getEntityNames(): array
     {
         return [
+            CustomerAttributeDataSet::getEntity(),
             CustomerDataSet::getEntity(),
+            OrderAttributeDataSet::getEntity(),
             OrderDataSet::getEntity(),
         ];
     }

@@ -38,6 +38,9 @@ class Shopware55LocalCustomerGroupReader extends Shopware55LocalAbstractReader
         $query->from('s_core_customergroups', 'customerGroup');
         $this->addTableSelection($query, 's_core_customergroups', 'customerGroup');
 
+        $query->leftJoin('customerGroup', 's_core_customergroups_attributes', 'customerGroup_attributes', 'customerGroup.id = customerGroup_attributes.customerGroupID');
+        $this->addTableSelection($query, 's_core_customergroups_attributes', 'customerGroup_attributes');
+
         $query->where('customerGroup.id IN (:ids)');
         $query->setParameter('ids', $ids, Connection::PARAM_STR_ARRAY);
 

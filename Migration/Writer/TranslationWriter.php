@@ -5,6 +5,7 @@ namespace SwagMigrationNext\Migration\Writer;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
+use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 
 class TranslationWriter implements WriterInterface
 {
@@ -20,7 +21,7 @@ class TranslationWriter implements WriterInterface
 
     public function supports(): string
     {
-        return 'translation';
+        return DefaultEntities::TRANSLATION;
     }
 
     public function writeData(array $data, Context $context): void

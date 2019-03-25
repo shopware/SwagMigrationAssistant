@@ -2,10 +2,10 @@
 
 namespace SwagMigrationNext\Migration\Writer;
 
-use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Struct\Serializer\StructNormalizer;
+use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 
 class OrderWriter implements WriterInterface
 {
@@ -27,7 +27,7 @@ class OrderWriter implements WriterInterface
 
     public function supports(): string
     {
-        return OrderDefinition::getEntityName();
+        return DefaultEntities::ORDER;
     }
 
     /**

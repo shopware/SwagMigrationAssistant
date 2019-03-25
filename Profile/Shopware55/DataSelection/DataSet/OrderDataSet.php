@@ -2,14 +2,14 @@
 
 namespace SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet;
 
-use Shopware\Core\Checkout\Order\OrderDefinition;
+use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
 class OrderDataSet extends Shopware55DataSet
 {
     public static function getEntity(): string
     {
-        return OrderDefinition::getEntityName();
+        return DefaultEntities::ORDER;
     }
 
     public function supports(string $profileName, string $entity): bool

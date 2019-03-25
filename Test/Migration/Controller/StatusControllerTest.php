@@ -3,11 +3,6 @@
 namespace SwagMigrationNext\Test\Migration\Controller;
 
 use PHPUnit\Framework\TestCase;
-use Shopware\Core\Checkout\Customer\Aggregate\CustomerGroup\CustomerGroupDefinition;
-use Shopware\Core\Checkout\Customer\CustomerDefinition;
-use Shopware\Core\Checkout\Order\OrderDefinition;
-use Shopware\Core\Content\Category\CategoryDefinition;
-use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Context\AdminApiSource;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -20,6 +15,7 @@ use SwagMigrationNext\Exception\MigrationContextPropertyMissingException;
 use SwagMigrationNext\Exception\MigrationIsRunningException;
 use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\DataSelection\DataSelectionRegistry;
+use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 use SwagMigrationNext\Migration\Mapping\MappingService;
 use SwagMigrationNext\Migration\Media\MediaFileService;
 use SwagMigrationNext\Migration\MigrationContext;
@@ -210,13 +206,21 @@ class StatusControllerTest extends TestCase
         $state = json_decode($result->getContent(), true);
 
         static::assertSame($state[0]['id'], 'categoriesProducts');
-        static::assertSame($state[0]['entityNames'][0], CategoryDefinition::getEntityName());
-        static::assertSame($state[0]['entityNames'][1], CustomerGroupDefinition::getEntityName());
-        static::assertSame($state[0]['entityNames'][2], ProductDefinition::getEntityName());
+        static::assertSame($state[0]['entityNames'][0], DefaultEntities::CATEGORY_ATTRIBUTE);
+        static::assertSame($state[0]['entityNames'][1], DefaultEntities::CATEGORY);
+        static::assertSame($state[0]['entityNames'][2], DefaultEntities::CUSTOMER_GROUP_ATTRIBUTE);
+        static::assertSame($state[0]['entityNames'][3], DefaultEntities::CUSTOMER_GROUP);
+        static::assertSame($state[0]['entityNames'][4], DefaultEntities::PRODUCT_ATTRIBUTE);
+        static::assertSame($state[0]['entityNames'][5], DefaultEntities::PRODUCT_PRICE_ATTRIBUTE);
+        static::assertSame($state[0]['entityNames'][6], DefaultEntities::MANUFACTURER_ATTRIBUTE);
+        static::assertSame($state[0]['entityNames'][7], DefaultEntities::PRODUCT);
+        static::assertSame($state[0]['entityNames'][8], DefaultEntities::TRANSLATION);
 
         static::assertSame($state[1]['id'], 'customersOrders');
-        static::assertSame($state[1]['entityNames'][0], CustomerDefinition::getEntityName());
-        static::assertSame($state[1]['entityNames'][1], OrderDefinition::getEntityName());
+        static::assertSame($state[1]['entityNames'][0], DefaultEntities::CUSTOMER_ATTRIBUTE);
+        static::assertSame($state[1]['entityNames'][1], DefaultEntities::CUSTOMER);
+        static::assertSame($state[1]['entityNames'][2], DefaultEntities::ORDER_ATTRIBUTE);
+        static::assertSame($state[1]['entityNames'][3], DefaultEntities::ORDER);
     }
 
     public function testGetState(): void
