@@ -56,6 +56,7 @@
               "contentInformation": "You need the API key and username to establish a connection. You can find these in your shop backend under “User administration”. Activate API access there and confirm with “Save”.",
               "apiKeyLabel": "API key",
               "apiKeyPlaceholder": "Insert key",
+              "apiKeyInvalid": "The API key does not have the correct length ({length}/40 characters).",
               "apiUserLabel": "Username (API user)",
               "apiUserPlaceholder": "Enter username",
               "endpointLabel": "Shop domain",

@@ -19,8 +19,19 @@ Component.register('swag-migration-profile-shopware55-api-credential-form', {
                 endpoint: '',
                 apiUser: '',
                 apiKey: ''
-            }
+            },
+            apiKeyErrorSnippet: ''
         };
+    },
+
+    computed: {
+        apiKeyLength() {
+            if (this.inputCredentials.apiKey === null) {
+                return 0;
+            }
+
+            return this.inputCredentials.apiKey.length;
+        }
     },
 
     watch: {
@@ -49,12 +60,27 @@ Component.register('swag-migration-profile-shopware55-api-credential-form', {
 
     methods: {
         areCredentialsValid(newInputCredentials) {
-            return (newInputCredentials.endpoint !== '' &&
-                newInputCredentials.apiUser !== '' &&
-                newInputCredentials.apiKey !== '' &&
+            return (
+                this.apiKeyValid(newInputCredentials.apiKey) &&
+                this.validateInput(newInputCredentials.endpoint) &&
+                this.validateInput(newInputCredentials.apiUser) &&
                 newInputCredentials.endpoint !== 'http://' &&
                 newInputCredentials.endpoint !== 'https://'
             );
+        },
+
+        validateInput(input) {
+            return input !== null && input !== '';
+        },
+
+        apiKeyValid(apiKey) {
+            if (apiKey === null || apiKey.length < 40 || apiKey.length > 40) {
+                this.apiKeyErrorSnippet = 'swag-migration.wizard.pages.credentials.shopware55.api.apiKeyInvalid';
+                return false;
+            }
+
+            this.apiKeyErrorSnippet = '';
+            return true;
         },
 
         emitOnChildRouteReadyChanged(isReady) {
