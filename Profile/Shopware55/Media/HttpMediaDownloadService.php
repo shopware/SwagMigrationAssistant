@@ -4,13 +4,12 @@ namespace SwagMigrationNext\Profile\Shopware55\Media;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Promise;
-use Shopware\Core\Content\Media\Exception\IllegalMimeTypeException;
 use Shopware\Core\Content\Media\Exception\MediaNotFoundException;
-use Shopware\Core\Content\Media\Exception\UploadException;
 use Shopware\Core\Content\Media\File\FileSaver;
 use Shopware\Core\Content\Media\File\MediaFile;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Exception\InconsistentCriteriaIdsException;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
@@ -65,9 +64,8 @@ class HttpMediaDownloadService extends AbstractMediaFileProcessor
     /**
      * @param array $workload [{ "uuid": "04ed51ccbb2341bc9b352d78e64213fb", "currentOffset": 0, "state": "inProgress" }]
      *
-     * @throws IllegalMimeTypeException
-     * @throws NoFileSystemPermissionsException
-     * @throws UploadException
+     * @throws MediaNotFoundException
+     * @throws InconsistentCriteriaIdsException
      */
     public function process(MigrationContextInterface $migrationContext, Context $context, array $workload, int $fileChunkByteSize): array
     {
