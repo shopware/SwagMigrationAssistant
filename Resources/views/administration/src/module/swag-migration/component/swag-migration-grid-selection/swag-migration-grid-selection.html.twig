@@ -18,6 +18,7 @@
                                 <sw-field class="swag-migration-grid-selection__choice-field"
                                           type="select"
                                           v-model="item.destinationUuid"
+                                          @input="onInput"
                                           :placeholder="$tc('swag-migration.index.premappingCard.placeholder')"
                                           validation="required">
                                     <option v-for="choice in choices" :value="choice.uuid">

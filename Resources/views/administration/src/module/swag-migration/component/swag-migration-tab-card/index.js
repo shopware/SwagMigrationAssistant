@@ -15,6 +15,14 @@ import template from './swag-migration-tab-card.html.twig';
 Component.register('swag-migration-tab-card', {
     template,
 
+    props: {
+        title: {
+            type: String,
+            default: '',
+            required: false
+        }
+    },
+
     data() {
         return {
             items: [],
@@ -54,8 +62,10 @@ Component.register('swag-migration-tab-card', {
             this.$refs.tabs.addScrollbarOffset();
 
             // select first tab
-            this.selectedItemName = this.tabItems[0].name;
-            this.$refs.tabs.setActiveItem(this.tabItems[0]);
+            if (this.tabItems !== undefined && this.tabItems.length > 0) {
+                this.selectedItemName = this.tabItems[0].name;
+                this.$refs.tabs.setActiveItem(this.tabItems[0]);
+            }
         });
     },
 

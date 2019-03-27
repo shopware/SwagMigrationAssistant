@@ -1,6 +1,6 @@
 {% block swag_migration_tab_card %}
     <div class="swag-migration-tab-card">
-        <sw-card ref="card" :class="cardClasses">
+        <sw-card ref="card" :class="cardClasses" :title="title">
             <template slot="tabs">
                 {% block swag_migration_tab_card_item_tab %}
                     <sw-tabs @newActiveItem="onNewActiveItem" :small="false" ref="tabs">

@@ -25,7 +25,9 @@ class MigrationUIStore extends SimpleStateManagementStore {
             isPremappingValid: false,
             dataSelectionIds: [],
             dataSelectionTableData: [],
-            premapping: []
+            premapping: [],
+            unfilledPremapping: [],
+            filledPremapping: []
         };
     }
 
@@ -86,10 +88,65 @@ class MigrationUIStore extends SimpleStateManagementStore {
         const newPremappingCopy = object.deepCopyObject(newPremapping);
         this._checkDebugging(this.state.premapping, newPremappingCopy);
         this.state.premapping = newPremappingCopy;
+
+        if (this.state.premapping !== undefined && this.state.premapping.length > 0) {
+            this._seperatePremapping();
+        } else {
+            this._setUnfilledPremapping([]);
+            this._setFilledPremapping([]);
+        }
     }
 
     getIsMigrationAllowed() {
         return this.state.dataSelectionIds.length > 0;
+    }
+
+    _setUnfilledPremapping(unfilledPremapping) {
+        this._checkDebugging(this.state.unfilledPremapping, unfilledPremapping);
+        this.state.unfilledPremapping = unfilledPremapping;
+    }
+
+    _setFilledPremapping(filledPremapping) {
+        this._checkDebugging(this.state.filledPremapping, filledPremapping);
+        this.state.filledPremapping = filledPremapping;
+    }
+
+    _seperatePremapping() {
+        const unfilledMapping = [];
+        const filledMapping = [];
+
+        this.state.premapping.forEach((group) => {
+            const newFilledGroup = {
+                choices: group.choices,
+                entity: group.entity,
+                mapping: []
+            };
+
+            const newUnfilledGroup = {
+                choices: group.choices,
+                entity: group.entity,
+                mapping: []
+            };
+
+            group.mapping.forEach((mapping) => {
+                if (mapping.destinationUuid.length > 0) {
+                    newFilledGroup.mapping.push(mapping);
+                } else {
+                    newUnfilledGroup.mapping.push(mapping);
+                }
+            });
+
+            if (newFilledGroup.mapping.length > 0) {
+                filledMapping.push(newFilledGroup);
+            }
+
+            if (newUnfilledGroup.mapping.length > 0) {
+                unfilledMapping.push(newUnfilledGroup);
+            }
+        });
+
+        this._setUnfilledPremapping(unfilledMapping);
+        this._setFilledPremapping(filledMapping);
     }
 }
 

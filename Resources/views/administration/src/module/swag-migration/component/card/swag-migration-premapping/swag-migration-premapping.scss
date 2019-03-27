@@ -5,7 +5,7 @@ $swag-migration-premapping-success-icon-color: $color-emerald;
 $swag-migration-premapping-caption-color: #B3BFCC;
 
 .swag-migration-premapping {
-    .swag-migration-premapping__valid-card {
+    .swag-migration-premapping__success-card {
         text-align: center;
         font-size: 14px;
     }
@@ -60,5 +60,49 @@ $swag-migration-premapping-caption-color: #B3BFCC;
         .sw-loader__container {
             transform: translate(-50%);
         }
+    }
+
+    .swag-migration-premapping__unfilled-alert {
+        max-width: 800px;
+        margin: 0 auto 40px auto;
+        padding-top: 25px;
+        padding-bottom: 25px;
+    }
+
+    .sw-alert__icon {
+        top: 25px;
+    }
+
+    .swag-migration-premapping__filled-tab-card {
+        margin-top: 40px;
+    }
+
+    .swag-migration-premapping__unfilled-card {
+        text-align: center;
+        font-size: 14px;
+    }
+
+    .swag-migration-premapping__unfilled-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-top: 10px;
+        margin-bottom: 5px;
+    }
+
+    .swag-migration-premapping__unfilled-caption {
+        color: $swag-migration-premapping-caption-color;
+        margin-bottom: 10px;
+    }
+
+    .swag-migration-premapping__tab-card {
+        font-size: 14px;
+    }
+
+    .swag-migration-premapping__tab-card-item {
+        font-size: 14px;
+    }
+
+    .sw-grid__cell-label {
+        font-size: 14px;
     }
 }
