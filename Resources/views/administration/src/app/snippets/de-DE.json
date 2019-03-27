@@ -117,7 +117,6 @@
       "abortButton": "Beenden",
       "finishButton": "Fertig",
       "backButton": "Migration abschließen",
-      "browserClosingHint": "Möchtest Du den Datenimport wirklich abbrechen?",
       "migrationAlreadyRunning": "Der Datenimport wurde bereits gestartet.",
       "pluginVersionText": "Wir haben festgestellt, dass ein Plugin-Update verfügbar ist. Bitte update das Plugin „Shopware Playground Connector“. Gegebenenfalls kann der Datenimport nicht vollständig durchgeführt werden.",
       "mainInformationTitle": "### Information Title PLACEHOLDER ###",
