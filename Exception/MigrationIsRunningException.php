@@ -7,15 +7,18 @@ use Symfony\Component\HttpFoundation\Response;
 
 class MigrationIsRunningException extends ShopwareHttpException
 {
-    protected $code = 'SWAG-MIGRATION-IS-RUNNING';
-
-    public function __construct(int $code = 0, ?\Throwable $previous = null)
+    public function __construct()
     {
-        parent::__construct('A Migration is currently Running. You can not perform this action now.', $code, $previous);
+        parent::__construct('A migration is currently running. You can not perform this action now.');
     }
 
     public function getStatusCode(): int
     {
         return Response::HTTP_BAD_REQUEST;
+    }
+
+    public function getErrorCode(): string
+    {
+        return 'SWAG_MIGRATION__IS_RUNNING';
     }
 }

@@ -7,16 +7,21 @@ use Symfony\Component\HttpFoundation\Response;
 
 class MigrationContextPropertyMissingException extends ShopwareHttpException
 {
-    protected $code = 'SWAG-MIGRATION-CONTEXT-PROPERTY-MISSING';
-
-    public function __construct(string $property, $code = 0, ?\Throwable $previous = null)
+    public function __construct(string $property)
     {
-        $message = sprintf('Required property "%s" for migration context is missing', $property);
-        parent::__construct($message, $code, $previous);
+        parent::__construct(
+            'Required property "{{ property }}" for migration context is missing.',
+            ['property' => $property]
+        );
     }
 
     public function getStatusCode(): int
     {
         return Response::HTTP_BAD_REQUEST;
+    }
+
+    public function getErrorCode(): string
+    {
+        return 'SWAG_MIGRATION__CONTEXT_PROPERTY_MISSING';
     }
 }

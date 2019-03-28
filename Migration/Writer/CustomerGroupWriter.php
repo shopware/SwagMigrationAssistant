@@ -5,7 +5,6 @@ namespace SwagMigrationNext\Migration\Writer;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerGroup\CustomerGroupDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\SourceContext;
 
 class CustomerGroupWriter implements WriterInterface
 {
@@ -26,7 +25,7 @@ class CustomerGroupWriter implements WriterInterface
 
     public function writeData(array $data, Context $context): void
     {
-        $context->scope(SourceContext::ORIGIN_SYSTEM, function (Context $context) use ($data) {
+        $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($data) {
             $this->customerGroupRepository->upsert($data, $context);
         });
     }

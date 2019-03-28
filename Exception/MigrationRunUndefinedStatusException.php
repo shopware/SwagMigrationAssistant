@@ -7,16 +7,21 @@ use Symfony\Component\HttpFoundation\Response;
 
 class MigrationRunUndefinedStatusException extends ShopwareHttpException
 {
-    protected $code = 'SWAG-MIGRATION-RUN-UNDEFINED-STATUS';
-
-    public function __construct(string $status, $code = 0, ?\Throwable $previous = null)
+    public function __construct(string $status)
     {
-        $message = sprintf('Migration run status "%s" is not a valid status', $status);
-        parent::__construct($message, $code, $previous);
+        parent::__construct(
+            'Migration run status "{{ status }}" is not a valid status.',
+            ['status' => $status]
+        );
     }
 
     public function getStatusCode(): int
     {
         return Response::HTTP_BAD_REQUEST;
+    }
+
+    public function getErrorCode(): string
+    {
+        return 'SWAG_MIGRATION__RUN_UNDEFINED_STATUS';
     }
 }

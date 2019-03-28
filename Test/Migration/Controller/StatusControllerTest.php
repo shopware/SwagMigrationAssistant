@@ -9,6 +9,7 @@ use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Context\AdminApiSource;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
@@ -228,9 +229,9 @@ class StatusControllerTest extends TestCase
 
     public function testGetStateWithCreateMigration(): void
     {
-        $context = Context::createDefaultContext();
-        $customerId = Uuid::uuid4()->getHex();
-        $context->getSourceContext()->setUserId($customerId);
+        $userId = Uuid::uuid4()->getHex();
+        $origin = new AdminApiSource($userId);
+        $context = Context::createDefaultContext($origin);
 
         $params = [
             'connectionId' => $this->connectionId,
@@ -341,9 +342,10 @@ class StatusControllerTest extends TestCase
             'runUuid' => $this->runUuid,
         ];
 
-        $context = Context::createDefaultContext();
-        $customerId = Uuid::uuid4()->getHex();
-        $context->getSourceContext()->setUserId($customerId);
+        $userId = Uuid::uuid4()->getHex();
+        $origin = new AdminApiSource($userId);
+        $context = Context::createDefaultContext($origin);
+
         $request = new Request([], $params);
         $result = $this->controller->takeoverMigration($request, $context);
         $resultArray = json_decode($result->getContent(), true);
@@ -353,10 +355,9 @@ class StatusControllerTest extends TestCase
         $criteria->addFilter(new EqualsFilter('accessToken', $resultArray['accessToken']));
         /** @var SwagMigrationRunEntity $run */
         $run = $this->runRepo->search($criteria, $context)->first();
-        static::assertSame($run->getUserId(), mb_strtoupper($customerId));
+        static::assertSame($run->getUserId(), mb_strtoupper($userId));
 
         $this->expectException(MigrationContextPropertyMissingException::class);
-        $this->expectExceptionMessage('Required property "runUuid" for migration context is missing');
         $this->controller->takeoverMigration(new Request(), $context);
     }
 
@@ -391,7 +392,8 @@ class StatusControllerTest extends TestCase
             /* @var MigrationContextPropertyMissingException $e */
             static::assertInstanceOf(MigrationContextPropertyMissingException::class, $e);
             static::assertSame(Response::HTTP_BAD_REQUEST, $e->getStatusCode());
-            static::assertSame('Required property "connectionId" for migration context is missing', $e->getMessage());
+            static::assertArrayHasKey('property', $e->getParameters());
+            static::assertSame($e->getParameters()['property'], 'connectionId');
         }
     }
 }

@@ -7,14 +7,21 @@ use Symfony\Component\HttpFoundation\Response;
 
 class DataSetNotFoundException extends ShopwareHttpException
 {
-    public function __construct(string $entity, $code = 0, ?\Throwable $previous = null)
+    public function __construct(string $entity)
     {
-        $message = sprintf('Data set for "%s" entity not found', $entity);
-        parent::__construct($message, $code, $previous);
+        parent::__construct(
+            'Data set for "{{ entity }}" entity not found.',
+            ['entity' => $entity]
+        );
     }
 
     public function getStatusCode(): int
     {
         return Response::HTTP_NOT_FOUND;
+    }
+
+    public function getErrorCode(): string
+    {
+        return 'SWAG_MIGRATION__DATASET_NOT_FOUND';
     }
 }

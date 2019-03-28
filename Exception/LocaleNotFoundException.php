@@ -7,16 +7,21 @@ use Symfony\Component\HttpFoundation\Response;
 
 class LocaleNotFoundException extends ShopwareHttpException
 {
-    protected $code = 'SWAG-MIGRATION-LOCALE-NOT-FOUND';
-
-    public function __construct(string $localeCode, $code = 0, ?\Throwable $previous = null)
+    public function __construct(string $localeCode)
     {
-        $message = sprintf('Locale entity for code "%s" not found', $localeCode);
-        parent::__construct($message, $code, $previous);
+        parent::__construct(
+            'Locale entity for code "{{ localeCode }}" not found.',
+            ['localeCode' => $localeCode]
+        );
     }
 
     public function getStatusCode(): int
     {
         return Response::HTTP_NOT_FOUND;
+    }
+
+    public function getErrorCode(): string
+    {
+        return 'SWAG_MIGRATION__LOCALE_NOT_FOUND';
     }
 }

@@ -7,15 +7,18 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ConnectionCredentialsMissingException extends ShopwareHttpException
 {
-    protected $code = 'SWAG-MIGRATION-CONNECTION-CREDENTIALS-MISSING';
-
-    public function __construct(int $code = 0, ?\Throwable $previous = null)
+    public function __construct()
     {
-        parent::__construct('The given connection has no credentials.', $code, $previous);
+        parent::__construct('The given connection has no credentials.');
     }
 
     public function getStatusCode(): int
     {
         return Response::HTTP_BAD_REQUEST;
+    }
+
+    public function getErrorCode(): string
+    {
+        return 'SWAG_MIGRATION__CONNECTION_CREDENTIALS_MISSING';
     }
 }

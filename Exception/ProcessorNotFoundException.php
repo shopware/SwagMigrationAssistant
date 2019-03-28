@@ -7,16 +7,24 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ProcessorNotFoundException extends ShopwareHttpException
 {
-    protected $code = 'SWAG-MIGRATION-PROCESSOR-NOT-FOUND';
-
-    public function __construct(string $profile, $gateway, $code = 0, ?\Throwable $previous = null)
+    public function __construct(string $profile, string $gateway)
     {
-        $message = sprintf('Processor for profile "%s" and gateway "%s" not found', $profile, $gateway);
-        parent::__construct($message, $code, $previous);
+        parent::__construct(
+            'Processor for profile "{{ profile }}" and gateway "{{ gateway }}" not found.',
+            [
+                'profile' => $profile,
+                'gateway' => $gateway,
+            ]
+        );
     }
 
     public function getStatusCode(): int
     {
         return Response::HTTP_NOT_FOUND;
+    }
+
+    public function getErrorCode(): string
+    {
+        return 'SWAG_MIGRATION__PROCESSOR_NOT_FOUND';
     }
 }

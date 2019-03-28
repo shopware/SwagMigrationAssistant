@@ -7,16 +7,22 @@ use Symfony\Component\HttpFoundation\Response;
 
 class GatewayReadException extends ShopwareHttpException
 {
-    protected $code = 'SWAG-MIGRATION-GATEWAY-READ';
-
-    public function __construct(string $gateway, $code = 0, ?\Throwable $previous = null)
+    public function __construct(string $gateway, int $code = 0)
     {
-        $message = sprintf('Could not read from gateway: "%s"', $gateway);
-        parent::__construct($message, $code, $previous);
+        parent::__construct(
+            'Could not read from gateway: "{{ gateway }}".',
+            ['gateway' => $gateway]
+        );
+        $this->code = $code;
     }
 
     public function getStatusCode(): int
     {
         return Response::HTTP_NOT_FOUND;
+    }
+
+    public function getErrorCode(): string
+    {
+        return 'SWAG_MIGRATION__GATEWAY_READ';
     }
 }

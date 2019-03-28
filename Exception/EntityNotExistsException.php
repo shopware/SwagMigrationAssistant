@@ -7,16 +7,24 @@ use Symfony\Component\HttpFoundation\Response;
 
 class EntityNotExistsException extends ShopwareHttpException
 {
-    protected $code = 'SWAG-MIGRATION-ENTITY-NOT-EXISTS';
-
-    public function __construct(string $entityClassName, string $uuid, int $code = 0, ?\Throwable $previous = null)
+    public function __construct(string $entityClassName, string $uuid)
     {
-        $message = sprintf('No %s with UUID %s found. Make sure the entity with the UUID exists.', $entityClassName, $uuid);
-        parent::__construct($message, $code, $previous);
+        parent::__construct(
+            'No {{ entityClassName }} with UUID {{ uuid }} found. Make sure the entity with the UUID exists.',
+            [
+                'entityClassName' => $entityClassName,
+                'uuid' => $uuid,
+            ]
+        );
     }
 
     public function getStatusCode(): int
     {
         return Response::HTTP_BAD_REQUEST;
+    }
+
+    public function getErrorCode(): string
+    {
+        return 'SWAG_MIGRATION__ENTITY_NOT_EXISTS';
     }
 }

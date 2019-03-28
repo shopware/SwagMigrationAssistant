@@ -2,6 +2,7 @@
 
 namespace SwagMigrationNext\Migration\Mapping;
 
+use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Api\Util\AccessKeyHelper;
 use Shopware\Core\Framework\Context;
@@ -369,6 +370,9 @@ class MappingService implements MappingServiceInterface
         /** @var SalesChannelTypeEntity $salesChannelType */
         $salesChannelType = $this->salesChannelTypeRepo->search($criteria, $context)->first();
 
+        /** @var PaymentMethodEntity $validPaymentMethod */
+        $validPaymentMethod = $this->paymentRepository->search(new Criteria(), $context)->first();
+
         // Todo: Replace default values with external values
         $createEvent = $this->salesChannelRepo->create([
             [
@@ -390,10 +394,10 @@ class MappingService implements MappingServiceInterface
                     ],
                 ],
 
-                'paymentMethodId' => Defaults::PAYMENT_METHOD_INVOICE,
+                'paymentMethodId' => $validPaymentMethod->getId(),
                 'paymentMethods' => [
                     [
-                        'id' => Defaults::PAYMENT_METHOD_INVOICE,
+                        'id' => $validPaymentMethod->getId(),
                     ],
                 ],
 

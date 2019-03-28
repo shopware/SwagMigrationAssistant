@@ -7,16 +7,21 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ProfileNotFoundException extends ShopwareHttpException
 {
-    protected $code = 'SWAG-MIGRATION-PROFILE-NOT-FOUND';
-
-    public function __construct(string $profileName, $code = 0, ?\Throwable $previous = null)
+    public function __construct(string $profileName)
     {
-        $message = sprintf('Profile "%s" not found', $profileName);
-        parent::__construct($message, $code, $previous);
+        parent::__construct(
+            'Profile "{{ profileName }}" not found.',
+            ['profileName' => $profileName]
+        );
     }
 
     public function getStatusCode(): int
     {
         return Response::HTTP_NOT_FOUND;
+    }
+
+    public function getErrorCode(): string
+    {
+        return 'SWAG_MIGRATION__PROFILE_NOT_FOUND';
     }
 }

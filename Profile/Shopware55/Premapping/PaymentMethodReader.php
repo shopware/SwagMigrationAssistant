@@ -108,7 +108,7 @@ class PaymentMethodReader extends AbstractPremappingReader
         $choices = [];
         /** @var PaymentMethodEntity $paymentMethod */
         foreach ($paymentMethods as $paymentMethod) {
-            $this->preselectionDictionary[$paymentMethod->getTechnicalName()] = $paymentMethod->getId();
+            $this->preselectionDictionary[$paymentMethod->getHandlerIdentifier()] = $paymentMethod->getId();
             $choices[] = new PremappingChoiceStruct($paymentMethod->getId(), $paymentMethod->getName());
         }
 

@@ -4,6 +4,7 @@ namespace SwagMigrationNext\Test\Migration\Services;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Context\AdminApiSource;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Struct\Uuid;
@@ -171,9 +172,9 @@ class RunServiceTest extends TestCase
 
     public function testCreateMigrationRunWithoutStructure(): void
     {
-        $context = $context = Context::createDefaultContext();
-        $customerId = Uuid::uuid4()->getHex();
-        $context->getSourceContext()->setUserId($customerId);
+        $userId = Uuid::uuid4()->getHex();
+        $origin = new AdminApiSource($userId);
+        $context = Context::createDefaultContext($origin);
 
         $beforeRunTotal = $this->runRepo->search(new Criteria(), $context)->getTotal();
         $beforeMappingTotal = $this->mappingRepo->search(new Criteria(), $context)->getTotal();
@@ -191,9 +192,9 @@ class RunServiceTest extends TestCase
 
     public function testCreateMigrationRunWithStructure(): void
     {
-        $context = $context = Context::createDefaultContext();
-        $customerId = Uuid::uuid4()->getHex();
-        $context->getSourceContext()->setUserId($customerId);
+        $userId = Uuid::uuid4()->getHex();
+        $origin = new AdminApiSource($userId);
+        $context = Context::createDefaultContext($origin);
 
         $beforeRunTotal = $this->runRepo->search(new Criteria(), $context)->getTotal();
         $beforeMappingTotal = $this->mappingRepo->search(new Criteria(), $context)->getTotal();
