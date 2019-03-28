@@ -190,7 +190,8 @@
           "order_state": "Bestellstatus",
           "transaction_state": "Zahlungsstatus",
           "payment_method": "Zahlungsarten",
-          "manufacturer": "Hersteller"
+          "manufacturer": "Hersteller",
+          "salutation": "Anrede"
         }
       },
       "loadingScreenCard": {
@@ -319,7 +320,8 @@
         "SWAG_MIGRATION__SHOPWARE55_SOURCE_FILE_NOT_FOUND": "Die Quelldatei konnte nicht gefunden werden. Betroffene Datei: {path}",
         "SWAG_MIGRATION__SHOPWARE55_CANNOT_COPY_DATA": "Die Quelldatei konnte nicht kopiert werden. Betroffene Datei: {path}",
         "SWAG_MIGRATION__SHOPWARE55_UNKNOWN_ORDER_STATE": "Bestellungsentität konnte aufgrund eines unbekannten Bestellstatus nicht konvertiert werden.",
-        "SWAG_MIGRATION__SHOPWARE55_UNKNOWN_TRANSACTION_STATE": "Zahlungsentität konnte aufgrund eines unbekannten Zahlungsstatus nicht konvertiert werden."
+        "SWAG_MIGRATION__SHOPWARE55_UNKNOWN_TRANSACTION_STATE": "Zahlungsentität konnte aufgrund eines unbekannten Zahlungsstatus nicht konvertiert werden.",
+        "SWAG_MIGRATION__SHOPWARE55_UNKNOWN_CUSTOMER_SALUTATION": "Kundendaten konnten aufgrund einer unbekannten Anrede nicht konvertiert werden."
       }
     },
     "history": {

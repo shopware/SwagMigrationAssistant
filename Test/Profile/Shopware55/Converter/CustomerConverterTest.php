@@ -16,6 +16,7 @@ use SwagMigrationNext\Profile\Shopware55\Converter\CustomerConverter;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CustomerDataSet;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationNext\Profile\Shopware55\Premapping\PaymentMethodReader;
+use SwagMigrationNext\Profile\Shopware55\Premapping\SalutationReader;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationNext\Test\Mock\Migration\Mapping\DummyMappingService;
@@ -94,6 +95,9 @@ class CustomerConverterTest extends TestCase
         $this->mappingService->createNewUuid($this->connectionId, PaymentMethodReader::getMappingName(), '3', $context, [], Uuid::uuid4()->getHex());
         $this->mappingService->createNewUuid($this->connectionId, PaymentMethodReader::getMappingName(), '4', $context, [], Uuid::uuid4()->getHex());
         $this->mappingService->createNewUuid($this->connectionId, PaymentMethodReader::getMappingName(), '5', $context, [], Uuid::uuid4()->getHex());
+
+        $this->mappingService->createNewUuid($this->connectionId, SalutationReader::getMappingName(), 'mr', $context, [], Uuid::uuid4()->getHex());
+        $this->mappingService->createNewUuid($this->connectionId, SalutationReader::getMappingName(), 'ms', $context, [], Uuid::uuid4()->getHex());
     }
 
     public function testSupports(): void

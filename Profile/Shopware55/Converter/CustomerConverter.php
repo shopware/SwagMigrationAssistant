@@ -20,6 +20,7 @@ use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationNext\Migration\MigrationContextInterface;
 use SwagMigrationNext\Profile\Shopware55\Logging\Shopware55LogTypes;
 use SwagMigrationNext\Profile\Shopware55\Premapping\PaymentMethodReader;
+use SwagMigrationNext\Profile\Shopware55\Premapping\SalutationReader;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
 class CustomerConverter extends AbstractConverter
@@ -71,6 +72,7 @@ class CustomerConverter extends AbstractConverter
         'firstname',
         'lastname',
         'email',
+        'salutation',
     ];
 
     /**
@@ -82,6 +84,7 @@ class CustomerConverter extends AbstractConverter
         'zipcode',
         'city',
         'street',
+        'salutation',
     ];
 
     public function __construct(
@@ -188,7 +191,6 @@ class CustomerConverter extends AbstractConverter
         $this->helper->convertValue($converted, 'internalComment', $data, 'internalcomment');
         $this->helper->convertValue($converted, 'failedLogins', $data, 'failedlogins', $this->helper::TYPE_INTEGER); // Nötig?
         $this->helper->convertValue($converted, 'title', $data, 'title');
-        $this->helper->convertValue($converted, 'salutation', $data, 'salutation');
         $this->helper->convertValue($converted, 'firstName', $data, 'firstname');
         $this->helper->convertValue($converted, 'lastName', $data, 'lastname');
         $this->helper->convertValue($converted, 'customerNumber', $data, 'customernumber');
@@ -240,12 +242,19 @@ class CustomerConverter extends AbstractConverter
             }
         }
 
+        $salutationUuid = $this->getSalutation($data['salutation']);
+        if ($salutationUuid === null) {
+            return new ConvertStruct(null, $oldData);
+        }
+        $converted['salutationId'] = $salutationUuid;
+
         if (isset($data['addresses'])) {
             $this->getAddresses($data, $converted, $customerUuid);
         }
 
         unset(
             $data['addresses'],
+            $data['salutation'],
 
             // Legacy data which don't need a mapping or there is no equivalent field
             $data['doubleOptinRegister'],
@@ -381,12 +390,22 @@ class CustomerConverter extends AbstractConverter
                 continue;
             }
 
+            $salutationUuid = $this->getSalutation($address['salutation']);
+            if ($salutationUuid === null) {
+                continue;
+            }
+
+            if (isset($data['addresses'])) {
+                $this->getAddresses($data, $converted, $customerUuid);
+            }
+
             $newAddress['id'] = $this->mappingService->createNewUuid(
                 $this->connectionId,
                 CustomerAddressDefinition::getEntityName(),
                 $address['id'],
                 $this->context
             );
+            $newAddress['salutationId'] = $salutationUuid;
 
             if (isset($originalData['default_billing_address_id']) && $address['id'] === $originalData['default_billing_address_id']) {
                 $converted['defaultBillingAddressId'] = $newAddress['id'];
@@ -404,7 +423,6 @@ class CustomerConverter extends AbstractConverter
                 $newAddress['countryState'] = $this->getCountryState($address['state'], $newAddress['country']);
             }
 
-            $this->helper->convertValue($newAddress, 'salutation', $address, 'salutation');
             $this->helper->convertValue($newAddress, 'firstName', $address, 'firstname');
             $this->helper->convertValue($newAddress, 'lastName', $address, 'lastname');
             $this->helper->convertValue($newAddress, 'zipcode', $address, 'zipcode');
@@ -592,5 +610,31 @@ class CustomerConverter extends AbstractConverter
                 ]
             );
         }
+    }
+
+    private function getSalutation(string $salutation): ?string
+    {
+        $salutationUuid = $this->mappingService->getUuid(
+            $this->connectionId,
+            SalutationReader::getMappingName(),
+            $salutation,
+            $this->context
+        );
+
+        if ($salutationUuid === null) {
+            $this->loggingService->addWarning(
+                $this->runId,
+                Shopware55LogTypes::UNKNOWN_CUSTOMER_SALUTATION,
+                'Cannot find customer salutation',
+                'Customer-Entity could not converted cause of unknown salutation',
+                [
+                    'id' => $this->oldCustomerId,
+                    'entity' => CustomerDefinition::getEntityName(),
+                    'salutation' => $salutation,
+                ]
+            );
+        }
+
+        return $salutationUuid;
     }
 }

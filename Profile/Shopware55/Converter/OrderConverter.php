@@ -39,6 +39,7 @@ use SwagMigrationNext\Profile\Shopware55\Exception\AssociationEntityRequiredMiss
 use SwagMigrationNext\Profile\Shopware55\Logging\Shopware55LogTypes;
 use SwagMigrationNext\Profile\Shopware55\Premapping\OrderStateReader;
 use SwagMigrationNext\Profile\Shopware55\Premapping\PaymentMethodReader;
+use SwagMigrationNext\Profile\Shopware55\Premapping\SalutationReader;
 use SwagMigrationNext\Profile\Shopware55\Premapping\TransactionStateReader;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
@@ -115,6 +116,7 @@ class OrderConverter extends AbstractConverter
         'zipcode',
         'city',
         'street',
+        'salutation',
     ];
 
     public function __construct(
@@ -195,6 +197,8 @@ class OrderConverter extends AbstractConverter
         unset($data['id']);
         $this->uuid = $converted['id'];
 
+        $this->helper->convertValue($converted, 'orderNumber', $data, 'ordernumber');
+
         $customerId = $this->mappingService->getUuid(
             $this->connectionId,
             CustomerDefinition::getEntityName(),
@@ -222,10 +226,15 @@ class OrderConverter extends AbstractConverter
             'customerId' => $customerId,
         ];
 
+        $salutationUuid = $this->getSalutation($data['customer']['salutation']);
+        if ($salutationUuid === null) {
+            return new ConvertStruct(null, $data);
+        }
+        $converted['orderCustomer']['salutationId'] = $salutationUuid;
+
         $this->helper->convertValue($converted['orderCustomer'], 'email', $data['customer'], 'email');
         $this->helper->convertValue($converted['orderCustomer'], 'firstName', $data['customer'], 'firstname');
         $this->helper->convertValue($converted['orderCustomer'], 'lastName', $data['customer'], 'lastname');
-        $this->helper->convertValue($converted['orderCustomer'], 'salutation', $data['customer'], 'salutation');
         $this->helper->convertValue($converted['orderCustomer'], 'customerNumber', $data['customer'], 'customernumber');
         unset($data['userID'], $data['customer']);
 
@@ -359,7 +368,6 @@ class OrderConverter extends AbstractConverter
             $data['changed'],
 
             // TODO check how to handle these
-            $data['ordernumber'],
             $data['language'], // TODO use for sales channel information?
             $data['attributes'],
             $data['documents']
@@ -401,6 +409,7 @@ class OrderConverter extends AbstractConverter
 
         $currency['symbol'] = html_entity_decode($originalData['templatechar']);
         $currency['placedInFront'] = ((int) $originalData['symbol_position']) > 16;
+        $currency['decimalPrecision'] = $this->context->getCurrencyPrecision();
 
         $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);
 
@@ -551,7 +560,12 @@ class OrderConverter extends AbstractConverter
             }
         }
 
-        $this->helper->convertValue($address, 'salutation', $originalData, 'salutation');
+        $salutationUuid = $this->getSalutation($originalData['salutation']);
+        if ($salutationUuid === null) {
+            return [];
+        }
+        $address['salutationId'] = $salutationUuid;
+
         $this->helper->convertValue($address, 'firstName', $originalData, 'firstname');
         $this->helper->convertValue($address, 'lastName', $originalData, 'lastname');
         $this->helper->convertValue($address, 'zipcode', $originalData, 'zipcode');
@@ -894,5 +908,31 @@ class OrderConverter extends AbstractConverter
         }
 
         return $taxStatus;
+    }
+
+    private function getSalutation(string $salutation): ?string
+    {
+        $salutationUuid = $this->mappingService->getUuid(
+            $this->connectionId,
+            SalutationReader::getMappingName(),
+            $salutation,
+            $this->context
+        );
+
+        if ($salutationUuid === null) {
+            $this->loggingService->addWarning(
+                $this->runId,
+                Shopware55LogTypes::UNKNOWN_CUSTOMER_SALUTATION,
+                'Cannot find customer salutation for order',
+                'Order-Entity could not converted cause of unknown customer salutation',
+                [
+                    'id' => $this->oldId,
+                    'entity' => OrderDefinition::getEntityName(),
+                    'salutation' => $salutation,
+                ]
+            );
+        }
+
+        return $salutationUuid;
     }
 }

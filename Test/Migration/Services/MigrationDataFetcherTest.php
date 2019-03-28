@@ -37,6 +37,7 @@ use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\TranslationDataSe
 use SwagMigrationNext\Profile\Shopware55\Gateway\Api\Shopware55ApiFactory;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationNext\Profile\Shopware55\Premapping\PaymentMethodReader;
+use SwagMigrationNext\Profile\Shopware55\Premapping\SalutationReader;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Migration\Services\MigrationProfileUuidService;
 use SwagMigrationNext\Test\MigrationServicesTrait;
@@ -64,6 +65,11 @@ class MigrationDataFetcherTest extends TestCase
      * @var EntityRepositoryInterface
      */
     private $productRepo;
+
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $salutationRepo;
 
     /**
      * @var EntityRepositoryInterface
@@ -182,6 +188,16 @@ class MigrationDataFetcherTest extends TestCase
         $this->mappingService->createNewUuid($this->connectionId, PaymentMethodReader::getMappingName(), '3', $this->context, [], $paymentUuid);
         $this->mappingService->createNewUuid($this->connectionId, PaymentMethodReader::getMappingName(), '4', $this->context, [], $paymentUuid);
         $this->mappingService->createNewUuid($this->connectionId, PaymentMethodReader::getMappingName(), '5', $this->context, [], $paymentUuid);
+
+        $salutationUuid = $this->getSalutationUuid(
+            $this->salutationRepo,
+            'mr',
+            $this->context
+        );
+
+        $this->mappingService->createNewUuid($this->connectionId, SalutationReader::getMappingName(), 'mr', $this->context, [], $salutationUuid);
+        $this->mappingService->createNewUuid($this->connectionId, SalutationReader::getMappingName(), 'ms', $this->context, [], $salutationUuid);
+
         $this->mappingService->writeMapping($this->context);
     }
 
@@ -384,6 +400,7 @@ class MigrationDataFetcherTest extends TestCase
         $this->productRepo = $this->getContainer()->get('product.repository');
         $this->paymentRepo = $this->getContainer()->get('payment_method.repository');
         $this->profileRepo = $this->getContainer()->get('swag_migration_profile.repository');
+        $this->salutationRepo = $this->getContainer()->get('salutation.repository');
     }
 
     private function initConnectionAndRun(): void
