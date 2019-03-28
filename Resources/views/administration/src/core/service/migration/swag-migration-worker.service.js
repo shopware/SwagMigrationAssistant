@@ -50,6 +50,27 @@ class MigrationWorkerService {
         this._broadcastService.sendMessage({
             migrationMessage: 'initialized'
         });
+
+        window.addEventListener('beforeunload', this.onBrowserTabClosing.bind(this));
+    }
+
+    /**
+     * Show the browser tab closing prompt to confirm the page leave.
+     * Custom text support is deprecated so it will display the browser specific default message.
+     * For more information look here:
+     * https://developer.mozilla.org/en-US/docs/Web/API/WindowEventHandlers/onbeforeunload
+     *
+     * @param {Event} e
+     * @returns {string}
+     */
+    onBrowserTabClosing(e) {
+        if (this._migrationProcessStore.state.isMigrating) {
+            e.preventDefault();
+            e.returnValue = '';
+            return '';
+        }
+
+        return '';
     }
 
     /**

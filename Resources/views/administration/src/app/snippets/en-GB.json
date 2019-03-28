@@ -116,7 +116,6 @@
       "abortButton": "Abort",
       "finishButton": "Finish",
       "backButton": "Finish migration",
-      "browserClosingHint": "Do you really want to abort the data import?",
       "migrationAlreadyRunning": "Import already started.",
       "pluginVersionText": "Please make sure your Shopware 5 backend is using the latest version of the Shopware Playground Connector Plugin.",
       "mainInformationTitle": "### Information Title PLACEHOLDER ###",

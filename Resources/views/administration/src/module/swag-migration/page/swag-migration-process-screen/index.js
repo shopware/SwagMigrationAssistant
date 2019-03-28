@@ -273,8 +273,6 @@ Component.register('swag-migration-process-screen', {
                     this.connectionEstablished = false;
                     this.migrationUIStore.setIsLoading(false);
                 });
-
-            window.addEventListener('beforeunload', this.onBrowserTabClosing.bind(this));
         },
 
         restoreFlowChart(currentStatus) {
@@ -484,16 +482,6 @@ Component.register('swag-migration-process-screen', {
                     this.onContinueButtonClick();
                 });
             }
-        },
-
-        onBrowserTabClosing(e) {
-            if (this.migrationProcessStore.state.isMigrating) {
-                const dialogText = this.$tc('swag-migration.index.browserClosingHint');
-                e.returnValue = dialogText;
-                return dialogText;
-            }
-
-            return '';
         },
 
         /**
