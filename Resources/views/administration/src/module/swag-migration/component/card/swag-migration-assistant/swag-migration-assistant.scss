@@ -1,0 +1,43 @@
+@import "~scss/variables";
+
+$swag-migration-assistant-font-size-content: $font-size-small;
+
+.swag-migration-assistant {
+    h4.swag-migration-assistant__headline {
+        font-size: 32px;
+        text-align: center;
+        margin: 0;
+        padding-top: 10px;
+    }
+
+    .swag-migration-assistant__paragraph {
+        text-align: center;
+        width: 80%;
+        margin: 80px auto 0 auto;
+
+        &:first-of-type {
+            margin-top: 64px;
+        }
+
+        &:last-of-type {
+            margin-top: 40px;
+        }
+    }
+
+    .swag-migration-assistant__illustration {
+        width: 136px;
+        display: block;
+        margin: 0 auto;
+        padding-bottom: 16px;
+    }
+
+    h5.swag-migration-assistant__title {
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .swag-migration-assistant__content {
+        font-size: $swag-migration-assistant-font-size-content;
+        line-height: 22px;
+    }
+}

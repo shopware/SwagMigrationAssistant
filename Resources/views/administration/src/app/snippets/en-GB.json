@@ -118,8 +118,6 @@
       "backButton": "Finish migration",
       "migrationAlreadyRunning": "Import already started.",
       "pluginVersionText": "Please make sure your Shopware 5 backend is using the latest version of the Shopware Playground Connector Plugin.",
-      "mainInformationTitle": "### Information Title PLACEHOLDER ###",
-      "mainInformationContent": "### Information Content PLACEHOLDER ###",
       "shopInfoCard": {
         "cardTitle": "Shop system",
         "buttonEditSettings": "Edit connection",
@@ -139,6 +137,23 @@
           "content": "Your current access data will be deleted. This will stop the active connection from working. However, the connection's access data can be edited at any time and the connection re-established using fresh/new access credentials.{linebreak}{linebreak}Do you want to delete the access data?",
           "abortButtonText": "Cancel",
           "confirmButtonText": "Yes, delete"
+        }
+      },
+      "assistantCard": {
+        "title": "Information",
+        "headline": "Your migration assistant",
+        "finish": "Done!",
+        "connection": {
+          "title": "Set up a connection",
+          "content": "Let us connect your shop system to the new Shopware 6 and easily migrate the selected data."
+        },
+        "dataSelection": {
+          "title": "Specify data for migration",
+          "content": "Select the data you want to migrate. It is possible to include plugin data as well, given that the plugin is already installed in Shopware 6. Check for plugin availability in your Shopware account."
+        },
+        "migrationOverview": {
+          "title": "Migration scheme",
+          "content": "1. An automatic routine checks the selected data for missing assignments. Prepare to complete the automatic process by adding manual assignments.{linebreak}2. Your shop‘s data is read and assigned.{linebreak}3. All selected and properly assigned data gets transferred to Shopware 6.{linebreak}4. Media items are downloaded."
         }
       },
       "selectDataCard": {

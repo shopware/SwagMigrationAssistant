@@ -15,12 +15,8 @@
             </div>
         {% endblock %}
 
-        {% block swag_migration_index_main_page_main_information %}
-            <sw-card class="swag-migration-index-main-page__main-information" :title="$tc('swag-migration.index.mainInformationTitle')">
-                {% block swag_migration_index_card_mainInformation_content %}
-                    {{ $tc('swag-migration.index.mainInformationContent') }}
-                {% endblock %}
-            </sw-card>
+        {% block swag_migration_index_main_page_assistant %}
+            <swag-migration-assistant v-if="!migrationUIStore.state.isLoading"></swag-migration-assistant>
         {% endblock %}
 
         {% block swag_migration_index_main_page_loader %}
