@@ -28,6 +28,7 @@ Component.register('swag-migration-shop-information', {
         return {
             showMoreInformation: true,
             showConfirmModal: false,
+            lastConnectionCheck: '-',
             lastMigrationDate: '-',
             connection: null,
             /** @type ApiService */
@@ -51,26 +52,18 @@ Component.register('swag-migration-shop-information', {
 
     computed: {
         environmentInformation() {
-            if (this.migrationProcessStore.state.environmentInformation !== null) {
-                return this.migrationProcessStore.state.environmentInformation;
-            }
-
-            return {};
+            return this.migrationProcessStore.state.environmentInformation === null ? {} :
+                this.migrationProcessStore.state.environmentInformation;
         },
 
-        totalEntityCounts() {
-            if (this.environmentInformation.totals !== undefined) {
-                return this.environmentInformation.totals;
-            }
-
-            return {};
+        connectionName() {
+            return this.connection === null ? '' :
+                this.connection.name;
         },
 
         shopUrl() {
-            if (this.environmentInformation.sourceSystemDomain === undefined) {
-                return '-';
-            }
-            return this.environmentInformation.sourceSystemDomain.replace(/^\s*https?:\/\//, '');
+            return this.environmentInformation.sourceSystemDomain === undefined ? '' :
+                this.environmentInformation.sourceSystemDomain.replace(/^\s*https?:\/\//, '');
         },
 
         shopUrlPrefix() {
@@ -87,9 +80,6 @@ Component.register('swag-migration-shop-information', {
         },
 
         sslActive() {
-            if (this.environmentInformation.sourceSystemDomain === undefined) {
-                return false;
-            }
             return (this.shopUrlPrefix === 'https://');
         },
 
@@ -117,55 +107,32 @@ Component.register('swag-migration-shop-information', {
             return BADGE_TYPE.DANGER;
         },
 
-        shopSystem() {
-            if (this.environmentInformation.sourceSystemName === undefined) {
-                return '';
-            }
-
-            return this.environmentInformation.sourceSystemName;
-        },
-
-        shopVersion() {
-            if (this.environmentInformation.sourceSystemVersion === undefined) {
-                return '';
-            }
-
-            return this.environmentInformation.sourceSystemVersion;
-        },
-
         shopFirstLetter() {
-            if (this.environmentInformation.sourceSystemName === undefined) {
-                return 'S';
-            }
-            return this.environmentInformation.sourceSystemName[0];
+            return this.environmentInformation.sourceSystemName === undefined ? 'S' :
+                this.environmentInformation.sourceSystemName[0];
+        },
+
+        profile() {
+            return this.connection === null ? '' :
+                this.connection.profile.name;
         },
 
         gateway() {
-            if (!this.connection) {
-                return '';
-            }
-
-            return this.connection.profile.gatewayName;
+            return this.connection === null ? '' :
+                this.connection.profile.gatewayName;
         },
 
-        lastMigrationDateString() {
-            return format.date(this.lastMigrationDate);
-        },
-
-        lastMigrationTimeString() {
-            return format.date(this.lastMigrationDate, {
-                day: undefined,
-                month: undefined,
-                year: undefined,
-                hour: 'numeric',
-                minute: '2-digit'
-            });
+        lastConnectionCheckDateTimeParams() {
+            return {
+                date: this.getDateString(this.lastConnectionCheck),
+                time: this.getTimeString(this.lastConnectionCheck)
+            };
         },
 
         lastMigrationDateTimeParams() {
             return {
-                date: this.lastMigrationDateString,
-                time: this.lastMigrationTimeString
+                date: this.getDateString(this.lastMigrationDate),
+                time: this.getTimeString(this.lastMigrationDate)
             };
         }
     },
@@ -211,7 +178,22 @@ Component.register('swag-migration-shop-information', {
             this.migrationConnectionStore.getByIdAsync(connectionId).then((connection) => {
                 delete connection.credentialFields;
                 this.connection = connection;
+                this.lastConnectionCheck = new Date();
             });
+        },
+
+        getTimeString(date) {
+            return format.date(date, {
+                day: undefined,
+                month: undefined,
+                year: undefined,
+                hour: 'numeric',
+                minute: '2-digit'
+            });
+        },
+
+        getDateString(date) {
+            return format.date(date);
         },
 
         onClickEditConnectionCredentials() {

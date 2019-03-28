@@ -1,9 +1,9 @@
 @import "~scss/variables";
 
-$swag-migration-shop-information-shop-domain-font-size: $font-size-default;
+$swag-migration-shop-information-connection-name-font-size: $font-size-large;
+$swag-migration-shop-information-shop-domain-font-size: $font-size-small;
 $swag-migration-shop-information-color-domain-prefix-no-ssl: $color-steam-cloud;
 $swag-migration-shop-information-color-domain-prefix-ssl: $color-emerald;
-$swag-migration-shop-information-shop-system-font-size: $font-size-small;
 $swag-migration-shop-information-color-metadata: $color-gutenberg;
 
 .swag-migration-shop-information {
@@ -11,7 +11,7 @@ $swag-migration-shop-information-color-metadata: $color-gutenberg;
     .swag-migration-shop-information__connection {
         display: grid;
         grid-gap: 8px;
-        grid-template-columns: 120px 1fr min-content;
+        grid-template-columns: (112px - 8px) 1fr min-content;
 
         @media screen and (max-width: 650px) {
             grid-template-columns: 1fr;
@@ -19,9 +19,7 @@ $swag-migration-shop-information-color-metadata: $color-gutenberg;
     }
 
     .swag-migration-shop-information__shop-domain {
-        font-weight: 600;
         font-size: $swag-migration-shop-information-shop-domain-font-size;
-        margin-bottom: 8px;
         white-space: nowrap;
     }
 
@@ -33,24 +31,24 @@ $swag-migration-shop-information-color-metadata: $color-gutenberg;
         color: $swag-migration-shop-information-color-domain-prefix-ssl;
     }
 
-    .swag-migration-shop-information__shop-system {
-        font-size: $swag-migration-shop-information-shop-system-font-size;
+    .swag-migration-shop-information__connection-name {
+        font-size: $swag-migration-shop-information-connection-name-font-size;
+        font-weight: 600;
+        margin-bottom: 4px;
     }
 
     .swag-migration-shop-information__actions {
-        margin-top: 20px;
+        margin-top: 16px;
 
         .sw-button {
-            margin-right: 6px;
-
-            &:last-of-type {
-                margin-right: 0;
-            }
+            margin-right: 8px;
         }
     }
 
     .swag-migration-shop-information__connection-status {
         white-space: nowrap;
+        padding: 0 10px 0 10px;
+        max-width: unset;
     }
 
     .swag-migration-shop-information__connection-status-dot {
@@ -58,9 +56,8 @@ $swag-migration-shop-information-color-metadata: $color-gutenberg;
     }
 
     .swag-migration-shop-information__connection-status-text {
-        font-size: 14px;
+        font-size: 12px;
         font-weight: 600;
-        line-height: 18px;
     }
 
     .swag-migration-shop-information__metadata {
