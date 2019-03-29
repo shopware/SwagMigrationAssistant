@@ -249,7 +249,7 @@ class OrderConverter extends AbstractConverter
         $converted['paymentMethodId'] = $paymentMethodUuid;
         unset($data['payment'], $data['paymentID']);
 
-        $this->helper->convertValue($converted, 'date', $data, 'ordertime', $this->helper::TYPE_DATETIME);
+        $this->helper->convertValue($converted, 'orderDate', $data, 'ordertime', $this->helper::TYPE_DATETIME);
 
         $converted['stateId'] = $this->mappingService->getUuid(
             $this->connectionId,
@@ -692,8 +692,8 @@ class OrderConverter extends AbstractConverter
                 $this->context
             ),
             'stateId' => $converted['stateId'],
-            'shippingDateEarliest' => $converted['date'],
-            'shippingDateLatest' => $converted['date'],
+            'shippingDateEarliest' => $converted['orderDate'],
+            'shippingDateLatest' => $converted['orderDate'],
         ];
 
         if (isset($data['shippingMethod']['id'])) {
