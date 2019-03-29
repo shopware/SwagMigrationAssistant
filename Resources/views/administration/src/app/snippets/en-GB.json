@@ -189,7 +189,8 @@
           "order_state": "Order states",
           "transaction_state": "Transaction states",
           "payment_method": "Payment methods",
-          "manufacturer": "Manufacturer"
+          "manufacturer": "Manufacturer",
+          "salutation": "Salutation"
         }
       },
       "loadingScreenCard": {
@@ -319,7 +320,8 @@
         "SWAG_MIGRATION__SHOPWARE55_SOURCE_FILE_NOT_FOUND": "The source file could not be found. File: {path}",
         "SWAG_MIGRATION__SHOPWARE55_CANNOT_COPY_DATA": "The source file could not be copied. File: {path}",
         "SWAG_MIGRATION__SHOPWARE55_UNKNOWN_ORDER_STATE": "Order entity could not be converted, because of unknown order state.",
-        "SWAG_MIGRATION__SHOPWARE55_UNKNOWN_TRANSACTION_STATE": "Transaction entity could not be converted, because of unknown transaction state."
+        "SWAG_MIGRATION__SHOPWARE55_UNKNOWN_TRANSACTION_STATE": "Transaction entity could not be converted, because of unknown transaction state.",
+        "SWAG_MIGRATION__SHOPWARE55_UNKNOWN_CUSTOMER_SALUTATION": "Customer data could not be converted due to unknown salutation."
       }
     },
     "history": {

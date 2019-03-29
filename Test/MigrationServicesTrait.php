@@ -11,6 +11,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\System\Salutation\SalutationEntity;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateEntity;
 use Shopware\Core\System\StateMachine\StateMachineEntity;
 use SwagMigrationNext\Migration\Converter\ConverterRegistry;
@@ -248,6 +249,23 @@ trait MigrationServicesTrait
             $element = $result->getEntities()->first();
 
             return $element->getId();
+        }
+
+        return null;
+    }
+
+    private function getSalutationUuid(EntityRepositoryInterface $salutationRepo, string $salutationKey, Context $context): ?string
+    {
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('salutationKey', $salutationKey));
+        $criteria->setLimit(1);
+        $result = $salutationRepo->search($criteria, $context);
+
+        if ($result->getTotal() > 0) {
+            /** @var SalutationEntity $salutation */
+            $salutation = $result->getEntities()->first();
+
+            return $salutation->getId();
         }
 
         return null;

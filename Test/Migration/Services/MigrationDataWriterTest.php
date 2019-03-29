@@ -4,6 +4,7 @@ namespace SwagMigrationNext\Test\Migration;
 
 use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\InvoicePayment;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -34,6 +35,7 @@ use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\TranslationDataSe
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationNext\Profile\Shopware55\Premapping\OrderStateReader;
 use SwagMigrationNext\Profile\Shopware55\Premapping\PaymentMethodReader;
+use SwagMigrationNext\Profile\Shopware55\Premapping\SalutationReader;
 use SwagMigrationNext\Profile\Shopware55\Premapping\TransactionStateReader;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Migration\Services\MigrationProfileUuidService;
@@ -160,6 +162,11 @@ class MigrationDataWriterTest extends TestCase
      * @var EntityRepositoryInterface
      */
     private $paymentRepo;
+
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $salutationRepo;
 
     /**
      * @var Context
@@ -471,6 +478,7 @@ class MigrationDataWriterTest extends TestCase
         $this->stateMachineStateRepository = $this->getContainer()->get('state_machine_state.repository');
         $this->productTranslationRepo = $this->getContainer()->get('product_translation.repository');
         $this->currencyRepo = $this->getContainer()->get('currency.repository');
+        $this->salutationRepo = $this->getContainer()->get('salutation.repository');
     }
 
     private function initConnectionAndRun(): void
@@ -535,13 +543,23 @@ class MigrationDataWriterTest extends TestCase
 
         $paymentUuid = $this->getPaymentUuid(
             $this->paymentRepo,
-            'invoice',
+            InvoicePayment::class,
             $this->context
         );
 
         $this->mappingService->createNewUuid($this->connectionId, PaymentMethodReader::getMappingName(), '3', $this->context, [], $paymentUuid);
         $this->mappingService->createNewUuid($this->connectionId, PaymentMethodReader::getMappingName(), '4', $this->context, [], $paymentUuid);
         $this->mappingService->createNewUuid($this->connectionId, PaymentMethodReader::getMappingName(), '5', $this->context, [], $paymentUuid);
+
+        $salutationUuid = $this->getSalutationUuid(
+            $this->salutationRepo,
+            'mr',
+            $this->context
+        );
+
+        $this->mappingService->createNewUuid($this->connectionId, SalutationReader::getMappingName(), 'mr', $this->context, [], $salutationUuid);
+        $this->mappingService->createNewUuid($this->connectionId, SalutationReader::getMappingName(), 'ms', $this->context, [], $salutationUuid);
+
         $this->mappingService->writeMapping($this->context);
     }
 

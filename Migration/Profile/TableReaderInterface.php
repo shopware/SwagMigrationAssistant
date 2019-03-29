@@ -7,5 +7,5 @@ interface TableReaderInterface
     /**
      * Reads data from source table via the given gateway based on implementation
      */
-    public function read(string $tableName): array;
+    public function read(string $tableName, array $filter = []): array;
 }

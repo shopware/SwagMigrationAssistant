@@ -17,11 +17,18 @@ class Shopware55LocalTableReader implements TableReaderInterface
         $this->connection = $connection;
     }
 
-    public function read(string $tableName): array
+    public function read(string $tableName, array $filter = []): array
     {
         $query = $this->connection->createQueryBuilder();
         $query->select('*');
         $query->from($tableName);
+
+        if (!empty($filter)) {
+            foreach ($filter as $property => $value) {
+                $query->andWhere($property . ' = :value');
+                $query->setParameter('value', $value);
+            }
+        }
 
         return $query->execute()->fetchAll();
     }

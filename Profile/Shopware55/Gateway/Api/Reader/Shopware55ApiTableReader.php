@@ -20,7 +20,7 @@ class Shopware55ApiTableReader implements TableReaderInterface
         $this->client = $client;
     }
 
-    public function read(string $tableName): array
+    public function read(string $tableName, array $filter = []): array
     {
         /** @var GuzzleResponse $result */
         $result = $this->client->get(
@@ -28,6 +28,7 @@ class Shopware55ApiTableReader implements TableReaderInterface
             [
                 'query' => [
                     'table' => $tableName,
+                    'filter' => $filter,
                 ],
             ]
         );

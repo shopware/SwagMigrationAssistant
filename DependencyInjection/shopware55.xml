@@ -165,5 +165,10 @@
             <argument type="service" id="product_manufacturer.repository"/>
             <tag name="shopware.migration.pre_mapping_reader"/>
         </service>
+
+        <service id="SwagMigrationNext\Profile\Shopware55\Premapping\SalutationReader">
+            <argument type="service" id="salutation.repository" />
+            <tag name="shopware.migration.pre_mapping_reader"/>
+        </service>
     </services>
 </container>
