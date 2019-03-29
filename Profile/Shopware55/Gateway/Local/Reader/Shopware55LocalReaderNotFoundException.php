@@ -7,16 +7,21 @@ use Symfony\Component\HttpFoundation\Response;
 
 class Shopware55LocalReaderNotFoundException extends ShopwareHttpException
 {
-    protected $code = 'SWAG-MIGRATION-SHOPWARE55-LOCAL-READER-NOT-FOUND';
-
-    public function __construct(string $entityName, $code = 0, ?\Throwable $previous = null)
+    public function __construct(string $entityName)
     {
-        $message = sprintf('Shopware55 local reader for "%s" not found', $entityName);
-        parent::__construct($message, $code, $previous);
+        parent::__construct(
+            'Shopware55 local reader for "{{ entityName }}" not found.',
+            ['entityName' => $entityName]
+        );
     }
 
     public function getStatusCode(): int
     {
         return Response::HTTP_NOT_FOUND;
+    }
+
+    public function getErrorCode(): string
+    {
+        return 'SWAG_MIGRATION__SHOPWARE55_LOCAL_READER_NOT_FOUND';
     }
 }

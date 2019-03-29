@@ -7,16 +7,21 @@ use Symfony\Component\HttpFoundation\Response;
 
 class GatewayNotFoundException extends ShopwareHttpException
 {
-    protected $code = 'SWAG-MIGRATION-GATEWAY-NOT-FOUND';
-
-    public function __construct(string $gatewayName, $code = 0, ?\Throwable $previous = null)
+    public function __construct(string $gatewayName)
     {
-        $message = sprintf('Gateway "%s" not found', $gatewayName);
-        parent::__construct($message, $code, $previous);
+        parent::__construct(
+            'Gateway "{{ gatewayName }}" not found.',
+            ['gatewayName' => $gatewayName]
+        );
     }
 
     public function getStatusCode(): int
     {
         return Response::HTTP_NOT_FOUND;
+    }
+
+    public function getErrorCode(): string
+    {
+        return 'SWAG_MIGRATION__GATEWAY_NOT_FOUND';
     }
 }

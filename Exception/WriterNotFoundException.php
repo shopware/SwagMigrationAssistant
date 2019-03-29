@@ -7,16 +7,21 @@ use Symfony\Component\HttpFoundation\Response;
 
 class WriterNotFoundException extends ShopwareHttpException
 {
-    protected $code = 'SWAG-MIGRATION-WRITER-NOT-FOUND';
-
-    public function __construct(string $entityName, $code = 0, ?\Throwable $previous = null)
+    public function __construct(string $entityName)
     {
-        $message = sprintf('Writer for "%s" entity not found', $entityName);
-        parent::__construct($message, $code, $previous);
+        parent::__construct(
+            'Writer for "{{ entityName }}" entity not found.',
+            ['entityName' => $entityName]
+        );
     }
 
     public function getStatusCode(): int
     {
         return Response::HTTP_NOT_FOUND;
+    }
+
+    public function getErrorCode(): string
+    {
+        return 'SWAG_MIGRATION__WRITER_NOT_FOUND';
     }
 }

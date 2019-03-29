@@ -7,16 +7,24 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AssociationEntityRequiredMissingException extends ShopwareHttpException
 {
-    protected $code = 'SWAG-MIGRATION-SHOPWARE55-ASSOCIATION-REQUIRED-MISSING';
-
-    public function __construct(string $entity, string $missingEntity, $code = 0, ?\Throwable $previous = null)
+    public function __construct(string $entity, string $missingEntity)
     {
-        $message = sprintf('Mapping of "%s" is missing, but it is a required association for "%s". Import "%s" first', $missingEntity, $entity, $missingEntity);
-        parent::__construct($message, $code, $previous);
+        parent::__construct(
+            'Mapping of "{{ missingEntity }}" is missing, but it is a required association for "{{ entity }}". Import "{{ missingEntity }}" first.',
+            [
+                'missingEntity' => $missingEntity,
+                'entity' => $entity,
+            ]
+        );
     }
 
     public function getStatusCode(): int
     {
         return Response::HTTP_NOT_FOUND;
+    }
+
+    public function getErrorCode(): string
+    {
+        return 'SWAG_MIGRATION__SHOPWARE55_ASSOCIATION_REQUIRED_MISSING';
     }
 }

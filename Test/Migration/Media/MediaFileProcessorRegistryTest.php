@@ -5,7 +5,6 @@ namespace SwagMigrationNext\Test\Migration\Media;
 use PHPUnit\Framework\TestCase;
 use SwagMigrationNext\Exception\ProcessorNotFoundException;
 use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
-use SwagMigrationNext\Migration\Logging\LogType;
 use SwagMigrationNext\Migration\Media\MediaFileProcessorRegistry;
 use SwagMigrationNext\Migration\Media\MediaFileProcessorRegistryInterface;
 use SwagMigrationNext\Migration\MigrationContext;
@@ -57,7 +56,6 @@ class MediaFileProcessorRegistryTest extends TestCase
             /* @var ProcessorNotFoundException $e */
             static::assertInstanceOf(ProcessorNotFoundException::class, $e);
             static::assertSame(Response::HTTP_NOT_FOUND, $e->getStatusCode());
-            static::assertSame(LogType::PROCESSOR_NOT_FOUND, $e->getCode());
         }
     }
 }

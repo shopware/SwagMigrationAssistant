@@ -28,7 +28,7 @@ class SwagMigrationAccessTokenService
         string $runId,
         Context $context
     ): string {
-        $userId = \mb_strtoupper($context->getSourceContext()->getUserId());
+        $userId = \mb_strtoupper($context->getUserId());
 
         return $this->createMigrationAccessToken($runId, $userId, $context);
     }

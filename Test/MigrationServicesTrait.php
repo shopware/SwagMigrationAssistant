@@ -239,7 +239,7 @@ trait MigrationServicesTrait
     private function getPaymentUuid(EntityRepositoryInterface $paymentRepo, string $technicalName, Context $context): ?string
     {
         $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('technicalName', $technicalName));
+        $criteria->addFilter(new EqualsFilter('handlerIdentifier', $technicalName));
         $criteria->setLimit(1);
         $result = $paymentRepo->search($criteria, $context);
 

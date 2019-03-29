@@ -3,6 +3,7 @@
 namespace SwagMigrationNext\Migration\Service;
 
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\ShopwareHttpException;
 use SwagMigrationNext\Migration\EnvironmentInformation;
 use SwagMigrationNext\Migration\Gateway\GatewayFactoryRegistryInterface;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
@@ -49,8 +50,13 @@ class MigrationDataFetcher implements MigrationDataFetcherInterface
             }
             $returnCount = $profile->convert($data, $migrationContext, $context);
         } catch (\Exception $exception) {
+            $code = $exception->getCode();
+            if (is_subclass_of($exception, ShopwareHttpException::class, false)) {
+                $code = $exception->getErrorCode();
+            }
+
             $dataSet = $migrationContext->getDataSet();
-            $this->loggingService->addError($migrationContext->getRunUuid(), (string) $exception->getCode(), '', $exception->getMessage(), ['entity' => $dataSet::getEntity()]);
+            $this->loggingService->addError($migrationContext->getRunUuid(), (string) $code, '', $exception->getMessage(), ['entity' => $dataSet::getEntity()]);
             $this->loggingService->saveLogging($context);
         }
 

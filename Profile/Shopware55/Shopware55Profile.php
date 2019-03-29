@@ -121,7 +121,7 @@ class Shopware55Profile implements ProfileInterface
             ) {
                 $this->loggingService->addError(
                     $runUuid,
-                    (string) $exception->getCode(),
+                    $exception->getErrorCode(),
                     '',
                     $exception->getMessage(),
                     [

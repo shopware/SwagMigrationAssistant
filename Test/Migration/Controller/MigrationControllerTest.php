@@ -174,7 +174,8 @@ class MigrationControllerTest extends TestCase
             /* @var MigrationRunUndefinedStatusException $e */
             static::assertInstanceOf(MigrationRunUndefinedStatusException::class, $e);
             static::assertSame(Response::HTTP_BAD_REQUEST, $e->getStatusCode());
-            static::assertSame('Migration run status "invalidRunStatus" is not a valid status', $e->getMessage());
+            static::assertArrayHasKey('status', $e->getParameters());
+            static::assertSame('invalidRunStatus', $e->getParameters()['status']);
         }
     }
 
@@ -238,7 +239,6 @@ class MigrationControllerTest extends TestCase
         $request = new Request([], $properties);
 
         $this->expectException(MigrationContextPropertyMissingException::class);
-        $this->expectExceptionMessage(sprintf('Required property "%s" for migration context is missing', $missingProperty));
         $this->controller->fetchData($request, $context);
     }
 
@@ -265,8 +265,6 @@ class MigrationControllerTest extends TestCase
         $context = Context::createDefaultContext();
 
         $this->expectException(MigrationContextPropertyMissingException::class);
-        $this->expectExceptionMessage(sprintf('Required property "%s" for migration context is missing', $missingProperty));
-
         $this->controller->writeData($request, $context);
     }
 
@@ -411,7 +409,6 @@ class MigrationControllerTest extends TestCase
 
         if (!\in_array($missingProperty, $requestParamKeys, true)) {
             $this->expectException(MigrationWorkloadPropertyMissingException::class);
-            $this->expectExceptionMessage(sprintf('Required property "%s" for migration workload is missing', $missingProperty));
 
             foreach ($inputWorkload as &$workload) {
                 unset($workload[$missingProperty]);
@@ -419,7 +416,6 @@ class MigrationControllerTest extends TestCase
             unset($workload);
         } else {
             $this->expectException(MigrationContextPropertyMissingException::class);
-            $this->expectExceptionMessage(sprintf('Required property "%s" for migration context is missing', $missingProperty));
 
             unset($properties[$missingProperty]);
         }

@@ -56,7 +56,6 @@ class Shopware55ApiReaderTest extends TestCase
     public function testReadNoRouteMapping(): void
     {
         $this->expectException(GatewayReadException::class);
-        $this->expectExceptionMessage('No endpoint for entity foo available.');
 
         $apiReader = new Shopware55ApiReader(
             new Client(),
@@ -101,7 +100,8 @@ class Shopware55ApiReaderTest extends TestCase
             /* @var GatewayReadException $e */
             static::assertInstanceOf(GatewayReadException::class, $e);
             static::assertSame(SymfonyResponse::HTTP_NOT_FOUND, $e->getStatusCode());
-            static::assertSame('Could not read from gateway: "Shopware 5.5 Api product"', $e->getMessage());
+            static::assertArrayHasKey('gateway', $e->getParameters());
+            static::assertSame($e->getParameters()['gateway'], 'Shopware 5.5 Api product');
         }
     }
 }

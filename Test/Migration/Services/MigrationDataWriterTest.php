@@ -8,7 +8,6 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use Shopware\Core\Framework\SourceContext;
 use Shopware\Core\Framework\Struct\Serializer\StructNormalizer;
 use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
@@ -241,7 +240,7 @@ class MigrationDataWriterTest extends TestCase
 
         $this->migrationDataRepo->update([$customer], $context);
         $customerTotalBefore = $this->customerRepo->search($criteria, $context)->getTotal();
-        $context->scope(SourceContext::ORIGIN_API, function (Context $context) use ($migrationContext) {
+        $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext) {
             $this->dummyDataWriter->writeData($migrationContext, $context);
         });
         $customerTotalAfter = $this->customerRepo->search($criteria, $context)->getTotal();
@@ -271,7 +270,7 @@ class MigrationDataWriterTest extends TestCase
         $criteria = new Criteria();
         $customerTotalBefore = $this->customerRepo->search($criteria, $context)->getTotal();
 
-        $context->scope(SourceContext::ORIGIN_API, function (Context $context) use ($migrationContext) {
+        $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext) {
             $this->migrationDataWriter->writeData($migrationContext, $context);
         });
         $customerTotalAfter = $this->customerRepo->search($criteria, $context)->getTotal();
@@ -291,7 +290,7 @@ class MigrationDataWriterTest extends TestCase
             250
         );
         $this->migrationDataFetcher->fetchData($userMigrationContext, $context);
-        $context->scope(SourceContext::ORIGIN_API, function (Context $context) use ($userMigrationContext) {
+        $context->scope(Context::USER_SCOPE, function (Context $context) use ($userMigrationContext) {
             $this->migrationDataWriter->writeData($userMigrationContext, $context);
         });
 
@@ -317,7 +316,7 @@ class MigrationDataWriterTest extends TestCase
         $jpyInvalidTotalBefore = $this->currencyRepo->search($jpyInvalidCriteria, $context)->getTotal();
 
         // Get data after writing
-        $context->scope(SourceContext::ORIGIN_API, function (Context $context) use ($migrationContext) {
+        $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext) {
             $this->migrationDataWriter->writeData($migrationContext, $context);
         });
         $orderTotalAfter = $this->orderRepo->search($criteria, $context)->getTotal();
@@ -347,7 +346,7 @@ class MigrationDataWriterTest extends TestCase
         $criteria = new Criteria();
         $totalBefore = $this->mediaRepo->search($criteria, $context)->getTotal();
 
-        $context->scope(SourceContext::ORIGIN_API, function (Context $context) use ($migrationContext) {
+        $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext) {
             $this->migrationDataWriter->writeData($migrationContext, $context);
         });
         $totalAfter = $this->mediaRepo->search($criteria, $context)->getTotal();
@@ -370,7 +369,7 @@ class MigrationDataWriterTest extends TestCase
         $criteria = new Criteria();
         $totalBefore = $this->categoryRepo->search($criteria, $context)->getTotal();
 
-        $context->scope(SourceContext::ORIGIN_API, function (Context $context) use ($migrationContext) {
+        $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext) {
             $this->migrationDataWriter->writeData($migrationContext, $context);
         });
         $totalAfter = $this->categoryRepo->search($criteria, $context)->getTotal();
@@ -393,7 +392,7 @@ class MigrationDataWriterTest extends TestCase
         $criteria = new Criteria();
         $productTotalBefore = $this->productRepo->search($criteria, $context)->getTotal();
 
-        $context->scope(SourceContext::ORIGIN_API, function (Context $context) use ($migrationContext) {
+        $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext) {
             $this->migrationDataWriter->writeData($migrationContext, $context);
         });
         $productTotalAfter = $this->productRepo->search($criteria, $context)->getTotal();
@@ -427,7 +426,7 @@ class MigrationDataWriterTest extends TestCase
         $productTranslationTotalBefore = $this->getTranslationTotal();
         $this->migrationDataFetcher->fetchData($migrationContext, $context);
 
-        $context->scope(SourceContext::ORIGIN_API, function (Context $context) use ($migrationContext) {
+        $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext) {
             $this->migrationDataWriter->writeData($migrationContext, $context);
         });
         $productTranslationTotalAfter = $this->getTranslationTotal();
@@ -450,6 +449,7 @@ class MigrationDataWriterTest extends TestCase
         $this->dummyDataWriter->writeData($migrationContext, $context);
 
         $logs = $this->loggingService->getLoggingArray();
+
         static::assertSame(LogType::WRITER_NOT_FOUND, $logs[0]['logEntry']['code']);
         static::assertCount(1, $logs);
     }

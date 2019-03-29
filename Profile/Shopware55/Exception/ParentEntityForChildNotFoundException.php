@@ -7,16 +7,24 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ParentEntityForChildNotFoundException extends ShopwareHttpException
 {
-    protected $code = 'SWAG-MIGRATION-SHOPWARE55-PARENT-ENTITY-NOT-FOUND';
-
-    public function __construct(string $entity, string $oldIdentifier, $code = 0, ?\Throwable $previous = null)
+    public function __construct(string $entity, string $oldIdentifier)
     {
-        $message = sprintf('Parent entity for "%s: %s" child not found', $entity, $oldIdentifier);
-        parent::__construct($message, $code, $previous);
+        parent::__construct(
+            'Parent entity for "{{ entity }}: {{ oldIdentifier }}" child not found.',
+            [
+                'entity' => $entity,
+                'oldIdentifier' => $oldIdentifier,
+            ]
+        );
     }
 
     public function getStatusCode(): int
     {
         return Response::HTTP_NOT_FOUND;
+    }
+
+    public function getErrorCode(): string
+    {
+        return 'SWAG_MIGRATION__SHOPWARE55_PARENT_ENTITY_NOT_FOUND';
     }
 }

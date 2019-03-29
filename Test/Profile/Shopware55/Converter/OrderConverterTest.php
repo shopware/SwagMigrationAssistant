@@ -175,7 +175,11 @@ class OrderConverterTest extends TestCase
             /* @var AssociationEntityRequiredMissingException $e */
             static::assertInstanceOf(AssociationEntityRequiredMissingException::class, $e);
             static::assertSame(Response::HTTP_NOT_FOUND, $e->getStatusCode());
-            static::assertSame('Mapping of "customer" is missing, but it is a required association for "order". Import "customer" first', $e->getMessage());
+
+            static::assertArrayHasKey('missingEntity', $e->getParameters());
+            static::assertArrayHasKey('entity', $e->getParameters());
+            static::assertSame('order', $e->getParameters()['entity']);
+            static::assertSame('customer', $e->getParameters()['missingEntity']);
         }
     }
 
