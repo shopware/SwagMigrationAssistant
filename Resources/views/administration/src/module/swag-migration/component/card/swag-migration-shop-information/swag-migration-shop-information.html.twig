@@ -6,15 +6,23 @@
                     {% block swag_migration_shop_information_connection %}
                         <div class="swag-migration-shop-information__connection">
                             {% block swag_migration_shop_information_connection_avatar %}
-                                <sw-avatar class="swag-migration-shop-information__connection-avatar"
-                                           color="#189EFF"
-                                           size="80px">{{ shopFirstLetter }}</sw-avatar>
+                                <swag-migration-shop-avatar class="swag-migration-shop-information__connection-avatar"
+                                                            color="#189EFF"
+                                                            size="80px">
+                                    {{ shopFirstLetter }}
+                                </swag-migration-shop-avatar>
                             {% endblock %}
 
                             {% block swag_migration_shop_information_connection_info %}
                                 <div class="swag-migration-shop-information__connection-info">
+                                    {% block swag_migration_shop_information_shop_system %}
+                                        <div class="swag-migration-shop-information__connection-name">
+                                            {{ connectionName }}
+                                        </div>
+                                    {% endblock %}
+
                                     {% block swag_migration_shop_information_shop_domain %}
-                                        <div class="swag-migration-shop-information__shop-domain">
+                                        <div class="swag-migration-shop-information__shop-domain" v-if="shopUrl !== ''">
                                             <span class="swag-migration-shop-information__shop-domain-prefix"
                                                   :class="shopUrlPrefixClass">
                                                 <sw-icon name="small-lock-closed"
@@ -28,14 +36,6 @@
                                                          v-else>
                                                 </sw-icon>
                                                 {{ shopUrlPrefix }}</span>{{ shopUrl }}
-                                        </div>
-                                    {% endblock %}
-
-                                    {% block swag_migration_shop_information_shop_system %}
-                                        <div class="swag-migration-shop-information__shop-system">
-                                            {{ $tc('swag-migration.index.shopInfoCard.shopSystem') }}
-                                            {{ shopSystem }}
-                                            {{ shopVersion }}
                                         </div>
                                     {% endblock %}
 
@@ -92,25 +92,42 @@
                         {% block swag_migration_shop_information_metadata_columns %}
                             <div class="swag-migration-shop-information__metadata-columns">
                                 {% block swag_migration_shop_information_metadata_column_left %}
-                                    <sw-description-list>
-                                        {% block swag_migration_shop_information_metadata_gateway %}
-                                            <dt>{{ $tc('swag-migration.index.shopInfoCard.gateway') }}</dt>
-                                            <dd>{{ gateway.toUpperCase() }}</dd>
-                                        {% endblock %}
-                                    </sw-description-list>
+                                    {% block swag_migration_shop_information_metadata_profile %}
+                                        <sw-description-list>
+                                            <dt>{{ $tc('swag-migration.index.shopInfoCard.profile') }}</dt>
+                                            <dd>{{ profile }}</dd>
+                                        </sw-description-list>
+                                    {% endblock %}
+                                    {% block swag_migration_shop_information_metadata_gateway %}
+                                        <sw-description-list>
+                                                <dt>{{ $tc('swag-migration.index.shopInfoCard.gateway') }}</dt>
+                                                <dd>{{ gateway.toUpperCase() }}</dd>
+                                        </sw-description-list>
+                                    {% endblock %}
                                 {% endblock %}
                             </div>
                             <div class="swag-migration-shop-information__metadata-columns">
                                 {% block swag_migration_shop_information_column_right %}
-                                    <sw-description-list>
-                                        {% block swag_migration_shop_information_metadata_lastMigration %}
-                                            <dt>{{ $tc('swag-migration.index.shopInfoCard.lastMigration') }}</dt>
-                                            <dd v-if="lastMigrationDate !== '-'">
-                                                {{ $t('swag-migration.index.shopInfoCard.lastMigrationDateTime', lastMigrationDateTimeParams) }}
+                                    {% block swag_migration_shop_information_metadata_lastConnectionCheck %}
+                                        <sw-description-list>
+                                            <dt>{{ $tc('swag-migration.index.shopInfoCard.connectionCheck') }}</dt>
+                                            <dd v-if="lastConnectionCheck !== '-'">
+                                                {{ $t('swag-migration.index.shopInfoCard.displayDateTime', lastConnectionCheckDateTimeParams) }}
                                             </dd>
                                             <dd v-else>-</dd>
-                                        {% endblock %}
-                                    </sw-description-list>
+                                        </sw-description-list>
+                                    {% endblock %}
+                                    {% block swag_migration_shop_information_metadata_lastMigration %}
+                                        <sw-description-list>
+                                                <dt>{{ $tc('swag-migration.index.shopInfoCard.lastMigration') }}</dt>
+                                                <dd v-if="lastMigrationDate !== '-'">
+                                                    {{ $t('swag-migration.index.shopInfoCard.displayDateTime', lastMigrationDateTimeParams) }}
+                                                </dd>
+                                                <dd v-else>
+                                                    {{ $t('swag-migration.index.shopInfoCard.noMigrationDoneYet') }}
+                                                </dd>
+                                        </sw-description-list>
+                                    {% endblock %}
                                 {% endblock %}
                             </div>
                         {% endblock %}
