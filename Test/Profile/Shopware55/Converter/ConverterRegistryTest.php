@@ -3,7 +3,7 @@
 namespace SwagMigrationNext\Test\Profile\Shopware55\Converter;
 
 use PHPUnit\Framework\TestCase;
-use Shopware\Core\Framework\Struct\Uuid;
+use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationNext\Exception\ConverterNotFoundException;
 use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\Converter\ConverterRegistry;
@@ -52,7 +52,7 @@ class ConverterRegistryTest extends TestCase
 
         $migrationContext = new MigrationContext(
             $connection,
-            Uuid::uuid4()->getHex(),
+            Uuid::randomHex(),
             new FooDataSet(),
             0,
             250

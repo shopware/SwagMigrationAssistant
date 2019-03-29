@@ -5,8 +5,8 @@ namespace SwagMigrationNext\Test\Migration\Controller;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
+use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationNext\Controller\PremappingController;
 use SwagMigrationNext\Migration\Mapping\MappingService;
 use SwagMigrationNext\Migration\MigrationContext;
@@ -104,7 +104,7 @@ class PremappingControllerTest extends TestCase
         );
 
         $this->context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use ($connectionRepo, $profileUuidService) {
-            $this->connectionId = Uuid::uuid4()->getHex();
+            $this->connectionId = Uuid::randomHex();
             $connectionRepo->create(
                 [
                     [
@@ -122,7 +122,7 @@ class PremappingControllerTest extends TestCase
             );
         });
 
-        $this->runUuid = Uuid::uuid4()->getHex();
+        $this->runUuid = Uuid::randomHex();
         $this->runRepo->create(
             [
                 [
@@ -136,10 +136,10 @@ class PremappingControllerTest extends TestCase
             Context::createDefaultContext()
         );
 
-        $firstStateUuid = Uuid::uuid4()->getHex();
+        $firstStateUuid = Uuid::randomHex();
         $this->firstState = new PremappingEntityStruct('0', 'First State', $firstStateUuid);
 
-        $secondStateUuid = Uuid::uuid4()->getHex();
+        $secondStateUuid = Uuid::randomHex();
         $this->secondState = new PremappingEntityStruct('1', 'Second State', $secondStateUuid);
 
         $this->premapping = new PremappingStruct(OrderStateReader::getMappingName(), [$this->firstState, $this->secondState]);
@@ -204,10 +204,10 @@ class PremappingControllerTest extends TestCase
         static::assertSame($this->firstState->getDestinationUuid(), $firstUuid);
         static::assertSame($this->secondState->getDestinationUuid(), $secondUuid);
 
-        $firstStateUuid = Uuid::uuid4()->getHex();
+        $firstStateUuid = Uuid::randomHex();
         $firstState = new PremappingEntityStruct('0', 'First State', $firstStateUuid);
 
-        $secondStateUuid = Uuid::uuid4()->getHex();
+        $secondStateUuid = Uuid::randomHex();
         $secondState = new PremappingEntityStruct('1', 'Second State', $secondStateUuid);
 
         $premapping = new PremappingStruct(OrderStateReader::getMappingName(), [$firstState, $secondState]);

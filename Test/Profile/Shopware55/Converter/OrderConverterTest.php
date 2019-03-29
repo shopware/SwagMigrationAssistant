@@ -9,7 +9,7 @@ use Shopware\Core\Checkout\Cart\Tax\TaxCalculator;
 use Shopware\Core\Checkout\Cart\Tax\TaxRuleCalculator;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\Struct\Uuid;
+use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\MigrationContext;
@@ -86,8 +86,8 @@ class OrderConverterTest extends TestCase
         $this->orderConverter = new OrderConverter($mappingService, $converterHelperService, $taxCalculator, $this->loggingService);
         $this->customerConverter = new CustomerConverter($mappingService, $converterHelperService, $this->loggingService);
 
-        $connectionId = Uuid::uuid4()->getHex();
-        $this->runId = Uuid::uuid4()->getHex();
+        $connectionId = Uuid::randomHex();
+        $this->runId = Uuid::randomHex();
         $this->connection = new SwagMigrationConnectionEntity();
         $profile = new SwagMigrationProfileEntity();
         $profile->setName(Shopware55Profile::PROFILE_NAME);
@@ -121,15 +121,15 @@ class OrderConverterTest extends TestCase
             Defaults::SALES_CHANNEL
         );
 
-        $mappingService->createNewUuid($connectionId, OrderStateReader::getMappingName(), '0', $context, [], Uuid::uuid4()->getHex());
-        $mappingService->createNewUuid($connectionId, TransactionStateReader::getMappingName(), '17', $context, [], Uuid::uuid4()->getHex());
+        $mappingService->createNewUuid($connectionId, OrderStateReader::getMappingName(), '0', $context, [], Uuid::randomHex());
+        $mappingService->createNewUuid($connectionId, TransactionStateReader::getMappingName(), '17', $context, [], Uuid::randomHex());
 
-        $mappingService->createNewUuid($connectionId, PaymentMethodReader::getMappingName(), '3', $context, [], Uuid::uuid4()->getHex());
-        $mappingService->createNewUuid($connectionId, PaymentMethodReader::getMappingName(), '4', $context, [], Uuid::uuid4()->getHex());
-        $mappingService->createNewUuid($connectionId, PaymentMethodReader::getMappingName(), '5', $context, [], Uuid::uuid4()->getHex());
+        $mappingService->createNewUuid($connectionId, PaymentMethodReader::getMappingName(), '3', $context, [], Uuid::randomHex());
+        $mappingService->createNewUuid($connectionId, PaymentMethodReader::getMappingName(), '4', $context, [], Uuid::randomHex());
+        $mappingService->createNewUuid($connectionId, PaymentMethodReader::getMappingName(), '5', $context, [], Uuid::randomHex());
 
-        $mappingService->createNewUuid($connectionId, SalutationReader::getMappingName(), 'mr', $context, [], Uuid::uuid4()->getHex());
-        $mappingService->createNewUuid($connectionId, SalutationReader::getMappingName(), 'ms', $context, [], Uuid::uuid4()->getHex());
+        $mappingService->createNewUuid($connectionId, SalutationReader::getMappingName(), 'mr', $context, [], Uuid::randomHex());
+        $mappingService->createNewUuid($connectionId, SalutationReader::getMappingName(), 'ms', $context, [], Uuid::randomHex());
     }
 
     public function testSupports(): void

@@ -10,8 +10,8 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
+use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\DataSelection\DataSelectionRegistry;
 use SwagMigrationNext\Migration\Mapping\MappingService;
@@ -133,7 +133,7 @@ class MigrationProgressServiceTest extends TestCase
         );
         $this->profileId = $profileUuidService->getProfileUuid();
 
-        $this->runUuid = Uuid::uuid4()->getHex();
+        $this->runUuid = Uuid::randomHex();
         $this->runProgress = require __DIR__ . '/../../_fixtures/run_progress_data.php';
 
         $this->credentialFields = [
@@ -142,7 +142,7 @@ class MigrationProgressServiceTest extends TestCase
         ];
 
         $context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use ($profileUuidService) {
-            $this->connectionId = Uuid::uuid4()->getHex();
+            $this->connectionId = Uuid::randomHex();
             $this->connectionRepo->create(
                 [
                     [

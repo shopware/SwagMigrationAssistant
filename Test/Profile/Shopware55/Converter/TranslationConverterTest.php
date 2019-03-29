@@ -4,7 +4,7 @@ namespace SwagMigrationNext\Test\Profile\Shopware55\Converter;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\Struct\Uuid;
+use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\MigrationContextInterface;
@@ -72,7 +72,7 @@ class TranslationConverterTest extends TestCase
         $this->translationConverter = new TranslationConverter($this->mappingService, $converterHelperService, $this->loggingService);
 
         $connection = new SwagMigrationConnectionEntity();
-        $connection->setId(Uuid::uuid4()->getHex());
+        $connection->setId(Uuid::randomHex());
         $profile = new SwagMigrationProfileEntity();
         $profile->setName(Shopware55Profile::PROFILE_NAME);
         $profile->setGatewayName(Shopware55LocalGateway::GATEWAY_NAME);
@@ -80,8 +80,8 @@ class TranslationConverterTest extends TestCase
         $connection->setProfile($profile);
         $connection->setCredentialFields([]);
 
-        $this->runId = Uuid::uuid4()->getHex();
-        $this->profileId = Uuid::uuid4()->getHex();
+        $this->runId = Uuid::randomHex();
+        $this->profileId = Uuid::randomHex();
 
         $this->migrationContext = new MigrationContext(
             $connection,

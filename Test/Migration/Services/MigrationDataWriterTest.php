@@ -10,8 +10,8 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Struct\Serializer\StructNormalizer;
-use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
+use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\Currency\CurrencyEntity;
 use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\Data\SwagMigrationDataEntity;
@@ -483,8 +483,8 @@ class MigrationDataWriterTest extends TestCase
 
     private function initConnectionAndRun(): void
     {
-        $this->connectionId = Uuid::uuid4()->getHex();
-        $this->runUuid = Uuid::uuid4()->getHex();
+        $this->connectionId = Uuid::randomHex();
+        $this->runUuid = Uuid::randomHex();
 
         $this->profileUuidService = new MigrationProfileUuidService(
             $this->profileRepo,

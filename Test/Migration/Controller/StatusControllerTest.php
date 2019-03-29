@@ -13,8 +13,8 @@ use Shopware\Core\Framework\Context\AdminApiSource;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
+use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationNext\Controller\StatusController;
 use SwagMigrationNext\Exception\MigrationContextPropertyMissingException;
 use SwagMigrationNext\Exception\MigrationIsRunningException;
@@ -94,7 +94,7 @@ class StatusControllerTest extends TestCase
         $this->runRepo = $this->getContainer()->get('swag_migration_run.repository');
 
         $context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) {
-            $this->connectionId = Uuid::uuid4()->getHex();
+            $this->connectionId = Uuid::randomHex();
             $this->connectionRepo->create(
                 [
                     [
@@ -112,7 +112,7 @@ class StatusControllerTest extends TestCase
             );
         });
 
-        $this->runUuid = Uuid::uuid4()->getHex();
+        $this->runUuid = Uuid::randomHex();
         $this->runRepo->create(
             [
                 [
@@ -229,7 +229,7 @@ class StatusControllerTest extends TestCase
 
     public function testGetStateWithCreateMigration(): void
     {
-        $userId = Uuid::uuid4()->getHex();
+        $userId = Uuid::randomHex();
         $origin = new AdminApiSource($userId);
         $context = Context::createDefaultContext($origin);
 
@@ -342,7 +342,7 @@ class StatusControllerTest extends TestCase
             'runUuid' => $this->runUuid,
         ];
 
-        $userId = Uuid::uuid4()->getHex();
+        $userId = Uuid::randomHex();
         $origin = new AdminApiSource($userId);
         $context = Context::createDefaultContext($origin);
 

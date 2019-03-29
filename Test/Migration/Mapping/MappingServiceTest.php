@@ -6,8 +6,8 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenEvent;
-use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
+use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\Language\LanguageDefinition;
 use SwagMigrationNext\Exception\LocaleNotFoundException;
 use SwagMigrationNext\Migration\Mapping\MappingService;
@@ -48,7 +48,7 @@ class MappingServiceTest extends TestCase
         $this->profileUuidService = new MigrationProfileUuidService($this->getContainer()->get('swag_migration_profile.repository'));
 
         $context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use ($connectionRepo) {
-            $this->connectionId = Uuid::uuid4()->getHex();
+            $this->connectionId = Uuid::randomHex();
             $connectionRepo->create(
                 [
                     [

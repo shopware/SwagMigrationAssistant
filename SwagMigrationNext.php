@@ -8,7 +8,7 @@ use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Plugin;
 use Shopware\Core\Framework\Plugin\Context\InstallContext;
 use Shopware\Core\Framework\Plugin\Context\UninstallContext;
-use Shopware\Core\Framework\Struct\Uuid;
+use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Api\Shopware55ApiGateway;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
@@ -54,19 +54,19 @@ class SwagMigrationNext extends Plugin
         $connection->beginTransaction();
         try {
             $connection->insert('swag_migration_profile', [
-                'id' => Uuid::uuid4()->getBytes(),
+                'id' => Uuid::randomBytes(),
                 'name' => Shopware55Profile::PROFILE_NAME,
                 'gateway_name' => Shopware55ApiGateway::GATEWAY_NAME,
                 'created_at' => $now,
             ]);
             $connection->insert('swag_migration_profile', [
-                'id' => Uuid::uuid4()->getBytes(),
+                'id' => Uuid::randomBytes(),
                 'name' => Shopware55Profile::PROFILE_NAME,
                 'gateway_name' => Shopware55LocalGateway::GATEWAY_NAME,
                 'created_at' => $now,
             ]);
             $connection->insert('swag_migration_general_setting', [
-                'id' => Uuid::uuid4()->getBytes(),
+                'id' => Uuid::randomBytes(),
                 'created_at' => $now,
             ]);
 
