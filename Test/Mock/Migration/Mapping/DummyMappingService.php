@@ -3,7 +3,7 @@
 namespace SwagMigrationNext\Test\Mock\Migration\Mapping;
 
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\Struct\Uuid;
+use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationNext\Migration\Mapping\MappingService;
 
 class DummyMappingService extends MappingService
@@ -32,7 +32,7 @@ class DummyMappingService extends MappingService
             return $uuid;
         }
 
-        $uuid = Uuid::uuid4()->getHex();
+        $uuid = Uuid::randomHex();
         if ($newUuid !== null) {
             $uuid = $newUuid;
         }

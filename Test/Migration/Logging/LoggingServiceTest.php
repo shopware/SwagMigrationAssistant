@@ -6,8 +6,8 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
+use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationNext\Migration\Logging\LoggingService;
 use SwagMigrationNext\Migration\Logging\SwagMigrationLoggingEntity;
 
@@ -53,8 +53,8 @@ class LoggingServiceTest extends TestCase
 
     public function testAddInfo(): void
     {
-        $this->loggingService->addInfo(Uuid::uuid4()->getHex(), self::$firstLog['code'], self::$firstLog['title'], self::$firstLog['description'], ['name' => self::$firstLog['name']]);
-        $this->loggingService->addInfo(Uuid::uuid4()->getHex(), self::$firstLog['code'], self::$secondLog['title'], self::$secondLog['description'], ['name' => self::$secondLog['name']]);
+        $this->loggingService->addInfo(Uuid::randomHex(), self::$firstLog['code'], self::$firstLog['title'], self::$firstLog['description'], ['name' => self::$firstLog['name']]);
+        $this->loggingService->addInfo(Uuid::randomHex(), self::$firstLog['code'], self::$secondLog['title'], self::$secondLog['description'], ['name' => self::$secondLog['name']]);
 
         $result = $this->loggingRepo->search(new Criteria(), $this->context);
         static::assertSame(0, $result->getTotal());
@@ -69,8 +69,8 @@ class LoggingServiceTest extends TestCase
 
     public function testAddWarning(): void
     {
-        $this->loggingService->addWarning(Uuid::uuid4()->getHex(), self::$firstLog['code'], self::$firstLog['title'], self::$firstLog['description'], ['name' => self::$firstLog['name']]);
-        $this->loggingService->addWarning(Uuid::uuid4()->getHex(), self::$secondLog['code'], self::$secondLog['title'], self::$secondLog['description'], ['name' => self::$secondLog['name']]);
+        $this->loggingService->addWarning(Uuid::randomHex(), self::$firstLog['code'], self::$firstLog['title'], self::$firstLog['description'], ['name' => self::$firstLog['name']]);
+        $this->loggingService->addWarning(Uuid::randomHex(), self::$secondLog['code'], self::$secondLog['title'], self::$secondLog['description'], ['name' => self::$secondLog['name']]);
 
         $result = $this->loggingRepo->search(new Criteria(), $this->context);
         static::assertSame(0, $result->getTotal());
@@ -85,8 +85,8 @@ class LoggingServiceTest extends TestCase
 
     public function testAddError(): void
     {
-        $this->loggingService->addError(Uuid::uuid4()->getHex(), self::$firstLog['code'], self::$firstLog['title'], self::$firstLog['description'], ['name' => self::$firstLog['name']]);
-        $this->loggingService->addError(Uuid::uuid4()->getHex(), self::$secondLog['code'], self::$secondLog['title'], self::$firstLog['description'], ['name' => self::$secondLog['name']]);
+        $this->loggingService->addError(Uuid::randomHex(), self::$firstLog['code'], self::$firstLog['title'], self::$firstLog['description'], ['name' => self::$firstLog['name']]);
+        $this->loggingService->addError(Uuid::randomHex(), self::$secondLog['code'], self::$secondLog['title'], self::$firstLog['description'], ['name' => self::$secondLog['name']]);
 
         $result = $this->loggingRepo->search(new Criteria(), $this->context);
         static::assertSame(0, $result->getTotal());

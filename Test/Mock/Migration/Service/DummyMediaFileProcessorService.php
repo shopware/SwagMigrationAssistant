@@ -3,7 +3,7 @@
 namespace SwagMigrationNext\Test\Mock\Migration\Service;
 
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\Struct\Uuid;
+use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationNext\Migration\MigrationContextInterface;
 use SwagMigrationNext\Migration\Service\MediaFileProcessorService;
 
@@ -12,16 +12,16 @@ class DummyMediaFileProcessorService extends MediaFileProcessorService
     public function fetchMediaUuids(string $runUuid, Context $context, int $limit): array
     {
         return [
-            0 => Uuid::uuid4()->getHex(),
-            1 => Uuid::uuid4()->getHex(),
-            2 => Uuid::uuid4()->getHex(),
-            3 => Uuid::uuid4()->getHex(),
-            4 => Uuid::uuid4()->getHex(),
-            5 => Uuid::uuid4()->getHex(),
-            6 => Uuid::uuid4()->getHex(),
-            7 => Uuid::uuid4()->getHex(),
-            8 => Uuid::uuid4()->getHex(),
-            9 => Uuid::uuid4()->getHex(),
+            0 => Uuid::randomHex(),
+            1 => Uuid::randomHex(),
+            2 => Uuid::randomHex(),
+            3 => Uuid::randomHex(),
+            4 => Uuid::randomHex(),
+            5 => Uuid::randomHex(),
+            6 => Uuid::randomHex(),
+            7 => Uuid::randomHex(),
+            8 => Uuid::randomHex(),
+            9 => Uuid::randomHex(),
         ];
     }
 

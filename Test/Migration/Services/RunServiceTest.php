@@ -7,8 +7,8 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Context\AdminApiSource;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
+use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\Converter\ConverterRegistry;
 use SwagMigrationNext\Migration\DataSelection\DataSelectionRegistry;
@@ -102,7 +102,7 @@ class RunServiceTest extends TestCase
             Shopware55LocalGateway::GATEWAY_NAME
         );
 
-        $connectionId = Uuid::uuid4()->getHex();
+        $connectionId = Uuid::randomHex();
         $context = $context = Context::createDefaultContext();
         $context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use ($connectionId, $profileUuidService) {
             $this->connectionRepo->create(
@@ -172,7 +172,7 @@ class RunServiceTest extends TestCase
 
     public function testCreateMigrationRunWithoutStructure(): void
     {
-        $userId = Uuid::uuid4()->getHex();
+        $userId = Uuid::randomHex();
         $origin = new AdminApiSource($userId);
         $context = Context::createDefaultContext($origin);
 
@@ -192,7 +192,7 @@ class RunServiceTest extends TestCase
 
     public function testCreateMigrationRunWithStructure(): void
     {
-        $userId = Uuid::uuid4()->getHex();
+        $userId = Uuid::randomHex();
         $origin = new AdminApiSource($userId);
         $context = Context::createDefaultContext($origin);
 

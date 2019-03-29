@@ -12,8 +12,8 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
+use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\Converter\ConverterRegistry;
 use SwagMigrationNext\Migration\Gateway\GatewayFactoryRegistry;
@@ -405,8 +405,8 @@ class MigrationDataFetcherTest extends TestCase
 
     private function initConnectionAndRun(): void
     {
-        $this->connectionId = Uuid::uuid4()->getHex();
-        $this->runUuid = Uuid::uuid4()->getHex();
+        $this->connectionId = Uuid::randomHex();
+        $this->runUuid = Uuid::randomHex();
 
         $this->profileUuidService = new MigrationProfileUuidService(
             $this->profileRepo,

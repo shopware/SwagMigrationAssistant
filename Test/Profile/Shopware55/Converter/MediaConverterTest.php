@@ -4,7 +4,7 @@ namespace SwagMigrationNext\Test\Profile\Shopware55\Converter;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\Struct\Uuid;
+use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService;
@@ -43,9 +43,9 @@ class MediaConverterTest extends TestCase
         $converterHelperService = new ConverterHelperService();
         $this->mediaConverter = new MediaConverter($mappingService, $converterHelperService, $mediaFileService);
 
-        $this->runId = Uuid::uuid4()->getHex();
+        $this->runId = Uuid::randomHex();
         $this->connection = new SwagMigrationConnectionEntity();
-        $this->connection->setId(Uuid::uuid4()->getHex());
+        $this->connection->setId(Uuid::randomHex());
 
         $this->migrationContext = new MigrationContext(
             $this->connection,

@@ -5,7 +5,7 @@ namespace SwagMigrationNext\Test\Profile\Shopware55\Converter;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\Struct\Uuid;
+use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\MigrationContext;
@@ -65,8 +65,8 @@ class CustomerConverterTest extends TestCase
         $converterHelperService = new ConverterHelperService();
         $this->customerConverter = new CustomerConverter($this->mappingService, $converterHelperService, $this->loggingService);
 
-        $this->connectionId = Uuid::uuid4()->getHex();
-        $this->runId = Uuid::uuid4()->getHex();
+        $this->connectionId = Uuid::randomHex();
+        $this->runId = Uuid::randomHex();
         $this->connection = new SwagMigrationConnectionEntity();
         $profile = new SwagMigrationProfileEntity();
         $profile->setName(Shopware55Profile::PROFILE_NAME);
@@ -92,12 +92,12 @@ class CustomerConverterTest extends TestCase
             Defaults::SALES_CHANNEL
         );
 
-        $this->mappingService->createNewUuid($this->connectionId, PaymentMethodReader::getMappingName(), '3', $context, [], Uuid::uuid4()->getHex());
-        $this->mappingService->createNewUuid($this->connectionId, PaymentMethodReader::getMappingName(), '4', $context, [], Uuid::uuid4()->getHex());
-        $this->mappingService->createNewUuid($this->connectionId, PaymentMethodReader::getMappingName(), '5', $context, [], Uuid::uuid4()->getHex());
+        $this->mappingService->createNewUuid($this->connectionId, PaymentMethodReader::getMappingName(), '3', $context, [], Uuid::randomHex());
+        $this->mappingService->createNewUuid($this->connectionId, PaymentMethodReader::getMappingName(), '4', $context, [], Uuid::randomHex());
+        $this->mappingService->createNewUuid($this->connectionId, PaymentMethodReader::getMappingName(), '5', $context, [], Uuid::randomHex());
 
-        $this->mappingService->createNewUuid($this->connectionId, SalutationReader::getMappingName(), 'mr', $context, [], Uuid::uuid4()->getHex());
-        $this->mappingService->createNewUuid($this->connectionId, SalutationReader::getMappingName(), 'ms', $context, [], Uuid::uuid4()->getHex());
+        $this->mappingService->createNewUuid($this->connectionId, SalutationReader::getMappingName(), 'mr', $context, [], Uuid::randomHex());
+        $this->mappingService->createNewUuid($this->connectionId, SalutationReader::getMappingName(), 'ms', $context, [], Uuid::randomHex());
     }
 
     public function testSupports(): void
@@ -221,7 +221,7 @@ class CustomerConverterTest extends TestCase
         unset($customerData['defaultpayment']);
 
         $context = Context::createDefaultContext();
-        $uuid = $this->mappingService->createNewUuid($this->connectionId, PaymentMethodReader::getMappingName(), 'default_payment_method', $context, [], Uuid::uuid4()->getHex());
+        $uuid = $this->mappingService->createNewUuid($this->connectionId, PaymentMethodReader::getMappingName(), 'default_payment_method', $context, [], Uuid::randomHex());
         $convertResult = $this->customerConverter->convert(
             $customerData,
             $context,

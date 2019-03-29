@@ -4,7 +4,7 @@ namespace SwagMigrationNext\Test\Profile\Shopware55\Converter;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\Struct\Uuid;
+use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\MigrationContextInterface;
@@ -60,12 +60,12 @@ class ProductConverterTest extends TestCase
         $this->loggingService = new DummyLoggingService();
         $this->productConverter = new ProductConverter($this->mappingService, $converterHelperService, $mediaFileService, $this->loggingService);
 
-        $this->runId = Uuid::uuid4()->getHex();
+        $this->runId = Uuid::randomHex();
         $this->connection = new SwagMigrationConnectionEntity();
         $profile = new SwagMigrationProfileEntity();
         $profile->setName(Shopware55Profile::PROFILE_NAME);
         $profile->setGatewayName(Shopware55LocalGateway::GATEWAY_NAME);
-        $this->connection->setId(Uuid::uuid4()->getHex());
+        $this->connection->setId(Uuid::randomHex());
         $this->connection->setProfile($profile);
 
         $this->migrationContext = new MigrationContext(

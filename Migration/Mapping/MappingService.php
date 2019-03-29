@@ -10,7 +10,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenEvent;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use Shopware\Core\Framework\Struct\Uuid;
+use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\Country\CountryDefinition;
 use Shopware\Core\System\Country\CountryEntity;
 use Shopware\Core\System\Currency\CurrencyEntity;
@@ -126,7 +126,7 @@ class MappingService implements MappingServiceInterface
             return $uuid;
         }
 
-        $uuid = Uuid::uuid4()->getHex();
+        $uuid = Uuid::randomHex();
         if ($newUuid !== null) {
             $uuid = $newUuid;
         }

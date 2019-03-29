@@ -10,8 +10,8 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
-use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
+use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationNext\Migration\Mapping\MappingService;
 use SwagMigrationNext\Migration\Media\CliMediaDownloadService;
 use SwagMigrationNext\Migration\Media\MediaFileService;
@@ -84,7 +84,7 @@ class MediaDownloadServiceTest extends TestCase
             Shopware55Profile::PROFILE_NAME,
             Shopware55LocalGateway::GATEWAY_NAME
         );
-        $this->runUuid = Uuid::uuid4()->getHex();
+        $this->runUuid = Uuid::randomHex();
         $runRepository->create(
             [
                 [

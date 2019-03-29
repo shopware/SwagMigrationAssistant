@@ -3,7 +3,7 @@
 namespace SwagMigrationNext\Test\Migration\DataSelection;
 
 use PHPUnit\Framework\TestCase;
-use Shopware\Core\Framework\Struct\Uuid;
+use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\DataSelection\DataSelectionRegistry;
 use SwagMigrationNext\Migration\DataSelection\DataSelectionStruct;
@@ -48,7 +48,7 @@ class DataSelectionRegistryTest extends TestCase
             ]
         );
         $this->connection = new SwagMigrationConnectionEntity();
-        $this->connection->setId(Uuid::uuid4()->getHex());
+        $this->connection->setId(Uuid::randomHex());
         $profile = new SwagMigrationProfileEntity();
         $profile->setName(Shopware55Profile::PROFILE_NAME);
         $profile->setGatewayName(Shopware55LocalGateway::GATEWAY_NAME);

@@ -8,7 +8,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
-use Shopware\Core\Framework\Struct\Uuid;
+use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\DataSelection\DataSet\DataSetRegistryInterface;
 use SwagMigrationNext\Migration\MigrationContext;
@@ -109,7 +109,7 @@ class MigrationFetchDataCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $runId = Uuid::uuid4()->getHex();
+        $runId = Uuid::randomHex();
         $context = Context::createDefaultContext();
         $this->checkOptions($input);
         $this->getProfile($context);

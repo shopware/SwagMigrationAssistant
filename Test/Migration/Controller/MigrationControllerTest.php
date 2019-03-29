@@ -5,8 +5,8 @@ namespace SwagMigrationNext\Test\Migration\Controller;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\Struct\Uuid;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
+use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationNext\Controller\MigrationController;
 use SwagMigrationNext\Exception\EntityNotExistsException;
 use SwagMigrationNext\Exception\MigrationContextPropertyMissingException;
@@ -96,7 +96,7 @@ class MigrationControllerTest extends TestCase
         $this->dataSetRegistry = $this->getContainer()->get(DataSetRegistry::class);
 
         $context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) {
-            $this->connectionId = Uuid::uuid4()->getHex();
+            $this->connectionId = Uuid::randomHex();
             $this->connectionRepo->create(
                 [
                     [
@@ -114,7 +114,7 @@ class MigrationControllerTest extends TestCase
             );
         });
 
-        $this->runUuid = Uuid::uuid4()->getHex();
+        $this->runUuid = Uuid::randomHex();
         $this->runRepo->create(
             [
                 [
@@ -183,7 +183,7 @@ class MigrationControllerTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $params = [
-            'runUuid' => Uuid::uuid4()->getHex(),
+            'runUuid' => Uuid::randomHex(),
             'entity' => ProductDataSet::getEntity(),
         ];
 
@@ -313,19 +313,19 @@ class MigrationControllerTest extends TestCase
     {
         $inputWorkload = [
             [
-                'uuid' => Uuid::uuid4()->getHex(),
+                'uuid' => Uuid::randomHex(),
                 'currentOffset' => 100,
                 'state' => 'inProgress',
             ],
 
             [
-                'uuid' => Uuid::uuid4()->getHex(),
+                'uuid' => Uuid::randomHex(),
                 'currentOffset' => 100,
                 'state' => 'inProgress',
             ],
 
             [
-                'uuid' => Uuid::uuid4()->getHex(),
+                'uuid' => Uuid::randomHex(),
                 'currentOffset' => 100,
                 'state' => 'inProgress',
             ],
@@ -380,19 +380,19 @@ class MigrationControllerTest extends TestCase
     {
         $inputWorkload = [
             [
-                'uuid' => Uuid::uuid4()->getHex(),
+                'uuid' => Uuid::randomHex(),
                 'currentOffset' => 100,
                 'state' => 'inProgress',
             ],
 
             [
-                'uuid' => Uuid::uuid4()->getHex(),
+                'uuid' => Uuid::randomHex(),
                 'currentOffset' => 100,
                 'state' => 'inProgress',
             ],
 
             [
-                'uuid' => Uuid::uuid4()->getHex(),
+                'uuid' => Uuid::randomHex(),
                 'currentOffset' => 100,
                 'state' => 'inProgress',
             ],
