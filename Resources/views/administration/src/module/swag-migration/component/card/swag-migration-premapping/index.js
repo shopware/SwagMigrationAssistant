@@ -17,7 +17,6 @@ Component.register('swag-migration-premapping', {
         return {
             isLoading: false,
             premappingInput: [],
-            instantValid: false,
             /** @type MigrationProcessStore */
             migrationProcessStore: State.getStore('migrationProcess'),
             /** @type MigrationUIStore */
@@ -47,6 +46,10 @@ Component.register('swag-migration-premapping', {
 
         displayFilledPremapping() {
             return this.migrationUIStore.state.filledPremapping.length > 0;
+        },
+
+        premappingValid() {
+            return this.migrationUIStore.state.isPremappingValid;
         }
     },
 
@@ -55,10 +58,8 @@ Component.register('swag-migration-premapping', {
             this.isLoading = true;
 
             if (this.migrationUIStore.state.premapping !== null && this.migrationUIStore.state.premapping.length > 0) {
-                this.migrationUIStore.setIsPremappingValid(false);
                 this.$nextTick(() => {
                     this.validatePremapping();
-                    this.instantValid = this.migrationUIStore.state.unfilledPremapping.length === 0;
                     this.isLoading = false;
                 });
                 return;
@@ -75,11 +76,6 @@ Component.register('swag-migration-premapping', {
                 } else {
                     this.migrationUIStore.setPremapping(premapping);
                     this.validatePremapping();
-                    this.instantValid = this.migrationUIStore.state.unfilledPremapping.length === 0;
-
-                    if (!this.instantValid) {
-                        this.$emit('unfilledPremapping');
-                    }
 
                     this.isLoading = false;
                 }

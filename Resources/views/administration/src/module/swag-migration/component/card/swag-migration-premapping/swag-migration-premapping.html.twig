@@ -2,7 +2,7 @@
     <div class="swag-migration-premapping">
         {% block swag_migration_premapping_success_card %}
             <sw-card class="swag-migration-premapping__success-card"
-                     v-if="!isLoading && instantValid">
+                     v-if="!isLoading && premappingValid">
                 {% block swag_migration_premapping_success_bubble %}
                     <div class="swag-migration-premapping__success-bubble">
                         <sw-icon size="36px"
@@ -29,7 +29,7 @@
 
         {% block swag_migration_premapping_unfilled_alert %}
             <sw-alert variant="error"
-                      v-if="displayUnfilledPremapping"
+                      v-if="!premappingValid"
                       class="swag-migration-premapping__unfilled-alert">
                 {{ $tc('swag-migration.index.premappingCard.unfilledAlert') }}
             </sw-alert>
@@ -37,7 +37,7 @@
 
         {% block swag_migration_premapping_unfilled_card %}
             <sw-card class="swag-migration-premapping__unfilled-card"
-                     v-if="displayUnfilledPremapping">
+                     v-if="!premappingValid">
                 {% block swag_migration_premapping_unfilled_title %}
                     <div class="swag-migration-premapping__unfilled-title">
                         {{ $t('swag-migration.index.premappingCard.unfilledTitle') }}
