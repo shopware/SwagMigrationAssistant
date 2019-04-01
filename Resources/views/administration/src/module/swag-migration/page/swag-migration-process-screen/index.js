@@ -158,7 +158,15 @@ Component.register('swag-migration-process-screen', {
              * @param {number} status
              */
             handler(status) {
-                if (status === MIGRATION_STATUS.WAITING || status === MIGRATION_STATUS.PREMAPPING) {
+                if (status === MIGRATION_STATUS.WAITING) {
+                    return;
+                }
+
+                if (status === MIGRATION_STATUS.PREMAPPING) {
+                    this.$nextTick(() => {
+                        this.flowChartItemIndex = status;
+                        this.flowChartItemVariant = this.migrationUIStore.state.isPremappingValid ? 'success' : 'error';
+                    });
                     return;
                 }
 
@@ -185,6 +193,17 @@ Component.register('swag-migration-process-screen', {
                         this.onFinishWithoutErrors();
                     }
                 }
+            }
+        },
+
+        'migrationUIStore.state.isPremappingValid': {
+            handler(valid) {
+                if (valid) {
+                    this.flowChartItemVariant = 'success';
+                    return;
+                }
+
+                this.flowChartItemVariant = 'error';
             }
         }
     },
@@ -264,7 +283,7 @@ Component.register('swag-migration-process-screen', {
                     }
 
                     if (this.$route.params.startMigration) {
-                        this.onMigrate();
+                        await this.onMigrate();
                     }
 
                     this.connectionEstablished = (connectionCheckResponse.errorCode === -1);
@@ -579,10 +598,6 @@ Component.register('swag-migration-process-screen', {
             this.isOtherMigrationRunning = true;
             this.migrationUIStore.setComponentIndex(UI_COMPONENT_INDEX.TAKEOVER);
             this.migrationUIStore.setIsLoading(false);
-        },
-
-        onUnfilledPremapping() {
-            this.flowChartItemVariant = 'error';
         }
     }
 });
