@@ -4,6 +4,10 @@
             <div class="swag-migration-wizard__content">
                 {% block swag_migration_wizard_page_plugin_information_information %}
                     <div class="swag-migration-wizard__content-information">
+                        {% block swag_migration_wizard_page_plugin_information_svg %}
+                            <img class="swag-migration-wizard__illustration" :src="'/swagmigrationnext/static/img/wizard-shopware55-api-plugin-information.svg' | asset">
+                        {% endblock %}
+
                         {% block swag_migration_wizard_page_plugin_information_title %}
                             <h3 class="information__header">
                                 {{ $tc('swag-migration.wizard.pages.profileInformation.shopware55Api.contentTitle') }}
@@ -20,10 +24,6 @@
                             <div class="swag-migration-wizard__link">
                                 <a class="link" target="_blank" href="https://store.shopware.com/search?sSearch=Swag576192431929">{{ $tc('swag-migration.wizard.pages.profileInformation.shopware55Api.pluginLink') }}</a>
                             </div>
-                        {% endblock %}
-
-                        {% block swag_migration_wizard_page_plugin_information_svg %}
-                            <img class="swag-migration-wizard__illustration" :src="'/swagmigrationnext/static/img/wizard-shopware55-api-plugin-information.svg' | asset">
                         {% endblock %}
                     </div>
                 {% endblock %}

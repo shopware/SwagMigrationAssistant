@@ -13,10 +13,6 @@ Component.register('swag-migration-wizard-page-connection-create', {
         }
     },
 
-    created() {
-        this.createdComponent();
-    },
-
     data() {
         return {
             isLoading: true,
@@ -49,6 +45,10 @@ Component.register('swag-migration-wizard-page-connection-create', {
         }
     },
 
+    created() {
+        this.createdComponent();
+    },
+
     methods: {
         createdComponent() {
             this.setIsLoading(true);
@@ -68,12 +68,14 @@ Component.register('swag-migration-wizard-page-connection-create', {
 
                 this.generalSettingStore.getList({ limit: 1 }).then((response) => {
                     if (!response || response.items[0].selectedProfileId === null) {
+                        this.selectDefaultProfile();
                         this.setIsLoading(false);
                         return;
                     }
 
                     this.profileStore.getByIdAsync(response.items[0].selectedProfileId).then((profileResponse) => {
                         if (profileResponse.id === null) {
+                            this.selectDefaultProfile();
                             this.setIsLoading(false);
                             return;
                         }
@@ -89,6 +91,11 @@ Component.register('swag-migration-wizard-page-connection-create', {
                     });
                 });
             });
+        },
+
+        selectDefaultProfile() {
+            this.selection.profile = 'shopware55';
+            this.onSelectProfile();
         },
 
         setIsLoading(value) {

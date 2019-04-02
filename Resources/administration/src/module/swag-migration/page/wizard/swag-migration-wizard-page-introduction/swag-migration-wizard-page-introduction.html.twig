@@ -4,21 +4,18 @@
             <div class="swag-migration-wizard__content">
                 {% block swag_migration_wizard_page_introduction_information %}
                     <div class="swag-migration-wizard__content-information">
+                        {% block swag_migration_wizard_page_introduction_svg %}
+                            <img class="swag-migration-wizard__illustration" :src="'/swagmigrationnext/static/img/wizard-introduction.svg' | asset">
+                        {% endblock %}
                         {% block swag_migration_wizard_page_introduction_api_hint %}
+                            <h3>
+                                {{ $tc('swag-migration.wizard.pages.introduction.contentHeadline') }}
+                            </h3>
                             <p class="swag-migration-wizard__description">
                                 {{ $tc('swag-migration.wizard.pages.introduction.contentInformation') }}
                             </p>
                         {% endblock %}
 
-                        {% block swag_migration_wizard_page_plugin_information_plugin_link %}
-                            <div class="swag-migration-wizard__link">
-                                <a class="link" target="_blank" href="#">{{ $tc('swag-migration.wizard.pages.introduction.documentationLink') }}</a>
-                            </div>
-                        {% endblock %}
-
-                        {% block swag_migration_wizard_page_introduction_svg %}
-                            <img class="swag-migration-wizard__illustration" :src="'/swagmigrationnext/static/img/wizard-introduction.svg' | asset">
-                        {% endblock %}
                     </div>
                 {% endblock %}
             </div>
