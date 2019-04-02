@@ -86,15 +86,15 @@
             "contentInformation": "You can now start the data migration.",
             "alertErrorTitle": "Attention",
             "undefinedErrorMsg": "An unknown error occurred while checking the SSL certificate from the specified shop domain.",
-            "connectionInsecureMsg": "The SSL certificate of the given shop domain is not secure. We recommend you to check the certificate for your own security."
+            "SWAG_MIGRATION__REQUEST_CERTIFICATE_INVALID": "The SSL certificate of the given shop domain is not secure. We recommend you to check the certificate for your own security."
           },
           "error": {
             "contentTitle": "Connection failed",
-            "contentInformation": "The connection could not be established. ",
             "alertErrorTitle": "Attention",
-            "connectionErrorMsg": "Could not connect to the server. Please check the given shop domain.",
-            "authenticationErrorMsg": "Your credentials are incorrect. Please check them and try again.",
-            "invalidShopDomainErrorMsg": "The given URL is not valid shop domain. Please enter a valid shop domain.",
+            "SWAG_MIGRATION__GATEWAY_READ": "Could not connect to the server. Please check the given shop domain.",
+            "SWAG_MIGRATION__CONNECTION_AUTHENTICATION_INVALID": "Your credentials are incorrect. Please check them and try again.",
+            "SWAG_MIGRATION__PLUGIN_NOT_INSTALLED": "The required plugin “Shopware Playground Connector” is not installed in Shopware 5. Please install the free plugin and try again.",
+            "SWAG_MIGRATION__DATABASE_CONNECTION_ERROR": "Database connection could not be established.",
             "undefinedErrorMsg": "Internal server error. Please try again.",
             "credentialsMissing": "There are no credentials available, please enter them first.",
             "migrationRunning": "A migration is currently in progress. Therefore, you cannot edit the credentials until the migration is complete."

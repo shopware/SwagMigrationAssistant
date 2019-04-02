@@ -86,15 +86,15 @@
             "contentInformation": "Jetzt kannst Du mit der Datenmigration beginnen.",
             "alertErrorTitle": "Achtung",
             "undefinedErrorMsg": "Bei der Prüfung des SSL-Zertifikats der angegebenen Shop-Domain ist ein unbekannter Fehler aufgetreten.",
-            "connectionInsecureMsg": "Das SSL-Zertifikat der angegebenen Shop-Domain ist nicht sicher. Wir empfehlen eine Überprüfung des Zertifikats zur eigenen Sicherheit."
+            "SWAG_MIGRATION__REQUEST_CERTIFICATE_INVALID": "Das SSL-Zertifikat der angegebenen Shop-Domain ist nicht sicher. Wir empfehlen eine Überprüfung des Zertifikats zur eigenen Sicherheit."
           },
           "error": {
             "contentTitle": "Verbindung fehlgeschlagen",
-            "contentInformation": "Die Verbindung konnte nicht hergestellt werden. ",
             "alertErrorTitle": "Achtung",
-            "connectionErrorMsg": "Es konnte keine Verbindung zum angegebenen Server hergestellt werden. Bitte überprüfe die angegebene Shop-Domain.",
-            "authenticationErrorMsg": "Deine Zugangsdaten sind nicht korrekt. Bitte überprüfe sie und versuche es erneut.",
-            "invalidShopDomainErrorMsg": "Die angegebene URL ist keine valide Shop-Domain. Bitte gib eine valide Shop-Domain ein.",
+            "SWAG_MIGRATION__GATEWAY_READ": "Es konnte keine Verbindung zum angegebenen Server hergestellt werden. Bitte überprüfe die angegebene Shop-Domain.",
+            "SWAG_MIGRATION__CONNECTION_AUTHENTICATION_INVALID": "Deine Zugangsdaten sind nicht korrekt. Bitte überprüfe sie und versuche es erneut.",
+            "SWAG_MIGRATION__PLUGIN_NOT_INSTALLED": "Das benötigte Plugin „Shopware Playground Connector“ ist nicht in Shopware 5 installiert. Bitte installiere das kostenlose Plugin und versuche es erneut.",
+            "SWAG_MIGRATION__DATABASE_CONNECTION_ERROR": "Die Datenbank Verbindung konnte nicht hergestellt werden.",
             "undefinedErrorMsg": "Interner Server Fehler. Bitte versuche es erneut.",
             "credentialsMissing": "Es sind keine Zugangsdaten vorhanden, bitte trage zuerst welche ein.",
             "migrationRunning": "Eine Migration ist zurzeit im Gange. Du kannst deshalb die Zugangsdaten nicht bearbeiten bis die Migration abgeschlossen ist."

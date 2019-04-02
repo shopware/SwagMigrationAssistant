@@ -16,6 +16,7 @@ use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CustomerDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\OrderDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
+use SwagMigrationNext\Profile\Shopware55\Exception\DatabaseConnectionException;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalCategoryReader;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalCustomerReader;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalEnvironmentReader;
@@ -67,16 +68,18 @@ class Shopware55LocalGateway extends AbstractGateway
         try {
             $connection->connect();
         } catch (\Exception $e) {
+            $error = new DatabaseConnectionException();
+
             return new EnvironmentInformation(
                 Shopware55Profile::SOURCE_SYSTEM_NAME,
                 Shopware55Profile::SOURCE_SYSTEM_VERSION,
                 '-',
                 [],
                 [],
-                -1,
+                '',
                 'No warning.',
-                404,
-                'Database connection could not be established.'
+                $error->getErrorCode(),
+                $error->getMessage()
             );
         }
         $reader = new Shopware55LocalEnvironmentReader($connection, $this->migrationContext);

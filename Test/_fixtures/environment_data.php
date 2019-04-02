@@ -76,11 +76,11 @@ return [
         'shoppingWorlds' => 1,
     ],
     'warning' => [
-        'code' => -1,
+        'code' => '',
         'detail' => 'No warning.',
     ],
     'error' => [
-        'code' => -1,
+        'code' => '',
         'detail' => 'No error.',
     ],
 ];

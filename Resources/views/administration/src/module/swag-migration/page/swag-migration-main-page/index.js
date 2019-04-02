@@ -69,12 +69,12 @@ Component.register('swag-migration-main-page', {
             this.migrationService.checkConnection(this.migrationProcessStore.state.connectionId)
                 .then(async (connectionCheckResponse) => {
                     this.migrationProcessStore.setEnvironmentInformation(connectionCheckResponse);
+                    this.connectionEstablished = (connectionCheckResponse.errorCode === '');
 
                     if (this.$route.params.startMigration) {
-                        this.onMigrate();
+                        await this.onMigrate();
                     }
 
-                    this.connectionEstablished = (connectionCheckResponse.errorCode === -1);
                     this.migrationUIStore.setIsLoading(false);
                 }).catch(() => {
                     this.connectionEstablished = false;

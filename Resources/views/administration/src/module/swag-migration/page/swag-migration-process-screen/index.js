@@ -26,7 +26,6 @@ Component.register('swag-migration-process-screen', {
 
     data() {
         return {
-            connectionEstablished: false,
             errorList: [],
             isOtherInstanceFetching: false,
             isMigrationInterrupted: false,
@@ -268,6 +267,15 @@ Component.register('swag-migration-process-screen', {
             this.migrationService.checkConnection(this.migrationProcessStore.state.connectionId)
                 .then(async (connectionCheckResponse) => {
                     this.migrationProcessStore.setEnvironmentInformation(connectionCheckResponse);
+
+                    if (
+                        connectionCheckResponse.errorCode !== '' ||
+                        (!otherInstanceMigrating && !this.$route.params.startMigration)
+                    ) {
+                        this.$router.push({ name: 'swag.migration.index.main' });
+                        return;
+                    }
+
                     this.migrationWorkerService.restoreRunningMigration(false);
 
                     if (
@@ -277,19 +285,12 @@ Component.register('swag-migration-process-screen', {
                         this.restoreRunningMigration();
                     }
 
-                    if (!otherInstanceMigrating && !this.$route.params.startMigration) {
-                        this.$router.push({ name: 'swag.migration.index.main' });
-                        return;
-                    }
-
                     if (this.$route.params.startMigration) {
                         await this.onMigrate();
                     }
 
-                    this.connectionEstablished = (connectionCheckResponse.errorCode === -1);
                     this.migrationUIStore.setIsLoading(false);
                 }).catch(() => {
-                    this.connectionEstablished = false;
                     this.migrationUIStore.setIsLoading(false);
                 });
         },

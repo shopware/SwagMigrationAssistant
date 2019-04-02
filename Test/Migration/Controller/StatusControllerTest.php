@@ -379,10 +379,10 @@ class StatusControllerTest extends TestCase
         static::assertSame($environmentInformation['totals']['order'], 0);
         static::assertSame($environmentInformation['totals']['translation'], 0);
 
-        static::assertSame($environmentInformation['warningCode'], -1);
+        static::assertSame($environmentInformation['warningCode'], '');
         static::assertSame($environmentInformation['warningMessage'], 'No warning.');
 
-        static::assertSame($environmentInformation['errorCode'], -1);
+        static::assertSame($environmentInformation['errorCode'], '');
         static::assertSame($environmentInformation['errorMessage'], 'No error.');
 
         $request = new Request();

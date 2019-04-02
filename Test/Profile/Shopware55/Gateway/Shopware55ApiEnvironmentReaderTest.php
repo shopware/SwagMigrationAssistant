@@ -3,11 +3,15 @@
 namespace SwagMigrationNext\Test\Profile\Shopware55\Gateway;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Framework\ShopwareHttpException;
 use SwagMigrationNext\Exception\GatewayReadException;
+use SwagMigrationNext\Exception\RequestCertificateInvalidException;
 use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiEnvironmentReader;
@@ -20,13 +24,22 @@ class Shopware55ApiEnvironmentReaderTest extends TestCase
 
     private $body;
 
+    /** @var RequestException */
+    private $sslInsecureException;
+
+    /** @var ShopwareHttpException */
+    private $sslInsecureShopwareException;
+
+    /** @var ShopwareHttpException */
+    private $gatewayReadException;
+
     private $warning = [
-        'code' => -1,
+        'code' => '',
         'detail' => 'No warning.',
     ];
 
     private $error = [
-        'code' => -1,
+        'code' => '',
         'detail' => 'No error.',
     ];
 
@@ -35,6 +48,20 @@ class Shopware55ApiEnvironmentReaderTest extends TestCase
         $this->body = json_encode([
             'data' => $this->dataArray,
         ]);
+
+        $this->sslInsecureException = new RequestException(
+            'SSL insecure',
+            new Request('GET', 'product/api/SwagMigrationEnvironment'),
+            null,
+            null,
+            [
+                'errno' => 60,
+                'url' => 'product/api/SwagMigrationEnvironment',
+            ]
+        );
+
+        $this->sslInsecureShopwareException = new RequestCertificateInvalidException('product/api/SwagMigrationEnvironment');
+        $this->gatewayReadException = new GatewayReadException('Shopware 5.5 Api SwagMigrationEnvironment', 466);
     }
 
     public function testEnvironmentReaderVerifiedTest(): void
@@ -68,13 +95,8 @@ class Shopware55ApiEnvironmentReaderTest extends TestCase
 
     public function testEnvironmentReaderNotVerifiedTest(): void
     {
-        $warning = [
-            'code' => 666,
-            'detail' => 'My test exception',
-        ];
-
         $mock = new MockHandler([
-            new \Exception($warning['detail'], $warning['code']),
+            $this->sslInsecureException,
             new Response(200, [], $this->body),
         ]);
         $handler = HandlerStack::create($mock);
@@ -97,20 +119,17 @@ class Shopware55ApiEnvironmentReaderTest extends TestCase
 
         $response = $environmentReader->read();
         static::assertSame($response['environmentInformation'], $this->dataArray);
-        static::assertSame($response['warning'], $warning);
+        static::assertSame($response['warning']['code'], $this->sslInsecureShopwareException->getErrorCode());
+        static::assertSame($response['warning']['detail'], $this->sslInsecureShopwareException->getMessage());
         static::assertSame($response['error'], $this->error);
     }
 
     public function testEnvironmentReaderNotConnectedTest(): void
     {
-        $error = [
-            'code' => 666,
-            'detail' => 'My test exception',
-        ];
-
         $mock = new MockHandler([
-            new \Exception($error['detail'], $error['code']),
-            new \Exception($error['detail'], $error['code']),
+            $this->sslInsecureException,
+            $this->gatewayReadException,
+            new Response(200, [], $this->body),
         ]);
         $handler = HandlerStack::create($mock);
 
@@ -132,8 +151,10 @@ class Shopware55ApiEnvironmentReaderTest extends TestCase
 
         $response = $environmentReader->read();
         static::assertSame($response['environmentInformation'], []);
-        static::assertSame($response['error'], $error);
-        static::assertSame($response['warning'], $this->warning);
+        static::assertSame($response['warning']['code'], $this->sslInsecureShopwareException->getErrorCode());
+        static::assertSame($response['warning']['detail'], $this->sslInsecureShopwareException->getMessage());
+        static::assertSame($response['error']['code'], $this->gatewayReadException->getErrorCode());
+        static::assertSame($response['error']['detail'], $this->gatewayReadException->getMessage());
     }
 
     public function testEnvironmentReaderWithGatewayReadException(): void
@@ -141,6 +162,7 @@ class Shopware55ApiEnvironmentReaderTest extends TestCase
         $mock = new MockHandler([
             new Response(404, [], $this->body),
             new Response(300, [], $this->body),
+            new Response(200, [], $this->body),
         ]);
         $handler = HandlerStack::create($mock);
 
@@ -157,11 +179,10 @@ class Shopware55ApiEnvironmentReaderTest extends TestCase
             )
         );
 
-        $gatewayReadException = new GatewayReadException('Shopware 5.5 Api SwagMigrationEnvironment', 466);
         $response = $environmentReader->read();
         static::assertSame($response['environmentInformation'], []);
-        static::assertSame($response['error']['code'], $gatewayReadException->getCode());
-        static::assertSame($response['error']['detail'], $gatewayReadException->getMessage());
+        static::assertSame($response['error']['code'], $this->gatewayReadException->getErrorCode());
+        static::assertSame($response['error']['detail'], $this->gatewayReadException->getMessage());
     }
 
     public function testEnvironmentReaderWithInvalidJsonResponse(): void
@@ -169,6 +190,7 @@ class Shopware55ApiEnvironmentReaderTest extends TestCase
         $mock = new MockHandler([
             new Response(404, [], $this->body),
             new Response(200, [], 'invalid JSON Response'),
+            new Response(200, [], $this->body),
         ]);
         $handler = HandlerStack::create($mock);
 
@@ -185,10 +207,9 @@ class Shopware55ApiEnvironmentReaderTest extends TestCase
             )
         );
 
-        $gatewayReadException = new GatewayReadException('Shopware 5.5 Api SwagMigrationEnvironment', 466);
         $response = $environmentReader->read();
         static::assertSame($response['environmentInformation'], []);
-        static::assertSame($response['error']['code'], $gatewayReadException->getCode());
-        static::assertSame($response['error']['detail'], $gatewayReadException->getMessage());
+        static::assertSame($response['error']['code'], $this->gatewayReadException->getErrorCode());
+        static::assertSame($response['error']['detail'], $this->gatewayReadException->getMessage());
     }
 }

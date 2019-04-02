@@ -32,7 +32,7 @@ class EnvironmentInformation extends Struct
     protected $totals;
 
     /**
-     * @var int
+     * @var string
      */
     protected $warningCode;
 
@@ -42,7 +42,7 @@ class EnvironmentInformation extends Struct
     protected $warningMessage;
 
     /**
-     * @var int
+     * @var string
      */
     protected $errorCode;
 
@@ -65,9 +65,9 @@ class EnvironmentInformation extends Struct
         string $sourceSystemDomain,
         array $structure = [],
         array $totals = [],
-        int $warningCode = -1,
+        string $warningCode = '',
         string $warningMessage = '',
-        int $errorCode = -1,
+        string $errorCode = '',
         string $errorMessage = '',
         bool $updateAvailable = false
     ) {
@@ -111,7 +111,7 @@ class EnvironmentInformation extends Struct
         return $this->totals;
     }
 
-    public function getWarningCode(): int
+    public function getWarningCode(): string
     {
         return $this->warningCode;
     }
@@ -121,7 +121,7 @@ class EnvironmentInformation extends Struct
         return $this->warningMessage;
     }
 
-    public function getErrorCode(): int
+    public function getErrorCode(): string
     {
         return $this->errorCode;
     }
