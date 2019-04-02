@@ -119,8 +119,6 @@
       "backButton": "Migration abschließen",
       "migrationAlreadyRunning": "Der Datenimport wurde bereits gestartet.",
       "pluginVersionText": "Wir haben festgestellt, dass ein Plugin-Update verfügbar ist. Bitte update das Plugin „Shopware Playground Connector“. Gegebenenfalls kann der Datenimport nicht vollständig durchgeführt werden.",
-      "mainInformationTitle": "### Information Title PLACEHOLDER ###",
-      "mainInformationContent": "### Information Content PLACEHOLDER ###",
       "shopInfoCard": {
         "cardTitle": "Shopsystem",
         "buttonEditSettings": "Verbindung bearbeiten",
@@ -140,6 +138,23 @@
           "content": "Deine aktuellen Zugangsdaten werden gelöscht. Somit besteht keine aktive Verbindung mehr, um weitere Daten zu migrieren. Die Verbindung kann jedoch jederzeit bearbeitet und mit neuen Zugangsdaten wiederhergestellt werden.{linebreak}{linebreak}Möchtest Du die Zugangsdaten löschen?",
           "abortButtonText": "Abbrechen",
           "confirmButtonText": "Ja, löschen"
+        }
+      },
+      "assistantCard": {
+        "title": "Information",
+        "headline": "Dein Migrationsassistent",
+        "finish": "Fertig!",
+        "connection": {
+          "title": "Eine Verbindung anlegen",
+          "content": "Gemeinsam verbinden wir Deinen Shop mit dem neuen Shopware 6 und können dann ganz leicht alle von Dir ausgewählten Daten migrieren."
+        },
+        "dataSelection": {
+          "title": "Daten für die Migration auswählen",
+          "content": "Wähle aus, welche Daten migiert werden sollen. Auch Plugin-Daten können migriert werden, wenn das zugehörige Plugin in Shopware 6 installiert ist. Die Verfügbarkeit des Plugins kannst Du in Deinem Shopware-Account prüfen."
+        },
+        "migrationOverview": {
+          "title": "Die Migration im Überblick",
+          "content": "1. Ein Datencheck prüft Deine Daten. Gegebenfalls wird eine Zuordnung benötigt.{linebreak}2. Die Daten werden von Deinem System gelesen und zugeordnet.{linebreak}3. Die Daten werden in Shopware 6 geschrieben.{linebreak}4. Die Medien werden heruntergeladen."
         }
       },
       "selectDataCard": {
