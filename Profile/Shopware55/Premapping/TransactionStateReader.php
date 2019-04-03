@@ -2,7 +2,7 @@
 
 namespace SwagMigrationNext\Profile\Shopware55\Premapping;
 
-use Shopware\Core\Defaults;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStates;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -101,7 +101,7 @@ class TransactionStateReader extends AbstractPremappingReader
     private function getChoices(Context $context): array
     {
         $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('technicalName', Defaults::ORDER_TRANSACTION_STATE_MACHINE));
+        $criteria->addFilter(new EqualsFilter('technicalName', OrderTransactionStates::STATE_MACHINE));
 
         /** @var StateMachineEntity $stateMachine */
         $stateMachine = $this->stateMachineRepo->search($criteria, $context)->first();
@@ -144,62 +144,62 @@ class TransactionStateReader extends AbstractPremappingReader
         $preselectionValue = null;
         switch ($sourceId) {
             case 9: // partially_invoiced
-                $preselectionValue = $this->preselectionDictionary[Defaults::ORDER_TRANSACTION_STATES_OPEN];
+                $preselectionValue = $this->preselectionDictionary[OrderTransactionStates::STATE_OPEN];
                 break;
             case 10: // completely_invoiced
-                $preselectionValue = $this->preselectionDictionary[Defaults::ORDER_TRANSACTION_STATES_OPEN];
+                $preselectionValue = $this->preselectionDictionary[OrderTransactionStates::STATE_OPEN];
                 break;
             case 11: // partially_paid
-                $preselectionValue = $this->preselectionDictionary[Defaults::ORDER_TRANSACTION_STATES_PARTIALLY_PAID];
+                $preselectionValue = $this->preselectionDictionary[OrderTransactionStates::STATE_PARTIALLY_PAID];
                 break;
             case 12: // completely_paid
-                $preselectionValue = $this->preselectionDictionary[Defaults::ORDER_TRANSACTION_STATES_PAID];
+                $preselectionValue = $this->preselectionDictionary[OrderTransactionStates::STATE_PAID];
                 break;
             case 13: // 1st_reminder
-                $preselectionValue = $this->preselectionDictionary[Defaults::ORDER_TRANSACTION_STATES_REMINDED];
+                $preselectionValue = $this->preselectionDictionary[OrderTransactionStates::STATE_REMINDED];
                 break;
             case 14: // 2nd_reminder
-                $preselectionValue = $this->preselectionDictionary[Defaults::ORDER_TRANSACTION_STATES_REMINDED];
+                $preselectionValue = $this->preselectionDictionary[OrderTransactionStates::STATE_REMINDED];
                 break;
             case 15: // 3rd_reminder
-                $preselectionValue = $this->preselectionDictionary[Defaults::ORDER_TRANSACTION_STATES_REMINDED];
+                $preselectionValue = $this->preselectionDictionary[OrderTransactionStates::STATE_REMINDED];
                 break;
             case 16: // encashment
-                $preselectionValue = $this->preselectionDictionary[Defaults::ORDER_TRANSACTION_STATES_REMINDED];
+                $preselectionValue = $this->preselectionDictionary[OrderTransactionStates::STATE_REFUNDED];
                 break;
             case 17: // open
-                $preselectionValue = $this->preselectionDictionary[Defaults::ORDER_TRANSACTION_STATES_OPEN];
+                $preselectionValue = $this->preselectionDictionary[OrderTransactionStates::STATE_OPEN];
                 break;
             case 18: // reserved
-                $preselectionValue = $this->preselectionDictionary[Defaults::ORDER_TRANSACTION_STATES_OPEN];
+                $preselectionValue = $this->preselectionDictionary[OrderTransactionStates::STATE_OPEN];
                 break;
             case 19: // delayed
-                $preselectionValue = $this->preselectionDictionary[Defaults::ORDER_TRANSACTION_STATES_OPEN];
+                $preselectionValue = $this->preselectionDictionary[OrderTransactionStates::STATE_OPEN];
                 break;
             case 20: // re_crediting
-                $preselectionValue = $this->preselectionDictionary[Defaults::ORDER_TRANSACTION_STATES_REFUNDED];
+                $preselectionValue = $this->preselectionDictionary[OrderTransactionStates::STATE_REFUNDED];
                 break;
             case 21: // review_necessary
-                $preselectionValue = $this->preselectionDictionary[Defaults::ORDER_TRANSACTION_STATES_OPEN];
+                $preselectionValue = $this->preselectionDictionary[OrderTransactionStates::STATE_OPEN];
                 break;
             case 30: // no_credit_approved
-                $preselectionValue = $this->preselectionDictionary[Defaults::ORDER_TRANSACTION_STATES_OPEN];
+                $preselectionValue = $this->preselectionDictionary[OrderTransactionStates::STATE_OPEN];
                 break;
             case 31: // the_credit_has_been_preliminarily_accepted
-                $preselectionValue = $this->preselectionDictionary[Defaults::ORDER_TRANSACTION_STATES_OPEN];
+                $preselectionValue = $this->preselectionDictionary[OrderTransactionStates::STATE_OPEN];
                 break;
             case 32: // the_credit_has_been_accepted
-                $preselectionValue = $this->preselectionDictionary[Defaults::ORDER_TRANSACTION_STATES_OPEN];
+                $preselectionValue = $this->preselectionDictionary[OrderTransactionStates::STATE_OPEN];
                 break;
             case 33: // the_payment_has_been_ordered
-                $preselectionValue = $this->preselectionDictionary[Defaults::ORDER_TRANSACTION_STATES_OPEN];
+                $preselectionValue = $this->preselectionDictionary[OrderTransactionStates::STATE_OPEN];
                 break;
             case 34: // a_time_extension_has_been_registered
-                $preselectionValue = $this->preselectionDictionary[Defaults::ORDER_TRANSACTION_STATES_OPEN];
+                $preselectionValue = $this->preselectionDictionary[OrderTransactionStates::STATE_OPEN];
                 break;
             case 35: // the_process_has_been_cancelled
             case 0: // Cancelled order without payment state
-                $preselectionValue = $this->preselectionDictionary[Defaults::ORDER_TRANSACTION_STATES_CANCELLED];
+                $preselectionValue = $this->preselectionDictionary[OrderTransactionStates::STATE_CANCELLED];
                 break;
         }
 

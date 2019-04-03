@@ -2,7 +2,6 @@
 
 namespace SwagMigrationNext\Migration\Mapping;
 
-use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Api\Util\AccessKeyHelper;
 use Shopware\Core\Framework\Context;
@@ -10,6 +9,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenEvent;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\Country\CountryDefinition;
 use Shopware\Core\System\Country\CountryEntity;
@@ -63,6 +63,11 @@ class MappingService implements MappingServiceInterface
      */
     protected $paymentRepository;
 
+    /**
+     * @var EntityRepositoryInterface
+     */
+    protected $shippingMethodRepo;
+
     protected $uuids = [];
 
     protected $writeArray = [];
@@ -75,7 +80,8 @@ class MappingService implements MappingServiceInterface
         EntityRepositoryInterface $currencyRepository,
         EntityRepositoryInterface $salesChannelRepo,
         EntityRepositoryInterface $salesChannelTypeRepo,
-        EntityRepositoryInterface $paymentRepository
+        EntityRepositoryInterface $paymentRepository,
+        EntityRepositoryInterface $shippingMethodRepo
     ) {
         $this->migrationMappingRepo = $migrationMappingRepo;
         $this->localeRepository = $localeRepository;
@@ -85,6 +91,7 @@ class MappingService implements MappingServiceInterface
         $this->salesChannelRepo = $salesChannelRepo;
         $this->salesChannelTypeRepo = $salesChannelTypeRepo;
         $this->paymentRepository = $paymentRepository;
+        $this->shippingMethodRepo = $shippingMethodRepo;
     }
 
     public function getUuid(string $connectionId, string $entityName, string $oldId, Context $context): ?string
@@ -370,8 +377,8 @@ class MappingService implements MappingServiceInterface
         /** @var SalesChannelTypeEntity $salesChannelType */
         $salesChannelType = $this->salesChannelTypeRepo->search($criteria, $context)->first();
 
-        /** @var PaymentMethodEntity $validPaymentMethod */
-        $validPaymentMethod = $this->paymentRepository->search(new Criteria(), $context)->first();
+        $validPaymentMethodId = $this->getFirstActivePaymentMethodId();
+        $validShippingMethodId = $this->getFirstActiveShippingMethodId();
 
         // Todo: Replace default values with external values
         $createEvent = $this->salesChannelRepo->create([
@@ -394,17 +401,17 @@ class MappingService implements MappingServiceInterface
                     ],
                 ],
 
-                'paymentMethodId' => $validPaymentMethod->getId(),
+                'paymentMethodId' => $validPaymentMethodId,
                 'paymentMethods' => [
                     [
-                        'id' => $validPaymentMethod->getId(),
+                        'id' => $validPaymentMethodId,
                     ],
                 ],
 
-                'shippingMethodId' => Defaults::SHIPPING_METHOD,
+                'shippingMethodId' => $validShippingMethodId,
                 'shippingMethods' => [
                     [
-                        'id' => Defaults::SHIPPING_METHOD,
+                        'id' => $validShippingMethodId,
                     ],
                 ],
 
@@ -425,6 +432,25 @@ class MappingService implements MappingServiceInterface
         $ids = $writtenEvent->getIds();
 
         return $ids[0]['salesChannelId'];
+    }
+
+    private function getFirstActiveShippingMethodId(): string
+    {
+        $criteria = (new Criteria())
+            ->setLimit(1)
+            ->addFilter(new EqualsFilter('active', true));
+
+        return $this->shippingMethodRepo->searchIds($criteria, Context::createDefaultContext())->getIds()[0];
+    }
+
+    private function getFirstActivePaymentMethodId(): string
+    {
+        $criteria = (new Criteria())
+            ->setLimit(1)
+            ->addFilter(new EqualsFilter('active', true))
+            ->addSorting(new FieldSorting('position'));
+
+        return $this->paymentRepository->searchIds($criteria, Context::createDefaultContext())->getIds()[0];
     }
 
     private function insertSalesChannelMapping(string $structureId, string $connectionId, string $salesChannelUuid, Context $context): void

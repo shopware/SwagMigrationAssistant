@@ -91,7 +91,8 @@ class RunServiceTest extends TestCase
             $this->getContainer()->get('currency.repository'),
             $this->getContainer()->get('sales_channel.repository'),
             $this->getContainer()->get('sales_channel_type.repository'),
-            $this->getContainer()->get('payment_method.repository')
+            $this->getContainer()->get('payment_method.repository'),
+            $this->getContainer()->get('shipping_method.repository')
         );
         $loggingService = new LoggingService($loggingRepo);
         $mediaFileService = new DummyMediaFileService();
