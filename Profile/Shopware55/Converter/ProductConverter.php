@@ -303,7 +303,6 @@ class ProductConverter extends AbstractConverter
             $data['pricegroupActive'],
             $data['filtergroupID'],
             $data['template'],
-            $data['detail']['ordernumber'],
             $data['detail']['additionaltext'],
             $data['attributes']
         );
@@ -318,7 +317,7 @@ class ProductConverter extends AbstractConverter
 
         $setInGross = isset($data['prices'][0]['customergroup']) ? (bool) $data['prices'][0]['customergroup']['taxinput'] : false;
         $converted['price'] = $this->getPrice($data['prices'][0], $converted['tax']['taxRate'], $setInGross);
-        $converted['priceRules'] = $this->getPriceRules($data['prices'], $converted);
+        $converted['prices'] = $this->getPrices($data['prices'], $converted);
         unset($data['prices']);
 
         if (isset($data['assets'])) {
@@ -343,6 +342,8 @@ class ProductConverter extends AbstractConverter
             $converted['categories'] = $this->getCategoryMapping($data['categories']);
         }
         unset($data['categories']);
+
+        $this->helper->convertValue($converted, 'productNumber', $data['detail'], 'ordernumber', $this->helper::TYPE_STRING);
 
         $this->helper->convertValue($converted, 'active', $data, 'active', $this->helper::TYPE_BOOLEAN);
         $this->helper->convertValue($converted, 'minDeliveryTime', $data, 'shippingtime', $this->helper::TYPE_INTEGER);
@@ -563,7 +564,7 @@ class ProductConverter extends AbstractConverter
         ];
     }
 
-    private function getPriceRules(array $priceData, array $converted): array
+    private function getPrices(array $priceData, array $converted): array
     {
         $newData = [];
         foreach ($priceData as $price) {
