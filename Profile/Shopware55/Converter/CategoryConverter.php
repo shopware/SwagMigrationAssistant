@@ -103,6 +103,11 @@ class CategoryConverter extends AbstractConverter
             $data['added'],
             $data['changed'],
             $data['stream_id'],
+            $data['metakeywords'],
+            $data['metadescription'],
+            $data['cmsheadline'],
+            $data['cmstext'],
+            $data['meta_title'],
 
             // TODO check how to handle these
             $data['attributes'],
@@ -161,32 +166,36 @@ class CategoryConverter extends AbstractConverter
 
     private function setGivenCategoryTranslation(array &$data, array &$converted): void
     {
-        $defaultTranslation = [];
-        $defaultTranslation['id'] = $this->mappingService->createNewUuid(
+        $originalData = $data;
+        $this->helper->convertValue($converted, 'name', $data, 'description');
+
+        $languageData = $this->mappingService->getDefaultLanguageUuid($this->context);
+        if ($languageData['createData']['localeCode'] === $data['_locale']) {
+            return;
+        }
+
+        $localeTranslation = [];
+        $localeTranslation['categoryId'] = $converted['id'];
+
+        $this->helper->convertValue($localeTranslation, 'name', $originalData, 'description');
+
+        $localeTranslation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
             CategoryTranslationDefinition::getEntityName(),
             $this->oldCategoryId . ':' . $data['_locale'],
             $this->context
         );
-        $defaultTranslation['categoryId'] = $converted['id'];
-
-        $this->helper->convertValue($defaultTranslation, 'name', $data, 'description');
-        $this->helper->convertValue($defaultTranslation, 'metaKeywords', $data, 'metakeywords');
-        $this->helper->convertValue($defaultTranslation, 'metaTitle', $data, 'meta_title');
-        $this->helper->convertValue($defaultTranslation, 'metaDescription', $data, 'metadescription');
-        $this->helper->convertValue($defaultTranslation, 'cmsHeadline', $data, 'cmsheadline');
-        $this->helper->convertValue($defaultTranslation, 'cmsDescription', $data, 'cmstext');
 
         $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $data['_locale'], $this->context);
-
         if (isset($languageData['createData']) && !empty($languageData['createData'])) {
-            $defaultTranslation['language']['id'] = $languageData['uuid'];
-            $defaultTranslation['language']['localeId'] = $languageData['createData']['localeId'];
-            $defaultTranslation['language']['name'] = $languageData['createData']['localeCode'];
+            $localeTranslation['language']['id'] = $languageData['uuid'];
+            $localeTranslation['language']['localeId'] = $languageData['createData']['localeId'];
+            $localeTranslation['language']['translationCodeId'] = $languageData['createData']['localeId'];
+            $localeTranslation['language']['name'] = $languageData['createData']['localeCode'];
         } else {
-            $defaultTranslation['languageId'] = $languageData['uuid'];
+            $localeTranslation['languageId'] = $languageData['uuid'];
         }
 
-        $converted['translations'][$languageData['uuid']] = $defaultTranslation;
+        $converted['translations'][$languageData['uuid']] = $localeTranslation;
     }
 }

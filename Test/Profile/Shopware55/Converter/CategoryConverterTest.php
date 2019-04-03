@@ -94,7 +94,6 @@ class CategoryConverterTest extends TestCase
         $convertResult = $this->categoryConverter->convert($categoryData[3], $context, $this->migrationContext);
 
         $converted = $convertResult->getConverted();
-
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('parentId', $converted);

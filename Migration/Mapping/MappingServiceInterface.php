@@ -19,6 +19,8 @@ interface MappingServiceInterface
 
     public function getLanguageUuid(string $connectionId, string $localeCode, Context $context): array;
 
+    public function getDefaultLanguageUuid(Context $context): array;
+
     public function getCountryUuid(string $oldId, string $iso, string $iso3, string $connectionId, Context $context): ?string;
 
     public function getCurrencyUuid(string $oldShortName, Context $context): ?string;

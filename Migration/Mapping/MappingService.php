@@ -153,13 +153,6 @@ class MappingService implements MappingServiceInterface
 
     public function getLanguageUuid(string $connectionId, string $localeCode, Context $context): array
     {
-        // TODO: Revert the override of localeCode and test localCode, if the core can handle translations in a right way
-        $_localeCode = 'en_GB';
-        if ($localeCode === 'swagMigrationTestingLocaleCode') {
-            $_localeCode = $localeCode;
-        }
-        $localeCode = $_localeCode;
-
         $languageUuid = $this->searchLanguageInMapping($localeCode, $context);
         $localeUuid = $this->searchLocale($localeCode, $context);
 
@@ -176,11 +169,34 @@ class MappingService implements MappingServiceInterface
         $languageUuid = $this->searchLanguageByLocale($localeUuid, $context);
 
         if ($languageUuid !== null) {
-            return ['uuid' => $languageUuid];
+            return [
+                'uuid' => $languageUuid,
+                'createData' => [
+                    'localeId' => $localeUuid,
+                    'localeCode' => $localeCode,
+                ],
+            ];
         }
 
         return [
             'uuid' => $this->createNewUuid($connectionId, LanguageDefinition::getEntityName(), $localeCode, $context),
+            'createData' => [
+                'localeId' => $localeUuid,
+                'localeCode' => $localeCode,
+            ],
+        ];
+    }
+
+    public function getDefaultLanguageUuid(Context $context): array
+    {
+        $languageUuid = $context->getLanguageId();
+        /** @var LanguageEntity $language */
+        $language = $this->languageRepository->search(new Criteria([$languageUuid]), $context)->first();
+        $localeUuid = $language->getLocaleId();
+        $localeCode = $language->getLocale()->getCode();
+
+        return [
+            'uuid' => $languageUuid,
             'createData' => [
                 'localeId' => $localeUuid,
                 'localeCode' => $localeCode,

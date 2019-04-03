@@ -394,36 +394,50 @@ class OrderConverter extends AbstractConverter
             );
         }
 
-        $translation['id'] = $this->mappingService->createNewUuid(
-            $this->connectionId,
-            CurrencyTranslationDefinition::getEntityName(),
-            $originalData['id'] . ':' . $this->mainLocale,
-            $this->context
-        );
-
         $this->helper->convertValue($currency, 'isDefault', $originalData, 'standard', $this->helper::TYPE_BOOLEAN);
         $this->helper->convertValue($currency, 'factor', $originalData, 'factor', $this->helper::TYPE_FLOAT);
         $this->helper->convertValue($currency, 'position', $originalData, 'position', $this->helper::TYPE_INTEGER);
-        $this->helper->convertValue($translation, 'shortName', $originalData, 'currency');
-        $this->helper->convertValue($translation, 'name', $originalData, 'name');
 
         $currency['symbol'] = html_entity_decode($originalData['templatechar']);
         $currency['placedInFront'] = ((int) $originalData['symbol_position']) > 16;
         $currency['decimalPrecision'] = $this->context->getCurrencyPrecision();
 
+        $this->getCurrencyTranslation($currency, $originalData);
+        $this->helper->convertValue($currency, 'shortName', $originalData, 'currency');
+        $this->helper->convertValue($currency, 'name', $originalData, 'name');
+
+        return $currency;
+    }
+
+    private function getCurrencyTranslation(array &$currency, array $data): void
+    {
+        $languageData = $this->mappingService->getDefaultLanguageUuid($this->context);
+        if ($languageData['createData']['localeCode'] === $this->mainLocale) {
+            return;
+        }
+
+        $localeTranslation = [];
+
+        $this->helper->convertValue($localeTranslation, 'shortName', $data, 'currency');
+        $this->helper->convertValue($localeTranslation, 'name', $data, 'name');
+
+        $localeTranslation['id'] = $this->mappingService->createNewUuid(
+            $this->connectionId,
+            CurrencyTranslationDefinition::getEntityName(),
+            $data['id'] . ':' . $this->mainLocale,
+            $this->context
+        );
         $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);
 
         if (isset($languageData['createData']) && !empty($languageData['createData'])) {
-            $translation['language']['id'] = $languageData['uuid'];
-            $translation['language']['localeId'] = $languageData['createData']['localeId'];
-            $translation['language']['name'] = $languageData['createData']['localeCode'];
+            $localeTranslation['language']['id'] = $languageData['uuid'];
+            $localeTranslation['language']['localeId'] = $languageData['createData']['localeId'];
+            $localeTranslation['language']['name'] = $languageData['createData']['localeCode'];
         } else {
-            $translation['languageId'] = $languageData['uuid'];
+            $localeTranslation['languageId'] = $languageData['uuid'];
         }
 
-        $currency['translations'][$languageData['uuid']] = $translation;
-
-        return $currency;
+        $currency['translations'][$languageData['uuid']] = $localeTranslation;
     }
 
     private function getTransactions(array $data, array &$converted): void
@@ -606,16 +620,7 @@ class OrderConverter extends AbstractConverter
             );
         }
 
-        $translation['id'] = $this->mappingService->createNewUuid(
-            $this->connectionId,
-            CountryTranslationDefinition::getEntityName(),
-            $oldCountryData['id'] . ':' . $this->mainLocale,
-            $this->context
-        );
-
-        $translation['countryId'] = $country['id'];
-        $this->helper->convertValue($translation, 'name', $oldCountryData, 'countryname');
-
+        $this->getCountryTranslation($country, $oldCountryData);
         $this->helper->convertValue($country, 'iso', $oldCountryData, 'countryiso');
         $this->helper->convertValue($country, 'position', $oldCountryData, 'position', $this->helper::TYPE_INTEGER);
         $this->helper->convertValue($country, 'taxFree', $oldCountryData, 'taxfree', $this->helper::TYPE_BOOLEAN);
@@ -625,20 +630,40 @@ class OrderConverter extends AbstractConverter
         $this->helper->convertValue($country, 'iso3', $oldCountryData, 'iso3');
         $this->helper->convertValue($country, 'displayStateInRegistration', $oldCountryData, 'display_state_in_registration', $this->helper::TYPE_BOOLEAN);
         $this->helper->convertValue($country, 'forceStateInRegistration', $oldCountryData, 'force_state_in_registration', $this->helper::TYPE_BOOLEAN);
-
-        $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);
-
-        if (isset($languageData['createData']) && !empty($languageData['createData'])) {
-            $translation['language']['id'] = $languageData['uuid'];
-            $translation['language']['localeId'] = $languageData['createData']['localeId'];
-            $translation['language']['name'] = $languageData['createData']['localeCode'];
-        } else {
-            $translation['languageId'] = $languageData['uuid'];
-        }
-
-        $country['translations'][$languageData['uuid']] = $translation;
+        $this->helper->convertValue($country, 'name', $oldCountryData, 'countryname');
 
         return $country;
+    }
+
+    private function getCountryTranslation(array &$country, array $data): void
+    {
+        $languageData = $this->mappingService->getDefaultLanguageUuid($this->context);
+        if ($languageData['createData']['localeCode'] === $this->mainLocale) {
+            return;
+        }
+
+        $localeTranslation = [];
+        $localeTranslation['countryId'] = $country['id'];
+
+        $this->helper->convertValue($localeTranslation, 'name', $data, 'countryname');
+
+        $localeTranslation['id'] = $this->mappingService->createNewUuid(
+            $this->connectionId,
+            CountryTranslationDefinition::getEntityName(),
+            $data['id'] . ':' . $this->mainLocale,
+            $this->context
+        );
+
+        $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);
+        if (isset($languageData['createData']) && !empty($languageData['createData'])) {
+            $localeTranslation['language']['id'] = $languageData['uuid'];
+            $localeTranslation['language']['localeId'] = $languageData['createData']['localeId'];
+            $localeTranslation['language']['name'] = $languageData['createData']['localeCode'];
+        } else {
+            $localeTranslation['languageId'] = $languageData['uuid'];
+        }
+
+        $country['translations'][$languageData['uuid']] = $localeTranslation;
     }
 
     private function getCountryState(array $oldStateData, string $newCountryId): array
@@ -652,32 +677,44 @@ class OrderConverter extends AbstractConverter
         );
         $state['countryId'] = $newCountryId;
 
-        $translation['id'] = $this->mappingService->createNewUuid(
-            $this->connectionId,
-            CountryStateTranslationDefinition::getEntityName(),
-            $oldStateData['id'] . ':' . $this->mainLocale,
-            $this->context
-        );
-
-        $translation['countryStateId'] = $state['id'];
-        $this->helper->convertValue($translation, 'name', $oldStateData, 'name');
+        $this->getCountryStateTranslation($state, $oldStateData);
         $this->helper->convertValue($state, 'shortCode', $oldStateData, 'shortcode');
         $this->helper->convertValue($state, 'position', $oldStateData, 'position', $this->helper::TYPE_INTEGER);
         $this->helper->convertValue($state, 'active', $oldStateData, 'active', $this->helper::TYPE_BOOLEAN);
-
-        $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);
-
-        if (isset($languageData['createData']) && !empty($languageData['createData'])) {
-            $translation['language']['id'] = $languageData['uuid'];
-            $translation['language']['localeId'] = $languageData['createData']['localeId'];
-            $translation['language']['name'] = $languageData['createData']['localeCode'];
-        } else {
-            $translation['languageId'] = $languageData['uuid'];
-        }
-
-        $state['translations'][$languageData['uuid']] = $translation;
+        $this->helper->convertValue($state, 'name', $oldStateData, 'name');
 
         return $state;
+    }
+
+    private function getCountryStateTranslation(array &$state, array $data): void
+    {
+        $languageData = $this->mappingService->getDefaultLanguageUuid($this->context);
+        if ($languageData['createData']['localeCode'] === $this->mainLocale) {
+            return;
+        }
+
+        $localeTranslation = [];
+        $translation['countryStateId'] = $state['id'];
+
+        $this->helper->convertValue($translation, 'name', $data, 'name');
+
+        $localeTranslation['id'] = $this->mappingService->createNewUuid(
+            $this->connectionId,
+            CountryStateTranslationDefinition::getEntityName(),
+            $data['id'] . ':' . $this->mainLocale,
+            $this->context
+        );
+
+        $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);
+        if (isset($languageData['createData']) && !empty($languageData['createData'])) {
+            $localeTranslation['language']['id'] = $languageData['uuid'];
+            $localeTranslation['language']['localeId'] = $languageData['createData']['localeId'];
+            $localeTranslation['language']['name'] = $languageData['createData']['localeCode'];
+        } else {
+            $localeTranslation['languageId'] = $languageData['uuid'];
+        }
+
+        $state['translations'][$languageData['uuid']] = $localeTranslation;
     }
 
     private function getDeliveries(array $data, array $converted, CalculatedPrice $shippingCosts): array
@@ -748,54 +785,48 @@ class OrderConverter extends AbstractConverter
             $this->context
         );
 
-        $translation['id'] = $this->mappingService->createNewUuid(
+        $this->getShippingMethodTranslation($shippingMethod, $originalData);
+        $this->helper->convertValue($shippingMethod, 'bindShippingfree', $originalData, 'bind_shippingfree', $this->helper::TYPE_BOOLEAN);
+        $this->helper->convertValue($shippingMethod, 'active', $originalData, 'active', $this->helper::TYPE_BOOLEAN);
+        $this->helper->convertValue($shippingMethod, 'shippingFree', $originalData, 'shippingfree', $this->helper::TYPE_FLOAT);
+        $this->helper->convertValue($shippingMethod, 'name', $originalData, 'name');
+        $this->helper->convertValue($shippingMethod, 'description', $originalData, 'description');
+        $this->helper->convertValue($shippingMethod, 'comment', $originalData, 'comment');
+
+        return $shippingMethod;
+    }
+
+    private function getShippingMethodTranslation(array &$shippingMethod, array $data): void
+    {
+        $languageData = $this->mappingService->getDefaultLanguageUuid($this->context);
+        if ($languageData['createData']['localeCode'] === $this->mainLocale) {
+            return;
+        }
+
+        $localeTranslation = [];
+        $localeTranslation['shippingMethodId'] = $shippingMethod['id'];
+
+        $this->helper->convertValue($localeTranslation, 'name', $data, 'name');
+        $this->helper->convertValue($localeTranslation, 'description', $data, 'description');
+        $this->helper->convertValue($localeTranslation, 'comment', $data, 'comment');
+
+        $localeTranslation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
             ShippingMethodTranslationDefinition::getEntityName(),
-            $originalData['id'] . ':' . $this->mainLocale,
+            $data['id'] . ':' . $this->mainLocale,
             $this->context
         );
 
-        $translation['shippingMethodId'] = $shippingMethod['id'];
-        $this->helper->convertValue($translation, 'name', $originalData, 'name');
-        $this->helper->convertValue($translation, 'description', $originalData, 'description');
-        $this->helper->convertValue($translation, 'comment', $originalData, 'comment');
-
         $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);
-
         if (isset($languageData['createData']) && !empty($languageData['createData'])) {
-            $translation['language']['id'] = $languageData['uuid'];
-            $translation['language']['localeId'] = $languageData['createData']['localeId'];
-            $translation['language']['name'] = $languageData['createData']['localeCode'];
+            $localeTranslation['language']['id'] = $languageData['uuid'];
+            $localeTranslation['language']['localeId'] = $languageData['createData']['localeId'];
+            $localeTranslation['language']['name'] = $languageData['createData']['localeCode'];
         } else {
-            $translation['languageId'] = $languageData['uuid'];
+            $localeTranslation['languageId'] = $languageData['uuid'];
         }
 
-        $shippingMethod['translations'][$languageData['uuid']] = $translation;
-
-        $this->helper->convertValue($shippingMethod, 'type', $originalData, 'type', $this->helper::TYPE_INTEGER);
-        $this->helper->convertValue($shippingMethod, 'bindShippingfree', $originalData, 'bind_shippingfree', $this->helper::TYPE_BOOLEAN);
-        $this->helper->convertValue($shippingMethod, 'bindLaststock', $originalData, 'bind_laststock', $this->helper::TYPE_BOOLEAN);
-        $this->helper->convertValue($shippingMethod, 'active', $originalData, 'active', $this->helper::TYPE_BOOLEAN);
-        $this->helper->convertValue($shippingMethod, 'position', $originalData, 'position', $this->helper::TYPE_INTEGER);
-        $this->helper->convertValue($shippingMethod, 'calculation', $originalData, 'calculation', $this->helper::TYPE_INTEGER);
-        $this->helper->convertValue($shippingMethod, 'surchargeCalculation', $originalData, 'surcharge_calculation', $this->helper::TYPE_INTEGER);
-        $this->helper->convertValue($shippingMethod, 'taxCalculation', $originalData, 'tax_calculation', $this->helper::TYPE_INTEGER);
-        $this->helper->convertValue($shippingMethod, 'shippingFree', $originalData, 'shippingfree', $this->helper::TYPE_FLOAT);
-        $this->helper->convertValue($shippingMethod, 'bindTimeFrom', $originalData, 'bind_time_from', $this->helper::TYPE_INTEGER);
-        $this->helper->convertValue($shippingMethod, 'bindTimeTo', $originalData, 'bind_time_to', $this->helper::TYPE_INTEGER);
-        $this->helper->convertValue($shippingMethod, 'bindInstock', $originalData, 'bind_instock', $this->helper::TYPE_BOOLEAN);
-        $this->helper->convertValue($shippingMethod, 'bindWeekdayFrom', $originalData, 'bind_weekday_from', $this->helper::TYPE_INTEGER);
-        $this->helper->convertValue($shippingMethod, 'bindWeekdayTo', $originalData, 'bind_weekday_to', $this->helper::TYPE_INTEGER);
-        $this->helper->convertValue($shippingMethod, 'bindWeightFrom', $originalData, 'bind_weight_from', $this->helper::TYPE_FLOAT);
-        $this->helper->convertValue($shippingMethod, 'bindWeightTo', $originalData, 'bind_weight_to', $this->helper::TYPE_FLOAT);
-        $this->helper->convertValue($shippingMethod, 'bindPriceFrom', $originalData, 'bind_price_from', $this->helper::TYPE_FLOAT);
-        $this->helper->convertValue($shippingMethod, 'bindPriceTo', $originalData, 'bind_price_to', $this->helper::TYPE_FLOAT);
-        $this->helper->convertValue($shippingMethod, 'bindSql', $originalData, 'bind_sql');
-        $this->helper->convertValue($shippingMethod, 'statusLink', $originalData, 'status_link');
-        $this->helper->convertValue($shippingMethod, 'calculationSql', $originalData, 'calculation_sql');
-
-        // TODO sales channel assignment
-        return $shippingMethod;
+        $shippingMethod['translations'][$languageData['uuid']] = $localeTranslation;
     }
 
     private function getLineItems(array $originalData, array &$converted, TaxRuleCollection $taxRules, string $taxStatus, Context $context): array

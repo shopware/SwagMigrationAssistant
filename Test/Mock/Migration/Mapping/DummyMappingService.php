@@ -2,6 +2,7 @@
 
 namespace SwagMigrationNext\Test\Mock\Migration\Mapping;
 
+use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationNext\Migration\Mapping\MappingService;
@@ -80,7 +81,7 @@ class DummyMappingService extends MappingService
             'uuid' => self::DEFAULT_LANGUAGE_UUID,
             'createData' => [
                 'localeId' => self::DEFAULT_LOCAL_UUID,
-                'localeCode' => 'en_GB',
+                'localeCode' => 'de_DE',
             ],
         ];
     }
@@ -98,5 +99,16 @@ class DummyMappingService extends MappingService
     public function getPrivateUuidArray(): array
     {
         return $this->uuids;
+    }
+
+    public function getDefaultLanguageUuid(Context $context): array
+    {
+        return [
+            'uuid' => Defaults::LANGUAGE_SYSTEM,
+            'createData' => [
+                'localeId' => Uuid::randomHex(),
+                'localeCode' => 'en_GB',
+            ],
+        ];
     }
 }

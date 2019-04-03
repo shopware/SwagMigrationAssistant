@@ -29,6 +29,21 @@ class MediaConverter extends AbstractConverter
      */
     private $mediaFileService;
 
+    /**
+     * @var Context
+     */
+    private $context;
+
+    /**
+     * @var string
+     */
+    private $locale;
+
+    /**
+     * @var string
+     */
+    private $connectionId;
+
     public function __construct(
         MappingServiceInterface $mappingService,
         ConverterHelperService $converterHelperService,
@@ -59,13 +74,14 @@ class MediaConverter extends AbstractConverter
         Context $context,
         MigrationContextInterface $migrationContext
     ): ConvertStruct {
-        $locale = $data['_locale'];
+        $this->context = $context;
+        $this->locale = $data['_locale'];
         unset($data['_locale']);
-        $connectionId = $migrationContext->getConnection()->getId();
+        $this->connectionId = $migrationContext->getConnection()->getId();
 
         $converted = [];
         $converted['id'] = $this->mappingService->createNewUuid(
-            $connectionId,
+            $this->connectionId,
             MediaDefinition::getEntityName(),
             $data['id'],
             $context
@@ -86,31 +102,14 @@ class MediaConverter extends AbstractConverter
         );
         unset($data['uri'], $data['file_size']);
 
-        $translation['id'] = $this->mappingService->createNewUuid(
-            $connectionId,
-            MediaTranslationDefinition::getEntityName(),
-            $data['id'] . ':' . $locale,
-            $context
-        );
-        unset($data['id']);
+        $this->getMediaTranslation($converted, $data);
+        $this->helper->convertValue($converted, 'name', $data, 'name');
+        $this->helper->convertValue($converted, 'description', $data, 'description');
 
-        $this->helper->convertValue($translation, 'name', $data, 'name');
-        $this->helper->convertValue($translation, 'description', $data, 'description');
-
-        $languageData = $this->mappingService->getLanguageUuid($connectionId, $locale, $context);
-
-        if (isset($languageData['createData']) && !empty($languageData['createData'])) {
-            $translation['language']['id'] = $languageData['uuid'];
-            $translation['language']['localeId'] = $languageData['createData']['localeId'];
-            $translation['language']['name'] = $languageData['createData']['localeCode'];
-        } else {
-            $translation['languageId'] = $languageData['uuid'];
-        }
-
-        $converted['translations'][$languageData['uuid']] = $translation;
-
-        // Legacy data which don't need a mapping or there is no equivalent field
         unset(
+            $data['id'],
+
+            // Legacy data which don't need a mapping or there is no equivalent field
             $data['path'],
             $data['type'],
             $data['extension'],
@@ -128,5 +127,37 @@ class MediaConverter extends AbstractConverter
         }
 
         return new ConvertStruct($converted, $data);
+    }
+
+    // Todo: Check if this is necessary, because name and description is currently not translatable
+    private function getMediaTranslation(array &$media, array $data): void
+    {
+        $languageData = $this->mappingService->getDefaultLanguageUuid($this->context);
+        if ($languageData['createData']['localeCode'] === $this->locale) {
+            return;
+        }
+
+        $localeTranslation = [];
+
+        $this->helper->convertValue($media, 'name', $data, 'name');
+        $this->helper->convertValue($media, 'description', $data, 'description');
+
+        $localeTranslation['id'] = $this->mappingService->createNewUuid(
+            $this->connectionId,
+            MediaTranslationDefinition::getEntityName(),
+            $data['id'] . ':' . $this->locale,
+            $this->context
+        );
+
+        $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $this->locale, $this->context);
+        if (isset($languageData['createData']) && !empty($languageData['createData'])) {
+            $localeTranslation['language']['id'] = $languageData['uuid'];
+            $localeTranslation['language']['localeId'] = $languageData['createData']['localeId'];
+            $localeTranslation['language']['name'] = $languageData['createData']['localeCode'];
+        } else {
+            $localeTranslation['languageId'] = $languageData['uuid'];
+        }
+
+        $media['translations'][$languageData['uuid']] = $localeTranslation;
     }
 }
