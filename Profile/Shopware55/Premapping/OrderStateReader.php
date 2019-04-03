@@ -2,7 +2,7 @@
 
 namespace SwagMigrationNext\Profile\Shopware55\Premapping;
 
-use Shopware\Core\Defaults;
+use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryStates;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -101,7 +101,7 @@ class OrderStateReader extends AbstractPremappingReader
     private function getChoices(Context $context): array
     {
         $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('technicalName', Defaults::ORDER_STATE_MACHINE));
+        $criteria->addFilter(new EqualsFilter('technicalName', OrderDeliveryStates::STATE_MACHINE));
 
         /** @var StateMachineEntity $stateMachine */
         $stateMachine = $this->stateMachineRepo->search($criteria, $context)->first();
@@ -145,34 +145,34 @@ class OrderStateReader extends AbstractPremappingReader
 
         switch ($sourceId) {
             case -1: // cancelled
-                $preselectionValue = $this->preselectionDictionary[Defaults::ORDER_STATE_STATES_CANCELLED];
+                $preselectionValue = $this->preselectionDictionary[OrderDeliveryStates::STATE_CANCELLED];
                 break;
             case 0: // open
-                $preselectionValue = $this->preselectionDictionary[Defaults::ORDER_STATE_STATES_OPEN];
+                $preselectionValue = $this->preselectionDictionary[OrderDeliveryStates::STATE_OPEN];
                 break;
             case 1: // in_process
-                $preselectionValue = $this->preselectionDictionary[Defaults::ORDER_STATE_STATES_IN_PROGRESS];
+                $preselectionValue = $this->preselectionDictionary[OrderDeliveryStates::STATE_OPEN];
                 break;
             case 2: // completed
-                $preselectionValue = $this->preselectionDictionary[Defaults::ORDER_STATE_STATES_COMPLETED];
+                $preselectionValue = $this->preselectionDictionary[OrderDeliveryStates::STATE_SHIPPED];
                 break;
             case 3: // partially_completed
-                $preselectionValue = $this->preselectionDictionary[Defaults::ORDER_STATE_STATES_IN_PROGRESS];
+                $preselectionValue = $this->preselectionDictionary[OrderDeliveryStates::STATE_PARTIALLY_SHIPPED];
                 break;
             case 4: // cancelled_rejected
-                $preselectionValue = $this->preselectionDictionary[Defaults::ORDER_STATE_STATES_OPEN];
+                $preselectionValue = $this->preselectionDictionary[OrderDeliveryStates::STATE_OPEN];
                 break;
             case 5: // ready_for_delivery
-                $preselectionValue = $this->preselectionDictionary[Defaults::ORDER_STATE_STATES_IN_PROGRESS];
+                $preselectionValue = $this->preselectionDictionary[OrderDeliveryStates::STATE_OPEN];
                 break;
             case 6: // partially_delivered
-                $preselectionValue = $this->preselectionDictionary[Defaults::ORDER_STATE_STATES_IN_PROGRESS];
+                $preselectionValue = $this->preselectionDictionary[OrderDeliveryStates::STATE_PARTIALLY_SHIPPED];
                 break;
             case 7: // completely_delivered
-                $preselectionValue = $this->preselectionDictionary[Defaults::ORDER_STATE_STATES_IN_PROGRESS];
+                $preselectionValue = $this->preselectionDictionary[OrderDeliveryStates::STATE_SHIPPED];
                 break;
             case 8: // clarification_required
-                $preselectionValue = $this->preselectionDictionary[Defaults::ORDER_STATE_STATES_IN_PROGRESS];
+                $preselectionValue = $this->preselectionDictionary[OrderDeliveryStates::STATE_OPEN];
                 break;
         }
 

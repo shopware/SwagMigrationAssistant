@@ -5,8 +5,9 @@ namespace SwagMigrationNext\Test;
 use Shopware\Core\Checkout\Cart\Price\PriceRounding;
 use Shopware\Core\Checkout\Cart\Tax\TaxCalculator;
 use Shopware\Core\Checkout\Cart\Tax\TaxRuleCalculator;
+use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryStates;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStates;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
-use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -44,7 +45,7 @@ trait MigrationServicesTrait
         EntityRepositoryInterface $loggingRepo
     ): MigrationDataFetcherInterface {
         $loggingService = new LoggingService($loggingRepo);
-        $priceRounding = new PriceRounding(2);
+        $priceRounding = new PriceRounding();
         $converterRegistry = new ConverterRegistry(
             new DummyCollection(
                 [
@@ -92,7 +93,7 @@ trait MigrationServicesTrait
         Context $context
     ): ?string {
         $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('technicalName', Defaults::ORDER_STATE_MACHINE));
+        $criteria->addFilter(new EqualsFilter('technicalName', OrderDeliveryStates::STATE_MACHINE));
 
         /** @var StateMachineEntity $stateMachine */
         $stateMachine = $stateMachineRepository->search($criteria, $context)->first();
@@ -102,34 +103,34 @@ trait MigrationServicesTrait
         $criteria->setLimit(1);
         switch ($oldStateId) {
             case -1: // cancelled
-                $criteria->addFilter(new EqualsFilter('technicalName', Defaults::ORDER_STATE_STATES_CANCELLED));
+                $criteria->addFilter(new EqualsFilter('technicalName', OrderDeliveryStates::STATE_CANCELLED));
                 break;
             case 0: // open
-                $criteria->addFilter(new EqualsFilter('technicalName', Defaults::ORDER_STATE_STATES_OPEN));
+                $criteria->addFilter(new EqualsFilter('technicalName', OrderDeliveryStates::STATE_OPEN));
                 break;
             case 1: // in_process
-                $criteria->addFilter(new EqualsFilter('technicalName', Defaults::ORDER_STATE_STATES_IN_PROGRESS));
+                $criteria->addFilter(new EqualsFilter('technicalName', OrderDeliveryStates::STATE_OPEN));
                 break;
             case 2: // completed
-                $criteria->addFilter(new EqualsFilter('technicalName', Defaults::ORDER_STATE_STATES_COMPLETED));
+                $criteria->addFilter(new EqualsFilter('technicalName', OrderDeliveryStates::STATE_SHIPPED));
                 break;
             case 3: // partially_completed
-                $criteria->addFilter(new EqualsFilter('technicalName', Defaults::ORDER_STATE_STATES_IN_PROGRESS));
+                $criteria->addFilter(new EqualsFilter('technicalName', OrderDeliveryStates::STATE_PARTIALLY_SHIPPED));
                 break;
             case 4: // cancelled_rejected
-                $criteria->addFilter(new EqualsFilter('technicalName', Defaults::ORDER_STATE_STATES_OPEN));
+                $criteria->addFilter(new EqualsFilter('technicalName', OrderDeliveryStates::STATE_OPEN));
                 break;
             case 5: // ready_for_delivery
-                $criteria->addFilter(new EqualsFilter('technicalName', Defaults::ORDER_STATE_STATES_IN_PROGRESS));
+                $criteria->addFilter(new EqualsFilter('technicalName', OrderDeliveryStates::STATE_OPEN));
                 break;
             case 6: // partially_delivered
-                $criteria->addFilter(new EqualsFilter('technicalName', Defaults::ORDER_STATE_STATES_IN_PROGRESS));
+                $criteria->addFilter(new EqualsFilter('technicalName', OrderDeliveryStates::STATE_PARTIALLY_SHIPPED));
                 break;
             case 7: // completely_delivered
-                $criteria->addFilter(new EqualsFilter('technicalName', Defaults::ORDER_STATE_STATES_IN_PROGRESS));
+                $criteria->addFilter(new EqualsFilter('technicalName', OrderDeliveryStates::STATE_SHIPPED));
                 break;
             case 8: // clarification_required
-                $criteria->addFilter(new EqualsFilter('technicalName', Defaults::ORDER_STATE_STATES_IN_PROGRESS));
+                $criteria->addFilter(new EqualsFilter('technicalName', OrderDeliveryStates::STATE_OPEN));
                 break;
             default:
                 return null;
@@ -154,7 +155,7 @@ trait MigrationServicesTrait
         Context $context
     ): ?string {
         $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('technicalName', Defaults::ORDER_TRANSACTION_STATE_MACHINE));
+        $criteria->addFilter(new EqualsFilter('technicalName', OrderTransactionStates::STATE_MACHINE));
 
         /** @var StateMachineEntity $stateMachine */
         $stateMachine = $stateMachineRepository->search($criteria, $context)->first();
@@ -164,62 +165,62 @@ trait MigrationServicesTrait
         $criteria->setLimit(1);
         switch ($oldStateId) {
             case 9: // partially_invoiced
-                $criteria->addFilter(new EqualsFilter('technicalName', Defaults::ORDER_TRANSACTION_STATES_OPEN));
+                $criteria->addFilter(new EqualsFilter('technicalName', OrderTransactionStates::STATE_OPEN));
                 break;
             case 10: // completely_invoiced
-                $criteria->addFilter(new EqualsFilter('technicalName', Defaults::ORDER_TRANSACTION_STATES_OPEN));
+                $criteria->addFilter(new EqualsFilter('technicalName', OrderTransactionStates::STATE_OPEN));
                 break;
             case 11: // partially_paid
-                $criteria->addFilter(new EqualsFilter('technicalName', Defaults::ORDER_TRANSACTION_STATES_PARTIALLY_PAID));
+                $criteria->addFilter(new EqualsFilter('technicalName', OrderTransactionStates::STATE_PARTIALLY_PAID));
                 break;
             case 12: // completely_paid
-                $criteria->addFilter(new EqualsFilter('technicalName', Defaults::ORDER_TRANSACTION_STATES_PAID));
+                $criteria->addFilter(new EqualsFilter('technicalName', OrderTransactionStates::STATE_PAID));
                 break;
             case 13: // 1st_reminder
-                $criteria->addFilter(new EqualsFilter('technicalName', Defaults::ORDER_TRANSACTION_STATES_REMINDED));
+                $criteria->addFilter(new EqualsFilter('technicalName', OrderTransactionStates::STATE_REMINDED));
                 break;
             case 14: // 2nd_reminder
-                $criteria->addFilter(new EqualsFilter('technicalName', Defaults::ORDER_TRANSACTION_STATES_REMINDED));
+                $criteria->addFilter(new EqualsFilter('technicalName', OrderTransactionStates::STATE_REMINDED));
                 break;
             case 15: // 3rd_reminder
-                $criteria->addFilter(new EqualsFilter('technicalName', Defaults::ORDER_TRANSACTION_STATES_REMINDED));
+                $criteria->addFilter(new EqualsFilter('technicalName', OrderTransactionStates::STATE_REMINDED));
                 break;
             case 16: // encashment
-                $criteria->addFilter(new EqualsFilter('technicalName', Defaults::ORDER_TRANSACTION_STATES_REMINDED));
+                $criteria->addFilter(new EqualsFilter('technicalName', OrderTransactionStates::STATE_REMINDED));
                 break;
             case 17: // open
-                $criteria->addFilter(new EqualsFilter('technicalName', Defaults::ORDER_TRANSACTION_STATES_OPEN));
+                $criteria->addFilter(new EqualsFilter('technicalName', OrderTransactionStates::STATE_OPEN));
                 break;
             case 18: // reserved
-                $criteria->addFilter(new EqualsFilter('technicalName', Defaults::ORDER_TRANSACTION_STATES_OPEN));
+                $criteria->addFilter(new EqualsFilter('technicalName', OrderTransactionStates::STATE_OPEN));
                 break;
             case 19: // delayed
-                $criteria->addFilter(new EqualsFilter('technicalName', Defaults::ORDER_TRANSACTION_STATES_OPEN));
+                $criteria->addFilter(new EqualsFilter('technicalName', OrderTransactionStates::STATE_OPEN));
                 break;
             case 20: // re_crediting
-                $criteria->addFilter(new EqualsFilter('technicalName', Defaults::ORDER_TRANSACTION_STATES_REFUNDED));
+                $criteria->addFilter(new EqualsFilter('technicalName', OrderTransactionStates::STATE_REFUNDED));
                 break;
             case 21: // review_necessary
-                $criteria->addFilter(new EqualsFilter('technicalName', Defaults::ORDER_TRANSACTION_STATES_OPEN));
+                $criteria->addFilter(new EqualsFilter('technicalName', OrderTransactionStates::STATE_OPEN));
                 break;
             case 30: // no_credit_approved
-                $criteria->addFilter(new EqualsFilter('technicalName', Defaults::ORDER_TRANSACTION_STATES_OPEN));
+                $criteria->addFilter(new EqualsFilter('technicalName', OrderTransactionStates::STATE_OPEN));
                 break;
             case 31: // the_credit_has_been_preliminarily_accepted
-                $criteria->addFilter(new EqualsFilter('technicalName', Defaults::ORDER_TRANSACTION_STATES_OPEN));
+                $criteria->addFilter(new EqualsFilter('technicalName', OrderTransactionStates::STATE_OPEN));
                 break;
             case 32: // the_credit_has_been_accepted
-                $criteria->addFilter(new EqualsFilter('technicalName', Defaults::ORDER_TRANSACTION_STATES_OPEN));
+                $criteria->addFilter(new EqualsFilter('technicalName', OrderTransactionStates::STATE_OPEN));
                 break;
             case 33: // the_payment_has_been_ordered
-                $criteria->addFilter(new EqualsFilter('technicalName', Defaults::ORDER_TRANSACTION_STATES_OPEN));
+                $criteria->addFilter(new EqualsFilter('technicalName', OrderTransactionStates::STATE_OPEN));
                 break;
             case 34: // a_time_extension_has_been_registered
-                $criteria->addFilter(new EqualsFilter('technicalName', Defaults::ORDER_TRANSACTION_STATES_OPEN));
+                $criteria->addFilter(new EqualsFilter('technicalName', OrderTransactionStates::STATE_OPEN));
                 break;
             case 35: // the_process_has_been_cancelled
             case 0: // Cancelled order without payment state
-                $criteria->addFilter(new EqualsFilter('technicalName', Defaults::ORDER_TRANSACTION_STATES_CANCELLED));
+                $criteria->addFilter(new EqualsFilter('technicalName', OrderTransactionStates::STATE_CANCELLED));
                 break;
             default:
                 return null;
