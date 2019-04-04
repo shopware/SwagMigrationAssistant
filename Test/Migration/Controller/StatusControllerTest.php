@@ -224,7 +224,7 @@ class StatusControllerTest extends TestCase
         $context = Context::createDefaultContext();
         $result = $this->controller->getState(new Request(), $context);
         $state = json_decode($result->getContent(), true);
-        static::assertSame(ProgressState::class, $state['_class']);
+        static::assertTrue($this->isJsonArrayTypeOfProgressState($state));
     }
 
     public function testGetStateWithCreateMigration(): void
@@ -259,7 +259,7 @@ class StatusControllerTest extends TestCase
         $totalAfter = $this->runRepo->search(new Criteria(), $context)->getTotal();
         $totalAbortedAfter = $this->runRepo->search($abortedCriteria, $context)->getTotal();
         $totalProcessing = $this->runRepo->search($runningCriteria, $context)->getTotal();
-        static::assertSame(ProgressState::class, $state['_class']);
+        static::assertTrue($this->isJsonArrayTypeOfProgressState($state));
         static::assertFalse($state['migrationRunning']);
         static::assertFalse($state['validMigrationRunToken']);
         static::assertSame(ProgressState::STATUS_FETCH_DATA, $state['status']);
@@ -275,7 +275,7 @@ class StatusControllerTest extends TestCase
         $totalAfter = $this->runRepo->search(new Criteria(), $context)->getTotal();
         $totalAbortedAfter = $this->runRepo->search($abortedCriteria, $context)->getTotal();
         $totalProcessing = $this->runRepo->search($runningCriteria, $context)->getTotal();
-        static::assertSame(ProgressState::class, $state['_class']);
+        static::assertTrue($this->isJsonArrayTypeOfProgressState($state));
         static::assertFalse($state['migrationRunning']);
         static::assertTrue($state['validMigrationRunToken']);
         static::assertSame(ProgressState::STATUS_FETCH_DATA, $state['status']);
@@ -291,7 +291,7 @@ class StatusControllerTest extends TestCase
         $totalAfter = $this->runRepo->search(new Criteria(), $context)->getTotal();
         $totalAbortedAfter = $this->runRepo->search($abortedCriteria, $context)->getTotal();
         $totalProcessing = $this->runRepo->search($runningCriteria, $context)->getTotal();
-        static::assertSame(ProgressState::class, $state['_class']);
+        static::assertTrue($this->isJsonArrayTypeOfProgressState($state));
         static::assertFalse($state['migrationRunning']);
         static::assertTrue($state['validMigrationRunToken']);
         static::assertSame(1, $totalAfter - $totalBefore);
@@ -306,7 +306,7 @@ class StatusControllerTest extends TestCase
         $totalAfter = $this->runRepo->search(new Criteria(), $context)->getTotal();
         $totalAbortedAfter = $this->runRepo->search($abortedCriteria, $context)->getTotal();
         $totalProcessing = $this->runRepo->search($runningCriteria, $context)->getTotal();
-        static::assertSame(ProgressState::class, $state['_class']);
+        static::assertTrue($this->isJsonArrayTypeOfProgressState($state));
         static::assertFalse($state['migrationRunning']);
         static::assertFalse($state['validMigrationRunToken']);
         static::assertSame(0, $totalAfter - $totalBefore);
@@ -328,7 +328,7 @@ class StatusControllerTest extends TestCase
         $totalAfter = $this->runRepo->search(new Criteria(), $context)->getTotal();
         $totalAbortedAfter = $this->runRepo->search($abortedCriteria, $context)->getTotal();
         $totalProcessing = $this->runRepo->search($runningCriteria, $context)->getTotal();
-        static::assertSame(ProgressState::class, $state['_class']);
+        static::assertTrue($this->isJsonArrayTypeOfProgressState($state));
         static::assertFalse($state['migrationRunning']);
         static::assertTrue($state['validMigrationRunToken']);
         static::assertSame(0, $totalAfter - $totalBefore);
@@ -395,5 +395,13 @@ class StatusControllerTest extends TestCase
             static::assertArrayHasKey('property', $e->getParameters());
             static::assertSame($e->getParameters()['property'], 'connectionId');
         }
+    }
+
+    private function isJsonArrayTypeOfProgressState(array $state): bool
+    {
+        return array_key_exists('migrationRunning', $state)
+            && array_key_exists('runId', $state)
+            && array_key_exists('runProgress', $state)
+        ;
     }
 }
