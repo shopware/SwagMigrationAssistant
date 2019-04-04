@@ -86,9 +86,8 @@ class TranslationConverter extends AbstractConverter
         $this->runId = $migrationContext->getRunUuid();
 
         switch ($data['objecttype']) {
-//            Does not work currently, because products are mapped with the SKU
-//            case 'article':
-//                return $this->createProductTranslation($data);
+            case 'article':
+                return $this->createProductTranslation($data);
             case 'supplier':
                 return $this->createManufacturerProductTranslation($data);
             case 'config_units':
@@ -114,22 +113,16 @@ class TranslationConverter extends AbstractConverter
     private function createProductTranslation(array &$data): ConvertStruct
     {
         $sourceData = $data;
-        $productTranslation = [];
-        $productTranslation['id'] = $this->mappingService->createNewUuid(
-            $this->connectionId,
-            ProductTranslationDefinition::getEntityName(),
-            $data['id'],
-            $this->context
-        );
-        $productTranslation['productId'] = $this->mappingService->getUuid(
+        $product = [];
+        $product['id'] = $this->mappingService->getUuid(
             $this->connectionId,
             ProductDefinition::getEntityName() . '_container',
             $data['objectkey'],
             $this->context
         );
 
-        if (!isset($productTranslation['productId'])) {
-            $productTranslation['productId'] = $this->mappingService->getUuid(
+        if (!isset($product['id'])) {
+            $product['id'] = $this->mappingService->getUuid(
                 $this->connectionId,
                 ProductDefinition::getEntityName() . '_mainProduct',
                 $data['objectkey'],
@@ -137,7 +130,7 @@ class TranslationConverter extends AbstractConverter
             );
         }
 
-        if (!isset($productTranslation['productId'])) {
+        if (!isset($product['id'])) {
             $this->loggingService->addWarning(
                 $this->runId,
                 Shopware55LogTypes::ASSOCIATION_REQUIRED_MISSING,
@@ -153,9 +146,7 @@ class TranslationConverter extends AbstractConverter
 
             return new ConvertStruct(null, $sourceData);
         }
-
-        unset($data['id'], $data['objectkey']);
-        $productTranslation['entityDefinitionClass'] = ProductTranslationDefinition::class;
+        $product['entityDefinitionClass'] = ProductDefinition::class;
 
         $objectData = unserialize($data['objectdata'], ['allowed_classes' => false]);
 
@@ -174,13 +165,11 @@ class TranslationConverter extends AbstractConverter
             return new ConvertStruct(null, $sourceData);
         }
 
+        $productTranslation = [];
         foreach ($objectData as $key => $value) {
             switch ($key) {
                 case 'txtArtikel':
                     $this->helper->convertValue($productTranslation, 'name', $objectData, 'txtArtikel');
-                    break;
-                case 'txtlangbeschreibung':
-                    $this->helper->convertValue($productTranslation, 'descriptionLong', $objectData, 'txtlangbeschreibung');
                     break;
                 case 'txtshortdescription':
                     $this->helper->convertValue($productTranslation, 'description', $objectData, 'txtshortdescription');
@@ -189,49 +178,65 @@ class TranslationConverter extends AbstractConverter
                     $this->helper->convertValue($productTranslation, 'packUnit', $objectData, 'txtpackunit');
                     break;
             }
+
+            $isAttribute = strpos($key, '__attribute_');
+            if ($isAttribute !== false) {
+                $key = str_replace('__attribute_', '', $key);
+                $productTranslation['attributes'][$key] = $value;
+                unset($objectData[$key]);
+            }
         }
 
-        $data['objectdata'] = serialize($objectData);
         if (empty($objectData)) {
             unset($data['objectdata']);
+        } else {
+            $data['objectdata'] = serialize($objectData);
         }
 
         unset($data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
+
+        $productTranslation['id'] = $this->mappingService->createNewUuid(
+            $this->connectionId,
+            ProductTranslationDefinition::getEntityName(),
+            $data['id'],
+            $this->context
+        );
+        unset($data['id'], $data['objectkey']);
 
         $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $data['_locale'], $this->context);
 
         if (isset($languageData['createData'])) {
             $productTranslation['language']['id'] = $languageData['uuid'];
             $productTranslation['language']['localeId'] = $languageData['createData']['localeId'];
+            $productTranslation['language']['translationCodeId'] = $languageData['createData']['localeId'];
             $productTranslation['language']['name'] = $languageData['createData']['localeCode'];
         } else {
             $productTranslation['languageId'] = $languageData['uuid'];
         }
 
+        $product['translations'][$languageData['uuid']] = $productTranslation;
+
         unset($data['name'], $data['_locale']);
 
-        return new ConvertStruct($productTranslation, $data);
+        if (empty($data)) {
+            $data = null;
+        }
+
+        return new ConvertStruct($product, $data);
     }
 
     private function createManufacturerProductTranslation(array &$data): ConvertStruct
     {
         $sourceData = $data;
-        $manufacturerTranslation = [];
-        $manufacturerTranslation['id'] = $this->mappingService->createNewUuid(
-            $this->connectionId,
-            ProductManufacturerTranslationDefinition::getEntityName(),
-            $data['id'],
-            $this->context
-        );
-        $manufacturerTranslation['productManufacturerId'] = $this->mappingService->getUuid(
+        $manufacturer = [];
+        $manufacturer['id'] = $this->mappingService->getUuid(
             $this->connectionId,
             ProductManufacturerDefinition::getEntityName(),
             $data['objectkey'],
             $this->context
         );
-        unset($data['id'], $data['objectkey']);
 
-        if (!isset($manufacturerTranslation['productManufacturerId'])) {
+        if (!isset($manufacturer['id'])) {
             $this->loggingService->addWarning(
                 $this->runId,
                 Shopware55LogTypes::ASSOCIATION_REQUIRED_MISSING,
@@ -248,8 +253,7 @@ class TranslationConverter extends AbstractConverter
             return new ConvertStruct(null, $sourceData);
         }
 
-        $manufacturerTranslation['entityDefinitionClass'] = ProductManufacturerTranslationDefinition::class;
-        $this->helper->convertValue($manufacturerTranslation, 'name', $data, 'name');
+        $manufacturer['entityDefinitionClass'] = ProductManufacturerDefinition::class;
 
         $objectData = unserialize($data['objectdata'], ['allowed_classes' => false]);
 
@@ -268,39 +272,34 @@ class TranslationConverter extends AbstractConverter
             return new ConvertStruct(null, $sourceData);
         }
 
+        $manufacturerTranslation = [];
+        $manufacturerTranslation['id'] = $this->mappingService->createNewUuid(
+            $this->connectionId,
+            ProductManufacturerTranslationDefinition::getEntityName(),
+            $data['id'],
+            $this->context
+        );
+        unset($data['id'], $data['objectkey']);
+
+        $this->helper->convertValue($manufacturerTranslation, 'name', $data, 'name');
+
         foreach ($objectData as $key => $value) {
-            switch ($key) {
-                case 'metaTitle':
-                    $this->helper->convertValue($manufacturerTranslation, 'metaTitle', $objectData, 'metaTitle');
-                    break;
-                case 'description':
-                    $this->helper->convertValue($manufacturerTranslation, 'description', $objectData, 'description');
-                    break;
-                case 'metaDescription':
-                    $this->helper->convertValue($manufacturerTranslation, 'metaDescription', $objectData, 'metaDescription');
-                    break;
-                case 'metaKeywords':
-                    $this->helper->convertValue($manufacturerTranslation, 'metaKeywords', $objectData, 'metaKeywords');
-                    break;
+            if ($key === 'description') {
+                $this->helper->convertValue($manufacturerTranslation, 'description', $objectData, 'description');
+            }
+
+            $isAttribute = strpos($key, '__attribute_');
+            if ($isAttribute !== false) {
+                $key = str_replace('__attribute_', '', $key);
+                $manufacturerTranslation['attributes'][$key] = $value;
+                unset($objectData[$key]);
             }
         }
 
-        $data['objectdata'] = serialize($objectData);
         if (empty($objectData)) {
             unset($data['objectdata']);
         } else {
-            $this->loggingService->addWarning(
-                $this->runId,
-                Shopware55LogTypes::INVALID_UNSERIALIZED_DATA,
-                'Invalid unserialized data',
-                'Manufacturer-Translation-Entity could not converted cause of invalid unserialized object data.',
-                [
-                    'entity' => 'Manufacturer',
-                    'data' => $data['objectdata'],
-                ]
-            );
-
-            return new ConvertStruct(null, $sourceData);
+            $data['objectdata'] = serialize($objectData);
         }
 
         unset($data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
@@ -315,35 +314,31 @@ class TranslationConverter extends AbstractConverter
             $manufacturerTranslation['languageId'] = $languageData['uuid'];
         }
 
+        $manufacturer['translations'][$languageData['uuid']] = $manufacturerTranslation;
+
         unset($data['_locale']);
 
         if (empty($data)) {
             $data = null;
         }
 
-        return new ConvertStruct($manufacturerTranslation, $data);
+        return new ConvertStruct($manufacturer, $data);
     }
 
     private function createUnitTranslation(array $data): ConvertStruct
     {
         $sourceData = $data;
 
-        $unitTranslation = [];
-        $unitTranslation['id'] = $this->mappingService->createNewUuid(
-            $this->connectionId,
-            UnitTranslationDefinition::getEntityName(),
-            $data['id'],
-            $this->context
-        );
-        $unitTranslation['unitId'] = $this->mappingService->getUuid(
+        $unit = [];
+        $unit['id'] = $this->mappingService->getUuid(
             $this->connectionId,
             UnitDefinition::getEntityName(),
             $data['objectkey'],
             $this->context
         );
-        unset($data['id'], $data['objectkey']);
+        unset($data['objectkey']);
 
-        if (!isset($unitTranslation['unitId'])) {
+        if (!isset($unit['id'])) {
             $this->loggingService->addWarning(
                 $this->runId,
                 Shopware55LogTypes::ASSOCIATION_REQUIRED_MISSING,
@@ -360,7 +355,7 @@ class TranslationConverter extends AbstractConverter
             return new ConvertStruct(null, $sourceData);
         }
 
-        $unitTranslation['entityDefinitionClass'] = UnitTranslationDefinition::class;
+        $unit['entityDefinitionClass'] = UnitDefinition::class;
 
         $objectData = unserialize($data['objectdata'], ['allowed_classes' => false]);
 
@@ -379,6 +374,14 @@ class TranslationConverter extends AbstractConverter
             return new ConvertStruct(null, $sourceData);
         }
 
+        $unitTranslation = [];
+        $unitTranslation['id'] = $this->mappingService->createNewUuid(
+            $this->connectionId,
+            UnitTranslationDefinition::getEntityName(),
+            $data['id'],
+            $this->context
+        );
+
         /** @var array $objectData */
         $objectData = array_pop($objectData);
 
@@ -391,27 +394,22 @@ class TranslationConverter extends AbstractConverter
                     $this->helper->convertValue($unitTranslation, 'name', $objectData, 'description');
                     break;
             }
+
+            $isAttribute = strpos($key, '__attribute_');
+            if ($isAttribute !== false) {
+                $key = str_replace('__attribute_', '', $key);
+                $unitTranslation['attributes'][$key] = $value;
+                unset($objectData[$key]);
+            }
         }
 
-        $data['objectdata'] = serialize($objectData);
         if (empty($objectData)) {
             unset($data['objectdata']);
         } else {
-            $this->loggingService->addWarning(
-                $this->runId,
-                Shopware55LogTypes::INVALID_UNSERIALIZED_DATA,
-                'Invalid unserialized data',
-                'Unit-Translation-Entity could not converted cause of invalid unserialized object data.',
-                [
-                    'entity' => 'Unit',
-                    'data' => $data['objectdata'],
-                ]
-            );
-
-            return new ConvertStruct(null, $sourceData);
+            $data['objectdata'] = serialize($objectData);
         }
 
-        unset($data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
+        unset($data['id'], $data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
 
         $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $data['_locale'], $this->context);
 
@@ -423,35 +421,31 @@ class TranslationConverter extends AbstractConverter
             $unitTranslation['languageId'] = $languageData['uuid'];
         }
 
+        $unit['translations'][$languageData['uuid']] = $unitTranslation;
+
         unset($data['name'], $data['_locale']);
 
         if (empty($data)) {
             $data = null;
         }
 
-        return new ConvertStruct($unitTranslation, $data);
+        return new ConvertStruct($unit, $data);
     }
 
     private function createCategoryTranslation(array $data): ConvertStruct
     {
         $sourceData = $data;
 
-        $categoryTranslation = [];
-        $categoryTranslation['id'] = $this->mappingService->createNewUuid(
-            $this->connectionId,
-            CategoryDefinition::getEntityName(),
-            $data['id'],
-            $this->context
-        );
-        $categoryTranslation['categoryId'] = $this->mappingService->getUuid(
+        $category = [];
+        $category['id'] = $this->mappingService->getUuid(
             $this->connectionId,
             CategoryDefinition::getEntityName(),
             $data['objectkey'],
             $this->context
         );
-        unset($data['id'], $data['objectkey']);
+        unset($data['objectkey']);
 
-        if (!isset($categoryTranslation['categoryId'])) {
+        if (!isset($category['id'])) {
             $this->loggingService->addWarning(
                 $this->runId,
                 Shopware55LogTypes::ASSOCIATION_REQUIRED_MISSING,
@@ -468,7 +462,7 @@ class TranslationConverter extends AbstractConverter
             return new ConvertStruct(null, $sourceData);
         }
 
-        $categoryTranslation['entityDefinitionClass'] = CategoryTranslationDefinition::class;
+        $category['entityDefinitionClass'] = CategoryDefinition::class;
 
         $objectData = unserialize($data['objectdata'], ['allowed_classes' => false]);
 
@@ -488,49 +482,49 @@ class TranslationConverter extends AbstractConverter
         }
 
         // no equivalent in category translation definition
-        unset($objectData['streamId'], $objectData['external'], $objectData['externalTarget']);
+        unset(
+            $objectData['streamId'],
+            $objectData['external'],
+            $objectData['externalTarget'],
+            $objectData['cmsheadline'],
+            $objectData['cmstext'],
+            $objectData['metatitle'],
+            $objectData['metadescription'],
+            $objectData['metakeywords']
+        );
+
+        $categoryTranslation = [];
+        $categoryTranslation['id'] = $this->mappingService->createNewUuid(
+            $this->connectionId,
+            CategoryTranslationDefinition::getEntityName(),
+            $data['id'],
+            $this->context
+        );
+
+        if (isset($objectData['description'])) {
+            $this->helper->convertValue($categoryTranslation, 'name', $objectData, 'description');
+        }
+
         foreach ($objectData as $key => $value) {
-            switch ($key) {
-                case 'description':
-                    $this->helper->convertValue($categoryTranslation, 'name', $objectData, 'description');
-                    break;
-                case 'cmsheadline':
-                    $this->helper->convertValue($categoryTranslation, 'cmsHeadline', $objectData, 'cmsheadline');
-                    break;
-                case 'cmstext':
-                    $this->helper->convertValue($categoryTranslation, 'cmsDescription', $objectData, 'cmstext');
-                    break;
-                case 'metatitle':
-                    $this->helper->convertValue($categoryTranslation, 'metaTitle', $objectData, 'metatitle');
-                    break;
-                case 'metadescription':
-                    $this->helper->convertValue($categoryTranslation, 'metaDescription', $objectData, 'metadescription');
-                    break;
-                case 'metakeywords':
-                    $this->helper->convertValue($categoryTranslation, 'metaKeywords', $objectData, 'metakeywords');
-                    break;
+            if ($key === 'description') {
+                $this->helper->convertValue($categoryTranslation, 'name', $objectData, $key);
+            }
+
+            $isAttribute = strpos($key, '__attribute_');
+            if ($isAttribute !== false) {
+                $key = str_replace('__attribute_', '', $key);
+                $categoryTranslation['attributes'][$key] = $value;
+                unset($objectData[$key]);
             }
         }
 
-        $data['objectdata'] = serialize($objectData);
         if (empty($objectData)) {
             unset($data['objectdata']);
         } else {
-            $this->loggingService->addWarning(
-                $this->runId,
-                Shopware55LogTypes::INVALID_UNSERIALIZED_DATA,
-                'Invalid unserialized data',
-                'Category-Translation-Entity could not converted cause of invalid unserialized object data.',
-                [
-                    'entity' => 'category',
-                    'data' => $data['objectdata'],
-                ]
-            );
-
-            return new ConvertStruct(null, $sourceData);
+            $data['objectdata'] = serialize($objectData);
         }
 
-        unset($data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
+        unset($data['id'], $data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
 
         $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $data['_locale'], $this->context);
 
@@ -542,12 +536,14 @@ class TranslationConverter extends AbstractConverter
             $categoryTranslation['languageId'] = $languageData['uuid'];
         }
 
+        $category['translations'][$languageData['uuid']] = $categoryTranslation;
+
         unset($data['name'], $data['_locale']);
 
         if (empty($data)) {
             $data = null;
         }
 
-        return new ConvertStruct($categoryTranslation, $data);
+        return new ConvertStruct($category, $data);
     }
 }

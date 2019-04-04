@@ -5,6 +5,7 @@ namespace SwagMigrationNext\Profile\Shopware55;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenContainerEvent;
+use Shopware\Core\Framework\ShopwareHttpException;
 use SwagMigrationNext\Migration\Converter\ConverterInterface;
 use SwagMigrationNext\Migration\Converter\ConverterRegistryInterface;
 use SwagMigrationNext\Migration\Data\SwagMigrationDataDefinition;
@@ -15,8 +16,6 @@ use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationNext\Migration\MigrationContextInterface;
 use SwagMigrationNext\Migration\Profile\ProfileInterface;
-use SwagMigrationNext\Profile\Shopware55\Exception\AssociationEntityRequiredMissingException;
-use SwagMigrationNext\Profile\Shopware55\Exception\ParentEntityForChildNotFoundException;
 
 class Shopware55Profile implements ProfileInterface
 {
@@ -116,12 +115,15 @@ class Shopware55Profile implements ProfileInterface
                     'unmapped' => $convertStruct->getUnmapped(),
                     'convertFailure' => $convertFailureFlag,
                 ];
-            } catch (ParentEntityForChildNotFoundException
-            | AssociationEntityRequiredMissingException $exception
-            ) {
+            } catch (\Exception $exception) {
+                $errorCode = $exception->getCode();
+                if (is_subclass_of($exception, ShopwareHttpException::class)) {
+                    $errorCode = $exception->getErrorCode();
+                }
+
                 $this->loggingService->addError(
                     $runUuid,
-                    $exception->getErrorCode(),
+                    (string) $errorCode,
                     '',
                     $exception->getMessage(),
                     [

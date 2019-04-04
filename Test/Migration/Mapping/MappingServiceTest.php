@@ -141,7 +141,7 @@ class MappingServiceTest extends TestCase
         $this->mappingService->writeMapping($context);
         $languageUuid = $this->mappingService->createNewUuid($this->connectionId, LanguageDefinition::getEntityName(), $localeCode, $context);
         $this->mappingService->writeMapping($context);
-        $response = $this->mappingService->getLanguageUuid($this->connectionId, '', $context);
+        $response = $this->mappingService->getLanguageUuid($this->connectionId, 'en_GB', $context);
 
         static::assertSame($languageUuid, $response['uuid']);
         static::assertSame($localeCode, $response['createData']['localeCode']);

@@ -83,6 +83,11 @@ class ProductConverter extends AbstractConverter
         'prices',
     ];
 
+    /**
+     * @var string
+     */
+    private $locale;
+
     public function __construct(
         MappingServiceInterface $mappingService,
         ConverterHelperService $converterHelperService,
@@ -122,7 +127,7 @@ class ProductConverter extends AbstractConverter
         $this->runId = $migrationContext->getRunUuid();
         $this->connectionId = $migrationContext->getConnection()->getId();
         $this->oldProductId = $data['detail']['ordernumber'];
-        $locale = $data['_locale'];
+        $this->locale = $data['_locale'];
 
         $fields = $this->helper->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
         if (!empty($fields)) {
@@ -159,7 +164,7 @@ class ProductConverter extends AbstractConverter
         $converted = $this->getProductData($data, $converted);
 
         if (isset($data['manufacturer'])) {
-            $converted['manufacturer'] = $this->getManufacturer($data['manufacturer'], $locale);
+            $converted['manufacturer'] = $this->getManufacturer($data['manufacturer']);
             unset($data['manufacturer'], $data['supplierID']);
         } else {
             $manufacturerUuid = $this->mappingService->getUuid(
@@ -311,7 +316,7 @@ class ProductConverter extends AbstractConverter
         unset($data['tax'], $data['taxID']);
 
         if (isset($data['unit']['id'])) {
-            $converted['unit'] = $this->getUnit($data['unit'], $data['_locale']);
+            $converted['unit'] = $this->getUnit($data['unit']);
         }
         unset($data['unit'], $data['detail']['unitID']);
 
@@ -321,7 +326,7 @@ class ProductConverter extends AbstractConverter
         unset($data['prices']);
 
         if (isset($data['assets'])) {
-            $convertedMedia = $this->getMedia($data['assets'], $converted, $data['_locale']);
+            $convertedMedia = $this->getMedia($data['assets'], $converted);
 
             if (!empty($convertedMedia['media'])) {
                 $converted['media'] = $convertedMedia['media'];
@@ -380,45 +385,53 @@ class ProductConverter extends AbstractConverter
         return $converted;
     }
 
-    private function getManufacturer(array $manufacturerData, string $locale): array
+    private function getManufacturer(array $data): array
     {
-        $manufacturerUuid = $this->mappingService->createNewUuid(
+        $manufacturer['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
             ProductManufacturerDefinition::getEntityName(),
-            $manufacturerData['id'],
+            $data['id'],
             $this->context
         );
 
-        $newData['id'] = $manufacturerUuid;
-        $this->helper->convertValue($newData, 'link', $manufacturerData, 'link');
+        $this->getManufacturerTranslation($manufacturer, $data);
+        $this->helper->convertValue($manufacturer, 'link', $data, 'link');
+        $this->helper->convertValue($manufacturer, 'name', $data, 'name');
+        $this->helper->convertValue($manufacturer, 'description', $data, 'description');
 
-        $translations = [];
-        $translations['id'] = $this->mappingService->createNewUuid(
-            $this->connectionId,
-            ProductManufacturerTranslationDefinition::getEntityName(),
-            $manufacturerData['id'] . ':' . $locale,
-            $this->context
-        );
-        $translations['productManufacturerId'] = $manufacturerUuid;
-        $this->helper->convertValue($translations, 'name', $manufacturerData, 'name');
-        $this->helper->convertValue($translations, 'description', $manufacturerData, 'description');
-        $this->helper->convertValue($translations, 'metaTitle', $manufacturerData, 'meta_title');
-        $this->helper->convertValue($translations, 'metaDescription', $manufacturerData, 'meta_description');
-        $this->helper->convertValue($translations, 'metaKeywords', $manufacturerData, 'meta_keywords');
+        return $manufacturer;
+    }
 
-        $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $locale, $this->context);
-
-        if (isset($languageData['createData']) && !empty($languageData['createData'])) {
-            $translations['language']['id'] = $languageData['uuid'];
-            $translations['language']['localeId'] = $languageData['createData']['localeId'];
-            $translations['language']['name'] = $languageData['createData']['localeCode'];
-        } else {
-            $translations['languageId'] = $languageData['uuid'];
+    private function getManufacturerTranslation(array &$manufacturer, array $data): void
+    {
+        $languageData = $this->mappingService->getDefaultLanguageUuid($this->context);
+        if ($languageData['createData']['localeCode'] === $this->locale) {
+            return;
         }
 
-        $newData['translations'][$languageData['uuid']] = $translations;
+        $localeTranslation = [];
+        $localeTranslation['productManufacturerId'] = $manufacturer['id'];
 
-        return $newData;
+        $this->helper->convertValue($localeTranslation, 'name', $data, 'name');
+        $this->helper->convertValue($localeTranslation, 'description', $data, 'description');
+
+        $localeTranslation['id'] = $this->mappingService->createNewUuid(
+            $this->connectionId,
+            ProductManufacturerTranslationDefinition::getEntityName(),
+            $data['id'] . ':' . $this->locale,
+            $this->context
+        );
+
+        $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $this->locale, $this->context);
+        if (isset($languageData['createData']) && !empty($languageData['createData'])) {
+            $localeTranslation['language']['id'] = $languageData['uuid'];
+            $localeTranslation['language']['localeId'] = $languageData['createData']['localeId'];
+            $localeTranslation['language']['name'] = $languageData['createData']['localeCode'];
+        } else {
+            $localeTranslation['languageId'] = $languageData['uuid'];
+        }
+
+        $manufacturer['translations'][$languageData['uuid']] = $localeTranslation;
     }
 
     private function getTax(array $taxData): array
@@ -435,40 +448,55 @@ class ProductConverter extends AbstractConverter
         ];
     }
 
-    private function getUnit(array $unitData, string $locale): array
+    private function getUnit(array $data): array
     {
-        $translation['id'] = $this->mappingService->createNewUuid(
+        $unit = [];
+        $unit['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            UnitTranslationDefinition::getEntityName(),
-            $unitData['id'] . ':' . $locale,
+            UnitDefinition::getEntityName(),
+            $data['id'],
             $this->context
         );
 
-        $this->helper->convertValue($translation, 'shortCode', $unitData, 'unit');
-        $this->helper->convertValue($translation, 'name', $unitData, 'description');
+        $this->getUnitTranslation($unit, $data);
+        $this->helper->convertValue($unit, 'shortCode', $data, 'unit');
+        $this->helper->convertValue($unit, 'name', $data, 'description');
 
-        $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $locale, $this->context);
-
-        if (isset($languageData['createData']) && !empty($languageData['createData'])) {
-            $translation['language']['id'] = $languageData['uuid'];
-            $translation['language']['localeId'] = $languageData['createData']['localeId'];
-            $translation['language']['name'] = $languageData['createData']['localeCode'];
-        } else {
-            $translation['languageId'] = $languageData['uuid'];
-        }
-
-        return [
-            'id' => $this->mappingService->createNewUuid(
-                $this->connectionId,
-                UnitDefinition::getEntityName(),
-                $unitData['id'],
-                $this->context
-            ),
-            'translations' => [$translation],
-        ];
+        return $unit;
     }
 
-    private function getMedia(array $media, array $converted, $locale): array
+    private function getUnitTranslation(array &$unit, $data): void
+    {
+        $languageData = $this->mappingService->getDefaultLanguageUuid($this->context);
+        if ($languageData['createData']['localeCode'] === $this->locale) {
+            return;
+        }
+
+        $localeTranslation = [];
+
+        $this->helper->convertValue($localeTranslation, 'shortCode', $data, 'unit');
+        $this->helper->convertValue($localeTranslation, 'name', $data, 'description');
+
+        $localeTranslation['id'] = $this->mappingService->createNewUuid(
+            $this->connectionId,
+            UnitTranslationDefinition::getEntityName(),
+            $data['id'] . ':' . $this->locale,
+            $this->context
+        );
+
+        $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $this->locale, $this->context);
+        if (isset($languageData['createData']) && !empty($languageData['createData'])) {
+            $localeTranslation['language']['id'] = $languageData['uuid'];
+            $localeTranslation['language']['localeId'] = $languageData['createData']['localeId'];
+            $localeTranslation['language']['name'] = $languageData['createData']['localeCode'];
+        } else {
+            $localeTranslation['languageId'] = $languageData['uuid'];
+        }
+
+        $unit['translations'][$languageData['uuid']] = $localeTranslation;
+    }
+
+    private function getMedia(array $media, array $converted): array
     {
         $mediaObjects = [];
         $cover = null;
@@ -520,26 +548,9 @@ class ProductConverter extends AbstractConverter
                 ]
             );
 
-            $translation['id'] = $this->mappingService->createNewUuid(
-                $this->connectionId,
-                MediaTranslationDefinition::getEntityName(),
-                $mediaData['media']['id'] . ':' . $locale,
-                $this->context
-            );
-            $this->helper->convertValue($translation, 'name', $mediaData['media'], 'name');
-            $this->helper->convertValue($translation, 'description', $mediaData['media'], 'description');
-
-            $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $locale, $this->context);
-
-            if (isset($languageData['createData']) && !empty($languageData['createData'])) {
-                $translation['language']['id'] = $languageData['uuid'];
-                $translation['language']['localeId'] = $languageData['createData']['localeId'];
-                $translation['language']['name'] = $languageData['createData']['localeCode'];
-            } else {
-                $translation['languageId'] = $languageData['uuid'];
-            }
-
-            $newMedia['translations'][$languageData['uuid']] = $translation;
+            $this->getMediaTranslation($newMedia, $mediaData);
+            $this->helper->convertValue($newMedia, 'name', $mediaData['media'], 'name');
+            $this->helper->convertValue($newMedia, 'description', $mediaData['media'], 'description');
 
             $newProductMedia['media'] = $newMedia;
             $mediaObjects[] = $newProductMedia;
@@ -550,6 +561,38 @@ class ProductConverter extends AbstractConverter
         }
 
         return ['media' => $mediaObjects, 'cover' => $cover];
+    }
+
+    // Todo: Check if this is necessary, because name and description is currently not translatable
+    private function getMediaTranslation(array &$media, array $data): void
+    {
+        $languageData = $this->mappingService->getDefaultLanguageUuid($this->context);
+        if ($languageData['createData']['localeCode'] === $this->locale) {
+            return;
+        }
+
+        $localeTranslation = [];
+
+        $this->helper->convertValue($localeTranslation, 'name', $data['media'], 'name');
+        $this->helper->convertValue($localeTranslation, 'description', $data['media'], 'description');
+
+        $localeTranslation['id'] = $this->mappingService->createNewUuid(
+            $this->connectionId,
+            MediaTranslationDefinition::getEntityName(),
+            $data['media']['id'] . ':' . $this->locale,
+            $this->context
+        );
+
+        $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $this->locale, $this->context);
+        if (isset($languageData['createData']) && !empty($languageData['createData'])) {
+            $localeTranslation['language']['id'] = $languageData['uuid'];
+            $localeTranslation['language']['localeId'] = $languageData['createData']['localeId'];
+            $localeTranslation['language']['name'] = $languageData['createData']['localeCode'];
+        } else {
+            $localeTranslation['languageId'] = $languageData['uuid'];
+        }
+
+        $media['translations'][$languageData['uuid']] = $localeTranslation;
     }
 
     private function getPrice(array $priceData, float $taxRate, bool $setInGross): array
@@ -669,32 +712,46 @@ class ProductConverter extends AbstractConverter
 
     private function setGivenProductTranslation(array &$data, array &$converted): void
     {
+        $originalData = $data;
+        $this->helper->convertValue($converted, 'name', $data, 'name');
+        $this->helper->convertValue($converted, 'keywords', $data, 'keywords');
+        $this->helper->convertValue($converted, 'description', $data, 'description');
+        $this->helper->convertValue($converted, 'metaTitle', $data, 'metaTitle');
+        $this->helper->convertValue($converted, 'packUnit', $data['detail'], 'packunit');
+        unset($data['description_long']);
+
+        $languageData = $this->mappingService->getDefaultLanguageUuid($this->context);
+        if ($languageData['createData']['localeCode'] === $this->locale) {
+            return;
+        }
+
+        $localeTranslation = [];
+
+        $localeTranslation['productId'] = $converted['id'];
+        $this->helper->convertValue($localeTranslation, 'name', $originalData, 'name');
+        $this->helper->convertValue($localeTranslation, 'keywords', $originalData, 'keywords');
+        $this->helper->convertValue($localeTranslation, 'description', $originalData, 'description');
+        $this->helper->convertValue($localeTranslation, 'metaTitle', $originalData, 'metaTitle');
+        $this->helper->convertValue($localeTranslation, 'packUnit', $originalData['detail'], 'packunit');
+
         $defaultTranslation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
             ProductTranslationDefinition::getEntityName(),
-            $this->oldProductId . ':' . $data['_locale'],
+            $this->oldProductId . ':' . $this->locale,
             $this->context
         );
-        $defaultTranslation['productId'] = $converted['id'];
 
-        $this->helper->convertValue($defaultTranslation, 'name', $data, 'name');
-        $this->helper->convertValue($defaultTranslation, 'description', $data, 'description');
-        $this->helper->convertValue($defaultTranslation, 'descriptionLong', $data, 'description_long');
-        $this->helper->convertValue($defaultTranslation, 'metaTitle', $data, 'metaTitle');
-        $this->helper->convertValue($defaultTranslation, 'keywords', $data, 'keywords');
-        $this->helper->convertValue($defaultTranslation, 'packUnit', $data['detail'], 'packunit');
-
-        $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $data['_locale'], $this->context);
-
+        $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $this->locale, $this->context);
         if (isset($languageData['createData']) && !empty($languageData['createData'])) {
-            $defaultTranslation['language']['id'] = $languageData['uuid'];
-            $defaultTranslation['language']['localeId'] = $languageData['createData']['localeId'];
-            $defaultTranslation['language']['name'] = $languageData['createData']['localeCode'];
+            $localeTranslation['language']['id'] = $languageData['uuid'];
+            $localeTranslation['language']['localeId'] = $languageData['createData']['localeId'];
+            $localeTranslation['language']['translationCodeId'] = $languageData['createData']['localeId'];
+            $localeTranslation['language']['name'] = $languageData['createData']['localeCode'];
         } else {
-            $defaultTranslation['languageId'] = $languageData['uuid'];
+            $localeTranslation['languageId'] = $languageData['uuid'];
         }
 
-        $converted['translations'][$languageData['uuid']] = $defaultTranslation;
+        $converted['translations'][$languageData['uuid']] = $localeTranslation;
     }
 
     private function getCategoryMapping(array $categories): array
