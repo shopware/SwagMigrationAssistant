@@ -36,8 +36,9 @@ class Shopware55ApiGatewayTest extends TestCase
         $gateway = $factory->create($migrationContext);
         /** @var EnvironmentInformation $response */
         $response = $gateway->readEnvironmentInformation();
+        $errorException = new GatewayReadException('Shopware 5.5 Api SwagMigrationEnvironment', 466);
 
         static::assertSame($response->getTotals(), []);
-        static::assertSame($response->getErrorCode(), 0);
+        static::assertSame($response->getErrorCode(), $errorException->getErrorCode());
     }
 }

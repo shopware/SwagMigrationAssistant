@@ -241,16 +241,16 @@ Component.register('swag-migration-wizard', {
                 this.migrationUIStore.setDataSelectionTableData([]);
 
                 if (connectionCheckResponse.errorCode !== undefined) {
-                    if (connectionCheckResponse.errorCode !== -1) {
+                    if (connectionCheckResponse.errorCode !== '') {
                         this.onResponseError(connectionCheckResponse.errorCode);
                         return;
                     }
 
                     // create warning for success page
                     this.errorMessageSnippet = '';
-                    if (connectionCheckResponse.warningCode === 0) {
+                    if (connectionCheckResponse.warningCode !== '') {
                         this.errorMessageSnippet =
-                            'swag-migration.wizard.pages.credentials.success.connectionInsecureMsg';
+                            `swag-migration.wizard.pages.credentials.success.${connectionCheckResponse.warningCode}`;
                     }
                 }
 
@@ -262,26 +262,10 @@ Component.register('swag-migration-wizard', {
         },
 
         onResponseError(errorCode) {
-            switch (errorCode) {
-            case 404:
-            case 0: // can't connect to shop
-                this.errorMessageSnippet = 'swag-migration.wizard.pages.credentials.error.connectionErrorMsg';
-                break;
-            case 401: // invalid access credentials
-                this.errorMessageSnippet = 'swag-migration.wizard.pages.credentials.error.authenticationErrorMsg';
-                break;
-            case 466: // invalid shop domain
-                this.errorMessageSnippet = 'swag-migration.wizard.pages.credentials.error.invalidShopDomainErrorMsg';
-                break;
-            case 'SWAG-MIGRATION-CONNECTION-CREDENTIALS-MISSING':
-                this.errorMessageSnippet = 'swag-migration.wizard.pages.credentials.error.credentialsMissing';
-                break;
-            case 'SWAG-MIGRATION-IS-RUNNING':
-                this.errorMessageSnippet = 'swag-migration.wizard.pages.credentials.error.migrationRunning';
-                break;
-            default: // something else
-                this.errorMessageSnippet = 'swag-migration.wizard.pages.credentials.error.undefinedErrorMsg';
-                break;
+            if (errorCode !== '') {
+                this.errorMessageSnippet = `swag-migration.wizard.pages.credentials.error.${errorCode}`;
+            } else {
+                this.errorMessageSnippet = '';
             }
 
             this.navigateToRoute(this.routes.credentialsError);
