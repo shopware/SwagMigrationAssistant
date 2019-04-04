@@ -399,6 +399,11 @@ class ProductConverter extends AbstractConverter
         $this->helper->convertValue($manufacturer, 'name', $data, 'name');
         $this->helper->convertValue($manufacturer, 'description', $data, 'description');
 
+        if (isset($data['media'])) {
+            $newData['media'] = $this->getManufacturerMedia($data['media']);
+        }
+        unset($data['media']);
+
         return $manufacturer;
     }
 
@@ -593,6 +598,32 @@ class ProductConverter extends AbstractConverter
         }
 
         $media['translations'][$languageData['uuid']] = $localeTranslation;
+    }
+
+    private function getManufacturerMedia(array $media): array
+    {
+        $newMedia['id'] = $this->mappingService->createNewUuid(
+            $this->connectionId,
+            MediaDefinition::getEntityName(),
+            $media['id'],
+            $this->context
+        );
+
+        if (empty($media['name'])) {
+            $media['name'] = $newMedia['id'];
+        }
+
+        $this->mediaFileService->saveMediaFile(
+            [
+                'runId' => $this->runId,
+                'uri' => $media['uri'] ?? $media['path'],
+                'fileName' => $media['name'],
+                'fileSize' => (int) $media['file_size'],
+                'mediaId' => $newMedia['id'],
+            ]
+        );
+
+        return $newMedia;
     }
 
     private function getPrice(array $priceData, float $taxRate, bool $setInGross): array
