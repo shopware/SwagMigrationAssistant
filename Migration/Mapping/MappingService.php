@@ -10,12 +10,12 @@ use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenEvent;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
+use Shopware\Core\Framework\Language\LanguageDefinition;
+use Shopware\Core\Framework\Language\LanguageEntity;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\Country\CountryDefinition;
 use Shopware\Core\System\Country\CountryEntity;
 use Shopware\Core\System\Currency\CurrencyEntity;
-use Shopware\Core\System\Language\LanguageDefinition;
-use Shopware\Core\System\Language\LanguageEntity;
 use Shopware\Core\System\Locale\LocaleEntity;
 use Shopware\Core\System\SalesChannel\Aggregate\SalesChannelType\SalesChannelTypeEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
@@ -379,6 +379,7 @@ class MappingService implements MappingServiceInterface
 
         $validPaymentMethodId = $this->getFirstActivePaymentMethodId();
         $validShippingMethodId = $this->getFirstActiveShippingMethodId();
+        $validCountryId = $this->getFirstActiveCountryId();
 
         // Todo: Replace default values with external values
         $createEvent = $this->salesChannelRepo->create([
@@ -415,10 +416,10 @@ class MappingService implements MappingServiceInterface
                     ],
                 ],
 
-                'countryId' => Defaults::COUNTRY,
+                'countryId' => $validCountryId,
                 'countries' => [
                     [
-                        'id' => Defaults::COUNTRY,
+                        'id' => $validCountryId,
                     ],
                 ],
 
@@ -451,6 +452,16 @@ class MappingService implements MappingServiceInterface
             ->addSorting(new FieldSorting('position'));
 
         return $this->paymentRepository->searchIds($criteria, Context::createDefaultContext())->getIds()[0];
+    }
+
+    private function getFirstActiveCountryId(): string
+    {
+        $criteria = (new Criteria())
+            ->setLimit(1)
+            ->addFilter(new EqualsFilter('active', true))
+            ->addSorting(new FieldSorting('position'));
+
+        return $this->countryRepository->searchIds($criteria, Context::createDefaultContext())->getIds()[0];
     }
 
     private function insertSalesChannelMapping(string $structureId, string $connectionId, string $salesChannelUuid, Context $context): void
