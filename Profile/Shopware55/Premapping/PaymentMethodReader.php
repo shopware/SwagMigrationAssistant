@@ -2,6 +2,11 @@
 
 namespace SwagMigrationNext\Profile\Shopware55\Premapping;
 
+use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\CashPayment;
+use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\DebitPayment;
+use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\InvoicePayment;
+use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\PrePayment;
+use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SEPAPayment;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -126,12 +131,36 @@ class PaymentMethodReader extends AbstractPremappingReader
             }
 
             $sourceName = $this->preselectionSourceNameDictonary[$item->getSourceId()];
+            $preselectionValue = $this->getPreselectionValue($sourceName);
 
-            if (!isset($this->preselectionDictionary[$sourceName])) {
-                continue;
+            if ($preselectionValue !== null) {
+                $item->setDestinationUuid($preselectionValue);
             }
-
-            $item->setDestinationUuid($this->preselectionDictionary[$sourceName]);
         }
+    }
+
+    private function getPreselectionValue(string $sourceName): ?string
+    {
+        $preselectionValue = null;
+
+        switch ($sourceName) {
+            case 'debit':
+                $preselectionValue = $this->preselectionDictionary[DebitPayment::class];
+                break;
+            case 'cash':
+                $preselectionValue = $this->preselectionDictionary[CashPayment::class];
+                break;
+            case 'invoice':
+                $preselectionValue = $this->preselectionDictionary[InvoicePayment::class];
+                break;
+            case 'prepayment':
+                $preselectionValue = $this->preselectionDictionary[PrePayment::class];
+                break;
+            case 'sepa':
+                $preselectionValue = $this->preselectionDictionary[SEPAPayment::class];
+                break;
+        }
+
+        return $preselectionValue;
     }
 }

@@ -50,7 +50,7 @@ Component.register('swag-migration-tab-card', {
     mounted() {
         // read tab-card items
         this.$refs.card.$children.forEach((child) => {
-            if (child._name === '<SwagMigrationTabCardItem>') {
+            if (child.$options._componentTag === 'swag-migration-tab-card-item') {
                 this.items.push(child);
                 this.itemDictionary[child.id] = child;
             }

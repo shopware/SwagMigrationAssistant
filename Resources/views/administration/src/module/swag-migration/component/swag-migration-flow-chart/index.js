@@ -53,7 +53,7 @@ Component.register('swag-migration-flow-chart', {
     mounted() {
         // read child flow items
         this.$children.forEach((child) => {
-            if (child._name === '<SwagMigrationFlowItem>') {
+            if (child.$options._componentTag === 'swag-migration-flow-item') {
                 this.items.push(child);
             }
         });

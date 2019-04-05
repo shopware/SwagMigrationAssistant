@@ -102,6 +102,9 @@ class Shopware55LocalProductReader extends Shopware55LocalAbstractReader
         $query->leftJoin('product', 's_articles_supplier', 'product_manufacturer', 'product.supplierID = product_manufacturer.id');
         $this->addTableSelection($query, 's_articles_supplier', 'product_manufacturer');
 
+        $query->leftJoin('product_manufacturer', 's_media', 'product_manufacturer_media', 'product_manufacturer.img = product_manufacturer_media.path');
+        $this->addTableSelection($query, 's_media', 'product_manufacturer_media');
+
         $query->where('product_detail.id IN (:ids)');
         $query->setParameter('ids', $ids, Connection::PARAM_STR_ARRAY);
 

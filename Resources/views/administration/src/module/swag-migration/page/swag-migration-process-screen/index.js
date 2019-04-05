@@ -480,6 +480,7 @@ Component.register('swag-migration-process-screen', {
 
         onFinishWithoutErrors() {
             this.migrationUIStore.setComponentIndex(UI_COMPONENT_INDEX.RESULT_SUCCESS);
+            this.$root.$emit('changed-sales-channel');
         },
 
         onFinishWithErrors(errors) {
@@ -492,6 +493,7 @@ Component.register('swag-migration-process-screen', {
             this.errorList = [...new Set(this.errorList)];
 
             this.migrationUIStore.setComponentIndex(UI_COMPONENT_INDEX.RESULT_WARNING);
+            this.$root.$emit('changed-sales-channel');
         },
 
         onCloseAbortMigrationConfirmDialog() {

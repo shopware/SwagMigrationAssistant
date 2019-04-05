@@ -19,6 +19,7 @@ use Shopware\Core\System\Currency\CurrencyEntity;
 use Shopware\Core\System\Locale\LocaleEntity;
 use Shopware\Core\System\SalesChannel\Aggregate\SalesChannelType\SalesChannelTypeEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
+use Shopware\Core\System\Tax\TaxEntity;
 use SwagMigrationNext\Exception\LocaleNotFoundException;
 
 class MappingService implements MappingServiceInterface
@@ -68,6 +69,11 @@ class MappingService implements MappingServiceInterface
      */
     protected $shippingMethodRepo;
 
+    /**
+     * @var EntityRepositoryInterface
+     */
+    protected $taxRepo;
+
     protected $uuids = [];
 
     protected $writeArray = [];
@@ -81,7 +87,8 @@ class MappingService implements MappingServiceInterface
         EntityRepositoryInterface $salesChannelRepo,
         EntityRepositoryInterface $salesChannelTypeRepo,
         EntityRepositoryInterface $paymentRepository,
-        EntityRepositoryInterface $shippingMethodRepo
+        EntityRepositoryInterface $shippingMethodRepo,
+        EntityRepositoryInterface $taxRepo
     ) {
         $this->migrationMappingRepo = $migrationMappingRepo;
         $this->localeRepository = $localeRepository;
@@ -92,6 +99,7 @@ class MappingService implements MappingServiceInterface
         $this->salesChannelTypeRepo = $salesChannelTypeRepo;
         $this->paymentRepository = $paymentRepository;
         $this->shippingMethodRepo = $shippingMethodRepo;
+        $this->taxRepo = $taxRepo;
     }
 
     public function getUuid(string $connectionId, string $entityName, string $oldId, Context $context): ?string
@@ -251,6 +259,23 @@ class MappingService implements MappingServiceInterface
             $element = $result->getEntities()->first();
 
             return $element->getId();
+        }
+
+        return null;
+    }
+
+    public function getTaxUuid(float $taxRate, Context $context): ?string
+    {
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('taxRate', $taxRate));
+        $criteria->setLimit(1);
+        $result = $this->taxRepo->search($criteria, $context);
+
+        if ($result->getTotal() > 0) {
+            /** @var TaxEntity $tax */
+            $tax = $result->getEntities()->first();
+
+            return $tax->getId();
         }
 
         return null;
