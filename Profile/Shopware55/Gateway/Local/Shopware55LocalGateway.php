@@ -4,6 +4,7 @@ namespace SwagMigrationNext\Profile\Shopware55\Gateway\Local;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
+use Shopware\Core\Checkout\Customer\Aggregate\CustomerGroup\CustomerGroupDefinition;
 use Shopware\Core\Checkout\Customer\CustomerDefinition;
 use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Content\Category\CategoryDefinition;
@@ -13,17 +14,21 @@ use SwagMigrationNext\Migration\EnvironmentInformation;
 use SwagMigrationNext\Migration\Gateway\AbstractGateway;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CategoryDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CustomerDataSet;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CustomerGroupDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\OrderDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\TranslationDataSet;
 use SwagMigrationNext\Profile\Shopware55\Exception\DatabaseConnectionException;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalCategoryReader;
+use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalCustomerGroupReader;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalCustomerReader;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalEnvironmentReader;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalMediaReader;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalOrderReader;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalProductReader;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalReaderNotFoundException;
+use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalTranslationReader;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
 class Shopware55LocalGateway extends AbstractGateway
@@ -44,6 +49,10 @@ class Shopware55LocalGateway extends AbstractGateway
                 $reader = new Shopware55LocalCategoryReader($connection, $this->migrationContext);
 
                 return $reader->read();
+            case CustomerGroupDataSet::getEntity():
+                $reader = new Shopware55LocalCustomerGroupReader($connection, $this->migrationContext);
+
+                return $reader->read();
             case CustomerDataSet::getEntity():
                 $reader = new Shopware55LocalCustomerReader($connection, $this->migrationContext);
 
@@ -54,6 +63,10 @@ class Shopware55LocalGateway extends AbstractGateway
                 return $reader->read();
             case MediaDataSet::getEntity():
                 $reader = new Shopware55LocalMediaReader($connection, $this->migrationContext);
+
+                return $reader->read();
+            case TranslationDataSet::getEntity():
+                $reader = new Shopware55LocalTranslationReader($connection, $this->migrationContext);
 
                 return $reader->read();
             default:
@@ -91,6 +104,7 @@ class Shopware55LocalGateway extends AbstractGateway
             CustomerDefinition::getEntityName() => $environmentData['customers'],
             OrderDefinition::getEntityName() => $environmentData['orders'],
             MediaDefinition::getEntityName() => $environmentData['assets'],
+            CustomerGroupDefinition::getEntityName() => $environmentData['customerGroups'],
             'translation' => $environmentData['translations'],
         ];
 
@@ -98,7 +112,7 @@ class Shopware55LocalGateway extends AbstractGateway
             Shopware55Profile::SOURCE_SYSTEM_NAME,
             Shopware55Profile::SOURCE_SYSTEM_VERSION,
             $environmentData['host'],
-            [],
+            $environmentData['structure'],
             $totals
         );
     }

@@ -402,7 +402,6 @@ class ProductConverter extends AbstractConverter
         if (isset($data['media'])) {
             $manufacturer['media'] = $this->getManufacturerMedia($data['media']);
         }
-        unset($data['media']);
 
         return $manufacturer;
     }
