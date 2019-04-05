@@ -96,6 +96,11 @@ class DummyMappingService extends MappingService
         return null;
     }
 
+    public function getTaxUuid(float $taxRate, Context $context): ?string
+    {
+        return null;
+    }
+
     public function getPrivateUuidArray(): array
     {
         return $this->uuids;

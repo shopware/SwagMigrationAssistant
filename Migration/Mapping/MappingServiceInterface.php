@@ -25,6 +25,8 @@ interface MappingServiceInterface
 
     public function getCurrencyUuid(string $oldShortName, Context $context): ?string;
 
+    public function getTaxUuid(float $taxRate, Context $context): ?string;
+
     public function deleteMapping(string $entityUuid, string $connectionId, Context $context): void;
 
     public function bulkDeleteMapping(array $mappingUuids, Context $context): void;

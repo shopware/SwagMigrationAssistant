@@ -400,7 +400,7 @@ class ProductConverter extends AbstractConverter
         $this->helper->convertValue($manufacturer, 'description', $data, 'description');
 
         if (isset($data['media'])) {
-            $newData['media'] = $this->getManufacturerMedia($data['media']);
+            $manufacturer['media'] = $this->getManufacturerMedia($data['media']);
         }
         unset($data['media']);
 
@@ -441,14 +441,21 @@ class ProductConverter extends AbstractConverter
 
     private function getTax(array $taxData): array
     {
-        return [
-            'id' => $this->mappingService->createNewUuid(
+        $taxRate = (float) $taxData['tax'];
+        $taxUuid = $this->mappingService->getTaxUuid($taxRate, $this->context);
+
+        if (empty($taxUuid)) {
+            $taxUuid = $this->mappingService->createNewUuid(
                 $this->connectionId,
                 TaxDefinition::getEntityName(),
                 $taxData['id'],
                 $this->context
-            ),
-            'taxRate' => (float) $taxData['tax'],
+            );
+        }
+
+        return [
+            'id' => $taxUuid,
+            'taxRate' => $taxRate,
             'name' => $taxData['description'],
         ];
     }
@@ -602,7 +609,7 @@ class ProductConverter extends AbstractConverter
 
     private function getManufacturerMedia(array $media): array
     {
-        $newMedia['id'] = $this->mappingService->createNewUuid(
+        $manufacturerMedia['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
             MediaDefinition::getEntityName(),
             $media['id'],
@@ -610,7 +617,7 @@ class ProductConverter extends AbstractConverter
         );
 
         if (empty($media['name'])) {
-            $media['name'] = $newMedia['id'];
+            $media['name'] = $manufacturerMedia['id'];
         }
 
         $this->mediaFileService->saveMediaFile(
@@ -619,11 +626,11 @@ class ProductConverter extends AbstractConverter
                 'uri' => $media['uri'] ?? $media['path'],
                 'fileName' => $media['name'],
                 'fileSize' => (int) $media['file_size'],
-                'mediaId' => $newMedia['id'],
+                'mediaId' => $manufacturerMedia['id'],
             ]
         );
 
-        return $newMedia;
+        return $manufacturerMedia;
     }
 
     private function getPrice(array $priceData, float $taxRate, bool $setInGross): array
