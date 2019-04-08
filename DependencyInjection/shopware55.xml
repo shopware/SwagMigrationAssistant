@@ -104,6 +104,12 @@
             <tag name="shopware.migration.converter"/>
         </service>
 
+        <service id="SwagMigrationNext\Profile\Shopware55\Converter\NumberRangeConverter">
+            <argument type="service" id="SwagMigrationNext\Migration\Mapping\MappingService" />
+            <argument type="service" id="number_range_type.repository" />
+            <argument type="service" id="SwagMigrationNext\Migration\Logging\LoggingService"/>
+            <tag name="shopware.migration.converter"/>
+        </service>
 
         <!-- Shopware 5.5 Gateway -->
         <service id="SwagMigrationNext\Profile\Shopware55\Gateway\Api\Shopware55ApiFactory">
@@ -148,6 +154,10 @@
         </service>
 
         <service id="SwagMigrationNext\Profile\Shopware55\DataSelection\MediaDataSelection">
+            <tag name="shopware.migration.data_selection"/>
+        </service>
+
+        <service id="SwagMigrationNext\Profile\Shopware55\DataSelection\NumberRangeDataSelection">
             <tag name="shopware.migration.data_selection"/>
         </service>
 
@@ -201,6 +211,10 @@
         </service>
 
         <service id="SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\MediaDataSet">
+            <tag name="shopware.migration.data_set" />
+        </service>
+
+        <service id="SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\NumberRangeDataSet">
             <tag name="shopware.migration.data_set" />
         </service>
 

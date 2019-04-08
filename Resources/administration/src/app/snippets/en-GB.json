@@ -178,7 +178,8 @@
           "customersOrders": "Customers & Orders",
           "categoriesProducts": "Categories & Products",
           "media": "Media",
-          "processMediaFiles": "Media"
+          "processMediaFiles": "Media",
+          "numberRanges": "Number ranges"
         },
         "entities": {
           "category": "Categories:",

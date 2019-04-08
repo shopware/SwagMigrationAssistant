@@ -3,6 +3,7 @@
 namespace SwagMigrationNext\Migration\Mapping;
 
 use Shopware\Core\Framework\Context;
+use SwagMigrationNext\Migration\MigrationContextInterface;
 
 interface MappingServiceInterface
 {
@@ -36,6 +37,13 @@ interface MappingServiceInterface
     public function getCurrencyUuid(string $oldShortName, Context $context): ?string;
 
     public function getTaxUuid(float $taxRate, Context $context): ?string;
+
+    public function getNumberRangeUuid(string $type, string $oldId, MigrationContextInterface $migrationContext, Context $context): ?string;
+
+    /**
+     * @return string[]
+     */
+    public function getMigratedSalesChannelUuids(string $connectionId, Context $context): array;
 
     public function deleteMapping(string $entityUuid, string $connectionId, Context $context): void;
 

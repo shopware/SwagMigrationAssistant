@@ -15,6 +15,7 @@ class Shopware55LocalEnvironmentReader extends Shopware55LocalAbstractReader
         'translations' => 's_core_translations',
         'customerGroups' => 's_core_customergroups',
         'configuratorOptions' => 's_article_configurator_options',
+        'numberRanges' => 's_order_number',
     ];
 
     public function read(): array

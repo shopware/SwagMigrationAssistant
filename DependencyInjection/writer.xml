@@ -34,6 +34,11 @@
             <tag name="shopware.migration.writer"/>
         </service>
 
+        <service id="SwagMigrationNext\Migration\Writer\NumberRangeWriter">
+            <argument type="service" id="number_range.repository" />
+            <tag name="shopware.migration.writer"/>
+        </service>
+
         <service id="SwagMigrationNext\Migration\Writer\CustomerAttributeWriter">
             <argument type="service" id="attribute_set.repository"/>
             <tag name="shopware.migration.writer"/>
