@@ -1,0 +1,76 @@
+<?php declare(strict_types=1);
+
+return [
+    0 => [
+        'name' => 'categorydate1',
+        'type' => 'date',
+        '_locale' => 'de_DE',
+        'configuration' => [
+            'id' => '25',
+            'table_name' => 's_categories_attributes',
+            'column_name' => 'categorydate1',
+            'column_type' => 'date',
+            'default_value' => null,
+            'position' => '0',
+            'translatable' => '0',
+            'display_in_backend' => '1',
+            'custom' => '1',
+            'help_text' => '',
+            'support_text' => '',
+            'label' => 'KategorieDatum1',
+            'entity' => '',
+            'array_store' => '',
+        ],
+    ],
+
+    1 => [
+        'name' => 'checkbox1',
+        'type' => 'integer',
+        '_locale' => 'de_DE',
+        'configuration' => [
+            'id' => '13',
+            'table_name' => 's_articles_attributes',
+            'column_name' => 'checkbox1',
+            'column_type' => 'boolean',
+            'default_value' => null,
+            'position' => '0',
+            'translatable' => '0',
+            'display_in_backend' => '1',
+            'custom' => '1',
+            'help_text' => 'Meine HIlfe123',
+            'support_text' => 'Supporttext123',
+            'label' => 'MeineCheckbox1',
+            'entity' => '',
+            'array_store' => '',
+        ],
+    ],
+
+    2 => [
+        'name' => 'datetime1',
+        'type' => 'datetime',
+        '_locale' => 'de_DE',
+        'configuration' => [
+            'id' => '19',
+            'table_name' => 's_articles_attributes',
+            'column_name' => 'datetime1',
+            'column_type' => 'datetime',
+            'default_value' => null,
+            'position' => '0',
+            'translatable' => '0',
+            'display_in_backend' => '1',
+            'custom' => '1',
+            'help_text' => '',
+            'support_text' => '',
+            'label' => 'Datum und Zeit',
+            'entity' => '',
+            'array_store' => '',
+        ],
+    ],
+
+    3 => [
+        'name' => 'attr6',
+        'type' => 'text',
+        '_locale' => 'de_DE',
+        'configuration' => null,
+    ],
+];

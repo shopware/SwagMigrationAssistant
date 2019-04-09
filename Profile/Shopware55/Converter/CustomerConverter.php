@@ -252,6 +252,11 @@ class CustomerConverter extends AbstractConverter
             $this->getAddresses($data, $converted, $customerUuid);
         }
 
+        if (isset($data['attributes'])) {
+            $converted['attributes'] = $this->getAttributes($data['attributes']);
+        }
+        unset($data['attributes']);
+
         unset(
             $data['addresses'],
             $data['salutation'],
@@ -272,8 +277,7 @@ class CustomerConverter extends AbstractConverter
             // TODO check how to handle these
             $data['shop'], // TODO use for sales channel information?
             $data['language'], // TODO use for sales channel information?
-            $data['customerlanguage'], // TODO use for sales channel information?
-            $data['attributes']
+            $data['customerlanguage'] // TODO use for sales channel information?
         );
 
         if (empty($data)) {
@@ -673,5 +677,19 @@ class CustomerConverter extends AbstractConverter
         }
 
         return $salutationUuid;
+    }
+
+    private function getAttributes(array $attributes): array
+    {
+        $result = [];
+
+        foreach ($attributes as $attribute => $value) {
+            if ($attribute === 'id' || $attribute === 'userID') {
+                continue;
+            }
+            $result[CustomerDefinition::getEntityName() . '_' . $attribute] = $value;
+        }
+
+        return $result;
     }
 }

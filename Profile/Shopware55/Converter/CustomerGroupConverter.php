@@ -77,6 +77,10 @@ class CustomerGroupConverter extends AbstractConverter
         $this->helper->convertValue($converted, 'minimumOrderAmountSurcharge', $data, 'minimumordersurcharge', $this->helper::TYPE_FLOAT);
         $this->helper->convertValue($converted, 'name', $data, 'description');
 
+        if (isset($data['attributes'])) {
+            $converted['attributes'] = $this->getAttributes($data['attributes']);
+        }
+
         unset($data['id'], $data['groupkey']);
         if (empty($data)) {
             $data = null;
@@ -119,5 +123,19 @@ class CustomerGroupConverter extends AbstractConverter
     public function writeMapping(Context $context): void
     {
         $this->mappingService->writeMapping($context);
+    }
+
+    private function getAttributes(array $attributes): array
+    {
+        $result = [];
+
+        foreach ($attributes as $attribute => $value) {
+            if ($attribute === 'id' || $attribute === 'customerGroupID') {
+                continue;
+            }
+            $result[CustomerGroupDefinition::getEntityName() . '_' . $attribute] = $value;
+        }
+
+        return $result;
     }
 }

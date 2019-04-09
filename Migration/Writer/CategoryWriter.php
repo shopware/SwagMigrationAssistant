@@ -2,9 +2,9 @@
 
 namespace SwagMigrationNext\Migration\Writer;
 
-use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 
 class CategoryWriter implements WriterInterface
 {
@@ -20,7 +20,7 @@ class CategoryWriter implements WriterInterface
 
     public function supports(): string
     {
-        return CategoryDefinition::getEntityName();
+        return DefaultEntities::CATEGORY;
     }
 
     public function writeData(array $data, Context $context): void

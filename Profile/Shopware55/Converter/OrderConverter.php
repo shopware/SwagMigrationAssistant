@@ -351,6 +351,11 @@ class OrderConverter extends AbstractConverter
             }
         }
 
+        if (isset($data['attributes'])) {
+            $converted['attributes'] = $this->getAttributes($data['attributes']);
+        }
+        unset($data['attributes']);
+
         // Legacy data which don't need a mapping or there is no equivalent field
         unset(
             $data['invoice_shipping_tax_rate'],
@@ -369,7 +374,6 @@ class OrderConverter extends AbstractConverter
 
             // TODO check how to handle these
             $data['language'], // TODO use for sales channel information?
-            $data['attributes'],
             $data['documents']
         );
 
@@ -965,5 +969,19 @@ class OrderConverter extends AbstractConverter
         }
 
         return $salutationUuid;
+    }
+
+    private function getAttributes(array $attributes): array
+    {
+        $result = [];
+
+        foreach ($attributes as $attribute => $value) {
+            if ($attribute === 'id' || $attribute === 'orderID') {
+                continue;
+            }
+            $result[OrderDefinition::getEntityName() . '_' . $attribute] = $value;
+        }
+
+        return $result;
     }
 }

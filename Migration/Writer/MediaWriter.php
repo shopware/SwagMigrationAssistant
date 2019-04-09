@@ -2,9 +2,9 @@
 
 namespace SwagMigrationNext\Migration\Writer;
 
-use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 
 class MediaWriter implements WriterInterface
 {
@@ -20,7 +20,7 @@ class MediaWriter implements WriterInterface
 
     public function supports(): string
     {
-        return MediaDefinition::getEntityName();
+        return DefaultEntities::MEDIA;
     }
 
     public function writeData(array $data, Context $context): void

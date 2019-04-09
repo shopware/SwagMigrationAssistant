@@ -5,11 +5,11 @@ namespace SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet;
 use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
-class CategoryDataSet extends Shopware55DataSet
+class ManufacturerAttributeDataSet extends Shopware55DataSet
 {
     public static function getEntity(): string
     {
-        return DefaultEntities::CATEGORY;
+        return DefaultEntities::MANUFACTURER_ATTRIBUTE;
     }
 
     public function supports(string $profileName, string $entity): bool
@@ -19,11 +19,13 @@ class CategoryDataSet extends Shopware55DataSet
 
     public function getApiRoute(): string
     {
-        return 'SwagMigrationCategories';
+        return 'SwagMigrationAttributes';
     }
 
     public function getExtraQueryParameters(): array
     {
-        return [];
+        return [
+            'attribute_table' => 's_articles_supplier_attributes',
+        ];
     }
 }

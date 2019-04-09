@@ -441,6 +441,8 @@ class RunService implements RunServiceInterface
             foreach ($dataSelection->getEntityNames() as $entityName) {
                 if (isset($environmentInformationTotals[$entityName]) && !isset($totals[$entityName])) {
                     $totals[$entityName] = $environmentInformationTotals[$entityName];
+                } elseif (!isset($totals[$entityName])) {
+                    $totals[$entityName] = 1;
                 }
             }
         }

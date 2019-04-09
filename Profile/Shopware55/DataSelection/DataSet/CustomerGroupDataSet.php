@@ -2,14 +2,14 @@
 
 namespace SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet;
 
-use Shopware\Core\Checkout\Customer\Aggregate\CustomerGroup\CustomerGroupDefinition;
+use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
 class CustomerGroupDataSet extends Shopware55DataSet
 {
     public static function getEntity(): string
     {
-        return CustomerGroupDefinition::getEntityName();
+        return DefaultEntities::CUSTOMER_GROUP;
     }
 
     public function supports(string $profileName, string $entity): bool

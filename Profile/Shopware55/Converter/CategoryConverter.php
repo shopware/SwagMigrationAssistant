@@ -110,7 +110,6 @@ class CategoryConverter extends AbstractConverter
             $data['meta_title'],
 
             // TODO check how to handle these
-            $data['attributes'],
             $data['template'],
             $data['external_target'],
             $data['mediaID'],
@@ -152,6 +151,11 @@ class CategoryConverter extends AbstractConverter
         $this->helper->convertValue($converted, 'hideSortings', $data, 'hide_sortings', $this->helper::TYPE_BOOLEAN);
         $this->helper->convertValue($converted, 'sortingIds', $data, 'sorting_ids');
         $this->helper->convertValue($converted, 'facetIds', $data, 'facet_ids');
+
+        if (isset($data['attributes'])) {
+            $converted['attributes'] = $this->getAttributes($data['attributes']);
+        }
+        unset($data['attributes']);
 
         $converted['translations'] = [];
         $this->setGivenCategoryTranslation($data, $converted);
@@ -197,5 +201,19 @@ class CategoryConverter extends AbstractConverter
         }
 
         $converted['translations'][$languageData['uuid']] = $localeTranslation;
+    }
+
+    private function getAttributes(array $attributes): array
+    {
+        $result = [];
+
+        foreach ($attributes as $attribute => $value) {
+            if ($attribute === 'id' || $attribute === 'categoryID') {
+                continue;
+            }
+            $result[CategoryDefinition::getEntityName() . '_' . $attribute] = $value;
+        }
+
+        return $result;
     }
 }

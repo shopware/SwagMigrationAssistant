@@ -15,7 +15,35 @@
         </service>
 
         <!-- Shopware 5.5 Profile Converter -->
-        <service id="SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService">
+        <service id="SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService" />
+
+        <service id="SwagMigrationNext\Profile\Shopware55\Converter\AttributeConverter" abstract="true">
+            <argument id="SwagMigrationNext\Migration\Mapping\MappingService" type="service"/>
+        </service>
+
+        <service id="SwagMigrationNext\Profile\Shopware55\Converter\ProductAttributeConverter"
+                 parent="SwagMigrationNext\Profile\Shopware55\Converter\AttributeConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationNext\Profile\Shopware55\Converter\ProductPriceAttributeConverter"
+                 parent="SwagMigrationNext\Profile\Shopware55\Converter\AttributeConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationNext\Profile\Shopware55\Converter\ManufacturerAttributeConverter"
+                 parent="SwagMigrationNext\Profile\Shopware55\Converter\AttributeConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationNext\Profile\Shopware55\Converter\CustomerAttributeConverter"
+                 parent="SwagMigrationNext\Profile\Shopware55\Converter\AttributeConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationNext\Profile\Shopware55\Converter\OrderAttributeConverter"
+                 parent="SwagMigrationNext\Profile\Shopware55\Converter\AttributeConverter">
+            <tag name="shopware.migration.converter"/>
         </service>
 
         <service id="SwagMigrationNext\Profile\Shopware55\Converter\ProductConverter">
@@ -30,6 +58,11 @@
             <argument type="service" id="SwagMigrationNext\Migration\Mapping\MappingService"/>
             <argument type="service" id="SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService"/>
             <argument type="service" id="SwagMigrationNext\Migration\Logging\LoggingService"/>
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationNext\Profile\Shopware55\Converter\CategoryAttributeConverter"
+                 parent="SwagMigrationNext\Profile\Shopware55\Converter\AttributeConverter">
             <tag name="shopware.migration.converter"/>
         </service>
 
@@ -59,6 +92,11 @@
             <argument type="service" id="SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService"/>
             <argument type="service" id="Shopware\Core\Checkout\Cart\Tax\TaxCalculator"/>
             <argument type="service" id="SwagMigrationNext\Migration\Logging\LoggingService"/>
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationNext\Profile\Shopware55\Converter\CustomerGroupAttributeConverter"
+                 parent="SwagMigrationNext\Profile\Shopware55\Converter\AttributeConverter">
             <tag name="shopware.migration.converter"/>
         </service>
 
@@ -115,7 +153,23 @@
         </service>
 
         <!-- Shopware 5.5 DataSets -->
+        <service id="SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ProductAttributeDataSet">
+            <tag name="shopware.migration.data_set" />
+        </service>
+
+        <service id="SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ProductPriceAttributeDataSet">
+            <tag name="shopware.migration.data_set" />
+        </service>
+
+        <service id="SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ManufacturerAttributeDataSet">
+            <tag name="shopware.migration.data_set" />
+        </service>
+
         <service id="SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ProductDataSet">
+            <tag name="shopware.migration.data_set" />
+        </service>
+
+        <service id="SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CustomerAttributeDataSet">
             <tag name="shopware.migration.data_set" />
         </service>
 
@@ -123,11 +177,23 @@
             <tag name="shopware.migration.data_set" />
         </service>
 
+        <service id="SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\OrderAttributeDataSet">
+            <tag name="shopware.migration.data_set" />
+        </service>
+
         <service id="SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\OrderDataSet">
             <tag name="shopware.migration.data_set" />
         </service>
 
+        <service id="SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CategoryAttributeDataSet">
+            <tag name="shopware.migration.data_set" />
+        </service>
+
         <service id="SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CategoryDataSet">
+            <tag name="shopware.migration.data_set" />
+        </service>
+
+        <service id="SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CustomerGroupAttributeDataSet">
             <tag name="shopware.migration.data_set" />
         </service>
 

@@ -2,13 +2,14 @@
 
 namespace SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet;
 
+use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
 class TranslationDataSet extends Shopware55DataSet
 {
     public static function getEntity(): string
     {
-        return 'translation';
+        return DefaultEntities::TRANSLATION;
     }
 
     public function supports(string $profileName, string $entity): bool

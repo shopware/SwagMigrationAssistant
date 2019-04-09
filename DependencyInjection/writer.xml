@@ -34,9 +34,19 @@
             <tag name="shopware.migration.writer"/>
         </service>
 
+        <service id="SwagMigrationNext\Migration\Writer\CustomerAttributeWriter">
+            <argument type="service" id="attribute_set.repository"/>
+            <tag name="shopware.migration.writer"/>
+        </service>
+
         <service id="SwagMigrationNext\Migration\Writer\CustomerWriter"
                  class="SwagMigrationNext\Migration\Writer\CustomerWriter">
             <argument type="service" id="customer.repository"/>
+            <tag name="shopware.migration.writer"/>
+        </service>
+
+        <service id="SwagMigrationNext\Migration\Writer\OrderAttributeWriter">
+            <argument type="service" id="attribute_set.repository"/>
             <tag name="shopware.migration.writer"/>
         </service>
 
@@ -47,8 +57,33 @@
             <tag name="shopware.migration.writer"/>
         </service>
 
+        <service id="SwagMigrationNext\Migration\Writer\CustomerGroupAttributeWriter">
+            <argument type="service" id="attribute_set.repository"/>
+            <tag name="shopware.migration.writer"/>
+        </service>
+
         <service id="SwagMigrationNext\Migration\Writer\CustomerGroupWriter">
             <argument type="service" id="customer_group.repository"/>
+            <tag name="shopware.migration.writer"/>
+        </service>
+
+        <service id="SwagMigrationNext\Migration\Writer\ManufacturerAttributeWriter">
+            <argument type="service" id="attribute_set.repository"/>
+            <tag name="shopware.migration.writer"/>
+        </service>
+
+        <service id="SwagMigrationNext\Migration\Writer\ProductAttributeWriter">
+            <argument type="service" id="attribute_set.repository"/>
+            <tag name="shopware.migration.writer"/>
+        </service>
+
+        <service id="SwagMigrationNext\Migration\Writer\ProductPriceAttributeWriter">
+            <argument type="service" id="attribute_set.repository"/>
+            <tag name="shopware.migration.writer"/>
+        </service>
+
+        <service id="SwagMigrationNext\Migration\Writer\CategoryAttributeWriter">
+            <argument type="service" id="attribute_set.repository"/>
             <tag name="shopware.migration.writer"/>
         </service>
     </services>

@@ -2,9 +2,9 @@
 
 namespace SwagMigrationNext\Migration\Writer;
 
-use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 
 class ProductWriter implements WriterInterface
 {
@@ -20,7 +20,7 @@ class ProductWriter implements WriterInterface
 
     public function supports(): string
     {
-        return ProductDefinition::getEntityName();
+        return DefaultEntities::PRODUCT;
     }
 
     /**
