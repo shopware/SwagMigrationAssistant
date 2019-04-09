@@ -2,6 +2,7 @@
 
 namespace SwagMigrationNext\Migration\Service;
 
+use Shopware\Core\Content\Configuration\Aggregate\ConfigurationGroupOption\ConfigurationGroupOptionDefinition;
 use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\Context;
@@ -111,7 +112,11 @@ class MigrationDataWriter implements MigrationDataWriterInterface
         }
 
         // Update written-Flag of the media file in the media file table
-        if ($dataSet::getEntity() === MediaDefinition::getEntityName() || $dataSet::getEntity() === ProductDefinition::getEntityName()) {
+        if (
+            $dataSet::getEntity() === MediaDefinition::getEntityName()
+            || $dataSet::getEntity() === ProductDefinition::getEntityName()
+            || $dataSet::getEntity() === ConfigurationGroupOptionDefinition::getEntityName()
+        ) {
             $this->mediaFileService->setWrittenFlag($converted, $migrationContext, $context);
         }
     }

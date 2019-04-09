@@ -4,6 +4,10 @@ namespace SwagMigrationNext\Profile\Shopware55\Converter;
 
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerGroup\CustomerGroupDefinition;
 use Shopware\Core\Content\Category\CategoryDefinition;
+use Shopware\Core\Content\Configuration\Aggregate\ConfigurationGroupOption\ConfigurationGroupOptionDefinition;
+use Shopware\Core\Content\Configuration\Aggregate\ConfigurationGroupOptionTranslation\ConfigurationGroupOptionTranslationDefinition;
+use Shopware\Core\Content\Configuration\Aggregate\ConfigurationGroupTranslation\ConfigurationGroupTranslationDefinition;
+use Shopware\Core\Content\Configuration\ConfigurationGroupDefinition;
 use Shopware\Core\Content\Media\Aggregate\MediaTranslation\MediaTranslationDefinition;
 use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Content\Product\Aggregate\ProductManufacturer\ProductManufacturerDefinition;
@@ -89,6 +93,16 @@ class ProductConverter extends AbstractConverter
      */
     private $locale;
 
+    /**
+     * @var int
+     */
+    private $productType;
+
+    /**
+     * @var string
+     */
+    private $mainProductId;
+
     public function __construct(
         MappingServiceInterface $mappingService,
         ConverterHelperService $converterHelperService,
@@ -128,6 +142,7 @@ class ProductConverter extends AbstractConverter
         $this->runId = $migrationContext->getRunUuid();
         $this->connectionId = $migrationContext->getConnection()->getId();
         $this->oldProductId = $data['detail']['ordernumber'];
+        $this->mainProductId = $data['detail']['articleID'];
         $this->locale = $data['_locale'];
 
         $fields = $this->helper->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
@@ -148,53 +163,23 @@ class ProductConverter extends AbstractConverter
             return new ConvertStruct(null, $data);
         }
 
-        $productType = (int) $data['detail']['kind'];
+        $this->productType = (int) $data['detail']['kind'];
         unset($data['detail']['kind']);
         $isProductWithVariant = $data['configurator_set_id'] !== null;
 
-//        if ($productType === self::MAIN_PRODUCT_TYPE && $isProductWithVariant) {
-//            return $this->convertMainProduct($data); TODO reimplement when variant handling is implemented in core
-//        }
+        if ($this->productType === self::MAIN_PRODUCT_TYPE && $isProductWithVariant) {
+            return $this->convertMainProduct($data);
+        }
 
-        if ($productType === self::VARIANT_PRODUCT_TYPE && $isProductWithVariant) {
-            return new ConvertStruct(null, $data);
-//            return $this->convertVariantProduct($data); TODO reimplement when variant handling is implemented in core
+        if ($this->productType === self::VARIANT_PRODUCT_TYPE && $isProductWithVariant) {
+            return $this->convertVariantProduct($data);
         }
 
         $converted = $this->getUuidForProduct($data);
         $converted = $this->getProductData($data, $converted);
 
-        if (isset($data['manufacturer'])) {
-            $converted['manufacturer'] = $this->getManufacturer($data['manufacturer']);
-            unset($data['manufacturer'], $data['supplierID']);
-        } else {
-            $manufacturerUuid = $this->mappingService->getUuid(
-                $this->connectionId,
-                ProductManufacturerReader::getMappingName(),
-                'default_manufacturer',
-                $this->context
-            );
-
-            if ($manufacturerUuid !== null) {
-                $converted['manufacturerId'] = $manufacturerUuid;
-
-                unset($data['supplierID']);
-            } else {
-                $this->loggingService->addWarning(
-                    $this->runId,
-                    Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
-                    'Empty necessary data fields',
-                    'Product-Entity could not converted cause of empty necessary field(s): manufacturer.',
-                    [
-                        'id' => $this->oldProductId,
-                        'entity' => ProductDefinition::getEntityName(),
-                        'fields' => ['manufacturer'],
-                    ],
-                    1
-                );
-
-                return new ConvertStruct(null, $data);
-            }
+        if (!isset($converted['manufacturerId']) && !isset($converted['manufacturer'])) {
+            return new ConvertStruct(null, $data);
         }
 
         if (empty($data)) {
@@ -290,27 +275,36 @@ class ProductConverter extends AbstractConverter
 
     private function getProductData(array &$data, array $converted): array
     {
-        // Legacy data which don't need a mapping or there is no equivalent field
-        unset(
-            $data['id'],
-            $data['datum'],
-            $data['changetime'],
-            $data['crossbundlelook'],
-            $data['mode'],
-            $data['main_detail_id'],
-            $data['available_from'],
-            $data['available_to'],
-            $data['pseudosales'],
+        if (isset($data['manufacturer'])) {
+            $converted['manufacturer'] = $this->getManufacturer($data['manufacturer']);
+            unset($data['manufacturer'], $data['supplierID']);
+        } else {
+            $manufacturerUuid = $this->mappingService->getUuid(
+                $this->connectionId,
+                ProductManufacturerReader::getMappingName(),
+                'default_manufacturer',
+                $this->context
+            );
 
-            // TODO check how to handle these
-            $data['configurator_set_id'],
-            $data['configuratorOptions'],
-            $data['pricegroupID'],
-            $data['pricegroupActive'],
-            $data['filtergroupID'],
-            $data['template'],
-            $data['detail']['additionaltext']
-        );
+            if ($manufacturerUuid !== null) {
+                $converted['manufacturerId'] = $manufacturerUuid;
+
+                unset($data['supplierID']);
+            } else {
+                $this->loggingService->addWarning(
+                    $this->runId,
+                    Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
+                    'Empty necessary data fields',
+                    'Product-Entity could not converted cause of empty necessary field(s): manufacturer.',
+                    [
+                        'id' => $this->oldProductId,
+                        'entity' => ProductDefinition::getEntityName(),
+                        'fields' => ['manufacturer'],
+                    ],
+                    1
+                );
+            }
+        }
 
         $converted['tax'] = $this->getTax($data['tax']);
         unset($data['tax'], $data['taxID']);
@@ -383,11 +377,140 @@ class ProductConverter extends AbstractConverter
         $this->helper->convertValue($converted, 'minDeliveryTime', $data['detail'], 'shippingtime', $this->helper::TYPE_INTEGER);
         $this->helper->convertValue($converted, 'purchasePrice', $data['detail'], 'purchaseprice', $this->helper::TYPE_FLOAT);
 
+        $this->getVariations($converted, $data);
+
+        // Legacy data which don't need a mapping or there is no equivalent field
+        unset(
+            $data['id'],
+            $data['datum'],
+            $data['changetime'],
+            $data['crossbundlelook'],
+            $data['mode'],
+            $data['main_detail_id'],
+            $data['available_from'],
+            $data['available_to'],
+            $data['pseudosales'],
+
+            // TODO check how to handle these
+            $data['configurator_set_id'],
+            $data['pricegroupID'],
+            $data['pricegroupActive'],
+            $data['filtergroupID'],
+            $data['template'],
+            $data['detail']['additionaltext']
+        );
+
         if (empty($data['detail'])) {
             unset($data['detail']);
         }
 
         return $converted;
+    }
+
+    private function getVariations(&$converted, &$data): void
+    {
+        if (
+            !isset($data['configuratorOptions'])
+            || !is_array($data['configuratorOptions'])
+        ) {
+            return;
+        }
+
+        $variations = [];
+        $productContainerUuid = $this->mappingService->getUuid(
+            $this->connectionId,
+            ProductDefinition::getEntityName() . '_container',
+            $this->mainProductId,
+            $this->context
+        );
+
+        $languageData = $this->mappingService->getDefaultLanguageUuid($this->context);
+        $shouldTranslated = true;
+        if ($languageData['createData']['localeCode'] === $this->locale) {
+            $shouldTranslated = false;
+        }
+
+        foreach ($data['configuratorOptions'] as $option) {
+            if ($productContainerUuid !== null) {
+                $this->mappingService->createNewUuidListItem(
+                    $this->connectionId,
+                    'main_product_options',
+                    $option['id'],
+                    null,
+                    $productContainerUuid
+                );
+            }
+
+            $variationsElement = [
+                'id' => $this->mappingService->createNewUuid(
+                    $this->connectionId,
+                    ConfigurationGroupOptionDefinition::getEntityName(),
+                    $option['id'],
+                    $this->context
+                ),
+
+                'group' => [
+                    'id' => $this->mappingService->createNewUuid(
+                        $this->connectionId,
+                        ConfigurationGroupDefinition::getEntityName(),
+                        $option['group']['id'],
+                        $this->context
+                    ),
+                ],
+            ];
+
+            if ($shouldTranslated) {
+                $this->getVariationTranslation($variationsElement, $option);
+            }
+
+            $this->helper->convertValue($variationsElement, 'name', $option, 'name');
+            $this->helper->convertValue($variationsElement, 'position', $option, 'position', $this->helper::TYPE_INTEGER);
+
+            $this->helper->convertValue($variationsElement['group'], 'name', $option['group'], 'name');
+            $this->helper->convertValue($variationsElement['group'], 'description', $option['group'], 'description');
+
+            $variations[] = $variationsElement;
+        }
+        unset($data['configuratorOptions']);
+
+        $converted['variations'] = $variations;
+    }
+
+    private function getVariationTranslation(array &$variation, array $data): void
+    {
+        $localeOptionTranslation = [];
+        $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $this->locale, $this->context);
+        if (isset($languageData['createData']) && !empty($languageData['createData'])) {
+            $localeOptionTranslation['language']['id'] = $languageData['uuid'];
+            $localeOptionTranslation['language']['localeId'] = $languageData['createData']['localeId'];
+            $localeOptionTranslation['language']['name'] = $languageData['createData']['localeCode'];
+        } else {
+            $localeOptionTranslation['languageId'] = $languageData['uuid'];
+        }
+        $localeGroupTranslation = $localeOptionTranslation;
+
+        $localeOptionTranslation['id'] = $this->mappingService->createNewUuid(
+            $this->connectionId,
+            ConfigurationGroupOptionTranslationDefinition::getEntityName(),
+            $data['id'] . ':' . $this->locale,
+            $this->context
+        );
+
+        $this->helper->convertValue($localeOptionTranslation, 'name', $data, 'name');
+        $this->helper->convertValue($localeOptionTranslation, 'position', $data, 'position', $this->helper::TYPE_INTEGER);
+
+        $localeGroupTranslation['id'] = $this->mappingService->createNewUuid(
+            $this->connectionId,
+            ConfigurationGroupTranslationDefinition::getEntityName(),
+            $data['group']['id'] . ':' . $this->locale,
+            $this->context
+        );
+
+        $this->helper->convertValue($localeGroupTranslation, 'name', $data['group'], 'name');
+        $this->helper->convertValue($localeGroupTranslation, 'description', $data['group'], 'description');
+
+        $variation['translations'][$languageData['uuid']] = $localeOptionTranslation;
+        $variation['group']['translations'][$languageData['uuid']] = $localeGroupTranslation;
     }
 
     private function getManufacturer(array $data): array

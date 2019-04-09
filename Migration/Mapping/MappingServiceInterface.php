@@ -8,6 +8,16 @@ interface MappingServiceInterface
 {
     public function getUuid(string $connectionId, string $entityName, string $oldId, Context $context): ?string;
 
+    public function createNewUuidListItem(
+        string $connectionId,
+        string $entityName,
+        string $oldId,
+        ?array $additionalData = null,
+        ?string $newUuid = null
+    ): string;
+
+    public function getUuidList(string $connectionId, string $entityName, string $identifier, Context $context): array;
+
     public function createNewUuid(
         string $connectionId,
         string $entityName,

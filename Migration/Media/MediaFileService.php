@@ -2,6 +2,7 @@
 
 namespace SwagMigrationNext\Migration\Media;
 
+use Shopware\Core\Content\Configuration\Aggregate\ConfigurationGroupOption\ConfigurationGroupOptionDefinition;
 use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\Context;
@@ -75,6 +76,14 @@ class MediaFileService implements MediaFileServiceInterface
 
                     $mediaUuids[] = $media['media']['id'];
                 }
+            }
+
+            if ($dataSet::getEntity() === ConfigurationGroupOptionDefinition::getEntityName()) {
+                if (!isset($data['media']['id'])) {
+                    continue;
+                }
+
+                $mediaUuids[] = $data['media']['id'];
             }
         }
 

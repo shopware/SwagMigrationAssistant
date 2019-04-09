@@ -371,10 +371,15 @@ return [
         'configuratorOptions' => [
             0 => [
                 'id' => '4',
-                'group_id' => '6',
                 'name' => 'S',
                 'position' => '1',
                 'media_id' => null,
+                'group' => [
+                    'id' => '6',
+                    'name' => 'Größe',
+                    'description' => 'test123',
+                    'position' => 0,
+                ],
             ],
         ],
     ],
@@ -896,7 +901,12 @@ return [
         'configuratorOptions' => [
             0 => [
                 'id' => '11',
-                'group_id' => '8',
+                'group' => [
+                    'id' => '8',
+                    'name' => 'Inhalt',
+                    'description' => 'Inhalte',
+                    'position' => 0,
+                ],
                 'name' => 'Standard',
                 'position' => '1',
                 'media_id' => null,
@@ -1279,17 +1289,27 @@ return [
         'configuratorOptions' => [
             0 => [
                 'id' => '3',
-                'group_id' => '5',
                 'name' => 'Weiß',
                 'position' => '3',
                 'media_id' => null,
+                'group' => [
+                    'id' => '5',
+                    'name' => 'Farbe',
+                    'description' => 'Farben',
+                    'position' => 0,
+                ],
             ],
             1 => [
                 'id' => '5',
-                'group_id' => '6',
                 'name' => 'M',
                 'position' => '2',
                 'media_id' => null,
+                'group' => [
+                    'id' => '6',
+                    'name' => 'Größe',
+                    'description' => 'Farben',
+                    'position' => 0,
+                ],
             ],
         ],
     ],
@@ -1759,17 +1779,33 @@ return [
         'configuratorOptions' => [
             0 => [
                 'id' => '3',
-                'group_id' => '5',
+                'group' => [
+                    'id' => '5',
+                    'name' => 'Farbe',
+                    'description' => 'Farben',
+                    'position' => 0,
+                ],
                 'name' => 'Weiß',
                 'position' => '3',
                 'media_id' => null,
+                'group' => [
+                    'id' => '5',
+                    'name' => 'Farbe',
+                    'description' => 'Farben',
+                    'position' => 0,
+                ],
             ],
             1 => [
                 'id' => '4',
-                'group_id' => '6',
                 'name' => 'S',
                 'position' => '1',
                 'media_id' => null,
+                'group' => [
+                    'id' => '6',
+                    'name' => 'Größe',
+                    'description' => 'Größen',
+                    'position' => 0,
+                ],
             ],
         ],
     ],
@@ -3392,10 +3428,15 @@ return [
         'configuratorOptions' => [
             0 => [
                 'id' => '10',
-                'group_id' => '7',
                 'name' => 'Full',
                 'position' => '3',
                 'media_id' => null,
+                'group' => [
+                    'id' => '7',
+                    'name' => 'Inhalt',
+                    'description' => 'Inhalte',
+                    'position' => 0,
+                ],
             ],
         ],
     ],
@@ -3775,17 +3816,27 @@ return [
         'configuratorOptions' => [
             0 => [
                 'id' => '1',
-                'group_id' => '5',
                 'name' => 'Rot',
                 'position' => '1',
                 'media_id' => null,
+                'group' => [
+                    'id' => '5',
+                    'name' => 'Farbe',
+                    'description' => 'Farben',
+                    'position' => 0,
+                ],
             ],
             1 => [
                 'id' => '5',
-                'group_id' => '6',
                 'name' => 'M',
                 'position' => '2',
                 'media_id' => null,
+                'group' => [
+                    'id' => '6',
+                    'name' => 'Größe',
+                    'description' => 'Größen',
+                    'position' => 0,
+                ],
             ],
         ],
     ],
@@ -3975,10 +4026,15 @@ return [
         'configuratorOptions' => [
             0 => [
                 'id' => '5',
-                'group_id' => '6',
                 'name' => 'M',
                 'position' => '2',
                 'media_id' => null,
+                'group' => [
+                    'id' => '6',
+                    'name' => 'Größe',
+                    'description' => 'Größen',
+                    'position' => 0,
+                ],
             ],
         ],
     ],
@@ -4168,10 +4224,15 @@ return [
         'configuratorOptions' => [
             0 => [
                 'id' => '6',
-                'group_id' => '6',
                 'name' => 'L',
                 'position' => '3',
                 'media_id' => null,
+                'group' => [
+                    'id' => '6',
+                    'name' => 'Größe',
+                    'description' => 'Größen',
+                    'position' => 0,
+                ],
             ],
         ],
     ],
@@ -4361,10 +4422,15 @@ return [
         'configuratorOptions' => [
             0 => [
                 'id' => '7',
-                'group_id' => '6',
                 'name' => 'XL',
                 'position' => '4',
                 'media_id' => null,
+                'group' => [
+                    'id' => '6',
+                    'name' => 'Größe',
+                    'description' => 'Größen',
+                    'position' => 0,
+                ],
             ],
         ],
     ],
@@ -4744,17 +4810,27 @@ return [
         'configuratorOptions' => [
             0 => [
                 'id' => '1',
-                'group_id' => '5',
                 'name' => 'Rot',
                 'position' => '1',
                 'media_id' => null,
+                'group' => [
+                    'id' => '5',
+                    'name' => 'Farbe',
+                    'description' => 'Farben',
+                    'position' => 0,
+                ],
             ],
             1 => [
                 'id' => '7',
-                'group_id' => '6',
                 'name' => 'XL',
                 'position' => '4',
                 'media_id' => null,
+                'group' => [
+                    'id' => '6',
+                    'name' => 'Größe',
+                    'description' => 'Größen',
+                    'position' => 0,
+                ],
             ],
         ],
     ],
@@ -5134,17 +5210,27 @@ return [
         'configuratorOptions' => [
             0 => [
                 'id' => '2',
-                'group_id' => '5',
                 'name' => 'Blau',
                 'position' => '2',
                 'media_id' => null,
+                'group' => [
+                    'id' => '5',
+                    'name' => 'Farbe',
+                    'description' => 'Farben',
+                    'position' => 0,
+                ],
             ],
             1 => [
                 'id' => '5',
-                'group_id' => '6',
                 'name' => 'M',
                 'position' => '2',
                 'media_id' => null,
+                'group' => [
+                    'id' => '6',
+                    'name' => 'Größe',
+                    'description' => 'Größen',
+                    'position' => 0,
+                ],
             ],
         ],
     ],
@@ -5524,17 +5610,27 @@ return [
         'configuratorOptions' => [
             0 => [
                 'id' => '2',
-                'group_id' => '5',
                 'name' => 'Blau',
                 'position' => '2',
                 'media_id' => null,
+                'group' => [
+                    'id' => '5',
+                    'name' => 'Farbe',
+                    'description' => 'Farben',
+                    'position' => 0,
+                ],
             ],
             1 => [
                 'id' => '7',
-                'group_id' => '6',
                 'name' => 'XL',
                 'position' => '4',
                 'media_id' => null,
+                'group' => [
+                    'id' => '6',
+                    'name' => 'Größe',
+                    'description' => 'Größen',
+                    'position' => 0,
+                ],
             ],
         ],
     ],
@@ -5914,17 +6010,27 @@ return [
         'configuratorOptions' => [
             0 => [
                 'id' => '3',
-                'group_id' => '5',
                 'name' => 'Weiß',
                 'position' => '3',
                 'media_id' => null,
+                'group' => [
+                    'id' => '5',
+                    'name' => 'Farbe',
+                    'description' => 'Farben',
+                    'position' => 0,
+                ],
             ],
             1 => [
                 'id' => '7',
-                'group_id' => '6',
                 'name' => 'XL',
                 'position' => '4',
                 'media_id' => null,
+                'group' => [
+                    'id' => '6',
+                    'name' => 'Größe',
+                    'description' => 'Größen',
+                    'position' => 0,
+                ],
             ],
         ],
     ],
@@ -6369,17 +6475,27 @@ return [
         'configuratorOptions' => [
             0 => [
                 'id' => '1',
-                'group_id' => '5',
                 'name' => 'Rot',
                 'position' => '1',
                 'media_id' => null,
+                'group' => [
+                    'id' => '5',
+                    'name' => 'Farbe',
+                    'description' => 'Farben',
+                    'position' => 0,
+                ],
             ],
             1 => [
                 'id' => '4',
-                'group_id' => '6',
                 'name' => 'S',
                 'position' => '1',
                 'media_id' => null,
+                'group' => [
+                    'id' => '6',
+                    'name' => 'Größe',
+                    'description' => 'Größen',
+                    'position' => 0,
+                ],
             ],
         ],
     ],
@@ -6824,17 +6940,27 @@ return [
         'configuratorOptions' => [
             0 => [
                 'id' => '1',
-                'group_id' => '5',
                 'name' => 'Rot',
                 'position' => '1',
                 'media_id' => null,
+                'group' => [
+                    'id' => '5',
+                    'name' => 'Farbe',
+                    'description' => 'Farben',
+                    'position' => 0,
+                ],
             ],
             1 => [
                 'id' => '5',
-                'group_id' => '6',
                 'name' => 'M',
                 'position' => '2',
                 'media_id' => null,
+                'group' => [
+                    'id' => '6',
+                    'name' => 'Größe',
+                    'description' => 'Größen',
+                    'position' => 0,
+                ],
             ],
         ],
     ],
@@ -7279,17 +7405,27 @@ return [
         'configuratorOptions' => [
             0 => [
                 'id' => '1',
-                'group_id' => '5',
                 'name' => 'Rot',
                 'position' => '1',
                 'media_id' => null,
+                'group' => [
+                    'id' => '5',
+                    'name' => 'Farbe',
+                    'description' => 'Farben',
+                    'position' => 0,
+                ],
             ],
             1 => [
                 'id' => '6',
-                'group_id' => '6',
                 'name' => 'L',
                 'position' => '3',
                 'media_id' => null,
+                'group' => [
+                    'id' => '6',
+                    'name' => 'Größe',
+                    'description' => 'Größen',
+                    'position' => 0,
+                ],
             ],
         ],
     ],
@@ -7734,17 +7870,27 @@ return [
         'configuratorOptions' => [
             0 => [
                 'id' => '1',
-                'group_id' => '5',
                 'name' => 'Rot',
                 'position' => '1',
                 'media_id' => null,
+                'group' => [
+                    'id' => '5',
+                    'name' => 'Farbe',
+                    'description' => 'Farben',
+                    'position' => 0,
+                ],
             ],
             1 => [
                 'id' => '7',
-                'group_id' => '6',
                 'name' => 'XL',
                 'position' => '4',
                 'media_id' => null,
+                'group' => [
+                    'id' => '6',
+                    'name' => 'Größe',
+                    'description' => 'Größen',
+                    'position' => 0,
+                ],
             ],
         ],
     ],
@@ -8189,17 +8335,27 @@ return [
         'configuratorOptions' => [
             0 => [
                 'id' => '2',
-                'group_id' => '5',
+                'group' => [
+                    'id' => '5',
+                    'name' => 'Farbe',
+                    'description' => 'Farben',
+                    'position' => 0,
+                ],
                 'name' => 'Blau',
                 'position' => '2',
                 'media_id' => null,
             ],
             1 => [
                 'id' => '4',
-                'group_id' => '6',
                 'name' => 'S',
                 'position' => '1',
                 'media_id' => null,
+                'group' => [
+                    'id' => '6',
+                    'name' => 'Größe',
+                    'description' => 'Größen',
+                    'position' => 0,
+                ],
             ],
         ],
     ],
@@ -8644,17 +8800,27 @@ return [
         'configuratorOptions' => [
             0 => [
                 'id' => '2',
-                'group_id' => '5',
+                'group' => [
+                    'id' => '5',
+                    'name' => 'Farbe',
+                    'description' => 'Farben',
+                    'position' => 0,
+                ],
                 'name' => 'Blau',
                 'position' => '2',
                 'media_id' => null,
             ],
             1 => [
                 'id' => '5',
-                'group_id' => '6',
                 'name' => 'M',
                 'position' => '2',
                 'media_id' => null,
+                'group' => [
+                    'id' => '6',
+                    'name' => 'Größe',
+                    'description' => 'Größen',
+                    'position' => 0,
+                ],
             ],
         ],
     ],
@@ -9099,14 +9265,24 @@ return [
         'configuratorOptions' => [
             0 => [
                 'id' => '2',
-                'group_id' => '5',
+                'group' => [
+                    'id' => '5',
+                    'name' => 'Farbe',
+                    'description' => 'Farben',
+                    'position' => 0,
+                ],
                 'name' => 'Blau',
                 'position' => '2',
                 'media_id' => null,
             ],
             1 => [
                 'id' => '6',
-                'group_id' => '6',
+                'group' => [
+                    'id' => '6',
+                    'name' => 'Größe',
+                    'description' => 'Größen',
+                    'position' => 0,
+                ],
                 'name' => 'L',
                 'position' => '3',
                 'media_id' => null,
@@ -9554,14 +9730,24 @@ return [
         'configuratorOptions' => [
             0 => [
                 'id' => '2',
-                'group_id' => '5',
+                'group' => [
+                    'id' => '5',
+                    'name' => 'Farbe',
+                    'description' => 'Farben',
+                    'position' => 0,
+                ],
                 'name' => 'Blau',
                 'position' => '2',
                 'media_id' => null,
             ],
             1 => [
                 'id' => '7',
-                'group_id' => '6',
+                'group' => [
+                    'id' => '6',
+                    'name' => 'Größe',
+                    'description' => 'Größen',
+                    'position' => 0,
+                ],
                 'name' => 'XL',
                 'position' => '4',
                 'media_id' => null,
@@ -10009,14 +10195,24 @@ return [
         'configuratorOptions' => [
             0 => [
                 'id' => '3',
-                'group_id' => '5',
+                'group' => [
+                    'id' => '5',
+                    'name' => 'Farbe',
+                    'description' => 'Farben',
+                    'position' => 0,
+                ],
                 'name' => 'Weiß',
                 'position' => '3',
                 'media_id' => null,
             ],
             1 => [
                 'id' => '5',
-                'group_id' => '6',
+                'group' => [
+                    'id' => '6',
+                    'name' => 'Größe',
+                    'description' => 'Größen',
+                    'position' => 0,
+                ],
                 'name' => 'M',
                 'position' => '2',
                 'media_id' => null,
@@ -10464,14 +10660,24 @@ return [
         'configuratorOptions' => [
             0 => [
                 'id' => '3',
-                'group_id' => '5',
+                'group' => [
+                    'id' => '5',
+                    'name' => 'Farbe',
+                    'description' => 'Farben',
+                    'position' => 0,
+                ],
                 'name' => 'Weiß',
                 'position' => '3',
                 'media_id' => null,
             ],
             1 => [
                 'id' => '6',
-                'group_id' => '6',
+                'group' => [
+                    'id' => '6',
+                    'name' => 'Größe',
+                    'description' => 'Größen',
+                    'position' => 0,
+                ],
                 'name' => 'L',
                 'position' => '3',
                 'media_id' => null,
@@ -10919,14 +11125,24 @@ return [
         'configuratorOptions' => [
             0 => [
                 'id' => '3',
-                'group_id' => '5',
+                'group' => [
+                    'id' => '5',
+                    'name' => 'Farbe',
+                    'description' => 'Farben',
+                    'position' => 0,
+                ],
                 'name' => 'Weiß',
                 'position' => '3',
                 'media_id' => null,
             ],
             1 => [
                 'id' => '7',
-                'group_id' => '6',
+                'group' => [
+                    'id' => '6',
+                    'name' => 'Größe',
+                    'description' => 'Größen',
+                    'position' => 0,
+                ],
                 'name' => 'XL',
                 'position' => '4',
                 'media_id' => null,
@@ -11264,7 +11480,12 @@ return [
         'configuratorOptions' => [
             0 => [
                 'id' => '12',
-                'group_id' => '8',
+                'group' => [
+                    'id' => '8',
+                    'name' => 'Inhalt',
+                    'description' => 'Inhalte',
+                    'position' => 0,
+                ],
                 'name' => 'Stripes',
                 'position' => '2',
                 'media_id' => null,
@@ -11602,7 +11823,12 @@ return [
         'configuratorOptions' => [
             0 => [
                 'id' => '13',
-                'group_id' => '8',
+                'group' => [
+                    'id' => '8',
+                    'name' => 'Inhalt',
+                    'description' => 'Inhalte',
+                    'position' => 0,
+                ],
                 'name' => 'Shopware',
                 'position' => '3',
                 'media_id' => null,
@@ -11940,7 +12166,12 @@ return [
         'configuratorOptions' => [
             0 => [
                 'id' => '8',
-                'group_id' => '7',
+                'group' => [
+                    'id' => '7',
+                    'name' => 'Inhalt',
+                    'description' => 'Inhalte',
+                    'position' => 0,
+                ],
                 'name' => 'Zero',
                 'position' => '1',
                 'media_id' => null,
@@ -12278,7 +12509,12 @@ return [
         'configuratorOptions' => [
             0 => [
                 'id' => '9',
-                'group_id' => '7',
+                'group' => [
+                    'id' => '7',
+                    'name' => 'Inhalt',
+                    'description' => 'Inhalte',
+                    'position' => 0,
+                ],
                 'name' => 'Half',
                 'position' => '2',
                 'media_id' => null,

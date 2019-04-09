@@ -128,6 +128,51 @@ class MappingService implements MappingServiceInterface
         return null;
     }
 
+    public function createNewUuidListItem(
+        string $connectionId,
+        string $entityName,
+        string $oldId,
+        ?array $additionalData = null,
+        ?string $newUuid = null
+    ): string {
+        $uuid = Uuid::randomHex();
+        if ($newUuid !== null) {
+            $uuid = $newUuid;
+        }
+
+        $this->saveMapping(
+            [
+                'connectionId' => $connectionId,
+                'entity' => $entityName,
+                'oldIdentifier' => $oldId,
+                'entityUuid' => $uuid,
+                'additionalData' => $additionalData,
+            ]
+        );
+
+        return $uuid;
+    }
+
+    public function getUuidList(string $connectionId, string $entityName, string $identifier, Context $context): array
+    {
+        $uuidList = [];
+
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('connectionId', $connectionId));
+        $criteria->addFilter(new EqualsFilter('entity', $entityName));
+        $criteria->addFilter(new EqualsFilter('oldIdentifier', $identifier));
+        $result = $this->migrationMappingRepo->search($criteria, $context);
+
+        if ($result->getTotal() > 0) {
+            /** @var SwagMigrationMappingEntity $entity */
+            foreach ($result->getEntities() as $entity) {
+                $uuidList[] = $entity->getEntityUuid();
+            }
+        }
+
+        return $uuidList;
+    }
+
     public function createNewUuid(
         string $connectionId,
         string $entityName,
