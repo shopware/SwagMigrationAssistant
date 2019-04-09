@@ -37,7 +37,7 @@ class SwagMigrationMediaFileDefinition extends EntityDefinition
             new BoolField('process_failure', 'processFailure'),
             new CreatedAtField(),
             new UpdatedAtField(),
-            new ManyToOneAssociationField('run', 'run_id', SwagMigrationRunDefinition::class, true),
+            new ManyToOneAssociationField('run', 'run_id', SwagMigrationRunDefinition::class),
         ]);
     }
 

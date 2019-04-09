@@ -47,9 +47,9 @@ class SwagMigrationConnectionDefinition extends EntityDefinition
             (new FkField('profile_id', 'profileId', SwagMigrationProfileDefinition::class))->setFlags(new Required()),
             new CreatedAtField(),
             new UpdatedAtField(),
-            new ManyToOneAssociationField('profile', 'profile_id', SwagMigrationProfileDefinition::class, true),
-            new OneToManyAssociationField('runs', SwagMigrationRunDefinition::class, 'connection_id', false),
-            new OneToManyAssociationField('mappings', SwagMigrationMappingDefinition::class, 'connection_id', false),
+            new ManyToOneAssociationField('profile', 'profile_id', SwagMigrationProfileDefinition::class, 'id', true),
+            new OneToManyAssociationField('runs', SwagMigrationRunDefinition::class, 'connection_id'),
+            new OneToManyAssociationField('mappings', SwagMigrationMappingDefinition::class, 'connection_id'),
         ]);
     }
 }

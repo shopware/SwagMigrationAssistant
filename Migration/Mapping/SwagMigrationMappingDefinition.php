@@ -33,7 +33,7 @@ class SwagMigrationMappingDefinition extends EntityDefinition
             new JsonField('additional_data', 'additionalData'),
             new CreatedAtField(),
             new UpdatedAtField(),
-            new ManyToOneAssociationField('connection', 'connection_id', SwagMigrationConnectionDefinition::class, false),
+            new ManyToOneAssociationField('connection', 'connection_id', SwagMigrationConnectionDefinition::class),
         ]);
     }
 

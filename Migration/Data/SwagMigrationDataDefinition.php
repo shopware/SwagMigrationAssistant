@@ -37,7 +37,7 @@ class SwagMigrationDataDefinition extends EntityDefinition
             new BoolField('write_failure', 'writeFailure'),
             new CreatedAtField(),
             new UpdatedAtField(),
-            new ManyToOneAssociationField('run', 'run_id', SwagMigrationRunDefinition::class, true),
+            new ManyToOneAssociationField('run', 'run_id', SwagMigrationRunDefinition::class, 'id', true),
         ]);
     }
 

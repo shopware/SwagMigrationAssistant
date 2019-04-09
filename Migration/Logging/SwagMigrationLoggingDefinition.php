@@ -31,7 +31,7 @@ class SwagMigrationLoggingDefinition extends EntityDefinition
             (new JsonField('log_entry', 'logEntry'))->setFlags(new Required()),
             new CreatedAtField(),
             new UpdatedAtField(),
-            new ManyToOneAssociationField('run', 'run_id', SwagMigrationRunDefinition::class, false),
+            new ManyToOneAssociationField('run', 'run_id', SwagMigrationRunDefinition::class),
         ]);
     }
 

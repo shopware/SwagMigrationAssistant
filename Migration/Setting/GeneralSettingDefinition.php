@@ -37,7 +37,7 @@ class GeneralSettingDefinition extends EntityDefinition
             new FkField('selected_connection_id', 'selectedConnectionId', SwagMigrationConnectionDefinition::class),
             new CreatedAtField(),
             new UpdatedAtField(),
-            new ManyToOneAssociationField('selectedConnection', 'selected_connection_id', SwagMigrationConnectionDefinition::class, true),
+            new ManyToOneAssociationField('selectedConnection', 'selected_connection_id', SwagMigrationConnectionDefinition::class, 'id', true),
         ]);
     }
 }

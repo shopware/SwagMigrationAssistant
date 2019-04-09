@@ -28,7 +28,7 @@ class SwagMigrationProfileDefinition extends EntityDefinition
             (new StringField('gateway_name', 'gatewayName'))->setFlags(new Required()),
             new CreatedAtField(),
             new UpdatedAtField(),
-            new OneToManyAssociationField('connections', SwagMigrationConnectionDefinition::class, 'profile_id', false),
+            new OneToManyAssociationField('connections', SwagMigrationConnectionDefinition::class, 'profile_id'),
         ]);
     }
 
