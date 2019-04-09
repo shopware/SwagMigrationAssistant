@@ -145,7 +145,7 @@
         "finish": "Done!",
         "connection": {
           "title": "Set up a connection",
-          "content": "Let us connect your shop system to the new Shopware 6 and easily migrate the selected data."
+          "content": "Let us connect your shop system to the new Shopware 6 and migrate the selected data."
         },
         "dataSelection": {
           "title": "Specify data for migration",
@@ -256,19 +256,34 @@
           "message": "The import was paused.{linebreak}Continue it or abort the process."
         },
         "takeoverScreen": {
-          "message": "The import is already active on another device or browser.",
-          "hint": "An import is already active, but you don't have access to it? Here, you can ",
-          "hintLink": "take over the active import."
-        },
-        "takeoverModal": {
-          "title": "Take over import",
-          "message": "Note that taking over an active import will revoke the administration rights from the original user as well.",
-          "hint": "Do you want to stop the active import here and take it over?",
-          "cancel": "Cancel",
-          "confirm": "Take over"
-        },
-        "takeoverInfoScreen": {
-          "message": "Your active import has been stopped and taken over by another device or browser."
+          "buttonCheck": "Check status",
+          "buttonRedirect": "Overview",
+          "running": {
+            "title": "Migration already started",
+            "message": "The migration has already been started in another browser or tab. {linebreak}The process can be terminated or taken over by you, depending on the current status of the migration."
+          },
+          "interrupted": {
+            "title": "Migration has been taken over",
+            "message": "The migration process was taken over from another browser or tab. {linebreak}The process can be terminated or reinstated by you, depending on the current status of the migration."
+          },
+          "aborted": {
+            "title": "Migration was completed",
+            "message": "The migration process was aborted in another browser or tab. {linebreak}Please check the responsibilities and start a new migration."
+          },
+          "takeoverModal": {
+            "title": "Take over migration",
+            "message": "It is possible to transfer the active migration. The migration is withdrawn from the other browser or tab and the process can be continued here.",
+            "hint": "Would you like to take over the migration?",
+            "cancel": "Cancel",
+            "confirm": "Take over migration"
+          },
+          "abortModal": {
+            "title": "Abort migration",
+            "message": "It is currently not possible to take over the migration. You can abort the migration and start a new one here.",
+            "hint": "Do you want to abort the migration?",
+            "cancel": "Cancel",
+            "confirm": "Abort migration"
+          }
         }
       },
       "confirmDialog": {

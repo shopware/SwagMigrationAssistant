@@ -82,7 +82,8 @@
                 {% block swag_migration_index_main_page_card_loadingScreen_takeover %}
                     <swag-migration-loading-screen-takeover v-if="migrationUIStore.state.componentIndex === UI_COMPONENT_INDEX.TAKEOVER"
                                                             @onTakeoverMigration="onTakeoverMigration"
-                                                            :isOtherInstanceFetching="isOtherInstanceFetching"
+                                                            @onAbortMigration="onAbortOtherMigration"
+                                                            :isTakeoverForbidden="isTakeoverForbidden"
                                                             :isMigrationInterrupted="isMigrationInterrupted">
                     </swag-migration-loading-screen-takeover>
                 {% endblock %}

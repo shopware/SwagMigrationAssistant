@@ -55,10 +55,18 @@ Component.register('swag-migration-main-page', {
                 return;
             }
 
-            let isMigrationRunning = false;
-            await this.migrationWorkerService.checkForRunningMigration().then((runState) => {
-                isMigrationRunning = runState.isMigrationRunning;
+            let isTakeoverForbidden = false;
+            await this.migrationWorkerService.isMigrationRunningInOtherTab().then((isRunning) => {
+                console.log('isRunningInOtherTab - main page: ', isRunning);
+                isTakeoverForbidden = isRunning;
             });
+
+            let isMigrationRunning = isTakeoverForbidden;
+            if (!isTakeoverForbidden) {
+                await this.migrationWorkerService.checkForRunningMigration().then((runState) => {
+                    isMigrationRunning = runState.isMigrationRunning;
+                });
+            }
 
             if (isMigrationRunning) {
                 this.$router.push({ name: 'swag.migration.processScreen' });

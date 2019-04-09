@@ -9,6 +9,8 @@ interface RunServiceInterface
 {
     public function takeoverMigration(string $runUuid, Context $context): string;
 
+    public function abortMigration(string $runUuid, Context $context): void;
+
     /**
      * @param int[] $dataSelectionIds
      */

@@ -146,7 +146,7 @@
         "finish": "Fertig!",
         "connection": {
           "title": "Eine Verbindung anlegen",
-          "content": "Gemeinsam verbinden wir Deinen Shop mit dem neuen Shopware 6 und können dann ganz leicht alle von Dir ausgewählten Daten migrieren."
+          "content": "Gemeinsam verbinden wir Deinen Shop mit dem neuen Shopware 6 und können dann alle von Dir ausgewählten Daten migrieren."
         },
         "dataSelection": {
           "title": "Daten für die Migration auswählen",
@@ -256,19 +256,34 @@
           "message": "Der Import wurde pausiert.{linebreak}Setze ihn fort oder brich den Prozess ab."
         },
         "takeoverScreen": {
-          "message": "Der Import ist bereits auf einem anderen Gerät oder Browser aktiv.",
-          "hint": "Ein Import ist bereits aktiv, Du hast aber keinen Zugriff auf diesen? Hier kannst Du den aktiven ",
-          "hintLink": "Import übernehmen."
-        },
-        "takeoverModal": {
-          "title": "Import übernehmen",
-          "message": "Beachte, dass bei der Übernahme eines aktiven Imports dem ursprünglichen Nutzer die Verwaltungsrechte entzogen werden.",
-          "hint": "Möchtest Du den aktiven Import stoppen und hier übernehmen?",
-          "cancel": "Abbrechen",
-          "confirm": "Übernehmen"
-        },
-        "takeoverInfoScreen": {
-          "message": "Dein aktiver Import wurde gestoppt und von einem anderen Gerät oder Browser übernommen."
+          "buttonCheck": "Status prüfen",
+          "buttonRedirect": "Zur Übersicht",
+          "running": {
+            "title": "Migration bereits gestartet",
+            "message": "Die Migration wurde bereits in einem anderen Browser oder Tab gestartet. {linebreak}Der Prozess kann von Dir beendet oder übernommen werden, dies ist abhänging von dem aktuellen Status der Migration."
+          },
+          "interrupted": {
+            "title": "Migration wurde übernommen",
+            "message": "Der Migrationsprozess wurde von einem anderen Browser oder Tab übernommen. {linebreak}Der Prozess kann von Dir beendet oder wieder übernommen werden, dies ist abhänging von dem aktuellen Status der Migration."
+          },
+          "aborted": {
+            "title": "Migration wurde beendet",
+            "message": "Der Migrationsprozess wurde in einem anderen Browser oder Tab beendet. {linebreak}Bitte überprüfe die Zuständigkeiten und starte eine neue Migration."
+          },
+          "takeoverModal": {
+            "title": "Migration übernehmen",
+            "message": "Die Übernahme der aktiven Migration ist möglich. Dem anderen Browser oder Tab wird die Migration entzogen und der Prozess kann hier fortgesetzt werden.",
+            "hint": "Möchtest Du die Migration übernehmen?",
+            "cancel": "Abbrechen",
+            "confirm": "Migration übernehmen"
+          },
+          "abortModal": {
+            "title": "Migration beenden",
+            "message": "Eine Übernahme der Migration ist derzeit nicht möglich. Du kannst die Migration beenden und hier eine neue starten.",
+            "hint": "Möchtest Du die Migration beenden?",
+            "cancel": "Abbrechen",
+            "confirm": "Migration beenden"
+          }
         }
       },
       "confirmDialog": {
