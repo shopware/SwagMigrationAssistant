@@ -2,7 +2,7 @@
     "name": "swag/migration-next",
     "description": "Migration plugin for Shopware",
     "version": "v1.0.0",
-    "type": "shopware-plugin",
+    "type": "shopware-platform-plugin",
     "license": "MIT",
     "authors": [
         {
@@ -13,11 +13,16 @@
         "shopware/platform": "dev-master"
     },
     "extra": {
-        "installer-name": "SwagMigrationNext",
+        "shopware-plugin-class": "SwagMigrationNext\\SwagMigrationNext",
         "copyright": "(c) by shopware AG",
         "label": {
             "de_DE": "Migration",
             "en_GB": "Migration"
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "SwagMigrationNext\\": ""
         }
     }
 }

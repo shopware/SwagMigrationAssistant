@@ -49,7 +49,7 @@ class SwagMigrationNext extends Plugin
     {
         /** @var Connection $connection */
         $connection = $this->container->get(Connection::class);
-        $now = (new \DateTime())->format(Defaults::DATE_FORMAT);
+        $now = (new \DateTime())->format(Defaults::STORAGE_DATE_FORMAT);
 
         $connection->beginTransaction();
         try {
