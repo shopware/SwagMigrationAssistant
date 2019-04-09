@@ -4,14 +4,14 @@ namespace SwagMigrationNext\Profile\Shopware55\Converter;
 
 use Shopware\Core\Content\Category\Aggregate\CategoryTranslation\CategoryTranslationDefinition;
 use Shopware\Core\Content\Category\CategoryDefinition;
-use Shopware\Core\Content\Configuration\Aggregate\ConfigurationGroupOption\ConfigurationGroupOptionDefinition;
-use Shopware\Core\Content\Configuration\Aggregate\ConfigurationGroupOptionTranslation\ConfigurationGroupOptionTranslationDefinition;
-use Shopware\Core\Content\Configuration\Aggregate\ConfigurationGroupTranslation\ConfigurationGroupTranslationDefinition;
-use Shopware\Core\Content\Configuration\ConfigurationGroupDefinition;
 use Shopware\Core\Content\Product\Aggregate\ProductManufacturer\ProductManufacturerDefinition;
 use Shopware\Core\Content\Product\Aggregate\ProductManufacturerTranslation\ProductManufacturerTranslationDefinition;
 use Shopware\Core\Content\Product\Aggregate\ProductTranslation\ProductTranslationDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
+use Shopware\Core\Content\Property\Aggregate\PropertyGroupOption\PropertyGroupOptionDefinition;
+use Shopware\Core\Content\Property\Aggregate\PropertyGroupOptionTranslation\PropertyGroupOptionTranslationDefinition;
+use Shopware\Core\Content\Property\Aggregate\PropertyGroupTranslation\PropertyGroupTranslationDefinition;
+use Shopware\Core\Content\Property\PropertyGroupDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\System\Unit\Aggregate\UnitTranslation\UnitTranslationDefinition;
 use Shopware\Core\System\Unit\UnitDefinition;
@@ -555,14 +555,14 @@ class TranslationConverter extends AbstractConverter
         return new ConvertStruct($category, $data);
     }
 
-    private function createConfiguratorOptionTranslation(array $data)
+    private function createConfiguratorOptionTranslation(array $data): ConvertStruct
     {
         $sourceData = $data;
 
         $configuratorOption = [];
         $configuratorOption['id'] = $this->mappingService->getUuid(
             $this->connectionId,
-            ConfigurationGroupOptionDefinition::getEntityName(),
+            PropertyGroupOptionDefinition::getEntityName(),
             $data['objectkey'],
             $this->context
         );
@@ -585,7 +585,7 @@ class TranslationConverter extends AbstractConverter
             return new ConvertStruct(null, $sourceData);
         }
 
-        $configuratorOption['entityDefinitionClass'] = ConfigurationGroupOptionDefinition::class;
+        $configuratorOption['entityDefinitionClass'] = PropertyGroupOptionDefinition::class;
 
         $objectData = unserialize($data['objectdata'], ['allowed_classes' => false]);
 
@@ -604,27 +604,27 @@ class TranslationConverter extends AbstractConverter
             return new ConvertStruct(null, $sourceData);
         }
 
-        $configurationGroupOptionTranslation = [];
-        $configurationGroupOptionTranslation['id'] = $this->mappingService->createNewUuid(
+        $propertyGroupOptionTranslation = [];
+        $propertyGroupOptionTranslation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            ConfigurationGroupOptionTranslationDefinition::getEntityName(),
+            PropertyGroupOptionTranslationDefinition::getEntityName(),
             $data['id'],
             $this->context
         );
 
         foreach ($objectData as $key => $value) {
             if ($key === 'name') {
-                $this->helper->convertValue($configurationGroupOptionTranslation, 'name', $objectData, $key);
+                $this->helper->convertValue($propertyGroupOptionTranslation, 'name', $objectData, $key);
             }
 
             if ($key === 'position') {
-                $this->helper->convertValue($configurationGroupOptionTranslation, 'position', $objectData, $key, ConverterHelperService::TYPE_INTEGER);
+                $this->helper->convertValue($propertyGroupOptionTranslation, 'position', $objectData, $key, ConverterHelperService::TYPE_INTEGER);
             }
 
             $isAttribute = strpos($key, '__attribute_');
             if ($isAttribute !== false) {
                 $key = str_replace('__attribute_', '', $key);
-                $configurationGroupOptionTranslation['attributes'][$key] = $value;
+                $propertyGroupOptionTranslation['attributes'][$key] = $value;
                 unset($objectData[$key]);
             }
         }
@@ -640,14 +640,14 @@ class TranslationConverter extends AbstractConverter
         $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $data['_locale'], $this->context);
 
         if (isset($languageData['createData'])) {
-            $configurationGroupOptionTranslation['language']['id'] = $languageData['uuid'];
-            $configurationGroupOptionTranslation['language']['localeId'] = $languageData['createData']['localeId'];
-            $configurationGroupOptionTranslation['language']['name'] = $languageData['createData']['localeCode'];
+            $propertyGroupOptionTranslation['language']['id'] = $languageData['uuid'];
+            $propertyGroupOptionTranslation['language']['localeId'] = $languageData['createData']['localeId'];
+            $propertyGroupOptionTranslation['language']['name'] = $languageData['createData']['localeCode'];
         } else {
-            $configurationGroupOptionTranslation['languageId'] = $languageData['uuid'];
+            $propertyGroupOptionTranslation['languageId'] = $languageData['uuid'];
         }
 
-        $configuratorOption['translations'][$languageData['uuid']] = $configurationGroupOptionTranslation;
+        $configuratorOption['translations'][$languageData['uuid']] = $propertyGroupOptionTranslation;
 
         unset($data['name'], $data['_locale']);
 
@@ -658,14 +658,14 @@ class TranslationConverter extends AbstractConverter
         return new ConvertStruct($configuratorOption, $data);
     }
 
-    private function createConfiguratorOptionGroupTranslation(array $data)
+    private function createConfiguratorOptionGroupTranslation(array $data): ConvertStruct
     {
         $sourceData = $data;
 
         $configuratorOptionGroup = [];
         $configuratorOptionGroup['id'] = $this->mappingService->getUuid(
             $this->connectionId,
-            ConfigurationGroupDefinition::getEntityName(),
+            PropertyGroupDefinition::getEntityName(),
             $data['objectkey'],
             $this->context
         );
@@ -688,7 +688,7 @@ class TranslationConverter extends AbstractConverter
             return new ConvertStruct(null, $sourceData);
         }
 
-        $configuratorOptionGroup['entityDefinitionClass'] = ConfigurationGroupDefinition::class;
+        $configuratorOptionGroup['entityDefinitionClass'] = PropertyGroupDefinition::class;
 
         $objectData = unserialize($data['objectdata'], ['allowed_classes' => false]);
 
@@ -707,27 +707,27 @@ class TranslationConverter extends AbstractConverter
             return new ConvertStruct(null, $sourceData);
         }
 
-        $configurationGroupTranslation = [];
-        $configurationGroupTranslation['id'] = $this->mappingService->createNewUuid(
+        $propertyGroupTranslation = [];
+        $propertyGroupTranslation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            ConfigurationGroupTranslationDefinition::getEntityName(),
+            PropertyGroupTranslationDefinition::getEntityName(),
             $data['id'],
             $this->context
         );
 
         foreach ($objectData as $key => $value) {
             if ($key === 'name') {
-                $this->helper->convertValue($configurationGroupTranslation, 'name', $objectData, $key);
+                $this->helper->convertValue($propertyGroupTranslation, 'name', $objectData, $key);
             }
 
             if ($key === 'description') {
-                $this->helper->convertValue($configurationGroupTranslation, 'description', $objectData, $key);
+                $this->helper->convertValue($propertyGroupTranslation, 'description', $objectData, $key);
             }
 
             $isAttribute = strpos($key, '__attribute_');
             if ($isAttribute !== false) {
                 $key = str_replace('__attribute_', '', $key);
-                $configurationGroupTranslation['attributes'][$key] = $value;
+                $propertyGroupTranslation['attributes'][$key] = $value;
                 unset($objectData[$key]);
             }
         }
@@ -743,14 +743,14 @@ class TranslationConverter extends AbstractConverter
         $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $data['_locale'], $this->context);
 
         if (isset($languageData['createData'])) {
-            $configurationGroupTranslation['language']['id'] = $languageData['uuid'];
-            $configurationGroupTranslation['language']['localeId'] = $languageData['createData']['localeId'];
-            $configurationGroupTranslation['language']['name'] = $languageData['createData']['localeCode'];
+            $propertyGroupTranslation['language']['id'] = $languageData['uuid'];
+            $propertyGroupTranslation['language']['localeId'] = $languageData['createData']['localeId'];
+            $propertyGroupTranslation['language']['name'] = $languageData['createData']['localeCode'];
         } else {
-            $configurationGroupTranslation['languageId'] = $languageData['uuid'];
+            $propertyGroupTranslation['languageId'] = $languageData['uuid'];
         }
 
-        $configuratorOptionGroup['translations'][$languageData['uuid']] = $configurationGroupTranslation;
+        $configuratorOptionGroup['translations'][$languageData['uuid']] = $propertyGroupTranslation;
 
         unset($data['name'], $data['_locale']);
 

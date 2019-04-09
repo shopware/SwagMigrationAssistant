@@ -87,8 +87,8 @@
             <tag name="shopware.migration.writer"/>
         </service>
 
-        <service id="SwagMigrationNext\Migration\Writer\ConfigurationGroupOptionWriter">
-            <argument type="service" id="configuration_group_option.repository"/>
+        <service id="SwagMigrationNext\Migration\Writer\PropertyGroupOptionWriter">
+            <argument type="service" id="property_group_option.repository"/>
             <tag name="shopware.migration.writer"/>
         </service>
     </services>

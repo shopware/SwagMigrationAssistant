@@ -2,11 +2,11 @@
 
 namespace SwagMigrationNext\Profile\Shopware55\Converter;
 
-use Shopware\Core\Content\Configuration\Aggregate\ConfigurationGroupOption\ConfigurationGroupOptionDefinition;
-use Shopware\Core\Content\Configuration\ConfigurationGroupDefinition;
 use Shopware\Core\Content\Media\Aggregate\MediaTranslation\MediaTranslationDefinition;
 use Shopware\Core\Content\Media\MediaDefinition;
-use Shopware\Core\Content\Product\Aggregate\ProductConfigurator\ProductConfiguratorDefinition;
+use Shopware\Core\Content\Product\Aggregate\ProductProperty\ProductPropertyDefinition;
+use Shopware\Core\Content\Property\Aggregate\PropertyGroupOption\PropertyGroupOptionDefinition;
+use Shopware\Core\Content\Property\PropertyGroupDefinition;
 use Shopware\Core\Framework\Context;
 use SwagMigrationNext\Migration\Converter\AbstractConverter;
 use SwagMigrationNext\Migration\Converter\ConvertStruct;
@@ -17,7 +17,7 @@ use SwagMigrationNext\Migration\MigrationContextInterface;
 use SwagMigrationNext\Profile\Shopware55\Logging\Shopware55LogTypes;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
-class ConfigurationGroupOptionConverter extends AbstractConverter
+class PropertyGroupOptionConverter extends AbstractConverter
 {
     /**
      * @var MappingServiceInterface
@@ -73,7 +73,7 @@ class ConfigurationGroupOptionConverter extends AbstractConverter
 
     public function getSupportedEntityName(): string
     {
-        return ConfigurationGroupOptionDefinition::getEntityName();
+        return PropertyGroupOptionDefinition::getEntityName();
     }
 
     public function getSupportedProfileName(): string
@@ -104,7 +104,7 @@ class ConfigurationGroupOptionConverter extends AbstractConverter
         $converted = [
             'id' => $this->mappingService->createNewUuid(
                 $this->connectionId,
-                ConfigurationGroupOptionDefinition::getEntityName(),
+                PropertyGroupOptionDefinition::getEntityName(),
                 $data['id'],
                 $context
             ),
@@ -112,7 +112,7 @@ class ConfigurationGroupOptionConverter extends AbstractConverter
             'group' => [
                 'id' => $this->mappingService->createNewUuid(
                     $this->connectionId,
-                    ConfigurationGroupDefinition::getEntityName(),
+                    PropertyGroupDefinition::getEntityName(),
                     $data['group']['id'],
                     $context
                 ),
@@ -144,9 +144,9 @@ class ConfigurationGroupOptionConverter extends AbstractConverter
         if (!isset($data['media']['id'])) {
             $this->loggingService->addInfo(
                 $this->runId,
-                Shopware55LogTypes::PRODUCT_MEDIA_NOT_CONVERTED,
-                'Configuration-Group-Option-Media could not be converted',
-                'Configuration-Group-Option-Media could not be converted.',
+                Shopware55LogTypes::PROPERTY_MEDIA_NOT_CONVERTED,
+                'Property-Group-Option-Media could not be converted',
+                'Property-Group-Option-Media could not be converted.',
                 [
                     'uuid' => $converted['id'],
                     'id' => $data['id'],
@@ -222,7 +222,7 @@ class ConfigurationGroupOptionConverter extends AbstractConverter
         $converted['productConfigurators'][] = [
             'id' => $this->mappingService->createNewUuid(
                 $this->connectionId,
-                ProductConfiguratorDefinition::getEntityName(),
+                ProductPropertyDefinition::getEntityName(),
                 $data['id'] . '_' . $productContainerUuid,
                 $this->context
             ),

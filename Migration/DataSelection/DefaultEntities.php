@@ -34,5 +34,7 @@ final class DefaultEntities
 
     public const PRODUCT_PRICE_ATTRIBUTE = 'product_price_attribute';
 
+    public const PROPERTY_GROUP_OPTION = 'property_group_option';
+
     public const TRANSLATION = 'translation';
 }

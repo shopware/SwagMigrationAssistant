@@ -2,14 +2,14 @@
 
 namespace SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet;
 
-use Shopware\Core\Content\Configuration\Aggregate\ConfigurationGroupOption\ConfigurationGroupOptionDefinition;
+use Shopware\Core\Content\Property\Aggregate\PropertyGroupOption\PropertyGroupOptionDefinition;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
-class ConfigurationGroupOptionDataSet extends Shopware55DataSet
+class PropertyGroupOptionDataSet extends Shopware55DataSet
 {
     public static function getEntity(): string
     {
-        return ConfigurationGroupOptionDefinition::getEntityName();
+        return PropertyGroupOptionDefinition::getEntityName();
     }
 
     public function supports(string $profileName, string $entity): bool

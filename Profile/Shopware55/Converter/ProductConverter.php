@@ -4,10 +4,6 @@ namespace SwagMigrationNext\Profile\Shopware55\Converter;
 
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerGroup\CustomerGroupDefinition;
 use Shopware\Core\Content\Category\CategoryDefinition;
-use Shopware\Core\Content\Configuration\Aggregate\ConfigurationGroupOption\ConfigurationGroupOptionDefinition;
-use Shopware\Core\Content\Configuration\Aggregate\ConfigurationGroupOptionTranslation\ConfigurationGroupOptionTranslationDefinition;
-use Shopware\Core\Content\Configuration\Aggregate\ConfigurationGroupTranslation\ConfigurationGroupTranslationDefinition;
-use Shopware\Core\Content\Configuration\ConfigurationGroupDefinition;
 use Shopware\Core\Content\Media\Aggregate\MediaTranslation\MediaTranslationDefinition;
 use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Content\Product\Aggregate\ProductManufacturer\ProductManufacturerDefinition;
@@ -16,6 +12,10 @@ use Shopware\Core\Content\Product\Aggregate\ProductMedia\ProductMediaDefinition;
 use Shopware\Core\Content\Product\Aggregate\ProductPrice\ProductPriceDefinition;
 use Shopware\Core\Content\Product\Aggregate\ProductTranslation\ProductTranslationDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
+use Shopware\Core\Content\Property\Aggregate\PropertyGroupOption\PropertyGroupOptionDefinition;
+use Shopware\Core\Content\Property\Aggregate\PropertyGroupOptionTranslation\PropertyGroupOptionTranslationDefinition;
+use Shopware\Core\Content\Property\Aggregate\PropertyGroupTranslation\PropertyGroupTranslationDefinition;
+use Shopware\Core\Content\Property\PropertyGroupDefinition;
 use Shopware\Core\Content\Rule\RuleDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
@@ -444,7 +444,7 @@ class ProductConverter extends AbstractConverter
             $variationsElement = [
                 'id' => $this->mappingService->createNewUuid(
                     $this->connectionId,
-                    ConfigurationGroupOptionDefinition::getEntityName(),
+                    PropertyGroupOptionDefinition::getEntityName(),
                     $option['id'],
                     $this->context
                 ),
@@ -452,7 +452,7 @@ class ProductConverter extends AbstractConverter
                 'group' => [
                     'id' => $this->mappingService->createNewUuid(
                         $this->connectionId,
-                        ConfigurationGroupDefinition::getEntityName(),
+                        PropertyGroupDefinition::getEntityName(),
                         $option['group']['id'],
                         $this->context
                     ),
@@ -491,7 +491,7 @@ class ProductConverter extends AbstractConverter
 
         $localeOptionTranslation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            ConfigurationGroupOptionTranslationDefinition::getEntityName(),
+            PropertyGroupOptionTranslationDefinition::getEntityName(),
             $data['id'] . ':' . $this->locale,
             $this->context
         );
@@ -501,7 +501,7 @@ class ProductConverter extends AbstractConverter
 
         $localeGroupTranslation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            ConfigurationGroupTranslationDefinition::getEntityName(),
+            PropertyGroupTranslationDefinition::getEntityName(),
             $data['group']['id'] . ':' . $this->locale,
             $this->context
         );

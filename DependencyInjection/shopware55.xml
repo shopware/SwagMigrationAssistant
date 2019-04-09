@@ -106,7 +106,7 @@
             <tag name="shopware.migration.converter"/>
         </service>
 
-        <service id="SwagMigrationNext\Profile\Shopware55\Converter\ConfigurationGroupOptionConverter">
+        <service id="SwagMigrationNext\Profile\Shopware55\Converter\PropertyGroupOptionConverter">
             <argument id="SwagMigrationNext\Migration\Mapping\MappingService" type="service"/>
             <argument id="SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService" type="service"/>
             <argument type="service" id="SwagMigrationNext\Migration\Media\MediaFileService"/>
@@ -218,7 +218,7 @@
             <tag name="shopware.migration.data_set" />
         </service>
 
-        <service id="SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ConfigurationGroupOptionDataSet">
+        <service id="SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\PropertyGroupOptionDataSet">
             <tag name="shopware.migration.data_set" />
         </service>
 

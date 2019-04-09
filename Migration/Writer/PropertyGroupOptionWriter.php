@@ -2,11 +2,11 @@
 
 namespace SwagMigrationNext\Migration\Writer;
 
-use Shopware\Core\Content\Configuration\Aggregate\ConfigurationGroupOption\ConfigurationGroupOptionDefinition;
+use Shopware\Core\Content\Property\Aggregate\PropertyGroupOption\PropertyGroupOptionDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 
-class ConfigurationGroupOptionWriter implements WriterInterface
+class PropertyGroupOptionWriter implements WriterInterface
 {
     /**
      * @var EntityRepositoryInterface
@@ -20,7 +20,7 @@ class ConfigurationGroupOptionWriter implements WriterInterface
 
     public function supports(): string
     {
-        return ConfigurationGroupOptionDefinition::getEntityName();
+        return PropertyGroupOptionDefinition::getEntityName();
     }
 
     public function writeData(array $data, Context $context): void
