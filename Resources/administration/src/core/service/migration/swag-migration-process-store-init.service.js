@@ -36,6 +36,8 @@ class ProcessStoreInitService {
                     .then((connectionCheckResponse) => {
                         this._migrationProcessStore.setEnvironmentInformation(connectionCheckResponse);
                         resolve();
+                    }).catch(() => {
+                        reject();
                     });
             });
         });

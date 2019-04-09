@@ -54,7 +54,6 @@ Component.register('swag-migration-loading-screen-takeover', {
 
     created() {
         this.migrationWorkerService.isMigrationRunningInOtherTab().then((isRunning) => {
-            console.log('isRunningInOtherTab - takeover component: ', isRunning);
             if (isRunning) {
                 this.isLoading = false;
                 return;

@@ -11,7 +11,7 @@ class MigrationProcessStore extends SimpleStateManagementStore {
         super();
         this.state = {
             connectionId: null,
-            environmentInformation: null,
+            environmentInformation: {},
             runId: null,
             isMigrating: false,
             entityGroups: [],

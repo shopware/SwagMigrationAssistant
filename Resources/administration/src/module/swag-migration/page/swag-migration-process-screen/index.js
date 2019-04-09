@@ -222,7 +222,6 @@ Component.register('swag-migration-process-screen', {
             let otherInstanceMigrating = this.migrationProcessStore.state.isMigrating;
             if (this.migrationProcessStore.state.isMigrating === false) {
                 await this.migrationWorkerService.isMigrationRunningInOtherTab().then((isRunning) => {
-                    console.log('isRunningInOtherTab - process screen: ', isRunning);
                     if (isRunning) {
                         otherInstanceMigrating = true;
                         this.isTakeoverForbidden = true;

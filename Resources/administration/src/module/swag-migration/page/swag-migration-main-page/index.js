@@ -20,7 +20,6 @@ Component.register('swag-migration-main-page', {
 
     data() {
         return {
-            connectionEstablished: false,
             /** @type MigrationProcessStore */
             migrationProcessStore: State.getStore('migrationProcess'),
             /** @type MigrationUIStore */
@@ -34,6 +33,10 @@ Component.register('swag-migration-main-page', {
                 this.migrationProcessStore.state.environmentInformation.updateAvailable !== null
                 && this.migrationProcessStore.state.environmentInformation.updateAvailable === true
             );
+        },
+
+        connectionEstablished() {
+            return Object.keys(this.migrationProcessStore.state.environmentInformation).length > 0;
         }
     },
 
@@ -57,7 +60,6 @@ Component.register('swag-migration-main-page', {
 
             let isTakeoverForbidden = false;
             await this.migrationWorkerService.isMigrationRunningInOtherTab().then((isRunning) => {
-                console.log('isRunningInOtherTab - main page: ', isRunning);
                 isTakeoverForbidden = isRunning;
             });
 
@@ -73,21 +75,11 @@ Component.register('swag-migration-main-page', {
                 return;
             }
 
-            // Do connection check
-            this.migrationService.checkConnection(this.migrationProcessStore.state.connectionId)
-                .then(async (connectionCheckResponse) => {
-                    this.migrationProcessStore.setEnvironmentInformation(connectionCheckResponse);
-                    this.connectionEstablished = (connectionCheckResponse.errorCode === '');
+            if (this.$route.params.startMigration) {
+                await this.onMigrate();
+            }
 
-                    if (this.$route.params.startMigration) {
-                        await this.onMigrate();
-                    }
-
-                    this.migrationUIStore.setIsLoading(false);
-                }).catch(() => {
-                    this.connectionEstablished = false;
-                    this.migrationUIStore.setIsLoading(false);
-                });
+            this.migrationUIStore.setIsLoading(false);
         },
 
         async onMigrate() {
