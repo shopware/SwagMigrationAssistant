@@ -226,7 +226,6 @@ Component.register('swag-migration-process-screen', {
                         otherInstanceMigrating = true;
                         this.isTakeoverForbidden = true;
                         this.onInvalidMigrationAccessToken();
-                        this.displayFlowChart = false;
                     }
                 });
 
@@ -235,7 +234,6 @@ Component.register('swag-migration-process-screen', {
                         if (runState.isMigrationAccessTokenValid === false && runState.isMigrationRunning === true) {
                             otherInstanceMigrating = true;
                             this.onInvalidMigrationAccessToken();
-                            this.displayFlowChart = false;
                             return;
                         }
 
@@ -517,23 +515,25 @@ Component.register('swag-migration-process-screen', {
                 }
             });
 
-            if (!this.isTakeoverForbidden) {
-                await this.migrationWorkerService.checkForRunningMigration().then((runState) => {
-                    if (runState.isMigrationRunning === false) {
-                        this.migrationProcessStore.setIsMigrating(false);
-                        this.migrationUIStore.setIsLoading(false);
-                        this.isOtherMigrationRunning = false;
-                        this.$router.push({ name: 'swag.migration.index.main' });
-                        return;
-                    }
-
-                    this.migrationWorkerService.takeoverMigration(runState.runUuid).then(() => {
-                        this.migrationUIStore.setIsLoading(false);
-                        this.migrationWorkerService.restoreRunningMigration();
-                        this.restoreRunningMigration();
-                    });
-                });
+            if (this.isTakeoverForbidden) {
+                return;
             }
+
+            await this.migrationWorkerService.checkForRunningMigration().then((runState) => {
+                if (runState.isMigrationRunning === false) {
+                    this.migrationProcessStore.setIsMigrating(false);
+                    this.migrationUIStore.setIsLoading(false);
+                    this.isOtherMigrationRunning = false;
+                    this.$router.push({ name: 'swag.migration.index.main' });
+                    return;
+                }
+
+                this.migrationWorkerService.takeoverMigration(runState.runUuid).then(() => {
+                    this.migrationUIStore.setIsLoading(false);
+                    this.migrationWorkerService.restoreRunningMigration();
+                    this.restoreRunningMigration();
+                });
+            });
         },
 
         /**
@@ -551,24 +551,26 @@ Component.register('swag-migration-process-screen', {
                 }
             });
 
-            if (!this.isTakeoverForbidden) {
-                await this.migrationWorkerService.checkForRunningMigration().then((runState) => {
-                    if (runState.isMigrationRunning === false) {
-                        this.migrationProcessStore.setIsMigrating(false);
-                        this.migrationUIStore.setIsLoading(false);
-                        this.isOtherMigrationRunning = false;
-                        this.$router.push({ name: 'swag.migration.index.main' });
-                        return;
-                    }
-
-                    this.migrationService.abortMigration(runState.runUuid).then(() => {
-                        this.migrationProcessStore.setIsMigrating(false);
-                        this.migrationUIStore.setIsLoading(false);
-                        this.isOtherMigrationRunning = false;
-                        this.$router.push({ name: 'swag.migration.index.main' });
-                    });
-                });
+            if (this.isTakeoverForbidden) {
+                return;
             }
+
+            await this.migrationWorkerService.checkForRunningMigration().then((runState) => {
+                if (runState.isMigrationRunning === false) {
+                    this.migrationProcessStore.setIsMigrating(false);
+                    this.migrationUIStore.setIsLoading(false);
+                    this.isOtherMigrationRunning = false;
+                    this.$router.push({ name: 'swag.migration.index.main' });
+                    return;
+                }
+
+                this.migrationService.abortMigration(runState.runUuid).then(() => {
+                    this.migrationProcessStore.setIsMigrating(false);
+                    this.migrationUIStore.setIsLoading(false);
+                    this.isOtherMigrationRunning = false;
+                    this.$router.push({ name: 'swag.migration.index.main' });
+                });
+            });
         },
 
         /**
@@ -592,6 +594,9 @@ Component.register('swag-migration-process-screen', {
         onConfiscatedMigration() {
             this.onInvalidMigrationAccessToken();
             this.isMigrationInterrupted = true;
+            this.$nextTick(() => {
+                this.$refs.loadingScreenTakeover.refreshState();
+            });
         },
 
         /**
@@ -626,6 +631,7 @@ Component.register('swag-migration-process-screen', {
          * If the current accessToken is invalid and a migration is running
          */
         onInvalidMigrationAccessToken() {
+            this.displayFlowChart = false;
             this.isMigrationInterrupted = false;
             this.migrationProcessStore.setIsMigrating(false);
             this.migrationUIStore.setIsPaused(false);

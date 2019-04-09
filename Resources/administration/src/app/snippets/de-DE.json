@@ -260,29 +260,38 @@
           "buttonRedirect": "Zur Übersicht",
           "running": {
             "title": "Migration bereits gestartet",
-            "message": "Die Migration wurde bereits in einem anderen Browser oder Tab gestartet. {linebreak}Der Prozess kann von Dir beendet oder übernommen werden, dies ist abhänging von dem aktuellen Status der Migration."
+            "message": "Es ist bereits eine Migration in einem anderen Browser oder Browser-Tab gestartet. Dieser Prozess kann nun, je nach aktuellem Status der Migration, entweder übernommen oder beendet werden."
           },
           "interrupted": {
             "title": "Migration wurde übernommen",
-            "message": "Der Migrationsprozess wurde von einem anderen Browser oder Tab übernommen. {linebreak}Der Prozess kann von Dir beendet oder wieder übernommen werden, dies ist abhänging von dem aktuellen Status der Migration."
+            "message": "Der Migrationsprozess wurde von einem anderen Browser oder Browser-Tab übernommen. Dieser Prozess kann nun, je nach aktuellem Status der Migration, entweder übernommen oder beendet werden."
           },
           "aborted": {
             "title": "Migration wurde beendet",
-            "message": "Der Migrationsprozess wurde in einem anderen Browser oder Tab beendet. {linebreak}Bitte überprüfe die Zuständigkeiten und starte eine neue Migration."
+            "message": "Der Migrationsprozess wurde in einem anderen Browser oder Browser-Tab beendet. Bitte überprüfe die Zuständigkeiten und starte eine neue Migration."
+          },
+          "forbidden": {
+            "title": "Migration bereits gestartet",
+            "message": "Es ist bereits eine Migration in einem anderen Browser-Tab gestartet. Bitte wechsle in diesen Tab, um den Migrationsprozess einsehen zu können."
           },
           "takeoverModal": {
             "title": "Migration übernehmen",
-            "message": "Die Übernahme der aktiven Migration ist möglich. Dem anderen Browser oder Tab wird die Migration entzogen und der Prozess kann hier fortgesetzt werden.",
+            "message": "Eine Übernahme der aktiven Migration ist möglich. Wenn Du möchtest, kannst Du die Migration jetzt in diesem Browserfenster fortsetzen.",
             "hint": "Möchtest Du die Migration übernehmen?",
             "cancel": "Abbrechen",
             "confirm": "Migration übernehmen"
           },
           "abortModal": {
             "title": "Migration beenden",
-            "message": "Eine Übernahme der Migration ist derzeit nicht möglich. Du kannst die Migration beenden und hier eine neue starten.",
+            "message": "Eine Übernahme der aktiven Migration ist derzeit nicht möglich. Wenn Du möchtest, kannst Du die laufende Migration beenden und danach in diesem Browserfenster eine neue Migration starten.",
             "hint": "Möchtest Du die Migration beenden?",
             "cancel": "Abbrechen",
             "confirm": "Migration beenden"
+          },
+          "redirectModal": {
+            "title": "Migration abgeschlossen",
+            "message": "Die Migration wurde bereits in einem anderen Browser oder Browser-Tab durchgeführt.",
+            "confirm": "Zur Übersicht"
           }
         }
       },

@@ -13,11 +13,7 @@
                     </h5>
                 {% endblock %}
                 {% block swag_migration_loading_screen_takeover_content_message %}
-                    <i18n class="swag-migration-loading-screen-takeover__content-message"
-                          :path="messageSnippet"
-                          tag="p">
-                        <br place="linebreak">
-                    </i18n>
+                    {{ $tc(messageSnippet) }}
                 {% endblock %}
                 {% block swag_migration_loading_screen_takeover_hint %}
                     <div class="swag-migration-loading-screen-takeover__actions">
@@ -128,21 +124,8 @@
                         </p>
                     {% endblock %}
 
-                    {% block swag_migration_loading_screen_redirect_modal_hint %}
-                        <p class="swag-migration-loading-screen-takeover__modal-hint">
-                            {{ $tc('swag-migration.index.loadingScreenCard.takeoverScreen.redirectModal.hint') }}
-                        </p>
-                    {% endblock %}
-
                     {% block swag_migration_loading_screen_redirect_modal_footer %}
                         <template slot="modal-footer">
-                            {% block swag_migration_loading_screen_redirect_modal_footer_cancelAction %}
-                                <sw-button @click="onCloseRedirectModal"
-                                           size="small">
-                                    {{ $tc('swag-migration.index.loadingScreenCard.takeoverScreen.redirectModal.cancel') }}
-                                </sw-button>
-                            {% endblock %}
-
                             {% block swag_migration_loading_screen_redirect_modal_footer_confirmAction %}
                                 <sw-button @click="onRedirect"
                                            variant="primary"

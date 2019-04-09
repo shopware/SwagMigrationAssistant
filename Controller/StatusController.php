@@ -197,7 +197,7 @@ class StatusController extends AbstractController
     }
 
     /**
-     * Aborts a already running migration remotely.
+     * Aborts an already running migration remotely.
      *
      * @Route("/api/v{version}/_action/migration/abort-migration", name="api.admin.migration.abort-migration", methods={"POST"})
      */

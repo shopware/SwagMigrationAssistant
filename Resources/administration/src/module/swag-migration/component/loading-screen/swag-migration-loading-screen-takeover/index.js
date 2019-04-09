@@ -45,43 +45,62 @@ Component.register('swag-migration-loading-screen-takeover', {
 
     computed: {
         titleSnippet() {
+            if (this.isTakeoverForbidden) {
+                return 'swag-migration.index.loadingScreenCard.takeoverScreen.forbidden.title';
+            }
+
             return `swag-migration.index.loadingScreenCard.takeoverScreen.${this.state}.title`;
         },
         messageSnippet() {
+            if (this.isTakeoverForbidden) {
+                return 'swag-migration.index.loadingScreenCard.takeoverScreen.forbidden.message';
+            }
+
             return `swag-migration.index.loadingScreenCard.takeoverScreen.${this.state}.message`;
         }
     },
 
     created() {
-        this.migrationWorkerService.isMigrationRunningInOtherTab().then((isRunning) => {
-            if (isRunning) {
-                this.isLoading = false;
-                return;
-            }
+        if (this.isMigrationInterrupted) {
+            this.state = TAKEOVER_STATE.INTERRUPTED;
+        } else {
+            this.state = TAKEOVER_STATE.RUNNING;
+        }
 
-            this.migrationWorkerService.checkForRunningMigration().then((runState) => {
-                if (runState.isMigrationRunning === false) {
-                    this.isLoading = false;
-                    this.state = TAKEOVER_STATE.ABORTED;
-                    return;
-                }
-
-                if (this.isMigrationInterrupted) {
-                    this.state = TAKEOVER_STATE.INTERRUPTED;
-                } else {
-                    this.state = TAKEOVER_STATE.RUNNING;
-                }
-
-                this.isLoading = false;
-            }).catch(() => {
-                this.isLoading = false;
-            });
-        }).catch(() => {
-            this.isLoading = false;
-        });
+        this.isLoading = false;
     },
 
     methods: {
+        refreshState() {
+            this.isLoading = true;
+            this.migrationWorkerService.isMigrationRunningInOtherTab().then((isRunning) => {
+                if (isRunning) {
+                    this.isLoading = false;
+                    return;
+                }
+
+                this.migrationWorkerService.checkForRunningMigration().then((runState) => {
+                    if (runState.isMigrationRunning === false) {
+                        this.isLoading = false;
+                        this.state = TAKEOVER_STATE.ABORTED;
+                        return;
+                    }
+
+                    if (this.isMigrationInterrupted) {
+                        this.state = TAKEOVER_STATE.INTERRUPTED;
+                    } else {
+                        this.state = TAKEOVER_STATE.RUNNING;
+                    }
+
+                    this.isLoading = false;
+                }).catch(() => {
+                    this.isLoading = false;
+                });
+            }).catch(() => {
+                this.isLoading = false;
+            });
+        },
+
         onCheckButtonClick() {
             this.isLoading = true;
             this.migrationWorkerService.checkForRunningMigration().then((runState) => {

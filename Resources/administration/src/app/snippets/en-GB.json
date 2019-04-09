@@ -260,29 +260,38 @@
           "buttonRedirect": "Overview",
           "running": {
             "title": "Migration already started",
-            "message": "The migration has already been started in another browser or tab. {linebreak}The process can be terminated or taken over by you, depending on the current status of the migration."
+            "message": "There is already a migration running in another browser or browser tab. You may now either take over the running migration or abort it."
           },
           "interrupted": {
             "title": "Migration has been taken over",
-            "message": "The migration process was taken over from another browser or tab. {linebreak}The process can be terminated or reinstated by you, depending on the current status of the migration."
+            "message": "The migration process was taken over from another browser or browser tab. The process can be aborted or taken over by you, depending on the current status of the migration."
           },
           "aborted": {
-            "title": "Migration was completed",
-            "message": "The migration process was aborted in another browser or tab. {linebreak}Please check the responsibilities and start a new migration."
+            "title": "Migration was aborted",
+            "message": "The migration process was aborted in another browser or browser tab. Please check the responsibilities and start a new migration."
+          },
+          "forbidden": {
+            "title": "Migration already started",
+            "message": "A migration has already been started in another browser or browser tab. Please switch to this tab to view the migration process."
           },
           "takeoverModal": {
             "title": "Take over migration",
-            "message": "It is possible to transfer the active migration. The migration is withdrawn from the other browser or tab and the process can be continued here.",
+            "message": "It is possible to take over the active migration. If you like, you may continue the migration in this browser window immediately.",
             "hint": "Would you like to take over the migration?",
             "cancel": "Cancel",
             "confirm": "Take over migration"
           },
           "abortModal": {
             "title": "Abort migration",
-            "message": "It is currently not possible to take over the migration. You can abort the migration and start a new one here.",
-            "hint": "Do you want to abort the migration?",
+            "message": "It is not possible to take over the active migration at the moment. If you like, you may now abort the active migration and start a new one directly afterwards.",
+            "hint": "Would you like to abort the migration?",
             "cancel": "Cancel",
             "confirm": "Abort migration"
+          },
+          "redirectModal": {
+            "title": "Migration completed",
+            "message": "The migration has already been completed in another browser or browser tab.",
+            "confirm": "Overview"
           }
         }
       },
