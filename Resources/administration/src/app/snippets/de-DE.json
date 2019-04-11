@@ -252,8 +252,8 @@
           }
         },
         "pauseScreen": {
-          "title": "Pause",
-          "message": "Der Import wurde pausiert.{linebreak}Setze ihn fort oder brich den Prozess ab."
+          "title": "Die Migration ist pausiert",
+          "message": "Du hast nicht pausiert? Bei fehlender Internetverbindung wechselt die Migration automatisch in den Pause-Modus um Datenverlust zu vermeiden."
         },
         "takeoverScreen": {
           "buttonCheck": "Status prüfen",
@@ -293,6 +293,11 @@
             "message": "Die Migration wurde bereits in einem anderen Browser oder Browser-Tab durchgeführt.",
             "confirm": "Zur Übersicht"
           }
+        },
+        "connectionLostScreen": {
+          "title": "Die Verbindung wurde unterbrochen",
+          "message": "Die Migration hat den Prozess beendet um Datenverlust zu vermeiden. Prüfe die Internetverbindung und starte eine neue Migration.",
+          "buttonNavigateToMain": "Zur Übersicht"
         }
       },
       "confirmDialog": {

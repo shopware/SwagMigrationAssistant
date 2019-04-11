@@ -252,8 +252,8 @@
           }
         },
         "pauseScreen": {
-          "title": "Pause",
-          "message": "The import was paused.{linebreak}Continue it or abort the process."
+          "title": "The migration is paused",
+          "message": "You didn't pause? If there is no internet connection, the migration automatically switches to pause mode to prevent data loss."
         },
         "takeoverScreen": {
           "buttonCheck": "Check status",
@@ -293,6 +293,11 @@
             "message": "The migration has already been completed in another browser or browser tab.",
             "confirm": "Overview"
           }
+        },
+        "connectionLostScreen": {
+          "title": "The connection has been lost",
+          "message": "The migration ended the process to avoid data loss. Check the internet connection and start a new migration.",
+          "buttonNavigateToMain": "Overview"
         }
       },
       "confirmDialog": {

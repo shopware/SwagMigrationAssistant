@@ -403,6 +403,13 @@ Component.register('swag-migration-process-screen', {
 
             if (!this.isTakeoverForbidden) {
                 await this.migrationWorkerService.checkForRunningMigration().then((runState) => {
+                    if (runState.requestErrorCode !== undefined &&
+                        runState.requestErrorCode !== '500') {
+                        // Something is wrong with the connection
+                        this.migrationUIStore.setIsLoading(false);
+                        return;
+                    }
+
                     this.migrationUIStore.setIsLoading(false);
                     this.migrationUIStore.setIsPaused(false);
 
@@ -585,6 +592,8 @@ Component.register('swag-migration-process-screen', {
                 this.onStop();
             } else if (type === WORKER_INTERRUPT_TYPE.PAUSE) {
                 this.onPause();
+            } else if (type === WORKER_INTERRUPT_TYPE.CONNECTION_LOST) {
+                this.onConnectionLost();
             }
         },
 
@@ -625,6 +634,15 @@ Component.register('swag-migration-process-screen', {
             this.migrationUIStore.setIsLoading(false);
             this.isOtherMigrationRunning = false;
             this.migrationUIStore.setComponentIndex(UI_COMPONENT_INDEX.PAUSE_SCREEN);
+        },
+
+        onConnectionLost() {
+            this.migrationProcessStore.setIsMigrating(false);
+            this.migrationUIStore.setIsPaused(false);
+            this.migrationUIStore.setDataSelectionIds([]);
+            this.migrationUIStore.setDataSelectionTableData([]);
+            this.migrationUIStore.setIsLoading(false);
+            this.migrationUIStore.setComponentIndex(UI_COMPONENT_INDEX.CONNECTION_LOST);
         },
 
         /**

@@ -1,0 +1,41 @@
+@import "~scss/variables";
+
+$swag-migration-pause-screen-color-bubble-background: #e3f3ff;
+$swag-migration-pause-screen-font-size-message: $font-size-small;
+$swag-migration-pause-screen-font-size-title: $font-size-large;
+$swag-migration-pause-screen-color-message: #b3bfcc;
+
+.swag-migration-pause-screen {
+    .swag-migration-pause-screen__content {
+        text-align: center;
+        max-width: 520px;
+        margin: 0 auto 0 auto;
+        padding-top: 10px;
+        padding-bottom: 20px;
+    }
+
+    .swag-migration-pause-screen__icon-wrapper {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        background-color: $swag-migration-pause-screen-color-bubble-background;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px auto;
+    }
+
+    h5.swag-migration-pause-screen__title {
+        font-size: $swag-migration-pause-screen-font-size-title;
+        font-weight: 600;
+    }
+
+    .swag-migration-pause-screen__content-message {
+        font-size: $swag-migration-pause-screen-font-size-message;
+        color: $swag-migration-pause-screen-color-message;
+    }
+
+    .swag-migration-pause-screen__actions {
+        margin-top: 24px;
+    }
+}

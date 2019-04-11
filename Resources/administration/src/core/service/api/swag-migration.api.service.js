@@ -3,6 +3,9 @@ import ApiService from 'src/core/service/api.service';
 class MigrationApiService extends ApiService {
     constructor(httpClient, loginService, apiEndpoint = 'migration') {
         super(httpClient, loginService, apiEndpoint);
+        this.basicConfig = {
+            timeout: 30000
+        };
     }
 
     updateConnectionCredentials(connectionId, credentialFields, additionalHeaders = {}) {
@@ -13,6 +16,7 @@ class MigrationApiService extends ApiService {
                 connectionId,
                 credentialFields
             }, {
+                ...this.basicConfig,
                 headers
             })
             .then((response) => {
@@ -25,6 +29,7 @@ class MigrationApiService extends ApiService {
 
         return this.httpClient
             .post(`_action/${this.getApiBasePath()}/check-connection`, { connectionId }, {
+                ...this.basicConfig,
                 headers
             })
             .then((response) => {
@@ -37,6 +42,7 @@ class MigrationApiService extends ApiService {
 
         return this.httpClient
             .get(`_action/${this.getApiBasePath()}/data-selection`, {
+                ...this.basicConfig,
                 params: {
                     connectionId
                 },
@@ -56,6 +62,7 @@ class MigrationApiService extends ApiService {
 
         return this.httpClient
             .post(`_action/${this.getApiBasePath()}/create-migration`, params, {
+                ...this.basicConfig,
                 headers
             })
             .then((response) => {
@@ -69,6 +76,7 @@ class MigrationApiService extends ApiService {
 
         return this.httpClient
             .post(`_action/${this.getApiBasePath()}/fetch-data`, params, {
+                ...this.basicConfig,
                 headers
             })
             .then((response) => {
@@ -83,6 +91,7 @@ class MigrationApiService extends ApiService {
             .post(`_action/${this.getApiBasePath()}/update-write-progress`, {
                 runUuid
             }, {
+                ...this.basicConfig,
                 headers
             })
             .then((response) => {
@@ -97,6 +106,7 @@ class MigrationApiService extends ApiService {
             .post(`_action/${this.getApiBasePath()}/update-media-files-progress`, {
                 runUuid
             }, {
+                ...this.basicConfig,
                 headers
             })
             .then((response) => {
@@ -110,6 +120,7 @@ class MigrationApiService extends ApiService {
 
         return this.httpClient
             .post(`_action/${this.getApiBasePath()}/write-data`, params, {
+                ...this.basicConfig,
                 headers
             })
             .then((response) => {
@@ -122,7 +133,11 @@ class MigrationApiService extends ApiService {
         const headers = this.getBasicHeaders(additionalHeaders);
 
         return this.httpClient
-            .get(`_action/${this.getApiBasePath()}/fetch-media-uuids`, { params, headers })
+            .get(`_action/${this.getApiBasePath()}/fetch-media-uuids`, {
+                ...this.basicConfig,
+                params,
+                headers
+            })
             .then((response) => {
                 return ApiService.handleResponse(response);
             });
@@ -134,6 +149,7 @@ class MigrationApiService extends ApiService {
 
         return this.httpClient
             .post(`_action/${this.getApiBasePath()}/process-media`, params, {
+                ...this.basicConfig,
                 headers
             })
             .then((response) => {
@@ -147,6 +163,7 @@ class MigrationApiService extends ApiService {
 
         return this.httpClient
             .post(`_action/${this.getApiBasePath()}/get-state`, params, {
+                ...this.basicConfig,
                 headers
             })
             .then((response) => {
@@ -159,6 +176,7 @@ class MigrationApiService extends ApiService {
 
         return this.httpClient
             .post(`_action/${this.getApiBasePath()}/takeover-migration`, { runUuid }, {
+                ...this.basicConfig,
                 headers
             })
             .then((response) => {
@@ -171,6 +189,7 @@ class MigrationApiService extends ApiService {
 
         return this.httpClient
             .post(`_action/${this.getApiBasePath()}/abort-migration`, { runUuid }, {
+                ...this.basicConfig,
                 headers
             })
             .then((response) => {
@@ -183,6 +202,7 @@ class MigrationApiService extends ApiService {
 
         return this.httpClient
             .post(`_action/${this.getApiBasePath()}/generate-premapping`, { runUuid }, {
+                ...this.basicConfig,
                 headers
             })
             .then((response) => {
@@ -195,6 +215,7 @@ class MigrationApiService extends ApiService {
 
         return this.httpClient
             .post(`_action/${this.getApiBasePath()}/write-premapping`, { runUuid, premapping }, {
+                ...this.basicConfig,
                 headers
             })
             .then((response) => {

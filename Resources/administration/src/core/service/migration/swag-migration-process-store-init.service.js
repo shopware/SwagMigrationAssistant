@@ -39,6 +39,8 @@ class ProcessStoreInitService {
                     }).catch(() => {
                         reject();
                     });
+            }).catch(() => {
+                reject();
             });
         });
     }
