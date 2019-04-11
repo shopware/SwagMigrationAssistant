@@ -45,14 +45,6 @@ class SwagMigrationNext extends Plugin
     /**
      * {@inheritdoc}
      */
-    public function getAdministrationEntryPath(): string
-    {
-        return 'Resources/views/administration';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function postInstall(InstallContext $installContext): void
     {
         /** @var Connection $connection */
