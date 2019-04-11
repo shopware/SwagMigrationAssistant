@@ -195,4 +195,22 @@ class StatusController extends AbstractController
 
         return new JsonResponse(['accessToken' => $accessToken]);
     }
+
+    /**
+     * Aborts an already running migration remotely.
+     *
+     * @Route("/api/v{version}/_action/migration/abort-migration", name="api.admin.migration.abort-migration", methods={"POST"})
+     */
+    public function abortMigration(Request $request, Context $context): Response
+    {
+        $runUuid = $request->request->get('runUuid');
+
+        if ($runUuid === null) {
+            throw new MigrationContextPropertyMissingException('runUuid');
+        }
+
+        $this->runService->abortMigration($runUuid, $context);
+
+        return new Response();
+    }
 }

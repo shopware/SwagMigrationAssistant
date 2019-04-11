@@ -91,6 +91,11 @@ class RunService implements RunServiceInterface
         return $this->accessTokenService->updateRunAccessToken($runUuid, $context);
     }
 
+    public function abortMigration(string $runUuid, Context $context): void
+    {
+        $this->accessTokenService->invalidateRunAccessToken($runUuid, $context);
+    }
+
     public function createMigrationRun(string $connectionId, array $dataSelectionIds, Context $context): ?ProgressState
     {
         if ($this->isMigrationRunning($context)) {

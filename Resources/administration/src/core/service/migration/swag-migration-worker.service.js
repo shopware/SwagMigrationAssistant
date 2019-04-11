@@ -47,10 +47,6 @@ class MigrationWorkerService {
         this._interruptSubscriber = null;
         this._restoreState = {};
 
-        this._broadcastService.sendMessage({
-            migrationMessage: 'initialized'
-        });
-
         window.addEventListener('beforeunload', this.onBrowserTabClosing.bind(this));
     }
 
@@ -475,7 +471,7 @@ class MigrationWorkerService {
                 }
 
                 resolve(false);
-            }, 250);
+            }, 300);
         });
     }
 

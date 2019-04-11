@@ -48,11 +48,13 @@ Component.register('swag-migration-index', {
             ) {
                 this.migrationProcessStoreInitService.initProcessStore().then(() => {
                     return this.migrationUiStoreInitService.initUiStore();
-                }).finally(() => {
+                }).catch(() => {}).finally(() => {
                     this.storesInitializing = false;
                 });
             } else if (this.migrationUIStore.state.dataSelectionTableData.length === 0) {
                 this.migrationUiStoreInitService.initUiStore().then(() => {
+                    this.storesInitializing = false;
+                }).catch(() => {
                     this.storesInitializing = false;
                 });
             } else {

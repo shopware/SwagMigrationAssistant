@@ -1,39 +1,51 @@
 @import "~scss/variables";
 
-$swag-migration-loading-screen-takeover-color-content-background: $color-iron;
-$swag-migration-loading-screen-takeover-font-size-hint: $font-size-small;
+$swag-migration-loading-screen-takeover-color-bubble-background: #E3F3FF;
+$swag-migration-loading-screen-takeover-font-size-message: $font-size-small;
+$swag-migration-loading-screen-takeover-font-size-title: $font-size-large;
 $swag-migration-loading-screen-takeover-font-size-modal: $font-size-small;
 
 .swag-migration-loading-screen-takeover {
     .swag-migration-loading-screen-takeover__content {
-        background-color: $swag-migration-loading-screen-takeover-color-content-background;
-        height: 230px;
         text-align: center;
-        width: 100%;
+        max-width: 520px;
+        margin: 0 auto 0 auto;
+        padding-top: 10px;
+    }
+
+    .swag-migration-loading-screen-takeover__icon-wrapper {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        background-color: $swag-migration-loading-screen-takeover-color-bubble-background;
         display: flex;
-        flex-direction: column;
-        justify-content: center;
         align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px auto;
+    }
+
+    h5.swag-migration-loading-screen-takeover__title {
+        font-size: $swag-migration-loading-screen-takeover-font-size-title;
+        font-weight: 600;
     }
 
     .swag-migration-loading-screen-takeover__content-message {
-        font-size: 18px;
-        font-weight: 600;
-        letter-spacing: 0.1px;
-        width: 465px;
+        font-size: $swag-migration-loading-screen-takeover-font-size-message;
     }
 
-    .swag-migration-loading-screen-takeover__hint {
-        font-size: $swag-migration-loading-screen-takeover-font-size-hint;
+    .swag-migration-loading-screen-takeover__actions {
+        margin-top: 24px;
     }
 }
 
 .swag-migration-loading-screen-takeover__modal {
     font-size: $swag-migration-loading-screen-takeover-font-size-modal;
+    line-height: 22px;
+    text-align: center;
 }
 
 .swag-migration-loading-screen-takeover__modal-hint {
-    font-weight: bold;
-    padding-top: 28px;
-    padding-bottom: 28px;
+    font-weight: 600;
+    padding-top: 8px;
+    padding-bottom: 8px;
 }

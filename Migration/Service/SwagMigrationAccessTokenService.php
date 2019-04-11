@@ -33,6 +33,25 @@ class SwagMigrationAccessTokenService
         return $this->createMigrationAccessToken($runId, $userId, $context);
     }
 
+    public function invalidateRunAccessToken(string $runId, Context $context): void
+    {
+        $token = hash(
+            'sha256',
+            sprintf('invalid_%s', time())
+        );
+
+        $this->migrationRunRepo->update(
+            [
+                [
+                    'id' => $runId,
+                    'accessToken' => $token,
+                    'status' => SwagMigrationRunEntity::STATUS_ABORTED,
+                ],
+            ],
+            $context
+        );
+    }
+
     public function validateMigrationAccessToken(string $runId, Request $request, Context $context): bool
     {
         $databaseToken = $this->getDatabaseToken($runId, $context);

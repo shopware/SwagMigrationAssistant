@@ -166,6 +166,18 @@ class MigrationApiService extends ApiService {
             });
     }
 
+    abortMigration(runUuid) {
+        const headers = this.getBasicHeaders();
+
+        return this.httpClient
+            .post(`_action/${this.getApiBasePath()}/abort-migration`, { runUuid }, {
+                headers
+            })
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
     generatePremapping(runUuid) {
         const headers = this.getBasicHeaders();
 
