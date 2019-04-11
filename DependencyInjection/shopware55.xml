@@ -258,6 +258,13 @@
             <tag name="shopware.migration.converter"/>
         </service>
 
+        <service class="SwagMigrationAssistant\Profile\Shopware55\Converter\NewsletterReceiverConverter" id="swag_migration_next.profile.shopware55.converter.newsletter_receiver_converter">
+            <argument id="SwagMigrationAssistant\Migration\Mapping\MappingService" type="service"/>
+            <argument id="SwagMigrationAssistant\Profile\Shopware55\Converter\ConverterHelperService" type="service"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
+            <tag name="shopware.migration.converter"/>
+        </service>
+
         <!-- Shopware 5.5 MediaHandler -->
         <service id="SwagMigrationAssistant\Profile\Shopware55\Media\HttpMediaDownloadService">
             <argument type="service" id="swag_migration_media_file.repository"/>
@@ -300,6 +307,10 @@
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware55\DataSelection\NumberRangeDataSelection">
+            <tag name="shopware.migration.data_selection"/>
+        </service>
+
+        <service id="SwagMigrationNext\Profile\Shopware55\DataSelection\NewsletterReceiverDataSelection">
             <tag name="shopware.migration.data_selection"/>
         </service>
 
@@ -372,6 +383,10 @@
             <tag name="shopware.migration.data_set" />
         </service>
 
+        <service id="SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\NewsletterReceiverDataSet">
+            <tag name="shopware.migration.data_set" />
+        </service>
+
         <service id="SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\LanguageDataSet">
             <tag name="shopware.migration.data_set" />
         </service>
@@ -421,5 +436,9 @@
             <tag name="shopware.migration.pre_mapping_reader"/>
         </service>
 
+        <service id="SwagMigrationNext\Profile\Shopware55\Premapping\SalesChannelReader">
+            <argument type="service" id="sales_channel.repository" />
+            <tag name="shopware.migration.pre_mapping_reader"/>
+        </service>
     </services>
 </container>

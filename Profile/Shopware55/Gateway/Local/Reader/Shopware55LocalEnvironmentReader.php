@@ -19,6 +19,7 @@ class Shopware55LocalEnvironmentReader extends Shopware55LocalAbstractReader
         'configuratorOptions' => 's_article_configurator_options',
         'numberRanges' => 's_order_number',
         'currencies' => 's_core_currencies',
+        'newsletterReceiver' => 's_campaigns_maildata',
     ];
 
     public function read(MigrationContextInterface $migrationContext, array $params = []): array

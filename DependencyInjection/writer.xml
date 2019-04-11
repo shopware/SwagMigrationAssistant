@@ -130,5 +130,11 @@
             <argument type="service" id="Shopware\Core\System\SalesChannel\SalesChannelDefinition"/>
             <tag name="shopware.migration.writer"/>
         </service>
+
+        <service id="SwagMigrationNext\Migration\Writer\NewsletterReceiverWriter"
+                 class="SwagMigrationNext\Migration\Writer\NewsletterReceiverWriter">
+            <argument type="service" id="newsletter_receiver.repository"/>
+            <tag name="shopware.migration.writer"/>
+        </service>
     </services>
 </container>

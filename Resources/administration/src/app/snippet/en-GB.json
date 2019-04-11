@@ -182,7 +182,8 @@
           "media": "Media",
           "processMediaFiles": "Media",
           "numberRanges": "Number ranges",
-          "basicSettings": "Basic settings"
+          "basicSettings": "Basic settings",
+          "newsletterReceiver": "Newsletter Receiver"
         },
         "entities": {
           "category": "Categories:",
@@ -217,7 +218,8 @@
           "payment_method": "Payment methods",
           "manufacturer": "Manufacturers",
           "salutation": "Salutation",
-          "delivery_time": "Delivery time"
+          "delivery_time": "Delivery time",
+          "salesChannel": "Sales Channel"
         }
       },
       "loadingScreenCard": {

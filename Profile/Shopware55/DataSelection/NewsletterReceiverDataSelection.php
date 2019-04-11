@@ -17,9 +17,9 @@ class NewsletterReceiverDataSelection implements DataSelectionInterface
     public function getData(): DataSelectionStruct
     {
         return new DataSelectionStruct(
-            'newsletter',
+            'newsletterReceiver',
             $this->getEntityNames(),
-            'swag-migration.index.selectDataCard.dataSelection.newsletter',
+            'swag-migration.index.selectDataCard.dataSelection.newsletterReceiver',
             400,
             false
         );

@@ -52,7 +52,8 @@ class SalutationReader extends AbstractPremappingReader
     public function supports(string $profileName, string $gatewayIdentifier, array $entityGroupNames): bool
     {
         return $profileName === Shopware55Profile::PROFILE_NAME
-            && in_array(CustomerAndOrderDataSelection::IDENTIFIER, $entityGroupNames, true);
+            && (in_array(CustomerAndOrderDataSelection::IDENTIFIER, $entityGroupNames, true)
+            || in_array('newsletterReceiver', $entityGroupNames, true));
     }
 
     public function getPremapping(Context $context, MigrationContext $migrationContext): PremappingStruct
@@ -88,7 +89,8 @@ class SalutationReader extends AbstractPremappingReader
 
         if (!empty($configuredSalutations)) {
             foreach ($configuredSalutations as $configuredSalutation) {
-                $salutations[] = explode(',', unserialize($configuredSalutation['value'], ['allowed_classes' => false]));
+                $salutations[] = explode(',',
+                    unserialize($configuredSalutation['value'], ['allowed_classes' => false]));
             }
         }
 

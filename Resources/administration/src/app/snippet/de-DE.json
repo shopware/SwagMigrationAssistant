@@ -183,7 +183,8 @@
           "media": "Medien",
           "processMediaFiles": "Medien",
           "numberRanges": "Nummernkreise",
-          "basicSettings": "Grundeinstellungen"
+          "basicSettings": "Grundeinstellungen",
+          "newsletterReceiver": "Newsletter Empfänger"
         },
         "entities": {
           "category": "Kategorien:",
@@ -218,7 +219,8 @@
           "payment_method": "Zahlungsarten",
           "manufacturer": "Hersteller",
           "salutation": "Anrede",
-          "delivery_time": "Lieferzeit"
+          "delivery_time": "Lieferzeit",
+          "salesChannel": "Verkaufskanäle"
         }
       },
       "loadingScreenCard": {

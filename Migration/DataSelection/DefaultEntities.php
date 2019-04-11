@@ -125,4 +125,6 @@ final class DefaultEntities
     public const UNIT = 'unit';
 
     public const UNIT_TRANSLATION = 'unit_translation';
+
+    public const NEWSLETTER_RECEIVER = 'newsletter_receiver';
 }
