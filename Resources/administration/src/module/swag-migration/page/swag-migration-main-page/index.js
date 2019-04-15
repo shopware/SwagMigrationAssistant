@@ -36,7 +36,8 @@ Component.register('swag-migration-main-page', {
         },
 
         connectionEstablished() {
-            return Object.keys(this.migrationProcessStore.state.environmentInformation).length > 0;
+            return this.migrationProcessStore.state.environmentInformation !== undefined &&
+                this.migrationProcessStore.state.environmentInformation.errorCode === '';
         }
     },
 
