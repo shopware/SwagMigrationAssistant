@@ -377,7 +377,7 @@ class ProductConverter extends AbstractConverter
         $this->helper->convertValue($converted, 'minDeliveryTime', $data['detail'], 'shippingtime', $this->helper::TYPE_INTEGER);
         $this->helper->convertValue($converted, 'purchasePrice', $data['detail'], 'purchaseprice', $this->helper::TYPE_FLOAT);
 
-        $this->getVariations($converted, $data);
+        $this->getOptions($converted, $data);
 
         // Legacy data which don't need a mapping or there is no equivalent field
         unset(
@@ -390,9 +390,9 @@ class ProductConverter extends AbstractConverter
             $data['available_from'],
             $data['available_to'],
             $data['pseudosales'],
+            $data['configurator_set_id'],
 
             // TODO check how to handle these
-            $data['configurator_set_id'],
             $data['pricegroupID'],
             $data['pricegroupActive'],
             $data['filtergroupID'],
@@ -407,7 +407,7 @@ class ProductConverter extends AbstractConverter
         return $converted;
     }
 
-    private function getVariations(&$converted, &$data): void
+    private function getOptions(&$converted, &$data): void
     {
         if (
             !isset($data['configuratorOptions'])
@@ -416,7 +416,7 @@ class ProductConverter extends AbstractConverter
             return;
         }
 
-        $variations = [];
+        $options = [];
         $productContainerUuid = $this->mappingService->getUuid(
             $this->connectionId,
             ProductDefinition::getEntityName() . '_container',
@@ -441,7 +441,7 @@ class ProductConverter extends AbstractConverter
                 );
             }
 
-            $variationsElement = [
+            $optionElement = [
                 'id' => $this->mappingService->createNewUuid(
                     $this->connectionId,
                     PropertyGroupOptionDefinition::getEntityName(),
@@ -460,23 +460,23 @@ class ProductConverter extends AbstractConverter
             ];
 
             if ($shouldTranslated) {
-                $this->getVariationTranslation($variationsElement, $option);
+                $this->getOptionTranslation($optionElement, $option);
             }
 
-            $this->helper->convertValue($variationsElement, 'name', $option, 'name');
-            $this->helper->convertValue($variationsElement, 'position', $option, 'position', $this->helper::TYPE_INTEGER);
+            $this->helper->convertValue($optionElement, 'name', $option, 'name');
+            $this->helper->convertValue($optionElement, 'position', $option, 'position', $this->helper::TYPE_INTEGER);
 
-            $this->helper->convertValue($variationsElement['group'], 'name', $option['group'], 'name');
-            $this->helper->convertValue($variationsElement['group'], 'description', $option['group'], 'description');
+            $this->helper->convertValue($optionElement['group'], 'name', $option['group'], 'name');
+            $this->helper->convertValue($optionElement['group'], 'description', $option['group'], 'description');
 
-            $variations[] = $variationsElement;
+            $options[] = $optionElement;
         }
         unset($data['configuratorOptions']);
 
-        $converted['variations'] = $variations;
+        $converted['options'] = $options;
     }
 
-    private function getVariationTranslation(array &$variation, array $data): void
+    private function getOptionTranslation(array &$option, array $data): void
     {
         $localeOptionTranslation = [];
         $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $this->locale, $this->context);
@@ -509,8 +509,8 @@ class ProductConverter extends AbstractConverter
         $this->helper->convertValue($localeGroupTranslation, 'name', $data['group'], 'name');
         $this->helper->convertValue($localeGroupTranslation, 'description', $data['group'], 'description');
 
-        $variation['translations'][$languageData['uuid']] = $localeOptionTranslation;
-        $variation['group']['translations'][$languageData['uuid']] = $localeGroupTranslation;
+        $option['translations'][$languageData['uuid']] = $localeOptionTranslation;
+        $option['group']['translations'][$languageData['uuid']] = $localeGroupTranslation;
     }
 
     private function getManufacturer(array $data): array

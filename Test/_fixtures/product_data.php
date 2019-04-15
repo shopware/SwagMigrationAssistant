@@ -1307,7 +1307,7 @@ return [
                 'group' => [
                     'id' => '6',
                     'name' => 'Größe',
-                    'description' => 'Farben',
+                    'description' => 'Größe',
                     'position' => 0,
                 ],
             ],
@@ -1788,12 +1788,6 @@ return [
                 'name' => 'Weiß',
                 'position' => '3',
                 'media_id' => null,
-                'group' => [
-                    'id' => '5',
-                    'name' => 'Farbe',
-                    'description' => 'Farben',
-                    'position' => 0,
-                ],
             ],
             1 => [
                 'id' => '4',
@@ -4814,7 +4808,7 @@ return [
                 'position' => '1',
                 'media_id' => null,
                 'group' => [
-                    'id' => '5',
+                    'id' => '6',
                     'name' => 'Farbe',
                     'description' => 'Farben',
                     'position' => 0,
@@ -4826,7 +4820,7 @@ return [
                 'position' => '4',
                 'media_id' => null,
                 'group' => [
-                    'id' => '6',
+                    'id' => '5',
                     'name' => 'Größe',
                     'description' => 'Größen',
                     'position' => 0,

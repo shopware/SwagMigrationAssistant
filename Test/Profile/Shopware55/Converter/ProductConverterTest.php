@@ -134,7 +134,6 @@ class ProductConverterTest extends TestCase
 
     public function testConvertMainProduct(): void
     {
-        static::markTestSkipped('Remove when variant support is implemented again');
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
 
         $context = Context::createDefaultContext();
@@ -154,7 +153,6 @@ class ProductConverterTest extends TestCase
 
     public function testConvertVariantProduct(): void
     {
-        static::markTestSkipped('Remove when variant support is implemented again');
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
 
         $context = Context::createDefaultContext();
@@ -168,13 +166,16 @@ class ProductConverterTest extends TestCase
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('manufacturer', $converted);
         static::assertArrayHasKey('price', $converted);
+        static::assertArrayHasKey('options', $converted);
         static::assertSame($convertedContainer['id'], $converted['parentId']);
         static::assertCount(0, $this->loggingService->getLoggingArray());
+
+        static::assertSame('Größe', $converted['options'][0]['group']['translations'][DummyMappingService::DEFAULT_LANGUAGE_UUID]['name']);
+        static::assertSame('M', $converted['options'][0]['translations'][DummyMappingService::DEFAULT_LANGUAGE_UUID]['name']);
     }
 
     public function testConvertVariantProductWithoutParent(): void
     {
-        static::markTestSkipped('Remove when variant support is implemented again');
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
 
         $context = Context::createDefaultContext();

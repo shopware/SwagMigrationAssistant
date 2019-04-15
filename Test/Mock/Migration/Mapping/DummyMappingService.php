@@ -2,7 +2,6 @@
 
 namespace SwagMigrationNext\Test\Mock\Migration\Mapping;
 
-use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationNext\Migration\Mapping\MappingService;
@@ -54,6 +53,11 @@ class DummyMappingService extends MappingService
     public function getUuid(string $connectionId, string $entityName, string $oldId, Context $context): ?string
     {
         return $this->uuids[$connectionId][$entityName][$oldId] ?? null;
+    }
+
+    public function getUuidList(string $connectionId, string $entityName, string $identifier, Context $context): array
+    {
+        return $this->uuids[$connectionId][$entityName][$identifier] ?? [];
     }
 
     public function deleteMapping(string $entityUuid, string $connectionId, Context $context): void
@@ -109,7 +113,7 @@ class DummyMappingService extends MappingService
     public function getDefaultLanguageUuid(Context $context): array
     {
         return [
-            'uuid' => Defaults::LANGUAGE_SYSTEM,
+            'uuid' => self::DEFAULT_LANGUAGE_UUID,
             'createData' => [
                 'localeId' => Uuid::randomHex(),
                 'localeCode' => 'en_GB',

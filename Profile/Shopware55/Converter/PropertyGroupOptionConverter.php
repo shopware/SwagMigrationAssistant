@@ -219,7 +219,7 @@ class PropertyGroupOptionConverter extends AbstractConverter
 
     private function getConfigurator(array &$converted, array &$data, string $productContainerUuid): void
     {
-        $converted['productConfigurators'][] = [
+        $converted['productConfiguratorSettings'][] = [
             'id' => $this->mappingService->createNewUuid(
                 $this->connectionId,
                 ProductPropertyDefinition::getEntityName(),
@@ -233,7 +233,7 @@ class PropertyGroupOptionConverter extends AbstractConverter
 
     private function getDatasheet(array &$converted, string $productContainerUuid): void
     {
-        $converted['productDatasheets'][] = [
+        $converted['productProperties'][] = [
             'id' => $productContainerUuid,
         ];
     }
