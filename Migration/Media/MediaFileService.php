@@ -4,6 +4,7 @@ namespace SwagMigrationNext\Migration\Media;
 
 use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
+use Shopware\Core\Content\Property\Aggregate\PropertyGroupOption\PropertyGroupOptionDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -75,6 +76,14 @@ class MediaFileService implements MediaFileServiceInterface
 
                     $mediaUuids[] = $media['media']['id'];
                 }
+            }
+
+            if ($dataSet::getEntity() === PropertyGroupOptionDefinition::getEntityName()) {
+                if (!isset($data['media']['id'])) {
+                    continue;
+                }
+
+                $mediaUuids[] = $data['media']['id'];
             }
         }
 

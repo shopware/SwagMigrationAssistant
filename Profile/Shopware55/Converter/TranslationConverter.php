@@ -8,6 +8,10 @@ use Shopware\Core\Content\Product\Aggregate\ProductManufacturer\ProductManufactu
 use Shopware\Core\Content\Product\Aggregate\ProductManufacturerTranslation\ProductManufacturerTranslationDefinition;
 use Shopware\Core\Content\Product\Aggregate\ProductTranslation\ProductTranslationDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
+use Shopware\Core\Content\Property\Aggregate\PropertyGroupOption\PropertyGroupOptionDefinition;
+use Shopware\Core\Content\Property\Aggregate\PropertyGroupOptionTranslation\PropertyGroupOptionTranslationDefinition;
+use Shopware\Core\Content\Property\Aggregate\PropertyGroupTranslation\PropertyGroupTranslationDefinition;
+use Shopware\Core\Content\Property\PropertyGroupDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\System\Unit\Aggregate\UnitTranslation\UnitTranslationDefinition;
 use Shopware\Core\System\Unit\UnitDefinition;
@@ -94,6 +98,10 @@ class TranslationConverter extends AbstractConverter
                 return $this->createUnitTranslation($data);
             case 'category':
                 return $this->createCategoryTranslation($data);
+            case 'configuratoroption':
+                return $this->createConfiguratorOptionTranslation($data);
+            case 'configuratorgroup':
+                return $this->createConfiguratorOptionGroupTranslation($data);
         }
 
         $this->loggingService->addWarning(
@@ -545,5 +553,211 @@ class TranslationConverter extends AbstractConverter
         }
 
         return new ConvertStruct($category, $data);
+    }
+
+    private function createConfiguratorOptionTranslation(array $data): ConvertStruct
+    {
+        $sourceData = $data;
+
+        $configuratorOption = [];
+        $configuratorOption['id'] = $this->mappingService->getUuid(
+            $this->connectionId,
+            PropertyGroupOptionDefinition::getEntityName(),
+            $data['objectkey'],
+            $this->context
+        );
+        unset($data['objectkey']);
+
+        if (!isset($configuratorOption['id'])) {
+            $this->loggingService->addWarning(
+                $this->runId,
+                Shopware55LogTypes::ASSOCIATION_REQUIRED_MISSING,
+                'Associated configuration group option not found',
+                'Mapping of "configuration group option" is missing, but it is a required association for "translation". Import "configuration group option" first.',
+                [
+                    'data' => $data,
+                    'missingEntity' => 'Configuration group option',
+                    'requiredFor' => 'translation',
+                    'missingImportEntity' => 'Configuration group option',
+                ]
+            );
+
+            return new ConvertStruct(null, $sourceData);
+        }
+
+        $configuratorOption['entityDefinitionClass'] = PropertyGroupOptionDefinition::class;
+
+        $objectData = unserialize($data['objectdata'], ['allowed_classes' => false]);
+
+        if (!\is_array($objectData)) {
+            $this->loggingService->addWarning(
+                $this->runId,
+                Shopware55LogTypes::INVALID_UNSERIALIZED_DATA,
+                'Invalid unserialized data',
+                'Configuration-Group-Option-Translation-Entity could not converted cause of invalid unserialized object data.',
+                [
+                    'entity' => 'Configuration group option',
+                    'data' => $data['objectdata'],
+                ]
+            );
+
+            return new ConvertStruct(null, $sourceData);
+        }
+
+        $propertyGroupOptionTranslation = [];
+        $propertyGroupOptionTranslation['id'] = $this->mappingService->createNewUuid(
+            $this->connectionId,
+            PropertyGroupOptionTranslationDefinition::getEntityName(),
+            $data['id'],
+            $this->context
+        );
+
+        foreach ($objectData as $key => $value) {
+            if ($key === 'name') {
+                $this->helper->convertValue($propertyGroupOptionTranslation, 'name', $objectData, $key);
+            }
+
+            if ($key === 'position') {
+                $this->helper->convertValue($propertyGroupOptionTranslation, 'position', $objectData, $key, ConverterHelperService::TYPE_INTEGER);
+            }
+
+            $isAttribute = strpos($key, '__attribute_');
+            if ($isAttribute !== false) {
+                $key = str_replace('__attribute_', '', $key);
+                $propertyGroupOptionTranslation['attributes'][$key] = $value;
+                unset($objectData[$key]);
+            }
+        }
+
+        if (empty($objectData)) {
+            unset($data['objectdata']);
+        } else {
+            $data['objectdata'] = serialize($objectData);
+        }
+
+        unset($data['id'], $data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
+
+        $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $data['_locale'], $this->context);
+
+        if (isset($languageData['createData'])) {
+            $propertyGroupOptionTranslation['language']['id'] = $languageData['uuid'];
+            $propertyGroupOptionTranslation['language']['localeId'] = $languageData['createData']['localeId'];
+            $propertyGroupOptionTranslation['language']['name'] = $languageData['createData']['localeCode'];
+        } else {
+            $propertyGroupOptionTranslation['languageId'] = $languageData['uuid'];
+        }
+
+        $configuratorOption['translations'][$languageData['uuid']] = $propertyGroupOptionTranslation;
+
+        unset($data['name'], $data['_locale']);
+
+        if (empty($data)) {
+            $data = null;
+        }
+
+        return new ConvertStruct($configuratorOption, $data);
+    }
+
+    private function createConfiguratorOptionGroupTranslation(array $data): ConvertStruct
+    {
+        $sourceData = $data;
+
+        $configuratorOptionGroup = [];
+        $configuratorOptionGroup['id'] = $this->mappingService->getUuid(
+            $this->connectionId,
+            PropertyGroupDefinition::getEntityName(),
+            $data['objectkey'],
+            $this->context
+        );
+        unset($data['objectkey']);
+
+        if (!isset($configuratorOptionGroup['id'])) {
+            $this->loggingService->addWarning(
+                $this->runId,
+                Shopware55LogTypes::ASSOCIATION_REQUIRED_MISSING,
+                'Associated configuration group not found',
+                'Mapping of "configuration group" is missing, but it is a required association for "translation". Import "configuration group" first.',
+                [
+                    'data' => $data,
+                    'missingEntity' => 'Configuration group',
+                    'requiredFor' => 'translation',
+                    'missingImportEntity' => 'Configuration group',
+                ]
+            );
+
+            return new ConvertStruct(null, $sourceData);
+        }
+
+        $configuratorOptionGroup['entityDefinitionClass'] = PropertyGroupDefinition::class;
+
+        $objectData = unserialize($data['objectdata'], ['allowed_classes' => false]);
+
+        if (!\is_array($objectData)) {
+            $this->loggingService->addWarning(
+                $this->runId,
+                Shopware55LogTypes::INVALID_UNSERIALIZED_DATA,
+                'Invalid unserialized data',
+                'Configuration-Group-Translation-Entity could not converted cause of invalid unserialized object data.',
+                [
+                    'entity' => 'Configuration group',
+                    'data' => $data['objectdata'],
+                ]
+            );
+
+            return new ConvertStruct(null, $sourceData);
+        }
+
+        $propertyGroupTranslation = [];
+        $propertyGroupTranslation['id'] = $this->mappingService->createNewUuid(
+            $this->connectionId,
+            PropertyGroupTranslationDefinition::getEntityName(),
+            $data['id'],
+            $this->context
+        );
+
+        foreach ($objectData as $key => $value) {
+            if ($key === 'name') {
+                $this->helper->convertValue($propertyGroupTranslation, 'name', $objectData, $key);
+            }
+
+            if ($key === 'description') {
+                $this->helper->convertValue($propertyGroupTranslation, 'description', $objectData, $key);
+            }
+
+            $isAttribute = strpos($key, '__attribute_');
+            if ($isAttribute !== false) {
+                $key = str_replace('__attribute_', '', $key);
+                $propertyGroupTranslation['attributes'][$key] = $value;
+                unset($objectData[$key]);
+            }
+        }
+
+        if (empty($objectData)) {
+            unset($data['objectdata']);
+        } else {
+            $data['objectdata'] = serialize($objectData);
+        }
+
+        unset($data['id'], $data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
+
+        $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $data['_locale'], $this->context);
+
+        if (isset($languageData['createData'])) {
+            $propertyGroupTranslation['language']['id'] = $languageData['uuid'];
+            $propertyGroupTranslation['language']['localeId'] = $languageData['createData']['localeId'];
+            $propertyGroupTranslation['language']['name'] = $languageData['createData']['localeCode'];
+        } else {
+            $propertyGroupTranslation['languageId'] = $languageData['uuid'];
+        }
+
+        $configuratorOptionGroup['translations'][$languageData['uuid']] = $propertyGroupTranslation;
+
+        unset($data['name'], $data['_locale']);
+
+        if (empty($data)) {
+            $data = null;
+        }
+
+        return new ConvertStruct($configuratorOptionGroup, $data);
     }
 }

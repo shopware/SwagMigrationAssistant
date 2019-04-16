@@ -10,6 +10,7 @@ use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
+use Shopware\Core\Content\Property\Aggregate\PropertyGroupOption\PropertyGroupOptionDefinition;
 use SwagMigrationNext\Migration\EnvironmentInformation;
 use SwagMigrationNext\Migration\Gateway\AbstractGateway;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CategoryAttributeDataSet;
@@ -23,6 +24,7 @@ use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\OrderDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ProductAttributeDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ProductPriceAttributeDataSet;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\PropertyGroupOptionDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\Shopware55DataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\TranslationDataSet;
 use SwagMigrationNext\Profile\Shopware55\Exception\DatabaseConnectionException;
@@ -34,6 +36,7 @@ use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalEnv
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalMediaReader;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalOrderReader;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalProductReader;
+use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalPropertyGroupOptionReader;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalReaderNotFoundException;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalTranslationReader;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
@@ -75,6 +78,10 @@ class Shopware55LocalGateway extends AbstractGateway
                 return $reader->read();
             case TranslationDataSet::getEntity():
                 $reader = new Shopware55LocalTranslationReader($connection, $this->migrationContext);
+
+                return $reader->read();
+            case PropertyGroupOptionDataSet::getEntity():
+                $reader = new Shopware55LocalPropertyGroupOptionReader($connection, $this->migrationContext);
 
                 return $reader->read();
             case CategoryAttributeDataSet::getEntity():
@@ -121,6 +128,7 @@ class Shopware55LocalGateway extends AbstractGateway
             OrderDefinition::getEntityName() => $environmentData['orders'],
             MediaDefinition::getEntityName() => $environmentData['assets'],
             CustomerGroupDefinition::getEntityName() => $environmentData['customerGroups'],
+            PropertyGroupOptionDefinition::getEntityName() => $environmentData['configuratorOptions'],
             'translation' => $environmentData['translations'],
         ];
 

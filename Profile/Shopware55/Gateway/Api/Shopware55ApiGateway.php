@@ -9,6 +9,7 @@ use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
+use Shopware\Core\Content\Property\Aggregate\PropertyGroupOption\PropertyGroupOptionDefinition;
 use SwagMigrationNext\Migration\EnvironmentInformation;
 use SwagMigrationNext\Migration\Gateway\AbstractGateway;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiEnvironmentReader;
@@ -62,6 +63,7 @@ class Shopware55ApiGateway extends AbstractGateway
             OrderDefinition::getEntityName() => $environmentDataArray['orders'],
             MediaDefinition::getEntityName() => $environmentDataArray['assets'],
             CustomerGroupDefinition::getEntityName() => $environmentDataArray['customerGroups'],
+            PropertyGroupOptionDefinition::getEntityName() => $environmentDataArray['configuratorOptions'],
             'translation' => $environmentDataArray['translations'],
         ];
         $credentials = $this->migrationContext->getConnection()->getCredentialFields();

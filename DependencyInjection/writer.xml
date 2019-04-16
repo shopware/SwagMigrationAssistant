@@ -86,5 +86,10 @@
             <argument type="service" id="attribute_set.repository"/>
             <tag name="shopware.migration.writer"/>
         </service>
+
+        <service id="SwagMigrationNext\Migration\Writer\PropertyGroupOptionWriter">
+            <argument type="service" id="property_group_option.repository"/>
+            <tag name="shopware.migration.writer"/>
+        </service>
     </services>
 </container>

@@ -211,10 +211,16 @@ class Shopware55LocalProductReader extends Shopware55LocalAbstractReader
     {
         $variantIds = $this->productMapping->keys();
         $query = $this->connection->createQueryBuilder();
+
         $query->from('s_article_configurator_options', 'configurator_option');
         $query->addSelect('option_relation.article_id');
         $this->addTableSelection($query, 's_article_configurator_options', 'configurator_option');
+
         $query->leftJoin('configurator_option', 's_article_configurator_option_relations', 'option_relation', 'option_relation.option_id = configurator_option.id');
+
+        $query->leftJoin('configurator_option', 's_article_configurator_groups', 'configurator_option_group', 'configurator_option.group_id = configurator_option_group.id');
+        $this->addTableSelection($query, 's_article_configurator_groups', 'configurator_option_group');
+
         $query->where('option_relation.article_id IN (:ids)');
         $query->setParameter('ids', $variantIds, Connection::PARAM_INT_ARRAY);
         $fetchedConfiguratorOptions = $query->execute()->fetchAll(\PDO::FETCH_GROUP);

@@ -354,6 +354,7 @@
         "SWAG_MIGRATION__SHOPWARE55_NO_DEFAULT_BILLING_ADDRESS": "Default billing address of customer is empty and will be set with the default shipping address.",
         "SWAG_MIGRATION__SHOPWARE55_NO_DEFAULT_BILLING_AND_SHIPPING_ADDRESS": "Default billing and shipping address of customer are empty and will be set with the first address.",
         "SWAG_MIGRATION__SHOPWARE55_PRODUCT_MEDIA_NOT_CONVERTED": "Product media could not be converted.",
+        "SWAG_MIGRATION__SHOPWARE55_PROPERTY_MEDIA_NOT_CONVERTED": "Property media could not be converted.",
         "SWAG_MIGRATION__SHOPWARE55_EMPTY_LOCALE": "Category entity could not be converted, because of empty locale.",
         "SWAG_MIGRATION__SHOPWARE55_NO_ADDRESS_DATA": "Customer entity could not be converted, because of empty address data.",
         "SWAG_MIGRATION__SHOPWARE55_NOT_CONVERT_ABLE_OBJECT_TYPE": "Translation of object type “{objectType}“ could not be converted.",

@@ -403,7 +403,7 @@ class MigrationDataWriterTest extends TestCase
         });
         $productTotalAfter = $this->productRepo->search($criteria, $context)->getTotal();
 
-        static::assertSame(14, $productTotalAfter - $productTotalBefore); //TODO change back to 42 after variant support is implemented
+        static::assertSame(42, $productTotalAfter - $productTotalBefore);
     }
 
     public function testWriteTranslationData(): void
@@ -436,8 +436,9 @@ class MigrationDataWriterTest extends TestCase
             $this->migrationDataWriter->writeData($migrationContext, $context);
         });
         $productTranslationTotalAfter = $this->getTranslationTotal();
+        $entities = $this->loggingRepo->search(new Criteria(), $context)->getEntities();
 
-        static::assertSame(14, $productTotalAfter - $productTotalBefore); //TODO change back to 42 after variant support is implemented
+        static::assertSame(42, $productTotalAfter - $productTotalBefore);
         static::assertSame(0, $productTranslationTotalAfter - $productTranslationTotalBefore);  //TODO change back to 2 after translation support is implemented
     }
 
