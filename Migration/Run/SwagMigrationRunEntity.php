@@ -6,6 +6,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
 use SwagMigrationNext\Exception\MigrationRunUndefinedStatusException;
 use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationNext\Migration\Data\SwagMigrationDataCollection;
 use SwagMigrationNext\Migration\Logging\SwagMigrationLoggingCollection;
 use SwagMigrationNext\Migration\Media\SwagMigrationMediaFileCollection;
 use SwagMigrationNext\Migration\Premapping\PremappingStruct;
@@ -83,6 +84,11 @@ class SwagMigrationRunEntity extends Entity
      * @var PremappingStruct[]
      */
     protected $premapping;
+
+    /**
+     * @var SwagMigrationDataCollection|null
+     */
+    protected $data;
 
     /**
      * @var SwagMigrationMediaFileCollection|null
@@ -215,6 +221,16 @@ class SwagMigrationRunEntity extends Entity
     public function setPremapping(array $premapping): void
     {
         $this->premapping = $premapping;
+    }
+
+    public function getData(): ?SwagMigrationDataCollection
+    {
+        return $this->data;
+    }
+
+    public function setData(SwagMigrationDataCollection $data): void
+    {
+        $this->data = $data;
     }
 
     public function getMediaFiles(): ?SwagMigrationMediaFileCollection

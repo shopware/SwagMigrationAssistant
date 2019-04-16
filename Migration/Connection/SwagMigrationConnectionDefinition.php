@@ -19,6 +19,7 @@ use SwagMigrationNext\Migration\Mapping\SwagMigrationMappingDefinition;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Profile\SwagMigrationProfileDefinition;
 use SwagMigrationNext\Migration\Run\SwagMigrationRunDefinition;
+use SwagMigrationNext\Migration\Setting\GeneralSettingDefinition;
 
 class SwagMigrationConnectionDefinition extends EntityDefinition
 {
@@ -50,6 +51,7 @@ class SwagMigrationConnectionDefinition extends EntityDefinition
             new ManyToOneAssociationField('profile', 'profile_id', SwagMigrationProfileDefinition::class, 'id', true),
             new OneToManyAssociationField('runs', SwagMigrationRunDefinition::class, 'connection_id'),
             new OneToManyAssociationField('mappings', SwagMigrationMappingDefinition::class, 'connection_id'),
+            new OneToManyAssociationField('settings', GeneralSettingDefinition::class, 'selected_connection_id'),
         ]);
     }
 }

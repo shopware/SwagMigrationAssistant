@@ -41,6 +41,16 @@ class SwagMigrationDataEntity extends Entity
     protected $written;
 
     /**
+     * @var bool
+     */
+    protected $convertFailure;
+
+    /**
+     * @var bool
+     */
+    protected $writeFailure;
+
+    /**
      * @var \DateTime
      */
     protected $createdAt;
@@ -113,6 +123,26 @@ class SwagMigrationDataEntity extends Entity
     public function setWritten(bool $written): void
     {
         $this->written = $written;
+    }
+
+    public function getConvertFailure(): bool
+    {
+        return $this->convertFailure;
+    }
+
+    public function setConvertFailure(bool $convertFailure): void
+    {
+        $this->convertFailure = $convertFailure;
+    }
+
+    public function getWriteFailure(): bool
+    {
+        return $this->writeFailure;
+    }
+
+    public function setWriteFailure(bool $writeFailure): void
+    {
+        $this->writeFailure = $writeFailure;
     }
 
     public function getCreatedAt(): \DateTime
