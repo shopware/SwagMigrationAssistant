@@ -3,10 +3,13 @@
 namespace SwagMigrationNext\Migration\Setting;
 
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
 use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 
 class GeneralSettingEntity extends Entity
 {
+    use EntityIdTrait;
+
     /**
      * @var string|null
      */
@@ -16,6 +19,16 @@ class GeneralSettingEntity extends Entity
      * @var SwagMigrationConnectionEntity|null
      */
     protected $selectedConnection;
+
+    /**
+     * @var \DateTime
+     */
+    protected $createdAt;
+
+    /**
+     * @var \DateTime|null
+     */
+    protected $updatedAt;
 
     public function getSelectedConnectionId(): ?string
     {
@@ -35,5 +48,25 @@ class GeneralSettingEntity extends Entity
     public function setSelectedConnection(SwagMigrationConnectionEntity $selectedConnection): void
     {
         $this->selectedConnection = $selectedConnection;
+    }
+
+    public function getCreatedAt(): \DateTime
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTime $createdAt): void
+    {
+        $this->createdAt = $createdAt;
+    }
+
+    public function getUpdatedAt(): ?\DateTime
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTime $updatedAt): void
+    {
+        $this->updatedAt = $updatedAt;
     }
 }

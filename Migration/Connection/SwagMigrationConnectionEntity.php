@@ -8,6 +8,7 @@ use SwagMigrationNext\Migration\Mapping\SwagMigrationMappingCollection;
 use SwagMigrationNext\Migration\Premapping\PremappingStruct;
 use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
 use SwagMigrationNext\Migration\Run\SwagMigrationRunCollection;
+use SwagMigrationNext\Migration\Setting\GeneralSettingCollection;
 
 class SwagMigrationConnectionEntity extends Entity
 {
@@ -57,6 +58,11 @@ class SwagMigrationConnectionEntity extends Entity
      * @var SwagMigrationMappingCollection|null
      */
     protected $mappings;
+
+    /**
+     * @var GeneralSettingCollection|null
+     */
+    protected $settings;
 
     public function getName(): ?string
     {
@@ -149,5 +155,15 @@ class SwagMigrationConnectionEntity extends Entity
     public function setMappings(SwagMigrationMappingCollection $mappings): void
     {
         $this->mappings = $mappings;
+    }
+
+    public function getSettings(): ?GeneralSettingCollection
+    {
+        return $this->settings;
+    }
+
+    public function setSettings(GeneralSettingCollection $settings): void
+    {
+        $this->settings = $settings;
     }
 }
