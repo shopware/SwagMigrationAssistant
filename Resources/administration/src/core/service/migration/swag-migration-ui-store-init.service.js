@@ -8,7 +8,7 @@ class UiStoreInitService {
     }
 
     initUiStore() {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             const connectionId = this._migrationProcessStore.state.connectionId;
 
             if (connectionId === undefined) {
@@ -20,6 +20,8 @@ class UiStoreInitService {
                 this._migrationUiStore.setPremapping([]);
                 this._migrationUiStore.setDataSelectionTableData(dataSelection);
                 resolve();
+            }).catch(() => {
+                reject();
             });
         });
     }

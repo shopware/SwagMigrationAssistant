@@ -10,7 +10,8 @@ export const MIGRATION_ACCESS_TOKEN_NAME = 'swagMigrationAccessToken';
 export const WORKER_INTERRUPT_TYPE = Object.freeze({
     TAKEOVER: 'takeover',
     STOP: 'stop',
-    PAUSE: 'pause'
+    PAUSE: 'pause',
+    CONNECTION_LOST: 'connectionLost'
 });
 
 class MigrationWorkerService {
@@ -106,13 +107,14 @@ class MigrationWorkerService {
                 swagMigrationAccessToken: MigrationWorkerService.migrationAccessToken
             }).then((state) => {
                 resolve(this.processStateResponse(state));
-            }).catch(() => {
+            }).catch((error) => {
                 const returnValue = {
                     runUuid: null,
                     isMigrationRunning: false,
                     isMigrationAccessTokenValid: false,
                     status: null,
-                    accessToken: null
+                    accessToken: null,
+                    requestErrorCode: error !== undefined && error.response !== undefined ? error.response.code : ''
                 };
 
                 returnValue.isMigrationAccessTokenValid = true;

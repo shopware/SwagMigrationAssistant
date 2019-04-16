@@ -1,5 +1,6 @@
 import { State } from 'src/core/shopware';
 import { WORKER_INTERRUPT_TYPE } from './swag-migration-worker.service';
+import { WORKER_API_OPERATION } from './swag-migration-worker-request.service';
 
 export class WorkerMediaFiles {
     /**
@@ -81,6 +82,7 @@ export class WorkerMediaFiles {
     /* eslint-disable no-unused-vars, no-await-in-loop */
     async migrateProcess(groupStartIndex = 0, entityStartIndex = 0, entityOffset = 0) {
         return new Promise(async (resolve) => {
+            let statusChangedError = false;
             await this._workerStatusManager.onStatusChanged(this._runId).then(() => {
                 this._mediaTotalCount = 0;
                 this._migrationProcessStore.state.entityGroups.forEach((group) => {
@@ -88,7 +90,16 @@ export class WorkerMediaFiles {
                         this._mediaTotalCount = group.total;
                     }
                 });
+            }).catch(() => {
+                statusChangedError = true;
             });
+
+            if (statusChangedError === true) {
+                this.interrupt = WORKER_INTERRUPT_TYPE.PAUSE;
+                this._callInterruptCB();
+                resolve();
+                return;
+            }
 
             if (entityOffset === 0) {
                 this._resetMediaProgress();
@@ -265,27 +276,73 @@ export class WorkerMediaFiles {
      * @private
      */
     _processMediaFilesWorkload() {
-        return new Promise((resolve) => {
-            this._migrationService.processMedia({
-                runUuid: this._runId,
-                workload: this._mediaWorkload,
-                fileChunkByteSize: this._MEDIA_FILE_CHUNK_BYTE_SIZE,
-                swagMigrationAccessToken: this._accessToken
-            }).then((res) => {
-                if (!res.validToken) {
-                    this.interrupt = WORKER_INTERRUPT_TYPE.TAKEOVER;
-                    resolve(this._mediaWorkload);
-                    return;
-                }
+        return new Promise(async (resolve) => {
+            let requestRetry = true;
+            let requestFailedCount = 0;
+            let responseWorkload = this._mediaWorkload;
+            /* eslint-disable no-await-in-loop, no-loop-func */
+            while (requestRetry) {
+                await this._migrationService.processMedia({
+                    runUuid: this._runId,
+                    workload: this._mediaWorkload,
+                    fileChunkByteSize: this._MEDIA_FILE_CHUNK_BYTE_SIZE,
+                    swagMigrationAccessToken: this._accessToken
+                }).then((res) => {
+                    if (!res) {
+                        requestFailedCount += 1;
+                        return;
+                    }
 
-                resolve(res.workload);
-            }).catch(() => {
-                this._migrationProcessStore.addError({
-                    code: 'mediaProcessConnectionError',
-                    internalError: true
+                    if (!res.validToken) {
+                        this.interrupt = WORKER_INTERRUPT_TYPE.TAKEOVER;
+                        requestRetry = false;
+                        return;
+                    }
+
+                    responseWorkload = res.workload;
+                    requestRetry = false;
+                }).catch((response) => {
+                    if (!response || !response.response) {
+                        this._migrationProcessStore.addError({
+                            code: 'canNotConnectToServer',
+                            internalError: true
+                        });
+                        requestFailedCount += 1;
+                        return;
+                    }
+
+                    if (response.response.data && response.response.data.errors) {
+                        response.response.data.errors.forEach((error) => {
+                            this._migrationProcessStore.addError(error);
+                        });
+                    }
+
+                    if (response.response.status === 500) {
+                        // Don't retry if server errors happen, only if something is wrong with the connection.
+                        requestRetry = false;
+                        return;
+                    }
+
+                    this._migrationProcessStore.addError({
+                        code: 'mediaProcessConnectionError',
+                        internalError: true
+                    });
+
+                    requestFailedCount += 1;
                 });
-                resolve(this._mediaWorkload);
-            });
+
+                if (requestFailedCount >= 3) {
+                    requestRetry = false;
+                    if (this.operation === WORKER_API_OPERATION[1]) {
+                        this.interrupt = WORKER_INTERRUPT_TYPE.TAKEOVER; // TODO: check if we need a extra screen for this.
+                    } else {
+                        this.interrupt = WORKER_INTERRUPT_TYPE.PAUSE;
+                    }
+                }
+            }
+            /* eslint-enable no-await-in-loop, no-loop-func */
+
+            resolve(responseWorkload);
         });
     }
 

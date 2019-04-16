@@ -44,7 +44,7 @@ Component.register('swag-migration-index', {
     methods: {
         createdComponent() {
             if (this.migrationProcessStore.state.connectionId === null
-                || this.migrationProcessStore.state.environmentInformation === null
+                || Object.keys(this.migrationProcessStore.state.environmentInformation).length === 0
             ) {
                 this.migrationProcessStoreInitService.initProcessStore().then(() => {
                     return this.migrationUiStoreInitService.initUiStore();

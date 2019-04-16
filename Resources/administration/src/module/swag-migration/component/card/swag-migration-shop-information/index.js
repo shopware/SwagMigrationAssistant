@@ -92,6 +92,10 @@ Component.register('swag-migration-shop-information', {
         },
 
         connectionBadgeLabel() {
+            if (this.serverUnreachable) {
+                return 'swag-migration.index.shopInfoCard.serverUnreachable';
+            }
+
             if (this.connected) {
                 return 'swag-migration.index.shopInfoCard.connected';
             }

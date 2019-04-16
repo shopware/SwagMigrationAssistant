@@ -49,25 +49,65 @@ export class WorkerStatusManager {
      * @returns {Promise}
      */
     onStatusChanged(runId) {
-        return new Promise((resolve) => {
-            if (this._migrationProcessStore.state.statusIndex === MIGRATION_STATUS.WRITE_DATA) {
-                this._migrationService.updateWriteProgress(runId).then((response) => {
+        if (this._migrationProcessStore.state.statusIndex === MIGRATION_STATUS.WRITE_DATA) {
+            return this.beforeWriteProgress(runId);
+        }
+
+        if (this._migrationProcessStore.state.statusIndex === MIGRATION_STATUS.PROCESS_MEDIA_FILES) {
+            return this.beforeProcessMedia(runId);
+        }
+
+        return Promise.resolve();
+    }
+
+    beforeWriteProgress(runId) {
+        return new Promise(async (resolve, reject) => {
+            let requestRetry = true;
+            let requestFailedCount = 0;
+            /* eslint-disable no-await-in-loop, no-loop-func */
+            while (requestRetry) {
+                await this._migrationService.updateWriteProgress(runId).then((response) => {
                     response = response.filter((group) => {
                         return group.id !== 'processMediaFiles';
                     });
                     this._migrationProcessStore.setEntityGroups(response);
-                    resolve();
+                    requestRetry = false;
+                }).catch(() => {
+                    requestFailedCount += 1;
                 });
-                return;
-            }
 
-            if (this._migrationProcessStore.state.statusIndex === MIGRATION_STATUS.PROCESS_MEDIA_FILES) {
-                this._migrationService.updateMediaFilesProgress(runId).then((response) => {
-                    this._migrationProcessStore.setEntityGroups(response);
-                    resolve();
-                });
-                return;
+                if (requestFailedCount >= 3) {
+                    requestRetry = false;
+                    reject();
+                    return;
+                }
             }
+            /* eslint-enable no-await-in-loop, no-loop-func */
+
+            resolve();
+        });
+    }
+
+    beforeProcessMedia(runId) {
+        return new Promise(async (resolve, reject) => {
+            let requestRetry = true;
+            let requestFailedCount = 0;
+            /* eslint-disable no-await-in-loop, no-loop-func */
+            while (requestRetry) {
+                await this._migrationService.updateMediaFilesProgress(runId).then((response) => {
+                    this._migrationProcessStore.setEntityGroups(response);
+                    requestRetry = false;
+                }).catch(() => {
+                    requestFailedCount += 1;
+                });
+
+                if (requestFailedCount >= 3) {
+                    requestRetry = false;
+                    reject();
+                    return;
+                }
+            }
+            /* eslint-enable no-await-in-loop, no-loop-func */
 
             resolve();
         });

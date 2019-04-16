@@ -89,6 +89,11 @@
                     </swag-migration-loading-screen-takeover>
                 {% endblock %}
 
+                {% block swag_migration_index_main_page_card_loadingScreen_connectionLost %}
+                    <swag-migration-loading-screen-connection-lost v-if="migrationUIStore.state.componentIndex === UI_COMPONENT_INDEX.CONNECTION_LOST">
+                    </swag-migration-loading-screen-connection-lost>
+                {% endblock %}
+
                 {% block swag_migration_index_main_page_modal_abort_migration_confirmDialog %}
                     <sw-modal v-if="showAbortMigrationConfirmDialog"
                               :title="$tc('swag-migration.index.confirmAbortDialog.title')"

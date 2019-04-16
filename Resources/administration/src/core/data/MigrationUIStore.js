@@ -12,7 +12,8 @@ export const UI_COMPONENT_INDEX = Object.freeze({
     RESULT_SUCCESS: 3,
     RESULT_WARNING: 4,
     PAUSE_SCREEN: 5,
-    TAKEOVER: 6
+    TAKEOVER: 6,
+    CONNECTION_LOST: 7
 });
 
 class MigrationUIStore extends SimpleStateManagementStore {

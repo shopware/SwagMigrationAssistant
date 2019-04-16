@@ -1,41 +1,49 @@
 {% block swag_migration_loading_screen %}
-    <sw-card class="swag-migration-loading-screen">
-        {% block swag_migration_index_loading_screen_header %}
-            <div class="swag-migration-loading-screen__header">
-                {% block swag_migration_index_loading_screen_title %}
-                    <div class="swag-migration-loading-screen__title">
-                        {{ statusLong }}
+    <div class="swag-migration-loading-screen">
+        {% block swag_migration_loading_screen_card %}
+            <sw-card class="swag-migration-loading-screen__card" v-show="!migrationUIStore.state.isPaused">
+                {% block swag_migration_index_loading_screen_content %}
+                    <div class="swag-migration-loading-screen__content">
+                        {% block swag_migration_index_loading_screen_header %}
+                            <div class="swag-migration-loading-screen__header">
+                                {% block swag_migration_index_loading_screen_title %}
+                                    <div class="swag-migration-loading-screen__title">
+                                        {{ statusLong }}
+                                    </div>
+                                {% endblock %}
+
+                                {% block swag_migration_index_loading_screen_caption %}
+                                    <div class="swag-migration-loading-screen__caption">
+                                        {{ caption }}
+                                    </div>
+                                {% endblock %}
+                            </div>
+                        {% endblock %}
+
+                        {% block swag_migration_index_loading_screen_progress_bar %}
+                            <swag-migration-progress-bar
+                                    :title="progressBarTitle"
+                                    :leftPointDescription="progressBarLeftPointDescription"
+                                    :rightPointDescription="$t('swag-migration.index.loadingScreenCard.status.finish')"
+                                    :value="progressBarValue"
+                                    :maxValue="progressBarMaxValue"></swag-migration-progress-bar>
+                        {% endblock %}
+
+                        {% block swag_migration_index_loading_screen_alert %}
+                            <sw-alert variant="success" class="swag-migration-loading-screen__hint">
+                                {{ hint }}
+                                <template slot="customIcon">
+                                    <sw-icon size="20px" class="swag-migration-loading-screen__alert-icon" name="default-object-lightbulb" decorative></sw-icon>
+                                </template>
+                            </sw-alert>
+                        {% endblock %}
                     </div>
                 {% endblock %}
-
-                {% block swag_migration_index_loading_screen_caption %}
-                    <div class="swag-migration-loading-screen__caption">
-                        {{ caption }}
-                    </div>
-                {% endblock %}
-            </div>
-        {% endblock %}
-
-        {% block swag_migration_index_loading_screen_progress_bar %}
-            <swag-migration-progress-bar
-                    :title="progressBarTitle"
-                    :leftPointDescription="progressBarLeftPointDescription"
-                    :rightPointDescription="$t('swag-migration.index.loadingScreenCard.status.finish')"
-                    :value="progressBarValue"
-                    :maxValue="progressBarMaxValue"></swag-migration-progress-bar>
-        {% endblock %}
-
-        {% block swag_migration_index_loading_screen_alert %}
-            <sw-alert variant="success" class="swag-migration-loading-screen__hint">
-                {{ hint }}
-                <template slot="customIcon">
-                    <sw-icon size="20px" class="swag-migration-loading-screen__alert-icon" name="default-object-lightbulb" decorative></sw-icon>
-                </template>
-            </sw-alert>
+            </sw-card>
         {% endblock %}
 
         {% block swag_migration_index_loading_screen_pause_overlay %}
-            <swag-migration-pause-overlay v-if="migrationUIStore.state.isPaused"></swag-migration-pause-overlay>
+            <swag-migration-pause-screen v-show="migrationUIStore.state.isPaused"></swag-migration-pause-screen>
         {% endblock %}
-    </sw-card>
+    </div>
 {% endblock %}

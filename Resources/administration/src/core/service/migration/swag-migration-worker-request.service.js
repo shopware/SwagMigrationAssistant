@@ -93,7 +93,17 @@ export class WorkerRequest {
     async migrateProcess(groupStartIndex = 0, entityStartIndex = 0, entityOffset = 0) {
         /* eslint-disable no-await-in-loop */
         return new Promise(async (resolve) => {
-            await this._workerStatusManager.onStatusChanged(this._runId);
+            let statusChangedError = false;
+            await this._workerStatusManager.onStatusChanged(this._runId).catch(() => {
+                statusChangedError = true;
+            });
+
+            if (statusChangedError === true) {
+                this.interrupt = WORKER_INTERRUPT_TYPE.STOP;
+                this._callInterruptCB();
+                resolve();
+                return;
+            }
 
             // Reference to store state, don't mutate this!
             const entityGroups = this._migrationProcessStore.state.entityGroups;
@@ -179,51 +189,80 @@ export class WorkerRequest {
      * @private
      */
     _migrateEntityRequest(entityName, offset) {
-        return new Promise((resolve) => {
+        return new Promise(async (resolve) => {
             this._requestParams.entity = entityName;
             this._requestParams.offset = offset;
             this._requestParams.limit = this._chunkSize;
 
-            const beforeRequestTime = new Date();
-            this._migrationService[this.operation](this._requestParams).then((response) => {
-                if (!response) {
+            let requestRetry = true;
+            let requestFailedCount = 0;
+            /* eslint-disable no-await-in-loop, no-loop-func */
+            while (requestRetry) {
+                const beforeRequestTime = new Date();
+                await this._migrationService[this.operation](this._requestParams).then((response) => {
+                    if (!response) {
+                        this._migrationProcessStore.addError({
+                            code: 'canNotConnectToServer',
+                            internalError: true
+                        });
+                        requestFailedCount += 1;
+                        return;
+                    }
+
+                    if (!response.validToken) {
+                        this.interrupt = WORKER_INTERRUPT_TYPE.TAKEOVER;
+                        requestRetry = false;
+                        return;
+                    }
+
+                    const afterRequestTime = new Date();
+                    this._handleChunkSize(afterRequestTime.getTime() - beforeRequestTime.getTime());
+                    requestRetry = false;
+                }).catch((response) => {
+                    if (!response || !response.response) {
+                        this._migrationProcessStore.addError({
+                            code: 'canNotConnectToServer',
+                            internalError: true
+                        });
+                        requestFailedCount += 1;
+                        return;
+                    }
+
+                    if (response.response.data && response.response.data.errors) {
+                        response.response.data.errors.forEach((error) => {
+                            this._migrationProcessStore.addError(error);
+                        });
+                    }
+
+                    const afterRequestTime = new Date();
+                    this._handleChunkSize(afterRequestTime.getTime() - beforeRequestTime.getTime());
+
+                    if (response.response.status === 500) {
+                        // Don't retry if server errors happen, only if something is wrong with the connection.
+                        requestRetry = false;
+                        return;
+                    }
+
                     this._migrationProcessStore.addError({
                         code: 'canNotConnectToServer',
                         internalError: true
                     });
-                    resolve();
-                    return;
-                }
 
-                if (!response.validToken) {
-                    this.interrupt = WORKER_INTERRUPT_TYPE.TAKEOVER;
-                    resolve();
-                    return;
-                }
+                    requestFailedCount += 1;
+                });
 
-                const afterRequestTime = new Date();
-                this._handleChunkSize(afterRequestTime.getTime() - beforeRequestTime.getTime());
-                resolve();
-            }).catch((response) => {
-                if (!response || !response.response) {
-                    this._migrationProcessStore.addError({
-                        code: 'canNotConnectToServer',
-                        internalError: true
-                    });
-                    resolve();
-                    return;
+                if (requestFailedCount >= 3) {
+                    requestRetry = false;
+                    if (this.operation === WORKER_API_OPERATION[1]) {
+                        this.interrupt = WORKER_INTERRUPT_TYPE.CONNECTION_LOST;
+                    } else {
+                        this.interrupt = WORKER_INTERRUPT_TYPE.PAUSE;
+                    }
                 }
+            }
+            /* eslint-enable no-await-in-loop, no-loop-func */
 
-                if (response.response.data && response.response.data.errors) {
-                    response.response.data.errors.forEach((error) => {
-                        this._migrationProcessStore.addError(error);
-                    });
-                }
-
-                const afterRequestTime = new Date();
-                this._handleChunkSize(afterRequestTime.getTime() - beforeRequestTime.getTime());
-                resolve();
-            });
+            resolve();
         });
     }
 
