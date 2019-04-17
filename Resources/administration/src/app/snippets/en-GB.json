@@ -9,42 +9,47 @@
     },
     "wizard": {
       "buttonAbort": "Cancel",
-      "buttonLetsGo": "Start",
+      "buttonLetsGo": "Let's go",
+      "buttonConnectionCreate": "Establish connection",
+      "buttonConnectionSelect": "Change connection",
       "buttonConnect": "Connect",
-      "buttonToProfileInformation": "Profile information",
+      "buttonToProfileInformation": "Information",
       "buttonNext": "Continue",
       "buttonFinish": "Done",
-      "buttonEdit": "Edit",
-      "buttonLater": "Later",
+      "buttonEdit": "Edit connection",
+      "buttonLater": "Close",
       "pages": {
         "introduction": {
-          "title": "Welcome to the migration process",
-          "contentInformation": "Before starting the migration process, we will create a connection to your data source. If you wish to migrate from a third party system, please install and activate all relevant plugins in your active system as well as your Shopware 6 instance.",
-          "documentationLink": "#TODO: PLACE LINK# Learn more about migrating to Shopware 6"
+          "title": "Welcome to the migration",
+          "contentHeadline": "Pick up where you left off",
+          "contentInformation": "Connect your shop system with Shopware 6 and transfer your data. Together we will connect the systems. Afterwards you can migrate your data using the migration assistant."
         },
         "connectionSelect": {
           "title": "Migration – Changing the connection",
           "contentInformation": "Select an existing connection from the list to update the data.",
-          "connectionLabel": "Name of the connection",
+          "connectionLabel": "Connection name",
           "connectionPlaceholder": "Please select a connection"
         },
         "connectionCreate": {
           "title": "Migration – Creating a connection",
           "contentInformation": "Enter the data needed for the migration.",
           "profileLabel": "Profile",
+          "profileTooltip": "Describes the type of source system.",
           "profilePlaceholder": "Select profile",
           "gatewayLabel": "Gateway",
+          "gatewayTooltip": "The type of connection between the systems.",
           "gatewayPlaceholder": "Select gateway",
           "connectionLabel": "Name",
           "connectionPlaceholder": "Enter name",
-          "connectionTooltip": "Enter a unique name for the connection. We recommend using the respective domain name for this.",
-          "connectionNameExistsError": "Connection name already exists."
+          "connectionTooltip": "Enter a unique name for the connection.",
+          "connectionNameExistsError": "Connection name already exists.",
+          "connectionNameTooShort": "The connection name must be at least 6 characters long."
         },
         "profileInformation": {
           "title": "Migration - Connection preparation",
           "shopware55Api": {
             "contentTitle": "Plugin required",
-            "contentInformation": "The required plugin “Shopware Playground Connector” is free and can be found in your Shopware 5 backend under Plugin Manager > Extensions > Migration tools. Please install and activate the plugin to proceed.",
+            "contentInformation": "The required plugin “Shopware Migration Assistant” is free and can be found in your Shopware 5 backend under Plugin Manager > Extensions > Migration tools. Please install and activate the plugin to proceed.",
             "pluginLink": "More information on the plugin"
           }
         },
@@ -55,13 +60,15 @@
             "api": {
               "contentInformation": "You need the API key and username to establish a connection. You can find these in your shop backend under “User administration”. Activate API access there and confirm with “Save”.",
               "apiKeyLabel": "API key",
+              "apiKeyTooltip": "The API key is used for security and identification.",
               "apiKeyPlaceholder": "Insert key",
               "apiKeyInvalid": "The API key does not have the correct length ({length}/40 characters).",
               "apiUserLabel": "Username (API user)",
+              "apiUserTooltip": "Username of your Shopware 5 backend.",
               "apiUserPlaceholder": "Enter username",
               "endpointLabel": "Shop domain",
               "endpointPlaceholder": "www.demoshop.com",
-              "endpointSSLLabel": "My shop uses SSL"
+              "endpointSSLLabel": "My shop uses a secure connection (SSL)"
             },
             "local": {
               "contentTitle": "#PLACEHOLDER# Database connection to Shopware 5",
@@ -80,16 +87,15 @@
               "installationRootPlaceholder": "#PLACEHOLDER# Installationsordner der Shopinstallation eingeben"
             }
           },
-          "statusTitle": "Migration – Connection status",
+          "statusTitle": "Connection check",
           "success": {
             "contentTitle": "Connection successful",
-            "contentInformation": "You can now start the data migration.",
-            "alertErrorTitle": "Attention",
+            "contentInformation": "You can start your migration.",
             "undefinedErrorMsg": "An unknown error occurred while checking the SSL certificate from the specified shop domain.",
-            "SWAG_MIGRATION__REQUEST_CERTIFICATE_INVALID": "The SSL certificate of the given shop domain is not secure. We recommend you to check the certificate for your own security."
+            "SWAG_MIGRATION__REQUEST_CERTIFICATE_INVALID": "We have determined that the SSL certificate of the specified shop domain is not secure. Check the certificate for your own security."
           },
           "error": {
-            "contentTitle": "Connection failed",
+            "contentTitle": "No connection",
             "alertErrorTitle": "Attention",
             "SWAG_MIGRATION__GATEWAY_READ": "Could not connect to the server. Please check the given shop domain.",
             "SWAG_MIGRATION__CONNECTION_AUTHENTICATION_INVALID": "Your credentials are incorrect. Please check them and try again.",

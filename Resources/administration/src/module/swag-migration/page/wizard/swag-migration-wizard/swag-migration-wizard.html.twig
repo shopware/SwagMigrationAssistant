@@ -1,7 +1,7 @@
 {% block swag_migration_wizard %}
     <div class="swag-migration-wizard">
         <sw-modal class="swag-migration-wizard__modal"
-                  size="800px"
+                  :size="modalSize"
                   v-if="showModal"
                   :title="$tc(modalTitleSnippet)"
                   :isLoading="isLoading"

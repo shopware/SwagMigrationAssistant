@@ -10,17 +10,19 @@
     "wizard": {
       "buttonAbort": "Abbrechen",
       "buttonLetsGo": "Los geht's",
-      "buttonConnect": "Verbinden",
-      "buttonToProfileInformation": "Informationen",
+      "buttonConnectionCreate": "Verbindung anlegen",
+      "buttonConnectionSelect": "Verbindung wechseln",
+      "buttonConnect": "Verbindung herstellen",
+      "buttonToProfileInformation": "Information",
       "buttonNext": "Fortfahren",
       "buttonFinish": "Fertig",
-      "buttonEdit": "Bearbeiten",
-      "buttonLater": "Später",
+      "buttonEdit": "Verbindung bearbeiten",
+      "buttonLater": "Schließen",
       "pages": {
         "introduction": {
           "title": "Willkommen in der Migration",
-          "contentInformation": "Vor dem Migrationsprozess werden wir eine Verbindung zu Deiner Datenquelle herstellen. Falls Du von einem Drittsystem migrieren willst, installiere und aktiviere die entsprechenden Plugins in Deinem System und in Deiner Shopware-6-Instanz.",
-          "documentationLink": "#TODO: PLACE LINK# Mehr zum Thema Migration lesen"
+          "contentHeadline": "Mache dort weiter, wo du aufgehört hast",
+          "contentInformation": "Verbinde Dein Shopsystem mit Shopware 6 und übertrage Deine Daten. Gemeinsam stellen wir eine Verbindung der Systeme her. Im Anschluss hast Du die Möglichkeit mit dem Migrationsassistenten Deine Daten zu migrieren."
         },
         "connectionSelect": {
           "title": "Migration - Verbindung wechseln",
@@ -32,19 +34,22 @@
           "title": "Migration - Verbindung anlegen",
           "contentInformation": "Gib die Daten an, die für die Migration benötigt werden.",
           "profileLabel": "Profil",
+          "profileTooltip": "Bezeichnet die Art des Quellsystems.",
           "profilePlaceholder": "Bitte wählen",
           "gatewayLabel": "Schnittstelle",
+          "gatewayTooltip": "Bezeichnet die Art der Verbindung zwischen den Systemen.",
           "gatewayPlaceholder": "Bitte wählen",
           "connectionLabel": "Name",
           "connectionPlaceholder": "Namen eintragen",
-          "connectionTooltip": "Gib einen einzigartigen Namen für die Verbindung ein. Wir empfehlen Dir, Deine Domain als Namen zu verwenden.",
-          "connectionNameExistsError": "Verbindungsname existiert bereits."
+          "connectionTooltip": "Einen eindeutigen Namen für die Verbindung eingeben.",
+          "connectionNameExistsError": "Der Verbindungsname existiert bereits.",
+          "connectionNameTooShort": "Der Verbindungsname muss mindestens 6 Zeichen lang sein."
         },
         "profileInformation": {
           "title": "Migration - Verbindung vorbereiten",
           "shopware55Api": {
             "contentTitle": "Migration erfordert eine Plugin-Installation",
-            "contentInformation": "Für die Migration wird die Installation des kostenlosen Plugins „Shopware Playground Connector“ benötigt. Dieses findest Du in Deinem Shop-Backend (unter Shopware 5: Plugin Manager > Erweiterungen > Migrationstools). Bitte installiere und aktiviere das Plugin.",
+            "contentInformation": "Für die Migration wird die Installation des kostenlosen Plugins „Shopware Migration Assistant“ benötigt. Dieses findest Du in Deinem Shop-Backend (unter Shopware 5: Plugin Manager > Erweiterungen > Migrationstools). Bitte installiere und aktiviere das Plugin.",
             "pluginLink": "Mehr Informationen zum Plugin"
           }
         },
@@ -53,15 +58,17 @@
           "emptyState": "Leider wurde kein enstprechendes Formular für dieses Profil gefunden.",
           "shopware55": {
             "api": {
-              "contentInformation": "Für die Verbindung benötigst Du den API-Schlüssel und den Benutzernamen. Diese findest Du in der Benutzerverwaltung Deines Shop-Backends. Aktiviere da den API-Zugang und bestätige mit „Speichern“.",
+              "contentInformation": "Wir benötigen noch einige Daten um eine Verbindung mit Deinem Shopware 5 Shop herstellen zu können. Diese Daten findest Du in der Benutzerverwaltung Deines Shopware 5 Shops.",
               "apiKeyLabel": "API-Schlüssel",
+              "apiKeyTooltip": "Der API-Schlüssel dient der Sicherheit und Identifizierung.",
               "apiKeyPlaceholder": "Schlüssel einfügen",
               "apiKeyInvalid": "Der API-Schlüssel hat nicht die richtige Länge ({length}/40 Zeichen).",
               "apiUserLabel": "Benutzername (API-User)",
+              "apiUserTooltip": "Benutzername Deines Shopware 5 Backends.",
               "apiUserPlaceholder": "Login-Benutzernamen eintragen",
               "endpointLabel": "Shop-Domain",
               "endpointPlaceholder": "www.demoshop.com",
-              "endpointSSLLabel": "Mein Shop benutzt SSL"
+              "endpointSSLLabel": "Mein Shop verwendet eine sichere Verbindung (SSL)"
             },
             "local": {
               "contentTitle": "Datenbankverbindung zu Shopware 5",
@@ -80,16 +87,15 @@
               "installationRootPlaceholder": "Installationsordner der Shopinstallation eingeben"
             }
           },
-          "statusTitle": "Migration - Status der Verbindung",
+          "statusTitle": "Verbindungscheck",
           "success": {
             "contentTitle": "Erfolgreich verbunden",
-            "contentInformation": "Jetzt kannst Du mit der Datenmigration beginnen.",
-            "alertErrorTitle": "Achtung",
+            "contentInformation": "Du kannst mit Deiner Migration beginnen.",
             "undefinedErrorMsg": "Bei der Prüfung des SSL-Zertifikats der angegebenen Shop-Domain ist ein unbekannter Fehler aufgetreten.",
-            "SWAG_MIGRATION__REQUEST_CERTIFICATE_INVALID": "Das SSL-Zertifikat der angegebenen Shop-Domain ist nicht sicher. Wir empfehlen eine Überprüfung des Zertifikats zur eigenen Sicherheit."
+            "SWAG_MIGRATION__REQUEST_CERTIFICATE_INVALID": "Wir haben festgestellt, dass das SSL-Zertifikat der angegebenen Shop-Domain nicht sicher ist. Überprüfe das Zertifikat zur eigenen Sicherheit."
           },
           "error": {
-            "contentTitle": "Verbindung fehlgeschlagen",
+            "contentTitle": "Keine Verbindung hergestellt",
             "alertErrorTitle": "Achtung",
             "SWAG_MIGRATION__GATEWAY_READ": "Es konnte keine Verbindung zum angegebenen Server hergestellt werden. Bitte überprüfe die angegebene Shop-Domain.",
             "SWAG_MIGRATION__CONNECTION_AUTHENTICATION_INVALID": "Deine Zugangsdaten sind nicht korrekt. Bitte überprüfe sie und versuche es erneut.",
@@ -253,7 +259,7 @@
         },
         "pauseScreen": {
           "title": "Die Migration ist pausiert",
-          "message": "Du hast nicht pausiert? Bei fehlender Internetverbindung wechselt die Migration automatisch in den Pause-Modus um Datenverlust zu vermeiden."
+          "message": "Du hast nicht pausiert? Bei fehlender Internetverbindung wechselt die Migration automatisch in den Pause-Modus um einen Datenverlust zu vermeiden."
         },
         "takeoverScreen": {
           "buttonCheck": "Status prüfen",
@@ -296,7 +302,7 @@
         },
         "connectionLostScreen": {
           "title": "Die Verbindung wurde unterbrochen",
-          "message": "Die Migration hat den Prozess beendet um Datenverlust zu vermeiden. Prüfe die Internetverbindung und starte eine neue Migration.",
+          "message": "Die Migration hat den Prozess beendet um einen Datenverlust zu vermeiden. Prüfe die Internetverbindung und starte eine neue Migration.",
           "buttonNavigateToMain": "Zur Übersicht"
         }
       },

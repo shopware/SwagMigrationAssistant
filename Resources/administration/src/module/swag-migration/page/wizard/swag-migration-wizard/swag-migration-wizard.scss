@@ -1,32 +1,50 @@
 @import "~scss/variables";
 
+$swag-migration-wizard-bubble-success-background-color: #E7F9E9;
+$swag-migration-wizard-success-icon-color: $color-emerald;
+$swag-migration-wizard-bubble-warning-background-color: #fff6ec;
+$swag-migration-wizard-warning-icon-color: $color-pumpkin-spice;
+$swag-migration-wizard-caption-color: #B3BFCC;
+$swag-migration-wizard-font-size: $font-size-small;
+
 .swag-migration-wizard__modal {
+    font-size: $swag-migration-wizard-font-size;
 
     .swag-migration-wizard__placeholder {
         height: 500px;
     }
 
     .swag-migration-wizard__content {
-        max-width: 500px;
-        margin: 35px auto 0 auto;
+        max-width: 520px;
+        margin: 8px auto 16px auto;
     }
 
     .swag-migration-wizard__content-information {
         text-align: center;
-        margin-bottom: 30px;
+    }
+
+    h3.swag-migration-wizard__information-header {
+        margin-bottom: 12px;
     }
 
     .swag-migration-wizard__link {
         margin-top: 20px;
+
+        a {
+            font-weight: 600;
+            font-size: 12px;
+            text-decoration: none;
+        }
     }
 
     .swag-migration-wizard__illustration {
-        width: 100%;
-        margin-top: 60px;
+        width: 380px;
+        margin-bottom: 40px;
     }
 
     .swag-migration-wizard__form {
-        margin: 40px 0 30px 0;
+        width: 80%;
+        margin: 40px auto 30px auto;
     }
 
     .sw-modal__footer {
@@ -42,5 +60,37 @@
 
     .swag-migration-wizard__right-actions {
         text-align: right;
+    }
+
+    .swag-migration-wizard__bubble {
+        margin: 4px auto 20px auto;
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        background-color: $swag-migration-wizard-bubble-success-background-color;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .swag-migration-wizard__bubble--success {
+        background-color: $swag-migration-wizard-bubble-success-background-color;
+    }
+
+    .swag-migration-wizard__bubble--warning {
+        background-color: $swag-migration-wizard-bubble-warning-background-color;
+    }
+
+    .swag-migration-wizard__success-icon {
+        color: $swag-migration-wizard-success-icon-color;
+    }
+
+    .swag-migration-wizard__warning-icon {
+        color: $swag-migration-wizard-warning-icon-color;
+    }
+
+    .sw-url-input-ssl-switch__field {
+        grid-template-columns: 24px 1fr;
     }
 }

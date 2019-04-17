@@ -71,6 +71,17 @@ Component.register('swag-migration-wizard', {
     },
 
     computed: {
+        modalSize() {
+            if ([
+                this.routes.credentialsSuccess,
+                this.routes.credentialsError
+            ].includes(this.currentRoute)) {
+                return '460px';
+            }
+
+            return '688px'
+        },
+
         modalTitleSnippet() {
             return this.currentRoute.titleSnippet;
         },
@@ -102,6 +113,14 @@ Component.register('swag-migration-wizard', {
         buttonPrimarySnippet() {
             if (this.currentRoute === this.routes.introduction) {
                 return 'swag-migration.wizard.buttonLetsGo';
+            }
+
+            if (this.currentRoute === this.routes.connectionCreate) {
+                return 'swag-migration.wizard.buttonConnectionCreate';
+            }
+
+            if (this.currentRoute === this.routes.connectionSelect) {
+                return 'swag-migration.wizard.buttonConnectionSelect';
             }
 
             if (this.currentRoute === this.routes.credentials) {
@@ -502,6 +521,12 @@ Component.register('swag-migration-wizard', {
 
         onChangeConnectionName(value) {
             this.connectionName = value;
+            if (this.connectionName !== null && this.connectionName.length > 5) {
+                this.connectionNameErrorSnippet = '';
+                return;
+            }
+
+            this.connectionNameErrorSnippet = 'swag-migration.wizard.pages.connectionCreate.connectionNameTooShort';
         },
 
         onChildIsLoadingChanged(value) {
