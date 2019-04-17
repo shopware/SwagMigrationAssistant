@@ -92,20 +92,12 @@ class PropertyGroupOptionConverter extends AbstractConverter
         $this->locale = $data['_locale'];
         $this->runId = $migrationContext->getRunUuid();
         $this->connectionId = $migrationContext->getConnection()->getId();
-        $productContainerUuids = $this->mappingService->getUuidList(
-            $this->connectionId,
-            'main_product_options',
-            $data['id'],
-            $context
-        );
-        $languageData = $this->mappingService->getDefaultLanguageUuid($this->context);
-        $defaultLanguageUuid = $languageData['uuid'];
 
         $converted = [
             'id' => $this->mappingService->createNewUuid(
                 $this->connectionId,
                 PropertyGroupOptionDefinition::getEntityName(),
-                $data['id'],
+                hash('md5', strtolower($data['name'] . '_' . $data['group']['name'])),
                 $context
             ),
 
@@ -113,28 +105,21 @@ class PropertyGroupOptionConverter extends AbstractConverter
                 'id' => $this->mappingService->createNewUuid(
                     $this->connectionId,
                     PropertyGroupDefinition::getEntityName(),
-                    $data['group']['id'],
+                    hash('md5', strtolower($data['group']['name'])),
                     $context
                 ),
             ],
         ];
 
+        $this->createAndDeleteNecessaryMappings($data, $converted);
+
         if (isset($data['media'])) {
             $this->getMedia($converted, $data);
         }
 
-        $converted['translations'][$defaultLanguageUuid] = [];
-        $this->helper->convertValue($converted['translations'][$defaultLanguageUuid], 'name', $data, 'name', $this->helper::TYPE_STRING);
-        $this->helper->convertValue($converted['translations'][$defaultLanguageUuid], 'position', $data, 'position', $this->helper::TYPE_INTEGER);
-
-        $converted['group']['translations'][$defaultLanguageUuid] = [];
-        $this->helper->convertValue($converted['group']['translations'][$defaultLanguageUuid], 'name', $data['group'], 'name', $this->helper::TYPE_STRING);
-        $this->helper->convertValue($converted['group']['translations'][$defaultLanguageUuid], 'description', $data['group'], 'description', $this->helper::TYPE_STRING);
-
-        foreach ($productContainerUuids as $uuid) {
-            $this->getDatasheet($converted, $uuid);
-            $this->getConfigurator($converted, $data, $uuid);
-        }
+        $this->getConfiguratorSettings($data, $converted);
+        $this->getProperties($data, $converted);
+        $this->getTranslation($data, $converted);
 
         return new ConvertStruct($converted, null);
     }
@@ -217,24 +202,123 @@ class PropertyGroupOptionConverter extends AbstractConverter
         $media['translations'][$languageData['uuid']] = $localeTranslation;
     }
 
-    private function getConfigurator(array &$converted, array &$data, string $productContainerUuid): void
+    private function getConfiguratorSettings(array &$data, array &$converted): void
     {
-        $converted['productConfiguratorSettings'][] = [
-            'id' => $this->mappingService->createNewUuid(
-                $this->connectionId,
-                ProductPropertyDefinition::getEntityName(),
-                $data['id'] . '_' . $productContainerUuid,
-                $this->context
-            ),
+        $variantOptionsToProductContainer = $this->mappingService->getUuidList(
+            $this->connectionId,
+            'main_product_options',
+            hash('md5', strtolower($data['name'] . '_' . $data['group']['name'])),
+            $this->context
+        );
 
-            'productId' => $productContainerUuid,
-        ];
+        foreach ($variantOptionsToProductContainer as $uuid) {
+            $converted['productConfiguratorSettings'][] = [
+                'id' => $this->mappingService->createNewUuid(
+                    $this->connectionId,
+                    ProductPropertyDefinition::getEntityName(),
+                    $data['id'] . '_' . $uuid,
+                    $this->context
+                ),
+
+                'productId' => $uuid,
+            ];
+        }
     }
 
-    private function getDatasheet(array &$converted, string $productContainerUuid): void
+    private function getProperties(array $data, array &$converted): void
     {
-        $converted['productProperties'][] = [
-            'id' => $productContainerUuid,
-        ];
+        $propertyOptionsToProductContainer = $this->mappingService->getUuidList(
+            $this->connectionId,
+            'main_product_filter',
+            hash('md5', strtolower($data['name'] . '_' . $data['group']['name'])),
+            $this->context
+        );
+
+        foreach ($propertyOptionsToProductContainer as $uuid) {
+            $converted['productProperties'][] = [
+                'id' => $uuid,
+            ];
+        }
+    }
+
+    private function createAndDeleteNecessaryMappings(array $data, array $converted): void
+    {
+        $this->mappingService->createNewUuid(
+            $this->connectionId,
+            PropertyGroupOptionDefinition::getEntityName() . '_' . $data['type'],
+            $data['id'],
+            $this->context,
+            null,
+            $converted['id']
+        );
+
+        $this->mappingService->createNewUuid(
+            $this->connectionId,
+            PropertyGroupDefinition::getEntityName() . '_' . $data['type'],
+            $data['group']['id'],
+            $this->context,
+            null,
+            $converted['group']['id']
+        );
+
+        $this->mappingService->createNewUuid(
+            $this->connectionId,
+            PropertyGroupOptionDefinition::getEntityName(),
+            hash('md5', strtolower($data['name'] . '_' . $data['group']['name'] . '_' . $data['type'])),
+            $this->context
+        );
+
+        $this->mappingService->createNewUuid(
+            $this->connectionId,
+            PropertyGroupOptionDefinition::getEntityName(),
+            hash('md5', strtolower($data['group']['name'] . '_' . $data['type'])),
+            $this->context
+        );
+
+        if ($data['type'] === 'option') {
+            $propertyOptionMapping = $this->mappingService->getUuid(
+                $this->connectionId,
+                PropertyGroupOptionDefinition::getEntityName(),
+                hash('md5', strtolower($data['name'] . '_' . $data['group']['name'] . '_property')),
+                $this->context
+            );
+
+            $propertyGroupMapping = $this->mappingService->getUuid(
+                $this->connectionId,
+                PropertyGroupDefinition::getEntityName(),
+                hash('md5', strtolower($data['group']['name'] . '_property')),
+                $this->context
+            );
+
+            if ($propertyOptionMapping !== null) {
+                $this->mappingService->deleteMapping(
+                    $propertyOptionMapping,
+                    $this->connectionId,
+                    $this->context
+                );
+            }
+
+            if ($propertyGroupMapping !== null) {
+                $this->mappingService->deleteMapping(
+                    $propertyGroupMapping,
+                    $this->connectionId,
+                    $this->context
+                );
+            }
+        }
+    }
+
+    private function getTranslation(array &$data, array &$converted): void
+    {
+        $languageData = $this->mappingService->getDefaultLanguageUuid($this->context);
+        $defaultLanguageUuid = $languageData['uuid'];
+
+        $converted['translations'][$defaultLanguageUuid] = [];
+        $this->helper->convertValue($converted['translations'][$defaultLanguageUuid], 'name', $data, 'name', $this->helper::TYPE_STRING);
+        $this->helper->convertValue($converted['translations'][$defaultLanguageUuid], 'position', $data, 'position', $this->helper::TYPE_INTEGER);
+
+        $converted['group']['translations'][$defaultLanguageUuid] = [];
+        $this->helper->convertValue($converted['group']['translations'][$defaultLanguageUuid], 'name', $data['group'], 'name', $this->helper::TYPE_STRING);
+        $this->helper->convertValue($converted['group']['translations'][$defaultLanguageUuid], 'description', $data['group'], 'description', $this->helper::TYPE_STRING);
     }
 }

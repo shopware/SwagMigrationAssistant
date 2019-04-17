@@ -102,6 +102,10 @@ class TranslationConverter extends AbstractConverter
                 return $this->createConfiguratorOptionTranslation($data);
             case 'configuratorgroup':
                 return $this->createConfiguratorOptionGroupTranslation($data);
+            case 'propertyvalue':
+                return $this->createPropertyValueTranslation($data);
+            case 'propertyoption':
+                return $this->createPropertyOptionTranslation($data);
         }
 
         $this->loggingService->addWarning(
@@ -562,7 +566,7 @@ class TranslationConverter extends AbstractConverter
         $configuratorOption = [];
         $configuratorOption['id'] = $this->mappingService->getUuid(
             $this->connectionId,
-            PropertyGroupOptionDefinition::getEntityName(),
+            PropertyGroupOptionDefinition::getEntityName() . '_option',
             $data['objectkey'],
             $this->context
         );
@@ -665,7 +669,7 @@ class TranslationConverter extends AbstractConverter
         $configuratorOptionGroup = [];
         $configuratorOptionGroup['id'] = $this->mappingService->getUuid(
             $this->connectionId,
-            PropertyGroupDefinition::getEntityName(),
+            PropertyGroupDefinition::getEntityName() . '_option',
             $data['objectkey'],
             $this->context
         );
@@ -759,5 +763,203 @@ class TranslationConverter extends AbstractConverter
         }
 
         return new ConvertStruct($configuratorOptionGroup, $data);
+    }
+
+    private function createPropertyValueTranslation(array $data): ConvertStruct
+    {
+        $sourceData = $data;
+
+        $propertyValue = [];
+        $propertyValue['id'] = $this->mappingService->getUuid(
+            $this->connectionId,
+            PropertyGroupOptionDefinition::getEntityName() . '_property',
+            $data['objectkey'],
+            $this->context
+        );
+        unset($data['objectkey']);
+
+        if (!isset($propertyValue['id'])) {
+            $this->loggingService->addWarning(
+                $this->runId,
+                Shopware55LogTypes::ASSOCIATION_REQUIRED_MISSING,
+                'Associated property value not found',
+                'Mapping of "property value" is missing, but it is a required association for "translation". Import "property value" first.',
+                [
+                    'data' => $data,
+                    'missingEntity' => 'Property value',
+                    'requiredFor' => 'translation',
+                    'missingImportEntity' => 'Property value',
+                ]
+            );
+
+            return new ConvertStruct(null, $sourceData);
+        }
+
+        $propertyValue['entityDefinitionClass'] = PropertyGroupOptionDefinition::class;
+
+        $objectData = unserialize($data['objectdata'], ['allowed_classes' => false]);
+
+        if (!\is_array($objectData)) {
+            $this->loggingService->addWarning(
+                $this->runId,
+                Shopware55LogTypes::INVALID_UNSERIALIZED_DATA,
+                'Invalid unserialized data',
+                'Property-Value-Option-Translation-Entity could not converted cause of invalid unserialized object data.',
+                [
+                    'entity' => 'Property value',
+                    'data' => $data['objectdata'],
+                ]
+            );
+
+            return new ConvertStruct(null, $sourceData);
+        }
+
+        $propertyValueTranslation = [];
+        $propertyValueTranslation['id'] = $this->mappingService->createNewUuid(
+            $this->connectionId,
+            PropertyGroupOptionTranslationDefinition::getEntityName(),
+            $data['id'],
+            $this->context
+        );
+
+        foreach ($objectData as $key => $value) {
+            if ($key === 'optionValue') {
+                $this->helper->convertValue($propertyValueTranslation, 'name', $objectData, $key);
+            }
+
+            $isAttribute = strpos($key, '__attribute_');
+            if ($isAttribute !== false) {
+                $key = str_replace('__attribute_', '', $key);
+                $propertyValueTranslation['attributes'][$key] = $value;
+                unset($objectData[$key]);
+            }
+        }
+
+        if (empty($objectData)) {
+            unset($data['objectdata']);
+        } else {
+            $data['objectdata'] = serialize($objectData);
+        }
+
+        unset($data['id'], $data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
+
+        $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $data['_locale'], $this->context);
+
+        if (isset($languageData['createData'])) {
+            $propertyValueTranslation['language']['id'] = $languageData['uuid'];
+            $propertyValueTranslation['language']['localeId'] = $languageData['createData']['localeId'];
+            $propertyValueTranslation['language']['name'] = $languageData['createData']['localeCode'];
+        } else {
+            $propertyValueTranslation['languageId'] = $languageData['uuid'];
+        }
+
+        $propertyValue['translations'][$languageData['uuid']] = $propertyValueTranslation;
+
+        unset($data['name'], $data['_locale']);
+
+        if (empty($data)) {
+            $data = null;
+        }
+
+        return new ConvertStruct($propertyValue, $data);
+    }
+
+    private function createPropertyOptionTranslation(array $data): ConvertStruct
+    {
+        $sourceData = $data;
+
+        $propertyOption = [];
+        $propertyOption['id'] = $this->mappingService->getUuid(
+            $this->connectionId,
+            PropertyGroupDefinition::getEntityName() . '_property',
+            $data['objectkey'],
+            $this->context
+        );
+        unset($data['objectkey']);
+
+        if (!isset($propertyOption['id'])) {
+            $this->loggingService->addWarning(
+                $this->runId,
+                Shopware55LogTypes::ASSOCIATION_REQUIRED_MISSING,
+                'Associated property option not found',
+                'Mapping of "property option" is missing, but it is a required association for "translation". Import "property option" first.',
+                [
+                    'data' => $data,
+                    'missingEntity' => 'Property option',
+                    'requiredFor' => 'translation',
+                    'missingImportEntity' => 'Property option',
+                ]
+            );
+
+            return new ConvertStruct(null, $sourceData);
+        }
+
+        $propertyOption['entityDefinitionClass'] = PropertyGroupDefinition::class;
+
+        $objectData = unserialize($data['objectdata'], ['allowed_classes' => false]);
+
+        if (!\is_array($objectData)) {
+            $this->loggingService->addWarning(
+                $this->runId,
+                Shopware55LogTypes::INVALID_UNSERIALIZED_DATA,
+                'Invalid unserialized data',
+                'Property-Option-Translation-Entity could not converted cause of invalid unserialized object data.',
+                [
+                    'entity' => 'Property option',
+                    'data' => $data['objectdata'],
+                ]
+            );
+
+            return new ConvertStruct(null, $sourceData);
+        }
+
+        $propertyOptionTranslation = [];
+        $propertyOptionTranslation['id'] = $this->mappingService->createNewUuid(
+            $this->connectionId,
+            PropertyGroupTranslationDefinition::getEntityName(),
+            $data['id'],
+            $this->context
+        );
+
+        foreach ($objectData as $key => $value) {
+            if ($key === 'optionName') {
+                $this->helper->convertValue($propertyOptionTranslation, 'optionName', $objectData, $key);
+            }
+
+            $isAttribute = strpos($key, '__attribute_');
+            if ($isAttribute !== false) {
+                $key = str_replace('__attribute_', '', $key);
+                $propertyOptionTranslation['attributes'][$key] = $value;
+                unset($objectData[$key]);
+            }
+        }
+
+        if (empty($objectData)) {
+            unset($data['objectdata']);
+        } else {
+            $data['objectdata'] = serialize($objectData);
+        }
+
+        unset($data['id'], $data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
+
+        $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $data['_locale'], $this->context);
+
+        if (isset($languageData['createData'])) {
+            $propertyOptionTranslation['language']['id'] = $languageData['uuid'];
+            $propertyOptionTranslation['language']['localeId'] = $languageData['createData']['localeId'];
+            $propertyOptionTranslation['language']['name'] = $languageData['createData']['localeCode'];
+        } else {
+            $propertyOptionTranslation['languageId'] = $languageData['uuid'];
+        }
+
+        $propertyOption['translations'][$languageData['uuid']] = $propertyOptionTranslation;
+
+        unset($data['name'], $data['_locale']);
+
+        if (empty($data)) {
+            $data = null;
+        }
+
+        return new ConvertStruct($propertyOption, $data);
     }
 }

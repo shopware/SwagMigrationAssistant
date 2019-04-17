@@ -187,7 +187,8 @@
           "order": "Orders:",
           "media": "Media:",
           "translation": "Translations:",
-          "customer_group": "Customer groups:"
+          "customer_group": "Customer groups:",
+          "property_group_option": "Properties:"
         },
         "noData": "No data was found to import.",
         "touText": "The general {link} of Shopware Playground applies to the import of data. The import process does not affect the data of the source system.",

@@ -188,7 +188,8 @@
           "order": "Bestellungen:",
           "media": "Medien:",
           "translation": "Übersetzungen:",
-          "customer_group": "Kundengruppen:"
+          "customer_group": "Kundengruppen:",
+          "property_group_option": "Eigenschaften:"
         },
         "noData": "Es wurden keine Daten zum Importieren gefunden.",
         "touText": "Für den Import der Daten gelten die {link} von Shopware Playground. Der Importprozess nimmt keinen Einfluss auf die Daten des Quellsystems.",

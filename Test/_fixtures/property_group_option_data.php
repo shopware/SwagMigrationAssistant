@@ -2,9 +2,10 @@
 
 return [
     0 => [
+        'type' => 'option',
         'id' => '1',
         'group_id' => '6',
-        'name' => 'rot',
+        'name' => 'Rot',
         'position' => '8',
         'media_id' => null,
         'group' => [
@@ -16,6 +17,7 @@ return [
         '_locale' => 'de_DE',
     ],
     1 => [
+        'type' => 'option',
         'id' => '32',
         'group_id' => '5',
         'name' => '1,0 Liter',
@@ -30,6 +32,7 @@ return [
         '_locale' => 'de_DE',
     ],
     2 => [
+        'type' => 'option',
         'id' => '33',
         'group_id' => '5',
         'name' => '1,5 Liter',
@@ -44,6 +47,7 @@ return [
         '_locale' => 'de_DE',
     ],
     3 => [
+        'type' => 'option',
         'id' => '34',
         'group_id' => '5',
         'name' => '5 Liter',
@@ -58,6 +62,7 @@ return [
         '_locale' => 'de_DE',
     ],
     4 => [
+        'type' => 'option',
         'id' => '35',
         'group_id' => '5',
         'name' => '0,5 Liter',
@@ -72,6 +77,7 @@ return [
         '_locale' => 'de_DE',
     ],
     5 => [
+        'type' => 'option',
         'id' => '36',
         'group_id' => '6',
         'name' => 'grün',
@@ -86,6 +92,7 @@ return [
         '_locale' => 'de_DE',
     ],
     6 => [
+        'type' => 'option',
         'id' => '37',
         'group_id' => '6',
         'name' => 'pink',
@@ -100,6 +107,7 @@ return [
         '_locale' => 'de_DE',
     ],
     7 => [
+        'type' => 'option',
         'id' => '38',
         'group_id' => '6',
         'name' => 'gelb',
@@ -114,6 +122,7 @@ return [
         '_locale' => 'de_DE',
     ],
     8 => [
+        'type' => 'option',
         'id' => '39',
         'group_id' => '6',
         'name' => 'Signalrot',
@@ -128,6 +137,7 @@ return [
         '_locale' => 'de_DE',
     ],
     9 => [
+        'type' => 'option',
         'id' => '40',
         'group_id' => '6',
         'name' => 'Blau-Weiss',
