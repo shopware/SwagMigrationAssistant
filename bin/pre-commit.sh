@@ -30,6 +30,7 @@ then
         php -l -d display_errors=0 "$FILE" 1> /dev/null
     done
 
+    composer dump-autoload
     ../../../vendor/shopware/platform/bin/phpstan.phar analyze --level 5 --no-progress --configuration phpstan.neon --autoload-file="$AUTOLOAD_FILE" ${PHP_FILES}
 fi
 
