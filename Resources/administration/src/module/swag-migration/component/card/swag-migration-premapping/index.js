@@ -59,7 +59,9 @@ Component.register('swag-migration-premapping', {
 
             if (this.migrationUIStore.state.premapping !== null && this.migrationUIStore.state.premapping.length > 0) {
                 this.$nextTick(() => {
-                    this.validatePremapping();
+                    this.notifyPremappingValidWatchers(
+                        this.validatePremapping(false)
+                    );
                     this.isLoading = false;
                 });
                 return;
@@ -75,21 +77,40 @@ Component.register('swag-migration-premapping', {
                     });
                 } else {
                     this.migrationUIStore.setPremapping(premapping);
-                    this.validatePremapping();
+                    this.notifyPremappingValidWatchers(
+                        this.validatePremapping(false)
+                    );
 
                     this.isLoading = false;
                 }
             });
         },
 
-        validatePremapping() {
+        notifyPremappingValidWatchers(isValid) {
+            if (isValid !== this.migrationUIStore.state.isPremappingValid) {
+                this.migrationUIStore.setIsPremappingValid(isValid);
+                return;
+            }
+
+            // It is needed to trigger a watcher event here, even if the value does not have been changed.
+            this.migrationUIStore.setIsPremappingValid(!isValid);
+            this.$nextTick(() => {
+                this.migrationUIStore.setIsPremappingValid(isValid);
+            });
+        },
+
+        validatePremapping(updateStore = true) {
             const isValid = !this.migrationUIStore.state.premapping.some((group) => {
                 return group.mapping.some((mapping) => {
                     return mapping.destinationUuid === null || mapping.destinationUuid.length === 0;
                 });
             });
 
-            this.migrationUIStore.setIsPremappingValid(isValid);
+            if (updateStore) {
+                this.migrationUIStore.setIsPremappingValid(isValid);
+            }
+
+            return isValid;
         }
     }
 });

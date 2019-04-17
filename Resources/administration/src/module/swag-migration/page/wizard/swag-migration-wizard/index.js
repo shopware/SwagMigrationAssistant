@@ -79,7 +79,7 @@ Component.register('swag-migration-wizard', {
                 return '460px';
             }
 
-            return '688px'
+            return '688px';
         },
 
         modalTitleSnippet() {
@@ -285,6 +285,10 @@ Component.register('swag-migration-wizard', {
                 this.errorMessageSnippet = `swag-migration.wizard.pages.credentials.error.${errorCode}`;
             } else {
                 this.errorMessageSnippet = '';
+            }
+
+            if (this.errorMessageSnippet === this.$tc(`swag-migration.wizard.pages.credentials.error.${errorCode}`)) {
+                this.errorMessageSnippet = 'swag-migration.wizard.pages.credentials.error.undefinedErrorMsg';
             }
 
             this.navigateToRoute(this.routes.credentialsError);

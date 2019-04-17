@@ -96,19 +96,21 @@
 
                 {% block swag_migration_index_main_page_modal_abort_migration_confirmDialog %}
                     <sw-modal v-if="showAbortMigrationConfirmDialog"
+                              class="swag-migration-index-modal-abort-migration-confirm-dialog"
                               :title="$tc('swag-migration.index.confirmAbortDialog.title')"
                               @closeModal="onCloseAbortMigrationConfirmDialog"
                               variant="small">
 
-                        <sw-alert variant="warning"
-                                  class="swag-migration-index-data-selector__tou">
-                            <p v-html="$tc('swag-migration.index.confirmAbortDialog.hintContent')"></p>
-                        </sw-alert>
-
                         {% block swag_migration_index_main_page_modal_abort_migration_confirmDialog_message %}
-                        <p class="swag-migration-index-modal-abort-migration-confirm-dialog-message">
-                            {{ $tc('swag-migration.index.confirmAbortDialog.message') }}
-                        </p>
+                            <p class="swag-migration-index-modal-abort-migration-confirm-dialog-content">
+                                {{ $tc('swag-migration.index.confirmAbortDialog.content') }}
+                            </p>
+                        {% endblock %}
+
+                        {% block swag_migration_index_main_page_modal_abort_migration_confirmDialog_message_hint %}
+                            <p class="swag-migration-index-modal-abort-migration-confirm-dialog-hint">
+                                {{ $tc('swag-migration.index.confirmAbortDialog.hint') }}
+                            </p>
                         {% endblock %}
 
                         {% block swag_migration_index_main_page_modal_abort_migration_confirmDialog_footer %}

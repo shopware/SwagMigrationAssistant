@@ -2,7 +2,7 @@
   "swag-migration": {
     "general": {
       "mainMenuItemGeneral": "Migration",
-      "descriptionTextModule": "Modul zum Import der Daten aus Shopware 5",
+      "descriptionTextModule": "Modul zum Migrieren der Daten",
       "tabMain": "Übersicht",
       "tabHistory": "Verlauf",
       "tabDataSelector": "Datenauswahl"
@@ -97,13 +97,12 @@
           "error": {
             "contentTitle": "Keine Verbindung hergestellt",
             "alertErrorTitle": "Achtung",
+            "undefinedErrorMsg": "Interner Server-Fehler. Bitte versuche es erneut.",
             "SWAG_MIGRATION__GATEWAY_READ": "Es konnte keine Verbindung zum angegebenen Server hergestellt werden. Bitte überprüfe die angegebene Shop-Domain.",
             "SWAG_MIGRATION__CONNECTION_AUTHENTICATION_INVALID": "Deine Zugangsdaten sind nicht korrekt. Bitte überprüfe sie und versuche es erneut.",
             "SWAG_MIGRATION__PLUGIN_NOT_INSTALLED": "Das benötigte Plugin „Shopware Playground Connector“ ist nicht in Shopware 5 installiert. Bitte installiere das kostenlose Plugin und versuche es erneut.",
             "SWAG_MIGRATION__DATABASE_CONNECTION_ERROR": "Die Datenbank Verbindung konnte nicht hergestellt werden.",
-            "undefinedErrorMsg": "Interner Server Fehler. Bitte versuche es erneut.",
-            "credentialsMissing": "Es sind keine Zugangsdaten vorhanden, bitte trage zuerst welche ein.",
-            "migrationRunning": "Eine Migration ist zurzeit im Gange. Du kannst deshalb die Zugangsdaten nicht bearbeiten bis die Migration abgeschlossen ist."
+            "SWAG_MIGRATION__IS_RUNNING": "Eine Migration ist zurzeit im Gange. Du kannst deshalb die Zugangsdaten nicht bearbeiten, bis die Migration abgeschlossen ist."
           }
         }
       }
@@ -112,19 +111,19 @@
       "title": "Keine Verbindung ",
       "description": "Stelle sicher, dass eine Verbindung zwischen den Systemen hergestellt ist. Erst dann ist eine Migration möglich. Mehr Informationen dazu findest Du hier:{linebreak}{link}",
       "link": "Dokumentation: Migration zu Shopware 6",
-      "connectButton": "Verbindung herstellen"
+      "connectButton": "Verbindung anlegen"
     },
     "index": {
       "title": "Übersicht",
-      "migrateButton": "Importieren",
+      "migrateButton": "Migration starten",
       "startButton": "Fortfahren",
       "pauseButton": "Pausieren",
       "continueButton": "Fortsetzen",
       "abortButton": "Beenden",
       "finishButton": "Fertig",
       "backButton": "Migration abschließen",
-      "migrationAlreadyRunning": "Der Datenimport wurde bereits gestartet.",
-      "pluginVersionText": "Wir haben festgestellt, dass ein Plugin-Update verfügbar ist. Bitte update das Plugin „Shopware Playground Connector“. Gegebenenfalls kann der Datenimport nicht vollständig durchgeführt werden.",
+      "migrationAlreadyRunning": "Die Migration wurde bereits gestartet.",
+      "pluginVersionText": "Wir haben festgestellt, dass ein Plugin-Update verfügbar ist. Bitte update das Plugin „Shopware Playground Connector“. Gegebenenfalls kann die Migration nicht vollständig durchgeführt werden.",
       "shopInfoCard": {
         "cardTitle": "Shopsystem",
         "buttonEditSettings": "Verbindung bearbeiten",
@@ -141,7 +140,8 @@
         "noMigrationDoneYet": "bisher keine durchgeführt",
         "confirmDialog": {
           "title": "Zugangsdaten löschen",
-          "content": "Deine aktuellen Zugangsdaten werden gelöscht. Somit besteht keine aktive Verbindung mehr, um weitere Daten zu migrieren. Die Verbindung kann jedoch jederzeit bearbeitet und mit neuen Zugangsdaten wiederhergestellt werden.{linebreak}{linebreak}Möchtest Du die Zugangsdaten löschen?",
+          "content": "Danach besteht keine aktive Verbindung mehr. Gib Deine Zugangsdaten erneut ein, um die Verbindung wiederherzustellen.",
+          "contentHint": "Möchtest Du die aktuellen Zugangsdaten löschen?",
           "abortButtonText": "Abbrechen",
           "confirmButtonText": "Ja, löschen"
         }
@@ -190,8 +190,8 @@
           "translation": "Übersetzungen:",
           "customer_group": "Kundengruppen:"
         },
-        "noData": "Es wurden keine Daten zum Importieren gefunden.",
-        "touText": "Für den Import der Daten gelten die {link} von Shopware Playground. Der Importprozess nimmt keinen Einfluss auf die Daten des Quellsystems.",
+        "noData": "Es wurden keine Daten zum Migrieren gefunden.",
+        "touText": "Für die Migration der Daten gelten die {link} von Shopware Playground. Der Migrationsprozess nimmt keinen Einfluss auf die Daten des Quellsystems.",
         "touLinkText": "Allgemeinen Nutzungsbedingungen"
       },
       "premappingCard": {
@@ -306,19 +306,13 @@
           "buttonNavigateToMain": "Zur Übersicht"
         }
       },
-      "confirmDialog": {
-        "title": "Datenimport",
-        "message": "Möchtest Du wirklich Deine Daten importieren?",
-        "cancel": "Abbrechen",
-        "confirm": "Importieren"
-      },
       "confirmAbortDialog": {
-        "title": "Datenimport",
-        "message": "Den Datenimport jetzt beenden?",
+        "title": "Migration beenden",
+        "content": "Die Daten sind noch nicht vollständig migriert und teilweise unbrauchbar. Die gesamten Daten müssen erneut migriert werden, wenn Du jetzt beendest.",
+        "hint": "Möchtest Du die Migration beenden?",
         "cancelRunning": "Fortsetzen",
-        "cancelPause": "Weiter pausieren",
-        "confirm": "Beenden",
-        "hintContent": "Wenn der Prozess beendet wird sind die Daten nicht vollständig und dadurch teilweise unbrauchbar."
+        "cancelPause": "Pausieren",
+        "confirm": "Migration beenden"
       },
       "error": {
         "authorizationError": {
@@ -338,20 +332,20 @@
           "information": "Eintrag des Locale-Codes „{notFoundCode}“ konnte nicht gefunden werden."
         },
         "migrationContextPropertyMissing": {
-          "information": "Erforderliche Eigenschaft „{notFoundProperty}“ konnte für den Importkontext nicht gefunden werden."
+          "information": "Erforderliche Eigenschaft „{notFoundProperty}“ konnte für den Migrationskontext nicht gefunden werden."
         },
         "migrationsWorkloadPropertyMissing": {
-          "information": "Erforderliche Eigenschaft „{notFoundProperty}“ konnte für den Import-Workload nicht gefunden werden."
+          "information": "Erforderliche Eigenschaft „{notFoundProperty}“ konnte für den Migrations-Workload nicht gefunden werden."
         },
         "noFileSystemPermissions": {
           "information": "Du besitzt keine Rechte um Dateien oder Ordner zu erstellen oder zu schreiben. Bitte überprüfe Deine Berechtigungen."
         },
         "profileNotFound": {
-          "information": "Importprofil „{notFoundProfile}“ konnte nicht gefunden werden."
+          "information": "Migrationsprofil „{notFoundProfile}“ konnte nicht gefunden werden."
         },
         "undefinedIndex" : {
           "title": "Unidentifizierter Index",
-          "detail": "Unidentifizierter Index konnte nicht importiert werden.",
+          "detail": "Unidentifizierter Index konnte nicht migriert werden.",
           "information": "Index „{unidentifiedIndex}“ konnte nicht identifiziert werden. Bitte prüfe Deine Daten."
         },
         "unknownError": "Unbekannter Fehlertyp. Für weitere Informationen kannst Du in die Konsolenlogs der Entwicklertools Deines Browser schauen.",
@@ -359,7 +353,7 @@
         "SWAG_MIGRATION__WRITER_NOT_FOUND": "Filewriter für die „{entity}“-Entität konnte nicht gefunden werden.",
         "SWAG_MIGRATION__SHOPWARE55_CANNOT_DOWNLOAD_DATA": "Medien-Datei konnte nicht heruntergeladen werden. Betroffene Datei: {uri}",
         "SWAG_MIGRATION__SHOPWARE55_PARENT_ENTITY_NOT_FOUND": "Eltern-Entität für das „{entity}“-Kind konnte nicht gefunden werden.",
-        "SWAG_MIGRATION__SHOPWARE55_ASSOCIATION_REQUIRED_MISSING": "Das Mapping von „{missingEntity}“ konnte nicht gefunden werden. Diese ist allerdings erforderlich für „{requiredFor}“. Bitte importiere zuerst „{missingImportEntity}“ um fortzufahren.",
+        "SWAG_MIGRATION__SHOPWARE55_ASSOCIATION_REQUIRED_MISSING": "Das Mapping von „{missingEntity}“ konnte nicht gefunden werden. Diese ist allerdings erforderlich für „{requiredFor}“. Bitte migriere zuerst „{missingImportEntity}“ um fortzufahren.",
         "SWAG_MIGRATION__SHOPWARE55_EMPTY_NECESSARY_DATA_FIELDS": "{entity}-Entität konnte aufgrund eines leeren Pflichtfeldes nicht konvertiert werden: {fields} | {entity}-Entität konnte aufgrund leerer Pflichtfelder nicht konvertiert werden: {fields}",
         "SWAG_MIGRATION__SHOPWARE55_NO_DEFAULT_SHIPPING_ADDRESS": "Die Standard-Lieferadresse des Kunden ist leer und wird mit der Standard-Rechnungsadresse gefüllt.",
         "SWAG_MIGRATION__SHOPWARE55_NO_DEFAULT_BILLING_ADDRESS": "Die Standard-Rechnungsadresse des Kunden ist leer und wird mit der Standard-Lieferadresse gefüllt.",
@@ -387,7 +381,7 @@
       "contextMenu": {
         "details": "Details"
       },
-      "noData": "Es wurden keine Importe gefunden."
+      "noData": "Es wurden keine Migrationen gefunden."
     }
   }
 }
