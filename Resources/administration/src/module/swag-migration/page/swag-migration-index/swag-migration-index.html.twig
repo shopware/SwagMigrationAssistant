@@ -13,7 +13,7 @@
         <template v-if="!storesInitializing">
             {% block swag_migration_index_smart_bar_actions %}
                 <template slot="smart-bar-actions">
-                    <sw-button variant="primary" @click="onMigrateButtonClick" :disabled="migrateButtonDisabled">
+                    <sw-button variant="primary" @click="onMigrate" :disabled="migrateButtonDisabled">
                         {{ $tc('swag-migration.index.migrateButton') }}
                     </sw-button>
                 </template>
@@ -50,40 +50,6 @@
                         {% block swag_migration_index_content_view %}
                             <router-view ref="contentComponent">
                             </router-view>
-                        {% endblock %}
-
-                        {% block swag_migration_index_main_page_modal_migration_confirmDialog %}
-                            <sw-modal v-if="showMigrationConfirmDialog"
-                                      :title="$tc('swag-migration.index.confirmDialog.title')"
-                                      :isLoading="migrationProcessStore.state.isMigrating"
-                                      @closeModal="onCloseMigrationConfirmDialog"
-                                      variant="small">
-
-                                {% block swag_migration_index_main_page_modal_migration_confirmDialog_message %}
-                                    <p class="swag-migration-index-modal-migration-confirm-dialog-message">
-                                        {{ $tc('swag-migration.index.confirmDialog.message') }}
-                                    </p>
-                                {% endblock %}
-
-                                {% block swag_migration_index_main_page_modal_migration_confirmDialog_footer %}
-                                    <template slot="modal-footer">
-                                        {% block swag_migration_index_main_page_modal_migration_confirmDialog_footer_cancelAction %}
-                                            <sw-button @click="onCloseMigrationConfirmDialog"
-                                                       size="small">
-                                                {{ $tc('swag-migration.index.confirmDialog.cancel') }}
-                                            </sw-button>
-                                        {% endblock %}
-
-                                        {% block swag_migration_index_main_page_modal_migration_confirmDialog_footer_confirmAction %}
-                                            <sw-button @click="onMigrate"
-                                                       variant="primary"
-                                                       size="small">
-                                                {{ $tc('swag-migration.index.confirmDialog.confirm') }}
-                                            </sw-button>
-                                        {% endblock %}
-                                    </template>
-                                {% endblock %}
-                            </sw-modal>
                         {% endblock %}
                     </sw-card-view>
                 </template>

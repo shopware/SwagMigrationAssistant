@@ -75,3 +75,19 @@ $swag-migration-shop-information-color-metadata: $color-gutenberg;
         }
     }
 }
+
+.swag-migration-shop-information__confirm-modal {
+    .sw-modal__body {
+        padding: 32px;
+    }
+
+    .swag-migration-shop-information__confirm-modal-content {
+        text-align: center;
+    }
+
+    .swag-migration-shop-information__confirm-modal-content-hint {
+        text-align: center;
+        padding-top: 32px;
+        font-weight: 600;
+    }
+}

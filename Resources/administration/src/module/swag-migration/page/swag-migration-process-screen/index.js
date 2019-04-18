@@ -164,7 +164,6 @@ Component.register('swag-migration-process-screen', {
                 if (status === MIGRATION_STATUS.PREMAPPING) {
                     this.$nextTick(() => {
                         this.flowChartItemIndex = status;
-                        this.flowChartItemVariant = this.migrationUIStore.state.isPremappingValid ? 'success' : 'error';
                     });
                     return;
                 }

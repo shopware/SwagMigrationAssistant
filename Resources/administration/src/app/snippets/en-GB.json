@@ -2,7 +2,7 @@
   "swag-migration": {
     "general": {
       "mainMenuItemGeneral": "Migration",
-      "descriptionTextModule": "Module to import data from Shopware 5",
+      "descriptionTextModule": "Module to migrate data",
       "tabMain": "Overview",
       "tabHistory": "History",
       "tabDataSelector": "Data selection"
@@ -97,13 +97,12 @@
           "error": {
             "contentTitle": "No connection",
             "alertErrorTitle": "Attention",
+            "undefinedErrorMsg": "Internal server error. Please try again.",
             "SWAG_MIGRATION__GATEWAY_READ": "Could not connect to the server. Please check the given shop domain.",
             "SWAG_MIGRATION__CONNECTION_AUTHENTICATION_INVALID": "Your credentials are incorrect. Please check them and try again.",
             "SWAG_MIGRATION__PLUGIN_NOT_INSTALLED": "The required plugin “Shopware Playground Connector” is not installed in Shopware 5. Please install the free plugin and try again.",
             "SWAG_MIGRATION__DATABASE_CONNECTION_ERROR": "Database connection could not be established.",
-            "undefinedErrorMsg": "Internal server error. Please try again.",
-            "credentialsMissing": "There are no credentials available, please enter them first.",
-            "migrationRunning": "A migration is currently in progress. Therefore, you cannot edit the credentials until the migration is complete."
+            "SWAG_MIGRATION__IS_RUNNING": "A migration is currently in progress. Therefore, you cannot edit the credentials until the migration is complete."
           }
         }
       }
@@ -111,18 +110,18 @@
     "emptyScreen": {
       "title": "No connection",
       "description": "Make sure that a connection has been established between the systems. This is required for the migration. You can find more information here:{linebreak}{link}",
-      "connectButton": "Establish connection"
+      "connectButton": "Create connection"
     },
     "index": {
       "title": "Overview",
-      "migrateButton": "Import",
+      "migrateButton": "Start migration",
       "startButton": "Continue",
       "pauseButton": "Pause",
       "continueButton": "Continue",
       "abortButton": "Abort",
       "finishButton": "Finish",
       "backButton": "Finish migration",
-      "migrationAlreadyRunning": "Import already started.",
+      "migrationAlreadyRunning": "Migration already started.",
       "pluginVersionText": "Please make sure your Shopware 5 backend is using the latest version of the Shopware Playground Connector Plugin.",
       "shopInfoCard": {
         "cardTitle": "Shop system",
@@ -140,7 +139,8 @@
         "noMigrationDoneYet": "none performed yet",
         "confirmDialog": {
           "title": "Delete access data",
-          "content": "Your current access data will be deleted. This will stop the active connection from working. However, the connection's access data can be edited at any time and the connection re-established using fresh/new access credentials.{linebreak}{linebreak}Do you want to delete the access data?",
+          "content": "There will be no active connection after this. Enter your access data again to restore the connection.",
+          "contentHint": "Would you like to delete the current access data?",
           "abortButtonText": "Cancel",
           "confirmButtonText": "Yes, delete"
         }
@@ -189,8 +189,8 @@
           "translation": "Translations:",
           "customer_group": "Customer groups:"
         },
-        "noData": "No data was found to import.",
-        "touText": "The general {link} of Shopware Playground applies to the import of data. The import process does not affect the data of the source system.",
+        "noData": "Nothing found to migrate.",
+        "touText": "The general {link} of Shopware Playground applies to the migration of data. Migrating will neither affect nor harm the data on your source system.",
         "touLinkText": "terms of use"
       },
       "premappingCard": {
@@ -306,19 +306,13 @@
           "buttonNavigateToMain": "Overview"
         }
       },
-      "confirmDialog": {
-        "title": "Data import",
-        "message": "Do you really want to import your data?",
-        "cancel": "Cancel",
-        "confirm": "Import"
-      },
       "confirmAbortDialog": {
-        "title": "Data import",
-        "message": "Stop data import now?",
+        "title": "Stop migration",
+        "content": "The migration is not fully complete. Already migrated data might be unusable. If you quit now, you will have to completely rerun the migration process.",
+        "hint": "Do you want to stop the migration?",
         "cancelRunning": "Continue",
-        "cancelPause": "Pause further",
-        "confirm": "Stop import",
-        "hintContent": "When the process is finished, the data is not complete and therefore partially unusable."
+        "cancelPause": "Pause",
+        "confirm": "Stop migration"
       },
       "error": {
         "authorizationError": {
@@ -338,10 +332,10 @@
           "information": "Locale entry code \"{notFoundCode}\" not found."
         },
         "migrationContextPropertyMissing": {
-          "information": "Required property \"{notFoundProperty}\" for import context not found."
+          "information": "Required property \"{notFoundProperty}\" for migration context not found."
         },
         "migrationsWorkloadPropertyMissing": {
-          "information": "Required property \"{notFoundProperty}\" for import workload not found."
+          "information": "Required property \"{notFoundProperty}\" for migration workload not found."
         },
         "noFileSystemPermissions": {
           "information": "No file system permissions to create or write files or directories. Please check your permissions."
@@ -359,7 +353,7 @@
         "SWAG_MIGRATION__WRITER_NOT_FOUND": "File writer for \"{entity}\" entity not found.",
         "SWAG_MIGRATION__SHOPWARE55_CANNOT_DOWNLOAD_DATA": "Cannot download media. Affected file: {uri}",
         "SWAG_MIGRATION__SHOPWARE55_PARENT_ENTITY_NOT_FOUND": "Parent entity for \"{entity}\" child not found.",
-        "SWAG_MIGRATION__SHOPWARE55_ASSOCIATION_REQUIRED_MISSING": "Mapping of \"{missingEntity}\" is missing, but it is a required association for \"{requiredFor}\". Please import \"{missingImportEntity}\" first to continue.",
+        "SWAG_MIGRATION__SHOPWARE55_ASSOCIATION_REQUIRED_MISSING": "Mapping of \"{missingEntity}\" is missing, but it is a required association for \"{requiredFor}\". Please migrate \"{missingImportEntity}\" first to continue.",
         "SWAG_MIGRATION__SHOPWARE55_EMPTY_NECESSARY_DATA_FIELDS": "{entity} entity could not be converted, because of empty, necessary field: {fields} | {entity} entity could not be converted, because of empty, necessary fields: {fields}",
         "SWAG_MIGRATION__SHOPWARE55_NO_DEFAULT_SHIPPING_ADDRESS": "Default shipping address of customer is empty and will be set with the default billing address.",
         "SWAG_MIGRATION__SHOPWARE55_NO_DEFAULT_BILLING_ADDRESS": "Default billing address of customer is empty and will be set with the default shipping address.",
@@ -387,7 +381,7 @@
       "contextMenu": {
         "details": "Details"
       },
-      "noData": "No imports were found."
+      "noData": "No migrations found."
     }
   }
 }

@@ -138,14 +138,21 @@
 
         {% block swag_migration_shop_information_confirm_modal %}
             <sw-modal v-if="showConfirmModal"
+                      class="swag-migration-shop-information__confirm-modal"
                       :title="$tc('swag-migration.index.shopInfoCard.confirmDialog.title')"
+                      size="460px"
                       @closeModal="showConfirmModal = false">
 
                 {% block swag_migration_shop_information_confirm_modal_content %}
-                    <i18n path="swag-migration.index.shopInfoCard.confirmDialog.content"
-                          tag="p">
-                        <br place="linebreak">
-                    </i18n>
+                    <p class="swag-migration-shop-information__confirm-modal-content">
+                        {{ $tc('swag-migration.index.shopInfoCard.confirmDialog.content') }}
+                    </p>
+                {% endblock %}
+
+                {% block swag_migration_shop_information_confirm_modal_content_hint %}
+                    <p class="swag-migration-shop-information__confirm-modal-content-hint">
+                        {{ $tc('swag-migration.index.shopInfoCard.confirmDialog.contentHint') }}
+                    </p>
                 {% endblock %}
 
                 <template slot="modal-footer">

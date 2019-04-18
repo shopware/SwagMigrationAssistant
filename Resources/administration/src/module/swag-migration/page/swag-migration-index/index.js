@@ -17,8 +17,7 @@ Component.register('swag-migration-index', {
             migrationUIStore: State.getStore('migrationUI'),
             /** @type MigrationProcessStore */
             migrationProcessStore: State.getStore('migrationProcess'),
-            storesInitializing: true,
-            showMigrationConfirmDialog: false
+            storesInitializing: true
         };
     },
 
@@ -62,17 +61,7 @@ Component.register('swag-migration-index', {
             }
         },
 
-        onMigrateButtonClick() {
-            this.showMigrationConfirmDialog = true;
-        },
-
-        onCloseMigrationConfirmDialog() {
-            this.showMigrationConfirmDialog = false;
-        },
-
         onMigrate() {
-            this.showMigrationConfirmDialog = false;
-
             if (this.$refs.contentComponent.onMigrate !== undefined) {
                 this.$refs.contentComponent.onMigrate();
             } else {

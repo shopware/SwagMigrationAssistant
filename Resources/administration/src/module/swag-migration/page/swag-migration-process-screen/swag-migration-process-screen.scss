@@ -21,3 +21,20 @@
         }
     }
 }
+
+.swag-migration-index-modal-abort-migration-confirm-dialog {
+
+    .sw-modal__body {
+        padding: 32px;
+    }
+
+    .swag-migration-index-modal-abort-migration-confirm-dialog-content {
+        text-align: center;
+    }
+
+    .swag-migration-index-modal-abort-migration-confirm-dialog-hint {
+        text-align: center;
+        font-weight: 600;
+        padding-top: 32px;
+    }
+}
