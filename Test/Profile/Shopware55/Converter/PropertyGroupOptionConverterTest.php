@@ -124,7 +124,7 @@ class PropertyGroupOptionConverterTest extends TestCase
         static::assertArrayHasKey('group', $converted);
         static::assertArrayHasKey('translations', $converted);
         static::assertSame(
-            'rot',
+            'Rot',
             $converted['translations'][DummyMappingService::DEFAULT_LANGUAGE_UUID]['name']
         );
         static::assertArrayHasKey('translations', $converted['group']);
@@ -169,7 +169,7 @@ class PropertyGroupOptionConverterTest extends TestCase
         static::assertSame($converted['productConfiguratorSettings'][1]['productId'], $mainProduct2->getConverted()['id']);
 
         static::assertSame(
-            'rot',
+            'Rot',
             $converted['translations'][DummyMappingService::DEFAULT_LANGUAGE_UUID]['name']
         );
         static::assertArrayHasKey('translations', $converted['group']);

@@ -1312,6 +1312,32 @@ return [
                 ],
             ],
         ],
+        'filters' => [
+            0 => [
+                'id' => '3',
+                'value' => 'Weiß',
+                'position' => '3',
+                'media_id' => null,
+                'option' => [
+                    'id' => '5',
+                    'name' => 'Farbe',
+                    'description' => 'Farben',
+                    'position' => 0,
+                ],
+            ],
+            1 => [
+                'id' => '5',
+                'value' => 'M',
+                'position' => '2',
+                'media_id' => null,
+                'option' => [
+                    'id' => '6',
+                    'name' => 'Größe',
+                    'description' => 'Größe',
+                    'position' => 0,
+                ],
+            ],
+        ],
     ],
     5 => [
         'detail' => [
@@ -1785,7 +1811,7 @@ return [
                     'description' => 'Farben',
                     'position' => 0,
                 ],
-                'name' => 'Weiß',
+                'name' => 'rot',
                 'position' => '3',
                 'media_id' => null,
             ],
@@ -1795,6 +1821,32 @@ return [
                 'position' => '1',
                 'media_id' => null,
                 'group' => [
+                    'id' => '6',
+                    'name' => 'Größe',
+                    'description' => 'Größen',
+                    'position' => 0,
+                ],
+            ],
+        ],
+        'filters' => [
+            0 => [
+                'id' => '3',
+                'option' => [
+                    'id' => '5',
+                    'name' => 'Farbe',
+                    'description' => 'Farben',
+                    'position' => 0,
+                ],
+                'value' => 'rot',
+                'position' => '3',
+                'media_id' => null,
+            ],
+            1 => [
+                'id' => '4',
+                'value' => 'S',
+                'position' => '1',
+                'media_id' => null,
+                'option' => [
                     'id' => '6',
                     'name' => 'Größe',
                     'description' => 'Größen',
@@ -3810,7 +3862,7 @@ return [
         'configuratorOptions' => [
             0 => [
                 'id' => '1',
-                'name' => 'Rot',
+                'name' => 'rot',
                 'position' => '1',
                 'media_id' => null,
                 'group' => [
@@ -3826,6 +3878,32 @@ return [
                 'position' => '2',
                 'media_id' => null,
                 'group' => [
+                    'id' => '6',
+                    'name' => 'Größe',
+                    'description' => 'Größen',
+                    'position' => 0,
+                ],
+            ],
+        ],
+        'filters' => [
+            0 => [
+                'id' => '1',
+                'value' => 'rot',
+                'position' => '1',
+                'media_id' => null,
+                'option' => [
+                    'id' => '5',
+                    'name' => 'Farbe',
+                    'description' => 'Farben',
+                    'position' => 0,
+                ],
+            ],
+            1 => [
+                'id' => '5',
+                'value' => 'M',
+                'position' => '2',
+                'media_id' => null,
+                'option' => [
                     'id' => '6',
                     'name' => 'Größe',
                     'description' => 'Größen',
@@ -4804,7 +4882,7 @@ return [
         'configuratorOptions' => [
             0 => [
                 'id' => '1',
-                'name' => 'Rot',
+                'name' => 'rot',
                 'position' => '1',
                 'media_id' => null,
                 'group' => [
@@ -4820,6 +4898,32 @@ return [
                 'position' => '4',
                 'media_id' => null,
                 'group' => [
+                    'id' => '5',
+                    'name' => 'Größe',
+                    'description' => 'Größen',
+                    'position' => 0,
+                ],
+            ],
+        ],
+        'filters' => [
+            0 => [
+                'id' => '1',
+                'value' => 'rot',
+                'position' => '1',
+                'media_id' => null,
+                'option' => [
+                    'id' => '6',
+                    'name' => 'Farbe',
+                    'description' => 'Farben',
+                    'position' => 0,
+                ],
+            ],
+            1 => [
+                'id' => '7',
+                'value' => 'XL',
+                'position' => '4',
+                'media_id' => null,
+                'option' => [
                     'id' => '5',
                     'name' => 'Größe',
                     'description' => 'Größen',
@@ -5227,6 +5331,32 @@ return [
                 ],
             ],
         ],
+        'filters' => [
+            0 => [
+                'id' => '2',
+                'value' => 'Blau',
+                'position' => '2',
+                'media_id' => null,
+                'option' => [
+                    'id' => '5',
+                    'name' => 'Farbe',
+                    'description' => 'Farben',
+                    'position' => 0,
+                ],
+            ],
+            1 => [
+                'id' => '5',
+                'value' => 'M',
+                'position' => '2',
+                'media_id' => null,
+                'option' => [
+                    'id' => '6',
+                    'name' => 'Größe',
+                    'description' => 'Größen',
+                    'position' => 0,
+                ],
+            ],
+        ],
     ],
     20 => [
         'detail' => [
@@ -5620,6 +5750,32 @@ return [
                 'position' => '4',
                 'media_id' => null,
                 'group' => [
+                    'id' => '6',
+                    'name' => 'Größe',
+                    'description' => 'Größen',
+                    'position' => 0,
+                ],
+            ],
+        ],
+        'filters' => [
+            0 => [
+                'id' => '2',
+                'value' => 'Blau',
+                'position' => '2',
+                'media_id' => null,
+                'option' => [
+                    'id' => '5',
+                    'name' => 'Farbe',
+                    'description' => 'Farben',
+                    'position' => 0,
+                ],
+            ],
+            1 => [
+                'id' => '7',
+                'value' => 'XL',
+                'position' => '4',
+                'media_id' => null,
+                'option' => [
                     'id' => '6',
                     'name' => 'Größe',
                     'description' => 'Größen',
@@ -6469,7 +6625,7 @@ return [
         'configuratorOptions' => [
             0 => [
                 'id' => '1',
-                'name' => 'Rot',
+                'name' => 'rot',
                 'position' => '1',
                 'media_id' => null,
                 'group' => [
@@ -6485,6 +6641,32 @@ return [
                 'position' => '1',
                 'media_id' => null,
                 'group' => [
+                    'id' => '6',
+                    'name' => 'Größe',
+                    'description' => 'Größen',
+                    'position' => 0,
+                ],
+            ],
+        ],
+        'filters' => [
+            0 => [
+                'id' => '1',
+                'value' => 'rot',
+                'position' => '1',
+                'media_id' => null,
+                'option' => [
+                    'id' => '5',
+                    'name' => 'Farbe',
+                    'description' => 'Farben',
+                    'position' => 0,
+                ],
+            ],
+            1 => [
+                'id' => '4',
+                'value' => 'S',
+                'position' => '1',
+                'media_id' => null,
+                'option' => [
                     'id' => '6',
                     'name' => 'Größe',
                     'description' => 'Größen',
@@ -6934,7 +7116,7 @@ return [
         'configuratorOptions' => [
             0 => [
                 'id' => '1',
-                'name' => 'Rot',
+                'name' => 'rot',
                 'position' => '1',
                 'media_id' => null,
                 'group' => [
@@ -6950,6 +7132,32 @@ return [
                 'position' => '2',
                 'media_id' => null,
                 'group' => [
+                    'id' => '6',
+                    'name' => 'Größe',
+                    'description' => 'Größen',
+                    'position' => 0,
+                ],
+            ],
+        ],
+        'filters' => [
+            0 => [
+                'id' => '1',
+                'value' => 'rot',
+                'position' => '1',
+                'media_id' => null,
+                'option' => [
+                    'id' => '5',
+                    'name' => 'Farbe',
+                    'description' => 'Farben',
+                    'position' => 0,
+                ],
+            ],
+            1 => [
+                'id' => '5',
+                'value' => 'M',
+                'position' => '2',
+                'media_id' => null,
+                'option' => [
                     'id' => '6',
                     'name' => 'Größe',
                     'description' => 'Größen',

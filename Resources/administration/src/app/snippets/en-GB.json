@@ -187,7 +187,8 @@
           "order": "Orders:",
           "media": "Media:",
           "translation": "Translations:",
-          "customer_group": "Customer groups:"
+          "customer_group": "Customer groups:",
+          "property_group_option": "Properties:"
         },
         "noData": "Nothing found to migrate.",
         "touText": "The general {link} of Shopware Playground applies to the migration of data. Migrating will neither affect nor harm the data on your source system.",

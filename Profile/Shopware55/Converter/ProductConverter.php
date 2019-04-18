@@ -378,6 +378,7 @@ class ProductConverter extends AbstractConverter
         $this->helper->convertValue($converted, 'purchasePrice', $data['detail'], 'purchaseprice', $this->helper::TYPE_FLOAT);
 
         $this->getOptions($converted, $data);
+        $this->getFilters($data);
 
         // Legacy data which don't need a mapping or there is no equivalent field
         unset(
@@ -435,7 +436,7 @@ class ProductConverter extends AbstractConverter
                 $this->mappingService->createNewUuidListItem(
                     $this->connectionId,
                     'main_product_options',
-                    $option['id'],
+                    hash('md5', strtolower($option['name'] . '_' . $option['group']['name'])),
                     null,
                     $productContainerUuid
                 );
@@ -445,7 +446,7 @@ class ProductConverter extends AbstractConverter
                 'id' => $this->mappingService->createNewUuid(
                     $this->connectionId,
                     PropertyGroupOptionDefinition::getEntityName(),
-                    $option['id'],
+                    hash('md5', strtolower($option['name'] . '_' . $option['group']['name'])),
                     $this->context
                 ),
 
@@ -453,7 +454,7 @@ class ProductConverter extends AbstractConverter
                     'id' => $this->mappingService->createNewUuid(
                         $this->connectionId,
                         PropertyGroupDefinition::getEntityName(),
-                        $option['group']['id'],
+                        hash('md5', strtolower($option['group']['name'])),
                         $this->context
                     ),
                 ],
@@ -476,6 +477,51 @@ class ProductConverter extends AbstractConverter
         $converted['options'] = $options;
     }
 
+    private function getFilters(&$data): void
+    {
+        if (
+            !isset($data['filters'])
+            || !is_array($data['filters'])
+        ) {
+            return;
+        }
+
+        $productContainerUuid = $this->mappingService->getUuid(
+            $this->connectionId,
+            ProductDefinition::getEntityName() . '_container',
+            $this->mainProductId,
+            $this->context
+        );
+
+        if ($productContainerUuid === null) {
+            $productContainerUuid = $this->mappingService->getUuid(
+                $this->connectionId,
+                ProductDefinition::getEntityName() . '_mainProduct',
+                $this->mainProductId,
+                $this->context
+            );
+        }
+
+        if ($productContainerUuid === null) {
+            return;
+        }
+
+        foreach ($data['filters'] as $option) {
+            if (!isset($option['value'], $option['option']['name'])) {
+                continue;
+            }
+
+            $this->mappingService->createNewUuidListItem(
+                $this->connectionId,
+                'main_product_filter',
+                hash('md5', strtolower($option['value'] . '_' . $option['option']['name'])),
+                null,
+                $productContainerUuid
+            );
+        }
+        unset($data['filters']);
+    }
+
     private function getOptionTranslation(array &$option, array $data): void
     {
         $localeOptionTranslation = [];
@@ -492,7 +538,7 @@ class ProductConverter extends AbstractConverter
         $localeOptionTranslation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
             PropertyGroupOptionTranslationDefinition::getEntityName(),
-            $data['id'] . ':' . $this->locale,
+            hash('md5', strtolower($data['name'] . '_' . $data['group']['name'])) . ':' . $this->locale,
             $this->context
         );
 
@@ -502,7 +548,7 @@ class ProductConverter extends AbstractConverter
         $localeGroupTranslation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
             PropertyGroupTranslationDefinition::getEntityName(),
-            $data['group']['id'] . ':' . $this->locale,
+            hash('md5', strtolower($data['group']['name'])) . ':' . $this->locale,
             $this->context
         );
 
