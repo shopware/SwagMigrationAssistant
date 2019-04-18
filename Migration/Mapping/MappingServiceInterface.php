@@ -34,9 +34,9 @@ interface MappingServiceInterface
 
     public function getCountryUuid(string $oldId, string $iso, string $iso3, string $connectionId, Context $context): ?string;
 
-    public function getCurrencyUuid(string $oldShortName, Context $context): ?string;
+    public function getCurrencyUuid(string $connectionId, string $oldShortName, Context $context): ?string;
 
-    public function getTaxUuid(float $taxRate, Context $context): ?string;
+    public function getTaxUuid(string $connectionId, float $taxRate, Context $context): ?string;
 
     public function getNumberRangeUuid(string $type, string $oldId, MigrationContextInterface $migrationContext, Context $context): ?string;
 

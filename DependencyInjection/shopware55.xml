@@ -7,7 +7,7 @@
     <services>
         <!-- Shopware 5.5 Profile -->
         <service id="SwagMigrationNext\Profile\Shopware55\Shopware55Profile">
-            <argument type="service" id="swag_migration_data.repository"/>
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
             <argument type="service" id="SwagMigrationNext\Migration\Converter\ConverterRegistry"/>
             <argument type="service" id="SwagMigrationNext\Migration\Media\MediaFileService"/>
             <argument type="service" id="SwagMigrationNext\Migration\Logging\LoggingService"/>

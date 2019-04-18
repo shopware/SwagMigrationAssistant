@@ -100,12 +100,12 @@ class DummyMappingService extends MappingService
         return null;
     }
 
-    public function getCurrencyUuid(string $oldShortName, Context $context): ?string
+    public function getCurrencyUuid(string $connectionId, string $oldShortName, Context $context): ?string
     {
         return null;
     }
 
-    public function getTaxUuid(float $taxRate, Context $context): ?string
+    public function getTaxUuid(string $connectionId, float $taxRate, Context $context): ?string
     {
         return null;
     }

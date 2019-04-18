@@ -379,7 +379,7 @@ class OrderConverter extends Shopware55Converter
     private function getCurrency(array $originalData): array
     {
         $currency = [];
-        $currency['id'] = $this->mappingService->getCurrencyUuid($originalData['currency'], $this->context);
+        $currency['id'] = $this->mappingService->getCurrencyUuid($this->connectionId, $originalData['currency'], $this->context);
 
         if (!isset($currency['id'])) {
             $currency['id'] = $this->mappingService->createNewUuid(

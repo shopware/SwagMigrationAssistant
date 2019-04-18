@@ -179,7 +179,7 @@ class MigrationDataWriterTest extends TestCase
     private $mappingService;
 
     /**
-     * @var EntityRepositoryInterface
+     * @var EntityWriter
      */
     private $entityWriter;
 
@@ -203,7 +203,7 @@ class MigrationDataWriterTest extends TestCase
         $this->mappingService = $this->getContainer()->get(MappingService::class);
         $this->migrationDataWriter = $this->getContainer()->get(MigrationDataWriter::class);
         $this->migrationDataFetcher = $this->getMigrationDataFetcher(
-            $this->migrationDataRepo,
+            $this->getContainer()->get(EntityWriter::class),
             $this->mappingService,
             $this->getContainer()->get(MediaFileService::class),
             $this->loggingRepo

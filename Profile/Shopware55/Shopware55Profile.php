@@ -3,8 +3,9 @@
 namespace SwagMigrationNext\Profile\Shopware55;
 
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenContainerEvent;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityWriteResult;
+use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
 use Shopware\Core\Framework\ShopwareHttpException;
 use SwagMigrationNext\Migration\Converter\ConverterInterface;
 use SwagMigrationNext\Migration\Converter\ConverterRegistryInterface;
@@ -26,9 +27,9 @@ class Shopware55Profile implements ProfileInterface
     public const SOURCE_SYSTEM_VERSION = '5.5';
 
     /**
-     * @var EntityRepositoryInterface
+     * @var EntityWriterInterface
      */
-    private $migrationDataRepo;
+    private $entityWriter;
 
     /**
      * @var ConverterRegistryInterface
@@ -46,12 +47,12 @@ class Shopware55Profile implements ProfileInterface
     private $loggingService;
 
     public function __construct(
-        EntityRepositoryInterface $migrationDataRepo,
+        EntityWriterInterface $entityWriter,
         ConverterRegistryInterface $converterRegistry,
         MediaFileServiceInterface $mediaFileService,
         LoggingServiceInterface $loggingService
     ) {
-        $this->migrationDataRepo = $migrationDataRepo;
+        $this->entityWriter = $entityWriter;
         $this->converterRegistry = $converterRegistry;
         $this->mediaFileService = $mediaFileService;
         $this->loggingService = $loggingService;
@@ -75,16 +76,14 @@ class Shopware55Profile implements ProfileInterface
         $this->mediaFileService->writeMediaFile($context);
         $this->loggingService->saveLogging($context);
 
-        /** @var EntityWrittenContainerEvent $writtenEvent */
-        $writtenEvent = $this->migrationDataRepo->upsert($createData, $context);
+        /** @var EntityWriteResult[] $writtenEvents */
+        $writtenEvents = $this->entityWriter->upsert(
+            SwagMigrationDataDefinition::class,
+            $createData,
+            WriteContext::createFromContext($context)
+        );
 
-        $event = $writtenEvent->getEventByDefinition(SwagMigrationDataDefinition::class);
-
-        if (!$event) {
-            return 0;
-        }
-
-        return \count($event->getIds());
+        return \count($writtenEvents);
     }
 
     public function readEnvironmentInformation(GatewayInterface $gateway): EnvironmentInformation

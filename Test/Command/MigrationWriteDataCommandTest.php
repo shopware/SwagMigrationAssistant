@@ -86,7 +86,7 @@ class MigrationWriteDataCommandTest extends TestCase
         $this->mediaFileRepo = $this->getContainer()->get('swag_migration_media_file.repository');
 
         $this->migrationDataFetcher = $this->getMigrationDataFetcher(
-            $this->migrationDataRepo,
+            $this->getContainer()->get(EntityWriter::class),
             $this->getContainer()->get(MappingService::class),
             $this->getContainer()->get(MediaFileService::class),
             $this->loggingRepo
