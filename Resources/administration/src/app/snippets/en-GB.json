@@ -246,8 +246,6 @@
           },
           "finish": "Finish"
         },
-        "hintTitle": "Note:",
-        "hint": "Please remain logged in and do not delete any data in the other shop system until the process is complete. You can work in the system, the process continues in the background.",
         "result": {
           "success": {
             "title": "The migration was successful",
@@ -255,7 +253,8 @@
           },
           "warning": {
             "title": "The migration was successful",
-            "caption": "Some data could not be migrated. You can see which data was migrated and which errors occurred in the history."
+            "caption": "Some data could not be migrated. You can see which data was migrated and which errors occurred in the history.",
+            "warningListTitle": "No errors occurred. | The following error has occurred: | {count} Errors have occurred:"
           }
         },
         "pauseScreen": {
@@ -373,12 +372,13 @@
       }
     },
     "history": {
+      "connectionName": "Connection name",
+      "profileAndGateway": "Profile & gateway",
+      "status": "Status",
+      "importDateTime": "Start time",
       "shopDomain": "Shop domain",
       "shopSystem": "Shop system",
       "selectedData": "Data",
-      "profileAndGateway": "Profile / Gateway",
-      "status": "Status",
-      "importDateTime": "Start time",
       "contextMenu": {
         "details": "Details"
       },

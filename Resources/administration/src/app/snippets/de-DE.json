@@ -373,12 +373,13 @@
       }
     },
     "history": {
+      "connectionName": "Verbindungsname",
+      "profileAndGateway": "Profil & Schnittstelle",
+      "status": "Status",
+      "importDateTime": "Startzeitpunkt",
       "shopDomain": "Shop-Domain",
       "shopSystem": "Shopsystem",
       "selectedData": "Daten",
-      "profileAndGateway": "Profil / Gateway",
-      "status": "Status",
-      "importDateTime": "Startzeitpunkt",
       "contextMenu": {
         "details": "Details"
       },

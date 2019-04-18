@@ -2,116 +2,91 @@
     <sw-card class="swag-migration-history"
              :isLoading="isLoading"
              :large="true">
-        {% block swag_migration_history_grid %}
-            <sw-grid v-if="migrationRuns.length > 0"
-                     :items="migrationRuns"
-                     :sortBy="sortBy"
-                     :sortDirection="sortDirection"
-                     :selectable="false"
-                     @sort-column="onSortColumn">
-                {% block swag_migration_history_grid_columns %}
-                    <template slot="columns" slot-scope="{ item }">
-                        {% block swag_migration_history_grid_columns_domain %}
-                            <sw-grid-column flex="minmax(100px, 1fr)"
-                                            :label="$tc('swag-migration.history.shopDomain')"
-                                            dataIndex="environmentInformation.sourceSystemDomain"
-                                            sortable>
-                                {{ item.environmentInformation.sourceSystemDomain }}
-                            </sw-grid-column>
-                        {% endblock %}
-                        {% block swag_migration_history_grid_columns_shopSystem %}
-                            <sw-grid-column flex="minmax(100px, 1fr)"
-                                            :label="$tc('swag-migration.history.shopSystem')"
-                                            dataIndex="environmentInformation.sourceSystemName"
-                                            sortable>
-                                {{ item.environmentInformation.sourceSystemName }}
-                                {{ item.environmentInformation.sourceSystemVersion }}
-                            </sw-grid-column>
-                        {% endblock %}
-                        {% block swag_migration_history_grid_columns_selectedData %}
-                            <sw-grid-column flex="minmax(200px, 1fr)"
-                                            :label="$tc('swag-migration.history.selectedData')">
-                                <swag-migration-history-selected-data :entityGroups="item.progress">
-                                </swag-migration-history-selected-data>
-                            </sw-grid-column>
-                        {% endblock %}
-                        {% block swag_migration_history_grid_columns_profile_gateway %}
-                            <sw-grid-column flex="minmax(120px, 1fr)"
-                                            :label="$tc('swag-migration.history.profileAndGateway')"
-                                            dataIndex="connection.profileId"
-                                            sortable>
-                                {{ item.connection.profile.name }} /
-                                {{ item.connection.profile.gatewayName }}
-                            </sw-grid-column>
-                        {% endblock %}
-                        {% block swag_migration_history_grid_columns_status %}
-                            <sw-grid-column flex="minmax(110px, 110px)"
-                                            :label="$tc('swag-migration.history.status')"
-                                            dataIndex="status"
-                                            sortable
-                                            align="center">
-                                <sw-icon v-if="item.status === 'finished'"
-                                         name="default-basic-checkmark-line"
-                                         class="swag-migration-history__status-icon swag-migration-history__status-icon--finished">
-                                </sw-icon>
-                                <sw-icon v-else-if="item.status === 'aborted'"
-                                         name="default-basic-x-line"
-                                         class="swag-migration-history__status-icon swag-migration-history__status-icon--aborted">
-                                </sw-icon>
-                                <sw-icon v-else-if="item.status === 'running'"
-                                         name="default-basic-shape-circle"
-                                         class="swag-migration-history__status-icon swag-migration-history__status-icon--loading">
-                                </sw-icon>
-                            </sw-grid-column>
-                        {% endblock %}
-                        {% block swag_migration_history_grid_columns_importStart %}
-                            <sw-grid-column flex="minmax(150px, 1fr)"
-                                            :label="$tc('swag-migration.history.importDateTime')"
-                                            dataIndex="createdAt"
-                                            sortable
-                                            truncate>
-                                {{ item.createdAt | date({ hour: '2-digit', minute: '2-digit', second: '2-digit' }) }}
-                            </sw-grid-column>
-                        {% endblock %}
-                        {% block swag_migration_history_grid_columns_actions %}
-                            <sw-grid-column flex="minmax(100px, 100px)"
-                                            align="center">
-                                {% block swag_migration_history_grid_columns_actions_context_button %}
-                                    <sw-context-button>
-                                        {% block swag_migration_history_grid_columns_actions_details %}
-                                            <sw-context-menu-item
-                                                    :routerLink="{ name: 'swag.migration.index.history.detail', params:{ id:item.id } }">
-                                                {{ $tc('swag-migration.history.contextMenu.details') }}
-                                            </sw-context-menu-item>
-                                        {% endblock %}
-                                    </sw-context-button>
-                                {% endblock %}
-                            </sw-grid-column>
-                        {% endblock %}
-                    </template>
-                {% endblock %}
+        <template slot="grid">
+            {% block swag_migration_history_grid %}
+                <sw-data-grid v-if="migrationRuns.length > 0"
+                              identifier="swag-migration-history"
+                              :dataSource="migrationRuns"
+                              :columns="migrationColumns"
+                              :showSelection="false"
+                              :showSettings="true"
+                              :allowColumnEdit="true"
+                              :sortBy="sortBy"
+                              :sortDirection="sortDirection"
+                              @column-sort="onSortColumn">
+                    {% block swag_migration_history_grid_column_status %}
+                        <template slot="column-status" slot-scope="{ item }">
+                            <sw-icon v-if="item.status === 'finished'"
+                                     name="default-basic-checkmark-line"
+                                     size="16px"
+                                     class="swag-migration-history__status-icon swag-migration-history__status-icon--finished">
+                            </sw-icon>
+                            <sw-icon v-else-if="item.status === 'aborted'"
+                                     name="default-basic-x-line"
+                                     size="16px"
+                                     class="swag-migration-history__status-icon swag-migration-history__status-icon--aborted">
+                            </sw-icon>
+                            <sw-icon v-else-if="item.status === 'running'"
+                                     name="default-basic-shape-circle"
+                                     size="16px"
+                                     class="swag-migration-history__status-icon swag-migration-history__status-icon--loading">
+                            </sw-icon>
+                        </template>
+                    {% endblock %}
+                    {% block swag_migration_history_grid_column_profile %}
+                        <template slot="column-connection.profile" slot-scope="{ item }">
+                            {{ item.connection.profile.name }} /
+                            {{ item.connection.profile.gatewayName }}
+                        </template>
+                    {% endblock %}
+                    {% block swag_migration_history_grid_column_createdAt %}
+                        <template slot="column-createdAt" slot-scope="{ item }">
+                            {{ item.createdAt | date(migrationDateOptions) }}
+                        </template>
+                    {% endblock %}
+                    {% block swag_migration_history_grid_column_sourceSystemName %}
+                        <template slot="column-environmentInformation.sourceSystemName" slot-scope="{ item }">
+                            {{ item.environmentInformation.sourceSystemName }}
+                            {{ item.environmentInformation.sourceSystemVersion }}
+                        </template>
+                    {% endblock %}
+                    {% block swag_migration_history_grid_column_selectedData %}
+                        <template slot="column-progress" slot-scope="{ item }">
+                            <swag-migration-history-selected-data :entityGroups="item.progress">
+                            </swag-migration-history-selected-data>
+                        </template>
+                    {% endblock %}
+                    {% block swag_migration_history_grid_actions %}
+                        <template slot="actions" slot-scope="{ item }">
+                            <sw-context-menu-item :routerLink="{ name: 'swag.migration.index.history.detail', params:{ id:item.id } }">
+                                {{ $tc('swag-migration.history.contextMenu.details') }}
+                            </sw-context-menu-item>
+                        </template>
+                    {% endblock %}
+                    {% block swag_migration_history_grid_pagination %}
+                        <template slot="pagination">
+                                <sw-pagination :page="page"
+                                               :limit="limit"
+                                               :total="total"
+                                               :total-visible="7"
+                                                @page-change="onPageChange">
+                                </sw-pagination>
+                        </template>
+                    {% endblock %}
+                </sw-data-grid>
+            {% endblock %}
 
-                {% block swag_migration_history_grid_pagination %}
-                    <sw-pagination
-                            slot="pagination"
-                            :page="page"
-                            :limit="limit"
-                            :total="total"
-                            :total-visible="7"
-                            @page-change="onPageChange">
-                    </sw-pagination>
-                {% endblock %}
-            </sw-grid>
+            {% block swag_migration_history_no_data %}
+                <div class="swag-migration-history__no-data" v-if="migrationRuns.length === 0">
+                    <p class="swag-migration-history__no-data-label">
+                        {{ $tc('swag-migration.history.noData') }}
+                    </p>
+                </div>
+            {% endblock %}
+        </template>
+
+        {% block swag_migration_history_router_view %}
+            <router-view></router-view>
         {% endblock %}
-
-        {% block swag_migration_history_no_data %}
-            <div class="swag-migration-history__no-data" v-else>
-                <p class="swag-migration-history__no-data-label">
-                    {{ $tc('swag-migration.history.noData') }}
-                </p>
-            </div>
-        {% endblock %}
-
-        <router-view></router-view>
     </sw-card>
 {% endblock %}
