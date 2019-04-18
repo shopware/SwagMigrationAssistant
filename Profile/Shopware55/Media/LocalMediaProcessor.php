@@ -2,6 +2,7 @@
 
 namespace SwagMigrationNext\Profile\Shopware55\Media;
 
+use Shopware\Core\Content\Media\Exception\DuplicatedMediaFileNameException;
 use Shopware\Core\Content\Media\File\FileSaver;
 use Shopware\Core\Content\Media\File\MediaFile;
 use Shopware\Core\Framework\Context;
@@ -196,7 +197,12 @@ class LocalMediaProcessor extends AbstractMediaFileProcessor
     ): void {
         $mimeType = mime_content_type($filePath);
         $mediaFile = new MediaFile($filePath, $mimeType, $fileExtension, $fileSize);
-        $this->fileSaver->persistFileToMedia($mediaFile, $media->getFileName(), $media->getMediaId(), $context);
+
+        try {
+            $this->fileSaver->persistFileToMedia($mediaFile, $media->getFileName(), $media->getMediaId(), $context);
+        } catch (DuplicatedMediaFileNameException $e) {
+            $this->fileSaver->persistFileToMedia($mediaFile, $media->getFileName() . substr(md5((string) time()), 0, 5), $media->getMediaId(), $context);
+        }
     }
 
     private function setProcessedFlag(string $runId, Context $context, array $finishedUuids): void

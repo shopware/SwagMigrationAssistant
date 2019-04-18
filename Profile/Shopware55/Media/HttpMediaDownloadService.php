@@ -4,6 +4,7 @@ namespace SwagMigrationNext\Profile\Shopware55\Media;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Promise;
+use Shopware\Core\Content\Media\Exception\DuplicatedMediaFileNameException;
 use Shopware\Core\Content\Media\Exception\MediaNotFoundException;
 use Shopware\Core\Content\Media\File\FileSaver;
 use Shopware\Core\Content\Media\File\MediaFile;
@@ -229,7 +230,12 @@ class HttpMediaDownloadService extends AbstractMediaFileProcessor
     {
         $mimeType = mime_content_type($filePath);
         $mediaFile = new MediaFile($filePath, $mimeType, $fileExtension, $fileSize);
-        $this->fileSaver->persistFileToMedia($mediaFile, $name, $uuid, $context);
+
+        try {
+            $this->fileSaver->persistFileToMedia($mediaFile, $name, $uuid, $context);
+        } catch (DuplicatedMediaFileNameException $e) {
+            $this->fileSaver->persistFileToMedia($mediaFile, $name . substr(md5((string) time()), 0, 5), $uuid, $context);
+        }
     }
 
     private function doNormalDownloadRequest(array &$workload, Client $client): ?Promise\PromiseInterface
