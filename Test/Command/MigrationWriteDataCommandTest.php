@@ -7,7 +7,8 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use Shopware\Core\Framework\Struct\Serializer\StructNormalizer;
+use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
+use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagMigrationNext\Command\MigrationFetchDataCommand;
 use SwagMigrationNext\Command\MigrationWriteDataCommand;
@@ -41,9 +42,9 @@ class MigrationWriteDataCommandTest extends TestCase
     private $migrationRunRepo;
 
     /**
-     * @var EntityRepositoryInterface
+     * @var EntityWriterInterface
      */
-    private $productRepo;
+    private $entityWriter;
 
     /**
      * @var EntityRepositoryInterface
@@ -78,8 +79,7 @@ class MigrationWriteDataCommandTest extends TestCase
     protected function setUp(): void
     {
         $this->loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
-        $this->productRepo = $this->getContainer()->get('product.repository');
-        $categoryRepo = $this->getContainer()->get('category.repository');
+        $this->entityWriter = $this->getContainer()->get(EntityWriter::class);
         $this->migrationProfileRepo = $this->getContainer()->get('swag_migration_profile.repository');
         $this->migrationDataRepo = $this->getContainer()->get('swag_migration_data.repository');
         $this->migrationRunRepo = $this->getContainer()->get('swag_migration_run.repository');
@@ -96,8 +96,8 @@ class MigrationWriteDataCommandTest extends TestCase
             $this->migrationDataRepo,
             new WriterRegistry(
                 [
-                    new ProductWriter($this->productRepo, $this->getContainer()->get(StructNormalizer::class)),
-                    new CategoryWriter($categoryRepo),
+                    new ProductWriter($this->entityWriter),
+                    new CategoryWriter($this->entityWriter),
                 ]
             ),
             $this->getContainer()->get(MediaFileService::class),

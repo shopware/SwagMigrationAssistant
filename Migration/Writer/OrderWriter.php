@@ -2,26 +2,28 @@
 
 namespace SwagMigrationNext\Migration\Writer;
 
+use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
 use Shopware\Core\Framework\Struct\Serializer\StructNormalizer;
 use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 
 class OrderWriter implements WriterInterface
 {
     /**
-     * @var EntityRepositoryInterface
+     * @var EntityWriterInterface
      */
-    private $orderRepository;
+    private $entityWriter;
 
     /**
      * @var StructNormalizer
      */
     private $structNormalizer;
 
-    public function __construct(EntityRepositoryInterface $orderRepository, StructNormalizer $structNormalizer)
+    public function __construct(EntityWriterInterface $entityWriter, StructNormalizer $structNormalizer)
     {
-        $this->orderRepository = $orderRepository;
+        $this->entityWriter = $entityWriter;
         $this->structNormalizer = $structNormalizer;
     }
 
@@ -43,6 +45,10 @@ class OrderWriter implements WriterInterface
         }
         unset($item);
 
-        $this->orderRepository->upsert($data, $context);
+        $this->entityWriter->upsert(
+            OrderDefinition::class,
+            $data,
+            WriteContext::createFromContext($context)
+        );
     }
 }

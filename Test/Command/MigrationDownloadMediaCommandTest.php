@@ -5,6 +5,8 @@ namespace SwagMigrationNext\Test\Command;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Content\Media\File\FileSaver;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
+use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagMigrationNext\Command\MigrationDownloadMediaCommand;
 use SwagMigrationNext\Command\MigrationFetchDataCommand;
@@ -57,9 +59,9 @@ class MigrationDownloadMediaCommandTest extends TestCase
     private $migrationRunRepo;
 
     /**
-     * @var EntityRepositoryInterface
+     * @var EntityWriterInterface
      */
-    private $mediaRepo;
+    private $entityWriter;
 
     /**
      * @var EntityRepositoryInterface
@@ -103,7 +105,7 @@ class MigrationDownloadMediaCommandTest extends TestCase
 
         $this->loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
         $this->productRepo = $this->getContainer()->get('product.repository');
-        $this->mediaRepo = $this->getContainer()->get('media.repository');
+        $this->entityWriter = $this->getContainer()->get(EntityWriter::class);
         $this->mediaFileRepo = $this->getContainer()->get('swag_migration_media_file.repository');
         $this->migrationProfileRepo = $this->getContainer()->get('swag_migration_profile.repository');
         $this->migrationDataRepo = $this->getContainer()->get('swag_migration_data.repository');
@@ -120,7 +122,7 @@ class MigrationDownloadMediaCommandTest extends TestCase
             $this->migrationDataRepo,
             new WriterRegistry(
                 [
-                    new MediaWriter($this->mediaRepo),
+                    new MediaWriter($this->entityWriter),
                 ]
             ),
             $this->getContainer()->get(MediaFileService::class),

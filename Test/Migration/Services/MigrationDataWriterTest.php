@@ -9,6 +9,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\Currency\CurrencyEntity;
@@ -177,6 +178,16 @@ class MigrationDataWriterTest extends TestCase
      */
     private $mappingService;
 
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $entityWriter;
+
+    /**
+     * @var Connection
+     */
+    private $dbConnection;
+
     protected function setUp(): void
     {
         $this->context = Context::createDefaultContext();
@@ -202,8 +213,8 @@ class MigrationDataWriterTest extends TestCase
             $this->migrationDataRepo,
             new WriterRegistry(
                 [
-                    new ProductWriter($this->productRepo),
-                    new CustomerWriter($this->customerRepo),
+                    new ProductWriter($this->entityWriter),
+                    new CustomerWriter($this->entityWriter),
                 ]
             ),
             new DummyMediaFileService(),
@@ -279,7 +290,7 @@ class MigrationDataWriterTest extends TestCase
         $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext) {
             $this->migrationDataWriter->writeData($migrationContext, $context);
         });
-        $customerTotalAfter = $this->customerRepo->search($criteria, $context)->getTotal();
+        $customerTotalAfter = $this->dbConnection->query('select count(*) from customer')->fetchColumn();
 
         static::assertSame(3, $customerTotalAfter - $customerTotalBefore);
     }
@@ -359,7 +370,7 @@ class MigrationDataWriterTest extends TestCase
         $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext) {
             $this->migrationDataWriter->writeData($migrationContext, $context);
         });
-        $totalAfter = $this->mediaRepo->search($criteria, $context)->getTotal();
+        $totalAfter = $this->dbConnection->query('select count(*) from media')->fetchColumn();
 
         static::assertSame(23, $totalAfter - $totalBefore);
     }
@@ -382,7 +393,7 @@ class MigrationDataWriterTest extends TestCase
         $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext) {
             $this->migrationDataWriter->writeData($migrationContext, $context);
         });
-        $totalAfter = $this->categoryRepo->search($criteria, $context)->getTotal();
+        $totalAfter = $this->dbConnection->query('select count(*) from category')->fetchColumn();
 
         static::assertSame(8, $totalAfter - $totalBefore);
     }
@@ -405,7 +416,7 @@ class MigrationDataWriterTest extends TestCase
         $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext) {
             $this->migrationDataWriter->writeData($migrationContext, $context);
         });
-        $productTotalAfter = $this->productRepo->search($criteria, $context)->getTotal();
+        $productTotalAfter = $this->dbConnection->query('select count(*) from product')->fetchColumn();
 
         static::assertSame(42, $productTotalAfter - $productTotalBefore);
     }
@@ -424,7 +435,7 @@ class MigrationDataWriterTest extends TestCase
         $productTotalBefore = $this->productRepo->search($criteria, $context)->getTotal();
         $this->migrationDataFetcher->fetchData($migrationContext, $context);
         $this->migrationDataWriter->writeData($migrationContext, $context);
-        $productTotalAfter = $this->productRepo->search($criteria, $context)->getTotal();
+        $productTotalAfter = $this->dbConnection->query('select count(*) from product')->fetchColumn();
 
         $migrationContext = new MigrationContext(
             $this->connection,
@@ -433,17 +444,16 @@ class MigrationDataWriterTest extends TestCase
             0,
             250
         );
-        $productTranslationTotalBefore = $this->getTranslationTotal();
         $this->migrationDataFetcher->fetchData($migrationContext, $context);
 
+        $productTranslationTotalBefore = $this->getTranslationTotal();
         $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext) {
             $this->migrationDataWriter->writeData($migrationContext, $context);
         });
         $productTranslationTotalAfter = $this->getTranslationTotal();
-        $entities = $this->loggingRepo->search(new Criteria(), $context)->getEntities();
 
         static::assertSame(42, $productTotalAfter - $productTotalBefore);
-        static::assertSame(0, $productTranslationTotalAfter - $productTranslationTotalBefore);  //TODO change back to 2 after translation support is implemented
+        static::assertSame(1, $productTranslationTotalAfter - $productTranslationTotalBefore);
     }
 
     public function testWriteDataWithUnknownWriter(): void
@@ -467,6 +477,8 @@ class MigrationDataWriterTest extends TestCase
 
     private function initRepos(): void
     {
+        $this->dbConnection = $this->getContainer()->get(Connection::class);
+        $this->entityWriter = $this->getContainer()->get(EntityWriter::class);
         $this->runRepo = $this->getContainer()->get('swag_migration_run.repository');
         $this->profileRepo = $this->getContainer()->get('swag_migration_profile.repository');
         $this->paymentRepo = $this->getContainer()->get('payment_method.repository');
