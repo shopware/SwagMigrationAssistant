@@ -210,6 +210,7 @@ class MigrationDataWriterTest extends TestCase
         );
 
         $this->dummyDataWriter = new MigrationDataWriter(
+            $this->entityWriter,
             $this->migrationDataRepo,
             new WriterRegistry(
                 [

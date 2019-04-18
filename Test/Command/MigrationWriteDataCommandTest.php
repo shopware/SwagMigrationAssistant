@@ -93,6 +93,7 @@ class MigrationWriteDataCommandTest extends TestCase
         );
 
         $this->migrationWriteService = new MigrationDataWriter(
+            $this->entityWriter,
             $this->migrationDataRepo,
             new WriterRegistry(
                 [
