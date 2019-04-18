@@ -255,8 +255,7 @@
           },
           "warning": {
             "title": "Die Migration war erfolgreich",
-            "caption": "Manche Daten konnten nicht migriert werden. Um welche Daten es sich handelt und welche Fehler aufgetreten ist, kannst Du in den Historie einsehen.",
-            "warningListTitle": "Es sind keine Fehler aufgetreten. | Folgender Fehler ist aufgetreten: | {count} Fehler sind aufgetreten:"
+            "caption": "Manche Daten konnten nicht migriert werden. Um welche Daten es sich handelt und welche Fehler aufgetreten ist, kannst Du in der Historie einsehen."
           }
         },
         "pauseScreen": {
@@ -316,6 +315,14 @@
         "cancelPause": "Pausieren",
         "confirm": "Migration beenden"
       },
+      "noErrorsOccurred": "Es sind keine Fehler aufgetreten.",
+      "errorType": "Fehlertyp",
+      "errorDescription": "Fehlerbeschreibung",
+      "errorTypes": {
+        "error": "Fehler",
+        "warning": "Warnung",
+        "info": "Information"
+      },
       "error": {
         "authorizationError": {
           "information": "Authorisierungsfehler. Deine Zugangsdaten sind nicht korrekt. Bitte überprüfe sie und versuche es erneut."
@@ -350,7 +357,7 @@
           "detail": "Unidentifizierter Index konnte nicht migriert werden.",
           "information": "Index „{unidentifiedIndex}“ konnte nicht identifiziert werden. Bitte prüfe Deine Daten."
         },
-        "unknownError": "Unbekannter Fehlertyp. Für weitere Informationen kannst Du in die Konsolenlogs der Entwicklertools Deines Browser schauen.",
+        "unknownError": "Unbekannter Fehler. Für weitere Informationen kannst Du in die Logging-Tabelle Deiner Datenbank schauen.",
         "mediaProcessConnectionError": "Beim Kopieren der Mediadaten ist ein Verbindungsfehler aufgetreten. Bitte überprüfen Sie die Verbindung.",
         "SWAG_MIGRATION__WRITER_NOT_FOUND": "Filewriter für die „{entity}“-Entität konnte nicht gefunden werden.",
         "SWAG_MIGRATION__SHOPWARE55_CANNOT_DOWNLOAD_DATA": "Medien-Datei konnte nicht heruntergeladen werden. Betroffene Datei: {uri}",

@@ -6,22 +6,14 @@
                   :title="$tc('swag-migration.history.contextMenu.details')"
                   :isLoading="isLoading"
                   @closeModal="onCloseModal">
-            <div v-if="!isLoading">
-                {% block swag_migration_history_detail_errors %}
-                    {% block swag_migration_history_detail_errors_title %}
-                        <p class="swag-migration-history-detail__header">{{ $tc('swag-migration.index.loadingScreenCard.result.warning.warningListTitle', errorList.length, { count: errorList.length }) }}</p>
-                    {% endblock %}
-                    {% block swag_migration_history_detail_errors_list %}
-                        <div v-if="errorList.length > 0">
-                            <ul class="swag-migration-history-detail__content">
-                                <li v-for="error in errorList">
-                                    {{ (error.snippetName !== $t(error.snippetName, error.details)) ? $t(error.snippetName, error.details) : $t('swag-migration.index.error.unknownError') }}
-                                </li>
-                            </ul>
-                        </div>
-                    {% endblock %}
-                {% endblock %}
-            </div>
+            {% block swag_migration_history_detail_modal_content %}
+                <div v-if="isLoading"
+                     class="swag-migration-history-detail__loading-placeholder">
+                </div>
+                <swag-migration-history-detail-errors v-if="!isLoading"
+                                                      :migrationRun="migrationRun">
+                </swag-migration-history-detail-errors>
+            {% endblock %}
         </sw-modal>
     </div>
 {% endblock %}

@@ -254,8 +254,7 @@
           },
           "warning": {
             "title": "The migration was successful",
-            "caption": "Some data could not be migrated. You can see which data was migrated and which errors occurred in the history.",
-            "warningListTitle": "No errors occurred. | The following error has occurred: | {count} Errors have occurred:"
+            "caption": "Some data could not be migrated. You can see which data was migrated and which errors occurred in the history."
           }
         },
         "pauseScreen": {
@@ -315,6 +314,14 @@
         "cancelPause": "Pause",
         "confirm": "Stop migration"
       },
+      "noErrorsOccurred": "No errors have occurred.",
+      "errorType": "Error type",
+      "errorDescription": "Error description",
+      "errorTypes": {
+        "error": "Error",
+        "warning": "Warning",
+        "info": "Information"
+      },
       "error": {
         "authorizationError": {
           "information": "Authorization Error. Your access data is not correct. Please check it and try again."
@@ -349,7 +356,7 @@
           "detail": "Unidentified index couldn't be found.",
           "information": "Index \"{unidentifiedIndex}\" could not be found. Please check your data."
         },
-        "unknownError": "Unknown error. For more information, you can check the console logs of the developer tools in your browser.",
+        "unknownError": "Unknown error. You can check the logging table of your database for more information.",
         "mediaProcessConnectionError": "A connection error occurred while copying the media data. Please check the connection.",
         "SWAG_MIGRATION__WRITER_NOT_FOUND": "File writer for \"{entity}\" entity not found.",
         "SWAG_MIGRATION__SHOPWARE55_CANNOT_DOWNLOAD_DATA": "Cannot download media. Affected file: {uri}",
