@@ -11,7 +11,6 @@ use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\MigrationContextInterface;
 use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
-use SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\Converter\CustomerConverter;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CustomerDataSet;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
@@ -62,8 +61,7 @@ class CustomerConverterTest extends TestCase
     {
         $this->loggingService = new DummyLoggingService();
         $this->mappingService = new DummyMappingService();
-        $converterHelperService = new ConverterHelperService();
-        $this->customerConverter = new CustomerConverter($this->mappingService, $converterHelperService, $this->loggingService);
+        $this->customerConverter = new CustomerConverter($this->mappingService, $this->loggingService);
 
         $this->connectionId = Uuid::randomHex();
         $this->runId = Uuid::randomHex();

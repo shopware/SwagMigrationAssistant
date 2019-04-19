@@ -5,24 +5,18 @@ namespace SwagMigrationNext\Profile\Shopware55\Converter;
 use Shopware\Core\Content\Media\Aggregate\MediaTranslation\MediaTranslationDefinition;
 use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Framework\Context;
-use SwagMigrationNext\Migration\Converter\AbstractConverter;
 use SwagMigrationNext\Migration\Converter\ConvertStruct;
 use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationNext\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationNext\Migration\MigrationContextInterface;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
-class MediaConverter extends AbstractConverter
+class MediaConverter extends Shopware55Converter
 {
     /**
      * @var MappingServiceInterface
      */
     private $mappingService;
-
-    /**
-     * @var ConverterHelperService
-     */
-    private $helper;
 
     /**
      * @var MediaFileServiceInterface
@@ -46,11 +40,9 @@ class MediaConverter extends AbstractConverter
 
     public function __construct(
         MappingServiceInterface $mappingService,
-        ConverterHelperService $converterHelperService,
         MediaFileServiceInterface $mediaFileService
     ) {
         $this->mappingService = $mappingService;
-        $this->helper = $converterHelperService;
         $this->mediaFileService = $mediaFileService;
     }
 
@@ -103,8 +95,8 @@ class MediaConverter extends AbstractConverter
         unset($data['uri'], $data['file_size']);
 
         $this->getMediaTranslation($converted, $data);
-        $this->helper->convertValue($converted, 'name', $data, 'name');
-        $this->helper->convertValue($converted, 'description', $data, 'description');
+        $this->convertValue($converted, 'name', $data, 'name');
+        $this->convertValue($converted, 'description', $data, 'description');
 
         unset(
             $data['id'],
@@ -139,8 +131,8 @@ class MediaConverter extends AbstractConverter
 
         $localeTranslation = [];
 
-        $this->helper->convertValue($media, 'name', $data, 'name');
-        $this->helper->convertValue($media, 'description', $data, 'description');
+        $this->convertValue($media, 'name', $data, 'name');
+        $this->convertValue($media, 'description', $data, 'description');
 
         $localeTranslation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,

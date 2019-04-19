@@ -5,7 +5,6 @@ namespace SwagMigrationNext\Profile\Shopware55\Converter;
 use Shopware\Core\Content\Category\Aggregate\CategoryTranslation\CategoryTranslationDefinition;
 use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Framework\Context;
-use SwagMigrationNext\Migration\Converter\AbstractConverter;
 use SwagMigrationNext\Migration\Converter\ConvertStruct;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
@@ -14,17 +13,12 @@ use SwagMigrationNext\Profile\Shopware55\Exception\ParentEntityForChildNotFoundE
 use SwagMigrationNext\Profile\Shopware55\Logging\Shopware55LogTypes;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
-class CategoryConverter extends AbstractConverter
+class CategoryConverter extends Shopware55Converter
 {
     /**
      * @var MappingServiceInterface
      */
     private $mappingService;
-
-    /**
-     * @var ConverterHelperService
-     */
-    private $helper;
 
     /**
      * @var string
@@ -48,11 +42,9 @@ class CategoryConverter extends AbstractConverter
 
     public function __construct(
         MappingServiceInterface $mappingService,
-        ConverterHelperService $converterHelperService,
         LoggingServiceInterface $loggingService
     ) {
         $this->mappingService = $mappingService;
-        $this->helper = $converterHelperService;
         $this->loggingService = $loggingService;
     }
 
@@ -140,17 +132,17 @@ class CategoryConverter extends AbstractConverter
         );
         unset($data['id']);
 
-        $this->helper->convertValue($converted, 'position', $data, 'position', $this->helper::TYPE_INTEGER);
-        $this->helper->convertValue($converted, 'level', $data, 'level', $this->helper::TYPE_INTEGER);
-        $this->helper->convertValue($converted, 'active', $data, 'active', $this->helper::TYPE_BOOLEAN);
-        $this->helper->convertValue($converted, 'isBlog', $data, 'blog', $this->helper::TYPE_BOOLEAN);
-        $this->helper->convertValue($converted, 'external', $data, 'external');
-        $this->helper->convertValue($converted, 'hideFilter', $data, 'hidefilter', $this->helper::TYPE_BOOLEAN);
-        $this->helper->convertValue($converted, 'hideTop', $data, 'hidetop', $this->helper::TYPE_BOOLEAN);
-        $this->helper->convertValue($converted, 'productBoxLayout', $data, 'product_box_layout');
-        $this->helper->convertValue($converted, 'hideSortings', $data, 'hide_sortings', $this->helper::TYPE_BOOLEAN);
-        $this->helper->convertValue($converted, 'sortingIds', $data, 'sorting_ids');
-        $this->helper->convertValue($converted, 'facetIds', $data, 'facet_ids');
+        $this->convertValue($converted, 'position', $data, 'position', self::TYPE_INTEGER);
+        $this->convertValue($converted, 'level', $data, 'level', self::TYPE_INTEGER);
+        $this->convertValue($converted, 'active', $data, 'active', self::TYPE_BOOLEAN);
+        $this->convertValue($converted, 'isBlog', $data, 'blog', self::TYPE_BOOLEAN);
+        $this->convertValue($converted, 'external', $data, 'external');
+        $this->convertValue($converted, 'hideFilter', $data, 'hidefilter', self::TYPE_BOOLEAN);
+        $this->convertValue($converted, 'hideTop', $data, 'hidetop', self::TYPE_BOOLEAN);
+        $this->convertValue($converted, 'productBoxLayout', $data, 'product_box_layout');
+        $this->convertValue($converted, 'hideSortings', $data, 'hide_sortings', self::TYPE_BOOLEAN);
+        $this->convertValue($converted, 'sortingIds', $data, 'sorting_ids');
+        $this->convertValue($converted, 'facetIds', $data, 'facet_ids');
 
         if (isset($data['attributes'])) {
             $converted['attributes'] = $this->getAttributes($data['attributes']);
@@ -171,7 +163,7 @@ class CategoryConverter extends AbstractConverter
     private function setGivenCategoryTranslation(array &$data, array &$converted): void
     {
         $originalData = $data;
-        $this->helper->convertValue($converted, 'name', $data, 'description');
+        $this->convertValue($converted, 'name', $data, 'description');
 
         $languageData = $this->mappingService->getDefaultLanguageUuid($this->context);
         if ($languageData['createData']['localeCode'] === $data['_locale']) {
@@ -181,7 +173,7 @@ class CategoryConverter extends AbstractConverter
         $localeTranslation = [];
         $localeTranslation['categoryId'] = $converted['id'];
 
-        $this->helper->convertValue($localeTranslation, 'name', $originalData, 'description');
+        $this->convertValue($localeTranslation, 'name', $originalData, 'description');
 
         $localeTranslation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,

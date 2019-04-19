@@ -9,7 +9,6 @@ use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\MigrationContextInterface;
 use SwagMigrationNext\Profile\Shopware55\Converter\CategoryConverter;
-use SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CategoryDataSet;
 use SwagMigrationNext\Profile\Shopware55\Exception\ParentEntityForChildNotFoundException;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
@@ -47,9 +46,8 @@ class CategoryConverterTest extends TestCase
     protected function setUp(): void
     {
         $mappingService = new DummyMappingService();
-        $converterHelperService = new ConverterHelperService();
         $this->loggingService = new DummyLoggingService();
-        $this->categoryConverter = new CategoryConverter($mappingService, $converterHelperService, $this->loggingService);
+        $this->categoryConverter = new CategoryConverter($mappingService, $this->loggingService);
 
         $this->runId = Uuid::randomHex();
         $this->connection = new SwagMigrationConnectionEntity();

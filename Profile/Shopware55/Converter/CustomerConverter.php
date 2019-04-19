@@ -13,7 +13,6 @@ use Shopware\Core\System\Country\Aggregate\CountryStateTranslation\CountryStateT
 use Shopware\Core\System\Country\Aggregate\CountryTranslation\CountryTranslationDefinition;
 use Shopware\Core\System\Country\CountryDefinition;
 use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
-use SwagMigrationNext\Migration\Converter\AbstractConverter;
 use SwagMigrationNext\Migration\Converter\ConvertStruct;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
@@ -23,17 +22,12 @@ use SwagMigrationNext\Profile\Shopware55\Premapping\PaymentMethodReader;
 use SwagMigrationNext\Profile\Shopware55\Premapping\SalutationReader;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
-class CustomerConverter extends AbstractConverter
+class CustomerConverter extends Shopware55Converter
 {
     /**
      * @var MappingServiceInterface
      */
     private $mappingService;
-
-    /**
-     * @var ConverterHelperService
-     */
-    private $helper;
 
     /**
      * @var string
@@ -89,11 +83,9 @@ class CustomerConverter extends AbstractConverter
 
     public function __construct(
         MappingServiceInterface $mappingService,
-        ConverterHelperService $converterHelperService,
         LoggingServiceInterface $loggingService
     ) {
         $this->mappingService = $mappingService;
-        $this->helper = $converterHelperService;
         $this->loggingService = $loggingService;
     }
 
@@ -120,7 +112,7 @@ class CustomerConverter extends AbstractConverter
         $oldData = $data;
         $this->runId = $migrationContext->getRunUuid();
 
-        $fields = $this->helper->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
+        $fields = $this->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
         if (!isset($data['group']['id'])) {
             $fields[] = 'group id';
         }
@@ -179,24 +171,24 @@ class CustomerConverter extends AbstractConverter
             }
         }
 
-        $this->helper->convertValue($converted, 'password', $data, 'password');
-        $this->helper->convertValue($converted, 'active', $data, 'active', $this->helper::TYPE_BOOLEAN);
-        $this->helper->convertValue($converted, 'email', $data, 'email');
-        $this->helper->convertValue($converted, 'guest', $data, 'accountmode', $this->helper::TYPE_BOOLEAN);
-        $this->helper->convertValue($converted, 'confirmationKey', $data, 'confirmationkey');
-        $this->helper->convertValue($converted, 'newsletter', $data, 'newsletter', $this->helper::TYPE_BOOLEAN);
-        $this->helper->convertValue($converted, 'validation', $data, 'validation');
-        $this->helper->convertValue($converted, 'affiliate', $data, 'affiliate', $this->helper::TYPE_BOOLEAN);
-        $this->helper->convertValue($converted, 'referer', $data, 'referer');
-        $this->helper->convertValue($converted, 'internalComment', $data, 'internalcomment');
-        $this->helper->convertValue($converted, 'failedLogins', $data, 'failedlogins', $this->helper::TYPE_INTEGER); // Nötig?
-        $this->helper->convertValue($converted, 'title', $data, 'title');
-        $this->helper->convertValue($converted, 'firstName', $data, 'firstname');
-        $this->helper->convertValue($converted, 'lastName', $data, 'lastname');
-        $this->helper->convertValue($converted, 'customerNumber', $data, 'customernumber');
-        $this->helper->convertValue($converted, 'birthday', $data, 'birthday', $this->helper::TYPE_DATETIME);
-        $this->helper->convertValue($converted, 'lockedUntil', $data, 'lockeduntil', $this->helper::TYPE_DATETIME);
-        $this->helper->convertValue($converted, 'encoder', $data, 'encoder');
+        $this->convertValue($converted, 'password', $data, 'password');
+        $this->convertValue($converted, 'active', $data, 'active', self::TYPE_BOOLEAN);
+        $this->convertValue($converted, 'email', $data, 'email');
+        $this->convertValue($converted, 'guest', $data, 'accountmode', self::TYPE_BOOLEAN);
+        $this->convertValue($converted, 'confirmationKey', $data, 'confirmationkey');
+        $this->convertValue($converted, 'newsletter', $data, 'newsletter', self::TYPE_BOOLEAN);
+        $this->convertValue($converted, 'validation', $data, 'validation');
+        $this->convertValue($converted, 'affiliate', $data, 'affiliate', self::TYPE_BOOLEAN);
+        $this->convertValue($converted, 'referer', $data, 'referer');
+        $this->convertValue($converted, 'internalComment', $data, 'internalcomment');
+        $this->convertValue($converted, 'failedLogins', $data, 'failedlogins', self::TYPE_INTEGER); // Nötig?
+        $this->convertValue($converted, 'title', $data, 'title');
+        $this->convertValue($converted, 'firstName', $data, 'firstname');
+        $this->convertValue($converted, 'lastName', $data, 'lastname');
+        $this->convertValue($converted, 'customerNumber', $data, 'customernumber');
+        $this->convertValue($converted, 'birthday', $data, 'birthday', self::TYPE_DATETIME);
+        $this->convertValue($converted, 'lockedUntil', $data, 'lockeduntil', self::TYPE_DATETIME);
+        $this->convertValue($converted, 'encoder', $data, 'encoder');
 
         if (!isset($converted['customerNumber']) || $converted['customerNumber'] === '') {
             $converted['customerNumber'] = 'number-' . $this->oldCustomerId;
@@ -311,13 +303,13 @@ class CustomerConverter extends AbstractConverter
         );
 
         $this->getCustomerGroupTranslation($group, $data);
-        $this->helper->convertValue($group, 'displayGross', $data, 'tax', $this->helper::TYPE_BOOLEAN);
-        $this->helper->convertValue($group, 'inputGross', $data, 'taxinput', $this->helper::TYPE_BOOLEAN);
-        $this->helper->convertValue($group, 'hasGlobalDiscount', $data, 'mode', $this->helper::TYPE_BOOLEAN);
-        $this->helper->convertValue($group, 'percentageGlobalDiscount', $data, 'discount', $this->helper::TYPE_FLOAT);
-        $this->helper->convertValue($group, 'minimumOrderAmount', $data, 'minimumorder', $this->helper::TYPE_FLOAT);
-        $this->helper->convertValue($group, 'minimumOrderAmountSurcharge', $data, 'minimumordersurcharge', $this->helper::TYPE_FLOAT);
-        $this->helper->convertValue($group, 'name', $data, 'description');
+        $this->convertValue($group, 'displayGross', $data, 'tax', self::TYPE_BOOLEAN);
+        $this->convertValue($group, 'inputGross', $data, 'taxinput', self::TYPE_BOOLEAN);
+        $this->convertValue($group, 'hasGlobalDiscount', $data, 'mode', self::TYPE_BOOLEAN);
+        $this->convertValue($group, 'percentageGlobalDiscount', $data, 'discount', self::TYPE_FLOAT);
+        $this->convertValue($group, 'minimumOrderAmount', $data, 'minimumorder', self::TYPE_FLOAT);
+        $this->convertValue($group, 'minimumOrderAmountSurcharge', $data, 'minimumordersurcharge', self::TYPE_FLOAT);
+        $this->convertValue($group, 'name', $data, 'description');
 
         return $group;
     }
@@ -332,7 +324,7 @@ class CustomerConverter extends AbstractConverter
         $localeTranslation = [];
         $localeTranslation['customerGroupId'] = $group['id'];
 
-        $this->helper->convertValue($localeTranslation, 'name', $data, 'description');
+        $this->convertValue($localeTranslation, 'name', $data, 'description');
 
         $localeTranslation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
@@ -388,7 +380,7 @@ class CustomerConverter extends AbstractConverter
         foreach ($originalData['addresses'] as $address) {
             $newAddress = [];
 
-            $fields = $this->helper->checkForEmptyRequiredDataFields($address, $this->requiredAddressDataFieldKeys);
+            $fields = $this->checkForEmptyRequiredDataFields($address, $this->requiredAddressDataFieldKeys);
             if (!empty($fields)) {
                 $this->loggingService->addInfo(
                     $this->runId,
@@ -440,18 +432,18 @@ class CustomerConverter extends AbstractConverter
                 $newAddress['countryState'] = $this->getCountryState($address['state'], $newAddress['country']);
             }
 
-            $this->helper->convertValue($newAddress, 'firstName', $address, 'firstname');
-            $this->helper->convertValue($newAddress, 'lastName', $address, 'lastname');
-            $this->helper->convertValue($newAddress, 'zipcode', $address, 'zipcode');
-            $this->helper->convertValue($newAddress, 'city', $address, 'city');
-            $this->helper->convertValue($newAddress, 'company', $address, 'company');
-            $this->helper->convertValue($newAddress, 'street', $address, 'street');
-            $this->helper->convertValue($newAddress, 'department', $address, 'department');
-            $this->helper->convertValue($newAddress, 'title', $address, 'title');
-            $this->helper->convertValue($newAddress, 'vatId', $address, 'ustid');
-            $this->helper->convertValue($newAddress, 'phoneNumber', $address, 'phone');
-            $this->helper->convertValue($newAddress, 'additionalAddressLine1', $address, 'additional_address_line1');
-            $this->helper->convertValue($newAddress, 'additionalAddressLine2', $address, 'additional_address_line2');
+            $this->convertValue($newAddress, 'firstName', $address, 'firstname');
+            $this->convertValue($newAddress, 'lastName', $address, 'lastname');
+            $this->convertValue($newAddress, 'zipcode', $address, 'zipcode');
+            $this->convertValue($newAddress, 'city', $address, 'city');
+            $this->convertValue($newAddress, 'company', $address, 'company');
+            $this->convertValue($newAddress, 'street', $address, 'street');
+            $this->convertValue($newAddress, 'department', $address, 'department');
+            $this->convertValue($newAddress, 'title', $address, 'title');
+            $this->convertValue($newAddress, 'vatId', $address, 'ustid');
+            $this->convertValue($newAddress, 'phoneNumber', $address, 'phone');
+            $this->convertValue($newAddress, 'additionalAddressLine1', $address, 'additional_address_line1');
+            $this->convertValue($newAddress, 'additionalAddressLine2', $address, 'additional_address_line2');
 
             $addresses[] = $newAddress;
         }
@@ -498,16 +490,16 @@ class CustomerConverter extends AbstractConverter
         }
 
         $this->getCountryTranslation($country, $oldCountryData);
-        $this->helper->convertValue($country, 'iso', $oldCountryData, 'countryiso');
-        $this->helper->convertValue($country, 'position', $oldCountryData, 'position', $this->helper::TYPE_INTEGER);
-        $this->helper->convertValue($country, 'taxFree', $oldCountryData, 'taxfree', $this->helper::TYPE_BOOLEAN);
-        $this->helper->convertValue($country, 'taxfreeForVatId', $oldCountryData, 'taxfree_ustid', $this->helper::TYPE_BOOLEAN);
-        $this->helper->convertValue($country, 'taxfreeVatidChecked', $oldCountryData, 'taxfree_ustid_checked', $this->helper::TYPE_BOOLEAN);
-        $this->helper->convertValue($country, 'active', $oldCountryData, 'active', $this->helper::TYPE_BOOLEAN);
-        $this->helper->convertValue($country, 'iso3', $oldCountryData, 'iso3');
-        $this->helper->convertValue($country, 'displayStateInRegistration', $oldCountryData, 'display_state_in_registration', $this->helper::TYPE_BOOLEAN);
-        $this->helper->convertValue($country, 'forceStateInRegistration', $oldCountryData, 'force_state_in_registration', $this->helper::TYPE_BOOLEAN);
-        $this->helper->convertValue($country, 'name', $oldCountryData, 'countryname');
+        $this->convertValue($country, 'iso', $oldCountryData, 'countryiso');
+        $this->convertValue($country, 'position', $oldCountryData, 'position', self::TYPE_INTEGER);
+        $this->convertValue($country, 'taxFree', $oldCountryData, 'taxfree', self::TYPE_BOOLEAN);
+        $this->convertValue($country, 'taxfreeForVatId', $oldCountryData, 'taxfree_ustid', self::TYPE_BOOLEAN);
+        $this->convertValue($country, 'taxfreeVatidChecked', $oldCountryData, 'taxfree_ustid_checked', self::TYPE_BOOLEAN);
+        $this->convertValue($country, 'active', $oldCountryData, 'active', self::TYPE_BOOLEAN);
+        $this->convertValue($country, 'iso3', $oldCountryData, 'iso3');
+        $this->convertValue($country, 'displayStateInRegistration', $oldCountryData, 'display_state_in_registration', self::TYPE_BOOLEAN);
+        $this->convertValue($country, 'forceStateInRegistration', $oldCountryData, 'force_state_in_registration', self::TYPE_BOOLEAN);
+        $this->convertValue($country, 'name', $oldCountryData, 'countryname');
 
         return $country;
     }
@@ -522,7 +514,7 @@ class CustomerConverter extends AbstractConverter
         $localeTranslation = [];
         $localeTranslation['countryId'] = $country['id'];
 
-        $this->helper->convertValue($localeTranslation, 'name', $data, 'countryname');
+        $this->convertValue($localeTranslation, 'name', $data, 'countryname');
 
         $localeTranslation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
@@ -555,10 +547,10 @@ class CustomerConverter extends AbstractConverter
         $state['countryId'] = $newCountryData['id'];
 
         $this->getCountryStateTranslation($state, $oldStateData);
-        $this->helper->convertValue($state, 'name', $oldStateData, 'name');
-        $this->helper->convertValue($state, 'shortCode', $oldStateData, 'shortcode');
-        $this->helper->convertValue($state, 'position', $oldStateData, 'position', $this->helper::TYPE_INTEGER);
-        $this->helper->convertValue($state, 'active', $oldStateData, 'active', $this->helper::TYPE_BOOLEAN);
+        $this->convertValue($state, 'name', $oldStateData, 'name');
+        $this->convertValue($state, 'shortCode', $oldStateData, 'shortcode');
+        $this->convertValue($state, 'position', $oldStateData, 'position', self::TYPE_INTEGER);
+        $this->convertValue($state, 'active', $oldStateData, 'active', self::TYPE_BOOLEAN);
 
         return $state;
     }
@@ -573,7 +565,7 @@ class CustomerConverter extends AbstractConverter
         $localeTranslation = [];
         $localeTranslation['categoryId'] = $data['id'];
 
-        $this->helper->convertValue($localeTranslation, 'name', $data, 'name');
+        $this->convertValue($localeTranslation, 'name', $data, 'name');
 
         $translation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,

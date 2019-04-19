@@ -14,7 +14,6 @@ use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
-use SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\Converter\CustomerConverter;
 use SwagMigrationNext\Profile\Shopware55\Converter\OrderConverter;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CustomerDataSet;
@@ -75,7 +74,6 @@ class OrderConverterTest extends TestCase
     {
         $this->loggingService = new DummyLoggingService();
         $mappingService = new DummyMappingService();
-        $converterHelperService = new ConverterHelperService();
         $rounding = new PriceRounding(2);
         $taxRuleCalculator = new TaxRuleCalculator($rounding);
 
@@ -83,8 +81,8 @@ class OrderConverterTest extends TestCase
             $rounding,
             $taxRuleCalculator
         );
-        $this->orderConverter = new OrderConverter($mappingService, $converterHelperService, $taxCalculator, $this->loggingService);
-        $this->customerConverter = new CustomerConverter($mappingService, $converterHelperService, $this->loggingService);
+        $this->orderConverter = new OrderConverter($mappingService, $taxCalculator, $this->loggingService);
+        $this->customerConverter = new CustomerConverter($mappingService, $this->loggingService);
 
         $connectionId = Uuid::randomHex();
         $this->runId = Uuid::randomHex();

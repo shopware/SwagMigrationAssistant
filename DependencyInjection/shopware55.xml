@@ -15,8 +15,6 @@
         </service>
 
         <!-- Shopware 5.5 Profile Converter -->
-        <service id="SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService" />
-
         <service id="SwagMigrationNext\Profile\Shopware55\Converter\AttributeConverter" abstract="true">
             <argument id="SwagMigrationNext\Migration\Mapping\MappingService" type="service"/>
         </service>
@@ -48,7 +46,6 @@
 
         <service id="SwagMigrationNext\Profile\Shopware55\Converter\ProductConverter">
             <argument type="service" id="SwagMigrationNext\Migration\Mapping\MappingService"/>
-            <argument type="service" id="SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService"/>
             <argument type="service" id="SwagMigrationNext\Migration\Media\MediaFileService"/>
             <argument type="service" id="SwagMigrationNext\Migration\Logging\LoggingService"/>
             <tag name="shopware.migration.converter"/>
@@ -56,7 +53,6 @@
 
         <service id="SwagMigrationNext\Profile\Shopware55\Converter\TranslationConverter">
             <argument type="service" id="SwagMigrationNext\Migration\Mapping\MappingService"/>
-            <argument type="service" id="SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService"/>
             <argument type="service" id="SwagMigrationNext\Migration\Logging\LoggingService"/>
             <tag name="shopware.migration.converter"/>
         </service>
@@ -68,28 +64,24 @@
 
         <service id="SwagMigrationNext\Profile\Shopware55\Converter\CategoryConverter">
             <argument type="service" id="SwagMigrationNext\Migration\Mapping\MappingService"/>
-            <argument type="service" id="SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService"/>
             <argument type="service" id="SwagMigrationNext\Migration\Logging\LoggingService"/>
             <tag name="shopware.migration.converter"/>
         </service>
 
         <service id="SwagMigrationNext\Profile\Shopware55\Converter\MediaConverter">
             <argument type="service" id="SwagMigrationNext\Migration\Mapping\MappingService"/>
-            <argument type="service" id="SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService"/>
             <argument type="service" id="SwagMigrationNext\Migration\Media\MediaFileService"/>
             <tag name="shopware.migration.converter"/>
         </service>
 
         <service id="SwagMigrationNext\Profile\Shopware55\Converter\CustomerConverter">
             <argument type="service" id="SwagMigrationNext\Migration\Mapping\MappingService"/>
-            <argument type="service" id="SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService"/>
             <argument type="service" id="SwagMigrationNext\Migration\Logging\LoggingService"/>
             <tag name="shopware.migration.converter"/>
         </service>
 
         <service id="SwagMigrationNext\Profile\Shopware55\Converter\OrderConverter">
             <argument type="service" id="SwagMigrationNext\Migration\Mapping\MappingService"/>
-            <argument type="service" id="SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService"/>
             <argument type="service" id="Shopware\Core\Checkout\Cart\Tax\TaxCalculator"/>
             <argument type="service" id="SwagMigrationNext\Migration\Logging\LoggingService"/>
             <tag name="shopware.migration.converter"/>
@@ -102,13 +94,11 @@
 
         <service id="SwagMigrationNext\Profile\Shopware55\Converter\CustomerGroupConverter">
             <argument type="service" id="SwagMigrationNext\Migration\Mapping\MappingService"/>
-            <argument type="service" id="SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService"/>
             <tag name="shopware.migration.converter"/>
         </service>
 
         <service id="SwagMigrationNext\Profile\Shopware55\Converter\PropertyGroupOptionConverter">
             <argument id="SwagMigrationNext\Migration\Mapping\MappingService" type="service"/>
-            <argument id="SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService" type="service"/>
             <argument type="service" id="SwagMigrationNext\Migration\Media\MediaFileService"/>
             <argument type="service" id="SwagMigrationNext\Migration\Logging\LoggingService"/>
             <tag name="shopware.migration.converter"/>

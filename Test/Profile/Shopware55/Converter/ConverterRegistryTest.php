@@ -10,7 +10,6 @@ use SwagMigrationNext\Migration\Converter\ConverterRegistry;
 use SwagMigrationNext\Migration\Converter\ConverterRegistryInterface;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
-use SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\Converter\ProductConverter;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
@@ -34,7 +33,6 @@ class ConverterRegistryTest extends TestCase
             new DummyCollection([
                 new ProductConverter(
                     new DummyMappingService(),
-                    new ConverterHelperService(),
                     new DummyMediaFileService(),
                     new DummyLoggingService()
                 ),

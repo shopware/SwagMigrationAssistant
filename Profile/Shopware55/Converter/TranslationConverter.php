@@ -15,7 +15,6 @@ use Shopware\Core\Content\Property\PropertyGroupDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\System\Unit\Aggregate\UnitTranslation\UnitTranslationDefinition;
 use Shopware\Core\System\Unit\UnitDefinition;
-use SwagMigrationNext\Migration\Converter\AbstractConverter;
 use SwagMigrationNext\Migration\Converter\ConvertStruct;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
@@ -23,13 +22,8 @@ use SwagMigrationNext\Migration\MigrationContextInterface;
 use SwagMigrationNext\Profile\Shopware55\Logging\Shopware55LogTypes;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
-class TranslationConverter extends AbstractConverter
+class TranslationConverter extends Shopware55Converter
 {
-    /**
-     * @var ConverterHelperService
-     */
-    private $helper;
-
     /**
      * @var MappingServiceInterface
      */
@@ -57,10 +51,8 @@ class TranslationConverter extends AbstractConverter
 
     public function __construct(
         MappingServiceInterface $mappingService,
-        ConverterHelperService $converterHelperService,
         LoggingServiceInterface $loggingService
     ) {
-        $this->helper = $converterHelperService;
         $this->mappingService = $mappingService;
         $this->loggingService = $loggingService;
     }
@@ -181,13 +173,13 @@ class TranslationConverter extends AbstractConverter
         foreach ($objectData as $key => $value) {
             switch ($key) {
                 case 'txtArtikel':
-                    $this->helper->convertValue($productTranslation, 'name', $objectData, 'txtArtikel');
+                    $this->convertValue($productTranslation, 'name', $objectData, 'txtArtikel');
                     break;
                 case 'txtshortdescription':
-                    $this->helper->convertValue($productTranslation, 'description', $objectData, 'txtshortdescription');
+                    $this->convertValue($productTranslation, 'description', $objectData, 'txtshortdescription');
                     break;
                 case 'txtpackunit':
-                    $this->helper->convertValue($productTranslation, 'packUnit', $objectData, 'txtpackunit');
+                    $this->convertValue($productTranslation, 'packUnit', $objectData, 'txtpackunit');
                     break;
             }
 
@@ -293,11 +285,11 @@ class TranslationConverter extends AbstractConverter
         );
         unset($data['id'], $data['objectkey']);
 
-        $this->helper->convertValue($manufacturerTranslation, 'name', $data, 'name');
+        $this->convertValue($manufacturerTranslation, 'name', $data, 'name');
 
         foreach ($objectData as $key => $value) {
             if ($key === 'description') {
-                $this->helper->convertValue($manufacturerTranslation, 'description', $objectData, 'description');
+                $this->convertValue($manufacturerTranslation, 'description', $objectData, 'description');
             }
 
             $isAttribute = strpos($key, '__attribute_');
@@ -400,10 +392,10 @@ class TranslationConverter extends AbstractConverter
         foreach ($objectData as $key => $value) {
             switch ($key) {
                 case 'unit':
-                    $this->helper->convertValue($unitTranslation, 'shortCode', $objectData, 'unit');
+                    $this->convertValue($unitTranslation, 'shortCode', $objectData, 'unit');
                     break;
                 case 'description':
-                    $this->helper->convertValue($unitTranslation, 'name', $objectData, 'description');
+                    $this->convertValue($unitTranslation, 'name', $objectData, 'description');
                     break;
             }
 
@@ -514,12 +506,12 @@ class TranslationConverter extends AbstractConverter
         );
 
         if (isset($objectData['description'])) {
-            $this->helper->convertValue($categoryTranslation, 'name', $objectData, 'description');
+            $this->convertValue($categoryTranslation, 'name', $objectData, 'description');
         }
 
         foreach ($objectData as $key => $value) {
             if ($key === 'description') {
-                $this->helper->convertValue($categoryTranslation, 'name', $objectData, $key);
+                $this->convertValue($categoryTranslation, 'name', $objectData, $key);
             }
 
             $isAttribute = strpos($key, '__attribute_');
@@ -618,11 +610,11 @@ class TranslationConverter extends AbstractConverter
 
         foreach ($objectData as $key => $value) {
             if ($key === 'name') {
-                $this->helper->convertValue($propertyGroupOptionTranslation, 'name', $objectData, $key);
+                $this->convertValue($propertyGroupOptionTranslation, 'name', $objectData, $key);
             }
 
             if ($key === 'position') {
-                $this->helper->convertValue($propertyGroupOptionTranslation, 'position', $objectData, $key, ConverterHelperService::TYPE_INTEGER);
+                $this->convertValue($propertyGroupOptionTranslation, 'position', $objectData, $key, self::TYPE_INTEGER);
             }
 
             $isAttribute = strpos($key, '__attribute_');
@@ -721,11 +713,11 @@ class TranslationConverter extends AbstractConverter
 
         foreach ($objectData as $key => $value) {
             if ($key === 'name') {
-                $this->helper->convertValue($propertyGroupTranslation, 'name', $objectData, $key);
+                $this->convertValue($propertyGroupTranslation, 'name', $objectData, $key);
             }
 
             if ($key === 'description') {
-                $this->helper->convertValue($propertyGroupTranslation, 'description', $objectData, $key);
+                $this->convertValue($propertyGroupTranslation, 'description', $objectData, $key);
             }
 
             $isAttribute = strpos($key, '__attribute_');
@@ -824,7 +816,7 @@ class TranslationConverter extends AbstractConverter
 
         foreach ($objectData as $key => $value) {
             if ($key === 'optionValue') {
-                $this->helper->convertValue($propertyValueTranslation, 'name', $objectData, $key);
+                $this->convertValue($propertyValueTranslation, 'name', $objectData, $key);
             }
 
             $isAttribute = strpos($key, '__attribute_');
@@ -923,7 +915,7 @@ class TranslationConverter extends AbstractConverter
 
         foreach ($objectData as $key => $value) {
             if ($key === 'optionName') {
-                $this->helper->convertValue($propertyOptionTranslation, 'optionName', $objectData, $key);
+                $this->convertValue($propertyOptionTranslation, 'optionName', $objectData, $key);
             }
 
             $isAttribute = strpos($key, '__attribute_');

@@ -9,7 +9,6 @@ use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
 use SwagMigrationNext\Profile\Shopware55\Converter\CategoryAttributeConverter;
-use SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CategoryAttributeDataSet;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Mock\Migration\Logging\DummyLoggingService;
@@ -45,9 +44,8 @@ class CategoryAttributeConverterTest extends TestCase
     protected function setUp(): void
     {
         $mappingService = new DummyMappingService();
-        $converterHelperService = new ConverterHelperService();
         $this->loggingService = new DummyLoggingService();
-        $this->converter = new CategoryAttributeConverter($mappingService, $converterHelperService);
+        $this->converter = new CategoryAttributeConverter($mappingService);
 
         $this->runId = Uuid::randomHex();
         $this->connection = new SwagMigrationConnectionEntity();

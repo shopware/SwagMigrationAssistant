@@ -8,7 +8,6 @@ use Shopware\Core\Content\Product\Aggregate\ProductProperty\ProductPropertyDefin
 use Shopware\Core\Content\Property\Aggregate\PropertyGroupOption\PropertyGroupOptionDefinition;
 use Shopware\Core\Content\Property\PropertyGroupDefinition;
 use Shopware\Core\Framework\Context;
-use SwagMigrationNext\Migration\Converter\AbstractConverter;
 use SwagMigrationNext\Migration\Converter\ConvertStruct;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
@@ -17,17 +16,12 @@ use SwagMigrationNext\Migration\MigrationContextInterface;
 use SwagMigrationNext\Profile\Shopware55\Logging\Shopware55LogTypes;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
-class PropertyGroupOptionConverter extends AbstractConverter
+class PropertyGroupOptionConverter extends Shopware55Converter
 {
     /**
      * @var MappingServiceInterface
      */
     private $mappingService;
-
-    /**
-     * @var ConverterHelperService
-     */
-    private $helper;
 
     /**
      * @var string
@@ -61,12 +55,10 @@ class PropertyGroupOptionConverter extends AbstractConverter
 
     public function __construct(
         MappingServiceInterface $mappingService,
-        ConverterHelperService $converterHelperService,
         MediaFileServiceInterface $mediaFileService,
         LoggingServiceInterface $loggingService
     ) {
         $this->mappingService = $mappingService;
-        $this->helper = $converterHelperService;
         $this->loggingService = $loggingService;
         $this->mediaFileService = $mediaFileService;
     }
@@ -164,8 +156,8 @@ class PropertyGroupOptionConverter extends AbstractConverter
         );
 
         $this->getMediaTranslation($newMedia, $data);
-        $this->helper->convertValue($newMedia, 'name', $data['media'], 'name');
-        $this->helper->convertValue($newMedia, 'description', $data['media'], 'description');
+        $this->convertValue($newMedia, 'name', $data['media'], 'name');
+        $this->convertValue($newMedia, 'description', $data['media'], 'description');
 
         $converted['media'] = $newMedia;
     }
@@ -180,8 +172,8 @@ class PropertyGroupOptionConverter extends AbstractConverter
 
         $localeTranslation = [];
 
-        $this->helper->convertValue($localeTranslation, 'name', $data['media'], 'name');
-        $this->helper->convertValue($localeTranslation, 'description', $data['media'], 'description');
+        $this->convertValue($localeTranslation, 'name', $data['media'], 'name');
+        $this->convertValue($localeTranslation, 'description', $data['media'], 'description');
 
         $localeTranslation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
@@ -314,11 +306,11 @@ class PropertyGroupOptionConverter extends AbstractConverter
         $defaultLanguageUuid = $languageData['uuid'];
 
         $converted['translations'][$defaultLanguageUuid] = [];
-        $this->helper->convertValue($converted['translations'][$defaultLanguageUuid], 'name', $data, 'name', $this->helper::TYPE_STRING);
-        $this->helper->convertValue($converted['translations'][$defaultLanguageUuid], 'position', $data, 'position', $this->helper::TYPE_INTEGER);
+        $this->convertValue($converted['translations'][$defaultLanguageUuid], 'name', $data, 'name', self::TYPE_STRING);
+        $this->convertValue($converted['translations'][$defaultLanguageUuid], 'position', $data, 'position', self::TYPE_INTEGER);
 
         $converted['group']['translations'][$defaultLanguageUuid] = [];
-        $this->helper->convertValue($converted['group']['translations'][$defaultLanguageUuid], 'name', $data['group'], 'name', $this->helper::TYPE_STRING);
-        $this->helper->convertValue($converted['group']['translations'][$defaultLanguageUuid], 'description', $data['group'], 'description', $this->helper::TYPE_STRING);
+        $this->convertValue($converted['group']['translations'][$defaultLanguageUuid], 'name', $data['group'], 'name', self::TYPE_STRING);
+        $this->convertValue($converted['group']['translations'][$defaultLanguageUuid], 'description', $data['group'], 'description', self::TYPE_STRING);
     }
 }
