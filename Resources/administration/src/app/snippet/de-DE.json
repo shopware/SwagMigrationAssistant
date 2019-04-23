@@ -184,7 +184,7 @@
           "processMediaFiles": "Medien",
           "numberRanges": "Nummernkreise",
           "basicSettings": "Grundeinstellungen",
-          "newsletterReceiver": "Newsletter Empfänger"
+          "newsletterRecipient": "Newsletter-Empfänger"
         },
         "entities": {
           "category": "Kategorien:",
@@ -220,7 +220,8 @@
           "manufacturer": "Hersteller",
           "salutation": "Anrede",
           "delivery_time": "Lieferzeit",
-          "salesChannel": "Verkaufskanäle"
+          "salesChannel": "Newsletter-Verkaufskanäle",
+          "newsletter_status": "Newsletter-Status"
         }
       },
       "loadingScreenCard": {

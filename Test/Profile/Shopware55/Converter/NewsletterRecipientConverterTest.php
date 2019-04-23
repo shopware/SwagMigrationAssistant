@@ -1,24 +1,23 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Test\Profile\Shopware55\Converter;
+namespace SwagMigrationAssistant\Test\Profile\Shopware55\Converter;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Uuid\Uuid;
-use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
-use SwagMigrationNext\Migration\MigrationContext;
-use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
-use SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService;
-use SwagMigrationNext\Profile\Shopware55\Converter\NewsletterReceiverConverter;
-use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\NewsletterReceiverDataSet;
-use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
-use SwagMigrationNext\Profile\Shopware55\Premapping\SalesChannelReader;
-use SwagMigrationNext\Profile\Shopware55\Premapping\SalutationReader;
-use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
-use SwagMigrationNext\Test\Mock\Migration\Logging\DummyLoggingService;
-use SwagMigrationNext\Test\Mock\Migration\Mapping\DummyMappingService;
+use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\Profile\SwagMigrationProfileEntity;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\NewsletterRecipientConverter;
+use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\NewsletterRecipientDataSet;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
+use SwagMigrationAssistant\Profile\Shopware55\Premapping\SalesChannelReader;
+use SwagMigrationAssistant\Profile\Shopware55\Premapping\SalutationReader;
+use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
+use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 
-class NewsletterReceiverConverterTest extends TestCase
+class NewsletterRecipientConverterTest extends TestCase
 {
     /**
      * @var DummyMappingService
@@ -26,17 +25,12 @@ class NewsletterReceiverConverterTest extends TestCase
     private $mappingService;
 
     /**
-     * @var ConverterHelperService
-     */
-    private $converterHelperService;
-
-    /**
      * @var DummyLoggingService
      */
     private $loggingService;
 
     /**
-     * @var NewsletterReceiverConverter
+     * @var NewsletterRecipientConverter
      */
     private $newsletterReceiverConverter;
 
@@ -63,10 +57,8 @@ class NewsletterReceiverConverterTest extends TestCase
     protected function setUp(): void
     {
         $this->mappingService = new DummyMappingService();
-        $this->converterHelperService = new ConverterHelperService();
         $this->loggingService = new DummyLoggingService();
-        $this->newsletterReceiverConverter = new NewsletterReceiverConverter($this->mappingService,
-            $this->converterHelperService, $this->loggingService);
+        $this->newsletterReceiverConverter = new NewsletterRecipientConverter($this->mappingService, $this->loggingService);
 
         $this->runId = Uuid::randomHex();
         $this->connection = new SwagMigrationConnectionEntity();
@@ -80,24 +72,23 @@ class NewsletterReceiverConverterTest extends TestCase
         $this->context = new MigrationContext(
             $this->connection,
             $this->runId,
-            new NewsletterReceiverDataSet(),
+            new NewsletterRecipientDataSet(),
             0,
             250
         );
 
-        $salesChannelId = 'default_salesChannel';
         $context = Context::createDefaultContext();
         $this->mappingService->createNewUuid($this->connectionId, SalutationReader::getMappingName(), 'mr',
             $context, [], Uuid::randomHex());
         $this->mappingService->createNewUuid($this->connectionId, SalutationReader::getMappingName(), 'ms',
             $context, [], Uuid::randomHex());
-        $this->mappingService->createNewUuid($this->connectionId, SalesChannelReader::getMappingName(), $salesChannelId,
+        $this->mappingService->createNewUuid($this->connectionId, SalesChannelReader::getMappingName(), 'default_salesChannel',
             $context, [], Uuid::randomHex());
     }
 
     public function testConvertWithoutDoubleOptinConfirmed(): void
     {
-        $customerData = require __DIR__ . '/../../../_fixtures/invalid/newsletter_receiver_data.php';
+        $customerData = require __DIR__ . '/../../../_fixtures/invalid/newsletter_recipient_data.php';
 
         $context = Context::createDefaultContext();
         $convertResult = $this->newsletterReceiverConverter->convert(
@@ -111,13 +102,13 @@ class NewsletterReceiverConverterTest extends TestCase
         $logs = $this->loggingService->getLoggingArray();
         static::assertCount(1, $logs);
 
-        $description = sprintf('NewsletterReceiver-Entity could not converted cause of empty necessary field(s): %s.', 'double_optin_confirmed');
+        $description = sprintf('NewsletterRecipient-Entity could not converted cause of empty necessary field(s): %s.', 'double_optin_confirmed');
         static::assertSame($description, $logs[0]['logEntry']['description']);
     }
 
     public function testConvertWithNotExistingSalutation(): void
     {
-        $customerData = require __DIR__ . '/../../../_fixtures/invalid/newsletter_receiver_data.php';
+        $customerData = require __DIR__ . '/../../../_fixtures/invalid/newsletter_recipient_data.php';
 
         $context = Context::createDefaultContext();
         $convertResult = $this->newsletterReceiverConverter->convert(
@@ -131,13 +122,13 @@ class NewsletterReceiverConverterTest extends TestCase
         $logs = $this->loggingService->getLoggingArray();
         static::assertCount(1, $logs);
 
-        $description = sprintf('NewsletterReceiver-Entity could not converted cause of unknown salutation');
+        $description = sprintf('NewsletterRecipient-Entity could not converted cause of unknown salutation');
         static::assertSame($description, $logs[0]['logEntry']['description']);
     }
 
     public function testConvert(): void
     {
-        $data = require __DIR__ . '/../../../_fixtures/newsletter_receiver_data.php';
+        $data = require __DIR__ . '/../../../_fixtures/newsletter_recipient_data.php';
 
         $context = Context::createDefaultContext();
         $convertResult = $this->newsletterReceiverConverter->convert(

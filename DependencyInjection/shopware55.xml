@@ -258,9 +258,8 @@
             <tag name="shopware.migration.converter"/>
         </service>
 
-        <service class="SwagMigrationAssistant\Profile\Shopware55\Converter\NewsletterReceiverConverter" id="swag_migration_next.profile.shopware55.converter.newsletter_receiver_converter">
+        <service id="SwagMigrationAssistant\Profile\Shopware55\Converter\NewsletterRecipientConverter">
             <argument id="SwagMigrationAssistant\Migration\Mapping\MappingService" type="service"/>
-            <argument id="SwagMigrationAssistant\Profile\Shopware55\Converter\ConverterHelperService" type="service"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
             <tag name="shopware.migration.converter"/>
         </service>
@@ -310,7 +309,7 @@
             <tag name="shopware.migration.data_selection"/>
         </service>
 
-        <service id="SwagMigrationNext\Profile\Shopware55\DataSelection\NewsletterReceiverDataSelection">
+        <service id="SwagMigrationAssistant\Profile\Shopware55\DataSelection\NewsletterRecipientDataSelection">
             <tag name="shopware.migration.data_selection"/>
         </service>
 
@@ -383,7 +382,7 @@
             <tag name="shopware.migration.data_set" />
         </service>
 
-        <service id="SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\NewsletterReceiverDataSet">
+        <service id="SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\NewsletterRecipientDataSet">
             <tag name="shopware.migration.data_set" />
         </service>
 
@@ -436,8 +435,12 @@
             <tag name="shopware.migration.pre_mapping_reader"/>
         </service>
 
-        <service id="SwagMigrationNext\Profile\Shopware55\Premapping\SalesChannelReader">
+        <service id="SwagMigrationAssistant\Profile\Shopware55\Premapping\SalesChannelReader">
             <argument type="service" id="sales_channel.repository" />
+            <tag name="shopware.migration.pre_mapping_reader"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware55\Premapping\NewsletterRecipientStatusReader">
             <tag name="shopware.migration.pre_mapping_reader"/>
         </service>
     </services>

@@ -183,7 +183,7 @@
           "processMediaFiles": "Media",
           "numberRanges": "Number ranges",
           "basicSettings": "Basic settings",
-          "newsletterReceiver": "Newsletter Receiver"
+          "newsletterRecipient": "Newsletter recipient"
         },
         "entities": {
           "category": "Categories:",
@@ -219,7 +219,8 @@
           "manufacturer": "Manufacturers",
           "salutation": "Salutation",
           "delivery_time": "Delivery time",
-          "salesChannel": "Sales Channel"
+          "salesChannel": "Newsletter saleschannel",
+          "newsletter_status": "Newsletter status"
         }
       },
       "loadingScreenCard": {

@@ -88,6 +88,7 @@ class Shopware55ApiGateway implements Shopware55GatewayInterface
             DefaultEntities::TRANSLATION => $environmentDataArray['translations'],
             DefaultEntities::NUMBER_RANGE => $environmentDataArray['numberRanges'],
             DefaultEntities::CURRENCY => $environmentDataArray['currencies'],
+            DefaultEntities::NEWSLETTER_RECIPIENT => $environmentDataArray['newsletterRecipients'],
         ];
         $credentials = $migrationContext->getConnection()->getCredentialFields();
 

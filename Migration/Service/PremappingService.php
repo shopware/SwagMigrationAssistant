@@ -9,6 +9,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\IdSearchResult;
+use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\Premapping\PremappingReaderRegistryInterface;
@@ -79,14 +80,23 @@ class PremappingService implements PremappingServiceInterface
 
             foreach ($item['mapping'] as $mapping) {
                 $id = $mapping['sourceId'];
-                $uuid = $mapping['destinationUuid'];
+                $identifier = $mapping['destinationUuid'];
 
-                $this->mappingService->pushMapping(
-                    $migrationContext->getConnection()->getId(),
-                    $entity,
-                    $id,
-                    $uuid
-                );
+                if (Uuid::isValid($identifier)) {
+                    $this->mappingService->pushMapping(
+                        $migrationContext->getConnection()->getId(),
+                        $entity,
+                        $id,
+                        $identifier
+                    );
+                } else {
+                    $this->mappingService->pushValueMapping(
+                        $migrationContext->getConnection()->getId(),
+                        $entity,
+                        $id,
+                        $identifier
+                    );
+                }
             }
         }
 

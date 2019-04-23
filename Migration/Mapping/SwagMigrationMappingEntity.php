@@ -36,6 +36,11 @@ class SwagMigrationMappingEntity extends Entity
     protected $entityUuid;
 
     /**
+     * @var string|null
+     */
+    protected $entityValue;
+
+    /**
      * @var array|null
      */
     protected $additionalData;
@@ -88,6 +93,16 @@ class SwagMigrationMappingEntity extends Entity
     public function setEntityUuid(string $entityUuid): void
     {
         $this->entityUuid = $entityUuid;
+    }
+
+    public function getEntityValue(): ?string
+    {
+        return $this->entityValue;
+    }
+
+    public function setEntityValue(?string $entityValue): void
+    {
+        $this->entityValue = $entityValue;
     }
 
     public function getAdditionalData(): ?array

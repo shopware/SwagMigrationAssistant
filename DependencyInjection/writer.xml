@@ -131,9 +131,9 @@
             <tag name="shopware.migration.writer"/>
         </service>
 
-        <service id="SwagMigrationNext\Migration\Writer\NewsletterReceiverWriter"
-                 class="SwagMigrationNext\Migration\Writer\NewsletterReceiverWriter">
-            <argument type="service" id="newsletter_receiver.repository"/>
+        <service id="SwagMigrationAssistant\Migration\Writer\NewsletterRecipientWriter">
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
+            <argument type="service" id="Shopware\Core\Content\Newsletter\Aggregate\NewsletterRecipient\NewsletterRecipientDefinition"/>
             <tag name="shopware.migration.writer"/>
         </service>
     </services>

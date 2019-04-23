@@ -21,6 +21,7 @@ CREATE TABLE `swag_migration_mapping` (
     `entity`          VARCHAR(255),
     `old_identifier`  VARCHAR(255),
     `entity_uuid`     BINARY(16),
+    `entity_value`  VARCHAR(255),
     `additional_data` LONGTEXT,
     `created_at`      DATETIME(3) NOT NULL,
     `updated_at`      DATETIME(3),

@@ -3,10 +3,6 @@
 namespace SwagMigrationAssistant\Profile\Shopware55\Premapping;
 
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
-use Shopware\Core\System\SalesChannel\SalesChannelEntity;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\Premapping\AbstractPremappingReader;
 use SwagMigrationAssistant\Migration\Premapping\PremappingChoiceStruct;
@@ -15,24 +11,14 @@ use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\NewsletterRecipientDataSelection;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
-class SalesChannelReader extends AbstractPremappingReader
+class NewsletterRecipientStatusReader extends AbstractPremappingReader
 {
-    private const MAPPING_NAME = 'salesChannel';
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $salesChannelRepository;
+    private const MAPPING_NAME = 'newsletter_status';
 
     /**
      * @var string
      */
     private $connectionPremappingValue = '';
-
-    public function __construct(EntityRepositoryInterface $salesChannelRepository)
-    {
-        $this->salesChannelRepository = $salesChannelRepository;
-    }
 
     public static function getMappingName(): string
     {
@@ -49,7 +35,7 @@ class SalesChannelReader extends AbstractPremappingReader
     {
         $this->fillConnectionPremappingValue($migrationContext);
         $mapping = $this->getMapping();
-        $choices = $this->getChoices($context);
+        $choices = $this->getChoices();
 
         return new PremappingStruct(self::getMappingName(), $mapping, $choices);
     }
@@ -74,7 +60,7 @@ class SalesChannelReader extends AbstractPremappingReader
      */
     private function getMapping(): array
     {
-        $entityData[] = new PremappingEntityStruct('default_salesChannel', 'Default Sales Channel', $this->connectionPremappingValue);
+        $entityData[] = new PremappingEntityStruct('default_newsletter_recipient_status', 'Standard newsletter status', $this->connectionPremappingValue);
 
         return $entityData;
     }
@@ -82,17 +68,12 @@ class SalesChannelReader extends AbstractPremappingReader
     /**
      * @return PremappingChoiceStruct[]
      */
-    private function getChoices(Context $context): array
+    private function getChoices(): array
     {
-        $criteria = new Criteria();
-        $criteria->addSorting(new FieldSorting('name'));
-        $salesChannels = $this->salesChannelRepository->search($criteria, $context);
-
-        $choices = [];
-        /* @var SalesChannelEntity $manufacturer */
-        foreach ($salesChannels as $salesChannel) {
-            $choices[] = new PremappingChoiceStruct($salesChannel->getId(), $salesChannel->getName());
-        }
+        $choices[] = new PremappingChoiceStruct('notSet', 'Not set');
+        $choices[] = new PremappingChoiceStruct('optIn', 'OptIn');
+        $choices[] = new PremappingChoiceStruct('optOut', 'OptOut');
+        $choices[] = new PremappingChoiceStruct('direct', 'Direct');
 
         return $choices;
     }

@@ -1,15 +1,15 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet;
+namespace SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet;
 
-use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
-use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
-class NewsletterReceiverDataSet extends Shopware55DataSet
+class NewsletterRecipientDataSet extends Shopware55DataSet
 {
     public static function getEntity(): string
     {
-        return DefaultEntities::NEWSLETTER_RECEIVER;
+        return DefaultEntities::NEWSLETTER_RECIPIENT;
     }
 
     public function supports(string $profileName, string $entity): bool
@@ -19,7 +19,7 @@ class NewsletterReceiverDataSet extends Shopware55DataSet
 
     public function getApiRoute(): string
     {
-        return 'SwagMigrationNewsletterReceiver';
+        return 'SwagMigrationNewsletterRecipients';
     }
 
     public function getExtraQueryParameters(): array
