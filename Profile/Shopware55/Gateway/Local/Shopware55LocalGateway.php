@@ -16,9 +16,11 @@ use SwagMigrationNext\Migration\EnvironmentInformation;
 use SwagMigrationNext\Migration\Gateway\AbstractGateway;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CategoryAttributeDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CategoryDataSet;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CurrencyDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CustomerDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CustomerGroupAttributeDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CustomerGroupDataSet;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\LanguageDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ManufacturerAttributeDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\NumberRangeDataSet;
@@ -27,20 +29,24 @@ use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ProductAttributeD
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ProductPriceAttributeDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\PropertyGroupOptionDataSet;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\SalesChannelDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\Shopware55DataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\TranslationDataSet;
 use SwagMigrationNext\Profile\Shopware55\Exception\DatabaseConnectionException;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalAttributeReader;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalCategoryReader;
+use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalCurrencyReader;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalCustomerGroupReader;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalCustomerReader;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalEnvironmentReader;
+use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalLanguageReader;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalMediaReader;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalNumberRangeReader;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalOrderReader;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalProductReader;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalPropertyGroupOptionReader;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalReaderNotFoundException;
+use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalSalesChannelReader;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalTranslationReader;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
@@ -85,6 +91,18 @@ class Shopware55LocalGateway extends AbstractGateway
                 return $reader->read();
             case PropertyGroupOptionDataSet::getEntity():
                 $reader = new Shopware55LocalPropertyGroupOptionReader($connection, $this->migrationContext);
+
+                return $reader->read();
+            case LanguageDataSet::getEntity():
+                $reader = new Shopware55LocalLanguageReader($connection, $this->migrationContext);
+
+                return $reader->read();
+            case CurrencyDataSet::getEntity():
+                $reader = new Shopware55LocalCurrencyReader($connection, $this->migrationContext);
+
+                return $reader->read();
+            case SalesChannelDataSet::getEntity():
+                $reader = new Shopware55LocalSalesChannelReader($connection, $this->migrationContext);
 
                 return $reader->read();
             case NumberRangeDataSet::getEntity():

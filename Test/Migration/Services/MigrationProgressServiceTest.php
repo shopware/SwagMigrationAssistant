@@ -193,7 +193,6 @@ class MigrationProgressServiceTest extends TestCase
                 $this->runRepo,
                 $this->connectionRepo,
                 $this->migrationDataFetcher,
-                $this->getContainer()->get(MappingService::class),
                 $this->getContainer()->get(SwagMigrationAccessTokenService::class),
                 new DataSelectionRegistry([]),
                 $this->dataRepo,

@@ -162,7 +162,6 @@ class RunServiceTest extends TestCase
                 $mediaFileService,
                 $loggingRepo
             ),
-            $this->mappingService,
             new SwagMigrationAccessTokenService($this->runRepo),
             new DataSelectionRegistry([]),
             $this->dataRepo,
@@ -178,7 +177,6 @@ class RunServiceTest extends TestCase
                 $gatewayFactoryRegistry,
                 $loggingService
             ),
-            $this->mappingService,
             new SwagMigrationAccessTokenService($this->runRepo),
             new DataSelectionRegistry([]),
             $this->dataRepo,

@@ -6,8 +6,6 @@ use SwagMigrationNext\Migration\DataSelection\DataSelectionInterface;
 use SwagMigrationNext\Migration\DataSelection\DataSelectionStruct;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CategoryAttributeDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CategoryDataSet;
-use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CustomerGroupAttributeDataSet;
-use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CustomerGroupDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ManufacturerAttributeDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ProductAttributeDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
@@ -42,8 +40,6 @@ class ProductCategoryTranslationDataSelection implements DataSelectionInterface
         return [
             CategoryAttributeDataSet::getEntity(),
             CategoryDataSet::getEntity(),
-            CustomerGroupAttributeDataSet::getEntity(),
-            CustomerGroupDataSet::getEntity(),
             ProductAttributeDataSet::getEntity(),
             ProductPriceAttributeDataSet::getEntity(),
             ManufacturerAttributeDataSet::getEntity(),

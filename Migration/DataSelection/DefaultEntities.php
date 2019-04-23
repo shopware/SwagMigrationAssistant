@@ -8,6 +8,8 @@ final class DefaultEntities
 
     public const CATEGORY_ATTRIBUTE = 'category_attribute';
 
+    public const CURRENCY = 'currency';
+
     public const CUSTOMER = 'customer';
 
     public const CUSTOMER_ATTRIBUTE = 'customer_attribute';
@@ -15,6 +17,8 @@ final class DefaultEntities
     public const CUSTOMER_GROUP = 'customer_group';
 
     public const CUSTOMER_GROUP_ATTRIBUTE = 'customer_group_attribute';
+
+    public const LANGUAGE = 'language';
 
     public const MANUFACTURER = 'manufacturer';
 
@@ -37,6 +41,8 @@ final class DefaultEntities
     public const PRODUCT_PRICE_ATTRIBUTE = 'product_price_attribute';
 
     public const PROPERTY_GROUP_OPTION = 'property_group_option';
+
+    public const SALES_CHANNEL = 'sales_channel';
 
     public const TRANSLATION = 'translation';
 }
