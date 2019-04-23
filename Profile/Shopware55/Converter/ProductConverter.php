@@ -195,6 +195,7 @@ class ProductConverter extends Shopware55Converter
         $converted = $this->getProductData($data, $converted);
 
         $converted['children'][] = $converted;
+        $converted['productNumber'] .= 'M';
         $converted['children'][0]['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
             ProductDefinition::getEntityName(),
