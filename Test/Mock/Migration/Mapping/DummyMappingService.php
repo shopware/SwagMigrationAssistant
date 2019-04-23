@@ -3,6 +3,7 @@
 namespace SwagMigrationNext\Test\Mock\Migration\Mapping;
 
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Language\LanguageEntity;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationNext\Migration\Mapping\MappingService;
 
@@ -79,15 +80,9 @@ class DummyMappingService extends MappingService
     {
     }
 
-    public function getLanguageUuid(string $connectionId, string $localeCode, Context $context): array
+    public function getLanguageUuid(string $connectionId, string $localeCode, Context $context): ?string
     {
-        return [
-            'uuid' => self::DEFAULT_LANGUAGE_UUID,
-            'createData' => [
-                'localeId' => self::DEFAULT_LOCAL_UUID,
-                'localeCode' => 'de-DE',
-            ],
-        ];
+        return self::DEFAULT_LANGUAGE_UUID;
     }
 
     public function getMigratedSalesChannelUuids(string $connectionId, Context $context): array
@@ -120,14 +115,17 @@ class DummyMappingService extends MappingService
         return '';
     }
 
-    public function getDefaultLanguageUuid(Context $context): array
+    public function getDefaultLanguageUuid(Context $context): LanguageEntity
     {
-        return [
-            'uuid' => self::DEFAULT_LANGUAGE_UUID,
-            'createData' => [
-                'localeId' => Uuid::randomHex(),
-                'localeCode' => 'en-GB',
+        $defaultLanguage = new LanguageEntity();
+        $defaultLanguage->assign([
+            'id' => self::DEFAULT_LANGUAGE_UUID,
+            'locale' => [
+                'id' => self::DEFAULT_LOCAL_UUID,
+                'code' => 'en-GB',
             ],
-        ];
+        ]);
+
+        return $defaultLanguage;
     }
 }

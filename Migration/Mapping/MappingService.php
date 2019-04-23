@@ -97,7 +97,10 @@ class MappingService implements MappingServiceInterface
 
     protected $languageData = [];
 
-    protected $defaultLanguageData = [];
+    /**
+     * @var LanguageEntity
+     */
+    protected $defaultLanguageData;
 
     /**
      * @var EntityRepositoryInterface
@@ -271,56 +274,35 @@ class MappingService implements MappingServiceInterface
         return $uuid;
     }
 
-    public function getLanguageUuid(string $connectionId, string $localeCode, Context $context): array
+    public function getLanguageUuid(string $connectionId, string $localeCode, Context $context): ?string
     {
         if (isset($this->languageData[$localeCode])) {
             return $this->languageData[$localeCode];
         }
 
         $languageUuid = $this->searchLanguageInMapping($localeCode, $context);
-        $localeUuid = $this->searchLocale($localeCode, $context);
-
         if ($languageUuid !== null) {
-            $languageData = [
-                'uuid' => $languageUuid,
-                'createData' => [
-                    'localeId' => $localeUuid,
-                    'localeCode' => $localeCode,
-                ],
-            ];
-            $this->languageData[$localeCode] = $languageData;
-
-            return $languageData;
+            return $languageUuid;
         }
+
+        $localeUuid = $this->searchLocale($localeCode, $context);
 
         $languageUuid = $this->searchLanguageByLocale($localeUuid, $context);
 
-        if ($languageUuid !== null) {
-            $languageData = [
-                'uuid' => $languageUuid,
-                'createData' => [
-                    'localeId' => $localeUuid,
-                    'localeCode' => $localeCode,
-                ],
-            ];
-            $this->languageData[$localeCode] = $languageData;
-
-            return $languageData;
+        if ($languageUuid === null) {
+            return $languageUuid;
         }
+        $this->languageData[$localeCode] = $languageUuid;
 
-        $newLanguageData = [
-            'uuid' => $this->createNewUuid($connectionId, LanguageDefinition::getEntityName(), $localeCode, $context),
-            'createData' => [
-                'localeId' => $localeUuid,
-                'localeCode' => $localeCode,
-            ],
-        ];
-        $this->languageData[$localeCode] = $newLanguageData;
-
-        return $newLanguageData;
+        return $languageUuid;
     }
 
-    public function getDefaultLanguageUuid(Context $context): array
+    public function getLocaleUuid(string $connectionId, string $localeCode, Context $context): string
+    {
+        // TODO: Implement getLocaleUuid() method.
+    }
+
+    public function getDefaultLanguageUuid(Context $context): LanguageEntity
     {
         if (!empty($this->defaultLanguageData)) {
             return $this->defaultLanguageData;
@@ -329,18 +311,10 @@ class MappingService implements MappingServiceInterface
         $languageUuid = $context->getLanguageId();
         /** @var LanguageEntity $language */
         $language = $this->languageRepository->search(new Criteria([$languageUuid]), $context)->first();
-        $localeUuid = $language->getLocaleId();
-        $localeCode = $language->getLocale()->getCode();
 
-        $this->defaultLanguageData = [
-            'uuid' => $languageUuid,
-            'createData' => [
-                'localeId' => $localeUuid,
-                'localeCode' => $localeCode,
-            ],
-        ];
+        $this->defaultLanguageData = $language;
 
-        return $this->defaultLanguageData;
+        return $language;
     }
 
     public function getCountryUuid(string $oldId, string $iso, string $iso3, string $connectionId, Context $context): ?string

@@ -12,7 +12,7 @@ class Shopware55LocalCurrencyReader extends Shopware55LocalAbstractReader
         $locale = $this->getDefaultShopLocale();
 
         foreach ($currencies as $key => &$currency) {
-            $currency['_locale'] = $locale;
+            $currency['_locale'] = str_replace('_', '-', $locale);
         }
 
         $currencies = $this->mapData($currencies, [], ['currency']);

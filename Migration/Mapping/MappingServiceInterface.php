@@ -3,6 +3,7 @@
 namespace SwagMigrationNext\Migration\Mapping;
 
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Language\LanguageEntity;
 use SwagMigrationNext\Migration\MigrationContextInterface;
 
 interface MappingServiceInterface
@@ -28,9 +29,11 @@ interface MappingServiceInterface
         ?string $newUuid = null
     ): string;
 
-    public function getLanguageUuid(string $connectionId, string $localeCode, Context $context): array;
+    public function getLanguageUuid(string $connectionId, string $localeCode, Context $context): ?string;
 
-    public function getDefaultLanguageUuid(Context $context): array;
+    public function getLocaleUuid(string $connectionId, string $localeCode, Context $context): string;
+
+    public function getDefaultLanguageUuid(Context $context): LanguageEntity;
 
     public function getCountryUuid(string $oldId, string $iso, string $iso3, string $connectionId, Context $context): ?string;
 

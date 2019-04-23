@@ -98,7 +98,7 @@ class Shopware55LocalAbstractReader
     {
         $query = $this->connection->createQueryBuilder();
 
-        return $query->select('REPLACE(locale.locale, "_", "-")')
+        return $query->select('locale.locale')
             ->from('s_core_locales', 'locale')
             ->innerJoin('locale', 's_core_shops', 'shop', 'locale.id = shop.locale_id')
             ->where('shop.default = 1')
