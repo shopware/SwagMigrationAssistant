@@ -203,7 +203,7 @@ class MigrationDataWriterTest extends TestCase
         $this->mappingService = $this->getContainer()->get(MappingService::class);
         $this->migrationDataWriter = $this->getContainer()->get(MigrationDataWriter::class);
         $this->migrationDataFetcher = $this->getMigrationDataFetcher(
-            $this->getContainer()->get(EntityWriter::class),
+            $this->entityWriter,
             $this->mappingService,
             $this->getContainer()->get(MediaFileService::class),
             $this->loggingRepo
@@ -247,7 +247,9 @@ class MigrationDataWriterTest extends TestCase
         );
 
         $this->migrationDataFetcher->fetchData($migrationContext, $context);
+
         $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('entity', 'customer'));
         $customerData = $this->migrationDataRepo->search($criteria, $context);
 
         /** @var SwagMigrationDataEntity $data */
@@ -257,11 +259,11 @@ class MigrationDataWriterTest extends TestCase
         unset($customer['run'], $customer['converted'][$missingProperty]);
 
         $this->migrationDataRepo->update([$customer], $context);
-        $customerTotalBefore = $this->customerRepo->search($criteria, $context)->getTotal();
+        $customerTotalBefore = $this->customerRepo->search(new Criteria(), $context)->getTotal();
         $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext) {
             $this->dummyDataWriter->writeData($migrationContext, $context);
         });
-        $customerTotalAfter = $this->customerRepo->search($criteria, $context)->getTotal();
+        $customerTotalAfter = $this->dbConnection->query('select count(*) from customer')->fetchColumn();
 
         static::assertSame(0, $customerTotalAfter - $customerTotalBefore);
         static::assertCount(1, $this->loggingService->getLoggingArray());
@@ -410,7 +412,9 @@ class MigrationDataWriterTest extends TestCase
             250
         );
 
+        $this->clearCacheBefore();
         $this->migrationDataFetcher->fetchData($migrationContext, $context);
+
         $criteria = new Criteria();
         $productTotalBefore = $this->productRepo->search($criteria, $context)->getTotal();
 
@@ -435,6 +439,8 @@ class MigrationDataWriterTest extends TestCase
         $criteria = new Criteria();
         $productTotalBefore = $this->productRepo->search($criteria, $context)->getTotal();
         $this->migrationDataFetcher->fetchData($migrationContext, $context);
+        $this->clearCacheBefore();
+
         $this->migrationDataWriter->writeData($migrationContext, $context);
         $productTotalAfter = $this->dbConnection->query('select count(*) from product')->fetchColumn();
 
@@ -446,6 +452,7 @@ class MigrationDataWriterTest extends TestCase
             250
         );
         $this->migrationDataFetcher->fetchData($migrationContext, $context);
+        $this->clearCacheBefore();
 
         $productTranslationTotalBefore = $this->getTranslationTotal();
         $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext) {
@@ -578,6 +585,7 @@ class MigrationDataWriterTest extends TestCase
         $this->mappingService->createNewUuid($this->connectionId, SalutationReader::getMappingName(), 'ms', $this->context, [], $salutationUuid);
 
         $this->mappingService->writeMapping($this->context);
+        $this->clearCacheBefore();
     }
 
     private function getTranslationTotal(): int

@@ -33,6 +33,7 @@
             <argument type="service" id="shipping_method.repository"/>
             <argument type="service" id="tax.repository"/>
             <argument type="service" id="number_range.repository" />
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
         </service>
 
         <service id="SwagMigrationNext\Migration\Run\RunService">

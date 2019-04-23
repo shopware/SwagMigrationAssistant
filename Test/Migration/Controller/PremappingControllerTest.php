@@ -216,6 +216,7 @@ class PremappingControllerTest extends TestCase
             'runUuid' => $this->runUuid,
             'premapping' => json_decode((new JsonResponse([$premapping]))->getContent(), true),
         ]);
+        $this->clearCacheBefore();
 
         $this->controller->writePremapping(
             $request,

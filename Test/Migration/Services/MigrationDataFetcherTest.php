@@ -339,6 +339,7 @@ class MigrationDataFetcherTest extends TestCase
             250
         );
 
+        $this->clearCacheBefore();
         $this->migrationDataFetcher->fetchData($migrationContext, $context);
         $result = $this->loggingRepo->search(new Criteria(), $context);
 

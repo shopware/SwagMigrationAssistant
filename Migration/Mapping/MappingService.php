@@ -10,6 +10,8 @@ use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenEvent;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
+use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
 use Shopware\Core\Framework\Language\LanguageDefinition;
 use Shopware\Core\Framework\Language\LanguageEntity;
 use Shopware\Core\Framework\Uuid\Uuid;
@@ -94,6 +96,11 @@ class MappingService implements MappingServiceInterface
 
     protected $defaultLanguageData = [];
 
+    /**
+     * @var EntityWriterInterface
+     */
+    private $entityWriter;
+
     public function __construct(
         EntityRepositoryInterface $migrationMappingRepo,
         EntityRepositoryInterface $localeRepository,
@@ -105,7 +112,8 @@ class MappingService implements MappingServiceInterface
         EntityRepositoryInterface $paymentRepository,
         EntityRepositoryInterface $shippingMethodRepo,
         EntityRepositoryInterface $taxRepo,
-        EntityRepositoryInterface $numberRangeRepo
+        EntityRepositoryInterface $numberRangeRepo,
+        EntityWriterInterface $entityWriter
     ) {
         $this->migrationMappingRepo = $migrationMappingRepo;
         $this->localeRepository = $localeRepository;
@@ -118,6 +126,7 @@ class MappingService implements MappingServiceInterface
         $this->shippingMethodRepo = $shippingMethodRepo;
         $this->taxRepo = $taxRepo;
         $this->numberRangeRepo = $numberRangeRepo;
+        $this->entityWriter = $entityWriter;
     }
 
     public function getUuid(string $connectionId, string $entityName, string $oldId, Context $context): ?string
@@ -303,13 +312,15 @@ class MappingService implements MappingServiceInterface
         $localeUuid = $language->getLocaleId();
         $localeCode = $language->getLocale()->getCode();
 
-        return [
+        $this->defaultLanguageData = [
             'uuid' => $languageUuid,
             'createData' => [
                 'localeId' => $localeUuid,
                 'localeCode' => $localeCode,
             ],
         ];
+
+        return $this->defaultLanguageData;
     }
 
     public function getCountryUuid(string $oldId, string $iso, string $iso3, string $connectionId, Context $context): ?string
@@ -368,7 +379,7 @@ class MappingService implements MappingServiceInterface
             $this->saveMapping(
                 [
                     'connectionId' => $connectionId,
-                    'entity' => CountryDefinition::getEntityName(),
+                    'entity' => CurrencyDefinition::getEntityName(),
                     'oldIdentifier' => $oldShortName,
                     'entityUuid' => $currencyUuid,
                 ]
@@ -401,7 +412,7 @@ class MappingService implements MappingServiceInterface
             $this->saveMapping(
                 [
                     'connectionId' => $connectionId,
-                    'entity' => CountryDefinition::getEntityName(),
+                    'entity' => TaxDefinition::getEntityName(),
                     'oldIdentifier' => (string) $taxRate,
                     'entityUuid' => $taxUuid,
                 ]
@@ -523,7 +534,12 @@ class MappingService implements MappingServiceInterface
             return;
         }
 
-        $this->migrationMappingRepo->create($this->writeArray, $context);
+        $this->entityWriter->insert(
+            SwagMigrationMappingDefinition::class,
+            $this->writeArray,
+            WriteContext::createFromContext($context)
+        );
+
         $this->writeArray = [];
         $this->uuids = [];
     }
