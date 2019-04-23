@@ -24,7 +24,6 @@ use Shopware\Core\Framework\Rule\Container\OrRule;
 use Shopware\Core\System\Tax\TaxDefinition;
 use Shopware\Core\System\Unit\Aggregate\UnitTranslation\UnitTranslationDefinition;
 use Shopware\Core\System\Unit\UnitDefinition;
-use SwagMigrationNext\Migration\Converter\AbstractConverter;
 use SwagMigrationNext\Migration\Converter\ConvertStruct;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
@@ -35,7 +34,7 @@ use SwagMigrationNext\Profile\Shopware55\Logging\Shopware55LogTypes;
 use SwagMigrationNext\Profile\Shopware55\Premapping\ProductManufacturerReader;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
-class ProductConverter extends AbstractConverter
+class ProductConverter extends Shopware55Converter
 {
     public const MAIN_PRODUCT_TYPE = 1;
     public const VARIANT_PRODUCT_TYPE = 2;
@@ -44,11 +43,6 @@ class ProductConverter extends AbstractConverter
      * @var MappingServiceInterface
      */
     private $mappingService;
-
-    /**
-     * @var ConverterHelperService
-     */
-    private $helper;
 
     /**
      * @var Context
@@ -105,12 +99,10 @@ class ProductConverter extends AbstractConverter
 
     public function __construct(
         MappingServiceInterface $mappingService,
-        ConverterHelperService $converterHelperService,
         MediaFileServiceInterface $mediaFileService,
         LoggingServiceInterface $loggingService
     ) {
         $this->mappingService = $mappingService;
-        $this->helper = $converterHelperService;
         $this->mediaFileService = $mediaFileService;
         $this->loggingService = $loggingService;
     }
@@ -145,7 +137,7 @@ class ProductConverter extends AbstractConverter
         $this->mainProductId = $data['detail']['articleID'];
         $this->locale = $data['_locale'];
 
-        $fields = $this->helper->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
+        $fields = $this->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
         if (!empty($fields)) {
             $this->loggingService->addWarning(
                 $this->runId,
@@ -347,35 +339,35 @@ class ProductConverter extends AbstractConverter
         }
         unset($data['attributes']);
 
-        $this->helper->convertValue($converted, 'productNumber', $data['detail'], 'ordernumber', $this->helper::TYPE_STRING);
+        $this->convertValue($converted, 'productNumber', $data['detail'], 'ordernumber', self::TYPE_STRING);
 
-        $this->helper->convertValue($converted, 'active', $data, 'active', $this->helper::TYPE_BOOLEAN);
-        $this->helper->convertValue($converted, 'minDeliveryTime', $data, 'shippingtime', $this->helper::TYPE_INTEGER);
-        $this->helper->convertValue($converted, 'isCloseout', $data, 'laststock', $this->helper::TYPE_BOOLEAN);
-        $this->helper->convertValue($converted, 'markAsTopseller', $data, 'topseller', $this->helper::TYPE_BOOLEAN);
-        $this->helper->convertValue($converted, 'allowNotification', $data, 'notification', $this->helper::TYPE_BOOLEAN);
+        $this->convertValue($converted, 'active', $data, 'active', self::TYPE_BOOLEAN);
+        $this->convertValue($converted, 'minDeliveryTime', $data, 'shippingtime', self::TYPE_INTEGER);
+        $this->convertValue($converted, 'isCloseout', $data, 'laststock', self::TYPE_BOOLEAN);
+        $this->convertValue($converted, 'markAsTopseller', $data, 'topseller', self::TYPE_BOOLEAN);
+        $this->convertValue($converted, 'allowNotification', $data, 'notification', self::TYPE_BOOLEAN);
 
-        $this->helper->convertValue($converted, 'manufacturerNumber', $data['detail'], 'suppliernumber');
-        $this->helper->convertValue($converted, 'active', $data['detail'], 'active', $this->helper::TYPE_BOOLEAN);
-        $this->helper->convertValue($converted, 'sales', $data['detail'], 'sales', $this->helper::TYPE_INTEGER);
-        $this->helper->convertValue($converted, 'stock', $data['detail'], 'instock', $this->helper::TYPE_INTEGER);
-        $this->helper->convertValue($converted, 'minStock', $data['detail'], 'stockmin', $this->helper::TYPE_INTEGER);
-        $this->helper->convertValue($converted, 'isCloseout', $data['detail'], 'laststock', $this->helper::TYPE_BOOLEAN);
-        $this->helper->convertValue($converted, 'position', $data['detail'], 'position', $this->helper::TYPE_INTEGER);
-        $this->helper->convertValue($converted, 'weight', $data['detail'], 'weight', $this->helper::TYPE_FLOAT);
-        $this->helper->convertValue($converted, 'width', $data['detail'], 'width', $this->helper::TYPE_FLOAT);
-        $this->helper->convertValue($converted, 'height', $data['detail'], 'height', $this->helper::TYPE_FLOAT);
-        $this->helper->convertValue($converted, 'length', $data['detail'], 'length', $this->helper::TYPE_FLOAT);
-        $this->helper->convertValue($converted, 'ean', $data['detail'], 'ean');
-        $this->helper->convertValue($converted, 'purchaseSteps', $data['detail'], 'purchasesteps', $this->helper::TYPE_INTEGER);
-        $this->helper->convertValue($converted, 'maxPurchase', $data['detail'], 'maxpurchase', $this->helper::TYPE_INTEGER);
-        $this->helper->convertValue($converted, 'minPurchase', $data['detail'], 'minpurchase', $this->helper::TYPE_INTEGER);
-        $this->helper->convertValue($converted, 'purchaseUnit', $data['detail'], 'purchaseunit', $this->helper::TYPE_FLOAT);
-        $this->helper->convertValue($converted, 'referenceUnit', $data['detail'], 'referenceunit', $this->helper::TYPE_FLOAT);
-        $this->helper->convertValue($converted, 'releaseDate', $data['detail'], 'releasedate', $this->helper::TYPE_DATETIME);
-        $this->helper->convertValue($converted, 'shippingFree', $data['detail'], 'shippingfree', $this->helper::TYPE_BOOLEAN);
-        $this->helper->convertValue($converted, 'minDeliveryTime', $data['detail'], 'shippingtime', $this->helper::TYPE_INTEGER);
-        $this->helper->convertValue($converted, 'purchasePrice', $data['detail'], 'purchaseprice', $this->helper::TYPE_FLOAT);
+        $this->convertValue($converted, 'manufacturerNumber', $data['detail'], 'suppliernumber');
+        $this->convertValue($converted, 'active', $data['detail'], 'active', self::TYPE_BOOLEAN);
+        $this->convertValue($converted, 'sales', $data['detail'], 'sales', self::TYPE_INTEGER);
+        $this->convertValue($converted, 'stock', $data['detail'], 'instock', self::TYPE_INTEGER);
+        $this->convertValue($converted, 'minStock', $data['detail'], 'stockmin', self::TYPE_INTEGER);
+        $this->convertValue($converted, 'isCloseout', $data['detail'], 'laststock', self::TYPE_BOOLEAN);
+        $this->convertValue($converted, 'position', $data['detail'], 'position', self::TYPE_INTEGER);
+        $this->convertValue($converted, 'weight', $data['detail'], 'weight', self::TYPE_FLOAT);
+        $this->convertValue($converted, 'width', $data['detail'], 'width', self::TYPE_FLOAT);
+        $this->convertValue($converted, 'height', $data['detail'], 'height', self::TYPE_FLOAT);
+        $this->convertValue($converted, 'length', $data['detail'], 'length', self::TYPE_FLOAT);
+        $this->convertValue($converted, 'ean', $data['detail'], 'ean');
+        $this->convertValue($converted, 'purchaseSteps', $data['detail'], 'purchasesteps', self::TYPE_INTEGER);
+        $this->convertValue($converted, 'maxPurchase', $data['detail'], 'maxpurchase', self::TYPE_INTEGER);
+        $this->convertValue($converted, 'minPurchase', $data['detail'], 'minpurchase', self::TYPE_INTEGER);
+        $this->convertValue($converted, 'purchaseUnit', $data['detail'], 'purchaseunit', self::TYPE_FLOAT);
+        $this->convertValue($converted, 'referenceUnit', $data['detail'], 'referenceunit', self::TYPE_FLOAT);
+        $this->convertValue($converted, 'releaseDate', $data['detail'], 'releasedate', self::TYPE_DATETIME);
+        $this->convertValue($converted, 'shippingFree', $data['detail'], 'shippingfree', self::TYPE_BOOLEAN);
+        $this->convertValue($converted, 'minDeliveryTime', $data['detail'], 'shippingtime', self::TYPE_INTEGER);
+        $this->convertValue($converted, 'purchasePrice', $data['detail'], 'purchaseprice', self::TYPE_FLOAT);
 
         $this->getOptions($converted, $data);
         $this->getFilters($data);
@@ -464,11 +456,11 @@ class ProductConverter extends AbstractConverter
                 $this->getOptionTranslation($optionElement, $option);
             }
 
-            $this->helper->convertValue($optionElement, 'name', $option, 'name');
-            $this->helper->convertValue($optionElement, 'position', $option, 'position', $this->helper::TYPE_INTEGER);
+            $this->convertValue($optionElement, 'name', $option, 'name');
+            $this->convertValue($optionElement, 'position', $option, 'position', self::TYPE_INTEGER);
 
-            $this->helper->convertValue($optionElement['group'], 'name', $option['group'], 'name');
-            $this->helper->convertValue($optionElement['group'], 'description', $option['group'], 'description');
+            $this->convertValue($optionElement['group'], 'name', $option['group'], 'name');
+            $this->convertValue($optionElement['group'], 'description', $option['group'], 'description');
 
             $options[] = $optionElement;
         }
@@ -542,8 +534,8 @@ class ProductConverter extends AbstractConverter
             $this->context
         );
 
-        $this->helper->convertValue($localeOptionTranslation, 'name', $data, 'name');
-        $this->helper->convertValue($localeOptionTranslation, 'position', $data, 'position', $this->helper::TYPE_INTEGER);
+        $this->convertValue($localeOptionTranslation, 'name', $data, 'name');
+        $this->convertValue($localeOptionTranslation, 'position', $data, 'position', self::TYPE_INTEGER);
 
         $localeGroupTranslation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
@@ -552,8 +544,8 @@ class ProductConverter extends AbstractConverter
             $this->context
         );
 
-        $this->helper->convertValue($localeGroupTranslation, 'name', $data['group'], 'name');
-        $this->helper->convertValue($localeGroupTranslation, 'description', $data['group'], 'description');
+        $this->convertValue($localeGroupTranslation, 'name', $data['group'], 'name');
+        $this->convertValue($localeGroupTranslation, 'description', $data['group'], 'description');
 
         $option['translations'][$languageData['uuid']] = $localeOptionTranslation;
         $option['group']['translations'][$languageData['uuid']] = $localeGroupTranslation;
@@ -569,9 +561,9 @@ class ProductConverter extends AbstractConverter
         );
 
         $this->getManufacturerTranslation($manufacturer, $data);
-        $this->helper->convertValue($manufacturer, 'link', $data, 'link');
-        $this->helper->convertValue($manufacturer, 'name', $data, 'name');
-        $this->helper->convertValue($manufacturer, 'description', $data, 'description');
+        $this->convertValue($manufacturer, 'link', $data, 'link');
+        $this->convertValue($manufacturer, 'name', $data, 'name');
+        $this->convertValue($manufacturer, 'description', $data, 'description');
 
         if (isset($data['media'])) {
             $manufacturer['media'] = $this->getManufacturerMedia($data['media']);
@@ -594,8 +586,8 @@ class ProductConverter extends AbstractConverter
         $localeTranslation = [];
         $localeTranslation['productManufacturerId'] = $manufacturer['id'];
 
-        $this->helper->convertValue($localeTranslation, 'name', $data, 'name');
-        $this->helper->convertValue($localeTranslation, 'description', $data, 'description');
+        $this->convertValue($localeTranslation, 'name', $data, 'name');
+        $this->convertValue($localeTranslation, 'description', $data, 'description');
 
         $localeTranslation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
@@ -648,8 +640,8 @@ class ProductConverter extends AbstractConverter
         );
 
         $this->getUnitTranslation($unit, $data);
-        $this->helper->convertValue($unit, 'shortCode', $data, 'unit');
-        $this->helper->convertValue($unit, 'name', $data, 'description');
+        $this->convertValue($unit, 'shortCode', $data, 'unit');
+        $this->convertValue($unit, 'name', $data, 'description');
 
         return $unit;
     }
@@ -663,8 +655,8 @@ class ProductConverter extends AbstractConverter
 
         $localeTranslation = [];
 
-        $this->helper->convertValue($localeTranslation, 'shortCode', $data, 'unit');
-        $this->helper->convertValue($localeTranslation, 'name', $data, 'description');
+        $this->convertValue($localeTranslation, 'shortCode', $data, 'unit');
+        $this->convertValue($localeTranslation, 'name', $data, 'description');
 
         $localeTranslation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
@@ -713,7 +705,7 @@ class ProductConverter extends AbstractConverter
                 $this->context
             );
             $newProductMedia['productId'] = $converted['id'];
-            $this->helper->convertValue($newProductMedia, 'position', $mediaData, 'position', $this->helper::TYPE_INTEGER);
+            $this->convertValue($newProductMedia, 'position', $mediaData, 'position', self::TYPE_INTEGER);
 
             $newMedia = [];
             $newMedia['id'] = $this->mappingService->createNewUuid(
@@ -738,8 +730,8 @@ class ProductConverter extends AbstractConverter
             );
 
             $this->getMediaTranslation($newMedia, $mediaData);
-            $this->helper->convertValue($newMedia, 'name', $mediaData['media'], 'name');
-            $this->helper->convertValue($newMedia, 'description', $mediaData['media'], 'description');
+            $this->convertValue($newMedia, 'name', $mediaData['media'], 'name');
+            $this->convertValue($newMedia, 'description', $mediaData['media'], 'description');
 
             $newProductMedia['media'] = $newMedia;
             $mediaObjects[] = $newProductMedia;
@@ -762,8 +754,8 @@ class ProductConverter extends AbstractConverter
 
         $localeTranslation = [];
 
-        $this->helper->convertValue($localeTranslation, 'name', $data['media'], 'name');
-        $this->helper->convertValue($localeTranslation, 'description', $data['media'], 'description');
+        $this->convertValue($localeTranslation, 'name', $data['media'], 'name');
+        $this->convertValue($localeTranslation, 'description', $data['media'], 'description');
 
         $localeTranslation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
@@ -935,11 +927,11 @@ class ProductConverter extends AbstractConverter
     private function setGivenProductTranslation(array &$data, array &$converted): void
     {
         $originalData = $data;
-        $this->helper->convertValue($converted, 'name', $data, 'name');
-        $this->helper->convertValue($converted, 'keywords', $data, 'keywords');
-        $this->helper->convertValue($converted, 'description', $data, 'description');
-        $this->helper->convertValue($converted, 'metaTitle', $data, 'metaTitle');
-        $this->helper->convertValue($converted, 'packUnit', $data['detail'], 'packunit');
+        $this->convertValue($converted, 'name', $data, 'name');
+        $this->convertValue($converted, 'keywords', $data, 'keywords');
+        $this->convertValue($converted, 'description', $data, 'description');
+        $this->convertValue($converted, 'metaTitle', $data, 'metaTitle');
+        $this->convertValue($converted, 'packUnit', $data['detail'], 'packunit');
         unset($data['description_long']);
 
         $languageData = $this->mappingService->getDefaultLanguageUuid($this->context);
@@ -950,11 +942,11 @@ class ProductConverter extends AbstractConverter
         $localeTranslation = [];
 
         $localeTranslation['productId'] = $converted['id'];
-        $this->helper->convertValue($localeTranslation, 'name', $originalData, 'name');
-        $this->helper->convertValue($localeTranslation, 'keywords', $originalData, 'keywords');
-        $this->helper->convertValue($localeTranslation, 'description', $originalData, 'description');
-        $this->helper->convertValue($localeTranslation, 'metaTitle', $originalData, 'metaTitle');
-        $this->helper->convertValue($localeTranslation, 'packUnit', $originalData['detail'], 'packunit');
+        $this->convertValue($localeTranslation, 'name', $originalData, 'name');
+        $this->convertValue($localeTranslation, 'keywords', $originalData, 'keywords');
+        $this->convertValue($localeTranslation, 'description', $originalData, 'description');
+        $this->convertValue($localeTranslation, 'metaTitle', $originalData, 'metaTitle');
+        $this->convertValue($localeTranslation, 'packUnit', $originalData['detail'], 'packunit');
 
         $defaultTranslation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,

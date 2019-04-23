@@ -10,7 +10,6 @@ use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\MigrationContextInterface;
 use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
 use SwagMigrationNext\Profile\Shopware55\Converter\CategoryConverter;
-use SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\Converter\ProductConverter;
 use SwagMigrationNext\Profile\Shopware55\Converter\TranslationConverter;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CategoryDataSet;
@@ -67,9 +66,8 @@ class TranslationConverterTest extends TestCase
     protected function setUp(): void
     {
         $this->mappingService = new DummyMappingService();
-        $converterHelperService = new ConverterHelperService();
         $this->loggingService = new DummyLoggingService();
-        $this->translationConverter = new TranslationConverter($this->mappingService, $converterHelperService, $this->loggingService);
+        $this->translationConverter = new TranslationConverter($this->mappingService, $this->loggingService);
 
         $connection = new SwagMigrationConnectionEntity();
         $connection->setId(Uuid::randomHex());
@@ -133,7 +131,7 @@ class TranslationConverterTest extends TestCase
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
         $context = Context::createDefaultContext();
 
-        $productConverter = new ProductConverter($this->mappingService, new ConverterHelperService(), new DummyMediaFileService(), $this->loggingService);
+        $productConverter = new ProductConverter($this->mappingService, new DummyMediaFileService(), $this->loggingService);
         $productConverter->convert($productData[0], $context, $this->productMigrationContext);
 
         $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
@@ -148,7 +146,7 @@ class TranslationConverterTest extends TestCase
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
         $context = Context::createDefaultContext();
 
-        $productConverter = new ProductConverter($this->mappingService, new ConverterHelperService(), new DummyMediaFileService(), $this->loggingService);
+        $productConverter = new ProductConverter($this->mappingService, new DummyMediaFileService(), $this->loggingService);
         $productConvertResult = $productConverter->convert($productData[0], $context, $this->productMigrationContext);
 
         $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
@@ -179,7 +177,7 @@ class TranslationConverterTest extends TestCase
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
         $context = Context::createDefaultContext();
 
-        $productConverter = new ProductConverter($this->mappingService, new ConverterHelperService(), new DummyMediaFileService(), $this->loggingService);
+        $productConverter = new ProductConverter($this->mappingService, new DummyMediaFileService(), $this->loggingService);
         $productConverter->convert($productData[0], $context, $this->productMigrationContext);
 
         $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
@@ -200,7 +198,7 @@ class TranslationConverterTest extends TestCase
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
         $context = Context::createDefaultContext();
 
-        $productConverter = new ProductConverter($this->mappingService, new ConverterHelperService(), new DummyMediaFileService(), $this->loggingService);
+        $productConverter = new ProductConverter($this->mappingService, new DummyMediaFileService(), $this->loggingService);
         $productConvertResult = $productConverter->convert($productData[0], $context, $this->productMigrationContext);
 
         $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
@@ -234,7 +232,7 @@ class TranslationConverterTest extends TestCase
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
         $context = Context::createDefaultContext();
 
-        $productConverter = new ProductConverter($this->mappingService, new ConverterHelperService(), new DummyMediaFileService(), $this->loggingService);
+        $productConverter = new ProductConverter($this->mappingService, new DummyMediaFileService(), $this->loggingService);
         $productConverter->convert($productData[0], $context, $this->productMigrationContext);
 
         $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
@@ -255,7 +253,7 @@ class TranslationConverterTest extends TestCase
         $categoryData = require __DIR__ . '/../../../_fixtures/category_data.php';
         $context = Context::createDefaultContext();
 
-        $categoryConverter = new CategoryConverter($this->mappingService, new ConverterHelperService(), $this->loggingService);
+        $categoryConverter = new CategoryConverter($this->mappingService, $this->loggingService);
         $categoryConvertResult = $categoryConverter->convert($categoryData[1], $context, $this->categoryMigrationContext);
 
         $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
@@ -289,7 +287,7 @@ class TranslationConverterTest extends TestCase
         $categoryData = require __DIR__ . '/../../../_fixtures/category_data.php';
         $context = Context::createDefaultContext();
 
-        $categoryConverter = new CategoryConverter($this->mappingService, new ConverterHelperService(), $this->loggingService);
+        $categoryConverter = new CategoryConverter($this->mappingService, $this->loggingService);
         $categoryConverter->convert($categoryData[1], $context, $this->categoryMigrationContext);
 
         $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';

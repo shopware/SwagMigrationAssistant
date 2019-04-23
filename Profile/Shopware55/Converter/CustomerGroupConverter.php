@@ -5,23 +5,17 @@ namespace SwagMigrationNext\Profile\Shopware55\Converter;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerGroup\CustomerGroupDefinition;
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerGroupTranslation\CustomerGroupTranslationDefinition;
 use Shopware\Core\Framework\Context;
-use SwagMigrationNext\Migration\Converter\AbstractConverter;
 use SwagMigrationNext\Migration\Converter\ConvertStruct;
 use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationNext\Migration\MigrationContextInterface;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
-class CustomerGroupConverter extends AbstractConverter
+class CustomerGroupConverter extends Shopware55Converter
 {
     /**
      * @var MappingServiceInterface
      */
     private $mappingService;
-
-    /**
-     * @var ConverterHelperService
-     */
-    private $helper;
 
     /**
      * @var string
@@ -38,10 +32,9 @@ class CustomerGroupConverter extends AbstractConverter
      */
     private $locale;
 
-    public function __construct(MappingServiceInterface $mappingService, ConverterHelperService $converterHelperService)
+    public function __construct(MappingServiceInterface $mappingService)
     {
         $this->mappingService = $mappingService;
-        $this->helper = $converterHelperService;
     }
 
     public function getSupportedEntityName(): string
@@ -69,13 +62,13 @@ class CustomerGroupConverter extends AbstractConverter
         );
 
         $this->getCustomerGroupTranslation($converted, $data);
-        $this->helper->convertValue($converted, 'displayGross', $data, 'tax', $this->helper::TYPE_BOOLEAN);
-        $this->helper->convertValue($converted, 'inputGross', $data, 'taxinput', $this->helper::TYPE_BOOLEAN);
-        $this->helper->convertValue($converted, 'hasGlobalDiscount', $data, 'mode', $this->helper::TYPE_BOOLEAN);
-        $this->helper->convertValue($converted, 'percentageGlobalDiscount', $data, 'discount', $this->helper::TYPE_FLOAT);
-        $this->helper->convertValue($converted, 'minimumOrderAmount', $data, 'minimumorder', $this->helper::TYPE_FLOAT);
-        $this->helper->convertValue($converted, 'minimumOrderAmountSurcharge', $data, 'minimumordersurcharge', $this->helper::TYPE_FLOAT);
-        $this->helper->convertValue($converted, 'name', $data, 'description');
+        $this->convertValue($converted, 'displayGross', $data, 'tax', self::TYPE_BOOLEAN);
+        $this->convertValue($converted, 'inputGross', $data, 'taxinput', self::TYPE_BOOLEAN);
+        $this->convertValue($converted, 'hasGlobalDiscount', $data, 'mode', self::TYPE_BOOLEAN);
+        $this->convertValue($converted, 'percentageGlobalDiscount', $data, 'discount', self::TYPE_FLOAT);
+        $this->convertValue($converted, 'minimumOrderAmount', $data, 'minimumorder', self::TYPE_FLOAT);
+        $this->convertValue($converted, 'minimumOrderAmountSurcharge', $data, 'minimumordersurcharge', self::TYPE_FLOAT);
+        $this->convertValue($converted, 'name', $data, 'description');
 
         if (isset($data['attributes'])) {
             $converted['attributes'] = $this->getAttributes($data['attributes']);
@@ -99,7 +92,7 @@ class CustomerGroupConverter extends AbstractConverter
         $localeTranslation = [];
         $localeTranslation['customerGroupId'] = $customerGroup['id'];
 
-        $this->helper->convertValue($localeTranslation, 'name', $data, 'description');
+        $this->convertValue($localeTranslation, 'name', $data, 'description');
 
         $localeTranslation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,

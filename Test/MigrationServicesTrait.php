@@ -24,7 +24,6 @@ use SwagMigrationNext\Migration\Profile\ProfileRegistry;
 use SwagMigrationNext\Migration\Service\MigrationDataFetcher;
 use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationNext\Profile\Shopware55\Converter\CategoryConverter;
-use SwagMigrationNext\Profile\Shopware55\Converter\ConverterHelperService;
 use SwagMigrationNext\Profile\Shopware55\Converter\CustomerConverter;
 use SwagMigrationNext\Profile\Shopware55\Converter\MediaConverter;
 use SwagMigrationNext\Profile\Shopware55\Converter\OrderConverter;
@@ -49,22 +48,21 @@ trait MigrationServicesTrait
         $converterRegistry = new ConverterRegistry(
             new DummyCollection(
                 [
-                    new ProductConverter($mappingService, new ConverterHelperService(), $mediaFileService, $loggingService),
-                    new TranslationConverter($mappingService, new ConverterHelperService(), $loggingService),
-                    new CategoryConverter($mappingService, new ConverterHelperService(), $loggingService),
-                    new MediaConverter($mappingService, new ConverterHelperService(), $mediaFileService),
-                    new CustomerConverter($mappingService, new ConverterHelperService(), $loggingService),
-                    new CustomerConverter($mappingService, new ConverterHelperService(), $loggingService),
+                    new ProductConverter($mappingService, $mediaFileService, $loggingService),
+                    new TranslationConverter($mappingService, $loggingService),
+                    new CategoryConverter($mappingService, $loggingService),
+                    new MediaConverter($mappingService, $mediaFileService),
+                    new CustomerConverter($mappingService, $loggingService),
+                    new CustomerConverter($mappingService, $loggingService),
                     new OrderConverter(
                         $mappingService,
-                        new ConverterHelperService(),
                         new TaxCalculator(
                             $priceRounding,
                             new TaxRuleCalculator($priceRounding)
                         ),
                         $loggingService
                     ),
-                    new DummyInvalidCustomerConverter($mappingService, new ConverterHelperService(), $loggingService),
+                    new DummyInvalidCustomerConverter($mappingService, $loggingService),
                 ]
             )
         );

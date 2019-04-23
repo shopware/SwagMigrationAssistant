@@ -2,15 +2,17 @@
 
 namespace SwagMigrationNext\Profile\Shopware55\Converter;
 
-class ConverterHelperService
-{
-    public const TYPE_STRING = 'string';
-    public const TYPE_BOOLEAN = 'bool';
-    public const TYPE_INTEGER = 'int';
-    public const TYPE_FLOAT = 'float';
-    public const TYPE_DATETIME = 'datetime';
+use SwagMigrationNext\Migration\Converter\AbstractConverter;
 
-    public function convertValue(
+abstract class Shopware55Converter extends AbstractConverter
+{
+    protected const TYPE_STRING = 'string';
+    protected const TYPE_BOOLEAN = 'bool';
+    protected const TYPE_INTEGER = 'int';
+    protected const TYPE_FLOAT = 'float';
+    protected const TYPE_DATETIME = 'datetime';
+
+    protected function convertValue(
         array &$newData,
         string $newKey,
         array &$sourceData,
@@ -47,7 +49,7 @@ class ConverterHelperService
      *
      * @return string[]
      */
-    public function checkForEmptyRequiredDataFields(array $rawData, array $requiredDataFieldKeys): array
+    protected function checkForEmptyRequiredDataFields(array $rawData, array $requiredDataFieldKeys): array
     {
         $emptyFields = [];
         foreach ($requiredDataFieldKeys as $requiredDataFieldKey) {
