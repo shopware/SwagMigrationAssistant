@@ -179,7 +179,8 @@
           "customersOrders": "Kunden & Bestellungen",
           "categoriesProducts": "Kategorien & Produkte",
           "media": "Medien",
-          "processMediaFiles": "Medien"
+          "processMediaFiles": "Medien",
+          "numberRanges": "Nummernkreise"
         },
         "entities": {
           "category": "Kategorien:",

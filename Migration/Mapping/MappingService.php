@@ -17,10 +17,13 @@ use Shopware\Core\System\Country\CountryDefinition;
 use Shopware\Core\System\Country\CountryEntity;
 use Shopware\Core\System\Currency\CurrencyEntity;
 use Shopware\Core\System\Locale\LocaleEntity;
+use Shopware\Core\System\NumberRange\NumberRangeDefinition;
+use Shopware\Core\System\NumberRange\NumberRangeEntity;
 use Shopware\Core\System\SalesChannel\Aggregate\SalesChannelType\SalesChannelTypeEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 use Shopware\Core\System\Tax\TaxEntity;
 use SwagMigrationNext\Exception\LocaleNotFoundException;
+use SwagMigrationNext\Migration\MigrationContextInterface;
 
 class MappingService implements MappingServiceInterface
 {
@@ -74,7 +77,14 @@ class MappingService implements MappingServiceInterface
      */
     protected $taxRepo;
 
+    /**
+     * @var EntityRepositoryInterface
+     */
+    protected $numberRangeRepo;
+
     protected $uuids = [];
+
+    protected $migratedSalesChannels = [];
 
     protected $writeArray = [];
 
@@ -88,7 +98,8 @@ class MappingService implements MappingServiceInterface
         EntityRepositoryInterface $salesChannelTypeRepo,
         EntityRepositoryInterface $paymentRepository,
         EntityRepositoryInterface $shippingMethodRepo,
-        EntityRepositoryInterface $taxRepo
+        EntityRepositoryInterface $taxRepo,
+        EntityRepositoryInterface $numberRangeRepo
     ) {
         $this->migrationMappingRepo = $migrationMappingRepo;
         $this->localeRepository = $localeRepository;
@@ -100,6 +111,7 @@ class MappingService implements MappingServiceInterface
         $this->paymentRepository = $paymentRepository;
         $this->shippingMethodRepo = $shippingMethodRepo;
         $this->taxRepo = $taxRepo;
+        $this->numberRangeRepo = $numberRangeRepo;
     }
 
     public function getUuid(string $connectionId, string $entityName, string $oldId, Context $context): ?string
@@ -344,6 +356,62 @@ class MappingService implements MappingServiceInterface
         }
 
         return null;
+    }
+
+    public function getNumberRangeUuid(string $type, string $oldId, MigrationContextInterface $migrationContext, Context $context): ?string
+    {
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter(
+            'number_range.type.technicalName',
+            $type
+        ));
+
+        $result = $this->numberRangeRepo->search($criteria, $context);
+
+        if ($result->getTotal() > 0) {
+            /** @var NumberRangeEntity $numberRange */
+            $numberRange = $result->getEntities()->first();
+
+            $this->saveMapping(
+                [
+                    'connectionId' => $migrationContext->getConnection()->getId(),
+                    'entity' => NumberRangeDefinition::getEntityName(),
+                    'oldIdentifier' => $oldId,
+                    'entityUuid' => $numberRange->getId(),
+                ]
+            );
+
+            return $numberRange->getId();
+        }
+
+        return null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getMigratedSalesChannelUuids(string $connectionId, Context $context): array
+    {
+        if (isset($this->migratedSalesChannels[$connectionId])) {
+            return $this->migratedSalesChannels[$connectionId];
+        }
+
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('connectionId', $connectionId));
+        $criteria->addFilter(new EqualsFilter('entity', SalesChannelDefinition::getEntityName()));
+
+        $result = $this->migrationMappingRepo->search($criteria, $context);
+        /** @var SwagMigrationMappingCollection $saleschannelMappingCollection */
+        $saleschannelMappingCollection = $result->getEntities();
+
+        $uuids = [];
+        foreach ($saleschannelMappingCollection as $swagMigrationMappingEntity) {
+            $uuid = $swagMigrationMappingEntity->getEntityUuid();
+            $uuids[] = $uuid;
+            $this->migratedSalesChannels[$connectionId][] = $uuid;
+        }
+
+        return $uuids;
     }
 
     public function deleteMapping(string $entityUuid, string $connectionId, Context $context): void

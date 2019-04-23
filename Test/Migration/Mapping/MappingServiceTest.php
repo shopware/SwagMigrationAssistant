@@ -76,7 +76,8 @@ class MappingServiceTest extends TestCase
             $this->getContainer()->get('sales_channel_type.repository'),
             $this->getContainer()->get('payment_method.repository'),
             $this->getContainer()->get('shipping_method.repository'),
-            $this->getContainer()->get('tax.repository')
+            $this->getContainer()->get('tax.repository'),
+            $this->getContainer()->get('number_range.repository')
         );
     }
 
@@ -108,7 +109,8 @@ class MappingServiceTest extends TestCase
             $this->getContainer()->get('sales_channel_type.repository'),
             $this->getContainer()->get('payment_method.repository'),
             $this->getContainer()->get('shipping_method.repository'),
-            $this->getContainer()->get('tax.repository')
+            $this->getContainer()->get('tax.repository'),
+            $this->getContainer()->get('number_range.repository')
         );
 
         $uuid2 = $newMappingService->createNewUuid($this->connectionId, 'product', '123', $context);

@@ -90,6 +90,11 @@ class DummyMappingService extends MappingService
         ];
     }
 
+    public function getMigratedSalesChannelUuids(string $connectionId, Context $context): array
+    {
+        return [];
+    }
+
     public function getCountryUuid(string $oldId, string $iso, string $iso3, string $connectionId, Context $context): ?string
     {
         return null;

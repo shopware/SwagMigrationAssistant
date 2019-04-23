@@ -22,6 +22,8 @@ final class DefaultEntities
 
     public const MEDIA = 'media';
 
+    public const NUMBER_RANGE = 'number_range';
+
     public const ORDER = 'order';
 
     public const ORDER_ATTRIBUTE = 'order_attribute';
