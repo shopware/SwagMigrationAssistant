@@ -2,20 +2,22 @@
 
 namespace SwagMigrationNext\Migration\Writer;
 
+use Shopware\Core\Checkout\Customer\CustomerDefinition;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
 use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 
 class CustomerWriter implements WriterInterface
 {
     /**
-     * @var EntityRepositoryInterface
+     * @var EntityWriterInterface
      */
-    private $customerRepository;
+    private $entityWriter;
 
-    public function __construct(EntityRepositoryInterface $customerRepository)
+    public function __construct(EntityWriterInterface $entityWriter)
     {
-        $this->customerRepository = $customerRepository;
+        $this->entityWriter = $entityWriter;
     }
 
     public function supports(): string
@@ -25,6 +27,10 @@ class CustomerWriter implements WriterInterface
 
     public function writeData(array $data, Context $context): void
     {
-        $this->customerRepository->upsert($data, $context);
+        $this->entityWriter->upsert(
+            CustomerDefinition::class,
+            $data,
+            WriteContext::createFromContext($context)
+        );
     }
 }

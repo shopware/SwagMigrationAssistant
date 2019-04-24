@@ -12,7 +12,10 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
+use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
 use Shopware\Core\Framework\ShopwareHttpException;
+use SwagMigrationNext\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationNext\Migration\Data\SwagMigrationDataEntity;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\Media\MediaFileServiceInterface;
@@ -41,7 +44,13 @@ class MigrationDataWriter implements MigrationDataWriterInterface
      */
     private $mediaFileService;
 
+    /**
+     * @var EntityWriterInterface
+     */
+    private $entityWriter;
+
     public function __construct(
+        EntityWriterInterface $entityWriter,
         EntityRepositoryInterface $migrationDataRepo,
         WriterRegistryInterface $writerRegistry,
         MediaFileServiceInterface $mediaFileService,
@@ -51,6 +60,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
         $this->writerRegistry = $writerRegistry;
         $this->mediaFileService = $mediaFileService;
         $this->loggingService = $loggingService;
+        $this->entityWriter = $entityWriter;
     }
 
     public function writeData(MigrationContextInterface $migrationContext, Context $context): void
@@ -108,7 +118,11 @@ class MigrationDataWriter implements MigrationDataWriterInterface
             return;
         } finally {
             // Update written-Flag of the entity in the data table
-            $this->migrationDataRepo->update($updateWrittenData, $context);
+            $this->entityWriter->update(
+                SwagMigrationDataDefinition::class,
+                $updateWrittenData,
+                WriteContext::createFromContext($context)
+            );
         }
 
         // Update written-Flag of the media file in the media file table

@@ -60,6 +60,7 @@ class LoggingServiceTest extends TestCase
         static::assertSame(0, $result->getTotal());
 
         $this->loggingService->saveLogging($this->context);
+        $this->clearCacheBefore();
 
         $result = $this->loggingRepo->search(new Criteria(), $this->context);
         static::assertSame(2, $result->getTotal());
@@ -76,6 +77,7 @@ class LoggingServiceTest extends TestCase
         static::assertSame(0, $result->getTotal());
 
         $this->loggingService->saveLogging($this->context);
+        $this->clearCacheBefore();
 
         $result = $this->loggingRepo->search(new Criteria(), $this->context);
         static::assertSame(2, $result->getTotal());
@@ -92,6 +94,7 @@ class LoggingServiceTest extends TestCase
         static::assertSame(0, $result->getTotal());
 
         $this->loggingService->saveLogging($this->context);
+        $this->clearCacheBefore();
 
         $result = $this->loggingRepo->search(new Criteria(), $this->context);
         static::assertSame(2, $result->getTotal());

@@ -10,6 +10,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationNext\Migration\Mapping\MappingService;
@@ -99,7 +100,7 @@ class MediaDownloadServiceTest extends TestCase
         $this->migrationWriteService = $this->getContainer()->get(MigrationDataWriter::class);
         $this->productRepo = $this->getContainer()->get('product.repository');
         $this->migrationDataFetcher = $this->getMigrationDataFetcher(
-            $this->getContainer()->get('swag_migration_data.repository'),
+            $this->getContainer()->get(EntityWriter::class),
             $this->getContainer()->get(MappingService::class),
             $this->getContainer()->get(MediaFileService::class),
             $this->getContainer()->get('swag_migration_logging.repository')

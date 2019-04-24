@@ -4,29 +4,35 @@ namespace SwagMigrationNext\Migration\Writer;
 
 use Shopware\Core\Content\Property\Aggregate\PropertyGroupOption\PropertyGroupOptionDefinition;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
+use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 
 class PropertyGroupOptionWriter implements WriterInterface
 {
     /**
-     * @var EntityRepositoryInterface
+     * @var EntityWriterInterface
      */
-    private $configuratorGroupOptionRepository;
+    private $entityWriter;
 
-    public function __construct(EntityRepositoryInterface $configuratorGroupOptionRepository)
+    public function __construct(EntityWriterInterface $entityWriter)
     {
-        $this->configuratorGroupOptionRepository = $configuratorGroupOptionRepository;
+        $this->entityWriter = $entityWriter;
     }
 
     public function supports(): string
     {
-        return PropertyGroupOptionDefinition::getEntityName();
+        return DefaultEntities::PROPERTY_GROUP_OPTION;
     }
 
     public function writeData(array $data, Context $context): void
     {
         $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($data) {
-            $this->configuratorGroupOptionRepository->upsert($data, $context);
+            $this->entityWriter->upsert(
+                PropertyGroupOptionDefinition::class,
+                $data,
+                WriteContext::createFromContext($context)
+            );
         });
     }
 }

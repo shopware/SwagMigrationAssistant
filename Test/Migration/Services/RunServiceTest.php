@@ -2,11 +2,14 @@
 
 namespace SwagMigrationNext\Test\Migration\Services;
 
+use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Context\AdminApiSource;
+use Shopware\Core\Framework\DataAbstractionLayer\Dbal\Indexing\IndexerRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
@@ -73,8 +76,15 @@ class RunServiceTest extends TestCase
      */
     private $connection;
 
+    /**
+     * @var Connection
+     */
+    private $dbConnection;
+
     protected function setUp(): void
     {
+        $this->dbConnection = $this->getContainer()->get(Connection::class);
+        $entityWriter = $this->getContainer()->get(EntityWriter::class);
         $this->runRepo = $this->getContainer()->get('swag_migration_run.repository');
         $profileRepo = $this->getContainer()->get('swag_migration_profile.repository');
         $this->dataRepo = $this->getContainer()->get('swag_migration_data.repository');
@@ -94,7 +104,8 @@ class RunServiceTest extends TestCase
             $this->getContainer()->get('payment_method.repository'),
             $this->getContainer()->get('shipping_method.repository'),
             $this->getContainer()->get('tax.repository'),
-            $this->getContainer()->get('number_range.repository')
+            $this->getContainer()->get('number_range.repository'),
+            $entityWriter
         );
         $loggingService = new LoggingService($loggingRepo);
         $mediaFileService = new DummyMediaFileService();
@@ -129,7 +140,7 @@ class RunServiceTest extends TestCase
 
         $profileRegistry = new ProfileRegistry(new DummyCollection([
             new Shopware55Profile(
-                $this->dataRepo,
+                $entityWriter,
                 $converterRegistry,
                 $mediaFileService,
                 $loggingService
@@ -145,7 +156,7 @@ class RunServiceTest extends TestCase
             $this->runRepo,
             $this->connectionRepo,
             $this->getMigrationDataFetcher(
-                $this->dataRepo,
+                $entityWriter,
                 $this->mappingService,
                 $mediaFileService,
                 $loggingRepo
@@ -154,7 +165,8 @@ class RunServiceTest extends TestCase
             new SwagMigrationAccessTokenService($this->runRepo),
             new DataSelectionRegistry([]),
             $this->dataRepo,
-            $mediaFileRepo
+            $mediaFileRepo,
+            $this->getContainer()->get(IndexerRegistry::class)
         );
 
         $this->runServiceWithoutStructure = new RunService(
@@ -169,7 +181,8 @@ class RunServiceTest extends TestCase
             new SwagMigrationAccessTokenService($this->runRepo),
             new DataSelectionRegistry([]),
             $this->dataRepo,
-            $mediaFileRepo
+            $mediaFileRepo,
+            $this->getContainer()->get(IndexerRegistry::class)
         );
     }
 
@@ -207,7 +220,7 @@ class RunServiceTest extends TestCase
             $context
         );
         $afterRunTotal = $this->runRepo->search(new Criteria(), $context)->getTotal();
-        $afterMappingTotal = $this->mappingRepo->search(new Criteria(), $context)->getTotal();
+        $afterMappingTotal = $this->dbConnection->query('select count(*) from swag_migration_mapping')->fetchColumn();
 
         static::assertSame(1, $afterRunTotal - $beforeRunTotal);
         static::assertSame(2, $afterMappingTotal - $beforeMappingTotal);

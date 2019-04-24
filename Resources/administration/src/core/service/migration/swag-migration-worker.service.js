@@ -1,5 +1,4 @@
 import { Application, State } from 'src/core/shopware';
-import CriteriaFactory from 'src/core/factory/criteria.factory';
 import StorageBroadcastService from '../storage-broadcaster.service';
 import { WorkerRequest } from './swag-migration-worker-request.service';
 import { WorkerMediaFiles } from './swag-migration-worker-media-files.service';
@@ -508,45 +507,11 @@ class MigrationWorkerService {
             return Promise.resolve();
         }
 
-        return this._getErrors().then(() => {
-            this._migrationRunService.updateById(this._migrationProcessStore.state.runId, { status: 'finished' });
+        this._migrationProcessStore.setStatusIndex(MIGRATION_STATUS.FINISHED);
+        return this._workerStatusManager.onStatusChanged(this._migrationProcessStore.state.runId).then(() => {
             this._resetProgress();
-            this._migrationProcessStore.setStatusIndex(MIGRATION_STATUS.FINISHED);
 
             return Promise.resolve();
-        });
-    }
-
-    /**
-     * Update the local errors array with the errors from the backend.
-     *
-     * @returns {Promise}
-     * @private
-     */
-    _getErrors() {
-        return new Promise((resolve) => {
-            const criteria = CriteriaFactory.equals('runId', this._migrationProcessStore.state.runId);
-            const params = {
-                criteria: criteria,
-                limit: 500
-            };
-
-            this._migrationLoggingService.getList(params).then((response) => {
-                const logs = response.data;
-                logs.forEach((log) => {
-                    if (log.type === 'warning' || log.type === 'error') {
-                        this._addError({
-                            code: log.logEntry.code,
-                            detail: log.logEntry.description,
-                            description: log.logEntry.description,
-                            details: log.logEntry.details,
-                            internalError: false
-                        });
-                    }
-                });
-
-                resolve();
-            });
         });
     }
 

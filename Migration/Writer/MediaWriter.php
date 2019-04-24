@@ -2,20 +2,22 @@
 
 namespace SwagMigrationNext\Migration\Writer;
 
+use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
 use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 
 class MediaWriter implements WriterInterface
 {
     /**
-     * @var EntityRepositoryInterface
+     * @var EntityWriterInterface
      */
-    private $mediaRepository;
+    private $entityWriter;
 
-    public function __construct(EntityRepositoryInterface $mediaRepository)
+    public function __construct(EntityWriterInterface $entityWriter)
     {
-        $this->mediaRepository = $mediaRepository;
+        $this->entityWriter = $entityWriter;
     }
 
     public function supports(): string
@@ -25,6 +27,10 @@ class MediaWriter implements WriterInterface
 
     public function writeData(array $data, Context $context): void
     {
-        $this->mediaRepository->upsert($data, $context);
+        $this->entityWriter->upsert(
+            MediaDefinition::class,
+            $data,
+            WriteContext::createFromContext($context)
+        );
     }
 }

@@ -12,6 +12,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
@@ -149,7 +150,7 @@ class MigrationDataFetcherTest extends TestCase
     {
         $this->mappingService = $this->getContainer()->get(MappingService::class);
         $this->migrationDataFetcher = $this->getMigrationDataFetcher(
-            $this->migrationDataRepo,
+            $this->getContainer()->get(EntityWriter::class),
             $this->mappingService,
             $this->getContainer()->get(MediaFileService::class),
             $this->loggingRepo
@@ -159,7 +160,7 @@ class MigrationDataFetcherTest extends TestCase
         $this->dummyDataFetcher = new MigrationDataFetcher(
             new ProfileRegistry(new DummyCollection([
                 new Shopware55Profile(
-                    $this->migrationDataRepo,
+                    $this->getContainer()->get(EntityWriter::class),
                     new ConverterRegistry([
                         $this->getContainer()->get(ProductConverter::class),
                     ]),
@@ -338,6 +339,7 @@ class MigrationDataFetcherTest extends TestCase
             250
         );
 
+        $this->clearCacheBefore();
         $this->migrationDataFetcher->fetchData($migrationContext, $context);
         $result = $this->loggingRepo->search(new Criteria(), $context);
 

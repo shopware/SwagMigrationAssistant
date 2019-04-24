@@ -5,9 +5,11 @@ namespace SwagMigrationNext\Test\Migration\Controller;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Context\AdminApiSource;
+use Shopware\Core\Framework\DataAbstractionLayer\Dbal\Indexing\IndexerRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationNext\Controller\StatusController;
@@ -127,7 +129,7 @@ class StatusControllerTest extends TestCase
             $this->runRepo
         );
         $dataFetcher = $this->getMigrationDataFetcher(
-            $dataRepo,
+            $this->getContainer()->get(EntityWriter::class),
             $mappingService,
             $this->getContainer()->get(MediaFileService::class),
             $this->getContainer()->get('swag_migration_logging.repository')
@@ -146,7 +148,8 @@ class StatusControllerTest extends TestCase
                     new CustomerAndOrderDataSelection(),
                 ]),
                 $dataRepo,
-                $mediaFileRepo
+                $mediaFileRepo,
+                $this->getContainer()->get(IndexerRegistry::class)
             ),
             new DataSelectionRegistry([
                 new ProductCategoryTranslationDataSelection(),

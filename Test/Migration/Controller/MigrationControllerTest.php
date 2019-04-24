@@ -4,7 +4,9 @@ namespace SwagMigrationNext\Test\Migration\Controller;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\Dbal\Indexing\IndexerRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationNext\Controller\MigrationController;
@@ -133,7 +135,7 @@ class MigrationControllerTest extends TestCase
             $this->runRepo
         );
         $dataFetcher = $this->getMigrationDataFetcher(
-            $dataRepo,
+            $this->getContainer()->get(EntityWriter::class),
             $mappingService,
             $this->getContainer()->get(MediaFileService::class),
             $this->getContainer()->get('swag_migration_logging.repository')
@@ -158,7 +160,8 @@ class MigrationControllerTest extends TestCase
                 $accessTokenService,
                 new DataSelectionRegistry([]),
                 $dataRepo,
-                $mediaFileRepo
+                $mediaFileRepo,
+                $this->getContainer()->get(IndexerRegistry::class)
             ),
             $this->runRepo,
             $this->dataSetRegistry

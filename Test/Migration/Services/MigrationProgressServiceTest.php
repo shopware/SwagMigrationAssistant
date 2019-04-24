@@ -7,9 +7,11 @@ use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\Dbal\Indexing\IndexerRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
@@ -174,7 +176,7 @@ class MigrationProgressServiceTest extends TestCase
         );
 
         $this->migrationDataFetcher = $this->getMigrationDataFetcher(
-            $this->dataRepo,
+            $this->getContainer()->get(EntityWriter::class),
             $this->getContainer()->get(MappingService::class),
             $this->getContainer()->get(MediaFileService::class),
             $this->loggingRepo
@@ -195,7 +197,8 @@ class MigrationProgressServiceTest extends TestCase
                 $this->getContainer()->get(SwagMigrationAccessTokenService::class),
                 new DataSelectionRegistry([]),
                 $this->dataRepo,
-                $this->mediaFileRepo
+                $this->mediaFileRepo,
+                $this->getContainer()->get(IndexerRegistry::class)
             )
         );
     }

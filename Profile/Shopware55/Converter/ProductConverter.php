@@ -612,7 +612,7 @@ class ProductConverter extends Shopware55Converter
     private function getTax(array $taxData): array
     {
         $taxRate = (float) $taxData['tax'];
-        $taxUuid = $this->mappingService->getTaxUuid($taxRate, $this->context);
+        $taxUuid = $this->mappingService->getTaxUuid($this->connectionId, $taxRate, $this->context);
 
         if (empty($taxUuid)) {
             $taxUuid = $this->mappingService->createNewUuid(

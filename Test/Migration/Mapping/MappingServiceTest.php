@@ -6,6 +6,8 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenEvent;
+use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
+use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\Language\LanguageDefinition;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
@@ -40,9 +42,15 @@ class MappingServiceTest extends TestCase
      */
     private $connectionId;
 
+    /**
+     * @var EntityWriterInterface
+     */
+    private $entityWriter;
+
     protected function setUp(): void
     {
         $context = Context::createDefaultContext();
+        $this->entityWriter = $this->getContainer()->get(EntityWriter::class);
         $connectionRepo = $this->getContainer()->get('swag_migration_connection.repository');
         $this->localeRepo = $this->getContainer()->get('locale.repository');
         $this->profileUuidService = new MigrationProfileUuidService($this->getContainer()->get('swag_migration_profile.repository'));
@@ -77,7 +85,8 @@ class MappingServiceTest extends TestCase
             $this->getContainer()->get('payment_method.repository'),
             $this->getContainer()->get('shipping_method.repository'),
             $this->getContainer()->get('tax.repository'),
-            $this->getContainer()->get('number_range.repository')
+            $this->getContainer()->get('number_range.repository'),
+            $this->entityWriter
         );
     }
 
@@ -98,6 +107,7 @@ class MappingServiceTest extends TestCase
         $uuid1 = $this->mappingService->createNewUuid($this->connectionId, 'product', '123', $context);
 
         $this->mappingService->writeMapping($context);
+        $this->clearCacheBefore();
 
         $newMappingService = new MappingService(
             $this->getContainer()->get('swag_migration_mapping.repository'),
@@ -110,7 +120,8 @@ class MappingServiceTest extends TestCase
             $this->getContainer()->get('payment_method.repository'),
             $this->getContainer()->get('shipping_method.repository'),
             $this->getContainer()->get('tax.repository'),
-            $this->getContainer()->get('number_range.repository')
+            $this->getContainer()->get('number_range.repository'),
+            $this->entityWriter
         );
 
         $uuid2 = $newMappingService->createNewUuid($this->connectionId, 'product', '123', $context);
@@ -194,6 +205,8 @@ class MappingServiceTest extends TestCase
 
         $languageUuid = $this->mappingService->createNewUuid($this->connectionId, LanguageDefinition::getEntityName(), $localeCode, $context);
         $this->mappingService->writeMapping($context);
+        $this->clearCacheBefore();
+
         $uuid = $this->mappingService->getUuid($this->connectionId, LanguageDefinition::getEntityName(), $localeCode, $context);
         static::assertSame($languageUuid, $uuid);
 

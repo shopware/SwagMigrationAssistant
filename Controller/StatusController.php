@@ -213,4 +213,20 @@ class StatusController extends AbstractController
 
         return new Response();
     }
+
+    /**
+     * @Route("/api/v{version}/_action/migration/finish-migration", name="api.admin.migration.finish-migration", methods={"POST"})
+     */
+    public function finishMigration(Request $request, Context $context): Response
+    {
+        $runUuid = $request->request->get('runUuid');
+
+        if ($runUuid === null) {
+            throw new MigrationContextPropertyMissingException('runUuid');
+        }
+
+        $this->runService->finishMigration($context, $runUuid);
+
+        return new Response();
+    }
 }

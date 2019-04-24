@@ -10,17 +10,21 @@ use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenEvent;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
+use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
 use Shopware\Core\Framework\Language\LanguageDefinition;
 use Shopware\Core\Framework\Language\LanguageEntity;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\Country\CountryDefinition;
 use Shopware\Core\System\Country\CountryEntity;
+use Shopware\Core\System\Currency\CurrencyDefinition;
 use Shopware\Core\System\Currency\CurrencyEntity;
 use Shopware\Core\System\Locale\LocaleEntity;
 use Shopware\Core\System\NumberRange\NumberRangeDefinition;
 use Shopware\Core\System\NumberRange\NumberRangeEntity;
 use Shopware\Core\System\SalesChannel\Aggregate\SalesChannelType\SalesChannelTypeEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
+use Shopware\Core\System\Tax\TaxDefinition;
 use Shopware\Core\System\Tax\TaxEntity;
 use SwagMigrationNext\Exception\LocaleNotFoundException;
 use SwagMigrationNext\Migration\MigrationContextInterface;
@@ -88,6 +92,15 @@ class MappingService implements MappingServiceInterface
 
     protected $writeArray = [];
 
+    protected $languageData = [];
+
+    protected $defaultLanguageData = [];
+
+    /**
+     * @var EntityWriterInterface
+     */
+    private $entityWriter;
+
     public function __construct(
         EntityRepositoryInterface $migrationMappingRepo,
         EntityRepositoryInterface $localeRepository,
@@ -99,7 +112,8 @@ class MappingService implements MappingServiceInterface
         EntityRepositoryInterface $paymentRepository,
         EntityRepositoryInterface $shippingMethodRepo,
         EntityRepositoryInterface $taxRepo,
-        EntityRepositoryInterface $numberRangeRepo
+        EntityRepositoryInterface $numberRangeRepo,
+        EntityWriterInterface $entityWriter
     ) {
         $this->migrationMappingRepo = $migrationMappingRepo;
         $this->localeRepository = $localeRepository;
@@ -112,6 +126,7 @@ class MappingService implements MappingServiceInterface
         $this->shippingMethodRepo = $shippingMethodRepo;
         $this->taxRepo = $taxRepo;
         $this->numberRangeRepo = $numberRangeRepo;
+        $this->entityWriter = $entityWriter;
     }
 
     public function getUuid(string $connectionId, string $entityName, string $oldId, Context $context): ?string
@@ -238,55 +253,74 @@ class MappingService implements MappingServiceInterface
 
     public function getLanguageUuid(string $connectionId, string $localeCode, Context $context): array
     {
+        if (isset($this->languageData[$localeCode])) {
+            return $this->languageData[$localeCode];
+        }
+
         $languageUuid = $this->searchLanguageInMapping($localeCode, $context);
         $localeUuid = $this->searchLocale($localeCode, $context);
 
         if ($languageUuid !== null) {
-            return [
+            $languageData = [
                 'uuid' => $languageUuid,
                 'createData' => [
                     'localeId' => $localeUuid,
                     'localeCode' => $localeCode,
                 ],
             ];
+            $this->languageData[$localeCode] = $languageData;
+
+            return $languageData;
         }
 
         $languageUuid = $this->searchLanguageByLocale($localeUuid, $context);
 
         if ($languageUuid !== null) {
-            return [
+            $languageData = [
                 'uuid' => $languageUuid,
                 'createData' => [
                     'localeId' => $localeUuid,
                     'localeCode' => $localeCode,
                 ],
             ];
+            $this->languageData[$localeCode] = $languageData;
+
+            return $languageData;
         }
 
-        return [
+        $newLanguageData = [
             'uuid' => $this->createNewUuid($connectionId, LanguageDefinition::getEntityName(), $localeCode, $context),
             'createData' => [
                 'localeId' => $localeUuid,
                 'localeCode' => $localeCode,
             ],
         ];
+        $this->languageData[$localeCode] = $newLanguageData;
+
+        return $newLanguageData;
     }
 
     public function getDefaultLanguageUuid(Context $context): array
     {
+        if (!empty($this->defaultLanguageData)) {
+            return $this->defaultLanguageData;
+        }
+
         $languageUuid = $context->getLanguageId();
         /** @var LanguageEntity $language */
         $language = $this->languageRepository->search(new Criteria([$languageUuid]), $context)->first();
         $localeUuid = $language->getLocaleId();
         $localeCode = $language->getLocale()->getCode();
 
-        return [
+        $this->defaultLanguageData = [
             'uuid' => $languageUuid,
             'createData' => [
                 'localeId' => $localeUuid,
                 'localeCode' => $localeCode,
             ],
         ];
+
+        return $this->defaultLanguageData;
     }
 
     public function getCountryUuid(string $oldId, string $iso, string $iso3, string $connectionId, Context $context): ?string
@@ -324,8 +358,14 @@ class MappingService implements MappingServiceInterface
         return null;
     }
 
-    public function getCurrencyUuid(string $oldShortName, Context $context): ?string
+    public function getCurrencyUuid(string $connectionId, string $oldShortName, Context $context): ?string
     {
+        $currencyUuid = $this->getUuid($connectionId, CurrencyDefinition::getEntityName(), $oldShortName, $context);
+
+        if ($currencyUuid !== null) {
+            return $currencyUuid;
+        }
+
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('shortName', $oldShortName));
         $criteria->setLimit(1);
@@ -334,15 +374,31 @@ class MappingService implements MappingServiceInterface
         if ($result->getTotal() > 0) {
             /** @var CurrencyEntity $element */
             $element = $result->getEntities()->first();
+            $currencyUuid = $element->getId();
 
-            return $element->getId();
+            $this->saveMapping(
+                [
+                    'connectionId' => $connectionId,
+                    'entity' => CurrencyDefinition::getEntityName(),
+                    'oldIdentifier' => $oldShortName,
+                    'entityUuid' => $currencyUuid,
+                ]
+            );
+
+            return $currencyUuid;
         }
 
         return null;
     }
 
-    public function getTaxUuid(float $taxRate, Context $context): ?string
+    public function getTaxUuid(string $connectionId, float $taxRate, Context $context): ?string
     {
+        $taxUuid = $this->getUuid($connectionId, TaxDefinition::getEntityName(), (string) $taxRate, $context);
+
+        if ($taxUuid !== null) {
+            return $taxUuid;
+        }
+
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('taxRate', $taxRate));
         $criteria->setLimit(1);
@@ -351,8 +407,18 @@ class MappingService implements MappingServiceInterface
         if ($result->getTotal() > 0) {
             /** @var TaxEntity $tax */
             $tax = $result->getEntities()->first();
+            $taxUuid = $tax->getId();
 
-            return $tax->getId();
+            $this->saveMapping(
+                [
+                    'connectionId' => $connectionId,
+                    'entity' => TaxDefinition::getEntityName(),
+                    'oldIdentifier' => (string) $taxRate,
+                    'entityUuid' => $taxUuid,
+                ]
+            );
+
+            return $taxUuid;
         }
 
         return null;
@@ -468,7 +534,12 @@ class MappingService implements MappingServiceInterface
             return;
         }
 
-        $this->migrationMappingRepo->create($this->writeArray, $context);
+        $this->entityWriter->insert(
+            SwagMigrationMappingDefinition::class,
+            $this->writeArray,
+            WriteContext::createFromContext($context)
+        );
+
         $this->writeArray = [];
         $this->uuids = [];
     }

@@ -12,6 +12,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\System\Salutation\SalutationEntity;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateEntity;
 use Shopware\Core\System\StateMachine\StateMachineEntity;
@@ -38,7 +39,7 @@ use SwagMigrationNext\Test\Mock\Profile\Dummy\DummyInvalidCustomerConverter;
 trait MigrationServicesTrait
 {
     protected function getMigrationDataFetcher(
-        EntityRepositoryInterface $migrationDataRepo,
+        EntityWriterInterface $entityWriter,
         MappingService $mappingService,
         MediaFileServiceInterface $mediaFileService,
         EntityRepositoryInterface $loggingRepo
@@ -69,7 +70,7 @@ trait MigrationServicesTrait
 
         $profileRegistry = new ProfileRegistry(new DummyCollection([
             new Shopware55Profile(
-                $migrationDataRepo,
+                $entityWriter,
                 $converterRegistry,
                 $mediaFileService,
                 $loggingService

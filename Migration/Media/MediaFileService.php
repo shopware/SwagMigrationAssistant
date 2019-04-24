@@ -11,6 +11,8 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
 use SwagMigrationNext\Migration\MigrationContextInterface;
 
 class MediaFileService implements MediaFileServiceInterface
@@ -24,9 +26,17 @@ class MediaFileService implements MediaFileServiceInterface
      */
     private $mediaFileRepo;
 
-    public function __construct(EntityRepositoryInterface $mediaFileRepo)
-    {
+    /**
+     * @var EntityWriterInterface
+     */
+    private $entityWriter;
+
+    public function __construct(
+        EntityRepositoryInterface $mediaFileRepo,
+        EntityWriterInterface $entityWriter
+    ) {
         $this->mediaFileRepo = $mediaFileRepo;
+        $this->entityWriter = $entityWriter;
     }
 
     public function writeMediaFile(Context $context): void
@@ -37,7 +47,12 @@ class MediaFileService implements MediaFileServiceInterface
             return;
         }
 
-        $this->mediaFileRepo->create($this->writeArray, $context);
+        $this->entityWriter->insert(
+            SwagMigrationMediaFileDefinition::class,
+            $this->writeArray,
+            WriteContext::createFromContext($context)
+        );
+
         $this->writeArray = [];
         $this->uuids = [];
     }
@@ -166,6 +181,10 @@ class MediaFileService implements MediaFileServiceInterface
             return;
         }
 
-        $this->mediaFileRepo->update($updateWrittenMediaFiles, $context);
+        $this->entityWriter->update(
+            SwagMigrationMediaFileDefinition::class,
+            $updateWrittenMediaFiles,
+            WriteContext::createFromContext($context)
+        );
     }
 }

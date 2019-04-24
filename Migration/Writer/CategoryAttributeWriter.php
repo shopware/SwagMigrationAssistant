@@ -2,20 +2,22 @@
 
 namespace SwagMigrationNext\Migration\Writer;
 
+use Shopware\Core\Framework\Attribute\Aggregate\AttributeSet\AttributeSetDefinition;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
 use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 
 class CategoryAttributeWriter implements WriterInterface
 {
     /**
-     * @var EntityRepositoryInterface
+     * @var EntityWriterInterface
      */
-    private $attributeSetRepository;
+    private $entityWriter;
 
-    public function __construct(EntityRepositoryInterface $attributeSetRepository)
+    public function __construct(EntityWriterInterface $entityWriter)
     {
-        $this->attributeSetRepository = $attributeSetRepository;
+        $this->entityWriter = $entityWriter;
     }
 
     public function supports(): string
@@ -25,6 +27,10 @@ class CategoryAttributeWriter implements WriterInterface
 
     public function writeData(array $data, Context $context): void
     {
-        $this->attributeSetRepository->upsert($data, $context);
+        $this->entityWriter->upsert(
+            AttributeSetDefinition::class,
+            $data,
+            WriteContext::createFromContext($context)
+        );
     }
 }

@@ -12,6 +12,7 @@
         <service id="SwagMigrationNext\Migration\Media\MediaFileService"
                  class="SwagMigrationNext\Migration\Media\MediaFileService">
             <argument type="service" id="swag_migration_media_file.repository"/>
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
         </service>
 
         <service id="SwagMigrationNext\Migration\Converter\ConverterRegistry"
@@ -32,6 +33,7 @@
             <argument type="service" id="shipping_method.repository"/>
             <argument type="service" id="tax.repository"/>
             <argument type="service" id="number_range.repository" />
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
         </service>
 
         <service id="SwagMigrationNext\Migration\Run\RunService">
@@ -43,6 +45,7 @@
             <argument type="service" id="SwagMigrationNext\Migration\DataSelection\DataSelectionRegistry"/>
             <argument type="service" id="swag_migration_data.repository"/>
             <argument type="service" id="swag_migration_media_file.repository"/>
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Dbal\Indexing\IndexerRegistry"/>
         </service>
 
         <service id="SwagMigrationNext\Migration\Service\SwagMigrationAccessTokenService">
@@ -57,9 +60,8 @@
             <argument type="service" id="SwagMigrationNext\Migration\Logging\LoggingService"/>
         </service>
 
-        <service id="SwagMigrationNext\Migration\Service\MigrationDataWriter"
-                 class="SwagMigrationNext\Migration\Service\MigrationDataWriter"
-                 public="true">
+        <service id="SwagMigrationNext\Migration\Service\MigrationDataWriter" public="true">
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
             <argument type="service" id="swag_migration_data.repository"/>
             <argument type="service" id="SwagMigrationNext\Migration\Writer\WriterRegistry"/>
             <argument type="service" id="SwagMigrationNext\Migration\Media\MediaFileService"/>
