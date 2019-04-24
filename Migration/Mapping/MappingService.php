@@ -2,6 +2,7 @@
 
 namespace SwagMigrationNext\Migration\Mapping;
 
+use Shopware\Core\Content\Rule\RuleEntity;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Api\Util\AccessKeyHelper;
 use Shopware\Core\Framework\Context;
@@ -97,9 +98,19 @@ class MappingService implements MappingServiceInterface
     protected $defaultLanguageData = [];
 
     /**
+     * @var EntityRepositoryInterface
+     */
+    private $ruleRepo;
+
+    /**
      * @var EntityWriterInterface
      */
     private $entityWriter;
+
+    /**
+     * @var string
+     */
+    private $defaultAvailabilityRule;
 
     public function __construct(
         EntityRepositoryInterface $migrationMappingRepo,
@@ -113,6 +124,7 @@ class MappingService implements MappingServiceInterface
         EntityRepositoryInterface $shippingMethodRepo,
         EntityRepositoryInterface $taxRepo,
         EntityRepositoryInterface $numberRangeRepo,
+        EntityRepositoryInterface $ruleRepo,
         EntityWriterInterface $entityWriter
     ) {
         $this->migrationMappingRepo = $migrationMappingRepo;
@@ -126,6 +138,7 @@ class MappingService implements MappingServiceInterface
         $this->shippingMethodRepo = $shippingMethodRepo;
         $this->taxRepo = $taxRepo;
         $this->numberRangeRepo = $numberRangeRepo;
+        $this->ruleRepo = $ruleRepo;
         $this->entityWriter = $entityWriter;
     }
 
@@ -475,6 +488,26 @@ class MappingService implements MappingServiceInterface
             $uuid = $swagMigrationMappingEntity->getEntityUuid();
             $uuids[] = $uuid;
             $this->migratedSalesChannels[$connectionId][] = $uuid;
+        }
+
+        return $uuids;
+    }
+
+    //Todo: Remove if we migrate every data of the shipping method
+    public function getDefaultAvailabilityRule(Context $context): ?string
+    {
+        if (isset($this->defaultAvailabilityRule)) {
+            return $this->defaultAvailabilityRule;
+        }
+
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('name', 'Cart >= 0'));
+        /** @var RuleEntity $result */
+        $result = $this->ruleRepo->search($criteria, $context)->first();
+
+        $uuids = null;
+        if ($result !== null) {
+            $uuids = $result->getId();
         }
 
         return $uuids;

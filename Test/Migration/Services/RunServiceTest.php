@@ -105,6 +105,7 @@ class RunServiceTest extends TestCase
             $this->getContainer()->get('shipping_method.repository'),
             $this->getContainer()->get('tax.repository'),
             $this->getContainer()->get('number_range.repository'),
+            $this->getContainer()->get('rule.repository'),
             $entityWriter
         );
         $loggingService = new LoggingService($loggingRepo);

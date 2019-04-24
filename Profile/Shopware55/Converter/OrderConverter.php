@@ -814,6 +814,24 @@ class OrderConverter extends Shopware55Converter
             );
         }
 
+        $defaultAvailabilityRuleUuid = $this->mappingService->getDefaultAvailabilityRule($this->context);
+        if ($defaultAvailabilityRuleUuid !== null) {
+            $shippingMethod['availabilityRuleId'] = $defaultAvailabilityRuleUuid;
+        } else {
+            $this->loggingService->addWarning(
+                $this->runId,
+                Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
+                'Empty necessary data fields',
+                'Order-Entity could not converted cause of empty necessary field(s): availability_rule_id.',
+                [
+                    'id' => $this->oldId,
+                    'entity' => OrderDefinition::getEntityName(),
+                    'fields' => ['availability_rule_id'],
+                ],
+                1
+            );
+        }
+
         return $shippingMethod;
     }
 

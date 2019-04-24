@@ -115,6 +115,11 @@ class DummyMappingService extends MappingService
         return $this->uuids;
     }
 
+    public function getDefaultAvailabilityRule(Context $context): string
+    {
+        return '';
+    }
+
     public function getDefaultLanguageUuid(Context $context): array
     {
         return [

@@ -320,6 +320,7 @@ class MigrationDataWriterTest extends TestCase
 
         $context->scope(Context::USER_SCOPE, function (Context $context) use ($userMigrationContext) {
             $this->migrationDataWriter->writeData($userMigrationContext, $context);
+            $this->clearCacheBefore();
         });
 
         // Add orders
@@ -338,6 +339,7 @@ class MigrationDataWriterTest extends TestCase
         // Get data before writing
         $this->migrationDataFetcher->fetchData($migrationContext, $context);
         $this->clearCacheBefore();
+
         $orderTotalBefore = $this->orderRepo->search($criteria, $context)->getTotal();
         $currencyTotalBefore = $this->currencyRepo->search($criteria, $context)->getTotal();
         /** @var CurrencyEntity $usdResultBefore */
@@ -349,6 +351,7 @@ class MigrationDataWriterTest extends TestCase
             $this->migrationDataWriter->writeData($migrationContext, $context);
             $this->clearCacheBefore();
         });
+
         $orderTotalAfter = $this->orderRepo->search($criteria, $context)->getTotal();
         $currencyTotalAfter = $this->currencyRepo->search($criteria, $context)->getTotal();
         /** @var CurrencyEntity $usdResultAfter */
