@@ -11,8 +11,7 @@ Component.register('swag-migration-history-detail', {
             runId: '',
             migrationRun: {},
             showModal: true,
-            isLoading: true,
-            errorList: []
+            isLoading: true
         };
     },
 
@@ -44,14 +43,7 @@ Component.register('swag-migration-history-detail', {
             }
 
             this.migrationRun = response.items[0];
-            this.migrationRun.getAssociation('logs').getList({
-                limit: 100
-            }).then(() => {
-                this.buildErrorList();
-                this.isLoading = false;
-            }).catch(() => {
-                this.isLoading = false;
-            });
+            this.isLoading = false;
         }).catch(() => {
             this.isLoading = false;
             this.onCloseModal();
@@ -59,18 +51,6 @@ Component.register('swag-migration-history-detail', {
     },
 
     methods: {
-        buildErrorList() {
-            this.errorList = [];
-            this.migrationRun.logs.forEach((log) => {
-                if (log.type === 'warning' || log.type === 'error') {
-                    this.errorList.push({
-                        snippetName: `swag-migration.index.error.${log.logEntry.code}`,
-                        details: log.logEntry.details
-                    });
-                }
-            });
-        },
-
         onCloseModal() {
             this.showModal = false;
             this.$nextTick(() => {

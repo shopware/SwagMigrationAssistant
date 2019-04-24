@@ -1,0 +1,54 @@
+{% block swag_migration_history_detail_errors %}
+    <div class="swag-migration-history-detail-errors">
+        <div v-if="!isLoading">
+            {% block swag_migration_history_detail_errors_grid %}
+                <sw-data-grid v-if="migrationErrors.length > 0"
+                              identifier="swag-migration-history-detail-errors"
+                              :dataSource="migrationErrors"
+                              :columns="columns"
+                              :showSelection="false"
+                              :showSettings="false"
+                              :allowColumnEdit="false"
+                              :showActions="false"
+                              :sortBy="sortBy"
+                              :sortDirection="sortDirection"
+                              @column-sort="onSortColumn">
+                    {% block swag_migration_history_detail_errors_grid_type %}
+                        <template slot="column-type" slot-scope="{ item }">
+                            {{ $t(`swag-migration.index.errorTypes.${item.type}`) }}
+                        </template>
+                    {% endblock %}
+
+                    {% block swag_migration_history_detail_errors_grid_description %}
+                        <template slot="column-logEntry.code" slot-scope="{ item }">
+                            {{ $t(getErrorDescriptionSnippet(item), item.logEntry.details) }}
+                        </template>
+                    {% endblock %}
+
+                    {% block swag_migration_history_detail_errors_grid_pagination %}
+                        <template slot="pagination">
+                            <sw-pagination :page="page"
+                                           :limit="limit"
+                                           :total="total"
+                                           :steps="[5,10]"
+                                           :total-visible="7"
+                                           @page-change="onPageChange">
+                            </sw-pagination>
+                        </template>
+                    {% endblock %}
+                </sw-data-grid>
+            {% endblock %}
+            {% block swag_migration_history_detail_errors_noError %}
+                <p v-if="migrationErrors.length === 0"
+                   class="swag-migration-history-detail-errors__no-error">
+                    {{ $t('swag-migration.index.noErrorsOccurred') }}
+                </p>
+            {% endblock %}
+        </div>
+        {% block swag_migration_history_detail_errors_noError__loader %}
+            <div v-if="isLoading"
+                 class="swag-migration-history-detail-errors__loading-placeholder"></div>
+            <sw-loader v-if="isLoading"></sw-loader>
+        {% endblock %}
+    </div>
+{% endblock %}
