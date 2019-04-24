@@ -216,7 +216,8 @@
           "transaction_state": "Zahlungsstatus",
           "payment_method": "Zahlungsarten",
           "manufacturer": "Hersteller",
-          "salutation": "Anrede"
+          "salutation": "Anrede",
+          "delivery_time": "Lieferzeit"
         }
       },
       "loadingScreenCard": {

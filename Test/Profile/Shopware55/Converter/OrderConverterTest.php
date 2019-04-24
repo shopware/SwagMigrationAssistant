@@ -21,6 +21,7 @@ use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\OrderDataSet;
 use SwagMigrationNext\Profile\Shopware55\Exception\AssociationEntityRequiredMissingException;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationNext\Profile\Shopware55\Logging\Shopware55LogTypes;
+use SwagMigrationNext\Profile\Shopware55\Premapping\DeliveryTimeReader;
 use SwagMigrationNext\Profile\Shopware55\Premapping\OrderStateReader;
 use SwagMigrationNext\Profile\Shopware55\Premapping\PaymentMethodReader;
 use SwagMigrationNext\Profile\Shopware55\Premapping\SalutationReader;
@@ -128,6 +129,8 @@ class OrderConverterTest extends TestCase
 
         $mappingService->createNewUuid($connectionId, SalutationReader::getMappingName(), 'mr', $context, [], Uuid::randomHex());
         $mappingService->createNewUuid($connectionId, SalutationReader::getMappingName(), 'ms', $context, [], Uuid::randomHex());
+
+        $mappingService->createNewUuid($connectionId, DeliveryTimeReader::getMappingName(), 'default_delivery_time', $context, [], Uuid::randomHex());
     }
 
     public function testSupports(): void

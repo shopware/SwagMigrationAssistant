@@ -215,7 +215,8 @@
           "transaction_state": "Transaction states",
           "payment_method": "Payment methods",
           "manufacturer": "Manufacturer",
-          "salutation": "Salutation"
+          "salutation": "Salutation",
+          "delivery_time": "Delivery time"
         }
       },
       "loadingScreenCard": {

@@ -33,6 +33,7 @@ use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\OrderDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\TranslationDataSet;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
+use SwagMigrationNext\Profile\Shopware55\Premapping\DeliveryTimeReader;
 use SwagMigrationNext\Profile\Shopware55\Premapping\OrderStateReader;
 use SwagMigrationNext\Profile\Shopware55\Premapping\PaymentMethodReader;
 use SwagMigrationNext\Profile\Shopware55\Premapping\SalutationReader;
@@ -188,6 +189,11 @@ class MigrationDataWriterTest extends TestCase
      */
     private $dbConnection;
 
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $deliveryTimeRepo;
+
     protected function setUp(): void
     {
         $this->context = Context::createDefaultContext();
@@ -300,10 +306,6 @@ class MigrationDataWriterTest extends TestCase
 
     public function testWriteOrderData(): void
     {
-        static::markTestIncomplete(
-            'This test is currently failing based on delivery time requirement.'
-        );
-
         $context = Context::createDefaultContext();
         // Add users, who have ordered
         $userMigrationContext = new MigrationContext(
@@ -314,6 +316,8 @@ class MigrationDataWriterTest extends TestCase
             250
         );
         $this->migrationDataFetcher->fetchData($userMigrationContext, $context);
+        $this->clearCacheBefore();
+
         $context->scope(Context::USER_SCOPE, function (Context $context) use ($userMigrationContext) {
             $this->migrationDataWriter->writeData($userMigrationContext, $context);
         });
@@ -333,6 +337,7 @@ class MigrationDataWriterTest extends TestCase
 
         // Get data before writing
         $this->migrationDataFetcher->fetchData($migrationContext, $context);
+        $this->clearCacheBefore();
         $orderTotalBefore = $this->orderRepo->search($criteria, $context)->getTotal();
         $currencyTotalBefore = $this->currencyRepo->search($criteria, $context)->getTotal();
         /** @var CurrencyEntity $usdResultBefore */
@@ -342,6 +347,7 @@ class MigrationDataWriterTest extends TestCase
         // Get data after writing
         $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext) {
             $this->migrationDataWriter->writeData($migrationContext, $context);
+            $this->clearCacheBefore();
         });
         $orderTotalAfter = $this->orderRepo->search($criteria, $context)->getTotal();
         $currencyTotalAfter = $this->currencyRepo->search($criteria, $context)->getTotal();
@@ -503,6 +509,7 @@ class MigrationDataWriterTest extends TestCase
         $this->productTranslationRepo = $this->getContainer()->get('product_translation.repository');
         $this->currencyRepo = $this->getContainer()->get('currency.repository');
         $this->salutationRepo = $this->getContainer()->get('salutation.repository');
+        $this->deliveryTimeRepo = $this->getContainer()->get('delivery_time.repository');
     }
 
     private function initConnectionAndRun(): void
@@ -583,6 +590,9 @@ class MigrationDataWriterTest extends TestCase
 
         $this->mappingService->createNewUuid($this->connectionId, SalutationReader::getMappingName(), 'mr', $this->context, [], $salutationUuid);
         $this->mappingService->createNewUuid($this->connectionId, SalutationReader::getMappingName(), 'ms', $this->context, [], $salutationUuid);
+
+        $deliveryTimeUuid = $this->getFirstDeliveryTimeUuid($this->deliveryTimeRepo, $this->context);
+        $this->mappingService->createNewUuid($this->connectionId, DeliveryTimeReader::getMappingName(), 'default_delivery_time', $this->context, [], $deliveryTimeUuid);
 
         $this->mappingService->writeMapping($this->context);
         $this->clearCacheBefore();

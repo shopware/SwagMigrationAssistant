@@ -8,10 +8,12 @@ use Shopware\Core\Checkout\Cart\Tax\TaxRuleCalculator;
 use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryStates;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStates;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
+use Shopware\Core\Content\DeliveryTime\DeliveryTimeEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\System\Salutation\SalutationEntity;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateEntity;
@@ -266,6 +268,23 @@ trait MigrationServicesTrait
             $salutation = $result->getEntities()->first();
 
             return $salutation->getId();
+        }
+
+        return null;
+    }
+
+    private function getFirstDeliveryTimeUuid(EntityRepositoryInterface $deliveryTimeRepo, Context $context): ?string
+    {
+        $criteria = new Criteria();
+        $criteria->addSorting(new FieldSorting('name'));
+        $criteria->setLimit(1);
+        $result = $deliveryTimeRepo->search($criteria, $context);
+
+        if ($result->getTotal() > 0) {
+            /** @var DeliveryTimeEntity $deliveryTime */
+            $deliveryTime = $result->getEntities()->first();
+
+            return $deliveryTime->getId();
         }
 
         return null;

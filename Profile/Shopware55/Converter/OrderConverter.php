@@ -19,6 +19,7 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionDefi
 use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Checkout\Shipping\Aggregate\ShippingMethodTranslation\ShippingMethodTranslationDefinition;
 use Shopware\Core\Checkout\Shipping\ShippingMethodDefinition;
+use Shopware\Core\Content\DeliveryTime\DeliveryTimeDefinition;
 use Shopware\Core\Content\Product\Cart\ProductCollector;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Defaults;
@@ -788,6 +789,30 @@ class OrderConverter extends Shopware55Converter
         $this->convertValue($shippingMethod, 'name', $originalData, 'name');
         $this->convertValue($shippingMethod, 'description', $originalData, 'description');
         $this->convertValue($shippingMethod, 'comment', $originalData, 'comment');
+
+        $defaultDeliveryTimeUuid = $this->mappingService->getUuid(
+            $this->connectionId,
+            DeliveryTimeDefinition::getEntityName(),
+            'default_delivery_time',
+            $this->context
+        );
+
+        if ($defaultDeliveryTimeUuid !== null) {
+            $shippingMethod['deliveryTimeId'] = $defaultDeliveryTimeUuid;
+        } else {
+            $this->loggingService->addWarning(
+                $this->runId,
+                Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
+                'Empty necessary data fields',
+                'Order-Entity could not converted cause of empty necessary field(s): delivery_time.',
+                [
+                    'id' => $this->oldId,
+                    'entity' => OrderDefinition::getEntityName(),
+                    'fields' => ['delivery_time'],
+                ],
+                1
+            );
+        }
 
         return $shippingMethod;
     }
