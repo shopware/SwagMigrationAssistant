@@ -35,12 +35,38 @@ class Shopware55LocalProductReader extends Shopware55LocalAbstractReader
         return $this->cleanupResultSet($resultSet);
     }
 
+    public function getFilterOptionValues(): array
+    {
+        $variantIds = $this->productMapping->keys();
+
+        $query = $this->connection->createQueryBuilder();
+
+        $query->from('s_filter_articles', 'filter');
+        $query->leftJoin('filter', 's_articles_details', 'details', 'details.articleID = filter.articleID');
+        $query->addSelect('details.id');
+
+        $query->leftJoin('filter', 's_filter_values', 'filter_values', 'filter.valueID = filter_values.id');
+        $this->addTableSelection($query, 's_filter_values', 'filter_values');
+
+        $query->leftJoin('filter_values', 's_filter_options', 'filter_values_option', 'filter_values_option.id = filter_values.optionID');
+        $this->addTableSelection($query, 's_filter_options', 'filter_values_option');
+
+        $query->where('details.id IN (:ids)');
+
+        $query->setParameter('ids', $variantIds, Connection::PARAM_INT_ARRAY);
+
+        $fetchedFilterOptionValues = $query->execute()->fetchAll(\PDO::FETCH_GROUP);
+
+        return $this->mapData($fetchedFilterOptionValues, [], ['filter', 'values']);
+    }
+
     protected function appendAssociatedData(array $products): array
     {
         $categories = $this->getCategories();
         $prices = $this->getPrices();
         $media = $this->getMedia();
         $options = $this->getConfiguratorOptions();
+        $filterValues = $this->getFilterOptionValues();
 
         // represents the main language of the migrated shop
         $locale = $this->getDefaultShopLocale();
@@ -59,6 +85,9 @@ class Shopware55LocalProductReader extends Shopware55LocalAbstractReader
             }
             if (isset($options[$product['detail']['id']])) {
                 $product['configuratorOptions'] = $options[$product['detail']['id']];
+            }
+            if (isset($filterValues[$product['detail']['id']])) {
+                $product['filters'] = $filterValues[$product['detail']['id']];
             }
         }
         unset(
