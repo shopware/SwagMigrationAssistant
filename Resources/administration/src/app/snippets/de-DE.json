@@ -49,7 +49,7 @@
           "title": "Migration - Verbindung vorbereiten",
           "shopware55Api": {
             "contentTitle": "Migration erfordert eine Plugin-Installation",
-            "contentInformation": "Für die Migration wird die Installation des kostenlosen Plugins „Shopware Migration Assistant“ benötigt. Dieses findest Du in Deinem Shop-Backend (unter Shopware 5: Plugin Manager > Erweiterungen > Migrationstools). Bitte installiere und aktiviere das Plugin.",
+            "contentInformation": "Für die Migration wird die Installation des kostenlosen Plugins „Shopware Migrationsassistant“ benötigt. Dieses findest Du in Deinem Shop-Backend (unter Shopware 5: Plugin Manager > Erweiterungen > Migrationstools). Bitte installiere und aktiviere das Plugin.",
             "pluginLink": "Mehr Informationen zum Plugin"
           }
         },
@@ -225,7 +225,7 @@
           "premapping": "Datencheck",
           "fetchData": "Lesen der Daten",
           "writeData": "Schreiben der Daten",
-          "processMedia": "Medien Download",
+          "processMedia": "Medien-Download",
           "finish": "Fertig"
         },
         "status": {

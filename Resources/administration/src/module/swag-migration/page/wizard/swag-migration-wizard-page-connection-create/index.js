@@ -26,6 +26,12 @@ Component.register('swag-migration-wizard-page-connection-create', {
         };
     },
 
+    metaInfo() {
+        return {
+            title: this.$createTitle()
+        };
+    },
+
     computed: {
         isReady() {
             return (

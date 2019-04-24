@@ -18,6 +18,12 @@ Component.register('swag-migration-wizard-page-credentials', {
         }
     },
 
+    metaInfo() {
+        return {
+            title: this.$createTitle()
+        };
+    },
+
     computed: {
         componentIsLoaded() {
             return Component.getComponentRegistry().has(this.credentialsComponent);

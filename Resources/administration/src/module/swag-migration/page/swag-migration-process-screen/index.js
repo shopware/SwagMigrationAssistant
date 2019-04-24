@@ -46,6 +46,12 @@ Component.register('swag-migration-process-screen', {
         };
     },
 
+    metaInfo() {
+        return {
+            title: this.$createTitle()
+        };
+    },
+
     computed: {
         /**
          * @returns {string}

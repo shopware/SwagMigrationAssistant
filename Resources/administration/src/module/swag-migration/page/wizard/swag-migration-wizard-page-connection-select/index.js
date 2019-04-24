@@ -17,6 +17,12 @@ Component.register('swag-migration-wizard-page-connection-select', {
         };
     },
 
+    metaInfo() {
+        return {
+            title: this.$createTitle()
+        };
+    },
+
     computed: {
         migrationConnectionStore() {
             return State.getStore('swag_migration_connection');

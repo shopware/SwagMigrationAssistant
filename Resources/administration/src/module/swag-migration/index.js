@@ -8,7 +8,8 @@ import './profile';
 
 Module.register('swag-migration', {
     type: 'plugin',
-    name: 'swag-migration.general.mainMenuItemGeneral',
+    name: 'swag-migration',
+    title: 'swag-migration.general.mainMenuItemGeneral',
     description: 'swag-migration.general.descriptionTextModule',
     version: '1.0.0',
     targetVersion: '1.0.0',

@@ -70,6 +70,12 @@ Component.register('swag-migration-wizard', {
         };
     },
 
+    metaInfo() {
+        return {
+            title: this.$createTitle()
+        };
+    },
+
     computed: {
         modalSize() {
             if ([
