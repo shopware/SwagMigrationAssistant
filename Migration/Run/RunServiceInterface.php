@@ -27,4 +27,6 @@ interface RunServiceInterface
     public function calculateCurrentTotals(string $runId, bool $isWritten, Context $context): array;
 
     public function updateConnectionCredentials(Context $context, string $connectionUuid, array $credentialFields): void;
+
+    public function finishMigration(Context $context, string $runUuid): void;
 }

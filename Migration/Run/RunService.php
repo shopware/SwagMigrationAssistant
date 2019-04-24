@@ -3,6 +3,7 @@
 namespace SwagMigrationNext\Migration\Run;
 
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\Dbal\Indexing\IndexerInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\CountAggregation;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\ValueCountAggregation;
@@ -66,6 +67,11 @@ class RunService implements RunServiceInterface
      */
     private $mediaFileRepository;
 
+    /**
+     * @var IndexerInterface
+     */
+    private $indexer;
+
     public function __construct(
         EntityRepositoryInterface $migrationRunRepo,
         EntityRepositoryInterface $connectionRepo,
@@ -74,7 +80,8 @@ class RunService implements RunServiceInterface
         SwagMigrationAccessTokenService $accessTokenService,
         DataSelectionRegistryInterface $dataSelectionRegistry,
         EntityRepositoryInterface $migrationDataRepository,
-        EntityRepositoryInterface $mediaFileRepository
+        EntityRepositoryInterface $mediaFileRepository,
+        IndexerInterface $indexer
     ) {
         $this->migrationRunRepo = $migrationRunRepo;
         $this->connectionRepo = $connectionRepo;
@@ -84,6 +91,7 @@ class RunService implements RunServiceInterface
         $this->dataSelectionRegistry = $dataSelectionRegistry;
         $this->migrationDataRepository = $migrationDataRepository;
         $this->mediaFileRepository = $mediaFileRepository;
+        $this->indexer = $indexer;
     }
 
     public function takeoverMigration(string $runUuid, Context $context): string
@@ -229,6 +237,18 @@ class RunService implements RunServiceInterface
                 ],
             ], $context);
         });
+    }
+
+    public function finishMigration(Context $context, string $runUuid): void
+    {
+        $this->indexer->index(new \DateTime());
+
+        $this->migrationRunRepo->update([
+            [
+                'id' => $runUuid,
+                'status' => 'finished',
+            ],
+        ], $context);
     }
 
     private function isMigrationRunningWithGivenConnection(Context $context, string $connectionUuid): bool

@@ -6,6 +6,7 @@ use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Context\AdminApiSource;
+use Shopware\Core\Framework\DataAbstractionLayer\Dbal\Indexing\IndexerRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
@@ -164,7 +165,8 @@ class RunServiceTest extends TestCase
             new SwagMigrationAccessTokenService($this->runRepo),
             new DataSelectionRegistry([]),
             $this->dataRepo,
-            $mediaFileRepo
+            $mediaFileRepo,
+            $this->getContainer()->get(IndexerRegistry::class)
         );
 
         $this->runServiceWithoutStructure = new RunService(
@@ -179,7 +181,8 @@ class RunServiceTest extends TestCase
             new SwagMigrationAccessTokenService($this->runRepo),
             new DataSelectionRegistry([]),
             $this->dataRepo,
-            $mediaFileRepo
+            $mediaFileRepo,
+            $this->getContainer()->get(IndexerRegistry::class)
         );
     }
 

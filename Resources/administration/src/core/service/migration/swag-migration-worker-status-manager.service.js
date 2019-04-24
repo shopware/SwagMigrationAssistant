@@ -57,6 +57,10 @@ export class WorkerStatusManager {
             return this.beforeProcessMedia(runId);
         }
 
+        if (this._migrationProcessStore.state.statusIndex === MIGRATION_STATUS.FINISHED) {
+            return this.onFinish(runId);
+        }
+
         return Promise.resolve();
     }
 
@@ -96,6 +100,30 @@ export class WorkerStatusManager {
             while (requestRetry) {
                 await this._migrationService.updateMediaFilesProgress(runId).then((response) => {
                     this._migrationProcessStore.setEntityGroups(response);
+                    requestRetry = false;
+                }).catch(() => {
+                    requestFailedCount += 1;
+                });
+
+                if (requestFailedCount >= 3) {
+                    requestRetry = false;
+                    reject();
+                    return;
+                }
+            }
+            /* eslint-enable no-await-in-loop, no-loop-func */
+
+            resolve();
+        });
+    }
+
+    onFinish(runId) {
+        return new Promise(async (resolve, reject) => {
+            let requestRetry = true;
+            let requestFailedCount = 0;
+            /* eslint-disable no-await-in-loop, no-loop-func */
+            while (requestRetry) {
+                await this._migrationService.finishMigration(runId).then(() => {
                     requestRetry = false;
                 }).catch(() => {
                     requestFailedCount += 1;

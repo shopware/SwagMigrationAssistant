@@ -4,6 +4,7 @@ namespace SwagMigrationNext\Test\Migration\Controller;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\Dbal\Indexing\IndexerRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
@@ -159,7 +160,8 @@ class MigrationControllerTest extends TestCase
                 $accessTokenService,
                 new DataSelectionRegistry([]),
                 $dataRepo,
-                $mediaFileRepo
+                $mediaFileRepo,
+                $this->getContainer()->get(IndexerRegistry::class)
             ),
             $this->runRepo,
             $this->dataSetRegistry

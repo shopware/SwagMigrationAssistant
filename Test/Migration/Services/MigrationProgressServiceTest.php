@@ -7,6 +7,7 @@ use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\Dbal\Indexing\IndexerRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
@@ -196,7 +197,8 @@ class MigrationProgressServiceTest extends TestCase
                 $this->getContainer()->get(SwagMigrationAccessTokenService::class),
                 new DataSelectionRegistry([]),
                 $this->dataRepo,
-                $this->mediaFileRepo
+                $this->mediaFileRepo,
+                $this->getContainer()->get(IndexerRegistry::class)
             )
         );
     }
