@@ -16,14 +16,13 @@ use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\DataSelection\DataSelectionCollection;
 use SwagMigrationNext\Migration\DataSelection\DataSelectionRegistryInterface;
 use SwagMigrationNext\Migration\DataSelection\DataSelectionStruct;
+use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 use SwagMigrationNext\Migration\EnvironmentInformation;
 use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationNext\Migration\Service\ProgressState;
 use SwagMigrationNext\Migration\Service\SwagMigrationAccessTokenService;
-use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\MediaDataSet;
-use SwagMigrationNext\Profile\Shopware55\DataSelection\MediaDataSelection;
 
 class RunService implements RunServiceInterface
 {
@@ -372,7 +371,7 @@ class RunService implements RunServiceInterface
     private function calculateProcessMediaFileProgress(): RunProgress
     {
         $entityProgress = new EntityProgress();
-        $entityProgress->setEntityName(MediaDataSet::getEntity());
+        $entityProgress->setEntityName(DefaultEntities::MEDIA);
         $entityProgress->setCurrentCount(0);
         $entityProgress->setTotal(0);
 
@@ -381,7 +380,7 @@ class RunService implements RunServiceInterface
         $runProgress->setEntities([$entityProgress]);
         $runProgress->setCurrentCount(0);
         $runProgress->setTotal(0);
-        $runProgress->setSnippet((new MediaDataSelection())->getData()->getSnippet());
+        $runProgress->setSnippet('swag-migration.index.selectDataCard.dataSelection.media');
 
         return $runProgress;
     }
