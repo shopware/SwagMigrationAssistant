@@ -235,13 +235,6 @@ class OrderConverter extends Shopware55Converter
         $converted['currency'] = $this->getCurrency($data['paymentcurrency']);
         unset($data['currency'], $data['currencyFactor'], $data['paymentcurrency']);
 
-        $paymentMethodUuid = $this->getPaymentMethod($data);
-        if ($paymentMethodUuid === null) {
-            return new ConvertStruct(null, $data);
-        }
-        $converted['paymentMethodId'] = $paymentMethodUuid;
-        unset($data['payment'], $data['paymentID']);
-
         $this->convertValue($converted, 'orderDate', $data, 'ordertime', self::TYPE_DATETIME);
 
         $converted['stateId'] = $this->mappingService->getUuid(
@@ -364,6 +357,8 @@ class OrderConverter extends Shopware55Converter
             $data['deviceType'],
             $data['is_proportional_calculation'],
             $data['changed'],
+            $data['payment'],
+            $data['paymentID'],
 
             // TODO check how to handle these
             $data['language'], // TODO use for sales channel information?
@@ -475,10 +470,16 @@ class OrderConverter extends Shopware55Converter
             $this->context
         );
 
+        $paymentMethodUuid = $this->getPaymentMethod($data);
+
+        if ($paymentMethodUuid === null) {
+            return;
+        }
+
         $transactions = [
             [
                 'id' => $id,
-                'paymentMethodId' => $converted['paymentMethodId'],
+                'paymentMethodId' => $paymentMethodUuid,
                 'stateId' => $stateId,
                 'amount' => new CalculatedPrice(
                     $cartPrice->getTotalPrice(),
@@ -502,11 +503,11 @@ class OrderConverter extends Shopware55Converter
         );
 
         if ($paymentMethodUuid === null) {
-            $this->loggingService->addWarning(
+            $this->loggingService->addInfo(
                 $this->runId,
                 Shopware55LogTypes::UNKNOWN_PAYMENT_METHOD,
                 'Cannot find payment method',
-                'Order-Entity could not converted cause of unknown payment method',
+                'Order-Transaction-Entity could not converted cause of unknown payment method',
                 [
                     'id' => $this->oldId,
                     'entity' => OrderDefinition::getEntityName(),
