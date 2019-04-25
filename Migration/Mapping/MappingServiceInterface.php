@@ -54,4 +54,6 @@ interface MappingServiceInterface
     public function writeMapping(Context $context): void;
 
     public function createSalesChannelMapping(string $connectionId, array $structure, Context $context): void;
+
+    public function getDefaultAvailabilityRule(Context $context): ?string;
 }

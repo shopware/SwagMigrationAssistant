@@ -86,6 +86,7 @@ class MappingServiceTest extends TestCase
             $this->getContainer()->get('shipping_method.repository'),
             $this->getContainer()->get('tax.repository'),
             $this->getContainer()->get('number_range.repository'),
+            $this->getContainer()->get('rule.repository'),
             $this->entityWriter
         );
     }
@@ -121,6 +122,7 @@ class MappingServiceTest extends TestCase
             $this->getContainer()->get('shipping_method.repository'),
             $this->getContainer()->get('tax.repository'),
             $this->getContainer()->get('number_range.repository'),
+            $this->getContainer()->get('rule.repository'),
             $this->entityWriter
         );
 
