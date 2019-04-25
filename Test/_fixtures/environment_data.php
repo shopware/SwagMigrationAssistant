@@ -2,7 +2,7 @@
 
 return [
     'environmentInformation' => [
-        'defaultShopLanguage' => 'de_DE',
+        'defaultShopLanguage' => 'de-DE',
         'shopwareVersion' => '___VERSION___',
         'versionText' => '___VERSION_TEXT___',
         'revision' => '___REVISION___',
@@ -30,7 +30,7 @@ return [
                 'active' => '1',
                 'locale' => [
                     'id' => '1',
-                    'locale' => 'de_DE',
+                    'locale' => 'de-DE',
                     'language' => 'Deutsch',
                     'territory' => 'Deutschland',
                 ],
@@ -58,7 +58,7 @@ return [
                         'active' => '1',
                         'locale' => [
                             'id' => '2',
-                            'locale' => 'en_GB',
+                            'locale' => 'en-GB',
                             'language' => 'Englisch',
                             'territory' => 'Vereinigtes Königreich',
                         ],

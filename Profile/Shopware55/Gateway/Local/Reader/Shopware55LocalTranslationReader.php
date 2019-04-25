@@ -28,7 +28,7 @@ class Shopware55LocalTranslationReader extends Shopware55LocalAbstractReader
 
         $query->leftJoin('translation', 's_core_shops', 'shop', 'shop.id = translation.objectlanguage');
         $query->leftJoin('shop', 's_core_locales', 'locale', 'locale.id = shop.locale_id');
-        $query->addSelect('locale.locale as _locale');
+        $query->addSelect('REPLACE(locale.locale, "_", "-") as _locale');
 
         $query->leftJoin('translation', 's_articles_supplier', 'manufacturer', 'translation.objecttype = "supplier" AND translation.objectkey = manufacturer.id');
         $query->addSelect('manufacturer.name');

@@ -4,7 +4,7 @@ return [
     0 => [
         'name' => 'categorydate1',
         'type' => 'date',
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'configuration' => [
             'id' => '25',
             'table_name' => 's_categories_attributes',
@@ -26,7 +26,7 @@ return [
     1 => [
         'name' => 'checkbox1',
         'type' => 'integer',
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'configuration' => [
             'id' => '13',
             'table_name' => 's_articles_attributes',
@@ -48,7 +48,7 @@ return [
     2 => [
         'name' => 'datetime1',
         'type' => 'datetime',
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'configuration' => [
             'id' => '19',
             'table_name' => 's_articles_attributes',
@@ -70,7 +70,7 @@ return [
     3 => [
         'name' => 'attr6',
         'type' => 'text',
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'configuration' => null,
     ],
 ];

@@ -259,7 +259,7 @@ return [
             'symbol_position' => '32',
             'position' => '0',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'details' => [
             0 => [
                 'id' => '228',
@@ -636,7 +636,7 @@ return [
             'symbol_position' => '32',
             'position' => '0',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'details' => [
             0 => [
                 'id' => '235',

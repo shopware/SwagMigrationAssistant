@@ -36,7 +36,7 @@ return [
         'customernumber' => '20005',
         'login_token' => '410a6677-85af-4292-8450-af4b2b29bdbc.1',
         'changed' => '2018-10-08 15:48:25',
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
     ],
     1 => [
         'id' => '1',
@@ -113,7 +113,7 @@ return [
         ],
         'customerlanguage' => [
             'id' => '1',
-            'locale' => 'de_DE',
+            'locale' => 'de-DE',
             'language' => 'Deutsch',
             'territory' => 'Deutschland',
         ],
@@ -139,7 +139,7 @@ return [
             'default' => '1',
             'active' => '1',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'addresses' => [
             0 => [
                 'id' => '1',
@@ -333,7 +333,7 @@ return [
         ],
         'customerlanguage' => [
             'id' => '1',
-            'locale' => 'de_DE',
+            'locale' => 'de-DE',
             'language' => 'Deutsch',
             'territory' => 'Deutschland',
         ],
@@ -359,7 +359,7 @@ return [
             'default' => '1',
             'active' => '1',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'addresses' => [
             0 => [
                 'id' => '1',
@@ -551,7 +551,7 @@ return [
         ],
         'customerlanguage' => [
             'id' => '1',
-            'locale' => 'de_DE',
+            'locale' => 'de-DE',
             'language' => 'Deutsch',
             'territory' => 'Deutschland',
         ],
@@ -577,6 +577,6 @@ return [
             'default' => '1',
             'active' => '1',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
     ],
 ];

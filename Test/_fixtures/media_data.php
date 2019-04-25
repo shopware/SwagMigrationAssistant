@@ -31,7 +31,7 @@ return [
                 'thumbnail_high_dpi_quality' => '60',
             ],
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'uri' => 'http://sw55.internal/media/image/e9/43/a3/brot.jpg',
     ],
     1 => [
@@ -64,7 +64,7 @@ return [
                 'thumbnail_high_dpi_quality' => '60',
             ],
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'uri' => 'http://sw55.internal/media/image/ec/01/5b/download.jpg',
     ],
     2 => [
@@ -97,7 +97,7 @@ return [
                 'thumbnail_high_dpi_quality' => '60',
             ],
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'uri' => 'http://sw55.internal/media/image/e4/b8/06/fisch.jpg',
     ],
     3 => [
@@ -130,7 +130,7 @@ return [
                 'thumbnail_high_dpi_quality' => '60',
             ],
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'uri' => 'http://sw55.internal/media/image/02/ba/72/handschuh.jpg',
     ],
     4 => [
@@ -163,7 +163,7 @@ return [
                 'thumbnail_high_dpi_quality' => '60',
             ],
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'uri' => 'http://sw55.internal/media/image/84/65/d3/hemd.jpg',
     ],
     5 => [
@@ -196,7 +196,7 @@ return [
                 'thumbnail_high_dpi_quality' => '60',
             ],
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'uri' => 'http://sw55.internal/media/image/2f/5d/6e/mobile.jpg',
     ],
     6 => [
@@ -229,7 +229,7 @@ return [
                 'thumbnail_high_dpi_quality' => '60',
             ],
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'uri' => 'http://sw55.internal/media/image/c0/cf/37/schokolade.jpg',
     ],
     7 => [
@@ -262,7 +262,7 @@ return [
                 'thumbnail_high_dpi_quality' => '60',
             ],
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'uri' => 'http://sw55.internal/media/image/44/02/6f/socken.jpg',
     ],
     8 => [
@@ -295,7 +295,7 @@ return [
                 'thumbnail_high_dpi_quality' => '60',
             ],
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'uri' => 'http://sw55.internal/media/image/7c/21/c4/tube.jpg',
     ],
     9 => [
@@ -328,7 +328,7 @@ return [
                 'thumbnail_high_dpi_quality' => '60',
             ],
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'uri' => 'http://sw55.internal/media/image/59/55/1e/waschmaschine.jpg',
     ],
     10 => [
@@ -361,7 +361,7 @@ return [
                 'thumbnail_high_dpi_quality' => '60',
             ],
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'uri' => 'http://sw55.internal/media/image/55/38/fc/shirt.jpg',
     ],
     11 => [
@@ -394,7 +394,7 @@ return [
                 'thumbnail_high_dpi_quality' => '60',
             ],
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'uri' => 'http://sw55.internal/media/image/f8/57/2e/shirt_blue.jpg',
     ],
     12 => [
@@ -427,7 +427,7 @@ return [
                 'thumbnail_high_dpi_quality' => '60',
             ],
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'uri' => 'http://sw55.internal/media/image/23/9f/5a/shirt_red.jpg',
     ],
     13 => [
@@ -460,7 +460,7 @@ return [
                 'thumbnail_high_dpi_quality' => '60',
             ],
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'uri' => 'http://sw55.internal/media/image/9b/b0/70/hose_blue.jpg',
     ],
     14 => [
@@ -493,7 +493,7 @@ return [
                 'thumbnail_high_dpi_quality' => '60',
             ],
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'uri' => 'http://sw55.internal/media/image/5a/91/78/hose_red.jpg',
     ],
     15 => [
@@ -526,7 +526,7 @@ return [
                 'thumbnail_high_dpi_quality' => '60',
             ],
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'uri' => 'http://sw55.internal/media/image/33/86/cc/hose_white.jpg',
     ],
     16 => [
@@ -559,7 +559,7 @@ return [
                 'thumbnail_high_dpi_quality' => '60',
             ],
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'uri' => 'http://sw55.internal/media/image/54/a9/06/rucksack_0.jpg',
     ],
     17 => [
@@ -592,7 +592,7 @@ return [
                 'thumbnail_high_dpi_quality' => '60',
             ],
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'uri' => 'http://sw55.internal/media/image/ce/95/29/rucksack_1.jpg',
     ],
     18 => [
@@ -625,7 +625,7 @@ return [
                 'thumbnail_high_dpi_quality' => '60',
             ],
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'uri' => 'http://sw55.internal/media/image/aa/31/b2/rucksack_2.jpg',
     ],
     19 => [
@@ -658,7 +658,7 @@ return [
                 'thumbnail_high_dpi_quality' => '60',
             ],
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'uri' => 'http://sw55.internal/media/image/70/98/11/handtasche_0.jpg',
     ],
     20 => [
@@ -691,7 +691,7 @@ return [
                 'thumbnail_high_dpi_quality' => '60',
             ],
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'uri' => 'http://sw55.internal/media/image/7e/72/9e/handtasche_1.jpg',
     ],
     21 => [
@@ -724,7 +724,7 @@ return [
                 'thumbnail_high_dpi_quality' => '60',
             ],
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'uri' => 'http://sw55.internal/media/unknown/65/2f/08/Datei.txt',
     ],
     22 => [
@@ -757,7 +757,7 @@ return [
                 'thumbnail_high_dpi_quality' => '60',
             ],
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'uri' => 'http://sw55.internal/media/image/e4/6f/b8/hq.jpg',
     ],
 ];

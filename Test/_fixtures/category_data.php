@@ -44,7 +44,7 @@ return [
             'userID' => '50',
             'created' => '2017-10-05',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
     ],
     1 => [
         'id' => '6',
@@ -89,7 +89,7 @@ return [
             'userID' => '50',
             'created' => '2017-10-05',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
     ],
     2 => [
         'id' => '7',
@@ -134,7 +134,7 @@ return [
             'userID' => '50',
             'created' => '2017-10-05',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
     ],
     3 => [
         'id' => '8',
@@ -179,7 +179,7 @@ return [
             'userID' => '50',
             'created' => '2017-10-05',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
     ],
     4 => [
         'id' => '9',
@@ -224,7 +224,7 @@ return [
             'userID' => '50',
             'created' => '2017-10-05',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
     ],
     5 => [
         'id' => '10',
@@ -269,7 +269,7 @@ return [
             'userID' => '50',
             'created' => '2017-10-05',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
     ],
     6 => [
         'id' => '11',
@@ -314,7 +314,7 @@ return [
             'userID' => '50',
             'created' => '2017-10-06',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
     ],
     7 => [
         'id' => '12',
@@ -359,6 +359,6 @@ return [
             'userID' => '50',
             'created' => '2017-10-05',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
     ],
 ];

@@ -85,7 +85,7 @@ class DummyMappingService extends MappingService
             'uuid' => self::DEFAULT_LANGUAGE_UUID,
             'createData' => [
                 'localeId' => self::DEFAULT_LOCAL_UUID,
-                'localeCode' => 'de_DE',
+                'localeCode' => 'de-DE',
             ],
         ];
     }
@@ -126,7 +126,7 @@ class DummyMappingService extends MappingService
             'uuid' => self::DEFAULT_LANGUAGE_UUID,
             'createData' => [
                 'localeId' => Uuid::randomHex(),
-                'localeCode' => 'en_GB',
+                'localeCode' => 'en-GB',
             ],
         ];
     }
