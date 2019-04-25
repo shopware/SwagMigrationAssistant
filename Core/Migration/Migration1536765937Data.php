@@ -28,9 +28,9 @@ CREATE TABLE `swag_migration_data` (
     `created_at`      DATETIME(3) NOT NULL,
     `updated_at`      DATETIME(3),
     KEY `idx.swag_migration_data.entity__run_id` (`entity`, `run_id`),
-    CONSTRAINT `json.raw` CHECK (JSON_VALID(`raw`)),
-    CONSTRAINT `json.converted` CHECK (JSON_VALID(`converted`)),
-    CONSTRAINT `json.unmapped` CHECK (JSON_VALID(`unmapped`)),
+    CONSTRAINT `json.swag_migration_data.raw` CHECK (JSON_VALID(`raw`)),
+    CONSTRAINT `json.swag_migration_data.converted` CHECK (JSON_VALID(`converted`)),
+    CONSTRAINT `json.swag_migration_data.unmapped` CHECK (JSON_VALID(`unmapped`)),
     PRIMARY KEY (`id`),
     CONSTRAINT `fk.swag_migration_run.run_id` FOREIGN KEY (`run_id`) REFERENCES `swag_migration_run` (`id`)
       ON DELETE RESTRICT

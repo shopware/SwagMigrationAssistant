@@ -23,7 +23,7 @@ CREATE TABLE `swag_migration_logging` (
     `created_at`    DATETIME(3)  NOT NULL,
     `updated_at`    DATETIME(3),
     PRIMARY KEY (`id`),
-    CONSTRAINT `json.log_entry` CHECK (JSON_VALID(`log_entry`))
+    CONSTRAINT `json.swag_migration_logging.log_entry` CHECK (JSON_VALID(`log_entry`))
 )
     ENGINE = InnoDB
     DEFAULT CHARSET = utf8mb4

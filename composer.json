@@ -16,8 +16,8 @@
         "shopware-plugin-class": "SwagMigrationNext\\SwagMigrationNext",
         "copyright": "(c) by shopware AG",
         "label": {
-            "de_DE": "Migration",
-            "en_GB": "Migration"
+            "de-DE": "Migration",
+            "en-GB": "Migration"
         }
     },
     "autoload": {

@@ -94,7 +94,7 @@ class Shopware55LocalCategoryReader extends Shopware55LocalAbstractReader
                 array_filter(explode('|', $category['path']))
             );
             $topMostParent = end($parentCategoryIds);
-            $category['_locale'] = $topMostCategories[$topMostParent];
+            $category['_locale'] = str_replace('_', '-', $topMostCategories[$topMostParent]);
             $resultSet[] = $category;
         }
 

@@ -86,6 +86,9 @@ class Shopware55LocalCustomerReader extends Shopware55LocalAbstractReader
             if (isset($discounts[$customer['group']['id']])) {
                 $customer['group']['discounts'] = $discounts[$customer['group']['id']];
             }
+            if (isset($customer['customerlanguage']['locale'])) {
+                $customer['customerlanguage']['locale'] = str_replace('_', '-', $customer['customerlanguage']['locale']);
+            }
         }
         unset($customer);
 

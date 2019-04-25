@@ -14,7 +14,7 @@ return [
             'description' => null,
             'position' => '8',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
     ],
     1 => [
         'type' => 'option',
@@ -29,7 +29,7 @@ return [
             'description' => null,
             'position' => '3',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
     ],
     2 => [
         'type' => 'option',
@@ -44,7 +44,7 @@ return [
             'description' => null,
             'position' => '3',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
     ],
     3 => [
         'type' => 'option',
@@ -59,7 +59,7 @@ return [
             'description' => null,
             'position' => '3',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
     ],
     4 => [
         'type' => 'option',
@@ -74,7 +74,7 @@ return [
             'description' => null,
             'position' => '3',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
     ],
     5 => [
         'type' => 'option',
@@ -89,7 +89,7 @@ return [
             'description' => null,
             'position' => '8',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
     ],
     6 => [
         'type' => 'option',
@@ -104,7 +104,7 @@ return [
             'description' => null,
             'position' => '8',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
     ],
     7 => [
         'type' => 'option',
@@ -119,7 +119,7 @@ return [
             'description' => null,
             'position' => '8',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
     ],
     8 => [
         'type' => 'option',
@@ -134,7 +134,7 @@ return [
             'description' => null,
             'position' => '8',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
     ],
     9 => [
         'type' => 'option',
@@ -149,6 +149,6 @@ return [
             'description' => null,
             'position' => '8',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
     ],
 ];

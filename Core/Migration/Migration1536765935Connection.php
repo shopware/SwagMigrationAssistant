@@ -25,8 +25,8 @@ CREATE TABLE `swag_migration_connection` (
     `updated_at`            DATETIME(3),
     PRIMARY KEY (`id`),
     CONSTRAINT `uniq.swag_migration_connection.name` UNIQUE (`name`),
-    CONSTRAINT `json.credential_fields` CHECK (JSON_VALID(`credential_fields`)),
-    CONSTRAINT `json.premapping` CHECK (JSON_VALID(`premapping`)),
+    CONSTRAINT `json.swag_migration_connection.credential_fields` CHECK (JSON_VALID(`credential_fields`)),
+    CONSTRAINT `json.swag_migration_connection.premapping` CHECK (JSON_VALID(`premapping`)),
     CONSTRAINT `fk.swag_migration_connection.profile_id` FOREIGN KEY (`profile_id`) REFERENCES `swag_migration_profile`(`id`)
       ON DELETE CASCADE
       ON UPDATE CASCADE

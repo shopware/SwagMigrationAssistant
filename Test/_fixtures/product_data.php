@@ -104,7 +104,7 @@ return [
             'meta_keywords' => '',
             'changed' => '2017-10-05 14:59:03',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'categories' => [
             0 => [
                 'id' => '12',
@@ -288,7 +288,7 @@ return [
             'meta_keywords' => '',
             'changed' => '2017-10-05 14:59:03',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'categories' => [
             0 => [
                 'id' => '12',
@@ -486,7 +486,7 @@ return [
             'meta_keywords' => '',
             'changed' => '2017-10-05 14:59:03',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'categories' => [
             0 => [
                 'id' => '11',
@@ -673,7 +673,7 @@ return [
             'meta_keywords' => '',
             'changed' => '2017-10-05 14:59:03',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'categories' => [
             0 => [
                 'id' => '11',
@@ -1016,7 +1016,7 @@ return [
             'meta_keywords' => '',
             'changed' => '2017-10-05 14:59:03',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'categories' => [
             0 => [
                 'id' => '11',
@@ -1442,7 +1442,7 @@ return [
             'meta_keywords' => '',
             'changed' => '2017-10-05 14:59:03',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'categories' => [
             0 => [
                 'id' => '12',
@@ -1958,7 +1958,7 @@ return [
             'meta_keywords' => '',
             'changed' => '2017-10-05 14:59:13',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'categories' => [
             0 => [
                 'id' => '10',
@@ -2142,7 +2142,7 @@ return [
             'meta_keywords' => '',
             'changed' => '2017-10-05 14:59:13',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'categories' => [
             0 => [
                 'id' => '8',
@@ -2326,7 +2326,7 @@ return [
             'meta_keywords' => '',
             'changed' => '2017-10-05 14:59:13',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'categories' => [
             0 => [
                 'id' => '9',
@@ -2510,7 +2510,7 @@ return [
             'meta_keywords' => '',
             'changed' => '2017-10-05 14:59:13',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'categories' => [
             0 => [
                 'id' => '10',
@@ -2694,7 +2694,7 @@ return [
             'meta_keywords' => '',
             'changed' => '2017-10-05 14:59:40',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'categories' => [
             0 => [
                 'id' => '7',
@@ -2878,7 +2878,7 @@ return [
             'meta_keywords' => '',
             'changed' => '2017-10-05 14:59:40',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'categories' => [
             0 => [
                 'id' => '7',
@@ -3062,7 +3062,7 @@ return [
             'meta_keywords' => '',
             'changed' => '2017-10-05 14:59:40',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'categories' => [
             0 => [
                 'id' => '7',
@@ -3246,7 +3246,7 @@ return [
             'meta_keywords' => '',
             'changed' => '2017-10-05 14:59:40',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'categories' => [
             0 => [
                 'id' => '7',
@@ -3589,7 +3589,7 @@ return [
             'meta_keywords' => '',
             'changed' => '2017-10-05 14:59:03',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'categories' => [
             0 => [
                 'id' => '11',
@@ -4015,7 +4015,7 @@ return [
             'meta_keywords' => '',
             'changed' => '2017-10-05 14:59:03',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'categories' => [
             0 => [
                 'id' => '12',
@@ -4213,7 +4213,7 @@ return [
             'meta_keywords' => '',
             'changed' => '2017-10-05 14:59:03',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'categories' => [
             0 => [
                 'id' => '12',
@@ -4411,7 +4411,7 @@ return [
             'meta_keywords' => '',
             'changed' => '2017-10-05 14:59:03',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'categories' => [
             0 => [
                 'id' => '12',
@@ -4609,7 +4609,7 @@ return [
             'meta_keywords' => '',
             'changed' => '2017-10-05 14:59:03',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'categories' => [
             0 => [
                 'id' => '11',
@@ -5035,7 +5035,7 @@ return [
             'meta_keywords' => '',
             'changed' => '2017-10-05 14:59:03',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'categories' => [
             0 => [
                 'id' => '11',
@@ -5461,7 +5461,7 @@ return [
             'meta_keywords' => '',
             'changed' => '2017-10-05 14:59:03',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'categories' => [
             0 => [
                 'id' => '11',
@@ -5887,7 +5887,7 @@ return [
             'meta_keywords' => '',
             'changed' => '2017-10-05 14:59:03',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'categories' => [
             0 => [
                 'id' => '11',
@@ -6262,7 +6262,7 @@ return [
             'meta_keywords' => '',
             'changed' => '2017-10-05 14:59:03',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'categories' => [
             0 => [
                 'id' => '12',
@@ -6753,7 +6753,7 @@ return [
             'meta_keywords' => '',
             'changed' => '2017-10-05 14:59:03',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'categories' => [
             0 => [
                 'id' => '12',
@@ -7244,7 +7244,7 @@ return [
             'meta_keywords' => '',
             'changed' => '2017-10-05 14:59:03',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'categories' => [
             0 => [
                 'id' => '12',
@@ -7709,7 +7709,7 @@ return [
             'meta_keywords' => '',
             'changed' => '2017-10-05 14:59:03',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'categories' => [
             0 => [
                 'id' => '12',
@@ -8174,7 +8174,7 @@ return [
             'meta_keywords' => '',
             'changed' => '2017-10-05 14:59:03',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'categories' => [
             0 => [
                 'id' => '12',
@@ -8639,7 +8639,7 @@ return [
             'meta_keywords' => '',
             'changed' => '2017-10-05 14:59:03',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'categories' => [
             0 => [
                 'id' => '12',
@@ -9104,7 +9104,7 @@ return [
             'meta_keywords' => '',
             'changed' => '2017-10-05 14:59:03',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'categories' => [
             0 => [
                 'id' => '12',
@@ -9569,7 +9569,7 @@ return [
             'meta_keywords' => '',
             'changed' => '2017-10-05 14:59:03',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'categories' => [
             0 => [
                 'id' => '12',
@@ -10034,7 +10034,7 @@ return [
             'meta_keywords' => '',
             'changed' => '2017-10-05 14:59:03',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'categories' => [
             0 => [
                 'id' => '12',
@@ -10499,7 +10499,7 @@ return [
             'meta_keywords' => '',
             'changed' => '2017-10-05 14:59:03',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'categories' => [
             0 => [
                 'id' => '12',
@@ -10964,7 +10964,7 @@ return [
             'meta_keywords' => '',
             'changed' => '2017-10-05 14:59:03',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'categories' => [
             0 => [
                 'id' => '12',
@@ -11454,7 +11454,7 @@ return [
             'meta_keywords' => '',
             'changed' => '2017-10-05 14:59:03',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'categories' => [
             0 => [
                 'id' => '11',
@@ -11797,7 +11797,7 @@ return [
             'meta_keywords' => '',
             'changed' => '2017-10-05 14:59:03',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'categories' => [
             0 => [
                 'id' => '11',
@@ -12140,7 +12140,7 @@ return [
             'meta_keywords' => '',
             'changed' => '2017-10-05 14:59:40',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'categories' => [
             0 => [
                 'id' => '7',
@@ -12483,7 +12483,7 @@ return [
             'meta_keywords' => '',
             'changed' => '2017-10-05 14:59:40',
         ],
-        '_locale' => 'de_DE',
+        '_locale' => 'de-DE',
         'categories' => [
             0 => [
                 'id' => '7',
