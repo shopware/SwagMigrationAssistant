@@ -13,7 +13,7 @@ class Shopware55LocalCategoryReader extends Shopware55LocalAbstractReader
         $topMostParentIds = $this->getTopMostParentIds($fetchedCategories);
         $topMostCategories = $this->fetchCategoriesById($topMostParentIds);
 
-        $categories = $this->mapData($fetchedCategories, [], ['category']);
+        $categories = $this->mapData($fetchedCategories, [], ['category', 'categorypath']);
 
         $resultSet = $this->setAllLocales($categories, $topMostCategories);
 
@@ -25,6 +25,7 @@ class Shopware55LocalCategoryReader extends Shopware55LocalAbstractReader
         $query = $this->connection->createQueryBuilder();
         $query->from('s_categories', 'category');
         $this->addTableSelection($query, 's_categories', 'category');
+        $query->addSelect('REPLACE(category.path, "|", "") as categorypath');
 
         $query->leftJoin('category', 's_categories_attributes', 'attributes', 'category.id = attributes.categoryID');
         $this->addTableSelection($query, 's_categories_attributes', 'attributes');
@@ -33,7 +34,7 @@ class Shopware55LocalCategoryReader extends Shopware55LocalAbstractReader
         $this->addTableSelection($query, 's_media', 'asset');
 
         $query->andWhere('category.parent IS NOT NULL OR category.path IS NOT NULL');
-        $query->orderBy('category.parent');
+        $query->orderBy('LENGTH(categorypath)');
         $query->setFirstResult($this->migrationContext->getOffset());
         $query->setMaxResults($this->migrationContext->getLimit());
 
