@@ -100,6 +100,7 @@ class CategoryConverter extends Shopware55Converter
             $data['cmsheadline'],
             $data['cmstext'],
             $data['meta_title'],
+            $data['categorypath'],
 
             // TODO check how to handle these
             $data['template'],
