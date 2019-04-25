@@ -212,7 +212,7 @@ class MappingServiceTest extends TestCase
         $uuid = $this->mappingService->getUuid($this->connectionId, LanguageDefinition::getEntityName(), $localeCode, $context);
         static::assertSame($languageUuid, $uuid);
 
-        $this->mappingService->createNewUuid($this->connectionId, LanguageDefinition::getEntityName(), 'en_GB', $context);
+        $this->mappingService->createNewUuid($this->connectionId, LanguageDefinition::getEntityName(), 'en-GB', $context);
         $this->mappingService->writeMapping($context);
 
         $this->mappingService->deleteMapping($languageUuid, $this->connectionId, $context);
