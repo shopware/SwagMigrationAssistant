@@ -17,10 +17,10 @@ use Shopware\Core\Content\Property\Aggregate\PropertyGroupOptionTranslation\Prop
 use Shopware\Core\Content\Property\Aggregate\PropertyGroupTranslation\PropertyGroupTranslationDefinition;
 use Shopware\Core\Content\Property\PropertyGroupDefinition;
 use Shopware\Core\Content\Rule\RuleDefinition;
-use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Rule\Container\AndRule;
 use Shopware\Core\Framework\Rule\Container\OrRule;
+use Shopware\Core\System\Currency\CurrencyDefinition;
 use Shopware\Core\System\Tax\TaxDefinition;
 use Shopware\Core\System\Unit\Aggregate\UnitTranslation\UnitTranslationDefinition;
 use Shopware\Core\System\Unit\UnitDefinition;
@@ -871,10 +871,31 @@ class ProductConverter extends Shopware55Converter
 
             $setInGross = (bool) $price['customergroup']['taxinput'];
 
+            $currencyUuid = null;
+            if (isset($price['currencyShortName'])) {
+                $currencyUuid = $this->mappingService->getUuid(
+                    $this->connectionId,
+                    CurrencyDefinition::getEntityName(),
+                    $price['currencyShortName'],
+                    $this->context
+                );
+            }
+            if ($currencyUuid === null) {
+                $this->loggingService->addWarning(
+                    $this->runId,
+                    Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
+                    'Empty necessary data fields',
+                    'Product-Price-Entity could not converted cause of empty necessary field: currencyId.',
+                    ['id' => $this->oldProductId]
+                );
+
+                continue;
+            }
+
             $data = [
                 'id' => $productPriceRuleUuid,
                 'productId' => $converted['id'],
-                'currencyId' => Defaults::CURRENCY,
+                'currencyId' => $currencyUuid,
                 'rule' => [
                     'id' => $priceRuleUuid,
                     'name' => $price['customergroup']['description'],

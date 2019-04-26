@@ -11,6 +11,7 @@ use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Content\Property\Aggregate\PropertyGroupOption\PropertyGroupOptionDefinition;
+use Shopware\Core\System\Currency\CurrencyDefinition;
 use Shopware\Core\System\NumberRange\NumberRangeDefinition;
 use SwagMigrationNext\Migration\EnvironmentInformation;
 use SwagMigrationNext\Migration\Gateway\AbstractGateway;
@@ -156,6 +157,7 @@ class Shopware55LocalGateway extends AbstractGateway
             PropertyGroupOptionDefinition::getEntityName() => $environmentData['configuratorOptions'],
             'translation' => $environmentData['translations'],
             NumberRangeDefinition::getEntityName() => $environmentData['numberRanges'],
+            CurrencyDefinition::getEntityName() => $environmentData['currencies'],
         ];
 
         return new EnvironmentInformation(

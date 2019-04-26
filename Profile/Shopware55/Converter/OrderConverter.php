@@ -28,7 +28,6 @@ use Shopware\Core\System\Country\Aggregate\CountryState\CountryStateDefinition;
 use Shopware\Core\System\Country\Aggregate\CountryStateTranslation\CountryStateTranslationDefinition;
 use Shopware\Core\System\Country\Aggregate\CountryTranslation\CountryTranslationDefinition;
 use Shopware\Core\System\Country\CountryDefinition;
-use Shopware\Core\System\Currency\Aggregate\CurrencyTranslation\CurrencyTranslationDefinition;
 use Shopware\Core\System\Currency\CurrencyDefinition;
 use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 use SwagMigrationNext\Migration\Converter\ConvertStruct;
@@ -232,8 +231,29 @@ class OrderConverter extends Shopware55Converter
         unset($data['userID'], $data['customer']);
 
         $this->convertValue($converted, 'currencyFactor', $data, 'currencyFactor', self::TYPE_FLOAT);
-        $converted['currency'] = $this->getCurrency($data['paymentcurrency']);
-        unset($data['currency'], $data['currencyFactor'], $data['paymentcurrency']);
+
+        $currencyUuid = null;
+        if (isset($data['paymentcurrency']['currency'])) {
+            $currencyUuid = $this->mappingService->getUuid(
+                $this->connectionId,
+                CurrencyDefinition::getEntityName(),
+                $data['paymentcurrency']['currency'],
+                $this->context
+            );
+        }
+        if ($currencyUuid === null) {
+            $this->loggingService->addWarning(
+                $this->runId,
+                Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
+                'Empty necessary data fields',
+                'Order-Entity could not converted cause of empty necessary field: paymentcurrency.',
+                ['id' => $this->oldId]
+            );
+
+            return new ConvertStruct(null, $data);
+        }
+
+        $converted['currencyId'] = $currencyUuid;
 
         $this->convertValue($converted, 'orderDate', $data, 'ordertime', self::TYPE_DATETIME);
 
@@ -370,66 +390,6 @@ class OrderConverter extends Shopware55Converter
         }
 
         return new ConvertStruct($converted, $data);
-    }
-
-    private function getCurrency(array $originalData): array
-    {
-        $currency = [];
-        $currency['id'] = $this->mappingService->getCurrencyUuid($this->connectionId, $originalData['currency'], $this->context);
-
-        if (!isset($currency['id'])) {
-            $currency['id'] = $this->mappingService->createNewUuid(
-                $this->connectionId,
-                CurrencyDefinition::getEntityName(),
-                $originalData['id'],
-                $this->context
-            );
-        }
-
-        $this->convertValue($currency, 'isDefault', $originalData, 'standard', self::TYPE_BOOLEAN);
-        $this->convertValue($currency, 'factor', $originalData, 'factor', self::TYPE_FLOAT);
-        $this->convertValue($currency, 'position', $originalData, 'position', self::TYPE_INTEGER);
-
-        $currency['symbol'] = html_entity_decode($originalData['templatechar']);
-        $currency['placedInFront'] = ((int) $originalData['symbol_position']) > 16;
-        $currency['decimalPrecision'] = $this->context->getCurrencyPrecision();
-
-        $this->getCurrencyTranslation($currency, $originalData);
-        $this->convertValue($currency, 'shortName', $originalData, 'currency');
-        $this->convertValue($currency, 'name', $originalData, 'name');
-
-        return $currency;
-    }
-
-    private function getCurrencyTranslation(array &$currency, array $data): void
-    {
-        $languageData = $this->mappingService->getDefaultLanguageUuid($this->context);
-        if ($languageData['createData']['localeCode'] === $this->mainLocale) {
-            return;
-        }
-
-        $localeTranslation = [];
-
-        $this->convertValue($localeTranslation, 'shortName', $data, 'currency');
-        $this->convertValue($localeTranslation, 'name', $data, 'name');
-
-        $localeTranslation['id'] = $this->mappingService->createNewUuid(
-            $this->connectionId,
-            CurrencyTranslationDefinition::getEntityName(),
-            $data['id'] . ':' . $this->mainLocale,
-            $this->context
-        );
-        $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);
-
-        if (isset($languageData['createData']) && !empty($languageData['createData'])) {
-            $localeTranslation['language']['id'] = $languageData['uuid'];
-            $localeTranslation['language']['localeId'] = $languageData['createData']['localeId'];
-            $localeTranslation['language']['name'] = $languageData['createData']['localeCode'];
-        } else {
-            $localeTranslation['languageId'] = $languageData['uuid'];
-        }
-
-        $currency['translations'][$languageData['uuid']] = $localeTranslation;
     }
 
     private function getTransactions(array $data, array &$converted): void

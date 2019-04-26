@@ -111,6 +111,12 @@
             <tag name="shopware.migration.converter"/>
         </service>
 
+        <service id="SwagMigrationNext\Profile\Shopware55\Converter\CurrencyConverter">
+            <argument type="service" id="SwagMigrationNext\Migration\Mapping\MappingService"/>
+            <argument type="service" id="SwagMigrationNext\Migration\Logging\LoggingService"/>
+            <tag name="shopware.migration.converter"/>
+        </service>
+
         <!-- Shopware 5.5 Gateway -->
         <service id="SwagMigrationNext\Profile\Shopware55\Gateway\Api\Shopware55ApiFactory">
             <tag name="shopware.migration.gateway_factory"/>
@@ -145,6 +151,10 @@
         </service>
 
         <!-- Shopware 5.5 Dataselector -->
+        <service id="SwagMigrationNext\Profile\Shopware55\DataSelection\BasicSettingsDataSelection">
+            <tag name="shopware.migration.data_selection"/>
+        </service>
+
         <service id="SwagMigrationNext\Profile\Shopware55\DataSelection\ProductCategoryTranslationDataSelection">
             <tag name="shopware.migration.data_selection"/>
         </service>
@@ -223,6 +233,18 @@
         </service>
 
         <service id="SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\PropertyGroupOptionDataSet">
+            <tag name="shopware.migration.data_set" />
+        </service>
+
+        <service id="SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\LanguageDataSet">
+            <tag name="shopware.migration.data_set" />
+        </service>
+
+        <service id="SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CurrencyDataSet">
+            <tag name="shopware.migration.data_set" />
+        </service>
+
+        <service id="SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\SalesChannelDataSet">
             <tag name="shopware.migration.data_set" />
         </service>
 
