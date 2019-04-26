@@ -36,7 +36,7 @@ use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalCus
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalCustomerReader;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalEnvironmentReader;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalLanguageReader;
-use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalMediaFolderReader;
+use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalMediaAlbumReader;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalMediaReader;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalNumberRangeReader;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalOrderReader;
@@ -79,7 +79,7 @@ class Shopware55LocalGateway extends AbstractGateway
 
                 return $reader->read();
             case MediaFolderDataSet::getEntity():
-                $reader = new Shopware55LocalMediaFolderReader($connection, $this->migrationContext);
+                $reader = new Shopware55LocalMediaAlbumReader($connection, $this->migrationContext);
 
                 return $reader->read();
             case MediaDataSet::getEntity():

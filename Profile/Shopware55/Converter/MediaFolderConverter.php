@@ -2,14 +2,10 @@
 
 namespace SwagMigrationNext\Profile\Shopware55\Converter;
 
-use Shopware\Core\Content\MailTemplate\MailTemplateDefinition;
-use Shopware\Core\Content\Media\Aggregate\MediaFolder\MediaFolderDefinition;
-use Shopware\Core\Content\Media\Aggregate\MediaFolderConfiguration\MediaFolderConfigurationDefinition;
-use Shopware\Core\Content\Media\Aggregate\MediaThumbnailSize\MediaThumbnailSizeDefinition;
-use Shopware\Core\Content\Product\Aggregate\ProductManufacturer\ProductManufacturerDefinition;
-use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationNext\Migration\Converter\ConvertStruct;
+use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationNext\Migration\MigrationContextInterface;
@@ -62,7 +58,7 @@ class MediaFolderConverter extends Shopware55Converter
 
     public function getSupportedEntityName(): string
     {
-        return MediaFolderDefinition::getEntityName();
+        return DefaultEntities::MEDIA_FOLDER;
     }
 
     public function getSupportedProfileName(): string
@@ -84,7 +80,7 @@ class MediaFolderConverter extends Shopware55Converter
         $converted = [];
         $converted['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            MediaFolderDefinition::getEntityName(),
+            DefaultEntities::MEDIA_FOLDER,
             $data['id'],
             $this->context
         );
@@ -98,7 +94,7 @@ class MediaFolderConverter extends Shopware55Converter
         if (isset($data['parentID'])) {
             $parentUuid = $this->mappingService->getUuid(
               $this->connectionId,
-              MediaFolderDefinition::getEntityName(),
+                DefaultEntities::MEDIA_FOLDER,
               $data['parentID'],
               $this->context
             );
@@ -112,7 +108,7 @@ class MediaFolderConverter extends Shopware55Converter
             $converted['parent'] = [
                 'id' => $this->mappingService->createNewUuid(
                   $this->connectionId,
-                  MediaFolderDefinition::getEntityName(),
+                    DefaultEntities::MEDIA_FOLDER,
                   'default_migration_media_folder',
                   $this->context
                 ),
@@ -121,7 +117,7 @@ class MediaFolderConverter extends Shopware55Converter
                 'configuration' => [
                     'id' => $this->mappingService->createNewUuid(
                       $this->connectionId,
-                      MediaFolderConfigurationDefinition::getEntityName(),
+                      DefaultEntities::MEDIA_FOLDER_CONFIGURATION,
                         'default_migration_media_folder',
                         $this->context
                     ),
@@ -136,6 +132,12 @@ class MediaFolderConverter extends Shopware55Converter
             unset($setting);
         } else {
             $converted['useParentConfiguration'] = true;
+            // will immediately be overriden by MediaConfigIndexer
+            $converted['configuration'] = [
+                [
+                    'id' => Uuid::randomHex(),
+                ],
+            ];
         }
 
         return new ConvertStruct($converted, $data);
@@ -151,7 +153,7 @@ class MediaFolderConverter extends Shopware55Converter
         $configuration = [];
         $configuration['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            MediaFolderConfigurationDefinition::getEntityName(),
+            DefaultEntities::MEDIA_FOLDER_CONFIGURATION,
             $setting['id'],
             $this->context
         );
@@ -178,7 +180,7 @@ class MediaFolderConverter extends Shopware55Converter
                 if ($uuid === null) {
                     $uuid = $this->mappingService->createNewUuid(
                         $this->connectionId,
-                        MediaThumbnailSizeDefinition::getEntityName(),
+                        DefaultEntities::MEDIA_THUMBNAIL_SIZE,
                         $thumbnailSize['width'] . '' . $thumbnailSize['height'],
                         $this->context
                     );
@@ -195,12 +197,13 @@ class MediaFolderConverter extends Shopware55Converter
     private function getDefaultFolderId(): ?string
     {
         switch ($this->oldId) {
+            case '1':
             case '-12':
-                return $this->mappingService->getDefaultFolderIdByEntity(ProductManufacturerDefinition::getEntityName(), $this->migrationContext, $this->context);
+                return $this->mappingService->getDefaultFolderIdByEntity(DefaultEntities::PRODUCT_MANUFACTURER, $this->migrationContext, $this->context);
             case '-5':
-                return $this->mappingService->getDefaultFolderIdByEntity(MailTemplateDefinition::getEntityName(), $this->migrationContext, $this->context);
+                return $this->mappingService->getDefaultFolderIdByEntity(DefaultEntities::MAIL_TEMPLATE, $this->migrationContext, $this->context);
             case '-1':
-                return $this->mappingService->getDefaultFolderIdByEntity(ProductDefinition::getEntityName(), $this->migrationContext, $this->context);
+                return $this->mappingService->getDefaultFolderIdByEntity(DefaultEntities::PRODUCT, $this->migrationContext, $this->context);
         }
 
         return null;

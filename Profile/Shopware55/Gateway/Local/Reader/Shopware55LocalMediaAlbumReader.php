@@ -2,7 +2,7 @@
 
 namespace SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader;
 
-class Shopware55LocalMediaFolderReader extends Shopware55LocalAbstractReader
+class Shopware55LocalMediaAlbumReader extends Shopware55LocalAbstractReader
 {
     public function read(): array
     {
@@ -37,40 +37,54 @@ class Shopware55LocalMediaFolderReader extends Shopware55LocalAbstractReader
         // represents the main language of the migrated shop
         $locale = $this->getDefaultShopLocale();
 
-        $returnAlbums = [];
+        $albums = [];
         foreach ($mediaAlbums as $key => $mediaAlbum) {
             if ($mediaAlbum['parentID'] !== null) {
                 continue;
             }
 
-            $mediaAlbum['_locale'] = str_replace('_', '-', $locale);
-            $returnAlbums[] = $mediaAlbum;
+            $mediaAlbum['_locale'] = $locale;
+            $albums[] = [$mediaAlbum];
             unset($mediaAlbums[$key]);
 
             $childAlbums = $this->getChildAlbums($mediaAlbums, $mediaAlbum['id'], $locale);
-            $returnAlbums = array_merge($returnAlbums, $childAlbums);
+
+            if (!empty($childAlbums)) {
+                $albums[] = $childAlbums;
+            }
         }
         unset($mediaAlbum);
 
-        return $returnAlbums;
+        if (empty($albums)) {
+            return $albums;
+        }
+
+        return array_merge(...$albums);
     }
 
     private function getChildAlbums(array &$mediaAlbums, $id, $locale): array
     {
-        $returnAlbums = [];
+        $albums = [];
         foreach ($mediaAlbums as $key => $mediaAlbum) {
             if ($mediaAlbum['parentID'] !== $id) {
                 continue;
             }
 
-            $mediaAlbum['_locale'] = str_replace('_', '-', $locale);
-            $returnAlbums[] = $mediaAlbum;
+            $mediaAlbum['_locale'] = $locale;
+            $albums[] = [$mediaAlbum];
             unset($mediaAlbums[$key]);
 
             $childAlbums = $this->getChildAlbums($mediaAlbums, $mediaAlbum['id'], $locale);
-            $returnAlbums = array_merge($returnAlbums, $childAlbums);
+
+            if (!empty($childAlbums)) {
+                $albums[] = $childAlbums;
+            }
         }
 
-        return $returnAlbums;
+        if (empty($albums)) {
+            return $albums;
+        }
+
+        return array_merge(...$albums);
     }
 }

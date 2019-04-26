@@ -77,7 +77,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
         $criteria->addFilter(new NotFilter(MultiFilter::CONNECTION_AND, [new EqualsFilter('converted', null)]));
         $criteria->setOffset($migrationContext->getOffset());
         $criteria->setLimit($migrationContext->getLimit());
-        $criteria->addSorting(new FieldSorting('createdAt', FieldSorting::ASCENDING));
+        $criteria->addSorting(new FieldSorting('autoIncrement', FieldSorting::ASCENDING));
         $migrationData = $this->migrationDataRepo->search($criteria, $context);
 
         if ($migrationData->getTotal() === 0) {

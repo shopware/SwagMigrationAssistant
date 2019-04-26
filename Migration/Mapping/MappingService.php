@@ -2,9 +2,7 @@
 
 namespace SwagMigrationNext\Migration\Mapping;
 
-use Shopware\Core\Content\Media\Aggregate\MediaDefaultFolder\MediaDefaultFolderDefinition;
 use Shopware\Core\Content\Media\Aggregate\MediaDefaultFolder\MediaDefaultFolderEntity;
-use Shopware\Core\Content\Media\Aggregate\MediaThumbnailSize\MediaThumbnailSizeDefinition;
 use Shopware\Core\Content\Media\Aggregate\MediaThumbnailSize\MediaThumbnailSizeEntity;
 use Shopware\Core\Content\Rule\RuleEntity;
 use Shopware\Core\Framework\Context;
@@ -483,7 +481,7 @@ class MappingService implements MappingServiceInterface
     public function getDefaultFolderIdByEntity(string $entityName, MigrationContextInterface $migrationContext, Context $context): ?string
     {
         $connectionId = $migrationContext->getConnection()->getId();
-        $defaultFolderUuid = $this->getUuid($connectionId, MediaDefaultFolderDefinition::getEntityName(), $entityName, $context);
+        $defaultFolderUuid = $this->getUuid($connectionId, DefaultEntities::MEDIA_DEFAULT_FOLDER, $entityName, $context);
 
         if ($defaultFolderUuid !== null) {
             return $defaultFolderUuid;
@@ -500,7 +498,7 @@ class MappingService implements MappingServiceInterface
             $this->saveMapping(
                 [
                     'connectionId' => $migrationContext->getConnection()->getId(),
-                    'entity' => MediaDefaultFolderDefinition::getEntityName(),
+                    'entity' => DefaultEntities::MEDIA_DEFAULT_FOLDER,
                     'oldIdentifier' => $entityName,
                     'entityUuid' => $mediaDefaultFolder->getFolder()->getId(),
                 ]
@@ -516,7 +514,7 @@ class MappingService implements MappingServiceInterface
     {
         $sizeString = $width . '-' . $height;
         $connectionId = $migrationContext->getConnection()->getId();
-        $thumbnailSizeUuid = $this->getUuid($connectionId, MediaThumbnailSizeDefinition::getEntityName(), $sizeString, $context);
+        $thumbnailSizeUuid = $this->getUuid($connectionId, DefaultEntities::MEDIA_THUMBNAIL_SIZE, $sizeString, $context);
 
         if ($thumbnailSizeUuid !== null) {
             return $thumbnailSizeUuid;
@@ -534,7 +532,7 @@ class MappingService implements MappingServiceInterface
             $this->saveMapping(
                 [
                     'connectionId' => $migrationContext->getConnection()->getId(),
-                    'entity' => MediaThumbnailSizeDefinition::getEntityName(),
+                    'entity' => DefaultEntities::MEDIA_THUMBNAIL_SIZE,
                     'oldIdentifier' => $sizeString,
                     'entityUuid' => $thumbnailSize->getId(),
                 ]

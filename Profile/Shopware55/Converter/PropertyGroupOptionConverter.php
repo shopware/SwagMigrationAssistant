@@ -155,6 +155,17 @@ class PropertyGroupOptionConverter extends Shopware55Converter
         $this->convertValue($newMedia, 'name', $data['media'], 'name');
         $this->convertValue($newMedia, 'description', $data['media'], 'description');
 
+        $albumUuid = $this->mappingService->getUuid(
+            $this->connectionId,
+            DefaultEntities::MEDIA_FOLDER,
+            $data['media']['albumID'],
+            $this->context
+        );
+
+        if ($albumUuid !== null) {
+            $newMedia['mediaFolderId'] = $albumUuid;
+        }
+
         $converted['media'] = $newMedia;
     }
 

@@ -97,8 +97,20 @@ class MediaConverter extends Shopware55Converter
         $this->convertValue($converted, 'name', $data, 'name');
         $this->convertValue($converted, 'description', $data, 'description');
 
+        $albumUuid = $this->mappingService->getUuid(
+          $this->connectionId,
+            DefaultEntities::MEDIA_FOLDER,
+          $data['albumID'],
+          $this->context
+        );
+
+        if ($albumUuid !== null) {
+            $converted['mediaFolderId'] = $albumUuid;
+        }
+
         unset(
             $data['id'],
+            $data['albumID'],
 
             // Legacy data which don't need a mapping or there is no equivalent field
             $data['path'],
@@ -108,9 +120,7 @@ class MediaConverter extends Shopware55Converter
             $data['width'],
             $data['height'],
             $data['userID'],
-            $data['created'],
-            $data['album'],
-            $data['albumID']
+            $data['created']
         );
 
         if (empty($data)) {

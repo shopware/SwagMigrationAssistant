@@ -2,8 +2,8 @@
 
 namespace SwagMigrationNext\Migration\Writer;
 
-use Shopware\Core\Content\Media\Aggregate\MediaFolder\MediaFolderDefinition;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
 use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
@@ -15,9 +15,15 @@ class MediaFolderWriter implements WriterInterface
      */
     private $entityWriter;
 
-    public function __construct(EntityWriterInterface $entityWriter)
+    /**
+     * @var EntityDefinition
+     */
+    private $definition;
+
+    public function __construct(EntityWriterInterface $entityWriter, EntityDefinition $definition)
     {
         $this->entityWriter = $entityWriter;
+        $this->definition = $definition;
     }
 
     public function supports(): string
@@ -27,10 +33,12 @@ class MediaFolderWriter implements WriterInterface
 
     public function writeData(array $data, Context $context): void
     {
-        $this->entityWriter->upsert(
-            MediaFolderDefinition::class,
-            $data,
-            WriteContext::createFromContext($context)
-        );
+        $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($data) {
+            $this->entityWriter->upsert(
+                $this->definition,
+                $data,
+                WriteContext::createFromContext($context)
+            );
+        });
     }
 }

@@ -19,7 +19,7 @@ class MediaFolderDataSet extends Shopware55DataSet
 
     public function getApiRoute(): string
     {
-        return 'SwagMigrationMediaFolders';
+        return 'SwagMigrationMediaAlbums';
     }
 
     public function getExtraQueryParameters(): array
