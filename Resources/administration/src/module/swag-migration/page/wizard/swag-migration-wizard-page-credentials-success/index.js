@@ -10,5 +10,11 @@ Component.register('swag-migration-wizard-page-credentials-success', {
             default: '',
             required: false
         }
+    },
+
+    metaInfo() {
+        return {
+            title: this.$createTitle()
+        };
     }
 });

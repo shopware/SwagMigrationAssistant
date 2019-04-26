@@ -21,6 +21,12 @@ Component.register('swag-migration-index', {
         };
     },
 
+    metaInfo() {
+        return {
+            title: this.$createTitle()
+        };
+    },
+
     created() {
         this.createdComponent();
     },

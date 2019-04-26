@@ -27,6 +27,12 @@ Component.register('swag-migration-history-detail-errors', {
         };
     },
 
+    metaInfo() {
+        return {
+            title: this.$createTitle()
+        };
+    },
+
     computed: {
         columns() {
             return this.getColumns();

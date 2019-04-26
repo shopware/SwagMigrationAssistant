@@ -5,6 +5,12 @@ import './swag-migration-empty-screen.scss';
 Component.register('swag-migration-empty-screen', {
     template,
 
+    metaInfo() {
+        return {
+            title: this.$createTitle()
+        };
+    },
+
     methods: {
         onConnectClick() {
             this.$router.push({ name: 'swag.migration.wizard.introduction' });

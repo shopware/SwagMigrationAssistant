@@ -24,6 +24,12 @@ Component.register('swag-migration-history', {
         };
     },
 
+    metaInfo() {
+        return {
+            title: this.$createTitle()
+        };
+    },
+
     computed: {
         migrationRunStore() {
             return State.getStore('swag_migration_run');

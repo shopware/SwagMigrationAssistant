@@ -21,6 +21,12 @@ Component.register('swag-migration-history-detail', {
         }
     },
 
+    metaInfo() {
+        return {
+            title: this.$createTitle()
+        };
+    },
+
     created() {
         if (!this.$route.params.id) {
             this.isLoading = false;

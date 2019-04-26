@@ -27,6 +27,12 @@ Component.register('swag-migration-main-page', {
         };
     },
 
+    metaInfo() {
+        return {
+            title: this.$createTitle()
+        };
+    },
+
     computed: {
         isUpdateAvailable() {
             return (

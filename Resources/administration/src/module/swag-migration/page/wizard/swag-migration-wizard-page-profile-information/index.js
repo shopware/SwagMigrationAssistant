@@ -15,5 +15,11 @@ Component.register('swag-migration-wizard-page-profile-information', {
         componentIsLoaded() {
             return Component.getComponentRegistry().has(this.profileInformationComponent);
         }
+    },
+
+    metaInfo() {
+        return {
+            title: this.$createTitle()
+        };
     }
 });
