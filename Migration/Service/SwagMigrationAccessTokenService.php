@@ -3,6 +3,8 @@
 namespace SwagMigrationNext\Migration\Service;
 
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Context\AdminApiSource;
+use Shopware\Core\Framework\Context\Exception\InvalidContextSourceException;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
@@ -28,7 +30,12 @@ class SwagMigrationAccessTokenService
         string $runId,
         Context $context
     ): string {
-        $userId = \mb_strtoupper($context->getUserId());
+        $sourceContext = $context->getSource();
+        if (!$sourceContext instanceof AdminApiSource) {
+            throw new InvalidContextSourceException(AdminApiSource::class, \get_class($context->getSource()));
+        }
+
+        $userId = \mb_strtoupper($sourceContext->getUserId());
 
         return $this->createMigrationAccessToken($runId, $userId, $context);
     }
