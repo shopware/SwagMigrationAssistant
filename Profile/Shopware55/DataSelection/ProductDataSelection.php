@@ -5,6 +5,7 @@ namespace SwagMigrationNext\Profile\Shopware55\DataSelection;
 use SwagMigrationNext\Migration\DataSelection\DataSelectionInterface;
 use SwagMigrationNext\Migration\DataSelection\DataSelectionStruct;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ManufacturerAttributeDataSet;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\MediaFolderDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ProductAttributeDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ProductPriceAttributeDataSet;
@@ -38,6 +39,7 @@ class ProductDataSelection implements DataSelectionInterface
     public function getEntityNames(): array
     {
         return [
+            MediaFolderDataSet::getEntity(),
             ProductAttributeDataSet::getEntity(),
             ProductPriceAttributeDataSet::getEntity(),
             ManufacturerAttributeDataSet::getEntity(),

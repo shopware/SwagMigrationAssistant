@@ -28,6 +28,12 @@
             <tag name="shopware.migration.writer"/>
         </service>
 
+        <service id="SwagMigrationNext\Migration\Writer\MediaFolderWriter">
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
+            <argument type="service" id="Shopware\Core\Content\Media\Aggregate\MediaFolder\MediaFolderDefinition"/>
+            <tag name="shopware.migration.writer"/>
+        </service>
+
         <service id="SwagMigrationNext\Migration\Writer\MediaWriter">
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
             <argument type="service" id="Shopware\Core\Content\Media\MediaDefinition"/>

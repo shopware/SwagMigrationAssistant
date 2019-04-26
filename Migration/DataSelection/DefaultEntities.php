@@ -46,6 +46,8 @@ final class DefaultEntities
 
     public const MEDIA = 'media';
 
+    public const MEDIA_FOLDER = 'media_folder';
+
     public const MEDIA_TRANSLATION = 'media_translation';
 
     public const NUMBER_RANGE = 'number_range';

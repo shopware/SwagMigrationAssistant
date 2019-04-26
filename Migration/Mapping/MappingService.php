@@ -2,6 +2,10 @@
 
 namespace SwagMigrationNext\Migration\Mapping;
 
+use Shopware\Core\Content\Media\Aggregate\MediaDefaultFolder\MediaDefaultFolderDefinition;
+use Shopware\Core\Content\Media\Aggregate\MediaDefaultFolder\MediaDefaultFolderEntity;
+use Shopware\Core\Content\Media\Aggregate\MediaThumbnailSize\MediaThumbnailSizeDefinition;
+use Shopware\Core\Content\Media\Aggregate\MediaThumbnailSize\MediaThumbnailSizeEntity;
 use Shopware\Core\Content\Rule\RuleEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
@@ -78,6 +82,11 @@ class MappingService implements MappingServiceInterface
      */
     protected $numberRangeRepo;
 
+    /**
+     * @var EntityRepositoryInterface
+     */
+    protected $mediaDefaultFolderRepo;
+
     protected $uuids = [];
 
     protected $uuidLists = [];
@@ -99,6 +108,11 @@ class MappingService implements MappingServiceInterface
      * @var EntityRepositoryInterface
      */
     private $ruleRepo;
+
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $thumbnailSizeRepo;
 
     /**
      * @var EntityWriterInterface
@@ -128,6 +142,8 @@ class MappingService implements MappingServiceInterface
         EntityRepositoryInterface $taxRepo,
         EntityRepositoryInterface $numberRangeRepo,
         EntityRepositoryInterface $ruleRepo,
+        EntityRepositoryInterface $thumbnailSizeRepo,
+        EntityRepositoryInterface $mediaDefaultRepo,
         EntityWriterInterface $entityWriter,
         EntityDefinition $mappingDefinition
     ) {
@@ -143,6 +159,8 @@ class MappingService implements MappingServiceInterface
         $this->taxRepo = $taxRepo;
         $this->numberRangeRepo = $numberRangeRepo;
         $this->ruleRepo = $ruleRepo;
+        $this->thumbnailSizeRepo = $thumbnailSizeRepo;
+        $this->mediaDefaultFolderRepo = $mediaDefaultRepo;
         $this->entityWriter = $entityWriter;
         $this->mappingDefinition = $mappingDefinition;
     }
@@ -457,6 +475,72 @@ class MappingService implements MappingServiceInterface
             );
 
             return $numberRange->getId();
+        }
+
+        return null;
+    }
+
+    public function getDefaultFolderIdByEntity(string $entityName, MigrationContextInterface $migrationContext, Context $context): ?string
+    {
+        $connectionId = $migrationContext->getConnection()->getId();
+        $defaultFolderUuid = $this->getUuid($connectionId, MediaDefaultFolderDefinition::getEntityName(), $entityName, $context);
+
+        if ($defaultFolderUuid !== null) {
+            return $defaultFolderUuid;
+        }
+
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('entity', $entityName));
+        $result = $this->mediaDefaultFolderRepo->search($criteria, $context);
+
+        if ($result->getTotal() > 0) {
+            /** @var MediaDefaultFolderEntity $mediaDefaultFolder */
+            $mediaDefaultFolder = $result->getEntities()->first();
+
+            $this->saveMapping(
+                [
+                    'connectionId' => $migrationContext->getConnection()->getId(),
+                    'entity' => MediaDefaultFolderDefinition::getEntityName(),
+                    'oldIdentifier' => $entityName,
+                    'entityUuid' => $mediaDefaultFolder->getFolder()->getId(),
+                ]
+            );
+
+            return $mediaDefaultFolder->getFolder()->getId();
+        }
+
+        return null;
+    }
+
+    public function getThumbnailSizeUuid(int $width, int $height, MigrationContextInterface $migrationContext, Context $context): ?string
+    {
+        $sizeString = $width . '-' . $height;
+        $connectionId = $migrationContext->getConnection()->getId();
+        $thumbnailSizeUuid = $this->getUuid($connectionId, MediaThumbnailSizeDefinition::getEntityName(), $sizeString, $context);
+
+        if ($thumbnailSizeUuid !== null) {
+            return $thumbnailSizeUuid;
+        }
+
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('width', $width));
+        $criteria->addFilter(new EqualsFilter('height', $height));
+        $result = $this->thumbnailSizeRepo->search($criteria, $context);
+
+        if ($result->getTotal() > 0) {
+            /** @var MediaThumbnailSizeEntity $thumbnailSize */
+            $thumbnailSize = $result->getEntities()->first();
+
+            $this->saveMapping(
+                [
+                    'connectionId' => $migrationContext->getConnection()->getId(),
+                    'entity' => MediaThumbnailSizeDefinition::getEntityName(),
+                    'oldIdentifier' => $sizeString,
+                    'entityUuid' => $thumbnailSize->getId(),
+                ]
+            );
+
+            return $thumbnailSize->getId();
         }
 
         return null;
