@@ -89,6 +89,8 @@ class MappingService implements MappingServiceInterface
 
     protected $uuids = [];
 
+    protected $uuidLists = [];
+
     protected $migratedSalesChannels = [];
 
     protected $writeArray = [];
@@ -144,8 +146,8 @@ class MappingService implements MappingServiceInterface
 
     public function getUuid(string $connectionId, string $entityName, string $oldId, Context $context): ?string
     {
-        if (isset($this->uuids[$connectionId][$entityName][$oldId])) {
-            return $this->uuids[$connectionId][$entityName][$oldId];
+        if (isset($this->uuids[$entityName][$oldId])) {
+            return $this->uuids[$entityName][$oldId];
         }
 
         $criteria = new Criteria();
@@ -160,7 +162,7 @@ class MappingService implements MappingServiceInterface
             $element = $result->getEntities()->first();
             $uuid = $element->getEntityUuid();
 
-            $this->uuids[$connectionId][$entityName][$oldId] = $uuid;
+            $this->uuids[$entityName][$oldId] = $uuid;
 
             return $uuid;
         }
@@ -215,7 +217,9 @@ class MappingService implements MappingServiceInterface
 
     public function getUuidList(string $connectionId, string $entityName, string $identifier, Context $context): array
     {
-        $uuidList = [];
+        if (isset($this->uuidLists[$entityName][$identifier])) {
+            return $this->uuidLists[$entityName][$identifier];
+        }
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('connectionId', $connectionId));
@@ -223,12 +227,15 @@ class MappingService implements MappingServiceInterface
         $criteria->addFilter(new EqualsFilter('oldIdentifier', $identifier));
         $result = $this->migrationMappingRepo->search($criteria, $context);
 
+        $uuidList = [];
         if ($result->getTotal() > 0) {
             /** @var SwagMigrationMappingEntity $entity */
             foreach ($result->getEntities() as $entity) {
                 $uuidList[] = $entity->getEntityUuid();
             }
         }
+
+        $this->uuidLists[$entityName][$identifier] = $uuidList;
 
         return $uuidList;
     }
@@ -522,11 +529,11 @@ class MappingService implements MappingServiceInterface
             }
         }
 
-        if (isset($this->uuids[$connectionId])) {
-            foreach ($this->uuids[$connectionId] as $entityName => $entityArray) {
+        if (!empty($this->uuids)) {
+            foreach ($this->uuids as $entityName => $entityArray) {
                 foreach ($entityArray as $oldId => $uuid) {
                     if ($uuid === $entityUuid) {
-                        unset($this->uuids[$connectionId][$entityName][$oldId]);
+                        unset($this->uuids[$entityName][$oldId]);
                         break;
                     }
                 }
@@ -612,23 +619,21 @@ class MappingService implements MappingServiceInterface
 
     protected function saveMapping(array $mapping): void
     {
-        $connectionId = $mapping['connectionId'];
         $entity = $mapping['entity'];
         $oldId = $mapping['oldIdentifier'];
         $uuid = $mapping['entityUuid'];
 
-        $this->uuids[$connectionId][$entity][$oldId] = $uuid;
+        $this->uuids[$entity][$oldId] = $uuid;
         $this->writeArray[] = $mapping;
     }
 
     protected function saveListMapping(array $mapping): void
     {
-        $connectionId = $mapping['connectionId'];
         $entity = $mapping['entity'];
         $oldId = $mapping['oldIdentifier'];
         $uuid = $mapping['entityUuid'];
 
-        $this->uuids[$connectionId][$entity][$oldId][] = $uuid;
+        $this->uuids[$entity][$oldId][] = $uuid;
         $this->writeArray[] = $mapping;
     }
 

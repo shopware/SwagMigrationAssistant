@@ -37,7 +37,7 @@ class DummyMappingService extends MappingService
             $uuid = $newUuid;
         }
 
-        $this->uuids[$connectionId][$entityName][$oldId] = $uuid;
+        $this->uuids[$entityName][$oldId] = $uuid;
 
         return $uuid;
     }
@@ -52,12 +52,12 @@ class DummyMappingService extends MappingService
 
     public function getUuid(string $connectionId, string $entityName, string $oldId, Context $context): ?string
     {
-        return $this->uuids[$connectionId][$entityName][$oldId] ?? null;
+        return $this->uuids[$entityName][$oldId] ?? null;
     }
 
     public function getUuidList(string $connectionId, string $entityName, string $identifier, Context $context): array
     {
-        return $this->uuids[$connectionId][$entityName][$identifier] ?? [];
+        return $this->uuids[$entityName][$identifier] ?? [];
     }
 
     public function deleteMapping(string $entityUuid, string $connectionId, Context $context): void
@@ -72,7 +72,7 @@ class DummyMappingService extends MappingService
 
     public function pushMapping(string $connectionId, string $entity, string $oldIdentifier, string $uuid)
     {
-        $this->uuids[$connectionId][$entity][$oldIdentifier] = $uuid;
+        $this->uuids[$entity][$oldIdentifier] = $uuid;
     }
 
     public function bulkDeleteMapping(array $mappingUuids, Context $context): void
