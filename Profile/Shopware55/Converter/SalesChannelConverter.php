@@ -1,0 +1,299 @@
+<?php declare(strict_types=1);
+
+namespace SwagMigrationNext\Profile\Shopware55\Converter;
+
+use Shopware\Core\Checkout\Customer\Aggregate\CustomerGroup\CustomerGroupDefinition;
+use Shopware\Core\Content\Category\CategoryDefinition;
+use Shopware\Core\Defaults;
+use Shopware\Core\Framework\Api\Util\AccessKeyHelper;
+use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
+use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
+use SwagMigrationNext\Migration\Converter\ConvertStruct;
+use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
+use SwagMigrationNext\Migration\MigrationContextInterface;
+use SwagMigrationNext\Profile\Shopware55\Logging\Shopware55LogTypes;
+use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
+
+class SalesChannelConverter extends Shopware55Converter
+{
+    /**
+     * @var EntityRepositoryInterface
+     */
+    protected $countryRepository;
+
+    /**
+     * @var EntityRepositoryInterface
+     */
+    protected $paymentRepository;
+
+    /**
+     * @var EntityRepositoryInterface
+     */
+    protected $shippingMethodRepo;
+    /**
+     * @var MappingServiceInterface
+     */
+    private $mappingService;
+
+    /**
+     * @var LoggingServiceInterface
+     */
+    private $loggingService;
+
+    /**
+     * @var string
+     */
+    private $mainLocale;
+
+    /**
+     * @var Context
+     */
+    private $context;
+
+    /**
+     * @var string
+     */
+    private $connectionId;
+
+    public function __construct(
+        MappingServiceInterface $mappingService,
+        LoggingServiceInterface $loggingService,
+        EntityRepositoryInterface $paymentRepository,
+        EntityRepositoryInterface $shippingMethodRepo,
+        EntityRepositoryInterface $countryRepo
+    ) {
+        $this->mappingService = $mappingService;
+        $this->loggingService = $loggingService;
+        $this->paymentRepository = $paymentRepository;
+        $this->shippingMethodRepo = $shippingMethodRepo;
+        $this->countryRepository = $countryRepo;
+    }
+
+    public function getSupportedEntityName(): string
+    {
+        return SalesChannelDefinition::getEntityName();
+    }
+
+    public function getSupportedProfileName(): string
+    {
+        return Shopware55Profile::PROFILE_NAME;
+    }
+
+    public function writeMapping(Context $context): void
+    {
+        $this->mappingService->writeMapping($context);
+    }
+
+    public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
+    {
+        $this->context = $context;
+        $this->mainLocale = $data['_locale'];
+        $this->connectionId = $migrationContext->getConnection()->getId();
+
+        $converted = [];
+        $converted['id'] = $this->mappingService->createNewUuid(
+            $this->connectionId,
+            SalesChannelDefinition::getEntityName(),
+            $data['id'],
+            $context
+        );
+
+        $customerGroupUuid = $this->mappingService->getUuid(
+            $this->connectionId,
+            CustomerGroupDefinition::getEntityName(),
+            $data['customer_group_id'],
+            $context
+        );
+
+        if ($customerGroupUuid === null) {
+            $this->loggingService->addWarning(
+                $migrationContext->getRunUuid(),
+                Shopware55LogTypes::ASSOCIATION_REQUIRED_MISSING,
+                'Associated customer group not found',
+                'Customer group for the sales channel can not be found.',
+                [
+                    'data' => $data,
+                    'missingEntity' => 'customer_group',
+                    'requiredFor' => 'sales_channel',
+                    'missingImportEntity' => 'customer_group',
+                ]
+            );
+
+            return new ConvertStruct(null, $data);
+        }
+
+        $converted['customerGroupId'] = $customerGroupUuid;
+
+        $languageUuid = $this->mappingService->getLanguageUuid(
+            $this->connectionId,
+            $data['locale'],
+            $context
+        );
+
+        if ($languageUuid === null) {
+            $this->loggingService->addWarning(
+                $migrationContext->getRunUuid(),
+                Shopware55LogTypes::ASSOCIATION_REQUIRED_MISSING,
+                'Associated language not found',
+                'Language for the sales channel can not be found.',
+                [
+                    'data' => $data,
+                    'missingEntity' => 'language',
+                    'requiredFor' => 'sales_channel',
+                    'missingImportEntity' => 'language',
+                ]
+            );
+
+            return new ConvertStruct(null, $data);
+        }
+
+        $converted['languageId'] = $languageUuid;
+        $converted['languages'] = $this->getSalesChannelLanguages($languageUuid, $data, $context);
+
+        $currencyUuid = $this->mappingService->getCurrencyUuid(
+            $this->connectionId,
+            $data['currency'],
+            $context
+        );
+
+        if ($currencyUuid === null) {
+            $this->loggingService->addWarning(
+                $migrationContext->getRunUuid(),
+                Shopware55LogTypes::ASSOCIATION_REQUIRED_MISSING,
+                'Associated currency not found',
+                'Currency for the sales channel can not be found.',
+                [
+                    'data' => $data,
+                    'missingEntity' => 'currency',
+                    'requiredFor' => 'sales_channel',
+                    'missingImportEntity' => 'currency',
+                ]
+            );
+
+            return new ConvertStruct(null, $data);
+        }
+
+        $converted['currencyId'] = $currencyUuid;
+        $converted['currencies'] = [
+            [
+                'id' => $currencyUuid,
+            ],
+        ];
+
+        $categoryUuid = $this->mappingService->getUuid(
+            $this->connectionId,
+            CategoryDefinition::getEntityName(),
+            $data['category_id'],
+            $context
+        );
+
+        if ($categoryUuid === null) {
+            $this->loggingService->addWarning(
+                $migrationContext->getRunUuid(),
+                Shopware55LogTypes::ASSOCIATION_REQUIRED_MISSING,
+                'Associated category not found',
+                'Navigation category root for the sales channel can not be found.',
+                [
+                    'data' => $data,
+                    'missingEntity' => 'category',
+                    'requiredFor' => 'sales_channel',
+                    'missingImportEntity' => 'category',
+                ]
+            );
+
+            return new ConvertStruct(null, $data);
+        }
+        $converted['navigationCategoryId'] = $categoryUuid;
+
+        $countryUuid = $this->getFirstActiveCountryId();
+        $converted['countryId'] = $countryUuid;
+        $converted['countries'] = [
+            [
+                'id' => $countryUuid,
+            ],
+        ];
+
+        $paymentMethodUuid = $this->getFirstActivePaymentMethodId();
+        $converted['paymentMethodId'] = $paymentMethodUuid;
+        $converted['paymentMethods'] = [
+            [
+                'id' => $paymentMethodUuid,
+            ],
+        ];
+
+        $shippingMethodUuid = $this->getFirstActiveShippingMethodId();
+        $converted['shippingMethodId'] = $shippingMethodUuid;
+        $converted['shippingMethods'] = [
+            [
+                'id' => $shippingMethodUuid,
+            ],
+        ];
+
+        $converted['typeId'] = Defaults::SALES_CHANNEL_TYPE_STOREFRONT;
+        $this->convertValue($converted, 'name', $data, 'name');
+        $converted['accessKey'] = AccessKeyHelper::generateAccessKey('sales-channel');
+
+        return new ConvertStruct($converted, $data);
+    }
+
+    private function getFirstActiveShippingMethodId(): string
+    {
+        $criteria = (new Criteria())
+            ->setLimit(1)
+            ->addFilter(new EqualsFilter('active', true));
+
+        return $this->shippingMethodRepo->searchIds($criteria, Context::createDefaultContext())->getIds()[0];
+    }
+
+    private function getFirstActivePaymentMethodId(): string
+    {
+        $criteria = (new Criteria())
+            ->setLimit(1)
+            ->addFilter(new EqualsFilter('active', true))
+            ->addSorting(new FieldSorting('position'));
+
+        return $this->paymentRepository->searchIds($criteria, Context::createDefaultContext())->getIds()[0];
+    }
+
+    private function getFirstActiveCountryId(): string
+    {
+        $criteria = (new Criteria())
+            ->setLimit(1)
+            ->addFilter(new EqualsFilter('active', true))
+            ->addSorting(new FieldSorting('position'));
+
+        return $this->countryRepository->searchIds($criteria, Context::createDefaultContext())->getIds()[0];
+    }
+
+    private function getSalesChannelLanguages(string $languageUuid, array $data, Context $context): array
+    {
+        $languages[] = [
+            'id' => $languageUuid,
+        ];
+
+        if (isset($data['children'])) {
+            foreach ($data['children'] as $subShop) {
+                $uuid = $this->mappingService->getLanguageUuid(
+                    $this->connectionId,
+                    $subShop['locale'],
+                    $context
+                );
+
+                if ($uuid === null) {
+                    continue;
+                }
+
+                $languages[] = [
+                    'id' => $uuid,
+                ];
+            }
+        }
+
+        return $languages;
+    }
+}

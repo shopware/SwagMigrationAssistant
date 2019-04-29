@@ -4,8 +4,6 @@ namespace SwagMigrationNext\Profile\Shopware55\DataSelection;
 
 use SwagMigrationNext\Migration\DataSelection\DataSelectionInterface;
 use SwagMigrationNext\Migration\DataSelection\DataSelectionStruct;
-use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CategoryAttributeDataSet;
-use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CategoryDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ManufacturerAttributeDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ProductAttributeDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
@@ -14,7 +12,7 @@ use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\PropertyGroupOpti
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\TranslationDataSet;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
-class ProductCategoryTranslationDataSelection implements DataSelectionInterface
+class ProductDataSelection implements DataSelectionInterface
 {
     public function supports(string $profileName, string $gatewayIdentifier): bool
     {
@@ -24,9 +22,9 @@ class ProductCategoryTranslationDataSelection implements DataSelectionInterface
     public function getData(): DataSelectionStruct
     {
         return new DataSelectionStruct(
-            'categoriesProducts',
+            'products',
             $this->getEntityNames(),
-            'swag-migration.index.selectDataCard.dataSelection.categoriesProducts',
+            'swag-migration.index.selectDataCard.dataSelection.products',
             100,
             true
         );
@@ -38,8 +36,6 @@ class ProductCategoryTranslationDataSelection implements DataSelectionInterface
     public function getEntityNames(): array
     {
         return [
-            CategoryAttributeDataSet::getEntity(),
-            CategoryDataSet::getEntity(),
             ProductAttributeDataSet::getEntity(),
             ProductPriceAttributeDataSet::getEntity(),
             ManufacturerAttributeDataSet::getEntity(),

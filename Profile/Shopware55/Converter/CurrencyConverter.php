@@ -74,7 +74,7 @@ class CurrencyConverter extends Shopware55Converter
                 $migrationContext->getRunUuid(),
                 LogType::ENTITY_ALREADY_EXISTS,
                 'Entity already exists',
-                'Curreny-Entity already exists.',
+                'Currency-Entity already exists.',
                 ['id' => $data['id']]
             );
 
@@ -99,8 +99,8 @@ class CurrencyConverter extends Shopware55Converter
 
     private function getCurrencyTranslation(array &$currency, array $data): void
     {
-        $languageData = $this->mappingService->getDefaultLanguageUuid($this->context);
-        if ($languageData['createData']['localeCode'] === $this->mainLocale) {
+        $language = $this->mappingService->getDefaultLanguage($this->context);
+        if ($language->getLocale()->getCode() === $this->mainLocale) {
             return;
         }
 
@@ -115,16 +115,9 @@ class CurrencyConverter extends Shopware55Converter
             $data['id'] . ':' . $this->mainLocale,
             $this->context
         );
-        $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);
+        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);
+        $localeTranslation['languageId'] = $languageUuid;
 
-        if (isset($languageData['createData']) && !empty($languageData['createData'])) {
-            $localeTranslation['language']['id'] = $languageData['uuid'];
-            $localeTranslation['language']['localeId'] = $languageData['createData']['localeId'];
-            $localeTranslation['language']['name'] = $languageData['createData']['localeCode'];
-        } else {
-            $localeTranslation['languageId'] = $languageData['uuid'];
-        }
-
-        $currency['translations'][$languageData['uuid']] = $localeTranslation;
+        $currency['translations'][$languageUuid] = $localeTranslation;
     }
 }

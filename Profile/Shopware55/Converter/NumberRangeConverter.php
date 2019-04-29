@@ -203,8 +203,8 @@ class NumberRangeConverter extends Shopware55Converter
         MigrationContextInterface $migrationContext,
         Context $context
     ): void {
-        $languageData = $this->mappingService->getDefaultLanguageUuid($context);
-        if ($languageData['createData']['localeCode'] === $data['_locale']) {
+        $language = $this->mappingService->getDefaultLanguage($context);
+        if ($language->getLocale()->getCode() === $data['_locale']) {
             return;
         }
 
@@ -221,16 +221,10 @@ class NumberRangeConverter extends Shopware55Converter
             $context
         );
 
-        $languageData = $this->mappingService->getLanguageUuid($connectionId, $data['_locale'], $context);
-        if (isset($languageData['createData']) && !empty($languageData['createData'])) {
-            $localeTranslation['language']['id'] = $languageData['uuid'];
-            $localeTranslation['language']['localeId'] = $languageData['createData']['localeId'];
-            $localeTranslation['language']['name'] = $languageData['createData']['localeCode'];
-        } else {
-            $localeTranslation['languageId'] = $languageData['uuid'];
-        }
+        $languageUuid = $this->mappingService->getLanguageUuid($connectionId, $data['_locale'], $context);
+        $localeTranslation['languageId'] = $languageUuid;
 
-        $converted['translations'][$languageData['uuid']] = $localeTranslation;
+        $converted['translations'][$languageUuid] = $localeTranslation;
     }
 
     private function setNumberRangeSalesChannels(array &$converted, MigrationContextInterface $migrationContext, Context $context): void

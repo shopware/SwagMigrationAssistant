@@ -418,10 +418,10 @@ class ProductConverter extends Shopware55Converter
             $this->context
         );
 
-        $languageData = $this->mappingService->getDefaultLanguageUuid($this->context);
-        $shouldTranslated = true;
-        if ($languageData['createData']['localeCode'] === $this->locale) {
-            $shouldTranslated = false;
+        $language = $this->mappingService->getDefaultLanguage($this->context);
+        $shouldBeTranslated = true;
+        if ($language->getLocale()->getCode() === $this->locale) {
+            $shouldBeTranslated = false;
         }
 
         foreach ($data['configuratorOptions'] as $option) {
@@ -453,7 +453,7 @@ class ProductConverter extends Shopware55Converter
                 ],
             ];
 
-            if ($shouldTranslated) {
+            if ($shouldBeTranslated) {
                 $this->getOptionTranslation($optionElement, $option);
             }
 
@@ -518,14 +518,8 @@ class ProductConverter extends Shopware55Converter
     private function getOptionTranslation(array &$option, array $data): void
     {
         $localeOptionTranslation = [];
-        $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $this->locale, $this->context);
-        if (isset($languageData['createData']) && !empty($languageData['createData'])) {
-            $localeOptionTranslation['language']['id'] = $languageData['uuid'];
-            $localeOptionTranslation['language']['localeId'] = $languageData['createData']['localeId'];
-            $localeOptionTranslation['language']['name'] = $languageData['createData']['localeCode'];
-        } else {
-            $localeOptionTranslation['languageId'] = $languageData['uuid'];
-        }
+        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->locale, $this->context);
+        $localeOptionTranslation['languageId'] = $languageUuid;
         $localeGroupTranslation = $localeOptionTranslation;
 
         $localeOptionTranslation['id'] = $this->mappingService->createNewUuid(
@@ -548,8 +542,8 @@ class ProductConverter extends Shopware55Converter
         $this->convertValue($localeGroupTranslation, 'name', $data['group'], 'name');
         $this->convertValue($localeGroupTranslation, 'description', $data['group'], 'description');
 
-        $option['translations'][$languageData['uuid']] = $localeOptionTranslation;
-        $option['group']['translations'][$languageData['uuid']] = $localeGroupTranslation;
+        $option['translations'][$languageUuid] = $localeOptionTranslation;
+        $option['group']['translations'][$languageUuid] = $localeGroupTranslation;
     }
 
     private function getManufacturer(array $data): array
@@ -579,8 +573,8 @@ class ProductConverter extends Shopware55Converter
 
     private function getManufacturerTranslation(array &$manufacturer, array $data): void
     {
-        $languageData = $this->mappingService->getDefaultLanguageUuid($this->context);
-        if ($languageData['createData']['localeCode'] === $this->locale) {
+        $language = $this->mappingService->getDefaultLanguage($this->context);
+        if ($language->getLocale()->getCode() === $this->locale) {
             return;
         }
 
@@ -597,16 +591,10 @@ class ProductConverter extends Shopware55Converter
             $this->context
         );
 
-        $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $this->locale, $this->context);
-        if (isset($languageData['createData']) && !empty($languageData['createData'])) {
-            $localeTranslation['language']['id'] = $languageData['uuid'];
-            $localeTranslation['language']['localeId'] = $languageData['createData']['localeId'];
-            $localeTranslation['language']['name'] = $languageData['createData']['localeCode'];
-        } else {
-            $localeTranslation['languageId'] = $languageData['uuid'];
-        }
+        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->locale, $this->context);
+        $localeTranslation['languageId'] = $languageUuid;
 
-        $manufacturer['translations'][$languageData['uuid']] = $localeTranslation;
+        $manufacturer['translations'][$languageUuid] = $localeTranslation;
     }
 
     private function getTax(array $taxData): array
@@ -649,8 +637,8 @@ class ProductConverter extends Shopware55Converter
 
     private function getUnitTranslation(array &$unit, $data): void
     {
-        $languageData = $this->mappingService->getDefaultLanguageUuid($this->context);
-        if ($languageData['createData']['localeCode'] === $this->locale) {
+        $language = $this->mappingService->getDefaultLanguage($this->context);
+        if ($language->getLocale()->getCode() === $this->locale) {
             return;
         }
 
@@ -666,16 +654,10 @@ class ProductConverter extends Shopware55Converter
             $this->context
         );
 
-        $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $this->locale, $this->context);
-        if (isset($languageData['createData']) && !empty($languageData['createData'])) {
-            $localeTranslation['language']['id'] = $languageData['uuid'];
-            $localeTranslation['language']['localeId'] = $languageData['createData']['localeId'];
-            $localeTranslation['language']['name'] = $languageData['createData']['localeCode'];
-        } else {
-            $localeTranslation['languageId'] = $languageData['uuid'];
-        }
+        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->locale, $this->context);
+        $localeTranslation['languageId'] = $languageUuid;
 
-        $unit['translations'][$languageData['uuid']] = $localeTranslation;
+        $unit['translations'][$languageUuid] = $localeTranslation;
     }
 
     private function getMedia(array $media, array $converted): array
@@ -748,8 +730,8 @@ class ProductConverter extends Shopware55Converter
     // Todo: Check if this is necessary, because name and description is currently not translatable
     private function getMediaTranslation(array &$media, array $data): void
     {
-        $languageData = $this->mappingService->getDefaultLanguageUuid($this->context);
-        if ($languageData['createData']['localeCode'] === $this->locale) {
+        $language = $this->mappingService->getDefaultLanguage($this->context);
+        if ($language->getLocale()->getCode() === $this->locale) {
             return;
         }
 
@@ -765,16 +747,10 @@ class ProductConverter extends Shopware55Converter
             $this->context
         );
 
-        $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $this->locale, $this->context);
-        if (isset($languageData['createData']) && !empty($languageData['createData'])) {
-            $localeTranslation['language']['id'] = $languageData['uuid'];
-            $localeTranslation['language']['localeId'] = $languageData['createData']['localeId'];
-            $localeTranslation['language']['name'] = $languageData['createData']['localeCode'];
-        } else {
-            $localeTranslation['languageId'] = $languageData['uuid'];
-        }
+        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->locale, $this->context);
+        $localeTranslation['languageId'] = $languageUuid;
 
-        $media['translations'][$languageData['uuid']] = $localeTranslation;
+        $media['translations'][$languageUuid] = $localeTranslation;
     }
 
     private function getManufacturerMedia(array $media): array
@@ -956,8 +932,8 @@ class ProductConverter extends Shopware55Converter
         $this->convertValue($converted, 'packUnit', $data['detail'], 'packunit');
         unset($data['description_long']);
 
-        $languageData = $this->mappingService->getDefaultLanguageUuid($this->context);
-        if ($languageData['createData']['localeCode'] === $this->locale) {
+        $language = $this->mappingService->getDefaultLanguage($this->context);
+        if ($language->getLocale()->getCode() === $this->locale) {
             return;
         }
 
@@ -977,17 +953,10 @@ class ProductConverter extends Shopware55Converter
             $this->context
         );
 
-        $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $this->locale, $this->context);
-        if (isset($languageData['createData']) && !empty($languageData['createData'])) {
-            $localeTranslation['language']['id'] = $languageData['uuid'];
-            $localeTranslation['language']['localeId'] = $languageData['createData']['localeId'];
-            $localeTranslation['language']['translationCodeId'] = $languageData['createData']['localeId'];
-            $localeTranslation['language']['name'] = $languageData['createData']['localeCode'];
-        } else {
-            $localeTranslation['languageId'] = $languageData['uuid'];
-        }
+        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->locale, $this->context);
+        $localeTranslation['languageId'] = $languageUuid;
 
-        $converted['translations'][$languageData['uuid']] = $localeTranslation;
+        $converted['translations'][$languageUuid] = $localeTranslation;
     }
 
     private function getCategoryMapping(array $categories): array

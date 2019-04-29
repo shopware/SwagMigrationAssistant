@@ -3,14 +3,10 @@
 namespace SwagMigrationNext\Migration\Mapping;
 
 use Shopware\Core\Content\Rule\RuleEntity;
-use Shopware\Core\Defaults;
-use Shopware\Core\Framework\Api\Util\AccessKeyHelper;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenEvent;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
 use Shopware\Core\Framework\Language\LanguageDefinition;
@@ -20,10 +16,10 @@ use Shopware\Core\System\Country\CountryDefinition;
 use Shopware\Core\System\Country\CountryEntity;
 use Shopware\Core\System\Currency\CurrencyDefinition;
 use Shopware\Core\System\Currency\CurrencyEntity;
+use Shopware\Core\System\Locale\LocaleDefinition;
 use Shopware\Core\System\Locale\LocaleEntity;
 use Shopware\Core\System\NumberRange\NumberRangeDefinition;
 use Shopware\Core\System\NumberRange\NumberRangeEntity;
-use Shopware\Core\System\SalesChannel\Aggregate\SalesChannelType\SalesChannelTypeEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 use Shopware\Core\System\Tax\TaxDefinition;
 use Shopware\Core\System\Tax\TaxEntity;
@@ -96,6 +92,8 @@ class MappingService implements MappingServiceInterface
     protected $writeArray = [];
 
     protected $languageData = [];
+
+    protected $locales = [];
 
     /**
      * @var LanguageEntity
@@ -299,10 +297,25 @@ class MappingService implements MappingServiceInterface
 
     public function getLocaleUuid(string $connectionId, string $localeCode, Context $context): string
     {
-        // TODO: Implement getLocaleUuid() method.
+        if (isset($this->locales[$localeCode])) {
+            return $this->locales[$localeCode];
+        }
+
+        $localeUuid = $this->getUuid($connectionId, LocaleDefinition::getEntityName(), $localeCode, $context);
+
+        if ($localeUuid !== null) {
+            $this->locales[$localeCode] = $localeUuid;
+
+            return $localeUuid;
+        }
+
+        $localeUuid = $this->searchLocale($localeCode, $context);
+        $this->locales[$localeCode] = $localeUuid;
+
+        return $localeUuid;
     }
 
-    public function getDefaultLanguageUuid(Context $context): LanguageEntity
+    public function getDefaultLanguage(Context $context): LanguageEntity
     {
         if (!empty($this->defaultLanguageData)) {
             return $this->defaultLanguageData;
@@ -558,29 +571,6 @@ class MappingService implements MappingServiceInterface
         $this->uuids = [];
     }
 
-    public function createSalesChannelMapping(string $connectionId, array $structure, Context $context): void
-    {
-        foreach ($structure as $structureItem) {
-            $uuid = $this->getStructureToSalesChannelMapping($structureItem['id'], $connectionId, $context);
-
-            if ($uuid !== null && !$this->existsSalesChannel($uuid, $context)) {
-                $this->deleteMapping($uuid, $connectionId, $context);
-                $uuid = null;
-            }
-
-            if ($uuid === null) {
-                $uuid = $this->createSalesChannel($structureItem, $context);
-                $this->insertSalesChannelMapping($structureItem['id'], $connectionId, $uuid, $context);
-            }
-
-            if (isset($structureItem['children'])) {
-                $this->createChildrenMapping($connectionId, $structureItem['children'], $uuid, $context);
-            }
-        }
-
-        $this->writeMapping($context);
-    }
-
     public function pushMapping(string $connectionId, string $entity, string $oldIdentifier, string $uuid)
     {
         $this->saveMapping([
@@ -609,147 +599,6 @@ class MappingService implements MappingServiceInterface
 
         $this->uuids[$entity][$oldId][] = $uuid;
         $this->writeArray[] = $mapping;
-    }
-
-    private function createChildrenMapping(string $connectionId, array $children, string $uuid, Context $context): void
-    {
-        foreach ($children as $child) {
-            $oldUuid = $this->getStructureToSalesChannelMapping($child['id'], $connectionId, $context);
-
-            if ($oldUuid !== null && $oldUuid === $uuid) {
-                continue;
-            }
-
-            if ($oldUuid !== null && $oldUuid !== $uuid) {
-                $this->deleteMapping($oldUuid, $connectionId, $context);
-            }
-
-            $this->insertSalesChannelMapping($child['id'], $connectionId, $uuid, $context);
-        }
-    }
-
-    private function getStructureToSalesChannelMapping(string $structureId, string $connectionId, Context $context): ?string
-    {
-        return $this->getUuid(
-            $connectionId,
-            SalesChannelDefinition::getEntityName(),
-            $structureId,
-            $context
-        );
-    }
-
-    private function createSalesChannel(array $structureItem, Context $context): string
-    {
-        $criteria = new Criteria();
-        $criteria->setLimit(1);
-        /** @var SalesChannelTypeEntity $salesChannelType */
-        $salesChannelType = $this->salesChannelTypeRepo->search($criteria, $context)->first();
-
-        $validPaymentMethodId = $this->getFirstActivePaymentMethodId();
-        $validShippingMethodId = $this->getFirstActiveShippingMethodId();
-        $validCountryId = $this->getFirstActiveCountryId();
-
-        // Todo: Replace default values with external values
-        $createEvent = $this->salesChannelRepo->create([
-            [
-                'typeId' => $salesChannelType->getId(),
-
-                'customerGroupId' => Defaults::FALLBACK_CUSTOMER_GROUP,
-
-                'languageId' => Defaults::LANGUAGE_SYSTEM,
-                'languages' => [
-                    [
-                        'id' => Defaults::LANGUAGE_SYSTEM,
-                    ],
-                ],
-
-                'currencyId' => Defaults::CURRENCY,
-                'currencies' => [
-                    [
-                        'id' => Defaults::CURRENCY,
-                    ],
-                ],
-
-                'paymentMethodId' => $validPaymentMethodId,
-                'paymentMethods' => [
-                    [
-                        'id' => $validPaymentMethodId,
-                    ],
-                ],
-
-                'shippingMethodId' => $validShippingMethodId,
-                'shippingMethods' => [
-                    [
-                        'id' => $validShippingMethodId,
-                    ],
-                ],
-
-                'countryId' => $validCountryId,
-                'countries' => [
-                    [
-                        'id' => $validCountryId,
-                    ],
-                ],
-
-                'name' => $structureItem['name'],
-                'accessKey' => AccessKeyHelper::generateAccessKey('sales-channel'),
-            ],
-        ], $context);
-
-        /** @var EntityWrittenEvent $writtenEvent */
-        $writtenEvent = $createEvent->getEvents()->first();
-        $ids = $writtenEvent->getIds();
-
-        return $ids[0]['salesChannelId'];
-    }
-
-    private function getFirstActiveShippingMethodId(): string
-    {
-        $criteria = (new Criteria())
-            ->setLimit(1)
-            ->addFilter(new EqualsFilter('active', true));
-
-        return $this->shippingMethodRepo->searchIds($criteria, Context::createDefaultContext())->getIds()[0];
-    }
-
-    private function getFirstActivePaymentMethodId(): string
-    {
-        $criteria = (new Criteria())
-            ->setLimit(1)
-            ->addFilter(new EqualsFilter('active', true))
-            ->addSorting(new FieldSorting('position'));
-
-        return $this->paymentRepository->searchIds($criteria, Context::createDefaultContext())->getIds()[0];
-    }
-
-    private function getFirstActiveCountryId(): string
-    {
-        $criteria = (new Criteria())
-            ->setLimit(1)
-            ->addFilter(new EqualsFilter('active', true))
-            ->addSorting(new FieldSorting('position'));
-
-        return $this->countryRepository->searchIds($criteria, Context::createDefaultContext())->getIds()[0];
-    }
-
-    private function insertSalesChannelMapping(string $structureId, string $connectionId, string $salesChannelUuid, Context $context): void
-    {
-        $this->createNewUuid(
-            $connectionId,
-            SalesChannelDefinition::getEntityName(),
-            $structureId,
-            $context,
-            [],
-            $salesChannelUuid
-        );
-    }
-
-    private function existsSalesChannel(string $salesChannelUuid, Context $context): bool
-    {
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('id', $salesChannelUuid));
-
-        return $this->salesChannelRepo->search($criteria, $context)->count() > 0;
     }
 
     private function searchLanguageInMapping(string $localeCode, Context $context): ?string

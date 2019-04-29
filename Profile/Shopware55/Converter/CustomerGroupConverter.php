@@ -84,8 +84,8 @@ class CustomerGroupConverter extends Shopware55Converter
 
     public function getCustomerGroupTranslation(array &$customerGroup, array $data): void
     {
-        $languageData = $this->mappingService->getDefaultLanguageUuid($this->context);
-        if ($languageData['createData']['localeCode'] === $this->locale) {
+        $language = $this->mappingService->getDefaultLanguage($this->context);
+        if ($language->getLocale()->getCode() === $this->locale) {
             return;
         }
 
@@ -101,16 +101,10 @@ class CustomerGroupConverter extends Shopware55Converter
             $this->context
         );
 
-        $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $this->locale, $this->context);
-        if (isset($languageData['createData']) && !empty($languageData['createData'])) {
-            $localeTranslation['language']['id'] = $languageData['uuid'];
-            $localeTranslation['language']['localeId'] = $languageData['createData']['localeId'];
-            $localeTranslation['language']['name'] = $languageData['createData']['localeCode'];
-        } else {
-            $localeTranslation['languageId'] = $languageData['uuid'];
-        }
+        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->locale, $this->context);
+        $localeTranslation['languageId'] = $languageUuid;
 
-        $customerGroup['translations'][$languageData['uuid']] = $localeTranslation;
+        $customerGroup['translations'][$languageUuid] = $localeTranslation;
     }
 
     public function writeMapping(Context $context): void

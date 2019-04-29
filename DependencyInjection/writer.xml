@@ -99,5 +99,10 @@
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
             <tag name="shopware.migration.writer"/>
         </service>
+
+        <service id="SwagMigrationNext\Migration\Writer\SalesChannelWriter">
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
+            <tag name="shopware.migration.writer"/>
+        </service>
     </services>
 </container>

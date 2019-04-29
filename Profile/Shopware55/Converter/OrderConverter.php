@@ -595,8 +595,8 @@ class OrderConverter extends Shopware55Converter
 
     private function getCountryTranslation(array &$country, array $data): void
     {
-        $languageData = $this->mappingService->getDefaultLanguageUuid($this->context);
-        if ($languageData['createData']['localeCode'] === $this->mainLocale) {
+        $language = $this->mappingService->getDefaultLanguage($this->context);
+        if ($language->getLocale()->getCode() === $this->mainLocale) {
             return;
         }
 
@@ -612,16 +612,10 @@ class OrderConverter extends Shopware55Converter
             $this->context
         );
 
-        $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);
-        if (isset($languageData['createData']) && !empty($languageData['createData'])) {
-            $localeTranslation['language']['id'] = $languageData['uuid'];
-            $localeTranslation['language']['localeId'] = $languageData['createData']['localeId'];
-            $localeTranslation['language']['name'] = $languageData['createData']['localeCode'];
-        } else {
-            $localeTranslation['languageId'] = $languageData['uuid'];
-        }
+        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);
+        $localeTranslation['languageId'] = $languageUuid;
 
-        $country['translations'][$languageData['uuid']] = $localeTranslation;
+        $country['translations'][$languageUuid] = $localeTranslation;
     }
 
     private function getCountryState(array $oldStateData, string $newCountryId): array
@@ -646,8 +640,8 @@ class OrderConverter extends Shopware55Converter
 
     private function getCountryStateTranslation(array &$state, array $data): void
     {
-        $languageData = $this->mappingService->getDefaultLanguageUuid($this->context);
-        if ($languageData['createData']['localeCode'] === $this->mainLocale) {
+        $language = $this->mappingService->getDefaultLanguage($this->context);
+        if ($language->getLocale()->getCode() === $this->mainLocale) {
             return;
         }
 
@@ -663,16 +657,10 @@ class OrderConverter extends Shopware55Converter
             $this->context
         );
 
-        $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);
-        if (isset($languageData['createData']) && !empty($languageData['createData'])) {
-            $localeTranslation['language']['id'] = $languageData['uuid'];
-            $localeTranslation['language']['localeId'] = $languageData['createData']['localeId'];
-            $localeTranslation['language']['name'] = $languageData['createData']['localeCode'];
-        } else {
-            $localeTranslation['languageId'] = $languageData['uuid'];
-        }
+        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);
+        $localeTranslation['languageId'] = $languageUuid;
 
-        $state['translations'][$languageData['uuid']] = $localeTranslation;
+        $state['translations'][$languageUuid] = $localeTranslation;
     }
 
     private function getDeliveries(array $data, array $converted, CalculatedPrice $shippingCosts): array
@@ -798,8 +786,8 @@ class OrderConverter extends Shopware55Converter
 
     private function getShippingMethodTranslation(array &$shippingMethod, array $data): void
     {
-        $languageData = $this->mappingService->getDefaultLanguageUuid($this->context);
-        if ($languageData['createData']['localeCode'] === $this->mainLocale) {
+        $language = $this->mappingService->getDefaultLanguage($this->context);
+        if ($language->getLocale()->getCode() === $this->mainLocale) {
             return;
         }
 
@@ -817,16 +805,10 @@ class OrderConverter extends Shopware55Converter
             $this->context
         );
 
-        $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);
-        if (isset($languageData['createData']) && !empty($languageData['createData'])) {
-            $localeTranslation['language']['id'] = $languageData['uuid'];
-            $localeTranslation['language']['localeId'] = $languageData['createData']['localeId'];
-            $localeTranslation['language']['name'] = $languageData['createData']['localeCode'];
-        } else {
-            $localeTranslation['languageId'] = $languageData['uuid'];
-        }
+        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);
+        $localeTranslation['languageId'] = $languageUuid;
 
-        $shippingMethod['translations'][$languageData['uuid']] = $localeTranslation;
+        $shippingMethod['translations'][$languageUuid] = $localeTranslation;
     }
 
     private function getLineItems(array $originalData, array &$converted, TaxRuleCollection $taxRules, string $taxStatus, Context $context): array

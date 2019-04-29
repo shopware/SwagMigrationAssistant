@@ -4,6 +4,8 @@ namespace SwagMigrationNext\Profile\Shopware55\DataSelection;
 
 use SwagMigrationNext\Migration\DataSelection\DataSelectionInterface;
 use SwagMigrationNext\Migration\DataSelection\DataSelectionStruct;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CategoryAttributeDataSet;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CategoryDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CurrencyDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CustomerGroupAttributeDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CustomerGroupDataSet;
@@ -24,7 +26,7 @@ class BasicSettingsDataSelection implements DataSelectionInterface
             'basicSettings',
             $this->getEntityNames(),
             'swag-migration.index.selectDataCard.dataSelection.basicSettings',
-            200
+            -100
         );
     }
 
@@ -32,6 +34,8 @@ class BasicSettingsDataSelection implements DataSelectionInterface
     {
         return [
             LanguageDataSet::getEntity(),
+            CategoryAttributeDataSet::getEntity(),
+            CategoryDataSet::getEntity(),
             CustomerGroupAttributeDataSet::getEntity(),
             CustomerGroupDataSet::getEntity(),
             CurrencyDataSet::getEntity(),

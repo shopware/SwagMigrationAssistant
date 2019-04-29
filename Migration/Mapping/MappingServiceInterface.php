@@ -33,7 +33,7 @@ interface MappingServiceInterface
 
     public function getLocaleUuid(string $connectionId, string $localeCode, Context $context): string;
 
-    public function getDefaultLanguageUuid(Context $context): LanguageEntity;
+    public function getDefaultLanguage(Context $context): LanguageEntity;
 
     public function getCountryUuid(string $oldId, string $iso, string $iso3, string $connectionId, Context $context): ?string;
 
@@ -55,8 +55,6 @@ interface MappingServiceInterface
     public function pushMapping(string $connectionId, string $entity, string $oldIdentifier, string $uuid);
 
     public function writeMapping(Context $context): void;
-
-    public function createSalesChannelMapping(string $connectionId, array $structure, Context $context): void;
 
     public function getDefaultAvailabilityRule(Context $context): ?string;
 }

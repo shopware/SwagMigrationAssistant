@@ -72,7 +72,7 @@ class Shopware55LocalProductReader extends Shopware55LocalAbstractReader
         $locale = $this->getDefaultShopLocale();
 
         foreach ($products as $key => &$product) {
-            $product['_locale'] = $locale;
+            $product['_locale'] = str_replace('_', '-', $locale);
 
             if (isset($categories[$product['id']])) {
                 $product['categories'] = $categories[$product['id']];

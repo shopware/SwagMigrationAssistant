@@ -166,8 +166,8 @@ class CategoryConverter extends Shopware55Converter
         $originalData = $data;
         $this->convertValue($converted, 'name', $data, 'description');
 
-        $languageData = $this->mappingService->getDefaultLanguageUuid($this->context);
-        if ($languageData['createData']['localeCode'] === $data['_locale']) {
+        $language = $this->mappingService->getDefaultLanguage($this->context);
+        if ($language->getLocale()->getCode() === $data['_locale']) {
             return;
         }
 
@@ -183,17 +183,10 @@ class CategoryConverter extends Shopware55Converter
             $this->context
         );
 
-        $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $data['_locale'], $this->context);
-        if (isset($languageData['createData']) && !empty($languageData['createData'])) {
-            $localeTranslation['language']['id'] = $languageData['uuid'];
-            $localeTranslation['language']['localeId'] = $languageData['createData']['localeId'];
-            $localeTranslation['language']['translationCodeId'] = $languageData['createData']['localeId'];
-            $localeTranslation['language']['name'] = $languageData['createData']['localeCode'];
-        } else {
-            $localeTranslation['languageId'] = $languageData['uuid'];
-        }
+        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $data['_locale'], $this->context);
+        $localeTranslation['languageId'] = $languageUuid;
 
-        $converted['translations'][$languageData['uuid']] = $localeTranslation;
+        $converted['translations'][$languageUuid] = $localeTranslation;
     }
 
     private function getAttributes(array $attributes): array

@@ -33,7 +33,7 @@ class Shopware55LocalCategoryReader extends Shopware55LocalAbstractReader
         $query->leftJoin('category', 's_media', 'asset', 'category.mediaID = asset.id');
         $this->addTableSelection($query, 's_media', 'asset');
 
-        $query->andWhere('category.parent IS NOT NULL OR category.path IS NOT NULL');
+        $query->andWhere('category.parent IS NOT NULL');
         $query->orderBy('LENGTH(categorypath)');
         $query->setFirstResult($this->migrationContext->getOffset());
         $query->setMaxResults($this->migrationContext->getLimit());
@@ -45,10 +45,12 @@ class Shopware55LocalCategoryReader extends Shopware55LocalAbstractReader
     {
         $ids = [];
         foreach ($categories as $key => $category) {
+            if (empty($category['category.path'])) {
+                continue;
+            }
             $parentCategoryIds = array_values(
                 array_filter(explode('|', (string) $category['category.path']))
             );
-
             $topMostParent = end($parentCategoryIds);
             if (!in_array($topMostParent, $ids, true)) {
                 $ids[] = $topMostParent;
@@ -83,17 +85,16 @@ class Shopware55LocalCategoryReader extends Shopware55LocalAbstractReader
         $ignoredCategories = $this->getIgnoredCategories();
 
         foreach ($categories as $key => $category) {
-            if (empty($category['path'])) {
-                $ignoredCategories[] = $category['id'];
-                continue;
-            }
             if (in_array($category['parent'], $ignoredCategories, true)) {
                 $category['parent'] = null;
             }
-            $parentCategoryIds = array_values(
-                array_filter(explode('|', $category['path']))
-            );
-            $topMostParent = end($parentCategoryIds);
+            $topMostParent = $category['id'];
+            if (!empty($category['path'])) {
+                $parentCategoryIds = array_values(
+                    array_filter(explode('|', $category['path']))
+                );
+                $topMostParent = end($parentCategoryIds);
+            }
             $category['_locale'] = str_replace('_', '-', $topMostCategories[$topMostParent]);
             $resultSet[] = $category;
         }
@@ -107,7 +108,7 @@ class Shopware55LocalCategoryReader extends Shopware55LocalAbstractReader
 
         $query->addSelect('category.id');
         $query->from('s_categories', 'category');
-        $query->andWhere('category.path IS NULL');
+        $query->andWhere('category.parent IS NULL AND category.path IS NULL');
 
         return $query->execute()->fetchAll(\PDO::FETCH_COLUMN);
     }

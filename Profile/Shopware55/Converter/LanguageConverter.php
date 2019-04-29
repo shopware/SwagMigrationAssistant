@@ -82,16 +82,13 @@ class LanguageConverter extends Shopware55Converter
 
         $converted = [];
         $converted['id'] = $this->mappingService->createNewUuid($this->connectionId, LanguageDefinition::getEntityName(), $data['locale'], $context);
-        //$converted['localeId'] = $this->mappingService->createNewUuid();
-        //$converted['translationCodeId'] = '';
 
-        $this->setLanguageTranslation($converted, $data);
+        $this->convertValue($converted, 'name', $data, 'language');
+
+        $localeUuid = $this->mappingService->getLocaleUuid($this->connectionId, $data['locale'], $context);
+        $converted['localeId'] = $localeUuid;
+        $converted['translationCodeId'] = $localeUuid;
 
         return new ConvertStruct($converted, $data);
-    }
-
-    private function setLanguageTranslation(array $converted, array $data)
-    {
-        $this->convertValue($converted, 'name', $data, 'language');
     }
 }
