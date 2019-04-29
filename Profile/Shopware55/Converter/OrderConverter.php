@@ -2,6 +2,7 @@
 
 namespace SwagMigrationNext\Profile\Shopware55\Converter;
 
+use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Checkout\Cart\Price\Struct\CalculatedPrice;
 use Shopware\Core\Checkout\Cart\Price\Struct\CartPrice;
 use Shopware\Core\Checkout\Cart\Price\Struct\QuantityPriceDefinition;
@@ -20,7 +21,6 @@ use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Checkout\Shipping\Aggregate\ShippingMethodTranslation\ShippingMethodTranslationDefinition;
 use Shopware\Core\Checkout\Shipping\ShippingMethodDefinition;
 use Shopware\Core\Content\DeliveryTime\DeliveryTimeDefinition;
-use Shopware\Core\Content\Product\Cart\ProductCollector;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
@@ -899,7 +899,7 @@ class OrderConverter extends Shopware55Converter
                     $lineItem['identifier'] = 'unmapped-product-' . $originalLineItem['articleordernumber'] . '-' . $originalLineItem['articleID'];
                 }
 
-                $lineItem['type'] = ProductCollector::LINE_ITEM_TYPE;
+                $lineItem['type'] = LineItem::PRODUCT_LINE_ITEM_TYPE;
             } else {
                 $this->convertValue($lineItem, 'identifier', $originalLineItem, 'articleordernumber');
 
