@@ -5,7 +5,7 @@
                   v-if="showModal"
                   :title="$tc(modalTitleSnippet)"
                   :isLoading="isLoading"
-                  @closeModal="onCloseModal">
+                  @modal-close="onCloseModal">
 
             {% block swag_migration_wizard_placeholder %}
                 <div class="swag-migration-wizard__placeholder" v-show="isLoading || childIsLoading"></div>

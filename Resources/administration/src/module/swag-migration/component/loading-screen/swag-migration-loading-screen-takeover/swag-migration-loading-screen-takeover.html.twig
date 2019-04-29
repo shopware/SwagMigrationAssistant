@@ -35,7 +35,7 @@
                 <sw-modal v-if="showTakeoverModal"
                           class="swag-migration-loading-screen-takeover__modal"
                           :title="$tc('swag-migration.index.loadingScreenCard.takeoverScreen.takeoverModal.title')"
-                          @closeModal="onCloseTakeoverModal"
+                          @modal-close="onCloseTakeoverModal"
                           variant="small">
 
                     {% block swag_migration_loading_screen_takeover_modal_message %}
@@ -75,7 +75,7 @@
                 <sw-modal v-if="showAbortModal"
                           class="swag-migration-loading-screen-takeover__modal"
                           :title="$tc('swag-migration.index.loadingScreenCard.takeoverScreen.abortModal.title')"
-                          @closeModal="onCloseAbortModal"
+                          @modal-close="onCloseAbortModal"
                           variant="small">
 
                     {% block swag_migration_loading_screen_abort_modal_message %}
@@ -115,7 +115,7 @@
                 <sw-modal v-if="showRedirectModal"
                           class="swag-migration-loading-screen-takeover__modal"
                           :title="$tc('swag-migration.index.loadingScreenCard.takeoverScreen.redirectModal.title')"
-                          @closeModal="onCloseRedirectModal"
+                          @modal-close="onCloseRedirectModal"
                           variant="small">
 
                     {% block swag_migration_loading_screen_redirect_modal_message %}
