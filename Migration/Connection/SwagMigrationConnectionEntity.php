@@ -40,16 +40,6 @@ class SwagMigrationConnectionEntity extends Entity
     protected $profile;
 
     /**
-     * @var \DateTime
-     */
-    protected $createdAt;
-
-    /**
-     * @var \DateTime|null
-     */
-    protected $updatedAt;
-
-    /**
      * @var SwagMigrationRunCollection|null
      */
     protected $runs;
@@ -115,26 +105,6 @@ class SwagMigrationConnectionEntity extends Entity
     public function setProfile(SwagMigrationProfileEntity $profile): void
     {
         $this->profile = $profile;
-    }
-
-    public function getCreatedAt(): \DateTime
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(\DateTime $createdAt): void
-    {
-        $this->createdAt = $createdAt;
-    }
-
-    public function getUpdatedAt(): ?\DateTime
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(\DateTime $updatedAt): void
-    {
-        $this->updatedAt = $updatedAt;
     }
 
     public function getRuns(): ?SwagMigrationRunCollection
