@@ -98,7 +98,7 @@
                     <sw-modal v-if="showAbortMigrationConfirmDialog"
                               class="swag-migration-index-modal-abort-migration-confirm-dialog"
                               :title="$tc('swag-migration.index.confirmAbortDialog.title')"
-                              @closeModal="onCloseAbortMigrationConfirmDialog"
+                              @modal-close="onCloseAbortMigrationConfirmDialog"
                               variant="small">
 
                         {% block swag_migration_index_main_page_modal_abort_migration_confirmDialog_message %}

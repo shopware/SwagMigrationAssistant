@@ -5,7 +5,7 @@
                   v-if="showModal"
                   :title="$tc('swag-migration.history.contextMenu.details')"
                   :isLoading="isLoading"
-                  @closeModal="onCloseModal">
+                  @modal-close="onCloseModal">
             {% block swag_migration_history_detail_modal_content %}
                 <div v-if="isLoading"
                      class="swag-migration-history-detail__loading-placeholder">
