@@ -21,16 +21,6 @@ class SwagMigrationProfileEntity extends Entity
     protected $gatewayName;
 
     /**
-     * @var \DateTime
-     */
-    protected $createdAt;
-
-    /**
-     * @var \DateTime|null
-     */
-    protected $updatedAt;
-
-    /**
      * @var SwagMigrationConnectionCollection|null
      */
     protected $connections;
@@ -53,26 +43,6 @@ class SwagMigrationProfileEntity extends Entity
     public function setGatewayName(string $gatewayName): void
     {
         $this->gatewayName = $gatewayName;
-    }
-
-    public function getCreatedAt(): \DateTime
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(\DateTime $createdAt): void
-    {
-        $this->createdAt = $createdAt;
-    }
-
-    public function getUpdatedAt(): ?\DateTime
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(\DateTime $updatedAt): void
-    {
-        $this->updatedAt = $updatedAt;
     }
 
     public function getConnections(): ?SwagMigrationConnectionCollection
