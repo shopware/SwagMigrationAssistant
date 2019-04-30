@@ -11,6 +11,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
+use Shopware\Core\System\SalesChannel\Aggregate\SalesChannelTranslation\SalesChannelTranslationDefinition;
 use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 use SwagMigrationNext\Migration\Converter\ConvertStruct;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
@@ -235,10 +236,34 @@ class SalesChannelConverter extends Shopware55Converter
         ];
 
         $converted['typeId'] = Defaults::SALES_CHANNEL_TYPE_STOREFRONT;
+        $this->getSalesChannelTranslation($converted, $data);
         $this->convertValue($converted, 'name', $data, 'name');
         $converted['accessKey'] = AccessKeyHelper::generateAccessKey('sales-channel');
 
         return new ConvertStruct($converted, $data);
+    }
+
+    private function getSalesChannelTranslation(array &$salesChannel, array $data): void
+    {
+        $language = $this->mappingService->getDefaultLanguage($this->context);
+        if ($language->getLocale()->getCode() === $this->mainLocale) {
+            return;
+        }
+
+        $localeTranslation = [];
+
+        $this->convertValue($localeTranslation, 'name', $data, 'name');
+
+        $localeTranslation['id'] = $this->mappingService->createNewUuid(
+            $this->connectionId,
+            SalesChannelTranslationDefinition::getEntityName(),
+            $data['id'] . ':' . $this->mainLocale,
+            $this->context
+        );
+        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);
+        $localeTranslation['languageId'] = $languageUuid;
+
+        $salesChannel['translations'][$languageUuid] = $localeTranslation;
     }
 
     private function getFirstActiveShippingMethodId(): string
