@@ -325,7 +325,6 @@ class ProductConverter extends Shopware55Converter
         $this->convertValue($converted, 'productNumber', $data['detail'], 'ordernumber', self::TYPE_STRING);
 
         $this->convertValue($converted, 'active', $data, 'active', self::TYPE_BOOLEAN);
-        $this->convertValue($converted, 'minDeliveryTime', $data, 'shippingtime', self::TYPE_INTEGER);
         $this->convertValue($converted, 'isCloseout', $data, 'laststock', self::TYPE_BOOLEAN);
         $this->convertValue($converted, 'markAsTopseller', $data, 'topseller', self::TYPE_BOOLEAN);
         $this->convertValue($converted, 'allowNotification', $data, 'notification', self::TYPE_BOOLEAN);
@@ -349,8 +348,29 @@ class ProductConverter extends Shopware55Converter
         $this->convertValue($converted, 'referenceUnit', $data['detail'], 'referenceunit', self::TYPE_FLOAT);
         $this->convertValue($converted, 'releaseDate', $data['detail'], 'releasedate', self::TYPE_DATETIME);
         $this->convertValue($converted, 'shippingFree', $data['detail'], 'shippingfree', self::TYPE_BOOLEAN);
-        $this->convertValue($converted, 'minDeliveryTime', $data['detail'], 'shippingtime', self::TYPE_INTEGER);
         $this->convertValue($converted, 'purchasePrice', $data['detail'], 'purchaseprice', self::TYPE_FLOAT);
+
+        if (isset($data['detail']['shippingtime'])) {
+            $deliveryTime = [];
+            preg_match('/([0-9]*)\s*-\s*([0-9]*)/', $data['detail']['shippingtime'], $deliveryTime);
+
+            if (empty($deliveryTime)) {
+                preg_match('/([0-9]*)\s*/', $data['detail']['shippingtime'], $deliveryTime);
+            }
+
+            if (empty($deliveryTime)) {
+                $deliveryTime[1] = (int) $data['detail']['shippingtime'];
+            }
+
+            if (isset($deliveryTime[1])) {
+                $converted['minDeliveryTime'] = (int) $deliveryTime[1];
+            }
+
+            if (isset($deliveryTime[2])) {
+                $converted['maxDeliveryTime'] = (int) $deliveryTime[2];
+            }
+            unset($data['detail']['shippingtime']);
+        }
 
         $this->getOptions($converted, $data);
         $this->getFilters($data);
@@ -373,7 +393,8 @@ class ProductConverter extends Shopware55Converter
             $data['pricegroupActive'],
             $data['filtergroupID'],
             $data['template'],
-            $data['detail']['additionaltext']
+            $data['detail']['additionaltext'],
+            $data['shippingtime']
         );
 
         if (empty($data['detail'])) {
