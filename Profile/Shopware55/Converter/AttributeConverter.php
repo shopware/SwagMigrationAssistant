@@ -3,10 +3,9 @@
 namespace SwagMigrationNext\Profile\Shopware55\Converter;
 
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\CustomField\Aggregate\CustomFieldSet\CustomFieldSetDefinition;
-use Shopware\Core\Framework\CustomField\Aggregate\CustomFieldSetRelation\CustomFieldSetRelationDefinition;
 use SwagMigrationNext\Migration\Converter\AbstractConverter;
 use SwagMigrationNext\Migration\Converter\ConvertStruct;
+use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationNext\Migration\MigrationContextInterface;
 
@@ -28,7 +27,7 @@ abstract class AttributeConverter extends AbstractConverter
 
         $converted['id'] = $this->mappingService->createNewUuid(
             $migrationContext->getConnection()->getId(),
-            CustomFieldSetDefinition::getEntityName(),
+            DefaultEntities::CUSTOM_FIELD_SET,
             $this->getCustomFieldEntityName() . 'CustomFieldSet',
             $context
         );
@@ -44,7 +43,7 @@ abstract class AttributeConverter extends AbstractConverter
             [
                 'id' => $this->mappingService->createNewUuid(
                     $migrationContext->getConnection()->getId(),
-                    CustomFieldSetRelationDefinition::getEntityName(),
+                    DefaultEntities::CUSTOM_FIELD_SET_RELATION,
                     $this->getCustomFieldEntityName() . 'CustomFieldSetRelation',
                     $context
                 ),

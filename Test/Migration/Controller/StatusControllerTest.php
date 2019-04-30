@@ -210,7 +210,7 @@ class StatusControllerTest extends TestCase
         static::assertSame($state[0]['id'], 'products');
         static::assertSame($state[0]['entityNames'][0], DefaultEntities::PRODUCT_CUSTOM_FIELD);
         static::assertSame($state[0]['entityNames'][1], DefaultEntities::PRODUCT_PRICE_CUSTOM_FIELD);
-        static::assertSame($state[0]['entityNames'][2], DefaultEntities::MANUFACTURER_CUSTOM_FIELD);
+        static::assertSame($state[0]['entityNames'][2], DefaultEntities::PRODUCT_MANUFACTURER_CUSTOM_FIELD);
         static::assertSame($state[0]['entityNames'][3], DefaultEntities::PRODUCT);
         static::assertSame($state[0]['entityNames'][4], DefaultEntities::PROPERTY_GROUP_OPTION);
         static::assertSame($state[0]['entityNames'][5], DefaultEntities::TRANSLATION);

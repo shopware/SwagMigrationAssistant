@@ -22,7 +22,7 @@ class ManufacturerAttributeWriter implements WriterInterface
 
     public function supports(): string
     {
-        return DefaultEntities::MANUFACTURER_CUSTOM_FIELD;
+        return DefaultEntities::PRODUCT_MANUFACTURER_CUSTOM_FIELD;
     }
 
     public function writeData(array $data, Context $context): void

@@ -2,18 +2,10 @@
 
 namespace SwagMigrationNext\Profile\Shopware55\Converter;
 
-use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressDefinition;
-use Shopware\Core\Checkout\Customer\Aggregate\CustomerGroup\CustomerGroupDefinition;
-use Shopware\Core\Checkout\Customer\Aggregate\CustomerGroupTranslation\CustomerGroupTranslationDefinition;
-use Shopware\Core\Checkout\Customer\CustomerDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\System\Country\Aggregate\CountryState\CountryStateDefinition;
-use Shopware\Core\System\Country\Aggregate\CountryStateTranslation\CountryStateTranslationDefinition;
-use Shopware\Core\System\Country\Aggregate\CountryTranslation\CountryTranslationDefinition;
-use Shopware\Core\System\Country\CountryDefinition;
-use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 use SwagMigrationNext\Migration\Converter\ConvertStruct;
+use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationNext\Migration\MigrationContextInterface;
@@ -91,7 +83,7 @@ class CustomerConverter extends Shopware55Converter
 
     public function getSupportedEntityName(): string
     {
-        return CustomerDefinition::getEntityName();
+        return DefaultEntities::CUSTOMER;
     }
 
     public function getSupportedProfileName(): string
@@ -148,7 +140,7 @@ class CustomerConverter extends Shopware55Converter
 
         $customerUuid = $this->mappingService->createNewUuid(
             $this->connectionId,
-            CustomerDefinition::getEntityName(),
+            DefaultEntities::CUSTOMER,
             $this->oldCustomerId,
             $this->context
         );
@@ -160,7 +152,7 @@ class CustomerConverter extends Shopware55Converter
         if (isset($data['subshopID'])) {
             $salesChannelId = $this->mappingService->getUuid(
                 $this->connectionId,
-                SalesChannelDefinition::getEntityName(),
+                DefaultEntities::SALES_CHANNEL,
                 $data['subshopID'],
                 $this->context
             );
@@ -297,7 +289,7 @@ class CustomerConverter extends Shopware55Converter
     {
         $group['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            CustomerGroupDefinition::getEntityName(),
+            DefaultEntities::CUSTOMER_GROUP,
             $data['id'],
             $this->context
         );
@@ -328,7 +320,7 @@ class CustomerConverter extends Shopware55Converter
 
         $localeTranslation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            CustomerGroupTranslationDefinition::getEntityName(),
+            DefaultEntities::CUSTOMER_GROUP_TRANSLATION,
             $data['id'] . ':' . $this->mainLocale,
             $this->context
         );
@@ -356,7 +348,7 @@ class CustomerConverter extends Shopware55Converter
                 'Customer-Entity could not converted cause of unknown payment method',
                 [
                     'id' => $this->oldCustomerId,
-                    'entity' => CustomerDefinition::getEntityName(),
+                    'entity' => DefaultEntities::CUSTOMER,
                     'paymentMethod' => $originalData['id'],
                 ]
             );
@@ -404,7 +396,7 @@ class CustomerConverter extends Shopware55Converter
 
             $newAddress['id'] = $this->mappingService->createNewUuid(
                 $this->connectionId,
-                CustomerAddressDefinition::getEntityName(),
+                DefaultEntities::CUSTOMER_ADDRESS,
                 $address['id'],
                 $this->context
             );
@@ -477,7 +469,7 @@ class CustomerConverter extends Shopware55Converter
         } else {
             $country['id'] = $this->mappingService->createNewUuid(
                 $this->connectionId,
-                CountryDefinition::getEntityName(),
+                DefaultEntities::COUNTRY,
                 $oldCountryData['id'],
                 $this->context
             );
@@ -512,7 +504,7 @@ class CustomerConverter extends Shopware55Converter
 
         $localeTranslation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            CountryTranslationDefinition::getEntityName(),
+            DefaultEntities::COUNTRY_TRANSLATION,
             $data['id'] . ':' . $this->mainLocale,
             $this->context
         );
@@ -528,7 +520,7 @@ class CustomerConverter extends Shopware55Converter
         $state = [];
         $state['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            CountryStateDefinition::getEntityName(),
+            DefaultEntities::COUNTRY_STATE,
             $oldStateData['id'],
             $this->context
         );
@@ -557,7 +549,7 @@ class CustomerConverter extends Shopware55Converter
 
         $translation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            CountryStateTranslationDefinition::getEntityName(),
+            DefaultEntities::COUNTRY_STATE_TRANSLATION,
             $data['id'] . ':' . $this->mainLocale,
             $this->context
         );
@@ -643,7 +635,7 @@ class CustomerConverter extends Shopware55Converter
                 'Customer-Entity could not converted cause of unknown salutation',
                 [
                     'id' => $this->oldCustomerId,
-                    'entity' => CustomerDefinition::getEntityName(),
+                    'entity' => DefaultEntities::CUSTOMER,
                     'salutation' => $salutation,
                 ]
             );
@@ -660,7 +652,7 @@ class CustomerConverter extends Shopware55Converter
             if ($attribute === 'id' || $attribute === 'userID') {
                 continue;
             }
-            $result[CustomerDefinition::getEntityName() . '_' . $attribute] = $value;
+            $result[DefaultEntities::CUSTOMER . '_' . $attribute] = $value;
         }
 
         return $result;

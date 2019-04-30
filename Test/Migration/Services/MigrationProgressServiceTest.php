@@ -3,9 +3,6 @@
 namespace SwagMigrationNext\Test\Migration\Services;
 
 use PHPUnit\Framework\TestCase;
-use Shopware\Core\Checkout\Order\OrderDefinition;
-use Shopware\Core\Content\Category\CategoryDefinition;
-use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Dbal\Indexing\IndexerRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -16,6 +13,7 @@ use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\DataSelection\DataSelectionRegistry;
+use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 use SwagMigrationNext\Migration\Mapping\MappingService;
 use SwagMigrationNext\Migration\Media\MediaFileService;
 use SwagMigrationNext\Migration\MigrationContext;
@@ -221,7 +219,7 @@ class MigrationProgressServiceTest extends TestCase
         );
 
         $entities = [];
-        $this->initEntity($entities, CategoryDefinition::getEntityName(), 3, 0);
+        $this->initEntity($entities, DefaultEntities::CATEGORY, 3, 0);
         $this->dataRepo->create(
             $entities,
             $context
@@ -340,7 +338,7 @@ class MigrationProgressServiceTest extends TestCase
 
         static::assertTrue($progress->isMigrationRunning());
         static::assertSame($progress->getFinishedCount(), 5);
-        static::assertSame($progress->getEntity(), CategoryDefinition::getEntityName());
+        static::assertSame($progress->getEntity(), DefaultEntities::CATEGORY);
         static::assertSame($progress->getStatus(), ProgressState::STATUS_WRITE_DATA);
         static::assertSame(
             $progress->getRunProgress(),
@@ -411,7 +409,7 @@ class MigrationProgressServiceTest extends TestCase
 
         static::assertTrue($progress->isMigrationRunning());
         static::assertSame($progress->getFinishedCount(), 0);
-        static::assertSame($progress->getEntity(), OrderDefinition::getEntityName());
+        static::assertSame($progress->getEntity(), DefaultEntities::ORDER);
         static::assertSame($progress->getStatus(), ProgressState::STATUS_WRITE_DATA);
         static::assertSame(
             $progress->getRunProgress(),
@@ -453,7 +451,7 @@ class MigrationProgressServiceTest extends TestCase
 
         static::assertTrue($progress->isMigrationRunning());
         static::assertSame($progress->getFinishedCount(), 0);
-        static::assertSame($progress->getEntity(), MediaDefinition::getEntityName());
+        static::assertSame($progress->getEntity(), DefaultEntities::MEDIA);
         static::assertSame($progress->getStatus(), ProgressState::STATUS_DOWNLOAD_DATA);
         static::assertSame(
             $progress->getRunProgress(),
@@ -510,7 +508,7 @@ class MigrationProgressServiceTest extends TestCase
         static::assertSame($progress->getFinishedCount(), 20);
         static::assertSame($progress->getRunId(), $this->runUuid);
         static::assertSame($progress->getRunId(), $this->runUuid);
-        static::assertSame($progress->getEntity(), MediaDefinition::getEntityName());
+        static::assertSame($progress->getEntity(), DefaultEntities::MEDIA);
         static::assertSame($progress->getStatus(), ProgressState::STATUS_DOWNLOAD_DATA);
         static::assertSame(
             $progress->getRunProgress(),
@@ -610,7 +608,7 @@ class MigrationProgressServiceTest extends TestCase
 
         static::assertTrue($progress->isMigrationRunning());
         static::assertSame($progress->getFinishedCount(), 0);
-        static::assertSame($progress->getEntity(), CategoryDefinition::getEntityName());
+        static::assertSame($progress->getEntity(), DefaultEntities::CATEGORY);
         static::assertSame($progress->getStatus(), ProgressState::STATUS_WRITE_DATA);
     }
 

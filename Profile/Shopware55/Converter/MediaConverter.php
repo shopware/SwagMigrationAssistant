@@ -2,10 +2,9 @@
 
 namespace SwagMigrationNext\Profile\Shopware55\Converter;
 
-use Shopware\Core\Content\Media\Aggregate\MediaTranslation\MediaTranslationDefinition;
-use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Framework\Context;
 use SwagMigrationNext\Migration\Converter\ConvertStruct;
+use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationNext\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationNext\Migration\MigrationContextInterface;
@@ -48,7 +47,7 @@ class MediaConverter extends Shopware55Converter
 
     public function getSupportedEntityName(): string
     {
-        return MediaDefinition::getEntityName();
+        return DefaultEntities::MEDIA;
     }
 
     public function getSupportedProfileName(): string
@@ -74,7 +73,7 @@ class MediaConverter extends Shopware55Converter
         $converted = [];
         $converted['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            MediaDefinition::getEntityName(),
+            DefaultEntities::MEDIA,
             $data['id'],
             $context
         );
@@ -136,7 +135,7 @@ class MediaConverter extends Shopware55Converter
 
         $localeTranslation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            MediaTranslationDefinition::getEntityName(),
+            DefaultEntities::MEDIA_TRANSLATION,
             $data['id'] . ':' . $this->locale,
             $this->context
         );

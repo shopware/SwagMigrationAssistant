@@ -2,20 +2,15 @@
 
 namespace SwagMigrationNext\Profile\Shopware55\Converter;
 
-use Shopware\Core\Content\Category\Aggregate\CategoryTranslation\CategoryTranslationDefinition;
 use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Content\Product\Aggregate\ProductManufacturer\ProductManufacturerDefinition;
-use Shopware\Core\Content\Product\Aggregate\ProductManufacturerTranslation\ProductManufacturerTranslationDefinition;
-use Shopware\Core\Content\Product\Aggregate\ProductTranslation\ProductTranslationDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Content\Property\Aggregate\PropertyGroupOption\PropertyGroupOptionDefinition;
-use Shopware\Core\Content\Property\Aggregate\PropertyGroupOptionTranslation\PropertyGroupOptionTranslationDefinition;
-use Shopware\Core\Content\Property\Aggregate\PropertyGroupTranslation\PropertyGroupTranslationDefinition;
 use Shopware\Core\Content\Property\PropertyGroupDefinition;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\System\Unit\Aggregate\UnitTranslation\UnitTranslationDefinition;
 use Shopware\Core\System\Unit\UnitDefinition;
 use SwagMigrationNext\Migration\Converter\ConvertStruct;
+use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationNext\Migration\MigrationContextInterface;
@@ -120,7 +115,7 @@ class TranslationConverter extends Shopware55Converter
         $product = [];
         $product['id'] = $this->mappingService->getUuid(
             $this->connectionId,
-            ProductDefinition::getEntityName() . '_container',
+            DefaultEntities::PRODUCT . '_container',
             $data['objectkey'],
             $this->context
         );
@@ -128,7 +123,7 @@ class TranslationConverter extends Shopware55Converter
         if (!isset($product['id'])) {
             $product['id'] = $this->mappingService->getUuid(
                 $this->connectionId,
-                ProductDefinition::getEntityName() . '_mainProduct',
+                DefaultEntities::PRODUCT . '_mainProduct',
                 $data['objectkey'],
                 $this->context
             );
@@ -201,7 +196,7 @@ class TranslationConverter extends Shopware55Converter
 
         $productTranslation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            ProductTranslationDefinition::getEntityName(),
+            DefaultEntities::PRODUCT_TRANSLATION,
             $data['id'],
             $this->context
         );
@@ -227,7 +222,7 @@ class TranslationConverter extends Shopware55Converter
         $manufacturer = [];
         $manufacturer['id'] = $this->mappingService->getUuid(
             $this->connectionId,
-            ProductManufacturerDefinition::getEntityName(),
+            DefaultEntities::PRODUCT_MANUFACTURER,
             $data['objectkey'],
             $this->context
         );
@@ -271,7 +266,7 @@ class TranslationConverter extends Shopware55Converter
         $manufacturerTranslation = [];
         $manufacturerTranslation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            ProductManufacturerTranslationDefinition::getEntityName(),
+            DefaultEntities::PRODUCT_MANUFACTURER_TRANSLATION,
             $data['id'],
             $this->context
         );
@@ -321,7 +316,7 @@ class TranslationConverter extends Shopware55Converter
         $unit = [];
         $unit['id'] = $this->mappingService->getUuid(
             $this->connectionId,
-            UnitDefinition::getEntityName(),
+            DefaultEntities::UNIT,
             $data['objectkey'],
             $this->context
         );
@@ -366,7 +361,7 @@ class TranslationConverter extends Shopware55Converter
         $unitTranslation = [];
         $unitTranslation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            UnitTranslationDefinition::getEntityName(),
+            DefaultEntities::UNIT_TRANSLATION,
             $data['id'],
             $this->context
         );
@@ -421,7 +416,7 @@ class TranslationConverter extends Shopware55Converter
         $category = [];
         $category['id'] = $this->mappingService->getUuid(
             $this->connectionId,
-            CategoryDefinition::getEntityName(),
+            DefaultEntities::CATEGORY,
             $data['objectkey'],
             $this->context
         );
@@ -478,7 +473,7 @@ class TranslationConverter extends Shopware55Converter
         $categoryTranslation = [];
         $categoryTranslation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            CategoryTranslationDefinition::getEntityName(),
+            DefaultEntities::CATEGORY_TRANSLATION,
             $data['id'],
             $this->context
         );
@@ -529,7 +524,7 @@ class TranslationConverter extends Shopware55Converter
         $configuratorOption = [];
         $configuratorOption['id'] = $this->mappingService->getUuid(
             $this->connectionId,
-            PropertyGroupOptionDefinition::getEntityName() . '_option',
+            DefaultEntities::PROPERTY_GROUP_OPTION . '_option',
             $data['objectkey'],
             $this->context
         );
@@ -574,7 +569,7 @@ class TranslationConverter extends Shopware55Converter
         $propertyGroupOptionTranslation = [];
         $propertyGroupOptionTranslation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            PropertyGroupOptionTranslationDefinition::getEntityName(),
+            DefaultEntities::PROPERTY_GROUP_OPTION_TRANSLATION,
             $data['id'],
             $this->context
         );
@@ -625,7 +620,7 @@ class TranslationConverter extends Shopware55Converter
         $configuratorOptionGroup = [];
         $configuratorOptionGroup['id'] = $this->mappingService->getUuid(
             $this->connectionId,
-            PropertyGroupDefinition::getEntityName() . '_option',
+            DefaultEntities::PROPERTY_GROUP . '_option',
             $data['objectkey'],
             $this->context
         );
@@ -670,7 +665,7 @@ class TranslationConverter extends Shopware55Converter
         $propertyGroupTranslation = [];
         $propertyGroupTranslation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            PropertyGroupTranslationDefinition::getEntityName(),
+            DefaultEntities::PROPERTY_GROUP_TRANSLATION,
             $data['id'],
             $this->context
         );
@@ -721,7 +716,7 @@ class TranslationConverter extends Shopware55Converter
         $propertyValue = [];
         $propertyValue['id'] = $this->mappingService->getUuid(
             $this->connectionId,
-            PropertyGroupOptionDefinition::getEntityName() . '_property',
+            DefaultEntities::PROPERTY_GROUP_OPTION . '_property',
             $data['objectkey'],
             $this->context
         );
@@ -766,7 +761,7 @@ class TranslationConverter extends Shopware55Converter
         $propertyValueTranslation = [];
         $propertyValueTranslation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            PropertyGroupOptionTranslationDefinition::getEntityName(),
+            DefaultEntities::PROPERTY_GROUP_OPTION_TRANSLATION,
             $data['id'],
             $this->context
         );
@@ -813,7 +808,7 @@ class TranslationConverter extends Shopware55Converter
         $propertyOption = [];
         $propertyOption['id'] = $this->mappingService->getUuid(
             $this->connectionId,
-            PropertyGroupDefinition::getEntityName() . '_property',
+            DefaultEntities::PROPERTY_GROUP . '_property',
             $data['objectkey'],
             $this->context
         );
@@ -858,7 +853,7 @@ class TranslationConverter extends Shopware55Converter
         $propertyOptionTranslation = [];
         $propertyOptionTranslation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            PropertyGroupTranslationDefinition::getEntityName(),
+            DefaultEntities::PROPERTY_GROUP_TRANSLATION,
             $data['id'],
             $this->context
         );

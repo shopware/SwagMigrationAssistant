@@ -9,21 +9,15 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
-use Shopware\Core\Framework\Language\LanguageDefinition;
 use Shopware\Core\Framework\Language\LanguageEntity;
 use Shopware\Core\Framework\Uuid\Uuid;
-use Shopware\Core\System\Country\CountryDefinition;
 use Shopware\Core\System\Country\CountryEntity;
-use Shopware\Core\System\Currency\CurrencyDefinition;
 use Shopware\Core\System\Currency\CurrencyEntity;
-use Shopware\Core\System\Locale\LocaleDefinition;
 use Shopware\Core\System\Locale\LocaleEntity;
-use Shopware\Core\System\NumberRange\NumberRangeDefinition;
 use Shopware\Core\System\NumberRange\NumberRangeEntity;
-use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
-use Shopware\Core\System\Tax\TaxDefinition;
 use Shopware\Core\System\Tax\TaxEntity;
 use SwagMigrationNext\Exception\LocaleNotFoundException;
+use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 use SwagMigrationNext\Migration\MigrationContextInterface;
 
 class MappingService implements MappingServiceInterface
@@ -301,7 +295,7 @@ class MappingService implements MappingServiceInterface
             return $this->locales[$localeCode];
         }
 
-        $localeUuid = $this->getUuid($connectionId, LocaleDefinition::getEntityName(), $localeCode, $context);
+        $localeUuid = $this->getUuid($connectionId, DefaultEntities::LOCALE, $localeCode, $context);
 
         if ($localeUuid !== null) {
             $this->locales[$localeCode] = $localeUuid;
@@ -332,7 +326,7 @@ class MappingService implements MappingServiceInterface
 
     public function getCountryUuid(string $oldId, string $iso, string $iso3, string $connectionId, Context $context): ?string
     {
-        $countryUuid = $this->getUuid($connectionId, CountryDefinition::getEntityName(), $oldId, $context);
+        $countryUuid = $this->getUuid($connectionId, DefaultEntities::COUNTRY, $oldId, $context);
 
         if ($countryUuid !== null) {
             return $countryUuid;
@@ -353,7 +347,7 @@ class MappingService implements MappingServiceInterface
             $this->saveMapping(
                 [
                     'connectionId' => $connectionId,
-                    'entity' => CountryDefinition::getEntityName(),
+                    'entity' => DefaultEntities::COUNTRY,
                     'oldIdentifier' => $oldId,
                     'entityUuid' => $countryUuid,
                 ]
@@ -367,7 +361,7 @@ class MappingService implements MappingServiceInterface
 
     public function getCurrencyUuid(string $connectionId, string $oldShortName, Context $context): ?string
     {
-        $currencyUuid = $this->getUuid($connectionId, CurrencyDefinition::getEntityName(), $oldShortName, $context);
+        $currencyUuid = $this->getUuid($connectionId, DefaultEntities::CURRENCY, $oldShortName, $context);
 
         if ($currencyUuid !== null) {
             return $currencyUuid;
@@ -386,7 +380,7 @@ class MappingService implements MappingServiceInterface
             $this->saveMapping(
                 [
                     'connectionId' => $connectionId,
-                    'entity' => CurrencyDefinition::getEntityName(),
+                    'entity' => DefaultEntities::CURRENCY,
                     'oldIdentifier' => $oldShortName,
                     'entityUuid' => $currencyUuid,
                 ]
@@ -400,7 +394,7 @@ class MappingService implements MappingServiceInterface
 
     public function getTaxUuid(string $connectionId, float $taxRate, Context $context): ?string
     {
-        $taxUuid = $this->getUuid($connectionId, TaxDefinition::getEntityName(), (string) $taxRate, $context);
+        $taxUuid = $this->getUuid($connectionId, DefaultEntities::TAX, (string) $taxRate, $context);
 
         if ($taxUuid !== null) {
             return $taxUuid;
@@ -419,7 +413,7 @@ class MappingService implements MappingServiceInterface
             $this->saveMapping(
                 [
                     'connectionId' => $connectionId,
-                    'entity' => TaxDefinition::getEntityName(),
+                    'entity' => DefaultEntities::TAX,
                     'oldIdentifier' => (string) $taxRate,
                     'entityUuid' => $taxUuid,
                 ]
@@ -448,7 +442,7 @@ class MappingService implements MappingServiceInterface
             $this->saveMapping(
                 [
                     'connectionId' => $migrationContext->getConnection()->getId(),
-                    'entity' => NumberRangeDefinition::getEntityName(),
+                    'entity' => DefaultEntities::NUMBER_RANGE,
                     'oldIdentifier' => $oldId,
                     'entityUuid' => $numberRange->getId(),
                 ]
@@ -471,7 +465,7 @@ class MappingService implements MappingServiceInterface
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('connectionId', $connectionId));
-        $criteria->addFilter(new EqualsFilter('entity', SalesChannelDefinition::getEntityName()));
+        $criteria->addFilter(new EqualsFilter('entity', DefaultEntities::SALES_CHANNEL));
 
         $result = $this->migrationMappingRepo->search($criteria, $context);
         /** @var SwagMigrationMappingCollection $saleschannelMappingCollection */
@@ -604,7 +598,7 @@ class MappingService implements MappingServiceInterface
     private function searchLanguageInMapping(string $localeCode, Context $context): ?string
     {
         $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('entity', LanguageDefinition::getEntityName()));
+        $criteria->addFilter(new EqualsFilter('entity', DefaultEntities::LANGUAGE));
         $criteria->addFilter(new EqualsFilter('oldIdentifier', $localeCode));
         $criteria->setLimit(1);
         $result = $this->migrationMappingRepo->search($criteria, $context);

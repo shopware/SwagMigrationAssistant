@@ -10,26 +10,11 @@ use Shopware\Core\Checkout\Cart\Tax\Struct\CalculatedTaxCollection;
 use Shopware\Core\Checkout\Cart\Tax\Struct\TaxRule;
 use Shopware\Core\Checkout\Cart\Tax\Struct\TaxRuleCollection;
 use Shopware\Core\Checkout\Cart\Tax\TaxCalculator;
-use Shopware\Core\Checkout\Customer\CustomerDefinition;
 use Shopware\Core\Checkout\DiscountSurcharge\Cart\DiscountSurchargeCollector;
-use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressDefinition;
-use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryDefinition;
-use Shopware\Core\Checkout\Order\Aggregate\OrderDeliveryPosition\OrderDeliveryPositionDefinition;
-use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemDefinition;
-use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionDefinition;
-use Shopware\Core\Checkout\Order\OrderDefinition;
-use Shopware\Core\Checkout\Shipping\Aggregate\ShippingMethodTranslation\ShippingMethodTranslationDefinition;
-use Shopware\Core\Checkout\Shipping\ShippingMethodDefinition;
-use Shopware\Core\Content\DeliveryTime\DeliveryTimeDefinition;
-use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\System\Country\Aggregate\CountryState\CountryStateDefinition;
-use Shopware\Core\System\Country\Aggregate\CountryStateTranslation\CountryStateTranslationDefinition;
-use Shopware\Core\System\Country\Aggregate\CountryTranslation\CountryTranslationDefinition;
-use Shopware\Core\System\Country\CountryDefinition;
-use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 use SwagMigrationNext\Migration\Converter\ConvertStruct;
+use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationNext\Migration\MigrationContextInterface;
@@ -124,7 +109,7 @@ class OrderConverter extends Shopware55Converter
 
     public function getSupportedEntityName(): string
     {
-        return OrderDefinition::getEntityName();
+        return DefaultEntities::ORDER;
     }
 
     public function getSupportedProfileName(): string
@@ -181,7 +166,7 @@ class OrderConverter extends Shopware55Converter
         $converted = [];
         $converted['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            OrderDefinition::getEntityName(),
+            DefaultEntities::ORDER,
             $data['id'],
             $this->context
         );
@@ -192,7 +177,7 @@ class OrderConverter extends Shopware55Converter
 
         $customerId = $this->mappingService->getUuid(
             $this->connectionId,
-            CustomerDefinition::getEntityName(),
+            DefaultEntities::CUSTOMER,
             $data['customer']['email'],
             $this->context
         );
@@ -200,7 +185,7 @@ class OrderConverter extends Shopware55Converter
         if ($customerId === null) {
             $customerId = $this->mappingService->getUuid(
                 $this->connectionId,
-                CustomerDefinition::getEntityName(),
+                DefaultEntities::CUSTOMER,
                 $data['userID'],
                 $this->context
             );
@@ -208,8 +193,8 @@ class OrderConverter extends Shopware55Converter
 
         if ($customerId === null) {
             throw new AssociationEntityRequiredMissingException(
-                OrderDefinition::getEntityName(),
-                CustomerDefinition::getEntityName()
+                DefaultEntities::ORDER,
+                DefaultEntities::CUSTOMER
             );
         }
 
@@ -346,7 +331,7 @@ class OrderConverter extends Shopware55Converter
         if (isset($data['subshopID'])) {
             $salesChannelId = $this->mappingService->getUuid(
                 $this->connectionId,
-                SalesChannelDefinition::getEntityName(),
+                DefaultEntities::SALES_CHANNEL,
                 $data['subshopID'],
                 $this->context
             );
@@ -425,7 +410,7 @@ class OrderConverter extends Shopware55Converter
 
         $id = $this->mappingService->createNewUuid(
             $this->connectionId,
-            OrderTransactionDefinition::getEntityName(),
+            DefaultEntities::ORDER_TRANSACTION,
             $this->oldId,
             $this->context
         );
@@ -470,7 +455,7 @@ class OrderConverter extends Shopware55Converter
                 'Order-Transaction-Entity could not converted cause of unknown payment method',
                 [
                     'id' => $this->oldId,
-                    'entity' => OrderDefinition::getEntityName(),
+                    'entity' => DefaultEntities::ORDER,
                     'paymentMethod' => $originalData['payment']['id'],
                 ]
             );
@@ -503,14 +488,14 @@ class OrderConverter extends Shopware55Converter
         $address = [];
         $address['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            OrderAddressDefinition::getEntityName(),
+            DefaultEntities::ORDER_ADDRESS,
             $originalData['id'],
             $this->context
         );
 
         $address['countryId'] = $this->mappingService->getUuid(
             $this->connectionId,
-            CountryDefinition::getEntityName(),
+            DefaultEntities::COUNTRY,
             $originalData['countryID'],
             $this->context
         );
@@ -522,7 +507,7 @@ class OrderConverter extends Shopware55Converter
         if (isset($originalData['stateID'])) {
             $address['countryStateId'] = $this->mappingService->getUuid(
                 $this->connectionId,
-                CountryStateDefinition::getEntityName(),
+                DefaultEntities::COUNTRY_STATE,
                 $originalData['stateID'],
                 $this->context
             );
@@ -572,7 +557,7 @@ class OrderConverter extends Shopware55Converter
         if (!isset($country['id'])) {
             $country['id'] = $this->mappingService->createNewUuid(
                 $this->connectionId,
-                CountryDefinition::getEntityName(),
+                DefaultEntities::COUNTRY,
                 $oldCountryData['id'],
                 $this->context
             );
@@ -607,7 +592,7 @@ class OrderConverter extends Shopware55Converter
 
         $localeTranslation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            CountryTranslationDefinition::getEntityName(),
+            DefaultEntities::COUNTRY_TRANSLATION,
             $data['id'] . ':' . $this->mainLocale,
             $this->context
         );
@@ -623,7 +608,7 @@ class OrderConverter extends Shopware55Converter
         $state = [];
         $state['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            CountryStateDefinition::getEntityName(),
+            DefaultEntities::COUNTRY_STATE,
             $oldStateData['id'],
             $this->context
         );
@@ -652,7 +637,7 @@ class OrderConverter extends Shopware55Converter
 
         $localeTranslation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            CountryStateTranslationDefinition::getEntityName(),
+            DefaultEntities::COUNTRY_STATE_TRANSLATION,
             $data['id'] . ':' . $this->mainLocale,
             $this->context
         );
@@ -670,7 +655,7 @@ class OrderConverter extends Shopware55Converter
         $delivery = [
             'id' => $this->mappingService->createNewUuid(
                 $this->connectionId,
-                OrderDeliveryDefinition::getEntityName(),
+                DefaultEntities::ORDER_DELIVERY,
                 $this->oldId,
                 $this->context
             ),
@@ -703,7 +688,7 @@ class OrderConverter extends Shopware55Converter
                 $positions[] = [
                     'id' => $this->mappingService->createNewUuid(
                         $this->connectionId,
-                        OrderDeliveryPositionDefinition::getEntityName(),
+                        DefaultEntities::ORDER_DELIVERY_POSITION,
                         $lineItem['id'],
                         $this->context
                     ),
@@ -726,7 +711,7 @@ class OrderConverter extends Shopware55Converter
         $shippingMethod = [];
         $shippingMethod['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            ShippingMethodDefinition::getEntityName(),
+            DefaultEntities::SHIPPING_METHOD,
             $originalData['id'],
             $this->context
         );
@@ -741,7 +726,7 @@ class OrderConverter extends Shopware55Converter
 
         $defaultDeliveryTimeUuid = $this->mappingService->getUuid(
             $this->connectionId,
-            DeliveryTimeDefinition::getEntityName(),
+            DefaultEntities::DELIVERY_TIME,
             'default_delivery_time',
             $this->context
         );
@@ -756,7 +741,7 @@ class OrderConverter extends Shopware55Converter
                 'Order-Entity could not converted cause of empty necessary field(s): delivery_time.',
                 [
                     'id' => $this->oldId,
-                    'entity' => OrderDefinition::getEntityName(),
+                    'entity' => DefaultEntities::ORDER,
                     'fields' => ['delivery_time'],
                 ],
                 1
@@ -774,7 +759,7 @@ class OrderConverter extends Shopware55Converter
                 'Order-Entity could not converted cause of empty necessary field(s): availability_rule_id.',
                 [
                     'id' => $this->oldId,
-                    'entity' => OrderDefinition::getEntityName(),
+                    'entity' => DefaultEntities::ORDER,
                     'fields' => ['availability_rule_id'],
                 ],
                 1
@@ -800,7 +785,7 @@ class OrderConverter extends Shopware55Converter
 
         $localeTranslation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            ShippingMethodTranslationDefinition::getEntityName(),
+            DefaultEntities::SHIPPING_METHOD_TRANSLATION,
             $data['id'] . ':' . $this->mainLocale,
             $this->context
         );
@@ -821,7 +806,7 @@ class OrderConverter extends Shopware55Converter
             $lineItem = [
                 'id' => $this->mappingService->createNewUuid(
                     $this->connectionId,
-                    OrderLineItemDefinition::getEntityName(),
+                    DefaultEntities::ORDER_LINE_ITEM,
                     $originalLineItem['id'],
                     $this->context
                 ),
@@ -831,7 +816,7 @@ class OrderConverter extends Shopware55Converter
                 if ($originalLineItem['articleordernumber'] !== null) {
                     $lineItem['identifier'] = $this->mappingService->getUuid(
                         $this->connectionId,
-                        ProductDefinition::getEntityName(),
+                        DefaultEntities::PRODUCT,
                         $originalLineItem['articleordernumber'],
                         $this->context
                     );
@@ -940,7 +925,7 @@ class OrderConverter extends Shopware55Converter
                 'Order-Entity could not converted cause of unknown customer salutation',
                 [
                     'id' => $this->oldId,
-                    'entity' => OrderDefinition::getEntityName(),
+                    'entity' => DefaultEntities::ORDER,
                     'salutation' => $salutation,
                 ]
             );
@@ -957,7 +942,7 @@ class OrderConverter extends Shopware55Converter
             if ($attribute === 'id' || $attribute === 'orderID') {
                 continue;
             }
-            $result[OrderDefinition::getEntityName() . '_' . $attribute] = $value;
+            $result[DefaultEntities::ORDER . '_' . $attribute] = $value;
         }
 
         return $result;

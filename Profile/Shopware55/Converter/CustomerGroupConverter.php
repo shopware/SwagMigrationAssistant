@@ -2,10 +2,9 @@
 
 namespace SwagMigrationNext\Profile\Shopware55\Converter;
 
-use Shopware\Core\Checkout\Customer\Aggregate\CustomerGroup\CustomerGroupDefinition;
-use Shopware\Core\Checkout\Customer\Aggregate\CustomerGroupTranslation\CustomerGroupTranslationDefinition;
 use Shopware\Core\Framework\Context;
 use SwagMigrationNext\Migration\Converter\ConvertStruct;
+use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationNext\Migration\MigrationContextInterface;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
@@ -39,7 +38,7 @@ class CustomerGroupConverter extends Shopware55Converter
 
     public function getSupportedEntityName(): string
     {
-        return CustomerGroupDefinition::getEntityName();
+        return DefaultEntities::CUSTOMER_GROUP;
     }
 
     public function getSupportedProfileName(): string
@@ -56,7 +55,7 @@ class CustomerGroupConverter extends Shopware55Converter
 
         $converted['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            CustomerGroupDefinition::getEntityName(),
+            DefaultEntities::CUSTOMER_GROUP,
             $data['id'],
             $context
         );
@@ -96,7 +95,7 @@ class CustomerGroupConverter extends Shopware55Converter
 
         $localeTranslation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            CustomerGroupTranslationDefinition::getEntityName(),
+            DefaultEntities::CUSTOMER_GROUP_TRANSLATION,
             $data['id'] . ':' . $this->locale,
             $this->context
         );
@@ -120,7 +119,7 @@ class CustomerGroupConverter extends Shopware55Converter
             if ($attribute === 'id' || $attribute === 'customerGroupID') {
                 continue;
             }
-            $result[CustomerGroupDefinition::getEntityName() . '_' . $attribute] = $value;
+            $result[DefaultEntities::CUSTOMER_GROUP . '_' . $attribute] = $value;
         }
 
         return $result;

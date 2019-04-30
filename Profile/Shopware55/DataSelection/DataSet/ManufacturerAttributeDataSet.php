@@ -9,7 +9,7 @@ class ManufacturerAttributeDataSet extends Shopware55DataSet
 {
     public static function getEntity(): string
     {
-        return DefaultEntities::MANUFACTURER_CUSTOM_FIELD;
+        return DefaultEntities::PRODUCT_MANUFACTURER_CUSTOM_FIELD;
     }
 
     public function supports(string $profileName, string $entity): bool

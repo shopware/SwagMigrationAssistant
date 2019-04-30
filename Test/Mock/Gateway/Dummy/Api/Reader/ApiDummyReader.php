@@ -2,13 +2,13 @@
 
 namespace SwagMigrationNext\Test\Mock\Gateway\Dummy\Api\Reader;
 
-use Shopware\Core\Content\Product\ProductDefinition;
+use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 
 class ApiDummyReader
 {
     public function supports(): string
     {
-        return ProductDefinition::getEntityName();
+        return DefaultEntities::PRODUCT;
     }
 
     public function read(): array

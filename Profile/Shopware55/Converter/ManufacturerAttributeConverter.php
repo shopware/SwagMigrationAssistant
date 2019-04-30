@@ -26,6 +26,6 @@ class ManufacturerAttributeConverter extends AttributeConverter
 
     protected function getCustomFieldEntityName(): string
     {
-        return DefaultEntities::MANUFACTURER;
+        return DefaultEntities::PRODUCT_MANUFACTURER;
     }
 }

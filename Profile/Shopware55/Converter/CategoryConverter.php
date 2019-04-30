@@ -2,10 +2,9 @@
 
 namespace SwagMigrationNext\Profile\Shopware55\Converter;
 
-use Shopware\Core\Content\Category\Aggregate\CategoryTranslation\CategoryTranslationDefinition;
-use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Framework\Context;
 use SwagMigrationNext\Migration\Converter\ConvertStruct;
+use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationNext\Migration\MigrationContextInterface;
@@ -50,7 +49,7 @@ class CategoryConverter extends Shopware55Converter
 
     public function getSupportedEntityName(): string
     {
-        return CategoryDefinition::getEntityName();
+        return DefaultEntities::CATEGORY;
     }
 
     public function getSupportedProfileName(): string
@@ -112,13 +111,13 @@ class CategoryConverter extends Shopware55Converter
         if (isset($data['parent'])) {
             $parentUuid = $this->mappingService->getUuid(
                 $this->connectionId,
-                CategoryDefinition::getEntityName(),
+                DefaultEntities::CATEGORY,
                 $data['parent'],
                 $this->context
             );
 
             if ($parentUuid === null) {
-                throw new ParentEntityForChildNotFoundException(CategoryDefinition::getEntityName(), $this->oldCategoryId);
+                throw new ParentEntityForChildNotFoundException(DefaultEntities::CATEGORY, $this->oldCategoryId);
             }
 
             $converted['parentId'] = $parentUuid;
@@ -127,7 +126,7 @@ class CategoryConverter extends Shopware55Converter
 
         $converted['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            CategoryDefinition::getEntityName(),
+            DefaultEntities::CATEGORY,
             $this->oldCategoryId,
             $this->context
         );
@@ -178,7 +177,7 @@ class CategoryConverter extends Shopware55Converter
 
         $localeTranslation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            CategoryTranslationDefinition::getEntityName(),
+            DefaultEntities::CATEGORY_TRANSLATION,
             $this->oldCategoryId . ':' . $data['_locale'],
             $this->context
         );
@@ -197,7 +196,7 @@ class CategoryConverter extends Shopware55Converter
             if ($attribute === 'id' || $attribute === 'categoryID') {
                 continue;
             }
-            $result[CategoryDefinition::getEntityName() . '_' . $attribute] = $value;
+            $result[DefaultEntities::CATEGORY . '_' . $attribute] = $value;
         }
 
         return $result;

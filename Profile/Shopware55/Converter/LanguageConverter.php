@@ -3,8 +3,8 @@
 namespace SwagMigrationNext\Profile\Shopware55\Converter;
 
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\Language\LanguageDefinition;
 use SwagMigrationNext\Migration\Converter\ConvertStruct;
+use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\Logging\LogType;
 use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
@@ -48,7 +48,7 @@ class LanguageConverter extends Shopware55Converter
 
     public function getSupportedEntityName(): string
     {
-        return LanguageDefinition::getEntityName();
+        return DefaultEntities::LANGUAGE;
     }
 
     public function getSupportedProfileName(): string
@@ -81,7 +81,7 @@ class LanguageConverter extends Shopware55Converter
         }
 
         $converted = [];
-        $converted['id'] = $this->mappingService->createNewUuid($this->connectionId, LanguageDefinition::getEntityName(), $data['locale'], $context);
+        $converted['id'] = $this->mappingService->createNewUuid($this->connectionId, DefaultEntities::LANGUAGE, $data['locale'], $context);
 
         $this->convertValue($converted, 'name', $data, 'language');
 

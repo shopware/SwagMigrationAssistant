@@ -10,8 +10,8 @@ use Shopware\Core\Checkout\Cart\Tax\TaxRuleCalculator;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Uuid\Uuid;
-use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
 use SwagMigrationNext\Profile\Shopware55\Converter\CustomerConverter;
@@ -113,7 +113,7 @@ class OrderConverterTest extends TestCase
         $context = Context::createDefaultContext();
         $mappingService->createNewUuid(
             $this->connection->getId(),
-            SalesChannelDefinition::getEntityName(),
+            DefaultEntities::SALES_CHANNEL,
             '1',
             $context,
             null,

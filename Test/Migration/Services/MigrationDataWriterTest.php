@@ -10,12 +10,11 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
-use Shopware\Core\Framework\Language\LanguageDefinition;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
-use Shopware\Core\System\Currency\CurrencyDefinition;
 use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\Data\SwagMigrationDataEntity;
+use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 use SwagMigrationNext\Migration\Logging\LogType;
 use SwagMigrationNext\Migration\Mapping\MappingService;
 use SwagMigrationNext\Migration\Media\MediaFileService;
@@ -561,14 +560,14 @@ class MigrationDataWriterTest extends TestCase
             'EUR',
             $this->context
         );
-        $this->mappingService->createNewUuid($this->connectionId, CurrencyDefinition::getEntityName(), 'JPY', $this->context, [], $currencyUuid);
+        $this->mappingService->createNewUuid($this->connectionId, DefaultEntities::CURRENCY, 'JPY', $this->context, [], $currencyUuid);
 
         $currencyUuid = $this->getCurrencyUuid(
             $this->currencyRepo,
             'EUR',
             $this->context
         );
-        $this->mappingService->createNewUuid($this->connectionId, CurrencyDefinition::getEntityName(), 'JPY', $this->context, [], $currencyUuid);
+        $this->mappingService->createNewUuid($this->connectionId, DefaultEntities::CURRENCY, 'JPY', $this->context, [], $currencyUuid);
 
         $languageUuid = $this->getLanguageUuid(
             $this->localeRepo,
@@ -576,7 +575,7 @@ class MigrationDataWriterTest extends TestCase
             'de-DE',
             $this->context
         );
-        $this->mappingService->createNewUuid($this->connectionId, LanguageDefinition::getEntityName(), 'en-US', $this->context, [], $languageUuid);
+        $this->mappingService->createNewUuid($this->connectionId, DefaultEntities::LANGUAGE, 'en-US', $this->context, [], $languageUuid);
 
         $this->mappingService->writeMapping($this->context);
         $this->clearCacheBefore();

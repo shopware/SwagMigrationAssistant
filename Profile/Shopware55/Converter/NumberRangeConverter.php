@@ -6,11 +6,9 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\System\NumberRange\Aggregate\NumberRangeSalesChannel\NumberRangeSalesChannelDefinition;
-use Shopware\Core\System\NumberRange\Aggregate\NumberRangeTranslation\NumberRangeTranslationDefinition;
-use Shopware\Core\System\NumberRange\NumberRangeDefinition;
 use Shopware\Core\System\NumberRange\NumberRangeEntity;
 use SwagMigrationNext\Migration\Converter\ConvertStruct;
+use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationNext\Migration\MigrationContextInterface;
@@ -62,7 +60,7 @@ class NumberRangeConverter extends Shopware55Converter
 
     public function getSupportedEntityName(): string
     {
-        return NumberRangeDefinition::getEntityName();
+        return DefaultEntities::NUMBER_RANGE;
     }
 
     public function getSupportedProfileName(): string
@@ -153,7 +151,7 @@ class NumberRangeConverter extends Shopware55Converter
     {
         $id = $this->mappingService->getUuid(
             $migrationContext->getConnection()->getId(),
-            NumberRangeDefinition::getEntityName(),
+            DefaultEntities::NUMBER_RANGE,
             $data['id'],
             $context
         );
@@ -170,7 +168,7 @@ class NumberRangeConverter extends Shopware55Converter
         if ($id === null) {
             $id = $this->mappingService->createNewUuid(
                 $migrationContext->getConnection()->getId(),
-                NumberRangeDefinition::getEntityName(),
+                DefaultEntities::NUMBER_RANGE,
                 $data['id'],
                 $context
             );
@@ -216,7 +214,7 @@ class NumberRangeConverter extends Shopware55Converter
 
         $localeTranslation['id'] = $this->mappingService->createNewUuid(
             $connectionId,
-            NumberRangeTranslationDefinition::getEntityName(),
+            DefaultEntities::NUMBER_RANGE_TRANSLATION,
             $data['id'] . ':' . $data['_locale'],
             $context
         );
@@ -238,7 +236,7 @@ class NumberRangeConverter extends Shopware55Converter
             $numberRangeSaleschannel = [];
             $numberRangeSaleschannel['id'] = $this->mappingService->createNewUuid(
                 $connectionId,
-                NumberRangeSalesChannelDefinition::getEntityName(),
+                DefaultEntities::NUMBER_RANGE_SALES_CHANNEL,
                 $converted['id'] . ':' . $saleschannelId,
                 $context
             );

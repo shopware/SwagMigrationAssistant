@@ -3,9 +3,8 @@
 namespace SwagMigrationNext\Profile\Shopware55\Converter;
 
 use Shopware\Core\Framework\Context;
-use Shopware\Core\System\Currency\Aggregate\CurrencyTranslation\CurrencyTranslationDefinition;
-use Shopware\Core\System\Currency\CurrencyDefinition;
 use SwagMigrationNext\Migration\Converter\ConvertStruct;
+use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\Logging\LogType;
 use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
@@ -49,7 +48,7 @@ class CurrencyConverter extends Shopware55Converter
 
     public function getSupportedEntityName(): string
     {
-        return CurrencyDefinition::getEntityName();
+        return DefaultEntities::CURRENCY;
     }
 
     public function getSupportedProfileName(): string
@@ -82,7 +81,7 @@ class CurrencyConverter extends Shopware55Converter
         }
 
         $converted = [];
-        $converted['id'] = $this->mappingService->createNewUuid($this->connectionId, CurrencyDefinition::getEntityName(), $data['currency'], $context);
+        $converted['id'] = $this->mappingService->createNewUuid($this->connectionId, DefaultEntities::CURRENCY, $data['currency'], $context);
         $this->getCurrencyTranslation($converted, $data);
 
         $this->convertValue($converted, 'isDefault', $data, 'standard', self::TYPE_BOOLEAN);
@@ -111,7 +110,7 @@ class CurrencyConverter extends Shopware55Converter
 
         $localeTranslation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            CurrencyTranslationDefinition::getEntityName(),
+            DefaultEntities::CURRENCY_TRANSLATION,
             $data['id'] . ':' . $this->mainLocale,
             $this->context
         );

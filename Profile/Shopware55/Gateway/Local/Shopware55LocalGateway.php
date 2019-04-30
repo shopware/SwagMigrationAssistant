@@ -4,15 +4,7 @@ namespace SwagMigrationNext\Profile\Shopware55\Gateway\Local;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
-use Shopware\Core\Checkout\Customer\Aggregate\CustomerGroup\CustomerGroupDefinition;
-use Shopware\Core\Checkout\Customer\CustomerDefinition;
-use Shopware\Core\Checkout\Order\OrderDefinition;
-use Shopware\Core\Content\Category\CategoryDefinition;
-use Shopware\Core\Content\Media\MediaDefinition;
-use Shopware\Core\Content\Product\ProductDefinition;
-use Shopware\Core\Content\Property\Aggregate\PropertyGroupOption\PropertyGroupOptionDefinition;
-use Shopware\Core\System\Currency\CurrencyDefinition;
-use Shopware\Core\System\NumberRange\NumberRangeDefinition;
+use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 use SwagMigrationNext\Migration\EnvironmentInformation;
 use SwagMigrationNext\Migration\Gateway\AbstractGateway;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CategoryAttributeDataSet;
@@ -152,16 +144,16 @@ class Shopware55LocalGateway extends AbstractGateway
         $environmentData = $reader->read();
 
         $totals = [
-            CategoryDefinition::getEntityName() => $environmentData['categories'],
-            ProductDefinition::getEntityName() => $environmentData['products'],
-            CustomerDefinition::getEntityName() => $environmentData['customers'],
-            OrderDefinition::getEntityName() => $environmentData['orders'],
-            MediaDefinition::getEntityName() => $environmentData['assets'],
-            CustomerGroupDefinition::getEntityName() => $environmentData['customerGroups'],
-            PropertyGroupOptionDefinition::getEntityName() => $environmentData['configuratorOptions'],
-            'translation' => $environmentData['translations'],
-            NumberRangeDefinition::getEntityName() => $environmentData['numberRanges'],
-            CurrencyDefinition::getEntityName() => $environmentData['currencies'],
+            DefaultEntities::CATEGORY => $environmentData['categories'],
+            DefaultEntities::PRODUCT => $environmentData['products'],
+            DefaultEntities::CUSTOMER => $environmentData['customers'],
+            DefaultEntities::ORDER => $environmentData['orders'],
+            DefaultEntities::MEDIA => $environmentData['assets'],
+            DefaultEntities::CUSTOMER_GROUP => $environmentData['customerGroups'],
+            DefaultEntities::PROPERTY_GROUP_OPTION => $environmentData['configuratorOptions'],
+            DefaultEntities::TRANSLATION => $environmentData['translations'],
+            DefaultEntities::NUMBER_RANGE => $environmentData['numberRanges'],
+            DefaultEntities::CURRENCY => $environmentData['currencies'],
         ];
 
         return new EnvironmentInformation(

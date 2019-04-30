@@ -7,10 +7,10 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
-use Shopware\Core\Framework\Language\LanguageDefinition;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationNext\Exception\LocaleNotFoundException;
+use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 use SwagMigrationNext\Migration\Mapping\MappingService;
 use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationNext\Migration\MigrationContext;
@@ -155,7 +155,7 @@ class MappingServiceTest extends TestCase
         $localeCode = 'en-GB';
 
         $this->mappingService->writeMapping($context);
-        $languageUuid = $this->mappingService->createNewUuid($this->connectionId, LanguageDefinition::getEntityName(), $localeCode, $context);
+        $languageUuid = $this->mappingService->createNewUuid($this->connectionId, DefaultEntities::LANGUAGE, $localeCode, $context);
         $this->mappingService->writeMapping($context);
         $response = $this->mappingService->getLanguageUuid($this->connectionId, 'en-GB', $context);
 
@@ -176,18 +176,18 @@ class MappingServiceTest extends TestCase
         $context = Context::createDefaultContext();
         $localeCode = 'swagMigrationTestingLocaleCode';
 
-        $languageUuid = $this->mappingService->createNewUuid($this->connectionId, LanguageDefinition::getEntityName(), $localeCode, $context);
+        $languageUuid = $this->mappingService->createNewUuid($this->connectionId, DefaultEntities::LANGUAGE, $localeCode, $context);
         $this->mappingService->writeMapping($context);
         $this->clearCacheBefore();
 
-        $uuid = $this->mappingService->getUuid($this->connectionId, LanguageDefinition::getEntityName(), $localeCode, $context);
+        $uuid = $this->mappingService->getUuid($this->connectionId, DefaultEntities::LANGUAGE, $localeCode, $context);
         static::assertSame($languageUuid, $uuid);
 
-        $this->mappingService->createNewUuid($this->connectionId, LanguageDefinition::getEntityName(), 'en-GB', $context);
+        $this->mappingService->createNewUuid($this->connectionId, DefaultEntities::LANGUAGE, 'en-GB', $context);
         $this->mappingService->writeMapping($context);
 
         $this->mappingService->deleteMapping($languageUuid, $this->connectionId, $context);
-        $uuid = $this->mappingService->getUuid($this->connectionId, LanguageDefinition::getEntityName(), $localeCode, $context);
+        $uuid = $this->mappingService->getUuid($this->connectionId, DefaultEntities::LANGUAGE, $localeCode, $context);
 
         static::assertNull($uuid);
     }

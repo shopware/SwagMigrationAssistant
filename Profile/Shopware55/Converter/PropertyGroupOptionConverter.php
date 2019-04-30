@@ -2,13 +2,9 @@
 
 namespace SwagMigrationNext\Profile\Shopware55\Converter;
 
-use Shopware\Core\Content\Media\Aggregate\MediaTranslation\MediaTranslationDefinition;
-use Shopware\Core\Content\Media\MediaDefinition;
-use Shopware\Core\Content\Product\Aggregate\ProductProperty\ProductPropertyDefinition;
-use Shopware\Core\Content\Property\Aggregate\PropertyGroupOption\PropertyGroupOptionDefinition;
-use Shopware\Core\Content\Property\PropertyGroupDefinition;
 use Shopware\Core\Framework\Context;
 use SwagMigrationNext\Migration\Converter\ConvertStruct;
+use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationNext\Migration\Media\MediaFileServiceInterface;
@@ -65,7 +61,7 @@ class PropertyGroupOptionConverter extends Shopware55Converter
 
     public function getSupportedEntityName(): string
     {
-        return PropertyGroupOptionDefinition::getEntityName();
+        return DefaultEntities::PROPERTY_GROUP_OPTION;
     }
 
     public function getSupportedProfileName(): string
@@ -88,7 +84,7 @@ class PropertyGroupOptionConverter extends Shopware55Converter
         $converted = [
             'id' => $this->mappingService->createNewUuid(
                 $this->connectionId,
-                PropertyGroupOptionDefinition::getEntityName(),
+                DefaultEntities::PROPERTY_GROUP_OPTION,
                 hash('md5', strtolower($data['name'] . '_' . $data['group']['name'])),
                 $context
             ),
@@ -96,7 +92,7 @@ class PropertyGroupOptionConverter extends Shopware55Converter
             'group' => [
                 'id' => $this->mappingService->createNewUuid(
                     $this->connectionId,
-                    PropertyGroupDefinition::getEntityName(),
+                    DefaultEntities::PROPERTY_GROUP,
                     hash('md5', strtolower($data['group']['name'])),
                     $context
                 ),
@@ -136,7 +132,7 @@ class PropertyGroupOptionConverter extends Shopware55Converter
         $newMedia = [];
         $newMedia['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            MediaDefinition::getEntityName(),
+            DefaultEntities::MEDIA,
             $data['media']['id'],
             $this->context
         );
@@ -177,7 +173,7 @@ class PropertyGroupOptionConverter extends Shopware55Converter
 
         $localeTranslation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            MediaTranslationDefinition::getEntityName(),
+            DefaultEntities::MEDIA_TRANSLATION,
             $data['media']['id'] . ':' . $this->locale,
             $this->context
         );
@@ -201,7 +197,7 @@ class PropertyGroupOptionConverter extends Shopware55Converter
             $converted['productConfiguratorSettings'][] = [
                 'id' => $this->mappingService->createNewUuid(
                     $this->connectionId,
-                    ProductPropertyDefinition::getEntityName(),
+                    DefaultEntities::PRODUCT_PROPERTY,
                     $data['id'] . '_' . $uuid,
                     $this->context
                 ),
@@ -231,7 +227,7 @@ class PropertyGroupOptionConverter extends Shopware55Converter
     {
         $this->mappingService->createNewUuid(
             $this->connectionId,
-            PropertyGroupOptionDefinition::getEntityName() . '_' . $data['type'],
+            DefaultEntities::PROPERTY_GROUP_OPTION . '_' . $data['type'],
             $data['id'],
             $this->context,
             null,
@@ -240,7 +236,7 @@ class PropertyGroupOptionConverter extends Shopware55Converter
 
         $this->mappingService->createNewUuid(
             $this->connectionId,
-            PropertyGroupDefinition::getEntityName() . '_' . $data['type'],
+            DefaultEntities::PROPERTY_GROUP . '_' . $data['type'],
             $data['group']['id'],
             $this->context,
             null,
@@ -249,14 +245,14 @@ class PropertyGroupOptionConverter extends Shopware55Converter
 
         $this->mappingService->createNewUuid(
             $this->connectionId,
-            PropertyGroupOptionDefinition::getEntityName(),
+            DefaultEntities::PROPERTY_GROUP_OPTION,
             hash('md5', strtolower($data['name'] . '_' . $data['group']['name'] . '_' . $data['type'])),
             $this->context
         );
 
         $this->mappingService->createNewUuid(
             $this->connectionId,
-            PropertyGroupOptionDefinition::getEntityName(),
+            DefaultEntities::PROPERTY_GROUP_OPTION,
             hash('md5', strtolower($data['group']['name'] . '_' . $data['type'])),
             $this->context
         );
@@ -264,14 +260,14 @@ class PropertyGroupOptionConverter extends Shopware55Converter
         if ($data['type'] === 'option') {
             $propertyOptionMapping = $this->mappingService->getUuid(
                 $this->connectionId,
-                PropertyGroupOptionDefinition::getEntityName(),
+                DefaultEntities::PROPERTY_GROUP_OPTION,
                 hash('md5', strtolower($data['name'] . '_' . $data['group']['name'] . '_property')),
                 $this->context
             );
 
             $propertyGroupMapping = $this->mappingService->getUuid(
                 $this->connectionId,
-                PropertyGroupDefinition::getEntityName(),
+                DefaultEntities::PROPERTY_GROUP,
                 hash('md5', strtolower($data['group']['name'] . '_property')),
                 $this->context
             );

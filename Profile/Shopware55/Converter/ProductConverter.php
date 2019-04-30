@@ -2,29 +2,12 @@
 
 namespace SwagMigrationNext\Profile\Shopware55\Converter;
 
-use Shopware\Core\Checkout\Customer\Aggregate\CustomerGroup\CustomerGroupDefinition;
-use Shopware\Core\Content\Category\CategoryDefinition;
-use Shopware\Core\Content\Media\Aggregate\MediaTranslation\MediaTranslationDefinition;
-use Shopware\Core\Content\Media\MediaDefinition;
-use Shopware\Core\Content\Product\Aggregate\ProductManufacturer\ProductManufacturerDefinition;
-use Shopware\Core\Content\Product\Aggregate\ProductManufacturerTranslation\ProductManufacturerTranslationDefinition;
-use Shopware\Core\Content\Product\Aggregate\ProductMedia\ProductMediaDefinition;
-use Shopware\Core\Content\Product\Aggregate\ProductPrice\ProductPriceDefinition;
-use Shopware\Core\Content\Product\Aggregate\ProductTranslation\ProductTranslationDefinition;
-use Shopware\Core\Content\Product\ProductDefinition;
-use Shopware\Core\Content\Property\Aggregate\PropertyGroupOption\PropertyGroupOptionDefinition;
-use Shopware\Core\Content\Property\Aggregate\PropertyGroupOptionTranslation\PropertyGroupOptionTranslationDefinition;
-use Shopware\Core\Content\Property\Aggregate\PropertyGroupTranslation\PropertyGroupTranslationDefinition;
-use Shopware\Core\Content\Property\PropertyGroupDefinition;
-use Shopware\Core\Content\Rule\RuleDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Rule\Container\AndRule;
 use Shopware\Core\Framework\Rule\Container\OrRule;
-use Shopware\Core\System\Currency\CurrencyDefinition;
-use Shopware\Core\System\Tax\TaxDefinition;
 use Shopware\Core\System\Unit\Aggregate\UnitTranslation\UnitTranslationDefinition;
-use Shopware\Core\System\Unit\UnitDefinition;
 use SwagMigrationNext\Migration\Converter\ConvertStruct;
+use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationNext\Migration\Media\MediaFileServiceInterface;
@@ -109,7 +92,7 @@ class ProductConverter extends Shopware55Converter
 
     public function getSupportedEntityName(): string
     {
-        return ProductDefinition::getEntityName();
+        return DefaultEntities::PRODUCT;
     }
 
     public function getSupportedProfileName(): string
@@ -185,7 +168,7 @@ class ProductConverter extends Shopware55Converter
     {
         $containerUuid = $this->mappingService->createNewUuid(
             $this->connectionId,
-            ProductDefinition::getEntityName() . '_container',
+            DefaultEntities::PRODUCT . '_container',
             $data['id'],
             $this->context
         );
@@ -198,7 +181,7 @@ class ProductConverter extends Shopware55Converter
         $converted['productNumber'] .= 'M';
         $converted['children'][0]['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            ProductDefinition::getEntityName(),
+            DefaultEntities::PRODUCT,
             $this->oldProductId,
             $this->context
         );
@@ -223,13 +206,13 @@ class ProductConverter extends Shopware55Converter
     {
         $parentUuid = $this->mappingService->getUuid(
             $this->connectionId,
-            ProductDefinition::getEntityName() . '_container',
+            DefaultEntities::PRODUCT . '_container',
             $data['detail']['articleID'],
             $this->context
         );
 
         if ($parentUuid === null) {
-            throw new ParentEntityForChildNotFoundException(ProductDefinition::getEntityName(), $this->oldProductId);
+            throw new ParentEntityForChildNotFoundException(DefaultEntities::PRODUCT, $this->oldProductId);
         }
 
         $converted = $this->getUuidForProduct($data);
@@ -247,14 +230,14 @@ class ProductConverter extends Shopware55Converter
     {
         $converted['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            ProductDefinition::getEntityName(),
+            DefaultEntities::PRODUCT,
             $this->oldProductId,
             $this->context
         );
 
         $this->mappingService->createNewUuid(
             $this->connectionId,
-            ProductDefinition::getEntityName() . '_mainProduct',
+            DefaultEntities::PRODUCT . '_mainProduct',
             $data['detail']['articleID'],
             $this->context,
             null,
@@ -291,7 +274,7 @@ class ProductConverter extends Shopware55Converter
                     'Product-Entity could not converted cause of empty necessary field(s): manufacturer.',
                     [
                         'id' => $this->oldProductId,
-                        'entity' => ProductDefinition::getEntityName(),
+                        'entity' => DefaultEntities::PRODUCT,
                         'fields' => ['manufacturer'],
                     ],
                     1
@@ -336,7 +319,7 @@ class ProductConverter extends Shopware55Converter
         unset($data['categories']);
 
         if (isset($data['attributes'])) {
-            $converted['customFields'] = $this->getAttributes($data['attributes'], ProductDefinition::getEntityName(), ['id', 'articleID', 'articledetailsID']);
+            $converted['customFields'] = $this->getAttributes($data['attributes'], DefaultEntities::PRODUCT, ['id', 'articleID', 'articledetailsID']);
         }
         unset($data['attributes']);
 
@@ -413,7 +396,7 @@ class ProductConverter extends Shopware55Converter
         $options = [];
         $productContainerUuid = $this->mappingService->getUuid(
             $this->connectionId,
-            ProductDefinition::getEntityName() . '_container',
+            DefaultEntities::PRODUCT . '_container',
             $this->mainProductId,
             $this->context
         );
@@ -438,7 +421,7 @@ class ProductConverter extends Shopware55Converter
             $optionElement = [
                 'id' => $this->mappingService->createNewUuid(
                     $this->connectionId,
-                    PropertyGroupOptionDefinition::getEntityName(),
+                    DefaultEntities::PROPERTY_GROUP_OPTION,
                     hash('md5', strtolower($option['name'] . '_' . $option['group']['name'])),
                     $this->context
                 ),
@@ -446,7 +429,7 @@ class ProductConverter extends Shopware55Converter
                 'group' => [
                     'id' => $this->mappingService->createNewUuid(
                         $this->connectionId,
-                        PropertyGroupDefinition::getEntityName(),
+                        DefaultEntities::PROPERTY_GROUP,
                         hash('md5', strtolower($option['group']['name'])),
                         $this->context
                     ),
@@ -481,7 +464,7 @@ class ProductConverter extends Shopware55Converter
 
         $productContainerUuid = $this->mappingService->getUuid(
             $this->connectionId,
-            ProductDefinition::getEntityName() . '_container',
+            DefaultEntities::PRODUCT . '_container',
             $this->mainProductId,
             $this->context
         );
@@ -489,7 +472,7 @@ class ProductConverter extends Shopware55Converter
         if ($productContainerUuid === null) {
             $productContainerUuid = $this->mappingService->getUuid(
                 $this->connectionId,
-                ProductDefinition::getEntityName() . '_mainProduct',
+                DefaultEntities::PRODUCT . '_mainProduct',
                 $this->mainProductId,
                 $this->context
             );
@@ -524,7 +507,7 @@ class ProductConverter extends Shopware55Converter
 
         $localeOptionTranslation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            PropertyGroupOptionTranslationDefinition::getEntityName(),
+            DefaultEntities::PROPERTY_GROUP_OPTION_TRANSLATION,
             hash('md5', strtolower($data['name'] . '_' . $data['group']['name'])) . ':' . $this->locale,
             $this->context
         );
@@ -534,7 +517,7 @@ class ProductConverter extends Shopware55Converter
 
         $localeGroupTranslation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            PropertyGroupTranslationDefinition::getEntityName(),
+            DefaultEntities::PROPERTY_GROUP_TRANSLATION,
             hash('md5', strtolower($data['group']['name'])) . ':' . $this->locale,
             $this->context
         );
@@ -550,7 +533,7 @@ class ProductConverter extends Shopware55Converter
     {
         $manufacturer['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            ProductManufacturerDefinition::getEntityName(),
+            DefaultEntities::PRODUCT_MANUFACTURER,
             $data['id'],
             $this->context
         );
@@ -565,7 +548,7 @@ class ProductConverter extends Shopware55Converter
         }
 
         if (isset($data['attributes'])) {
-            $manufacturer['customFields'] = $this->getAttributes($data['attributes'], ProductManufacturerDefinition::getEntityName(), ['id', 'supplierID']);
+            $manufacturer['customFields'] = $this->getAttributes($data['attributes'], DefaultEntities::PRODUCT_MANUFACTURER, ['id', 'supplierID']);
         }
 
         return $manufacturer;
@@ -586,7 +569,7 @@ class ProductConverter extends Shopware55Converter
 
         $localeTranslation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            ProductManufacturerTranslationDefinition::getEntityName(),
+            DefaultEntities::PRODUCT_MANUFACTURER_TRANSLATION,
             $data['id'] . ':' . $this->locale,
             $this->context
         );
@@ -605,7 +588,7 @@ class ProductConverter extends Shopware55Converter
         if (empty($taxUuid)) {
             $taxUuid = $this->mappingService->createNewUuid(
                 $this->connectionId,
-                TaxDefinition::getEntityName(),
+                DefaultEntities::TAX,
                 $taxData['id'],
                 $this->context
             );
@@ -623,7 +606,7 @@ class ProductConverter extends Shopware55Converter
         $unit = [];
         $unit['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            UnitDefinition::getEntityName(),
+            DefaultEntities::UNIT,
             $data['id'],
             $this->context
         );
@@ -683,7 +666,7 @@ class ProductConverter extends Shopware55Converter
             $newProductMedia = [];
             $newProductMedia['id'] = $this->mappingService->createNewUuid(
                 $this->connectionId,
-                ProductMediaDefinition::getEntityName(),
+                DefaultEntities::PRODUCT_MEDIA,
                 $mediaData['id'],
                 $this->context
             );
@@ -693,7 +676,7 @@ class ProductConverter extends Shopware55Converter
             $newMedia = [];
             $newMedia['id'] = $this->mappingService->createNewUuid(
                 $this->connectionId,
-                MediaDefinition::getEntityName(),
+                DefaultEntities::MEDIA,
                 $mediaData['media']['id'],
                 $this->context
             );
@@ -742,7 +725,7 @@ class ProductConverter extends Shopware55Converter
 
         $localeTranslation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            MediaTranslationDefinition::getEntityName(),
+            DefaultEntities::MEDIA_TRANSLATION,
             $data['media']['id'] . ':' . $this->locale,
             $this->context
         );
@@ -757,7 +740,7 @@ class ProductConverter extends Shopware55Converter
     {
         $manufacturerMedia['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            MediaDefinition::getEntityName(),
+            DefaultEntities::MEDIA,
             $media['id'],
             $this->context
         );
@@ -801,7 +784,7 @@ class ProductConverter extends Shopware55Converter
 
             $customerGroupUuid = $this->mappingService->getUuid(
                 $this->connectionId,
-                CustomerGroupDefinition::getEntityName(),
+                DefaultEntities::CUSTOMER_GROUP,
                 $price['customergroup']['id'],
                 $this->context
             );
@@ -812,35 +795,35 @@ class ProductConverter extends Shopware55Converter
 
             $productPriceRuleUuid = $this->mappingService->createNewUuid(
                 $this->connectionId,
-                RuleDefinition::getEntityName(),
+                DefaultEntities::RULE,
                 'customerGroupRule_productPriceRule_' . $price['id'] . '_' . $price['customergroup']['id'],
                 $this->context
             );
 
             $priceRuleUuid = $this->mappingService->createNewUuid(
                 $this->connectionId,
-                RuleDefinition::getEntityName(),
+                DefaultEntities::RULE,
                 'customerGroupRule_' . $price['customergroup']['id'],
                 $this->context
             );
 
             $orContainerUuid = $this->mappingService->createNewUuid(
                 $this->connectionId,
-                RuleDefinition::getEntityName(),
+                DefaultEntities::RULE,
                 'customerGroupRule_orContainer_' . $price['customergroup']['id'],
                 $this->context
             );
 
             $andContainerUuid = $this->mappingService->createNewUuid(
                 $this->connectionId,
-                RuleDefinition::getEntityName(),
+                DefaultEntities::RULE,
                 'customerGroupRule_andContainer_' . $price['customergroup']['id'],
                 $this->context
             );
 
             $conditionUuid = $this->mappingService->createNewUuid(
                 $this->connectionId,
-                RuleDefinition::getEntityName(),
+                DefaultEntities::RULE,
                 'customerGroupRule_condition_' . $price['customergroup']['id'],
                 $this->context
             );
@@ -851,7 +834,7 @@ class ProductConverter extends Shopware55Converter
             if (isset($price['currencyShortName'])) {
                 $currencyUuid = $this->mappingService->getUuid(
                     $this->connectionId,
-                    CurrencyDefinition::getEntityName(),
+                    DefaultEntities::CURRENCY,
                     $price['currencyShortName'],
                     $this->context
                 );
@@ -913,7 +896,7 @@ class ProductConverter extends Shopware55Converter
             ];
 
             if (isset($price['attributes'])) {
-                $data['customFields'] = $this->getAttributes($price, ProductPriceDefinition::getEntityName(), ['id', 'priceID']);
+                $data['customFields'] = $this->getAttributes($price, DefaultEntities::PRODUCT_PRICE, ['id', 'priceID']);
             }
 
             $newData[] = $data;
@@ -948,7 +931,7 @@ class ProductConverter extends Shopware55Converter
 
         $defaultTranslation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            ProductTranslationDefinition::getEntityName(),
+            DefaultEntities::PRODUCT_TRANSLATION,
             $this->oldProductId . ':' . $this->locale,
             $this->context
         );
@@ -966,7 +949,7 @@ class ProductConverter extends Shopware55Converter
         foreach ($categories as $key => $category) {
             $categoryUuid = $this->mappingService->getUuid(
                 $this->connectionId,
-                CategoryDefinition::getEntityName(),
+                DefaultEntities::CATEGORY,
                 $category['id'],
                 $this->context
             );

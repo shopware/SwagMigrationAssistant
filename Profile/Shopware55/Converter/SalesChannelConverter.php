@@ -2,8 +2,6 @@
 
 namespace SwagMigrationNext\Profile\Shopware55\Converter;
 
-use Shopware\Core\Checkout\Customer\Aggregate\CustomerGroup\CustomerGroupDefinition;
-use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Api\Util\AccessKeyHelper;
 use Shopware\Core\Framework\Context;
@@ -11,9 +9,8 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
-use Shopware\Core\System\SalesChannel\Aggregate\SalesChannelTranslation\SalesChannelTranslationDefinition;
-use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 use SwagMigrationNext\Migration\Converter\ConvertStruct;
+use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationNext\Migration\MigrationContextInterface;
@@ -77,7 +74,7 @@ class SalesChannelConverter extends Shopware55Converter
 
     public function getSupportedEntityName(): string
     {
-        return SalesChannelDefinition::getEntityName();
+        return DefaultEntities::SALES_CHANNEL;
     }
 
     public function getSupportedProfileName(): string
@@ -99,14 +96,14 @@ class SalesChannelConverter extends Shopware55Converter
         $converted = [];
         $converted['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            SalesChannelDefinition::getEntityName(),
+            DefaultEntities::SALES_CHANNEL,
             $data['id'],
             $context
         );
 
         $customerGroupUuid = $this->mappingService->getUuid(
             $this->connectionId,
-            CustomerGroupDefinition::getEntityName(),
+            DefaultEntities::CUSTOMER_GROUP,
             $data['customer_group_id'],
             $context
         );
@@ -188,7 +185,7 @@ class SalesChannelConverter extends Shopware55Converter
 
         $categoryUuid = $this->mappingService->getUuid(
             $this->connectionId,
-            CategoryDefinition::getEntityName(),
+            DefaultEntities::CATEGORY,
             $data['category_id'],
             $context
         );
@@ -256,7 +253,7 @@ class SalesChannelConverter extends Shopware55Converter
 
         $localeTranslation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            SalesChannelTranslationDefinition::getEntityName(),
+            DefaultEntities::SALES_CHANNEL_TRANSLATION,
             $data['id'] . ':' . $this->mainLocale,
             $this->context
         );
