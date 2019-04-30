@@ -81,10 +81,10 @@ class ProductAttributeConverterTest extends TestCase
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('relations', $converted);
         static::assertSame('product', $converted['relations'][0]['entityName']);
-        static::assertSame('product_categorydate1', $converted['attributes'][0]['name']);
-        static::assertSame('date', $converted['attributes'][0]['type']);
-        static::assertSame('date', $converted['attributes'][0]['config']['type']);
-        static::assertSame('date', $converted['attributes'][0]['config']['dateType']);
-        static::assertSame('date', $converted['attributes'][0]['config']['attributeType']);
+        static::assertSame('product_categorydate1', $converted['customFields'][0]['name']);
+        static::assertSame('date', $converted['customFields'][0]['type']);
+        static::assertSame('date', $converted['customFields'][0]['config']['type']);
+        static::assertSame('date', $converted['customFields'][0]['config']['dateType']);
+        static::assertSame('date', $converted['customFields'][0]['config']['customFieldType']);
     }
 }

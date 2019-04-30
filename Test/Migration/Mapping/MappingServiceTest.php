@@ -5,7 +5,6 @@ namespace SwagMigrationNext\Test\Migration\Mapping;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenEvent;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\Language\LanguageDefinition;
@@ -160,35 +159,7 @@ class MappingServiceTest extends TestCase
         $this->mappingService->writeMapping($context);
         $response = $this->mappingService->getLanguageUuid($this->connectionId, 'en-GB', $context);
 
-        static::assertSame($languageUuid, $response['uuid']);
-        static::assertSame($localeCode, $response['createData']['localeCode']);
-    }
-
-    public function testGetLanguageUuidWithNewLanguage(): void
-    {
-        $context = Context::createDefaultContext();
-        $profileId = $this->profileUuidService->getProfileUuid();
-        $localeCode = 'swagMigrationTestingLocaleCode';
-
-        $uuid = $this->localeRepo->create(
-            [
-                [
-                    'code' => $localeCode,
-                    'name' => 'Testing Locale Name',
-                    'territory' => 'Testing Locale Territory',
-                ],
-            ],
-            $context
-        );
-        /** @var EntityWrittenEvent $writtenEvent */
-        $writtenEvent = $uuid->getEvents()->first();
-        $localeIds = $writtenEvent->getIds()[0];
-        $localeId = $localeIds['localeId'];
-
-        $response = $this->mappingService->getLanguageUuid($profileId, 'swagMigrationTestingLocaleCode', $context);
-
-        static::assertSame($localeId, $response['createData']['localeId']);
-        static::assertSame($localeCode, $response['createData']['localeCode']);
+        static::assertSame($languageUuid, $response);
     }
 
     public function testGetCountryUuidWithNoResult(): void

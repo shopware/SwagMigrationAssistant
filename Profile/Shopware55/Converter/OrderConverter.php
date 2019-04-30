@@ -28,7 +28,6 @@ use Shopware\Core\System\Country\Aggregate\CountryState\CountryStateDefinition;
 use Shopware\Core\System\Country\Aggregate\CountryStateTranslation\CountryStateTranslationDefinition;
 use Shopware\Core\System\Country\Aggregate\CountryTranslation\CountryTranslationDefinition;
 use Shopware\Core\System\Country\CountryDefinition;
-use Shopware\Core\System\Currency\CurrencyDefinition;
 use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 use SwagMigrationNext\Migration\Converter\ConvertStruct;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
@@ -234,9 +233,8 @@ class OrderConverter extends Shopware55Converter
 
         $currencyUuid = null;
         if (isset($data['paymentcurrency']['currency'])) {
-            $currencyUuid = $this->mappingService->getUuid(
+            $currencyUuid = $this->mappingService->getCurrencyUuid(
                 $this->connectionId,
-                CurrencyDefinition::getEntityName(),
                 $data['paymentcurrency']['currency'],
                 $this->context
             );
@@ -311,7 +309,9 @@ class OrderConverter extends Shopware55Converter
             $data['invoice_amount'],
             $data['invoice_shipping_net'],
             $data['invoice_shipping'],
-            $data['details']
+            $data['details'],
+            $data['currency'],
+            $data['paymentcurrency']
         );
 
         $converted['deliveries'] = $this->getDeliveries($data, $converted, $shippingCosts);

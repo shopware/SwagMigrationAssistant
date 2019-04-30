@@ -2,9 +2,11 @@
 
 namespace SwagMigrationNext\Test\Mock\Migration\Mapping;
 
+use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Language\LanguageEntity;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\System\Locale\LocaleEntity;
 use SwagMigrationNext\Migration\Mapping\MappingService;
 
 class DummyMappingService extends MappingService
@@ -97,7 +99,7 @@ class DummyMappingService extends MappingService
 
     public function getCurrencyUuid(string $connectionId, string $oldShortName, Context $context): ?string
     {
-        return null;
+        return Defaults::CURRENCY;
     }
 
     public function getTaxUuid(string $connectionId, float $taxRate, Context $context): ?string
@@ -115,15 +117,16 @@ class DummyMappingService extends MappingService
         return '';
     }
 
-    public function getDefaultLanguageUuid(Context $context): LanguageEntity
+    public function getDefaultLanguage(Context $context): LanguageEntity
     {
         $defaultLanguage = new LanguageEntity();
+        $locale = new LocaleEntity();
         $defaultLanguage->assign([
             'id' => self::DEFAULT_LANGUAGE_UUID,
-            'locale' => [
+            'locale' => $locale->assign([
                 'id' => self::DEFAULT_LOCAL_UUID,
                 'code' => 'en-GB',
-            ],
+            ]),
         ]);
 
         return $defaultLanguage;

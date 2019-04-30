@@ -156,7 +156,6 @@ class MigrationControllerTest extends TestCase
                 $this->runRepo,
                 $this->connectionRepo,
                 $dataFetcher,
-                $mappingService,
                 $accessTokenService,
                 new DataSelectionRegistry([]),
                 $dataRepo,

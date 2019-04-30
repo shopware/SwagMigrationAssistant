@@ -81,11 +81,11 @@ class CategoryAttributeConverterTest extends TestCase
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('relations', $converted);
         static::assertSame('category', $converted['relations'][0]['entityName']);
-        static::assertSame('category_categorydate1', $converted['attributes'][0]['name']);
-        static::assertSame('date', $converted['attributes'][0]['type']);
-        static::assertSame('date', $converted['attributes'][0]['config']['type']);
-        static::assertSame('date', $converted['attributes'][0]['config']['dateType']);
-        static::assertSame('date', $converted['attributes'][0]['config']['attributeType']);
+        static::assertSame('category_categorydate1', $converted['customFields'][0]['name']);
+        static::assertSame('date', $converted['customFields'][0]['type']);
+        static::assertSame('date', $converted['customFields'][0]['config']['type']);
+        static::assertSame('date', $converted['customFields'][0]['config']['dateType']);
+        static::assertSame('date', $converted['customFields'][0]['config']['customFieldType']);
     }
 
     public function testConvertCheckboxAttribute(): void
@@ -101,9 +101,9 @@ class CategoryAttributeConverterTest extends TestCase
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('relations', $converted);
         static::assertSame('category', $converted['relations'][0]['entityName']);
-        static::assertSame('category_checkbox1', $converted['attributes'][0]['name']);
-        static::assertSame('checkbox', $converted['attributes'][0]['config']['type']);
-        static::assertSame('checkbox', $converted['attributes'][0]['config']['attributeType']);
+        static::assertSame('category_checkbox1', $converted['customFields'][0]['name']);
+        static::assertSame('checkbox', $converted['customFields'][0]['config']['type']);
+        static::assertSame('checkbox', $converted['customFields'][0]['config']['customFieldType']);
     }
 
     public function testConvertDatetimeAttribute(): void
@@ -119,10 +119,10 @@ class CategoryAttributeConverterTest extends TestCase
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('relations', $converted);
         static::assertSame('category', $converted['relations'][0]['entityName']);
-        static::assertSame('category_datetime1', $converted['attributes'][0]['name']);
-        static::assertSame('date', $converted['attributes'][0]['config']['type']);
-        static::assertSame('datetime', $converted['attributes'][0]['config']['dateType']);
-        static::assertSame('date', $converted['attributes'][0]['config']['attributeType']);
+        static::assertSame('category_datetime1', $converted['customFields'][0]['name']);
+        static::assertSame('date', $converted['customFields'][0]['config']['type']);
+        static::assertSame('datetime', $converted['customFields'][0]['config']['dateType']);
+        static::assertSame('date', $converted['customFields'][0]['config']['customFieldType']);
     }
 
     public function testConvertTextAttribute(): void
@@ -138,8 +138,8 @@ class CategoryAttributeConverterTest extends TestCase
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('relations', $converted);
         static::assertSame('category', $converted['relations'][0]['entityName']);
-        static::assertSame('category_attr6', $converted['attributes'][0]['name']);
-        static::assertSame('text', $converted['attributes'][0]['config']['type']);
-        static::assertSame('text', $converted['attributes'][0]['config']['attributeType']);
+        static::assertSame('category_attr6', $converted['customFields'][0]['name']);
+        static::assertSame('text', $converted['customFields'][0]['config']['type']);
+        static::assertSame('text', $converted['customFields'][0]['config']['customFieldType']);
     }
 }

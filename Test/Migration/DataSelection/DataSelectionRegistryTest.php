@@ -12,7 +12,7 @@ use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\CustomerAndOrderDataSelection;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\MediaDataSelection;
-use SwagMigrationNext\Profile\Shopware55\DataSelection\ProductCategoryTranslationDataSelection;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\ProductDataSelection;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Mock\DummyCollection;
@@ -58,7 +58,7 @@ class DataSelectionRegistryTest extends TestCase
 
         $this->dataSelectionRegistry = new DataSelectionRegistry(new DummyCollection([
             new MediaDataSelection(),
-            new ProductCategoryTranslationDataSelection(),
+            new ProductDataSelection(),
             new CustomerAndOrderDataSelection(),
         ]));
     }
@@ -70,7 +70,7 @@ class DataSelectionRegistryTest extends TestCase
         );
 
         $expected = [
-            0 => (new ProductCategoryTranslationDataSelection())->getData()->getId(),
+            0 => (new ProductDataSelection())->getData()->getId(),
             1 => (new CustomerAndOrderDataSelection())->getData()->getId(),
             2 => (new MediaDataSelection())->getData()->getId(),
         ];

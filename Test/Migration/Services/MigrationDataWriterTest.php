@@ -10,9 +10,10 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
+use Shopware\Core\Framework\Language\LanguageDefinition;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
-use Shopware\Core\System\Currency\CurrencyEntity;
+use Shopware\Core\System\Currency\CurrencyDefinition;
 use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\Data\SwagMigrationDataEntity;
 use SwagMigrationNext\Migration\Logging\LogType;
@@ -31,7 +32,6 @@ use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CustomerDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\OrderDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
-use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\TranslationDataSet;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationNext\Profile\Shopware55\Premapping\DeliveryTimeReader;
 use SwagMigrationNext\Profile\Shopware55\Premapping\OrderStateReader;
@@ -194,6 +194,16 @@ class MigrationDataWriterTest extends TestCase
      */
     private $deliveryTimeRepo;
 
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $localeRepo;
+
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $languageRepo;
+
     protected function setUp(): void
     {
         $this->context = Context::createDefaultContext();
@@ -333,35 +343,20 @@ class MigrationDataWriterTest extends TestCase
         );
 
         $criteria = new Criteria();
-        $usdFactorCriteria = (new Criteria())->addFilter(new EqualsFilter('shortName', 'USD'));
-        $jpyInvalidCriteria = (new Criteria())->addFilter(new EqualsFilter('symbol', '&yen;'));
 
         // Get data before writing
         $this->migrationDataFetcher->fetchData($migrationContext, $context);
         $this->clearCacheBefore();
 
         $orderTotalBefore = $this->orderRepo->search($criteria, $context)->getTotal();
-        $currencyTotalBefore = $this->currencyRepo->search($criteria, $context)->getTotal();
-        /** @var CurrencyEntity $usdResultBefore */
-        $usdResultBefore = $this->currencyRepo->search($usdFactorCriteria, $context)->first();
-        $jpyInvalidTotalBefore = $this->currencyRepo->search($jpyInvalidCriteria, $context)->getTotal();
-
         // Get data after writing
         $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext) {
             $this->migrationDataWriter->writeData($migrationContext, $context);
             $this->clearCacheBefore();
         });
-
         $orderTotalAfter = $this->orderRepo->search($criteria, $context)->getTotal();
-        $currencyTotalAfter = $this->currencyRepo->search($criteria, $context)->getTotal();
-        /** @var CurrencyEntity $usdResultAfter */
-        $usdResultAfter = $this->currencyRepo->search($usdFactorCriteria, $context)->first();
-        $jpyInvalidTotalAfter = $this->currencyRepo->search($jpyInvalidCriteria, $context)->getTotal();
 
         static::assertSame(2, $orderTotalAfter - $orderTotalBefore);
-        static::assertSame(1, $currencyTotalAfter - $currencyTotalBefore);
-        static::assertSame(0.2, $usdResultAfter->getFactor() - $usdResultBefore->getFactor());
-        static::assertSame(0, $jpyInvalidTotalAfter - $jpyInvalidTotalBefore);
     }
 
     public function testWriteMediaData(): void
@@ -435,44 +430,6 @@ class MigrationDataWriterTest extends TestCase
         static::assertSame(42, $productTotalAfter - $productTotalBefore);
     }
 
-    public function testWriteTranslationData(): void
-    {
-        $context = Context::createDefaultContext();
-        $migrationContext = new MigrationContext(
-            $this->connection,
-            $this->runUuid,
-            new ProductDataSet(),
-            0,
-            250
-        );
-        $criteria = new Criteria();
-        $productTotalBefore = $this->productRepo->search($criteria, $context)->getTotal();
-        $this->migrationDataFetcher->fetchData($migrationContext, $context);
-        $this->clearCacheBefore();
-
-        $this->migrationDataWriter->writeData($migrationContext, $context);
-        $productTotalAfter = $this->dbConnection->query('select count(*) from product')->fetchColumn();
-
-        $migrationContext = new MigrationContext(
-            $this->connection,
-            $this->runUuid,
-            new TranslationDataSet(),
-            0,
-            250
-        );
-        $this->migrationDataFetcher->fetchData($migrationContext, $context);
-        $this->clearCacheBefore();
-
-        $productTranslationTotalBefore = $this->getTranslationTotal();
-        $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext) {
-            $this->migrationDataWriter->writeData($migrationContext, $context);
-        });
-        $productTranslationTotalAfter = $this->getTranslationTotal();
-
-        static::assertSame(42, $productTotalAfter - $productTotalBefore);
-        static::assertSame(1, $productTranslationTotalAfter - $productTranslationTotalBefore);
-    }
-
     public function testWriteDataWithUnknownWriter(): void
     {
         $context = Context::createDefaultContext();
@@ -513,6 +470,8 @@ class MigrationDataWriterTest extends TestCase
         $this->currencyRepo = $this->getContainer()->get('currency.repository');
         $this->salutationRepo = $this->getContainer()->get('salutation.repository');
         $this->deliveryTimeRepo = $this->getContainer()->get('delivery_time.repository');
+        $this->localeRepo = $this->getContainer()->get('locale.repository');
+        $this->languageRepo = $this->getContainer()->get('language.repository');
     }
 
     private function initConnectionAndRun(): void
@@ -596,6 +555,28 @@ class MigrationDataWriterTest extends TestCase
 
         $deliveryTimeUuid = $this->getFirstDeliveryTimeUuid($this->deliveryTimeRepo, $this->context);
         $this->mappingService->createNewUuid($this->connectionId, DeliveryTimeReader::getMappingName(), 'default_delivery_time', $this->context, [], $deliveryTimeUuid);
+
+        $currencyUuid = $this->getCurrencyUuid(
+            $this->currencyRepo,
+            'EUR',
+            $this->context
+        );
+        $this->mappingService->createNewUuid($this->connectionId, CurrencyDefinition::getEntityName(), 'JPY', $this->context, [], $currencyUuid);
+
+        $currencyUuid = $this->getCurrencyUuid(
+            $this->currencyRepo,
+            'EUR',
+            $this->context
+        );
+        $this->mappingService->createNewUuid($this->connectionId, CurrencyDefinition::getEntityName(), 'JPY', $this->context, [], $currencyUuid);
+
+        $languageUuid = $this->getLanguageUuid(
+            $this->localeRepo,
+            $this->languageRepo,
+            'de-DE',
+            $this->context
+        );
+        $this->mappingService->createNewUuid($this->connectionId, LanguageDefinition::getEntityName(), 'en-US', $this->context, [], $languageUuid);
 
         $this->mappingService->writeMapping($this->context);
         $this->clearCacheBefore();
