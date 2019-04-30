@@ -146,7 +146,7 @@ class CategoryConverter extends Shopware55Converter
         $this->convertValue($converted, 'facetIds', $data, 'facet_ids');
 
         if (isset($data['attributes'])) {
-            $converted['attributes'] = $this->getAttributes($data['attributes']);
+            $converted['customFields'] = $this->getAttributes($data['attributes']);
         }
         unset($data['attributes']);
 

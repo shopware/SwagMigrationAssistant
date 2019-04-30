@@ -6,23 +6,23 @@ final class DefaultEntities
 {
     public const CATEGORY = 'category';
 
-    public const CATEGORY_ATTRIBUTE = 'category_attribute';
+    public const CATEGORY_CUSTOM_FIELD = 'category_custom_field';
 
     public const CURRENCY = 'currency';
 
     public const CUSTOMER = 'customer';
 
-    public const CUSTOMER_ATTRIBUTE = 'customer_attribute';
+    public const CUSTOMER_CUSTOM_FIELD = 'customer_custom_field';
 
     public const CUSTOMER_GROUP = 'customer_group';
 
-    public const CUSTOMER_GROUP_ATTRIBUTE = 'customer_group_attribute';
+    public const CUSTOMER_GROUP_CUSTOM_FIELD = 'customer_group_custom_field';
 
     public const LANGUAGE = 'language';
 
     public const MANUFACTURER = 'manufacturer';
 
-    public const MANUFACTURER_ATTRIBUTE = 'manufacturer_attribute';
+    public const MANUFACTURER_CUSTOM_FIELD = 'manufacturer_custom_field';
 
     public const MEDIA = 'media';
 
@@ -30,15 +30,15 @@ final class DefaultEntities
 
     public const ORDER = 'order';
 
-    public const ORDER_ATTRIBUTE = 'order_attribute';
+    public const ORDER_CUSTOM_FIELD = 'order_custom_field';
 
     public const PRODUCT = 'product';
 
-    public const PRODUCT_ATTRIBUTE = 'product_attribute';
+    public const PRODUCT_CUSTOM_FIELD = 'product_custom_field';
 
     public const PRODUCT_PRICE = 'product_price';
 
-    public const PRODUCT_PRICE_ATTRIBUTE = 'product_price_attribute';
+    public const PRODUCT_PRICE_CUSTOM_FIELD = 'product_price_custom_field';
 
     public const PROPERTY_GROUP_OPTION = 'property_group_option';
 

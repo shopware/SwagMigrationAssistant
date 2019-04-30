@@ -245,7 +245,7 @@ class CustomerConverter extends Shopware55Converter
         }
 
         if (isset($data['attributes'])) {
-            $converted['attributes'] = $this->getAttributes($data['attributes']);
+            $converted['customFields'] = $this->getAttributes($data['attributes']);
         }
         unset($data['attributes']);
 

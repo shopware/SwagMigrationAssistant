@@ -336,7 +336,7 @@ class ProductConverter extends Shopware55Converter
         unset($data['categories']);
 
         if (isset($data['attributes'])) {
-            $converted['attributes'] = $this->getAttributes($data['attributes'], ProductDefinition::getEntityName(), ['id', 'articleID', 'articledetailsID']);
+            $converted['customFields'] = $this->getAttributes($data['attributes'], ProductDefinition::getEntityName(), ['id', 'articleID', 'articledetailsID']);
         }
         unset($data['attributes']);
 
@@ -565,7 +565,7 @@ class ProductConverter extends Shopware55Converter
         }
 
         if (isset($data['attributes'])) {
-            $manufacturer['attributes'] = $this->getAttributes($data['attributes'], ProductManufacturerDefinition::getEntityName(), ['id', 'supplierID']);
+            $manufacturer['customFields'] = $this->getAttributes($data['attributes'], ProductManufacturerDefinition::getEntityName(), ['id', 'supplierID']);
         }
 
         return $manufacturer;
@@ -913,7 +913,7 @@ class ProductConverter extends Shopware55Converter
             ];
 
             if (isset($price['attributes'])) {
-                $data['attributes'] = $this->getAttributes($price, ProductPriceDefinition::getEntityName(), ['id', 'priceID']);
+                $data['customFields'] = $this->getAttributes($price, ProductPriceDefinition::getEntityName(), ['id', 'priceID']);
             }
 
             $newData[] = $data;

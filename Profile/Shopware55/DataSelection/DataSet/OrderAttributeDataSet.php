@@ -9,7 +9,7 @@ class OrderAttributeDataSet extends Shopware55DataSet
 {
     public static function getEntity(): string
     {
-        return DefaultEntities::ORDER_ATTRIBUTE;
+        return DefaultEntities::ORDER_CUSTOM_FIELD;
     }
 
     public function supports(string $profileName, string $entity): bool

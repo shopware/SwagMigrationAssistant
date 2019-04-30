@@ -18,6 +18,7 @@ use SwagMigrationNext\Migration\Gateway\AbstractGateway;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CategoryAttributeDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CategoryDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CurrencyDataSet;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CustomerAttributeDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CustomerDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CustomerGroupAttributeDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CustomerGroupDataSet;
@@ -25,6 +26,7 @@ use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\LanguageDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ManufacturerAttributeDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\NumberRangeDataSet;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\OrderAttributeDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\OrderDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ProductAttributeDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
@@ -111,8 +113,10 @@ class Shopware55LocalGateway extends AbstractGateway
 
                 return $reader->read();
             case CategoryAttributeDataSet::getEntity():
+            case CustomerAttributeDataSet::getEntity():
             case CustomerGroupAttributeDataSet::getEntity():
             case ManufacturerAttributeDataSet::getEntity():
+            case OrderAttributeDataSet::getEntity():
             case ProductAttributeDataSet::getEntity():
             case ProductPriceAttributeDataSet::getEntity():
                 $reader = new Shopware55LocalAttributeReader($connection, $this->migrationContext);

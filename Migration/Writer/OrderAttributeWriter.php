@@ -2,8 +2,8 @@
 
 namespace SwagMigrationNext\Migration\Writer;
 
-use Shopware\Core\Framework\Attribute\Aggregate\AttributeSet\AttributeSetDefinition;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\CustomField\Aggregate\CustomFieldSet\CustomFieldSetDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
 use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
@@ -22,13 +22,13 @@ class OrderAttributeWriter implements WriterInterface
 
     public function supports(): string
     {
-        return DefaultEntities::ORDER_ATTRIBUTE;
+        return DefaultEntities::ORDER_CUSTOM_FIELD;
     }
 
     public function writeData(array $data, Context $context): void
     {
         $this->entityWriter->upsert(
-            AttributeSetDefinition::class,
+            CustomFieldSetDefinition::class,
             $data,
             WriteContext::createFromContext($context)
         );

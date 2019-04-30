@@ -24,7 +24,7 @@ class CustomerGroupAttributeConverter extends AttributeConverter
         $this->mappingService->writeMapping($context);
     }
 
-    protected function getAttributeEntityName(): string
+    protected function getCustomFieldEntityName(): string
     {
         return DefaultEntities::CUSTOMER_GROUP;
     }

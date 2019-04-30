@@ -3,6 +3,8 @@
 namespace SwagMigrationNext\Profile\Shopware55\Converter;
 
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\CustomField\Aggregate\CustomFieldSet\CustomFieldSetDefinition;
+use Shopware\Core\Framework\CustomField\Aggregate\CustomFieldSetRelation\CustomFieldSetRelationDefinition;
 use SwagMigrationNext\Migration\Converter\AbstractConverter;
 use SwagMigrationNext\Migration\Converter\ConvertStruct;
 use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
@@ -26,15 +28,15 @@ abstract class AttributeConverter extends AbstractConverter
 
         $converted['id'] = $this->mappingService->createNewUuid(
             $migrationContext->getConnection()->getId(),
-            'attributeSet',
-            $this->getAttributeEntityName() . 'AttributeSet',
+            CustomFieldSetDefinition::getEntityName(),
+            $this->getCustomFieldEntityName() . 'CustomFieldSet',
             $context
         );
 
-        $converted['name'] = $this->getAttributeEntityName() . '_migration_' . $migrationContext->getConnection()->getName();
+        $converted['name'] = $this->getCustomFieldEntityName() . '_migration_' . $migrationContext->getConnection()->getName();
         $converted['config'] = [
             'label' => [
-                $data['_locale'] => ucfirst($this->getAttributeEntityName()) . ' migration attributes',
+                $data['_locale'] => ucfirst($this->getCustomFieldEntityName()) . ' migration custom fields (attributes)',
             ],
             'translated' => true,
         ];
@@ -42,15 +44,15 @@ abstract class AttributeConverter extends AbstractConverter
             [
                 'id' => $this->mappingService->createNewUuid(
                     $migrationContext->getConnection()->getId(),
-                    'attributeSetRelation',
-                    $this->getAttributeEntityName() . 'AttributeSetRelation',
+                    CustomFieldSetRelationDefinition::getEntityName(),
+                    $this->getCustomFieldEntityName() . 'CustomFieldSetRelation',
                     $context
                 ),
-                'entityName' => $this->getAttributeEntityName(),
+                'entityName' => $this->getCustomFieldEntityName(),
             ],
         ];
 
-        $converted['attributes'] = [
+        $converted['customFields'] = [
             [
                 'id' => $this->mappingService->createNewUuid(
                     $migrationContext->getConnection()->getId(),
@@ -58,9 +60,9 @@ abstract class AttributeConverter extends AbstractConverter
                     $data['name'],
                     $context
                 ),
-                'name' => $this->getAttributeEntityName() . '_' . $data['name'],
+                'name' => $this->getCustomFieldEntityName() . '_' . $data['name'],
                 'type' => $data['type'],
-                'config' => $this->getAttributeConfiguration($data),
+                'config' => $this->getCustomFieldConfiguration($data),
             ],
         ];
 
@@ -78,14 +80,14 @@ abstract class AttributeConverter extends AbstractConverter
         return new ConvertStruct($converted, $data);
     }
 
-    abstract protected function getAttributeEntityName(): string;
+    abstract protected function getCustomFieldEntityName(): string;
 
-    protected function getAttributeConfiguration(array $data): array
+    protected function getCustomFieldConfiguration(array $data): array
     {
         $locale = str_replace('_', '-', $data['_locale']);
 
         if (isset($data['configuration'])) {
-            return $this->getConfiguredAttributeData($data, $locale);
+            return $this->getConfiguredCustomFieldData($data, $locale);
         }
 
         $attributeData = [
@@ -97,7 +99,7 @@ abstract class AttributeConverter extends AbstractConverter
 
         if ($data['type'] === 'text') {
             $attributeData['type'] = 'text';
-            $attributeData['attributeType'] = 'text';
+            $attributeData['customFieldType'] = 'text';
 
             return $attributeData;
         }
@@ -105,7 +107,7 @@ abstract class AttributeConverter extends AbstractConverter
         if ($data['type'] === 'integer') {
             $attributeData['type'] = 'number';
             $attributeData['numberType'] = 'int';
-            $attributeData['attributeType'] = 'number';
+            $attributeData['customFieldType'] = 'number';
 
             return $attributeData;
         }
@@ -113,7 +115,7 @@ abstract class AttributeConverter extends AbstractConverter
         if ($data['type'] === 'float') {
             $attributeData['type'] = 'number';
             $attributeData['numberType'] = 'float';
-            $attributeData['attributeType'] = 'number';
+            $attributeData['customFieldType'] = 'number';
 
             return $attributeData;
         }
@@ -121,7 +123,7 @@ abstract class AttributeConverter extends AbstractConverter
         return [];
     }
 
-    private function getConfiguredAttributeData(array $data, string $locale): array
+    private function getConfiguredCustomFieldData(array $data, string $locale): array
     {
         $attributeData = ['componentName' => 'sw-field'];
 
@@ -143,7 +145,7 @@ abstract class AttributeConverter extends AbstractConverter
 
         if ($data['configuration']['column_type'] === 'text' || $data['configuration']['column_type'] === 'string') {
             $attributeData['type'] = 'text';
-            $attributeData['attributeType'] = 'text';
+            $attributeData['customFieldType'] = 'text';
 
             return $attributeData;
         }
@@ -151,7 +153,7 @@ abstract class AttributeConverter extends AbstractConverter
         if ($data['configuration']['column_type'] === 'integer') {
             $attributeData['type'] = 'number';
             $attributeData['numberType'] = 'int';
-            $attributeData['attributeType'] = 'number';
+            $attributeData['customFieldType'] = 'number';
 
             return $attributeData;
         }
@@ -159,21 +161,21 @@ abstract class AttributeConverter extends AbstractConverter
         if ($data['configuration']['column_type'] === 'float') {
             $attributeData['type'] = 'number';
             $attributeData['numberType'] = 'float';
-            $attributeData['attributeType'] = 'number';
+            $attributeData['customFieldType'] = 'number';
 
             return $attributeData;
         }
 
         if ($data['configuration']['column_type'] === 'html') {
             $attributeData['componentName'] = 'sw-text-editor';
-            $attributeData['attributeType'] = 'textEditor';
+            $attributeData['customFieldType'] = 'textEditor';
 
             return $attributeData;
         }
 
         if ($data['configuration']['column_type'] === 'boolean') {
             $attributeData['type'] = 'checkbox';
-            $attributeData['attributeType'] = 'checkbox';
+            $attributeData['customFieldType'] = 'checkbox';
 
             return $attributeData;
         }
@@ -181,7 +183,7 @@ abstract class AttributeConverter extends AbstractConverter
         if ($data['configuration']['column_type'] === 'date') {
             $attributeData['type'] = 'date';
             $attributeData['dateType'] = 'date';
-            $attributeData['attributeType'] = 'date';
+            $attributeData['customFieldType'] = 'date';
 
             return $attributeData;
         }
@@ -189,7 +191,7 @@ abstract class AttributeConverter extends AbstractConverter
         if ($data['configuration']['column_type'] === 'datetime') {
             $attributeData['type'] = 'date';
             $attributeData['dateType'] = 'datetime';
-            $attributeData['attributeType'] = 'date';
+            $attributeData['customFieldType'] = 'date';
 
             return $attributeData;
         }
@@ -207,7 +209,7 @@ abstract class AttributeConverter extends AbstractConverter
 
             $attributeData['componentName'] = 'sw-select';
             $attributeData['type'] = 'select';
-            $attributeData['attributeType'] = 'select';
+            $attributeData['customFieldType'] = 'select';
             $attributeData['options'] = $options;
 
             return $attributeData;

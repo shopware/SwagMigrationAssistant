@@ -9,7 +9,7 @@ class CustomerAttributeDataSet extends Shopware55DataSet
 {
     public static function getEntity(): string
     {
-        return DefaultEntities::CUSTOMER_ATTRIBUTE;
+        return DefaultEntities::CUSTOMER_CUSTOM_FIELD;
     }
 
     public function supports(string $profileName, string $entity): bool

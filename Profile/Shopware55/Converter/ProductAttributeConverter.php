@@ -24,7 +24,7 @@ class ProductAttributeConverter extends AttributeConverter
         $this->mappingService->writeMapping($context);
     }
 
-    protected function getAttributeEntityName(): string
+    protected function getCustomFieldEntityName(): string
     {
         return DefaultEntities::PRODUCT;
     }

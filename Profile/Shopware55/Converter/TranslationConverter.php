@@ -186,7 +186,7 @@ class TranslationConverter extends Shopware55Converter
             $isAttribute = strpos($key, '__attribute_');
             if ($isAttribute !== false) {
                 $key = str_replace('__attribute_', '', $key);
-                $productTranslation['attributes'][$key] = $value;
+                $productTranslation['customFields'][$key] = $value;
                 unset($objectData[$key]);
             }
         }
@@ -287,7 +287,7 @@ class TranslationConverter extends Shopware55Converter
             $isAttribute = strpos($key, '__attribute_');
             if ($isAttribute !== false) {
                 $key = str_replace('__attribute_', '', $key);
-                $manufacturerTranslation['attributes'][$key] = $value;
+                $manufacturerTranslation['customFields'][$key] = $value;
                 unset($objectData[$key]);
             }
         }
@@ -387,7 +387,7 @@ class TranslationConverter extends Shopware55Converter
             $isAttribute = strpos($key, '__attribute_');
             if ($isAttribute !== false) {
                 $key = str_replace('__attribute_', '', $key);
-                $unitTranslation['attributes'][$key] = $value;
+                $unitTranslation['customFields'][$key] = $value;
                 unset($objectData[$key]);
             }
         }
@@ -495,7 +495,7 @@ class TranslationConverter extends Shopware55Converter
             $isAttribute = strpos($key, '__attribute_');
             if ($isAttribute !== false) {
                 $key = str_replace('__attribute_', '', $key);
-                $categoryTranslation['attributes'][$key] = $value;
+                $categoryTranslation['customFields'][$key] = $value;
                 unset($objectData[$key]);
             }
         }
@@ -591,7 +591,7 @@ class TranslationConverter extends Shopware55Converter
             $isAttribute = strpos($key, '__attribute_');
             if ($isAttribute !== false) {
                 $key = str_replace('__attribute_', '', $key);
-                $propertyGroupOptionTranslation['attributes'][$key] = $value;
+                $propertyGroupOptionTranslation['customFields'][$key] = $value;
                 unset($objectData[$key]);
             }
         }
@@ -687,7 +687,7 @@ class TranslationConverter extends Shopware55Converter
             $isAttribute = strpos($key, '__attribute_');
             if ($isAttribute !== false) {
                 $key = str_replace('__attribute_', '', $key);
-                $propertyGroupTranslation['attributes'][$key] = $value;
+                $propertyGroupTranslation['customFields'][$key] = $value;
                 unset($objectData[$key]);
             }
         }
@@ -779,7 +779,7 @@ class TranslationConverter extends Shopware55Converter
             $isAttribute = strpos($key, '__attribute_');
             if ($isAttribute !== false) {
                 $key = str_replace('__attribute_', '', $key);
-                $propertyValueTranslation['attributes'][$key] = $value;
+                $propertyValueTranslation['customFields'][$key] = $value;
                 unset($objectData[$key]);
             }
         }
@@ -871,7 +871,7 @@ class TranslationConverter extends Shopware55Converter
             $isAttribute = strpos($key, '__attribute_');
             if ($isAttribute !== false) {
                 $key = str_replace('__attribute_', '', $key);
-                $propertyOptionTranslation['attributes'][$key] = $value;
+                $propertyOptionTranslation['customFields'][$key] = $value;
                 unset($objectData[$key]);
             }
         }

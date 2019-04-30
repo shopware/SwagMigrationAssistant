@@ -71,7 +71,7 @@ class CustomerGroupConverter extends Shopware55Converter
         $this->convertValue($converted, 'name', $data, 'description');
 
         if (isset($data['attributes'])) {
-            $converted['attributes'] = $this->getAttributes($data['attributes']);
+            $converted['customFields'] = $this->getAttributes($data['attributes']);
         }
 
         unset($data['id'], $data['groupkey']);

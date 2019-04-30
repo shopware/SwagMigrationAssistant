@@ -9,7 +9,7 @@ class ProductAttributeDataSet extends Shopware55DataSet
 {
     public static function getEntity(): string
     {
-        return DefaultEntities::PRODUCT_ATTRIBUTE;
+        return DefaultEntities::PRODUCT_CUSTOM_FIELD;
     }
 
     public function supports(string $profileName, string $entity): bool
