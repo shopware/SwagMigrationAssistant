@@ -237,6 +237,32 @@ class SalesChannelConverter extends Shopware55Converter
         $this->convertValue($converted, 'name', $data, 'name');
         $converted['accessKey'] = AccessKeyHelper::generateAccessKey('sales-channel');
 
+        unset(
+            $data['id'],
+            $data['main_id'],
+            $data['title'],
+            $data['position'],
+            $data['host'],
+            $data['base_path'],
+            $data['base_url'],
+            $data['hosts'],
+            $data['secure'],
+            $data['template_id'],
+            $data['document_template_id'],
+            $data['category_id'],
+            $data['locale_id'],
+            $data['currency_id'],
+            $data['customer_group_id'],
+            $data['fallback_id'],
+            $data['customer_scope'],
+            $data['default'],
+            $data['active'],
+            $data['locale'],
+            $data['currency'],
+            $data['_locale'],
+            $data['children']
+        );
+
         return new ConvertStruct($converted, $data);
     }
 

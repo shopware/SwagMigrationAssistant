@@ -89,6 +89,13 @@ class LanguageConverter extends Shopware55Converter
         $converted['localeId'] = $localeUuid;
         $converted['translationCodeId'] = $localeUuid;
 
+        unset(
+            $data['id'],
+            $data['locale'],
+            $data['_locale'],
+            $data['translations']
+        );
+
         return new ConvertStruct($converted, $data);
     }
 }

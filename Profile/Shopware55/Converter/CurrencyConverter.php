@@ -95,6 +95,12 @@ class CurrencyConverter extends Shopware55Converter
         $converted['placedInFront'] = ((int) $data['symbol_position']) > 16;
         $converted['decimalPrecision'] = $context->getCurrencyPrecision();
 
+        unset(
+            $data['id'],
+            $data['symbol_position'],
+            $data['_locale']
+        );
+
         return new ConvertStruct($converted, $data);
     }
 
