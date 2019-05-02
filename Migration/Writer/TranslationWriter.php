@@ -34,11 +34,13 @@ class TranslationWriter implements WriterInterface
         }
 
         foreach ($translationArray as $entityDefinitionClass => $translation) {
-            $this->entityWriter->upsert(
-                $entityDefinitionClass,
-                $translation,
-                WriteContext::createFromContext($context)
-            );
+            $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($entityDefinitionClass, $translation) {
+                $this->entityWriter->upsert(
+                    $entityDefinitionClass,
+                    $translation,
+                    WriteContext::createFromContext($context)
+                );
+            });
         }
     }
 }

@@ -55,16 +55,6 @@ class SwagMigrationMediaFileEntity extends Entity
      */
     protected $processFailure;
 
-    /**
-     * @var \DateTime
-     */
-    protected $createdAt;
-
-    /**
-     * @var \DateTime|null
-     */
-    protected $updatedAt;
-
     public function getRunId(): string
     {
         return $this->runId;
@@ -153,25 +143,5 @@ class SwagMigrationMediaFileEntity extends Entity
     public function setProcessFailure(bool $processFailure): void
     {
         $this->processFailure = $processFailure;
-    }
-
-    public function getCreatedAt(): \DateTime
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(\DateTime $createdAt): void
-    {
-        $this->createdAt = $createdAt;
-    }
-
-    public function getUpdatedAt(): ?\DateTime
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(?\DateTime $updatedAt): void
-    {
-        $this->updatedAt = $updatedAt;
     }
 }

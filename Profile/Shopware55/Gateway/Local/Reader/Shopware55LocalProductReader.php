@@ -72,7 +72,7 @@ class Shopware55LocalProductReader extends Shopware55LocalAbstractReader
         $locale = $this->getDefaultShopLocale();
 
         foreach ($products as $key => &$product) {
-            $product['_locale'] = $locale;
+            $product['_locale'] = str_replace('_', '-', $locale);
 
             if (isset($categories[$product['id']])) {
                 $product['categories'] = $categories[$product['id']];
@@ -171,16 +171,22 @@ class Shopware55LocalProductReader extends Shopware55LocalAbstractReader
         $query->from('s_articles_prices', 'price');
         $query->addSelect('price.articledetailsID');
         $this->addTableSelection($query, 's_articles_prices', 'price');
+
         $query->leftJoin('price', 's_core_customergroups', 'price_customergroup', 'price.pricegroup = price_customergroup.groupkey');
         $this->addTableSelection($query, 's_core_customergroups', 'price_customergroup');
+
         $query->leftJoin('price', 's_articles_prices_attributes', 'price_attributes', 'price.id = price_attributes.priceID');
         $this->addTableSelection($query, 's_articles_prices_attributes', 'price_attributes');
+
+        $query->leftJoin('price', 's_core_currencies', 'currency', 'currency.standard = 1');
+        $query->addSelect('currency.currency as currencyShortName');
+
         $query->where('price.articledetailsID IN (:ids)');
         $query->setParameter('ids', $variantIds, Connection::PARAM_INT_ARRAY);
 
         $fetchedPrices = $query->execute()->fetchAll(\PDO::FETCH_GROUP);
 
-        return $this->mapData($fetchedPrices, [], ['price']);
+        return $this->mapData($fetchedPrices, [], ['price', 'currencyShortName']);
     }
 
     private function getMedia(): array

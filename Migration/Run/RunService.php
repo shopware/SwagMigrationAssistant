@@ -18,7 +18,6 @@ use SwagMigrationNext\Migration\DataSelection\DataSelectionRegistryInterface;
 use SwagMigrationNext\Migration\DataSelection\DataSelectionStruct;
 use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 use SwagMigrationNext\Migration\EnvironmentInformation;
-use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationNext\Migration\Service\ProgressState;
@@ -40,11 +39,6 @@ class RunService implements RunServiceInterface
      * @var MigrationDataFetcherInterface
      */
     private $migrationDataFetcher;
-
-    /**
-     * @var MappingServiceInterface
-     */
-    private $mappingService;
 
     /**
      * @var SwagMigrationAccessTokenService
@@ -75,7 +69,6 @@ class RunService implements RunServiceInterface
         EntityRepositoryInterface $migrationRunRepo,
         EntityRepositoryInterface $connectionRepo,
         MigrationDataFetcherInterface $migrationDataFetcher,
-        MappingServiceInterface $mappingService,
         SwagMigrationAccessTokenService $accessTokenService,
         DataSelectionRegistryInterface $dataSelectionRegistry,
         EntityRepositoryInterface $migrationDataRepository,
@@ -86,7 +79,6 @@ class RunService implements RunServiceInterface
         $this->connectionRepo = $connectionRepo;
         $this->migrationDataFetcher = $migrationDataFetcher;
         $this->accessTokenService = $accessTokenService;
-        $this->mappingService = $mappingService;
         $this->dataSelectionRegistry = $dataSelectionRegistry;
         $this->migrationDataRepository = $migrationDataRepository;
         $this->mediaFileRepository = $mediaFileRepository;
@@ -117,7 +109,6 @@ class RunService implements RunServiceInterface
         $dataSelectionCollection = $this->getDataSelectionCollection($connection, $environmentInformation, $dataSelectionIds);
         $runProgress = $this->calculateRunProgress($environmentInformation, $dataSelectionCollection);
 
-        $this->mappingService->createSalesChannelMapping($connectionId, $environmentInformation->getStructure(), $context);
         $this->updateMigrationRun($runUuid, $connection, $environmentInformation, $runProgress, $context);
 
         return new ProgressState(false, true, $runUuid, $accessToken, -1, null, 0, 0, $runProgress);

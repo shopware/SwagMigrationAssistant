@@ -162,7 +162,6 @@ class RunServiceTest extends TestCase
                 $mediaFileService,
                 $loggingRepo
             ),
-            $this->mappingService,
             new SwagMigrationAccessTokenService($this->runRepo),
             new DataSelectionRegistry([]),
             $this->dataRepo,
@@ -178,7 +177,6 @@ class RunServiceTest extends TestCase
                 $gatewayFactoryRegistry,
                 $loggingService
             ),
-            $this->mappingService,
             new SwagMigrationAccessTokenService($this->runRepo),
             new DataSelectionRegistry([]),
             $this->dataRepo,
@@ -205,25 +203,5 @@ class RunServiceTest extends TestCase
 
         static::assertSame(1, $afterRunTotal - $beforeRunTotal);
         static::assertSame(0, $afterMappingTotal - $beforeMappingTotal);
-    }
-
-    public function testCreateMigrationRunWithStructure(): void
-    {
-        $userId = Uuid::randomHex();
-        $origin = new AdminApiSource($userId);
-        $context = Context::createDefaultContext($origin);
-
-        $beforeRunTotal = $this->runRepo->search(new Criteria(), $context)->getTotal();
-        $beforeMappingTotal = $this->mappingRepo->search(new Criteria(), $context)->getTotal();
-        $this->runService->createMigrationRun(
-            $this->connection->getId(),
-            [],
-            $context
-        );
-        $afterRunTotal = $this->runRepo->search(new Criteria(), $context)->getTotal();
-        $afterMappingTotal = $this->dbConnection->query('select count(*) from swag_migration_mapping')->fetchColumn();
-
-        static::assertSame(1, $afterRunTotal - $beforeRunTotal);
-        static::assertSame(2, $afterMappingTotal - $beforeMappingTotal);
     }
 }

@@ -2,9 +2,6 @@
 
 namespace SwagMigrationNext\Migration\Media;
 
-use Shopware\Core\Content\Media\MediaDefinition;
-use Shopware\Core\Content\Product\ProductDefinition;
-use Shopware\Core\Content\Property\Aggregate\PropertyGroupOption\PropertyGroupOptionDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -13,6 +10,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
+use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 use SwagMigrationNext\Migration\MigrationContextInterface;
 
 class MediaFileService implements MediaFileServiceInterface
@@ -74,12 +72,12 @@ class MediaFileService implements MediaFileServiceInterface
 
         $mediaUuids = [];
         foreach ($converted as $data) {
-            if ($dataSet::getEntity() === MediaDefinition::getEntityName()) {
+            if ($dataSet::getEntity() === DefaultEntities::MEDIA) {
                 $mediaUuids[] = $data['id'];
                 continue;
             }
 
-            if ($dataSet::getEntity() === ProductDefinition::getEntityName()) {
+            if ($dataSet::getEntity() === DefaultEntities::PRODUCT) {
                 if (!isset($data['media'])) {
                     continue;
                 }
@@ -93,7 +91,7 @@ class MediaFileService implements MediaFileServiceInterface
                 }
             }
 
-            if ($dataSet::getEntity() === PropertyGroupOptionDefinition::getEntityName()) {
+            if ($dataSet::getEntity() === DefaultEntities::PROPERTY_GROUP_OPTION) {
                 if (!isset($data['media']['id'])) {
                     continue;
                 }

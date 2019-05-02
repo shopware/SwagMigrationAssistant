@@ -11,7 +11,7 @@ class Shopware55LocalPropertyGroupOptionReader extends Shopware55LocalAbstractRe
         $locale = $this->getDefaultShopLocale();
 
         foreach ($options as $key => &$option) {
-            $option['_locale'] = $locale;
+            $option['_locale'] = str_replace('_', '-', $locale);
         }
         unset($option);
 

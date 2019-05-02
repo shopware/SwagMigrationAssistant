@@ -26,16 +26,6 @@ class SwagMigrationLoggingEntity extends Entity
     protected $logEntry;
 
     /**
-     * @var \DateTime
-     */
-    protected $createdAt;
-
-    /**
-     * @var \DateTime|null
-     */
-    protected $updatedAt;
-
-    /**
      * @var SwagMigrationRunEntity
      */
     protected $run;
@@ -68,26 +58,6 @@ class SwagMigrationLoggingEntity extends Entity
     public function setLogEntry(array $logEntry): void
     {
         $this->logEntry = $logEntry;
-    }
-
-    public function getCreatedAt(): \DateTime
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(\DateTime $createdAt): void
-    {
-        $this->createdAt = $createdAt;
-    }
-
-    public function getUpdatedAt(): ?\DateTime
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(\DateTime $updatedAt): void
-    {
-        $this->updatedAt = $updatedAt;
     }
 
     public function getRun(): SwagMigrationRunEntity

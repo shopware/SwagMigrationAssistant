@@ -76,7 +76,7 @@ class Shopware55LocalCustomerReader extends Shopware55LocalAbstractReader
         $locale = $this->getDefaultShopLocale();
 
         foreach ($customers as $key => &$customer) {
-            $customer['_locale'] = $locale;
+            $customer['_locale'] = str_replace('_', '-', $locale);
             if (isset($addresses[$customer['id']])) {
                 $customer['addresses'] = array_slice($addresses[$customer['id']], 0, self::MAX_ADDRESS_COUNT);
             }

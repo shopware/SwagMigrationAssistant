@@ -15,6 +15,9 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
+use Shopware\Core\Framework\Language\LanguageEntity;
+use Shopware\Core\System\Currency\CurrencyEntity;
+use Shopware\Core\System\Locale\LocaleEntity;
 use Shopware\Core\System\Salutation\SalutationEntity;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateEntity;
 use Shopware\Core\System\StateMachine\StateMachineEntity;
@@ -285,6 +288,45 @@ trait MigrationServicesTrait
             $deliveryTime = $result->getEntities()->first();
 
             return $deliveryTime->getId();
+        }
+
+        return null;
+    }
+
+    private function getCurrencyUuid(EntityRepositoryInterface $currencyRepo, string $isoCode, Context $context): ?string
+    {
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('isoCode', $isoCode));
+        $criteria->setLimit(1);
+        $result = $currencyRepo->search($criteria, $context);
+
+        if ($result->getTotal() > 0) {
+            /** @var CurrencyEntity $currency */
+            $currency = $result->getEntities()->first();
+
+            return $currency->getId();
+        }
+
+        return null;
+    }
+
+    private function getLanguageUuid(EntityRepositoryInterface $localeRepo, EntityRepositoryInterface $languageRepo, string $code, Context $context): ?string
+    {
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('code', $code));
+        $criteria->setLimit(1);
+        /** @var LocaleEntity $result */
+        $result = $localeRepo->search($criteria, $context)->first();
+
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('localeId', $result->getId()));
+        $result = $languageRepo->search($criteria, $context);
+
+        if ($result->getTotal() > 0) {
+            /** @var LanguageEntity $language */
+            $language = $result->getEntities()->first();
+
+            return $language->getId();
         }
 
         return null;

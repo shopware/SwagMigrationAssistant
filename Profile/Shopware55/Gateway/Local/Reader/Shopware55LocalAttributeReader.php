@@ -75,7 +75,7 @@ SQL;
             $columnData = [
                 'name' => $column->getName(),
                 'type' => $column->getType()->getName(),
-                '_locale' => $locale,
+                '_locale' => str_replace('_', '-', $locale),
                 'configuration' => null,
             ];
 

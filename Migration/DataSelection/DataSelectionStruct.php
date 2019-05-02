@@ -49,13 +49,19 @@ class DataSelectionStruct extends Struct
      */
     protected $dataType;
 
+    /**
+     * @var bool
+     */
+    protected $requiredSelection;
+
     public function __construct(
         string $id,
         array $entityNames,
         string $snippet,
         int $position,
         bool $processMediaFiles = false,
-        string $dataType = self::BASIC_DATA_TYPE
+        string $dataType = self::BASIC_DATA_TYPE,
+        bool $requiredSelection = false
     ) {
         $this->id = $id;
         $this->entityNames = $entityNames;
@@ -63,6 +69,7 @@ class DataSelectionStruct extends Struct
         $this->position = $position;
         $this->processMediaFiles = $processMediaFiles;
         $this->dataType = $dataType;
+        $this->requiredSelection = $requiredSelection;
     }
 
     public function getId(): string
@@ -93,6 +100,16 @@ class DataSelectionStruct extends Struct
     public function getDataType(): string
     {
         return $this->dataType;
+    }
+
+    public function isRequiredSelection(): bool
+    {
+        return $this->requiredSelection;
+    }
+
+    public function setRequiredSelection(bool $requiredSelection): void
+    {
+        $this->requiredSelection = $requiredSelection;
     }
 
     /**

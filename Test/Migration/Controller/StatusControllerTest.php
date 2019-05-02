@@ -27,7 +27,7 @@ use SwagMigrationNext\Migration\Service\MigrationProgressService;
 use SwagMigrationNext\Migration\Service\ProgressState;
 use SwagMigrationNext\Migration\Service\SwagMigrationAccessTokenService;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\CustomerAndOrderDataSelection;
-use SwagMigrationNext\Profile\Shopware55\DataSelection\ProductCategoryTranslationDataSelection;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\ProductDataSelection;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Migration\Services\MigrationProfileUuidService;
@@ -141,10 +141,9 @@ class StatusControllerTest extends TestCase
                 $this->runRepo,
                 $this->connectionRepo,
                 $dataFetcher,
-                $this->getContainer()->get(MappingService::class),
                 $accessTokenService,
                 new DataSelectionRegistry([
-                    new ProductCategoryTranslationDataSelection(),
+                    new ProductDataSelection(),
                     new CustomerAndOrderDataSelection(),
                 ]),
                 $dataRepo,
@@ -152,7 +151,7 @@ class StatusControllerTest extends TestCase
                 $this->getContainer()->get(IndexerRegistry::class)
             ),
             new DataSelectionRegistry([
-                new ProductCategoryTranslationDataSelection(),
+                new ProductDataSelection(),
                 new CustomerAndOrderDataSelection(),
             ]),
             $this->connectionRepo
@@ -208,22 +207,18 @@ class StatusControllerTest extends TestCase
         $result = $this->controller->getDataSelection($request, $context);
         $state = json_decode($result->getContent(), true);
 
-        static::assertSame($state[0]['id'], 'categoriesProducts');
-        static::assertSame($state[0]['entityNames'][0], DefaultEntities::CATEGORY_ATTRIBUTE);
-        static::assertSame($state[0]['entityNames'][1], DefaultEntities::CATEGORY);
-        static::assertSame($state[0]['entityNames'][2], DefaultEntities::CUSTOMER_GROUP_ATTRIBUTE);
-        static::assertSame($state[0]['entityNames'][3], DefaultEntities::CUSTOMER_GROUP);
-        static::assertSame($state[0]['entityNames'][4], DefaultEntities::PRODUCT_ATTRIBUTE);
-        static::assertSame($state[0]['entityNames'][5], DefaultEntities::PRODUCT_PRICE_ATTRIBUTE);
-        static::assertSame($state[0]['entityNames'][6], DefaultEntities::MANUFACTURER_ATTRIBUTE);
-        static::assertSame($state[0]['entityNames'][7], DefaultEntities::PRODUCT);
-        static::assertSame($state[0]['entityNames'][8], DefaultEntities::PROPERTY_GROUP_OPTION);
-        static::assertSame($state[0]['entityNames'][9], DefaultEntities::TRANSLATION);
+        static::assertSame($state[0]['id'], 'products');
+        static::assertSame($state[0]['entityNames'][0], DefaultEntities::PRODUCT_CUSTOM_FIELD);
+        static::assertSame($state[0]['entityNames'][1], DefaultEntities::PRODUCT_PRICE_CUSTOM_FIELD);
+        static::assertSame($state[0]['entityNames'][2], DefaultEntities::PRODUCT_MANUFACTURER_CUSTOM_FIELD);
+        static::assertSame($state[0]['entityNames'][3], DefaultEntities::PRODUCT);
+        static::assertSame($state[0]['entityNames'][4], DefaultEntities::PROPERTY_GROUP_OPTION);
+        static::assertSame($state[0]['entityNames'][5], DefaultEntities::TRANSLATION);
 
         static::assertSame($state[1]['id'], 'customersOrders');
-        static::assertSame($state[1]['entityNames'][0], DefaultEntities::CUSTOMER_ATTRIBUTE);
+        static::assertSame($state[1]['entityNames'][0], DefaultEntities::CUSTOMER_CUSTOM_FIELD);
         static::assertSame($state[1]['entityNames'][1], DefaultEntities::CUSTOMER);
-        static::assertSame($state[1]['entityNames'][2], DefaultEntities::ORDER_ATTRIBUTE);
+        static::assertSame($state[1]['entityNames'][2], DefaultEntities::ORDER_CUSTOM_FIELD);
         static::assertSame($state[1]['entityNames'][3], DefaultEntities::ORDER);
     }
 

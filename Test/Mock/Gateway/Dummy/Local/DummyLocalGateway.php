@@ -2,11 +2,7 @@
 
 namespace SwagMigrationNext\Test\Mock\Gateway\Dummy\Local;
 
-use Shopware\Core\Checkout\Customer\CustomerDefinition;
-use Shopware\Core\Checkout\Order\OrderDefinition;
-use Shopware\Core\Content\Category\CategoryDefinition;
-use Shopware\Core\Content\Media\MediaDefinition;
-use Shopware\Core\Content\Product\ProductDefinition;
+use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 use SwagMigrationNext\Migration\EnvironmentInformation;
 use SwagMigrationNext\Migration\Gateway\AbstractGateway;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CategoryDataSet;
@@ -72,12 +68,12 @@ class DummyLocalGateway extends AbstractGateway
         }
 
         $totals = [
-            CategoryDefinition::getEntityName() => $environmentDataArray['categories'],
-            ProductDefinition::getEntityName() => $environmentDataArray['products'],
-            CustomerDefinition::getEntityName() => $environmentDataArray['customers'],
-            OrderDefinition::getEntityName() => $environmentDataArray['orders'],
-            MediaDefinition::getEntityName() => $environmentDataArray['assets'],
-            'translation' => $environmentDataArray['translations'],
+            DefaultEntities::CATEGORY => $environmentDataArray['categories'],
+            DefaultEntities::PRODUCT => $environmentDataArray['products'],
+            DefaultEntities::CUSTOMER => $environmentDataArray['customers'],
+            DefaultEntities::ORDER => $environmentDataArray['orders'],
+            DefaultEntities::MEDIA => $environmentDataArray['assets'],
+            DefaultEntities::TRANSLATION => $environmentDataArray['translations'],
         ];
 
         return new EnvironmentInformation(

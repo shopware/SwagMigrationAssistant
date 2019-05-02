@@ -50,7 +50,7 @@ class Shopware55LocalMediaReader extends Shopware55LocalAbstractReader
         $locale = $this->getDefaultShopLocale();
 
         foreach ($media as &$mediaData) {
-            $mediaData['_locale'] = $locale;
+            $mediaData['_locale'] = str_replace('_', '-', $locale);
         }
         unset($mediaData);
 

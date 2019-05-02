@@ -6,17 +6,14 @@ use SwagMigrationNext\Migration\DataSelection\DataSelectionInterface;
 use SwagMigrationNext\Migration\DataSelection\DataSelectionStruct;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CategoryAttributeDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CategoryDataSet;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CurrencyDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CustomerGroupAttributeDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CustomerGroupDataSet;
-use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ManufacturerAttributeDataSet;
-use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ProductAttributeDataSet;
-use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
-use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ProductPriceAttributeDataSet;
-use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\PropertyGroupOptionDataSet;
-use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\TranslationDataSet;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\LanguageDataSet;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\SalesChannelDataSet;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
-class ProductCategoryTranslationDataSelection implements DataSelectionInterface
+class BasicSettingsDataSelection implements DataSelectionInterface
 {
     public function supports(string $profileName, string $gatewayIdentifier): bool
     {
@@ -26,30 +23,26 @@ class ProductCategoryTranslationDataSelection implements DataSelectionInterface
     public function getData(): DataSelectionStruct
     {
         return new DataSelectionStruct(
-            'categoriesProducts',
+            'basicSettings',
             $this->getEntityNames(),
-            'swag-migration.index.selectDataCard.dataSelection.categoriesProducts',
-            100,
+            'swag-migration.index.selectDataCard.dataSelection.basicSettings',
+            -100,
+            false,
+            DataSelectionStruct::BASIC_DATA_TYPE,
             true
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getEntityNames(): array
     {
         return [
+            LanguageDataSet::getEntity(),
             CategoryAttributeDataSet::getEntity(),
             CategoryDataSet::getEntity(),
             CustomerGroupAttributeDataSet::getEntity(),
             CustomerGroupDataSet::getEntity(),
-            ProductAttributeDataSet::getEntity(),
-            ProductPriceAttributeDataSet::getEntity(),
-            ManufacturerAttributeDataSet::getEntity(),
-            ProductDataSet::getEntity(),
-            PropertyGroupOptionDataSet::getEntity(),
-            TranslationDataSet::getEntity(),
+            CurrencyDataSet::getEntity(),
+            SalesChannelDataSet::getEntity(),
         ];
     }
 }

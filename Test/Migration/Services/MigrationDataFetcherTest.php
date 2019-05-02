@@ -3,10 +3,6 @@
 namespace SwagMigrationNext\Test\Migration;
 
 use PHPUnit\Framework\TestCase;
-use Shopware\Core\Checkout\Customer\CustomerDefinition;
-use Shopware\Core\Content\Category\CategoryDefinition;
-use Shopware\Core\Content\Media\MediaDefinition;
-use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -17,6 +13,7 @@ use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\Converter\ConverterRegistry;
+use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 use SwagMigrationNext\Migration\Gateway\GatewayFactoryRegistry;
 use SwagMigrationNext\Migration\Logging\LoggingService;
 use SwagMigrationNext\Migration\Logging\LogType;
@@ -217,7 +214,7 @@ class MigrationDataFetcherTest extends TestCase
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('runId', $this->runUuid));
-        $criteria->addFilter(new EqualsFilter('entity', MediaDefinition::getEntityName()));
+        $criteria->addFilter(new EqualsFilter('entity', DefaultEntities::MEDIA));
         /** @var EntitySearchResult $result */
         $result = $this->migrationDataRepo->search($criteria, $context);
         static::assertSame(23, $result->getTotal());
@@ -238,7 +235,7 @@ class MigrationDataFetcherTest extends TestCase
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('runId', $this->runUuid));
-        $criteria->addFilter(new EqualsFilter('entity', CategoryDefinition::getEntityName()));
+        $criteria->addFilter(new EqualsFilter('entity', DefaultEntities::CATEGORY));
         /** @var EntitySearchResult $result */
         $result = $this->migrationDataRepo->search($criteria, $context);
         static::assertSame(8, $result->getTotal());
@@ -280,7 +277,7 @@ class MigrationDataFetcherTest extends TestCase
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('runId', $this->runUuid));
-        $criteria->addFilter(new EqualsFilter('entity', CustomerDefinition::getEntityName()));
+        $criteria->addFilter(new EqualsFilter('entity', DefaultEntities::CUSTOMER));
         /** @var EntitySearchResult $result */
         $result = $this->migrationDataRepo->search($criteria, $context);
         static::assertSame(3, $result->getTotal());
@@ -301,7 +298,7 @@ class MigrationDataFetcherTest extends TestCase
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('runId', $this->runUuid));
-        $criteria->addFilter(new EqualsFilter('entity', ProductDefinition::getEntityName()));
+        $criteria->addFilter(new EqualsFilter('entity', DefaultEntities::PRODUCT));
         /** @var EntitySearchResult $result */
         $result = $this->migrationDataRepo->search($criteria, $context);
         static::assertSame(37, $result->getTotal());
@@ -322,7 +319,7 @@ class MigrationDataFetcherTest extends TestCase
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('runId', $this->runUuid));
-        $criteria->addFilter(new EqualsFilter('entity', ProductDefinition::getEntityName()));
+        $criteria->addFilter(new EqualsFilter('entity', DefaultEntities::PRODUCT));
         /** @var EntitySearchResult $result */
         $result = $this->migrationDataRepo->search($criteria, $context);
         static::assertSame(37, $result->getTotal());

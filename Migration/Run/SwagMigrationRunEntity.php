@@ -66,16 +66,6 @@ class SwagMigrationRunEntity extends Entity
     protected $accessToken;
 
     /**
-     * @var \DateTime
-     */
-    protected $createdAt;
-
-    /**
-     * @var \DateTime|null
-     */
-    protected $updatedAt;
-
-    /**
      * @var RunProgress[]
      */
     protected $progress;
@@ -175,26 +165,6 @@ class SwagMigrationRunEntity extends Entity
     public function setAccessToken(string $accessToken): void
     {
         $this->accessToken = $accessToken;
-    }
-
-    public function getCreatedAt(): \DateTime
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(\DateTime $createdAt): void
-    {
-        $this->createdAt = $createdAt;
-    }
-
-    public function getUpdatedAt(): ?\DateTime
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(\DateTime $updatedAt): void
-    {
-        $this->updatedAt = $updatedAt;
     }
 
     public function getProgress(): ?array

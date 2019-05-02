@@ -97,7 +97,7 @@ class Shopware55LocalOrderReader extends Shopware55LocalAbstractReader
         $locale = $this->getDefaultShopLocale();
 
         foreach ($orders as $key => &$order) {
-            $order['_locale'] = $locale;
+            $order['_locale'] = str_replace('_', '-', $locale);
             if (isset($orderDetails[$order['id']])) {
                 $order['details'] = $orderDetails[$order['id']];
             }

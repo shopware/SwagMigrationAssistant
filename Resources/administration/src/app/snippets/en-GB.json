@@ -176,10 +176,11 @@
         },
         "dataSelection": {
           "customersOrders": "Customers & Orders",
-          "categoriesProducts": "Categories & Products",
+          "products": "Products",
           "media": "Media",
           "processMediaFiles": "Media",
-          "numberRanges": "Number ranges"
+          "numberRanges": "Number ranges",
+          "basicSettings": "Basic settings"
         },
         "entities": {
           "category": "Categories:",

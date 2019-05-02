@@ -177,10 +177,11 @@
         },
         "dataSelection": {
           "customersOrders": "Kunden & Bestellungen",
-          "categoriesProducts": "Kategorien & Produkte",
+          "products": "Produkte",
           "media": "Medien",
           "processMediaFiles": "Medien",
-          "numberRanges": "Nummernkreise"
+          "numberRanges": "Nummernkreise",
+          "basicSettings": "Grundeinstellungen"
         },
         "entities": {
           "category": "Kategorien:",

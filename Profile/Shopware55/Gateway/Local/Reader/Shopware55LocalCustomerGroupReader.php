@@ -19,7 +19,7 @@ class Shopware55LocalCustomerGroupReader extends Shopware55LocalAbstractReader
         $locale = $this->getDefaultShopLocale();
 
         foreach ($customerGroups as $key => &$customerGroup) {
-            $customerGroup['_locale'] = $locale;
+            $customerGroup['_locale'] = str_replace('_', '-', $locale);
             if (isset($discounts[$customerGroup['id']])) {
                 $customerGroup['discounts'] = $discounts[$customerGroup['id']];
             }

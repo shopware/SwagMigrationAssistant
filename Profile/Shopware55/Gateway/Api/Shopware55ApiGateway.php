@@ -3,13 +3,7 @@
 namespace SwagMigrationNext\Profile\Shopware55\Gateway\Api;
 
 use GuzzleHttp\Client;
-use Shopware\Core\Checkout\Customer\Aggregate\CustomerGroup\CustomerGroupDefinition;
-use Shopware\Core\Checkout\Customer\CustomerDefinition;
-use Shopware\Core\Checkout\Order\OrderDefinition;
-use Shopware\Core\Content\Category\CategoryDefinition;
-use Shopware\Core\Content\Media\MediaDefinition;
-use Shopware\Core\Content\Product\ProductDefinition;
-use Shopware\Core\Content\Property\Aggregate\PropertyGroupOption\PropertyGroupOptionDefinition;
+use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 use SwagMigrationNext\Migration\EnvironmentInformation;
 use SwagMigrationNext\Migration\Gateway\AbstractGateway;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiEnvironmentReader;
@@ -57,14 +51,16 @@ class Shopware55ApiGateway extends AbstractGateway
         }
 
         $totals = [
-            CategoryDefinition::getEntityName() => $environmentDataArray['categories'],
-            ProductDefinition::getEntityName() => $environmentDataArray['products'],
-            CustomerDefinition::getEntityName() => $environmentDataArray['customers'],
-            OrderDefinition::getEntityName() => $environmentDataArray['orders'],
-            MediaDefinition::getEntityName() => $environmentDataArray['assets'],
-            CustomerGroupDefinition::getEntityName() => $environmentDataArray['customerGroups'],
-            PropertyGroupOptionDefinition::getEntityName() => $environmentDataArray['configuratorOptions'],
-            'translation' => $environmentDataArray['translations'],
+            DefaultEntities::CATEGORY => $environmentDataArray['categories'],
+            DefaultEntities::PRODUCT => $environmentDataArray['products'],
+            DefaultEntities::CUSTOMER => $environmentDataArray['customers'],
+            DefaultEntities::ORDER => $environmentDataArray['orders'],
+            DefaultEntities::MEDIA => $environmentDataArray['assets'],
+            DefaultEntities::CUSTOMER_GROUP => $environmentDataArray['customerGroups'],
+            DefaultEntities::PROPERTY_GROUP_OPTION => $environmentDataArray['configuratorOptions'],
+            DefaultEntities::TRANSLATION => $environmentDataArray['translations'],
+            DefaultEntities::NUMBER_RANGE => $environmentData['numberRanges'],
+            DefaultEntities::CURRENCY => $environmentData['currencies'],
         ];
         $credentials = $this->migrationContext->getConnection()->getCredentialFields();
 

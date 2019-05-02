@@ -5,7 +5,7 @@
             {% block swag_migration_data_selector_grid %}
                 <template slot="grid">
                     <sw-grid ref="tableDataGrid"
-                             :items="this.migrationUIStore.state.dataSelectionTableData"
+                             :items="uiDataSelectionTableData"
                              @sw-grid-select-item="onGridSelectItem"
                              @sw-grid-select-all="onGridSelectItem">
                         <template slot="columns" slot-scope="{ item }">

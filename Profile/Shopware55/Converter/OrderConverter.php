@@ -10,28 +10,11 @@ use Shopware\Core\Checkout\Cart\Tax\Struct\CalculatedTaxCollection;
 use Shopware\Core\Checkout\Cart\Tax\Struct\TaxRule;
 use Shopware\Core\Checkout\Cart\Tax\Struct\TaxRuleCollection;
 use Shopware\Core\Checkout\Cart\Tax\TaxCalculator;
-use Shopware\Core\Checkout\Customer\CustomerDefinition;
 use Shopware\Core\Checkout\DiscountSurcharge\Cart\DiscountSurchargeCollector;
-use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressDefinition;
-use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryDefinition;
-use Shopware\Core\Checkout\Order\Aggregate\OrderDeliveryPosition\OrderDeliveryPositionDefinition;
-use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemDefinition;
-use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionDefinition;
-use Shopware\Core\Checkout\Order\OrderDefinition;
-use Shopware\Core\Checkout\Shipping\Aggregate\ShippingMethodTranslation\ShippingMethodTranslationDefinition;
-use Shopware\Core\Checkout\Shipping\ShippingMethodDefinition;
-use Shopware\Core\Content\DeliveryTime\DeliveryTimeDefinition;
-use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\System\Country\Aggregate\CountryState\CountryStateDefinition;
-use Shopware\Core\System\Country\Aggregate\CountryStateTranslation\CountryStateTranslationDefinition;
-use Shopware\Core\System\Country\Aggregate\CountryTranslation\CountryTranslationDefinition;
-use Shopware\Core\System\Country\CountryDefinition;
-use Shopware\Core\System\Currency\Aggregate\CurrencyTranslation\CurrencyTranslationDefinition;
-use Shopware\Core\System\Currency\CurrencyDefinition;
-use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 use SwagMigrationNext\Migration\Converter\ConvertStruct;
+use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationNext\Migration\MigrationContextInterface;
@@ -126,7 +109,7 @@ class OrderConverter extends Shopware55Converter
 
     public function getSupportedEntityName(): string
     {
-        return OrderDefinition::getEntityName();
+        return DefaultEntities::ORDER;
     }
 
     public function getSupportedProfileName(): string
@@ -183,7 +166,7 @@ class OrderConverter extends Shopware55Converter
         $converted = [];
         $converted['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            OrderDefinition::getEntityName(),
+            DefaultEntities::ORDER,
             $data['id'],
             $this->context
         );
@@ -194,7 +177,7 @@ class OrderConverter extends Shopware55Converter
 
         $customerId = $this->mappingService->getUuid(
             $this->connectionId,
-            CustomerDefinition::getEntityName(),
+            DefaultEntities::CUSTOMER,
             $data['customer']['email'],
             $this->context
         );
@@ -202,7 +185,7 @@ class OrderConverter extends Shopware55Converter
         if ($customerId === null) {
             $customerId = $this->mappingService->getUuid(
                 $this->connectionId,
-                CustomerDefinition::getEntityName(),
+                DefaultEntities::CUSTOMER,
                 $data['userID'],
                 $this->context
             );
@@ -210,8 +193,8 @@ class OrderConverter extends Shopware55Converter
 
         if ($customerId === null) {
             throw new AssociationEntityRequiredMissingException(
-                OrderDefinition::getEntityName(),
-                CustomerDefinition::getEntityName()
+                DefaultEntities::ORDER,
+                DefaultEntities::CUSTOMER
             );
         }
 
@@ -232,8 +215,28 @@ class OrderConverter extends Shopware55Converter
         unset($data['userID'], $data['customer']);
 
         $this->convertValue($converted, 'currencyFactor', $data, 'currencyFactor', self::TYPE_FLOAT);
-        $converted['currency'] = $this->getCurrency($data['paymentcurrency']);
-        unset($data['currency'], $data['currencyFactor'], $data['paymentcurrency']);
+
+        $currencyUuid = null;
+        if (isset($data['paymentcurrency']['currency'])) {
+            $currencyUuid = $this->mappingService->getCurrencyUuid(
+                $this->connectionId,
+                $data['paymentcurrency']['currency'],
+                $this->context
+            );
+        }
+        if ($currencyUuid === null) {
+            $this->loggingService->addWarning(
+                $this->runId,
+                Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
+                'Empty necessary data fields',
+                'Order-Entity could not converted cause of empty necessary field: paymentcurrency.',
+                ['id' => $this->oldId]
+            );
+
+            return new ConvertStruct(null, $data);
+        }
+
+        $converted['currencyId'] = $currencyUuid;
 
         $this->convertValue($converted, 'orderDate', $data, 'ordertime', self::TYPE_DATETIME);
 
@@ -291,7 +294,9 @@ class OrderConverter extends Shopware55Converter
             $data['invoice_amount'],
             $data['invoice_shipping_net'],
             $data['invoice_shipping'],
-            $data['details']
+            $data['details'],
+            $data['currency'],
+            $data['paymentcurrency']
         );
 
         $converted['deliveries'] = $this->getDeliveries($data, $converted, $shippingCosts);
@@ -326,7 +331,7 @@ class OrderConverter extends Shopware55Converter
         if (isset($data['subshopID'])) {
             $salesChannelId = $this->mappingService->getUuid(
                 $this->connectionId,
-                SalesChannelDefinition::getEntityName(),
+                DefaultEntities::SALES_CHANNEL,
                 $data['subshopID'],
                 $this->context
             );
@@ -338,7 +343,7 @@ class OrderConverter extends Shopware55Converter
         }
 
         if (isset($data['attributes'])) {
-            $converted['attributes'] = $this->getAttributes($data['attributes']);
+            $converted['customFields'] = $this->getAttributes($data['attributes']);
         }
         unset($data['attributes']);
 
@@ -370,66 +375,6 @@ class OrderConverter extends Shopware55Converter
         }
 
         return new ConvertStruct($converted, $data);
-    }
-
-    private function getCurrency(array $originalData): array
-    {
-        $currency = [];
-        $currency['id'] = $this->mappingService->getCurrencyUuid($this->connectionId, $originalData['currency'], $this->context);
-
-        if (!isset($currency['id'])) {
-            $currency['id'] = $this->mappingService->createNewUuid(
-                $this->connectionId,
-                CurrencyDefinition::getEntityName(),
-                $originalData['id'],
-                $this->context
-            );
-        }
-
-        $this->convertValue($currency, 'isDefault', $originalData, 'standard', self::TYPE_BOOLEAN);
-        $this->convertValue($currency, 'factor', $originalData, 'factor', self::TYPE_FLOAT);
-        $this->convertValue($currency, 'position', $originalData, 'position', self::TYPE_INTEGER);
-
-        $currency['symbol'] = html_entity_decode($originalData['templatechar']);
-        $currency['placedInFront'] = ((int) $originalData['symbol_position']) > 16;
-        $currency['decimalPrecision'] = $this->context->getCurrencyPrecision();
-
-        $this->getCurrencyTranslation($currency, $originalData);
-        $this->convertValue($currency, 'shortName', $originalData, 'currency');
-        $this->convertValue($currency, 'name', $originalData, 'name');
-
-        return $currency;
-    }
-
-    private function getCurrencyTranslation(array &$currency, array $data): void
-    {
-        $languageData = $this->mappingService->getDefaultLanguageUuid($this->context);
-        if ($languageData['createData']['localeCode'] === $this->mainLocale) {
-            return;
-        }
-
-        $localeTranslation = [];
-
-        $this->convertValue($localeTranslation, 'shortName', $data, 'currency');
-        $this->convertValue($localeTranslation, 'name', $data, 'name');
-
-        $localeTranslation['id'] = $this->mappingService->createNewUuid(
-            $this->connectionId,
-            CurrencyTranslationDefinition::getEntityName(),
-            $data['id'] . ':' . $this->mainLocale,
-            $this->context
-        );
-        $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);
-
-        if (isset($languageData['createData']) && !empty($languageData['createData'])) {
-            $localeTranslation['language']['id'] = $languageData['uuid'];
-            $localeTranslation['language']['localeId'] = $languageData['createData']['localeId'];
-            $localeTranslation['language']['name'] = $languageData['createData']['localeCode'];
-        } else {
-            $localeTranslation['languageId'] = $languageData['uuid'];
-        }
-
-        $currency['translations'][$languageData['uuid']] = $localeTranslation;
     }
 
     private function getTransactions(array $data, array &$converted): void
@@ -465,7 +410,7 @@ class OrderConverter extends Shopware55Converter
 
         $id = $this->mappingService->createNewUuid(
             $this->connectionId,
-            OrderTransactionDefinition::getEntityName(),
+            DefaultEntities::ORDER_TRANSACTION,
             $this->oldId,
             $this->context
         );
@@ -510,7 +455,7 @@ class OrderConverter extends Shopware55Converter
                 'Order-Transaction-Entity could not converted cause of unknown payment method',
                 [
                     'id' => $this->oldId,
-                    'entity' => OrderDefinition::getEntityName(),
+                    'entity' => DefaultEntities::ORDER,
                     'paymentMethod' => $originalData['payment']['id'],
                 ]
             );
@@ -543,14 +488,14 @@ class OrderConverter extends Shopware55Converter
         $address = [];
         $address['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            OrderAddressDefinition::getEntityName(),
+            DefaultEntities::ORDER_ADDRESS,
             $originalData['id'],
             $this->context
         );
 
         $address['countryId'] = $this->mappingService->getUuid(
             $this->connectionId,
-            CountryDefinition::getEntityName(),
+            DefaultEntities::COUNTRY,
             $originalData['countryID'],
             $this->context
         );
@@ -562,7 +507,7 @@ class OrderConverter extends Shopware55Converter
         if (isset($originalData['stateID'])) {
             $address['countryStateId'] = $this->mappingService->getUuid(
                 $this->connectionId,
-                CountryStateDefinition::getEntityName(),
+                DefaultEntities::COUNTRY_STATE,
                 $originalData['stateID'],
                 $this->context
             );
@@ -612,7 +557,7 @@ class OrderConverter extends Shopware55Converter
         if (!isset($country['id'])) {
             $country['id'] = $this->mappingService->createNewUuid(
                 $this->connectionId,
-                CountryDefinition::getEntityName(),
+                DefaultEntities::COUNTRY,
                 $oldCountryData['id'],
                 $this->context
             );
@@ -635,8 +580,8 @@ class OrderConverter extends Shopware55Converter
 
     private function getCountryTranslation(array &$country, array $data): void
     {
-        $languageData = $this->mappingService->getDefaultLanguageUuid($this->context);
-        if ($languageData['createData']['localeCode'] === $this->mainLocale) {
+        $language = $this->mappingService->getDefaultLanguage($this->context);
+        if ($language->getLocale()->getCode() === $this->mainLocale) {
             return;
         }
 
@@ -647,21 +592,15 @@ class OrderConverter extends Shopware55Converter
 
         $localeTranslation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            CountryTranslationDefinition::getEntityName(),
+            DefaultEntities::COUNTRY_TRANSLATION,
             $data['id'] . ':' . $this->mainLocale,
             $this->context
         );
 
-        $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);
-        if (isset($languageData['createData']) && !empty($languageData['createData'])) {
-            $localeTranslation['language']['id'] = $languageData['uuid'];
-            $localeTranslation['language']['localeId'] = $languageData['createData']['localeId'];
-            $localeTranslation['language']['name'] = $languageData['createData']['localeCode'];
-        } else {
-            $localeTranslation['languageId'] = $languageData['uuid'];
-        }
+        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);
+        $localeTranslation['languageId'] = $languageUuid;
 
-        $country['translations'][$languageData['uuid']] = $localeTranslation;
+        $country['translations'][$languageUuid] = $localeTranslation;
     }
 
     private function getCountryState(array $oldStateData, string $newCountryId): array
@@ -669,7 +608,7 @@ class OrderConverter extends Shopware55Converter
         $state = [];
         $state['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            CountryStateDefinition::getEntityName(),
+            DefaultEntities::COUNTRY_STATE,
             $oldStateData['id'],
             $this->context
         );
@@ -686,8 +625,8 @@ class OrderConverter extends Shopware55Converter
 
     private function getCountryStateTranslation(array &$state, array $data): void
     {
-        $languageData = $this->mappingService->getDefaultLanguageUuid($this->context);
-        if ($languageData['createData']['localeCode'] === $this->mainLocale) {
+        $language = $this->mappingService->getDefaultLanguage($this->context);
+        if ($language->getLocale()->getCode() === $this->mainLocale) {
             return;
         }
 
@@ -698,21 +637,15 @@ class OrderConverter extends Shopware55Converter
 
         $localeTranslation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            CountryStateTranslationDefinition::getEntityName(),
+            DefaultEntities::COUNTRY_STATE_TRANSLATION,
             $data['id'] . ':' . $this->mainLocale,
             $this->context
         );
 
-        $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);
-        if (isset($languageData['createData']) && !empty($languageData['createData'])) {
-            $localeTranslation['language']['id'] = $languageData['uuid'];
-            $localeTranslation['language']['localeId'] = $languageData['createData']['localeId'];
-            $localeTranslation['language']['name'] = $languageData['createData']['localeCode'];
-        } else {
-            $localeTranslation['languageId'] = $languageData['uuid'];
-        }
+        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);
+        $localeTranslation['languageId'] = $languageUuid;
 
-        $state['translations'][$languageData['uuid']] = $localeTranslation;
+        $state['translations'][$languageUuid] = $localeTranslation;
     }
 
     private function getDeliveries(array $data, array $converted, CalculatedPrice $shippingCosts): array
@@ -722,7 +655,7 @@ class OrderConverter extends Shopware55Converter
         $delivery = [
             'id' => $this->mappingService->createNewUuid(
                 $this->connectionId,
-                OrderDeliveryDefinition::getEntityName(),
+                DefaultEntities::ORDER_DELIVERY,
                 $this->oldId,
                 $this->context
             ),
@@ -755,7 +688,7 @@ class OrderConverter extends Shopware55Converter
                 $positions[] = [
                     'id' => $this->mappingService->createNewUuid(
                         $this->connectionId,
-                        OrderDeliveryPositionDefinition::getEntityName(),
+                        DefaultEntities::ORDER_DELIVERY_POSITION,
                         $lineItem['id'],
                         $this->context
                     ),
@@ -778,7 +711,7 @@ class OrderConverter extends Shopware55Converter
         $shippingMethod = [];
         $shippingMethod['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            ShippingMethodDefinition::getEntityName(),
+            DefaultEntities::SHIPPING_METHOD,
             $originalData['id'],
             $this->context
         );
@@ -793,7 +726,7 @@ class OrderConverter extends Shopware55Converter
 
         $defaultDeliveryTimeUuid = $this->mappingService->getUuid(
             $this->connectionId,
-            DeliveryTimeDefinition::getEntityName(),
+            DefaultEntities::DELIVERY_TIME,
             'default_delivery_time',
             $this->context
         );
@@ -808,7 +741,7 @@ class OrderConverter extends Shopware55Converter
                 'Order-Entity could not converted cause of empty necessary field(s): delivery_time.',
                 [
                     'id' => $this->oldId,
-                    'entity' => OrderDefinition::getEntityName(),
+                    'entity' => DefaultEntities::ORDER,
                     'fields' => ['delivery_time'],
                 ],
                 1
@@ -826,7 +759,7 @@ class OrderConverter extends Shopware55Converter
                 'Order-Entity could not converted cause of empty necessary field(s): availability_rule_id.',
                 [
                     'id' => $this->oldId,
-                    'entity' => OrderDefinition::getEntityName(),
+                    'entity' => DefaultEntities::ORDER,
                     'fields' => ['availability_rule_id'],
                 ],
                 1
@@ -838,8 +771,8 @@ class OrderConverter extends Shopware55Converter
 
     private function getShippingMethodTranslation(array &$shippingMethod, array $data): void
     {
-        $languageData = $this->mappingService->getDefaultLanguageUuid($this->context);
-        if ($languageData['createData']['localeCode'] === $this->mainLocale) {
+        $language = $this->mappingService->getDefaultLanguage($this->context);
+        if ($language->getLocale()->getCode() === $this->mainLocale) {
             return;
         }
 
@@ -852,21 +785,15 @@ class OrderConverter extends Shopware55Converter
 
         $localeTranslation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            ShippingMethodTranslationDefinition::getEntityName(),
+            DefaultEntities::SHIPPING_METHOD_TRANSLATION,
             $data['id'] . ':' . $this->mainLocale,
             $this->context
         );
 
-        $languageData = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);
-        if (isset($languageData['createData']) && !empty($languageData['createData'])) {
-            $localeTranslation['language']['id'] = $languageData['uuid'];
-            $localeTranslation['language']['localeId'] = $languageData['createData']['localeId'];
-            $localeTranslation['language']['name'] = $languageData['createData']['localeCode'];
-        } else {
-            $localeTranslation['languageId'] = $languageData['uuid'];
-        }
+        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);
+        $localeTranslation['languageId'] = $languageUuid;
 
-        $shippingMethod['translations'][$languageData['uuid']] = $localeTranslation;
+        $shippingMethod['translations'][$languageUuid] = $localeTranslation;
     }
 
     private function getLineItems(array $originalData, array &$converted, TaxRuleCollection $taxRules, string $taxStatus, Context $context): array
@@ -879,7 +806,7 @@ class OrderConverter extends Shopware55Converter
             $lineItem = [
                 'id' => $this->mappingService->createNewUuid(
                     $this->connectionId,
-                    OrderLineItemDefinition::getEntityName(),
+                    DefaultEntities::ORDER_LINE_ITEM,
                     $originalLineItem['id'],
                     $this->context
                 ),
@@ -889,7 +816,7 @@ class OrderConverter extends Shopware55Converter
                 if ($originalLineItem['articleordernumber'] !== null) {
                     $lineItem['identifier'] = $this->mappingService->getUuid(
                         $this->connectionId,
-                        ProductDefinition::getEntityName(),
+                        DefaultEntities::PRODUCT,
                         $originalLineItem['articleordernumber'],
                         $this->context
                     );
@@ -998,7 +925,7 @@ class OrderConverter extends Shopware55Converter
                 'Order-Entity could not converted cause of unknown customer salutation',
                 [
                     'id' => $this->oldId,
-                    'entity' => OrderDefinition::getEntityName(),
+                    'entity' => DefaultEntities::ORDER,
                     'salutation' => $salutation,
                 ]
             );
@@ -1015,7 +942,7 @@ class OrderConverter extends Shopware55Converter
             if ($attribute === 'id' || $attribute === 'orderID') {
                 continue;
             }
-            $result[OrderDefinition::getEntityName() . '_' . $attribute] = $value;
+            $result[DefaultEntities::ORDER . '_' . $attribute] = $value;
         }
 
         return $result;

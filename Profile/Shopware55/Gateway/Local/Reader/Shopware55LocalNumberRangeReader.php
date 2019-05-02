@@ -16,7 +16,7 @@ class Shopware55LocalNumberRangeReader extends Shopware55LocalAbstractReader
         $locale = $this->getDefaultShopLocale();
 
         foreach ($numberRanges as &$numberRange) {
-            $numberRange['_locale'] = $locale;
+            $numberRange['_locale'] = str_replace('_', '-', $locale);
             $numberRange['prefix'] = $prefix;
         }
 

@@ -6,7 +6,6 @@ use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\CashPayment;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\DebitPayment;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\InvoicePayment;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\PrePayment;
-use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\SEPAPayment;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -155,9 +154,6 @@ class PaymentMethodReader extends AbstractPremappingReader
                 break;
             case 'prepayment':
                 $preselectionValue = $this->preselectionDictionary[PrePayment::class];
-                break;
-            case 'sepa':
-                $preselectionValue = $this->preselectionDictionary[SEPAPayment::class];
                 break;
         }
 

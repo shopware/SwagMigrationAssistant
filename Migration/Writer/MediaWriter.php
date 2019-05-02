@@ -27,10 +27,12 @@ class MediaWriter implements WriterInterface
 
     public function writeData(array $data, Context $context): void
     {
-        $this->entityWriter->upsert(
-            MediaDefinition::class,
-            $data,
-            WriteContext::createFromContext($context)
-        );
+        $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($data) {
+            $this->entityWriter->upsert(
+                MediaDefinition::class,
+                $data,
+                WriteContext::createFromContext($context)
+            );
+        });
     }
 }

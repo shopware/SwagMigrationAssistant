@@ -23,6 +23,23 @@ Component.register('swag-migration-data-selector', {
         };
     },
 
+    computed: {
+        uiDataSelectionTableData() {
+            return this.migrationUIStore.state.dataSelectionTableData.filter(
+                selection => selection.requiredSelection === false
+            );
+        },
+
+        uiDataSelectionTableDataIdLookup() {
+            const lookUp = {};
+            this.migrationUIStore.state.dataSelectionTableData.forEach((data) => {
+                lookUp[data.id] = data;
+            });
+
+            return lookUp;
+        }
+    },
+
     methods: {
         async createdComponent() {
             this.fetchTableData();
@@ -32,14 +49,28 @@ Component.register('swag-migration-data-selector', {
             if (this.migrationUIStore.state.dataSelectionTableData.length > 0) {
                 this.$nextTick(() => {
                     this.migrationUIStore.state.dataSelectionIds.forEach((id) => {
-                        this.$refs.tableDataGrid.selectItem(true, { id });
+                        if (this.uiDataSelectionTableDataIdLookup[id].requiredSelection === false) {
+                            this.$refs.tableDataGrid.selectItem(true, { id });
+                        }
                     });
                 });
             }
         },
 
         onGridSelectItem(selection) {
-            this.migrationUIStore.setDataSelectionIds(Object.keys(selection));
+            const selectionIds = Object.keys(selection);
+
+            if (selectionIds.length > 0) {
+                this.migrationUIStore.state.dataSelectionTableData.forEach((data) => {
+                    if (data.requiredSelection !== true) {
+                        return;
+                    }
+
+                    selectionIds.push(data.id);
+                });
+            }
+
+            this.migrationUIStore.setDataSelectionIds(selectionIds);
         },
 
         showHelptext(entityTotals) {
