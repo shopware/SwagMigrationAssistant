@@ -34,7 +34,12 @@
         </service>
 
         <service id="SwagMigrationNext\Migration\Writer\NumberRangeWriter">
-            <argument type="service" id="number_range.repository" />
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
+            <tag name="shopware.migration.writer"/>
+        </service>
+
+        <service id="SwagMigrationNext\Migration\Writer\LanguageWriter">
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
             <tag name="shopware.migration.writer"/>
         </service>
 

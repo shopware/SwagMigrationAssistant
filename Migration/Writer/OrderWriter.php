@@ -45,10 +45,12 @@ class OrderWriter implements WriterInterface
         }
         unset($item);
 
-        $this->entityWriter->upsert(
-            OrderDefinition::class,
-            $data,
-            WriteContext::createFromContext($context)
-        );
+        $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($data) {
+            $this->entityWriter->upsert(
+                OrderDefinition::class,
+                $data,
+                WriteContext::createFromContext($context)
+            );
+        });
     }
 }

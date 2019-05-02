@@ -30,10 +30,12 @@ class SalesChannelWriter implements WriterInterface
      */
     public function writeData(array $data, Context $context): void
     {
-        $this->entityWriter->upsert(
-            SalesChannelDefinition::class,
-            $data,
-            WriteContext::createFromContext($context)
-        );
+        $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($data) {
+            $this->entityWriter->upsert(
+                SalesChannelDefinition::class,
+                $data,
+                WriteContext::createFromContext($context)
+            );
+        });
     }
 }

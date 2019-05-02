@@ -3,19 +3,21 @@
 namespace SwagMigrationNext\Migration\Writer;
 
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
+use Shopware\Core\System\NumberRange\NumberRangeDefinition;
 use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 
 class NumberRangeWriter implements WriterInterface
 {
     /**
-     * @var EntityRepositoryInterface
+     * @var EntityWriterInterface
      */
-    private $numberRangeRepo;
+    private $entityWriter;
 
-    public function __construct(EntityRepositoryInterface $numberRangeRepo)
+    public function __construct(EntityWriterInterface $entityWriter)
     {
-        $this->numberRangeRepo = $numberRangeRepo;
+        $this->entityWriter = $entityWriter;
     }
 
     public function supports(): string
@@ -25,6 +27,12 @@ class NumberRangeWriter implements WriterInterface
 
     public function writeData(array $data, Context $context): void
     {
-        $this->numberRangeRepo->upsert($data, $context);
+        $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($data) {
+            $this->entityWriter->upsert(
+                NumberRangeDefinition::class,
+                $data,
+                WriteContext::createFromContext($context)
+            );
+        });
     }
 }
