@@ -106,14 +106,5 @@ Module.register('swag-migration', {
                 }
             }
         }
-    },
-
-    navigation: [{
-        id: 'swag-migration',
-        parent: 'sw-settings',
-        label: 'swag-migration.general.mainMenuItemGeneral',
-        path: 'swag.migration.index',
-        color: '#9AA8B5',
-        icon: 'default-chart-bar-filled'
-    }]
+    }
 });
