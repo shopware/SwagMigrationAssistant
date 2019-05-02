@@ -14,10 +14,12 @@ use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\Converter\ConverterRegistry;
+use SwagMigrationNext\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationNext\Migration\DataSelection\DataSelectionRegistry;
 use SwagMigrationNext\Migration\Gateway\GatewayFactoryRegistry;
 use SwagMigrationNext\Migration\Logging\LoggingService;
 use SwagMigrationNext\Migration\Mapping\MappingService;
+use SwagMigrationNext\Migration\Mapping\SwagMigrationMappingDefinition;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Profile\ProfileRegistry;
 use SwagMigrationNext\Migration\Run\RunService;
@@ -106,7 +108,8 @@ class RunServiceTest extends TestCase
             $this->getContainer()->get('tax.repository'),
             $this->getContainer()->get('number_range.repository'),
             $this->getContainer()->get('rule.repository'),
-            $entityWriter
+            $entityWriter,
+            $this->getContainer()->get(SwagMigrationMappingDefinition::class)
         );
         $loggingService = new LoggingService($loggingRepo);
         $mediaFileService = new DummyMediaFileService();
@@ -144,7 +147,8 @@ class RunServiceTest extends TestCase
                 $entityWriter,
                 $converterRegistry,
                 $mediaFileService,
-                $loggingService
+                $loggingService,
+                $this->getContainer()->get(SwagMigrationDataDefinition::class)
             ),
         ]));
 
@@ -160,7 +164,8 @@ class RunServiceTest extends TestCase
                 $entityWriter,
                 $this->mappingService,
                 $mediaFileService,
-                $loggingRepo
+                $loggingRepo,
+                $this->getContainer()->get(SwagMigrationDataDefinition::class)
             ),
             new SwagMigrationAccessTokenService($this->runRepo),
             new DataSelectionRegistry([]),

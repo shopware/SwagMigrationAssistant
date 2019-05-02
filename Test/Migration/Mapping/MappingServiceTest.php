@@ -13,6 +13,7 @@ use SwagMigrationNext\Exception\LocaleNotFoundException;
 use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 use SwagMigrationNext\Migration\Mapping\MappingService;
 use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
+use SwagMigrationNext\Migration\Mapping\SwagMigrationMappingDefinition;
 use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Test\Migration\Services\MigrationProfileUuidService;
 use Symfony\Component\HttpFoundation\Response;
@@ -86,7 +87,8 @@ class MappingServiceTest extends TestCase
             $this->getContainer()->get('tax.repository'),
             $this->getContainer()->get('number_range.repository'),
             $this->getContainer()->get('rule.repository'),
-            $this->entityWriter
+            $this->entityWriter,
+            $this->getContainer()->get(SwagMigrationMappingDefinition::class)
         );
     }
 
@@ -122,7 +124,8 @@ class MappingServiceTest extends TestCase
             $this->getContainer()->get('tax.repository'),
             $this->getContainer()->get('number_range.repository'),
             $this->getContainer()->get('rule.repository'),
-            $this->entityWriter
+            $this->entityWriter,
+            $this->getContainer()->get(SwagMigrationMappingDefinition::class)
         );
 
         $uuid2 = $newMappingService->createNewUuid($this->connectionId, 'product', '123', $context);

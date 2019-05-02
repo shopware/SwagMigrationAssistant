@@ -12,6 +12,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationNext\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationNext\Migration\DataSelection\DataSelectionRegistry;
 use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 use SwagMigrationNext\Migration\Mapping\MappingService;
@@ -177,7 +178,8 @@ class MigrationProgressServiceTest extends TestCase
             $this->getContainer()->get(EntityWriter::class),
             $this->getContainer()->get(MappingService::class),
             $this->getContainer()->get(MediaFileService::class),
-            $this->loggingRepo
+            $this->loggingRepo,
+            $this->getContainer()->get(SwagMigrationDataDefinition::class)
         );
 
         $this->progressService = new MigrationProgressService(

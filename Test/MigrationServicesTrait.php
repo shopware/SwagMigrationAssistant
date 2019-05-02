@@ -10,6 +10,7 @@ use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStat
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Content\DeliveryTime\DeliveryTimeEntity;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
@@ -47,7 +48,8 @@ trait MigrationServicesTrait
         EntityWriterInterface $entityWriter,
         MappingService $mappingService,
         MediaFileServiceInterface $mediaFileService,
-        EntityRepositoryInterface $loggingRepo
+        EntityRepositoryInterface $loggingRepo,
+        EntityDefinition $dataDefinition
     ): MigrationDataFetcherInterface {
         $loggingService = new LoggingService($loggingRepo);
         $priceRounding = new PriceRounding();
@@ -78,7 +80,8 @@ trait MigrationServicesTrait
                 $entityWriter,
                 $converterRegistry,
                 $mediaFileService,
-                $loggingService
+                $loggingService,
+                $dataDefinition
             ),
         ]));
 

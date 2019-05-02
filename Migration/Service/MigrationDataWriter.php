@@ -3,6 +3,7 @@
 namespace SwagMigrationNext\Migration\Service;
 
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
@@ -12,7 +13,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
 use Shopware\Core\Framework\ShopwareHttpException;
-use SwagMigrationNext\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationNext\Migration\Data\SwagMigrationDataEntity;
 use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
@@ -47,18 +47,25 @@ class MigrationDataWriter implements MigrationDataWriterInterface
      */
     private $entityWriter;
 
+    /**
+     * @var EntityDefinition
+     */
+    private $dataDefinition;
+
     public function __construct(
         EntityWriterInterface $entityWriter,
         EntityRepositoryInterface $migrationDataRepo,
         WriterRegistryInterface $writerRegistry,
         MediaFileServiceInterface $mediaFileService,
-        LoggingServiceInterface $loggingService
+        LoggingServiceInterface $loggingService,
+        EntityDefinition $dataDefinition
     ) {
         $this->migrationDataRepo = $migrationDataRepo;
         $this->writerRegistry = $writerRegistry;
         $this->mediaFileService = $mediaFileService;
         $this->loggingService = $loggingService;
         $this->entityWriter = $entityWriter;
+        $this->dataDefinition = $dataDefinition;
     }
 
     public function writeData(MigrationContextInterface $migrationContext, Context $context): void
@@ -117,7 +124,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
         } finally {
             // Update written-Flag of the entity in the data table
             $this->entityWriter->update(
-                SwagMigrationDataDefinition::class,
+                $this->dataDefinition,
                 $updateWrittenData,
                 WriteContext::createFromContext($context)
             );

@@ -5,7 +5,6 @@ namespace SwagMigrationNext\Profile\Shopware55\Converter;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Rule\Container\AndRule;
 use Shopware\Core\Framework\Rule\Container\OrRule;
-use Shopware\Core\System\Unit\Aggregate\UnitTranslation\UnitTranslationDefinition;
 use SwagMigrationNext\Migration\Converter\ConvertStruct;
 use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
@@ -632,7 +631,7 @@ class ProductConverter extends Shopware55Converter
 
         $localeTranslation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            UnitTranslationDefinition::getEntityName(),
+            DefaultEntities::UNIT_TRANSLATION,
             $data['id'] . ':' . $this->locale,
             $this->context
         );

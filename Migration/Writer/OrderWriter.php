@@ -2,8 +2,8 @@
 
 namespace SwagMigrationNext\Migration\Writer;
 
-use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
 use Shopware\Core\Framework\Struct\Serializer\StructNormalizer;
@@ -21,10 +21,16 @@ class OrderWriter implements WriterInterface
      */
     private $structNormalizer;
 
-    public function __construct(EntityWriterInterface $entityWriter, StructNormalizer $structNormalizer)
+    /**
+     * @var EntityDefinition
+     */
+    private $definition;
+
+    public function __construct(EntityWriterInterface $entityWriter, StructNormalizer $structNormalizer, EntityDefinition $definition)
     {
         $this->entityWriter = $entityWriter;
         $this->structNormalizer = $structNormalizer;
+        $this->definition = $definition;
     }
 
     public function supports(): string
@@ -47,7 +53,7 @@ class OrderWriter implements WriterInterface
 
         $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($data) {
             $this->entityWriter->upsert(
-                OrderDefinition::class,
+                $this->definition,
                 $data,
                 WriteContext::createFromContext($context)
             );

@@ -4,52 +4,17 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
-        <service id="SwagMigrationNext\Migration\Logging\SwagMigrationLoggingDefinition"
-                 class="SwagMigrationNext\Migration\Logging\SwagMigrationLoggingDefinition">
+        <service id="SwagMigrationNext\Migration\Logging\SwagMigrationLoggingDefinition">
             <tag name="shopware.entity.definition" entity="swag_migration_logging"/>
-        </service>
-
-        <service id="swag_migration_logging.repository"
-                 class="Shopware\Core\Framework\DataAbstractionLayer\EntityRepository"
-                 public="true">
-            <argument>SwagMigrationNext\Migration\Logging\SwagMigrationLoggingDefinition</argument>
-            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Read\EntityReaderInterface"/>
-            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\VersionManager"/>
-            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearcherInterface"/>
-            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Search\EntityAggregatorInterface"/>
-            <argument type="service" id="event_dispatcher"/>
         </service>
 
         <service id="SwagMigrationNext\Migration\Run\SwagMigrationRunDefinition"
                  class="SwagMigrationNext\Migration\Run\SwagMigrationRunDefinition">
             <tag name="shopware.entity.definition" entity="swag_migration_run"/>
         </service>
-
-        <service id="swag_migration_run.repository"
-                 class="Shopware\Core\Framework\DataAbstractionLayer\EntityRepository"
-                 public="true">
-            <argument>SwagMigrationNext\Migration\Run\SwagMigrationRunDefinition</argument>
-            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Read\EntityReaderInterface"/>
-            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\VersionManager"/>
-            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearcherInterface"/>
-            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Search\EntityAggregatorInterface"/>
-            <argument type="service" id="event_dispatcher"/>
-        </service>
-
         <service id="SwagMigrationNext\Migration\Data\SwagMigrationDataDefinition"
                  class="SwagMigrationNext\Migration\Data\SwagMigrationDataDefinition">
             <tag name="shopware.entity.definition" entity="swag_migration_data"/>
-        </service>
-
-        <service id="swag_migration_data.repository"
-                 class="Shopware\Core\Framework\DataAbstractionLayer\EntityRepository"
-                 public="true">
-            <argument>SwagMigrationNext\Migration\Data\SwagMigrationDataDefinition</argument>
-            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Read\EntityReaderInterface"/>
-            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\VersionManager"/>
-            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearcherInterface"/>
-            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Search\EntityAggregatorInterface"/>
-            <argument type="service" id="event_dispatcher"/>
         </service>
 
         <service id="SwagMigrationNext\Migration\Mapping\SwagMigrationMappingDefinition"
@@ -57,61 +22,17 @@
             <tag name="shopware.entity.definition" entity="swag_migration_mapping"/>
         </service>
 
-        <service id="swag_migration_mapping.repository"
-                 class="Shopware\Core\Framework\DataAbstractionLayer\EntityRepository"
-                 public="true">
-            <argument>SwagMigrationNext\Migration\Mapping\SwagMigrationMappingDefinition</argument>
-            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Read\EntityReaderInterface"/>
-            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\VersionManager"/>
-            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearcherInterface"/>
-            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Search\EntityAggregatorInterface"/>
-            <argument type="service" id="event_dispatcher"/>
-        </service>
-
         <service id="SwagMigrationNext\Migration\Media\SwagMigrationMediaFileDefinition"
                  class="SwagMigrationNext\Migration\Media\SwagMigrationMediaFileDefinition">
             <tag name="shopware.entity.definition" entity="swag_migration_media_file"/>
-        </service>
-
-        <service id="swag_migration_media_file.repository"
-                 class="Shopware\Core\Framework\DataAbstractionLayer\EntityRepository"
-                 public="true">
-            <argument>SwagMigrationNext\Migration\Media\SwagMigrationMediaFileDefinition</argument>
-            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Read\EntityReaderInterface"/>
-            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\VersionManager"/>
-            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearcherInterface"/>
-            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Search\EntityAggregatorInterface"/>
-            <argument type="service" id="event_dispatcher"/>
         </service>
 
         <service id="SwagMigrationNext\Migration\Setting\GeneralSettingDefinition">
             <tag name="shopware.entity.definition" entity="swag_migration_general_setting"/>
         </service>
 
-        <service id="swag_migration_general_setting.repository"
-                 class="Shopware\Core\Framework\DataAbstractionLayer\EntityRepository"
-                 public="true">
-            <argument>SwagMigrationNext\Migration\Setting\GeneralSettingDefinition</argument>
-            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Read\EntityReaderInterface"/>
-            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\VersionManager"/>
-            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearcherInterface"/>
-            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Search\EntityAggregatorInterface"/>
-            <argument type="service" id="event_dispatcher"/>
-        </service>
-
         <service id="SwagMigrationNext\Migration\Connection\SwagMigrationConnectionDefinition">
             <tag name="shopware.entity.definition" entity="swag_migration_connection"/>
-        </service>
-
-        <service id="swag_migration_connection.repository"
-                 class="Shopware\Core\Framework\DataAbstractionLayer\EntityRepository"
-                 public="true">
-            <argument>SwagMigrationNext\Migration\Connection\SwagMigrationConnectionDefinition</argument>
-            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Read\EntityReaderInterface"/>
-            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\VersionManager"/>
-            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearcherInterface"/>
-            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Search\EntityAggregatorInterface"/>
-            <argument type="service" id="event_dispatcher"/>
         </service>
     </services>
 </container>
