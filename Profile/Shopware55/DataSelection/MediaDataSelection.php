@@ -9,6 +9,8 @@ use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
 class MediaDataSelection implements DataSelectionInterface
 {
+    public const IDENTIFIER = 'media';
+
     public function supports(string $profileName, string $gatewayIdentifier): bool
     {
         return $profileName === Shopware55Profile::PROFILE_NAME;
@@ -17,7 +19,7 @@ class MediaDataSelection implements DataSelectionInterface
     public function getData(): DataSelectionStruct
     {
         return new DataSelectionStruct(
-            'media',
+            self::IDENTIFIER,
             $this->getEntityNames(),
             'swag-migration.index.selectDataCard.dataSelection.media',
             300,

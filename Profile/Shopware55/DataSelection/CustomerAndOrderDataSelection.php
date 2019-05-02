@@ -12,6 +12,8 @@ use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
 class CustomerAndOrderDataSelection implements DataSelectionInterface
 {
+    public const IDENTIFIER = 'customersOrders';
+
     public function supports(string $profileName, string $gatewayIdentifier): bool
     {
         return $profileName === Shopware55Profile::PROFILE_NAME;
@@ -20,7 +22,7 @@ class CustomerAndOrderDataSelection implements DataSelectionInterface
     public function getData(): DataSelectionStruct
     {
         return new DataSelectionStruct(
-            'customersOrders',
+            self::IDENTIFIER,
             $this->getEntityNames(),
             'swag-migration.index.selectDataCard.dataSelection.customersOrders',
             200

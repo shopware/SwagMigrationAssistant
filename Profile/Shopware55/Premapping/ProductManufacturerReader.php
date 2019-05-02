@@ -12,6 +12,7 @@ use SwagMigrationNext\Migration\Premapping\AbstractPremappingReader;
 use SwagMigrationNext\Migration\Premapping\PremappingChoiceStruct;
 use SwagMigrationNext\Migration\Premapping\PremappingEntityStruct;
 use SwagMigrationNext\Migration\Premapping\PremappingStruct;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\ProductDataSelection;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
 class ProductManufacturerReader extends AbstractPremappingReader
@@ -44,7 +45,7 @@ class ProductManufacturerReader extends AbstractPremappingReader
     public function supports(string $profileName, string $gatewayIdentifier, array $entityGroupNames): bool
     {
         return $profileName === Shopware55Profile::PROFILE_NAME
-            && in_array('categoriesProducts', $entityGroupNames, true);
+            && in_array(ProductDataSelection::IDENTIFIER, $entityGroupNames, true);
     }
 
     public function getPremapping(Context $context, MigrationContext $migrationContext): PremappingStruct

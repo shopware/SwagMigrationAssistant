@@ -9,6 +9,8 @@ use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
 class NumberRangeDataSelection implements DataSelectionInterface
 {
+    public const IDENTIFIER = 'numberRanges';
+
     public function supports(string $profileName, string $gatewayIdentifier): bool
     {
         return $profileName === Shopware55Profile::PROFILE_NAME;
@@ -17,7 +19,7 @@ class NumberRangeDataSelection implements DataSelectionInterface
     public function getData(): DataSelectionStruct
     {
         return new DataSelectionStruct(
-            'numberRanges',
+            self::IDENTIFIER,
             $this->getEntityNames(),
             'swag-migration.index.selectDataCard.dataSelection.numberRanges',
             99,
