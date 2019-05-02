@@ -14,16 +14,5 @@
                  class="SwagMigrationNext\Migration\Profile\SwagMigrationProfileDefinition">
             <tag name="shopware.entity.definition" entity="swag_migration_profile"/>
         </service>
-
-        <service id="swag_migration_profile.repository"
-                 class="Shopware\Core\Framework\DataAbstractionLayer\EntityRepository"
-                 public="true">
-            <argument>SwagMigrationNext\Migration\Profile\SwagMigrationProfileDefinition</argument>
-            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Read\EntityReaderInterface"/>
-            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\VersionManager"/>
-            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearcherInterface"/>
-            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Search\EntityAggregatorInterface"/>
-            <argument type="service" id="event_dispatcher"/>
-        </service>
     </services>
 </container>

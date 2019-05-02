@@ -13,6 +13,7 @@ use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationNext\Migration\Converter\ConverterRegistry;
+use SwagMigrationNext\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 use SwagMigrationNext\Migration\Gateway\GatewayFactoryRegistry;
 use SwagMigrationNext\Migration\Logging\LoggingService;
@@ -150,7 +151,8 @@ class MigrationDataFetcherTest extends TestCase
             $this->getContainer()->get(EntityWriter::class),
             $this->mappingService,
             $this->getContainer()->get(MediaFileService::class),
-            $this->loggingRepo
+            $this->loggingRepo,
+            $this->getContainer()->get(SwagMigrationDataDefinition::class)
         );
 
         $this->loggingService = new DummyLoggingService();
@@ -162,7 +164,8 @@ class MigrationDataFetcherTest extends TestCase
                         $this->getContainer()->get(ProductConverter::class),
                     ]),
                     $this->getContainer()->get(MediaFileService::class),
-                    new DummyLoggingService()
+                    new DummyLoggingService(),
+                    $this->getContainer()->get(SwagMigrationDataDefinition::class)
                 ),
             ])),
 

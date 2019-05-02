@@ -3,6 +3,8 @@
 namespace SwagMigrationNext\Test\Command;
 
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Content\Category\CategoryDefinition;
+use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -12,6 +14,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagMigrationNext\Command\MigrationFetchDataCommand;
 use SwagMigrationNext\Command\MigrationWriteDataCommand;
+use SwagMigrationNext\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationNext\Migration\Logging\LoggingService;
 use SwagMigrationNext\Migration\Mapping\MappingService;
 use SwagMigrationNext\Migration\Media\MediaFileService;
@@ -78,6 +81,9 @@ class MigrationWriteDataCommandTest extends TestCase
 
     protected function setUp(): void
     {
+        $dataDefinition = $this->getContainer()->get(SwagMigrationDataDefinition::class);
+        $productDefinition = $this->getContainer()->get(ProductDefinition::class);
+        $categoryDefinition = $this->getContainer()->get(CategoryDefinition::class);
         $this->loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
         $this->entityWriter = $this->getContainer()->get(EntityWriter::class);
         $this->migrationProfileRepo = $this->getContainer()->get('swag_migration_profile.repository');
@@ -89,7 +95,8 @@ class MigrationWriteDataCommandTest extends TestCase
             $this->getContainer()->get(EntityWriter::class),
             $this->getContainer()->get(MappingService::class),
             $this->getContainer()->get(MediaFileService::class),
-            $this->loggingRepo
+            $this->loggingRepo,
+            $dataDefinition
         );
 
         $this->migrationWriteService = new MigrationDataWriter(
@@ -97,12 +104,13 @@ class MigrationWriteDataCommandTest extends TestCase
             $this->migrationDataRepo,
             new WriterRegistry(
                 [
-                    new ProductWriter($this->entityWriter),
-                    new CategoryWriter($this->entityWriter),
+                    new ProductWriter($this->entityWriter, $productDefinition),
+                    new CategoryWriter($this->entityWriter, $categoryDefinition),
                 ]
             ),
             $this->getContainer()->get(MediaFileService::class),
-            $this->getContainer()->get(LoggingService::class)
+            $this->getContainer()->get(LoggingService::class),
+            $dataDefinition
         );
     }
 

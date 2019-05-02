@@ -21,12 +21,12 @@ use SwagMigrationNext\Migration\Media\SwagMigrationMediaFileDefinition;
 
 class SwagMigrationRunDefinition extends EntityDefinition
 {
-    public static function getEntityName(): string
+    public function getEntityName(): string
     {
         return 'swag_migration_run';
     }
 
-    public static function defineFields(): FieldCollection
+    public function defineFields(): FieldCollection
     {
         return new FieldCollection([
             (new IdField('id', 'id'))->setFlags(new PrimaryKey(), new Required()),
@@ -46,12 +46,12 @@ class SwagMigrationRunDefinition extends EntityDefinition
         ]);
     }
 
-    public static function getCollectionClass(): string
+    public function getCollectionClass(): string
     {
         return SwagMigrationRunCollection::class;
     }
 
-    public static function getEntityClass(): string
+    public function getEntityClass(): string
     {
         return SwagMigrationRunEntity::class;
     }

@@ -3,9 +3,9 @@
 namespace SwagMigrationNext\Migration\Writer;
 
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
-use Shopware\Core\System\Currency\CurrencyDefinition;
 use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 
 class CurrencyWriter implements WriterInterface
@@ -15,9 +15,15 @@ class CurrencyWriter implements WriterInterface
      */
     private $entityWriter;
 
-    public function __construct(EntityWriterInterface $entityWriter)
+    /**
+     * @var EntityDefinition
+     */
+    private $definition;
+
+    public function __construct(EntityWriterInterface $entityWriter, EntityDefinition $definition)
     {
         $this->entityWriter = $entityWriter;
+        $this->definition = $definition;
     }
 
     public function supports(): string
@@ -29,7 +35,7 @@ class CurrencyWriter implements WriterInterface
     {
         $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($data) {
             $this->entityWriter->upsert(
-                CurrencyDefinition::class,
+                $this->definition,
                 $data,
                 WriteContext::createFromContext($context)
             );

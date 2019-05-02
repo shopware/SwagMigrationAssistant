@@ -14,6 +14,7 @@ use SwagMigrationNext\Exception\EntityNotExistsException;
 use SwagMigrationNext\Exception\MigrationContextPropertyMissingException;
 use SwagMigrationNext\Exception\MigrationRunUndefinedStatusException;
 use SwagMigrationNext\Exception\MigrationWorkloadPropertyMissingException;
+use SwagMigrationNext\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationNext\Migration\DataSelection\DataSelectionRegistry;
 use SwagMigrationNext\Migration\DataSelection\DataSet\DataSetRegistry;
 use SwagMigrationNext\Migration\DataSelection\DataSet\DataSetRegistryInterface;
@@ -88,6 +89,7 @@ class MigrationControllerTest extends TestCase
     protected function setUp(): void
     {
         $context = Context::createDefaultContext();
+        $dataDefinition = $this->getContainer()->get(SwagMigrationDataDefinition::class);
         $mediaFileRepo = $this->getContainer()->get('swag_migration_media_file.repository');
         $dataRepo = $this->getContainer()->get('swag_migration_data.repository');
         $this->profileRepo = $this->getContainer()->get('swag_migration_profile.repository');
@@ -138,7 +140,8 @@ class MigrationControllerTest extends TestCase
             $this->getContainer()->get(EntityWriter::class),
             $mappingService,
             $this->getContainer()->get(MediaFileService::class),
-            $this->getContainer()->get('swag_migration_logging.repository')
+            $this->getContainer()->get('swag_migration_logging.repository'),
+            $dataDefinition
         );
         $this->controller = new MigrationController(
             $dataFetcher,

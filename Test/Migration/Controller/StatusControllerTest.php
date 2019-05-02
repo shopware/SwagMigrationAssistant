@@ -16,6 +16,7 @@ use SwagMigrationNext\Controller\StatusController;
 use SwagMigrationNext\Exception\MigrationContextPropertyMissingException;
 use SwagMigrationNext\Exception\MigrationIsRunningException;
 use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationNext\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationNext\Migration\DataSelection\DataSelectionRegistry;
 use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 use SwagMigrationNext\Migration\Mapping\MappingService;
@@ -132,7 +133,8 @@ class StatusControllerTest extends TestCase
             $this->getContainer()->get(EntityWriter::class),
             $mappingService,
             $this->getContainer()->get(MediaFileService::class),
-            $this->getContainer()->get('swag_migration_logging.repository')
+            $this->getContainer()->get('swag_migration_logging.repository'),
+            $this->getContainer()->get(SwagMigrationDataDefinition::class)
         );
         $this->controller = new StatusController(
             $dataFetcher,

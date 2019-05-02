@@ -3,6 +3,7 @@
 namespace SwagMigrationNext\Migration\Writer;
 
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\DefinitionInstanceRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
 use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
@@ -14,9 +15,15 @@ class TranslationWriter implements WriterInterface
      */
     private $entityWriter;
 
-    public function __construct(EntityWriterInterface $entityWriter)
+    /**
+     * @var DefinitionInstanceRegistry
+     */
+    private $registry;
+
+    public function __construct(EntityWriterInterface $entityWriter, DefinitionInstanceRegistry $registry)
     {
         $this->entityWriter = $entityWriter;
+        $this->registry = $registry;
     }
 
     public function supports(): string
@@ -36,7 +43,7 @@ class TranslationWriter implements WriterInterface
         foreach ($translationArray as $entityDefinitionClass => $translation) {
             $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($entityDefinitionClass, $translation) {
                 $this->entityWriter->upsert(
-                    $entityDefinitionClass,
+                    $this->registry->get($entityDefinitionClass),
                     $translation,
                     WriteContext::createFromContext($context)
                 );

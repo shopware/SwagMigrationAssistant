@@ -4,7 +4,9 @@ namespace SwagMigrationNext\Test\Migration;
 
 use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Checkout\Customer\CustomerDefinition;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\InvoicePayment;
+use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -13,6 +15,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationNext\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationNext\Migration\Data\SwagMigrationDataEntity;
 use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 use SwagMigrationNext\Migration\Logging\LogType;
@@ -221,7 +224,8 @@ class MigrationDataWriterTest extends TestCase
             $this->entityWriter,
             $this->mappingService,
             $this->getContainer()->get(MediaFileService::class),
-            $this->loggingRepo
+            $this->loggingRepo,
+            $this->getContainer()->get(SwagMigrationDataDefinition::class)
         );
 
         $this->dummyDataWriter = new MigrationDataWriter(
@@ -229,12 +233,13 @@ class MigrationDataWriterTest extends TestCase
             $this->migrationDataRepo,
             new WriterRegistry(
                 [
-                    new ProductWriter($this->entityWriter),
-                    new CustomerWriter($this->entityWriter),
+                    new ProductWriter($this->entityWriter, $this->getContainer()->get(ProductDefinition::class)),
+                    new CustomerWriter($this->entityWriter, $this->getContainer()->get(CustomerDefinition::class)),
                 ]
             ),
             new DummyMediaFileService(),
-            $this->loggingService
+            $this->loggingService,
+            $this->getContainer()->get(SwagMigrationDataDefinition::class)
         );
     }
 

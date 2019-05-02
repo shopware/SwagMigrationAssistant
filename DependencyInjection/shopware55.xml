@@ -11,6 +11,7 @@
             <argument type="service" id="SwagMigrationNext\Migration\Converter\ConverterRegistry"/>
             <argument type="service" id="SwagMigrationNext\Migration\Media\MediaFileService"/>
             <argument type="service" id="SwagMigrationNext\Migration\Logging\LoggingService"/>
+            <argument type="service" id="SwagMigrationNext\Migration\Data\SwagMigrationDataDefinition"/>
             <tag name="shopware.migration.profile"/>
         </service>
 

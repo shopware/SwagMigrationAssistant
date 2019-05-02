@@ -3,9 +3,9 @@
 namespace SwagMigrationNext\Migration\Writer;
 
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
-use Shopware\Core\Framework\Language\LanguageDefinition;
 use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 
 class LanguageWriter implements WriterInterface
@@ -15,9 +15,15 @@ class LanguageWriter implements WriterInterface
      */
     private $entityWriter;
 
-    public function __construct(EntityWriterInterface $entityWriter)
+    /**
+     * @var EntityDefinition
+     */
+    private $definition;
+
+    public function __construct(EntityWriterInterface $entityWriter, EntityDefinition $definition)
     {
         $this->entityWriter = $entityWriter;
+        $this->definition = $definition;
     }
 
     public function supports(): string
@@ -32,7 +38,7 @@ class LanguageWriter implements WriterInterface
     {
         $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($data) {
             $this->entityWriter->upsert(
-                LanguageDefinition::class,
+                $this->definition,
                 $data,
                 WriteContext::createFromContext($context)
             );

@@ -4,6 +4,7 @@ namespace SwagMigrationNext\Test\Command;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Content\Media\File\FileSaver;
+use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
@@ -11,6 +12,7 @@ use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagMigrationNext\Command\MigrationDownloadMediaCommand;
 use SwagMigrationNext\Command\MigrationFetchDataCommand;
 use SwagMigrationNext\Command\MigrationWriteDataCommand;
+use SwagMigrationNext\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationNext\Migration\Logging\LoggingService;
 use SwagMigrationNext\Migration\Mapping\MappingService;
 use SwagMigrationNext\Migration\Media\CliMediaDownloadService;
@@ -103,6 +105,8 @@ class MigrationDownloadMediaCommandTest extends TestCase
         $this->fileSaver = $this->getContainer()->get(FileSaver::class);
         $this->eventDispatcher = new EventDispatcher();
 
+        $dataDefinition = $this->getContainer()->get(SwagMigrationDataDefinition::class);
+        $mediaDefinition = $this->getContainer()->get(MediaDefinition::class);
         $this->loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
         $this->productRepo = $this->getContainer()->get('product.repository');
         $this->entityWriter = $this->getContainer()->get(EntityWriter::class);
@@ -115,7 +119,8 @@ class MigrationDownloadMediaCommandTest extends TestCase
             $this->entityWriter,
             $this->getContainer()->get(MappingService::class),
             $this->getContainer()->get(MediaFileService::class),
-            $this->loggingRepo
+            $this->loggingRepo,
+            $dataDefinition
         );
 
         $this->migrationWriteService = new MigrationDataWriter(
@@ -123,11 +128,12 @@ class MigrationDownloadMediaCommandTest extends TestCase
             $this->migrationDataRepo,
             new WriterRegistry(
                 [
-                    new MediaWriter($this->entityWriter),
+                    new MediaWriter($this->entityWriter, $mediaDefinition),
                 ]
             ),
             $this->getContainer()->get(MediaFileService::class),
-            $this->getContainer()->get(LoggingService::class)
+            $this->getContainer()->get(LoggingService::class),
+            $dataDefinition
         );
         $this->eventDispatcher = new EventDispatcher();
 

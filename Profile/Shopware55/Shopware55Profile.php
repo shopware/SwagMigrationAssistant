@@ -3,13 +3,13 @@
 namespace SwagMigrationNext\Profile\Shopware55;
 
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityWriteResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
 use Shopware\Core\Framework\ShopwareHttpException;
 use SwagMigrationNext\Migration\Converter\ConverterInterface;
 use SwagMigrationNext\Migration\Converter\ConverterRegistryInterface;
-use SwagMigrationNext\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationNext\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationNext\Migration\EnvironmentInformation;
 use SwagMigrationNext\Migration\Gateway\GatewayInterface;
@@ -46,16 +46,23 @@ class Shopware55Profile implements ProfileInterface
      */
     private $loggingService;
 
+    /**
+     * @var EntityDefinition
+     */
+    private $dataDefinition;
+
     public function __construct(
         EntityWriterInterface $entityWriter,
         ConverterRegistryInterface $converterRegistry,
         MediaFileServiceInterface $mediaFileService,
-        LoggingServiceInterface $loggingService
+        LoggingServiceInterface $loggingService,
+        EntityDefinition $dataDefinition
     ) {
         $this->entityWriter = $entityWriter;
         $this->converterRegistry = $converterRegistry;
         $this->mediaFileService = $mediaFileService;
         $this->loggingService = $loggingService;
+        $this->dataDefinition = $dataDefinition;
     }
 
     public function getName(): string
@@ -78,7 +85,7 @@ class Shopware55Profile implements ProfileInterface
 
         /** @var EntityWriteResult[] $writtenEvents */
         $writtenEvents = $this->entityWriter->upsert(
-            SwagMigrationDataDefinition::class,
+            $this->dataDefinition,
             $createData,
             WriteContext::createFromContext($context)
         );

@@ -4,6 +4,7 @@ namespace SwagMigrationNext\Migration\Mapping;
 
 use Shopware\Core\Content\Rule\RuleEntity;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
@@ -109,6 +110,11 @@ class MappingService implements MappingServiceInterface
      */
     private $defaultAvailabilityRule;
 
+    /**
+     * @var EntityDefinition
+     */
+    private $mappingDefinition;
+
     public function __construct(
         EntityRepositoryInterface $migrationMappingRepo,
         EntityRepositoryInterface $localeRepository,
@@ -122,7 +128,8 @@ class MappingService implements MappingServiceInterface
         EntityRepositoryInterface $taxRepo,
         EntityRepositoryInterface $numberRangeRepo,
         EntityRepositoryInterface $ruleRepo,
-        EntityWriterInterface $entityWriter
+        EntityWriterInterface $entityWriter,
+        EntityDefinition $mappingDefinition
     ) {
         $this->migrationMappingRepo = $migrationMappingRepo;
         $this->localeRepository = $localeRepository;
@@ -137,6 +144,7 @@ class MappingService implements MappingServiceInterface
         $this->numberRangeRepo = $numberRangeRepo;
         $this->ruleRepo = $ruleRepo;
         $this->entityWriter = $entityWriter;
+        $this->mappingDefinition = $mappingDefinition;
     }
 
     public function getUuid(string $connectionId, string $entityName, string $oldId, Context $context): ?string
@@ -556,7 +564,7 @@ class MappingService implements MappingServiceInterface
         }
 
         $this->entityWriter->insert(
-            SwagMigrationMappingDefinition::class,
+            $this->mappingDefinition,
             $this->writeArray,
             WriteContext::createFromContext($context)
         );

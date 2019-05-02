@@ -3,6 +3,7 @@
 namespace SwagMigrationNext\Migration\Media;
 
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
@@ -29,12 +30,19 @@ class MediaFileService implements MediaFileServiceInterface
      */
     private $entityWriter;
 
+    /**
+     * @var EntityDefinition
+     */
+    private $mediaFileDefinition;
+
     public function __construct(
         EntityRepositoryInterface $mediaFileRepo,
-        EntityWriterInterface $entityWriter
+        EntityWriterInterface $entityWriter,
+        EntityDefinition $mediaFileDefinition
     ) {
         $this->mediaFileRepo = $mediaFileRepo;
         $this->entityWriter = $entityWriter;
+        $this->mediaFileDefinition = $mediaFileDefinition;
     }
 
     public function writeMediaFile(Context $context): void
@@ -46,7 +54,7 @@ class MediaFileService implements MediaFileServiceInterface
         }
 
         $this->entityWriter->insert(
-            SwagMigrationMediaFileDefinition::class,
+            $this->mediaFileDefinition,
             $this->writeArray,
             WriteContext::createFromContext($context)
         );
@@ -180,7 +188,7 @@ class MediaFileService implements MediaFileServiceInterface
         }
 
         $this->entityWriter->update(
-            SwagMigrationMediaFileDefinition::class,
+            $this->mediaFileDefinition,
             $updateWrittenMediaFiles,
             WriteContext::createFromContext($context)
         );
