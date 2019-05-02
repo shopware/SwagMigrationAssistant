@@ -59,8 +59,8 @@ class Shopware55ApiGateway extends AbstractGateway
             DefaultEntities::CUSTOMER_GROUP => $environmentDataArray['customerGroups'],
             DefaultEntities::PROPERTY_GROUP_OPTION => $environmentDataArray['configuratorOptions'],
             DefaultEntities::TRANSLATION => $environmentDataArray['translations'],
-            DefaultEntities::NUMBER_RANGE => $environmentData['numberRanges'],
-            DefaultEntities::CURRENCY => $environmentData['currencies'],
+            DefaultEntities::NUMBER_RANGE => $environmentDataArray['numberRanges'],
+            DefaultEntities::CURRENCY => $environmentDataArray['currencies'],
         ];
         $credentials = $this->migrationContext->getConnection()->getCredentialFields();
 
