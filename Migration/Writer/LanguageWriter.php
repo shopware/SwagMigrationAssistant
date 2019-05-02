@@ -8,7 +8,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
 use Shopware\Core\Framework\Language\LanguageDefinition;
 use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 
-class LanguageWriter
+class LanguageWriter implements WriterInterface
 {
     /**
      * @var EntityWriterInterface

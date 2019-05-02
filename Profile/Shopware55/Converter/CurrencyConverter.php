@@ -85,7 +85,9 @@ class CurrencyConverter extends Shopware55Converter
         $this->getCurrencyTranslation($converted, $data);
 
         $this->convertValue($converted, 'isDefault', $data, 'standard', self::TYPE_BOOLEAN);
-        $this->convertValue($converted, 'shortName', $data, 'currency');
+        $converted['shortName'] = $data['currency'];
+        $converted['isoCode'] = $data['currency'];
+        unset($data['currency']);
         $this->convertValue($converted, 'name', $data, 'name');
         $this->convertValue($converted, 'factor', $data, 'factor', self::TYPE_INTEGER);
         $this->convertValue($converted, 'position', $data, 'position', self::TYPE_INTEGER);
