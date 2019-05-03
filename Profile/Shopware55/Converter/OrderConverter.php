@@ -81,7 +81,6 @@ class OrderConverter extends Shopware55Converter
         'currency',
         'currencyFactor',
         'payment',
-        'paymentcurrency',
         'status',
     ];
 
@@ -217,10 +216,10 @@ class OrderConverter extends Shopware55Converter
         $this->convertValue($converted, 'currencyFactor', $data, 'currencyFactor', self::TYPE_FLOAT);
 
         $currencyUuid = null;
-        if (isset($data['paymentcurrency']['currency'])) {
+        if (isset($data['currency'])) {
             $currencyUuid = $this->mappingService->getCurrencyUuid(
                 $this->connectionId,
-                $data['paymentcurrency']['currency'],
+                $data['currency'],
                 $this->context
             );
         }
@@ -229,7 +228,7 @@ class OrderConverter extends Shopware55Converter
                 $this->runId,
                 Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
                 'Empty necessary data fields',
-                'Order-Entity could not converted cause of empty necessary field: paymentcurrency.',
+                'Order-Entity could not converted cause of empty necessary field: currency.',
                 ['id' => $this->oldId]
             );
 
@@ -295,8 +294,7 @@ class OrderConverter extends Shopware55Converter
             $data['invoice_shipping_net'],
             $data['invoice_shipping'],
             $data['details'],
-            $data['currency'],
-            $data['paymentcurrency']
+            $data['currency']
         );
 
         $converted['deliveries'] = $this->getDeliveries($data, $converted, $shippingCosts);

@@ -59,6 +59,7 @@ class CustomerConverter extends Shopware55Converter
         'lastname',
         'email',
         'salutation',
+        'customerGroupId',
     ];
 
     /**
@@ -105,9 +106,6 @@ class CustomerConverter extends Shopware55Converter
         $this->runId = $migrationContext->getRunUuid();
 
         $fields = $this->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
-        if (!isset($data['group']['id'])) {
-            $fields[] = 'group id';
-        }
 
         if (!empty($fields)) {
             $this->loggingService->addWarning(
@@ -186,8 +184,12 @@ class CustomerConverter extends Shopware55Converter
             $converted['customerNumber'] = 'number-' . $this->oldCustomerId;
         }
 
-        $converted['group'] = $this->getCustomerGroup($data['group']);
-        unset($data['group'], $data['customergroup']);
+        $customerGroupUuid = $this->mappingService->getUuid($this->connectionId, DefaultEntities::CUSTOMER_GROUP, $data['customerGroupId'], $context);
+        if ($customerGroupUuid === null) {
+            return new ConvertStruct(null, $oldData);
+        }
+        $converted['groupId'] = $customerGroupUuid;
+        unset($data['customerGroupId'], $data['customergroup']);
 
         if (isset($data['defaultpayment']['id'])) {
             $defaultPaymentMethodUuid = $this->getDefaultPaymentMethod($data['defaultpayment']);
@@ -253,13 +255,11 @@ class CustomerConverter extends Shopware55Converter
             $data['pricegroupID'],
             $data['login_token'],
             $data['changed'],
-            $data['group']['mode'],
             $data['paymentID'],
             $data['firstlogin'],
             $data['lastlogin'],
 
             // TODO check how to handle these
-            $data['shop'], // TODO use for sales channel information?
             $data['language'], // TODO use for sales channel information?
             $data['customerlanguage'] // TODO use for sales channel information?
         );
@@ -285,51 +285,51 @@ class CustomerConverter extends Shopware55Converter
         return new ConvertStruct($converted, $data);
     }
 
-    private function getCustomerGroup(array $data): array
-    {
-        $group['id'] = $this->mappingService->createNewUuid(
-            $this->connectionId,
-            DefaultEntities::CUSTOMER_GROUP,
-            $data['id'],
-            $this->context
-        );
-
-        $this->getCustomerGroupTranslation($group, $data);
-        $this->convertValue($group, 'displayGross', $data, 'tax', self::TYPE_BOOLEAN);
-        $this->convertValue($group, 'inputGross', $data, 'taxinput', self::TYPE_BOOLEAN);
-        $this->convertValue($group, 'hasGlobalDiscount', $data, 'mode', self::TYPE_BOOLEAN);
-        $this->convertValue($group, 'percentageGlobalDiscount', $data, 'discount', self::TYPE_FLOAT);
-        $this->convertValue($group, 'minimumOrderAmount', $data, 'minimumorder', self::TYPE_FLOAT);
-        $this->convertValue($group, 'minimumOrderAmountSurcharge', $data, 'minimumordersurcharge', self::TYPE_FLOAT);
-        $this->convertValue($group, 'name', $data, 'description');
-
-        return $group;
-    }
-
-    private function getCustomerGroupTranslation(array &$group, array $data): void
-    {
-        $language = $this->mappingService->getDefaultLanguage($this->context);
-        if ($language->getLocale()->getCode() === $this->mainLocale) {
-            return;
-        }
-
-        $localeTranslation = [];
-        $localeTranslation['customerGroupId'] = $group['id'];
-
-        $this->convertValue($localeTranslation, 'name', $data, 'description');
-
-        $localeTranslation['id'] = $this->mappingService->createNewUuid(
-            $this->connectionId,
-            DefaultEntities::CUSTOMER_GROUP_TRANSLATION,
-            $data['id'] . ':' . $this->mainLocale,
-            $this->context
-        );
-
-        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);
-        $localeTranslation['languageId'] = $languageUuid;
-
-        $group['translations'][$languageUuid] = $localeTranslation;
-    }
+//    private function getCustomerGroup(array $data): array
+//    {
+//        $group['id'] = $this->mappingService->createNewUuid(
+//            $this->connectionId,
+//            DefaultEntities::CUSTOMER_GROUP,
+//            $data['id'],
+//            $this->context
+//        );
+//
+//        $this->getCustomerGroupTranslation($group, $data);
+//        $this->convertValue($group, 'displayGross', $data, 'tax', self::TYPE_BOOLEAN);
+//        $this->convertValue($group, 'inputGross', $data, 'taxinput', self::TYPE_BOOLEAN);
+//        $this->convertValue($group, 'hasGlobalDiscount', $data, 'mode', self::TYPE_BOOLEAN);
+//        $this->convertValue($group, 'percentageGlobalDiscount', $data, 'discount', self::TYPE_FLOAT);
+//        $this->convertValue($group, 'minimumOrderAmount', $data, 'minimumorder', self::TYPE_FLOAT);
+//        $this->convertValue($group, 'minimumOrderAmountSurcharge', $data, 'minimumordersurcharge', self::TYPE_FLOAT);
+//        $this->convertValue($group, 'name', $data, 'description');
+//
+//        return $group;
+//    }
+//
+//    private function getCustomerGroupTranslation(array &$group, array $data): void
+//    {
+//        $language = $this->mappingService->getDefaultLanguage($this->context);
+//        if ($language->getLocale()->getCode() === $this->mainLocale) {
+//            return;
+//        }
+//
+//        $localeTranslation = [];
+//        $localeTranslation['customerGroupId'] = $group['id'];
+//
+//        $this->convertValue($localeTranslation, 'name', $data, 'description');
+//
+//        $localeTranslation['id'] = $this->mappingService->createNewUuid(
+//            $this->connectionId,
+//            DefaultEntities::CUSTOMER_GROUP_TRANSLATION,
+//            $data['id'] . ':' . $this->mainLocale,
+//            $this->context
+//        );
+//
+//        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);
+//        $localeTranslation['languageId'] = $languageUuid;
+//
+//        $group['translations'][$languageUuid] = $localeTranslation;
+//    }
 
     private function getDefaultPaymentMethod(array $originalData): ?string
     {
