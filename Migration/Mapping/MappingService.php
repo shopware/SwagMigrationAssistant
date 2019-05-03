@@ -511,9 +511,9 @@ class MappingService implements MappingServiceInterface
 
     public function deleteMapping(string $entityUuid, string $connectionId, Context $context): void
     {
-        foreach ($this->writeArray as $writeMapping) {
+        foreach ($this->writeArray as $key => $writeMapping) {
             if ($writeMapping['connectionId'] === $connectionId && $writeMapping['entityUuid'] === $entityUuid) {
-                unset($writeMapping);
+                unset($this->writeArray[$key]);
                 break;
             }
         }

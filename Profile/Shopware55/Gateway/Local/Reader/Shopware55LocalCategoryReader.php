@@ -95,7 +95,12 @@ class Shopware55LocalCategoryReader extends Shopware55LocalAbstractReader
                 );
                 $topMostParent = end($parentCategoryIds);
             }
-            $category['_locale'] = str_replace('_', '-', $topMostCategories[$topMostParent]);
+            $locale = str_replace('_', '-', $topMostCategories[$topMostParent]);
+
+            if (empty($locale)) {
+                $locale = $this->getDefaultShopLocale();
+            }
+            $category['_locale'] = $locale;
             $resultSet[] = $category;
         }
 

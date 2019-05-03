@@ -930,10 +930,10 @@ class ProductConverter extends Shopware55Converter
         $originalData = $data;
         $this->convertValue($converted, 'name', $data, 'name');
         $this->convertValue($converted, 'keywords', $data, 'keywords');
-        $this->convertValue($converted, 'description', $data, 'description');
+        $this->convertValue($converted, 'description', $data, 'description_long');
         $this->convertValue($converted, 'metaTitle', $data, 'metaTitle');
         $this->convertValue($converted, 'packUnit', $data['detail'], 'packunit');
-        unset($data['description_long']);
+        unset($data['description']); // Todo: Use this for meta_description
 
         $language = $this->mappingService->getDefaultLanguage($this->context);
         if ($language->getLocale()->getCode() === $this->locale) {
@@ -945,7 +945,7 @@ class ProductConverter extends Shopware55Converter
         $localeTranslation['productId'] = $converted['id'];
         $this->convertValue($localeTranslation, 'name', $originalData, 'name');
         $this->convertValue($localeTranslation, 'keywords', $originalData, 'keywords');
-        $this->convertValue($localeTranslation, 'description', $originalData, 'description');
+        $this->convertValue($localeTranslation, 'description', $originalData, 'description_long');
         $this->convertValue($localeTranslation, 'metaTitle', $originalData, 'metaTitle');
         $this->convertValue($localeTranslation, 'packUnit', $originalData['detail'], 'packunit');
 
