@@ -121,7 +121,7 @@ class TranslationConverterTest extends TestCase
         static::assertNull($convertResult->getConverted());
 
         $logs = $this->loggingService->getLoggingArray();
-        $description = 'Translation of object type "invalid" could not converted.';
+        $description = 'Translation of object type "invalid" could not be converted.';
         static::assertSame($description, $logs[0]['logEntry']['description']);
         static::assertCount(1, $logs);
     }
@@ -188,7 +188,7 @@ class TranslationConverterTest extends TestCase
         static::assertNull($convertResult->getConverted());
 
         $logs = $this->loggingService->getLoggingArray();
-        $description = 'Manufacturer-Translation-Entity could not converted cause of invalid unserialized object data.';
+        $description = 'Manufacturer-Translation-Entity could not be converted cause of invalid unserialized object data.';
         static::assertSame($description, $logs[0]['logEntry']['description']);
         static::assertCount(1, $logs);
     }
@@ -243,7 +243,7 @@ class TranslationConverterTest extends TestCase
         static::assertNull($convertResult->getConverted());
 
         $logs = $this->loggingService->getLoggingArray();
-        $description = 'Unit-Translation-Entity could not converted cause of invalid unserialized object data.';
+        $description = 'Unit-Translation-Entity could not be converted cause of invalid unserialized object data.';
         static::assertSame($description, $logs[0]['logEntry']['description']);
         static::assertCount(1, $logs);
     }
@@ -297,7 +297,7 @@ class TranslationConverterTest extends TestCase
         static::assertNull($convertResult->getConverted());
 
         $logs = $this->loggingService->getLoggingArray();
-        $description = 'Category-Translation-Entity could not converted cause of invalid unserialized object data.';
+        $description = 'Category-Translation-Entity could not be converted cause of invalid unserialized object data.';
         static::assertSame($description, $logs[0]['logEntry']['description']);
         static::assertCount(1, $logs);
     }

@@ -582,6 +582,9 @@ class MigrationDataWriterTest extends TestCase
         );
         $this->mappingService->createNewUuid($this->connectionId, DefaultEntities::LANGUAGE, 'en-US', $this->context, [], $languageUuid);
 
+        $this->mappingService->createNewUuid($this->connectionId, DefaultEntities::CUSTOMER_GROUP, '1', $this->context, [], 'cfbd5018d38d41d8adca10d94fc8bdd6');
+        $this->mappingService->createNewUuid($this->connectionId, DefaultEntities::CUSTOMER_GROUP, '2', $this->context, [], 'cfbd5018d38d41d8adca10d94fc8bdd6');
+
         $this->mappingService->writeMapping($this->context);
         $this->clearCacheBefore();
     }
