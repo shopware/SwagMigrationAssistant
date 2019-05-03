@@ -183,7 +183,13 @@ class CategoryConverter extends Shopware55Converter
             $this->context
         );
 
-        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $data['_locale'], $this->context);
+        try {
+            $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $data['_locale'], $this->context);
+        } catch (\Exception $exception) {
+            $this->mappingService->deleteMapping($converted['id'], $this->connectionId, $this->context);
+            throw $exception;
+        }
+
         $localeTranslation['languageId'] = $languageUuid;
 
         $converted['translations'][$languageUuid] = $localeTranslation;
