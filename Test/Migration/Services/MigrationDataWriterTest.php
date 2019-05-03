@@ -285,14 +285,14 @@ class MigrationDataWriterTest extends TestCase
         });
         $customerTotalAfter = $this->dbConnection->query('select count(*) from customer')->fetchColumn();
 
-        static::assertSame(0, $customerTotalAfter - $customerTotalBefore);
+        static::assertSame(2, $customerTotalAfter - $customerTotalBefore);
         static::assertCount(1, $this->loggingService->getLoggingArray());
         $this->loggingService->resetLogging();
 
         $failureConvertCriteria = new Criteria();
         $failureConvertCriteria->addFilter(new EqualsFilter('writeFailure', true));
         $result = $this->migrationDataRepo->search($failureConvertCriteria, $context);
-        static::assertSame(3, $result->getTotal());
+        static::assertSame(1, $result->getTotal());
     }
 
     public function testWriteCustomerData(): void
