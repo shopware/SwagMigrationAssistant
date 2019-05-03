@@ -98,7 +98,7 @@ class Shopware55LocalCategoryReader extends Shopware55LocalAbstractReader
             $locale = str_replace('_', '-', $topMostCategories[$topMostParent]);
 
             if (empty($locale)) {
-                $locale = $this->getDefaultShopLocale();
+                $locale = str_replace('_', '-', $this->getDefaultShopLocale());
             }
             $category['_locale'] = $locale;
             $resultSet[] = $category;
