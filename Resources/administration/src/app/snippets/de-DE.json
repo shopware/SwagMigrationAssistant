@@ -22,7 +22,7 @@
         "introduction": {
           "title": "Willkommen in der Migration",
           "contentHeadline": "Mache dort weiter, wo du aufgehört hast",
-          "contentInformation": "Verbinde Dein Shopsystem mit Shopware 6 und übertrage Deine Daten. Gemeinsam stellen wir eine Verbindung der Systeme her. Im Anschluss hast Du die Möglichkeit mit dem Migrationsassistenten Deine Daten zu migrieren."
+          "contentInformation": "Der Migrationsassistent hilft Dir dabei eine Verbindung zwischen Deinem Shopsystem und Shopware 6 herzustellen, um Daten zu übertragen und zu migrieren."
         },
         "connectionSelect": {
           "title": "Migration - Verbindung wechseln",

@@ -3,13 +3,13 @@
     "general": {
       "mainMenuItemGeneral": "Migration",
       "descriptionTextModule": "Module to migrate data",
-      "tabMain": "Overview",
-      "tabHistory": "History",
+      "tabMain": "General",
+      "tabHistory": "Summary",
       "tabDataSelector": "Data selection"
     },
     "wizard": {
       "buttonAbort": "Cancel",
-      "buttonLetsGo": "Let's go",
+      "buttonLetsGo": "Next",
       "buttonConnectionCreate": "Establish connection",
       "buttonConnectionSelect": "Change connection",
       "buttonConnect": "Connect",
@@ -22,7 +22,7 @@
         "introduction": {
           "title": "Welcome to the migration",
           "contentHeadline": "Pick up where you left off",
-          "contentInformation": "Connect your shop system with Shopware 6 and transfer your data. Together we will connect the systems. Afterwards you can migrate your data using the migration assistant."
+          "contentInformation": "The Migration Assistant will help establish a connection between your shop system and Shopware 6 to transfer and migrate your data."
         },
         "connectionSelect": {
           "title": "Migration – Changing the connection",
@@ -54,11 +54,11 @@
           }
         },
         "credentials": {
-          "title": "Migration – Editing the connection",
-          "emptyState": "#PLACEHOLDER# Sorry no form for selected profile found.",
+          "title": "Migration – Establish a connection",
+          "emptyState": "Sorry no form for selected profile found.",
           "shopware55": {
             "api": {
-              "contentInformation": "You need the API key and username to establish a connection. You can find these in your shop backend under “User administration”. Activate API access there and confirm with “Save”.",
+              "contentInformation": "You need valid API credentials to establish a connection between Shopware 5 and Shopware 6. Your API credentials can be found in your Shopware 5 backend under “User administration”. API access needs to be activated there and confirmed by saving.",
               "apiKeyLabel": "API key",
               "apiKeyTooltip": "The API key is used for security and identification.",
               "apiKeyPlaceholder": "Insert key",
@@ -71,20 +71,20 @@
               "endpointSSLLabel": "My shop uses a secure connection (SSL)"
             },
             "local": {
-              "contentTitle": "#PLACEHOLDER# Database connection to Shopware 5",
-              "contentInformation": "#PLACEHOLDER# Insert your Shopware 5 database credentials to connect to the database",
-              "dbHostLabel": "#PLACEHOLDER# DB host",
-              "dbHostPlaceholder": "#PLACEHOLDER# Insert database host",
-              "dbPortLabel": "#PLACEHOLDER# DB port",
-              "dbPortPlaceholder": "#PLACEHOLDER# Insert database port",
-              "dbNameLabel": "#PLACEHOLDER# DB name",
-              "dbNamePlaceholder": "#PLACEHOLDER# Insert database name",
-              "dbUserLabel": "#PLACEHOLDER# DB user",
-              "dbUserPlaceholder": "#PLACEHOLDER# Insert username",
-              "dbPasswordLabel": "#PLACEHOLDER# DB password",
-              "dbPasswordPlaceholder": "#PLACEHOLDER# Insert password",
-              "installationRoot": "#PLACEHOLDER# Installation root",
-              "installationRootPlaceholder": "#PLACEHOLDER# Installationsordner der Shopinstallation eingeben"
+              "contentTitle": "Database connection to Shopware 5",
+              "contentInformation": "Insert your Shopware 5 database credentials to connect to the database",
+              "dbHostLabel": "DB host",
+              "dbHostPlaceholder": "Insert database host",
+              "dbPortLabel": "DB port",
+              "dbPortPlaceholder": "Insert database port",
+              "dbNameLabel": "DB name",
+              "dbNamePlaceholder": "Insert database name",
+              "dbUserLabel": "DB user",
+              "dbUserPlaceholder": "Insert username",
+              "dbPasswordLabel": "DB password",
+              "dbPasswordPlaceholder": "Insert password",
+              "installationRoot": "Installation root",
+              "installationRootPlaceholder": "Installationsordner der Shopinstallation eingeben"
             }
           },
           "statusTitle": "Connection check",
@@ -113,12 +113,12 @@
       "connectButton": "Create connection"
     },
     "index": {
-      "title": "Overview",
+      "title": "General",
       "migrateButton": "Start migration",
       "startButton": "Continue",
       "pauseButton": "Pause",
       "continueButton": "Continue",
-      "abortButton": "Abort",
+      "abortButton": "Cancel",
       "finishButton": "Finish",
       "backButton": "Finish migration",
       "migrationAlreadyRunning": "Migration already started.",
@@ -147,11 +147,11 @@
       },
       "assistantCard": {
         "title": "Information",
-        "headline": "Your migration assistant",
+        "headline": "Migration assistant",
         "finish": "Done!",
         "connection": {
           "title": "Set up a connection",
-          "content": "Let us connect your shop system to the new Shopware 6 and migrate the selected data."
+          "content": "The Migration Assistant will help establish a connection between your shop system and Shopware 6 to transfer and migrate your data."
         },
         "dataSelection": {
           "title": "Specify data for migration",
@@ -166,8 +166,8 @@
         "cardTitle": "Data selection",
         "dataHeader": "Data",
         "dataTypes": {
-          "basicData": "Shopdata",
-          "pluginData": "Plugindata"
+          "basicData": "Shop data",
+          "pluginData": "Plugin data"
         },
         "headers": {
           "name": "Name",
@@ -205,12 +205,12 @@
         "unfilledCaption": "You can only continue after the manual assignment has been completed.",
         "unfilledAlert": "We have detected that there is data that requires manual assignment.",
         "previousTitle": "Previous",
-        "newAssignmentTitle": "New assignment",
+        "newAssignmentTitle": "New assignments",
         "placeholder": "Please choose",
-        "filledCardTitle": "Processed assignment",
-        "expandTitle": "Hide processed assignment",
-        "collapseTitle": "Show processed assignment",
-        "unfilledCardTitle": "Manual assignment",
+        "filledCardTitle": "Processed assignments",
+        "expandTitle": "Hide processed assignments",
+        "collapseTitle": "Show processed assignments",
+        "unfilledCardTitle": "Manual assignments",
         "group": {
           "order_state": "Order states",
           "transaction_state": "Transaction states",
@@ -222,41 +222,41 @@
       },
       "loadingScreenCard": {
         "flowChart": {
-          "premapping": "Data check",
+          "premapping": "Checking Data",
           "fetchData": "Reading data",
           "writeData": "Writing data",
-          "processMedia": "Media download",
-          "finish": "Finish"
+          "processMedia": "Downloading media",
+          "finish": "Done"
         },
         "status": {
           "FETCH_DATA": {
             "long": "The data will be read from your system",
             "caption": "The new assignments are processed.",
             "short": "Reading",
-            "hint": "Hint: The migration continues step by step in the background, explore Shopware 6."
+            "hint": "Tip: The migration continues step by step in the background, explore Shopware 6."
           },
           "WRITE_DATA": {
             "long": "The data is written in Shopware 6",
-            "caption": "Depending on the shop size it may take a bit longer.",
+            "caption": "Depending on the shop size it may take a few moments.",
             "short": "Writing",
-            "hint": "Hint: This step can be paused and continued."
+            "hint": "Tip: You can pause and resume the migration process at any time."
           },
           "PROCESS_MEDIA_FILES": {
             "long": "The media will be downloaded",
             "caption": "Large image data can take some time to process.",
-            "short": "Download Media",
-            "hint": "Hint: If the connection is bad, pause the download and continue later."
+            "short": "Downloading",
+            "hint": "Tip: If the connection is bad, pause the download and continue later."
           },
-          "finish": "Finish"
+          "finish": "Done"
         },
         "result": {
           "success": {
             "title": "The migration was successful",
-            "caption": "You can find all details about the process in the history"
+            "caption": "We've created a summary for you with all details about the migration process."
           },
           "warning": {
             "title": "The migration was successful",
-            "caption": "Some data could not be migrated. You can see which data was migrated and which errors occurred in the history."
+            "caption": "Some data could not be migrated. You can see which data was migrated and which errors occurred in the summary."
           }
         },
         "pauseScreen": {
@@ -265,7 +265,7 @@
         },
         "takeoverScreen": {
           "buttonCheck": "Check status",
-          "buttonRedirect": "Overview",
+          "buttonRedirect": "General",
           "running": {
             "title": "Migration already started",
             "message": "There is already a migration running in another browser or browser tab. You may now either take over the running migration or abort it."
@@ -299,13 +299,13 @@
           "redirectModal": {
             "title": "Migration completed",
             "message": "The migration has already been completed in another browser or browser tab.",
-            "confirm": "Overview"
+            "confirm": "General"
           }
         },
         "connectionLostScreen": {
           "title": "The connection has been lost",
           "message": "The migration ended the process to avoid data loss. Check the internet connection and start a new migration.",
-          "buttonNavigateToMain": "Overview"
+          "buttonNavigateToMain": "General"
         }
       },
       "confirmAbortDialog": {
