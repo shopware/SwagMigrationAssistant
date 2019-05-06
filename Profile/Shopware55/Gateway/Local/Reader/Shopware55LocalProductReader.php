@@ -197,18 +197,19 @@ class Shopware55LocalProductReader extends Shopware55LocalAbstractReader
 
         $query = $this->connection->createQueryBuilder();
         $query->from('s_articles_img', 'asset');
+
         $query->addSelect('asset.articleID');
         $this->addTableSelection($query, 's_articles_img', 'asset');
+
         $query->leftJoin('asset', 's_articles_img_attributes', 'asset_attributes', 'asset_attributes.imageID = asset.id');
         $this->addTableSelection($query, 's_articles_img_attributes', 'asset_attributes');
+
         $query->leftJoin('asset', 's_media', 'asset_media', 'asset.media_id = asset_media.id');
         $this->addTableSelection($query, 's_media', 'asset_media');
+
         $query->leftJoin('asset_media', 's_media_attributes', 'asset_media_attributes', 'asset_media.id = asset_media_attributes.mediaID');
         $this->addTableSelection($query, 's_media_attributes', 'asset_media_attributes');
-        $query->leftJoin('asset_media', 's_media_album', 'asset_media_album', 'asset_media.albumID = asset_media_album.id');
-        $this->addTableSelection($query, 's_media_album', 'asset_media_album');
-        $query->leftJoin('asset_media_album', 's_media_album_settings', 'asset_media_album_settings', 'asset_media_album.id = asset_media_album_settings.albumID');
-        $this->addTableSelection($query, 's_media_album_settings', 'asset_media_album_settings');
+
         $query->where('asset.articleID IN (:ids)');
         $query->setParameter('ids', $productIds, Connection::PARAM_INT_ARRAY);
 
@@ -232,10 +233,13 @@ class Shopware55LocalProductReader extends Shopware55LocalAbstractReader
         $variantIds = $this->productMapping->keys();
         $query = $this->connection->createQueryBuilder();
         $query->from('s_articles_img', 'asset');
+
         $query->addSelect('asset.parent_id');
         $this->addTableSelection($query, 's_articles_img', 'asset');
+
         $query->leftJoin('asset', 's_articles_img_attributes', 'asset_attributes', 'asset_attributes.imageID = asset.id');
         $this->addTableSelection($query, 's_articles_img_attributes', 'asset_attributes');
+
         $query->where('asset.article_detail_id IN (:ids)');
         $query->setParameter('ids', $variantIds, Connection::PARAM_INT_ARRAY);
 

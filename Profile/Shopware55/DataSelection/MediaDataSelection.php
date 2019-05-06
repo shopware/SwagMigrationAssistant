@@ -5,6 +5,7 @@ namespace SwagMigrationNext\Profile\Shopware55\DataSelection;
 use SwagMigrationNext\Migration\DataSelection\DataSelectionInterface;
 use SwagMigrationNext\Migration\DataSelection\DataSelectionStruct;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\MediaDataSet;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\MediaFolderDataSet;
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 
 class MediaDataSelection implements DataSelectionInterface
@@ -33,6 +34,7 @@ class MediaDataSelection implements DataSelectionInterface
     public function getEntityNames(): array
     {
         return [
+            MediaFolderDataSet::getEntity(),
             MediaDataSet::getEntity(),
         ];
     }

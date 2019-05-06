@@ -44,7 +44,17 @@ final class DefaultEntities
 
     public const LOCALE = 'locale';
 
+    public const MAIL_TEMPLATE = 'mail_template';
+
     public const MEDIA = 'media';
+
+    public const MEDIA_DEFAULT_FOLDER = 'media_default_folder';
+
+    public const MEDIA_FOLDER = 'media_folder';
+
+    public const MEDIA_FOLDER_CONFIGURATION = 'media_folder_configuration';
+
+    public const MEDIA_THUMBNAIL_SIZE = 'media_thumbnail_size';
 
     public const MEDIA_TRANSLATION = 'media_translation';
 

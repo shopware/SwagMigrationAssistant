@@ -18,6 +18,7 @@ class Migration1536765937Data extends MigrationStep
 CREATE TABLE `swag_migration_data` (
     `id`              BINARY(16)  NOT NULL,
     `run_id`          BINARY(16)  NOT NULL,
+    `auto_increment`  BIGINT unsigned NOT NULL AUTO_INCREMENT,
     `entity`          VARCHAR(255),
     `raw`             LONGTEXT,
     `converted`       LONGTEXT,
@@ -27,6 +28,7 @@ CREATE TABLE `swag_migration_data` (
     `write_failure`   TINYINT(1)  NOT NULL DEFAULT '0',
     `created_at`      DATETIME(3) NOT NULL,
     `updated_at`      DATETIME(3),
+    KEY `idx.swag_migration_data.auto_increment` (`auto_increment`),
     KEY `idx.swag_migration_data.entity__run_id` (`entity`, `run_id`),
     CONSTRAINT `json.swag_migration_data.raw` CHECK (JSON_VALID(`raw`)),
     CONSTRAINT `json.swag_migration_data.converted` CHECK (JSON_VALID(`converted`)),
@@ -37,6 +39,7 @@ CREATE TABLE `swag_migration_data` (
       ON UPDATE CASCADE
 )
     ENGINE = InnoDB
+    AUTO_INCREMENT=1
     DEFAULT CHARSET = utf8mb4
     COLLATE = utf8mb4_unicode_ci;
 SQL;

@@ -719,6 +719,17 @@ class ProductConverter extends Shopware55Converter
             $this->convertValue($newMedia, 'name', $mediaData['media'], 'name');
             $this->convertValue($newMedia, 'description', $mediaData['media'], 'description');
 
+            $albumUuid = $this->mappingService->getUuid(
+                $this->connectionId,
+                DefaultEntities::MEDIA_FOLDER,
+                $mediaData['media']['albumID'],
+                $this->context
+            );
+
+            if ($albumUuid !== null) {
+                $newMedia['mediaFolderId'] = $albumUuid;
+            }
+
             $newProductMedia['media'] = $newMedia;
             $mediaObjects[] = $newProductMedia;
 
@@ -767,6 +778,19 @@ class ProductConverter extends Shopware55Converter
 
         if (empty($media['name'])) {
             $media['name'] = $manufacturerMedia['id'];
+        }
+
+        $this->getMediaTranslation($manufacturerMedia, ['media' => $media]);
+
+        $albumUuid = $this->mappingService->getUuid(
+            $this->connectionId,
+            DefaultEntities::MEDIA_FOLDER,
+            $media['albumID'],
+            $this->context
+        );
+
+        if ($albumUuid !== null) {
+            $manufacturerMedia['mediaFolderId'] = $albumUuid;
         }
 
         $this->mediaFileService->saveMediaFile(

@@ -21,6 +21,11 @@ class SwagMigrationDataEntity extends Entity
     protected $entity;
 
     /**
+     * @var int
+     */
+    protected $autoIncrement;
+
+    /**
      * @var array|null
      */
     protected $raw;
@@ -73,6 +78,16 @@ class SwagMigrationDataEntity extends Entity
     public function setEntity(string $entity): void
     {
         $this->entity = $entity;
+    }
+
+    public function getAutoIncrement(): int
+    {
+        return $this->autoIncrement;
+    }
+
+    public function setAutoIncrement(int $autoIncrement): void
+    {
+        $this->autoIncrement = $autoIncrement;
     }
 
     public function getRaw(): ?array

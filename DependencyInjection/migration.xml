@@ -34,6 +34,8 @@
             <argument type="service" id="tax.repository"/>
             <argument type="service" id="number_range.repository" />
             <argument type="service" id="rule.repository"/>
+            <argument type="service" id="media_thumbnail_size.repository"/>
+            <argument type="service" id="media_default_folder.repository"/>
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
             <argument type="service" id="SwagMigrationNext\Migration\Mapping\SwagMigrationMappingDefinition"/>
         </service>

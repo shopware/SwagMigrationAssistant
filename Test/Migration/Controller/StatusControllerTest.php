@@ -210,12 +210,13 @@ class StatusControllerTest extends TestCase
         $state = json_decode($result->getContent(), true);
 
         static::assertSame($state[0]['id'], 'products');
-        static::assertSame($state[0]['entityNames'][0], DefaultEntities::PRODUCT_CUSTOM_FIELD);
-        static::assertSame($state[0]['entityNames'][1], DefaultEntities::PRODUCT_PRICE_CUSTOM_FIELD);
-        static::assertSame($state[0]['entityNames'][2], DefaultEntities::PRODUCT_MANUFACTURER_CUSTOM_FIELD);
-        static::assertSame($state[0]['entityNames'][3], DefaultEntities::PRODUCT);
-        static::assertSame($state[0]['entityNames'][4], DefaultEntities::PROPERTY_GROUP_OPTION);
-        static::assertSame($state[0]['entityNames'][5], DefaultEntities::TRANSLATION);
+        static::assertSame($state[0]['entityNames'][0], DefaultEntities::MEDIA_FOLDER);
+        static::assertSame($state[0]['entityNames'][1], DefaultEntities::PRODUCT_CUSTOM_FIELD);
+        static::assertSame($state[0]['entityNames'][2], DefaultEntities::PRODUCT_PRICE_CUSTOM_FIELD);
+        static::assertSame($state[0]['entityNames'][3], DefaultEntities::PRODUCT_MANUFACTURER_CUSTOM_FIELD);
+        static::assertSame($state[0]['entityNames'][4], DefaultEntities::PRODUCT);
+        static::assertSame($state[0]['entityNames'][5], DefaultEntities::PROPERTY_GROUP_OPTION);
+        static::assertSame($state[0]['entityNames'][6], DefaultEntities::TRANSLATION);
 
         static::assertSame($state[1]['id'], 'customersOrders');
         static::assertSame($state[1]['entityNames'][0], DefaultEntities::CUSTOMER_CUSTOM_FIELD);

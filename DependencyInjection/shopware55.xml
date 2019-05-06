@@ -69,6 +69,12 @@
             <tag name="shopware.migration.converter"/>
         </service>
 
+        <service id="SwagMigrationNext\Profile\Shopware55\Converter\MediaFolderConverter">
+            <argument type="service" id="SwagMigrationNext\Migration\Mapping\MappingService"/>
+            <argument type="service" id="SwagMigrationNext\Migration\Logging\LoggingService"/>
+            <tag name="shopware.migration.converter"/>
+        </service>
+
         <service id="SwagMigrationNext\Profile\Shopware55\Converter\MediaConverter">
             <argument type="service" id="SwagMigrationNext\Migration\Mapping\MappingService"/>
             <argument type="service" id="SwagMigrationNext\Migration\Media\MediaFileService"/>
@@ -233,6 +239,10 @@
         </service>
 
         <service id="SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CustomerGroupDataSet">
+            <tag name="shopware.migration.data_set" />
+        </service>
+
+        <service id="SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\MediaFolderDataSet">
             <tag name="shopware.migration.data_set" />
         </service>
 

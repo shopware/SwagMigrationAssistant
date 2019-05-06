@@ -30,12 +30,6 @@ class Shopware55LocalMediaReader extends Shopware55LocalAbstractReader
         $query->leftJoin('asset', 's_media_attributes', 'attributes', 'asset.id = attributes.mediaID');
         $this->addTableSelection($query, 's_media_attributes', 'attributes');
 
-        $query->leftJoin('asset', 's_media_album', 'album', 'album.id = asset.albumID');
-        $this->addTableSelection($query, 's_media_album', 'album');
-
-        $query->leftJoin('album', 's_media_album_settings', 'album_settings', 'album.id = album_settings.albumID');
-        $this->addTableSelection($query, 's_media_album_settings', 'album_settings');
-
         $query->where('asset.id IN (:ids)');
         $query->setParameter('ids', $ids, Connection::PARAM_STR_ARRAY);
 

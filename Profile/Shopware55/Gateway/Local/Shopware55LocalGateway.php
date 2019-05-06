@@ -17,6 +17,7 @@ use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CustomerGroupData
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\LanguageDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ManufacturerAttributeDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\MediaDataSet;
+use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\MediaFolderDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\NumberRangeDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\OrderAttributeDataSet;
 use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\OrderDataSet;
@@ -35,6 +36,7 @@ use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalCus
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalCustomerReader;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalEnvironmentReader;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalLanguageReader;
+use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalMediaAlbumReader;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalMediaReader;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalNumberRangeReader;
 use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalOrderReader;
@@ -74,6 +76,10 @@ class Shopware55LocalGateway extends AbstractGateway
                 return $reader->read();
             case OrderDataSet::getEntity():
                 $reader = new Shopware55LocalOrderReader($connection, $this->migrationContext);
+
+                return $reader->read();
+            case MediaFolderDataSet::getEntity():
+                $reader = new Shopware55LocalMediaAlbumReader($connection, $this->migrationContext);
 
                 return $reader->read();
             case MediaDataSet::getEntity():
