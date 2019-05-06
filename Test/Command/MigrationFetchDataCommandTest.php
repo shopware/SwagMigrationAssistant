@@ -17,8 +17,8 @@ use Symfony\Component\Console\Tester\CommandTester;
 
 class MigrationFetchDataCommandTest extends TestCase
 {
-    use MigrationServicesTrait,
-        IntegrationTestBehaviour;
+    use MigrationServicesTrait;
+    use IntegrationTestBehaviour;
 
     /**
      * @var MigrationDataFetcherInterface

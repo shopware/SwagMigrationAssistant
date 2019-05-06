@@ -34,8 +34,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 class MigrationProgressServiceTest extends TestCase
 {
-    use MigrationServicesTrait,
-        IntegrationTestBehaviour;
+    use MigrationServicesTrait;
+    use IntegrationTestBehaviour;
 
     /**
      * @var EntityRepositoryInterface

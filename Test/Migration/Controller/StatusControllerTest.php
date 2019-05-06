@@ -38,8 +38,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class StatusControllerTest extends TestCase
 {
-    use MigrationServicesTrait,
-        IntegrationTestBehaviour;
+    use MigrationServicesTrait;
+    use IntegrationTestBehaviour;
 
     /**
      * @var StatusController

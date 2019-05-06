@@ -31,8 +31,8 @@ use Symfony\Component\Console\Tester\CommandTester;
 
 class MigrationWriteDataCommandTest extends TestCase
 {
-    use MigrationServicesTrait,
-        IntegrationTestBehaviour;
+    use MigrationServicesTrait;
+    use IntegrationTestBehaviour;
 
     /**
      * @var EntityRepositoryInterface

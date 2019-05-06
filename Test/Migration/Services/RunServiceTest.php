@@ -35,8 +35,8 @@ use SwagMigrationNext\Test\Mock\Migration\Service\DummyMigrationDataFetcher;
 
 class RunServiceTest extends TestCase
 {
-    use MigrationServicesTrait,
-        IntegrationTestBehaviour;
+    use MigrationServicesTrait;
+    use IntegrationTestBehaviour;
 
     /**
      * @var EntityRepositoryInterface
