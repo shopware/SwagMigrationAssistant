@@ -8,6 +8,8 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Controller\PremappingController;
+use SwagMigrationAssistant\Exception\EntityNotExistsException;
+use SwagMigrationAssistant\Exception\MigrationContextPropertyMissingException;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\Premapping\PremappingEntityStruct;
@@ -145,6 +147,24 @@ class PremappingControllerTest extends TestCase
         $this->premapping = new PremappingStruct(OrderStateReader::getMappingName(), [$this->firstState, $this->secondState]);
     }
 
+    public function testGeneratePremappingWithoutRunUuid(): void
+    {
+        $this->expectException(MigrationContextPropertyMissingException::class);
+        $this->controller->generatePremapping(
+            new Request(),
+            $this->context
+        );
+    }
+
+    public function testGeneratePremappingWithInvalidRunUuid(): void
+    {
+        $this->expectException(EntityNotExistsException::class);
+        $this->controller->generatePremapping(
+            new Request([], ['runUuid' => Uuid::randomHex()]),
+            $this->context
+        );
+    }
+
     public function testWritePremapping(): void
     {
         $request = new Request([], [
@@ -173,6 +193,46 @@ class PremappingControllerTest extends TestCase
 
         static::assertSame($this->firstState->getDestinationUuid(), $firstUuid);
         static::assertSame($this->secondState->getDestinationUuid(), $secondUuid);
+    }
+
+    public function testWritePremappingWithoutRunUuid(): void
+    {
+        $request = new Request([], [
+            'premapping' => json_decode((new JsonResponse([$this->premapping]))->getContent(), true),
+        ]);
+
+        $this->expectException(MigrationContextPropertyMissingException::class);
+        $this->controller->writePremapping(
+            $request,
+            $this->context
+        );
+    }
+
+    public function testWritePremappingWithoutPremapping(): void
+    {
+        $request = new Request([], [
+            'runUuid' => $this->runUuid,
+        ]);
+
+        $this->expectException(MigrationContextPropertyMissingException::class);
+        $this->controller->writePremapping(
+            $request,
+            $this->context
+        );
+    }
+
+    public function testWritePremappingWithInvalidRunUuid(): void
+    {
+        $request = new Request([], [
+            'runUuid' => Uuid::randomHex(),
+            'premapping' => json_decode((new JsonResponse([$this->premapping]))->getContent(), true),
+        ]);
+
+        $this->expectException(EntityNotExistsException::class);
+        $this->controller->writePremapping(
+            $request,
+            $this->context
+        );
     }
 
     public function testWritePremappingTwice(): void

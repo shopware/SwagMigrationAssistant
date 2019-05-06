@@ -15,7 +15,7 @@ $productEntity->setCurrentCount(0);
 $productEntity->setTotal(37);
 
 $categoriesProducts = new RunProgress();
-$categoriesProducts->setId('categories_products');
+$categoriesProducts->setId('products');
 $categoriesProducts->setCurrentCount(0);
 $categoriesProducts->setTotal(45);
 $categoriesProducts->setEntities([
@@ -35,7 +35,7 @@ $orderEntity->setCurrentCount(0);
 $orderEntity->setTotal(2);
 
 $customersOrders = new RunProgress();
-$customersOrders->setId('customers_orders');
+$customersOrders->setId('customersOrders');
 $customersOrders->setCurrentCount(0);
 $customersOrders->setTotal(5);
 $customersOrders->setEntities([

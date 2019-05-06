@@ -3,9 +3,12 @@
 namespace SwagMigrationAssistant\Test\Profile\Shopware55\Converter;
 
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Content\Property\Aggregate\PropertyGroupOption\PropertyGroupOptionDefinition;
+use Shopware\Core\Content\Property\PropertyGroupDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Profile\SwagMigrationProfileEntity;
@@ -302,5 +305,93 @@ class TranslationConverterTest extends TestCase
         $description = 'Category-Translation-Entity could not be converted cause of invalid unserialized object data.';
         static::assertSame($description, $logs[0]['logEntry']['description']);
         static::assertCount(1, $logs);
+    }
+
+    public function testCreateConfiguratorOptionTranslation(): void
+    {
+        $context = Context::createDefaultContext();
+        $defaultLanguage = DummyMappingService::DEFAULT_LANGUAGE_UUID;
+        $this->mappingService->createNewUuid(
+            $this->migrationContext->getConnection()->getId(),
+            DefaultEntities::PROPERTY_GROUP_OPTION . '_option',
+            '11',
+            $context
+        );
+
+        $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
+        $translationData = $translationData['configuratoroption'];
+        $convertResult = $this->translationConverter->convert($translationData, $context, $this->migrationContext);
+        $converted = $convertResult->getConverted();
+        static::assertNull($convertResult->getUnmapped());
+        static::assertNotNull($converted);
+
+        static::assertSame(PropertyGroupOptionDefinition::class, $converted['entityDefinitionClass']);
+        static::assertSame('My test option', $converted['translations'][$defaultLanguage]['name']);
+    }
+
+    public function testCreateConfiguratorOptionGroupTranslation(): void
+    {
+        $context = Context::createDefaultContext();
+        $defaultLanguage = DummyMappingService::DEFAULT_LANGUAGE_UUID;
+        $this->mappingService->createNewUuid(
+            $this->migrationContext->getConnection()->getId(),
+            DefaultEntities::PROPERTY_GROUP . '_option',
+            '5',
+            $context
+        );
+
+        $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
+        $translationData = $translationData['configuratorgroup'];
+        $convertResult = $this->translationConverter->convert($translationData, $context, $this->migrationContext);
+        $converted = $convertResult->getConverted();
+        static::assertNull($convertResult->getUnmapped());
+        static::assertNotNull($converted);
+
+        static::assertSame(PropertyGroupDefinition::class, $converted['entityDefinitionClass']);
+        static::assertSame('My test group', $converted['translations'][$defaultLanguage]['name']);
+    }
+
+    public function testCreatePropertyValueTranslation(): void
+    {
+        $context = Context::createDefaultContext();
+        $defaultLanguage = DummyMappingService::DEFAULT_LANGUAGE_UUID;
+        $this->mappingService->createNewUuid(
+            $this->migrationContext->getConnection()->getId(),
+            DefaultEntities::PROPERTY_GROUP_OPTION . '_property',
+            '31',
+            $context
+        );
+
+        $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
+        $translationData = $translationData['propertyvalue'];
+        $convertResult = $this->translationConverter->convert($translationData, $context, $this->migrationContext);
+        $converted = $convertResult->getConverted();
+        static::assertNull($convertResult->getUnmapped());
+        static::assertNotNull($converted);
+
+        static::assertSame(PropertyGroupOptionDefinition::class, $converted['entityDefinitionClass']);
+        static::assertSame('gold', $converted['translations'][$defaultLanguage]['name']);
+    }
+
+    public function testCreatePropertyOptionTranslation(): void
+    {
+        $context = Context::createDefaultContext();
+        $defaultLanguage = DummyMappingService::DEFAULT_LANGUAGE_UUID;
+        $this->mappingService->createNewUuid(
+            $this->migrationContext->getConnection()->getId(),
+            DefaultEntities::PROPERTY_GROUP . '_property',
+            '8',
+            $context
+        );
+
+        $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
+        $translationData = $translationData['propertyoption'];
+        $convertResult = $this->translationConverter->convert($translationData, $context, $this->migrationContext);
+        $converted = $convertResult->getConverted();
+        static::assertNull($convertResult->getUnmapped());
+        static::assertNotNull($converted);
+
+        static::assertSame(PropertyGroupDefinition::class, $converted['entityDefinitionClass']);
+        static::assertSame('Size', $converted['translations'][$defaultLanguage]['optionName']);
     }
 }

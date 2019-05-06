@@ -265,7 +265,7 @@ class MigrationDataFetcherTest extends TestCase
         $criteria->addFilter(new EqualsFilter('entity', 'translation'));
         /** @var EntitySearchResult $result */
         $result = $this->migrationDataRepo->search($criteria, $context);
-        static::assertSame(5, $result->getTotal());
+        static::assertSame(9, $result->getTotal());
     }
 
     public function testFetchCustomerDataApiGateway(): void

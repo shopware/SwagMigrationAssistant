@@ -106,6 +106,10 @@ class CurrencyConverter extends Shopware55Converter
             $data['_locale']
         );
 
+        if (empty($data)) {
+            $data = null;
+        }
+
         return new ConvertStruct($converted, $data);
     }
 

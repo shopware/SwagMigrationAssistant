@@ -329,7 +329,7 @@ class MigrationProgressServiceTest extends TestCase
 
         $runProgress = $this->serializeRunProgressForCompare();
         foreach ($runProgress as &$currentProgress) {
-            if ($currentProgress['id'] === 'categories_products') {
+            if ($currentProgress['id'] === 'products') {
                 foreach ($currentProgress['entities'] as &$currentEntityProgress) {
                     if ($currentEntityProgress['entityName'] === 'category') {
                         $currentEntityProgress['currentCount'] = $this->writeArray['category']['write'];
@@ -383,7 +383,7 @@ class MigrationProgressServiceTest extends TestCase
 
         $runProgress = $this->serializeRunProgressForCompare();
         foreach ($runProgress as &$currentProgress) {
-            if ($currentProgress['id'] === 'categories_products') {
+            if ($currentProgress['id'] === 'products') {
                 foreach ($currentProgress['entities'] as &$currentEntityProgress) {
                     if ($currentEntityProgress['entityName'] === 'category') {
                         $currentEntityProgress['currentCount'] = $this->writeArray['category']['write'];
@@ -396,7 +396,7 @@ class MigrationProgressServiceTest extends TestCase
                 $currentProgress['currentCount'] = $this->writeArray['category']['write'] + $this->writeArray['product']['write'];
             }
 
-            if ($currentProgress['id'] === 'customers_orders') {
+            if ($currentProgress['id'] === 'customersOrders') {
                 foreach ($currentProgress['entities'] as &$currentEntityProgress) {
                     if ($currentEntityProgress['entityName'] === 'customer') {
                         $currentEntityProgress['currentCount'] = $this->writeArray['customer']['write'];
@@ -584,7 +584,7 @@ class MigrationProgressServiceTest extends TestCase
 
         /** @var RunProgress $progress */
         foreach ($this->runProgress as $progress) {
-            if ($progress->getId() === 'customers_orders') {
+            if ($progress->getId() === 'customersOrders') {
                 /** @var EntityProgress $entityProgress */
                 foreach ($progress->getEntities() as $entityProgress) {
                     if ($entityProgress->getEntityName() === 'customer') {

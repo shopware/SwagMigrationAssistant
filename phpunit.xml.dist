@@ -31,6 +31,7 @@
                 <directory suffix="Collection.php">./Migration</directory>
                 <directory suffix="Entity.php">./Migration</directory>
                 <directory suffix="Struct.php">./Migration</directory>
+                <directory suffix="DataSet.php">./Profile</directory>
 
                 <!-- Can only thrown, if permissions denied -->
                 <file>./Exception/NoFileSystemPermissionsException.php</file>
