@@ -44,8 +44,8 @@ Component.register('swag-migration-grid-selection', {
             return this.items;
         },
 
-        onInput(event) {
-            this.$emit('input', event);
+        onInput() {
+            this.$emit('input');
         }
     }
 });
