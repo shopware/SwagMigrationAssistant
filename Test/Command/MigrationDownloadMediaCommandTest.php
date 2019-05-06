@@ -32,8 +32,8 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class MigrationDownloadMediaCommandTest extends TestCase
 {
-    use MigrationServicesTrait,
-        IntegrationTestBehaviour;
+    use MigrationServicesTrait;
+    use IntegrationTestBehaviour;
 
     /**
      * @var EntityRepositoryInterface

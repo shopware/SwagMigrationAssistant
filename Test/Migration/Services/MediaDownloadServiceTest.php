@@ -30,8 +30,8 @@ use SwagMigrationNext\Test\MigrationServicesTrait;
 
 class MediaDownloadServiceTest extends TestCase
 {
-    use MigrationServicesTrait,
-        IntegrationTestBehaviour;
+    use MigrationServicesTrait;
+    use IntegrationTestBehaviour;
 
     /**
      * @var CliMediaDownloadService
