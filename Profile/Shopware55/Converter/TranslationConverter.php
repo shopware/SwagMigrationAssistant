@@ -76,6 +76,23 @@ class TranslationConverter extends Shopware55Converter
         $this->context = $context;
         $this->runId = $migrationContext->getRunUuid();
 
+        if (!isset($data['locale'])) {
+            $this->loggingService->addWarning(
+                $this->runId,
+                Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
+                'Empty necessary data',
+                'Order-Entity could not converted cause of empty necessary field: locale.',
+                [
+                    'id' => $data['id'],
+                    'entity' => 'Translation',
+                    'fields' => ['locale'],
+                ],
+                1
+            );
+
+            return new ConvertStruct(null, $data);
+        }
+
         switch ($data['objecttype']) {
             case 'article':
                 return $this->createProductTranslation($data);
@@ -202,12 +219,12 @@ class TranslationConverter extends Shopware55Converter
         );
         unset($data['id'], $data['objectkey']);
 
-        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $data['_locale'], $this->context);
+        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $data['locale'], $this->context);
         $productTranslation['languageId'] = $languageUuid;
 
         $product['translations'][$languageUuid] = $productTranslation;
 
-        unset($data['name'], $data['_locale']);
+        unset($data['name'], $data['locale']);
 
         if (empty($data)) {
             $data = null;
@@ -295,12 +312,12 @@ class TranslationConverter extends Shopware55Converter
 
         unset($data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
 
-        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $data['_locale'], $this->context);
+        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $data['locale'], $this->context);
         $manufacturerTranslation['languageId'] = $languageUuid;
 
         $manufacturer['translations'][$languageUuid] = $manufacturerTranslation;
 
-        unset($data['_locale']);
+        unset($data['locale']);
 
         if (empty($data)) {
             $data = null;
@@ -395,12 +412,12 @@ class TranslationConverter extends Shopware55Converter
 
         unset($data['id'], $data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
 
-        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $data['_locale'], $this->context);
+        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $data['locale'], $this->context);
         $unitTranslation['languageId'] = $languageUuid;
 
         $unit['translations'][$languageUuid] = $unitTranslation;
 
-        unset($data['name'], $data['_locale']);
+        unset($data['name'], $data['locale']);
 
         if (empty($data)) {
             $data = null;
@@ -503,12 +520,12 @@ class TranslationConverter extends Shopware55Converter
 
         unset($data['id'], $data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
 
-        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $data['_locale'], $this->context);
+        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $data['locale'], $this->context);
         $categoryTranslation['languageId'] = $languageUuid;
 
         $category['translations'][$languageUuid] = $categoryTranslation;
 
-        unset($data['name'], $data['_locale']);
+        unset($data['name'], $data['locale']);
 
         if (empty($data)) {
             $data = null;
@@ -599,12 +616,12 @@ class TranslationConverter extends Shopware55Converter
 
         unset($data['id'], $data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
 
-        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $data['_locale'], $this->context);
+        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $data['locale'], $this->context);
         $propertyGroupOptionTranslation['languageId'] = $languageUuid;
 
         $configuratorOption['translations'][$languageUuid] = $propertyGroupOptionTranslation;
 
-        unset($data['name'], $data['_locale']);
+        unset($data['name'], $data['locale']);
 
         if (empty($data)) {
             $data = null;
@@ -695,12 +712,12 @@ class TranslationConverter extends Shopware55Converter
 
         unset($data['id'], $data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
 
-        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $data['_locale'], $this->context);
+        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $data['locale'], $this->context);
         $propertyGroupTranslation['languageId'] = $languageUuid;
 
         $configuratorOptionGroup['translations'][$languageUuid] = $propertyGroupTranslation;
 
-        unset($data['name'], $data['_locale']);
+        unset($data['name'], $data['locale']);
 
         if (empty($data)) {
             $data = null;
@@ -787,12 +804,12 @@ class TranslationConverter extends Shopware55Converter
 
         unset($data['id'], $data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
 
-        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $data['_locale'], $this->context);
+        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $data['locale'], $this->context);
         $propertyValueTranslation['languageId'] = $languageUuid;
 
         $propertyValue['translations'][$languageUuid] = $propertyValueTranslation;
 
-        unset($data['name'], $data['_locale']);
+        unset($data['name'], $data['locale']);
 
         if (empty($data)) {
             $data = null;
@@ -879,12 +896,12 @@ class TranslationConverter extends Shopware55Converter
 
         unset($data['id'], $data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
 
-        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $data['_locale'], $this->context);
+        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $data['locale'], $this->context);
         $propertyOptionTranslation['languageId'] = $languageUuid;
 
         $propertyOption['translations'][$languageUuid] = $propertyOptionTranslation;
 
-        unset($data['name'], $data['_locale']);
+        unset($data['name'], $data['locale']);
 
         if (empty($data)) {
             $data = null;

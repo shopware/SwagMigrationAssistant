@@ -26,8 +26,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 class PremappingControllerTest extends TestCase
 {
-    use MigrationServicesTrait,
-        IntegrationTestBehaviour;
+    use MigrationServicesTrait;
+    use IntegrationTestBehaviour;
 
     /**
      * @var EntityRepositoryInterface

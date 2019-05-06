@@ -48,8 +48,8 @@ use SwagMigrationNext\Test\Mock\Migration\Media\DummyMediaFileService;
 
 class MigrationDataWriterTest extends TestCase
 {
-    use MigrationServicesTrait,
-        IntegrationTestBehaviour;
+    use MigrationServicesTrait;
+    use IntegrationTestBehaviour;
 
     /**
      * @var EntityRepositoryInterface

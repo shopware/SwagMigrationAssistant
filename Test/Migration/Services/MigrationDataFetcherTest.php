@@ -47,8 +47,8 @@ use SwagMigrationNext\Test\Mock\Migration\Logging\DummyLoggingService;
 
 class MigrationDataFetcherTest extends TestCase
 {
-    use MigrationServicesTrait,
-        IntegrationTestBehaviour;
+    use MigrationServicesTrait;
+    use IntegrationTestBehaviour;
 
     /**
      * @var MigrationDataFetcherInterface

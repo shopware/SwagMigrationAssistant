@@ -8,7 +8,7 @@ return [
         'objectkey' => '6',
         'objectlanguage' => '2',
         'dirty' => '1',
-        '_locale' => 'en-US',
+        'locale' => 'en-US',
         'name' => null,
     ],
     'manufacturer' => [
@@ -18,7 +18,7 @@ return [
         'objectkey' => '1',
         'objectlanguage' => '2',
         'dirty' => '1',
-        '_locale' => 'en-US',
+        'locale' => 'en-US',
         'name' => 'Shopware Fashion',
     ],
     'unit' => [
@@ -28,7 +28,7 @@ return [
         'objectkey' => '9',
         'objectlanguage' => '2',
         'dirty' => '1',
-        '_locale' => 'en-US',
+        'locale' => 'en-US',
         'name' => null,
     ],
     'category' => [
@@ -38,7 +38,7 @@ return [
         'objectkey' => '6',
         'objectlanguage' => '2',
         'dirty' => '1',
-        '_locale' => 'en-US',
+        'locale' => 'en-US',
         'name' => null,
     ],
     'invalid' => [
@@ -48,7 +48,7 @@ return [
         'objectkey' => '6',
         'objectlanguage' => '2',
         'dirty' => '1',
-        '_locale' => 'en-US',
+        'locale' => 'en-US',
         'name' => null,
     ],
 ];
