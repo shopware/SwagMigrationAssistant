@@ -76,6 +76,23 @@ class TranslationConverter extends Shopware55Converter
         $this->context = $context;
         $this->runId = $migrationContext->getRunUuid();
 
+        if (!isset($data['_locale'])) {
+            $this->loggingService->addWarning(
+                $this->runId,
+                Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
+                'Empty necessary data',
+                'Order-Entity could not converted cause of empty necessary field: locale.',
+                [
+                    'id' => $data['id'],
+                    'entity' => 'Translation',
+                    'fields' => ['locale'],
+                ],
+                1
+            );
+
+            return new ConvertStruct(null, $data);
+        }
+
         switch ($data['objecttype']) {
             case 'article':
                 return $this->createProductTranslation($data);
