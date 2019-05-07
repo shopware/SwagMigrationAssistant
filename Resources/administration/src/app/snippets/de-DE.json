@@ -198,7 +198,7 @@
         "touLinkText": "Allgemeinen Nutzungsbedingungen"
       },
       "premappingCard": {
-        "validTitle": "Die Prüfung ist abgeschlossen",
+        "validTitle": "Die Prüfung der Daten ist abgeschlossen",
         "validCaption": "Die Daten sind zum Fortfahren bereit",
         "loadingTitle": "Die Prüfung der Daten wird durchgeführt",
         "loadingCaption": "Die bisherigen Daten werden geprüft.",
