@@ -261,6 +261,7 @@ export class WorkerMediaFiles {
         this._mediaProgress += mediaRemovedCount;
         // call event subscriber
         this._migrationProcessStore.setEntityProgress(
+            'processMediaFiles',
             'media',
             this._mediaProgress,
             this._mediaTotalCount
