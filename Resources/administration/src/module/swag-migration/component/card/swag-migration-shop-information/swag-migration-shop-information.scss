@@ -49,6 +49,7 @@ $swag-migration-shop-information-color-metadata: $color-gutenberg;
         white-space: nowrap;
         padding: 0 10px 0 10px;
         max-width: unset;
+        display: inline-flex;
     }
 
     .swag-migration-shop-information__connection-status-dot {
@@ -56,6 +57,7 @@ $swag-migration-shop-information-color-metadata: $color-gutenberg;
     }
 
     .swag-migration-shop-information__connection-status-text {
+        margin: auto 0;
         font-size: 12px;
         font-weight: 600;
     }

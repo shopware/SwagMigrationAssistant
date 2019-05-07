@@ -1,5 +1,6 @@
 import { Component } from 'src/core/shopware';
 import template from './swag-migration-tab-card.html.twig';
+import './swag-migration-tab-card.scss';
 
 /**
  * Example:

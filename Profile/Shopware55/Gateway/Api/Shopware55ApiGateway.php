@@ -85,6 +85,7 @@ class Shopware55ApiGateway extends AbstractGateway
         $options = [
             'base_uri' => $credentials['endpoint'] . '/api/',
             'auth' => [$credentials['apiUser'], $credentials['apiKey'], 'digest'],
+            'connect_timeout' => 5.0,
             'verify' => false,
         ];
 
