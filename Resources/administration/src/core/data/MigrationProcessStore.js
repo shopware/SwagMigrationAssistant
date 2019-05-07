@@ -78,21 +78,14 @@ class MigrationProcessStore extends SimpleStateManagementStore {
     }
 
     /**
+     * @param {string} groupId
      * @param {string} entityName
      * @param {number} groupCurrentCount
      * @param {number} groupTotal
      */
-    setEntityProgress(entityName, groupCurrentCount, groupTotal) {
-        this._checkDebugging(this.state.entityGroups, entityName, groupCurrentCount, groupTotal);
-        const targetGroup = this.getDisplayEntityGroups().find((group) => {
-            for (let i = 0; i < group.entities.length; i += 1) {
-                if (group.entities[i].entityName === entityName) {
-                    return true;
-                }
-            }
-
-            return false;
-        });
+    setEntityProgress(groupId, entityName, groupCurrentCount, groupTotal) {
+        this._checkDebugging(this.state.entityGroups, groupId, entityName, groupCurrentCount, groupTotal);
+        const targetGroup = this.getDisplayEntityGroups().find(group => group.id === groupId);
 
         if (targetGroup === undefined) {
             return;

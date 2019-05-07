@@ -168,6 +168,7 @@ export class WorkerRequest {
 
             // update State
             this._migrationProcessStore.setEntityProgress(
+                group.id,
                 entityName,
                 groupProgress + newOffset,
                 group.total
