@@ -495,6 +495,10 @@ class MappingService implements MappingServiceInterface
             /** @var MediaDefaultFolderEntity $mediaDefaultFolder */
             $mediaDefaultFolder = $result->getEntities()->first();
 
+            if ($mediaDefaultFolder->getFolder() === null) {
+                return null;
+            }
+
             $this->saveMapping(
                 [
                     'connectionId' => $migrationContext->getConnection()->getId(),
