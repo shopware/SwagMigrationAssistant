@@ -31,7 +31,7 @@ export class WorkerRequest {
     ) {
         this._MAX_REQUEST_TIME = 10000; // in ms
         this._DEFAULT_CHUNK_SIZE = 25; // in data sets
-        this._CHUNK_PROPORTION_BUFFER = 0.8; // chunk buffer
+        this._CHUNK_PROPORTION_BUFFER = 0.5; // chunk buffer
 
         this._migrationProcessStore = State.getStore('migrationProcess');
         this._runId = requestParams.runUuid;
@@ -40,6 +40,7 @@ export class WorkerRequest {
         this._migrationService = migrationService;
         this._interrupt = '';
         this._chunkSize = this._DEFAULT_CHUNK_SIZE;
+        this._lastChunkSize = this._DEFAULT_CHUNK_SIZE;
 
         // callbacks
         this._onInterruptCB = onInterruptCB;
@@ -207,6 +208,11 @@ export class WorkerRequest {
                             internalError: true
                         });
                         requestFailedCount += 1;
+                        if (this._requestParams.limit === this._lastChunkSize) {
+                            this._requestParams.limit = this._DEFAULT_CHUNK_SIZE;
+                        } else {
+                            this._requestParams.limit = this._lastChunkSize;
+                        }
                         return;
                     }
 
@@ -226,6 +232,11 @@ export class WorkerRequest {
                             internalError: true
                         });
                         requestFailedCount += 1;
+                        if (this._requestParams.limit === this._lastChunkSize) {
+                            this._requestParams.limit = this._DEFAULT_CHUNK_SIZE;
+                        } else {
+                            this._requestParams.limit = this._lastChunkSize;
+                        }
                         return;
                     }
 
@@ -274,6 +285,7 @@ export class WorkerRequest {
      * @private
      */
     _handleChunkSize(requestTime) {
+        this._lastChunkSize = this._chunkSize;
         if (requestTime < this._MAX_REQUEST_TIME) {
             const factor = this._MAX_REQUEST_TIME / requestTime;
             this._chunkSize = Math.ceil((this._chunkSize * factor) * this._CHUNK_PROPORTION_BUFFER);
