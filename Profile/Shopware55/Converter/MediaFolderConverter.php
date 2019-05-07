@@ -134,9 +134,7 @@ class MediaFolderConverter extends Shopware55Converter
             $converted['useParentConfiguration'] = true;
             // will immediately be overriden by MediaConfigIndexer
             $converted['configuration'] = [
-                [
-                    'id' => Uuid::randomHex(),
-                ],
+                'id' => Uuid::randomHex(),
             ];
         }
 
