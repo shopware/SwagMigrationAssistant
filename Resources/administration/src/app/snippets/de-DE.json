@@ -1,10 +1,10 @@
 {
   "swag-migration": {
     "general": {
-      "mainMenuItemGeneral": "Migration",
+      "mainMenuItemGeneral": "Migration Assistant",
       "descriptionTextModule": "Modul zum Migrieren der Daten",
       "tabMain": "Übersicht",
-      "tabHistory": "Verlauf",
+      "tabHistory": "Historie",
       "tabDataSelector": "Datenauswahl"
     },
     "wizard": {
@@ -48,8 +48,8 @@
         "profileInformation": {
           "title": "Migration - Verbindung vorbereiten",
           "shopware55Api": {
-            "contentTitle": "Migration erfordert eine Plugin-Installation",
-            "contentInformation": "Für die Migration wird die Installation des kostenlosen Plugins „Shopware Migrationsassistant“ benötigt. Dieses findest Du in Deinem Shop-Backend (unter Shopware 5: Plugin Manager > Erweiterungen > Migrationstools). Bitte installiere und aktiviere das Plugin.",
+            "contentTitle": "Installiere den Migration Connector",
+            "contentInformation": "Für die Migration ist die Installation des kostenlosen Plugins „Migration Connector“ erforderlich. Dieses findest Du in Deinem Shopware 5 Backend unter: Plugin Manager > Erweiterungen > Migrationstools. Bitte installiere und aktiviere das Plugin.",
             "pluginLink": "Mehr Informationen zum Plugin"
           }
         },
@@ -58,7 +58,7 @@
           "emptyState": "Leider wurde kein enstprechendes Formular für dieses Profil gefunden.",
           "shopware55": {
             "api": {
-              "contentInformation": "Wir benötigen noch einige Daten um eine Verbindung mit Deinem Shopware 5 Shop herstellen zu können. Diese Daten findest Du in der Benutzerverwaltung Deines Shopware 5 Shops.",
+              "contentInformation": "Wir benötigen noch einige Daten um eine Verbindung mit Deinem Shopware 5 Shop herstellen zu können. Diese Daten findest Du in der Benutzerverwaltung von Deinem Shopware 5 Backend.",
               "apiKeyLabel": "API-Schlüssel",
               "apiKeyTooltip": "Der API-Schlüssel dient der Sicherheit und Identifizierung.",
               "apiKeyPlaceholder": "Schlüssel einfügen",
@@ -148,7 +148,7 @@
       },
       "assistantCard": {
         "title": "Information",
-        "headline": "Dein Migrationsassistent",
+        "headline": "So funktioniert die Migration",
         "finish": "Fertig!",
         "connection": {
           "title": "Eine Verbindung anlegen",
@@ -198,11 +198,11 @@
         "touLinkText": "Allgemeinen Nutzungsbedingungen"
       },
       "premappingCard": {
-        "validTitle": "Der Datencheck ist abgeschlossen",
+        "validTitle": "Die Prüfung ist abgeschlossen",
         "validCaption": "Die Daten sind zum Fortfahren bereit",
-        "loadingTitle": "Der Datencheck wird durchgeführt",
+        "loadingTitle": "Die Prüfung der Daten wird durchgeführt",
         "loadingCaption": "Die bisherigen Daten werden geprüft.",
-        "unfilledTitle": "Der Datencheck ist abgeschlossen",
+        "unfilledTitle": "Die Prüfung der Daten ist abgeschlossen",
         "unfilledCaption": "Du kannst erst fortfahren, wenn die manuelle Zuordnung erfolgt ist.",
         "unfilledAlert": "Wir haben festgestellt, dass es Daten gibt, die eine manuelle Zuordnung benötigen.",
         "previousTitle": "Bisher",
@@ -223,7 +223,7 @@
       },
       "loadingScreenCard": {
         "flowChart": {
-          "premapping": "Datencheck",
+          "premapping": "Prüfen der Daten",
           "fetchData": "Lesen der Daten",
           "writeData": "Schreiben der Daten",
           "processMedia": "Medien-Download",
@@ -268,19 +268,19 @@
           "buttonCheck": "Status prüfen",
           "buttonRedirect": "Zur Übersicht",
           "running": {
-            "title": "Migration bereits gestartet",
+            "title": "Die Migration wurde bereits gestartet",
             "message": "Es ist bereits eine Migration in einem anderen Browser oder Browser-Tab gestartet. Dieser Prozess kann nun, je nach aktuellem Status der Migration, entweder übernommen oder beendet werden."
           },
           "interrupted": {
-            "title": "Migration wurde übernommen",
+            "title": "Die Migration wurde übernommen",
             "message": "Der Migrationsprozess wurde von einem anderen Browser oder Browser-Tab übernommen. Dieser Prozess kann nun, je nach aktuellem Status der Migration, entweder übernommen oder beendet werden."
           },
           "aborted": {
-            "title": "Migration wurde beendet",
+            "title": "Die Migration wurde beendet",
             "message": "Der Migrationsprozess wurde in einem anderen Browser oder Browser-Tab beendet. Bitte überprüfe die Zuständigkeiten und starte eine neue Migration."
           },
           "forbidden": {
-            "title": "Migration bereits gestartet",
+            "title": "Die Migration wurde bereits gestartet",
             "message": "Es ist bereits eine Migration in einem anderen Browser-Tab gestartet. Bitte wechsle in diesen Tab, um den Migrationsprozess einsehen zu können."
           },
           "takeoverModal": {
@@ -327,7 +327,7 @@
       },
       "error": {
         "authorizationError": {
-          "information": "Authorisierungsfehler. Deine Zugangsdaten sind nicht korrekt. Bitte überprüfe sie und versuche es erneut."
+          "information": "Authorisierungsfehler. Die Zugangsdaten sind nicht korrekt. Bitte überprüfe sie und versuche es erneut."
         },
         "canNotConnectToServer": "Keine Verbindung zum Server. Bitte überprüfe die Verbindung.",
         "customerExists": {

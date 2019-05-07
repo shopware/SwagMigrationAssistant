@@ -1,7 +1,7 @@
 {
   "swag-migration": {
     "general": {
-      "mainMenuItemGeneral": "Migration",
+      "mainMenuItemGeneral": "Migration Assistant",
       "descriptionTextModule": "Module to migrate data",
       "tabMain": "General",
       "tabHistory": "Summary",
@@ -31,15 +31,15 @@
           "connectionPlaceholder": "Please select a connection"
         },
         "connectionCreate": {
-          "title": "Migration – Creating a connection",
-          "contentInformation": "Enter the data needed for the migration.",
+          "title": "Migration – Create a connection",
+          "contentInformation": "The following information is required to perform the migration.",
           "profileLabel": "Profile",
           "profileTooltip": "Describes the type of source system.",
           "profilePlaceholder": "Select profile",
           "gatewayLabel": "Gateway",
           "gatewayTooltip": "The type of connection between the systems.",
           "gatewayPlaceholder": "Select gateway",
-          "connectionLabel": "Name",
+          "connectionLabel": "Connection name",
           "connectionPlaceholder": "Enter name",
           "connectionTooltip": "Enter a unique name for the connection.",
           "connectionNameExistsError": "Connection name already exists.",
@@ -49,8 +49,8 @@
           "title": "Migration - Connection preparation",
           "shopware55Api": {
             "contentTitle": "Plugin required",
-            "contentInformation": "The required plugin “Shopware Migration Assistant” is free and can be found in your Shopware 5 backend under Plugin Manager > Extensions > Migration tools. Please install and activate the plugin to proceed.",
-            "pluginLink": "More information on the plugin"
+            "contentInformation": "The required plugin “Migration Connector” is free and can be found in your Shopware 5 backend under Plugin Manager > Extensions > Migration tools. Please install and activate the plugin to proceed.",
+            "pluginLink": "More information about the plugin"
           }
         },
         "credentials": {
@@ -61,7 +61,7 @@
               "contentInformation": "You need valid API credentials to establish a connection between Shopware 5 and Shopware 6. Your API credentials can be found in your Shopware 5 backend under “User administration”. API access needs to be activated there and confirmed by saving.",
               "apiKeyLabel": "API key",
               "apiKeyTooltip": "The API key is used for security and identification.",
-              "apiKeyPlaceholder": "Insert key",
+              "apiKeyPlaceholder": "Enter key",
               "apiKeyInvalid": "The API key does not have the correct length ({length}/40 characters).",
               "apiUserLabel": "Username (API user)",
               "apiUserTooltip": "Username of your Shopware 5 backend.",
@@ -72,19 +72,19 @@
             },
             "local": {
               "contentTitle": "Database connection to Shopware 5",
-              "contentInformation": "Insert your Shopware 5 database credentials to connect to the database",
+              "contentInformation": "Enter your Shopware 5 database credentials to connect to the database",
               "dbHostLabel": "DB host",
-              "dbHostPlaceholder": "Insert database host",
+              "dbHostPlaceholder": "Enter database host",
               "dbPortLabel": "DB port",
-              "dbPortPlaceholder": "Insert database port",
+              "dbPortPlaceholder": "Enter database port",
               "dbNameLabel": "DB name",
-              "dbNamePlaceholder": "Insert database name",
+              "dbNamePlaceholder": "Enter database name",
               "dbUserLabel": "DB user",
-              "dbUserPlaceholder": "Insert username",
+              "dbUserPlaceholder": "Enter username",
               "dbPasswordLabel": "DB password",
-              "dbPasswordPlaceholder": "Insert password",
+              "dbPasswordPlaceholder": "Enter password",
               "installationRoot": "Installation root",
-              "installationRootPlaceholder": "Installationsordner der Shopinstallation eingeben"
+              "installationRootPlaceholder": "Enter the installation folder for the shop installation."
             }
           },
           "statusTitle": "Connection check",
@@ -100,7 +100,7 @@
             "undefinedErrorMsg": "Internal server error. Please try again.",
             "SWAG_MIGRATION__GATEWAY_READ": "Could not connect to the server. Please check the given shop domain.",
             "SWAG_MIGRATION__CONNECTION_AUTHENTICATION_INVALID": "Your credentials are incorrect. Please check them and try again.",
-            "SWAG_MIGRATION__PLUGIN_NOT_INSTALLED": "The required plugin “Shopware Playground Connector” is not installed in Shopware 5. Please install the free plugin and try again.",
+            "SWAG_MIGRATION__PLUGIN_NOT_INSTALLED": "The required plugin “Migration Connector” is not installed in Shopware 5. Please install the free plugin and try again.",
             "SWAG_MIGRATION__DATABASE_CONNECTION_ERROR": "Database connection could not be established.",
             "SWAG_MIGRATION__IS_RUNNING": "A migration is currently in progress. Therefore, you cannot edit the credentials until the migration is complete."
           }
@@ -122,7 +122,7 @@
       "finishButton": "Finish",
       "backButton": "Finish migration",
       "migrationAlreadyRunning": "Migration already started.",
-      "pluginVersionText": "Please make sure your Shopware 5 backend is using the latest version of the Shopware Playground Connector Plugin.",
+      "pluginVersionText": "Please make sure your Shopware 5 backend is using the latest version of the Migration Connector Plugin.",
       "shopInfoCard": {
         "cardTitle": "Shop system",
         "buttonEditSettings": "Edit connection",
@@ -136,7 +136,7 @@
         "connectionCheck": "Connection check:",
         "lastMigration": "Last migration:",
         "displayDateTime": "{time} - {date}",
-        "noMigrationDoneYet": "none performed yet",
+        "noMigrationDoneYet": "-",
         "confirmDialog": {
           "title": "Delete access data",
           "content": "There will be no active connection after this. Enter your access data again to restore the connection.",
@@ -147,7 +147,7 @@
       },
       "assistantCard": {
         "title": "Information",
-        "headline": "Migration assistant",
+        "headline": "How the migration works",
         "finish": "Done!",
         "connection": {
           "title": "Set up a connection",
@@ -155,11 +155,11 @@
         },
         "dataSelection": {
           "title": "Specify data for migration",
-          "content": "Select the data you want to migrate. It is possible to include plugin data as well, given that the plugin is already installed in Shopware 6. Check for plugin availability in your Shopware account."
+          "content": "Select the data you want to migrate. It is possible to include plugin data as well, should the plugin already be available for Shopware 6. Check for plugin availability in your Shopware account."
         },
         "migrationOverview": {
-          "title": "Migration scheme",
-          "content": "1. An automatic routine checks the selected data for missing assignments. Prepare to complete the automatic process by adding manual assignments.{linebreak}2. Your shop‘s data is read and assigned.{linebreak}3. All selected and properly assigned data gets transferred to Shopware 6.{linebreak}4. Media items are downloaded."
+          "title": "Migration steps",
+          "content": "1. An automatic process checks the selected data for missing assignments. Prepare to complete the automatic process by adding manual assignments.{linebreak}2. Your shop‘s data is read and assigned.{linebreak}3. All selected and properly assigned data gets transferred to Shopware 6.{linebreak}4. Media items are downloaded."
         }
       },
       "selectDataCard": {
@@ -172,10 +172,10 @@
         "headers": {
           "name": "Name",
           "dataType": "Type",
-          "total": "Datasets"
+          "total": "Data sets"
         },
         "dataSelection": {
-          "customersOrders": "Customers & Orders",
+          "customersOrders": "Customers & orders",
           "products": "Products",
           "media": "Media",
           "processMediaFiles": "Media",
@@ -193,20 +193,20 @@
           "property_group_option": "Properties:"
         },
         "noData": "Nothing found to migrate.",
-        "touText": "The general {link} of Shopware Playground applies to the migration of data. Migrating will neither affect nor harm the data on your source system.",
+        "touText": "The general {link} of Shopware 6 applies to the migration of data. Migrating will neither affect nor harm the data on your source system.",
         "touLinkText": "terms of use"
       },
       "premappingCard": {
-        "validTitle": "The data check is completed",
+        "validTitle": "The data check is complete",
         "validCaption": "The data is ready to proceed",
         "loadingTitle": "The data check is running",
-        "loadingCaption": "The existing data is checked.",
+        "loadingCaption": "The existing data has been checked.",
         "unfilledTitle": "The data check has been completed",
         "unfilledCaption": "You can only continue after the manual assignment has been completed.",
         "unfilledAlert": "We have detected that there is data that requires manual assignment.",
         "previousTitle": "Previous",
         "newAssignmentTitle": "New assignments",
-        "placeholder": "Please choose",
+        "placeholder": "Please select",
         "filledCardTitle": "Processed assignments",
         "expandTitle": "Hide processed assignments",
         "collapseTitle": "Show processed assignments",
@@ -215,7 +215,7 @@
           "order_state": "Order states",
           "transaction_state": "Transaction states",
           "payment_method": "Payment methods",
-          "manufacturer": "Manufacturer",
+          "manufacturer": "Manufacturers",
           "salutation": "Salutation",
           "delivery_time": "Delivery time"
         }
@@ -236,16 +236,16 @@
             "hint": "Tip: The migration continues step by step in the background, explore Shopware 6."
           },
           "WRITE_DATA": {
-            "long": "The data is written in Shopware 6",
+            "long": "The data is being written in Shopware 6",
             "caption": "Depending on the shop size it may take a few moments.",
             "short": "Writing",
             "hint": "Tip: You can pause and resume the migration process at any time."
           },
           "PROCESS_MEDIA_FILES": {
-            "long": "The media will be downloaded",
+            "long": "The media is being downloaded",
             "caption": "Large image data can take some time to process.",
             "short": "Downloading",
-            "hint": "Tip: If the connection is bad, pause the download and continue later."
+            "hint": "Tip: If the connection is poor, pause the download and continue later."
           },
           "finish": "Done"
         },
@@ -268,15 +268,15 @@
           "buttonRedirect": "General",
           "running": {
             "title": "Migration already started",
-            "message": "There is already a migration running in another browser or browser tab. You may now either take over the running migration or abort it."
+            "message": "There is already a migration running in another browser or browser tab. You may now either take over the running migration or cancel it."
           },
           "interrupted": {
             "title": "Migration has been taken over",
-            "message": "The migration process was taken over from another browser or browser tab. The process can be aborted or taken over by you, depending on the current status of the migration."
+            "message": "The migration process was taken over from another browser or browser tab. You can cancel or take over the process, depending on the current status of the migration."
           },
           "aborted": {
-            "title": "Migration was aborted",
-            "message": "The migration process was aborted in another browser or browser tab. Please check the responsibilities and start a new migration."
+            "title": "Migration was cancelled",
+            "message": "Another user has cancelled the migration process in a separate browser or browser tab. Please start a new migration."
           },
           "forbidden": {
             "title": "Migration already started",
@@ -284,20 +284,20 @@
           },
           "takeoverModal": {
             "title": "Take over migration",
-            "message": "It is possible to take over the active migration. If you like, you may continue the migration in this browser window immediately.",
+            "message": "It is possible to take over the active migration. If you would like, you may continue the migration in this browser window.",
             "hint": "Would you like to take over the migration?",
             "cancel": "Cancel",
             "confirm": "Take over migration"
           },
           "abortModal": {
-            "title": "Abort migration",
-            "message": "It is not possible to take over the active migration at the moment. If you like, you may now abort the active migration and start a new one directly afterwards.",
-            "hint": "Would you like to abort the migration?",
+            "title": "Cancel migration",
+            "message": "It is not possible to take over the active migration at the moment. If you would like, you may now cancel the active migration and start a new one directly afterwards.",
+            "hint": "Would you like to cancel the migration?",
             "cancel": "Cancel",
-            "confirm": "Abort migration"
+            "confirm": "Cancel migration"
           },
           "redirectModal": {
-            "title": "Migration completed",
+            "title": "Migration complete",
             "message": "The migration has already been completed in another browser or browser tab.",
             "confirm": "General"
           }
@@ -326,11 +326,11 @@
       },
       "error": {
         "authorizationError": {
-          "information": "Authorization Error. Your access data is not correct. Please check it and try again."
+          "information": "Authorization error. Your access data is not correct. Please check it and try again."
         },
         "canNotConnectToServer": "No connection to server. Please check the connection for issues.",
         "customerExists": {
-          "information": "Customer with email \"{mail}\" already exists. You cannot add this user with that e-mail to your database."
+          "information": "Customer with email \"{mail}\" already exists. You cannot add this user with that email to your database."
         },
         "gatewayNotFound": {
           "information": "Gateway \"{notFoundGateway}\" not found."
@@ -355,7 +355,7 @@
         },
         "undefinedIndex" : {
           "title": "Unidentified index",
-          "detail": "Unidentified index couldn't be found.",
+          "detail": "Unidentified index could not be found.",
           "information": "Index \"{unidentifiedIndex}\" could not be found. Please check your data."
         },
         "unknownError": "Unknown error. You can check the logging table of your database for more information.",
@@ -364,10 +364,10 @@
         "SWAG_MIGRATION__SHOPWARE55_CANNOT_DOWNLOAD_DATA": "Cannot download media. Affected file: {uri}",
         "SWAG_MIGRATION__SHOPWARE55_PARENT_ENTITY_NOT_FOUND": "Parent entity for \"{entity}\" child not found.",
         "SWAG_MIGRATION__SHOPWARE55_ASSOCIATION_REQUIRED_MISSING": "Mapping of \"{missingEntity}\" is missing, but it is a required association for \"{requiredFor}\". Please migrate \"{missingImportEntity}\" first to continue.",
-        "SWAG_MIGRATION__SHOPWARE55_EMPTY_NECESSARY_DATA_FIELDS": "{entity} entity could not be converted, because of empty, necessary field: {fields} | {entity} entity could not be converted, because of empty, necessary fields: {fields}",
-        "SWAG_MIGRATION__SHOPWARE55_NO_DEFAULT_SHIPPING_ADDRESS": "Default shipping address of customer is empty and will be set with the default billing address.",
-        "SWAG_MIGRATION__SHOPWARE55_NO_DEFAULT_BILLING_ADDRESS": "Default billing address of customer is empty and will be set with the default shipping address.",
-        "SWAG_MIGRATION__SHOPWARE55_NO_DEFAULT_BILLING_AND_SHIPPING_ADDRESS": "Default billing and shipping address of customer are empty and will be set with the first address.",
+        "SWAG_MIGRATION__SHOPWARE55_EMPTY_NECESSARY_DATA_FIELDS": "{entity} entity could not be converted, because of the empty required field: {fields} | {entity} entity could not be converted, because of the empty required fields: {fields}",
+        "SWAG_MIGRATION__SHOPWARE55_NO_DEFAULT_SHIPPING_ADDRESS": "Default shipping address of the customer is empty, therefore the default billing address will be used.",
+        "SWAG_MIGRATION__SHOPWARE55_NO_DEFAULT_BILLING_ADDRESS": "Default billing address of customer is empty, therefore the default shipping address will be used.",
+        "SWAG_MIGRATION__SHOPWARE55_NO_DEFAULT_BILLING_AND_SHIPPING_ADDRESS": "Default billing and shipping address of customer are empty, therefore the first address will be used.",
         "SWAG_MIGRATION__SHOPWARE55_PRODUCT_MEDIA_NOT_CONVERTED": "Product media could not be converted.",
         "SWAG_MIGRATION__SHOPWARE55_PROPERTY_MEDIA_NOT_CONVERTED": "Property media could not be converted.",
         "SWAG_MIGRATION__SHOPWARE55_EMPTY_LOCALE": "Category entity could not be converted, because of empty locale.",
