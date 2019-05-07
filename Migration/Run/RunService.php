@@ -231,14 +231,14 @@ class RunService implements RunServiceInterface
 
     public function finishMigration(Context $context, string $runUuid): void
     {
-        $this->indexer->index(new \DateTime());
-
         $this->migrationRunRepo->update([
             [
                 'id' => $runUuid,
                 'status' => 'finished',
             ],
         ], $context);
+
+        $this->indexer->index(new \DateTime());
     }
 
     private function isMigrationRunningWithGivenConnection(Context $context, string $connectionUuid): bool
