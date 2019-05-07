@@ -81,7 +81,6 @@ class OrderConverter extends Shopware55Converter
         'currency',
         'currencyFactor',
         'payment',
-        'paymentcurrency',
         'status',
     ];
 
@@ -146,7 +145,7 @@ class OrderConverter extends Shopware55Converter
                 $this->runId,
                 Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
                 'Empty necessary data',
-                sprintf('Order-Entity could not converted cause of empty necessary field(s): %s.', implode(', ', $fields)),
+                sprintf('Order-Entity could not be converted cause of empty necessary field(s): %s.', implode(', ', $fields)),
                 [
                     'id' => $this->oldId,
                     'entity' => 'Order',
@@ -217,10 +216,10 @@ class OrderConverter extends Shopware55Converter
         $this->convertValue($converted, 'currencyFactor', $data, 'currencyFactor', self::TYPE_FLOAT);
 
         $currencyUuid = null;
-        if (isset($data['paymentcurrency']['currency'])) {
+        if (isset($data['currency'])) {
             $currencyUuid = $this->mappingService->getCurrencyUuid(
                 $this->connectionId,
-                $data['paymentcurrency']['currency'],
+                $data['currency'],
                 $this->context
             );
         }
@@ -229,7 +228,7 @@ class OrderConverter extends Shopware55Converter
                 $this->runId,
                 Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
                 'Empty necessary data fields',
-                'Order-Entity could not converted cause of empty necessary field: paymentcurrency.',
+                'Order-Entity could not be converted cause of empty necessary field: currency.',
                 ['id' => $this->oldId]
             );
 
@@ -252,7 +251,7 @@ class OrderConverter extends Shopware55Converter
                 $this->runId,
                 Shopware55LogTypes::UNKNOWN_ORDER_STATE,
                 'Cannot find order state',
-                'Order-Entity could not converted cause of unknown order state',
+                'Order-Entity could not be converted cause of unknown order state',
                 [
                     'id' => $this->oldId,
                     'orderState' => $data['status'],
@@ -295,8 +294,7 @@ class OrderConverter extends Shopware55Converter
             $data['invoice_shipping_net'],
             $data['invoice_shipping'],
             $data['details'],
-            $data['currency'],
-            $data['paymentcurrency']
+            $data['currency']
         );
 
         $converted['deliveries'] = $this->getDeliveries($data, $converted, $shippingCosts);
@@ -312,7 +310,7 @@ class OrderConverter extends Shopware55Converter
                 $this->runId,
                 Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
                 'Empty necessary data',
-                sprintf('Order-Entity could not converted cause of empty necessary field(s): %s.', implode(', ', $fields)),
+                sprintf('Order-Entity could not be converted cause of empty necessary field(s): %s.', implode(', ', $fields)),
                 [
                     'id' => $this->oldId,
                     'entity' => 'Order',
@@ -398,7 +396,7 @@ class OrderConverter extends Shopware55Converter
                 $this->runId,
                 Shopware55LogTypes::UNKNOWN_TRANSACTION_STATE,
                 'Cannot find transaction state',
-                'Transaction-Order-Entity could not converted cause of unknown transaction state',
+                'Transaction-Order-Entity could not be converted cause of unknown transaction state',
                 [
                     'id' => $this->oldId,
                     'transactionState' => $data['cleared'],
@@ -452,7 +450,7 @@ class OrderConverter extends Shopware55Converter
                 $this->runId,
                 Shopware55LogTypes::UNKNOWN_PAYMENT_METHOD,
                 'Cannot find payment method',
-                'Order-Transaction-Entity could not converted cause of unknown payment method',
+                'Order-Transaction-Entity could not be converted cause of unknown payment method',
                 [
                     'id' => $this->oldId,
                     'entity' => DefaultEntities::ORDER,
@@ -472,7 +470,7 @@ class OrderConverter extends Shopware55Converter
                 $this->runId,
                 Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
                 'Empty necessary data fields for address',
-                sprintf('Address-Entity could not converted cause of empty necessary field(s): %s.', implode(', ', $fields)),
+                sprintf('Address-Entity could not be converted cause of empty necessary field(s): %s.', implode(', ', $fields)),
                 [
                     'id' => $this->oldId,
                     'uuid' => $this->uuid,
@@ -738,7 +736,7 @@ class OrderConverter extends Shopware55Converter
                 $this->runId,
                 Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
                 'Empty necessary data fields',
-                'Order-Entity could not converted cause of empty necessary field(s): delivery_time.',
+                'Order-Entity could not be converted cause of empty necessary field(s): delivery_time.',
                 [
                     'id' => $this->oldId,
                     'entity' => DefaultEntities::ORDER,
@@ -756,7 +754,7 @@ class OrderConverter extends Shopware55Converter
                 $this->runId,
                 Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
                 'Empty necessary data fields',
-                'Order-Entity could not converted cause of empty necessary field(s): availability_rule_id.',
+                'Order-Entity could not be converted cause of empty necessary field(s): availability_rule_id.',
                 [
                     'id' => $this->oldId,
                     'entity' => DefaultEntities::ORDER,
@@ -866,8 +864,8 @@ class OrderConverter extends Shopware55Converter
                 $this->loggingService->addInfo(
                     $this->runId,
                     Shopware55LogTypes::EMPTY_LINE_ITEM_IDENTIFIER,
-                    'Line item could not converted',
-                    'Order-Line-Item-Entity could not converted cause of empty identifier',
+                    'Line item could not be converted',
+                    'Order-Line-Item-Entity could not be converted cause of empty identifier',
                     [
                         'orderId' => $this->oldId,
                         'lineItemId' => $originalLineItem['id'],
@@ -922,7 +920,7 @@ class OrderConverter extends Shopware55Converter
                 $this->runId,
                 Shopware55LogTypes::UNKNOWN_CUSTOMER_SALUTATION,
                 'Cannot find customer salutation for order',
-                'Order-Entity could not converted cause of unknown customer salutation',
+                'Order-Entity could not be converted cause of unknown customer salutation',
                 [
                     'id' => $this->oldId,
                     'entity' => DefaultEntities::ORDER,

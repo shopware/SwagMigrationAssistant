@@ -59,6 +59,7 @@ class CustomerConverter extends Shopware55Converter
         'lastname',
         'email',
         'salutation',
+        'customerGroupId',
     ];
 
     /**
@@ -105,16 +106,13 @@ class CustomerConverter extends Shopware55Converter
         $this->runId = $migrationContext->getRunUuid();
 
         $fields = $this->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
-        if (!isset($data['group']['id'])) {
-            $fields[] = 'group id';
-        }
 
         if (!empty($fields)) {
             $this->loggingService->addWarning(
                 $this->runId,
                 Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
                 'Empty necessary data fields',
-                sprintf('Customer-Entity could not converted cause of empty necessary field(s): %s.', implode(', ', $fields)),
+                sprintf('Customer-Entity could not be converted cause of empty necessary field(s): %s.', implode(', ', $fields)),
                 [
                     'id' => $data['id'],
                     'entity' => 'Customer',
@@ -186,8 +184,12 @@ class CustomerConverter extends Shopware55Converter
             $converted['customerNumber'] = 'number-' . $this->oldCustomerId;
         }
 
-        $converted['group'] = $this->getCustomerGroup($data['group']);
-        unset($data['group'], $data['customergroup']);
+        $customerGroupUuid = $this->mappingService->getUuid($this->connectionId, DefaultEntities::CUSTOMER_GROUP, $data['customerGroupId'], $context);
+        if ($customerGroupUuid === null) {
+            return new ConvertStruct(null, $oldData);
+        }
+        $converted['groupId'] = $customerGroupUuid;
+        unset($data['customerGroupId'], $data['customergroup']);
 
         if (isset($data['defaultpayment']['id'])) {
             $defaultPaymentMethodUuid = $this->getDefaultPaymentMethod($data['defaultpayment']);
@@ -213,7 +215,7 @@ class CustomerConverter extends Shopware55Converter
                     $this->runId,
                     Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
                     'Empty necessary data fields',
-                    'Customer-Entity could not converted cause of empty necessary field(s): defaultpayment.',
+                    'Customer-Entity could not be converted cause of empty necessary field(s): defaultpayment.',
                     [
                         'id' => $this->oldCustomerId,
                         'entity' => 'Customer',
@@ -253,13 +255,11 @@ class CustomerConverter extends Shopware55Converter
             $data['pricegroupID'],
             $data['login_token'],
             $data['changed'],
-            $data['group']['mode'],
             $data['paymentID'],
             $data['firstlogin'],
             $data['lastlogin'],
 
             // TODO check how to handle these
-            $data['shop'], // TODO use for sales channel information?
             $data['language'], // TODO use for sales channel information?
             $data['customerlanguage'] // TODO use for sales channel information?
         );
@@ -275,7 +275,7 @@ class CustomerConverter extends Shopware55Converter
                 $this->runId,
                 Shopware55LogTypes::NO_ADDRESS_DATA,
                 'No address data',
-                'Customer-Entity could not converted cause of empty address data.',
+                'Customer-Entity could not be converted cause of empty address data.',
                 ['id' => $this->oldCustomerId]
             );
 
@@ -283,52 +283,6 @@ class CustomerConverter extends Shopware55Converter
         }
 
         return new ConvertStruct($converted, $data);
-    }
-
-    private function getCustomerGroup(array $data): array
-    {
-        $group['id'] = $this->mappingService->createNewUuid(
-            $this->connectionId,
-            DefaultEntities::CUSTOMER_GROUP,
-            $data['id'],
-            $this->context
-        );
-
-        $this->getCustomerGroupTranslation($group, $data);
-        $this->convertValue($group, 'displayGross', $data, 'tax', self::TYPE_BOOLEAN);
-        $this->convertValue($group, 'inputGross', $data, 'taxinput', self::TYPE_BOOLEAN);
-        $this->convertValue($group, 'hasGlobalDiscount', $data, 'mode', self::TYPE_BOOLEAN);
-        $this->convertValue($group, 'percentageGlobalDiscount', $data, 'discount', self::TYPE_FLOAT);
-        $this->convertValue($group, 'minimumOrderAmount', $data, 'minimumorder', self::TYPE_FLOAT);
-        $this->convertValue($group, 'minimumOrderAmountSurcharge', $data, 'minimumordersurcharge', self::TYPE_FLOAT);
-        $this->convertValue($group, 'name', $data, 'description');
-
-        return $group;
-    }
-
-    private function getCustomerGroupTranslation(array &$group, array $data): void
-    {
-        $language = $this->mappingService->getDefaultLanguage($this->context);
-        if ($language->getLocale()->getCode() === $this->mainLocale) {
-            return;
-        }
-
-        $localeTranslation = [];
-        $localeTranslation['customerGroupId'] = $group['id'];
-
-        $this->convertValue($localeTranslation, 'name', $data, 'description');
-
-        $localeTranslation['id'] = $this->mappingService->createNewUuid(
-            $this->connectionId,
-            DefaultEntities::CUSTOMER_GROUP_TRANSLATION,
-            $data['id'] . ':' . $this->mainLocale,
-            $this->context
-        );
-
-        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);
-        $localeTranslation['languageId'] = $languageUuid;
-
-        $group['translations'][$languageUuid] = $localeTranslation;
     }
 
     private function getDefaultPaymentMethod(array $originalData): ?string
@@ -345,7 +299,7 @@ class CustomerConverter extends Shopware55Converter
                 $this->runId,
                 Shopware55LogTypes::UNKNOWN_PAYMENT_METHOD,
                 'Cannot find payment method',
-                'Customer-Entity could not converted cause of unknown payment method',
+                'Customer-Entity could not be converted cause of unknown payment method',
                 [
                     'id' => $this->oldCustomerId,
                     'entity' => DefaultEntities::CUSTOMER,
@@ -372,7 +326,7 @@ class CustomerConverter extends Shopware55Converter
                     $this->runId,
                     Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
                     'Empty necessary data fields for address',
-                    sprintf('Address-Entity could not converted cause of empty necessary field(s): %s.', implode(', ', $fields)),
+                    sprintf('Address-Entity could not be converted cause of empty necessary field(s): %s.', implode(', ', $fields)),
                     [
                         'id' => $this->oldCustomerId,
                         'uuid' => $customerUuid,
@@ -632,7 +586,7 @@ class CustomerConverter extends Shopware55Converter
                 $this->runId,
                 Shopware55LogTypes::UNKNOWN_CUSTOMER_SALUTATION,
                 'Cannot find customer salutation',
-                'Customer-Entity could not converted cause of unknown salutation',
+                'Customer-Entity could not be converted cause of unknown salutation',
                 [
                     'id' => $this->oldCustomerId,
                     'entity' => DefaultEntities::CUSTOMER,

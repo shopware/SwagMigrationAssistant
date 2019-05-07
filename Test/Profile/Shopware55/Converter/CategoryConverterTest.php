@@ -123,7 +123,7 @@ class CategoryConverterTest extends TestCase
         static::assertNull($convertResult->getConverted());
 
         $logs = $this->loggingService->getLoggingArray();
-        $description = 'Category-Entity could not converted cause of empty locale.';
+        $description = 'Category-Entity could not be converted cause of empty locale.';
         static::assertSame($description, $logs[0]['logEntry']['description']);
         static::assertCount(1, $logs);
     }

@@ -125,7 +125,7 @@ class ProductConverter extends Shopware55Converter
                 $this->runId,
                 Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
                 'Empty necessary data fields',
-                sprintf('Product-Entity could not converted cause of empty necessary field(s): %s.', implode(', ', $fields)),
+                sprintf('Product-Entity could not be converted cause of empty necessary field(s): %s.', implode(', ', $fields)),
                 [
                     'id' => $this->oldProductId,
                     'entity' => 'Product',
@@ -270,7 +270,7 @@ class ProductConverter extends Shopware55Converter
                     $this->runId,
                     Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
                     'Empty necessary data fields',
-                    'Product-Entity could not converted cause of empty necessary field(s): manufacturer.',
+                    'Product-Entity could not be converted cause of empty necessary field(s): manufacturer.',
                     [
                         'id' => $this->oldProductId,
                         'entity' => DefaultEntities::PRODUCT,
@@ -888,7 +888,7 @@ class ProductConverter extends Shopware55Converter
                     $this->runId,
                     Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
                     'Empty necessary data fields',
-                    'Product-Price-Entity could not converted cause of empty necessary field: currencyId.',
+                    'Product-Price-Entity could not be converted cause of empty necessary field: currencyId.',
                     ['id' => $this->oldProductId]
                 );
 

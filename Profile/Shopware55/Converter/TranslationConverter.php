@@ -116,7 +116,7 @@ class TranslationConverter extends Shopware55Converter
             $this->runId,
             Shopware55LogTypes::NOT_CONVERTABLE_OBJECT_TYPE,
             'Not convert able object type',
-            sprintf('Translation of object type "%s" could not converted.', $data['objecttype']),
+            sprintf('Translation of object type "%s" could not be converted.', $data['objecttype']),
             [
                 'objectType' => $data['objecttype'],
                 'data' => $data,
@@ -171,7 +171,7 @@ class TranslationConverter extends Shopware55Converter
                 $this->runId,
                 Shopware55LogTypes::INVALID_UNSERIALIZED_DATA,
                 'Invalid unserialized data',
-                'Product-Translation-Entity could not converted cause of invalid unserialized object data.',
+                'Product-Translation-Entity could not be converted cause of invalid unserialized object data.',
                 [
                     'entity' => 'Product',
                     'data' => $data['objectdata'],
@@ -270,7 +270,7 @@ class TranslationConverter extends Shopware55Converter
                 $this->runId,
                 Shopware55LogTypes::INVALID_UNSERIALIZED_DATA,
                 'Invalid unserialized data',
-                'Manufacturer-Translation-Entity could not converted cause of invalid unserialized object data.',
+                'Manufacturer-Translation-Entity could not be converted cause of invalid unserialized object data.',
                 [
                     'entity' => 'Manufacturer',
                     'data' => $data['objectdata'],
@@ -365,7 +365,7 @@ class TranslationConverter extends Shopware55Converter
                 $this->runId,
                 Shopware55LogTypes::INVALID_UNSERIALIZED_DATA,
                 'Invalid unserialized data',
-                'Unit-Translation-Entity could not converted cause of invalid unserialized object data.',
+                'Unit-Translation-Entity could not be converted cause of invalid unserialized object data.',
                 [
                     'entity' => 'Unit',
                     'data' => $data['objectdata'],
@@ -465,7 +465,7 @@ class TranslationConverter extends Shopware55Converter
                 $this->runId,
                 Shopware55LogTypes::INVALID_UNSERIALIZED_DATA,
                 'Invalid unserialized data',
-                'Category-Translation-Entity could not converted cause of invalid unserialized object data.',
+                'Category-Translation-Entity could not be converted cause of invalid unserialized object data.',
                 [
                     'entity' => 'Category',
                     'data' => $data['objectdata'],
@@ -573,7 +573,7 @@ class TranslationConverter extends Shopware55Converter
                 $this->runId,
                 Shopware55LogTypes::INVALID_UNSERIALIZED_DATA,
                 'Invalid unserialized data',
-                'Configuration-Group-Option-Translation-Entity could not converted cause of invalid unserialized object data.',
+                'Configuration-Group-Option-Translation-Entity could not be converted cause of invalid unserialized object data.',
                 [
                     'entity' => 'Configuration group option',
                     'data' => $data['objectdata'],
@@ -669,7 +669,7 @@ class TranslationConverter extends Shopware55Converter
                 $this->runId,
                 Shopware55LogTypes::INVALID_UNSERIALIZED_DATA,
                 'Invalid unserialized data',
-                'Configuration-Group-Translation-Entity could not converted cause of invalid unserialized object data.',
+                'Configuration-Group-Translation-Entity could not be converted cause of invalid unserialized object data.',
                 [
                     'entity' => 'Configuration group',
                     'data' => $data['objectdata'],
@@ -765,7 +765,7 @@ class TranslationConverter extends Shopware55Converter
                 $this->runId,
                 Shopware55LogTypes::INVALID_UNSERIALIZED_DATA,
                 'Invalid unserialized data',
-                'Property-Value-Option-Translation-Entity could not converted cause of invalid unserialized object data.',
+                'Property-Value-Option-Translation-Entity could not be converted cause of invalid unserialized object data.',
                 [
                     'entity' => 'Property value',
                     'data' => $data['objectdata'],
@@ -857,7 +857,7 @@ class TranslationConverter extends Shopware55Converter
                 $this->runId,
                 Shopware55LogTypes::INVALID_UNSERIALIZED_DATA,
                 'Invalid unserialized data',
-                'Property-Option-Translation-Entity could not converted cause of invalid unserialized object data.',
+                'Property-Option-Translation-Entity could not be converted cause of invalid unserialized object data.',
                 [
                     'entity' => 'Property option',
                     'data' => $data['objectdata'],

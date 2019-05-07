@@ -152,16 +152,13 @@ class Shopware55LocalProductReader extends Shopware55LocalAbstractReader
             $this->productMapping->getIterator()->getArrayCopy()
         );
         $query = $this->connection->createQueryBuilder();
-        $query->from('s_categories', 'category');
-        $query->addSelect('product_category.articleID');
-        $query->addSelect('category.id');
-        $query->leftJoin('category', 's_articles_categories', 'product_category', 'category.id = product_category.categoryID');
+
+        $query->from('s_articles_categories', 'product_category');
+        $query->addSelect('product_category.articleID', 'product_category.categoryID as id');
         $query->where('product_category.articleID IN (:ids)');
         $query->setParameter('ids', $productIds, Connection::PARAM_INT_ARRAY);
 
-        $fetchedCategories = $query->execute()->fetchAll(\PDO::FETCH_GROUP);
-
-        return $this->mapData($fetchedCategories, [], ['category', 'id']);
+        return $query->execute()->fetchAll(\PDO::FETCH_GROUP);
     }
 
     private function getPrices(): array

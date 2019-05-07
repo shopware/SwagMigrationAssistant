@@ -79,7 +79,7 @@ class CategoryConverter extends Shopware55Converter
                 $migrationContext->getRunUuid(),
                 Shopware55LogTypes::EMPTY_LOCALE,
                 'Empty locale',
-                'Category-Entity could not converted cause of empty locale.',
+                'Category-Entity could not be converted cause of empty locale.',
                 ['id' => $this->oldCategoryId]
             );
 

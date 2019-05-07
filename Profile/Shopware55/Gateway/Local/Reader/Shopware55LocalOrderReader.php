@@ -77,9 +77,6 @@ class Shopware55LocalOrderReader extends Shopware55LocalAbstractReader
         $query->leftJoin('ordering', 's_core_paymentmeans', 'payment', 'payment.id = ordering.paymentID');
         $this->addTableSelection($query, 's_core_paymentmeans', 'payment');
 
-        $query->leftJoin('ordering', 's_core_currencies', 'paymentcurrency', 'ordering.currency = paymentcurrency.currency');
-        $this->addTableSelection($query, 's_core_currencies', 'paymentcurrency');
-
         $query->where('ordering.status != -1 AND ordering.id IN (:ids)');
         $query->setParameter('ids', $ids, Connection::PARAM_STR_ARRAY);
 

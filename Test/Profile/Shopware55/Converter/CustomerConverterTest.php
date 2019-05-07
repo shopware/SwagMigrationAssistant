@@ -96,6 +96,9 @@ class CustomerConverterTest extends TestCase
 
         $this->mappingService->createNewUuid($this->connectionId, SalutationReader::getMappingName(), 'mr', $context, [], Uuid::randomHex());
         $this->mappingService->createNewUuid($this->connectionId, SalutationReader::getMappingName(), 'ms', $context, [], Uuid::randomHex());
+
+        $this->mappingService->createNewUuid($this->connectionId, DefaultEntities::CUSTOMER_GROUP, '1', $context, [], 'cfbd5018d38d41d8adca10d94fc8bdd6');
+        $this->mappingService->createNewUuid($this->connectionId, DefaultEntities::CUSTOMER_GROUP, '2', $context, [], 'cfbd5018d38d41d8adca10d94fc8bdd6');
     }
 
     public function testSupports(): void
@@ -120,7 +123,6 @@ class CustomerConverterTest extends TestCase
 
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
-        static::assertArrayHasKey('group', $converted);
         static::assertArrayHasKey('addresses', $converted);
         static::assertSame(Defaults::SALES_CHANNEL, $converted['salesChannelId']);
         static::assertSame('Mustermann', $converted['lastName']);
@@ -147,7 +149,7 @@ class CustomerConverterTest extends TestCase
         $logs = $this->loggingService->getLoggingArray();
         static::assertCount(1, $logs);
 
-        $description = sprintf('Customer-Entity could not converted cause of empty necessary field(s): %s.', $property);
+        $description = sprintf('Customer-Entity could not be converted cause of empty necessary field(s): %s.', $property);
         static::assertSame($description, $logs[0]['logEntry']['description']);
     }
 
@@ -161,6 +163,8 @@ class CustomerConverterTest extends TestCase
             ['lastname', null],
             ['lastname', ''],
             ['defaultpayment', null],
+            ['customerGroupId', ''],
+            ['customerGroupId', null],
         ];
     }
 
@@ -179,7 +183,6 @@ class CustomerConverterTest extends TestCase
 
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
-        static::assertArrayHasKey('group', $converted);
         static::assertArrayHasKey('addresses', $converted);
         static::assertSame(Defaults::SALES_CHANNEL, $converted['salesChannelId']);
         static::assertSame('Test', $converted['lastName']);
@@ -204,7 +207,6 @@ class CustomerConverterTest extends TestCase
 
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
-        static::assertArrayHasKey('group', $converted);
         static::assertArrayHasKey('addresses', $converted);
         static::assertSame(Defaults::SALES_CHANNEL, $converted['salesChannelId']);
         static::assertSame('Mustermann', $converted['lastName']);
@@ -233,7 +235,6 @@ class CustomerConverterTest extends TestCase
         static::assertNotNull($converted);
         static::assertCount(0, $logs);
         static::assertArrayHasKey('id', $converted);
-        static::assertArrayHasKey('group', $converted);
         static::assertArrayHasKey('addresses', $converted);
         static::assertSame(Defaults::SALES_CHANNEL, $converted['salesChannelId']);
         static::assertSame('Mustermann', $converted['lastName']);
@@ -259,7 +260,7 @@ class CustomerConverterTest extends TestCase
         $logs = $this->loggingService->getLoggingArray();
         static::assertCount(1, $logs);
 
-        $description = 'Customer-Entity could not converted cause of empty address data.';
+        $description = 'Customer-Entity could not be converted cause of empty address data.';
         static::assertSame($description, $logs[0]['logEntry']['description']);
     }
 
@@ -283,13 +284,13 @@ class CustomerConverterTest extends TestCase
         $logs = $this->loggingService->getLoggingArray();
         static::assertCount(3, $logs);
 
-        $description = 'Address-Entity could not converted cause of empty necessary field(s): firstname.';
+        $description = 'Address-Entity could not be converted cause of empty necessary field(s): firstname.';
         static::assertSame($description, $logs[0]['logEntry']['description']);
 
-        $description = 'Address-Entity could not converted cause of empty necessary field(s): lastname.';
+        $description = 'Address-Entity could not be converted cause of empty necessary field(s): lastname.';
         static::assertSame($description, $logs[1]['logEntry']['description']);
 
-        $description = 'Customer-Entity could not converted cause of empty address data.';
+        $description = 'Customer-Entity could not be converted cause of empty address data.';
         static::assertSame($description, $logs[2]['logEntry']['description']);
     }
 
@@ -329,7 +330,6 @@ class CustomerConverterTest extends TestCase
 
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
-        static::assertArrayHasKey('group', $converted);
         static::assertArrayHasKey('addresses', $converted);
 
         static::assertSame('Mustermannstraße 92', $converted['addresses'][0]['street']);
@@ -338,7 +338,7 @@ class CustomerConverterTest extends TestCase
 
         $logs = $this->loggingService->getLoggingArray();
 
-        $description = sprintf('Address-Entity could not converted cause of empty necessary field(s): %s.', $property);
+        $description = sprintf('Address-Entity could not be converted cause of empty necessary field(s): %s.', $property);
         static::assertSame($description, $logs[0]['logEntry']['description']);
 
         $description = 'Default billing address of customer is empty and will set with the default shipping address.';
@@ -367,7 +367,6 @@ class CustomerConverterTest extends TestCase
 
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
-        static::assertArrayHasKey('group', $converted);
         static::assertArrayHasKey('addresses', $converted);
 
         static::assertSame('Musterstr. 55', $converted['addresses'][0]['street']);
@@ -376,7 +375,7 @@ class CustomerConverterTest extends TestCase
 
         $logs = $this->loggingService->getLoggingArray();
 
-        $description = sprintf('Address-Entity could not converted cause of empty necessary field(s): %s.', $property);
+        $description = sprintf('Address-Entity could not be converted cause of empty necessary field(s): %s.', $property);
         static::assertSame($description, $logs[0]['logEntry']['description']);
 
         $description = 'Default shipping address of customer is empty and will set with the default billing address.';
@@ -406,7 +405,6 @@ class CustomerConverterTest extends TestCase
 
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
-        static::assertArrayHasKey('group', $converted);
         static::assertArrayHasKey('addresses', $converted);
 
         static::assertSame('Musterstraße 3', $converted['addresses'][0]['street']);
@@ -415,7 +413,7 @@ class CustomerConverterTest extends TestCase
 
         $logs = $this->loggingService->getLoggingArray();
 
-        $description = sprintf('Address-Entity could not converted cause of empty necessary field(s): %s.', $property);
+        $description = sprintf('Address-Entity could not be converted cause of empty necessary field(s): %s.', $property);
         static::assertSame($description, $logs[0]['logEntry']['description']);
         static::assertSame($description, $logs[1]['logEntry']['description']);
 

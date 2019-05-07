@@ -249,16 +249,6 @@ return [
             'source' => null,
             'mobile_inactive' => '0',
         ],
-        'paymentcurrency' => [
-            'id' => '2',
-            'currency' => 'USD',
-            'name' => 'US-Dollar',
-            'standard' => '0',
-            'factor' => '1.37085',
-            'templatechar' => '$',
-            'symbol_position' => '32',
-            'position' => '0',
-        ],
         '_locale' => 'de-DE',
         'details' => [
             0 => [
@@ -625,16 +615,6 @@ return [
             'pluginID' => null,
             'source' => null,
             'mobile_inactive' => '0',
-        ],
-        'paymentcurrency' => [
-            'id' => '3',
-            'currency' => 'JPY',
-            'name' => 'Yen',
-            'standard' => '0',
-            'factor' => '100',
-            'templatechar' => '&yen;',
-            'symbol_position' => '32',
-            'position' => '0',
         ],
         '_locale' => 'de-DE',
         'details' => [

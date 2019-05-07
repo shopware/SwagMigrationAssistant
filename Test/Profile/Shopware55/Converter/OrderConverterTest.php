@@ -131,6 +131,9 @@ class OrderConverterTest extends TestCase
         $mappingService->createNewUuid($connectionId, SalutationReader::getMappingName(), 'ms', $context, [], Uuid::randomHex());
 
         $mappingService->createNewUuid($connectionId, DeliveryTimeReader::getMappingName(), 'default_delivery_time', $context, [], Uuid::randomHex());
+
+        $mappingService->createNewUuid($connectionId, DefaultEntities::CUSTOMER_GROUP, '1', $context, [], 'cfbd5018d38d41d8adca10d94fc8bdd6');
+        $mappingService->createNewUuid($connectionId, DefaultEntities::CUSTOMER_GROUP, '2', $context, [], 'cfbd5018d38d41d8adca10d94fc8bdd6');
     }
 
     public function testSupports(): void
@@ -246,7 +249,7 @@ class OrderConverterTest extends TestCase
         static::assertNull($convertResult->getConverted());
 
         $logs = $this->loggingService->getLoggingArray();
-        $description = sprintf('Order-Entity could not converted cause of empty necessary field(s): %s.', $missingProperty);
+        $description = sprintf('Order-Entity could not be converted cause of empty necessary field(s): %s.', $missingProperty);
         static::assertSame($description, $logs[0]['logEntry']['description']);
         static::assertCount(1, $logs);
     }
@@ -258,7 +261,6 @@ class OrderConverterTest extends TestCase
             ['payment'],
             ['customer'],
             ['currencyFactor'],
-            ['paymentcurrency'],
             ['currency'],
             ['status'],
         ];

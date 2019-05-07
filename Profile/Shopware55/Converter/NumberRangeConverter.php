@@ -79,7 +79,7 @@ class NumberRangeConverter extends Shopware55Converter
                 $migrationContext->getRunUuid(),
                 Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
                 'Unsupported number range type',
-                sprintf('NumberRange-Entity could not converted because of unsupported type: %s.', $data['name']),
+                sprintf('NumberRange-Entity could not be converted because of unsupported type: %s.', $data['name']),
                 [
                     'id' => $data['id'],
                     'entity' => 'NumberRange',
@@ -98,7 +98,7 @@ class NumberRangeConverter extends Shopware55Converter
                 $migrationContext->getRunUuid(),
                 Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
                 'Empty necessary data',
-                sprintf('NumberRange-Entity could not converted cause of empty necessary field(s): %s.', implode(', ', ['typeId'])),
+                sprintf('NumberRange-Entity could not be converted cause of empty necessary field(s): %s.', implode(', ', ['typeId'])),
                 [
                     'id' => $data['id'],
                     'entity' => 'NumberRange',
