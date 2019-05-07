@@ -151,7 +151,8 @@
         "finish": "Done!",
         "connection": {
           "title": "Set up a connection",
-          "content": "The Migration Assistant will help establish a connection between your shop system and Shopware 6 to transfer and migrate your data."
+          "content": "The Migration Assistant will help establish a connection between your shop system and Shopware 6 to transfer and migrate your data.",
+          "link": "Read more"
         },
         "dataSelection": {
           "title": "Specify data for migration",

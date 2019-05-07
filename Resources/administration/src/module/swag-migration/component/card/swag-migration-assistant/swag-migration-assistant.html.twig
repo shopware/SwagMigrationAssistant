@@ -23,6 +23,11 @@
                         {{ $tc('swag-migration.index.assistantCard.connection.content') }}
                     </p>
                 {% endblock %}
+                {% block swag_migration_assistant_connection_content_link %}
+                <div class="swag-migration-assistant__link">
+                    <a class="link" target="_blank" href="http://docs.shopware.com/en/migration-en">{{ $tc('swag-migration.index.assistantCard.connection.link') }}</a>
+                </div>
+                {% endblock %}
             </div>
         {% endblock %}
 

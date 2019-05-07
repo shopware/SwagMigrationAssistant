@@ -36,7 +36,8 @@ $swag-migration-assistant-font-size-content: $font-size-small;
         margin-bottom: 8px;
     }
 
-    .swag-migration-assistant__content {
+    .swag-migration-assistant__content,
+    .swag-migration-assistant__link a.link {
         font-size: $swag-migration-assistant-font-size-content;
         line-height: 22px;
     }
