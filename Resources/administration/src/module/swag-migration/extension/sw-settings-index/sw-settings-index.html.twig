@@ -1,9 +1,12 @@
 {% block sw_settings_content_card_slot_plugins %}
     {% parent %}
 
-    <sw-settings-item :label="$tc('swag-migration.general.mainMenuItemGeneral')" :to="{ name: 'swag.migration.index' }" class="sw-settings-index-migration">
+    <sw-settings-item :label="$tc('swag-migration.general.mainMenuItemGeneral')"
+                      :to="{ name: 'swag.migration.index' }"
+                      :backgroundEnabled="false"
+                      class="sw-settings-index-migration">
         <template slot="icon">
-            <sw-icon name="default-web-variants"></sw-icon>
+            <img class="swag-migration-modul__plugin" :src="'/swagmigrationnext/static/img/migration-assistant-plugin.svg' | asset">
         </template>
     </sw-settings-item>
 {% endblock %}

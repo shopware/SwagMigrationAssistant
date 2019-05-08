@@ -152,7 +152,8 @@
         "finish": "Fertig!",
         "connection": {
           "title": "Eine Verbindung anlegen",
-          "content": "Gemeinsam verbinden wir Deinen Shop mit dem neuen Shopware 6 und können dann alle von Dir ausgewählten Daten migrieren."
+          "content": "Gemeinsam verbinden wir Deinen Shop mit dem neuen Shopware 6 und können dann alle von Dir ausgewählten Daten migrieren.",
+          "link": "Hilfe & Dokumentation"
         },
         "dataSelection": {
           "title": "Daten für die Migration auswählen",
