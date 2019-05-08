@@ -60,6 +60,10 @@ class CustomerGroupConverter extends Shopware55Converter
             $context
         );
 
+        if (isset($data['attributes'])) {
+            $converted['customFields'] = $this->getAttributes($data['attributes']);
+        }
+
         $this->getCustomerGroupTranslation($converted, $data);
         $this->convertValue($converted, 'displayGross', $data, 'tax', self::TYPE_BOOLEAN);
         $this->convertValue($converted, 'inputGross', $data, 'taxinput', self::TYPE_BOOLEAN);
@@ -68,10 +72,6 @@ class CustomerGroupConverter extends Shopware55Converter
         $this->convertValue($converted, 'minimumOrderAmount', $data, 'minimumorder', self::TYPE_FLOAT);
         $this->convertValue($converted, 'minimumOrderAmountSurcharge', $data, 'minimumordersurcharge', self::TYPE_FLOAT);
         $this->convertValue($converted, 'name', $data, 'description');
-
-        if (isset($data['attributes'])) {
-            $converted['customFields'] = $this->getAttributes($data['attributes']);
-        }
 
         unset($data['id'], $data['groupkey']);
         if (empty($data)) {
@@ -102,6 +102,10 @@ class CustomerGroupConverter extends Shopware55Converter
 
         $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->locale, $this->context);
         $localeTranslation['languageId'] = $languageUuid;
+
+        if (isset($customerGroup['customFields'])) {
+            $localeTranslation['customFields'] = $customerGroup['customFields'];
+        }
 
         $customerGroup['translations'][$languageUuid] = $localeTranslation;
     }

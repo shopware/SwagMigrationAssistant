@@ -192,6 +192,10 @@ class CategoryConverter extends Shopware55Converter
 
         $localeTranslation['languageId'] = $languageUuid;
 
+        if (isset($converted['customFields'])) {
+            $localeTranslation['customFields'] = $converted['customFields'];
+        }
+
         $converted['translations'][$languageUuid] = $localeTranslation;
     }
 
