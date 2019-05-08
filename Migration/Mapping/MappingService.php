@@ -619,13 +619,10 @@ class MappingService implements MappingServiceInterface
         $criteria->addFilter(new EqualsFilter('entityUuid', $entityUuid));
         $criteria->addFilter(new EqualsFilter('connectionId', $connectionId));
         $criteria->setLimit(1);
-        $result = $this->migrationMappingRepo->search($criteria, $context);
+        $result = $this->migrationMappingRepo->searchIds($criteria, $context);
 
         if ($result->getTotal() > 0) {
-            /** @var SwagMigrationMappingEntity $element */
-            $element = $result->getEntities()->first();
-
-            $this->migrationMappingRepo->delete([['id' => $element->getId()]], $context);
+            $this->migrationMappingRepo->delete(array_values($result->getData()), $context);
         }
     }
 

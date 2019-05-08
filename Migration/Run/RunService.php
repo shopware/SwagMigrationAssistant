@@ -238,6 +238,8 @@ class RunService implements RunServiceInterface
             ],
         ], $context);
 
+        $this->removeWrittenMigrationData($context, $runUuid);
+
         $this->indexer->index(new \DateTime());
     }
 
@@ -463,5 +465,19 @@ class RunService implements RunServiceInterface
         }
 
         return $totals;
+    }
+
+    private function removeWrittenMigrationData(Context $context, string $runUuid): void
+    {
+        $criteria = new Criteria();
+        $criteria->addFilter(
+            new EqualsFilter('runId', $runUuid),
+            new EqualsFilter('written', true)
+        );
+        $result = $this->migrationDataRepository->searchIds($criteria, $context);
+
+        if ($result->getTotal() > 0) {
+            $this->migrationDataRepository->delete(array_values($result->getData()), $context);
+        }
     }
 }
