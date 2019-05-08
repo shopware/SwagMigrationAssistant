@@ -7,6 +7,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Dbal\Indexing\IndexerInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\CountAggregation;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\ValueCountAggregation;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregatorResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
@@ -201,8 +202,9 @@ class RunService implements RunServiceInterface
             ));
         }
         $criteria->addAggregation(new ValueCountAggregation('entity', 'entityCount'));
-        $result = $this->migrationDataRepository->search($criteria, $context);
-        $counts = $result->getAggregations()->first()->getResult();
+        /** @var AggregatorResult $result */
+        $result = $this->migrationDataRepository->aggregate($criteria, $context);
+        $counts = $result->getAggregations()->get('entityCount')->getResult();
 
         if (!isset($counts[0]['values'])) {
             return [];
@@ -276,9 +278,10 @@ class RunService implements RunServiceInterface
         }
         $criteria->addAggregation(new CountAggregation('id', 'count'));
         $criteria->setLimit(1);
-        $result = $this->mediaFileRepository->search($criteria, $context);
+        /** @var AggregatorResult $result */
+        $result = $this->mediaFileRepository->aggregate($criteria, $context);
 
-        return (int) $result->getAggregations()->first()->getResult()[0]['count'];
+        return (int) $result->getAggregations()->get('count')->getResult()[0]['count'];
     }
 
     private function calculateFetchedTotals(string $runId, Context $context): array
@@ -288,8 +291,9 @@ class RunService implements RunServiceInterface
         $criteria->addFilter(new EqualsFilter('convertFailure', false));
         $criteria->addFilter(new NotFilter(MultiFilter::CONNECTION_AND, [new EqualsFilter('converted', null)]));
         $criteria->addAggregation(new ValueCountAggregation('entity', 'entityCount'));
-        $result = $this->migrationDataRepository->search($criteria, $context);
-        $counts = $result->getAggregations()->first()->getResult();
+        /** @var AggregatorResult $result */
+        $result = $this->migrationDataRepository->aggregate($criteria, $context);
+        $counts = $result->getAggregations()->get('entityCount')->getResult();
 
         if (!isset($counts[0]['values'])) {
             return [];
