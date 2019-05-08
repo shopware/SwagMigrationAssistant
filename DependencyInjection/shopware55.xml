@@ -303,7 +303,7 @@
         </service>
 
         <service id="SwagMigrationNext\Profile\Shopware55\Premapping\DeliveryTimeReader">
-            <argument id="delivery_time.repository" type="service"/>
+            <argument type="service" id="delivery_time.repository"/>
             <tag name="shopware.migration.pre_mapping_reader"/>
         </service>
 
