@@ -22,6 +22,7 @@ use SwagMigrationNext\Migration\MigrationContext;
 use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationNext\Migration\Service\ProgressState;
 use SwagMigrationNext\Migration\Service\SwagMigrationAccessTokenService;
+use Symfony\Component\Cache\Adapter\TagAwareAdapter;
 
 class RunService implements RunServiceInterface
 {
@@ -65,6 +66,9 @@ class RunService implements RunServiceInterface
      */
     private $indexer;
 
+    /** @var TagAwareAdapter */
+    private $cache;
+
     public function __construct(
         EntityRepositoryInterface $migrationRunRepo,
         EntityRepositoryInterface $connectionRepo,
@@ -73,7 +77,8 @@ class RunService implements RunServiceInterface
         DataSelectionRegistryInterface $dataSelectionRegistry,
         EntityRepositoryInterface $migrationDataRepository,
         EntityRepositoryInterface $mediaFileRepository,
-        IndexerInterface $indexer
+        IndexerInterface $indexer,
+        TagAwareAdapter $cache
     ) {
         $this->migrationRunRepo = $migrationRunRepo;
         $this->connectionRepo = $connectionRepo;
@@ -83,6 +88,7 @@ class RunService implements RunServiceInterface
         $this->migrationDataRepository = $migrationDataRepository;
         $this->mediaFileRepository = $mediaFileRepository;
         $this->indexer = $indexer;
+        $this->cache = $cache;
     }
 
     public function takeoverMigration(string $runUuid, Context $context): string
@@ -93,6 +99,8 @@ class RunService implements RunServiceInterface
     public function abortMigration(string $runUuid, Context $context): void
     {
         $this->accessTokenService->invalidateRunAccessToken($runUuid, $context);
+
+        $this->cache->clear();
     }
 
     public function createMigrationRun(string $connectionId, array $dataSelectionIds, Context $context): ?ProgressState
@@ -239,6 +247,8 @@ class RunService implements RunServiceInterface
         ], $context);
 
         $this->removeWrittenMigrationData($context, $runUuid);
+
+        $this->cache->clear();
 
         $this->indexer->index(new \DateTime());
     }
