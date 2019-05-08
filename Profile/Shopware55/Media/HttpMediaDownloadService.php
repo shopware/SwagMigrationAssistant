@@ -14,6 +14,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Exception\InconsistentCriteriaI
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationNext\Exception\NoFileSystemPermissionsException;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\Media\AbstractMediaFileProcessor;
@@ -234,7 +235,7 @@ class HttpMediaDownloadService extends AbstractMediaFileProcessor
         try {
             $this->fileSaver->persistFileToMedia($mediaFile, $name, $uuid, $context);
         } catch (DuplicatedMediaFileNameException $e) {
-            $this->fileSaver->persistFileToMedia($mediaFile, $name . substr(md5((string) time()), 0, 5), $uuid, $context);
+            $this->fileSaver->persistFileToMedia($mediaFile, $name . substr(Uuid::randomHex(), 0, 5), $uuid, $context);
         }
     }
 
