@@ -2,7 +2,7 @@
     <sw-card class="swag-migration-history"
              :isLoading="isLoading"
              :large="true">
-        <template slot="grid">
+        <template #grid>
             {% block swag_migration_history_grid %}
                 <sw-data-grid v-if="migrationRuns.length > 0"
                               identifier="swag-migration-history"
@@ -15,7 +15,7 @@
                               :sortDirection="sortDirection"
                               @column-sort="onSortColumn">
                     {% block swag_migration_history_grid_column_status %}
-                        <template slot="column-status" slot-scope="{ item }">
+                        <template #column-status="{ item }">
                             <sw-icon v-if="item.status === 'finished'"
                                      name="default-basic-checkmark-line"
                                      size="16px"
@@ -34,37 +34,37 @@
                         </template>
                     {% endblock %}
                     {% block swag_migration_history_grid_column_profile %}
-                        <template slot="column-connection.profile" slot-scope="{ item }">
+                        <template #column-connection.profile="{ item }">
                             {{ item.connection.profile.name }} /
                             {{ item.connection.profile.gatewayName }}
                         </template>
                     {% endblock %}
                     {% block swag_migration_history_grid_column_createdAt %}
-                        <template slot="column-createdAt" slot-scope="{ item }">
+                        <template #column-createdAt="{ item }">
                             {{ item.createdAt | date(migrationDateOptions) }}
                         </template>
                     {% endblock %}
                     {% block swag_migration_history_grid_column_sourceSystemName %}
-                        <template slot="column-environmentInformation.sourceSystemName" slot-scope="{ item }">
+                        <template #column-environmentInformation.sourceSystemName="{ item }">
                             {{ item.environmentInformation.sourceSystemName }}
                             {{ item.environmentInformation.sourceSystemVersion }}
                         </template>
                     {% endblock %}
                     {% block swag_migration_history_grid_column_selectedData %}
-                        <template slot="column-progress" slot-scope="{ item }">
+                        <template #column-progress="{ item }">
                             <swag-migration-history-selected-data :entityGroups="item.progress">
                             </swag-migration-history-selected-data>
                         </template>
                     {% endblock %}
                     {% block swag_migration_history_grid_actions %}
-                        <template slot="actions" slot-scope="{ item }">
+                        <template #actions="{ item }">
                             <sw-context-menu-item :routerLink="{ name: 'swag.migration.index.history.detail', params:{ id:item.id } }">
                                 {{ $tc('swag-migration.history.contextMenu.details') }}
                             </sw-context-menu-item>
                         </template>
                     {% endblock %}
                     {% block swag_migration_history_grid_pagination %}
-                        <template slot="pagination">
+                        <template #pagination>
                                 <sw-pagination :page="page"
                                                :limit="limit"
                                                :total="total"
@@ -83,10 +83,10 @@
                     </p>
                 </div>
             {% endblock %}
-        </template>
 
-        {% block swag_migration_history_router_view %}
-            <router-view></router-view>
-        {% endblock %}
+            {% block swag_migration_history_router_view %}
+                <router-view></router-view>
+            {% endblock %}
+        </template>
     </sw-card>
 {% endblock %}

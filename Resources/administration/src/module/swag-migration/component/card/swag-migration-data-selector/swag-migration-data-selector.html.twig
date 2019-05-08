@@ -3,12 +3,12 @@
         <sw-card :title="$tc('swag-migration.index.selectDataCard.cardTitle')"
                  v-if="this.migrationUIStore.state.dataSelectionTableData.length > 0">
             {% block swag_migration_data_selector_grid %}
-                <template slot="grid">
+                <template #grid>
                     <sw-grid ref="tableDataGrid"
                              :items="uiDataSelectionTableData"
                              @sw-grid-select-item="onGridSelectItem"
                              @sw-grid-select-all="onGridSelectItem">
-                        <template slot="columns" slot-scope="{ item }">
+                        <template #columns="{ item }">
                             {% block swag_migration_data_selector_grid_column_data %}
                                 <sw-grid-column flex="1fr" :label="$tc('swag-migration.index.selectDataCard.headers.name')">
                                     {{ $tc(item.snippet) }}
@@ -31,7 +31,7 @@
             {% endblock %}
 
             {% block swag_migration_data_selector_tou %}
-                <template slot="footer">
+                <template #footer>
                     <i18n class="swag-migration-index-data-selector__tou"
                           path="swag-migration.index.selectDataCard.touText"
                           tag="p">

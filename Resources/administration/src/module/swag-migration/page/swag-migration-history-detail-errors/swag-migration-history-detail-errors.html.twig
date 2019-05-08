@@ -14,19 +14,19 @@
                               :sortDirection="sortDirection"
                               @column-sort="onSortColumn">
                     {% block swag_migration_history_detail_errors_grid_type %}
-                        <template slot="column-type" slot-scope="{ item }">
+                        <template #column-type="{ item }">
                             {{ $t(`swag-migration.index.errorTypes.${item.type}`) }}
                         </template>
                     {% endblock %}
 
                     {% block swag_migration_history_detail_errors_grid_description %}
-                        <template slot="column-logEntry.code" slot-scope="{ item }">
+                        <template #column-logEntry.code="{ item }">
                             {{ $t(getErrorDescriptionSnippet(item), item.logEntry.details) }}
                         </template>
                     {% endblock %}
 
                     {% block swag_migration_history_detail_errors_grid_pagination %}
-                        <template slot="pagination">
+                        <template #pagination>
                             <sw-pagination :page="page"
                                            :limit="limit"
                                            :total="total"

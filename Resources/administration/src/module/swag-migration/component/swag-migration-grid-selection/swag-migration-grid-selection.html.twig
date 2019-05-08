@@ -4,7 +4,7 @@
             <sw-grid ref="tableDataGrid"
                      :items="items"
                      :selectable="false">
-                <template slot="columns" slot-scope="{ item }">
+                <template #columns="{ item }">
                     {% block swag_migration_grid_selection_grid_column_description %}
                         <sw-grid-column flex="1fr" :label="$tc('swag-migration.index.premappingCard.previousTitle')">
                             {{ item.description }}
@@ -30,7 +30,7 @@
                     {% endblock %}
                 </template>
                 {% block swag_migration_grid_selection_grid_pagination %}
-                    <template slot="pagination">
+                    <template #pagination>
                         <sw-pagination
                                 :page="page"
                                 :limit="limit"
