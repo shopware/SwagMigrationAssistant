@@ -10,6 +10,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationNext\Exception\NoFileSystemPermissionsException;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\Media\AbstractMediaFileProcessor;
@@ -201,7 +202,7 @@ class LocalMediaProcessor extends AbstractMediaFileProcessor
         try {
             $this->fileSaver->persistFileToMedia($mediaFile, $media->getFileName(), $media->getMediaId(), $context);
         } catch (DuplicatedMediaFileNameException $e) {
-            $this->fileSaver->persistFileToMedia($mediaFile, $media->getFileName() . substr(md5((string) time()), 0, 5), $media->getMediaId(), $context);
+            $this->fileSaver->persistFileToMedia($mediaFile, $media->getFileName() . substr(Uuid::randomHex(), 0, 5), $media->getMediaId(), $context);
         }
     }
 
