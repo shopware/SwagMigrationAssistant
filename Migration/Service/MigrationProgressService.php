@@ -6,6 +6,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\CountAggregation;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\ValueCountAggregation;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregatorResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
@@ -173,9 +174,10 @@ class MigrationProgressService implements MigrationProgressServiceInterface
         }
         $criteria->addAggregation(new CountAggregation('id', 'count'));
         $criteria->setLimit(1);
-        $result = $this->migrationMediaFileRepository->search($criteria, $this->context);
+        /** @var AggregatorResult $result */
+        $result = $this->migrationMediaFileRepository->aggregate($criteria, $this->context);
 
-        return (int) $result->getAggregations()->first()->getResult()[0]['count'];
+        return (int) $result->getAggregations()->get('count')->getResult()[0]['count'];
     }
 
     private function mapCounts($counts): array
@@ -202,8 +204,8 @@ class MigrationProgressService implements MigrationProgressServiceInterface
                     new EqualsFilter('converted', null),
                 ]),
             ]));
-            $result = $this->migrationDataRepository->search($criteria, $this->context);
-            $totalCountsForWriting = $result->getAggregations()->first()->getResult();
+            $result = $this->migrationDataRepository->aggregate($criteria, $this->context);
+            $totalCountsForWriting = $result->getAggregations()->get('entityCount')->getResult();
             $totalCountsForWriting = $this->mapCounts($totalCountsForWriting[0]['values']);
 
             $runProgress = $this->validateEntityGroupCounts($runProgress, $finishedCount, $totalCountsForWriting);
