@@ -151,6 +151,12 @@ class ProductConverter extends Shopware55Converter
 
         $converted = $this->getUuidForProduct($data);
         $converted = $this->getProductData($data, $converted);
+
+        if (isset($data['categories'])) {
+            $converted['categories'] = $this->getCategoryMapping($data['categories']);
+        }
+        unset($data['categories']);
+
         unset($data['detail']['id'], $data['detail']['articleID']);
 
         if (!isset($converted['manufacturerId']) && !isset($converted['manufacturer'])) {
@@ -208,6 +214,11 @@ class ProductConverter extends Shopware55Converter
         }
         $converted['children'][0]['parentId'] = $containerUuid;
         unset($data['detail']['id']);
+
+        if (isset($data['categories'])) {
+            $converted['categories'] = $this->getCategoryMapping($data['categories']);
+        }
+        unset($data['categories']);
 
         if (empty($data['detail'])) {
             unset($data['detail']);
@@ -332,11 +343,6 @@ class ProductConverter extends Shopware55Converter
         $converted['translations'] = [];
         $this->setGivenProductTranslation($data, $converted);
         unset($data['_locale']);
-
-        if (isset($data['categories'])) {
-            $converted['categories'] = $this->getCategoryMapping($data['categories']);
-        }
-        unset($data['categories']);
 
         if (isset($data['attributes'])) {
             $converted['customFields'] = $this->getAttributes($data['attributes'], DefaultEntities::PRODUCT, ['id', 'articleID', 'articledetailsID']);
