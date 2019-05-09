@@ -413,7 +413,6 @@ class MigrationWorkerService {
 
             // finish
             await this._migrateFinish();
-            this._migrationProcessStore.setIsMigrating(false);
             resolve(this._migrationProcessStore.state.errors);
         });
     }
@@ -435,13 +434,12 @@ class MigrationWorkerService {
                 return;
             }
 
-            this._migrationProcessStore.setStatusIndex(status);
-
             if (groupStartIndex === 0 && entityStartIndex === 0 && entityOffset === 0) {
                 this._resetProgress();
             }
 
             await this._workRunner.migrateProcess(
+                status,
                 groupStartIndex,
                 entityStartIndex,
                 entityOffset
@@ -507,10 +505,11 @@ class MigrationWorkerService {
             return Promise.resolve();
         }
 
-        this._migrationProcessStore.setStatusIndex(MIGRATION_STATUS.FINISHED);
-        return this._workerStatusManager.onStatusChanged(this._migrationProcessStore.state.runId).then(() => {
+        return this._workerStatusManager.changeStatus(
+            this._migrationProcessStore.state.runId,
+            MIGRATION_STATUS.FINISHED
+        ).then(() => {
             this._resetProgress();
-
             return Promise.resolve();
         });
     }

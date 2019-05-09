@@ -42,26 +42,59 @@ export class WorkerStatusManager {
     }
 
     /**
-     * This handles the necessary things before we start working on the status.
+     * This handles the necessary things before we start working on the new status.
      * For example it resets the progress and updates the counts before the 'WRITE_DATA' operation.
      *
      * @param {string} runId
+     * @param {?number} newStatus
      * @returns {Promise}
      */
-    onStatusChanged(runId) {
-        if (this._migrationProcessStore.state.statusIndex === MIGRATION_STATUS.WRITE_DATA) {
-            return this.beforeWriteProgress(runId);
+    changeStatus(runId, newStatus = null) {
+        if (newStatus === null) {
+            newStatus = this._migrationProcessStore.state.statusIndex;
         }
 
-        if (this._migrationProcessStore.state.statusIndex === MIGRATION_STATUS.PROCESS_MEDIA_FILES) {
-            return this.beforeProcessMedia(runId);
-        }
+        return new Promise((resolve, reject) => {
+            if (newStatus === MIGRATION_STATUS.WRITE_DATA) {
+                this.beforeWriteProgress(runId).then((...params) => {
+                    this.onStatusPreparationFinished(newStatus);
+                    resolve(...params);
+                }).catch((err) => {
+                    this.onStatusPreparationFinished(newStatus);
+                    reject(err);
+                });
+                return;
+            }
 
-        if (this._migrationProcessStore.state.statusIndex === MIGRATION_STATUS.FINISHED) {
-            return this.onFinish(runId);
-        }
+            if (newStatus === MIGRATION_STATUS.PROCESS_MEDIA_FILES) {
+                this.beforeProcessMedia(runId).then((...params) => {
+                    this.onStatusPreparationFinished(newStatus);
+                    resolve(...params);
+                }).catch((err) => {
+                    this.onStatusPreparationFinished(newStatus);
+                    reject(err);
+                });
+                return;
+            }
 
-        return Promise.resolve();
+            if (newStatus === MIGRATION_STATUS.FINISHED) {
+                this.onFinish(runId).then((...params) => {
+                    this.onStatusPreparationFinished(newStatus);
+                    resolve(...params);
+                }).catch((err) => {
+                    this.onStatusPreparationFinished(newStatus);
+                    reject(err);
+                });
+                return;
+            }
+
+            this.onStatusPreparationFinished(newStatus);
+            resolve();
+        });
+    }
+
+    onStatusPreparationFinished(newStatus) {
+        this._migrationProcessStore.setStatusIndex(newStatus);
     }
 
     beforeWriteProgress(runId) {
