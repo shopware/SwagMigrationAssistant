@@ -151,6 +151,7 @@ class ProductConverter extends Shopware55Converter
 
         $converted = $this->getUuidForProduct($data);
         $converted = $this->getProductData($data, $converted);
+        unset($data['detail']['id'], $data['detail']['articleID']);
 
         if (!isset($converted['manufacturerId']) && !isset($converted['manufacturer'])) {
             return new ConvertStruct(null, $data);
@@ -178,12 +179,33 @@ class ProductConverter extends Shopware55Converter
 
         $converted['children'][] = $converted;
         $converted['productNumber'] .= 'M';
-        $converted['children'][0]['id'] = $this->mappingService->createNewUuid(
+        $mainProductUuid = $this->mappingService->createNewUuid(
             $this->connectionId,
             DefaultEntities::PRODUCT,
             $this->oldProductId,
             $this->context
         );
+        $converted['children'][0]['id'] = $mainProductUuid;
+
+        if (isset($converted['children'][0]['media'])) {
+            if (isset($converted['children'][0]['cover'])) {
+                $coverMediaUuid = $converted['children'][0]['cover']['media']['id'];
+            }
+            foreach ($converted['children'][0]['media'] as &$media) {
+                $productMediaRelationUuid = $this->mappingService->createNewUuid(
+                    $this->connectionId,
+                    DefaultEntities::PRODUCT_MEDIA,
+                    $media['id'],
+                    $this->context
+                );
+                $media['productId'] = $mainProductUuid;
+                $media['id'] = $productMediaRelationUuid;
+
+                if (isset($coverMediaUuid) && $media['media']['id'] === $coverMediaUuid) {
+                    $converted['children'][0]['cover'] = $media;
+                }
+            }
+        }
         $converted['children'][0]['parentId'] = $containerUuid;
         unset($data['detail']['id']);
 
@@ -217,6 +239,7 @@ class ProductConverter extends Shopware55Converter
         $converted = $this->getUuidForProduct($data);
         $converted['parentId'] = $parentUuid;
         $converted = $this->getProductData($data, $converted);
+        unset($data['detail']['id'], $data['detail']['articleID']);
 
         if (empty($data)) {
             $data = null;
@@ -242,8 +265,6 @@ class ProductConverter extends Shopware55Converter
             null,
             $converted['id']
         );
-
-        unset($data['detail']['id'], $data['detail']['articleID']);
 
         return $converted;
     }
@@ -295,7 +316,7 @@ class ProductConverter extends Shopware55Converter
         unset($data['prices']);
 
         if (isset($data['assets'])) {
-            $convertedMedia = $this->getMedia($data['assets'], $converted);
+            $convertedMedia = $this->getMedia($data['assets'], $data['detail']['id'], $converted);
 
             if (!empty($convertedMedia['media'])) {
                 $converted['media'] = $convertedMedia['media'];
@@ -663,7 +684,7 @@ class ProductConverter extends Shopware55Converter
         $unit['translations'][$languageUuid] = $localeTranslation;
     }
 
-    private function getMedia(array $media, array $converted): array
+    private function getMedia(array $media, string $oldVariantId, array $converted): array
     {
         $mediaObjects = [];
         $cover = null;
@@ -687,7 +708,7 @@ class ProductConverter extends Shopware55Converter
             $newProductMedia['id'] = $this->mappingService->createNewUuid(
                 $this->connectionId,
                 DefaultEntities::PRODUCT_MEDIA,
-                $mediaData['id'],
+                $oldVariantId . $mediaData['id'],
                 $this->context
             );
             $newProductMedia['productId'] = $converted['id'];
