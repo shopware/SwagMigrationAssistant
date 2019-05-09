@@ -73,6 +73,7 @@ class Shopware55LocalProductReader extends Shopware55LocalAbstractReader
 
         foreach ($products as $key => &$product) {
             $product['_locale'] = str_replace('_', '-', $locale);
+            $product['assets'] = [];
 
             if (isset($categories[$product['id']])) {
                 $product['categories'] = $categories[$product['id']];
@@ -80,8 +81,12 @@ class Shopware55LocalProductReader extends Shopware55LocalAbstractReader
             if (isset($prices[$product['detail']['id']])) {
                 $product['prices'] = $prices[$product['detail']['id']];
             }
-            if (isset($media[$product['id']])) {
-                $product['assets'] = $media[$product['id']];
+            if (isset($media[$product['id']][$product['detail']['id']])) {
+                $product['assets'] = $media[$product['id']][$product['detail']['id']];
+            }
+            if (isset($media['general'][$product['id']])) {
+                $generalAssets = $media['general'][$product['id']];
+                $product['assets'] = array_merge($product['assets'], $generalAssets);
             }
             if (isset($options[$product['detail']['id']])) {
                 $product['configuratorOptions'] = $options[$product['detail']['id']];
@@ -198,6 +203,8 @@ class Shopware55LocalProductReader extends Shopware55LocalAbstractReader
         $query->addSelect('asset.articleID');
         $this->addTableSelection($query, 's_articles_img', 'asset');
 
+        $query->leftJoin('asset', 's_articles_img', 'variantAsset', 'variantAsset.parent_id = asset.id');
+
         $query->leftJoin('asset', 's_articles_img_attributes', 'asset_attributes', 'asset_attributes.imageID = asset.id');
         $this->addTableSelection($query, 's_articles_img_attributes', 'asset_attributes');
 
@@ -207,22 +214,29 @@ class Shopware55LocalProductReader extends Shopware55LocalAbstractReader
         $query->leftJoin('asset_media', 's_media_attributes', 'asset_media_attributes', 'asset_media.id = asset_media_attributes.mediaID');
         $this->addTableSelection($query, 's_media_attributes', 'asset_media_attributes');
 
-        $query->where('asset.articleID IN (:ids)');
+        $query->where('asset.articleID IN (:ids) AND variantAsset.id IS NULL');
         $query->setParameter('ids', $productIds, Connection::PARAM_INT_ARRAY);
 
-        $fetchedAssets = $query->execute()->fetchAll(\PDO::FETCH_GROUP);
-        $fetchedVariantAssets = $this->fetchVariantAssets();
+        $fetchedAssets = $this->mapData($query->execute()->fetchAll(\PDO::FETCH_GROUP), [], ['asset']);
+        $fetchedVariantAssets = $this->mapData($this->fetchVariantAssets(), [], ['asset', 'img', 'description']);
 
-        foreach ($fetchedAssets as $productId => &$assets) {
-            foreach ($assets as &$asset) {
-                if (isset($fetchedVariantAssets[$asset['asset.id']])) {
-                    $asset['children'] = $this->mapData($fetchedVariantAssets[$asset['asset.id']], [], ['asset']);
+        $assets = [];
+        foreach ($fetchedVariantAssets as $articleId => $productAssets) {
+            if (!isset($assets[$articleId])) {
+                $assets[$articleId] = [];
+            }
+
+            foreach ($productAssets as $productAsset) {
+                if (!isset($assets[$articleId][$productAsset['article_detail_id']])) {
+                    $assets[$articleId][$productAsset['article_detail_id']] = [];
                 }
+                $assets[$articleId][$productAsset['article_detail_id']][] = $productAsset;
             }
         }
-        unset($assets, $asset);
+        $assets['general'] = $fetchedAssets;
+        unset($fetchedAssets, $fetchedVariantAssets);
 
-        return $this->mapData($fetchedAssets, [], ['asset', 'children']);
+        return $assets;
     }
 
     private function fetchVariantAssets(): array
@@ -231,11 +245,20 @@ class Shopware55LocalProductReader extends Shopware55LocalAbstractReader
         $query = $this->connection->createQueryBuilder();
         $query->from('s_articles_img', 'asset');
 
-        $query->addSelect('asset.parent_id');
+        $query->addSelect('parentasset.articleID');
         $this->addTableSelection($query, 's_articles_img', 'asset');
+        $query->addSelect('parentasset.img as img, parentasset.description as description');
 
         $query->leftJoin('asset', 's_articles_img_attributes', 'asset_attributes', 'asset_attributes.imageID = asset.id');
         $this->addTableSelection($query, 's_articles_img_attributes', 'asset_attributes');
+
+        $query->leftJoin('asset', 's_articles_img', 'parentasset', 'asset.parent_id = parentasset.id');
+
+        $query->leftJoin('asset', 's_media', 'asset_media', 'parentasset.media_id = asset_media.id');
+        $this->addTableSelection($query, 's_media', 'asset_media');
+
+        $query->leftJoin('asset_media', 's_media_attributes', 'asset_media_attributes', 'asset_media.id = asset_media_attributes.mediaID');
+        $this->addTableSelection($query, 's_media_attributes', 'asset_media_attributes');
 
         $query->where('asset.article_detail_id IN (:ids)');
         $query->setParameter('ids', $variantIds, Connection::PARAM_INT_ARRAY);
