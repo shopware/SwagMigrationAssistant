@@ -1,4 +1,5 @@
 import { Component } from 'src/core/shopware';
+import ShopwareError from 'src/core/data/ShopwareError';
 import template from './swag-migration-profile-shopware55-api-credential-form.html.twig';
 
 Component.register('swag-migration-profile-shopware55-api-credential-form', {
@@ -31,6 +32,18 @@ Component.register('swag-migration-profile-shopware55-api-credential-form', {
             }
 
             return this.inputCredentials.apiKey.length;
+        },
+
+        apiKeyError() {
+            const code = this.apiKeyErrorSnippet !== '' ? 1 : 0;
+            const detail = this.apiKeyErrorSnippet !== '' ?
+                this.$t(this.apiKeyErrorSnippet, { length: this.apiKeyLength }) :
+                '';
+
+            return new ShopwareError({
+                code,
+                detail
+            });
         }
     },
 

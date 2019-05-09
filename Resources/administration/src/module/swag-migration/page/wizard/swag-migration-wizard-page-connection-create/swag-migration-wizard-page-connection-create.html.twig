@@ -18,31 +18,31 @@
                                   v-model="selection.connectionName"
                                   @input="onChangeConnectionName"
                                   validation="required"
-                                  :tooltipText="$tc('swag-migration.wizard.pages.connectionCreate.connectionTooltip')"
-                                  :errorMessage="$tc(connectionNameErrorSnippet)">
+                                  :helpText="$tc('swag-migration.wizard.pages.connectionCreate.connectionTooltip')"
+                                  :error="connectionNameError">
                         </sw-field>
 
                         <sw-field type="select"
                                   :label="$tc('swag-migration.wizard.pages.connectionCreate.profileLabel')"
                                   :placeholder="$tc('swag-migration.wizard.pages.connectionCreate.profilePlaceholder')"
-                                  :tooltipText="$tc('swag-migration.wizard.pages.connectionCreate.profileTooltip')"
+                                  :helpText="$tc('swag-migration.wizard.pages.connectionCreate.profileTooltip')"
                                   v-model="selection.profile"
                                   @change="onSelectProfile"
                                   validation="required">
                             {% block swag_migration_wizard_page_create_profile_form_profile_field_options %}
-                                <option slot="options" v-for="profile in profiles" :value="profile">{{ profile }}</option>
+                                <option v-for="profile in profiles" :value="profile">{{ profile }}</option>
                             {% endblock %}
                         </sw-field>
 
                         <sw-field type="select"
                                   :label="$tc('swag-migration.wizard.pages.connectionCreate.gatewayLabel')"
                                   :placeholder="$tc('swag-migration.wizard.pages.connectionCreate.gatewayPlaceholder')"
-                                  :tooltipText="$tc('swag-migration.wizard.pages.connectionCreate.gatewayTooltip')"
+                                  :helpText="$tc('swag-migration.wizard.pages.connectionCreate.gatewayTooltip')"
                                   v-model="selection.gateway"
                                   @change="onSelectGateway"
                                   validation="required">
                             {% block swag_migration_wizard_page_create_profile_form_gateway_field_options %}
-                                <option slot="options" v-for="gateway in gateways" :value="gateway">{{ gateway }}</option>
+                                <option v-for="gateway in gateways" :value="gateway">{{ gateway }}</option>
                             {% endblock %}
                         </sw-field>
                     </div>

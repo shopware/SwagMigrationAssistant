@@ -1,7 +1,7 @@
 {% block swag_migration_index %}
     <sw-page class="swag-migration-index">
         {% block swag_migration_index_smart_bar_header %}
-            <template slot="smart-bar-header">
+            <template #smart-bar-header>
                 <h2>
                     {{ $tc('sw-settings.index.title') }}
                     <sw-icon name="small-arrow-medium-right" small></sw-icon>
@@ -10,55 +10,52 @@
             </template>
         {% endblock %}
 
-        <template v-if="!storesInitializing">
-            {% block swag_migration_index_smart_bar_actions %}
-                <template slot="smart-bar-actions">
-                    <sw-button variant="primary" @click="onMigrate" :disabled="migrateButtonDisabled">
-                        {{ $tc('swag-migration.index.migrateButton') }}
-                    </sw-button>
-                </template>
-            {% endblock %}
 
-            {% block swag_migration_index_content %}
-                <template slot="content">
-                    <sw-card-view>
-                        {% block swag_migration_index_tabs %}
-                            <sw-tabs class="swag-migration-index-tabs">
-                                {% block swag_migration_index_tab_main %}
-                                    <sw-tabs-item :route="{ name: 'swag.migration.index.main' }"
-                                                  :title="$tc('swag-migration.general.tabMain')">
-                                        {{ $tc('swag-migration.general.tabMain') }}
-                                    </sw-tabs-item>
-                                {% endblock %}
+        {% block swag_migration_index_smart_bar_actions %}
+            <template v-if="!storesInitializing" #smart-bar-actions>
+                <sw-button variant="primary" @click="onMigrate" :disabled="migrateButtonDisabled">
+                    {{ $tc('swag-migration.index.migrateButton') }}
+                </sw-button>
+            </template>
+        {% endblock %}
 
-                                {% block swag_migration_index_tab_data_selector %}
-                                    <sw-tabs-item :route="{ name: 'swag.migration.index.dataSelector' }"
-                                                  :title="$tc('swag-migration.general.tabDataSelector')">
-                                        {{ $tc('swag-migration.general.tabDataSelector') }}
-                                    </sw-tabs-item>
-                                {% endblock %}
+        {% block swag_migration_index_content %}
+            <template #content>
+                <sw-card-view v-if="!storesInitializing">
+                    {% block swag_migration_index_tabs %}
+                        <sw-tabs class="swag-migration-index-tabs">
+                            {% block swag_migration_index_tab_main %}
+                                <sw-tabs-item :route="{ name: 'swag.migration.index.main' }"
+                                              :title="$tc('swag-migration.general.tabMain')">
+                                    {{ $tc('swag-migration.general.tabMain') }}
+                                </sw-tabs-item>
+                            {% endblock %}
 
-                                {% block swag_migration_index_tab_history %}
-                                    <sw-tabs-item :route="{ name: 'swag.migration.index.history' }"
-                                                  :title="$tc('swag-migration.general.tabHistory')">
-                                        {{ $tc('swag-migration.general.tabHistory') }}
-                                    </sw-tabs-item>
-                                {% endblock %}
-                            </sw-tabs>
-                        {% endblock %}
+                            {% block swag_migration_index_tab_data_selector %}
+                                <sw-tabs-item :route="{ name: 'swag.migration.index.dataSelector' }"
+                                              :title="$tc('swag-migration.general.tabDataSelector')">
+                                    {{ $tc('swag-migration.general.tabDataSelector') }}
+                                </sw-tabs-item>
+                            {% endblock %}
 
-                        {% block swag_migration_index_content_view %}
-                            <router-view ref="contentComponent">
-                            </router-view>
-                        {% endblock %}
-                    </sw-card-view>
-                </template>
-            {% endblock %}
-        </template>
+                            {% block swag_migration_index_tab_history %}
+                                <sw-tabs-item :route="{ name: 'swag.migration.index.history' }"
+                                              :title="$tc('swag-migration.general.tabHistory')">
+                                    {{ $tc('swag-migration.general.tabHistory') }}
+                                </sw-tabs-item>
+                            {% endblock %}
+                        </sw-tabs>
+                    {% endblock %}
 
-        {% block swag_migration_index_loader_content %}
-            <template slot="content">
-                <sw-loader v-if="storesInitializing"></sw-loader>
+                    {% block swag_migration_index_content_view %}
+                        <router-view ref="contentComponent">
+                        </router-view>
+                    {% endblock %}
+                </sw-card-view>
+
+                {% block swag_migration_index_loader_content %}
+                    <sw-loader v-if="storesInitializing"></sw-loader>
+                {% endblock %}
             </template>
         {% endblock %}
     </sw-page>

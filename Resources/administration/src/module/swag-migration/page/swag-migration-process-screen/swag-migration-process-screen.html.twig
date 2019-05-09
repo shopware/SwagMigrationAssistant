@@ -1,7 +1,7 @@
 {% block swag_migration_process_screen %}
     <sw-page class="swag-migration-process-screen">
         {% block swag_migration_index_smart_bar_header %}
-            <template slot="smart-bar-header">
+            <template #smart-bar-header>
                 <h2>
                     {{ $tc('sw-settings.index.title') }}
                     <sw-icon name="small-arrow-medium-right" small></sw-icon>
@@ -11,7 +11,7 @@
         {% endblock %}
 
         {% block swag_migration_index_smart_bar_actions %}
-            <template slot="smart-bar-actions">
+            <template #smart-bar-actions>
                 <sw-button v-if="abortButtonVisible" @click="onAbortButtonClick">
                     {{ $tc('swag-migration.index.abortButton') }}
                 </sw-button>
@@ -30,7 +30,7 @@
             </template>
         {% endblock %}
 
-        <template slot="content">
+        <template #content>
             <sw-card-view class="swag-migration-process-screen" v-if="!migrationUIStore.state.isLoading">
                 {% block swag_migration_index_main_page_flow_chart %}
                     <swag-migration-flow-chart class="swag-migration-process-screen__flow-chart"
@@ -114,7 +114,7 @@
                         {% endblock %}
 
                         {% block swag_migration_index_main_page_modal_abort_migration_confirmDialog_footer %}
-                            <template slot="modal-footer">
+                            <template #modal-footer>
                                 {% block swag_migration_index_main_page_modal_abort_migration_confirmDialog_footer_cancelAction %}
                                     <sw-button @click="onCloseAbortMigrationConfirmDialog"
                                                size="small">
