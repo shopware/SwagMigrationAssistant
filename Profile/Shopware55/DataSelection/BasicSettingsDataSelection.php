@@ -29,7 +29,7 @@ class BasicSettingsDataSelection implements DataSelectionInterface
             $this->getEntityNames(),
             'swag-migration.index.selectDataCard.dataSelection.basicSettings',
             -100,
-            false,
+            true,
             DataSelectionStruct::BASIC_DATA_TYPE,
             true
         );
