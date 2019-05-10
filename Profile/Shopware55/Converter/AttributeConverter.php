@@ -94,12 +94,17 @@ abstract class AttributeConverter extends AbstractConverter
             'label' => [
                 $locale => $data['name'],
             ],
+            'helpText' => [
+                $locale => '',
+            ],
+            'tooltipText' => [
+                $locale => '',
+            ],
+            'type' => 'text',
+            'customFieldType' => 'text',
         ];
 
         if ($data['type'] === 'text') {
-            $attributeData['type'] = 'text';
-            $attributeData['customFieldType'] = 'text';
-
             return $attributeData;
         }
 
@@ -119,7 +124,7 @@ abstract class AttributeConverter extends AbstractConverter
             return $attributeData;
         }
 
-        return [];
+        return $attributeData;
     }
 
     private function getConfiguredCustomFieldData(array $data, string $locale): array
@@ -199,14 +204,14 @@ abstract class AttributeConverter extends AbstractConverter
             $options = [];
             foreach (json_decode($data['configuration']['array_store']) as $keyValue) {
                 $options[] = [
-                    'id' => $keyValue->key,
-                    'name' => [
+                    'value' => $keyValue->key,
+                    'label' => [
                         $locale => $keyValue->value,
                     ],
                 ];
             }
 
-            $attributeData['componentName'] = 'sw-select';
+            $attributeData['componentName'] = 'sw-single-select';
             $attributeData['type'] = 'select';
             $attributeData['customFieldType'] = 'select';
             $attributeData['options'] = $options;
