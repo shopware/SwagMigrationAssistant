@@ -1010,6 +1010,10 @@ class ProductConverter extends Shopware55Converter
         $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->locale, $this->context);
         $localeTranslation['languageId'] = $languageUuid;
 
+        if (isset($data['attributes'])) {
+            $localeTranslation['customFields'] = $this->getAttributes($data['attributes'], DefaultEntities::PRODUCT, ['id', 'articleID', 'articledetailsID']);
+        }
+
         $converted['translations'][$languageUuid] = $localeTranslation;
     }
 

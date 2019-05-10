@@ -195,12 +195,7 @@ class TranslationConverter extends Shopware55Converter
                     break;
             }
 
-            $isAttribute = strpos($key, '__attribute_');
-            if ($isAttribute !== false) {
-                $key = str_replace('__attribute_', '', $key);
-                $productTranslation['customFields'][$key] = $value;
-                unset($objectData[$key]);
-            }
+            $this->getAttribute(DefaultEntities::PRODUCT, $key, $value, $productTranslation, $objectData);
         }
 
         if (empty($objectData)) {
@@ -296,12 +291,7 @@ class TranslationConverter extends Shopware55Converter
                 $this->convertValue($manufacturerTranslation, 'description', $objectData, 'description');
             }
 
-            $isAttribute = strpos($key, '__attribute_');
-            if ($isAttribute !== false) {
-                $key = str_replace('__attribute_', '', $key);
-                $manufacturerTranslation['customFields'][$key] = $value;
-                unset($objectData[$key]);
-            }
+            $this->getAttribute(DefaultEntities::PRODUCT_MANUFACTURER, $key, $value, $manufacturerTranslation, $objectData);
         }
 
         if (empty($objectData)) {
@@ -396,12 +386,7 @@ class TranslationConverter extends Shopware55Converter
                     break;
             }
 
-            $isAttribute = strpos($key, '__attribute_');
-            if ($isAttribute !== false) {
-                $key = str_replace('__attribute_', '', $key);
-                $unitTranslation['customFields'][$key] = $value;
-                unset($objectData[$key]);
-            }
+            $this->getAttribute(DefaultEntities::UNIT, $key, $value, $unitTranslation, $objectData);
         }
 
         if (empty($objectData)) {
@@ -504,12 +489,7 @@ class TranslationConverter extends Shopware55Converter
                 $this->convertValue($categoryTranslation, 'name', $objectData, $key);
             }
 
-            $isAttribute = strpos($key, '__attribute_');
-            if ($isAttribute !== false) {
-                $key = str_replace('__attribute_', '', $key);
-                $categoryTranslation['customFields'][$key] = $value;
-                unset($objectData[$key]);
-            }
+            $this->getAttribute(DefaultEntities::CATEGORY, $key, $value, $categoryTranslation, $objectData);
         }
 
         if (empty($objectData)) {
@@ -600,12 +580,7 @@ class TranslationConverter extends Shopware55Converter
                 $this->convertValue($propertyGroupOptionTranslation, 'position', $objectData, $key, self::TYPE_INTEGER);
             }
 
-            $isAttribute = strpos($key, '__attribute_');
-            if ($isAttribute !== false) {
-                $key = str_replace('__attribute_', '', $key);
-                $propertyGroupOptionTranslation['customFields'][$key] = $value;
-                unset($objectData[$key]);
-            }
+            $this->getAttribute(DefaultEntities::PROPERTY_GROUP_OPTION, $key, $value, $propertyGroupOptionTranslation, $objectData);
         }
 
         if (empty($objectData)) {
@@ -696,12 +671,7 @@ class TranslationConverter extends Shopware55Converter
                 $this->convertValue($propertyGroupTranslation, 'description', $objectData, $key);
             }
 
-            $isAttribute = strpos($key, '__attribute_');
-            if ($isAttribute !== false) {
-                $key = str_replace('__attribute_', '', $key);
-                $propertyGroupTranslation['customFields'][$key] = $value;
-                unset($objectData[$key]);
-            }
+            $this->getAttribute(DefaultEntities::PROPERTY_GROUP, $key, $value, $propertyGroupTranslation, $objectData);
         }
 
         if (empty($objectData)) {
@@ -788,12 +758,7 @@ class TranslationConverter extends Shopware55Converter
                 $this->convertValue($propertyValueTranslation, 'name', $objectData, $key);
             }
 
-            $isAttribute = strpos($key, '__attribute_');
-            if ($isAttribute !== false) {
-                $key = str_replace('__attribute_', '', $key);
-                $propertyValueTranslation['customFields'][$key] = $value;
-                unset($objectData[$key]);
-            }
+            $this->getAttribute(DefaultEntities::PROPERTY_GROUP_OPTION, $key, $value, $propertyValueTranslation, $objectData);
         }
 
         if (empty($objectData)) {
@@ -880,12 +845,7 @@ class TranslationConverter extends Shopware55Converter
                 $this->convertValue($propertyOptionTranslation, 'optionName', $objectData, $key);
             }
 
-            $isAttribute = strpos($key, '__attribute_');
-            if ($isAttribute !== false) {
-                $key = str_replace('__attribute_', '', $key);
-                $propertyOptionTranslation['customFields'][$key] = $value;
-                unset($objectData[$key]);
-            }
+            $this->getAttribute(DefaultEntities::PROPERTY_GROUP, $key, $value, $propertyOptionTranslation, $objectData);
         }
 
         if (empty($objectData)) {
@@ -908,5 +868,15 @@ class TranslationConverter extends Shopware55Converter
         }
 
         return new ConvertStruct($propertyOption, $data);
+    }
+
+    private function getAttribute(string $entityName, string $key, string $value, array &$translation, array &$objectData): void
+    {
+        $isAttribute = strpos($key, '__attribute_');
+        if ($isAttribute !== false) {
+            $key = $entityName . '_' . str_replace('__attribute_', '', $key);
+            $translation['customFields'][$key] = $value;
+            unset($objectData[$key]);
+        }
     }
 }
