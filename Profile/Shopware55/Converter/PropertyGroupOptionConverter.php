@@ -81,6 +81,23 @@ class PropertyGroupOptionConverter extends Shopware55Converter
         $this->runId = $migrationContext->getRunUuid();
         $this->connectionId = $migrationContext->getConnection()->getId();
 
+        if (!isset($data['group']['name'])) {
+            $this->loggingService->addError(
+                $this->runId,
+                Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
+                'Empty necessary data fields',
+                'Property-Group-Option-Entity could not be converted cause of empty necessary field(s): group.',
+                [
+                    'id' => $data['id'],
+                    'entity' => 'Property-Group-Option',
+                    'fields' => ['group'],
+                ],
+                1
+            );
+
+            return new ConvertStruct(null, $data);
+        }
+
         $converted = [
             'id' => $this->mappingService->createNewUuid(
                 $this->connectionId,

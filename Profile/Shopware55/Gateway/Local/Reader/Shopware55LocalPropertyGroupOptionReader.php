@@ -37,7 +37,7 @@ SELECT
            media.albumID AS "property_media.albumID",
            mediaAttr.id AS "property_media.attribute"
     FROM s_filter_values AS filter
-           LEFT JOIN s_filter_options AS filterOpt ON filterOpt.id = filter.optionID
+           INNER JOIN s_filter_options AS filterOpt ON filterOpt.id = filter.optionID
            LEFT JOIN s_media AS media ON media.id = filter.media_id
            LEFT JOIN s_media_attributes AS mediaAttr ON mediaAttr.mediaID = media.id
 
@@ -60,7 +60,7 @@ UNION
            media.albumID AS "property_media.albumID",
            mediaAttr.id AS "property_media.attribute"
     FROM s_article_configurator_options AS opt
-          LEFT JOIN s_article_configurator_groups AS optGroup ON optGroup.id = opt.group_id
+          INNER JOIN s_article_configurator_groups AS optGroup ON optGroup.id = opt.group_id
           LEFT JOIN s_media AS media ON media.id = opt.media_id
           LEFT JOIN s_media_attributes AS mediaAttr ON mediaAttr.mediaID = media.id
 )
