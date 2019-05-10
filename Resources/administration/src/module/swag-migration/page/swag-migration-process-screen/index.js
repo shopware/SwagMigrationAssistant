@@ -328,6 +328,12 @@ Component.register('swag-migration-process-screen', {
             // show loading or premapping screen
             if (this.migrationProcessStore.state.statusIndex === MIGRATION_STATUS.PREMAPPING) {
                 this.migrationUIStore.setComponentIndex(UI_COMPONENT_INDEX.PREMAPPING);
+            } else if (this.migrationProcessStore.state.statusIndex === MIGRATION_STATUS.FINISHED) {
+                if (this.migrationProcessStore.state.errors.length > 0) {
+                    this.onFinishWithErrors(this.migrationProcessStore.state.errors);
+                } else {
+                    this.onFinishWithoutErrors();
+                }
             } else {
                 this.migrationUIStore.setComponentIndex(UI_COMPONENT_INDEX.LOADING_SCREEN);
             }
@@ -366,9 +372,9 @@ Component.register('swag-migration-process-screen', {
 
         onBackButtonClick() {
             this.migrationWorkerService.status = MIGRATION_STATUS.WAITING;
-            this.$router.push({ name: 'swag.migration.index.main' });
             this.migrationProcessStore.setIsMigrating(false);
             this.isOtherMigrationRunning = false;
+            this.$router.push({ name: 'swag.migration.index.main' });
         },
 
         onStartButtonClick() {
@@ -381,7 +387,9 @@ Component.register('swag-migration-process-screen', {
                 this.migrationUIStore.setIsLoading(false);
                 this.migrationWorkerService.startMigration(
                     this.migrationProcessStore.state.runId
-                ).catch(() => {
+                ).then(() => {
+                    this.migrationUIStore.setIsLoading(false);
+                }).catch(() => {
                     this.onInvalidMigrationAccessToken();
                 });
             });

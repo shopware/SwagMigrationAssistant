@@ -74,16 +74,17 @@ export class WorkerMediaFiles {
     /**
      * Do all the API requests for all entities with the given methodName
      *
+     * @param {number} statusIndex
      * @param {number} groupStartIndex
      * @param {number} entityStartIndex
      * @param {number} entityOffset
      * @returns {Promise}
      */
     /* eslint-disable no-unused-vars, no-await-in-loop */
-    async migrateProcess(groupStartIndex = 0, entityStartIndex = 0, entityOffset = 0) {
+    async migrateProcess(statusIndex, groupStartIndex = 0, entityStartIndex = 0, entityOffset = 0) {
         return new Promise(async (resolve) => {
             let statusChangedError = false;
-            await this._workerStatusManager.onStatusChanged(this._runId).then(() => {
+            await this._workerStatusManager.changeStatus(this._runId, statusIndex).then(() => {
                 this._mediaTotalCount = 0;
                 this._migrationProcessStore.state.entityGroups.forEach((group) => {
                     if (group.id === 'processMediaFiles') {
