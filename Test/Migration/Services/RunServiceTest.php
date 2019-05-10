@@ -173,7 +173,8 @@ class RunServiceTest extends TestCase
             new DataSelectionRegistry([]),
             $this->dataRepo,
             $mediaFileRepo,
-            $this->getContainer()->get(IndexerRegistry::class)
+            $this->getContainer()->get(IndexerRegistry::class),
+            $this->getContainer()->get('shopware.cache')
         );
 
         $this->runServiceWithoutStructure = new RunService(
@@ -188,7 +189,8 @@ class RunServiceTest extends TestCase
             new DataSelectionRegistry([]),
             $this->dataRepo,
             $mediaFileRepo,
-            $this->getContainer()->get(IndexerRegistry::class)
+            $this->getContainer()->get(IndexerRegistry::class),
+            $this->getContainer()->get('shopware.cache')
         );
     }
 

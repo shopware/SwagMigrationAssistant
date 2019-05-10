@@ -163,6 +163,10 @@ class ProductConverter extends Shopware55Converter
             return new ConvertStruct(null, $data);
         }
 
+        if (empty($data['detail'])) {
+            unset($data['detail']);
+        }
+
         if (empty($data)) {
             $data = null;
         }
@@ -250,7 +254,11 @@ class ProductConverter extends Shopware55Converter
         $converted = $this->getUuidForProduct($data);
         $converted['parentId'] = $parentUuid;
         $converted = $this->getProductData($data, $converted);
-        unset($data['detail']['id'], $data['detail']['articleID']);
+        unset($data['detail']['id'], $data['detail']['articleID'], $data['categories']);
+
+        if (empty($data['detail'])) {
+            unset($data['detail']);
+        }
 
         if (empty($data)) {
             $data = null;

@@ -197,7 +197,8 @@ class MigrationProgressServiceTest extends TestCase
                 new DataSelectionRegistry([]),
                 $this->dataRepo,
                 $this->mediaFileRepo,
-                $this->getContainer()->get(IndexerRegistry::class)
+                $this->getContainer()->get(IndexerRegistry::class),
+                $this->getContainer()->get('shopware.cache')
             )
         );
     }

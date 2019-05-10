@@ -105,7 +105,8 @@ class ProductConverterTest extends TestCase
 
     public function testConvertWithCategory(): void
     {
-        $categoryConverter = new CategoryConverter($this->mappingService, $this->loggingService);
+        $mediaFileService = new DummyMediaFileService();
+        $categoryConverter = new CategoryConverter($this->mappingService, $mediaFileService, $this->loggingService);
         $categoryData = require __DIR__ . '/../../../_fixtures/category_data.php';
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
         $context = Context::createDefaultContext();

@@ -91,7 +91,6 @@ class CategoryConverter extends Shopware55Converter
         $this->connectionId = $migrationContext->getConnection()->getId();
         $this->context = $context;
         $this->oldCategoryId = $data['id'];
-        $this->locale = $data['_locale'];
         $this->runId = $migrationContext->getRunUuid();
 
         if (!isset($data['_locale'])) {
@@ -105,6 +104,7 @@ class CategoryConverter extends Shopware55Converter
 
             return new ConvertStruct(null, $data);
         }
+        $this->locale = $data['_locale'];
 
         // Legacy data which don't need a mapping or there is no equivalent field
         unset(
@@ -166,6 +166,7 @@ class CategoryConverter extends Shopware55Converter
 
         if (isset($data['asset'])) {
             $converted['media'] = $this->getCategoryMedia($data['asset']);
+            unset($data['asset']);
         }
 
         if (isset($data['attributes'])) {

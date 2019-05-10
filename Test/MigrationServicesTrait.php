@@ -58,7 +58,7 @@ trait MigrationServicesTrait
                 [
                     new ProductConverter($mappingService, $mediaFileService, $loggingService),
                     new TranslationConverter($mappingService, $loggingService),
-                    new CategoryConverter($mappingService, $loggingService),
+                    new CategoryConverter($mappingService, $mediaFileService, $loggingService),
                     new MediaConverter($mappingService, $mediaFileService),
                     new CustomerConverter($mappingService, $loggingService),
                     new CustomerConverter($mappingService, $loggingService),
