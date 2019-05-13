@@ -11,8 +11,8 @@ Module.register('swag-migration', {
     name: 'swag-migration',
     title: 'swag-migration.general.mainMenuItemGeneral',
     description: 'swag-migration.general.descriptionTextModule',
-    version: '1.0.0',
-    targetVersion: '1.0.0',
+    version: '0.9.0',
+    targetVersion: '0.9.0',
     color: '#9AA8B5',
     icon: 'default-action-settings',
 

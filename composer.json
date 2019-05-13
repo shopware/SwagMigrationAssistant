@@ -1,7 +1,7 @@
 {
     "name": "swag/migration-assistant",
     "description": "Migration plugin for Shopware",
-    "version": "v1.0.0",
+    "version": "v0.9.0",
     "type": "shopware-platform-plugin",
     "license": "MIT",
     "authors": [
@@ -16,8 +16,8 @@
         "shopware-plugin-class": "SwagMigrationAssistant\\SwagMigrationAssistant",
         "copyright": "(c) by shopware AG",
         "label": {
-            "de-DE": "Migration",
-            "en-GB": "Migration"
+            "de-DE": "Shopware Migrationsassistent",
+            "en-GB": "Shopware Migration Assistant"
         }
     },
     "autoload": {
