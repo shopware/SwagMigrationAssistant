@@ -26,6 +26,7 @@ class Shopware55LocalCurrencyReader extends Shopware55LocalAbstractReader
         $query->from('s_core_currencies', 'currency');
         $this->addTableSelection($query, 's_core_currencies', 'currency');
 
+        $query->addOrderBy('standard', 'DESC');
         $query->setFirstResult($this->migrationContext->getOffset());
         $query->setMaxResults($this->migrationContext->getLimit());
 

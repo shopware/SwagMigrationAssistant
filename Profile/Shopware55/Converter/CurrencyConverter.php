@@ -2,11 +2,11 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware55\Converter;
 
+use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
-use SwagMigrationAssistant\Migration\Logging\LogType;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
@@ -66,22 +66,27 @@ class CurrencyConverter extends Shopware55Converter
         $this->context = $context;
         $this->mainLocale = $data['_locale'];
         $this->connectionId = $migrationContext->getConnection()->getId();
-        $currencyUuid = $this->mappingService->getCurrencyUuid($this->connectionId, $data['currency'], $context);
 
-        if ($currencyUuid !== null) {
-            $this->loggingService->addInfo(
-                $migrationContext->getRunUuid(),
-                LogType::ENTITY_ALREADY_EXISTS,
-                'Entity already exists',
-                'Currency-Entity already exists.',
-                ['id' => $data['id']]
-            );
-
-            return new ConvertStruct(null, $data);
+        $isDefault = false;
+        if (isset($data['standard'])) {
+            $isDefault = (bool) $data['standard'];
         }
 
+        $currencyUuid = $this->mappingService->getCurrencyUuidWithoutMapping($this->connectionId, $data['currency'], $context);
         $converted = [];
-        $converted['id'] = $this->mappingService->createNewUuid($this->connectionId, DefaultEntities::CURRENCY, $data['currency'], $context);
+        if ($isDefault) {
+            $defaultCurrency = $this->mappingService->getDefaultCurrency($context);
+            $this->mappingService->createNewUuid($this->connectionId, DefaultEntities::CURRENCY, $defaultCurrency->getIsoCode(), $context, [], $currencyUuid);
+
+            $converted['id'] = $this->mappingService->createNewUuid($this->connectionId, DefaultEntities::CURRENCY, $data['currency'], $context, [], Defaults::CURRENCY);
+        } else {
+            if ($currencyUuid !== null && $currencyUuid !== Defaults::CURRENCY) {
+                return new ConvertStruct(null, $data);
+            }
+
+            $converted['id'] = $this->mappingService->createNewUuid($this->connectionId, DefaultEntities::CURRENCY, $data['currency'], $context);
+        }
+
         $this->getCurrencyTranslation($converted, $data);
 
         $this->convertValue($converted, 'isDefault', $data, 'standard', self::TYPE_BOOLEAN);

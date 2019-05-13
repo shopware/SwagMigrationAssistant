@@ -173,6 +173,7 @@ class RunServiceTest extends TestCase
             new DataSelectionRegistry([]),
             $this->dataRepo,
             $mediaFileRepo,
+            $this->getContainer()->get('currency.repository'),
             $this->getContainer()->get(IndexerRegistry::class),
             $this->getContainer()->get('shopware.cache')
         );
