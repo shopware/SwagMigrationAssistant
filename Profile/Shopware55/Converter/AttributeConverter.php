@@ -59,7 +59,7 @@ abstract class AttributeConverter extends AbstractConverter
                     $data['name'],
                     $context
                 ),
-                'name' => $this->getCustomFieldEntityName() . '_' . $data['name'],
+                'name' => $converted['name'] . '_' . $data['name'],
                 'type' => $data['type'],
                 'config' => $this->getCustomFieldConfiguration($data),
             ],
@@ -95,10 +95,10 @@ abstract class AttributeConverter extends AbstractConverter
                 $locale => $data['name'],
             ],
             'helpText' => [
-                $locale => '',
+                $locale => null,
             ],
-            'tooltipText' => [
-                $locale => '',
+            'placeholder' => [
+                $locale => null,
             ],
             'type' => 'text',
             'customFieldType' => 'text',
@@ -136,15 +136,17 @@ abstract class AttributeConverter extends AbstractConverter
                 $attributeData[$attributeField] = $translations;
             }
         } else {
-            $attributeData['label'] = [
-                $locale => $data['configuration']['label'],
-            ];
-            $attributeData['helpText'] = [
-                $locale => $data['configuration']['help_text'],
-            ];
-            $attributeData['tooltipText'] = [
-                $locale => $data['configuration']['support_text'],
-            ];
+            if ($data['configuration']['label'] !== null && $data['configuration']['label'] !== '') {
+                $attributeData['label'] = [
+                    $locale => $data['configuration']['label'],
+                ];
+            }
+
+            if ($data['configuration']['help_text'] !== '') {
+                $attributeData['helpText'] = [
+                    $locale => $data['configuration']['help_text'],
+                ];
+            }
         }
 
         if ($data['configuration']['column_type'] === 'text' || $data['configuration']['column_type'] === 'string') {
