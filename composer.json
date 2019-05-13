@@ -1,5 +1,5 @@
 {
-    "name": "swag/migration-next",
+    "name": "swag/migration-assistant",
     "description": "Migration plugin for Shopware",
     "version": "v1.0.0",
     "type": "shopware-platform-plugin",
