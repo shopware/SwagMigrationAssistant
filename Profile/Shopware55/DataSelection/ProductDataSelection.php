@@ -1,17 +1,17 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Profile\Shopware55\DataSelection;
+namespace SwagMigrationAssistant\Profile\Shopware55\DataSelection;
 
-use SwagMigrationNext\Migration\DataSelection\DataSelectionInterface;
-use SwagMigrationNext\Migration\DataSelection\DataSelectionStruct;
-use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ManufacturerAttributeDataSet;
-use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\MediaFolderDataSet;
-use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ProductAttributeDataSet;
-use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
-use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ProductPriceAttributeDataSet;
-use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\PropertyGroupOptionDataSet;
-use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\TranslationDataSet;
-use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Migration\DataSelection\DataSelectionInterface;
+use SwagMigrationAssistant\Migration\DataSelection\DataSelectionStruct;
+use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\ManufacturerAttributeDataSet;
+use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\MediaFolderDataSet;
+use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\ProductAttributeDataSet;
+use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
+use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\ProductPriceAttributeDataSet;
+use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\PropertyGroupOptionDataSet;
+use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\TranslationDataSet;
+use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
 class ProductDataSelection implements DataSelectionInterface
 {

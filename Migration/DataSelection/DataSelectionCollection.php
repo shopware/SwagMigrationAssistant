@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Migration\DataSelection;
+namespace SwagMigrationAssistant\Migration\DataSelection;
 
 use Shopware\Core\Framework\Struct\Collection;
 

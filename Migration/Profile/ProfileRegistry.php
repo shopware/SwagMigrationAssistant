@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Migration\Profile;
+namespace SwagMigrationAssistant\Migration\Profile;
 
-use SwagMigrationNext\Exception\ProfileNotFoundException;
+use SwagMigrationAssistant\Exception\ProfileNotFoundException;
 
 class ProfileRegistry implements ProfileRegistryInterface
 {

@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Test\Mock\Gateway\Dummy\Local;
+namespace SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local;
 
-use SwagMigrationNext\Migration\Gateway\GatewayFactoryInterface;
-use SwagMigrationNext\Migration\Gateway\GatewayInterface;
-use SwagMigrationNext\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\Gateway\GatewayFactoryInterface;
+use SwagMigrationAssistant\Migration\Gateway\GatewayInterface;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 class DummyLocalFactory implements GatewayFactoryInterface
 {

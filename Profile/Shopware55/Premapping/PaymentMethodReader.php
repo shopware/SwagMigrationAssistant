@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Profile\Shopware55\Premapping;
+namespace SwagMigrationAssistant\Profile\Shopware55\Premapping;
 
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\CashPayment;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\DebitPayment;
@@ -11,14 +11,14 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
-use SwagMigrationNext\Migration\MigrationContext;
-use SwagMigrationNext\Migration\Premapping\AbstractPremappingReader;
-use SwagMigrationNext\Migration\Premapping\PremappingChoiceStruct;
-use SwagMigrationNext\Migration\Premapping\PremappingEntityStruct;
-use SwagMigrationNext\Migration\Premapping\PremappingStruct;
-use SwagMigrationNext\Profile\Shopware55\DataSelection\CustomerAndOrderDataSelection;
-use SwagMigrationNext\Profile\Shopware55\Gateway\TableReaderFactory;
-use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\Premapping\AbstractPremappingReader;
+use SwagMigrationAssistant\Migration\Premapping\PremappingChoiceStruct;
+use SwagMigrationAssistant\Migration\Premapping\PremappingEntityStruct;
+use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
+use SwagMigrationAssistant\Profile\Shopware55\DataSelection\CustomerAndOrderDataSelection;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\TableReaderFactory;
+use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
 class PaymentMethodReader extends AbstractPremappingReader
 {

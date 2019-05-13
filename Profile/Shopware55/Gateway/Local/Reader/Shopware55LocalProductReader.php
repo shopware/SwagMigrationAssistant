@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader;
+namespace SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader;
 
 use Doctrine\DBAL\Connection;
-use SwagMigrationNext\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 class Shopware55LocalProductReader extends Shopware55LocalAbstractReader

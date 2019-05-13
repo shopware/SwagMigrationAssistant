@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Test\Mock\Profile\Dummy;
+namespace SwagMigrationAssistant\Test\Mock\Profile\Dummy;
 
 use Shopware\Core\Framework\Context;
-use SwagMigrationNext\Migration\Gateway\GatewayInterface;
-use SwagMigrationNext\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\Gateway\GatewayInterface;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 class DummyProfile
 {

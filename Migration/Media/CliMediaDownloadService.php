@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Migration\Media;
+namespace SwagMigrationAssistant\Migration\Media;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
@@ -14,9 +14,9 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
-use SwagMigrationNext\Command\Event\MigrationMediaDownloadAdvanceEvent;
-use SwagMigrationNext\Command\Event\MigrationMediaDownloadFinishEvent;
-use SwagMigrationNext\Command\Event\MigrationMediaDownloadStartEvent;
+use SwagMigrationAssistant\Command\Event\MigrationMediaDownloadAdvanceEvent;
+use SwagMigrationAssistant\Command\Event\MigrationMediaDownloadFinishEvent;
+use SwagMigrationAssistant\Command\Event\MigrationMediaDownloadStartEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class CliMediaDownloadService implements CliMediaDownloadServiceInterface

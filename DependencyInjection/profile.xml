@@ -5,13 +5,13 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="SwagMigrationNext\Migration\Profile\ProfileRegistry"
-                 class="SwagMigrationNext\Migration\Profile\ProfileRegistry">
+        <service id="SwagMigrationAssistant\Migration\Profile\ProfileRegistry"
+                 class="SwagMigrationAssistant\Migration\Profile\ProfileRegistry">
             <argument type="tagged" tag="shopware.migration.profile"/>
         </service>
 
-        <service id="SwagMigrationNext\Migration\Profile\SwagMigrationProfileDefinition"
-                 class="SwagMigrationNext\Migration\Profile\SwagMigrationProfileDefinition">
+        <service id="SwagMigrationAssistant\Migration\Profile\SwagMigrationProfileDefinition"
+                 class="SwagMigrationAssistant\Migration\Profile\SwagMigrationProfileDefinition">
             <tag name="shopware.entity.definition" entity="swag_migration_profile"/>
         </service>
     </services>

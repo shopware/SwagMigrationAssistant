@@ -1,22 +1,22 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Controller;
+namespace SwagMigrationAssistant\Controller;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use SwagMigrationNext\Exception\EntityNotExistsException;
-use SwagMigrationNext\Exception\MigrationContextPropertyMissingException;
-use SwagMigrationNext\Exception\MigrationWorkloadPropertyMissingException;
-use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
-use SwagMigrationNext\Migration\DataSelection\DataSet\DataSetRegistryInterface;
-use SwagMigrationNext\Migration\MigrationContext;
-use SwagMigrationNext\Migration\Run\RunServiceInterface;
-use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
-use SwagMigrationNext\Migration\Service\MediaFileProcessorServiceInterface;
-use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
-use SwagMigrationNext\Migration\Service\MigrationDataWriterInterface;
-use SwagMigrationNext\Migration\Service\SwagMigrationAccessTokenService;
+use SwagMigrationAssistant\Exception\EntityNotExistsException;
+use SwagMigrationAssistant\Exception\MigrationContextPropertyMissingException;
+use SwagMigrationAssistant\Exception\MigrationWorkloadPropertyMissingException;
+use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistryInterface;
+use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\Run\RunServiceInterface;
+use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
+use SwagMigrationAssistant\Migration\Service\MediaFileProcessorServiceInterface;
+use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
+use SwagMigrationAssistant\Migration\Service\MigrationDataWriterInterface;
+use SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;

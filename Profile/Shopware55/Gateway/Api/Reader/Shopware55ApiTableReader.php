@@ -1,11 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Profile\Shopware55\Gateway\Api\Reader;
+namespace SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
-use SwagMigrationNext\Exception\GatewayReadException;
-use SwagMigrationNext\Migration\Profile\TableReaderInterface;
+use SwagMigrationAssistant\Exception\GatewayReadException;
+use SwagMigrationAssistant\Migration\Profile\TableReaderInterface;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class Shopware55ApiTableReader implements TableReaderInterface

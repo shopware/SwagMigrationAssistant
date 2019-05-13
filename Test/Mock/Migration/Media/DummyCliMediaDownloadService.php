@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Test\Mock\Migration\Media;
+namespace SwagMigrationAssistant\Test\Mock\Migration\Media;
 
 use GuzzleHttp\Client;
 use Shopware\Core\Framework\Context;
-use SwagMigrationNext\Migration\Media\CliMediaDownloadService;
+use SwagMigrationAssistant\Migration\Media\CliMediaDownloadService;
 
 class DummyCliMediaDownloadService extends CliMediaDownloadService
 {

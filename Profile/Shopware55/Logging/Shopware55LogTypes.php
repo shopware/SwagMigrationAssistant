@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Profile\Shopware55\Logging;
+namespace SwagMigrationAssistant\Profile\Shopware55\Logging;
 
 final class Shopware55LogTypes
 {

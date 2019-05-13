@@ -1,11 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Migration\Profile;
+namespace SwagMigrationAssistant\Migration\Profile;
 
 use Shopware\Core\Framework\Context;
-use SwagMigrationNext\Migration\EnvironmentInformation;
-use SwagMigrationNext\Migration\Gateway\GatewayInterface;
-use SwagMigrationNext\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\EnvironmentInformation;
+use SwagMigrationAssistant\Migration\Gateway\GatewayInterface;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 interface ProfileInterface
 {

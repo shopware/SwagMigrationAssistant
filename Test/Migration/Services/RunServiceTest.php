@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Test\Migration\Services;
+namespace SwagMigrationAssistant\Test\Migration\Services;
 
 use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\TestCase;
@@ -12,26 +12,26 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
-use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
-use SwagMigrationNext\Migration\Converter\ConverterRegistry;
-use SwagMigrationNext\Migration\Data\SwagMigrationDataDefinition;
-use SwagMigrationNext\Migration\DataSelection\DataSelectionRegistry;
-use SwagMigrationNext\Migration\Gateway\GatewayFactoryRegistry;
-use SwagMigrationNext\Migration\Logging\LoggingService;
-use SwagMigrationNext\Migration\Mapping\MappingService;
-use SwagMigrationNext\Migration\Mapping\SwagMigrationMappingDefinition;
-use SwagMigrationNext\Migration\MigrationContext;
-use SwagMigrationNext\Migration\Profile\ProfileRegistry;
-use SwagMigrationNext\Migration\Run\RunService;
-use SwagMigrationNext\Migration\Service\SwagMigrationAccessTokenService;
-use SwagMigrationNext\Profile\Shopware55\Gateway\Api\Shopware55ApiFactory;
-use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
-use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
-use SwagMigrationNext\Test\MigrationServicesTrait;
-use SwagMigrationNext\Test\Mock\DummyCollection;
-use SwagMigrationNext\Test\Mock\Gateway\Dummy\Local\DummyLocalFactory;
-use SwagMigrationNext\Test\Mock\Migration\Media\DummyMediaFileService;
-use SwagMigrationNext\Test\Mock\Migration\Service\DummyMigrationDataFetcher;
+use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationAssistant\Migration\Converter\ConverterRegistry;
+use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
+use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry;
+use SwagMigrationAssistant\Migration\Gateway\GatewayFactoryRegistry;
+use SwagMigrationAssistant\Migration\Logging\LoggingService;
+use SwagMigrationAssistant\Migration\Mapping\MappingService;
+use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition;
+use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\Profile\ProfileRegistry;
+use SwagMigrationAssistant\Migration\Run\RunService;
+use SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Shopware55ApiFactory;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
+use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Test\MigrationServicesTrait;
+use SwagMigrationAssistant\Test\Mock\DummyCollection;
+use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalFactory;
+use SwagMigrationAssistant\Test\Mock\Migration\Media\DummyMediaFileService;
+use SwagMigrationAssistant\Test\Mock\Migration\Service\DummyMigrationDataFetcher;
 
 class RunServiceTest extends TestCase
 {

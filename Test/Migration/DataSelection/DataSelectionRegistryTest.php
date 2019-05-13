@@ -1,21 +1,21 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Test\Migration\DataSelection;
+namespace SwagMigrationAssistant\Test\Migration\DataSelection;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Uuid\Uuid;
-use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
-use SwagMigrationNext\Migration\DataSelection\DataSelectionRegistry;
-use SwagMigrationNext\Migration\DataSelection\DataSelectionStruct;
-use SwagMigrationNext\Migration\EnvironmentInformation;
-use SwagMigrationNext\Migration\MigrationContext;
-use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
-use SwagMigrationNext\Profile\Shopware55\DataSelection\CustomerAndOrderDataSelection;
-use SwagMigrationNext\Profile\Shopware55\DataSelection\MediaDataSelection;
-use SwagMigrationNext\Profile\Shopware55\DataSelection\ProductDataSelection;
-use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
-use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
-use SwagMigrationNext\Test\Mock\DummyCollection;
+use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry;
+use SwagMigrationAssistant\Migration\DataSelection\DataSelectionStruct;
+use SwagMigrationAssistant\Migration\EnvironmentInformation;
+use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\Profile\SwagMigrationProfileEntity;
+use SwagMigrationAssistant\Profile\Shopware55\DataSelection\CustomerAndOrderDataSelection;
+use SwagMigrationAssistant\Profile\Shopware55\DataSelection\MediaDataSelection;
+use SwagMigrationAssistant\Profile\Shopware55\DataSelection\ProductDataSelection;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
+use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Test\Mock\DummyCollection;
 
 class DataSelectionRegistryTest extends TestCase
 {

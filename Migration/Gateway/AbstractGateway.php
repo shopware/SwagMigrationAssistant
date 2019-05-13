@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Migration\Gateway;
+namespace SwagMigrationAssistant\Migration\Gateway;
 
-use SwagMigrationNext\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 abstract class AbstractGateway implements GatewayInterface
 {

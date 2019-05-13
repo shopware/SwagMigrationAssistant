@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Test;
+namespace SwagMigrationAssistant\Test;
 
 use Shopware\Core\Checkout\Cart\Price\PriceRounding;
 use Shopware\Core\Checkout\Cart\Tax\TaxCalculator;
@@ -22,25 +22,25 @@ use Shopware\Core\System\Locale\LocaleEntity;
 use Shopware\Core\System\Salutation\SalutationEntity;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateEntity;
 use Shopware\Core\System\StateMachine\StateMachineEntity;
-use SwagMigrationNext\Migration\Converter\ConverterRegistry;
-use SwagMigrationNext\Migration\Gateway\GatewayFactoryRegistry;
-use SwagMigrationNext\Migration\Logging\LoggingService;
-use SwagMigrationNext\Migration\Mapping\MappingService;
-use SwagMigrationNext\Migration\Media\MediaFileServiceInterface;
-use SwagMigrationNext\Migration\Profile\ProfileRegistry;
-use SwagMigrationNext\Migration\Service\MigrationDataFetcher;
-use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
-use SwagMigrationNext\Profile\Shopware55\Converter\CategoryConverter;
-use SwagMigrationNext\Profile\Shopware55\Converter\CustomerConverter;
-use SwagMigrationNext\Profile\Shopware55\Converter\MediaConverter;
-use SwagMigrationNext\Profile\Shopware55\Converter\OrderConverter;
-use SwagMigrationNext\Profile\Shopware55\Converter\ProductConverter;
-use SwagMigrationNext\Profile\Shopware55\Converter\TranslationConverter;
-use SwagMigrationNext\Profile\Shopware55\Gateway\Api\Shopware55ApiFactory;
-use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
-use SwagMigrationNext\Test\Mock\DummyCollection;
-use SwagMigrationNext\Test\Mock\Gateway\Dummy\Local\DummyLocalFactory;
-use SwagMigrationNext\Test\Mock\Profile\Dummy\DummyInvalidCustomerConverter;
+use SwagMigrationAssistant\Migration\Converter\ConverterRegistry;
+use SwagMigrationAssistant\Migration\Gateway\GatewayFactoryRegistry;
+use SwagMigrationAssistant\Migration\Logging\LoggingService;
+use SwagMigrationAssistant\Migration\Mapping\MappingService;
+use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
+use SwagMigrationAssistant\Migration\Profile\ProfileRegistry;
+use SwagMigrationAssistant\Migration\Service\MigrationDataFetcher;
+use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\CategoryConverter;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\CustomerConverter;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\MediaConverter;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\OrderConverter;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\ProductConverter;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\TranslationConverter;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Shopware55ApiFactory;
+use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Test\Mock\DummyCollection;
+use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalFactory;
+use SwagMigrationAssistant\Test\Mock\Profile\Dummy\DummyInvalidCustomerConverter;
 
 trait MigrationServicesTrait
 {

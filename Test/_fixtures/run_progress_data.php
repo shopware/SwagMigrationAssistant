@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
-use SwagMigrationNext\Migration\Run\EntityProgress;
-use SwagMigrationNext\Migration\Run\RunProgress;
+use SwagMigrationAssistant\Migration\Run\EntityProgress;
+use SwagMigrationAssistant\Migration\Run\RunProgress;
 
 // Categories & Products
 $categoryEntity = new EntityProgress();

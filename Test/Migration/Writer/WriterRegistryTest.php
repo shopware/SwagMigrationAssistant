@@ -1,13 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Test\Migration\Writer;
+namespace SwagMigrationAssistant\Test\Migration\Writer;
 
 use PHPUnit\Framework\TestCase;
-use SwagMigrationNext\Exception\WriterNotFoundException;
-use SwagMigrationNext\Migration\Writer\WriterRegistry;
-use SwagMigrationNext\Migration\Writer\WriterRegistryInterface;
-use SwagMigrationNext\Test\Mock\DummyCollection;
-use SwagMigrationNext\Test\Mock\Migration\Writer\DummyWriter;
+use SwagMigrationAssistant\Exception\WriterNotFoundException;
+use SwagMigrationAssistant\Migration\Writer\WriterRegistry;
+use SwagMigrationAssistant\Migration\Writer\WriterRegistryInterface;
+use SwagMigrationAssistant\Test\Mock\DummyCollection;
+use SwagMigrationAssistant\Test\Mock\Migration\Writer\DummyWriter;
 use Symfony\Component\HttpFoundation\Response;
 
 class WriterRegistryTest extends TestCase

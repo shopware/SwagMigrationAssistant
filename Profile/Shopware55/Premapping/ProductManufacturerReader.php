@@ -1,19 +1,19 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Profile\Shopware55\Premapping;
+namespace SwagMigrationAssistant\Profile\Shopware55\Premapping;
 
 use Shopware\Core\Content\Product\Aggregate\ProductManufacturer\ProductManufacturerEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
-use SwagMigrationNext\Migration\MigrationContext;
-use SwagMigrationNext\Migration\Premapping\AbstractPremappingReader;
-use SwagMigrationNext\Migration\Premapping\PremappingChoiceStruct;
-use SwagMigrationNext\Migration\Premapping\PremappingEntityStruct;
-use SwagMigrationNext\Migration\Premapping\PremappingStruct;
-use SwagMigrationNext\Profile\Shopware55\DataSelection\ProductDataSelection;
-use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\Premapping\AbstractPremappingReader;
+use SwagMigrationAssistant\Migration\Premapping\PremappingChoiceStruct;
+use SwagMigrationAssistant\Migration\Premapping\PremappingEntityStruct;
+use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
+use SwagMigrationAssistant\Profile\Shopware55\DataSelection\ProductDataSelection;
+use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
 class ProductManufacturerReader extends AbstractPremappingReader
 {

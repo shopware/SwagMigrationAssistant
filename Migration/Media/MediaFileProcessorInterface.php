@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Migration\Media;
+namespace SwagMigrationAssistant\Migration\Media;
 
 use Shopware\Core\Framework\Context;
-use SwagMigrationNext\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 interface MediaFileProcessorInterface
 {

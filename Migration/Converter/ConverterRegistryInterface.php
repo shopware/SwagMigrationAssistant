@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Migration\Converter;
+namespace SwagMigrationAssistant\Migration\Converter;
 
-use SwagMigrationNext\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 interface ConverterRegistryInterface
 {

@@ -1,17 +1,17 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Test\Profile\Shopware55\Converter;
+namespace SwagMigrationAssistant\Test\Profile\Shopware55\Converter;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Uuid\Uuid;
-use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
-use SwagMigrationNext\Migration\MigrationContext;
-use SwagMigrationNext\Profile\Shopware55\Converter\MediaConverter;
-use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\MediaDataSet;
-use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
-use SwagMigrationNext\Test\Mock\Migration\Mapping\DummyMappingService;
-use SwagMigrationNext\Test\Mock\Migration\Media\DummyMediaFileService;
+use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\MediaConverter;
+use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\MediaDataSet;
+use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
+use SwagMigrationAssistant\Test\Mock\Migration\Media\DummyMediaFileService;
 
 class MediaConverterTest extends TestCase
 {

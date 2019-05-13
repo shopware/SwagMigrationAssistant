@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Test\Command;
+namespace SwagMigrationAssistant\Test\Command;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Content\Category\CategoryDefinition;
@@ -12,20 +12,20 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
-use SwagMigrationNext\Command\MigrationFetchDataCommand;
-use SwagMigrationNext\Command\MigrationWriteDataCommand;
-use SwagMigrationNext\Migration\Data\SwagMigrationDataDefinition;
-use SwagMigrationNext\Migration\Logging\LoggingService;
-use SwagMigrationNext\Migration\Mapping\MappingService;
-use SwagMigrationNext\Migration\Media\MediaFileService;
-use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
-use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
-use SwagMigrationNext\Migration\Service\MigrationDataWriter;
-use SwagMigrationNext\Migration\Service\MigrationDataWriterInterface;
-use SwagMigrationNext\Migration\Writer\CategoryWriter;
-use SwagMigrationNext\Migration\Writer\ProductWriter;
-use SwagMigrationNext\Migration\Writer\WriterRegistry;
-use SwagMigrationNext\Test\MigrationServicesTrait;
+use SwagMigrationAssistant\Command\MigrationFetchDataCommand;
+use SwagMigrationAssistant\Command\MigrationWriteDataCommand;
+use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
+use SwagMigrationAssistant\Migration\Logging\LoggingService;
+use SwagMigrationAssistant\Migration\Mapping\MappingService;
+use SwagMigrationAssistant\Migration\Media\MediaFileService;
+use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
+use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
+use SwagMigrationAssistant\Migration\Service\MigrationDataWriter;
+use SwagMigrationAssistant\Migration\Service\MigrationDataWriterInterface;
+use SwagMigrationAssistant\Migration\Writer\CategoryWriter;
+use SwagMigrationAssistant\Migration\Writer\ProductWriter;
+use SwagMigrationAssistant\Migration\Writer\WriterRegistry;
+use SwagMigrationAssistant\Test\MigrationServicesTrait;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 

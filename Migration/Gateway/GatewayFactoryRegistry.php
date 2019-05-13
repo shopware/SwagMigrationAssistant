@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Migration\Gateway;
+namespace SwagMigrationAssistant\Migration\Gateway;
 
-use SwagMigrationNext\Exception\GatewayNotFoundException;
-use SwagMigrationNext\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Exception\GatewayNotFoundException;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 class GatewayFactoryRegistry implements GatewayFactoryRegistryInterface
 {

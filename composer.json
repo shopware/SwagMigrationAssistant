@@ -13,7 +13,7 @@
         "shopware/platform": "dev-master"
     },
     "extra": {
-        "shopware-plugin-class": "SwagMigrationNext\\SwagMigrationNext",
+        "shopware-plugin-class": "SwagMigrationAssistant\\SwagMigrationAssistant",
         "copyright": "(c) by shopware AG",
         "label": {
             "de-DE": "Migration",
@@ -22,7 +22,7 @@
     },
     "autoload": {
         "psr-4": {
-            "SwagMigrationNext\\": ""
+            "SwagMigrationAssistant\\": ""
         }
     }
 }

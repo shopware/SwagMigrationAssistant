@@ -14,7 +14,7 @@
     </php>
 
     <testsuites>
-        <testsuite name="SwagMigrationNext Testsuite">
+        <testsuite name="SwagMigrationAssistant Testsuite">
             <directory suffix="MigrationServicesTrait.php">Test</directory>
             <directory>Test</directory>
         </testsuite>
@@ -35,7 +35,7 @@
                 <!-- Can only thrown, if permissions denied -->
                 <file>./Exception/NoFileSystemPermissionsException.php</file>
                 <file>./Migration/EnvironmentInformation.php</file>
-                <file>SwagMigrationNext.php</file>
+                <file>SwagMigrationAssistant.php</file>
             </exclude>
         </whitelist>
     </filter>

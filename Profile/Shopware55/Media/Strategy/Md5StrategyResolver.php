@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Profile\Shopware55\Media\Strategy;
+namespace SwagMigrationAssistant\Profile\Shopware55\Media\Strategy;
 
-use SwagMigrationNext\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 class Md5StrategyResolver implements StrategyResolverInterface
 {

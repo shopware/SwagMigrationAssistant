@@ -1,23 +1,23 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Test\Profile\Shopware55\Converter;
+namespace SwagMigrationAssistant\Test\Profile\Shopware55\Converter;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Uuid\Uuid;
-use SwagMigrationNext\Exception\ConverterNotFoundException;
-use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
-use SwagMigrationNext\Migration\Converter\ConverterRegistry;
-use SwagMigrationNext\Migration\Converter\ConverterRegistryInterface;
-use SwagMigrationNext\Migration\MigrationContext;
-use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
-use SwagMigrationNext\Profile\Shopware55\Converter\ProductConverter;
-use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
-use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
-use SwagMigrationNext\Test\Mock\DummyCollection;
-use SwagMigrationNext\Test\Mock\Migration\Logging\DummyLoggingService;
-use SwagMigrationNext\Test\Mock\Migration\Mapping\DummyMappingService;
-use SwagMigrationNext\Test\Mock\Migration\Media\DummyMediaFileService;
-use SwagMigrationNext\Test\Profile\Shopware55\DataSet\FooDataSet;
+use SwagMigrationAssistant\Exception\ConverterNotFoundException;
+use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationAssistant\Migration\Converter\ConverterRegistry;
+use SwagMigrationAssistant\Migration\Converter\ConverterRegistryInterface;
+use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\Profile\SwagMigrationProfileEntity;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\ProductConverter;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
+use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Test\Mock\DummyCollection;
+use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
+use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
+use SwagMigrationAssistant\Test\Mock\Migration\Media\DummyMediaFileService;
+use SwagMigrationAssistant\Test\Profile\Shopware55\DataSet\FooDataSet;
 use Symfony\Component\HttpFoundation\Response;
 
 class ConverterRegistryTest extends TestCase

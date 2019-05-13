@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Profile\Shopware55\Media;
+namespace SwagMigrationAssistant\Profile\Shopware55\Media;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Promise;
@@ -15,14 +15,14 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Uuid\Uuid;
-use SwagMigrationNext\Exception\NoFileSystemPermissionsException;
-use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
-use SwagMigrationNext\Migration\Media\AbstractMediaFileProcessor;
-use SwagMigrationNext\Migration\Media\SwagMigrationMediaFileEntity;
-use SwagMigrationNext\Migration\MigrationContextInterface;
-use SwagMigrationNext\Profile\Shopware55\Gateway\Api\Shopware55ApiGateway;
-use SwagMigrationNext\Profile\Shopware55\Logging\Shopware55LogTypes;
-use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Exception\NoFileSystemPermissionsException;
+use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Media\AbstractMediaFileProcessor;
+use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileEntity;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Shopware55ApiGateway;
+use SwagMigrationAssistant\Profile\Shopware55\Logging\Shopware55LogTypes;
+use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
 class HttpMediaDownloadService extends AbstractMediaFileProcessor
 {

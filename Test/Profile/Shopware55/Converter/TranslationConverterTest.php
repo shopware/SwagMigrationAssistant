@@ -1,25 +1,25 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Test\Profile\Shopware55\Converter;
+namespace SwagMigrationAssistant\Test\Profile\Shopware55\Converter;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Uuid\Uuid;
-use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
-use SwagMigrationNext\Migration\MigrationContext;
-use SwagMigrationNext\Migration\MigrationContextInterface;
-use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
-use SwagMigrationNext\Profile\Shopware55\Converter\CategoryConverter;
-use SwagMigrationNext\Profile\Shopware55\Converter\ProductConverter;
-use SwagMigrationNext\Profile\Shopware55\Converter\TranslationConverter;
-use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CategoryDataSet;
-use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
-use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\TranslationDataSet;
-use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
-use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
-use SwagMigrationNext\Test\Mock\Migration\Logging\DummyLoggingService;
-use SwagMigrationNext\Test\Mock\Migration\Mapping\DummyMappingService;
-use SwagMigrationNext\Test\Mock\Migration\Media\DummyMediaFileService;
+use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\Profile\SwagMigrationProfileEntity;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\CategoryConverter;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\ProductConverter;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\TranslationConverter;
+use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\CategoryDataSet;
+use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
+use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\TranslationDataSet;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
+use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
+use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
+use SwagMigrationAssistant\Test\Mock\Migration\Media\DummyMediaFileService;
 
 class TranslationConverterTest extends TestCase
 {

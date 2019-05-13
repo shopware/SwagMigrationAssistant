@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Test\Profile\Shopware55\DataSet;
+namespace SwagMigrationAssistant\Test\Profile\Shopware55\DataSet;
 
-use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\Shopware55DataSet;
+use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\Shopware55DataSet;
 
 class FooDataSet extends Shopware55DataSet
 {

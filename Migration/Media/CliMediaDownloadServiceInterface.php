@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Migration\Media;
+namespace SwagMigrationAssistant\Migration\Media;
 
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Framework\Context;

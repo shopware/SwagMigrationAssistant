@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Migration\Media;
+namespace SwagMigrationAssistant\Migration\Media;
 
-use SwagMigrationNext\Exception\ProcessorNotFoundException;
-use SwagMigrationNext\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Exception\ProcessorNotFoundException;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 interface MediaFileProcessorRegistryInterface
 {

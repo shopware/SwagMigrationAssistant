@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Test\Mock\Migration\Logging;
+namespace SwagMigrationAssistant\Test\Mock\Migration\Logging;
 
-use SwagMigrationNext\Migration\Logging\LoggingService;
+use SwagMigrationAssistant\Migration\Logging\LoggingService;
 
 class DummyLoggingService extends LoggingService
 {

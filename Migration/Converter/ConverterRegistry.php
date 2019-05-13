@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Migration\Converter;
+namespace SwagMigrationAssistant\Migration\Converter;
 
-use SwagMigrationNext\Exception\ConverterNotFoundException;
-use SwagMigrationNext\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Exception\ConverterNotFoundException;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 class ConverterRegistry implements ConverterRegistryInterface
 {

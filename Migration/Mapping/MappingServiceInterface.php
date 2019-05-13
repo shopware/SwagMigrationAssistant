@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Migration\Mapping;
+namespace SwagMigrationAssistant\Migration\Mapping;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Language\LanguageEntity;
-use SwagMigrationNext\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 interface MappingServiceInterface
 {

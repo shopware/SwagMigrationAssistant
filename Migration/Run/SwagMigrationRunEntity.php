@@ -1,15 +1,15 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Migration\Run;
+namespace SwagMigrationAssistant\Migration\Run;
 
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
-use SwagMigrationNext\Exception\MigrationRunUndefinedStatusException;
-use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
-use SwagMigrationNext\Migration\Data\SwagMigrationDataCollection;
-use SwagMigrationNext\Migration\Logging\SwagMigrationLoggingCollection;
-use SwagMigrationNext\Migration\Media\SwagMigrationMediaFileCollection;
-use SwagMigrationNext\Migration\Premapping\PremappingStruct;
+use SwagMigrationAssistant\Exception\MigrationRunUndefinedStatusException;
+use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationAssistant\Migration\Data\SwagMigrationDataCollection;
+use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingCollection;
+use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileCollection;
+use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
 
 class SwagMigrationRunEntity extends Entity
 {

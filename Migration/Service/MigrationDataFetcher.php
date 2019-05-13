@@ -1,14 +1,14 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Migration\Service;
+namespace SwagMigrationAssistant\Migration\Service;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\ShopwareHttpException;
-use SwagMigrationNext\Migration\EnvironmentInformation;
-use SwagMigrationNext\Migration\Gateway\GatewayFactoryRegistryInterface;
-use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
-use SwagMigrationNext\Migration\MigrationContextInterface;
-use SwagMigrationNext\Migration\Profile\ProfileRegistryInterface;
+use SwagMigrationAssistant\Migration\EnvironmentInformation;
+use SwagMigrationAssistant\Migration\Gateway\GatewayFactoryRegistryInterface;
+use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\Profile\ProfileRegistryInterface;
 
 class MigrationDataFetcher implements MigrationDataFetcherInterface
 {

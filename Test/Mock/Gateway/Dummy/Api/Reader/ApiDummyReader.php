@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Test\Mock\Gateway\Dummy\Api\Reader;
+namespace SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Api\Reader;
 
-use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 
 class ApiDummyReader
 {

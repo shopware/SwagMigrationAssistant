@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Migration\Logging;
+namespace SwagMigrationAssistant\Migration\Logging;
 
 final class LogType
 {

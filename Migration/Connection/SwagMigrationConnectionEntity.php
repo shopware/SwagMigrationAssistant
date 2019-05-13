@@ -1,14 +1,14 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Migration\Connection;
+namespace SwagMigrationAssistant\Migration\Connection;
 
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
-use SwagMigrationNext\Migration\Mapping\SwagMigrationMappingCollection;
-use SwagMigrationNext\Migration\Premapping\PremappingStruct;
-use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
-use SwagMigrationNext\Migration\Run\SwagMigrationRunCollection;
-use SwagMigrationNext\Migration\Setting\GeneralSettingCollection;
+use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingCollection;
+use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
+use SwagMigrationAssistant\Migration\Profile\SwagMigrationProfileEntity;
+use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
+use SwagMigrationAssistant\Migration\Setting\GeneralSettingCollection;
 
 class SwagMigrationConnectionEntity extends Entity
 {

@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Migration\Writer;
+namespace SwagMigrationAssistant\Migration\Writer;
 
-use SwagMigrationNext\Exception\WriterNotFoundException;
+use SwagMigrationAssistant\Exception\WriterNotFoundException;
 
 class WriterRegistry implements WriterRegistryInterface
 {
