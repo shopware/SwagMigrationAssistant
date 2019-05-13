@@ -14,6 +14,7 @@ use SwagMigrationNext\Profile\Shopware55\Exception\ParentEntityForChildNotFoundE
 use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationNext\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationNext\Test\Mock\Migration\Mapping\DummyMappingService;
+use SwagMigrationNext\Test\Mock\Migration\Media\DummyMediaFileService;
 use Symfony\Component\HttpFoundation\Response;
 
 class CategoryConverterTest extends TestCase
@@ -45,9 +46,10 @@ class CategoryConverterTest extends TestCase
 
     protected function setUp(): void
     {
+        $mediaFileService = new DummyMediaFileService();
         $mappingService = new DummyMappingService();
         $this->loggingService = new DummyLoggingService();
-        $this->categoryConverter = new CategoryConverter($mappingService, $this->loggingService);
+        $this->categoryConverter = new CategoryConverter($mappingService, $mediaFileService, $this->loggingService);
 
         $this->runId = Uuid::randomHex();
         $this->connection = new SwagMigrationConnectionEntity();

@@ -163,7 +163,8 @@ class MigrationControllerTest extends TestCase
                 new DataSelectionRegistry([]),
                 $dataRepo,
                 $mediaFileRepo,
-                $this->getContainer()->get(IndexerRegistry::class)
+                $this->getContainer()->get(IndexerRegistry::class),
+                $this->getContainer()->get('shopware.cache')
             ),
             $this->runRepo,
             $this->dataSetRegistry

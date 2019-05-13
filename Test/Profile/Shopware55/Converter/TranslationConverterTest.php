@@ -252,8 +252,9 @@ class TranslationConverterTest extends TestCase
     {
         $categoryData = require __DIR__ . '/../../../_fixtures/category_data.php';
         $context = Context::createDefaultContext();
+        $mediaFileService = new DummyMediaFileService();
 
-        $categoryConverter = new CategoryConverter($this->mappingService, $this->loggingService);
+        $categoryConverter = new CategoryConverter($this->mappingService, $mediaFileService, $this->loggingService);
         $categoryConvertResult = $categoryConverter->convert($categoryData[1], $context, $this->categoryMigrationContext);
 
         $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
@@ -286,8 +287,9 @@ class TranslationConverterTest extends TestCase
     {
         $categoryData = require __DIR__ . '/../../../_fixtures/category_data.php';
         $context = Context::createDefaultContext();
+        $mediaFileService = new DummyMediaFileService();
 
-        $categoryConverter = new CategoryConverter($this->mappingService, $this->loggingService);
+        $categoryConverter = new CategoryConverter($this->mappingService, $mediaFileService, $this->loggingService);
         $categoryConverter->convert($categoryData[1], $context, $this->categoryMigrationContext);
 
         $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';

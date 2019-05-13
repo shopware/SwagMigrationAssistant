@@ -150,7 +150,8 @@ class StatusControllerTest extends TestCase
                 ]),
                 $dataRepo,
                 $mediaFileRepo,
-                $this->getContainer()->get(IndexerRegistry::class)
+                $this->getContainer()->get(IndexerRegistry::class),
+                $this->getContainer()->get('shopware.cache')
             ),
             new DataSelectionRegistry([
                 new ProductDataSelection(),

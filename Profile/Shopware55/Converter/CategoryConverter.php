@@ -7,6 +7,7 @@ use SwagMigrationNext\Migration\Converter\ConvertStruct;
 use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
 use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
+use SwagMigrationNext\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationNext\Migration\MigrationContextInterface;
 use SwagMigrationNext\Profile\Shopware55\Exception\ParentEntityForChildNotFoundException;
 use SwagMigrationNext\Profile\Shopware55\Logging\Shopware55LogTypes;
@@ -18,6 +19,11 @@ class CategoryConverter extends Shopware55Converter
      * @var MappingServiceInterface
      */
     private $mappingService;
+
+    /**
+     * @var MediaFileServiceInterface
+     */
+    private $mediaFileService;
 
     /**
      * @var string
@@ -39,11 +45,23 @@ class CategoryConverter extends Shopware55Converter
      */
     private $loggingService;
 
+    /**
+     * @var string
+     */
+    private $locale;
+
+    /**
+     * @var string
+     */
+    private $runId;
+
     public function __construct(
         MappingServiceInterface $mappingService,
+        MediaFileServiceInterface $mediaFileService,
         LoggingServiceInterface $loggingService
     ) {
         $this->mappingService = $mappingService;
+        $this->mediaFileService = $mediaFileService;
         $this->loggingService = $loggingService;
     }
 
@@ -73,6 +91,7 @@ class CategoryConverter extends Shopware55Converter
         $this->connectionId = $migrationContext->getConnection()->getId();
         $this->context = $context;
         $this->oldCategoryId = $data['id'];
+        $this->runId = $migrationContext->getRunUuid();
 
         if (!isset($data['_locale'])) {
             $this->loggingService->addWarning(
@@ -85,6 +104,7 @@ class CategoryConverter extends Shopware55Converter
 
             return new ConvertStruct(null, $data);
         }
+        $this->locale = $data['_locale'];
 
         // Legacy data which don't need a mapping or there is no equivalent field
         unset(
@@ -97,7 +117,6 @@ class CategoryConverter extends Shopware55Converter
             $data['metakeywords'],
             $data['metadescription'],
             $data['cmsheadline'],
-            $data['cmstext'],
             $data['meta_title'],
             $data['categorypath'],
             $data['shops'],
@@ -105,8 +124,7 @@ class CategoryConverter extends Shopware55Converter
             // TODO check how to handle these
             $data['template'],
             $data['external_target'],
-            $data['mediaID'],
-            $data['asset']
+            $data['mediaID']
         );
 
         if (isset($data['parent'])) {
@@ -133,6 +151,7 @@ class CategoryConverter extends Shopware55Converter
         );
         unset($data['id']);
 
+        $this->convertValue($converted, 'description', $data, 'cmstext', self::TYPE_STRING);
         $this->convertValue($converted, 'position', $data, 'position', self::TYPE_INTEGER);
         $this->convertValue($converted, 'level', $data, 'level', self::TYPE_INTEGER);
         $this->convertValue($converted, 'active', $data, 'active', self::TYPE_BOOLEAN);
@@ -144,6 +163,11 @@ class CategoryConverter extends Shopware55Converter
         $this->convertValue($converted, 'hideSortings', $data, 'hide_sortings', self::TYPE_BOOLEAN);
         $this->convertValue($converted, 'sortingIds', $data, 'sorting_ids');
         $this->convertValue($converted, 'facetIds', $data, 'facet_ids');
+
+        if (isset($data['asset'])) {
+            $converted['media'] = $this->getCategoryMedia($data['asset']);
+            unset($data['asset']);
+        }
 
         if (isset($data['attributes'])) {
             $converted['customFields'] = $this->getAttributes($data['attributes']);
@@ -211,5 +235,69 @@ class CategoryConverter extends Shopware55Converter
         }
 
         return $result;
+    }
+
+    private function getCategoryMedia(array $media): array
+    {
+        $categoryMedia['id'] = $this->mappingService->createNewUuid(
+            $this->connectionId,
+            DefaultEntities::MEDIA,
+            $media['id'],
+            $this->context
+        );
+
+        if (empty($media['name'])) {
+            $media['name'] = $categoryMedia['id'];
+        }
+
+        $this->getMediaTranslation($categoryMedia, ['media' => $media]);
+
+        $albumUuid = $this->mappingService->getUuid(
+            $this->connectionId,
+            DefaultEntities::MEDIA_FOLDER,
+            $media['albumID'],
+            $this->context
+        );
+
+        if ($albumUuid !== null) {
+            $categoryMedia['mediaFolderId'] = $albumUuid;
+        }
+
+        $this->mediaFileService->saveMediaFile(
+            [
+                'runId' => $this->runId,
+                'uri' => $media['uri'] ?? $media['path'],
+                'fileName' => $media['name'],
+                'fileSize' => (int) $media['file_size'],
+                'mediaId' => $categoryMedia['id'],
+            ]
+        );
+
+        return $categoryMedia;
+    }
+
+    private function getMediaTranslation(array &$media, array $data): void
+    {
+        $language = $this->mappingService->getDefaultLanguage($this->context);
+        if ($language->getLocale()->getCode() === $this->locale) {
+            return;
+        }
+
+        $localeTranslation = [];
+
+        $this->convertValue($localeTranslation, 'name', $data['media'], 'name');
+        $this->convertValue($localeTranslation, 'description', $data['media'], 'description');
+
+        $localeTranslation['id'] = $this->mappingService->createNewUuid(
+            $this->connectionId,
+            DefaultEntities::MEDIA_TRANSLATION,
+            $data['media']['id'] . ':' . $this->locale,
+            $this->context
+        );
+
+        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->locale, $this->context);
+        $localeTranslation['languageId'] = $languageUuid;
+
+        $media['translations'][$languageUuid] = $localeTranslation;
     }
 }

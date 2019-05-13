@@ -65,6 +65,7 @@
 
         <service id="SwagMigrationNext\Profile\Shopware55\Converter\CategoryConverter">
             <argument type="service" id="SwagMigrationNext\Migration\Mapping\MappingService"/>
+            <argument type="service" id="SwagMigrationNext\Migration\Media\MediaFileService"/>
             <argument type="service" id="SwagMigrationNext\Migration\Logging\LoggingService"/>
             <tag name="shopware.migration.converter"/>
         </service>
