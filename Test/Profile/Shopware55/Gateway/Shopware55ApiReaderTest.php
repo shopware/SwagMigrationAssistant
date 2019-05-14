@@ -1,17 +1,17 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Test\Profile\Shopware55\Gateway;
+namespace SwagMigrationAssistant\Test\Profile\Shopware55\Gateway;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
-use SwagMigrationNext\Exception\GatewayReadException;
-use SwagMigrationNext\Migration\MigrationContext;
-use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
-use SwagMigrationNext\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiReader;
-use SwagMigrationNext\Test\Profile\Shopware55\DataSet\FooDataSet;
+use SwagMigrationAssistant\Exception\GatewayReadException;
+use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiReader;
+use SwagMigrationAssistant\Test\Profile\Shopware55\DataSet\FooDataSet;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class Shopware55ApiReaderTest extends TestCase

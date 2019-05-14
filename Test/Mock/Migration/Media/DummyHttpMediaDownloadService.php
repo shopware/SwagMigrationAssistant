@@ -1,12 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Test\Mock\Migration\Media;
+namespace SwagMigrationAssistant\Test\Mock\Migration\Media;
 
 use Shopware\Core\Framework\Context;
-use SwagMigrationNext\Migration\Media\AbstractMediaFileProcessor;
-use SwagMigrationNext\Migration\MigrationContextInterface;
-use SwagMigrationNext\Profile\Shopware55\Gateway\Api\Shopware55ApiGateway;
-use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Migration\Media\AbstractMediaFileProcessor;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Shopware55ApiGateway;
+use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
 class DummyHttpMediaDownloadService extends AbstractMediaFileProcessor
 {

@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Migration\Profile;
+namespace SwagMigrationAssistant\Migration\Profile;
 
 interface TableReaderInterface
 {

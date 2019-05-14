@@ -1,17 +1,17 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Test\Command;
+namespace SwagMigrationAssistant\Test\Command;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
-use SwagMigrationNext\Command\MigrationFetchDataCommand;
-use SwagMigrationNext\Migration\Data\SwagMigrationDataDefinition;
-use SwagMigrationNext\Migration\Mapping\MappingService;
-use SwagMigrationNext\Migration\Media\MediaFileService;
-use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
-use SwagMigrationNext\Test\MigrationServicesTrait;
+use SwagMigrationAssistant\Command\MigrationFetchDataCommand;
+use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
+use SwagMigrationAssistant\Migration\Mapping\MappingService;
+use SwagMigrationAssistant\Migration\Media\MediaFileService;
+use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
+use SwagMigrationAssistant\Test\MigrationServicesTrait;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 

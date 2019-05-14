@@ -1,14 +1,14 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Test\Profile\Shopware55\Gateway;
+namespace SwagMigrationAssistant\Test\Profile\Shopware55\Gateway;
 
 use PHPUnit\Framework\TestCase;
-use SwagMigrationNext\Exception\GatewayReadException;
-use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
-use SwagMigrationNext\Migration\EnvironmentInformation;
-use SwagMigrationNext\Migration\MigrationContext;
-use SwagMigrationNext\Profile\Shopware55\Gateway\Api\Shopware55ApiFactory;
-use SwagMigrationNext\Test\Profile\Shopware55\DataSet\FooDataSet;
+use SwagMigrationAssistant\Exception\GatewayReadException;
+use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationAssistant\Migration\EnvironmentInformation;
+use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Shopware55ApiFactory;
+use SwagMigrationAssistant\Test\Profile\Shopware55\DataSet\FooDataSet;
 
 class Shopware55ApiGatewayTest extends TestCase
 {

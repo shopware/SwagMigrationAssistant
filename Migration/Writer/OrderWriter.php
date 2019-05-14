@@ -1,13 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Migration\Writer;
+namespace SwagMigrationAssistant\Migration\Writer;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
 use Shopware\Core\Framework\Struct\Serializer\StructNormalizer;
-use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 
 class OrderWriter implements WriterInterface
 {

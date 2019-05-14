@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Test\Migration\Logging;
+namespace SwagMigrationAssistant\Test\Migration\Logging;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
@@ -8,8 +8,8 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
-use SwagMigrationNext\Migration\Logging\LoggingService;
-use SwagMigrationNext\Migration\Logging\SwagMigrationLoggingEntity;
+use SwagMigrationAssistant\Migration\Logging\LoggingService;
+use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingEntity;
 
 class LoggingServiceTest extends TestCase
 {

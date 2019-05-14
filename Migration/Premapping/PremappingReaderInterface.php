@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Migration\Premapping;
+namespace SwagMigrationAssistant\Migration\Premapping;
 
 use Shopware\Core\Framework\Context;
-use SwagMigrationNext\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\MigrationContext;
 
 interface PremappingReaderInterface
 {

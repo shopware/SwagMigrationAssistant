@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Migration\Service;
+namespace SwagMigrationAssistant\Migration\Service;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -9,10 +9,10 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\IdSearchResult;
-use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
-use SwagMigrationNext\Migration\MigrationContext;
-use SwagMigrationNext\Migration\Premapping\PremappingReaderRegistryInterface;
-use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
+use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
+use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\Premapping\PremappingReaderRegistryInterface;
+use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 
 class PremappingService implements PremappingServiceInterface
 {

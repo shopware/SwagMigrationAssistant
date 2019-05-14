@@ -1,15 +1,15 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Profile\Shopware55\Converter;
+namespace SwagMigrationAssistant\Profile\Shopware55\Converter;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Uuid\Uuid;
-use SwagMigrationNext\Migration\Converter\ConvertStruct;
-use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
-use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
-use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
-use SwagMigrationNext\Migration\MigrationContextInterface;
-use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
+use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
 class MediaFolderConverter extends Shopware55Converter
 {

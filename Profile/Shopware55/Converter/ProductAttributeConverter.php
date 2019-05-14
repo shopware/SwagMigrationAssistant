@@ -1,11 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Profile\Shopware55\Converter;
+namespace SwagMigrationAssistant\Profile\Shopware55\Converter;
 
 use Shopware\Core\Framework\Context;
-use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
-use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ProductAttributeDataSet;
-use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\ProductAttributeDataSet;
+use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
 class ProductAttributeConverter extends AttributeConverter
 {

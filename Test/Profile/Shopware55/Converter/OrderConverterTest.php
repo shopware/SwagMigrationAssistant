@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Test\Profile\Shopware55\Converter;
+namespace SwagMigrationAssistant\Test\Profile\Shopware55\Converter;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Cart\Price\PriceRounding;
@@ -10,26 +10,26 @@ use Shopware\Core\Checkout\Cart\Tax\TaxRuleCalculator;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Uuid\Uuid;
-use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
-use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
-use SwagMigrationNext\Migration\MigrationContext;
-use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
-use SwagMigrationNext\Profile\Shopware55\Converter\CustomerConverter;
-use SwagMigrationNext\Profile\Shopware55\Converter\OrderConverter;
-use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CustomerDataSet;
-use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\OrderDataSet;
-use SwagMigrationNext\Profile\Shopware55\Exception\AssociationEntityRequiredMissingException;
-use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
-use SwagMigrationNext\Profile\Shopware55\Logging\Shopware55LogTypes;
-use SwagMigrationNext\Profile\Shopware55\Premapping\DeliveryTimeReader;
-use SwagMigrationNext\Profile\Shopware55\Premapping\OrderStateReader;
-use SwagMigrationNext\Profile\Shopware55\Premapping\PaymentMethodReader;
-use SwagMigrationNext\Profile\Shopware55\Premapping\SalutationReader;
-use SwagMigrationNext\Profile\Shopware55\Premapping\TransactionStateReader;
-use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
-use SwagMigrationNext\Test\MigrationServicesTrait;
-use SwagMigrationNext\Test\Mock\Migration\Logging\DummyLoggingService;
-use SwagMigrationNext\Test\Mock\Migration\Mapping\DummyMappingService;
+use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\Profile\SwagMigrationProfileEntity;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\CustomerConverter;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\OrderConverter;
+use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\CustomerDataSet;
+use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\OrderDataSet;
+use SwagMigrationAssistant\Profile\Shopware55\Exception\AssociationEntityRequiredMissingException;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
+use SwagMigrationAssistant\Profile\Shopware55\Logging\Shopware55LogTypes;
+use SwagMigrationAssistant\Profile\Shopware55\Premapping\DeliveryTimeReader;
+use SwagMigrationAssistant\Profile\Shopware55\Premapping\OrderStateReader;
+use SwagMigrationAssistant\Profile\Shopware55\Premapping\PaymentMethodReader;
+use SwagMigrationAssistant\Profile\Shopware55\Premapping\SalutationReader;
+use SwagMigrationAssistant\Profile\Shopware55\Premapping\TransactionStateReader;
+use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Test\MigrationServicesTrait;
+use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
+use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 use Symfony\Component\HttpFoundation\Response;
 
 class OrderConverterTest extends TestCase

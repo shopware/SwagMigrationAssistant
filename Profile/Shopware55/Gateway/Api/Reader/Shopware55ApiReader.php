@@ -1,14 +1,14 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Profile\Shopware55\Gateway\Api\Reader;
+namespace SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
-use SwagMigrationNext\Exception\GatewayReadException;
-use SwagMigrationNext\Migration\DataSelection\DataSet\DataSet;
-use SwagMigrationNext\Migration\MigrationContextInterface;
-use SwagMigrationNext\Migration\Profile\ReaderInterface;
-use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\Shopware55DataSet;
+use SwagMigrationAssistant\Exception\GatewayReadException;
+use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\Profile\ReaderInterface;
+use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\Shopware55DataSet;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class Shopware55ApiReader implements ReaderInterface

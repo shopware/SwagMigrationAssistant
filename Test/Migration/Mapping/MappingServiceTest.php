@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Test\Migration\Mapping;
+namespace SwagMigrationAssistant\Test\Migration\Mapping;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
@@ -9,13 +9,13 @@ use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
-use SwagMigrationNext\Exception\LocaleNotFoundException;
-use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
-use SwagMigrationNext\Migration\Mapping\MappingService;
-use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
-use SwagMigrationNext\Migration\Mapping\SwagMigrationMappingDefinition;
-use SwagMigrationNext\Migration\MigrationContext;
-use SwagMigrationNext\Test\Migration\Services\MigrationProfileUuidService;
+use SwagMigrationAssistant\Exception\LocaleNotFoundException;
+use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Mapping\MappingService;
+use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition;
+use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Test\Migration\Services\MigrationProfileUuidService;
 use Symfony\Component\HttpFoundation\Response;
 
 class MappingServiceTest extends TestCase

@@ -1,7 +1,7 @@
 {
-  "name": "swagmigrationnext",
+  "name": "swagmigrationassistant",
   "version": "1.0.0",
-  "description": "Migrate old shops into SW-Next",
+  "description": "Migrate shop data to Shopware 6",
   "main": "index.js",
   "author": "Shopware Services",
   "license": "MIT"

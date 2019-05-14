@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Migration\DataSelection\DataSet;
+namespace SwagMigrationAssistant\Migration\DataSelection\DataSet;
 
-use SwagMigrationNext\Exception\DataSetNotFoundException;
+use SwagMigrationAssistant\Exception\DataSetNotFoundException;
 
 class DataSetRegistry implements DataSetRegistryInterface
 {

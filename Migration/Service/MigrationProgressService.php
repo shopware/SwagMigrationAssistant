@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Migration\Service;
+namespace SwagMigrationAssistant\Migration\Service;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -12,8 +12,8 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
-use SwagMigrationNext\Migration\Run\RunServiceInterface;
-use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
+use SwagMigrationAssistant\Migration\Run\RunServiceInterface;
+use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use Symfony\Component\HttpFoundation\Request;
 
 class MigrationProgressService implements MigrationProgressServiceInterface

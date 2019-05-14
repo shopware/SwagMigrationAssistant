@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Migration\Connection;
+namespace SwagMigrationAssistant\Migration\Connection;
 
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 

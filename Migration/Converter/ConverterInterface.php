@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Migration\Converter;
+namespace SwagMigrationAssistant\Migration\Converter;
 
 use Shopware\Core\Framework\Context;
-use SwagMigrationNext\Migration\DataSelection\DataSet\DataSet;
-use SwagMigrationNext\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 interface ConverterInterface
 {

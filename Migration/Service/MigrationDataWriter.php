@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Migration\Service;
+namespace SwagMigrationAssistant\Migration\Service;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
@@ -13,13 +13,13 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
 use Shopware\Core\Framework\ShopwareHttpException;
-use SwagMigrationNext\Exception\WriterNotFoundException;
-use SwagMigrationNext\Migration\Data\SwagMigrationDataEntity;
-use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
-use SwagMigrationNext\Migration\Logging\LoggingServiceInterface;
-use SwagMigrationNext\Migration\Media\MediaFileServiceInterface;
-use SwagMigrationNext\Migration\MigrationContextInterface;
-use SwagMigrationNext\Migration\Writer\WriterRegistryInterface;
+use SwagMigrationAssistant\Exception\WriterNotFoundException;
+use SwagMigrationAssistant\Migration\Data\SwagMigrationDataEntity;
+use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\Writer\WriterRegistryInterface;
 
 class MigrationDataWriter implements MigrationDataWriterInterface
 {

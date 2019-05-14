@@ -1,11 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader;
+namespace SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\DBAL\Schema\Column;
-use SwagMigrationNext\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 class Shopware55LocalAbstractReader
 {

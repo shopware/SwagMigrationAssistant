@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Migration\DataSelection\DataSet;
+namespace SwagMigrationAssistant\Migration\DataSelection\DataSet;
 
 abstract class DataSet
 {

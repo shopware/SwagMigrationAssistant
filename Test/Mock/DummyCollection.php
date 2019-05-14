@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Test\Mock;
+namespace SwagMigrationAssistant\Test\Mock;
 
 class DummyCollection implements \IteratorAggregate
 {

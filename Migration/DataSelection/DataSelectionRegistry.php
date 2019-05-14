@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Migration\DataSelection;
+namespace SwagMigrationAssistant\Migration\DataSelection;
 
-use SwagMigrationNext\Migration\EnvironmentInformation;
-use SwagMigrationNext\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\EnvironmentInformation;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 class DataSelectionRegistry implements DataSelectionRegistryInterface
 {

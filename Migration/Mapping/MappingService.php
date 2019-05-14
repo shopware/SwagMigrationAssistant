@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Migration\Mapping;
+namespace SwagMigrationAssistant\Migration\Mapping;
 
 use Shopware\Core\Content\Media\Aggregate\MediaDefaultFolder\MediaDefaultFolderEntity;
 use Shopware\Core\Content\Media\Aggregate\MediaThumbnailSize\MediaThumbnailSizeEntity;
@@ -21,9 +21,9 @@ use Shopware\Core\System\Currency\CurrencyEntity;
 use Shopware\Core\System\Locale\LocaleEntity;
 use Shopware\Core\System\NumberRange\NumberRangeEntity;
 use Shopware\Core\System\Tax\TaxEntity;
-use SwagMigrationNext\Exception\LocaleNotFoundException;
-use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
-use SwagMigrationNext\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Exception\LocaleNotFoundException;
+use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 class MappingService implements MappingServiceInterface
 {

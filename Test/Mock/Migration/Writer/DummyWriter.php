@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Test\Mock\Migration\Writer;
+namespace SwagMigrationAssistant\Test\Mock\Migration\Writer;
 
 use Shopware\Core\Framework\Context;
-use SwagMigrationNext\Migration\Writer\WriterInterface;
+use SwagMigrationAssistant\Migration\Writer\WriterInterface;
 
 class DummyWriter implements WriterInterface
 {

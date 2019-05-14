@@ -1,13 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Test\Migration\Profile;
+namespace SwagMigrationAssistant\Test\Migration\Profile;
 
 use PHPUnit\Framework\TestCase;
-use SwagMigrationNext\Exception\ProfileNotFoundException;
-use SwagMigrationNext\Migration\Profile\ProfileRegistry;
-use SwagMigrationNext\Migration\Profile\ProfileRegistryInterface;
-use SwagMigrationNext\Test\Mock\DummyCollection;
-use SwagMigrationNext\Test\Mock\Profile\Dummy\DummyProfile;
+use SwagMigrationAssistant\Exception\ProfileNotFoundException;
+use SwagMigrationAssistant\Migration\Profile\ProfileRegistry;
+use SwagMigrationAssistant\Migration\Profile\ProfileRegistryInterface;
+use SwagMigrationAssistant\Test\Mock\DummyCollection;
+use SwagMigrationAssistant\Test\Mock\Profile\Dummy\DummyProfile;
 use Symfony\Component\HttpFoundation\Response;
 
 class ProfileRegistryTest extends TestCase

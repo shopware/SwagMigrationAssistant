@@ -1,18 +1,18 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Profile\Shopware55\Gateway;
+namespace SwagMigrationAssistant\Profile\Shopware55\Gateway;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use GuzzleHttp\Client;
-use SwagMigrationNext\Migration\MigrationContextInterface;
-use SwagMigrationNext\Migration\Profile\TableReaderFactoryInterface;
-use SwagMigrationNext\Migration\Profile\TableReaderInterface;
-use SwagMigrationNext\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiTableReader;
-use SwagMigrationNext\Profile\Shopware55\Gateway\Api\Shopware55ApiGateway;
-use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalTableReader;
-use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
-use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\Profile\TableReaderFactoryInterface;
+use SwagMigrationAssistant\Migration\Profile\TableReaderInterface;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiTableReader;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Shopware55ApiGateway;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalTableReader;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
+use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
 class TableReaderFactory implements TableReaderFactoryInterface
 {

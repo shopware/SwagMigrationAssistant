@@ -1,11 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Profile\Shopware55\DataSelection;
+namespace SwagMigrationAssistant\Profile\Shopware55\DataSelection;
 
-use SwagMigrationNext\Migration\DataSelection\DataSelectionInterface;
-use SwagMigrationNext\Migration\DataSelection\DataSelectionStruct;
-use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\NumberRangeDataSet;
-use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Migration\DataSelection\DataSelectionInterface;
+use SwagMigrationAssistant\Migration\DataSelection\DataSelectionStruct;
+use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\NumberRangeDataSet;
+use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
 class NumberRangeDataSelection implements DataSelectionInterface
 {

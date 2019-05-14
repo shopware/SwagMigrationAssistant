@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Migration\Data;
+namespace SwagMigrationAssistant\Migration\Data;
 
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
-use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
+use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 
 class SwagMigrationDataEntity extends Entity
 {

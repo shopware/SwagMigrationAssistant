@@ -1,16 +1,16 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Profile\Shopware55\Gateway\Api\Reader;
+namespace SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\RequestException as GuzzleRequestException;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
 use Shopware\Core\Framework\ShopwareHttpException;
-use SwagMigrationNext\Exception\GatewayReadException;
-use SwagMigrationNext\Exception\InvalidConnectionAuthenticationException;
-use SwagMigrationNext\Exception\RequestCertificateInvalidException;
-use SwagMigrationNext\Profile\Shopware55\Exception\PluginNotInstalledException;
+use SwagMigrationAssistant\Exception\GatewayReadException;
+use SwagMigrationAssistant\Exception\InvalidConnectionAuthenticationException;
+use SwagMigrationAssistant\Exception\RequestCertificateInvalidException;
+use SwagMigrationAssistant\Profile\Shopware55\Exception\PluginNotInstalledException;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class Shopware55ApiEnvironmentReader extends Shopware55ApiReader

@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Migration\Setting;
+namespace SwagMigrationAssistant\Migration\Setting;
 
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\CreatedAtField;
@@ -11,7 +11,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\IdField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\ManyToOneAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\UpdatedAtField;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
-use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionDefinition;
+use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionDefinition;
 
 class GeneralSettingDefinition extends EntityDefinition
 {

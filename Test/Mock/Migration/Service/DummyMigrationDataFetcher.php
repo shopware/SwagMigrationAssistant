@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Test\Mock\Migration\Service;
+namespace SwagMigrationAssistant\Test\Mock\Migration\Service;
 
-use SwagMigrationNext\Migration\EnvironmentInformation;
-use SwagMigrationNext\Migration\MigrationContextInterface;
-use SwagMigrationNext\Migration\Service\MigrationDataFetcher;
+use SwagMigrationAssistant\Migration\EnvironmentInformation;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\Service\MigrationDataFetcher;
 
 class DummyMigrationDataFetcher extends MigrationDataFetcher
 {

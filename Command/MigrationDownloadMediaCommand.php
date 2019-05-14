@@ -1,15 +1,15 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Command;
+namespace SwagMigrationAssistant\Command;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use SwagMigrationNext\Command\Event\MigrationMediaDownloadAdvanceEvent;
-use SwagMigrationNext\Command\Event\MigrationMediaDownloadFinishEvent;
-use SwagMigrationNext\Command\Event\MigrationMediaDownloadStartEvent;
-use SwagMigrationNext\Migration\Media\CliMediaDownloadServiceInterface;
+use SwagMigrationAssistant\Command\Event\MigrationMediaDownloadAdvanceEvent;
+use SwagMigrationAssistant\Command\Event\MigrationMediaDownloadFinishEvent;
+use SwagMigrationAssistant\Command\Event\MigrationMediaDownloadStartEvent;
+use SwagMigrationAssistant\Migration\Media\CliMediaDownloadServiceInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;

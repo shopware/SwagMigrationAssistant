@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Migration\Premapping;
+namespace SwagMigrationAssistant\Migration\Premapping;
 
-use SwagMigrationNext\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 interface PremappingReaderRegistryInterface
 {

@@ -1,13 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Test\Mock\Migration\Mapping;
+namespace SwagMigrationAssistant\Test\Mock\Migration\Mapping;
 
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Language\LanguageEntity;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\Locale\LocaleEntity;
-use SwagMigrationNext\Migration\Mapping\MappingService;
+use SwagMigrationAssistant\Migration\Mapping\MappingService;
 
 class DummyMappingService extends MappingService
 {

@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Migration\Run;
+namespace SwagMigrationAssistant\Migration\Run;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Dbal\Indexing\IndexerInterface;
@@ -12,17 +12,17 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
-use SwagMigrationNext\Exception\MigrationIsRunningException;
-use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
-use SwagMigrationNext\Migration\DataSelection\DataSelectionCollection;
-use SwagMigrationNext\Migration\DataSelection\DataSelectionRegistryInterface;
-use SwagMigrationNext\Migration\DataSelection\DataSelectionStruct;
-use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
-use SwagMigrationNext\Migration\EnvironmentInformation;
-use SwagMigrationNext\Migration\MigrationContext;
-use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
-use SwagMigrationNext\Migration\Service\ProgressState;
-use SwagMigrationNext\Migration\Service\SwagMigrationAccessTokenService;
+use SwagMigrationAssistant\Exception\MigrationIsRunningException;
+use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationAssistant\Migration\DataSelection\DataSelectionCollection;
+use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistryInterface;
+use SwagMigrationAssistant\Migration\DataSelection\DataSelectionStruct;
+use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\EnvironmentInformation;
+use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
+use SwagMigrationAssistant\Migration\Service\ProgressState;
+use SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService;
 use Symfony\Component\Cache\Adapter\TagAwareAdapter;
 
 class RunService implements RunServiceInterface

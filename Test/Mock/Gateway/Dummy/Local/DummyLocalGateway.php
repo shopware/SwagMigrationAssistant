@@ -1,18 +1,18 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Test\Mock\Gateway\Dummy\Local;
+namespace SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local;
 
-use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
-use SwagMigrationNext\Migration\EnvironmentInformation;
-use SwagMigrationNext\Migration\Gateway\AbstractGateway;
-use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CategoryDataSet;
-use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CustomerDataSet;
-use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\MediaDataSet;
-use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\OrderDataSet;
-use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
-use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\TranslationDataSet;
-use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
-use SwagMigrationNext\Test\Mock\DataSet\InvalidCustomerDataSet;
+use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\EnvironmentInformation;
+use SwagMigrationAssistant\Migration\Gateway\AbstractGateway;
+use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\CategoryDataSet;
+use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\CustomerDataSet;
+use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\MediaDataSet;
+use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\OrderDataSet;
+use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
+use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\TranslationDataSet;
+use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Test\Mock\DataSet\InvalidCustomerDataSet;
 
 class DummyLocalGateway extends AbstractGateway
 {

@@ -1,11 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Test\Mock\Migration\Service;
+namespace SwagMigrationAssistant\Test\Mock\Migration\Service;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Uuid\Uuid;
-use SwagMigrationNext\Migration\MigrationContextInterface;
-use SwagMigrationNext\Migration\Service\MediaFileProcessorService;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\Service\MediaFileProcessorService;
 
 class DummyMediaFileProcessorService extends MediaFileProcessorService
 {

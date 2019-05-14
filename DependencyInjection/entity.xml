@@ -4,34 +4,34 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
-        <service id="SwagMigrationNext\Migration\Logging\SwagMigrationLoggingDefinition">
+        <service id="SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingDefinition">
             <tag name="shopware.entity.definition" entity="swag_migration_logging"/>
         </service>
 
-        <service id="SwagMigrationNext\Migration\Run\SwagMigrationRunDefinition"
-                 class="SwagMigrationNext\Migration\Run\SwagMigrationRunDefinition">
+        <service id="SwagMigrationAssistant\Migration\Run\SwagMigrationRunDefinition"
+                 class="SwagMigrationAssistant\Migration\Run\SwagMigrationRunDefinition">
             <tag name="shopware.entity.definition" entity="swag_migration_run"/>
         </service>
-        <service id="SwagMigrationNext\Migration\Data\SwagMigrationDataDefinition"
-                 class="SwagMigrationNext\Migration\Data\SwagMigrationDataDefinition">
+        <service id="SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition"
+                 class="SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition">
             <tag name="shopware.entity.definition" entity="swag_migration_data"/>
         </service>
 
-        <service id="SwagMigrationNext\Migration\Mapping\SwagMigrationMappingDefinition"
-                 class="SwagMigrationNext\Migration\Mapping\SwagMigrationMappingDefinition">
+        <service id="SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition"
+                 class="SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition">
             <tag name="shopware.entity.definition" entity="swag_migration_mapping"/>
         </service>
 
-        <service id="SwagMigrationNext\Migration\Media\SwagMigrationMediaFileDefinition"
-                 class="SwagMigrationNext\Migration\Media\SwagMigrationMediaFileDefinition">
+        <service id="SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileDefinition"
+                 class="SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileDefinition">
             <tag name="shopware.entity.definition" entity="swag_migration_media_file"/>
         </service>
 
-        <service id="SwagMigrationNext\Migration\Setting\GeneralSettingDefinition">
+        <service id="SwagMigrationAssistant\Migration\Setting\GeneralSettingDefinition">
             <tag name="shopware.entity.definition" entity="swag_migration_general_setting"/>
         </service>
 
-        <service id="SwagMigrationNext\Migration\Connection\SwagMigrationConnectionDefinition">
+        <service id="SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionDefinition">
             <tag name="shopware.entity.definition" entity="swag_migration_connection"/>
         </service>
     </services>

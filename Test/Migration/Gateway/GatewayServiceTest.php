@@ -1,18 +1,18 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Test\Gateway;
+namespace SwagMigrationAssistant\Test\Gateway;
 
 use PHPUnit\Framework\TestCase;
-use SwagMigrationNext\Exception\GatewayNotFoundException;
-use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
-use SwagMigrationNext\Migration\Gateway\GatewayFactoryRegistry;
-use SwagMigrationNext\Migration\Gateway\GatewayFactoryRegistryInterface;
-use SwagMigrationNext\Migration\MigrationContext;
-use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
-use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
-use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
-use SwagMigrationNext\Test\Mock\DummyCollection;
-use SwagMigrationNext\Test\Mock\Gateway\Dummy\Local\DummyLocalFactory;
+use SwagMigrationAssistant\Exception\GatewayNotFoundException;
+use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationAssistant\Migration\Gateway\GatewayFactoryRegistry;
+use SwagMigrationAssistant\Migration\Gateway\GatewayFactoryRegistryInterface;
+use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\Profile\SwagMigrationProfileEntity;
+use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
+use SwagMigrationAssistant\Test\Mock\DummyCollection;
+use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalFactory;
 use Symfony\Component\HttpFoundation\Response;
 
 class GatewayServiceTest extends TestCase

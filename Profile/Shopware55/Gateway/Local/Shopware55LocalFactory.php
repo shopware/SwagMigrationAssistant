@@ -1,11 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Profile\Shopware55\Gateway\Local;
+namespace SwagMigrationAssistant\Profile\Shopware55\Gateway\Local;
 
-use SwagMigrationNext\Migration\Gateway\GatewayFactoryInterface;
-use SwagMigrationNext\Migration\Gateway\GatewayInterface;
-use SwagMigrationNext\Migration\MigrationContextInterface;
-use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Migration\Gateway\GatewayFactoryInterface;
+use SwagMigrationAssistant\Migration\Gateway\GatewayInterface;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
 class Shopware55LocalFactory implements GatewayFactoryInterface
 {

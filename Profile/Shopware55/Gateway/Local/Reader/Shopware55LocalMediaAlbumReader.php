@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader;
+namespace SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader;
 
 class Shopware55LocalMediaAlbumReader extends Shopware55LocalAbstractReader
 {

@@ -1,24 +1,24 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Test\Profile\Shopware55\Converter;
+namespace SwagMigrationAssistant\Test\Profile\Shopware55\Converter;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Uuid\Uuid;
-use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
-use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
-use SwagMigrationNext\Migration\MigrationContext;
-use SwagMigrationNext\Migration\MigrationContextInterface;
-use SwagMigrationNext\Migration\Profile\SwagMigrationProfileEntity;
-use SwagMigrationNext\Profile\Shopware55\Converter\CustomerConverter;
-use SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet\CustomerDataSet;
-use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
-use SwagMigrationNext\Profile\Shopware55\Premapping\PaymentMethodReader;
-use SwagMigrationNext\Profile\Shopware55\Premapping\SalutationReader;
-use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
-use SwagMigrationNext\Test\Mock\Migration\Logging\DummyLoggingService;
-use SwagMigrationNext\Test\Mock\Migration\Mapping\DummyMappingService;
+use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\Profile\SwagMigrationProfileEntity;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\CustomerConverter;
+use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\CustomerDataSet;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
+use SwagMigrationAssistant\Profile\Shopware55\Premapping\PaymentMethodReader;
+use SwagMigrationAssistant\Profile\Shopware55\Premapping\SalutationReader;
+use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
+use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 
 class CustomerConverterTest extends TestCase
 {

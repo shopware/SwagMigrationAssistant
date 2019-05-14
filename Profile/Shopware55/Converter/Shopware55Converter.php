@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Profile\Shopware55\Converter;
+namespace SwagMigrationAssistant\Profile\Shopware55\Converter;
 
-use SwagMigrationNext\Migration\Converter\AbstractConverter;
+use SwagMigrationAssistant\Migration\Converter\AbstractConverter;
 
 abstract class Shopware55Converter extends AbstractConverter
 {

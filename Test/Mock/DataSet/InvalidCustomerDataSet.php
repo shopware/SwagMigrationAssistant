@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Test\Mock\DataSet;
+namespace SwagMigrationAssistant\Test\Mock\DataSet;
 
-use SwagMigrationNext\Migration\DataSelection\DataSet\DataSet;
+use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 
 class InvalidCustomerDataSet extends DataSet
 {

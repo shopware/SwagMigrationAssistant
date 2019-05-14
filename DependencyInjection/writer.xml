@@ -5,127 +5,127 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="SwagMigrationNext\Migration\Writer\WriterRegistry"
-                 class="SwagMigrationNext\Migration\Writer\WriterRegistry">
+        <service id="SwagMigrationAssistant\Migration\Writer\WriterRegistry"
+                 class="SwagMigrationAssistant\Migration\Writer\WriterRegistry">
             <argument type="tagged" tag="shopware.migration.writer"/>
         </service>
 
-        <service id="SwagMigrationNext\Migration\Writer\ProductWriter">
+        <service id="SwagMigrationAssistant\Migration\Writer\ProductWriter">
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
             <argument type="service" id="Shopware\Core\Content\Product\ProductDefinition"/>
             <tag name="shopware.migration.writer"/>
         </service>
 
-        <service id="SwagMigrationNext\Migration\Writer\TranslationWriter">
+        <service id="SwagMigrationAssistant\Migration\Writer\TranslationWriter">
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\DefinitionInstanceRegistry"/>
             <tag name="shopware.migration.writer"/>
         </service>
 
-        <service id="SwagMigrationNext\Migration\Writer\CategoryWriter">
+        <service id="SwagMigrationAssistant\Migration\Writer\CategoryWriter">
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
             <argument type="service" id="Shopware\Core\Content\Category\CategoryDefinition"/>
             <tag name="shopware.migration.writer"/>
         </service>
 
-        <service id="SwagMigrationNext\Migration\Writer\MediaFolderWriter">
+        <service id="SwagMigrationAssistant\Migration\Writer\MediaFolderWriter">
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
             <argument type="service" id="Shopware\Core\Content\Media\Aggregate\MediaFolder\MediaFolderDefinition"/>
             <tag name="shopware.migration.writer"/>
         </service>
 
-        <service id="SwagMigrationNext\Migration\Writer\MediaWriter">
+        <service id="SwagMigrationAssistant\Migration\Writer\MediaWriter">
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
             <argument type="service" id="Shopware\Core\Content\Media\MediaDefinition"/>
             <tag name="shopware.migration.writer"/>
         </service>
 
-        <service id="SwagMigrationNext\Migration\Writer\NumberRangeWriter">
+        <service id="SwagMigrationAssistant\Migration\Writer\NumberRangeWriter">
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
             <argument type="service" id="Shopware\Core\System\NumberRange\NumberRangeDefinition"/>
             <tag name="shopware.migration.writer"/>
         </service>
 
-        <service id="SwagMigrationNext\Migration\Writer\LanguageWriter">
+        <service id="SwagMigrationAssistant\Migration\Writer\LanguageWriter">
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
             <argument type="service" id="Shopware\Core\Framework\Language\LanguageDefinition"/>
             <tag name="shopware.migration.writer"/>
         </service>
 
-        <service id="SwagMigrationNext\Migration\Writer\CustomerAttributeWriter">
+        <service id="SwagMigrationAssistant\Migration\Writer\CustomerAttributeWriter">
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
             <argument type="service" id="Shopware\Core\Framework\CustomField\Aggregate\CustomFieldSet\CustomFieldSetDefinition"/>
             <tag name="shopware.migration.writer"/>
         </service>
 
-        <service id="SwagMigrationNext\Migration\Writer\CustomerWriter">
+        <service id="SwagMigrationAssistant\Migration\Writer\CustomerWriter">
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
             <argument type="service" id="Shopware\Core\Checkout\Customer\CustomerDefinition"/>
             <tag name="shopware.migration.writer"/>
         </service>
 
-        <service id="SwagMigrationNext\Migration\Writer\OrderAttributeWriter">
+        <service id="SwagMigrationAssistant\Migration\Writer\OrderAttributeWriter">
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
             <argument type="service" id="Shopware\Core\Framework\CustomField\Aggregate\CustomFieldSet\CustomFieldSetDefinition"/>
             <tag name="shopware.migration.writer"/>
         </service>
 
-        <service id="SwagMigrationNext\Migration\Writer\OrderWriter">
+        <service id="SwagMigrationAssistant\Migration\Writer\OrderWriter">
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
             <argument type="service" id="Shopware\Core\Framework\Struct\Serializer\StructNormalizer"/>
             <argument type="service" id="Shopware\Core\Checkout\Order\OrderDefinition"/>
             <tag name="shopware.migration.writer"/>
         </service>
 
-        <service id="SwagMigrationNext\Migration\Writer\CustomerGroupAttributeWriter">
+        <service id="SwagMigrationAssistant\Migration\Writer\CustomerGroupAttributeWriter">
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
             <argument type="service" id="Shopware\Core\Framework\CustomField\Aggregate\CustomFieldSet\CustomFieldSetDefinition"/>
             <tag name="shopware.migration.writer"/>
         </service>
 
-        <service id="SwagMigrationNext\Migration\Writer\CustomerGroupWriter">
+        <service id="SwagMigrationAssistant\Migration\Writer\CustomerGroupWriter">
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
             <argument type="service" id="Shopware\Core\Checkout\Customer\Aggregate\CustomerGroup\CustomerGroupDefinition"/>
             <tag name="shopware.migration.writer"/>
         </service>
 
-        <service id="SwagMigrationNext\Migration\Writer\ManufacturerAttributeWriter">
+        <service id="SwagMigrationAssistant\Migration\Writer\ManufacturerAttributeWriter">
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
             <argument type="service" id="Shopware\Core\Framework\CustomField\Aggregate\CustomFieldSet\CustomFieldSetDefinition"/>
             <tag name="shopware.migration.writer"/>
         </service>
 
-        <service id="SwagMigrationNext\Migration\Writer\ProductAttributeWriter">
+        <service id="SwagMigrationAssistant\Migration\Writer\ProductAttributeWriter">
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
             <argument type="service" id="Shopware\Core\Framework\CustomField\Aggregate\CustomFieldSet\CustomFieldSetDefinition"/>
             <tag name="shopware.migration.writer"/>
         </service>
 
-        <service id="SwagMigrationNext\Migration\Writer\ProductPriceAttributeWriter">
+        <service id="SwagMigrationAssistant\Migration\Writer\ProductPriceAttributeWriter">
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
             <argument type="service" id="Shopware\Core\Framework\CustomField\Aggregate\CustomFieldSet\CustomFieldSetDefinition"/>
             <tag name="shopware.migration.writer"/>
         </service>
 
-        <service id="SwagMigrationNext\Migration\Writer\CategoryAttributeWriter">
+        <service id="SwagMigrationAssistant\Migration\Writer\CategoryAttributeWriter">
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
             <argument type="service" id="Shopware\Core\Framework\CustomField\Aggregate\CustomFieldSet\CustomFieldSetDefinition"/>
             <tag name="shopware.migration.writer"/>
         </service>
 
-        <service id="SwagMigrationNext\Migration\Writer\PropertyGroupOptionWriter">
+        <service id="SwagMigrationAssistant\Migration\Writer\PropertyGroupOptionWriter">
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
             <argument type="service" id="Shopware\Core\Content\Property\Aggregate\PropertyGroupOption\PropertyGroupOptionDefinition"/>
             <tag name="shopware.migration.writer"/>
         </service>
 
-        <service id="SwagMigrationNext\Migration\Writer\CurrencyWriter">
+        <service id="SwagMigrationAssistant\Migration\Writer\CurrencyWriter">
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
             <argument type="service" id="Shopware\Core\System\Currency\CurrencyDefinition"/>
             <tag name="shopware.migration.writer"/>
         </service>
 
-        <service id="SwagMigrationNext\Migration\Writer\SalesChannelWriter">
+        <service id="SwagMigrationAssistant\Migration\Writer\SalesChannelWriter">
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
             <argument type="service" id="Shopware\Core\System\SalesChannel\SalesChannelDefinition"/>
             <tag name="shopware.migration.writer"/>

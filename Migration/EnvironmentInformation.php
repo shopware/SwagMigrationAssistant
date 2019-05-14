@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Migration;
+namespace SwagMigrationAssistant\Migration;
 
 use Shopware\Core\Framework\Struct\Struct;
 

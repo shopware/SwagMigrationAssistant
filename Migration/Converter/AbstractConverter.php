@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Migration\Converter;
+namespace SwagMigrationAssistant\Migration\Converter;
 
-use SwagMigrationNext\Migration\DataSelection\DataSet\DataSet;
+use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 
 abstract class AbstractConverter implements ConverterInterface
 {

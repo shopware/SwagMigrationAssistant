@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Profile\Shopware55\DataSelection\DataSet;
+namespace SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet;
 
-use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
-use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
 class CategoryDataSet extends Shopware55DataSet
 {

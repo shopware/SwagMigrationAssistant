@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Migration\Gateway;
+namespace SwagMigrationAssistant\Migration\Gateway;
 
-use SwagMigrationNext\Migration\EnvironmentInformation;
+use SwagMigrationAssistant\Migration\EnvironmentInformation;
 
 interface GatewayInterface
 {

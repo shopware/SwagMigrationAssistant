@@ -1,26 +1,26 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Test\Migration\Controller;
+namespace SwagMigrationAssistant\Test\Migration\Controller;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
-use SwagMigrationNext\Controller\PremappingController;
-use SwagMigrationNext\Migration\Mapping\MappingService;
-use SwagMigrationNext\Migration\MigrationContext;
-use SwagMigrationNext\Migration\Premapping\PremappingEntityStruct;
-use SwagMigrationNext\Migration\Premapping\PremappingReaderRegistry;
-use SwagMigrationNext\Migration\Premapping\PremappingStruct;
-use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
-use SwagMigrationNext\Migration\Service\PremappingService;
-use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
-use SwagMigrationNext\Profile\Shopware55\Premapping\OrderStateReader;
-use SwagMigrationNext\Profile\Shopware55\Premapping\TransactionStateReader;
-use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
-use SwagMigrationNext\Test\Migration\Services\MigrationProfileUuidService;
-use SwagMigrationNext\Test\MigrationServicesTrait;
+use SwagMigrationAssistant\Controller\PremappingController;
+use SwagMigrationAssistant\Migration\Mapping\MappingService;
+use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\Premapping\PremappingEntityStruct;
+use SwagMigrationAssistant\Migration\Premapping\PremappingReaderRegistry;
+use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
+use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
+use SwagMigrationAssistant\Migration\Service\PremappingService;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
+use SwagMigrationAssistant\Profile\Shopware55\Premapping\OrderStateReader;
+use SwagMigrationAssistant\Profile\Shopware55\Premapping\TransactionStateReader;
+use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Test\Migration\Services\MigrationProfileUuidService;
+use SwagMigrationAssistant\Test\MigrationServicesTrait;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 

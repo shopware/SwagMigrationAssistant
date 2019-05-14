@@ -1,13 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Test\Profile\Shopware55\Premapping;
+namespace SwagMigrationAssistant\Test\Profile\Shopware55\Premapping;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
-use SwagMigrationNext\Migration\MigrationContext;
-use SwagMigrationNext\Migration\Premapping\PremappingStruct;
-use SwagMigrationNext\Profile\Shopware55\Premapping\ProductManufacturerReader;
+use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
+use SwagMigrationAssistant\Profile\Shopware55\Premapping\ProductManufacturerReader;
 
 class TestProductManufacturerReader extends TestCase
 {

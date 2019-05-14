@@ -1,19 +1,19 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Controller;
+namespace SwagMigrationAssistant\Controller;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use SwagMigrationNext\Exception\ConnectionCredentialsMissingException;
-use SwagMigrationNext\Exception\EntityNotExistsException;
-use SwagMigrationNext\Exception\MigrationContextPropertyMissingException;
-use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
-use SwagMigrationNext\Migration\DataSelection\DataSelectionRegistryInterface;
-use SwagMigrationNext\Migration\MigrationContext;
-use SwagMigrationNext\Migration\Run\RunServiceInterface;
-use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
-use SwagMigrationNext\Migration\Service\MigrationProgressServiceInterface;
+use SwagMigrationAssistant\Exception\ConnectionCredentialsMissingException;
+use SwagMigrationAssistant\Exception\EntityNotExistsException;
+use SwagMigrationAssistant\Exception\MigrationContextPropertyMissingException;
+use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistryInterface;
+use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\Run\RunServiceInterface;
+use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
+use SwagMigrationAssistant\Migration\Service\MigrationProgressServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;

@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Profile\Shopware55\Gateway\Local\Reader;
+namespace SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader;
 
 use Doctrine\DBAL\Connection;
-use SwagMigrationNext\Migration\Profile\TableReaderInterface;
+use SwagMigrationAssistant\Migration\Profile\TableReaderInterface;
 
 class Shopware55LocalTableReader implements TableReaderInterface
 {

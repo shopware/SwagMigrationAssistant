@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Test\Migration\Services;
+namespace SwagMigrationAssistant\Test\Migration\Services;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
@@ -11,25 +11,25 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
-use SwagMigrationNext\Migration\Connection\SwagMigrationConnectionEntity;
-use SwagMigrationNext\Migration\Data\SwagMigrationDataDefinition;
-use SwagMigrationNext\Migration\DataSelection\DataSelectionRegistry;
-use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
-use SwagMigrationNext\Migration\Mapping\MappingService;
-use SwagMigrationNext\Migration\Media\MediaFileService;
-use SwagMigrationNext\Migration\MigrationContext;
-use SwagMigrationNext\Migration\Run\EntityProgress;
-use SwagMigrationNext\Migration\Run\RunProgress;
-use SwagMigrationNext\Migration\Run\RunService;
-use SwagMigrationNext\Migration\Run\SwagMigrationRunEntity;
-use SwagMigrationNext\Migration\Service\MigrationDataFetcherInterface;
-use SwagMigrationNext\Migration\Service\MigrationProgressService;
-use SwagMigrationNext\Migration\Service\MigrationProgressServiceInterface;
-use SwagMigrationNext\Migration\Service\ProgressState;
-use SwagMigrationNext\Migration\Service\SwagMigrationAccessTokenService;
-use SwagMigrationNext\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
-use SwagMigrationNext\Profile\Shopware55\Shopware55Profile;
-use SwagMigrationNext\Test\MigrationServicesTrait;
+use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
+use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry;
+use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Mapping\MappingService;
+use SwagMigrationAssistant\Migration\Media\MediaFileService;
+use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\Run\EntityProgress;
+use SwagMigrationAssistant\Migration\Run\RunProgress;
+use SwagMigrationAssistant\Migration\Run\RunService;
+use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
+use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
+use SwagMigrationAssistant\Migration\Service\MigrationProgressService;
+use SwagMigrationAssistant\Migration\Service\MigrationProgressServiceInterface;
+use SwagMigrationAssistant\Migration\Service\ProgressState;
+use SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
+use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Test\MigrationServicesTrait;
 use Symfony\Component\HttpFoundation\Request;
 
 class MigrationProgressServiceTest extends TestCase

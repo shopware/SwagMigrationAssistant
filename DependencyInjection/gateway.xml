@@ -5,8 +5,8 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="SwagMigrationNext\Migration\Gateway\GatewayFactoryRegistry"
-                 class="SwagMigrationNext\Migration\Gateway\GatewayFactoryRegistry">
+        <service id="SwagMigrationAssistant\Migration\Gateway\GatewayFactoryRegistry"
+                 class="SwagMigrationAssistant\Migration\Gateway\GatewayFactoryRegistry">
             <argument type="tagged" tag="shopware.migration.gateway_factory"/>
         </service>
     </services>

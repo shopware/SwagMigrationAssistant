@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Migration\Connection;
+namespace SwagMigrationAssistant\Migration\Connection;
 
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\CreatedAtField;
@@ -15,11 +15,11 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\OneToManyAssociationField
 use Shopware\Core\Framework\DataAbstractionLayer\Field\StringField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\UpdatedAtField;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
-use SwagMigrationNext\Migration\Mapping\SwagMigrationMappingDefinition;
-use SwagMigrationNext\Migration\MigrationContext;
-use SwagMigrationNext\Migration\Profile\SwagMigrationProfileDefinition;
-use SwagMigrationNext\Migration\Run\SwagMigrationRunDefinition;
-use SwagMigrationNext\Migration\Setting\GeneralSettingDefinition;
+use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition;
+use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\Profile\SwagMigrationProfileDefinition;
+use SwagMigrationAssistant\Migration\Run\SwagMigrationRunDefinition;
+use SwagMigrationAssistant\Migration\Setting\GeneralSettingDefinition;
 
 class SwagMigrationConnectionDefinition extends EntityDefinition
 {

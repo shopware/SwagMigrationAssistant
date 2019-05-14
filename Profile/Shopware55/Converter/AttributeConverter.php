@@ -1,13 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationNext\Profile\Shopware55\Converter;
+namespace SwagMigrationAssistant\Profile\Shopware55\Converter;
 
 use Shopware\Core\Framework\Context;
-use SwagMigrationNext\Migration\Converter\AbstractConverter;
-use SwagMigrationNext\Migration\Converter\ConvertStruct;
-use SwagMigrationNext\Migration\DataSelection\DefaultEntities;
-use SwagMigrationNext\Migration\Mapping\MappingServiceInterface;
-use SwagMigrationNext\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\Converter\AbstractConverter;
+use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
+use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 abstract class AttributeConverter extends AbstractConverter
 {
