@@ -7,7 +7,7 @@ use Shopware\Core\Framework\Struct\Struct;
 class DataSelectionStruct extends Struct
 {
     public const BASIC_DATA_TYPE = 'basicData';
-    public const PLUGIN_DATA_TYPE = 'basicPluginData';
+    public const PLUGIN_DATA_TYPE = 'pluginData';
 
     /**
      * @var string
