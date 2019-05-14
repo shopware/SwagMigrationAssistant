@@ -63,6 +63,8 @@ class Shopware55LocalProductReader extends Shopware55LocalAbstractReader
     protected function appendAssociatedData(array $products): array
     {
         $categories = $this->getCategories();
+        $topMostParentIds = $this->getTopMostParentIds($categories);
+        $shops = $this->getShops($topMostParentIds);
         $prices = $this->getPrices();
         $media = $this->getMedia();
         $options = $this->getConfiguratorOptions();
@@ -93,6 +95,9 @@ class Shopware55LocalProductReader extends Shopware55LocalAbstractReader
             }
             if (isset($filterValues[$product['detail']['id']])) {
                 $product['filters'] = $filterValues[$product['detail']['id']];
+            }
+            if (isset($shops[$product['id']])) {
+                $product['shops'] = array_values($shops[$product['id']]);
             }
         }
         unset(
@@ -159,9 +164,33 @@ class Shopware55LocalProductReader extends Shopware55LocalAbstractReader
         $query = $this->connection->createQueryBuilder();
 
         $query->from('s_articles_categories', 'product_category');
-        $query->addSelect('product_category.articleID', 'product_category.categoryID as id');
+
+        $query->leftJoin('product_category', 's_categories', 'category', 'category.id = product_category.categoryID');
+        $query->addSelect('product_category.articleID', 'product_category.categoryID as id, category.path');
+
         $query->where('product_category.articleID IN (:ids)');
         $query->setParameter('ids', $productIds, Connection::PARAM_INT_ARRAY);
+
+        return $query->execute()->fetchAll(\PDO::FETCH_GROUP);
+    }
+
+    /**
+     * @param array $categories
+     * @return array
+     */
+    public function fetchShopsByCategories(array $categories)
+    {
+        $query = $this->connection->createQueryBuilder();
+
+        $query->from('s_categories', 'category');
+        $query->addSelect('category.id');
+
+        $query->leftJoin('category', 's_core_shops', 'shop', 'category.id = shop.category_id');
+        $query->addSelect('shop.id');
+        $query->addSelect('shop.main_id');
+
+        $query->where('category.id IN (:ids)');
+        $query->setParameter('ids', $categories, Connection::PARAM_INT_ARRAY);
 
         return $query->execute()->fetchAll(\PDO::FETCH_GROUP);
     }
@@ -285,5 +314,61 @@ class Shopware55LocalProductReader extends Shopware55LocalAbstractReader
         $fetchedConfiguratorOptions = $query->execute()->fetchAll(\PDO::FETCH_GROUP);
 
         return $this->mapData($fetchedConfiguratorOptions, [], ['configurator', 'option']);
+    }
+
+    private function getShops(array $topMostCategoriesByProduct): array
+    {
+        $ids = [];
+        foreach ($topMostCategoriesByProduct as $product) {
+            foreach ($product as $category) {
+                if (!isset($ids[$category])) {
+                    $ids[$category] = $category;
+                }
+            }
+        }
+
+        $shops = $this->fetchShopsByCategories($ids);
+
+        $ids = [];
+        foreach ($topMostCategoriesByProduct as $productKey => $product) {
+            foreach ($product as $key => $category) {
+                if (isset($shops[$key]) && !isset($ids[$productKey][$key])) {
+                    foreach ($shops[$key] as $shop) {
+                        if (empty($shop['main_id'])) {
+                            $shopId = $shop['id'];
+                        } else {
+                            $shopId = $shop['main_id'];
+                        }
+
+                        if (!isset($ids[$productKey][$shopId])) {
+                            $ids[$productKey][$shopId] = $shopId;
+                        }
+                    }
+                }
+            }
+        }
+
+        return $ids;
+    }
+
+    private function getTopMostParentIds(array $categories): array
+    {
+        $ids = [];
+        foreach ($categories as $productKey => $product) {
+            foreach ($product as $key => $category) {
+                if (empty($category['path'])) {
+                    continue;
+                }
+                $parentCategoryIds = array_values(
+                    array_filter(explode('|', (string) $category['path']))
+                );
+                $topMostParent = end($parentCategoryIds);
+                if (!isset($ids[$productKey]) || !in_array($topMostParent, $ids[$productKey], true)) {
+                    $ids[$productKey][$topMostParent] = $topMostParent;
+                }
+            }
+        }
+
+        return $ids;
     }
 }
