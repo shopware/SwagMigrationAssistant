@@ -1080,7 +1080,7 @@ class ProductConverter extends Shopware55Converter
                     ),
                     'productId' => $converted['id'],
                     'salesChannelId' => $salesChannelUuid,
-                    'visibility' => ProductVisibilityDefinition::VISIBILITY_ALL
+                    'visibility' => ProductVisibilityDefinition::VISIBILITY_ALL,
                 ];
             }
         }

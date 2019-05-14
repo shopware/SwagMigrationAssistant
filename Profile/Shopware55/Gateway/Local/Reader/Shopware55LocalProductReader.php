@@ -60,6 +60,26 @@ class Shopware55LocalProductReader extends Shopware55LocalAbstractReader
         return $this->mapData($fetchedFilterOptionValues, [], ['filter', 'values']);
     }
 
+    /**
+     * @return array
+     */
+    public function fetchShopsByCategories(array $categories)
+    {
+        $query = $this->connection->createQueryBuilder();
+
+        $query->from('s_categories', 'category');
+        $query->addSelect('category.id');
+
+        $query->leftJoin('category', 's_core_shops', 'shop', 'category.id = shop.category_id');
+        $query->addSelect('shop.id');
+        $query->addSelect('shop.main_id');
+
+        $query->where('category.id IN (:ids)');
+        $query->setParameter('ids', $categories, Connection::PARAM_INT_ARRAY);
+
+        return $query->execute()->fetchAll(\PDO::FETCH_GROUP);
+    }
+
     protected function appendAssociatedData(array $products): array
     {
         $categories = $this->getCategories();
@@ -170,27 +190,6 @@ class Shopware55LocalProductReader extends Shopware55LocalAbstractReader
 
         $query->where('product_category.articleID IN (:ids)');
         $query->setParameter('ids', $productIds, Connection::PARAM_INT_ARRAY);
-
-        return $query->execute()->fetchAll(\PDO::FETCH_GROUP);
-    }
-
-    /**
-     * @param array $categories
-     * @return array
-     */
-    public function fetchShopsByCategories(array $categories)
-    {
-        $query = $this->connection->createQueryBuilder();
-
-        $query->from('s_categories', 'category');
-        $query->addSelect('category.id');
-
-        $query->leftJoin('category', 's_core_shops', 'shop', 'category.id = shop.category_id');
-        $query->addSelect('shop.id');
-        $query->addSelect('shop.main_id');
-
-        $query->where('category.id IN (:ids)');
-        $query->setParameter('ids', $categories, Connection::PARAM_INT_ARRAY);
 
         return $query->execute()->fetchAll(\PDO::FETCH_GROUP);
     }
