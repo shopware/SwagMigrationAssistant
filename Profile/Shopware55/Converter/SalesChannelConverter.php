@@ -263,6 +263,10 @@ class SalesChannelConverter extends Shopware55Converter
             $data['children']
         );
 
+        if (empty($data)) {
+            $data = null;
+        }
+
         return new ConvertStruct($converted, $data);
     }
 

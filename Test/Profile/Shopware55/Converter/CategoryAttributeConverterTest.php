@@ -51,6 +51,7 @@ class CategoryAttributeConverterTest extends TestCase
         $this->connection = new SwagMigrationConnectionEntity();
         $this->connection->setProfile(new SwagMigrationProfileEntity());
         $this->connection->setId(Uuid::randomHex());
+        $this->connection->setName('ConntectionName');
 
         $this->migrationContext = new MigrationContext(
             $this->connection,
@@ -74,14 +75,14 @@ class CategoryAttributeConverterTest extends TestCase
 
         $context = Context::createDefaultContext();
         $convertResult = $this->converter->convert($categoryData[0], $context, $this->migrationContext);
-
+        $this->converter->writeMapping($context);
         $converted = $convertResult->getConverted();
 
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('relations', $converted);
         static::assertSame('category', $converted['relations'][0]['entityName']);
-        static::assertSame('category_categorydate1', $converted['customFields'][0]['name']);
+        static::assertSame('category_migration_ConntectionName_categorydate1', $converted['customFields'][0]['name']);
         static::assertSame('date', $converted['customFields'][0]['type']);
         static::assertSame('date', $converted['customFields'][0]['config']['type']);
         static::assertSame('date', $converted['customFields'][0]['config']['dateType']);
@@ -101,7 +102,7 @@ class CategoryAttributeConverterTest extends TestCase
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('relations', $converted);
         static::assertSame('category', $converted['relations'][0]['entityName']);
-        static::assertSame('category_checkbox1', $converted['customFields'][0]['name']);
+        static::assertSame('category_migration_ConntectionName_checkbox1', $converted['customFields'][0]['name']);
         static::assertSame('checkbox', $converted['customFields'][0]['config']['type']);
         static::assertSame('checkbox', $converted['customFields'][0]['config']['customFieldType']);
     }
@@ -119,7 +120,7 @@ class CategoryAttributeConverterTest extends TestCase
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('relations', $converted);
         static::assertSame('category', $converted['relations'][0]['entityName']);
-        static::assertSame('category_datetime1', $converted['customFields'][0]['name']);
+        static::assertSame('category_migration_ConntectionName_datetime1', $converted['customFields'][0]['name']);
         static::assertSame('date', $converted['customFields'][0]['config']['type']);
         static::assertSame('datetime', $converted['customFields'][0]['config']['dateType']);
         static::assertSame('date', $converted['customFields'][0]['config']['customFieldType']);
@@ -138,7 +139,7 @@ class CategoryAttributeConverterTest extends TestCase
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('relations', $converted);
         static::assertSame('category', $converted['relations'][0]['entityName']);
-        static::assertSame('category_attr6', $converted['customFields'][0]['name']);
+        static::assertSame('category_migration_ConntectionName_attr6', $converted['customFields'][0]['name']);
         static::assertSame('text', $converted['customFields'][0]['config']['type']);
         static::assertSame('text', $converted['customFields'][0]['config']['customFieldType']);
     }

@@ -522,6 +522,10 @@ class RunService implements RunServiceInterface
             $existsIsoCodes[$currency->getIsoCode()] = $currency->getId();
         }
 
+        if (empty($currenciesToDelete)) {
+            return;
+        }
+
         $this->currencyRepository->delete($currenciesToDelete, $context);
     }
 }

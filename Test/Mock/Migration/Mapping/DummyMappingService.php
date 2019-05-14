@@ -8,6 +8,7 @@ use Shopware\Core\Framework\Language\LanguageEntity;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\Locale\LocaleEntity;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 class DummyMappingService extends MappingService
 {
@@ -130,5 +131,25 @@ class DummyMappingService extends MappingService
         ]);
 
         return $defaultLanguage;
+    }
+
+    public function getDefaultFolderIdByEntity(string $entityName, MigrationContextInterface $migrationContext, Context $context): ?string
+    {
+        return Uuid::randomHex();
+    }
+
+    public function getThumbnailSizeUuid(int $width, int $height, MigrationContextInterface $migrationContext, Context $context): ?string
+    {
+        return null;
+    }
+
+    public function getNumberRangeUuid(string $type, string $oldId, MigrationContextInterface $migrationContext, Context $context): ?string
+    {
+        return Uuid::randomHex();
+    }
+
+    public function getCurrencyUuidWithoutMapping(string $connectionId, string $oldShortName, Context $context): ?string
+    {
+        return Uuid::randomHex();
     }
 }

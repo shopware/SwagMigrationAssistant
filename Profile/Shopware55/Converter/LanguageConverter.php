@@ -96,6 +96,10 @@ class LanguageConverter extends Shopware55Converter
             $data['translations']
         );
 
+        if (empty($data)) {
+            $data = null;
+        }
+
         return new ConvertStruct($converted, $data);
     }
 }

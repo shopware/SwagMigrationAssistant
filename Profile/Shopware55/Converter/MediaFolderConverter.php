@@ -77,6 +77,8 @@ class MediaFolderConverter extends Shopware55Converter
         $this->mainLocale = $data['_locale'];
         $this->oldId = $data['id'];
 
+        unset($data['_locale']);
+
         $converted = [];
         $converted['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
@@ -103,6 +105,7 @@ class MediaFolderConverter extends Shopware55Converter
                 $converted['parentId'] = $parentUuid;
             }
         }
+        unset($data['parentID']);
 
         if (!isset($converted['parentId'])) {
             $converted['parent'] = [
@@ -129,13 +132,19 @@ class MediaFolderConverter extends Shopware55Converter
 
         if (isset($data['setting'])) {
             $converted['configuration'] = $this->getConfiguration($data['setting']);
-            unset($setting);
+            unset($data['setting']);
         } else {
             $converted['useParentConfiguration'] = true;
             // will immediately be overriden by MediaConfigIndexer
             $converted['configuration'] = [
                 'id' => Uuid::randomHex(),
             ];
+        }
+
+        unset($data['position'], $data['garbage_collectable']);
+
+        if (empty($data)) {
+            $data = null;
         }
 
         return new ConvertStruct($converted, $data);

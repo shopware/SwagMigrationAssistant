@@ -18,6 +18,7 @@ use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistryInterface;
+use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorRegistry;
 use SwagMigrationAssistant\Migration\Media\MediaFileService;
@@ -86,12 +87,32 @@ class MigrationControllerTest extends TestCase
      */
     private $dataSetRegistry;
 
+    /**
+     * @var string
+     */
+    private $invalidRunUuid;
+
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $dataRepo;
+
+    /**
+     * @var Context
+     */
+    private $context;
+
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $mediaFileRepo;
+
     protected function setUp(): void
     {
-        $context = Context::createDefaultContext();
+        $this->context = Context::createDefaultContext();
         $dataDefinition = $this->getContainer()->get(SwagMigrationDataDefinition::class);
-        $mediaFileRepo = $this->getContainer()->get('swag_migration_media_file.repository');
-        $dataRepo = $this->getContainer()->get('swag_migration_data.repository');
+        $this->mediaFileRepo = $this->getContainer()->get('swag_migration_media_file.repository');
+        $this->dataRepo = $this->getContainer()->get('swag_migration_data.repository');
         $currencyRepo = $this->getContainer()->get('currency.repository');
         $this->profileRepo = $this->getContainer()->get('swag_migration_profile.repository');
         $this->connectionRepo = $this->getContainer()->get('swag_migration_connection.repository');
@@ -100,7 +121,7 @@ class MigrationControllerTest extends TestCase
         $this->runRepo = $this->getContainer()->get('swag_migration_run.repository');
         $this->dataSetRegistry = $this->getContainer()->get(DataSetRegistry::class);
 
-        $context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) {
+        $this->context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) {
             $this->connectionId = Uuid::randomHex();
             $this->connectionRepo->create(
                 [
@@ -133,6 +154,19 @@ class MigrationControllerTest extends TestCase
             Context::createDefaultContext()
         );
 
+        $this->invalidRunUuid = Uuid::randomHex();
+        $this->runRepo->create(
+            [
+                [
+                    'id' => $this->invalidRunUuid,
+                    'progress' => require __DIR__ . '/../../_fixtures/run_progress_data.php',
+                    'status' => SwagMigrationRunEntity::STATUS_RUNNING,
+                    'accessToken' => 'testToken',
+                ],
+            ],
+            Context::createDefaultContext()
+        );
+
         $mappingService = $this->getContainer()->get(MappingService::class);
         $accessTokenService = new SwagMigrationAccessTokenService(
             $this->runRepo
@@ -148,7 +182,7 @@ class MigrationControllerTest extends TestCase
             $dataFetcher,
             $this->getContainer()->get(MigrationDataWriter::class),
             new DummyMediaFileProcessorService(
-                $mediaFileRepo,
+                $this->mediaFileRepo,
                 new MediaFileProcessorRegistry(
                     [
                         new DummyHttpMediaDownloadService(),
@@ -162,8 +196,8 @@ class MigrationControllerTest extends TestCase
                 $dataFetcher,
                 $accessTokenService,
                 new DataSelectionRegistry([]),
-                $dataRepo,
-                $mediaFileRepo,
+                $this->dataRepo,
+                $this->mediaFileRepo,
                 $currencyRepo,
                 $this->getContainer()->get(IndexerRegistry::class),
                 $this->getContainer()->get('shopware.cache')
@@ -223,6 +257,36 @@ class MigrationControllerTest extends TestCase
         static::assertSame(Response::HTTP_OK, $result->getStatusCode());
     }
 
+    public function testFetchDataWithIncorrectRunUuid(): void
+    {
+        $context = Context::createDefaultContext();
+
+        $params = [
+            'runUuid' => Uuid::randomHex(),
+            'entity' => ProductDataSet::getEntity(),
+            SwagMigrationAccessTokenService::ACCESS_TOKEN_NAME => 'testToken',
+        ];
+        $request = new Request([], $params);
+
+        $this->expectException(EntityNotExistsException::class);
+        $this->controller->fetchData($request, $context);
+    }
+
+    public function testFetchDataWithIncorrectConnection(): void
+    {
+        $context = Context::createDefaultContext();
+
+        $params = [
+            'runUuid' => $this->invalidRunUuid,
+            'entity' => ProductDataSet::getEntity(),
+            SwagMigrationAccessTokenService::ACCESS_TOKEN_NAME => 'testToken',
+        ];
+        $request = new Request([], $params);
+
+        $this->expectException(EntityNotExistsException::class);
+        $this->controller->fetchData($request, $context);
+    }
+
     public function requiredFetchDataProperties(): array
     {
         return [
@@ -248,6 +312,105 @@ class MigrationControllerTest extends TestCase
 
         $this->expectException(MigrationContextPropertyMissingException::class);
         $this->controller->fetchData($request, $context);
+    }
+
+    public function testUpdateWriteProgress(): void
+    {
+        $context = Context::createDefaultContext();
+
+        $properties = [
+            'runUuid' => $this->runUuid,
+            'entity' => ProductDataSet::getEntity(),
+        ];
+        $request = new Request([], $properties);
+
+        $this->createDataRows(DefaultEntities::CATEGORY, 10);
+        $this->createDataRows(DefaultEntities::PRODUCT, 11);
+        $this->createDataRows(DefaultEntities::CUSTOMER, 12);
+        $this->createDataRows(DefaultEntities::ORDER, 13);
+        $this->createDataRows(DefaultEntities::MEDIA, 14);
+
+        $result = $this->controller->updateWriteProgress($request, $context);
+        $progress = json_decode($result->getContent(), true);
+
+        static::assertSame(10, $progress[0]['entities'][0]['total']);
+        static::assertSame(11, $progress[0]['entities'][1]['total']);
+        static::assertSame(21, $progress[0]['total']);
+
+        static::assertSame(12, $progress[1]['entities'][0]['total']);
+        static::assertSame(13, $progress[1]['entities'][1]['total']);
+        static::assertSame(25, $progress[1]['total']);
+
+        static::assertSame(14, $progress[2]['entities'][0]['total']);
+        static::assertSame(14, $progress[2]['total']);
+    }
+
+    public function testUpdateWriteProgressWithoutRunUuid(): void
+    {
+        $properties = [
+            'entity' => ProductDataSet::getEntity(),
+        ];
+        $request = new Request([], $properties);
+
+        $this->expectException(MigrationContextPropertyMissingException::class);
+        $this->controller->updateWriteProgress($request, $this->context);
+    }
+
+    public function testUpdateWriteProgressWithInvalidRunUuid(): void
+    {
+        $properties = [
+            'runUuid' => Uuid::randomHex(),
+            'entity' => ProductDataSet::getEntity(),
+        ];
+        $request = new Request([], $properties);
+
+        $this->expectException(EntityNotExistsException::class);
+        $this->controller->updateWriteProgress($request, $this->context);
+    }
+
+    public function testUpdateMediaFilesProgress(): void
+    {
+        $context = Context::createDefaultContext();
+
+        $properties = [
+            'runUuid' => $this->runUuid,
+            'entity' => ProductDataSet::getEntity(),
+        ];
+        $request = new Request([], $properties);
+
+        $this->createMediaFileRows(14, true, true);
+        $this->createMediaFileRows(10, true);
+
+        $result = $this->controller->updateMediaFilesProgress($request, $context);
+        $progress = json_decode($result->getContent(), true);
+
+        static::assertSame(14, $progress[2]['entities'][0]['currentCount']);
+        static::assertSame(24, $progress[2]['entities'][0]['total']);
+        static::assertSame(14, $progress[2]['currentCount']);
+        static::assertSame(24, $progress[2]['total']);
+    }
+
+    public function testUpdateMediaFilesProgressWithoutRunUuid(): void
+    {
+        $properties = [
+            'entity' => ProductDataSet::getEntity(),
+        ];
+        $request = new Request([], $properties);
+
+        $this->expectException(MigrationContextPropertyMissingException::class);
+        $this->controller->updateMediaFilesProgress($request, $this->context);
+    }
+
+    public function testUpdateMediaFilesProgressWithInvalidRunUuid(): void
+    {
+        $properties = [
+            'runUuid' => Uuid::randomHex(),
+            'entity' => ProductDataSet::getEntity(),
+        ];
+        $request = new Request([], $properties);
+
+        $this->expectException(EntityNotExistsException::class);
+        $this->controller->updateMediaFilesProgress($request, $this->context);
     }
 
     public function requiredWriteDataProperties(): array
@@ -436,6 +599,113 @@ class MigrationControllerTest extends TestCase
         } catch (\Exception $e) {
             static::assertSame(Response::HTTP_BAD_REQUEST, $e->getStatusCode());
             throw $e;
+        }
+    }
+
+    public function testDownloadMediaWithInvalidRunUuid(): void
+    {
+        $inputWorkload = [
+            [
+                'uuid' => Uuid::randomHex(),
+                'currentOffset' => 100,
+                'state' => 'inProgress',
+            ],
+
+            [
+                'uuid' => Uuid::randomHex(),
+                'currentOffset' => 100,
+                'state' => 'inProgress',
+            ],
+
+            [
+                'uuid' => Uuid::randomHex(),
+                'currentOffset' => 100,
+                'state' => 'inProgress',
+            ],
+        ];
+
+        $properties = [
+            'runUuid' => Uuid::randomHex(),
+            'fileChunkByteSize' => 1000,
+        ];
+
+        $properties['workload'] = $inputWorkload;
+        $request = new Request([], $properties);
+
+        $this->expectException(EntityNotExistsException::class);
+        $this->controller->processMedia($request, $this->context);
+    }
+
+    public function testDownloadMediaWithInvalidConnection(): void
+    {
+        $inputWorkload = [
+            [
+                'uuid' => Uuid::randomHex(),
+                'currentOffset' => 100,
+                'state' => 'inProgress',
+            ],
+
+            [
+                'uuid' => Uuid::randomHex(),
+                'currentOffset' => 100,
+                'state' => 'inProgress',
+            ],
+
+            [
+                'uuid' => Uuid::randomHex(),
+                'currentOffset' => 100,
+                'state' => 'inProgress',
+            ],
+        ];
+
+        $properties = [
+            'runUuid' => $this->invalidRunUuid,
+            'fileChunkByteSize' => 1000,
+        ];
+
+        $properties['workload'] = $inputWorkload;
+        $properties[SwagMigrationAccessTokenService::ACCESS_TOKEN_NAME] = 'testToken';
+        $request = new Request([], $properties);
+
+        $this->expectException(EntityNotExistsException::class);
+        $this->controller->processMedia($request, $this->context);
+    }
+
+    private function createDataRows(string $entityName, int $count = 1, bool $setWritten = false): void
+    {
+        for ($i = 0; $i < $count; ++$i) {
+            $this->dataRepo->create(
+                [
+                    [
+                        'runId' => $this->runUuid,
+                        'entity' => $entityName,
+                        'raw' => [],
+                        'converted' => [],
+                        'written' => $setWritten,
+                    ],
+                ],
+                $this->context
+            );
+        }
+    }
+
+    private function createMediaFileRows(int $count = 1, bool $setWritten = false, bool $setProcessed = false): void
+    {
+        for ($i = 0; $i < $count; ++$i) {
+            $this->mediaFileRepo->create(
+                [
+                    [
+                        'runId' => $this->runUuid,
+                        'uri' => 'foobar',
+                        'fileName' => 'foobar',
+                        'fileSize' => 100,
+                        'mediaId' => Uuid::randomHex(),
+                        'written' => $setWritten,
+                        'processed' => $setProcessed,
+                    ],
+                ],
+                $this->context
+            );
         }
     }
 }

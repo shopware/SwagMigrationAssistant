@@ -73,7 +73,7 @@ class CustomerGroupConverter extends Shopware55Converter
         $this->convertValue($converted, 'minimumOrderAmountSurcharge', $data, 'minimumordersurcharge', self::TYPE_FLOAT);
         $this->convertValue($converted, 'name', $data, 'description');
 
-        unset($data['id'], $data['groupkey']);
+        unset($data['id'], $data['groupkey'], $data['discounts']);
         if (empty($data)) {
             $data = null;
         }

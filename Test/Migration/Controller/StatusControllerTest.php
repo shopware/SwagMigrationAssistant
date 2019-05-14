@@ -13,6 +13,8 @@ use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Controller\StatusController;
+use SwagMigrationAssistant\Exception\ConnectionCredentialsMissingException;
+use SwagMigrationAssistant\Exception\EntityNotExistsException;
 use SwagMigrationAssistant\Exception\MigrationContextPropertyMissingException;
 use SwagMigrationAssistant\Exception\MigrationIsRunningException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
@@ -81,9 +83,24 @@ class StatusControllerTest extends TestCase
      */
     private $connectionId;
 
+    /**
+     * @var Context
+     */
+    private $context;
+
+    /**
+     * @var string
+     */
+    private $invalidRunUuid;
+
+    /**
+     * @var string
+     */
+    private $invalidConnectionId;
+
     protected function setUp(): void
     {
-        $context = Context::createDefaultContext();
+        $this->context = Context::createDefaultContext();
         $mediaFileRepo = $this->getContainer()->get('swag_migration_media_file.repository');
         $dataRepo = $this->getContainer()->get('swag_migration_data.repository');
         $currencyRepo = $this->getContainer()->get('currency.repository');
@@ -93,7 +110,7 @@ class StatusControllerTest extends TestCase
         $this->generalSettingRepo = $this->getContainer()->get('swag_migration_general_setting.repository');
         $this->runRepo = $this->getContainer()->get('swag_migration_run.repository');
 
-        $context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) {
+        $this->context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) {
             $this->connectionId = Uuid::randomHex();
             $this->connectionRepo->create(
                 [
@@ -105,6 +122,18 @@ class StatusControllerTest extends TestCase
                             'apiUser' => 'testUser',
                             'apiKey' => 'testKey',
                         ],
+                        'profileId' => $this->profileUuidService->getProfileUuid(),
+                    ],
+                ],
+                $context
+            );
+
+            $this->invalidConnectionId = Uuid::randomHex();
+            $this->connectionRepo->create(
+                [
+                    [
+                        'id' => $this->invalidConnectionId,
+                        'name' => 'myInvalidConnection',
                         'profileId' => $this->profileUuidService->getProfileUuid(),
                     ],
                 ],
@@ -189,6 +218,35 @@ class StatusControllerTest extends TestCase
         static::assertSame($connection->getCredentialFields(), $params['credentialFields']);
     }
 
+    public function testUpdateConnectionCredentialsWithoutConnectionId(): void
+    {
+        $params = [
+            'credentialFields' => [
+                'testCredentialField1' => 'field1',
+                'testCredentialField2' => 'field2',
+            ],
+        ];
+        $request = new Request([], $params);
+
+        $this->expectException(MigrationContextPropertyMissingException::class);
+        $this->controller->updateConnectionCredentials($request, $this->context);
+    }
+
+    public function testUpdateConnectionCredentialsWithInvalidConnectionId(): void
+    {
+        $params = [
+            'connectionId' => Uuid::randomHex(),
+            'credentialFields' => [
+                'testCredentialField1' => 'field1',
+                'testCredentialField2' => 'field2',
+            ],
+        ];
+        $request = new Request([], $params);
+
+        $this->expectException(EntityNotExistsException::class);
+        $this->controller->updateConnectionCredentials($request, $this->context);
+    }
+
     public function testUpdateConnectionCredentialsWithRunningMigration(): void
     {
         $this->expectException(MigrationIsRunningException::class);
@@ -226,6 +284,19 @@ class StatusControllerTest extends TestCase
         static::assertSame($state[1]['entityNames'][1], DefaultEntities::CUSTOMER);
         static::assertSame($state[1]['entityNames'][2], DefaultEntities::ORDER_CUSTOM_FIELD);
         static::assertSame($state[1]['entityNames'][3], DefaultEntities::ORDER);
+    }
+
+    public function testGetDataSelectionWithoutConnectionId(): void
+    {
+        $this->expectException(MigrationContextPropertyMissingException::class);
+        $this->controller->getDataSelection(new Request(), $this->context);
+    }
+
+    public function testGetDataSelectionWithInvalidConnectionId(): void
+    {
+        $request = new Request(['connectionId' => Uuid::randomHex()]);
+        $this->expectException(EntityNotExistsException::class);
+        $this->controller->getDataSelection($request, $this->context);
     }
 
     public function testGetState(): void
@@ -345,6 +416,32 @@ class StatusControllerTest extends TestCase
         static::assertSame(0, $totalProcessing);
     }
 
+    public function testCreateMigrationWithoutConnectionId(): void
+    {
+        $params = [
+            'connectionId' => $this->connectionId,
+        ];
+        $requestWithToken = new Request([], $params);
+
+        $this->expectException(MigrationContextPropertyMissingException::class);
+        $this->controller->createMigration($requestWithToken, $this->context);
+    }
+
+    public function testCreateMigrationWithoutDataSelectionIds(): void
+    {
+        $params = [
+            'dataSelectionIds' => [
+                'categories_products',
+                'customers_orders',
+                'media',
+            ],
+        ];
+        $requestWithToken = new Request([], $params);
+
+        $this->expectException(MigrationContextPropertyMissingException::class);
+        $this->controller->createMigration($requestWithToken, $this->context);
+    }
+
     public function testTakeoverMigration(): void
     {
         $params = [
@@ -404,6 +501,52 @@ class StatusControllerTest extends TestCase
             static::assertArrayHasKey('property', $e->getParameters());
             static::assertSame($e->getParameters()['property'], 'connectionId');
         }
+    }
+
+    public function testCheckConnectionWithInvalidConnectionId(): void
+    {
+        $request = new Request([], ['connectionId' => Uuid::randomHex()]);
+        $this->expectException(EntityNotExistsException::class);
+        $this->controller->checkConnection($request, $this->context);
+    }
+
+    public function testCheckConnectionWithoutCredentials(): void
+    {
+        $request = new Request([], ['connectionId' => $this->invalidConnectionId]);
+        $this->expectException(ConnectionCredentialsMissingException::class);
+        $this->controller->checkConnection($request, $this->context);
+    }
+
+    public function testAbortMigrationWithoutRunUuid(): void
+    {
+        $this->expectException(MigrationContextPropertyMissingException::class);
+        $this->controller->abortMigration(new Request(), $this->context);
+    }
+
+    public function testAbortMigration(): void
+    {
+        $request = new Request([], ['runUuid' => $this->runUuid]);
+        $this->controller->abortMigration($request, $this->context);
+
+        /** @var SwagMigrationRunEntity $run */
+        $run = $this->runRepo->search(new Criteria([$this->runUuid]), $this->context)->first();
+        static::assertSame('aborted', $run->getStatus());
+    }
+
+    public function testFinishMigrationWithoutRunUuid(): void
+    {
+        $this->expectException(MigrationContextPropertyMissingException::class);
+        $this->controller->finishMigration(new Request(), $this->context);
+    }
+
+    public function testFinishMigration(): void
+    {
+        $request = new Request([], ['runUuid' => $this->runUuid]);
+        $this->controller->finishMigration($request, $this->context);
+
+        /** @var SwagMigrationRunEntity $run */
+        $run = $this->runRepo->search(new Criteria([$this->runUuid]), $this->context)->first();
+        static::assertSame('finished', $run->getStatus());
     }
 
     private function isJsonArrayTypeOfProgressState(array $state): bool
