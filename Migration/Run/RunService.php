@@ -12,6 +12,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use SwagMigrationAssistant\Exception\MigrationIsRunningException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionCollection;
@@ -70,6 +71,11 @@ class RunService implements RunServiceInterface
     /** @var TagAwareAdapter */
     private $cache;
 
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $currencyRepository;
+
     public function __construct(
         EntityRepositoryInterface $migrationRunRepo,
         EntityRepositoryInterface $connectionRepo,
@@ -78,6 +84,7 @@ class RunService implements RunServiceInterface
         DataSelectionRegistryInterface $dataSelectionRegistry,
         EntityRepositoryInterface $migrationDataRepository,
         EntityRepositoryInterface $mediaFileRepository,
+        EntityRepositoryInterface $currencyRepository,
         IndexerInterface $indexer,
         TagAwareAdapter $cache
     ) {
@@ -88,6 +95,7 @@ class RunService implements RunServiceInterface
         $this->dataSelectionRegistry = $dataSelectionRegistry;
         $this->migrationDataRepository = $migrationDataRepository;
         $this->mediaFileRepository = $mediaFileRepository;
+        $this->currencyRepository = $currencyRepository;
         $this->indexer = $indexer;
         $this->cache = $cache;
     }
@@ -101,6 +109,7 @@ class RunService implements RunServiceInterface
     {
         $this->accessTokenService->invalidateRunAccessToken($runUuid, $context);
 
+        $this->removeDuplicateCurrencies($context);
         $this->cache->clear();
     }
 
@@ -248,6 +257,7 @@ class RunService implements RunServiceInterface
             ],
         ], $context);
 
+        $this->removeDuplicateCurrencies($context);
         $this->removeWrittenMigrationData($context, $runUuid);
 
         $this->cache->clear();
@@ -493,5 +503,25 @@ class RunService implements RunServiceInterface
         if ($result->getTotal() > 0) {
             $this->migrationDataRepository->delete(array_values($result->getData()), $context);
         }
+    }
+
+    private function removeDuplicateCurrencies(Context $context): void
+    {
+        $currenciesToDelete = [];
+        $existsIsoCodes = [];
+        $criteria = new Criteria();
+        $criteria->addSorting(new FieldSorting('createdAt'));
+        $currencies = $this->currencyRepository->search($criteria, $context)->getEntities();
+
+        foreach ($currencies as $currency) {
+            if (isset($existsIsoCodes[$currency->getIsoCode()])) {
+                $currenciesToDelete[] = ['id' => $currency->getId()];
+                continue;
+            }
+
+            $existsIsoCodes[$currency->getIsoCode()] = $currency->getId();
+        }
+
+        $this->currencyRepository->delete($currenciesToDelete, $context);
     }
 }

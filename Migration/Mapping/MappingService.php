@@ -5,6 +5,7 @@ namespace SwagMigrationAssistant\Migration\Mapping;
 use Shopware\Core\Content\Media\Aggregate\MediaDefaultFolder\MediaDefaultFolderEntity;
 use Shopware\Core\Content\Media\Aggregate\MediaThumbnailSize\MediaThumbnailSizeEntity;
 use Shopware\Core\Content\Rule\RuleEntity;
+use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -432,6 +433,43 @@ class MappingService implements MappingServiceInterface
             );
 
             return $currencyUuid;
+        }
+
+        return null;
+    }
+
+    public function getDefaultCurrency(Context $context): CurrencyEntity
+    {
+        /** @var EntitySearchResult $result */
+        $result = $context->disableCache(function (Context $context) {
+            $criteria = new Criteria([Defaults::CURRENCY]);
+            $criteria->setLimit(1);
+
+            return $this->currencyRepository->search($criteria, $context);
+        });
+
+        /** @var CurrencyEntity $currency */
+        $currency = $result->getEntities()->first();
+
+        return $currency;
+    }
+
+    public function getCurrencyUuidWithoutMapping(string $connectionId, string $oldShortName, Context $context): ?string
+    {
+        /** @var EntitySearchResult $result */
+        $result = $context->disableCache(function (Context $context) use ($oldShortName) {
+            $criteria = new Criteria();
+            $criteria->addFilter(new EqualsFilter('shortName', $oldShortName));
+            $criteria->setLimit(1);
+
+            return $this->currencyRepository->search($criteria, $context);
+        });
+
+        if ($result->getTotal() > 0) {
+            /** @var CurrencyEntity $element */
+            $element = $result->getEntities()->first();
+
+            return $element->getId();
         }
 
         return null;

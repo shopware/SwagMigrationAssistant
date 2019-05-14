@@ -92,6 +92,7 @@ class MigrationControllerTest extends TestCase
         $dataDefinition = $this->getContainer()->get(SwagMigrationDataDefinition::class);
         $mediaFileRepo = $this->getContainer()->get('swag_migration_media_file.repository');
         $dataRepo = $this->getContainer()->get('swag_migration_data.repository');
+        $currencyRepo = $this->getContainer()->get('currency.repository');
         $this->profileRepo = $this->getContainer()->get('swag_migration_profile.repository');
         $this->connectionRepo = $this->getContainer()->get('swag_migration_connection.repository');
         $this->profileUuidService = new MigrationProfileUuidService($this->profileRepo, Shopware55Profile::PROFILE_NAME, Shopware55LocalGateway::GATEWAY_NAME);
@@ -163,6 +164,7 @@ class MigrationControllerTest extends TestCase
                 new DataSelectionRegistry([]),
                 $dataRepo,
                 $mediaFileRepo,
+                $currencyRepo,
                 $this->getContainer()->get(IndexerRegistry::class),
                 $this->getContainer()->get('shopware.cache')
             ),
