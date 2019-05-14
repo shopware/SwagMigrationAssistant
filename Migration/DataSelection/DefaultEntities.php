@@ -98,6 +98,8 @@ final class DefaultEntities
 
     public const PRODUCT_PROPERTY = 'product_property';
 
+    public const PRODUCT_VISIBILITY = 'product_visibility';
+
     public const PROPERTY_GROUP = 'property_group';
 
     public const PROPERTY_GROUP_TRANSLATION = 'property_group_translation';

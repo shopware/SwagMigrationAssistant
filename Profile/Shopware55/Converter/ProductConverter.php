@@ -2,6 +2,7 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware55\Converter;
 
+use Shopware\Core\Content\Product\Aggregate\ProductVisibility\ProductVisibilityDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Rule\Container\AndRule;
 use Shopware\Core\Framework\Rule\Container\OrRule;
@@ -157,6 +158,11 @@ class ProductConverter extends Shopware55Converter
         }
         unset($data['categories']);
 
+        if (isset($data['shops'])) {
+            $converted['visibilities'] = $this->getVisibilities($converted, $data['shops']);
+        }
+        unset($data['shops']);
+
         unset($data['detail']['id'], $data['detail']['articleID']);
 
         if (!isset($converted['manufacturerId']) && !isset($converted['manufacturer'])) {
@@ -223,6 +229,11 @@ class ProductConverter extends Shopware55Converter
             $converted['categories'] = $this->getCategoryMapping($data['categories']);
         }
         unset($data['categories']);
+
+        if (isset($data['shops'])) {
+            $converted['visibilities'] = $this->getVisibilities($converted, $data['shops']);
+        }
+        unset($data['shops']);
 
         if (empty($data['detail'])) {
             unset($data['detail']);
@@ -1045,6 +1056,36 @@ class ProductConverter extends Shopware55Converter
         }
 
         return $categoryMapping;
+    }
+
+    private function getVisibilities(array $converted, array $shops): array
+    {
+        $visibilities = [];
+
+        foreach ($shops as $shop) {
+            $salesChannelUuid = $this->mappingService->getUuid(
+                $this->connectionId,
+                DefaultEntities::SALES_CHANNEL,
+                $shop,
+                $this->context
+            );
+
+            if ($salesChannelUuid !== null) {
+                $visibilities[] = [
+                    'id' => $this->mappingService->createNewUuid(
+                        $this->connectionId,
+                        DefaultEntities::PRODUCT_VISIBILITY,
+                        $this->oldProductId . '_' . $shop,
+                        $this->context
+                    ),
+                    'productId' => $converted['id'],
+                    'salesChannelId' => $salesChannelUuid,
+                    'visibility' => ProductVisibilityDefinition::VISIBILITY_ALL
+                ];
+            }
+        }
+
+        return $visibilities;
     }
 
     private function getAttributes(array $attributes, string $entityName, array $blacklist = []): array
