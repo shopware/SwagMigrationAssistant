@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "shopware/platform": "dev-master"
+        "shopware/platform": "*"
     },
     "extra": {
         "shopware-plugin-class": "SwagMigrationAssistant\\SwagMigrationAssistant",
