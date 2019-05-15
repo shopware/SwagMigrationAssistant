@@ -15,7 +15,7 @@ use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Converter\ConverterRegistry;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
-use SwagMigrationAssistant\Migration\Gateway\GatewayFactoryRegistry;
+use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Logging\LogType;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingEntity;
@@ -33,7 +33,7 @@ use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\MediaDataSet
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\OrderDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\TranslationDataSet;
-use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Shopware55ApiFactory;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Shopware55ApiGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Premapping\PaymentMethodReader;
 use SwagMigrationAssistant\Profile\Shopware55\Premapping\SalutationReader;
@@ -42,7 +42,7 @@ use SwagMigrationAssistant\Test\Migration\Services\MigrationProfileUuidService;
 use SwagMigrationAssistant\Test\MigrationServicesTrait;
 use SwagMigrationAssistant\Test\Mock\DataSet\InvalidCustomerDataSet;
 use SwagMigrationAssistant\Test\Mock\DummyCollection;
-use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalFactory;
+use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGateway;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 
 class MigrationDataFetcherTest extends TestCase
@@ -169,9 +169,9 @@ class MigrationDataFetcherTest extends TestCase
                 ),
             ])),
 
-            new GatewayFactoryRegistry(new DummyCollection([
-                new Shopware55ApiFactory(),
-                new DummyLocalFactory(),
+            new GatewayRegistry(new DummyCollection([
+                new Shopware55ApiGateway(),
+                new DummyLocalGateway(),
             ])),
 
             $this->loggingService

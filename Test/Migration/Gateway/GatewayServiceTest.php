@@ -5,26 +5,26 @@ namespace SwagMigrationAssistant\Test\Gateway;
 use PHPUnit\Framework\TestCase;
 use SwagMigrationAssistant\Exception\GatewayNotFoundException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
-use SwagMigrationAssistant\Migration\Gateway\GatewayFactoryRegistry;
-use SwagMigrationAssistant\Migration\Gateway\GatewayFactoryRegistryInterface;
+use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
+use SwagMigrationAssistant\Migration\Gateway\GatewayRegistryInterface;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\Profile\SwagMigrationProfileEntity;
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationAssistant\Test\Mock\DummyCollection;
-use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalFactory;
+use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGateway;
 use Symfony\Component\HttpFoundation\Response;
 
 class GatewayServiceTest extends TestCase
 {
     /**
-     * @var GatewayFactoryRegistryInterface
+     * @var GatewayRegistryInterface
      */
-    private $gatewayFactoryRegistry;
+    private $gatewayRegistry;
 
     protected function setUp(): void
     {
-        $this->gatewayFactoryRegistry = new GatewayFactoryRegistry(new DummyCollection([new DummyLocalFactory()]));
+        $this->gatewayRegistry = new GatewayRegistry(new DummyCollection([new DummyLocalGateway()]));
     }
 
     public function testGetGatewayNotFound(): void
@@ -46,7 +46,7 @@ class GatewayServiceTest extends TestCase
         );
 
         try {
-            $this->gatewayFactoryRegistry->createGateway($migrationContext);
+            $this->gatewayRegistry->getGateway($migrationContext);
         } catch (\Exception $e) {
             /* @var GatewayNotFoundException $e */
             static::assertInstanceOf(GatewayNotFoundException::class, $e);

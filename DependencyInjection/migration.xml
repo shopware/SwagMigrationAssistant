@@ -58,10 +58,9 @@
         </service>
 
         <service id="SwagMigrationAssistant\Migration\Service\MigrationDataFetcher"
-                 class="SwagMigrationAssistant\Migration\Service\MigrationDataFetcher"
                  public="true">
             <argument type="service" id="SwagMigrationAssistant\Migration\Profile\ProfileRegistry"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\Gateway\GatewayFactoryRegistry"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Gateway\GatewayRegistry"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
         </service>
 

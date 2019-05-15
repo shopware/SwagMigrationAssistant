@@ -23,7 +23,7 @@ use Shopware\Core\System\Salutation\SalutationEntity;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateEntity;
 use Shopware\Core\System\StateMachine\StateMachineEntity;
 use SwagMigrationAssistant\Migration\Converter\ConverterRegistry;
-use SwagMigrationAssistant\Migration\Gateway\GatewayFactoryRegistry;
+use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
@@ -36,10 +36,10 @@ use SwagMigrationAssistant\Profile\Shopware55\Converter\MediaConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\OrderConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\ProductConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\TranslationConverter;
-use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Shopware55ApiFactory;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Shopware55ApiGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\DummyCollection;
-use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalFactory;
+use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGateway;
 use SwagMigrationAssistant\Test\Mock\Profile\Dummy\DummyInvalidCustomerConverter;
 
 trait MigrationServicesTrait
@@ -85,12 +85,12 @@ trait MigrationServicesTrait
             ),
         ]));
 
-        $gatewayFactoryRegistry = new GatewayFactoryRegistry(new DummyCollection([
-            new Shopware55ApiFactory(),
-            new DummyLocalFactory(),
+        $gatewayRegistry = new GatewayRegistry(new DummyCollection([
+            new Shopware55ApiGateway(),
+            new DummyLocalGateway(),
         ]));
 
-        return new MigrationDataFetcher($profileRegistry, $gatewayFactoryRegistry, $loggingService);
+        return new MigrationDataFetcher($profileRegistry, $gatewayRegistry, $loggingService);
     }
 
     protected function getOrderStateUuid(

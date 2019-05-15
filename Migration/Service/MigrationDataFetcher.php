@@ -5,7 +5,7 @@ namespace SwagMigrationAssistant\Migration\Service;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\ShopwareHttpException;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
-use SwagMigrationAssistant\Migration\Gateway\GatewayFactoryRegistryInterface;
+use SwagMigrationAssistant\Migration\Gateway\GatewayRegistryInterface;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Profile\ProfileRegistryInterface;
@@ -18,9 +18,9 @@ class MigrationDataFetcher implements MigrationDataFetcherInterface
     private $profileRegistry;
 
     /**
-     * @var GatewayFactoryRegistryInterface
+     * @var GatewayRegistryInterface
      */
-    private $gatewayFactoryRegistry;
+    private $gatewayRegistry;
 
     /**
      * @var LoggingServiceInterface
@@ -29,11 +29,11 @@ class MigrationDataFetcher implements MigrationDataFetcherInterface
 
     public function __construct(
         ProfileRegistryInterface $profileRegistry,
-        GatewayFactoryRegistryInterface $gatewayFactoryRegistry,
+        GatewayRegistryInterface $gatewayRegistry,
         LoggingServiceInterface $loggingService
     ) {
         $this->profileRegistry = $profileRegistry;
-        $this->gatewayFactoryRegistry = $gatewayFactoryRegistry;
+        $this->gatewayRegistry = $gatewayRegistry;
         $this->loggingService = $loggingService;
     }
 
@@ -42,8 +42,8 @@ class MigrationDataFetcher implements MigrationDataFetcherInterface
         $returnCount = 0;
         try {
             $profile = $this->profileRegistry->getProfile($migrationContext->getProfileName());
-            $gateway = $this->gatewayFactoryRegistry->createGateway($migrationContext);
-            $data = $gateway->read();
+            $gateway = $this->gatewayRegistry->getGateway($migrationContext);
+            $data = $gateway->read($migrationContext);
 
             if (\count($data) === 0) {
                 return $returnCount;
@@ -66,8 +66,8 @@ class MigrationDataFetcher implements MigrationDataFetcherInterface
     public function getEnvironmentInformation(MigrationContextInterface $migrationContext): EnvironmentInformation
     {
         $profile = $this->profileRegistry->getProfile($migrationContext->getProfileName());
-        $gateway = $this->gatewayFactoryRegistry->createGateway($migrationContext);
+        $gateway = $this->gatewayRegistry->getGateway($migrationContext);
 
-        return $profile->readEnvironmentInformation($gateway);
+        return $profile->readEnvironmentInformation($gateway, $migrationContext);
     }
 }

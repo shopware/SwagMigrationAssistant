@@ -6,7 +6,8 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
-use SwagMigrationAssistant\Migration\Gateway\AbstractGateway;
+use SwagMigrationAssistant\Migration\Gateway\GatewayInterface;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\CategoryAttributeDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\CategoryDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\CurrencyDataSet;
@@ -47,67 +48,72 @@ use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55Loc
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalTranslationReader;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
-class Shopware55LocalGateway extends AbstractGateway
+class Shopware55LocalGateway implements GatewayInterface
 {
     public const GATEWAY_NAME = 'local';
 
-    public function read(): array
+    public function supports(string $gatewayIdentifier): bool
     {
-        $connection = $this->getConnection();
+        return $gatewayIdentifier === Shopware55Profile::PROFILE_NAME . self::GATEWAY_NAME;
+    }
+
+    public function read(MigrationContextInterface $migrationContext): array
+    {
+        $connection = $this->getConnection($migrationContext);
         /** @var Shopware55DataSet $dataSet */
-        $dataSet = $this->migrationContext->getDataSet();
+        $dataSet = $migrationContext->getDataSet();
 
         switch ($dataSet::getEntity()) {
             case ProductDataSet::getEntity():
-                $reader = new Shopware55LocalProductReader($connection, $this->migrationContext);
+                $reader = new Shopware55LocalProductReader($connection, $migrationContext);
 
                 return $reader->read();
             case CategoryDataSet::getEntity():
-                $reader = new Shopware55LocalCategoryReader($connection, $this->migrationContext);
+                $reader = new Shopware55LocalCategoryReader($connection, $migrationContext);
 
                 return $reader->read();
             case CustomerGroupDataSet::getEntity():
-                $reader = new Shopware55LocalCustomerGroupReader($connection, $this->migrationContext);
+                $reader = new Shopware55LocalCustomerGroupReader($connection, $migrationContext);
 
                 return $reader->read();
             case CustomerDataSet::getEntity():
-                $reader = new Shopware55LocalCustomerReader($connection, $this->migrationContext);
+                $reader = new Shopware55LocalCustomerReader($connection, $migrationContext);
 
                 return $reader->read();
             case OrderDataSet::getEntity():
-                $reader = new Shopware55LocalOrderReader($connection, $this->migrationContext);
+                $reader = new Shopware55LocalOrderReader($connection, $migrationContext);
 
                 return $reader->read();
             case MediaFolderDataSet::getEntity():
-                $reader = new Shopware55LocalMediaAlbumReader($connection, $this->migrationContext);
+                $reader = new Shopware55LocalMediaAlbumReader($connection, $migrationContext);
 
                 return $reader->read();
             case MediaDataSet::getEntity():
-                $reader = new Shopware55LocalMediaReader($connection, $this->migrationContext);
+                $reader = new Shopware55LocalMediaReader($connection, $migrationContext);
 
                 return $reader->read();
             case TranslationDataSet::getEntity():
-                $reader = new Shopware55LocalTranslationReader($connection, $this->migrationContext);
+                $reader = new Shopware55LocalTranslationReader($connection, $migrationContext);
 
                 return $reader->read();
             case PropertyGroupOptionDataSet::getEntity():
-                $reader = new Shopware55LocalPropertyGroupOptionReader($connection, $this->migrationContext);
+                $reader = new Shopware55LocalPropertyGroupOptionReader($connection, $migrationContext);
 
                 return $reader->read();
             case LanguageDataSet::getEntity():
-                $reader = new Shopware55LocalLanguageReader($connection, $this->migrationContext);
+                $reader = new Shopware55LocalLanguageReader($connection, $migrationContext);
 
                 return $reader->read();
             case CurrencyDataSet::getEntity():
-                $reader = new Shopware55LocalCurrencyReader($connection, $this->migrationContext);
+                $reader = new Shopware55LocalCurrencyReader($connection, $migrationContext);
 
                 return $reader->read();
             case SalesChannelDataSet::getEntity():
-                $reader = new Shopware55LocalSalesChannelReader($connection, $this->migrationContext);
+                $reader = new Shopware55LocalSalesChannelReader($connection, $migrationContext);
 
                 return $reader->read();
             case NumberRangeDataSet::getEntity():
-                $reader = new Shopware55LocalNumberRangeReader($connection, $this->migrationContext);
+                $reader = new Shopware55LocalNumberRangeReader($connection, $migrationContext);
 
                 return $reader->read();
             case CategoryAttributeDataSet::getEntity():
@@ -117,7 +123,7 @@ class Shopware55LocalGateway extends AbstractGateway
             case OrderAttributeDataSet::getEntity():
             case ProductAttributeDataSet::getEntity():
             case ProductPriceAttributeDataSet::getEntity():
-                $reader = new Shopware55LocalAttributeReader($connection, $this->migrationContext);
+                $reader = new Shopware55LocalAttributeReader($connection, $migrationContext);
 
                 return $reader->read($dataSet->getExtraQueryParameters());
             default:
@@ -125,9 +131,9 @@ class Shopware55LocalGateway extends AbstractGateway
         }
     }
 
-    public function readEnvironmentInformation(): EnvironmentInformation
+    public function readEnvironmentInformation(MigrationContextInterface $migrationContext): EnvironmentInformation
     {
-        $connection = $this->getConnection();
+        $connection = $this->getConnection($migrationContext);
 
         try {
             $connection->connect();
@@ -146,7 +152,7 @@ class Shopware55LocalGateway extends AbstractGateway
                 $error->getMessage()
             );
         }
-        $reader = new Shopware55LocalEnvironmentReader($connection, $this->migrationContext);
+        $reader = new Shopware55LocalEnvironmentReader($connection, $migrationContext);
         $environmentData = $reader->read();
 
         $totals = [
@@ -171,9 +177,9 @@ class Shopware55LocalGateway extends AbstractGateway
         );
     }
 
-    private function getConnection(): Connection
+    private function getConnection(MigrationContextInterface $migrationContext): Connection
     {
-        $credentials = $this->migrationContext->getConnection()->getCredentialFields();
+        $credentials = $migrationContext->getConnection()->getCredentialFields();
 
         $connectionParams = [
             'dbname' => $credentials['dbName'] ?? '',

@@ -93,9 +93,9 @@ class Shopware55Profile implements ProfileInterface
         return \count($writtenEvents);
     }
 
-    public function readEnvironmentInformation(GatewayInterface $gateway): EnvironmentInformation
+    public function readEnvironmentInformation(GatewayInterface $gateway, MigrationContextInterface $migrationContext): EnvironmentInformation
     {
-        return $gateway->readEnvironmentInformation();
+        return $gateway->readEnvironmentInformation($migrationContext);
     }
 
     private function convertData(

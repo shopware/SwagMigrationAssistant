@@ -23,5 +23,5 @@ interface ProfileInterface
     /**
      * Reads environment information from the given gateway
      */
-    public function readEnvironmentInformation(GatewayInterface $gateway): EnvironmentInformation;
+    public function readEnvironmentInformation(GatewayInterface $gateway, MigrationContextInterface $migrationContext): EnvironmentInformation;
 }
