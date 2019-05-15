@@ -16,7 +16,7 @@ use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Converter\ConverterRegistry;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry;
-use SwagMigrationAssistant\Migration\Gateway\GatewayFactoryRegistry;
+use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition;
@@ -24,12 +24,12 @@ use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\Profile\ProfileRegistry;
 use SwagMigrationAssistant\Migration\Run\RunService;
 use SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService;
-use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Shopware55ApiFactory;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Shopware55ApiGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\MigrationServicesTrait;
 use SwagMigrationAssistant\Test\Mock\DummyCollection;
-use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalFactory;
+use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGateway;
 use SwagMigrationAssistant\Test\Mock\Migration\Media\DummyMediaFileService;
 use SwagMigrationAssistant\Test\Mock\Migration\Service\DummyMigrationDataFetcher;
 
@@ -154,9 +154,9 @@ class RunServiceTest extends TestCase
             ),
         ]));
 
-        $gatewayFactoryRegistry = new GatewayFactoryRegistry(new DummyCollection([
-            new Shopware55ApiFactory(),
-            new DummyLocalFactory(),
+        $gatewayRegistry = new GatewayRegistry(new DummyCollection([
+            new Shopware55ApiGateway(),
+            new DummyLocalGateway(),
         ]));
 
         $this->runService = new RunService(
@@ -183,7 +183,7 @@ class RunServiceTest extends TestCase
             $this->connectionRepo,
             new DummyMigrationDataFetcher(
                 $profileRegistry,
-                $gatewayFactoryRegistry,
+                $gatewayRegistry,
                 $loggingService
             ),
             new SwagMigrationAccessTokenService($this->runRepo),

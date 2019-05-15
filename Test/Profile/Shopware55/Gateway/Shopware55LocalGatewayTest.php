@@ -5,12 +5,11 @@ namespace SwagMigrationAssistant\Test\Profile\Shopware55\Gateway;
 use Doctrine\DBAL\Exception\ConnectionException;
 use PHPUnit\Framework\TestCase;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
-use SwagMigrationAssistant\Migration\Gateway\GatewayFactoryRegistry;
+use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\Profile\SwagMigrationProfileEntity;
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalReaderNotFoundException;
-use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalFactory;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Profile\Shopware55\DataSet\FooDataSet;
@@ -41,14 +40,14 @@ class Shopware55LocalGatewayTest extends TestCase
             new ProductDataSet()
         );
 
-        $factory = new Shopware55LocalFactory();
-        $gatewayFactoryRegistry = new GatewayFactoryRegistry([
-            $factory,
+        $gatewaySource = new Shopware55LocalGateway();
+        $gatewayRegistry = new GatewayRegistry([
+            $gatewaySource,
         ]);
-        $gateway = $gatewayFactoryRegistry->createGateway($migrationContext);
+        $gateway = $gatewayRegistry->getGateway($migrationContext);
 
         $this->expectException(ConnectionException::class);
-        $gateway->read();
+        $gateway->read($migrationContext);
     }
 
     public function testReadWithUnknownEntityThrowsException(): void
@@ -75,15 +74,15 @@ class Shopware55LocalGatewayTest extends TestCase
             new FooDataSet()
         );
 
-        $factory = new Shopware55LocalFactory();
-        $gatewayFactoryRegistry = new GatewayFactoryRegistry([
-            $factory,
+        $gatewaySource = new Shopware55LocalGateway();
+        $gatewayRegistry = new GatewayRegistry([
+            $gatewaySource,
         ]);
 
-        $gateway = $gatewayFactoryRegistry->createGateway($migrationContext);
+        $gateway = $gatewayRegistry->getGateway($migrationContext);
 
         $this->expectException(Shopware55LocalReaderNotFoundException::class);
-        $gateway->read();
+        $gateway->read($migrationContext);
     }
 
     public function testReadEnvironmentInformationHasEmptyResult(): void
@@ -98,9 +97,8 @@ class Shopware55LocalGatewayTest extends TestCase
             $connection
         );
 
-        $factory = new Shopware55LocalFactory();
-        $gateway = $factory->create($migrationContext);
-        $response = $gateway->readEnvironmentInformation();
+        $gateway = new Shopware55LocalGateway();
+        $response = $gateway->readEnvironmentInformation($migrationContext);
 
         static::assertSame($response->getTotals(), []);
     }

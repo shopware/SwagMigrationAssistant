@@ -4,7 +4,8 @@ namespace SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local;
 
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
-use SwagMigrationAssistant\Migration\Gateway\AbstractGateway;
+use SwagMigrationAssistant\Migration\Gateway\GatewayInterface;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\CategoryDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\CustomerDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\MediaDataSet;
@@ -14,13 +15,18 @@ use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\TranslationD
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\DataSet\InvalidCustomerDataSet;
 
-class DummyLocalGateway extends AbstractGateway
+class DummyLocalGateway implements GatewayInterface
 {
     public const GATEWAY_NAME = 'local';
 
-    public function read(): array
+    public function supports(string $gatewayIdentifier): bool
     {
-        $dataSet = $this->migrationContext->getDataSet();
+        return $gatewayIdentifier === Shopware55Profile::PROFILE_NAME . self::GATEWAY_NAME;
+    }
+
+    public function read(MigrationContextInterface $migrationContext): array
+    {
+        $dataSet = $migrationContext->getDataSet();
 
         switch ($dataSet::getEntity()) {
             case ProductDataSet::getEntity():
@@ -43,7 +49,7 @@ class DummyLocalGateway extends AbstractGateway
         }
     }
 
-    public function readEnvironmentInformation(): EnvironmentInformation
+    public function readEnvironmentInformation(MigrationContextInterface $migrationContext): EnvironmentInformation
     {
         $environmentData = require __DIR__ . '/../../../../_fixtures/environment_data.php';
 

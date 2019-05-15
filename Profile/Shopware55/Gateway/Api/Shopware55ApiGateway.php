@@ -5,25 +5,31 @@ namespace SwagMigrationAssistant\Profile\Shopware55\Gateway\Api;
 use GuzzleHttp\Client;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
-use SwagMigrationAssistant\Migration\Gateway\AbstractGateway;
+use SwagMigrationAssistant\Migration\Gateway\GatewayInterface;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiEnvironmentReader;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiReader;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
-class Shopware55ApiGateway extends AbstractGateway
+class Shopware55ApiGateway implements GatewayInterface
 {
     public const GATEWAY_NAME = 'api';
 
-    public function read(): array
+    public function supports(string $gatewayIdentifier): bool
     {
-        $reader = new Shopware55ApiReader($this->getClient(), $this->migrationContext);
+        return $gatewayIdentifier === Shopware55Profile::PROFILE_NAME . self::GATEWAY_NAME;
+    }
+
+    public function read(MigrationContextInterface $migrationContext): array
+    {
+        $reader = new Shopware55ApiReader($this->getClient($migrationContext), $migrationContext);
 
         return $reader->read();
     }
 
-    public function readEnvironmentInformation(): EnvironmentInformation
+    public function readEnvironmentInformation(MigrationContextInterface $migrationContext): EnvironmentInformation
     {
-        $reader = new Shopware55ApiEnvironmentReader($this->getClient(), $this->migrationContext);
+        $reader = new Shopware55ApiEnvironmentReader($this->getClient($migrationContext), $migrationContext);
         $environmentData = $reader->read();
         $environmentDataArray = $environmentData['environmentInformation'];
 
@@ -62,7 +68,7 @@ class Shopware55ApiGateway extends AbstractGateway
             DefaultEntities::NUMBER_RANGE => $environmentDataArray['numberRanges'],
             DefaultEntities::CURRENCY => $environmentDataArray['currencies'],
         ];
-        $credentials = $this->migrationContext->getConnection()->getCredentialFields();
+        $credentials = $migrationContext->getConnection()->getCredentialFields();
 
         return new EnvironmentInformation(
             Shopware55Profile::SOURCE_SYSTEM_NAME,
@@ -78,9 +84,9 @@ class Shopware55ApiGateway extends AbstractGateway
         );
     }
 
-    private function getClient(): Client
+    private function getClient(MigrationContextInterface $migrationContext): Client
     {
-        $credentials = $this->migrationContext->getConnection()->getCredentialFields();
+        $credentials = $migrationContext->getConnection()->getCredentialFields();
 
         $options = [
             'base_uri' => $credentials['endpoint'] . '/api/',

@@ -15,6 +15,15 @@
             <tag name="shopware.migration.profile"/>
         </service>
 
+        <!-- Shopware 5.5 Profile Gateways -->
+        <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway">
+            <tag name="shopware.migration.gateway" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Shopware55ApiGateway">
+            <tag name="shopware.migration.gateway" />
+        </service>
+
         <!-- Shopware 5.5 Profile Converter -->
         <service id="SwagMigrationAssistant\Profile\Shopware55\Converter\AttributeConverter" abstract="true">
             <argument id="SwagMigrationAssistant\Migration\Mapping\MappingService" type="service"/>
@@ -138,15 +147,6 @@
             <argument type="service" id="shipping_method.repository"/>
             <argument type="service" id="country.repository"/>
             <tag name="shopware.migration.converter"/>
-        </service>
-
-        <!-- Shopware 5.5 Gateway -->
-        <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Shopware55ApiFactory">
-            <tag name="shopware.migration.gateway_factory"/>
-        </service>
-
-        <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalFactory">
-            <tag name="shopware.migration.gateway_factory"/>
         </service>
 
         <!-- Shopware 5.5 MediaHandler -->

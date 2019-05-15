@@ -7,7 +7,7 @@ use SwagMigrationAssistant\Exception\GatewayReadException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\MigrationContext;
-use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Shopware55ApiFactory;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Shopware55ApiGateway;
 use SwagMigrationAssistant\Test\Profile\Shopware55\DataSet\FooDataSet;
 
 class Shopware55ApiGatewayTest extends TestCase
@@ -21,9 +21,8 @@ class Shopware55ApiGatewayTest extends TestCase
         );
 
         $this->expectException(GatewayReadException::class);
-        $factory = new Shopware55ApiFactory();
-        $gateway = $factory->create($migrationContext);
-        $gateway->read();
+        $gateway = new Shopware55ApiGateway();
+        $gateway->read($migrationContext);
     }
 
     public function testReadEnvironmentInformationFailed(): void
@@ -32,10 +31,9 @@ class Shopware55ApiGatewayTest extends TestCase
             new SwagMigrationConnectionEntity()
         );
 
-        $factory = new Shopware55ApiFactory();
-        $gateway = $factory->create($migrationContext);
+        $gateway = new Shopware55ApiGateway();
         /** @var EnvironmentInformation $response */
-        $response = $gateway->readEnvironmentInformation();
+        $response = $gateway->readEnvironmentInformation($migrationContext);
         $errorException = new GatewayReadException('Shopware 5.5 Api SwagMigrationEnvironment', 466);
 
         static::assertSame($response->getTotals(), []);
