@@ -65,6 +65,15 @@ class ProductConverter extends Shopware55Converter
         'prices',
     ];
 
+    private $defaultValues = [
+        'minPurchase' => 1,
+        'purchaseSteps' => 1,
+        'shippingFree' => false,
+        'restockTime' => 1,
+        'minDeliveryTime' => 1,
+        'maxDeliveryTime' => 2,
+    ];
+
     /**
      * @var string
      */
@@ -442,6 +451,22 @@ class ProductConverter extends Shopware55Converter
             $data['detail']['additionaltext'],
             $data['shippingtime']
         );
+
+        foreach ($this->defaultValues as $key => $value) {
+            if (!isset($converted[$key])) {
+                $converted[$key] = $value;
+                continue;
+            }
+
+            if (is_numeric($value) && $value > $converted[$key]) {
+                $converted[$key] = $value;
+                continue;
+            }
+
+            if ($value !== $converted[$key]) {
+                $converted[$key] = $value;
+            }
+        }
 
         if (empty($data['detail'])) {
             unset($data['detail']);
