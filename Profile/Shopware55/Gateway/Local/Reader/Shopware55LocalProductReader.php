@@ -70,7 +70,7 @@ class Shopware55LocalProductReader extends Shopware55LocalAbstractReader
         $query->from('s_categories', 'category');
         $query->addSelect('category.id');
 
-        $query->leftJoin('category', 's_core_shops', 'shop', 'category.id = shop.category_id');
+        $query->innerJoin('category', 's_core_shops', 'shop', 'category.id = shop.category_id');
         $query->addSelect('shop.id');
         $query->addSelect('shop.main_id');
 
