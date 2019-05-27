@@ -70,6 +70,10 @@ Component.register('swag-migration-profile-shopware55-local-credential-form', {
             this.emitOnChildRouteReadyChanged(
                 this.areCredentialsValid(newInputCredentials)
             );
+        },
+
+        onKeyPressEnter() {
+            this.$emit('onTriggerPrimaryClick');
         }
     }
 });

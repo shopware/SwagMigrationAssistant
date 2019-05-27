@@ -1,5 +1,6 @@
 {% block swag_migration_wizard_page_create_profile %}
-    <div class="swag-migration-wizard swag-migration-wizard-page-create-profile">
+    <div class="swag-migration-wizard swag-migration-wizard-page-create-profile"
+         @keypress.enter="onKeyPressEnter">
         {% block swag_migration_wizard_page_create_profile_content %}
             <div class="swag-migration-wizard__content" v-if="!isLoading">
                 {% block swag_migration_wizard_page_create_profile_information %}
@@ -13,14 +14,16 @@
                 {% endblock %}
                 {% block swag_migration_wizard_page_create_profile_selection %}
                     <div class="swag-migration-wizard__form">
-                        <sw-field :label="$tc('swag-migration.wizard.pages.connectionCreate.connectionLabel')"
-                                  :placeholder="$tc('swag-migration.wizard.pages.connectionCreate.connectionPlaceholder')"
-                                  v-model="selection.connectionName"
-                                  @input="onChangeConnectionName"
-                                  validation="required"
-                                  :helpText="$tc('swag-migration.wizard.pages.connectionCreate.connectionTooltip')"
-                                  :error="connectionNameError">
-                        </sw-field>
+                        <sw-text-field v-autofocus
+                                       :label="$tc('swag-migration.wizard.pages.connectionCreate.connectionLabel')"
+                                       :placeholder="$tc('swag-migration.wizard.pages.connectionCreate.connectionPlaceholder')"
+                                       v-model="selection.connectionName"
+                                       @input="onChangeConnectionName"
+                                       validation="required"
+                                       :helpText="$tc('swag-migration.wizard.pages.connectionCreate.connectionTooltip')"
+                                       :error="connectionNameError"
+                                  >
+                        </sw-text-field>
 
                         <sw-field type="select"
                                   :label="$tc('swag-migration.wizard.pages.connectionCreate.profileLabel')"
@@ -45,6 +48,10 @@
                                 <option v-for="gateway in gateways" :value="gateway">{{ gateway }}</option>
                             {% endblock %}
                         </sw-field>
+
+                        <sw-alert v-if="profileHint">
+                            {{ profileHint }}
+                        </sw-alert>
                     </div>
                 {% endblock %}
             </div>

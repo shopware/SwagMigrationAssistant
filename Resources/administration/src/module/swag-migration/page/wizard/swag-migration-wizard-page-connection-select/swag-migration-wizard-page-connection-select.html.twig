@@ -15,7 +15,7 @@
                     <div class="swag-migration-wizard__form">
                         <sw-select-field :options="connections"
                                          v-model="selectedConnectionId"
-                                         @input="onConnectionSelected"
+                                         @change="onConnectionSelected"
                                          :label="$tc('swag-migration.wizard.pages.connectionSelect.connectionLabel')"
                                          :placeholder="$tc('swag-migration.wizard.pages.connectionSelect.connectionPlaceholder')">
                         </sw-select-field>

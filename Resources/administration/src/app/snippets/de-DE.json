@@ -43,7 +43,10 @@
           "connectionPlaceholder": "Namen eintragen",
           "connectionTooltip": "Einen eindeutigen Namen für die Verbindung eingeben.",
           "connectionNameExistsError": "Der Verbindungsname existiert bereits.",
-          "connectionNameTooShort": "Der Verbindungsname muss mindestens 6 Zeichen lang sein."
+          "connectionNameTooShort": "Der Verbindungsname muss mindestens 6 Zeichen lang sein.",
+          "hint": {
+            "local": "Beachte: Die Shopsysteme müssen auf demselben Sever liegen. Du benötigst die Zugangsdaten der Datenbank."
+          }
         },
         "profileInformation": {
           "title": "Migration - Verbindung vorbereiten",
@@ -71,20 +74,18 @@
               "endpointSSLLabel": "Mein Shop verwendet eine sichere Verbindung (SSL)"
             },
             "local": {
-              "contentTitle": "Datenbankverbindung zu Shopware 5",
-              "contentInformation": "Bitte hinterlege hier die Zugangsdaten zu Deiner Shopware 5 Datenbank",
-              "dbHostLabel": "DB-Host",
-              "dbHostPlaceholder": "DB-Host eintragen",
-              "dbPortLabel": "DB-Port",
-              "dbPortPlaceholder": "DB-Port eintragen",
-              "dbNameLabel": "DB-Name",
-              "dbNamePlaceholder": "Datenbankname eintragen",
-              "dbUserLabel": "DB-Benutzer",
-              "dbUserPlaceholder": "Benutzername eintragen",
-              "dbPasswordLabel": "DB-Passwort",
+              "contentInformation": "Wir benötigen noch Zugangsdaten um eine Verbindung zu Deiner Datenbank von Shopware 5 herstellen zu können.",
+              "dbHostLabel": "Host",
+              "dbHostPlaceholder": "Host eintragen",
+              "dbPortLabel": "Port",
+              "dbNameLabel": "Datenbankname",
+              "dbNamePlaceholder": "Name eintragen",
+              "dbUserLabel": "Benutzername",
+              "dbUserPlaceholder": "Name eintragen",
+              "dbPasswordLabel": "Passwort",
               "dbPasswordPlaceholder": "Passwort eintragen",
-              "installationRoot": "Root Verzeichnis",
-              "installationRootPlaceholder": "Installationsordner der Shopinstallation eingeben"
+              "installationRoot": "Ordner der Shopinstallation",
+              "installationRootPlaceholder": "Root-Verzeichnis eingeben"
             }
           },
           "statusTitle": "Verbindungscheck",
