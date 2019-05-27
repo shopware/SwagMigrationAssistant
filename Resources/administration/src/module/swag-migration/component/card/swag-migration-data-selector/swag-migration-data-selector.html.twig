@@ -29,21 +29,6 @@
                     </sw-grid>
                 </template>
             {% endblock %}
-
-            {% block swag_migration_data_selector_tou %}
-                <template #footer>
-                    <i18n class="swag-migration-index-data-selector__tou"
-                          path="swag-migration.index.selectDataCard.touText"
-                          tag="p">
-                        <a class="link"
-                           place="link"
-                           target="_blank"
-                           href="https://playground.shopware.com/terms-of-use">
-                            {{ $tc('swag-migration.index.selectDataCard.touLinkText') }}
-                        </a>
-                    </i18n>
-                </template>
-            {% endblock %}
         </sw-card>
 
         <sw-card class="swag-migration-data-selector" v-else>

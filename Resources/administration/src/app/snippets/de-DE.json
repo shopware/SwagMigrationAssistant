@@ -194,9 +194,7 @@
           "customer_group": "Kundengruppen:",
           "property_group_option": "Eigenschaften:"
         },
-        "noData": "Es wurden keine Daten zum Migrieren gefunden.",
-        "touText": "Für die Migration der Daten gelten die {link} von Shopware Playground. Der Migrationsprozess nimmt keinen Einfluss auf die Daten des Quellsystems.",
-        "touLinkText": "Allgemeinen Nutzungsbedingungen"
+        "noData": "Es wurden keine Daten zum Migrieren gefunden."
       },
       "premappingCard": {
         "validTitle": "Die Prüfung der Daten ist abgeschlossen",
