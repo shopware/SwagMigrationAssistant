@@ -15,6 +15,12 @@ Component.register('swag-migration-tab-card-item', {
             type: Boolean,
             default: false,
             required: false
+        },
+
+        errorBadgeNumber: {
+            type: Number,
+            default: 0,
+            required: false
         }
     },
 

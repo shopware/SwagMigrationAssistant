@@ -1,5 +1,21 @@
+@import "~scss/variables";
+
 .swag-migration-tab-card {
     .sw-tabs__custom-content {
         padding: 0;
+    }
+
+    .swag-migration-tab-card__invalid-badge {
+        background-color: $color-crimson;
+        color: #ffffff;
+        border-radius: 8px;
+        height: 16px;
+        line-height: 16px;
+        font-size: 12px;
+        text-align: center;
+        padding: 0 8px;
+        position: absolute;
+        transform: translateY(-25%);
+        margin-left: 4px;
     }
 }

@@ -1,4 +1,5 @@
 import { Component, Mixin } from 'src/core/shopware';
+import ShopwareError from 'src/core/data/ShopwareError';
 import template from './swag-migration-grid-selection.html.twig';
 import './swag-migration-grid-selection.scss';
 
@@ -46,6 +47,16 @@ Component.register('swag-migration-grid-selection', {
 
         onInput() {
             this.$emit('input');
+        },
+
+        checkForRequiredError(item) {
+            if (item.destinationUuid === null || item.destinationUuid.length === 0) {
+                return new ShopwareError({
+                    code: 1
+                });
+            }
+
+            return null;
         }
     }
 });

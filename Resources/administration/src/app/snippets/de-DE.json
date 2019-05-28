@@ -45,7 +45,7 @@
           "connectionNameExistsError": "Der Verbindungsname existiert bereits.",
           "connectionNameTooShort": "Der Verbindungsname muss mindestens 6 Zeichen lang sein.",
           "hint": {
-            "local": "Beachte: Die Shopsysteme müssen auf demselben Sever liegen. Du benötigst die Zugangsdaten der Datenbank."
+            "local": "Beachte: Die Shopsysteme müssen auf demselben Server liegen. Du benötigst die Zugangsdaten der Datenbank."
           }
         },
         "profileInformation": {
