@@ -61,6 +61,19 @@ Component.register('swag-migration-wizard-page-connection-create', {
                 code,
                 detail
             });
+        },
+
+        profileHint() {
+            if (!this.selection.gateway) {
+                return '';
+            }
+
+            const snippet = `swag-migration.wizard.pages.connectionCreate.hint.${this.selection.gateway}`;
+            if (this.$te(snippet)) {
+                return this.$t(snippet);
+            }
+
+            return '';
         }
     },
 
@@ -114,7 +127,12 @@ Component.register('swag-migration-wizard-page-connection-create', {
 
         selectDefaultProfile() {
             this.selection.profile = 'shopware55';
-            this.onSelectProfile();
+            this.onSelectProfile().then(() => {
+                this.selection.gateway = 'api';
+                this.$nextTick(() => {
+                    this.onSelectGateway();
+                });
+            });
         },
 
         setIsLoading(value) {
@@ -126,6 +144,7 @@ Component.register('swag-migration-wizard-page-connection-create', {
             return new Promise((resolve) => {
                 this.emitOnChildRouteReadyChanged(false);
                 this.gateways = null;
+                this.selection.gateway = null;
 
                 if (this.selection.profile !== null) {
                     const criteria = CriteriaFactory.equals('name', this.selection.profile);
@@ -180,6 +199,10 @@ Component.register('swag-migration-wizard-page-connection-create', {
 
         emitOnChildRouteReadyChanged(isReady) {
             this.$emit('onChildRouteReadyChanged', isReady);
+        },
+
+        onKeyPressEnter() {
+            this.$emit('onTriggerPrimaryClick');
         }
     }
 });

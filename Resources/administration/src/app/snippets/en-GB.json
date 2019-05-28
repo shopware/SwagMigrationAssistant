@@ -43,7 +43,10 @@
           "connectionPlaceholder": "Enter name",
           "connectionTooltip": "Enter a unique name for the connection.",
           "connectionNameExistsError": "Connection name already exists.",
-          "connectionNameTooShort": "The connection name must be at least 6 characters long."
+          "connectionNameTooShort": "The connection name must be at least 6 characters long.",
+          "hint": {
+            "local": "Note: The shop systems have to be on the same server. You need access data to the database."
+          }
         },
         "profileInformation": {
           "title": "Migration - Connection preparation",
@@ -71,20 +74,18 @@
               "endpointSSLLabel": "My shop uses a secure connection (SSL)"
             },
             "local": {
-              "contentTitle": "Database connection to Shopware 5",
-              "contentInformation": "Enter your Shopware 5 database credentials to connect to the database",
-              "dbHostLabel": "DB host",
-              "dbHostPlaceholder": "Enter database host",
-              "dbPortLabel": "DB port",
-              "dbPortPlaceholder": "Enter database port",
-              "dbNameLabel": "DB name",
-              "dbNamePlaceholder": "Enter database name",
-              "dbUserLabel": "DB user",
+              "contentInformation": "We still need access data to connect to your Shopware 5 database.",
+              "dbHostLabel": "Host",
+              "dbHostPlaceholder": "Enter host",
+              "dbPortLabel": "Port",
+              "dbNameLabel": "Database name",
+              "dbNamePlaceholder": "Enter name",
+              "dbUserLabel": "User",
               "dbUserPlaceholder": "Enter username",
-              "dbPasswordLabel": "DB password",
+              "dbPasswordLabel": "Password",
               "dbPasswordPlaceholder": "Enter password",
-              "installationRoot": "Installation root",
-              "installationRootPlaceholder": "Enter the installation folder for the shop installation."
+              "installationRoot": "Shop installation folder",
+              "installationRootPlaceholder": "Enter installation root"
             }
           },
           "statusTitle": "Connection check",
