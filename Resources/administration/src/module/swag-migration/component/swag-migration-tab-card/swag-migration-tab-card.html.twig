@@ -6,7 +6,14 @@
                     <sw-tabs @newActiveItem="onNewActiveItem" :small="false" ref="tabs">
                         <sw-tabs-item v-for="item in items" :name="item.id" :key="item.id" ref="swTabsItems">
                             {% block swag_migration_tab_card_item_tab_content %}
-                                {{ item.title }}
+                                <span class="swag-migration-tab-card__title">
+                                    {{ item.title }}
+                                </span>
+                            {% endblock %}
+                            {% block swag_migration_tab_card_item_tab_invalid_badge %}
+                                <span class="swag-migration-tab-card__invalid-badge" v-show="item.errorBadgeNumber">
+                                    {{ item.errorBadgeNumber }}
+                                </span>
                             {% endblock %}
                         </sw-tabs-item>
                     </sw-tabs>

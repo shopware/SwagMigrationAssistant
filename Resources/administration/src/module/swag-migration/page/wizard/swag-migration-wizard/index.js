@@ -282,6 +282,13 @@ Component.register('swag-migration-wizard', {
                 this.navigateToRoute(this.routes.credentialsSuccess);
             }).catch((error) => {
                 this.isLoading = false;
+                this.migrationProcessStore.setConnectionId(this.connection.id);
+                this.migrationProcessStore.setEntityGroups([]);
+                this.migrationProcessStore.setErrors([]);
+                this.migrationProcessStore.setEnvironmentInformation({});
+                this.migrationUIStore.setDataSelectionIds([]);
+                this.migrationUIStore.setPremapping([]);
+                this.migrationUIStore.setDataSelectionTableData([]);
                 this.onResponseError(error.response.data.errors[0].code);
             });
         },
@@ -321,6 +328,16 @@ Component.register('swag-migration-wizard', {
 
         onChildRouteChanged() {
             this.checkForDisabledRoute();
+            if ([
+                this.routes.credentialsSuccess,
+                this.routes.credentialsError
+            ].includes(this.currentRoute)) {
+                this.$nextTick(() => {
+                    this.$refs.primaryButton.$el.focus();
+                });
+            } else {
+                this.$refs.primaryButton.$el.focus();
+            }
         },
 
         checkForDisabledRoute() {
@@ -348,6 +365,12 @@ Component.register('swag-migration-wizard', {
         onButtonSecondaryClick() {
             // Abort / Later
             this.onCloseModal();
+        },
+
+        triggerPrimaryClick() {
+            if (!this.buttonPrimaryDisabled) {
+                this.onButtonPrimaryClick();
+            }
         },
 
         onButtonPrimaryClick() {

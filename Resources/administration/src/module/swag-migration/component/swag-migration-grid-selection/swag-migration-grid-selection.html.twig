@@ -15,16 +15,15 @@
                                         flex="1fr"
                                         :label="$tc('swag-migration.index.premappingCard.newAssignmentTitle')">
                             {% block swag_migration_grid_selection_grid_column_choice_field %}
-                                <sw-field class="swag-migration-grid-selection__choice-field"
-                                          type="select"
+                                <sw-select-field class="swag-migration-grid-selection__choice-field"
                                           v-model="item.destinationUuid"
                                           @change="onInput"
                                           :placeholder="$tc('swag-migration.index.premappingCard.placeholder')"
-                                          validation="required">
-                                    <option v-for="choice in choices" :value="choice.uuid">
+                                          :error="checkForRequiredError(item)">
+                                    <option v-for="choice in choices" :key="choice.uuid" :value="choice.uuid">
                                         {{ choice.description }}
                                     </option>
-                                </sw-field>
+                                </sw-select-field>
                             {% endblock %}
                         </sw-grid-column>
                     {% endblock %}

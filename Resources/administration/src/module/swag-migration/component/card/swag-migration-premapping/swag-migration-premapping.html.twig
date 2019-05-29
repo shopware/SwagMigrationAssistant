@@ -60,6 +60,7 @@
                                               :key="group.entity"
                                               :title="$tc(`swag-migration.index.premappingCard.group.${group.entity}`)"
                                               :isGrid="true"
+                                              :errorBadgeNumber="getErrorCountForGroupTab(group)"
                                               class="swag-migration-premapping__tab-card-item">
                     <swag-migration-grid-selection :choices="group.choices"
                                                    :mapping="group.mapping"
@@ -82,6 +83,7 @@
                                                       :key="group.entity"
                                                       :title="$tc(`swag-migration.index.premappingCard.group.${group.entity}`)"
                                                       :isGrid="true"
+                                                      :errorBadgeNumber="getErrorCountForGroupTab(group)"
                                                       class="swag-migration-premapping__tab-card-item">
                             <swag-migration-grid-selection :choices="group.choices"
                                                            :mapping="group.mapping"
