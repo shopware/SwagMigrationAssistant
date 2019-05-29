@@ -3,12 +3,23 @@
 namespace SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader;
 
 use Doctrine\DBAL\Connection;
+use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
+use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
-class Shopware55LocalCustomerGroupReader extends Shopware55LocalAbstractReader
+class Shopware55LocalCustomerGroupReader extends Shopware55LocalAbstractReader implements LocalReaderInterface
 {
-    public function read(): array
+    public function supports(string $profileName, DataSet $dataSet): bool
     {
-        $fetchedCustomerGroups = $this->fetchCustomerGroups();
+        return $profileName === Shopware55Profile::PROFILE_NAME && $dataSet::getEntity() === DefaultEntities::CUSTOMER_GROUP;
+    }
+
+    public function read(MigrationContextInterface $migrationContext, array $params = []): array
+    {
+        $this->setConnection($migrationContext);
+
+        $fetchedCustomerGroups = $this->fetchCustomerGroups($migrationContext);
         $groupIds = array_column($fetchedCustomerGroups, 'customerGroup.id');
         $customerGroups = $this->mapData($fetchedCustomerGroups, [], ['customerGroup']);
 
@@ -29,9 +40,9 @@ class Shopware55LocalCustomerGroupReader extends Shopware55LocalAbstractReader
         return $this->cleanupResultSet($customerGroups);
     }
 
-    private function fetchCustomerGroups(): array
+    private function fetchCustomerGroups(MigrationContextInterface $migrationContext): array
     {
-        $ids = $this->fetchIdentifiers('s_core_customergroups', $this->migrationContext->getOffset(), $this->migrationContext->getLimit());
+        $ids = $this->fetchIdentifiers('s_core_customergroups', $migrationContext->getOffset(), $migrationContext->getLimit());
 
         $query = $this->connection->createQueryBuilder();
 

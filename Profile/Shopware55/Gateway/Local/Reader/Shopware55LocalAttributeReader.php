@@ -4,11 +4,36 @@ namespace SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader;
 
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Schema\ForeignKeyConstraint;
+use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
+use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
-class Shopware55LocalAttributeReader extends Shopware55LocalAbstractReader
+class Shopware55LocalAttributeReader extends Shopware55LocalAbstractReader implements LocalReaderInterface
 {
-    public function read(array $params): array
+    /**
+     * @var string[]
+     */
+    private $supportedCustomFields = [
+        DefaultEntities::CATEGORY_CUSTOM_FIELD,
+        DefaultEntities::CUSTOMER_CUSTOM_FIELD,
+        DefaultEntities::CUSTOMER_GROUP_CUSTOM_FIELD,
+        DefaultEntities::PRODUCT_MANUFACTURER_CUSTOM_FIELD,
+        DefaultEntities::ORDER_CUSTOM_FIELD,
+        DefaultEntities::PRODUCT_CUSTOM_FIELD,
+        DefaultEntities::PRODUCT_PRICE_CUSTOM_FIELD,
+    ];
+
+    public function supports(string $profileName, DataSet $dataSet): bool
     {
+        return $profileName === Shopware55Profile::PROFILE_NAME
+            && in_array($dataSet::getEntity(), $this->supportedCustomFields, true);
+    }
+
+    public function read(MigrationContextInterface $migrationContext, array $params = []): array
+    {
+        $this->setConnection($migrationContext);
+
         if (isset($params['attribute_table'])) {
             $table = $params['attribute_table'];
             $schemaManager = $this->connection->getSchemaManager();

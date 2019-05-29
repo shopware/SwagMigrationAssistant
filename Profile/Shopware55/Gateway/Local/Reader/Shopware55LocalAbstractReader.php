@@ -6,23 +6,19 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\DBAL\Schema\Column;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\Profile\ReaderInterface;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Connection\ConnectionFactory;
 
-class Shopware55LocalAbstractReader
+abstract class Shopware55LocalAbstractReader implements ReaderInterface
 {
     /**
      * @var Connection
      */
     protected $connection;
 
-    /**
-     * @var MigrationContextInterface
-     */
-    protected $migrationContext;
-
-    public function __construct(Connection $connection, MigrationContextInterface $migrationContext)
+    protected function setConnection(MigrationContextInterface $migrationContext): void
     {
-        $this->connection = $connection;
-        $this->migrationContext = $migrationContext;
+        $this->connection = ConnectionFactory::createDatabaseConnection($migrationContext);
     }
 
     protected function addTableSelection(QueryBuilder $query, string $table, string $tableAlias): void

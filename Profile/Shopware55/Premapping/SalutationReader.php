@@ -7,13 +7,14 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\System\Salutation\SalutationEntity;
+use SwagMigrationAssistant\Migration\Gateway\GatewayRegistryInterface;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\Premapping\AbstractPremappingReader;
 use SwagMigrationAssistant\Migration\Premapping\PremappingChoiceStruct;
 use SwagMigrationAssistant\Migration\Premapping\PremappingEntityStruct;
 use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\CustomerAndOrderDataSelection;
-use SwagMigrationAssistant\Profile\Shopware55\Gateway\TableReaderFactory;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Shopware55GatewayInterface;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
 class SalutationReader extends AbstractPremappingReader
@@ -30,9 +31,17 @@ class SalutationReader extends AbstractPremappingReader
      */
     private $salutationRepo;
 
-    public function __construct(EntityRepositoryInterface $salutationRepo)
-    {
+    /**
+     * @var GatewayRegistryInterface
+     */
+    private $gatewayRegistry;
+
+    public function __construct(
+        EntityRepositoryInterface $salutationRepo,
+        GatewayRegistryInterface $gatewayRegistry
+    ) {
         $this->salutationRepo = $salutationRepo;
+        $this->gatewayRegistry = $gatewayRegistry;
     }
 
     public static function getMappingName(): string
@@ -61,14 +70,10 @@ class SalutationReader extends AbstractPremappingReader
      */
     private function getMapping(MigrationContext $migrationContext): array
     {
-        $readerFactory = new TableReaderFactory();
-        $reader = $readerFactory->create($migrationContext);
+        /** @var Shopware55GatewayInterface $gateway */
+        $gateway = $this->gatewayRegistry->getGateway($migrationContext);
 
-        if ($reader === null) {
-            return [];
-        }
-
-        $result = $reader->read('s_core_config_elements', ['name' => 'shopsalutations']);
+        $result = $gateway->readTable($migrationContext, 's_core_config_elements', ['name' => 'shopsalutations']);
         if (empty($result)) {
             return [];
         }
@@ -79,7 +84,7 @@ class SalutationReader extends AbstractPremappingReader
             return [];
         }
 
-        $configuredSalutations = $reader->read('s_core_config_values', ['element_id' => $result[0]['id']]);
+        $configuredSalutations = $gateway->readTable($migrationContext, 's_core_config_values', ['element_id' => $result[0]['id']]);
 
         if (!empty($configuredSalutations)) {
             foreach ($configuredSalutations as $configuredSalutation) {

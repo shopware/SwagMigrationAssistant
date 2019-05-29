@@ -3,26 +3,33 @@
 namespace SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader;
 
 use Doctrine\DBAL\Connection;
+use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
+use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
-class Shopware55LocalProductReader extends Shopware55LocalAbstractReader
+class Shopware55LocalProductReader extends Shopware55LocalAbstractReader implements LocalReaderInterface
 {
     /**
      * @var ParameterBag
      */
     private $productMapping;
 
-    public function __construct(Connection $connection, MigrationContextInterface $migrationContext)
+    public function __construct()
     {
-        parent::__construct($connection, $migrationContext);
-
         $this->productMapping = new ParameterBag();
     }
 
-    public function read(): array
+    public function supports(string $profileName, DataSet $dataSet): bool
     {
-        $fetchedProducts = $this->fetchData();
+        return $profileName === Shopware55Profile::PROFILE_NAME && $dataSet::getEntity() === DefaultEntities::PRODUCT;
+    }
+
+    public function read(MigrationContextInterface $migrationContext, array $params = []): array
+    {
+        $this->setConnection($migrationContext);
+        $fetchedProducts = $this->fetchData($migrationContext);
 
         $this->buildIdentifierMappings($fetchedProducts);
 
@@ -137,9 +144,9 @@ class Shopware55LocalProductReader extends Shopware55LocalAbstractReader
         }
     }
 
-    private function fetchData(): array
+    private function fetchData(MigrationContextInterface $migrationContext): array
     {
-        $ids = $this->fetchIdentifiers('s_articles_details', $this->migrationContext->getOffset(), $this->migrationContext->getLimit());
+        $ids = $this->fetchIdentifiers('s_articles_details', $migrationContext->getOffset(), $migrationContext->getLimit());
 
         $query = $this->connection->createQueryBuilder();
 

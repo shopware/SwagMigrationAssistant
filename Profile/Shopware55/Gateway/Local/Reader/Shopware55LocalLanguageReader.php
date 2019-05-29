@@ -3,11 +3,21 @@
 namespace SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader;
 
 use Doctrine\DBAL\Connection;
+use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
+use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
-class Shopware55LocalLanguageReader extends Shopware55LocalAbstractReader
+class Shopware55LocalLanguageReader extends Shopware55LocalAbstractReader implements LocalReaderInterface
 {
-    public function read(): array
+    public function supports(string $profileName, DataSet $dataSet): bool
     {
+        return $profileName === Shopware55Profile::PROFILE_NAME && $dataSet::getEntity() === DefaultEntities::LANGUAGE;
+    }
+
+    public function read(MigrationContextInterface $migrationContext, array $params = []): array
+    {
+        $this->setConnection($migrationContext);
         $fetchedShopLocaleIds = array_unique($this->fetchShopLocaleIds());
         $locales = $this->fetchLocales($fetchedShopLocaleIds);
 

@@ -10,13 +10,23 @@ use Shopware\Core\Framework\ShopwareHttpException;
 use SwagMigrationAssistant\Exception\GatewayReadException;
 use SwagMigrationAssistant\Exception\InvalidConnectionAuthenticationException;
 use SwagMigrationAssistant\Exception\RequestCertificateInvalidException;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\Profile\ReaderInterface;
 use SwagMigrationAssistant\Profile\Shopware55\Exception\PluginNotInstalledException;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Connection\ConnectionFactory;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
-class Shopware55ApiEnvironmentReader extends Shopware55ApiReader
+class Shopware55ApiEnvironmentReader implements ReaderInterface
 {
-    public function read(): array
+    /**
+     * @var Client
+     */
+    private $client;
+
+    public function read(MigrationContextInterface $migrationContext, array $params = []): array
     {
+        $this->client = ConnectionFactory::createApiClient($migrationContext);
+
         $information = [
             'environmentInformation' => [],
             'warning' => [

@@ -17,11 +17,101 @@
 
         <!-- Shopware 5.5 Profile Gateways -->
         <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway">
+            <argument type="service" id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\ReaderRegistry" />
             <tag name="shopware.migration.gateway" />
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Shopware55ApiGateway">
+            <argument type="service" id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiReader" />
+            <argument type="service" id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiEnvironmentReader" />
             <tag name="shopware.migration.gateway" />
+        </service>
+
+        <!-- Shopware 5.5 Reader -->
+        <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiReader" />
+
+        <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiEnvironmentReader" />
+
+        <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiTableReader" />
+
+        <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\ReaderRegistry">
+            <argument type="tagged" tag="shopware.migration.local_reader"/>
+        </service>
+
+        <!-- Local reader -->
+        <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalEnvironmentReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalAbstractReader" />
+
+        <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalTableReader" />
+
+        <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalAttributeReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalAbstractReader">
+            <tag name="shopware.migration.local_reader" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalCategoryReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalAbstractReader">
+            <tag name="shopware.migration.local_reader" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalCurrencyReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalAbstractReader">
+            <tag name="shopware.migration.local_reader" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalCustomerGroupReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalAbstractReader">
+            <tag name="shopware.migration.local_reader" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalCustomerReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalAbstractReader">
+            <tag name="shopware.migration.local_reader" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalLanguageReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalAbstractReader">
+            <tag name="shopware.migration.local_reader" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalMediaAlbumReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalAbstractReader">
+            <tag name="shopware.migration.local_reader" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalMediaReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalAbstractReader">
+            <tag name="shopware.migration.local_reader" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalNumberRangeReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalAbstractReader">
+            <tag name="shopware.migration.local_reader" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalOrderReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalAbstractReader">
+            <tag name="shopware.migration.local_reader" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalProductReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalAbstractReader">
+            <tag name="shopware.migration.local_reader" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalPropertyGroupOptionReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalAbstractReader">
+            <tag name="shopware.migration.local_reader" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalSalesChannelReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalAbstractReader">
+            <tag name="shopware.migration.local_reader" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalTranslationReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalAbstractReader">
+            <tag name="shopware.migration.local_reader" />
         </service>
 
         <!-- Shopware 5.5 Profile Converter -->
@@ -279,17 +369,20 @@
         <service id="SwagMigrationAssistant\Profile\Shopware55\Premapping\OrderStateReader">
             <argument type="service" id="state_machine.repository"/>
             <argument type="service" id="state_machine_state.repository"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Gateway\GatewayRegistry"/>
             <tag name="shopware.migration.pre_mapping_reader"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware55\Premapping\TransactionStateReader">
             <argument type="service" id="state_machine.repository"/>
             <argument type="service" id="state_machine_state.repository"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Gateway\GatewayRegistry"/>
             <tag name="shopware.migration.pre_mapping_reader"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware55\Premapping\PaymentMethodReader">
             <argument type="service" id="payment_method.repository"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Gateway\GatewayRegistry"/>
             <tag name="shopware.migration.pre_mapping_reader"/>
         </service>
 
@@ -300,11 +393,13 @@
 
         <service id="SwagMigrationAssistant\Profile\Shopware55\Premapping\SalutationReader">
             <argument type="service" id="salutation.repository" />
+            <argument type="service" id="SwagMigrationAssistant\Migration\Gateway\GatewayRegistry"/>
             <tag name="shopware.migration.pre_mapping_reader"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware55\Premapping\DeliveryTimeReader">
             <argument type="service" id="delivery_time.repository"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Gateway\GatewayRegistry"/>
             <tag name="shopware.migration.pre_mapping_reader"/>
         </service>
 

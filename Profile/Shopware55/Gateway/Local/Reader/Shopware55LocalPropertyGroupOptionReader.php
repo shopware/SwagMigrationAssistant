@@ -2,11 +2,22 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader;
 
-class Shopware55LocalPropertyGroupOptionReader extends Shopware55LocalAbstractReader
+use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
+use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
+
+class Shopware55LocalPropertyGroupOptionReader extends Shopware55LocalAbstractReader implements LocalReaderInterface
 {
-    public function read(): array
+    public function supports(string $profileName, DataSet $dataSet): bool
     {
-        $fetchedConfiguratorOptions = $this->fetchData();
+        return $profileName === Shopware55Profile::PROFILE_NAME && $dataSet::getEntity() === DefaultEntities::PROPERTY_GROUP_OPTION;
+    }
+
+    public function read(MigrationContextInterface $migrationContext, array $params = []): array
+    {
+        $this->setConnection($migrationContext);
+        $fetchedConfiguratorOptions = $this->fetchData($migrationContext);
         $options = $this->mapData($fetchedConfiguratorOptions, [], ['property']);
         $locale = $this->getDefaultShopLocale();
 
@@ -18,7 +29,7 @@ class Shopware55LocalPropertyGroupOptionReader extends Shopware55LocalAbstractRe
         return $this->cleanupResultSet($options);
     }
 
-    private function fetchData(): array
+    private function fetchData(MigrationContextInterface $migrationContext): array
     {
         $sql = <<<SQL
 SELECT
@@ -68,8 +79,8 @@ ORDER BY "property.type", "property.id" LIMIT :limit OFFSET :offset
 SQL;
 
         $statement = $this->connection->prepare($sql);
-        $statement->bindValue('limit', $this->migrationContext->getLimit(), \PDO::PARAM_INT);
-        $statement->bindValue('offset', $this->migrationContext->getOffset(), \PDO::PARAM_INT);
+        $statement->bindValue('limit', $migrationContext->getLimit(), \PDO::PARAM_INT);
+        $statement->bindValue('offset', $migrationContext->getOffset(), \PDO::PARAM_INT);
         $statement->setFetchMode(\PDO::FETCH_ASSOC);
         $statement->execute();
 
