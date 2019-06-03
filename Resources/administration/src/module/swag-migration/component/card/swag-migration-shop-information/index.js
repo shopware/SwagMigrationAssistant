@@ -84,11 +84,7 @@ Component.register('swag-migration-shop-information', {
         },
 
         shopUrlPrefixClass() {
-            if (this.sslActive) {
-                return 'swag-migration-shop-information__shop-domain-prefix--is-ssl';
-            }
-
-            return '';
+            return this.sslActive ? 'swag-migration-shop-information__shop-domain-prefix--is-ssl' : '';
         },
 
         connectionBadgeLabel() {

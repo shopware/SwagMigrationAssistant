@@ -391,9 +391,24 @@
       "shopSystem": "Shopsystem",
       "selectedData": "Daten",
       "contextMenu": {
-        "details": "Details"
+        "details": "Details anzeigen"
       },
-      "noData": "Es wurden keine Migrationen gefunden."
+      "noData": "Es wurden keine Migrationen gefunden.",
+      "detailPage": {
+        "title": "Details zur Migration",
+        "timestamp": "Zeitpunkt:",
+        "runStatus": "Migrations-Status:",
+        "status": {
+          "finished": "Abgeschlossen",
+          "aborted": "Abgebrochen",
+          "running": "Laufend"
+        },
+        "data": "Daten",
+        "errors": "Details",
+        "dataName": "Name",
+        "dataCount": "Datensätze",
+        "close": "Schließen"
+      }
     }
   }
 }

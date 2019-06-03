@@ -34,7 +34,7 @@ Component.register('swag-migration-grid-selection', {
         getList() {
             this.total = this.mapping.length;
             const start = (this.page - 1) * this.limit;
-            const end = Math.min(start + this.limit, this.mapping.length);
+            const end = Math.min(start + this.limit, this.total);
             this.items = [];
 
             // Copy the object references into the display items array (for pagination). Note: Array.slice dont work
