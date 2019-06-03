@@ -1,15 +1,78 @@
+@import "~scss/variables";
+
+$swag-migration-history-detail-color-domain-prefix-no-ssl: $color-steam-cloud;
+$swag-migration-history-detail-color-domain-prefix-ssl: $color-emerald;
+$swag-migration-history-detail-color-status-running: $color-gutenberg;
+$swag-migration-history-detail-color-status-finished: $color-emerald;
+$swag-migration-history-detail-color-status-aborted: $color-crimson;
+
 .swag-migration-history-detail__modal {
-    .swag-migration-history-detail__header {
-        font-weight: bold;
-        padding-bottom: 10px;
-        display: block;
-    }
-
-    .swag-migration-history-detail__content {
-        padding-left: 20px;
-    }
-
     .swag-migration-history-detail__loading-placeholder {
         height: 100px;
+    }
+
+    .swag-migration-history-detail__header {
+        display: grid;
+        grid-template-columns: 80px 1fr min-content;
+    }
+
+    .swag-migration-history-detail__connection-info {
+        padding-left: 16px;
+        line-height: 22px;
+        font-size: $font-size-small;
+    }
+
+    .swag-migration-history-detail__connection-name {
+        font-size: $font-size-large;
+        font-weight: 600;
+        line-height: 25px;
+    }
+
+    .swag-migration-history-detail__shop-domain-prefix {
+        color: $swag-migration-history-detail-color-domain-prefix-no-ssl;
+    }
+
+    .swag-migration-shop-information__shop-domain-prefix--is-ssl {
+        color: $swag-migration-history-detail-color-domain-prefix-ssl;
+    }
+
+    .swag-migration-history-detail__run-info {
+        white-space: nowrap;
+        font-size: 12px;
+        line-height: 19px;
+        padding-right: 16px;
+    }
+
+    .swag-migration-history-detail__run-status-label {
+        margin-top: 4px;
+    }
+
+    .swag-migration-history-detail__run-timestamp-value,
+    .swag-migration-history-detail__run-status-value {
+        font-weight: 600;
+    }
+
+    .swag-migration-history-detail__run-status-value {
+        color: $swag-migration-history-detail-color-status-running;
+    }
+
+    .swag-migration-history-detail__run-status-value--finished {
+        color: $swag-migration-history-detail-color-status-finished;
+    }
+
+    .swag-migration-history-detail__run-status-value--aborted {
+        color: $swag-migration-history-detail-color-status-aborted;
+    }
+
+    .sw-tabs__custom-content {
+        display: none;
+    }
+
+    .sw-tabs {
+        margin-bottom: 0;
+    }
+
+    .swag-migration-history-detail__body {
+        padding-top: 16px;
     }
 }
