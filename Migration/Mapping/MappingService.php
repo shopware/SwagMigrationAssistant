@@ -354,7 +354,10 @@ class MappingService implements MappingServiceInterface
 
         /** @var LanguageEntity $language */
         $language = $context->disableCache(function (Context $context) use ($languageUuid) {
-            return $this->languageRepository->search(new Criteria([$languageUuid]), $context)->first();
+            $criteria = new Criteria([$languageUuid]);
+            $criteria->addAssociation('locale');
+
+            return $this->languageRepository->search($criteria, $context)->first();
         });
 
         $this->defaultLanguageData = $language;
