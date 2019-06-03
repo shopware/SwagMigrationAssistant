@@ -35,12 +35,6 @@ Component.register('swag-migration-history-detail-errors', {
 
     computed: {
         columns() {
-            return this.getColumns();
-        }
-    },
-
-    methods: {
-        getColumns() {
             return [
                 {
                     property: 'type',
@@ -56,8 +50,10 @@ Component.register('swag-migration-history-detail-errors', {
                     allowResize: true
                 }
             ];
-        },
+        }
+    },
 
+    methods: {
         getList() {
             this.isLoading = true;
             const params = this.getListingParams();
