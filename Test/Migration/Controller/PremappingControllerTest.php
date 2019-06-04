@@ -89,12 +89,14 @@ class PremappingControllerTest extends TestCase
         $profileUuidService = new MigrationProfileUuidService($profileRepo, Shopware55Profile::PROFILE_NAME, Shopware55LocalGateway::GATEWAY_NAME);
         $mappingRepo = $this->getContainer()->get('swag_migration_mapping.repository');
 
+        $gatewayRegistry = $this->getContainer()->get('SwagMigrationAssistant\Migration\Gateway\GatewayRegistry');
+
         $this->controller = new PremappingController(
             new PremappingService(
                 new PremappingReaderRegistry(
                     [
-                        new OrderStateReader($stateMachineRepo, $stateMachineStateRepo),
-                        new TransactionStateReader($stateMachineRepo, $stateMachineStateRepo),
+                        new OrderStateReader($stateMachineRepo, $stateMachineStateRepo, $gatewayRegistry),
+                        new TransactionStateReader($stateMachineRepo, $stateMachineStateRepo, $gatewayRegistry),
                     ]
                 ),
                 $this->mappingService,

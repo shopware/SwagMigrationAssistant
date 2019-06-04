@@ -3,14 +3,24 @@
 namespace SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader;
 
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware55\Gateway\Connection\ConnectionFactory;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Connection\ConnectionFactoryInterface;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\TableReaderInterface;
 
 class Shopware55LocalTableReader implements TableReaderInterface
 {
+    /**
+     * @var ConnectionFactoryInterface
+     */
+    private $connectionFactory;
+
+    public function __construct(ConnectionFactoryInterface $connectionFactory)
+    {
+        $this->connectionFactory = $connectionFactory;
+    }
+
     public function read(MigrationContextInterface $migrationContext, string $tableName, array $filter = []): array
     {
-        $connection = ConnectionFactory::createDatabaseConnection($migrationContext);
+        $connection = $this->connectionFactory->createDatabaseConnection($migrationContext);
         $query = $connection->createQueryBuilder();
         $query->select('*');
         $query->from($tableName);

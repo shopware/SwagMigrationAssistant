@@ -7,11 +7,21 @@ use SwagMigrationAssistant\Exception\GatewayReadException;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Profile\ReaderInterface;
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\Shopware55DataSet;
-use SwagMigrationAssistant\Profile\Shopware55\Gateway\Connection\ConnectionFactory;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Connection\ConnectionFactoryInterface;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class Shopware55ApiReader implements ReaderInterface
 {
+    /**
+     * @var ConnectionFactoryInterface
+     */
+    private $connectionFactory;
+
+    public function __construct(ConnectionFactoryInterface $connectionFactory)
+    {
+        $this->connectionFactory = $connectionFactory;
+    }
+
     /**
      * @throws GatewayReadException
      */
@@ -31,7 +41,7 @@ class Shopware55ApiReader implements ReaderInterface
 
         $queryParams = array_merge($queryParams, $dataSet->getExtraQueryParameters());
 
-        $client = ConnectionFactory::createApiClient($migrationContext);
+        $client = $this->connectionFactory->createApiClient($migrationContext);
 
         /** @var GuzzleResponse $result */
         $result = $client->get(

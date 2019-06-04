@@ -13,7 +13,7 @@ use SwagMigrationAssistant\Exception\RequestCertificateInvalidException;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Profile\ReaderInterface;
 use SwagMigrationAssistant\Profile\Shopware55\Exception\PluginNotInstalledException;
-use SwagMigrationAssistant\Profile\Shopware55\Gateway\Connection\ConnectionFactory;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Connection\ConnectionFactoryInterface;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class Shopware55ApiEnvironmentReader implements ReaderInterface
@@ -23,9 +23,19 @@ class Shopware55ApiEnvironmentReader implements ReaderInterface
      */
     private $client;
 
+    /**
+     * @var ConnectionFactoryInterface
+     */
+    private $connectionFactory;
+
+    public function __construct(ConnectionFactoryInterface $connectionFactory)
+    {
+        $this->connectionFactory = $connectionFactory;
+    }
+
     public function read(MigrationContextInterface $migrationContext, array $params = []): array
     {
-        $this->client = ConnectionFactory::createApiClient($migrationContext);
+        $this->client = $this->connectionFactory->createApiClient($migrationContext);
 
         $information = [
             'environmentInformation' => [],

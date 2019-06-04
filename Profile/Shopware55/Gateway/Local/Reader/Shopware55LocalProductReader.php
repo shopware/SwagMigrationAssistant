@@ -6,6 +6,7 @@ use Doctrine\DBAL\Connection;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Connection\ConnectionFactoryInterface;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
@@ -16,8 +17,10 @@ class Shopware55LocalProductReader extends Shopware55LocalAbstractReader impleme
      */
     private $productMapping;
 
-    public function __construct()
+    public function __construct(ConnectionFactoryInterface $connectionFactory)
     {
+        parent::__construct($connectionFactory);
+
         $this->productMapping = new ParameterBag();
     }
 

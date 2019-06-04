@@ -11,6 +11,7 @@ use SwagMigrationAssistant\Exception\GatewayReadException;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiReader;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Connection\ConnectionFactory;
 use SwagMigrationAssistant\Test\Profile\Shopware55\DataSet\FooDataSet;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
@@ -40,16 +41,19 @@ class Shopware55ApiReaderTest extends TestCase
 
         $client = new Client($options);
 
-        $apiReader = new Shopware55ApiReader(
-            $client,
-            new MigrationContext(
-                null,
-                '',
-                new ProductDataSet()
-            )
+        $migrationContext = new MigrationContext(
+            null,
+            '',
+            new ProductDataSet()
         );
+        $mock = $this->getMockBuilder(ConnectionFactory::class)->getMock();
+        $mock->expects(static::once())
+            ->method('createApiClient')
+            ->with($migrationContext)
+            ->will(static::returnValue($client));
 
-        $response = $apiReader->read();
+        $apiReader = new Shopware55ApiReader($mock);
+        $response = $apiReader->read($migrationContext);
         static::assertSame($response, $dataArray);
     }
 
@@ -57,18 +61,16 @@ class Shopware55ApiReaderTest extends TestCase
     {
         $this->expectException(GatewayReadException::class);
 
-        $apiReader = new Shopware55ApiReader(
-            new Client(),
-            new MigrationContext(
-                null,
-                '',
-                new FooDataSet(),
-                0,
-                0
-            )
+        $apiReader = new Shopware55ApiReader(new ConnectionFactory());
+        $migrationContext = new MigrationContext(
+            null,
+            '',
+            new FooDataSet(),
+            0,
+            0
         );
 
-        $apiReader->read();
+        $apiReader->read($migrationContext);
     }
 
     public function testReadGatewayException(): void
@@ -84,18 +86,23 @@ class Shopware55ApiReaderTest extends TestCase
             'verify' => false,
             'handler' => $handler,
         ];
+        $client = new Client($options);
 
-        $apiReader = new Shopware55ApiReader(
-            new Client($options),
-            new MigrationContext(
-                null,
-                '',
-                new ProductDataSet()
-            )
+        $migrationContext = new MigrationContext(
+            null,
+            '',
+            new ProductDataSet()
         );
+        $mock = $this->getMockBuilder(ConnectionFactory::class)->getMock();
+        $mock->expects(static::once())
+            ->method('createApiClient')
+            ->with($migrationContext)
+            ->will(static::returnValue($client));
+
+        $apiReader = new Shopware55ApiReader($mock);
 
         try {
-            $apiReader->read();
+            $apiReader->read($migrationContext);
         } catch (\Exception $e) {
             /* @var GatewayReadException $e */
             static::assertInstanceOf(GatewayReadException::class, $e);

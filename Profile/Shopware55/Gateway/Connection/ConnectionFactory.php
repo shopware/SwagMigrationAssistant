@@ -7,9 +7,9 @@ use Doctrine\DBAL\DriverManager;
 use GuzzleHttp\Client;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
-class ConnectionFactory
+class ConnectionFactory implements ConnectionFactoryInterface
 {
-    public static function createApiClient(MigrationContextInterface $migrationContext): Client
+    public function createApiClient(MigrationContextInterface $migrationContext): Client
     {
         $credentials = $migrationContext->getConnection()->getCredentialFields();
 
@@ -23,7 +23,7 @@ class ConnectionFactory
         return new Client($options);
     }
 
-    public static function createDatabaseConnection(MigrationContextInterface $migrationContext): Connection
+    public function createDatabaseConnection(MigrationContextInterface $migrationContext): Connection
     {
         $credentials = $migrationContext->getConnection()->getCredentialFields();
 

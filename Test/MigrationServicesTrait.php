@@ -36,7 +36,11 @@ use SwagMigrationAssistant\Profile\Shopware55\Converter\MediaConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\OrderConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\ProductConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\TranslationConverter;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiEnvironmentReader;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiReader;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiTableReader;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Shopware55ApiGateway;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Connection\ConnectionFactory;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\DummyCollection;
 use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGateway;
@@ -85,8 +89,13 @@ trait MigrationServicesTrait
             ),
         ]));
 
+        $connectionFactory = new ConnectionFactory();
         $gatewayRegistry = new GatewayRegistry(new DummyCollection([
-            new Shopware55ApiGateway(),
+            new Shopware55ApiGateway(
+                new Shopware55ApiReader($connectionFactory),
+                new Shopware55ApiEnvironmentReader($connectionFactory),
+                new Shopware55ApiTableReader($connectionFactory)
+            ),
             new DummyLocalGateway(),
         ]));
 

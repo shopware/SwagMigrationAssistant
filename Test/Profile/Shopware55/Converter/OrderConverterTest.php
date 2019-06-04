@@ -75,7 +75,7 @@ class OrderConverterTest extends TestCase
     {
         $this->loggingService = new DummyLoggingService();
         $mappingService = new DummyMappingService();
-        $rounding = new PriceRounding(2);
+        $rounding = new PriceRounding();
         $taxRuleCalculator = new TaxRuleCalculator($rounding);
 
         $taxCalculator = new TaxCalculator(

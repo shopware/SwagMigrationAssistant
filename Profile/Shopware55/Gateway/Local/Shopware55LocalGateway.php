@@ -8,7 +8,7 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Profile\ReaderInterface;
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\Shopware55DataSet;
 use SwagMigrationAssistant\Profile\Shopware55\Exception\DatabaseConnectionException;
-use SwagMigrationAssistant\Profile\Shopware55\Gateway\Connection\ConnectionFactory;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Connection\ConnectionFactoryInterface;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Shopware55GatewayInterface;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\TableReaderInterface;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
@@ -32,14 +32,21 @@ class Shopware55LocalGateway implements Shopware55GatewayInterface
      */
     private $localTableReader;
 
+    /**
+     * @var ConnectionFactoryInterface
+     */
+    private $connectionFactory;
+
     public function __construct(
         ReaderRegistry $readerRegistry,
         ReaderInterface $localEnvironmentReader,
-        TableReaderInterface $localTableReader
+        TableReaderInterface $localTableReader,
+        ConnectionFactoryInterface $connectionFactory
     ) {
         $this->readerRegistry = $readerRegistry;
         $this->localEnvironmentReader = $localEnvironmentReader;
         $this->localTableReader = $localTableReader;
+        $this->connectionFactory = $connectionFactory;
     }
 
     public function supports(string $gatewayIdentifier): bool
@@ -59,7 +66,7 @@ class Shopware55LocalGateway implements Shopware55GatewayInterface
 
     public function readEnvironmentInformation(MigrationContextInterface $migrationContext): EnvironmentInformation
     {
-        $connection = ConnectionFactory::createDatabaseConnection($migrationContext);
+        $connection = $this->connectionFactory->createDatabaseConnection($migrationContext);
 
         try {
             $connection->connect();

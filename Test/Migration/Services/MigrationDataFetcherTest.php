@@ -33,7 +33,11 @@ use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\MediaDataSet
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\OrderDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\TranslationDataSet;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiEnvironmentReader;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiReader;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiTableReader;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Shopware55ApiGateway;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Connection\ConnectionFactory;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Premapping\PaymentMethodReader;
 use SwagMigrationAssistant\Profile\Shopware55\Premapping\SalutationReader;
@@ -156,6 +160,7 @@ class MigrationDataFetcherTest extends TestCase
         );
 
         $this->loggingService = new DummyLoggingService();
+        $connectionFactory = new ConnectionFactory();
         $this->dummyDataFetcher = new MigrationDataFetcher(
             new ProfileRegistry(new DummyCollection([
                 new Shopware55Profile(
@@ -170,7 +175,11 @@ class MigrationDataFetcherTest extends TestCase
             ])),
 
             new GatewayRegistry(new DummyCollection([
-                new Shopware55ApiGateway(),
+                new Shopware55ApiGateway(
+                    new Shopware55ApiReader($connectionFactory),
+                    new Shopware55ApiEnvironmentReader($connectionFactory),
+                    new Shopware55ApiTableReader($connectionFactory)
+                ),
                 new DummyLocalGateway(),
             ])),
 

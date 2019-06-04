@@ -15,34 +15,53 @@
             <tag name="shopware.migration.profile"/>
         </service>
 
+        <!-- Shopware 5.5 ConnectionFactory -->
+        <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Connection\ConnectionFactory" />
+
         <!-- Shopware 5.5 Profile Gateways -->
         <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway">
             <argument type="service" id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\ReaderRegistry" />
+            <argument type="service" id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalEnvironmentReader" />
+            <argument type="service" id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalTableReader" />
+            <argument type="service" id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Connection\ConnectionFactory" />
             <tag name="shopware.migration.gateway" />
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Shopware55ApiGateway">
             <argument type="service" id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiReader" />
             <argument type="service" id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiEnvironmentReader" />
+            <argument type="service" id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiTableReader" />
             <tag name="shopware.migration.gateway" />
         </service>
 
         <!-- Shopware 5.5 Reader -->
-        <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiReader" />
+        <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiReader">
+            <argument type="service" id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Connection\ConnectionFactory" />
+        </service>
 
-        <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiEnvironmentReader" />
+        <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiEnvironmentReader">
+            <argument type="service" id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Connection\ConnectionFactory" />
+        </service>
 
-        <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiTableReader" />
+        <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiTableReader">
+            <argument type="service" id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Connection\ConnectionFactory" />
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\ReaderRegistry">
             <argument type="tagged" tag="shopware.migration.local_reader"/>
         </service>
 
         <!-- Local reader -->
+        <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalAbstractReader" abstract="true">
+            <argument type="service" id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Connection\ConnectionFactory" />
+        </service>
+
         <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalEnvironmentReader"
                  parent="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalAbstractReader" />
 
-        <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalTableReader" />
+        <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalTableReader">
+            <argument type="service" id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Connection\ConnectionFactory" />
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalAttributeReader"
                  parent="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalAbstractReader">
@@ -399,7 +418,6 @@
 
         <service id="SwagMigrationAssistant\Profile\Shopware55\Premapping\DeliveryTimeReader">
             <argument type="service" id="delivery_time.repository"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\Gateway\GatewayRegistry"/>
             <tag name="shopware.migration.pre_mapping_reader"/>
         </service>
 
