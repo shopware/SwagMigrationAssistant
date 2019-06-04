@@ -80,7 +80,7 @@
                     {% block swag_migration_history_detail_body %}
                         <div class="swag-migration-history-detail__body">
                             {% block swag_migration_history_detail_body_tabs %}
-                                <sw-tabs @newActiveItem="newActiveTabItem"
+                                <sw-tabs @new-item-active="newActiveTabItem"
                                          ref="tabReference">
                                     {% block swag_migration_history_detail_body_tabs_data %}
                                         <sw-tabs-item name="data" ref="dataTabItem">
