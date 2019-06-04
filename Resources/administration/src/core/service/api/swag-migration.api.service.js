@@ -128,21 +128,6 @@ class MigrationApiService extends ApiService {
             });
     }
 
-    fetchMediaUuids(additionalParams = {}, additionalHeaders = {}) {
-        const params = additionalParams;
-        const headers = this.getBasicHeaders(additionalHeaders);
-
-        return this.httpClient
-            .get(`_action/${this.getApiBasePath()}/fetch-media-uuids`, {
-                ...this.basicConfig,
-                params,
-                headers
-            })
-            .then((response) => {
-                return ApiService.handleResponse(response);
-            });
-    }
-
     processMedia(additionalParams = {}, additionalHeaders = {}) {
         const params = additionalParams;
         const headers = this.getBasicHeaders(additionalHeaders);

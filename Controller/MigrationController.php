@@ -230,49 +230,17 @@ class MigrationController extends AbstractController
     }
 
     /**
-     * @Route("/api/v{version}/_action/migration/fetch-media-uuids", name="api.admin.migration.fetch-media-uuids", methods={"GET"})
-     */
-    public function fetchMediaUuids(Request $request, Context $context): JsonResponse
-    {
-        $runUuid = $request->query->get('runUuid');
-        $limit = $request->query->getInt('limit', 100);
-
-        if ($runUuid === null) {
-            throw new MigrationWorkloadPropertyMissingException('runUuid');
-        }
-
-        $mediaUuids = $this->mediaFileProcessorService->fetchMediaUuids($runUuid, $context, $limit);
-
-        return new JsonResponse(['mediaUuids' => $mediaUuids]);
-    }
-
-    /**
      * @Route("/api/v{version}/_action/migration/process-media", name="api.admin.migration.process-media", methods={"POST"})
      */
     public function processMedia(Request $request, Context $context): JsonResponse
     {
         $runUuid = $request->request->get('runUuid');
-        $workload = $request->request->get('workload', []);
         $fileChunkByteSize = $request->request->getInt('fileChunkByteSize', 1000 * 1000);
+        $offset = $request->request->getInt('offset');
+        $limit = $request->request->getInt('limit', 250);
 
         if ($runUuid === null) {
             throw new MigrationContextPropertyMissingException('runUuid');
-        }
-
-        if (\count($workload) === 0) {
-            return new JsonResponse(['workload' => [], 'validToken' => true]);
-        }
-
-        foreach ($workload as $work) {
-            if (!isset($work['uuid'])) {
-                throw new MigrationWorkloadPropertyMissingException('uuid');
-            }
-            if (!isset($work['currentOffset'])) {
-                throw new MigrationWorkloadPropertyMissingException('currentOffset');
-            }
-            if (!isset($work['state'])) {
-                throw new MigrationWorkloadPropertyMissingException('state');
-            }
         }
 
         if (!$this->accessTokenService->validateMigrationAccessToken($runUuid, $request, $context)) {
@@ -294,11 +262,16 @@ class MigrationController extends AbstractController
 
         $migrationContext = new MigrationContext(
             $run->getConnection(),
-            $runUuid
+            $runUuid,
+            null,
+            $offset,
+            $limit
         );
 
-        $newWorkload = $this->mediaFileProcessorService->processMediaFiles($migrationContext, $context, $workload, $fileChunkByteSize);
+        $this->mediaFileProcessorService->processMediaFiles($migrationContext, $context, $fileChunkByteSize);
 
-        return new JsonResponse(['workload' => $newWorkload, 'validToken' => true]);
+        return new JsonResponse([
+            'validToken' => true,
+        ]);
     }
 }

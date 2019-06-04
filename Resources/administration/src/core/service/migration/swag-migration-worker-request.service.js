@@ -13,7 +13,7 @@ import { WORKER_INTERRUPT_TYPE } from './swag-migration-worker.service';
 export const WORKER_API_OPERATION = Object.freeze({
     1: 'fetchData',
     2: 'writeData',
-    3: 'downloadMedia'
+    3: 'processMedia'
 });
 
 export class WorkerRequest {
