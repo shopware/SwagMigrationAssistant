@@ -15,6 +15,7 @@ use SwagMigrationAssistant\Exception\RequestCertificateInvalidException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiEnvironmentReader;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Connection\ConnectionFactory;
 
 class Shopware55ApiEnvironmentReaderTest extends TestCase
 {
@@ -80,14 +81,19 @@ class Shopware55ApiEnvironmentReaderTest extends TestCase
 
         $client = new Client($options);
 
-        $environmentReader = new Shopware55ApiEnvironmentReader(
-            $client,
-            new MigrationContext(
-                new SwagMigrationConnectionEntity()
-            )
+        $migrationContext = new MigrationContext(
+            new SwagMigrationConnectionEntity()
         );
 
-        $response = $environmentReader->read();
+        $mock = $this->getMockBuilder(ConnectionFactory::class)->getMock();
+        $mock->expects(static::once())
+            ->method('createApiClient')
+            ->with($migrationContext)
+            ->will(static::returnValue($client));
+
+        $environmentReader = new Shopware55ApiEnvironmentReader($mock);
+
+        $response = $environmentReader->read($migrationContext);
         static::assertSame($response['environmentInformation'], $this->dataArray);
         static::assertSame($response['warning'], $this->warning);
         static::assertSame($response['error'], $this->error);
@@ -109,15 +115,17 @@ class Shopware55ApiEnvironmentReaderTest extends TestCase
         ];
 
         $client = new Client($options);
-
-        $environmentReader = new Shopware55ApiEnvironmentReader(
-            $client,
-            new MigrationContext(
-                new SwagMigrationConnectionEntity()
-            )
+        $migrationContext = new MigrationContext(
+            new SwagMigrationConnectionEntity()
         );
+        $mock = $this->getMockBuilder(ConnectionFactory::class)->getMock();
+        $mock->expects(static::once())
+            ->method('createApiClient')
+            ->with($migrationContext)
+            ->will(static::returnValue($client));
+        $environmentReader = new Shopware55ApiEnvironmentReader($mock);
 
-        $response = $environmentReader->read();
+        $response = $environmentReader->read($migrationContext);
         static::assertSame($response['environmentInformation'], $this->dataArray);
         static::assertSame($response['warning']['code'], $this->sslInsecureShopwareException->getErrorCode());
         static::assertSame($response['warning']['detail'], $this->sslInsecureShopwareException->getMessage());
@@ -142,14 +150,17 @@ class Shopware55ApiEnvironmentReaderTest extends TestCase
 
         $client = new Client($options);
 
-        $environmentReader = new Shopware55ApiEnvironmentReader(
-            $client,
-            new MigrationContext(
-                new SwagMigrationConnectionEntity()
-            )
+        $migrationContext = new MigrationContext(
+            new SwagMigrationConnectionEntity()
         );
+        $mock = $this->getMockBuilder(ConnectionFactory::class)->getMock();
+        $mock->expects(static::once())
+            ->method('createApiClient')
+            ->with($migrationContext)
+            ->will(static::returnValue($client));
+        $environmentReader = new Shopware55ApiEnvironmentReader($mock);
 
-        $response = $environmentReader->read();
+        $response = $environmentReader->read($migrationContext);
         static::assertSame($response['environmentInformation'], []);
         static::assertSame($response['warning']['code'], $this->sslInsecureShopwareException->getErrorCode());
         static::assertSame($response['warning']['detail'], $this->sslInsecureShopwareException->getMessage());
@@ -171,15 +182,17 @@ class Shopware55ApiEnvironmentReaderTest extends TestCase
         ];
 
         $client = new Client($options);
-
-        $environmentReader = new Shopware55ApiEnvironmentReader(
-            $client,
-            new MigrationContext(
-                new SwagMigrationConnectionEntity()
-            )
+        $migrationContext = new MigrationContext(
+            new SwagMigrationConnectionEntity()
         );
+        $mock = $this->getMockBuilder(ConnectionFactory::class)->getMock();
+        $mock->expects(static::once())
+            ->method('createApiClient')
+            ->with($migrationContext)
+            ->will(static::returnValue($client));
+        $environmentReader = new Shopware55ApiEnvironmentReader($mock);
 
-        $response = $environmentReader->read();
+        $response = $environmentReader->read($migrationContext);
         static::assertSame($response['environmentInformation'], []);
         static::assertSame($response['error']['code'], $this->gatewayReadException->getErrorCode());
         static::assertSame($response['error']['detail'], $this->gatewayReadException->getMessage());
@@ -200,14 +213,17 @@ class Shopware55ApiEnvironmentReaderTest extends TestCase
 
         $client = new Client($options);
 
-        $environmentReader = new Shopware55ApiEnvironmentReader(
-            $client,
-            new MigrationContext(
-                new SwagMigrationConnectionEntity()
-            )
+        $migrationContext = new MigrationContext(
+            new SwagMigrationConnectionEntity()
         );
+        $mock = $this->getMockBuilder(ConnectionFactory::class)->getMock();
+        $mock->expects(static::once())
+            ->method('createApiClient')
+            ->with($migrationContext)
+            ->will(static::returnValue($client));
+        $environmentReader = new Shopware55ApiEnvironmentReader($mock);
 
-        $response = $environmentReader->read();
+        $response = $environmentReader->read($migrationContext);
         static::assertSame($response['environmentInformation'], []);
         static::assertSame($response['error']['code'], $this->gatewayReadException->getErrorCode());
         static::assertSame($response['error']['detail'], $this->gatewayReadException->getMessage());

@@ -11,13 +11,14 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
+use SwagMigrationAssistant\Migration\Gateway\GatewayRegistryInterface;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\Premapping\AbstractPremappingReader;
 use SwagMigrationAssistant\Migration\Premapping\PremappingChoiceStruct;
 use SwagMigrationAssistant\Migration\Premapping\PremappingEntityStruct;
 use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\CustomerAndOrderDataSelection;
-use SwagMigrationAssistant\Profile\Shopware55\Gateway\TableReaderFactory;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Shopware55GatewayInterface;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
 class PaymentMethodReader extends AbstractPremappingReader
@@ -39,9 +40,17 @@ class PaymentMethodReader extends AbstractPremappingReader
      */
     private $preselectionSourceNameDictonary = [];
 
-    public function __construct(EntityRepositoryInterface $paymentMethodRepo)
-    {
+    /**
+     * @var GatewayRegistryInterface
+     */
+    private $gatewayRegistry;
+
+    public function __construct(
+        EntityRepositoryInterface $paymentMethodRepo,
+        GatewayRegistryInterface $gatewayRegistry
+    ) {
         $this->paymentMethodRepo = $paymentMethodRepo;
+        $this->gatewayRegistry = $gatewayRegistry;
     }
 
     public static function getMappingName(): string
@@ -70,14 +79,10 @@ class PaymentMethodReader extends AbstractPremappingReader
      */
     private function getMapping(MigrationContext $migrationContext): array
     {
-        $readerFactory = new TableReaderFactory();
-        $reader = $readerFactory->create($migrationContext);
+        /** @var Shopware55GatewayInterface $gateway */
+        $gateway = $this->gatewayRegistry->getGateway($migrationContext);
 
-        if ($reader === null) {
-            return [];
-        }
-
-        $preMappingData = $reader->read('s_core_paymentmeans');
+        $preMappingData = $gateway->readTable($migrationContext, 's_core_paymentmeans');
 
         $entityData = [];
         foreach ($preMappingData as $data) {

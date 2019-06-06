@@ -2,18 +2,42 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware55\Gateway\Api;
 
-use GuzzleHttp\Client;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
-use SwagMigrationAssistant\Migration\Gateway\GatewayInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiEnvironmentReader;
-use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiReader;
+use SwagMigrationAssistant\Migration\Profile\ReaderInterface;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Shopware55GatewayInterface;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\TableReaderInterface;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
-class Shopware55ApiGateway implements GatewayInterface
+class Shopware55ApiGateway implements Shopware55GatewayInterface
 {
     public const GATEWAY_NAME = 'api';
+
+    /**
+     * @var ReaderInterface
+     */
+    private $apiReader;
+
+    /**
+     * @var ReaderInterface
+     */
+    private $environmentReader;
+
+    /**
+     * @var TableReaderInterface
+     */
+    private $tableReader;
+
+    public function __construct(
+        ReaderInterface $apiReader,
+        ReaderInterface $environmentReader,
+        TableReaderInterface $tableReader
+    ) {
+        $this->apiReader = $apiReader;
+        $this->environmentReader = $environmentReader;
+        $this->tableReader = $tableReader;
+    }
 
     public function supports(string $gatewayIdentifier): bool
     {
@@ -22,15 +46,12 @@ class Shopware55ApiGateway implements GatewayInterface
 
     public function read(MigrationContextInterface $migrationContext): array
     {
-        $reader = new Shopware55ApiReader($this->getClient($migrationContext), $migrationContext);
-
-        return $reader->read();
+        return $this->apiReader->read($migrationContext);
     }
 
     public function readEnvironmentInformation(MigrationContextInterface $migrationContext): EnvironmentInformation
     {
-        $reader = new Shopware55ApiEnvironmentReader($this->getClient($migrationContext), $migrationContext);
-        $environmentData = $reader->read();
+        $environmentData = $this->environmentReader->read($migrationContext);
         $environmentDataArray = $environmentData['environmentInformation'];
 
         if (empty($environmentDataArray)) {
@@ -84,17 +105,8 @@ class Shopware55ApiGateway implements GatewayInterface
         );
     }
 
-    private function getClient(MigrationContextInterface $migrationContext): Client
+    public function readTable(MigrationContextInterface $migrationContext, string $tableName, array $filter = []): array
     {
-        $credentials = $migrationContext->getConnection()->getCredentialFields();
-
-        $options = [
-            'base_uri' => $credentials['endpoint'] . '/api/',
-            'auth' => [$credentials['apiUser'], $credentials['apiKey'], 'digest'],
-            'connect_timeout' => 5.0,
-            'verify' => false,
-        ];
-
-        return new Client($options);
+        return $this->tableReader->read($migrationContext, $tableName, $filter);
     }
 }

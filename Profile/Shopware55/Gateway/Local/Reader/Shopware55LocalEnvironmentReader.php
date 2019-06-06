@@ -2,6 +2,8 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader;
 
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
+
 class Shopware55LocalEnvironmentReader extends Shopware55LocalAbstractReader
 {
     private const TABLES_TO_COUNT = [
@@ -19,8 +21,9 @@ class Shopware55LocalEnvironmentReader extends Shopware55LocalAbstractReader
         'currencies' => 's_core_currencies',
     ];
 
-    public function read(): array
+    public function read(MigrationContextInterface $migrationContext, array $params = []): array
     {
+        $this->setConnection($migrationContext);
         $locale = $this->getDefaultShopLocale();
 
         $resultSet = [

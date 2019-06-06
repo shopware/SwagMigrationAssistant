@@ -3,12 +3,23 @@
 namespace SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader;
 
 use Doctrine\DBAL\Connection;
+use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
+use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
-class Shopware55LocalCategoryReader extends Shopware55LocalAbstractReader
+class Shopware55LocalCategoryReader extends Shopware55LocalAbstractReader implements LocalReaderInterface
 {
-    public function read(): array
+    public function supports(string $profileName, DataSet $dataSet): bool
     {
-        $fetchedCategories = $this->fetchData();
+        return $profileName === Shopware55Profile::PROFILE_NAME && $dataSet::getEntity() === DefaultEntities::CATEGORY;
+    }
+
+    public function read(MigrationContextInterface $migrationContext, array $params = []): array
+    {
+        $this->setConnection($migrationContext);
+
+        $fetchedCategories = $this->fetchData($migrationContext);
 
         $topMostParentIds = $this->getTopMostParentIds($fetchedCategories);
         $topMostCategories = $this->fetchCategoriesById($topMostParentIds);
@@ -20,7 +31,7 @@ class Shopware55LocalCategoryReader extends Shopware55LocalAbstractReader
         return $this->cleanupResultSet($resultSet);
     }
 
-    private function fetchData(): array
+    private function fetchData(MigrationContextInterface $migrationContext): array
     {
         $query = $this->connection->createQueryBuilder();
         $query->from('s_categories', 'category');
@@ -35,8 +46,8 @@ class Shopware55LocalCategoryReader extends Shopware55LocalAbstractReader
 
         $query->andWhere('category.parent IS NOT NULL');
         $query->orderBy('LENGTH(categorypath)');
-        $query->setFirstResult($this->migrationContext->getOffset());
-        $query->setMaxResults($this->migrationContext->getLimit());
+        $query->setFirstResult($migrationContext->getOffset());
+        $query->setMaxResults($migrationContext->getLimit());
 
         return $query->execute()->fetchAll();
     }

@@ -10,13 +10,14 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateEntity;
 use Shopware\Core\System\StateMachine\StateMachineEntity;
+use SwagMigrationAssistant\Migration\Gateway\GatewayRegistryInterface;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\Premapping\AbstractPremappingReader;
 use SwagMigrationAssistant\Migration\Premapping\PremappingChoiceStruct;
 use SwagMigrationAssistant\Migration\Premapping\PremappingEntityStruct;
 use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\CustomerAndOrderDataSelection;
-use SwagMigrationAssistant\Profile\Shopware55\Gateway\TableReaderFactory;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Shopware55GatewayInterface;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
 class OrderStateReader extends AbstractPremappingReader
@@ -38,12 +39,19 @@ class OrderStateReader extends AbstractPremappingReader
      */
     protected $preselectionDictionary = [];
 
+    /**
+     * @var GatewayRegistryInterface
+     */
+    private $gatewayRegistry;
+
     public function __construct(
         EntityRepositoryInterface $stateMachineRepo,
-        EntityRepositoryInterface $stateMachineStateRepo
+        EntityRepositoryInterface $stateMachineStateRepo,
+        GatewayRegistryInterface $gatewayRegistry
     ) {
         $this->stateMachineRepo = $stateMachineRepo;
         $this->stateMachineStateRepo = $stateMachineStateRepo;
+        $this->gatewayRegistry = $gatewayRegistry;
     }
 
     public static function getMappingName(): string
@@ -72,14 +80,10 @@ class OrderStateReader extends AbstractPremappingReader
      */
     private function getMapping(MigrationContext $migrationContext): array
     {
-        $readerFactory = new TableReaderFactory();
-        $reader = $readerFactory->create($migrationContext);
+        /** @var Shopware55GatewayInterface $gateway */
+        $gateway = $this->gatewayRegistry->getGateway($migrationContext);
 
-        if ($reader === null) {
-            return [];
-        }
-
-        $preMappingData = $reader->read('s_core_states');
+        $preMappingData = $gateway->readTable($migrationContext, 's_core_states');
 
         $entityData = [];
         foreach ($preMappingData as $data) {

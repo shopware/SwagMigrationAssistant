@@ -2,28 +2,31 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader;
 
-use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
 use SwagMigrationAssistant\Exception\GatewayReadException;
-use SwagMigrationAssistant\Migration\Profile\TableReaderInterface;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Connection\ConnectionFactoryInterface;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\TableReaderInterface;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class Shopware55ApiTableReader implements TableReaderInterface
 {
     /**
-     * @var Client
+     * @var ConnectionFactoryInterface
      */
-    private $client;
+    private $connectionFactory;
 
-    public function __construct(Client $client)
+    public function __construct(ConnectionFactoryInterface $connectionFactory)
     {
-        $this->client = $client;
+        $this->connectionFactory = $connectionFactory;
     }
 
-    public function read(string $tableName, array $filter = []): array
+    public function read(MigrationContextInterface $migrationContext, string $tableName, array $filter = []): array
     {
+        $client = $this->connectionFactory->createApiClient($migrationContext);
+
         /** @var GuzzleResponse $result */
-        $result = $this->client->get(
+        $result = $client->get(
             'SwagMigrationDynamic',
             [
                 'query' => [

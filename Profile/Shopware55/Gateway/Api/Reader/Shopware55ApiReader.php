@@ -2,59 +2,49 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader;
 
-use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
 use SwagMigrationAssistant\Exception\GatewayReadException;
-use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Profile\ReaderInterface;
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\Shopware55DataSet;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Connection\ConnectionFactoryInterface;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class Shopware55ApiReader implements ReaderInterface
 {
     /**
-     * @var Client
+     * @var ConnectionFactoryInterface
      */
-    protected $client;
+    private $connectionFactory;
 
-    /**
-     * @var MigrationContextInterface
-     */
-    protected $migrationContext;
-
-    /**
-     * @var array
-     */
-    protected $routeMapping;
-
-    public function __construct(Client $client, MigrationContextInterface $migrationContext)
+    public function __construct(ConnectionFactoryInterface $connectionFactory)
     {
-        $this->client = $client;
-        $this->migrationContext = $migrationContext;
+        $this->connectionFactory = $connectionFactory;
     }
 
     /**
      * @throws GatewayReadException
      */
-    public function read(): array
+    public function read(MigrationContextInterface $migrationContext, array $params = []): array
     {
         /** @var Shopware55DataSet $dataSet */
-        $dataSet = $this->migrationContext->getDataSet();
+        $dataSet = $migrationContext->getDataSet();
 
         if (empty($dataSet->getApiRoute())) {
             throw new GatewayReadException('No endpoint for entity ' . $dataSet::getEntity() . ' available.');
         }
 
         $queryParams = [
-            'offset' => $this->migrationContext->getOffset(),
-            'limit' => $this->migrationContext->getLimit(),
+            'offset' => $migrationContext->getOffset(),
+            'limit' => $migrationContext->getLimit(),
         ];
 
         $queryParams = array_merge($queryParams, $dataSet->getExtraQueryParameters());
 
+        $client = $this->connectionFactory->createApiClient($migrationContext);
+
         /** @var GuzzleResponse $result */
-        $result = $this->client->get(
+        $result = $client->get(
             $dataSet->getApiRoute(),
             [
                 'query' => $queryParams,

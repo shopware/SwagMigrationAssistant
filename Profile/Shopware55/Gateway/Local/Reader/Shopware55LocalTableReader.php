@@ -2,24 +2,26 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader;
 
-use Doctrine\DBAL\Connection;
-use SwagMigrationAssistant\Migration\Profile\TableReaderInterface;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Connection\ConnectionFactoryInterface;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\TableReaderInterface;
 
 class Shopware55LocalTableReader implements TableReaderInterface
 {
     /**
-     * @var Connection
+     * @var ConnectionFactoryInterface
      */
-    private $connection;
+    private $connectionFactory;
 
-    public function __construct(Connection $connection)
+    public function __construct(ConnectionFactoryInterface $connectionFactory)
     {
-        $this->connection = $connection;
+        $this->connectionFactory = $connectionFactory;
     }
 
-    public function read(string $tableName, array $filter = []): array
+    public function read(MigrationContextInterface $migrationContext, string $tableName, array $filter = []): array
     {
-        $query = $this->connection->createQueryBuilder();
+        $connection = $this->connectionFactory->createDatabaseConnection($migrationContext);
+        $query = $connection->createQueryBuilder();
         $query->select('*');
         $query->from($tableName);
 

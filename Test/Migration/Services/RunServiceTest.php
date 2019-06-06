@@ -24,7 +24,11 @@ use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\Profile\ProfileRegistry;
 use SwagMigrationAssistant\Migration\Run\RunService;
 use SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiEnvironmentReader;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiReader;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiTableReader;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Shopware55ApiGateway;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Connection\ConnectionFactory;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\MigrationServicesTrait;
@@ -154,8 +158,13 @@ class RunServiceTest extends TestCase
             ),
         ]));
 
+        $connectionFactory = new ConnectionFactory();
         $gatewayRegistry = new GatewayRegistry(new DummyCollection([
-            new Shopware55ApiGateway(),
+            new Shopware55ApiGateway(
+                new Shopware55ApiReader($connectionFactory),
+                new Shopware55ApiEnvironmentReader($connectionFactory),
+                new Shopware55ApiTableReader($connectionFactory)
+            ),
             new DummyLocalGateway(),
         ]));
 

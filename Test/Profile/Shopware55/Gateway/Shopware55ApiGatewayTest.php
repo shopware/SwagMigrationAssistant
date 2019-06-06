@@ -7,7 +7,11 @@ use SwagMigrationAssistant\Exception\GatewayReadException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiEnvironmentReader;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiReader;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiTableReader;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Shopware55ApiGateway;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Connection\ConnectionFactory;
 use SwagMigrationAssistant\Test\Profile\Shopware55\DataSet\FooDataSet;
 
 class Shopware55ApiGatewayTest extends TestCase
@@ -21,7 +25,17 @@ class Shopware55ApiGatewayTest extends TestCase
         );
 
         $this->expectException(GatewayReadException::class);
-        $gateway = new Shopware55ApiGateway();
+
+        $connectionFactory = new ConnectionFactory();
+        $apiReader = new Shopware55ApiReader($connectionFactory);
+        $environmentReader = new Shopware55ApiEnvironmentReader($connectionFactory);
+        $tableReader = new Shopware55ApiTableReader($connectionFactory);
+
+        $gateway = new Shopware55ApiGateway(
+            $apiReader,
+            $environmentReader,
+            $tableReader
+        );
         $gateway->read($migrationContext);
     }
 
@@ -31,7 +45,16 @@ class Shopware55ApiGatewayTest extends TestCase
             new SwagMigrationConnectionEntity()
         );
 
-        $gateway = new Shopware55ApiGateway();
+        $connectionFactory = new ConnectionFactory();
+        $apiReader = new Shopware55ApiReader($connectionFactory);
+        $environmentReader = new Shopware55ApiEnvironmentReader($connectionFactory);
+        $tableReader = new Shopware55ApiTableReader($connectionFactory);
+
+        $gateway = new Shopware55ApiGateway(
+            $apiReader,
+            $environmentReader,
+            $tableReader
+        );
         /** @var EnvironmentInformation $response */
         $response = $gateway->readEnvironmentInformation($migrationContext);
         $errorException = new GatewayReadException('Shopware 5.5 Api SwagMigrationEnvironment', 466);

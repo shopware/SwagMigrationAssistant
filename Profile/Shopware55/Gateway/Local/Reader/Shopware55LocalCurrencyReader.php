@@ -2,11 +2,23 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader;
 
-class Shopware55LocalCurrencyReader extends Shopware55LocalAbstractReader
+use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
+use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
+
+class Shopware55LocalCurrencyReader extends Shopware55LocalAbstractReader implements LocalReaderInterface
 {
-    public function read(): array
+    public function supports(string $profileName, DataSet $dataSet): bool
     {
-        $currencies = $this->fetchData();
+        return $profileName === Shopware55Profile::PROFILE_NAME && $dataSet::getEntity() === DefaultEntities::CURRENCY;
+    }
+
+    public function read(MigrationContextInterface $migrationContext, array $params = []): array
+    {
+        $this->setConnection($migrationContext);
+
+        $currencies = $this->fetchData($migrationContext);
 
         // represents the main language of the migrated shop
         $locale = $this->getDefaultShopLocale();
@@ -20,15 +32,15 @@ class Shopware55LocalCurrencyReader extends Shopware55LocalAbstractReader
         return $this->cleanupResultSet($currencies);
     }
 
-    private function fetchData(): array
+    private function fetchData(MigrationContextInterface $migrationContext): array
     {
         $query = $this->connection->createQueryBuilder();
         $query->from('s_core_currencies', 'currency');
         $this->addTableSelection($query, 's_core_currencies', 'currency');
 
         $query->addOrderBy('standard', 'DESC');
-        $query->setFirstResult($this->migrationContext->getOffset());
-        $query->setMaxResults($this->migrationContext->getLimit());
+        $query->setFirstResult($migrationContext->getOffset());
+        $query->setMaxResults($migrationContext->getLimit());
 
         return $query->execute()->fetchAll();
     }

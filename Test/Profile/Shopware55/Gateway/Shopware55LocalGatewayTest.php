@@ -4,18 +4,24 @@ namespace SwagMigrationAssistant\Test\Profile\Shopware55\Gateway;
 
 use Doctrine\DBAL\Exception\ConnectionException;
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\Profile\SwagMigrationProfileEntity;
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
-use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalReaderNotFoundException;
+use SwagMigrationAssistant\Profile\Shopware55\Exception\Shopware55LocalReaderNotFoundException;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Connection\ConnectionFactory;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalEnvironmentReader;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalTableReader;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Profile\Shopware55\DataSet\FooDataSet;
 
 class Shopware55LocalGatewayTest extends TestCase
 {
+    use KernelTestBehaviour;
+
     public function testReadFailedNoCredentials(): void
     {
         $connection = new SwagMigrationConnectionEntity();
@@ -40,7 +46,17 @@ class Shopware55LocalGatewayTest extends TestCase
             new ProductDataSet()
         );
 
-        $gatewaySource = new Shopware55LocalGateway();
+        $connectionFactory = new ConnectionFactory();
+        $readerRegistry = $this->getContainer()->get('SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\ReaderRegistry');
+        $localEnvironmentReader = new Shopware55LocalEnvironmentReader($connectionFactory);
+        $localTableReader = new Shopware55LocalTableReader($connectionFactory);
+
+        $gatewaySource = new Shopware55LocalGateway(
+            $readerRegistry,
+            $localEnvironmentReader,
+            $localTableReader,
+            $connectionFactory
+        );
         $gatewayRegistry = new GatewayRegistry([
             $gatewaySource,
         ]);
@@ -74,7 +90,17 @@ class Shopware55LocalGatewayTest extends TestCase
             new FooDataSet()
         );
 
-        $gatewaySource = new Shopware55LocalGateway();
+        $connectionFactory = new ConnectionFactory();
+        $readerRegistry = $this->getContainer()->get('SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\ReaderRegistry');
+        $localEnvironmentReader = new Shopware55LocalEnvironmentReader($connectionFactory);
+        $localTableReader = new Shopware55LocalTableReader($connectionFactory);
+
+        $gatewaySource = new Shopware55LocalGateway(
+            $readerRegistry,
+            $localEnvironmentReader,
+            $localTableReader,
+            $connectionFactory
+        );
         $gatewayRegistry = new GatewayRegistry([
             $gatewaySource,
         ]);
@@ -97,7 +123,17 @@ class Shopware55LocalGatewayTest extends TestCase
             $connection
         );
 
-        $gateway = new Shopware55LocalGateway();
+        $readerRegistry = $this->getContainer()->get('SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\ReaderRegistry');
+        $connectionFactory = new ConnectionFactory();
+        $localEnvironmentReader = new Shopware55LocalEnvironmentReader($connectionFactory);
+        $localTableReader = new Shopware55LocalTableReader($connectionFactory);
+
+        $gateway = new Shopware55LocalGateway(
+            $readerRegistry,
+            $localEnvironmentReader,
+            $localTableReader,
+            $connectionFactory
+        );
         $response = $gateway->readEnvironmentInformation($migrationContext);
 
         static::assertSame($response->getTotals(), []);
