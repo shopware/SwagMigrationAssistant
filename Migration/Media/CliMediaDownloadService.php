@@ -98,7 +98,7 @@ class CliMediaDownloadService implements CliMediaDownloadServiceInterface
                 $mediaUuids[] = $uuid;
 
                 if ($uri !== null) {
-                    $this->event->dispatch(MigrationMediaDownloadAdvanceEvent::EVENT_NAME, new MigrationMediaDownloadAdvanceEvent());
+                    $this->event->dispatch(new MigrationMediaDownloadAdvanceEvent());
                     $this->download($client, $uuid, $uri, $fileSize, $context);
                 }
             }
@@ -106,7 +106,7 @@ class CliMediaDownloadService implements CliMediaDownloadServiceInterface
 
             $media = $this->fetchMediaFiles($runId, $context, 10);
         }
-        $this->event->dispatch(MigrationMediaDownloadFinishEvent::EVENT_NAME, new MigrationMediaDownloadFinishEvent($mediaCount, $this->skippedMediaCount));
+        $this->event->dispatch(new MigrationMediaDownloadFinishEvent($mediaCount, $this->skippedMediaCount));
     }
 
     public function setLogger(LoggerInterface $logger): void
@@ -201,7 +201,7 @@ class CliMediaDownloadService implements CliMediaDownloadServiceInterface
         $criteria->addSorting(new FieldSorting('fileSize', FieldSorting::ASCENDING));
         $migrationData = $this->mediaFileRepo->search($criteria, $context);
 
-        $this->event->dispatch(MigrationMediaDownloadStartEvent::EVENT_NAME, new MigrationMediaDownloadStartEvent($migrationData->getTotal()));
+        $this->event->dispatch(new MigrationMediaDownloadStartEvent($migrationData->getTotal()));
     }
 
     private function download(Client $client, string $uuid, string $uri, int $fileSize, Context $context): void
