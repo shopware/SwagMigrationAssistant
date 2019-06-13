@@ -102,7 +102,7 @@ class NewsletterRecipientConverterTest extends TestCase
         $logs = $this->loggingService->getLoggingArray();
         static::assertCount(1, $logs);
 
-        $description = sprintf('NewsletterRecipient-Entity could not converted cause of empty necessary field(s): %s.', 'double_optin_confirmed');
+        $description = sprintf('NewsletterRecipient-Entity could not be converted cause of empty necessary field(s): %s.', 'double_optin_confirmed');
         static::assertSame($description, $logs[0]['logEntry']['description']);
     }
 
@@ -122,7 +122,7 @@ class NewsletterRecipientConverterTest extends TestCase
         $logs = $this->loggingService->getLoggingArray();
         static::assertCount(1, $logs);
 
-        $description = sprintf('NewsletterRecipient-Entity could not converted cause of unknown salutation');
+        $description = sprintf('NewsletterRecipient-Entity could not be converted cause of unknown salutation');
         static::assertSame($description, $logs[0]['logEntry']['description']);
     }
 

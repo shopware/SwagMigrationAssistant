@@ -165,7 +165,7 @@ class NewsletterRecipientConverter extends Shopware55Converter
                 $this->runId,
                 Shopware55LogTypes::UNKNOWN_CUSTOMER_SALUTATION,
                 'Cannot find customer salutation',
-                'NewsletterRecipient-Entity could not converted cause of unknown salutation',
+                'NewsletterRecipient-Entity could not be converted cause of unknown salutation',
                 [
                     'id' => $this->oldNewsletterRecipientId,
                     'entity' => DefaultEntities::NEWSLETTER_RECIPIENT,
@@ -203,7 +203,7 @@ class NewsletterRecipientConverter extends Shopware55Converter
                 $this->runId,
                 Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
                 'Empty necessary data fields',
-                'NewsletterRecipient-Entity could not converted cause of empty necessary field(s): salesChannel.',
+                'NewsletterRecipient-Entity could not be converted cause of empty necessary field(s): salesChannel.',
                 [
                     'id' => $this->oldNewsletterRecipientId,
                     'entity' => DefaultEntities::NEWSLETTER_RECIPIENT,
@@ -230,7 +230,7 @@ class NewsletterRecipientConverter extends Shopware55Converter
                 $this->runId,
                 Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
                 'Empty necessary data fields',
-                'NewsletterRecipient-Entity could not converted cause of empty necessary field(s): status.',
+                'NewsletterRecipient-Entity could not be converted cause of empty necessary field(s): status.',
                 [
                     'id' => $this->oldNewsletterRecipientId,
                     'entity' => DefaultEntities::NEWSLETTER_RECIPIENT,

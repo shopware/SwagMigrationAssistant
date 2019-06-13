@@ -78,6 +78,11 @@
             <tag name="shopware.migration.local_reader" />
         </service>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalNewsletterRecipientReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalAbstractReader">
+            <tag name="shopware.migration.local_reader" />
+        </service>
+
         <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalCustomerGroupReader"
                  parent="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalAbstractReader">
             <tag name="shopware.migration.local_reader" />
