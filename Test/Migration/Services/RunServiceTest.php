@@ -184,7 +184,9 @@ class RunServiceTest extends TestCase
             $mediaFileRepo,
             $this->getContainer()->get('currency.repository'),
             $this->getContainer()->get(IndexerRegistryInterface::class),
-            $this->getContainer()->get('shopware.cache')
+            $this->getContainer()->get('shopware.cache'),
+            $this->getContainer()->get(SwagMigrationDataDefinition::class),
+            $this->getContainer()->get(Connection::class)
         );
 
         $this->runServiceWithoutStructure = new RunService(
@@ -201,7 +203,9 @@ class RunServiceTest extends TestCase
             $mediaFileRepo,
             $this->getContainer()->get('currency.repository'),
             $this->getContainer()->get(IndexerRegistryInterface::class),
-            $this->getContainer()->get('shopware.cache')
+            $this->getContainer()->get('shopware.cache'),
+            $this->getContainer()->get(SwagMigrationDataDefinition::class),
+            $this->getContainer()->get(Connection::class)
         );
     }
 

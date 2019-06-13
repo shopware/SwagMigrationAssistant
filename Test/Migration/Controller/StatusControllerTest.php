@@ -2,6 +2,7 @@
 
 namespace SwagMigrationAssistant\Test\Migration\Controller;
 
+use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Context\AdminApiSource;
@@ -182,7 +183,9 @@ class StatusControllerTest extends TestCase
                 $mediaFileRepo,
                 $currencyRepo,
                 $this->getContainer()->get(IndexerRegistryInterface::class),
-                $this->getContainer()->get('shopware.cache')
+                $this->getContainer()->get('shopware.cache'),
+                $this->getContainer()->get(SwagMigrationDataDefinition::class),
+                $this->getContainer()->get(Connection::class)
             ),
             new DataSelectionRegistry([
                 new ProductDataSelection(),
