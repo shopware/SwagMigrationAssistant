@@ -75,6 +75,7 @@ class Shopware55ApiGateway implements Shopware55GatewayInterface
             $updateAvailable = $environmentData['environmentInformation']['updateAvailable'];
         }
 
+        //$totals = $this->readTotals($migrationContext);
         $totals = [
             DefaultEntities::CATEGORY => new TotalStruct(DefaultEntities::CATEGORY, $environmentDataArray['categories']),
             DefaultEntities::PRODUCT => new TotalStruct(DefaultEntities::PRODUCT, $environmentDataArray['products']),
@@ -99,6 +100,11 @@ class Shopware55ApiGateway implements Shopware55GatewayInterface
             $environmentData['requestStatus'],
             $updateAvailable
         );
+    }
+
+    public function readTotals(MigrationContextInterface $migrationContext): array
+    {
+        return [];
     }
 
     public function readTable(MigrationContextInterface $migrationContext, string $tableName, array $filter = []): array

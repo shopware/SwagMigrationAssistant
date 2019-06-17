@@ -8,15 +8,9 @@ use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistryInterface;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Migration\Profile\ProfileRegistryInterface;
 
 class MigrationDataFetcher implements MigrationDataFetcherInterface
 {
-    /**
-     * @var ProfileRegistryInterface
-     */
-    private $profileRegistry;
-
     /**
      * @var GatewayRegistryInterface
      */
@@ -28,27 +22,19 @@ class MigrationDataFetcher implements MigrationDataFetcherInterface
     private $loggingService;
 
     public function __construct(
-        ProfileRegistryInterface $profileRegistry,
         GatewayRegistryInterface $gatewayRegistry,
         LoggingServiceInterface $loggingService
     ) {
-        $this->profileRegistry = $profileRegistry;
         $this->gatewayRegistry = $gatewayRegistry;
         $this->loggingService = $loggingService;
     }
 
-    public function fetchData(MigrationContextInterface $migrationContext, Context $context): int
+    public function fetchData(MigrationContextInterface $migrationContext, Context $context): array
     {
-        $returnCount = 0;
         try {
-            $profile = $this->profileRegistry->getProfile($migrationContext->getProfileName());
             $gateway = $this->gatewayRegistry->getGateway($migrationContext);
-            $data = $gateway->read($migrationContext);
 
-            if (\count($data) === 0) {
-                return $returnCount;
-            }
-            $returnCount = $profile->convert($data, $migrationContext, $context);
+            return $gateway->read($migrationContext);
         } catch (\Exception $exception) {
             $code = $exception->getCode();
             if (is_subclass_of($exception, ShopwareHttpException::class, false)) {
@@ -60,14 +46,20 @@ class MigrationDataFetcher implements MigrationDataFetcherInterface
             $this->loggingService->saveLogging($context);
         }
 
-        return $returnCount;
+        return [];
     }
 
     public function getEnvironmentInformation(MigrationContextInterface $migrationContext): EnvironmentInformation
     {
-        $profile = $this->profileRegistry->getProfile($migrationContext->getProfileName());
         $gateway = $this->gatewayRegistry->getGateway($migrationContext);
 
-        return $profile->readEnvironmentInformation($gateway, $migrationContext);
+        return $gateway->readEnvironmentInformation($migrationContext);
+    }
+
+    public function fetchTotals(MigrationContextInterface $migrationContext): array
+    {
+        $gateway = $this->gatewayRegistry->getGateway($migrationContext);
+
+        return $gateway->readTotals($migrationContext);
     }
 }

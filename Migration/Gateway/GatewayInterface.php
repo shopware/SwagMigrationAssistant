@@ -18,4 +18,6 @@ interface GatewayInterface
     public function read(MigrationContextInterface $migrationContext): array;
 
     public function readEnvironmentInformation(MigrationContextInterface $migrationContext): EnvironmentInformation;
+
+    public function readTotals(MigrationContextInterface $migrationContext): array;
 }

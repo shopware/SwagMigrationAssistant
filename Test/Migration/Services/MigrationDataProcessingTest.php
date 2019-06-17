@@ -12,25 +12,21 @@ use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
-use SwagMigrationAssistant\Migration\Converter\ConverterRegistry;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
-use SwagMigrationAssistant\Migration\Logging\LogType;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingEntity;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Media\MediaFileService;
 use SwagMigrationAssistant\Migration\MigrationContext;
-use SwagMigrationAssistant\Migration\Profile\ProfileRegistry;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
+use SwagMigrationAssistant\Migration\Service\MigrationDataConverterInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcher;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
-use SwagMigrationAssistant\Profile\Shopware55\Converter\ProductConverter;
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\CategoryDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\CustomerDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\MediaDataSet;
-use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\OrderDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\TranslationDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiEnvironmentReader;
@@ -49,7 +45,10 @@ use SwagMigrationAssistant\Test\Mock\DummyCollection;
 use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGateway;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 
-class MigrationDataFetcherTest extends TestCase
+/**
+ * Combines tests for data fetching and converting
+ */
+class MigrationDataProcessingTest extends TestCase
 {
     use MigrationServicesTrait;
     use IntegrationTestBehaviour;
@@ -58,6 +57,11 @@ class MigrationDataFetcherTest extends TestCase
      * @var MigrationDataFetcherInterface
      */
     private $migrationDataFetcher;
+
+    /**
+     * @var MigrationDataConverterInterface
+     */
+    private $migrationDataConverter;
 
     /**
      * @var EntityRepositoryInterface
@@ -158,22 +162,17 @@ class MigrationDataFetcherTest extends TestCase
             $this->loggingRepo,
             $this->getContainer()->get(SwagMigrationDataDefinition::class)
         );
+        $this->migrationDataConverter = $this->getMigrationDataConverter(
+            $this->getContainer()->get(EntityWriter::class),
+            $this->mappingService,
+            $this->getContainer()->get(MediaFileService::class),
+            $this->loggingRepo,
+            $this->getContainer()->get(SwagMigrationDataDefinition::class)
+        );
 
         $this->loggingService = new DummyLoggingService();
         $connectionFactory = new ConnectionFactory();
         $this->dummyDataFetcher = new MigrationDataFetcher(
-            new ProfileRegistry(new DummyCollection([
-                new Shopware55Profile(
-                    $this->getContainer()->get(EntityWriter::class),
-                    new ConverterRegistry([
-                        $this->getContainer()->get(ProductConverter::class),
-                    ]),
-                    $this->getContainer()->get(MediaFileService::class),
-                    new DummyLoggingService(),
-                    $this->getContainer()->get(SwagMigrationDataDefinition::class)
-                ),
-            ])),
-
             new GatewayRegistry(new DummyCollection([
                 new Shopware55ApiGateway(
                     new Shopware55ApiReader($connectionFactory),
@@ -225,7 +224,14 @@ class MigrationDataFetcherTest extends TestCase
             250
         );
 
-        $this->migrationDataFetcher->fetchData($migrationContext, $context);
+        $data = $this->migrationDataFetcher->fetchData($migrationContext, $context);
+        $this->migrationDataConverter->convert($data, $migrationContext, $context);
+
+        static::assertSame(23, \count($data));
+        static::arrayHasKey('uri', $data[0]);
+        static::arrayHasKey('locale', $data[10]);
+        static::assertSame('27', $data[22]['id']);
+        static::assertSame('download', $data[1]['name']);
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('runId', $this->runUuid));
@@ -246,7 +252,10 @@ class MigrationDataFetcherTest extends TestCase
             250
         );
 
-        $this->migrationDataFetcher->fetchData($migrationContext, $context);
+        $data = $this->migrationDataFetcher->fetchData($migrationContext, $context);
+        $this->migrationDataConverter->convert($data, $migrationContext, $context);
+
+        static::assertSame(8, \count($data));
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('runId', $this->runUuid));
@@ -267,7 +276,10 @@ class MigrationDataFetcherTest extends TestCase
             250
         );
 
-        $this->migrationDataFetcher->fetchData($migrationContext, $context);
+        $data = $this->migrationDataFetcher->fetchData($migrationContext, $context);
+        $this->migrationDataConverter->convert($data, $migrationContext, $context);
+
+        static::assertSame(9, \count($data));
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('runId', $this->runUuid));
@@ -288,7 +300,10 @@ class MigrationDataFetcherTest extends TestCase
             250
         );
 
-        $this->migrationDataFetcher->fetchData($migrationContext, $context);
+        $data = $this->migrationDataFetcher->fetchData($migrationContext, $context);
+        $this->migrationDataConverter->convert($data, $migrationContext, $context);
+
+        static::assertSame(3, \count($data));
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('runId', $this->runUuid));
@@ -309,7 +324,9 @@ class MigrationDataFetcherTest extends TestCase
             250
         );
 
-        $this->migrationDataFetcher->fetchData($migrationContext, $context);
+        $data = $this->migrationDataFetcher->fetchData($migrationContext, $context);
+        $this->migrationDataConverter->convert($data, $migrationContext, $context);
+        static::assertSame(37, \count($data));
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('runId', $this->runUuid));
@@ -330,7 +347,9 @@ class MigrationDataFetcherTest extends TestCase
             250
         );
 
-        $this->migrationDataFetcher->fetchData($migrationContext, $context);
+        $data = $this->migrationDataFetcher->fetchData($migrationContext, $context);
+        $this->migrationDataConverter->convert($data, $migrationContext, $context);
+        static::assertSame(37, \count($data));
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('runId', $this->runUuid));
@@ -352,10 +371,11 @@ class MigrationDataFetcherTest extends TestCase
         );
 
         $this->clearCacheBefore();
-        $this->migrationDataFetcher->fetchData($migrationContext, $context);
+        $data = $this->migrationDataFetcher->fetchData($migrationContext, $context);
+        $this->migrationDataConverter->convert($data, $migrationContext, $context);
         $result = $this->loggingRepo->search(new Criteria(), $context);
 
-        static::assertSame(5, $result->getTotal());
+        static::assertSame(4, \count($data));
 
         $countValidLogging = 0;
         $countInvalidLogging = 0;
@@ -386,23 +406,6 @@ class MigrationDataFetcherTest extends TestCase
         $failureConvertCriteria->addFilter(new EqualsFilter('convertFailure', true));
         $result = $this->migrationDataRepo->search($failureConvertCriteria, $context);
         static::assertSame(2, $result->getTotal());
-    }
-
-    public function testFetchWithUnknownConverter(): void
-    {
-        $context = Context::createDefaultContext();
-        $migrationContext = new MigrationContext(
-            $this->connection,
-            $this->runUuid,
-            new OrderDataSet(),
-            0,
-            250
-        );
-
-        $this->dummyDataFetcher->fetchData($migrationContext, $context);
-        $logs = $this->loggingService->getLoggingArray();
-        static::assertCount(1, $logs);
-        static::assertSame(LogType::CONVERTER_NOT_FOUND, $logs[0]['logEntry']['code']);
     }
 
     private function initRepos(): void

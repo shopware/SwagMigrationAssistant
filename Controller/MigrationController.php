@@ -14,6 +14,7 @@ use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\Run\RunServiceInterface;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationAssistant\Migration\Service\MediaFileProcessorServiceInterface;
+use SwagMigrationAssistant\Migration\Service\MigrationDataConverterInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataWriterInterface;
 use SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService;
@@ -59,8 +60,14 @@ class MigrationController extends AbstractController
      */
     private $dataSetRegistry;
 
+    /**
+     * @var MigrationDataConverterInterface
+     */
+    private $migrationDataConverter;
+
     public function __construct(
         MigrationDataFetcherInterface $migrationDataFetcher,
+        MigrationDataConverterInterface $migrationDataConverter,
         MigrationDataWriterInterface $migrationDataWriter,
         MediaFileProcessorServiceInterface $mediaFileProcessorService,
         SwagMigrationAccessTokenService $accessTokenService,
@@ -69,6 +76,7 @@ class MigrationController extends AbstractController
         DataSetRegistryInterface $dataSetRegistry
     ) {
         $this->migrationDataFetcher = $migrationDataFetcher;
+        $this->migrationDataConverter = $migrationDataConverter;
         $this->migrationDataWriter = $migrationDataWriter;
         $this->mediaFileProcessorService = $mediaFileProcessorService;
         $this->accessTokenService = $accessTokenService;
@@ -113,7 +121,6 @@ class MigrationController extends AbstractController
         }
 
         $dataSet = $this->dataSetRegistry->getDataSet($run->getConnection()->getProfile()->getName(), $entity);
-
         $migrationContext = new MigrationContext(
             $run->getConnection(),
             $run->getId(),
@@ -121,7 +128,9 @@ class MigrationController extends AbstractController
             $offset,
             $limit
         );
-        $this->migrationDataFetcher->fetchData($migrationContext, $context);
+
+        $data = $this->migrationDataFetcher->fetchData($migrationContext, $context);
+        $this->migrationDataConverter->convert($data, $migrationContext, $context);
 
         return new JsonResponse([
             'validToken' => true,

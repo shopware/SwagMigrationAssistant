@@ -27,7 +27,8 @@ use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
-use SwagMigrationAssistant\Migration\Profile\ProfileRegistry;
+use SwagMigrationAssistant\Migration\Service\MigrationDataConverter;
+use SwagMigrationAssistant\Migration\Service\MigrationDataConverterInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcher;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\CategoryConverter;
@@ -41,7 +42,6 @@ use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiRe
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiTableReader;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Shopware55ApiGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Connection\ConnectionFactory;
-use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\DummyCollection;
 use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGateway;
 use SwagMigrationAssistant\Test\Mock\Profile\Dummy\DummyInvalidCustomerConverter;
@@ -57,6 +57,29 @@ trait MigrationServicesTrait
     ): MigrationDataFetcherInterface {
         $loggingService = new LoggingService($loggingRepo);
         $priceRounding = new PriceRounding();
+
+        $connectionFactory = new ConnectionFactory();
+        $gatewayRegistry = new GatewayRegistry(new DummyCollection([
+            new Shopware55ApiGateway(
+                new Shopware55ApiReader($connectionFactory),
+                new Shopware55ApiEnvironmentReader($connectionFactory),
+                new Shopware55ApiTableReader($connectionFactory)
+            ),
+            new DummyLocalGateway(),
+        ]));
+
+        return new MigrationDataFetcher($gatewayRegistry, $loggingService);
+    }
+
+    protected function getMigrationDataConverter(
+        EntityWriterInterface $entityWriter,
+        MappingService $mappingService,
+        MediaFileServiceInterface $mediaFileService,
+        EntityRepositoryInterface $loggingRepo,
+        EntityDefinition $dataDefinition
+    ): MigrationDataConverterInterface {
+        $priceRounding = new PriceRounding();
+        $loggingService = new LoggingService($loggingRepo);
         $converterRegistry = new ConverterRegistry(
             new DummyCollection(
                 [
@@ -79,27 +102,15 @@ trait MigrationServicesTrait
             )
         );
 
-        $profileRegistry = new ProfileRegistry(new DummyCollection([
-            new Shopware55Profile(
-                $entityWriter,
-                $converterRegistry,
-                $mediaFileService,
-                $loggingService,
-                $dataDefinition
-            ),
-        ]));
+        $migrationDataConverter = new MigrationDataConverter(
+            $entityWriter,
+            $converterRegistry,
+            $mediaFileService,
+            $loggingService,
+            $dataDefinition
+        );
 
-        $connectionFactory = new ConnectionFactory();
-        $gatewayRegistry = new GatewayRegistry(new DummyCollection([
-            new Shopware55ApiGateway(
-                new Shopware55ApiReader($connectionFactory),
-                new Shopware55ApiEnvironmentReader($connectionFactory),
-                new Shopware55ApiTableReader($connectionFactory)
-            ),
-            new DummyLocalGateway(),
-        ]));
-
-        return new MigrationDataFetcher($profileRegistry, $gatewayRegistry, $loggingService);
+        return $migrationDataConverter;
     }
 
     protected function getOrderStateUuid(

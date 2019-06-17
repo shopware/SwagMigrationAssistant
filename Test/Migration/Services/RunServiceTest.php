@@ -193,7 +193,6 @@ class RunServiceTest extends TestCase
             $this->runRepo,
             $this->connectionRepo,
             new DummyMigrationDataFetcher(
-                $profileRegistry,
                 $gatewayRegistry,
                 $loggingService
             ),

@@ -111,6 +111,11 @@ class Shopware55LocalGateway implements Shopware55GatewayInterface
         );
     }
 
+    public function readTotals(MigrationContextInterface $migrationContext): array
+    {
+        return [];
+    }
+
     public function readTable(MigrationContextInterface $migrationContext, string $tableName, array $filter = []): array
     {
         return $this->localTableReader->read($migrationContext, $tableName, $filter);
