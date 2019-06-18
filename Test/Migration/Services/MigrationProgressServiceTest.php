@@ -4,8 +4,8 @@ namespace SwagMigrationAssistant\Test\Migration\Services;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\Dbal\Indexing\IndexerRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Indexing\IndexerRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
@@ -675,6 +675,7 @@ class MigrationProgressServiceTest extends TestCase
                 'converted' => [
                     'value' => 'testValue',
                 ],
+                'raw' => [],
                 'written' => $writtenFlag,
             ];
         }

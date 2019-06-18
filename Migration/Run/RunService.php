@@ -3,8 +3,8 @@
 namespace SwagMigrationAssistant\Migration\Run;
 
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\Dbal\Indexing\IndexerInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Indexing\IndexerRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\CountAggregation;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\ValueCountAggregation;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregatorResult;
@@ -25,6 +25,7 @@ use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationAssistant\Migration\Service\ProgressState;
 use SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService;
 use Symfony\Component\Cache\Adapter\TagAwareAdapter;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class RunService implements RunServiceInterface
 {
@@ -64,7 +65,7 @@ class RunService implements RunServiceInterface
     private $mediaFileRepository;
 
     /**
-     * @var IndexerInterface
+     * @var EventSubscriberInterface
      */
     private $indexer;
 
@@ -85,7 +86,7 @@ class RunService implements RunServiceInterface
         EntityRepositoryInterface $migrationDataRepository,
         EntityRepositoryInterface $mediaFileRepository,
         EntityRepositoryInterface $currencyRepository,
-        IndexerInterface $indexer,
+        EventSubscriberInterface $indexer,
         TagAwareAdapter $cache
     ) {
         $this->migrationRunRepo = $migrationRunRepo;
@@ -262,7 +263,9 @@ class RunService implements RunServiceInterface
 
         $this->cache->clear();
 
-        $this->indexer->index(new \DateTime());
+        /** @var IndexerRegistry $indxerRegistry */
+        $indxerRegistry = $this->indexer;
+        $indxerRegistry->index(new \DateTime());
     }
 
     private function isMigrationRunningWithGivenConnection(Context $context, string $connectionUuid): bool
