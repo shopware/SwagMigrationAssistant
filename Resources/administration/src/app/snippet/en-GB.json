@@ -225,10 +225,10 @@
       },
       "loadingScreenCard": {
         "flowChart": {
-          "premapping": "Checking Data",
-          "fetchData": "Reading data",
-          "writeData": "Writing data",
-          "processMedia": "Downloading media",
+          "premapping": "Checking",
+          "fetchData": "Reading",
+          "writeData": "Writing",
+          "processMedia": "Downloading",
           "finish": "Done"
         },
         "status": {

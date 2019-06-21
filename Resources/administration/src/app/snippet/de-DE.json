@@ -226,10 +226,10 @@
       },
       "loadingScreenCard": {
         "flowChart": {
-          "premapping": "Prüfen der Daten",
-          "fetchData": "Lesen der Daten",
-          "writeData": "Schreiben der Daten",
-          "processMedia": "Medien-Download",
+          "premapping": "Prüfen",
+          "fetchData": "Lesen",
+          "writeData": "Schreiben",
+          "processMedia": "Download",
           "finish": "Fertig"
         },
         "status": {
