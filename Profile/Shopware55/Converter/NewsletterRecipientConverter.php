@@ -11,7 +11,6 @@ use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware55\Logging\Shopware55LogTypes;
 use SwagMigrationAssistant\Profile\Shopware55\Premapping\NewsletterRecipientStatusReader;
-use SwagMigrationAssistant\Profile\Shopware55\Premapping\SalesChannelReader;
 use SwagMigrationAssistant\Profile\Shopware55\Premapping\SalutationReader;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
@@ -185,15 +184,6 @@ class NewsletterRecipientConverter extends Shopware55Converter
                 $this->connectionId,
                 DefaultEntities::SALES_CHANNEL,
                 $data['shopId'],
-                $this->context
-            );
-        }
-
-        if ($salesChannelUuid === null) {
-            $salesChannelUuid = $this->mappingService->getUuid(
-                $this->connectionId,
-                SalesChannelReader::getMappingName(),
-                'default_salesChannel',
                 $this->context
             );
         }

@@ -15,7 +15,6 @@ use SwagMigrationAssistant\Migration\Premapping\PremappingEntityStruct;
 use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\CustomerAndOrderDataSelection;
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\NewsletterRecipientDataSelection;
-use SwagMigrationAssistant\Profile\Shopware55\Gateway\TableReaderFactory;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Shopware55GatewayInterface;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 

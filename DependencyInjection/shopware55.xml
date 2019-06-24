@@ -440,11 +440,6 @@
             <tag name="shopware.migration.pre_mapping_reader"/>
         </service>
 
-        <service id="SwagMigrationAssistant\Profile\Shopware55\Premapping\SalesChannelReader">
-            <argument type="service" id="sales_channel.repository" />
-            <tag name="shopware.migration.pre_mapping_reader"/>
-        </service>
-
         <service id="SwagMigrationAssistant\Profile\Shopware55\Premapping\NewsletterRecipientStatusReader">
             <tag name="shopware.migration.pre_mapping_reader"/>
         </service>
