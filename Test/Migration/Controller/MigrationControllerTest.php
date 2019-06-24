@@ -5,7 +5,7 @@ namespace SwagMigrationAssistant\Test\Migration\Controller;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Indexing\IndexerRegistry;
+use Shopware\Core\Framework\DataAbstractionLayer\Indexing\IndexerRegistryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
@@ -199,7 +199,7 @@ class MigrationControllerTest extends TestCase
                 $this->dataRepo,
                 $this->mediaFileRepo,
                 $currencyRepo,
-                $this->getContainer()->get(IndexerRegistry::class),
+                $this->getContainer()->get(IndexerRegistryInterface::class),
                 $this->getContainer()->get('shopware.cache')
             ),
             $this->runRepo,

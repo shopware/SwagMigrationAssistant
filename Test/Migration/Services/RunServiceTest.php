@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Context\AdminApiSource;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Indexing\IndexerRegistry;
+use Shopware\Core\Framework\DataAbstractionLayer\Indexing\IndexerRegistryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
@@ -183,7 +183,7 @@ class RunServiceTest extends TestCase
             $this->dataRepo,
             $mediaFileRepo,
             $this->getContainer()->get('currency.repository'),
-            $this->getContainer()->get(IndexerRegistry::class),
+            $this->getContainer()->get(IndexerRegistryInterface::class),
             $this->getContainer()->get('shopware.cache')
         );
 
@@ -200,7 +200,7 @@ class RunServiceTest extends TestCase
             $this->dataRepo,
             $mediaFileRepo,
             $this->getContainer()->get('currency.repository'),
-            $this->getContainer()->get(IndexerRegistry::class),
+            $this->getContainer()->get(IndexerRegistryInterface::class),
             $this->getContainer()->get('shopware.cache')
         );
     }

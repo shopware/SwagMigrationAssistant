@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Context\AdminApiSource;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Indexing\IndexerRegistry;
+use Shopware\Core\Framework\DataAbstractionLayer\Indexing\IndexerRegistryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
@@ -181,7 +181,7 @@ class StatusControllerTest extends TestCase
                 $dataRepo,
                 $mediaFileRepo,
                 $currencyRepo,
-                $this->getContainer()->get(IndexerRegistry::class),
+                $this->getContainer()->get(IndexerRegistryInterface::class),
                 $this->getContainer()->get('shopware.cache')
             ),
             new DataSelectionRegistry([
