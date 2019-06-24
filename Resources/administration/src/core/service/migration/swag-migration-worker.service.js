@@ -37,7 +37,7 @@ class MigrationWorkerService {
         this._migrationRunService = migrationRunService;
         this._migrationLoggingService = migrationLoggingService;
         this._workerStatusManager = new WorkerStatusManager(
-            this._migrationService,
+            this._migrationService
         );
         this._workRunner = null;
 
