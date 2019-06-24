@@ -10,7 +10,6 @@ use Shopware\Core\Checkout\Cart\Tax\Struct\CalculatedTaxCollection;
 use Shopware\Core\Checkout\Cart\Tax\Struct\TaxRule;
 use Shopware\Core\Checkout\Cart\Tax\Struct\TaxRuleCollection;
 use Shopware\Core\Checkout\Cart\Tax\TaxCalculator;
-use Shopware\Core\Checkout\DiscountSurcharge\Cart\DiscountSurchargeCollector;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
@@ -828,7 +827,7 @@ class OrderConverter extends Shopware55Converter
             } else {
                 $this->convertValue($lineItem, 'identifier', $originalLineItem, 'articleordernumber');
 
-                $lineItem['type'] = DiscountSurchargeCollector::DATA_KEY;
+                $lineItem['type'] = LineItem::CREDIT_LINE_ITEM_TYPE;
             }
 
             $this->convertValue($lineItem, 'quantity', $originalLineItem, 'quantity', self::TYPE_INTEGER);
