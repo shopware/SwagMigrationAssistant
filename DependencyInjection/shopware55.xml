@@ -78,6 +78,11 @@
             <tag name="shopware.migration.local_reader" />
         </service>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalNewsletterRecipientReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalAbstractReader">
+            <tag name="shopware.migration.local_reader" />
+        </service>
+
         <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalCustomerGroupReader"
                  parent="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalAbstractReader">
             <tag name="shopware.migration.local_reader" />
@@ -258,6 +263,12 @@
             <tag name="shopware.migration.converter"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware55\Converter\NewsletterRecipientConverter">
+            <argument id="SwagMigrationAssistant\Migration\Mapping\MappingService" type="service"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
+            <tag name="shopware.migration.converter"/>
+        </service>
+
         <!-- Shopware 5.5 MediaHandler -->
         <service id="SwagMigrationAssistant\Profile\Shopware55\Media\HttpMediaDownloadService">
             <argument type="service" id="swag_migration_media_file.repository"/>
@@ -300,6 +311,10 @@
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware55\DataSelection\NumberRangeDataSelection">
+            <tag name="shopware.migration.data_selection"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware55\DataSelection\NewsletterRecipientDataSelection">
             <tag name="shopware.migration.data_selection"/>
         </service>
 
@@ -372,6 +387,10 @@
             <tag name="shopware.migration.data_set" />
         </service>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\NewsletterRecipientDataSet">
+            <tag name="shopware.migration.data_set" />
+        </service>
+
         <service id="SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\LanguageDataSet">
             <tag name="shopware.migration.data_set" />
         </service>
@@ -421,5 +440,8 @@
             <tag name="shopware.migration.pre_mapping_reader"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware55\Premapping\NewsletterRecipientStatusReader">
+            <tag name="shopware.migration.pre_mapping_reader"/>
+        </service>
     </services>
 </container>

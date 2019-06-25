@@ -59,6 +59,11 @@ class DummyMappingService extends MappingService
         return $this->uuids[$entityName][$oldId] ?? null;
     }
 
+    public function getValue(string $connectionId, string $entityName, string $oldId, Context $context): ?string
+    {
+        return $this->values[$entityName][$oldId] ?? null;
+    }
+
     public function getUuidList(string $connectionId, string $entityName, string $identifier, Context $context): array
     {
         return $this->uuids[$entityName][$identifier] ?? [];

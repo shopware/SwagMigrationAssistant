@@ -99,6 +99,7 @@ class Shopware55LocalGateway implements Shopware55GatewayInterface
             DefaultEntities::TRANSLATION => $environmentData['translations'],
             DefaultEntities::NUMBER_RANGE => $environmentData['numberRanges'],
             DefaultEntities::CURRENCY => $environmentData['currencies'],
+            DefaultEntities::NEWSLETTER_RECIPIENT => $environmentData['newsletterRecipients'],
         ];
 
         return new EnvironmentInformation(

@@ -14,6 +14,7 @@ use SwagMigrationAssistant\Migration\Premapping\PremappingChoiceStruct;
 use SwagMigrationAssistant\Migration\Premapping\PremappingEntityStruct;
 use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\CustomerAndOrderDataSelection;
+use SwagMigrationAssistant\Profile\Shopware55\DataSelection\NewsletterRecipientDataSelection;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Shopware55GatewayInterface;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
@@ -52,7 +53,8 @@ class SalutationReader extends AbstractPremappingReader
     public function supports(string $profileName, string $gatewayIdentifier, array $entityGroupNames): bool
     {
         return $profileName === Shopware55Profile::PROFILE_NAME
-            && in_array(CustomerAndOrderDataSelection::IDENTIFIER, $entityGroupNames, true);
+            && (in_array(CustomerAndOrderDataSelection::IDENTIFIER, $entityGroupNames, true)
+            || in_array(NewsletterRecipientDataSelection::IDENTIFIER, $entityGroupNames, true));
     }
 
     public function getPremapping(Context $context, MigrationContext $migrationContext): PremappingStruct
@@ -88,7 +90,8 @@ class SalutationReader extends AbstractPremappingReader
 
         if (!empty($configuredSalutations)) {
             foreach ($configuredSalutations as $configuredSalutation) {
-                $salutations[] = explode(',', unserialize($configuredSalutation['value'], ['allowed_classes' => false]));
+                $salutations[] = explode(',',
+                    unserialize($configuredSalutation['value'], ['allowed_classes' => false]));
             }
         }
 

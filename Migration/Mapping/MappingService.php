@@ -90,6 +90,8 @@ class MappingService implements MappingServiceInterface
 
     protected $uuids = [];
 
+    protected $values = [];
+
     protected $uuidLists = [];
 
     protected $migratedSalesChannels = [];
@@ -191,6 +193,36 @@ class MappingService implements MappingServiceInterface
             $this->uuids[$entityName][$oldId] = $uuid;
 
             return $uuid;
+        }
+
+        return null;
+    }
+
+    public function getValue(string $connectionId, string $entityName, string $oldId, Context $context): ?string
+    {
+        if (isset($this->values[$entityName][$oldId])) {
+            return $this->values[$entityName][$oldId];
+        }
+
+        /** @var EntitySearchResult $result */
+        $result = $context->disableCache(function (Context $context) use ($connectionId, $entityName, $oldId) {
+            $criteria = new Criteria();
+            $criteria->addFilter(new EqualsFilter('connectionId', $connectionId));
+            $criteria->addFilter(new EqualsFilter('entity', $entityName));
+            $criteria->addFilter(new EqualsFilter('oldIdentifier', $oldId));
+            $criteria->setLimit(1);
+
+            return $this->migrationMappingRepo->search($criteria, $context);
+        });
+
+        if ($result->getTotal() > 0) {
+            /** @var SwagMigrationMappingEntity $element */
+            $element = $result->getEntities()->first();
+            $value = $element->getEntityValue();
+
+            $this->values[$entityName][$oldId] = $value;
+
+            return $value;
         }
 
         return null;
@@ -744,7 +776,7 @@ class MappingService implements MappingServiceInterface
         $this->uuids = [];
     }
 
-    public function pushMapping(string $connectionId, string $entity, string $oldIdentifier, string $uuid)
+    public function pushMapping(string $connectionId, string $entity, string $oldIdentifier, string $uuid): void
     {
         $this->saveMapping([
             'connectionId' => $connectionId,
@@ -754,13 +786,28 @@ class MappingService implements MappingServiceInterface
         ]);
     }
 
+    public function pushValueMapping(string $connectionId, string $entity, string $oldIdentifier, string $value): void
+    {
+        $this->saveMapping([
+            'connectionId' => $connectionId,
+            'entity' => $entity,
+            'oldIdentifier' => $oldIdentifier,
+            'entityValue' => $value,
+        ]);
+    }
+
     protected function saveMapping(array $mapping): void
     {
         $entity = $mapping['entity'];
         $oldId = $mapping['oldIdentifier'];
-        $uuid = $mapping['entityUuid'];
 
-        $this->uuids[$entity][$oldId] = $uuid;
+        if (isset($mapping['entityUuid'])) {
+            $newIdentifier = $mapping['entityUuid'];
+        } else {
+            $newIdentifier = $mapping['entityValue'];
+        }
+
+        $this->uuids[$entity][$oldId] = $newIdentifier;
         $this->writeArray[] = $mapping;
     }
 

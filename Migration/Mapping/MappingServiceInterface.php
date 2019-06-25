@@ -11,6 +11,8 @@ interface MappingServiceInterface
 {
     public function getUuid(string $connectionId, string $entityName, string $oldId, Context $context): ?string;
 
+    public function getValue(string $connectionId, string $entityName, string $oldId, Context $context): ?string;
+
     public function createNewUuidListItem(
         string $connectionId,
         string $entityName,
@@ -61,7 +63,9 @@ interface MappingServiceInterface
 
     public function bulkDeleteMapping(array $mappingUuids, Context $context): void;
 
-    public function pushMapping(string $connectionId, string $entity, string $oldIdentifier, string $uuid);
+    public function pushMapping(string $connectionId, string $entity, string $oldIdentifier, string $uuid): void;
+
+    public function pushValueMapping(string $connectionId, string $entity, string $oldIdentifier, string $value): void;
 
     public function writeMapping(Context $context): void;
 

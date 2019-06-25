@@ -58,6 +58,8 @@ final class DefaultEntities
 
     public const MEDIA_TRANSLATION = 'media_translation';
 
+    public const NEWSLETTER_RECIPIENT = 'newsletter_recipient';
+
     public const NUMBER_RANGE = 'number_range';
 
     public const NUMBER_RANGE_SALES_CHANNEL = 'number_range_sales_channel';
