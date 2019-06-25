@@ -28,5 +28,5 @@ interface RunServiceInterface
 
     public function updateConnectionCredentials(Context $context, string $connectionUuid, array $credentialFields): void;
 
-    public function finishMigration(Context $context, string $runUuid): void;
+    public function finishMigration(string $runUuid, Context $context): void;
 }

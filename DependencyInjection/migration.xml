@@ -49,8 +49,10 @@
             <argument type="service" id="swag_migration_data.repository"/>
             <argument type="service" id="swag_migration_media_file.repository"/>
             <argument type="service" id="currency.repository"/>
-            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Indexing\IndexerRegistryInterface"/>
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Indexing\MessageQueue\IndexerMessageSender"/>
             <argument type="service" id="shopware.cache" />
+            <argument type="service" id="SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition"/>
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
         </service>
 
         <service id="SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService">

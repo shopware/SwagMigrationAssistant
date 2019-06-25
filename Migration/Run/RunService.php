@@ -2,9 +2,12 @@
 
 namespace SwagMigrationAssistant\Migration\Run;
 
+use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\Dbal\QueryBuilder;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Indexing\IndexerRegistry;
+use Shopware\Core\Framework\DataAbstractionLayer\Indexing\IndexerRegistryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\CountAggregation;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\ValueCountAggregation;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregatorResult;
@@ -25,7 +28,6 @@ use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationAssistant\Migration\Service\ProgressState;
 use SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService;
 use Symfony\Component\Cache\Adapter\TagAwareAdapter;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class RunService implements RunServiceInterface
 {
@@ -65,7 +67,7 @@ class RunService implements RunServiceInterface
     private $mediaFileRepository;
 
     /**
-     * @var EventSubscriberInterface
+     * @var IndexerRegistryInterface
      */
     private $indexer;
 
@@ -77,6 +79,16 @@ class RunService implements RunServiceInterface
      */
     private $currencyRepository;
 
+    /**
+     * @var EntityDefinition
+     */
+    private $migrationDataDefinition;
+
+    /**
+     * @var Connection
+     */
+    private $dbalConnection;
+
     public function __construct(
         EntityRepositoryInterface $migrationRunRepo,
         EntityRepositoryInterface $connectionRepo,
@@ -86,8 +98,10 @@ class RunService implements RunServiceInterface
         EntityRepositoryInterface $migrationDataRepository,
         EntityRepositoryInterface $mediaFileRepository,
         EntityRepositoryInterface $currencyRepository,
-        EventSubscriberInterface $indexer,
-        TagAwareAdapter $cache
+        IndexerRegistryInterface $indexer,
+        TagAwareAdapter $cache,
+        EntityDefinition $migrationDataDefinition,
+        Connection $dbalConnection
     ) {
         $this->migrationRunRepo = $migrationRunRepo;
         $this->connectionRepo = $connectionRepo;
@@ -99,19 +113,13 @@ class RunService implements RunServiceInterface
         $this->currencyRepository = $currencyRepository;
         $this->indexer = $indexer;
         $this->cache = $cache;
+        $this->migrationDataDefinition = $migrationDataDefinition;
+        $this->dbalConnection = $dbalConnection;
     }
 
     public function takeoverMigration(string $runUuid, Context $context): string
     {
         return $this->accessTokenService->updateRunAccessToken($runUuid, $context);
-    }
-
-    public function abortMigration(string $runUuid, Context $context): void
-    {
-        $this->accessTokenService->invalidateRunAccessToken($runUuid, $context);
-
-        $this->removeDuplicateCurrencies($context);
-        $this->cache->clear();
     }
 
     public function createMigrationRun(string $connectionId, array $dataSelectionIds, Context $context): ?ProgressState
@@ -189,7 +197,6 @@ class RunService implements RunServiceInterface
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('runId', $runId));
         if ($isWritten) {
-            $criteria->addFilter(new NotFilter(MultiFilter::CONNECTION_AND, [new EqualsFilter('converted', null)]));
             $criteria->addFilter(new MultiFilter(
                 MultiFilter::CONNECTION_OR,
                 [
@@ -249,7 +256,13 @@ class RunService implements RunServiceInterface
         });
     }
 
-    public function finishMigration(Context $context, string $runUuid): void
+    public function abortMigration(string $runUuid, Context $context): void
+    {
+        $this->accessTokenService->invalidateRunAccessToken($runUuid, $context);
+        $this->cleanupMigration($runUuid, $context);
+    }
+
+    public function finishMigration(string $runUuid, Context $context): void
     {
         $this->migrationRunRepo->update([
             [
@@ -258,14 +271,16 @@ class RunService implements RunServiceInterface
             ],
         ], $context);
 
+        $this->cleanupMigration($runUuid, $context);
+    }
+
+    private function cleanupMigration(string $runUuid, Context $context): void
+    {
         $this->removeDuplicateCurrencies($context);
-        $this->removeWrittenMigrationData($context, $runUuid);
+        $this->removeWrittenMigrationData($runUuid);
 
         $this->cache->clear();
-
-        /** @var IndexerRegistry $indxerRegistry */
-        $indxerRegistry = $this->indexer;
-        $indxerRegistry->index(new \DateTime());
+        $this->indexer->index(new \DateTime());
     }
 
     private function isMigrationRunningWithGivenConnection(Context $context, string $connectionUuid): bool
@@ -494,18 +509,14 @@ class RunService implements RunServiceInterface
         return $totals;
     }
 
-    private function removeWrittenMigrationData(Context $context, string $runUuid): void
+    private function removeWrittenMigrationData(string $runUuid): void
     {
-        $criteria = new Criteria();
-        $criteria->addFilter(
-            new EqualsFilter('runId', $runUuid),
-            new EqualsFilter('written', true)
-        );
-        $result = $this->migrationDataRepository->searchIds($criteria, $context);
-
-        if ($result->getTotal() > 0) {
-            $this->migrationDataRepository->delete(array_values($result->getData()), $context);
-        }
+        $qb = new QueryBuilder($this->dbalConnection);
+        $qb->delete($this->migrationDataDefinition->getEntityName())
+            ->where('written = 1')
+            ->andWhere('HEX(run_id) = :runId')
+            ->setParameter('runId', $runUuid)
+            ->execute();
     }
 
     private function removeDuplicateCurrencies(Context $context): void

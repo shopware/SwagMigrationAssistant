@@ -2,6 +2,7 @@
 
 namespace SwagMigrationAssistant\Test\Migration\Controller;
 
+use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -200,7 +201,9 @@ class MigrationControllerTest extends TestCase
                 $this->mediaFileRepo,
                 $currencyRepo,
                 $this->getContainer()->get(IndexerRegistryInterface::class),
-                $this->getContainer()->get('shopware.cache')
+                $this->getContainer()->get('shopware.cache'),
+                $dataDefinition,
+                $this->getContainer()->get(Connection::class)
             ),
             $this->runRepo,
             $this->dataSetRegistry

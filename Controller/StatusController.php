@@ -225,7 +225,7 @@ class StatusController extends AbstractController
             throw new MigrationContextPropertyMissingException('runUuid');
         }
 
-        $this->runService->finishMigration($context, $runUuid);
+        $this->runService->finishMigration($runUuid, $context);
 
         return new Response();
     }
