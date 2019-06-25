@@ -573,6 +573,7 @@ class MigrationDataWriterTest extends TestCase
             $this->context
         );
         $this->mappingService->createNewUuid($this->connectionId, DefaultEntities::CURRENCY, 'JPY', $this->context, [], $currencyUuid);
+        $this->mappingService->createNewUuid($this->connectionId, DefaultEntities::CURRENCY, 'EUR', $this->context, [], $currencyUuid);
 
         $languageUuid = $this->getLanguageUuid(
             $this->localeRepo,

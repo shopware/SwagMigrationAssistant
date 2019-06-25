@@ -133,6 +133,7 @@ return [
                     'minimumorder' => '10',
                     'minimumordersurcharge' => '5',
                 ],
+                'currencyShortName' => 'EUR',
             ],
         ],
         'assets' => [
@@ -317,6 +318,7 @@ return [
                     'minimumorder' => '10',
                     'minimumordersurcharge' => '5',
                 ],
+                'currencyShortName' => 'EUR',
             ],
         ],
         'assets' => [
@@ -518,6 +520,7 @@ return [
                     'minimumorder' => '10',
                     'minimumordersurcharge' => '5',
                 ],
+                'currencyShortName' => 'EUR',
             ],
         ],
         'assets' => [
@@ -702,6 +705,7 @@ return [
                     'minimumorder' => '10',
                     'minimumordersurcharge' => '5',
                 ],
+                'currencyShortName' => 'EUR',
             ],
         ],
         'assets' => [
@@ -1045,6 +1049,7 @@ return [
                     'minimumorder' => '10',
                     'minimumordersurcharge' => '5',
                 ],
+                'currencyShortName' => 'EUR',
             ],
         ],
         'assets' => [
@@ -1471,6 +1476,7 @@ return [
                     'minimumorder' => '10',
                     'minimumordersurcharge' => '5',
                 ],
+                'currencyShortName' => 'EUR',
             ],
         ],
         'assets' => [
@@ -1987,6 +1993,7 @@ return [
                     'minimumorder' => '10',
                     'minimumordersurcharge' => '5',
                 ],
+                'currencyShortName' => 'EUR',
             ],
         ],
         'assets' => [
@@ -2171,6 +2178,7 @@ return [
                     'minimumorder' => '10',
                     'minimumordersurcharge' => '5',
                 ],
+                'currencyShortName' => 'EUR',
             ],
         ],
         'assets' => [
@@ -2355,6 +2363,7 @@ return [
                     'minimumorder' => '10',
                     'minimumordersurcharge' => '5',
                 ],
+                'currencyShortName' => 'EUR',
             ],
         ],
         'assets' => [
@@ -2539,6 +2548,7 @@ return [
                     'minimumorder' => '10',
                     'minimumordersurcharge' => '5',
                 ],
+                'currencyShortName' => 'EUR',
             ],
         ],
         'assets' => [
@@ -2723,6 +2733,7 @@ return [
                     'minimumorder' => '10',
                     'minimumordersurcharge' => '5',
                 ],
+                'currencyShortName' => 'EUR',
             ],
         ],
         'assets' => [
@@ -2907,6 +2918,7 @@ return [
                     'minimumorder' => '10',
                     'minimumordersurcharge' => '5',
                 ],
+                'currencyShortName' => 'EUR',
             ],
         ],
         'assets' => [
@@ -3091,6 +3103,7 @@ return [
                     'minimumorder' => '10',
                     'minimumordersurcharge' => '5',
                 ],
+                'currencyShortName' => 'EUR',
             ],
         ],
         'assets' => [
@@ -3275,6 +3288,7 @@ return [
                     'minimumorder' => '10',
                     'minimumordersurcharge' => '5',
                 ],
+                'currencyShortName' => 'EUR',
             ],
         ],
         'assets' => [
@@ -3618,6 +3632,7 @@ return [
                     'minimumorder' => '10',
                     'minimumordersurcharge' => '5',
                 ],
+                'currencyShortName' => 'EUR',
             ],
         ],
         'assets' => [
@@ -4044,6 +4059,7 @@ return [
                     'minimumorder' => '10',
                     'minimumordersurcharge' => '5',
                 ],
+                'currencyShortName' => 'EUR',
             ],
         ],
         'assets' => [
@@ -4242,6 +4258,7 @@ return [
                     'minimumorder' => '10',
                     'minimumordersurcharge' => '5',
                 ],
+                'currencyShortName' => 'EUR',
             ],
         ],
         'assets' => [
@@ -4440,6 +4457,7 @@ return [
                     'minimumorder' => '10',
                     'minimumordersurcharge' => '5',
                 ],
+                'currencyShortName' => 'EUR',
             ],
         ],
         'assets' => [
@@ -4638,6 +4656,7 @@ return [
                     'minimumorder' => '10',
                     'minimumordersurcharge' => '5',
                 ],
+                'currencyShortName' => 'EUR',
             ],
         ],
         'assets' => [
@@ -5064,6 +5083,7 @@ return [
                     'minimumorder' => '10',
                     'minimumordersurcharge' => '5',
                 ],
+                'currencyShortName' => 'EUR',
             ],
         ],
         'assets' => [
@@ -5490,6 +5510,7 @@ return [
                     'minimumorder' => '10',
                     'minimumordersurcharge' => '5',
                 ],
+                'currencyShortName' => 'EUR',
             ],
         ],
         'assets' => [
@@ -5916,6 +5937,7 @@ return [
                     'minimumorder' => '10',
                     'minimumordersurcharge' => '5',
                 ],
+                'currencyShortName' => 'EUR',
             ],
         ],
         'assets' => [
@@ -6291,6 +6313,7 @@ return [
                     'minimumorder' => '10',
                     'minimumordersurcharge' => '5',
                 ],
+                'currencyShortName' => 'EUR',
             ],
         ],
         'assets' => [
@@ -6782,6 +6805,7 @@ return [
                     'minimumorder' => '10',
                     'minimumordersurcharge' => '5',
                 ],
+                'currencyShortName' => 'EUR',
             ],
         ],
         'assets' => [
@@ -7273,6 +7297,7 @@ return [
                     'minimumorder' => '10',
                     'minimumordersurcharge' => '5',
                 ],
+                'currencyShortName' => 'EUR',
             ],
         ],
         'assets' => [
@@ -7738,6 +7763,7 @@ return [
                     'minimumorder' => '10',
                     'minimumordersurcharge' => '5',
                 ],
+                'currencyShortName' => 'EUR',
             ],
         ],
         'assets' => [
@@ -8203,6 +8229,7 @@ return [
                     'minimumorder' => '10',
                     'minimumordersurcharge' => '5',
                 ],
+                'currencyShortName' => 'EUR',
             ],
         ],
         'assets' => [
@@ -8668,6 +8695,7 @@ return [
                     'minimumorder' => '10',
                     'minimumordersurcharge' => '5',
                 ],
+                'currencyShortName' => 'EUR',
             ],
         ],
         'assets' => [
@@ -9133,6 +9161,7 @@ return [
                     'minimumorder' => '10',
                     'minimumordersurcharge' => '5',
                 ],
+                'currencyShortName' => 'EUR',
             ],
         ],
         'assets' => [
@@ -9598,6 +9627,7 @@ return [
                     'minimumorder' => '10',
                     'minimumordersurcharge' => '5',
                 ],
+                'currencyShortName' => 'EUR',
             ],
         ],
         'assets' => [
@@ -10063,6 +10093,7 @@ return [
                     'minimumorder' => '10',
                     'minimumordersurcharge' => '5',
                 ],
+                'currencyShortName' => 'EUR',
             ],
         ],
         'assets' => [
@@ -10528,6 +10559,7 @@ return [
                     'minimumorder' => '10',
                     'minimumordersurcharge' => '5',
                 ],
+                'currencyShortName' => 'EUR',
             ],
         ],
         'assets' => [
@@ -10993,6 +11025,7 @@ return [
                     'minimumorder' => '10',
                     'minimumordersurcharge' => '5',
                 ],
+                'currencyShortName' => 'EUR',
             ],
         ],
         'assets' => [
@@ -11483,6 +11516,7 @@ return [
                     'minimumorder' => '10',
                     'minimumordersurcharge' => '5',
                 ],
+                'currencyShortName' => 'EUR',
             ],
         ],
         'assets' => [
@@ -11826,6 +11860,7 @@ return [
                     'minimumorder' => '10',
                     'minimumordersurcharge' => '5',
                 ],
+                'currencyShortName' => 'EUR',
             ],
         ],
         'assets' => [
@@ -12169,6 +12204,7 @@ return [
                     'minimumorder' => '10',
                     'minimumordersurcharge' => '5',
                 ],
+                'currencyShortName' => 'EUR',
             ],
         ],
         'assets' => [
@@ -12512,6 +12548,7 @@ return [
                     'minimumorder' => '10',
                     'minimumordersurcharge' => '5',
                 ],
+                'currencyShortName' => 'EUR',
             ],
         ],
         'assets' => [

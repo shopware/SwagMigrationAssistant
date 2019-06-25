@@ -107,6 +107,8 @@ class TranslationConverterTest extends TestCase
             0,
             250
         );
+
+        $this->mappingService->createNewUuid($connection->getId(), DefaultEntities::CURRENCY, 'EUR', Context::createDefaultContext(), [], Uuid::randomHex());
     }
 
     public function testSupports(): void

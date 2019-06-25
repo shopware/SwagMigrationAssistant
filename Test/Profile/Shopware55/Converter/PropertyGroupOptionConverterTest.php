@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\Profile\SwagMigrationProfileEntity;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\ProductConverter;
@@ -93,6 +94,8 @@ class PropertyGroupOptionConverterTest extends TestCase
             0,
             250
         );
+
+        $this->mappingService->createNewUuid($this->connection->getId(), DefaultEntities::CURRENCY, 'EUR', Context::createDefaultContext(), [], Uuid::randomHex());
     }
 
     public function testSupports(): void

@@ -79,7 +79,7 @@ class DummyMappingService extends MappingService
         }
     }
 
-    public function pushMapping(string $connectionId, string $entity, string $oldIdentifier, string $uuid)
+    public function pushMapping(string $connectionId, string $entity, string $oldIdentifier, string $uuid): void
     {
         $this->uuids[$entity][$oldIdentifier] = $uuid;
     }

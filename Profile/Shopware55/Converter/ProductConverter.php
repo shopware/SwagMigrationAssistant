@@ -351,6 +351,22 @@ class ProductConverter extends Shopware55Converter
 
         $setInGross = isset($data['prices'][0]['customergroup']) ? (bool) $data['prices'][0]['customergroup']['taxinput'] : false;
         $converted['price'] = $this->getPrice($data['prices'][0], $converted['tax']['taxRate'], $setInGross);
+
+        if (empty($converted['price'])) {
+            $this->loggingService->addWarning(
+                $this->runId,
+                Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
+                'Empty necessary data fields',
+                sprintf('Product-Entity could not be converted cause of empty necessary field: currency.'),
+                [
+                    'id' => $this->oldProductId,
+                    'entity' => 'Product',
+                    'fields' => 'currency',
+                ],
+                1
+            );
+        }
+
         $converted['prices'] = $this->getPrices($data['prices'], $converted);
         unset($data['prices']);
 
@@ -882,11 +898,25 @@ class ProductConverter extends Shopware55Converter
         $gross = (float) $priceData['price'] * (1 + $taxRate / 100);
         $gross = $setInGross ? round($gross, 4) : $gross;
 
-        return [
+        $currencyUuid = null;
+        if (isset($priceData['currencyShortName'])) {
+            $currencyUuid = $this->mappingService->getUuid(
+                $this->connectionId,
+                DefaultEntities::CURRENCY,
+                $priceData['currencyShortName'],
+                $this->context
+            );
+        }
+        if ($currencyUuid === null) {
+            return [];
+        }
+
+        return [[
+            'currencyId' => $currencyUuid,
             'gross' => $gross,
             'net' => (float) $priceData['price'],
             'linked' => true,
-        ];
+        ]];
     }
 
     private function getPrices(array $priceData, array $converted): array
@@ -945,16 +975,9 @@ class ProductConverter extends Shopware55Converter
 
             $setInGross = (bool) $price['customergroup']['taxinput'];
 
-            $currencyUuid = null;
-            if (isset($price['currencyShortName'])) {
-                $currencyUuid = $this->mappingService->getUuid(
-                    $this->connectionId,
-                    DefaultEntities::CURRENCY,
-                    $price['currencyShortName'],
-                    $this->context
-                );
-            }
-            if ($currencyUuid === null) {
+            $priceArray = $this->getPrice($price, $converted['tax']['taxRate'], $setInGross);
+
+            if (empty($priceArray)) {
                 $this->loggingService->addWarning(
                     $this->runId,
                     Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
@@ -969,7 +992,6 @@ class ProductConverter extends Shopware55Converter
             $data = [
                 'id' => $productPriceRuleUuid,
                 'productId' => $converted['id'],
-                'currencyId' => $currencyUuid,
                 'rule' => [
                     'id' => $priceRuleUuid,
                     'name' => $price['customergroup']['description'],
@@ -1005,7 +1027,7 @@ class ProductConverter extends Shopware55Converter
                         ],
                     ],
                 ],
-                'price' => $this->getPrice($price, $converted['tax']['taxRate'], $setInGross),
+                'price' => $priceArray,
                 'quantityStart' => (int) $price['from'],
                 'quantityEnd' => $price['to'] !== 'beliebig' ? (int) $price['to'] : null,
             ];
