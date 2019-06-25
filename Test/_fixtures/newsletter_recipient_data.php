@@ -3,6 +3,7 @@
 return [
     0 => [
         'id' => '1',
+        'shopId' => '1',
         'email' => 'test@shopware.com',
         'groupID' => '1',
         'salutation' => 'mr',

@@ -89,14 +89,15 @@ class PremappingService implements PremappingServiceInterface
                         $id,
                         $identifier
                     );
-                } else {
-                    $this->mappingService->pushValueMapping(
-                        $migrationContext->getConnection()->getId(),
-                        $entity,
-                        $id,
-                        $identifier
-                    );
+                    continue;
                 }
+
+                $this->mappingService->pushValueMapping(
+                    $migrationContext->getConnection()->getId(),
+                    $entity,
+                    $id,
+                    $identifier
+                );
             }
         }
 

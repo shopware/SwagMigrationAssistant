@@ -5,13 +5,13 @@ namespace SwagMigrationAssistant\Test\Profile\Shopware55\Converter;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\Profile\SwagMigrationProfileEntity;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\NewsletterRecipientConverter;
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\NewsletterRecipientDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
-use SwagMigrationAssistant\Profile\Shopware55\Premapping\SalesChannelReader;
 use SwagMigrationAssistant\Profile\Shopware55\Premapping\SalutationReader;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
@@ -82,7 +82,7 @@ class NewsletterRecipientConverterTest extends TestCase
             $context, [], Uuid::randomHex());
         $this->mappingService->createNewUuid($this->connectionId, SalutationReader::getMappingName(), 'ms',
             $context, [], Uuid::randomHex());
-        $this->mappingService->createNewUuid($this->connectionId, SalesChannelReader::getMappingName(), 'default_salesChannel',
+        $this->mappingService->createNewUuid($this->connectionId, SalesChannelDefinition::ENTITY_NAME, '1',
             $context, [], Uuid::randomHex());
     }
 
@@ -102,7 +102,7 @@ class NewsletterRecipientConverterTest extends TestCase
         $logs = $this->loggingService->getLoggingArray();
         static::assertCount(1, $logs);
 
-        $description = sprintf('NewsletterRecipient-Entity could not be converted cause of empty necessary field(s): %s.', 'double_optin_confirmed');
+        $description = sprintf('NewsletterRecipient-Entity could not be converted cause of empty necessary field(s): %s.', 'status');
         static::assertSame($description, $logs[0]['logEntry']['description']);
     }
 

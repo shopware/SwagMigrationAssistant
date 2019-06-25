@@ -776,7 +776,7 @@ class MappingService implements MappingServiceInterface
         $this->uuids = [];
     }
 
-    public function pushMapping(string $connectionId, string $entity, string $oldIdentifier, string $uuid)
+    public function pushMapping(string $connectionId, string $entity, string $oldIdentifier, string $uuid): void
     {
         $this->saveMapping([
             'connectionId' => $connectionId,
@@ -786,7 +786,7 @@ class MappingService implements MappingServiceInterface
         ]);
     }
 
-    public function pushValueMapping(string $connectionId, string $entity, string $oldIdentifier, string $value)
+    public function pushValueMapping(string $connectionId, string $entity, string $oldIdentifier, string $value): void
     {
         $this->saveMapping([
             'connectionId' => $connectionId,

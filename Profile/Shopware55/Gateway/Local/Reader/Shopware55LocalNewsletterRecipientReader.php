@@ -43,14 +43,16 @@ class Shopware55LocalNewsletterRecipientReader extends Shopware55LocalAbstractRe
         if (isset($defaultShop[$item['groupID']][0])) {
             $item['shopId'] = $defaultShop[$item['groupID']][0]['shopId'];
             $item['_locale'] = str_replace('_', '-', $defaultShop[$item['groupID']][0]['locale']);
-        } else {
-            if (isset($shops[$item['groupID']])) {
-                $shop = $shops[$item['groupID']][0];
-                $shopId = $shop['mainId'] ?? $shop['shopId'];
 
-                $item['shopId'] = $shopId;
-                $item['_locale'] = str_replace('_', '-', $shop['locale']);
-            }
+            return;
+        }
+
+        if (isset($shops[$item['groupID']])) {
+            $shop = $shops[$item['groupID']][0];
+            $shopId = $shop['mainId'] ?? $shop['shopId'];
+
+            $item['shopId'] = $shopId;
+            $item['_locale'] = str_replace('_', '-', $shop['locale']);
         }
     }
 

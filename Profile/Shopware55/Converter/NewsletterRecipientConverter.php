@@ -131,6 +131,7 @@ class NewsletterRecipientConverter extends Shopware55Converter
         if ($salesChannelUuid === null) {
             return new ConvertStruct(null, $oldData);
         }
+        unset($data['shopId']);
         $converted['salesChannelId'] = $salesChannelUuid;
 
         unset(
