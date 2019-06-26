@@ -22,14 +22,14 @@ class EnvironmentInformation extends Struct
     protected $sourceSystemDomain;
 
     /**
-     * @var array
-     */
-    protected $structure;
-
-    /**
      * @var int[]
      */
     protected $totals;
+
+    /**
+     * @var array
+     */
+    protected $additionalData;
 
     /**
      * @var string
@@ -63,8 +63,8 @@ class EnvironmentInformation extends Struct
         string $sourceSystemName,
         string $sourceSystemVersion,
         string $sourceSystemDomain,
-        array $structure = [],
         array $totals = [],
+        array $additionalData = [],
         string $warningCode = '',
         string $warningMessage = '',
         string $errorCode = '',
@@ -74,8 +74,8 @@ class EnvironmentInformation extends Struct
         $this->sourceSystemName = $sourceSystemName;
         $this->sourceSystemVersion = $sourceSystemVersion;
         $this->sourceSystemDomain = $sourceSystemDomain;
-        $this->structure = $structure;
         $this->totals = $totals;
+        $this->additionalData = $additionalData;
         $this->warningCode = $warningCode;
         $this->warningMessage = $warningMessage;
         $this->errorCode = $errorCode;
@@ -98,17 +98,17 @@ class EnvironmentInformation extends Struct
         return $this->sourceSystemDomain;
     }
 
-    public function getStructure(): array
-    {
-        return $this->structure;
-    }
-
     /**
      * @return int[]
      */
     public function getTotals(): array
     {
         return $this->totals;
+    }
+
+    public function getAdditionalData(): array
+    {
+        return $this->additionalData;
     }
 
     public function getWarningCode(): string

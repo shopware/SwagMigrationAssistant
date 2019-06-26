@@ -6,7 +6,7 @@ return [
         'shopwareVersion' => '___VERSION___',
         'versionText' => '___VERSION_TEXT___',
         'revision' => '___REVISION___',
-        'structure' => [
+        'additionalData' => [
             0 => [
                 'id' => '1',
                 'main_id' => null,

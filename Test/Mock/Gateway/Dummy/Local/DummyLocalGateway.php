@@ -85,9 +85,9 @@ class DummyLocalGateway implements GatewayInterface
         return new EnvironmentInformation(
             Shopware55Profile::SOURCE_SYSTEM_NAME,
             $environmentDataArray['shopwareVersion'],
-            $environmentDataArray['structure'][0]['host'],
-            $environmentDataArray['structure'],
+            $environmentDataArray['additionalData'][0]['host'],
             $totals,
+            $environmentDataArray['additionalData'],
             $environmentData['warning']['code'],
             $environmentData['warning']['detail'],
             $environmentData['error']['code'],

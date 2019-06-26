@@ -40,12 +40,12 @@ class DataSelectionRegistryTest extends TestCase
             '',
             '',
             '',
-            [],
             [
                 'product' => 100,
                 'customer' => 5,
                 'media' => 100,
-            ]
+            ],
+            []
         );
         $this->connection = new SwagMigrationConnectionEntity();
         $this->connection->setId(Uuid::randomHex());
