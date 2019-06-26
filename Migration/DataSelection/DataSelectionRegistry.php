@@ -68,8 +68,8 @@ class DataSelectionRegistry implements DataSelectionRegistryInterface
                 continue;
             }
 
-            $groupTotal += $totals[$entityName];
-            $entityTotals[$entityName] = $totals[$entityName];
+            $groupTotal += $totals[$entityName]->getTotal();
+            $entityTotals[$entityName] = $totals[$entityName]->getTotal();
         }
 
         $dataSelection->setTotal($groupTotal);

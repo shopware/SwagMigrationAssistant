@@ -22,7 +22,7 @@ class EnvironmentInformation extends Struct
     protected $sourceSystemDomain;
 
     /**
-     * @var int[]
+     * @var TotalStruct[]
      */
     protected $totals;
 
@@ -42,7 +42,7 @@ class EnvironmentInformation extends Struct
     protected $updateAvailable;
 
     /**
-     * @param int[] $totals
+     * @param TotalStruct[] $totals
      */
     public function __construct(
         string $sourceSystemName,
@@ -78,7 +78,7 @@ class EnvironmentInformation extends Struct
     }
 
     /**
-     * @return int[]
+     * @return TotalStruct[]
      */
     public function getTotals(): array
     {

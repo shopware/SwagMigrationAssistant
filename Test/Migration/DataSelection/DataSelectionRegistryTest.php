@@ -10,6 +10,7 @@ use SwagMigrationAssistant\Migration\DataSelection\DataSelectionStruct;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\Profile\SwagMigrationProfileEntity;
+use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\CustomerAndOrderDataSelection;
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\MediaDataSelection;
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\ProductDataSelection;
@@ -41,9 +42,9 @@ class DataSelectionRegistryTest extends TestCase
             '',
             '',
             [
-                'product' => 100,
-                'customer' => 5,
-                'media' => 100,
+                'product' => new TotalStruct('product', 100),
+                'customer' => new TotalStruct('customer', 5),
+                'media' => new TotalStruct('media', 100),
             ],
             []
         );

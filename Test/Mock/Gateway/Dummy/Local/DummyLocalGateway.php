@@ -6,6 +6,7 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\Gateway\GatewayInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\CategoryDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\CustomerDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\MediaDataSet;
@@ -71,12 +72,12 @@ class DummyLocalGateway implements GatewayInterface
         }
 
         $totals = [
-            DefaultEntities::CATEGORY => $environmentDataArray['categories'],
-            DefaultEntities::PRODUCT => $environmentDataArray['products'],
-            DefaultEntities::CUSTOMER => $environmentDataArray['customers'],
-            DefaultEntities::ORDER => $environmentDataArray['orders'],
-            DefaultEntities::MEDIA => $environmentDataArray['assets'],
-            DefaultEntities::TRANSLATION => $environmentDataArray['translations'],
+            DefaultEntities::CATEGORY => new TotalStruct(DefaultEntities::CATEGORY, $environmentDataArray['categories']),
+            DefaultEntities::PRODUCT => new TotalStruct(DefaultEntities::PRODUCT, $environmentDataArray['products']),
+            DefaultEntities::CUSTOMER => new TotalStruct(DefaultEntities::CUSTOMER, $environmentDataArray['customers']),
+            DefaultEntities::ORDER => new TotalStruct(DefaultEntities::ORDER, $environmentDataArray['orders']),
+            DefaultEntities::MEDIA => new TotalStruct(DefaultEntities::MEDIA, $environmentDataArray['assets']),
+            DefaultEntities::TRANSLATION => new TotalStruct(DefaultEntities::TRANSLATION, $environmentDataArray['translations']),
         ];
 
         return new EnvironmentInformation(
