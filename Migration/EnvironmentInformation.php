@@ -32,24 +32,9 @@ class EnvironmentInformation extends Struct
     protected $additionalData;
 
     /**
-     * @var string
+     * @var RequestStatusStruct|null
      */
-    protected $warningCode;
-
-    /**
-     * @var string
-     */
-    protected $warningMessage;
-
-    /**
-     * @var string
-     */
-    protected $errorCode;
-
-    /**
-     * @var string
-     */
-    protected $errorMessage;
+    protected $requestStatus;
 
     /**
      * @var bool
@@ -65,10 +50,7 @@ class EnvironmentInformation extends Struct
         string $sourceSystemDomain,
         array $totals = [],
         array $additionalData = [],
-        string $warningCode = '',
-        string $warningMessage = '',
-        string $errorCode = '',
-        string $errorMessage = '',
+        ?RequestStatusStruct $requestStatus = null,
         bool $updateAvailable = false
     ) {
         $this->sourceSystemName = $sourceSystemName;
@@ -76,10 +58,7 @@ class EnvironmentInformation extends Struct
         $this->sourceSystemDomain = $sourceSystemDomain;
         $this->totals = $totals;
         $this->additionalData = $additionalData;
-        $this->warningCode = $warningCode;
-        $this->warningMessage = $warningMessage;
-        $this->errorCode = $errorCode;
-        $this->errorMessage = $errorMessage;
+        $this->requestStatus = $requestStatus;
         $this->updateAvailable = $updateAvailable;
     }
 
@@ -111,23 +90,8 @@ class EnvironmentInformation extends Struct
         return $this->additionalData;
     }
 
-    public function getWarningCode(): string
+    public function getRequestStatus(): ?RequestStatusStruct
     {
-        return $this->warningCode;
-    }
-
-    public function getWarningMessage(): string
-    {
-        return $this->warningMessage;
-    }
-
-    public function getErrorCode(): string
-    {
-        return $this->errorCode;
-    }
-
-    public function getErrorMessage(): string
-    {
-        return $this->errorMessage;
+        return $this->requestStatus;
     }
 }

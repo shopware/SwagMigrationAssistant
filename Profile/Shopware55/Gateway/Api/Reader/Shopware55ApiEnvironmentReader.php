@@ -12,6 +12,7 @@ use SwagMigrationAssistant\Exception\InvalidConnectionAuthenticationException;
 use SwagMigrationAssistant\Exception\RequestCertificateInvalidException;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Profile\ReaderInterface;
+use SwagMigrationAssistant\Migration\RequestStatusStruct;
 use SwagMigrationAssistant\Profile\Shopware55\Exception\PluginNotInstalledException;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Connection\ConnectionFactoryInterface;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
@@ -39,14 +40,7 @@ class Shopware55ApiEnvironmentReader implements ReaderInterface
 
         $information = [
             'environmentInformation' => [],
-            'warning' => [
-                'code' => '',
-                'detail' => 'No warning.',
-            ],
-            'error' => [
-                'code' => '',
-                'detail' => 'No error.',
-            ],
+            'requestStatus' => new RequestStatusStruct(),
         ];
 
         if ($this->doSecureCheck($information)) {
@@ -71,8 +65,7 @@ class Shopware55ApiEnvironmentReader implements ReaderInterface
 
             return true;
         } catch (ShopwareHttpException $eVerified) {
-            $information['warning']['code'] = $eVerified->getErrorCode();
-            $information['warning']['detail'] = $eVerified->getMessage();
+            $information['requestStatus'] = new RequestStatusStruct($eVerified->getErrorCode(), $eVerified->getMessage(), true);
 
             return false;
         }
@@ -98,8 +91,7 @@ class Shopware55ApiEnvironmentReader implements ReaderInterface
 
             throw new GatewayReadException('Shopware 5.5 Api SwagMigrationEnvironment', 466);
         } catch (ShopwareHttpException $eOther) {
-            $information['error']['code'] = $eOther->getErrorCode();
-            $information['error']['detail'] = $eOther->getMessage();
+            $information['requestStatus'] = new RequestStatusStruct($eOther->getErrorCode(), $eOther->getMessage());
 
             return true;
         }

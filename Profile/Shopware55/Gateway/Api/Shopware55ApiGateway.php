@@ -61,10 +61,7 @@ class Shopware55ApiGateway implements Shopware55GatewayInterface
                 '',
                 [],
                 [],
-                $environmentData['warning']['code'],
-                $environmentData['warning']['detail'],
-                $environmentData['error']['code'],
-                $environmentData['error']['detail']
+                $environmentData['requestStatus']
             );
         }
 
@@ -98,10 +95,7 @@ class Shopware55ApiGateway implements Shopware55GatewayInterface
             $credentials['endpoint'],
             $totals,
             $environmentDataArray['additionalData'],
-            $environmentData['warning']['code'],
-            $environmentData['warning']['detail'],
-            $environmentData['error']['code'],
-            $environmentData['error']['detail'],
+            $environmentData['requestStatus'],
             $updateAvailable
         );
     }

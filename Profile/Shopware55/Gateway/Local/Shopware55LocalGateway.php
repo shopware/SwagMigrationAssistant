@@ -6,6 +6,7 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Profile\ReaderInterface;
+use SwagMigrationAssistant\Migration\RequestStatusStruct;
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\Shopware55DataSet;
 use SwagMigrationAssistant\Profile\Shopware55\Exception\DatabaseConnectionException;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Connection\ConnectionFactoryInterface;
@@ -79,10 +80,7 @@ class Shopware55LocalGateway implements Shopware55GatewayInterface
                 '-',
                 [],
                 [],
-                '',
-                'No warning.',
-                $error->getErrorCode(),
-                $error->getMessage()
+                new RequestStatusStruct($error->getErrorCode(), $error->getMessage())
             );
         }
         $connection->close();

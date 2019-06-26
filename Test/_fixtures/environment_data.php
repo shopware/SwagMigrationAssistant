@@ -75,12 +75,5 @@ return [
         'translations' => 0,
         'shoppingWorlds' => 1,
     ],
-    'warning' => [
-        'code' => '',
-        'detail' => 'No warning.',
-    ],
-    'error' => [
-        'code' => '',
-        'detail' => 'No error.',
-    ],
+    'requestStatus' => new \SwagMigrationAssistant\Migration\RequestStatusStruct(),
 ];

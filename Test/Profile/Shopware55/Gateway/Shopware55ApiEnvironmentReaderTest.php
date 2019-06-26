@@ -34,14 +34,9 @@ class Shopware55ApiEnvironmentReaderTest extends TestCase
     /** @var ShopwareHttpException */
     private $gatewayReadException;
 
-    private $warning = [
-        'code' => '',
-        'detail' => 'No warning.',
-    ];
-
     private $error = [
         'code' => '',
-        'detail' => 'No error.',
+        'message' => 'No error.',
     ];
 
     protected function setUp(): void
@@ -95,8 +90,8 @@ class Shopware55ApiEnvironmentReaderTest extends TestCase
 
         $response = $environmentReader->read($migrationContext);
         static::assertSame($response['environmentInformation'], $this->dataArray);
-        static::assertSame($response['warning'], $this->warning);
-        static::assertSame($response['error'], $this->error);
+        static::assertSame($response['requestStatus']->getCode(), $this->error['code']);
+        static::assertSame($response['requestStatus']->getMessage(), $this->error['message']);
     }
 
     public function testEnvironmentReaderNotVerifiedTest(): void
@@ -127,9 +122,9 @@ class Shopware55ApiEnvironmentReaderTest extends TestCase
 
         $response = $environmentReader->read($migrationContext);
         static::assertSame($response['environmentInformation'], $this->dataArray);
-        static::assertSame($response['warning']['code'], $this->sslInsecureShopwareException->getErrorCode());
-        static::assertSame($response['warning']['detail'], $this->sslInsecureShopwareException->getMessage());
-        static::assertSame($response['error'], $this->error);
+        static::assertSame($response['requestStatus']->getCode(), $this->sslInsecureShopwareException->getErrorCode());
+        static::assertSame($response['requestStatus']->getMessage(), $this->sslInsecureShopwareException->getMessage());
+        static::assertTrue($response['requestStatus']->getIsWarning());
     }
 
     public function testEnvironmentReaderNotConnectedTest(): void
@@ -162,10 +157,9 @@ class Shopware55ApiEnvironmentReaderTest extends TestCase
 
         $response = $environmentReader->read($migrationContext);
         static::assertSame($response['environmentInformation'], []);
-        static::assertSame($response['warning']['code'], $this->sslInsecureShopwareException->getErrorCode());
-        static::assertSame($response['warning']['detail'], $this->sslInsecureShopwareException->getMessage());
-        static::assertSame($response['error']['code'], $this->gatewayReadException->getErrorCode());
-        static::assertSame($response['error']['detail'], $this->gatewayReadException->getMessage());
+        static::assertSame($response['requestStatus']->getCode(), $this->gatewayReadException->getErrorCode());
+        static::assertSame($response['requestStatus']->getMessage(), $this->gatewayReadException->getMessage());
+        static::assertFalse($response['requestStatus']->getIsWarning());
     }
 
     public function testEnvironmentReaderWithGatewayReadException(): void
@@ -194,8 +188,9 @@ class Shopware55ApiEnvironmentReaderTest extends TestCase
 
         $response = $environmentReader->read($migrationContext);
         static::assertSame($response['environmentInformation'], []);
-        static::assertSame($response['error']['code'], $this->gatewayReadException->getErrorCode());
-        static::assertSame($response['error']['detail'], $this->gatewayReadException->getMessage());
+        static::assertSame($response['requestStatus']->getCode(), $this->gatewayReadException->getErrorCode());
+        static::assertSame($response['requestStatus']->getMessage(), $this->gatewayReadException->getMessage());
+        static::assertFalse($response['requestStatus']->getIsWarning());
     }
 
     public function testEnvironmentReaderWithInvalidJsonResponse(): void
@@ -225,7 +220,8 @@ class Shopware55ApiEnvironmentReaderTest extends TestCase
 
         $response = $environmentReader->read($migrationContext);
         static::assertSame($response['environmentInformation'], []);
-        static::assertSame($response['error']['code'], $this->gatewayReadException->getErrorCode());
-        static::assertSame($response['error']['detail'], $this->gatewayReadException->getMessage());
+        static::assertSame($response['requestStatus']->getCode(), $this->gatewayReadException->getErrorCode());
+        static::assertSame($response['requestStatus']->getMessage(), $this->gatewayReadException->getMessage());
+        static::assertFalse($response['requestStatus']->getIsWarning());
     }
 }

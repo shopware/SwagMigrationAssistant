@@ -62,10 +62,7 @@ class DummyLocalGateway implements GatewayInterface
                 '',
                 [],
                 [],
-                $environmentData['warning']['code'],
-                $environmentData['warning']['detail'],
-                $environmentData['error']['code'],
-                $environmentData['error']['detail']
+                $environmentData['requestStatus']
             );
         }
 
@@ -88,10 +85,7 @@ class DummyLocalGateway implements GatewayInterface
             $environmentDataArray['additionalData'][0]['host'],
             $totals,
             $environmentDataArray['additionalData'],
-            $environmentData['warning']['code'],
-            $environmentData['warning']['detail'],
-            $environmentData['error']['code'],
-            $environmentData['error']['detail']
+            $environmentData['requestStatus']
         );
     }
 }
