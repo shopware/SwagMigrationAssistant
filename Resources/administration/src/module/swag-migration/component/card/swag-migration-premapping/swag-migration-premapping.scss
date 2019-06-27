@@ -1,9 +1,5 @@
 @import "~scss/variables";
 
-$swag-migration-premapping-bubble-background-color: #E7F9E9;
-$swag-migration-premapping-success-icon-color: $color-emerald;
-$swag-migration-premapping-caption-color: #B3BFCC;
-
 .swag-migration-premapping {
     .swag-migration-premapping__success-card {
         text-align: center;
@@ -15,7 +11,7 @@ $swag-migration-premapping-caption-color: #B3BFCC;
         width: 72px;
         height: 72px;
         border-radius: 50%;
-        background-color: $swag-migration-premapping-bubble-background-color;
+        background-color: $color-emerald-50;
         flex-shrink: 0;
         display: flex;
         align-items: center;
@@ -23,7 +19,7 @@ $swag-migration-premapping-caption-color: #B3BFCC;
     }
 
     .swag-migration-premapping__success-icon {
-        color: $swag-migration-premapping-success-icon-color;
+        color: $color-emerald-500;
     }
 
     .swag-migration-premapping__success-title {
@@ -33,7 +29,7 @@ $swag-migration-premapping-caption-color: #B3BFCC;
     }
 
     .swag-migration-premapping__success-caption {
-        color: $swag-migration-premapping-caption-color;
+        color: $color-gray-500;
         margin-bottom: 45px;
     }
 
@@ -49,7 +45,7 @@ $swag-migration-premapping-caption-color: #B3BFCC;
     }
 
     .swag-migration-premapping__loading-caption {
-        color: $swag-migration-premapping-caption-color;
+        color: $color-gray-500;
         margin-bottom: 45px;
     }
 
@@ -90,7 +86,7 @@ $swag-migration-premapping-caption-color: #B3BFCC;
     }
 
     .swag-migration-premapping__unfilled-caption {
-        color: $swag-migration-premapping-caption-color;
+        color: $color-gray-500;
         margin-bottom: 10px;
     }
 

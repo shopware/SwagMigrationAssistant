@@ -1,19 +1,15 @@
 @import "~scss/variables";
 
-$swag-migration-shop-avatar-color-fallback: darken($color-light-gray, 10%);
-$swag-migration-shop-avatar-color-initials: $color-white;
-$swag-migration-shop-avatar-size-default:   80px;
-
 .swag-migration-shop-avatar {
     display: inline-block;
-    width: $swag-migration-shop-avatar-size-default;
-    height: $swag-migration-shop-avatar-size-default;
+    width: 80px;
+    height: 80px;
     border-radius: 4px;
-    background: $swag-migration-shop-avatar-color-fallback no-repeat center center;
+    background: $color-gray-500 no-repeat center center;
     background-size: cover;
     text-align: center;
     font-weight: 600;
     text-transform: uppercase;
-    color: $swag-migration-shop-avatar-color-initials;
+    color: $color-white;
     user-select: none;
 }

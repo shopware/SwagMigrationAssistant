@@ -1,10 +1,5 @@
 @import "~scss/variables";
 
-$swag-migration-pause-screen-color-bubble-background: #e3f3ff;
-$swag-migration-pause-screen-font-size-message: $font-size-small;
-$swag-migration-pause-screen-font-size-title: $font-size-large;
-$swag-migration-pause-screen-color-message: #b3bfcc;
-
 .swag-migration-pause-screen {
     .swag-migration-pause-screen__content {
         text-align: center;
@@ -18,7 +13,7 @@ $swag-migration-pause-screen-color-message: #b3bfcc;
         width: 72px;
         height: 72px;
         border-radius: 50%;
-        background-color: $swag-migration-pause-screen-color-bubble-background;
+        background-color: $color-shopware-brand-50;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -26,13 +21,13 @@ $swag-migration-pause-screen-color-message: #b3bfcc;
     }
 
     h5.swag-migration-pause-screen__title {
-        font-size: $swag-migration-pause-screen-font-size-title;
+        font-size: $font-size-large;
         font-weight: 600;
     }
 
     .swag-migration-pause-screen__content-message {
-        font-size: $swag-migration-pause-screen-font-size-message;
-        color: $swag-migration-pause-screen-color-message;
+        font-size: $font-size-small;
+        color: $color-gray-500;
     }
 
     .swag-migration-pause-screen__actions {
