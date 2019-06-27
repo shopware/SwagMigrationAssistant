@@ -33,27 +33,27 @@
         <template #content>
             <sw-card-view class="swag-migration-process-screen" v-if="!migrationUIStore.state.isLoading">
                 {% block swag_migration_index_main_page_flow_chart %}
-                    <swag-migration-flow-chart class="swag-migration-process-screen__flow-chart"
+                    <sw-step-display class="swag-migration-process-screen__step-display"
                                                :itemIndex="flowChartItemIndex"
                                                :itemVariant="flowChartItemVariant"
                                                :initialItemVariants="flowChartInitialItemVariants"
                                                v-if="displayFlowChart">
-                        <swag-migration-flow-item>
+                        <sw-step-item>
                             {{ $tc('swag-migration.index.loadingScreenCard.flowChart.premapping') }}
-                        </swag-migration-flow-item>
-                        <swag-migration-flow-item>
+                        </sw-step-item>
+                        <sw-step-item>
                             {{ $tc('swag-migration.index.loadingScreenCard.flowChart.fetchData') }}
-                        </swag-migration-flow-item>
-                        <swag-migration-flow-item>
+                        </sw-step-item>
+                        <sw-step-item>
                             {{ $tc('swag-migration.index.loadingScreenCard.flowChart.writeData') }}
-                        </swag-migration-flow-item>
-                        <swag-migration-flow-item>
+                        </sw-step-item>
+                        <sw-step-item>
                             {{ $tc('swag-migration.index.loadingScreenCard.flowChart.processMedia') }}
-                        </swag-migration-flow-item>
-                        <swag-migration-flow-item disabledIcon="small-default-checkmark-line-medium">
+                        </sw-step-item>
+                        <sw-step-item disabledIcon="small-default-checkmark-line-medium">
                             {{ $tc('swag-migration.index.loadingScreenCard.flowChart.finish') }}
-                        </swag-migration-flow-item>
-                    </swag-migration-flow-chart>
+                        </sw-step-item>
+                    </sw-step-display>
                 {% endblock %}
 
                 {% block swag_migration_index_main_page_card_premapping %}

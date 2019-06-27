@@ -1,5 +1,5 @@
 .swag-migration-process-screen {
-    .swag-migration-process-screen__flow-chart {
+    .swag-migration-process-screen__step-display {
         position: absolute;
         padding-right: 56px;
         top: 40px;
@@ -13,7 +13,7 @@
             margin: 13px 0 16px 0;
             text-align: center;
 
-            .swag-migration-flow-item {
+            .sw-step-item {
                 display: inline-flex;
                 flex-direction: column;
                 margin-top: 0;
@@ -27,7 +27,7 @@
                     z-index: -1;
                 }
 
-                .swag-migration-flow-item__description {
+                .sw-step-item__description {
                     white-space: nowrap;
                     padding-left: 0;
                     padding-top: 10px;
@@ -36,19 +36,19 @@
         }
 
         @media screen and (max-width: 780px) {
-            .swag-migration-flow-item {
+            .sw-step-item {
                 width: 52px;
 
                 &:before {
                     width: 52px;
                 }
 
-                .swag-migration-flow-item__description {
+                .sw-step-item__description {
                     display: none;
                 }
 
-                &.swag-migration-flow-item--active {
-                    .swag-migration-flow-item__description {
+                &.sw-step-item--active {
+                    .sw-step-item__description {
                         display: inline;
                     }
                 }
