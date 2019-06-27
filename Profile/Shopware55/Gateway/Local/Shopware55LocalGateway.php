@@ -106,7 +106,8 @@ class Shopware55LocalGateway implements Shopware55GatewayInterface
             Shopware55Profile::SOURCE_SYSTEM_VERSION,
             $environmentData['host'],
             $totals,
-            $environmentData['additionalData']
+            $environmentData['additionalData'],
+            new RequestStatusStruct()
         );
     }
 
