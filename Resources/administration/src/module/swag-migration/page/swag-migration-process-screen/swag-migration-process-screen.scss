@@ -5,6 +5,55 @@
         top: 40px;
         left: calc(50% - 800px / 2);
         transform: translate(-100%, 0);
+
+        @media screen and (max-width: 1600px) {
+            position: static;
+            transform: none;
+            padding: 0 0 10px 0;
+            margin: 13px 0 16px 0;
+            text-align: center;
+
+            .swag-migration-flow-item {
+                display: inline-flex;
+                flex-direction: column;
+                margin-top: 0;
+                width: 84px;
+
+                &:before {
+                    width: 84px;
+                    height: 1px;
+                    top: 15px;
+                    transform: translate(-50%, 0);
+                    z-index: -1;
+                }
+
+                .swag-migration-flow-item__description {
+                    white-space: nowrap;
+                    padding-left: 0;
+                    padding-top: 10px;
+                }
+            }
+        }
+
+        @media screen and (max-width: 780px) {
+            .swag-migration-flow-item {
+                width: 52px;
+
+                &:before {
+                    width: 52px;
+                }
+
+                .swag-migration-flow-item__description {
+                    display: none;
+                }
+
+                &.swag-migration-flow-item--active {
+                    .swag-migration-flow-item__description {
+                        display: inline;
+                    }
+                }
+            }
+        }
     }
 
     .sw-card {
