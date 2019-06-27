@@ -19,10 +19,25 @@ class DataSetRegistry implements DataSetRegistryInterface
     /**
      * {@inheritdoc}
      */
+    public function getDataSets(string $profileName): array
+    {
+        $resultSet = [];
+        foreach ($this->dataSets as $dataSet) {
+            if ($dataSet->supports($profileName)) {
+                $resultSet[] = $dataSet;
+            }
+        }
+
+        return $resultSet;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getDataSet(string $profileName, string $entity): DataSet
     {
         foreach ($this->dataSets as $dataSet) {
-            if ($dataSet->supports($profileName, $entity)) {
+            if ($dataSet->supports($profileName) && $dataSet::getEntity() === $entity) {
                 return $dataSet;
             }
         }

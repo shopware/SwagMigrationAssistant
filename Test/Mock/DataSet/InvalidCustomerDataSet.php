@@ -11,7 +11,7 @@ class InvalidCustomerDataSet extends DataSet
         return 'customerInvalid';
     }
 
-    public function supports(string $profileName, string $entity): bool
+    public function supports(string $profileName): bool
     {
         return true;
     }

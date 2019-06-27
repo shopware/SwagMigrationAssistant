@@ -17,6 +17,7 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataEntity;
+use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\LogType;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
@@ -231,7 +232,8 @@ class MigrationDataWriterTest extends TestCase
             $this->mappingService,
             $this->getContainer()->get(MediaFileService::class),
             $this->loggingRepo,
-            $this->getContainer()->get(SwagMigrationDataDefinition::class)
+            $this->getContainer()->get(SwagMigrationDataDefinition::class),
+            $this->getContainer()->get(DataSetRegistry::class)
         );
         $this->migrationDataConverter = $this->getMigrationDataConverter(
             $this->entityWriter,

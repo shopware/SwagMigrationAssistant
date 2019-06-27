@@ -23,6 +23,7 @@ use Shopware\Core\System\Salutation\SalutationEntity;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateEntity;
 use Shopware\Core\System\StateMachine\StateMachineEntity;
 use SwagMigrationAssistant\Migration\Converter\ConverterRegistry;
+use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistryInterface;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
@@ -39,6 +40,7 @@ use SwagMigrationAssistant\Profile\Shopware55\Converter\ProductConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\TranslationConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiEnvironmentReader;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiReader;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiTableCountReader;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiTableReader;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Shopware55ApiGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Connection\ConnectionFactory;
@@ -53,7 +55,8 @@ trait MigrationServicesTrait
         MappingService $mappingService,
         MediaFileServiceInterface $mediaFileService,
         EntityRepositoryInterface $loggingRepo,
-        EntityDefinition $dataDefinition
+        EntityDefinition $dataDefinition,
+        DataSetRegistryInterface $dataSetRegistry
     ): MigrationDataFetcherInterface {
         $loggingService = new LoggingService($loggingRepo);
         $priceRounding = new PriceRounding();
@@ -63,7 +66,8 @@ trait MigrationServicesTrait
             new Shopware55ApiGateway(
                 new Shopware55ApiReader($connectionFactory),
                 new Shopware55ApiEnvironmentReader($connectionFactory),
-                new Shopware55ApiTableReader($connectionFactory)
+                new Shopware55ApiTableReader($connectionFactory),
+                new Shopware55ApiTableCountReader($connectionFactory, $dataSetRegistry)
             ),
             new DummyLocalGateway(),
         ]));

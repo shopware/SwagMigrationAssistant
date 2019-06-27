@@ -62,7 +62,7 @@ class MigrationDataConverter implements MigrationDataConverterInterface
             $createData = $this->convertData($context, $data, $converter, $migrationContext, $migrationContext->getDataSet());
 
             if (\count($createData) === 0) {
-                return;
+                throw new \Exception('Data of entity ' . $migrationContext->getDataSet()::getEntity() . ' (' . $data['id'] ?? 'unknown) could not be converted');
             }
 
             $converter->writeMapping($context);

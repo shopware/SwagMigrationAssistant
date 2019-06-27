@@ -6,22 +6,6 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 class Shopware55LocalEnvironmentReader extends Shopware55LocalAbstractReader
 {
-    private const TABLES_TO_COUNT = [
-        'products' => 's_articles_details',
-        'customers' => 's_user',
-        'categories' => 's_categories',
-        'assets' => 's_media',
-        'orders' => 's_order',
-        'shops' => 's_core_shops',
-        'shoppingWorlds' => 's_emotion',
-        'translations' => 's_core_translations',
-        'customerGroups' => 's_core_customergroups',
-        'configuratorOptions' => 's_article_configurator_options',
-        'numberRanges' => 's_order_number',
-        'currencies' => 's_core_currencies',
-        'newsletterRecipients' => 's_campaigns_maildata',
-    ];
-
     public function read(MigrationContextInterface $migrationContext, array $params = []): array
     {
         $this->setConnection($migrationContext);
@@ -33,27 +17,7 @@ class Shopware55LocalEnvironmentReader extends Shopware55LocalAbstractReader
             'additionalData' => $this->getAdditionalData(),
         ];
 
-        foreach (self::TABLES_TO_COUNT as $key => $table) {
-            if ($key === 'categories') {
-                $resultSet[$key] = $this->getCategoryCount();
-                continue;
-            }
-            $resultSet[$key] = $this->getTableCount($table);
-        }
-
         return $resultSet;
-    }
-
-    private function getCategoryCount(): int
-    {
-        $query = $this->connection->createQueryBuilder();
-
-        return (int) $query->select('COUNT(id)')
-            ->from('s_categories')
-            ->where('path IS NOT NULL')
-            ->andWhere('parent IS NOT NULL')
-            ->execute()
-            ->fetchColumn();
     }
 
     private function getHost(): string
@@ -66,16 +30,6 @@ class Shopware55LocalEnvironmentReader extends Shopware55LocalAbstractReader
             ->andWhere('shop.active = 1')
             ->execute()
             ->fetch(\PDO::FETCH_COLUMN);
-    }
-
-    private function getTableCount(string $table): int
-    {
-        $querybuilder = $this->connection->createQueryBuilder();
-
-        return (int) $querybuilder->select('COUNT(id)')
-            ->from($table)
-            ->execute()
-            ->fetchColumn();
     }
 
     private function getAdditionalData(): array

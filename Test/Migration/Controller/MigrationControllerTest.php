@@ -177,7 +177,8 @@ class MigrationControllerTest extends TestCase
             $mappingService,
             $this->getContainer()->get(MediaFileService::class),
             $this->getContainer()->get('swag_migration_logging.repository'),
-            $dataDefinition
+            $dataDefinition,
+            $this->dataSetRegistry
         );
         $dataConverter = $this->getMigrationDataConverter(
             $this->getContainer()->get(EntityWriter::class),

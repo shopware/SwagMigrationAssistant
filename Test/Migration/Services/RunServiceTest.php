@@ -13,19 +13,20 @@ use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
-use SwagMigrationAssistant\Migration\Converter\ConverterRegistry;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry;
+use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
+use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistryInterface;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition;
 use SwagMigrationAssistant\Migration\MigrationContext;
-use SwagMigrationAssistant\Migration\Profile\ProfileRegistry;
 use SwagMigrationAssistant\Migration\Run\RunService;
 use SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiEnvironmentReader;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiReader;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiTableCountReader;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiTableReader;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Shopware55ApiGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Connection\ConnectionFactory;
@@ -87,6 +88,11 @@ class RunServiceTest extends TestCase
      */
     private $dbConnection;
 
+    /**
+     * @var DataSetRegistryInterface
+     */
+    private $dataSetRegistry;
+
     protected function setUp(): void
     {
         $this->dbConnection = $this->getContainer()->get(Connection::class);
@@ -98,6 +104,7 @@ class RunServiceTest extends TestCase
         $this->mappingRepo = $this->getContainer()->get('swag_migration_mapping.repository');
         $loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
         $mediaFileRepo = $this->getContainer()->get('swag_migration_media_file.repository');
+        $this->dataSetRegistry = $this->getContainer()->get(DataSetRegistry::class);
 
         $this->mappingService = new MappingService(
             $this->mappingRepo,
@@ -146,24 +153,13 @@ class RunServiceTest extends TestCase
         });
         $this->connection = $this->connectionRepo->search(new Criteria([$connectionId]), $context)->first();
 
-        $converterRegistry = new ConverterRegistry(new DummyCollection([]));
-
-        $profileRegistry = new ProfileRegistry(new DummyCollection([
-            new Shopware55Profile(
-                $entityWriter,
-                $converterRegistry,
-                $mediaFileService,
-                $loggingService,
-                $this->getContainer()->get(SwagMigrationDataDefinition::class)
-            ),
-        ]));
-
         $connectionFactory = new ConnectionFactory();
         $gatewayRegistry = new GatewayRegistry(new DummyCollection([
             new Shopware55ApiGateway(
                 new Shopware55ApiReader($connectionFactory),
                 new Shopware55ApiEnvironmentReader($connectionFactory),
-                new Shopware55ApiTableReader($connectionFactory)
+                new Shopware55ApiTableReader($connectionFactory),
+                new Shopware55ApiTableCountReader($connectionFactory, $this->dataSetRegistry)
             ),
             new DummyLocalGateway(),
         ]));
@@ -176,7 +172,8 @@ class RunServiceTest extends TestCase
                 $this->mappingService,
                 $mediaFileService,
                 $loggingRepo,
-                $this->getContainer()->get(SwagMigrationDataDefinition::class)
+                $this->getContainer()->get(SwagMigrationDataDefinition::class),
+                $this->dataSetRegistry
             ),
             new SwagMigrationAccessTokenService($this->runRepo),
             new DataSelectionRegistry([]),

@@ -2,12 +2,11 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware55\Gateway\Api;
 
-use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Profile\ReaderInterface;
-use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Shopware55GatewayInterface;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\TableCountReaderInterface;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\TableReaderInterface;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
@@ -30,14 +29,21 @@ class Shopware55ApiGateway implements Shopware55GatewayInterface
      */
     private $tableReader;
 
+    /**
+     * @var TableCountReaderInterface
+     */
+    private $tableCountReader;
+
     public function __construct(
         ReaderInterface $apiReader,
         ReaderInterface $environmentReader,
-        TableReaderInterface $tableReader
+        TableReaderInterface $tableReader,
+        TableCountReaderInterface $tableCountReader
     ) {
         $this->apiReader = $apiReader;
         $this->environmentReader = $environmentReader;
         $this->tableReader = $tableReader;
+        $this->tableCountReader = $tableCountReader;
     }
 
     public function supports(string $gatewayIdentifier): bool
@@ -75,20 +81,7 @@ class Shopware55ApiGateway implements Shopware55GatewayInterface
             $updateAvailable = $environmentData['environmentInformation']['updateAvailable'];
         }
 
-        //$totals = $this->readTotals($migrationContext);
-        $totals = [
-            DefaultEntities::CATEGORY => new TotalStruct(DefaultEntities::CATEGORY, $environmentDataArray['categories']),
-            DefaultEntities::PRODUCT => new TotalStruct(DefaultEntities::PRODUCT, $environmentDataArray['products']),
-            DefaultEntities::CUSTOMER => new TotalStruct(DefaultEntities::CUSTOMER, $environmentDataArray['customers']),
-            DefaultEntities::ORDER => new TotalStruct(DefaultEntities::ORDER, $environmentDataArray['orders']),
-            DefaultEntities::MEDIA => new TotalStruct(DefaultEntities::MEDIA, $environmentDataArray['assets']),
-            DefaultEntities::CUSTOMER_GROUP => new TotalStruct(DefaultEntities::CUSTOMER_GROUP, $environmentDataArray['customerGroups']),
-            DefaultEntities::PROPERTY_GROUP_OPTION => new TotalStruct(DefaultEntities::PROPERTY_GROUP_OPTION, $environmentDataArray['configuratorOptions']),
-            DefaultEntities::TRANSLATION => new TotalStruct(DefaultEntities::TRANSLATION, $environmentDataArray['translations']),
-            DefaultEntities::NUMBER_RANGE => new TotalStruct(DefaultEntities::NUMBER_RANGE, $environmentDataArray['numberRanges']),
-            DefaultEntities::CURRENCY => new TotalStruct(DefaultEntities::CURRENCY, $environmentDataArray['currencies']),
-            DefaultEntities::NEWSLETTER_RECIPIENT => new TotalStruct(DefaultEntities::NEWSLETTER_RECIPIENT, $environmentDataArray['newsletterRecipients']),
-        ];
+        $totals = $this->readTotals($migrationContext);
         $credentials = $migrationContext->getConnection()->getCredentialFields();
 
         return new EnvironmentInformation(
@@ -104,7 +97,7 @@ class Shopware55ApiGateway implements Shopware55GatewayInterface
 
     public function readTotals(MigrationContextInterface $migrationContext): array
     {
-        return [];
+        return $this->tableCountReader->readTotals($migrationContext);
     }
 
     public function readTable(MigrationContextInterface $migrationContext, string $tableName, array $filter = []): array

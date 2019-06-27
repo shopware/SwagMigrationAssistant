@@ -13,6 +13,7 @@ use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
+use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
@@ -31,6 +32,7 @@ use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\ProductDataS
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\TranslationDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiEnvironmentReader;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiReader;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiTableCountReader;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiTableReader;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Shopware55ApiGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Connection\ConnectionFactory;
@@ -160,7 +162,8 @@ class MigrationDataProcessingTest extends TestCase
             $this->mappingService,
             $this->getContainer()->get(MediaFileService::class),
             $this->loggingRepo,
-            $this->getContainer()->get(SwagMigrationDataDefinition::class)
+            $this->getContainer()->get(SwagMigrationDataDefinition::class),
+            $this->getContainer()->get(DataSetRegistry::class)
         );
         $this->migrationDataConverter = $this->getMigrationDataConverter(
             $this->getContainer()->get(EntityWriter::class),
@@ -177,7 +180,8 @@ class MigrationDataProcessingTest extends TestCase
                 new Shopware55ApiGateway(
                     new Shopware55ApiReader($connectionFactory),
                     new Shopware55ApiEnvironmentReader($connectionFactory),
-                    new Shopware55ApiTableReader($connectionFactory)
+                    new Shopware55ApiTableReader($connectionFactory),
+                    new Shopware55ApiTableCountReader($connectionFactory, $this->getContainer()->get(DataSetRegistry::class))
                 ),
                 new DummyLocalGateway(),
             ])),
