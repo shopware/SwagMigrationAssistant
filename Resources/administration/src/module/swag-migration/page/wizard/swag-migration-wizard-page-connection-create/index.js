@@ -7,7 +7,7 @@ Component.register('swag-migration-wizard-page-connection-create', {
     template,
 
     props: {
-        connectionNameErrorSnippet: {
+        connectionNameErrorCode: {
             type: String,
             default: '',
             required: false
@@ -52,14 +52,12 @@ Component.register('swag-migration-wizard-page-connection-create', {
         },
 
         connectionNameError() {
-            const code = this.connectionNameErrorSnippet !== '' ? 1 : 0;
-            const detail = this.connectionNameErrorSnippet !== '' ?
-                this.$tc(this.connectionNameErrorSnippet) :
-                '';
+            if (this.connectionNameErrorCode === '') {
+                return null;
+            }
 
             return new ShopwareError({
-                code,
-                detail
+                code: this.connectionNameErrorCode
             });
         },
 

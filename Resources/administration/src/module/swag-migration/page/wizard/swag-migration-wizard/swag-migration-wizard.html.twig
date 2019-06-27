@@ -1,8 +1,8 @@
 {% block swag_migration_wizard %}
     <div class="swag-migration-wizard">
-        <sw-modal class="swag-migration-wizard__modal"
+        <sw-modal v-if="showModal"
+                  class="swag-migration-wizard__modal"
                   :size="modalSize"
-                  v-if="showModal"
                   :title="$tc(modalTitleSnippet)"
                   :isLoading="isLoading"
                   @modal-close="onCloseModal">
@@ -13,20 +13,20 @@
 
             {% block swag_migration_router_view %}
                 <router-view
+                        v-show="!isLoading && !childIsLoading"
+                        :currentConnectionId="connection.id"
+                        :profileInformationComponent="profileInformationComponent"
+                        :credentialsComponent="credentialsComponent"
+                        :credentials="connection.credentialFields"
+                        :errorMessageSnippet="errorMessageSnippet"
+                        :connectionNameErrorCode="connectionNameErrorCode"
                         @onChildRouteReadyChanged="onChildRouteReadyChanged"
                         @onTriggerPrimaryClick="triggerPrimaryClick"
                         @onProfileSelected="onProfileSelected"
                         @onChangeConnectionName="onChangeConnectionName"
                         @onConnectionSelected="onConnectionSelected"
-                        :currentConnectionId="connection.id"
-                        :profileInformationComponent="profileInformationComponent"
-                        :credentialsComponent="credentialsComponent"
-                        :credentials="connection.credentialFields"
                         @onCredentialsChanged="onCredentialsChanged"
-                        @onIsLoadingChanged="onChildIsLoadingChanged"
-                        :errorMessageSnippet="errorMessageSnippet"
-                        :connectionNameErrorSnippet="connectionNameErrorSnippet"
-                        v-show="!isLoading && !childIsLoading">
+                        @onIsLoadingChanged="onChildIsLoadingChanged">
                 </router-view>
             {% endblock %}
 

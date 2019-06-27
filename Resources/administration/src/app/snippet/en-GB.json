@@ -42,8 +42,6 @@
           "connectionLabel": "Connection name",
           "connectionPlaceholder": "Enter name",
           "connectionTooltip": "Enter a unique name for the connection.",
-          "connectionNameExistsError": "Connection name already exists.",
-          "connectionNameTooShort": "The connection name must be at least 6 characters long.",
           "hint": {
             "local": "Note: The shop systems have to be on the same server. You need access data to the database."
           }
@@ -65,7 +63,6 @@
               "apiKeyLabel": "API key",
               "apiKeyTooltip": "The API key is used for security and identification.",
               "apiKeyPlaceholder": "Enter key",
-              "apiKeyInvalid": "The API key does not have the correct length ({length}/40 characters).",
               "apiUserLabel": "Username (API user)",
               "apiUserTooltip": "Username of your Shopware 5 backend.",
               "apiUserPlaceholder": "Enter username",
@@ -411,6 +408,13 @@
         "dataCount": "Datasets",
         "close": "Close"
       }
+    }
+  },
+  "global": {
+    "error-codes": {
+      "SWAG_MIGRATION_CONNECTION_NAME_ALREADY_EXISTS": "Connection name already exists.",
+      "SWAG_MIGRATION_CONNECTION_NAME_TO_SHORT": "The connection name must be at least 6 characters long.",
+      "SWAG_MIGRATION_INVALID_API_KEY": "The API key does not have the correct length ({length}/40 characters)."
     }
   }
 }
