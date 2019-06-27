@@ -1,25 +1,20 @@
 @import "~scss/variables";
 
-$swag-migration-history-color-finished: $color-emerald;
-$swag-migration-history-color-aborted: $color-crimson;
-$swag-migration-history-color-loading: #B3BFCC; //TODO: fix with PT-10247 (replace hardcoded color)
-$swag-migration-history-color-background-no-data: $color-iron;
-
 .swag-migration-history {
     .swag-migration-history__status-icon--finished {
-        color: $swag-migration-history-color-finished;
+        color: $color-emerald-500;
     }
 
     .swag-migration-history__status-icon--aborted {
-        color: $swag-migration-history-color-aborted;
+        color: $color-crimson-500;
     }
 
     .swag-migration-history__status-icon--loading {
-        color: $swag-migration-history-color-loading;
+        color: $color-gray-500;
     }
 
     .swag-migration-history__no-data {
-        background-color: $swag-migration-history-color-background-no-data;
+        background-color: $color-gray-50;
         height: 230px;
         line-height: 230px;
         text-align: center;

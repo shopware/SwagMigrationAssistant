@@ -1,10 +1,5 @@
 @import "~scss/variables";
 
-$swag-migration-result-screen-caption-color: #B3BFCC;
-$swag-migration-result-screen-link-color: $color-shopware-blue;
-$swag-migration-result-screen-bubble-background-color: #E7F9E9;
-$swag-migration-result-screen-icon-color: $color-emerald;
-
 .swag-migration-result-screen {
     .swag-migration-result-screen__content {
         text-align: center;
@@ -20,13 +15,13 @@ $swag-migration-result-screen-icon-color: $color-emerald;
     .swag-migration-result-screen__caption {
         margin: 0 135px 28px 135px;
         font-size: 14px;
-        color: $swag-migration-result-screen-caption-color;
+        color: $color-gray-500;
     }
 
     .swag-migration-result-screen__link a {
         font-size: 12px;
         font-weight: 600;
-        color: $swag-migration-result-screen-link-color;
+        color: $color-shopware-brand-500;
     }
 
     .swag-migration-result-screen__image {
@@ -65,7 +60,7 @@ $swag-migration-result-screen-icon-color: $color-emerald;
         width: 72px;
         height: 72px;
         border-radius: 50%;
-        background-color: $swag-migration-result-screen-bubble-background-color;
+        background-color: $color-emerald-50;
         flex-shrink: 0;
         display: flex;
         align-items: center;
@@ -73,6 +68,6 @@ $swag-migration-result-screen-icon-color: $color-emerald;
     }
 
     .swag-migration-result-screen__icon {
-        color: $swag-migration-result-screen-icon-color;
+        color: $color-emerald-500;
     }
 }

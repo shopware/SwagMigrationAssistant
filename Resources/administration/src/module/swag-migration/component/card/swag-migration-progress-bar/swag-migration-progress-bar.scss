@@ -1,10 +1,5 @@
 @import "~scss/variables";
 
-$swag-migration-progress-bar-icon-color:            #E0E5EE;
-$swag-migration-progress-bar-active-bubble-color:   #E3F3FF;
-$swag-migration-progress-bar-disabled-bubble-color: #F0F2F5;
-$swag-migration-progress-bar-value-color:           $color-shopware-blue;
-
 .swag-migration-progress-bar {
   .swag-migration-progress-bar__progress-bar-container {
     position: relative;
@@ -52,15 +47,15 @@ $swag-migration-progress-bar-value-color:           $color-shopware-blue;
   }
 
   .swag-migration-progress-bar__bubble--active {
-    background-color: $swag-migration-progress-bar-active-bubble-color;
-    color: $swag-migration-progress-bar-value-color;
+    background-color: $color-shopware-brand-50;
+    color: $color-shopware-brand-500;
   }
 
   .swag-migration-progress-bar__bubble--disabled {
-    background-color: $swag-migration-progress-bar-disabled-bubble-color;
+    background-color: $color-gray-100;
 
     .swag-migration-progress-bar__icon {
-      color: $swag-migration-progress-bar-icon-color;
+      color: $color-gray-300;
     }
   }
 

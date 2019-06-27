@@ -1,20 +1,5 @@
 @import '~scss/variables';
 
-$swag-migration-flow-item-color-default: #F0F2F5;
-$swag-migration-flow-item-color-icon-default: #E0E5EE;
-$swag-migration-flow-item-color-description-active: #52667A;
-$swag-migration-flow-item-color-description-inactive: #B3BFCC;
-
-//variants
-$swag-migration-flow-item-color-disabled: $swag-migration-flow-item-color-icon-default;
-$swag-migration-flow-item-color-disabled-bg: $swag-migration-flow-item-color-default;
-$swag-migration-flow-item-color-info: $color-shopware-blue;
-$swag-migration-flow-item-color-info-bg: #E3F3FF;
-$swag-migration-flow-item-color-success: $color-emerald;
-$swag-migration-flow-item-color-success-bg: #E7F9E9;
-$swag-migration-flow-item-color-error: $color-crimson;
-$swag-migration-flow-item-color-error-bg: #FBE5EA;
-
 .swag-migration-flow-item {
     height: 32px;
     margin: 20px 0;
@@ -26,8 +11,8 @@ $swag-migration-flow-item-color-error-bg: #FBE5EA;
         content: "";
         width: 1px;
         height: 20px;
-        background-color: $swag-migration-flow-item-color-default;
-        border: 1px solid $swag-migration-flow-item-color-default;
+        background-color: $color-gray-100;
+        border: 1px solid $color-gray-100;
         position: absolute;
         left: 16px - (3px / 2);
         top: -20px;
@@ -45,7 +30,7 @@ $swag-migration-flow-item-color-error-bg: #FBE5EA;
         width: 32px;
         height: 32px;
         border-radius: 50%;
-        background-color: $swag-migration-flow-item-color-default;
+        background-color: $color-gray-100;
         flex-shrink: 0;
         display: flex;
         align-items: center;
@@ -56,53 +41,53 @@ $swag-migration-flow-item-color-error-bg: #FBE5EA;
         padding-left: 10px;
         font-size: $font-size-small;
         font-weight: 600;
-        color: $swag-migration-flow-item-color-description-inactive;
+        color: $color-gray-500;
         line-height: $font-size-small;
     }
 
     &.swag-migration-flow-item--disabled {
         .swag-migration-flow-item__bubble {
-            background-color: $swag-migration-flow-item-color-disabled-bg;
+            background-color: $color-gray-100;
         }
 
         .swag-migration-flow-item__icon {
-            color: $swag-migration-flow-item-color-disabled;
+            color: $color-gray-300;
         }
     }
 
     &.swag-migration-flow-item--info {
         .swag-migration-flow-item__bubble {
-            background-color: $swag-migration-flow-item-color-info-bg;
+            background-color: $color-shopware-brand-50;
         }
 
         .swag-migration-flow-item__icon {
-            color: $swag-migration-flow-item-color-info;
+            color: $color-shopware-brand-500;
         }
     }
 
     &.swag-migration-flow-item--error {
         .swag-migration-flow-item__bubble {
-            background-color: $swag-migration-flow-item-color-error-bg;
+            background-color: $color-crimson-50;
         }
 
         .swag-migration-flow-item__icon {
-            color: $swag-migration-flow-item-color-error;
+            color: $color-crimson-500;
         }
     }
 
     &.swag-migration-flow-item--success {
         .swag-migration-flow-item__bubble {
-            background-color: $swag-migration-flow-item-color-success-bg;
+            background-color: $color-emerald-50;
         }
 
         .swag-migration-flow-item__icon {
-            color: $swag-migration-flow-item-color-success;
+            color: $color-emerald-500;
         }
     }
 
     &.swag-migration-flow-item--active {
         .swag-migration-flow-item__description {
-            color: $swag-migration-flow-item-color-description-active;
+            color: $color-darkgray-200;
         }
     }
 }
