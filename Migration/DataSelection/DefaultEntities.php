@@ -32,6 +32,8 @@ final class DefaultEntities
 
     public const CUSTOMER_ADDRESS = 'customer_address';
 
+    public const ORDER_DOCUMENTS = 'order_document';
+
     public const CUSTOMER_GROUP = 'customer_group';
 
     public const CUSTOMER_GROUP_TRANSLATION = 'customer_group_translation';

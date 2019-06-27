@@ -125,6 +125,11 @@
             <tag name="shopware.migration.local_reader" />
         </service>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalOrderDocumentReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalAbstractReader">
+            <tag name="shopware.migration.local_reader" />
+        </service>
+
         <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalProductReader"
                  parent="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalAbstractReader">
             <tag name="shopware.migration.local_reader" />
@@ -222,6 +227,13 @@
             <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\MappingService"/>
             <argument type="service" id="Shopware\Core\Checkout\Cart\Tax\TaxCalculator"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware55\Converter\OrderDocumentConverter">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\MappingService"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Media\MediaFileService"/>
             <tag name="shopware.migration.converter"/>
         </service>
 
@@ -355,6 +367,10 @@
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\OrderDataSet">
+            <tag name="shopware.migration.data_set" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\OrderDocumentDataSet">
             <tag name="shopware.migration.data_set" />
         </service>
 

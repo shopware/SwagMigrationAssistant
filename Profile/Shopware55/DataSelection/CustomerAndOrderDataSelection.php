@@ -8,6 +8,7 @@ use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\CustomerAttr
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\CustomerDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\OrderAttributeDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\OrderDataSet;
+use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\OrderDocumentDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
 class CustomerAndOrderDataSelection implements DataSelectionInterface
@@ -25,7 +26,8 @@ class CustomerAndOrderDataSelection implements DataSelectionInterface
             self::IDENTIFIER,
             $this->getEntityNames(),
             'swag-migration.index.selectDataCard.dataSelection.customersOrders',
-            200
+            200,
+            true
         );
     }
 
@@ -39,6 +41,7 @@ class CustomerAndOrderDataSelection implements DataSelectionInterface
             CustomerDataSet::getEntity(),
             OrderAttributeDataSet::getEntity(),
             OrderDataSet::getEntity(),
+            OrderDocumentDataSet::getEntity(),
         ];
     }
 }
