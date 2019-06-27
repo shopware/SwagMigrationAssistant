@@ -481,18 +481,15 @@ class StatusControllerTest extends TestCase
         $result = $this->controller->checkConnection($request, $context);
         $environmentInformation = json_decode($result->getContent(), true);
 
-        static::assertSame($environmentInformation['totals']['product'], 37);
-        static::assertSame($environmentInformation['totals']['customer'], 2);
-        static::assertSame($environmentInformation['totals']['category'], 8);
-        static::assertSame($environmentInformation['totals']['media'], 23);
-        static::assertSame($environmentInformation['totals']['order'], 0);
-        static::assertSame($environmentInformation['totals']['translation'], 0);
+        static::assertSame($environmentInformation['totals']['product']['total'], 37);
+        static::assertSame($environmentInformation['totals']['customer']['total'], 2);
+        static::assertSame($environmentInformation['totals']['category']['total'], 8);
+        static::assertSame($environmentInformation['totals']['media']['total'], 23);
+        static::assertSame($environmentInformation['totals']['order']['total'], 0);
+        static::assertSame($environmentInformation['totals']['translation']['total'], 0);
 
-        static::assertSame($environmentInformation['warningCode'], '');
-        static::assertSame($environmentInformation['warningMessage'], 'No warning.');
-
-        static::assertSame($environmentInformation['errorCode'], '');
-        static::assertSame($environmentInformation['errorMessage'], 'No error.');
+        static::assertSame($environmentInformation['requestStatus']['code'], '');
+        static::assertSame($environmentInformation['requestStatus']['message'], 'No error.');
 
         $request = new Request();
         try {

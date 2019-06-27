@@ -22,34 +22,19 @@ class EnvironmentInformation extends Struct
     protected $sourceSystemDomain;
 
     /**
-     * @var array
-     */
-    protected $structure;
-
-    /**
-     * @var int[]
+     * @var TotalStruct[]
      */
     protected $totals;
 
     /**
-     * @var string
+     * @var array
      */
-    protected $warningCode;
+    protected $additionalData;
 
     /**
-     * @var string
+     * @var RequestStatusStruct|null
      */
-    protected $warningMessage;
-
-    /**
-     * @var string
-     */
-    protected $errorCode;
-
-    /**
-     * @var string
-     */
-    protected $errorMessage;
+    protected $requestStatus;
 
     /**
      * @var bool
@@ -57,29 +42,23 @@ class EnvironmentInformation extends Struct
     protected $updateAvailable;
 
     /**
-     * @param int[] $totals
+     * @param TotalStruct[] $totals
      */
     public function __construct(
         string $sourceSystemName,
         string $sourceSystemVersion,
         string $sourceSystemDomain,
-        array $structure = [],
         array $totals = [],
-        string $warningCode = '',
-        string $warningMessage = '',
-        string $errorCode = '',
-        string $errorMessage = '',
+        array $additionalData = [],
+        ?RequestStatusStruct $requestStatus = null,
         bool $updateAvailable = false
     ) {
         $this->sourceSystemName = $sourceSystemName;
         $this->sourceSystemVersion = $sourceSystemVersion;
         $this->sourceSystemDomain = $sourceSystemDomain;
-        $this->structure = $structure;
         $this->totals = $totals;
-        $this->warningCode = $warningCode;
-        $this->warningMessage = $warningMessage;
-        $this->errorCode = $errorCode;
-        $this->errorMessage = $errorMessage;
+        $this->additionalData = $additionalData;
+        $this->requestStatus = $requestStatus;
         $this->updateAvailable = $updateAvailable;
     }
 
@@ -98,36 +77,21 @@ class EnvironmentInformation extends Struct
         return $this->sourceSystemDomain;
     }
 
-    public function getStructure(): array
-    {
-        return $this->structure;
-    }
-
     /**
-     * @return int[]
+     * @return TotalStruct[]
      */
     public function getTotals(): array
     {
         return $this->totals;
     }
 
-    public function getWarningCode(): string
+    public function getAdditionalData(): array
     {
-        return $this->warningCode;
+        return $this->additionalData;
     }
 
-    public function getWarningMessage(): string
+    public function getRequestStatus(): ?RequestStatusStruct
     {
-        return $this->warningMessage;
-    }
-
-    public function getErrorCode(): string
-    {
-        return $this->errorCode;
-    }
-
-    public function getErrorMessage(): string
-    {
-        return $this->errorMessage;
+        return $this->requestStatus;
     }
 }

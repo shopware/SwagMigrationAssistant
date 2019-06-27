@@ -265,18 +265,27 @@ Component.register('swag-migration-wizard', {
                 this.migrationUIStore.setPremapping([]);
                 this.migrationUIStore.setDataSelectionTableData([]);
 
-                if (connectionCheckResponse.errorCode !== undefined) {
-                    if (connectionCheckResponse.errorCode !== '') {
-                        this.onResponseError(connectionCheckResponse.errorCode);
-                        return;
-                    }
+                if (connectionCheckResponse.requestStatus === undefined) {
+                    this.navigateToRoute(this.routes.credentialsSuccess);
+                    return;
+                }
 
-                    // create warning for success page
-                    this.errorMessageSnippet = '';
-                    if (connectionCheckResponse.warningCode !== '') {
-                        this.errorMessageSnippet =
-                            `swag-migration.wizard.pages.credentials.success.${connectionCheckResponse.warningCode}`;
-                    }
+                if (
+                    connectionCheckResponse.requestStatus.code !== '' &&
+                    connectionCheckResponse.requestStatus.isWarning === false
+                ) {
+                    this.onResponseError(connectionCheckResponse.requestStatus.code);
+                    return;
+                }
+
+                // create warning for success page
+                this.errorMessageSnippet = '';
+                if (
+                    connectionCheckResponse.requestStatus.code !== '' &&
+                    connectionCheckResponse.requestStatus.isWarning === true
+                ) {
+                    this.errorMessageSnippet =
+                        `swag-migration.wizard.pages.credentials.success.${connectionCheckResponse.requestStatus.code}`;
                 }
 
                 this.navigateToRoute(this.routes.credentialsSuccess);

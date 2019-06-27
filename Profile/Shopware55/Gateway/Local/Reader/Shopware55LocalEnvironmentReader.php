@@ -30,7 +30,7 @@ class Shopware55LocalEnvironmentReader extends Shopware55LocalAbstractReader
         $resultSet = [
             'defaultShopLanguage' => $locale,
             'host' => $this->getHost(),
-            'structure' => $this->getShopStructure(),
+            'additionalData' => $this->getAdditionalData(),
         ];
 
         foreach (self::TABLES_TO_COUNT as $key => $table) {
@@ -78,7 +78,7 @@ class Shopware55LocalEnvironmentReader extends Shopware55LocalAbstractReader
             ->fetchColumn();
     }
 
-    private function getShopStructure(): array
+    private function getAdditionalData(): array
     {
         $query = $this->connection->createQueryBuilder();
 

@@ -6,6 +6,7 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Profile\ReaderInterface;
+use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Shopware55GatewayInterface;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\TableReaderInterface;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
@@ -61,10 +62,7 @@ class Shopware55ApiGateway implements Shopware55GatewayInterface
                 '',
                 [],
                 [],
-                $environmentData['warning']['code'],
-                $environmentData['warning']['detail'],
-                $environmentData['error']['code'],
-                $environmentData['error']['detail']
+                $environmentData['requestStatus']
             );
         }
 
@@ -78,17 +76,17 @@ class Shopware55ApiGateway implements Shopware55GatewayInterface
         }
 
         $totals = [
-            DefaultEntities::CATEGORY => $environmentDataArray['categories'],
-            DefaultEntities::PRODUCT => $environmentDataArray['products'],
-            DefaultEntities::CUSTOMER => $environmentDataArray['customers'],
-            DefaultEntities::ORDER => $environmentDataArray['orders'],
-            DefaultEntities::MEDIA => $environmentDataArray['assets'],
-            DefaultEntities::CUSTOMER_GROUP => $environmentDataArray['customerGroups'],
-            DefaultEntities::PROPERTY_GROUP_OPTION => $environmentDataArray['configuratorOptions'],
-            DefaultEntities::TRANSLATION => $environmentDataArray['translations'],
-            DefaultEntities::NUMBER_RANGE => $environmentDataArray['numberRanges'],
-            DefaultEntities::CURRENCY => $environmentDataArray['currencies'],
-            DefaultEntities::NEWSLETTER_RECIPIENT => $environmentDataArray['newsletterRecipients'],
+            DefaultEntities::CATEGORY => new TotalStruct(DefaultEntities::CATEGORY, $environmentDataArray['categories']),
+            DefaultEntities::PRODUCT => new TotalStruct(DefaultEntities::PRODUCT, $environmentDataArray['products']),
+            DefaultEntities::CUSTOMER => new TotalStruct(DefaultEntities::CUSTOMER, $environmentDataArray['customers']),
+            DefaultEntities::ORDER => new TotalStruct(DefaultEntities::ORDER, $environmentDataArray['orders']),
+            DefaultEntities::MEDIA => new TotalStruct(DefaultEntities::MEDIA, $environmentDataArray['assets']),
+            DefaultEntities::CUSTOMER_GROUP => new TotalStruct(DefaultEntities::CUSTOMER_GROUP, $environmentDataArray['customerGroups']),
+            DefaultEntities::PROPERTY_GROUP_OPTION => new TotalStruct(DefaultEntities::PROPERTY_GROUP_OPTION, $environmentDataArray['configuratorOptions']),
+            DefaultEntities::TRANSLATION => new TotalStruct(DefaultEntities::TRANSLATION, $environmentDataArray['translations']),
+            DefaultEntities::NUMBER_RANGE => new TotalStruct(DefaultEntities::NUMBER_RANGE, $environmentDataArray['numberRanges']),
+            DefaultEntities::CURRENCY => new TotalStruct(DefaultEntities::CURRENCY, $environmentDataArray['currencies']),
+            DefaultEntities::NEWSLETTER_RECIPIENT => new TotalStruct(DefaultEntities::NEWSLETTER_RECIPIENT, $environmentDataArray['newsletterRecipients']),
         ];
         $credentials = $migrationContext->getConnection()->getCredentialFields();
 
@@ -96,12 +94,9 @@ class Shopware55ApiGateway implements Shopware55GatewayInterface
             Shopware55Profile::SOURCE_SYSTEM_NAME,
             $environmentDataArray['shopwareVersion'],
             $credentials['endpoint'],
-            $environmentDataArray['structure'],
             $totals,
-            $environmentData['warning']['code'],
-            $environmentData['warning']['detail'],
-            $environmentData['error']['code'],
-            $environmentData['error']['detail'],
+            $environmentDataArray['additionalData'],
+            $environmentData['requestStatus'],
             $updateAvailable
         );
     }

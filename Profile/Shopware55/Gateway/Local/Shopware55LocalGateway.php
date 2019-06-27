@@ -6,6 +6,8 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Profile\ReaderInterface;
+use SwagMigrationAssistant\Migration\RequestStatusStruct;
+use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\Shopware55DataSet;
 use SwagMigrationAssistant\Profile\Shopware55\Exception\DatabaseConnectionException;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Connection\ConnectionFactoryInterface;
@@ -79,35 +81,32 @@ class Shopware55LocalGateway implements Shopware55GatewayInterface
                 '-',
                 [],
                 [],
-                '',
-                'No warning.',
-                $error->getErrorCode(),
-                $error->getMessage()
+                new RequestStatusStruct($error->getErrorCode(), $error->getMessage())
             );
         }
         $connection->close();
         $environmentData = $this->localEnvironmentReader->read($migrationContext);
 
         $totals = [
-            DefaultEntities::CATEGORY => $environmentData['categories'],
-            DefaultEntities::PRODUCT => $environmentData['products'],
-            DefaultEntities::CUSTOMER => $environmentData['customers'],
-            DefaultEntities::ORDER => $environmentData['orders'],
-            DefaultEntities::MEDIA => $environmentData['assets'],
-            DefaultEntities::CUSTOMER_GROUP => $environmentData['customerGroups'],
-            DefaultEntities::PROPERTY_GROUP_OPTION => $environmentData['configuratorOptions'],
-            DefaultEntities::TRANSLATION => $environmentData['translations'],
-            DefaultEntities::NUMBER_RANGE => $environmentData['numberRanges'],
-            DefaultEntities::CURRENCY => $environmentData['currencies'],
-            DefaultEntities::NEWSLETTER_RECIPIENT => $environmentData['newsletterRecipients'],
+            DefaultEntities::CATEGORY => new TotalStruct(DefaultEntities::CATEGORY, $environmentData['categories']),
+            DefaultEntities::PRODUCT => new TotalStruct(DefaultEntities::PRODUCT, $environmentData['products']),
+            DefaultEntities::CUSTOMER => new TotalStruct(DefaultEntities::CUSTOMER, $environmentData['customers']),
+            DefaultEntities::ORDER => new TotalStruct(DefaultEntities::ORDER, $environmentData['orders']),
+            DefaultEntities::MEDIA => new TotalStruct(DefaultEntities::MEDIA, $environmentData['assets']),
+            DefaultEntities::CUSTOMER_GROUP => new TotalStruct(DefaultEntities::CUSTOMER_GROUP, $environmentData['customerGroups']),
+            DefaultEntities::PROPERTY_GROUP_OPTION => new TotalStruct(DefaultEntities::PROPERTY_GROUP_OPTION, $environmentData['configuratorOptions']),
+            DefaultEntities::TRANSLATION => new TotalStruct(DefaultEntities::TRANSLATION, $environmentData['translations']),
+            DefaultEntities::NUMBER_RANGE => new TotalStruct(DefaultEntities::NUMBER_RANGE, $environmentData['numberRanges']),
+            DefaultEntities::CURRENCY => new TotalStruct(DefaultEntities::CURRENCY, $environmentData['currencies']),
+            DefaultEntities::NEWSLETTER_RECIPIENT => new TotalStruct(DefaultEntities::NEWSLETTER_RECIPIENT, $environmentData['newsletterRecipients']),
         ];
 
         return new EnvironmentInformation(
             Shopware55Profile::SOURCE_SYSTEM_NAME,
             Shopware55Profile::SOURCE_SYSTEM_VERSION,
             $environmentData['host'],
-            $environmentData['structure'],
-            $totals
+            $totals,
+            $environmentData['additionalData']
         );
     }
 

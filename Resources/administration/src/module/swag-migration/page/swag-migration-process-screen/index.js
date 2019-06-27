@@ -271,7 +271,10 @@ Component.register('swag-migration-process-screen', {
                     this.migrationProcessStore.setEnvironmentInformation(connectionCheckResponse);
 
                     if (
-                        connectionCheckResponse.errorCode !== '' ||
+                        (
+                            connectionCheckResponse.requestStatus.isWarning === false &&
+                            connectionCheckResponse.requestStatus.code !== ''
+                        ) ||
                         (!otherInstanceMigrating && !this.$route.params.startMigration)
                     ) {
                         this.$router.push({ name: 'swag.migration.index.main' });

@@ -6,7 +6,7 @@ return [
         'shopwareVersion' => '___VERSION___',
         'versionText' => '___VERSION_TEXT___',
         'revision' => '___REVISION___',
-        'structure' => [
+        'additionalData' => [
             0 => [
                 'id' => '1',
                 'main_id' => null,
@@ -75,12 +75,5 @@ return [
         'translations' => 0,
         'shoppingWorlds' => 1,
     ],
-    'warning' => [
-        'code' => '',
-        'detail' => 'No warning.',
-    ],
-    'error' => [
-        'code' => '',
-        'detail' => 'No error.',
-    ],
+    'requestStatus' => new \SwagMigrationAssistant\Migration\RequestStatusStruct(),
 ];

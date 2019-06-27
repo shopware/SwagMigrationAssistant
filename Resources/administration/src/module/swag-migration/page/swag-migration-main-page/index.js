@@ -43,7 +43,13 @@ Component.register('swag-migration-main-page', {
 
         connectionEstablished() {
             return this.migrationProcessStore.state.environmentInformation !== undefined &&
-                this.migrationProcessStore.state.environmentInformation.errorCode === '';
+                (
+                    this.migrationProcessStore.state.environmentInformation.requestStatus.isWarning === true ||
+                    (
+                        this.migrationProcessStore.state.environmentInformation.requestStatus.isWarning === false &&
+                        this.migrationProcessStore.state.environmentInformation.requestStatus.code === ''
+                    )
+                );
         }
     },
 
