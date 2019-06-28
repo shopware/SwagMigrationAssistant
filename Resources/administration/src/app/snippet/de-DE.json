@@ -256,7 +256,7 @@
         "result": {
           "success": {
             "title": "Die Migration war erfolgreich",
-            "caption": "Alle Details zum Prozess findest Du in der Historie"
+            "caption": "Alle Details zum Prozess findest Du in der Historie. Die Medien-Downloads werden im Hintergrund durchgeführt."
           },
           "warning": {
             "title": "Die Migration war erfolgreich",

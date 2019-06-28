@@ -7,7 +7,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
-use SwagMigrationAssistant\Migration\Media\MediaFileProcessorRegistryInterface;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileEntity;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\ProcessMediaMessage;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -15,6 +14,8 @@ use Symfony\Component\Messenger\MessageBusInterface;
 
 class MediaFileProcessorService implements MediaFileProcessorServiceInterface
 {
+    public const MESSAGE_SIZE = 5;
+
     /**
      * @var EntityRepositoryInterface
      */
@@ -43,15 +44,34 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
         $criteria->addSorting(new FieldSorting('fileSize', FieldSorting::ASCENDING));
         $migrationData = $this->mediaFileRepo->search($criteria, $context);
 
+        $currentCount = 0;
+        $messageMediaUuids = [];
+        /* @var SwagMigrationMediaFileEntity $mediaFile */
         foreach ($migrationData->getElements() as $mediaFile) {
-            $message = new ProcessMediaMessage();
-            /* @var SwagMigrationMediaFileEntity $mediaFile */
-            $message->setMediaFileId($mediaFile->getMediaId());
-            $message->setRunId($migrationContext->getRunUuid());
-            $message->setFileChunkByteSize($fileChunkByteSize);
-            $message->withContext($context);
+            ++$currentCount;
+            $messageMediaUuids[] = $mediaFile->getMediaId();
 
-            $this->messageBus->dispatch($message);
+            if ($currentCount < self::MESSAGE_SIZE) {
+                continue;
+            }
+
+            $this->addMessageToBus($migrationContext->getRunUuid(), $context, $fileChunkByteSize, $messageMediaUuids);
+            $messageMediaUuids = [];
+            $currentCount = 0;
         }
+
+        if ($currentCount > 0) {
+            $this->addMessageToBus($migrationContext->getRunUuid(), $context, $fileChunkByteSize, $messageMediaUuids);
+        }
+    }
+
+    private function addMessageToBus(string $runUuid, Context $context, int $fileChunkByteSize, array $mediaUuids): void
+    {
+        $message = new ProcessMediaMessage();
+        $message->setMediaFileIds($mediaUuids);
+        $message->setRunId($runUuid);
+        $message->setFileChunkByteSize($fileChunkByteSize);
+        $message->withContext($context);
+        $this->messageBus->dispatch($message);
     }
 }

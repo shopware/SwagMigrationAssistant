@@ -3,7 +3,6 @@
 namespace SwagMigrationAssistant\Test\Mock\Migration\Service;
 
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Service\MediaFileProcessorService;
 
@@ -14,6 +13,5 @@ class DummyMediaFileProcessorService extends MediaFileProcessorService
         Context $context,
         int $fileChunkByteSize
     ): void {
-
     }
 }

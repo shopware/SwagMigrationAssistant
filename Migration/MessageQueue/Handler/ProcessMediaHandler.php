@@ -8,6 +8,8 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\MessageQueue\Handler\AbstractMessageHandler;
 use SwagMigrationAssistant\Exception\EntityNotExistsException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Media\MediaFileProcessorInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorRegistryInterface;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\ProcessMediaMessage;
 use SwagMigrationAssistant\Migration\MigrationContext;
@@ -15,6 +17,8 @@ use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 
 class ProcessMediaHandler extends AbstractMessageHandler
 {
+    public const MEDIA_ERROR_THRESHOLD = 3;
+
     /**
      * @var EntityRepositoryInterface
      */
@@ -25,12 +29,19 @@ class ProcessMediaHandler extends AbstractMessageHandler
      */
     private $mediaFileProcessorRegistry;
 
+    /**
+     * @var LoggingServiceInterface
+     */
+    private $loggingService;
+
     public function __construct(
         EntityRepositoryInterface $migrationRunRepo,
-        MediaFileProcessorRegistryInterface $mediaFileProcessorRegistry
+        MediaFileProcessorRegistryInterface $mediaFileProcessorRegistry,
+        LoggingServiceInterface $loggingService
     ) {
         $this->migrationRunRepo = $migrationRunRepo;
         $this->mediaFileProcessorRegistry = $mediaFileProcessorRegistry;
+        $this->loggingService = $loggingService;
     }
 
     /**
@@ -56,17 +67,19 @@ class ProcessMediaHandler extends AbstractMessageHandler
             $message->getRunId()
         );
 
-        $workload = [
-            [
-                'uuid' => $message->getMediaFileId(),
+        $workload = [];
+        foreach ($message->getMediaFileIds() as $mediaFileId) {
+            $workload[] = [
+                'uuid' => $mediaFileId,
                 'runId' => $message->getRunId(),
                 'currentOffset' => 0,
                 'state' => 'inProgress',
-            ],
-        ];
+            ];
+        }
 
         $processor = $this->mediaFileProcessorRegistry->getProcessor($migrationContext);
-        $processor->process($migrationContext, $context, $workload, $message->getFileChunkByteSize());
+        $workload = $processor->process($migrationContext, $context, $workload, $message->getFileChunkByteSize());
+        $this->processFailures($context, $migrationContext, $processor, $workload, $message->getFileChunkByteSize());
     }
 
     public static function getHandledMessages(): iterable
@@ -74,5 +87,29 @@ class ProcessMediaHandler extends AbstractMessageHandler
         return [
             ProcessMediaMessage::class,
         ];
+    }
+
+    private function processFailures(
+        Context $context,
+        MigrationContext $migrationContext,
+        MediaFileProcessorInterface $processor,
+        array $workload,
+        int $fileChunkByteSize
+    ): void {
+        for ($i = 0; $i < self::MEDIA_ERROR_THRESHOLD; ++$i) {
+            $errorWorkload = [];
+
+            foreach ($workload as $item) {
+                if (isset($item['errorCount']) && $item['errorCount'] > 0) {
+                    $errorWorkload[] = $item;
+                }
+            }
+
+            if (empty($errorWorkload)) {
+                break;
+            }
+
+            $workload = $processor->process($migrationContext, $context, $errorWorkload, $fileChunkByteSize);
+        }
     }
 }

@@ -7,9 +7,9 @@ use Shopware\Core\Framework\Context;
 class ProcessMediaMessage
 {
     /**
-     * @var string
+     * @var string[]
      */
-    private $mediaFileId;
+    private $mediaFileIds;
 
     /**
      * @var string
@@ -43,9 +43,9 @@ class ProcessMediaMessage
         $this->contextData = $contextData;
     }
 
-    public function setMediaFileId(string $mediaFileId): void
+    public function setMediaFileIds(array $mediaFileIds): void
     {
-        $this->mediaFileId = $mediaFileId;
+        $this->mediaFileIds = $mediaFileIds;
     }
 
     public function setRunId(string $runId): void
@@ -63,9 +63,12 @@ class ProcessMediaMessage
         return $this->contextData;
     }
 
-    public function getMediaFileId(): string
+    /**
+     * @return string[]
+     */
+    public function getMediaFileIds(): array
     {
-        return $this->mediaFileId;
+        return $this->mediaFileIds;
     }
 
     public function getRunId(): string

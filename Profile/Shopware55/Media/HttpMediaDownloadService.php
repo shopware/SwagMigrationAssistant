@@ -19,6 +19,7 @@ use SwagMigrationAssistant\Exception\NoFileSystemPermissionsException;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\AbstractMediaFileProcessor;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileEntity;
+use SwagMigrationAssistant\Migration\MessageQueue\Handler\ProcessMediaHandler;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Shopware55ApiGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Logging\Shopware55LogTypes;
@@ -26,8 +27,6 @@ use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
 class HttpMediaDownloadService extends AbstractMediaFileProcessor
 {
-    private const MEDIA_ERROR_THRESHOLD = 3;
-
     /**
      * @var FileSaver
      */
@@ -132,7 +131,7 @@ class HttpMediaDownloadService extends AbstractMediaFileProcessor
                     $mappedWorkload[$uuid]['errorCount'] = 1;
                 }
 
-                if ($mappedWorkload[$uuid]['errorCount'] > self::MEDIA_ERROR_THRESHOLD) {
+                if ($mappedWorkload[$uuid]['errorCount'] > ProcessMediaHandler::MEDIA_ERROR_THRESHOLD) {
                     $failureUuids[] = $uuid;
                     $mappedWorkload[$uuid]['state'] = 'error';
                     $this->loggingService->addError(
