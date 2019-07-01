@@ -43,6 +43,9 @@ class ProcessMediaMessage
         $this->contextData = $contextData;
     }
 
+    /**
+     * @param string[] $mediaFileIds
+     */
     public function setMediaFileIds(array $mediaFileIds): void
     {
         $this->mediaFileIds = $mediaFileIds;

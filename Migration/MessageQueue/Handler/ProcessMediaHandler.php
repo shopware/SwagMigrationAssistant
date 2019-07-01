@@ -11,6 +11,7 @@ use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorRegistryInterface;
+use SwagMigrationAssistant\Migration\Media\MediaProcessWorkloadStruct;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\ProcessMediaMessage;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
@@ -46,6 +47,8 @@ class ProcessMediaHandler extends AbstractMessageHandler
 
     /**
      * @param ProcessMediaMessage $message
+     *
+     * @throws EntityNotExistsException
      */
     public function handle($message): void
     {
@@ -69,12 +72,11 @@ class ProcessMediaHandler extends AbstractMessageHandler
 
         $workload = [];
         foreach ($message->getMediaFileIds() as $mediaFileId) {
-            $workload[] = [
-                'uuid' => $mediaFileId,
-                'runId' => $message->getRunId(),
-                'currentOffset' => 0,
-                'state' => 'inProgress',
-            ];
+            $workload[] = new MediaProcessWorkloadStruct(
+                $mediaFileId,
+                $message->getRunId(),
+                MediaProcessWorkloadStruct::IN_PROGRESS_STATE
+            );
         }
 
         $processor = $this->mediaFileProcessorRegistry->getProcessor($migrationContext);
@@ -89,6 +91,9 @@ class ProcessMediaHandler extends AbstractMessageHandler
         ];
     }
 
+    /**
+     * @param MediaProcessWorkloadStruct[] $workload
+     */
     private function processFailures(
         Context $context,
         MigrationContext $migrationContext,
@@ -100,7 +105,7 @@ class ProcessMediaHandler extends AbstractMessageHandler
             $errorWorkload = [];
 
             foreach ($workload as $item) {
-                if (isset($item['errorCount']) && $item['errorCount'] > 0) {
+                if ($item->getErrorCount() > 0) {
                     $errorWorkload[] = $item;
                 }
             }
