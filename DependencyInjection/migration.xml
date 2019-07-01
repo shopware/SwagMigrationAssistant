@@ -77,7 +77,7 @@
 
         <service id="SwagMigrationAssistant\Migration\Service\MediaFileProcessorService" public="true">
             <argument type="service" id="swag_migration_media_file.repository"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\Media\MediaFileProcessorRegistry"/>
+            <argument type="service" id="messenger.bus.shopware"/>
         </service>
 
         <service id="SwagMigrationAssistant\Migration\Media\MediaFileProcessorRegistry">
@@ -171,6 +171,13 @@
             <argument type="service" id="swag_migration_mapping.repository"/>
             <argument type="service" id="swag_migration_run.repository"/>
             <argument type="service" id="swag_migration_connection.repository"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Migration\MessageQueue\Handler\ProcessMediaHandler">
+            <tag name="messenger.message_handler" />
+            <argument type="service" id="swag_migration_run.repository"></argument>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Media\MediaFileProcessorRegistry"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
         </service>
     </services>
 </container>

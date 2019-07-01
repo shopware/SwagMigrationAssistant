@@ -14,14 +14,12 @@ use SwagMigrationAssistant\Controller\MigrationController;
 use SwagMigrationAssistant\Exception\EntityNotExistsException;
 use SwagMigrationAssistant\Exception\MigrationContextPropertyMissingException;
 use SwagMigrationAssistant\Exception\MigrationRunUndefinedStatusException;
-use SwagMigrationAssistant\Exception\MigrationWorkloadPropertyMissingException;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistryInterface;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
-use SwagMigrationAssistant\Migration\Media\MediaFileProcessorRegistry;
 use SwagMigrationAssistant\Migration\Media\MediaFileService;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\Run\RunService;
@@ -33,7 +31,6 @@ use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGatew
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Migration\Services\MigrationProfileUuidService;
 use SwagMigrationAssistant\Test\MigrationServicesTrait;
-use SwagMigrationAssistant\Test\Mock\Migration\Media\DummyHttpMediaDownloadService;
 use SwagMigrationAssistant\Test\Mock\Migration\Service\DummyMediaFileProcessorService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -184,11 +181,7 @@ class MigrationControllerTest extends TestCase
             $this->getContainer()->get(MigrationDataWriter::class),
             new DummyMediaFileProcessorService(
                 $this->mediaFileRepo,
-                new MediaFileProcessorRegistry(
-                    [
-                        new DummyHttpMediaDownloadService(),
-                    ]
-                )
+                $this->getContainer()->get('messenger.bus.shopware')
             ),
             $accessTokenService,
             new RunService(
@@ -387,10 +380,10 @@ class MigrationControllerTest extends TestCase
         $result = $this->controller->updateMediaFilesProgress($request, $context);
         $progress = json_decode($result->getContent(), true);
 
-        static::assertSame(14, $progress[2]['entities'][0]['currentCount']);
-        static::assertSame(24, $progress[2]['entities'][0]['total']);
-        static::assertSame(14, $progress[2]['currentCount']);
-        static::assertSame(24, $progress[2]['total']);
+        static::assertSame(14, $progress[0]['entities'][0]['currentCount']);
+        static::assertSame(24, $progress[0]['entities'][0]['total']);
+        static::assertSame(14, $progress[0]['currentCount']);
+        static::assertSame(24, $progress[0]['total']);
     }
 
     public function testUpdateMediaFilesProgressWithoutRunUuid(): void
@@ -464,50 +457,12 @@ class MigrationControllerTest extends TestCase
         static::assertSame(Response::HTTP_OK, $result->getStatusCode());
     }
 
-    public function testFetchMediaUuids(): void
-    {
-        $request = new Request([
-            'runUuid' => $this->runUuid,
-        ]);
-        $context = Context::createDefaultContext();
-        $result = $this->controller->fetchMediaUuids($request, $context);
-        $mediaUuids = json_decode($result->getContent(), true);
-
-        static::assertArrayHasKey('mediaUuids', $mediaUuids);
-        static::assertCount(10, $mediaUuids['mediaUuids']);
-
-        $this->expectException(MigrationWorkloadPropertyMissingException::class);
-        $this->expectExceptionMessage('Required property "runUuid" for migration workload is missing');
-
-        $request = new Request();
-        $this->controller->fetchMediaUuids($request, $context);
-    }
-
     public function testDownloadMedia(): void
     {
-        $inputWorkload = [
-            [
-                'uuid' => Uuid::randomHex(),
-                'currentOffset' => 100,
-                'state' => 'inProgress',
-            ],
-
-            [
-                'uuid' => Uuid::randomHex(),
-                'currentOffset' => 100,
-                'state' => 'inProgress',
-            ],
-
-            [
-                'uuid' => Uuid::randomHex(),
-                'currentOffset' => 100,
-                'state' => 'inProgress',
-            ],
-        ];
-
         $params = [
             'runUuid' => $this->runUuid,
-            'workload' => $inputWorkload,
+            'limit' => 1000,
+            'offset' => 0,
             'fileChunkByteSize' => 1000,
         ];
 
@@ -518,91 +473,14 @@ class MigrationControllerTest extends TestCase
         static::assertSame(['validToken' => false], json_decode($result->getContent(), true));
 
         $params[SwagMigrationAccessTokenService::ACCESS_TOKEN_NAME] = 'testToken';
+
         $request = new Request([], $params);
         $result = $this->controller->processMedia($request, $context);
         $result = json_decode($result->getContent(), true);
 
-        static::assertSame($result['workload'], $inputWorkload);
-
-        $request = new Request([], [
-            'runUuid' => $this->runUuid,
-            SwagMigrationAccessTokenService::ACCESS_TOKEN_NAME => 'testToken',
-        ]);
-        $result = $this->controller->processMedia($request, $context);
-        $result = json_decode($result->getContent(), true);
-
         static::assertSame([
-            'workload' => [],
             'validToken' => true,
         ], $result);
-    }
-
-    public function requiredDownloadMediaProperties(): array
-    {
-        return [
-            ['runUuid'],
-            ['uuid'],
-            ['currentOffset'],
-            ['state'],
-        ];
-    }
-
-    /**
-     * @dataProvider requiredDownloadMediaProperties
-     */
-    public function testDownloadMediaWithMissingProperty(string $missingProperty): void
-    {
-        $inputWorkload = [
-            [
-                'uuid' => Uuid::randomHex(),
-                'currentOffset' => 100,
-                'state' => 'inProgress',
-            ],
-
-            [
-                'uuid' => Uuid::randomHex(),
-                'currentOffset' => 100,
-                'state' => 'inProgress',
-            ],
-
-            [
-                'uuid' => Uuid::randomHex(),
-                'currentOffset' => 100,
-                'state' => 'inProgress',
-            ],
-        ];
-
-        $properties = [
-            'runUuid' => $this->runUuid,
-            'fileChunkByteSize' => 1000,
-        ];
-
-        $requestParamKeys = [
-            'runUuid',
-        ];
-
-        if (!\in_array($missingProperty, $requestParamKeys, true)) {
-            $this->expectException(MigrationWorkloadPropertyMissingException::class);
-
-            foreach ($inputWorkload as &$workload) {
-                unset($workload[$missingProperty]);
-            }
-            unset($workload);
-        } else {
-            $this->expectException(MigrationContextPropertyMissingException::class);
-
-            unset($properties[$missingProperty]);
-        }
-        $properties['workload'] = $inputWorkload;
-
-        $request = new Request([], $properties);
-        $context = Context::createDefaultContext();
-        try {
-            $this->controller->processMedia($request, $context);
-        } catch (\Exception $e) {
-            static::assertSame(Response::HTTP_BAD_REQUEST, $e->getStatusCode());
-            throw $e;
-        }
     }
 
     public function testDownloadMediaWithInvalidRunUuid(): void

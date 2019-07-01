@@ -1,7 +1,6 @@
 import { Application, State } from 'src/core/shopware';
 import StorageBroadcastService from '../storage-broadcaster.service';
 import { WorkerRequest } from './swag-migration-worker-request.service';
-import { WorkerMediaFiles } from './swag-migration-worker-media-files.service';
 import { MIGRATION_STATUS, WorkerStatusManager } from './swag-migration-worker-status-manager.service';
 
 export const MIGRATION_ACCESS_TOKEN_NAME = 'swagMigrationAccessToken';
@@ -392,13 +391,6 @@ class MigrationWorkerService {
 
             // download
             if (statusIndex <= MIGRATION_STATUS.PROCESS_MEDIA_FILES && processMediaFiles) {
-                this._workRunner = new WorkerMediaFiles(
-                    params,
-                    this._workerStatusManager,
-                    this._migrationService,
-                    this._onInterrupt.bind(this)
-                );
-
                 await this._startWorkRunner(
                     MIGRATION_STATUS.PROCESS_MEDIA_FILES,
                     groupStartIndex,

@@ -18,7 +18,9 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\NoFileSystemPermissionsException;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\AbstractMediaFileProcessor;
+use SwagMigrationAssistant\Migration\Media\MediaProcessWorkloadStruct;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileEntity;
+use SwagMigrationAssistant\Migration\MessageQueue\Handler\ProcessMediaHandler;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Shopware55ApiGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Logging\Shopware55LogTypes;
@@ -26,8 +28,6 @@ use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
 class HttpMediaDownloadService extends AbstractMediaFileProcessor
 {
-    private const MEDIA_ERROR_THRESHOLD = 3;
-
     /**
      * @var FileSaver
      */
@@ -64,21 +64,24 @@ class HttpMediaDownloadService extends AbstractMediaFileProcessor
     }
 
     /**
-     * @param array $workload [{ "uuid": "04ed51ccbb2341bc9b352d78e64213fb", "currentOffset": 0, "state": "inProgress" }]
+     * @param MediaProcessWorkloadStruct[] $workload
      *
      * @throws MediaNotFoundException
      * @throws InconsistentCriteriaIdsException
+     *
+     * @return MediaProcessWorkloadStruct[]
      */
     public function process(MigrationContextInterface $migrationContext, Context $context, array $workload, int $fileChunkByteSize): array
     {
         //Map workload with uuids as keys
+        /** @var MediaProcessWorkloadStruct[] $mappedWorkload */
         $mappedWorkload = [];
         $mediaIds = [];
         $runId = $migrationContext->getRunUuid();
 
         foreach ($workload as $work) {
-            $mappedWorkload[$work['uuid']] = $work;
-            $mediaIds[] = $work['uuid'];
+            $mappedWorkload[$work->getMediaId()] = $work;
+            $mediaIds[] = $work->getMediaId();
         }
 
         if (!is_dir('_temp') && !mkdir('_temp') && !is_dir('_temp')) {
@@ -112,36 +115,33 @@ class HttpMediaDownloadService extends AbstractMediaFileProcessor
         $finishedUuids = [];
         foreach ($results as $uuid => $result) {
             $state = $result['state'];
-            $additionalData = $mappedWorkload[$uuid]['additionalData'];
+            $additionalData = $mappedWorkload[$uuid]->getAdditionalData();
 
             $oldWorkloadSearchResult = array_filter(
                 $workload,
-                function ($work) use ($uuid) {
-                    return $work['uuid'] === $uuid;
+                function (MediaProcessWorkloadStruct $work) use ($uuid) {
+                    return $work->getMediaId() === $uuid;
                 }
             );
+
+            /** @var MediaProcessWorkloadStruct $oldWorkload */
             $oldWorkload = array_pop($oldWorkloadSearchResult);
 
             if ($state !== 'fulfilled') {
                 $mappedWorkload[$uuid] = $oldWorkload;
-                $mappedWorkload[$uuid]['additionalData'] = $additionalData;
+                $mappedWorkload[$uuid]->setAdditionalData($additionalData);
+                $mappedWorkload[$uuid]->setErrorCount($mappedWorkload[$uuid]->getErrorCount() + 1);
 
-                if (isset($mappedWorkload[$uuid]['errorCount'])) {
-                    ++$mappedWorkload[$uuid]['errorCount'];
-                } else {
-                    $mappedWorkload[$uuid]['errorCount'] = 1;
-                }
-
-                if ($mappedWorkload[$uuid]['errorCount'] > self::MEDIA_ERROR_THRESHOLD) {
+                if ($mappedWorkload[$uuid]->getErrorCount() > ProcessMediaHandler::MEDIA_ERROR_THRESHOLD) {
                     $failureUuids[] = $uuid;
-                    $mappedWorkload[$uuid]['state'] = 'error';
+                    $mappedWorkload[$uuid]->setState(MediaProcessWorkloadStruct::ERROR_STATE);
                     $this->loggingService->addError(
-                        $mappedWorkload[$uuid]['runId'],
+                        $mappedWorkload[$uuid]->getRunId(),
                         Shopware55LogTypes::CANNOT_DOWNLOAD_MEDIA,
                         '',
                         'Cannot download media.',
                         [
-                            'uri' => $mappedWorkload[$uuid]['additionalData']['uri'],
+                            'uri' => $mappedWorkload[$uuid]->getAdditionalData()['uri'],
                         ]
                     );
                 }
@@ -157,17 +157,17 @@ class HttpMediaDownloadService extends AbstractMediaFileProcessor
             fwrite($fileHandle, $response->getBody()->getContents());
             fclose($fileHandle);
 
-            if ($mappedWorkload[$uuid]['state'] === 'finished') {
+            if ($mappedWorkload[$uuid]->getState() === MediaProcessWorkloadStruct::FINISH_STATE) {
                 //move media to media system
                 $filename = $this->getMediaName($media, $uuid);
-                $this->persistFileToMedia($filePath, $uuid, $filename, (int) $additionalData['file_size'], $fileExtension, $context);
+                $this->persistFileToMedia($filePath, $uuid, $filename, (int) $additionalData['file_size'],
+                    $fileExtension, $context);
                 unlink($filePath);
                 $finishedUuids[] = $uuid;
             }
 
-            if (isset($mappedWorkload[$uuid]['errorCount'], $oldWorkload['errorCount'])
-                && $oldWorkload['errorCount'] === $mappedWorkload[$uuid]['errorCount']) {
-                unset($mappedWorkload[$uuid]['errorCount']);
+            if ($oldWorkload->getErrorCount() === $mappedWorkload[$uuid]->getErrorCount()) {
+                $mappedWorkload[$uuid]->setErrorCount(0);
             }
         }
 
@@ -195,6 +195,7 @@ class HttpMediaDownloadService extends AbstractMediaFileProcessor
      * Start all the download requests for the media in parallel (async) and return the promise array.
      *
      * @param SwagMigrationMediaFileEntity[] $media
+     * @param MediaProcessWorkloadStruct[]   $mappedWorkload
      */
     private function doMediaDownloadRequests(array $media, int $fileChunkByteSize, array &$mappedWorkload, Client $client): array
     {
@@ -204,7 +205,7 @@ class HttpMediaDownloadService extends AbstractMediaFileProcessor
             $additionalData = [];
             $additionalData['file_size'] = $mediaFile->getFileSize();
             $additionalData['uri'] = $mediaFile->getUri();
-            $mappedWorkload[$uuid]['additionalData'] = $additionalData;
+            $mappedWorkload[$uuid]->setAdditionalData($additionalData);
 
             /* Todo: Implement Chunkdownload
             if ($additionalData['file_size'] <= $fileChunkByteSize) {
@@ -239,9 +240,9 @@ class HttpMediaDownloadService extends AbstractMediaFileProcessor
         }
     }
 
-    private function doNormalDownloadRequest(array &$workload, Client $client): ?Promise\PromiseInterface
+    private function doNormalDownloadRequest(MediaProcessWorkloadStruct $workload, Client $client): ?Promise\PromiseInterface
     {
-        $additionalData = $workload['additionalData'];
+        $additionalData = $workload->getAdditionalData();
 
         try {
             $promise = $client->getAsync(
@@ -251,15 +252,11 @@ class HttpMediaDownloadService extends AbstractMediaFileProcessor
                 ]
             );
 
-            $workload['currentOffset'] = $additionalData['file_size'];
-            $workload['state'] = 'finished';
+            $workload->setCurrentOffset($additionalData['file_size']);
+            $workload->setState(MediaProcessWorkloadStruct::FINISH_STATE);
         } catch (\Exception $exception) {
             $promise = null;
-            if (isset($workload['errorCount'])) {
-                ++$workload['errorCount'];
-            } else {
-                $workload['errorCount'] = 1;
-            }
+            $workload->setErrorCount($workload->getErrorCount() + 1);
         }
 
         return $promise;

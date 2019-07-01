@@ -252,7 +252,7 @@
         "result": {
           "success": {
             "title": "The migration was successful",
-            "caption": "We've created a summary for you with all details about the migration process."
+            "caption": "We've created a summary for you with all details about the migration process. Media downloads are processed in the background. "
           },
           "warning": {
             "title": "The migration was successful",

@@ -7,7 +7,5 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 interface MediaFileProcessorServiceInterface
 {
-    public function fetchMediaUuids(string $runUuid, Context $context, int $limit): array;
-
-    public function processMediaFiles(MigrationContextInterface $migrationContext, Context $context, array $workload, int $fileChunkByteSize): array;
+    public function processMediaFiles(MigrationContextInterface $migrationContext, Context $context, int $fileChunkByteSize): void;
 }

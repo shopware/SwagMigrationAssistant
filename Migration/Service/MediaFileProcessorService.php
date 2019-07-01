@@ -7,54 +7,71 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
-use SwagMigrationAssistant\Migration\Media\MediaFileProcessorRegistryInterface;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileEntity;
+use SwagMigrationAssistant\Migration\MessageQueue\Message\ProcessMediaMessage;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 class MediaFileProcessorService implements MediaFileProcessorServiceInterface
 {
+    public const MESSAGE_SIZE = 5;
+
     /**
      * @var EntityRepositoryInterface
      */
     private $mediaFileRepo;
 
     /**
-     * @var MediaFileProcessorRegistryInterface
+     * @var MessageBusInterface
      */
-    private $mediaFileProcessorRegistry;
+    private $messageBus;
 
     public function __construct(
         EntityRepositoryInterface $mediaFileRepo,
-        MediaFileProcessorRegistryInterface $mediaFileProcessorRegistry
+        MessageBusInterface $messageBus
     ) {
         $this->mediaFileRepo = $mediaFileRepo;
-        $this->mediaFileProcessorRegistry = $mediaFileProcessorRegistry;
+        $this->messageBus = $messageBus;
     }
 
-    public function fetchMediaUuids(string $runUuid, Context $context, int $limit): array
+    public function processMediaFiles(MigrationContextInterface $migrationContext, Context $context, int $fileChunkByteSize): void
     {
         $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('runId', $runUuid));
+        $criteria->addFilter(new EqualsFilter('runId', $migrationContext->getRunUuid()));
         $criteria->addFilter(new EqualsFilter('written', true));
-        $criteria->addFilter(new EqualsFilter('processed', false));
-        $criteria->addFilter(new EqualsFilter('processFailure', false));
-        $criteria->setLimit($limit);
+        $criteria->setOffset($migrationContext->getOffset());
+        $criteria->setLimit($migrationContext->getLimit());
         $criteria->addSorting(new FieldSorting('fileSize', FieldSorting::ASCENDING));
         $migrationData = $this->mediaFileRepo->search($criteria, $context);
 
-        $mediaUuids = [];
+        $currentCount = 0;
+        $messageMediaUuids = [];
+        /* @var SwagMigrationMediaFileEntity $mediaFile */
         foreach ($migrationData->getElements() as $mediaFile) {
-            /* @var SwagMigrationMediaFileEntity $mediaFile */
-            $mediaUuids[] = $mediaFile->getMediaId();
+            ++$currentCount;
+            $messageMediaUuids[] = $mediaFile->getMediaId();
+
+            if ($currentCount < self::MESSAGE_SIZE) {
+                continue;
+            }
+
+            $this->addMessageToBus($migrationContext->getRunUuid(), $context, $fileChunkByteSize, $messageMediaUuids);
+            $messageMediaUuids = [];
+            $currentCount = 0;
         }
 
-        return $mediaUuids;
+        if ($currentCount > 0) {
+            $this->addMessageToBus($migrationContext->getRunUuid(), $context, $fileChunkByteSize, $messageMediaUuids);
+        }
     }
 
-    public function processMediaFiles(MigrationContextInterface $migrationContext, Context $context, array $workload, int $fileChunkByteSize): array
+    private function addMessageToBus(string $runUuid, Context $context, int $fileChunkByteSize, array $mediaUuids): void
     {
-        $processor = $this->mediaFileProcessorRegistry->getProcessor($migrationContext);
-
-        return $processor->process($migrationContext, $context, $workload, $fileChunkByteSize);
+        $message = new ProcessMediaMessage();
+        $message->setMediaFileIds($mediaUuids);
+        $message->setRunId($runUuid);
+        $message->setFileChunkByteSize($fileChunkByteSize);
+        $message->withContext($context);
+        $this->messageBus->dispatch($message);
     }
 }

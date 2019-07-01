@@ -14,6 +14,7 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\NoFileSystemPermissionsException;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\AbstractMediaFileProcessor;
+use SwagMigrationAssistant\Migration\Media\MediaProcessWorkloadStruct;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileEntity;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
@@ -65,13 +66,18 @@ class LocalMediaProcessor extends AbstractMediaFileProcessor
         return Shopware55LocalGateway::GATEWAY_NAME;
     }
 
+    /**
+     * @param MediaProcessWorkloadStruct[] $workload
+     *
+     * @return MediaProcessWorkloadStruct[]
+     */
     public function process(MigrationContextInterface $migrationContext, Context $context, array $workload, int $fileChunkByteSize): array
     {
         $mappedWorkload = [];
         $runId = $migrationContext->getRunUuid();
 
         foreach ($workload as $work) {
-            $mappedWorkload[$work['uuid']] = $work;
+            $mappedWorkload[$work->getMediaId()] = $work;
         }
 
         if (!is_dir('_temp') && !mkdir('_temp') && !is_dir('_temp')) {
@@ -99,6 +105,11 @@ class LocalMediaProcessor extends AbstractMediaFileProcessor
         return $mediaSearchResult->getElements();
     }
 
+    /**
+     * @param MediaProcessWorkloadStruct[] $mappedWorkload
+     *
+     * @return MediaProcessWorkloadStruct[]
+     */
     private function getMediaPathMapping(array $media, array $mappedWorkload, MigrationContextInterface $migrationContext): array
     {
         /** @var SwagMigrationMediaFileEntity[] $media */
@@ -106,12 +117,12 @@ class LocalMediaProcessor extends AbstractMediaFileProcessor
             $resolver = $this->getResolver($mediaFile, $migrationContext);
 
             if (!$resolver) {
-                $mappedWorkload[$mediaFile->getMediaId()]['path'] = $mediaFile->getUri();
+                $mappedWorkload[$mediaFile->getMediaId()]->setAdditionalData(['path' => $mediaFile->getUri()]);
 
                 continue;
             }
             $path = $resolver->resolve($mediaFile->getUri(), $migrationContext);
-            $mappedWorkload[$mediaFile->getMediaId()]['path'] = $path;
+            $mappedWorkload[$mediaFile->getMediaId()]->setAdditionalData(['path' => $path]);
         }
 
         return $mappedWorkload;
@@ -128,6 +139,11 @@ class LocalMediaProcessor extends AbstractMediaFileProcessor
         return null;
     }
 
+    /**
+     * @param MediaProcessWorkloadStruct[] $mappedWorkload
+     *
+     * @return MediaProcessWorkloadStruct[]
+     */
     private function copyMediaFiles(
         array $media,
         array $mappedWorkload,
@@ -138,15 +154,15 @@ class LocalMediaProcessor extends AbstractMediaFileProcessor
 
         /** @var SwagMigrationMediaFileEntity[] $media */
         foreach ($media as $mediaFile) {
-            $sourcePath = $mappedWorkload[$mediaFile->getMediaId()]['path'];
+            $sourcePath = $mappedWorkload[$mediaFile->getMediaId()]->getAdditionalData()['path'];
 
             if (!file_exists($sourcePath)) {
                 $resolver = $this->getResolver($mediaFile, $migrationContext);
 
                 if ($resolver === null) {
-                    $mappedWorkload[$mediaFile->getMediaId()]['state'] = 'error';
+                    $mappedWorkload[$mediaFile->getMediaId()]->setState(MediaProcessWorkloadStruct::ERROR_STATE);
                     $this->loggingService->addError(
-                        $mappedWorkload[$mediaFile->getMediaId()]['runId'],
+                        $mappedWorkload[$mediaFile->getMediaId()]->getRunId(),
                         Shopware55LogTypes::SOURCE_FILE_NOT_FOUND,
                         '',
                         'File not found in source system.',
@@ -165,13 +181,13 @@ class LocalMediaProcessor extends AbstractMediaFileProcessor
 
             if (copy($sourcePath, $filePath)) {
                 $fileSize = filesize($filePath);
-                $mappedWorkload[$mediaFile->getMediaId()]['state'] = 'finished';
+                $mappedWorkload[$mediaFile->getMediaId()]->setState(MediaProcessWorkloadStruct::FINISH_STATE);
                 $this->persistFileToMedia($filePath, $mediaFile, $fileSize, $fileExtension, $context);
                 unlink($filePath);
             } else {
-                $mappedWorkload[$mediaFile->getMediaId()]['state'] = 'error';
+                $mappedWorkload[$mediaFile->getMediaId()]->setState(MediaProcessWorkloadStruct::ERROR_STATE);
                 $this->loggingService->addError(
-                    $mappedWorkload[$mediaFile->getMediaId()]['runId'],
+                    $mappedWorkload[$mediaFile->getMediaId()]->getRunId(),
                     Shopware55LogTypes::CANNOT_COPY_MEDIA,
                     '',
                     'Cannot copy media.',

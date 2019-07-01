@@ -185,7 +185,10 @@ class RunService implements RunServiceInterface
                 }
                 $runProgress['currentCount'] = $mediaFileCount;
                 $runProgress['total'] = $mediaFileTotal;
-                break;
+
+                return [
+                    $runProgress,
+                ];
             }
         }
 
