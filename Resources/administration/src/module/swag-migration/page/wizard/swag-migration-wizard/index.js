@@ -4,6 +4,11 @@ import template from './swag-migration-wizard.html.twig';
 import './swag-migration-wizard.scss';
 
 
+const CONNECTION_NAME_ERRORS = Object.freeze({
+    NAME_TO_SHORT: 'SWAG_MIGRATION_CONNECTION_NAME_TO_SHORT',
+    NAME_ALREADY_EXISTS: 'SWAG_MIGRATION_CONNECTION_NAME_ALREADY_EXISTS'
+});
+
 Component.register('swag-migration-wizard', {
     template,
 
@@ -66,7 +71,7 @@ Component.register('swag-migration-wizard', {
             errorMessageSnippet: '',
             migrationProcessStore: State.getStore('migrationProcess'),
             migrationUIStore: State.getStore('migrationUI'),
-            connectionNameErrorSnippet: ''
+            connectionNameErrorCode: ''
         };
     },
 
@@ -388,8 +393,7 @@ Component.register('swag-migration-wizard', {
                 this.createNewConnection().then(() => {
                     this.navigateToNext();
                 }).catch(() => {
-                    this.connectionNameErrorSnippet =
-                        'swag-migration.wizard.pages.connectionCreate.connectionNameExistsError';
+                    this.connectionNameErrorCode = CONNECTION_NAME_ERRORS.NAME_ALREADY_EXISTS;
                     this.isLoading = false;
                 });
                 return;
@@ -501,7 +505,7 @@ Component.register('swag-migration-wizard', {
                     return Promise.reject();
                 }
 
-                this.connectionNameErrorSnippet = '';
+                this.connectionNameErrorCode = '';
                 const newConnection = this.migrationConnectionStore.create();
                 newConnection.profileId = this.selectedProfile.id;
                 newConnection.name = this.connectionName;
@@ -564,11 +568,11 @@ Component.register('swag-migration-wizard', {
         onChangeConnectionName(value) {
             this.connectionName = value;
             if (this.connectionName !== null && this.connectionName.length > 5) {
-                this.connectionNameErrorSnippet = '';
+                this.connectionNameErrorCode = '';
                 return;
             }
 
-            this.connectionNameErrorSnippet = 'swag-migration.wizard.pages.connectionCreate.connectionNameTooShort';
+            this.connectionNameErrorCode = CONNECTION_NAME_ERRORS.NAME_TO_SHORT;
         },
 
         onChildIsLoadingChanged(value) {

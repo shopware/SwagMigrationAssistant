@@ -42,8 +42,6 @@
           "connectionLabel": "Name",
           "connectionPlaceholder": "Namen eintragen",
           "connectionTooltip": "Einen eindeutigen Namen für die Verbindung eingeben.",
-          "connectionNameExistsError": "Der Verbindungsname existiert bereits.",
-          "connectionNameTooShort": "Der Verbindungsname muss mindestens 6 Zeichen lang sein.",
           "hint": {
             "local": "Beachte: Die Shopsysteme müssen auf demselben Server liegen. Du benötigst die Zugangsdaten der Datenbank."
           }
@@ -65,7 +63,6 @@
               "apiKeyLabel": "API-Schlüssel",
               "apiKeyTooltip": "Der API-Schlüssel dient der Sicherheit und Identifizierung.",
               "apiKeyPlaceholder": "Schlüssel einfügen",
-              "apiKeyInvalid": "Der API-Schlüssel hat nicht die richtige Länge ({length}/40 Zeichen).",
               "apiUserLabel": "Benutzername (API-User)",
               "apiUserTooltip": "Benutzername Deines Shopware 5 Backends.",
               "apiUserPlaceholder": "Login-Benutzernamen eintragen",
@@ -412,6 +409,13 @@
         "dataCount": "Datensätze",
         "close": "Schließen"
       }
+    }
+  },
+  "global": {
+    "error-codes": {
+      "SWAG_MIGRATION_CONNECTION_NAME_ALREADY_EXISTS": "Der Verbindungsname existiert bereits.",
+      "SWAG_MIGRATION_CONNECTION_NAME_TO_SHORT": "Der Verbindungsname muss mindestens 6 Zeichen lang sein.",
+      "SWAG_MIGRATION_INVALID_API_KEY": "Der API-Schlüssel hat nicht die richtige Länge ({length}/40 Zeichen)."
     }
   }
 }

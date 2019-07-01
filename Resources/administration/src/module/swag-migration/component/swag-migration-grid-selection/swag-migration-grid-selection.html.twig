@@ -19,7 +19,7 @@
                                           v-model="item.destinationUuid"
                                           @change="onInput"
                                           :placeholder="$tc('swag-migration.index.premappingCard.placeholder')"
-                                          :error="checkForRequiredError(item)">
+                                          :class="getClassesAfterValidation(item)">
                                     <option v-for="choice in choices" :key="choice.uuid" :value="choice.uuid">
                                         {{ choice.description }}
                                     </option>

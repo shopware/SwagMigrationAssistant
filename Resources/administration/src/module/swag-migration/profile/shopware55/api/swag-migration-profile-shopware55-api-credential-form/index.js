@@ -2,6 +2,8 @@ import { Component } from 'src/core/shopware';
 import ShopwareError from 'src/core/data/ShopwareError';
 import template from './swag-migration-profile-shopware55-api-credential-form.html.twig';
 
+const API_KEY_INVALID_ERROR_CODE = 'SWAG_MIGRATION_INVALID_API_KEY';
+
 Component.register('swag-migration-profile-shopware55-api-credential-form', {
     template,
 
@@ -21,7 +23,7 @@ Component.register('swag-migration-profile-shopware55-api-credential-form', {
                 apiUser: '',
                 apiKey: ''
             },
-            apiKeyErrorSnippet: ''
+            apiKeyErrorCode: ''
         };
     },
 
@@ -35,14 +37,15 @@ Component.register('swag-migration-profile-shopware55-api-credential-form', {
         },
 
         apiKeyError() {
-            const code = this.apiKeyErrorSnippet !== '' ? 1 : 0;
-            const detail = this.apiKeyErrorSnippet !== '' ?
-                this.$t(this.apiKeyErrorSnippet, { length: this.apiKeyLength }) :
-                '';
+            if (this.apiKeyErrorCode === '') {
+                return null;
+            }
 
             return new ShopwareError({
-                code,
-                detail
+                code: this.apiKeyErrorCode,
+                parameters: {
+                    length: this.apiKeyLength
+                }
             });
         }
     },
@@ -88,11 +91,11 @@ Component.register('swag-migration-profile-shopware55-api-credential-form', {
 
         apiKeyValid(apiKey) {
             if (apiKey === null || apiKey.length < 40 || apiKey.length > 40) {
-                this.apiKeyErrorSnippet = 'swag-migration.wizard.pages.credentials.shopware55.api.apiKeyInvalid';
+                this.apiKeyErrorCode = API_KEY_INVALID_ERROR_CODE;
                 return false;
             }
 
-            this.apiKeyErrorSnippet = '';
+            this.apiKeyErrorCode = '';
             return true;
         },
 
