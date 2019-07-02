@@ -2,7 +2,6 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware55\Converter;
 
-use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
@@ -67,34 +66,22 @@ class CurrencyConverter extends Shopware55Converter
         $this->mainLocale = $data['_locale'];
         $this->connectionId = $migrationContext->getConnection()->getId();
 
-        $isDefault = false;
-        if (isset($data['standard'])) {
-            $isDefault = (bool) $data['standard'];
+        $currencyUuid = $this->mappingService->getCurrencyUuid($this->connectionId, $data['currency'], $context);
+        if ($currencyUuid !== null) {
+            return new ConvertStruct(null, $data);
         }
 
-        $currencyUuid = $this->mappingService->getCurrencyUuidWithoutMapping($this->connectionId, $data['currency'], $context);
         $converted = [];
-        if ($isDefault) {
-            $defaultCurrency = $this->mappingService->getDefaultCurrency($context);
-            $this->mappingService->createNewUuid($this->connectionId, DefaultEntities::CURRENCY, $defaultCurrency->getIsoCode(), $context, [], $currencyUuid);
+        $converted['id'] = $this->mappingService->createNewUuid($this->connectionId, DefaultEntities::CURRENCY, $data['currency'], $context);
 
-            $converted['id'] = $this->mappingService->createNewUuid($this->connectionId, DefaultEntities::CURRENCY, $data['currency'], $context, [], Defaults::CURRENCY);
-        } else {
-            if ($currencyUuid !== null && $currencyUuid !== Defaults::CURRENCY) {
-                return new ConvertStruct(null, $data);
-            }
-
-            $converted['id'] = $this->mappingService->createNewUuid($this->connectionId, DefaultEntities::CURRENCY, $data['currency'], $context);
-        }
-
+        $converted['isDefault'] = false;
+        unset($data['standard']);
         $this->getCurrencyTranslation($converted, $data);
-
-        $this->convertValue($converted, 'isDefault', $data, 'standard', self::TYPE_BOOLEAN);
         $converted['shortName'] = $data['currency'];
         $converted['isoCode'] = $data['currency'];
         unset($data['currency']);
         $this->convertValue($converted, 'name', $data, 'name');
-        $this->convertValue($converted, 'factor', $data, 'factor', self::TYPE_INTEGER);
+        $this->convertValue($converted, 'factor', $data, 'factor', self::TYPE_FLOAT);
         $this->convertValue($converted, 'position', $data, 'position', self::TYPE_INTEGER);
         $this->convertValue($converted, 'symbol', $data, 'templatechar');
         $converted['placedInFront'] = ((int) $data['symbol_position']) > 16;

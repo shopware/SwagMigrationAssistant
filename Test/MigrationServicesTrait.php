@@ -56,7 +56,8 @@ trait MigrationServicesTrait
         MediaFileServiceInterface $mediaFileService,
         EntityRepositoryInterface $loggingRepo,
         EntityDefinition $dataDefinition,
-        DataSetRegistryInterface $dataSetRegistry
+        DataSetRegistryInterface $dataSetRegistry,
+        EntityRepositoryInterface $currencyRepository
     ): MigrationDataFetcherInterface {
         $loggingService = new LoggingService($loggingRepo);
         $priceRounding = new PriceRounding();
@@ -67,7 +68,8 @@ trait MigrationServicesTrait
                 new Shopware55ApiReader($connectionFactory),
                 new Shopware55ApiEnvironmentReader($connectionFactory),
                 new Shopware55ApiTableReader($connectionFactory),
-                new Shopware55ApiTableCountReader($connectionFactory, $dataSetRegistry)
+                new Shopware55ApiTableCountReader($connectionFactory, $dataSetRegistry),
+                $currencyRepository
             ),
             new DummyLocalGateway(),
         ]));

@@ -163,7 +163,8 @@ class MigrationDataProcessingTest extends TestCase
             $this->getContainer()->get(MediaFileService::class),
             $this->loggingRepo,
             $this->getContainer()->get(SwagMigrationDataDefinition::class),
-            $this->getContainer()->get(DataSetRegistry::class)
+            $this->getContainer()->get(DataSetRegistry::class),
+            $this->getContainer()->get('currency.repository')
         );
         $this->migrationDataConverter = $this->getMigrationDataConverter(
             $this->getContainer()->get(EntityWriter::class),
@@ -181,7 +182,8 @@ class MigrationDataProcessingTest extends TestCase
                     new Shopware55ApiReader($connectionFactory),
                     new Shopware55ApiEnvironmentReader($connectionFactory),
                     new Shopware55ApiTableReader($connectionFactory),
-                    new Shopware55ApiTableCountReader($connectionFactory, $this->getContainer()->get(DataSetRegistry::class))
+                    new Shopware55ApiTableCountReader($connectionFactory, $this->getContainer()->get(DataSetRegistry::class)),
+                    $this->getContainer()->get('currency.repository')
                 ),
                 new DummyLocalGateway(),
             ])),

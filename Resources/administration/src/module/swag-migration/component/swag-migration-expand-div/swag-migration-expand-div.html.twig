@@ -21,7 +21,7 @@
         </div>
 
         <div class="swag-migration-expand-div__slot"
-             v-show="isExpanded">
+             v-if="isExpanded">
             <slot>
                 {% block swag_migration_expand_div_slot %}
                 {% endblock %}

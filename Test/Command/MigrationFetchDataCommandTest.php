@@ -57,7 +57,8 @@ class MigrationFetchDataCommandTest extends TestCase
             $this->getContainer()->get(MediaFileService::class),
             $this->loggingRepo,
             $dataDefinition,
-            $this->getContainer()->get(DataSetRegistry::class)
+            $this->getContainer()->get(DataSetRegistry::class),
+            $this->getContainer()->get('currency.repository')
         );
 
         $this->migrationRunRepo = $this->getContainer()->get('swag_migration_run.repository');

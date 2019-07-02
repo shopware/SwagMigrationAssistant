@@ -195,6 +195,14 @@
         },
         "noData": "Nothing found to migrate."
       },
+      "confirmWarningCard": {
+        "currencyMismatch": {
+          "title": "Migration has recognised another currency",
+          "text": "The currency of the data to be migrated does not match the standard currency [{targetSystemCurrency}]. Data with [{sourceSystemCurrency}] can still be migrated, but it will not be automatically converted. You can adjust the prices manually afterwards.",
+          "question": "Are you sure that the data should be migrated in the standard currency [{targetSystemCurrency}]?",
+          "checkboxLabel": "Yes, I would like to continue"
+        }
+      },
       "premappingCard": {
         "validTitle": "The data check is complete",
         "validCaption": "The data is ready to proceed",

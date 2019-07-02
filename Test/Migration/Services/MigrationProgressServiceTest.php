@@ -177,7 +177,8 @@ class MigrationProgressServiceTest extends TestCase
             $this->getContainer()->get(MediaFileService::class),
             $this->loggingRepo,
             $this->getContainer()->get(SwagMigrationDataDefinition::class),
-            $this->getContainer()->get(DataSetRegistry::class)
+            $this->getContainer()->get(DataSetRegistry::class),
+            $this->getContainer()->get('currency.repository')
         );
 
         $this->progressService = new MigrationProgressService(

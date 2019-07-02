@@ -97,7 +97,7 @@ class CurrencyConverterTest extends TestCase
         static::assertSame('COC', $converted['isoCode']);
         static::assertSame('Kekse', $converted['name']);
         static::assertFalse($converted['isDefault']);
-        static::assertSame(100, $converted['factor']);
+        static::assertSame(100.0, $converted['factor']);
         static::assertSame('COOCIES', $converted['symbol']);
         static::assertFalse($converted['placedInFront']);
         static::assertSame(0, $converted['position']);

@@ -58,15 +58,14 @@
         }
     }
 
-    .swag-migration-premapping__unfilled-alert {
+    .swag-migration-premapping__alert {
         max-width: 800px;
-        margin: 0 auto 40px auto;
-        padding-top: 25px;
-        padding-bottom: 25px;
-    }
+        margin-left: auto;
+        margin-right: auto;
 
-    .sw-alert__icon {
-        top: 25px;
+        @media screen and (max-width: 1360px) {
+            max-width: 770px;
+        }
     }
 
     .swag-migration-premapping__filled-tab-card {
@@ -74,6 +73,7 @@
     }
 
     .swag-migration-premapping__unfilled-card {
+        margin-top: 40px;
         text-align: center;
         font-size: 14px;
     }

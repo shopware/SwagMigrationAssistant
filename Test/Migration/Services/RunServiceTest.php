@@ -154,7 +154,8 @@ class RunServiceTest extends TestCase
                 new Shopware55ApiReader($connectionFactory),
                 new Shopware55ApiEnvironmentReader($connectionFactory),
                 new Shopware55ApiTableReader($connectionFactory),
-                new Shopware55ApiTableCountReader($connectionFactory, $this->dataSetRegistry)
+                new Shopware55ApiTableCountReader($connectionFactory, $this->dataSetRegistry),
+                $this->getContainer()->get('currency.repository')
             ),
             new DummyLocalGateway(),
         ]));
@@ -168,7 +169,8 @@ class RunServiceTest extends TestCase
                 $mediaFileService,
                 $loggingRepo,
                 $this->getContainer()->get(SwagMigrationDataDefinition::class),
-                $this->dataSetRegistry
+                $this->dataSetRegistry,
+                $this->getContainer()->get('currency.repository')
             ),
             new SwagMigrationAccessTokenService($this->runRepo),
             new DataSelectionRegistry([]),

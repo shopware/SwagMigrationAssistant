@@ -122,7 +122,8 @@ class MigrationDownloadMediaCommandTest extends TestCase
             $this->getContainer()->get(MediaFileService::class),
             $this->loggingRepo,
             $dataDefinition,
-            $this->getContainer()->get(DataSetRegistry::class)
+            $this->getContainer()->get(DataSetRegistry::class),
+            $this->getContainer()->get('currency.repository')
         );
 
         $this->migrationWriteService = new MigrationDataWriter(

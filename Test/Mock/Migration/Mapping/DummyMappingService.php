@@ -103,7 +103,7 @@ class DummyMappingService extends MappingService
         return null;
     }
 
-    public function getCurrencyUuid(string $connectionId, string $oldShortName, Context $context): ?string
+    public function getCurrencyUuid(string $connectionId, string $oldIsoCode, Context $context): ?string
     {
         return Defaults::CURRENCY;
     }
@@ -153,7 +153,7 @@ class DummyMappingService extends MappingService
         return Uuid::randomHex();
     }
 
-    public function getCurrencyUuidWithoutMapping(string $connectionId, string $oldShortName, Context $context): ?string
+    public function getCurrencyUuidWithoutMapping(string $connectionId, string $oldIsoCode, Context $context): ?string
     {
         return Uuid::randomHex();
     }

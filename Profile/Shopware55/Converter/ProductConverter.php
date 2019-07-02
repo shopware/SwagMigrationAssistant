@@ -3,6 +3,7 @@
 namespace SwagMigrationAssistant\Profile\Shopware55\Converter;
 
 use Shopware\Core\Content\Product\Aggregate\ProductVisibility\ProductVisibilityDefinition;
+use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Rule\Container\AndRule;
 use Shopware\Core\Framework\Rule\Container\OrRule;
@@ -914,12 +915,24 @@ class ProductConverter extends Shopware55Converter
             return [];
         }
 
-        return [[
+        $price = [];
+        if ($currencyUuid !== Defaults::CURRENCY) {
+            $price[] = [
+                'currencyId' => Defaults::CURRENCY,
+                'gross' => $gross,
+                'net' => (float) $priceData['price'],
+                'linked' => true,
+            ];
+        }
+
+        $price[] = [
             'currencyId' => $currencyUuid,
             'gross' => $gross,
             'net' => (float) $priceData['price'],
             'linked' => true,
-        ]];
+        ];
+
+        return $price;
     }
 
     private function getPrices(array $priceData, array $converted): array

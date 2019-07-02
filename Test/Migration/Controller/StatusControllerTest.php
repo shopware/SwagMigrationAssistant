@@ -170,7 +170,8 @@ class StatusControllerTest extends TestCase
             $this->getContainer()->get(MediaFileService::class),
             $this->getContainer()->get('swag_migration_logging.repository'),
             $this->getContainer()->get(SwagMigrationDataDefinition::class),
-            $this->getContainer()->get(DataSetRegistry::class)
+            $this->getContainer()->get(DataSetRegistry::class),
+            $this->getContainer()->get('currency.repository')
         );
         $this->controller = new StatusController(
             $dataFetcher,

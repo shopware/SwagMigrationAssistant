@@ -233,7 +233,8 @@ class MigrationDataWriterTest extends TestCase
             $this->getContainer()->get(MediaFileService::class),
             $this->loggingRepo,
             $this->getContainer()->get(SwagMigrationDataDefinition::class),
-            $this->getContainer()->get(DataSetRegistry::class)
+            $this->getContainer()->get(DataSetRegistry::class),
+            $this->getContainer()->get('currency.repository')
         );
         $this->migrationDataConverter = $this->getMigrationDataConverter(
             $this->entityWriter,

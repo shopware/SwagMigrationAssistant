@@ -12,7 +12,7 @@ class BasicSettingsMappingService extends DummyMappingService
         return null;
     }
 
-    public function getCurrencyUuid(string $connectionId, string $oldShortName, Context $context): ?string
+    public function getCurrencyUuid(string $connectionId, string $oldIsoCode, Context $context): ?string
     {
         return null;
     }

@@ -1,5 +1,30 @@
 {% block swag_migration_premapping %}
     <div class="swag-migration-premapping">
+        {% block swag_migration_premapping_unfilled_alert %}
+            <sw-alert variant="error"
+                      v-if="!isLoading && !premappingValid"
+                      class="swag-migration-premapping__alert">
+                {{ $tc('swag-migration.index.premappingCard.unfilledAlert') }}
+            </sw-alert>
+        {% endblock %}
+
+        {% block swag_migration_premapping_unfilled_card %}
+            <sw-card class="swag-migration-premapping__unfilled-card"
+                     v-if="!isLoading && !premappingValid">
+                {% block swag_migration_premapping_unfilled_title %}
+                    <div class="swag-migration-premapping__unfilled-title">
+                        {{ $t('swag-migration.index.premappingCard.unfilledTitle') }}
+                    </div>
+                {% endblock %}
+
+                {% block swag_migration_premapping_unfilled_caption %}
+                    <div class="swag-migration-premapping__unfilled-caption">
+                        {{ $t('swag-migration.index.premappingCard.unfilledCaption') }}
+                    </div>
+                {% endblock %}
+            </sw-card>
+        {% endblock %}
+
         {% block swag_migration_premapping_success_card %}
             <sw-card class="swag-migration-premapping__success-card"
                      v-if="!isLoading && premappingValid">
@@ -22,31 +47,6 @@
                 {% block swag_migration_premapping_success_caption %}
                     <div class="swag-migration-premapping__success-caption">
                         {{ $t('swag-migration.index.premappingCard.validCaption') }}
-                    </div>
-                {% endblock %}
-            </sw-card>
-        {% endblock %}
-
-        {% block swag_migration_premapping_unfilled_alert %}
-            <sw-alert variant="error"
-                      v-if="!isLoading && !premappingValid"
-                      class="swag-migration-premapping__unfilled-alert">
-                {{ $tc('swag-migration.index.premappingCard.unfilledAlert') }}
-            </sw-alert>
-        {% endblock %}
-
-        {% block swag_migration_premapping_unfilled_card %}
-            <sw-card class="swag-migration-premapping__unfilled-card"
-                     v-if="!isLoading && !premappingValid">
-                {% block swag_migration_premapping_unfilled_title %}
-                    <div class="swag-migration-premapping__unfilled-title">
-                        {{ $t('swag-migration.index.premappingCard.unfilledTitle') }}
-                    </div>
-                {% endblock %}
-
-                {% block swag_migration_premapping_unfilled_caption %}
-                    <div class="swag-migration-premapping__unfilled-caption">
-                        {{ $t('swag-migration.index.premappingCard.unfilledCaption') }}
                     </div>
                 {% endblock %}
             </sw-card>

@@ -42,7 +42,8 @@ Component.register('swag-migration-process-screen', {
             displayFlowChart: true,
             flowChartItemIndex: 0,
             flowChartItemVariant: 'info',
-            flowChartInitialItemVariants: []
+            flowChartInitialItemVariants: [],
+            isWarningConfirmed: false
         };
     },
 
@@ -126,7 +127,10 @@ Component.register('swag-migration-process-screen', {
         startButtonDisabled() {
             return this.migrationUIStore.state.isLoading ||
                 (this.migrationProcessStore.state.statusIndex === MIGRATION_STATUS.PREMAPPING &&
-                    this.migrationProcessStore.state.isMigrating && !this.migrationUIStore.state.isPremappingValid);
+                    this.migrationUIStore.state.componentIndex !== UI_COMPONENT_INDEX.WARNING_CONFIRM &&
+                    this.migrationProcessStore.state.isMigrating && !this.migrationUIStore.state.isPremappingValid) ||
+                (this.migrationUIStore.state.componentIndex === UI_COMPONENT_INDEX.WARNING_CONFIRM &&
+                    this.isWarningConfirmed === false);
         },
 
         /**
@@ -329,7 +333,10 @@ Component.register('swag-migration-process-screen', {
             this.displayFlowChart = true;
 
             // show loading or premapping screen
-            if (this.migrationProcessStore.state.statusIndex === MIGRATION_STATUS.PREMAPPING) {
+            if (this.migrationProcessStore.state.statusIndex === MIGRATION_STATUS.PREMAPPING &&
+                this.migrationUIStore.state.componentIndex === UI_COMPONENT_INDEX.WARNING_CONFIRM) {
+                this.migrationUIStore.setComponentIndex(UI_COMPONENT_INDEX.WARNING_CONFIRM);
+            } else if (this.migrationProcessStore.state.statusIndex === MIGRATION_STATUS.PREMAPPING) {
                 this.migrationUIStore.setComponentIndex(UI_COMPONENT_INDEX.PREMAPPING);
             } else if (this.migrationProcessStore.state.statusIndex === MIGRATION_STATUS.FINISHED) {
                 if (this.migrationProcessStore.state.errors.length > 0) {
@@ -381,6 +388,11 @@ Component.register('swag-migration-process-screen', {
         },
 
         onStartButtonClick() {
+            if (this.migrationUIStore.state.componentIndex === UI_COMPONENT_INDEX.WARNING_CONFIRM) {
+                this.migrationUIStore.setComponentIndex(UI_COMPONENT_INDEX.PREMAPPING);
+                return;
+            }
+
             this.migrationUIStore.setIsLoading(true);
             this.migrationService.writePremapping(
                 this.migrationProcessStore.state.runId,
@@ -489,7 +501,16 @@ Component.register('swag-migration-process-screen', {
 
                     localStorage.setItem(MIGRATION_ACCESS_TOKEN_NAME, runState.accessToken);
                     this.migrationProcessStore.setRunId(runState.runUuid);
-                    this.migrationUIStore.setComponentIndex(UI_COMPONENT_INDEX.PREMAPPING);
+
+                    if (this.migrationProcessStore.state.environmentInformation.sourceSystemCurrency !== '' &&
+                        this.migrationProcessStore.state.environmentInformation.targetSystemCurrency !== '' &&
+                        this.migrationProcessStore.state.environmentInformation.sourceSystemCurrency !==
+                            this.migrationProcessStore.state.environmentInformation.targetSystemCurrency) {
+                        this.migrationUIStore.setComponentIndex(UI_COMPONENT_INDEX.WARNING_CONFIRM);
+                    } else {
+                        this.migrationUIStore.setComponentIndex(UI_COMPONENT_INDEX.PREMAPPING);
+                    }
+
                     this.migrationUIStore.setIsLoading(false);
                 });
             });
@@ -672,6 +693,10 @@ Component.register('swag-migration-process-screen', {
             this.isOtherMigrationRunning = true;
             this.migrationUIStore.setComponentIndex(UI_COMPONENT_INDEX.TAKEOVER);
             this.migrationUIStore.setIsLoading(false);
+        },
+
+        onWarningConfirmationChanged(confirmed) {
+            this.isWarningConfirmed = confirmed;
         }
     }
 });
