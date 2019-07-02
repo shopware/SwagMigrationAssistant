@@ -7,11 +7,6 @@
     <services>
         <!-- Shopware 5.5 Profile -->
         <service id="SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile">
-            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\Converter\ConverterRegistry"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\Media\MediaFileService"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition"/>
             <tag name="shopware.migration.profile"/>
         </service>
 
@@ -23,6 +18,7 @@
             <argument type="service" id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\ReaderRegistry" />
             <argument type="service" id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalEnvironmentReader" />
             <argument type="service" id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalTableReader" />
+            <argument type="service" id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalTableCountReader" />
             <argument type="service" id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Connection\ConnectionFactory" />
             <tag name="shopware.migration.gateway" />
         </service>
@@ -31,6 +27,7 @@
             <argument type="service" id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiReader" />
             <argument type="service" id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiEnvironmentReader" />
             <argument type="service" id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiTableReader" />
+            <argument type="service" id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiTableCountReader" />
             <tag name="shopware.migration.gateway" />
         </service>
 
@@ -47,6 +44,11 @@
             <argument type="service" id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Connection\ConnectionFactory" />
         </service>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiTableCountReader">
+            <argument type="service" id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Connection\ConnectionFactory" />
+            <argument type="service" id="SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry" />
+        </service>
+
         <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\ReaderRegistry">
             <argument type="tagged" tag="shopware.migration.local_reader"/>
         </service>
@@ -61,6 +63,11 @@
 
         <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalTableReader">
             <argument type="service" id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Connection\ConnectionFactory" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalTableCountReader">
+            <argument type="service" id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Connection\ConnectionFactory" />
+            <argument type="service" id="SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry" />
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalAttributeReader"

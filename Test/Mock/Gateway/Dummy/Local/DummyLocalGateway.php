@@ -89,4 +89,9 @@ class DummyLocalGateway implements GatewayInterface
             $environmentData['requestStatus']
         );
     }
+
+    public function readTotals(MigrationContextInterface $migrationContext): array
+    {
+        return [];
+    }
 }

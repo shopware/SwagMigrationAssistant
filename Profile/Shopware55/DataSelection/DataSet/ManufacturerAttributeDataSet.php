@@ -12,9 +12,9 @@ class ManufacturerAttributeDataSet extends Shopware55DataSet
         return DefaultEntities::PRODUCT_MANUFACTURER_CUSTOM_FIELD;
     }
 
-    public function supports(string $profileName, string $entity): bool
+    public function supports(string $profileName): bool
     {
-        return $profileName === Shopware55Profile::PROFILE_NAME && $entity === self::getEntity();
+        return $profileName === Shopware55Profile::PROFILE_NAME;
     }
 
     public function getApiRoute(): string

@@ -14,6 +14,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
+use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Media\CliMediaDownloadService;
 use SwagMigrationAssistant\Migration\Media\MediaFileService;
@@ -105,7 +106,8 @@ class MediaDownloadServiceTest extends TestCase
             $this->getContainer()->get(MappingService::class),
             $this->getContainer()->get(MediaFileService::class),
             $this->getContainer()->get('swag_migration_logging.repository'),
-            $this->getContainer()->get(SwagMigrationDataDefinition::class)
+            $this->getContainer()->get(SwagMigrationDataDefinition::class),
+            $this->getContainer()->get(DataSetRegistry::class)
         );
 
         $this->mediaDownloadService = new CliMediaDownloadService($migrationMapping, $fileSaver, $eventDispatcher, $this->logger);

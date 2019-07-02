@@ -61,9 +61,16 @@
 
         <service id="SwagMigrationAssistant\Migration\Service\MigrationDataFetcher"
                  public="true">
-            <argument type="service" id="SwagMigrationAssistant\Migration\Profile\ProfileRegistry"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Gateway\GatewayRegistry"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Migration\Service\MigrationDataConverter" public="true">
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter" />
+            <argument type="service" id="SwagMigrationAssistant\Migration\Converter\ConverterRegistry" />
+            <argument type="service" id="SwagMigrationAssistant\Migration\Media\MediaFileService" />
+            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService" />
+            <argument type="service" id="SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition" />
         </service>
 
         <service id="SwagMigrationAssistant\Migration\Service\MigrationDataWriter" public="true">
@@ -103,6 +110,7 @@
 
         <service id="SwagMigrationAssistant\Controller\MigrationController" public="true">
             <argument type="service" id="SwagMigrationAssistant\Migration\Service\MigrationDataFetcher"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Service\MigrationDataConverter" />
             <argument type="service" id="SwagMigrationAssistant\Migration\Service\MigrationDataWriter"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Service\MediaFileProcessorService"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService"/>

@@ -13,10 +13,15 @@ interface MigrationDataFetcherInterface
      * and tries to convert it into the internal structure.
      * Returns the count of the imported data
      */
-    public function fetchData(MigrationContextInterface $migrationContext, Context $context): int;
+    public function fetchData(MigrationContextInterface $migrationContext, Context $context): array;
 
     /**
      * Reads the complete environment information from the source system
      */
     public function getEnvironmentInformation(MigrationContextInterface $migrationContext): EnvironmentInformation;
+
+    /**
+     * Reads the totals of the data sets / db tables
+     */
+    public function fetchTotals(MigrationContextInterface $migrationContext): array;
 }

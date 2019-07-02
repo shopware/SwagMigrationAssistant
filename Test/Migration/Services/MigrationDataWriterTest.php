@@ -17,12 +17,14 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataEntity;
+use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\LogType;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Media\MediaFileService;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
+use SwagMigrationAssistant\Migration\Service\MigrationDataConverterInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataWriter;
 use SwagMigrationAssistant\Migration\Service\MigrationDataWriterInterface;
@@ -90,6 +92,11 @@ class MigrationDataWriterTest extends TestCase
      * @var MigrationDataFetcherInterface
      */
     private $migrationDataFetcher;
+
+    /**
+     * @var MigrationDataConverterInterface
+     */
+    private $migrationDataConverter;
 
     /**
      * @var MigrationDataWriterInterface
@@ -225,6 +232,14 @@ class MigrationDataWriterTest extends TestCase
             $this->mappingService,
             $this->getContainer()->get(MediaFileService::class),
             $this->loggingRepo,
+            $this->getContainer()->get(SwagMigrationDataDefinition::class),
+            $this->getContainer()->get(DataSetRegistry::class)
+        );
+        $this->migrationDataConverter = $this->getMigrationDataConverter(
+            $this->entityWriter,
+            $this->mappingService,
+            $this->getContainer()->get(MediaFileService::class),
+            $this->loggingRepo,
             $this->getContainer()->get(SwagMigrationDataDefinition::class)
         );
 
@@ -266,7 +281,8 @@ class MigrationDataWriterTest extends TestCase
             250
         );
 
-        $this->migrationDataFetcher->fetchData($migrationContext, $context);
+        $data = $this->migrationDataFetcher->fetchData($migrationContext, $context);
+        $this->migrationDataConverter->convert($data, $migrationContext, $context);
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('entity', 'customer'));
@@ -306,7 +322,8 @@ class MigrationDataWriterTest extends TestCase
             250
         );
 
-        $this->migrationDataFetcher->fetchData($migrationContext, $context);
+        $data = $this->migrationDataFetcher->fetchData($migrationContext, $context);
+        $this->migrationDataConverter->convert($data, $migrationContext, $context);
         $criteria = new Criteria();
         $customerTotalBefore = $this->customerRepo->search($criteria, $context)->getTotal();
 
@@ -329,7 +346,8 @@ class MigrationDataWriterTest extends TestCase
             0,
             250
         );
-        $this->migrationDataFetcher->fetchData($userMigrationContext, $context);
+        $data = $this->migrationDataFetcher->fetchData($userMigrationContext, $context);
+        $this->migrationDataConverter->convert($data, $userMigrationContext, $context);
         $this->clearCacheBefore();
 
         $context->scope(Context::USER_SCOPE, function (Context $context) use ($userMigrationContext) {
@@ -349,7 +367,8 @@ class MigrationDataWriterTest extends TestCase
         $criteria = new Criteria();
 
         // Get data before writing
-        $this->migrationDataFetcher->fetchData($migrationContext, $context);
+        $data = $this->migrationDataFetcher->fetchData($migrationContext, $context);
+        $this->migrationDataConverter->convert($data, $migrationContext, $context);
         $this->clearCacheBefore();
 
         $orderTotalBefore = $this->orderRepo->search($criteria, $context)->getTotal();
@@ -374,7 +393,8 @@ class MigrationDataWriterTest extends TestCase
             250
         );
 
-        $this->migrationDataFetcher->fetchData($migrationContext, $context);
+        $data = $this->migrationDataFetcher->fetchData($migrationContext, $context);
+        $this->migrationDataConverter->convert($data, $migrationContext, $context);
         $criteria = new Criteria();
         $totalBefore = $this->mediaRepo->search($criteria, $context)->getTotal();
 
@@ -397,7 +417,8 @@ class MigrationDataWriterTest extends TestCase
             250
         );
 
-        $this->migrationDataFetcher->fetchData($migrationContext, $context);
+        $data = $this->migrationDataFetcher->fetchData($migrationContext, $context);
+        $this->migrationDataConverter->convert($data, $migrationContext, $context);
         $criteria = new Criteria();
         $totalBefore = $this->categoryRepo->search($criteria, $context)->getTotal();
 
@@ -421,7 +442,8 @@ class MigrationDataWriterTest extends TestCase
         );
 
         $this->clearCacheBefore();
-        $this->migrationDataFetcher->fetchData($migrationContext, $context);
+        $data = $this->migrationDataFetcher->fetchData($migrationContext, $context);
+        $this->migrationDataConverter->convert($data, $migrationContext, $context);
 
         $criteria = new Criteria();
         $productTotalBefore = $this->productRepo->search($criteria, $context)->getTotal();
@@ -444,7 +466,8 @@ class MigrationDataWriterTest extends TestCase
             0,
             250
         );
-        $this->migrationDataFetcher->fetchData($migrationContext, $context);
+        $data = $this->migrationDataFetcher->fetchData($migrationContext, $context);
+        $this->migrationDataConverter->convert($data, $migrationContext, $context);
         $this->dummyDataWriter->writeData($migrationContext, $context);
 
         $logs = $this->loggingService->getLoggingArray();

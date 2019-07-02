@@ -71,7 +71,9 @@ class RunService implements RunServiceInterface
      */
     private $indexer;
 
-    /** @var TagAwareAdapter */
+    /**
+     * @var TagAwareAdapter
+     */
     private $cache;
 
     /**

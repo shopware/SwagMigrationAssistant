@@ -15,6 +15,7 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry;
+use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Media\MediaFileService;
@@ -180,7 +181,8 @@ class MigrationProgressServiceTest extends TestCase
             $this->getContainer()->get(MappingService::class),
             $this->getContainer()->get(MediaFileService::class),
             $this->loggingRepo,
-            $this->getContainer()->get(SwagMigrationDataDefinition::class)
+            $this->getContainer()->get(SwagMigrationDataDefinition::class),
+            $this->getContainer()->get(DataSetRegistry::class)
         );
 
         $this->progressService = new MigrationProgressService(

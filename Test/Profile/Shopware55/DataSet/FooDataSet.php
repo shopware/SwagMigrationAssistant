@@ -11,7 +11,7 @@ class FooDataSet extends Shopware55DataSet
         return 'foo';
     }
 
-    public function supports(string $profileName, string $entity): bool
+    public function supports(string $profileName): bool
     {
         return true;
     }

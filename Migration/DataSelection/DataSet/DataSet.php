@@ -6,5 +6,10 @@ abstract class DataSet
 {
     abstract public static function getEntity(): string;
 
-    abstract public function supports(string $profileName, string $entity): bool;
+    abstract public function supports(string $profileName): bool;
+
+    public function getCountingInformation(): ?CountingInformationStruct
+    {
+        return null;
+    }
 }

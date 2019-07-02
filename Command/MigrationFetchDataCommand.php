@@ -201,7 +201,7 @@ class MigrationFetchDataCommand extends Command
                 $this->limit
             );
             $importedCount = $this->migrationDataFetcher->fetchData($migrationContext, $context);
-            $progressBar->advance($importedCount);
+            $progressBar->advance(\count($importedCount));
         }
 
         $progressBar->finish();

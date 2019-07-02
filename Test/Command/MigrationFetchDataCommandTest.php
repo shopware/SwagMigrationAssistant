@@ -8,6 +8,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagMigrationAssistant\Command\MigrationFetchDataCommand;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
+use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Media\MediaFileService;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
@@ -55,7 +56,8 @@ class MigrationFetchDataCommandTest extends TestCase
             $this->getContainer()->get(MappingService::class),
             $this->getContainer()->get(MediaFileService::class),
             $this->loggingRepo,
-            $dataDefinition
+            $dataDefinition,
+            $this->getContainer()->get(DataSetRegistry::class)
         );
 
         $this->migrationRunRepo = $this->getContainer()->get('swag_migration_run.repository');

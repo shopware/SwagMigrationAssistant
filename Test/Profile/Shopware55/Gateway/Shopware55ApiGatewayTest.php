@@ -3,12 +3,15 @@
 namespace SwagMigrationAssistant\Test\Profile\Shopware55\Gateway;
 
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use SwagMigrationAssistant\Exception\GatewayReadException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiEnvironmentReader;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiReader;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiTableCountReader;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiTableReader;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Shopware55ApiGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Connection\ConnectionFactory;
@@ -16,6 +19,8 @@ use SwagMigrationAssistant\Test\Profile\Shopware55\DataSet\FooDataSet;
 
 class Shopware55ApiGatewayTest extends TestCase
 {
+    use KernelTestBehaviour;
+
     public function testReadFailed(): void
     {
         $migrationContext = new MigrationContext(
@@ -30,11 +35,13 @@ class Shopware55ApiGatewayTest extends TestCase
         $apiReader = new Shopware55ApiReader($connectionFactory);
         $environmentReader = new Shopware55ApiEnvironmentReader($connectionFactory);
         $tableReader = new Shopware55ApiTableReader($connectionFactory);
+        $tableCountReader = new Shopware55ApiTableCountReader($connectionFactory, $this->getContainer()->get(DataSetRegistry::class));
 
         $gateway = new Shopware55ApiGateway(
             $apiReader,
             $environmentReader,
-            $tableReader
+            $tableReader,
+            $tableCountReader
         );
         $gateway->read($migrationContext);
     }
@@ -49,11 +56,13 @@ class Shopware55ApiGatewayTest extends TestCase
         $apiReader = new Shopware55ApiReader($connectionFactory);
         $environmentReader = new Shopware55ApiEnvironmentReader($connectionFactory);
         $tableReader = new Shopware55ApiTableReader($connectionFactory);
+        $tableCountReader = new Shopware55ApiTableCountReader($connectionFactory, $this->getContainer()->get(DataSetRegistry::class));
 
         $gateway = new Shopware55ApiGateway(
             $apiReader,
             $environmentReader,
-            $tableReader
+            $tableReader,
+            $tableCountReader
         );
         /** @var EnvironmentInformation $response */
         $response = $gateway->readEnvironmentInformation($migrationContext);
