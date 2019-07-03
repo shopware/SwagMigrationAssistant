@@ -161,7 +161,6 @@ class CustomerConverter extends Shopware55Converter
             }
         }
 
-        $this->convertValue($converted, 'password', $data, 'password');
         $this->convertValue($converted, 'active', $data, 'active', self::TYPE_BOOLEAN);
         $this->convertValue($converted, 'email', $data, 'email');
         $this->convertValue($converted, 'guest', $data, 'accountmode', self::TYPE_BOOLEAN);
@@ -178,7 +177,8 @@ class CustomerConverter extends Shopware55Converter
         $this->convertValue($converted, 'customerNumber', $data, 'customernumber');
         $this->convertValue($converted, 'birthday', $data, 'birthday', self::TYPE_DATETIME);
         $this->convertValue($converted, 'lockedUntil', $data, 'lockeduntil', self::TYPE_DATETIME);
-        $this->convertValue($converted, 'encoder', $data, 'encoder');
+
+        $this->setPassword($data, $converted);
 
         if (!isset($converted['customerNumber']) || $converted['customerNumber'] === '') {
             $converted['customerNumber'] = 'number-' . $this->oldCustomerId;
@@ -283,6 +283,21 @@ class CustomerConverter extends Shopware55Converter
         }
 
         return new ConvertStruct($converted, $data);
+    }
+
+    protected function setPassword(array &$data, array &$converted)
+    {
+        $originalEncoder = $data['encoder'];
+
+        if ($originalEncoder === 'md5' || $originalEncoder === 'sha256') {
+            $converted['legacyPassword'] = $data['password'];
+            $converted['legacyEncoder'] = ucfirst($originalEncoder);
+            unset($data['password'], $data['encoder']);
+
+            return;
+        }
+        $converted['password'] = $data['password'];
+        unset($data['password'], $data['encoder']);
     }
 
     private function getDefaultPaymentMethod(array $originalData): ?string
