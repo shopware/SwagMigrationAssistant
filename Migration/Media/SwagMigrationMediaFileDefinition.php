@@ -28,6 +28,7 @@ class SwagMigrationMediaFileDefinition extends EntityDefinition
         return new FieldCollection([
             (new IdField('id', 'id'))->setFlags(new PrimaryKey(), new Required()),
             (new FkField('run_id', 'runId', SwagMigrationRunDefinition::class))->setFlags(new Required()),
+            (new StringField('entity', 'entity'))->setFlags(new Required()),
             (new StringField('uri', 'uri'))->setFlags(new Required()),
             (new StringField('file_name', 'fileName'))->setFlags(new Required()),
             (new IntField('file_size', 'fileSize'))->setFlags(new Required()),

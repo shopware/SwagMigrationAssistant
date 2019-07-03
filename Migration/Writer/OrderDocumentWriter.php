@@ -28,7 +28,7 @@ class OrderDocumentWriter implements WriterInterface
 
     public function supports(): string
     {
-        return DefaultEntities::ORDER_DOCUMENTS;
+        return DefaultEntities::ORDER_DOCUMENT;
     }
 
     public function writeData(array $data, Context $context): void

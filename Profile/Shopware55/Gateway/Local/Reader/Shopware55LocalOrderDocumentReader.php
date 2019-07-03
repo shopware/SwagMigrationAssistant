@@ -11,7 +11,7 @@ class Shopware55LocalOrderDocumentReader extends Shopware55LocalAbstractReader i
 {
     public function supports(string $profileName, DataSet $dataSet): bool
     {
-        return $profileName === Shopware55Profile::PROFILE_NAME && $dataSet::getEntity() === DefaultEntities::ORDER_DOCUMENTS;
+        return $profileName === Shopware55Profile::PROFILE_NAME && $dataSet::getEntity() === DefaultEntities::ORDER_DOCUMENT;
     }
 
     public function read(MigrationContextInterface $migrationContext, array $params = []): array

@@ -3,8 +3,7 @@
 namespace SwagMigrationAssistant\Profile\Shopware55\Media;
 
 use Shopware\Core\Content\Media\Exception\DuplicatedMediaFileNameException;
-use Shopware\Core\Content\Media\File\FileSaver;
-use Shopware\Core\Content\Media\File\MediaFile;
+use Shopware\Core\Content\Media\MediaService;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -17,19 +16,13 @@ use SwagMigrationAssistant\Migration\Media\AbstractMediaFileProcessor;
 use SwagMigrationAssistant\Migration\Media\MediaProcessWorkloadStruct;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileEntity;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\MediaDataSet;
+use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\OrderDocumentDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Logging\Shopware55LogTypes;
-use SwagMigrationAssistant\Profile\Shopware55\Media\Strategy\StrategyResolverInterface;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
-class LocalMediaProcessor extends AbstractMediaFileProcessor
+class LocalOrderDocumentProcessor extends AbstractMediaFileProcessor
 {
-    /**
-     * @var FileSaver
-     */
-    private $fileSaver;
-
     /**
      * @var EntityRepositoryInterface
      */
@@ -41,20 +34,18 @@ class LocalMediaProcessor extends AbstractMediaFileProcessor
     private $loggingService;
 
     /**
-     * @var StrategyResolverInterface[]
+     * @var MediaService
      */
-    private $resolver;
+    private $mediaService;
 
     public function __construct(
         EntityRepositoryInterface $migrationMediaFileRepo,
-        FileSaver $fileSaver,
-        LoggingServiceInterface $loggingService,
-        iterable $resolver
+        MediaService $mediaService,
+        LoggingServiceInterface $loggingService
     ) {
         $this->mediaFileRepo = $migrationMediaFileRepo;
-        $this->fileSaver = $fileSaver;
+        $this->mediaService = $mediaService;
         $this->loggingService = $loggingService;
-        $this->resolver = $resolver;
     }
 
     public function getSupportedProfileName(): string
@@ -69,16 +60,15 @@ class LocalMediaProcessor extends AbstractMediaFileProcessor
 
     public function getSupportedEntity(): string
     {
-        return MediaDataSet::getEntity();
+        return OrderDocumentDataSet::getEntity();
     }
 
-    /**
-     * @param MediaProcessWorkloadStruct[] $workload
-     *
-     * @return MediaProcessWorkloadStruct[]
-     */
-    public function process(MigrationContextInterface $migrationContext, Context $context, array $workload, int $fileChunkByteSize): array
-    {
+    public function process(
+        MigrationContextInterface $migrationContext,
+        Context $context,
+        array $workload,
+        int $fileChunkByteSize
+    ): array {
         $mappedWorkload = [];
         $runId = $migrationContext->getRunUuid();
 
@@ -96,7 +86,6 @@ class LocalMediaProcessor extends AbstractMediaFileProcessor
 
         /** @var SwagMigrationMediaFileEntity[] $media */
         $media = $this->getMediaFiles(array_keys($mappedWorkload), $migrationContext->getRunUuid(), $context);
-        $mappedWorkload = $this->getMediaPathMapping($media, $mappedWorkload, $migrationContext);
 
         return $this->copyMediaFiles($media, $mappedWorkload, $migrationContext, $context);
     }
@@ -116,40 +105,6 @@ class LocalMediaProcessor extends AbstractMediaFileProcessor
      *
      * @return MediaProcessWorkloadStruct[]
      */
-    private function getMediaPathMapping(array $media, array $mappedWorkload, MigrationContextInterface $migrationContext): array
-    {
-        /** @var SwagMigrationMediaFileEntity[] $media */
-        foreach ($media as $mediaFile) {
-            $resolver = $this->getResolver($mediaFile, $migrationContext);
-
-            if (!$resolver) {
-                $mappedWorkload[$mediaFile->getMediaId()]->setAdditionalData(['path' => $mediaFile->getUri()]);
-
-                continue;
-            }
-            $path = $resolver->resolve($mediaFile->getUri(), $migrationContext);
-            $mappedWorkload[$mediaFile->getMediaId()]->setAdditionalData(['path' => $path]);
-        }
-
-        return $mappedWorkload;
-    }
-
-    private function getResolver(SwagMigrationMediaFileEntity $mediaFile, MigrationContextInterface $migrationContext): ?StrategyResolverInterface
-    {
-        foreach ($this->resolver as $resolver) {
-            if ($resolver->supports($mediaFile->getUri(), $migrationContext)) {
-                return $resolver;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * @param MediaProcessWorkloadStruct[] $mappedWorkload
-     *
-     * @return MediaProcessWorkloadStruct[]
-     */
     private function copyMediaFiles(
         array $media,
         array $mappedWorkload,
@@ -160,48 +115,26 @@ class LocalMediaProcessor extends AbstractMediaFileProcessor
 
         /** @var SwagMigrationMediaFileEntity[] $media */
         foreach ($media as $mediaFile) {
-            $sourcePath = $mappedWorkload[$mediaFile->getMediaId()]->getAdditionalData()['path'];
+            $sourcePath = $migrationContext->getConnection()->getCredentialFields()['installationRoot'] . '/files/documents/' . $mediaFile->getFileName() . '.pdf';
 
             if (!file_exists($sourcePath)) {
-                $resolver = $this->getResolver($mediaFile, $migrationContext);
-
-                if ($resolver === null) {
-                    $mappedWorkload[$mediaFile->getMediaId()]->setState(MediaProcessWorkloadStruct::ERROR_STATE);
-                    $this->loggingService->addError(
-                        $mappedWorkload[$mediaFile->getMediaId()]->getRunId(),
-                        Shopware55LogTypes::SOURCE_FILE_NOT_FOUND,
-                        '',
-                        'File not found in source system.',
-                        [
-                            'path' => $sourcePath,
-                        ]
-                    );
-                    $processedMedia[] = $mediaFile->getMediaId();
-
-                    continue;
-                }
-            }
-
-            $fileExtension = pathinfo($sourcePath, PATHINFO_EXTENSION);
-            $filePath = sprintf('_temp/%s.%s', $mediaFile->getId(), $fileExtension);
-
-            if (copy($sourcePath, $filePath)) {
-                $fileSize = filesize($filePath);
-                $mappedWorkload[$mediaFile->getMediaId()]->setState(MediaProcessWorkloadStruct::FINISH_STATE);
-                $this->persistFileToMedia($filePath, $mediaFile, $fileSize, $fileExtension, $context);
-                unlink($filePath);
-            } else {
                 $mappedWorkload[$mediaFile->getMediaId()]->setState(MediaProcessWorkloadStruct::ERROR_STATE);
                 $this->loggingService->addError(
                     $mappedWorkload[$mediaFile->getMediaId()]->getRunId(),
-                    Shopware55LogTypes::CANNOT_COPY_MEDIA,
+                    Shopware55LogTypes::SOURCE_FILE_NOT_FOUND,
                     '',
-                    'Cannot copy media.',
+                    'File not found in source system.',
                     [
                         'path' => $sourcePath,
                     ]
                 );
+                $processedMedia[] = $mediaFile->getMediaId();
+
+                continue;
             }
+
+            $mappedWorkload[$mediaFile->getMediaId()]->setState(MediaProcessWorkloadStruct::FINISH_STATE);
+            $this->persistFileToMedia($sourcePath, $mediaFile, $context);
             $processedMedia[] = $mediaFile->getMediaId();
         }
 
@@ -212,19 +145,36 @@ class LocalMediaProcessor extends AbstractMediaFileProcessor
     }
 
     private function persistFileToMedia(
-        string $filePath,
+        string $sourcePath,
         SwagMigrationMediaFileEntity $media,
-        int $fileSize,
-        string $fileExtension,
         Context $context
     ): void {
-        $mimeType = mime_content_type($filePath);
-        $mediaFile = new MediaFile($filePath, $mimeType, $fileExtension, $fileSize);
+        $fileExtension = pathinfo($sourcePath, PATHINFO_EXTENSION);
+        $mimeType = mime_content_type($sourcePath);
+        $fileBlob = file_get_contents($sourcePath);
 
         try {
-            $this->fileSaver->persistFileToMedia($mediaFile, $media->getFileName(), $media->getMediaId(), $context);
+            $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($fileBlob, $fileExtension, $mimeType, $media) {
+                $this->mediaService->saveFile(
+                    $fileBlob,
+                    $fileExtension,
+                    $mimeType,
+                    $media->getFileName(),
+                    $context,
+                    'document',
+                    $media->getMediaId()
+                );
+            });
         } catch (DuplicatedMediaFileNameException $e) {
-            $this->fileSaver->persistFileToMedia($mediaFile, $media->getFileName() . substr(Uuid::randomHex(), 0, 5), $media->getMediaId(), $context);
+            $this->mediaService->saveFile(
+                $fileBlob,
+                $fileExtension,
+                $mimeType,
+                $media->getFileName() . substr(Uuid::randomHex(), 0, 5),
+                $context,
+                'document',
+                $media->getMediaId()
+            );
         }
     }
 

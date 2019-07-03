@@ -296,11 +296,26 @@
             <tag name="shopware.migration.media_file_processor"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware55\Media\HttpOrderDocumentProcessor">
+            <argument type="service" id="swag_migration_media_file.repository"/>
+            <argument type="service" id="Shopware\Core\Content\Media\MediaService"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
+            <argument type="service" id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Connection\ConnectionFactory"/>
+            <tag name="shopware.migration.media_file_processor"/>
+        </service>
+
         <service id="SwagMigrationAssistant\Profile\Shopware55\Media\LocalMediaProcessor">
             <argument type="service" id="swag_migration_media_file.repository"/>
             <argument type="service" id="Shopware\Core\Content\Media\File\FileSaver"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
             <argument type="tagged" tag="shopware.migration.media_strategy_resolver"/>
+            <tag name="shopware.migration.media_file_processor"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware55\Media\LocalOrderDocumentProcessor">
+            <argument type="service" id="swag_migration_media_file.repository"/>
+            <argument type="service" id="Shopware\Core\Content\Media\MediaService"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
             <tag name="shopware.migration.media_file_processor"/>
         </service>
 

@@ -134,7 +134,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
             || $dataSet::getEntity() === DefaultEntities::PRODUCT
             || $dataSet::getEntity() === DefaultEntities::PROPERTY_GROUP_OPTION
             || $dataSet::getEntity() === DefaultEntities::CATEGORY
-            || $dataSet::getEntity() === DefaultEntities::ORDER_DOCUMENTS
+            || $dataSet::getEntity() === DefaultEntities::ORDER_DOCUMENT
         ) {
             $this->mediaFileService->setWrittenFlag($converted, $migrationContext, $context);
         }

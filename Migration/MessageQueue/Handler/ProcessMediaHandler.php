@@ -7,8 +7,10 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\MessageQueue\Handler\AbstractMessageHandler;
 use SwagMigrationAssistant\Exception\EntityNotExistsException;
+use SwagMigrationAssistant\Exception\ProcessorNotFoundException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Logging\LogType;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorRegistryInterface;
 use SwagMigrationAssistant\Migration\Media\MediaProcessWorkloadStruct;
@@ -67,7 +69,8 @@ class ProcessMediaHandler extends AbstractMessageHandler
 
         $migrationContext = new MigrationContext(
             $run->getConnection(),
-            $message->getRunId()
+            $message->getRunId(),
+            $message->getDataSet()
         );
 
         $workload = [];
@@ -79,9 +82,28 @@ class ProcessMediaHandler extends AbstractMessageHandler
             );
         }
 
-        $processor = $this->mediaFileProcessorRegistry->getProcessor($migrationContext);
-        $workload = $processor->process($migrationContext, $context, $workload, $message->getFileChunkByteSize());
-        $this->processFailures($context, $migrationContext, $processor, $workload, $message->getFileChunkByteSize());
+        try {
+            $processor = $this->mediaFileProcessorRegistry->getProcessor($migrationContext);
+            $workload = $processor->process($migrationContext, $context, $workload, $message->getFileChunkByteSize());
+            $this->processFailures($context, $migrationContext, $processor, $workload, $message->getFileChunkByteSize());
+        } catch (ProcessorNotFoundException $e) {
+            $this->loggingService->addError(
+                $migrationContext->getRunUuid(),
+                LogType::PROCESSOR_NOT_FOUND,
+                'Processor not found',
+                sprintf(
+                    'Processor for profile "%s", gateway "%s" and entity "%s" not found.',
+                    $migrationContext->getProfileName(),
+                    $migrationContext->getGatewayName(),
+                    $migrationContext->getDataSet()::getEntity()
+                ),
+                [
+                    'migrationContext' => $migrationContext,
+                ]
+            );
+
+            $this->loggingService->saveLogging($context);
+        }
     }
 
     public static function getHandledMessages(): iterable

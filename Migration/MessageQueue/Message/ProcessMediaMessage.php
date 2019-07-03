@@ -3,6 +3,7 @@
 namespace SwagMigrationAssistant\Migration\MessageQueue\Message;
 
 use Shopware\Core\Framework\Context;
+use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 
 class ProcessMediaMessage
 {
@@ -20,6 +21,11 @@ class ProcessMediaMessage
      * @var string
      */
     private $contextData;
+
+    /**
+     * @var DataSet
+     */
+    private $dataSet;
 
     /**
      * @var int
@@ -64,6 +70,16 @@ class ProcessMediaMessage
     public function getContextData(): string
     {
         return $this->contextData;
+    }
+
+    public function getDataSet(): DataSet
+    {
+        return $this->dataSet;
+    }
+
+    public function setDataSet(DataSet $dataSet): void
+    {
+        $this->dataSet = $dataSet;
     }
 
     /**

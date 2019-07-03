@@ -32,8 +32,6 @@ final class DefaultEntities
 
     public const CUSTOMER_ADDRESS = 'customer_address';
 
-    public const ORDER_DOCUMENTS = 'order_document';
-
     public const CUSTOMER_GROUP = 'customer_group';
 
     public const CUSTOMER_GROUP_TRANSLATION = 'customer_group_translation';
@@ -75,6 +73,10 @@ final class DefaultEntities
     public const ORDER_DELIVERY = 'order_delivery';
 
     public const ORDER_DELIVERY_POSITION = 'order_delivery_position';
+
+    public const ORDER_DOCUMENT = 'order_document';
+
+    public const ORDER_DOCUMENT_MEDIA = 'order_document_media';
 
     public const ORDER_LINE_ITEM = 'order_line_item';
 

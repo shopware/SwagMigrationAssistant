@@ -191,7 +191,8 @@
           "media": "Medien:",
           "translation": "Übersetzungen:",
           "customer_group": "Kundengruppen:",
-          "property_group_option": "Eigenschaften:"
+          "property_group_option": "Eigenschaften:",
+          "order_document": "Bestelldokumente: "
         },
         "noData": "Es wurden keine Daten zum Migrieren gefunden."
       },

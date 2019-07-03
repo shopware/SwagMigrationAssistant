@@ -6,12 +6,14 @@ use Shopware\Core\Checkout\Document\Aggregate\DocumentType\DocumentTypeDefinitio
 use Shopware\Core\Checkout\Document\DocumentDefinition;
 use Shopware\Core\Checkout\Document\FileGenerator\FileTypes;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Util\Random;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\OrderDocumentDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\Logging\Shopware55LogTypes;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
@@ -69,7 +71,7 @@ class OrderDocumentConverter extends Shopware55Converter
 
     public function getSupportedEntityName(): string
     {
-        return DefaultEntities::ORDER_DOCUMENTS;
+        return DefaultEntities::ORDER_DOCUMENT;
     }
 
     public function getSupportedProfileName(): string
@@ -113,7 +115,7 @@ class OrderDocumentConverter extends Shopware55Converter
 
         $converted['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            DefaultEntities::ORDER_DOCUMENTS,
+            DefaultEntities::ORDER_DOCUMENT,
             $this->oldId,
             $context
         );
@@ -121,16 +123,21 @@ class OrderDocumentConverter extends Shopware55Converter
         $converted['orderId'] = $orderUuid;
         $converted['fileType'] = FileTypes::PDF;
         $converted['static'] = true;
+        $converted['deepLinkCode'] = Random::getAlphanumericString(32);
+        $converted['config'] = [];
+        if (isset($data['docID'])) {
+            $converted['config']['documentNumber'] = $data['docID'];
+            unset($data['docID']);
+        }
 
         $converted['documentType'] = $this->getDocumentType($data['documenttype']);
         unset($data['documenttype']);
 
         $converted['documentMediaFile'] = $this->getMediaFile($data);
-        $this->convertValue($converted, 'deepLinkCode', $data, 'docID');
         unset(
             $data['id'],
             $data['description'],
-            $data['hash'],
+            $data['hash']
         );
 
         if (empty($data)) {
@@ -159,7 +166,7 @@ class OrderDocumentConverter extends Shopware55Converter
     {
         $newMedia['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
-            DefaultEntities::MEDIA,
+            DefaultEntities::ORDER_DOCUMENT_MEDIA,
             $data['id'],
             $this->context
         );
@@ -167,6 +174,7 @@ class OrderDocumentConverter extends Shopware55Converter
         $this->mediaFileService->saveMediaFile(
             [
                 'runId' => $this->runId,
+                'entity' => OrderDocumentDataSet::getEntity(),
                 'uri' => $data['hash'],
                 'fileName' => $data['hash'],
                 'fileSize' => 0,

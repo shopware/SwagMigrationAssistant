@@ -190,7 +190,8 @@
           "media": "Media:",
           "translation": "Translations:",
           "customer_group": "Customer groups:",
-          "property_group_option": "Properties:"
+          "property_group_option": "Properties:",
+          "order_document": "Order documents: "
         },
         "noData": "Nothing found to migrate."
       },
