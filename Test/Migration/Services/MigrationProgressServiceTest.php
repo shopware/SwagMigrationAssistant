@@ -29,6 +29,7 @@ use SwagMigrationAssistant\Migration\Service\MigrationProgressService;
 use SwagMigrationAssistant\Migration\Service\MigrationProgressServiceInterface;
 use SwagMigrationAssistant\Migration\Service\ProgressState;
 use SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService;
+use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\MigrationServicesTrait;
@@ -715,6 +716,7 @@ class MigrationProgressServiceTest extends TestCase
 
             $entities[] = [
                 'runId' => $this->runUuid,
+                'entity' => MediaDataSet::getEntity(),
                 'uri' => 'meinMediaFileLink',
                 'fileName' => 'myFileName',
                 'fileSize' => 5,

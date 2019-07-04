@@ -19,6 +19,7 @@ use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistryInterface;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Media\MediaFileService;
 use SwagMigrationAssistant\Migration\MigrationContext;
@@ -26,6 +27,7 @@ use SwagMigrationAssistant\Migration\Run\RunService;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationAssistant\Migration\Service\MigrationDataWriter;
 use SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService;
+use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
@@ -112,6 +114,7 @@ class MigrationControllerTest extends TestCase
         $this->mediaFileRepo = $this->getContainer()->get('swag_migration_media_file.repository');
         $this->dataRepo = $this->getContainer()->get('swag_migration_data.repository');
         $currencyRepo = $this->getContainer()->get('currency.repository');
+        $loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
         $this->profileRepo = $this->getContainer()->get('swag_migration_profile.repository');
         $this->connectionRepo = $this->getContainer()->get('swag_migration_connection.repository');
         $this->profileUuidService = new MigrationProfileUuidService($this->profileRepo, Shopware55Profile::PROFILE_NAME, Shopware55LocalGateway::GATEWAY_NAME);
@@ -181,7 +184,7 @@ class MigrationControllerTest extends TestCase
             $this->getContainer()->get(EntityWriter::class),
             $mappingService,
             $this->getContainer()->get(MediaFileService::class),
-            $this->getContainer()->get('swag_migration_logging.repository'),
+            $loggingRepo,
             $dataDefinition
         );
         $this->controller = new MigrationController(
@@ -190,7 +193,9 @@ class MigrationControllerTest extends TestCase
             $this->getContainer()->get(MigrationDataWriter::class),
             new DummyMediaFileProcessorService(
                 $this->mediaFileRepo,
-                $this->getContainer()->get('messenger.bus.shopware')
+                $this->getContainer()->get('messenger.bus.shopware'),
+                $this->getContainer()->get(DataSetRegistry::class),
+                new LoggingService($loggingRepo)
             ),
             $accessTokenService,
             new RunService(
@@ -586,6 +591,7 @@ class MigrationControllerTest extends TestCase
                 [
                     [
                         'runId' => $this->runUuid,
+                        'entity' => MediaDataSet::getEntity(),
                         'uri' => 'foobar',
                         'fileName' => 'foobar',
                         'fileSize' => 100,

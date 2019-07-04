@@ -24,8 +24,9 @@ class MediaFileProcessorRegistry implements MediaFileProcessorRegistryInterface
     {
         $profileName = $context->getProfileName();
         $gatewayName = $context->getGatewayName();
+        $entity = $context->getDataSet()::getEntity();
         foreach ($this->processors as $processor) {
-            if ($processor->supports($profileName, $gatewayName)) {
+            if ($processor->supports($profileName, $gatewayName, $entity)) {
                 return $processor;
             }
         }

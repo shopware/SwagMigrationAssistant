@@ -9,6 +9,7 @@ use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\Exception\ParentEntityForChildNotFoundException;
 use SwagMigrationAssistant\Profile\Shopware55\Logging\Shopware55LogTypes;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
@@ -266,6 +267,7 @@ class CategoryConverter extends Shopware55Converter
         $this->mediaFileService->saveMediaFile(
             [
                 'runId' => $this->runId,
+                'entity' => MediaDataSet::getEntity(),
                 'uri' => $media['uri'] ?? $media['path'],
                 'fileName' => $media['name'],
                 'fileSize' => (int) $media['file_size'],

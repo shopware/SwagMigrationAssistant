@@ -116,6 +116,14 @@ class MediaFileService implements MediaFileServiceInterface
 
                 $mediaUuids[] = $data['media']['id'];
             }
+
+            if ($dataSet::getEntity() === DefaultEntities::ORDER_DOCUMENT) {
+                if (!isset($data['documentMediaFile']['id'])) {
+                    continue;
+                }
+
+                $mediaUuids[] = $data['documentMediaFile']['id'];
+            }
         }
 
         if (empty($mediaUuids)) {

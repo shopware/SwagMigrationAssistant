@@ -5,6 +5,7 @@ namespace SwagMigrationAssistant\Test\Mock\Migration\Media;
 use Shopware\Core\Framework\Context;
 use SwagMigrationAssistant\Migration\Media\AbstractMediaFileProcessor;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Shopware55ApiGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
@@ -18,6 +19,11 @@ class DummyHttpMediaDownloadService extends AbstractMediaFileProcessor
     public function getSupportedGatewayIdentifier(): string
     {
         return Shopware55ApiGateway::GATEWAY_NAME;
+    }
+
+    public function getSupportedEntity(): string
+    {
+        return MediaDataSet::getEntity();
     }
 
     public function process(

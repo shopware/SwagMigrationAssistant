@@ -8,6 +8,7 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
 class MediaConverter extends Shopware55Converter
@@ -85,6 +86,7 @@ class MediaConverter extends Shopware55Converter
         $this->mediaFileService->saveMediaFile(
             [
                 'runId' => $migrationContext->getRunUuid(),
+                'entity' => MediaDataSet::getEntity(),
                 'uri' => $data['uri'] ?? $data['path'],
                 'fileName' => $data['name'],
                 'fileSize' => (int) $data['file_size'],
