@@ -58,11 +58,6 @@ class MigrationWriteDataCommandTest extends TestCase
     /**
      * @var EntityRepositoryInterface
      */
-    private $migrationProfileRepo;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
     private $mediaFileRepo;
 
     /**
@@ -87,7 +82,6 @@ class MigrationWriteDataCommandTest extends TestCase
         $categoryDefinition = $this->getContainer()->get(CategoryDefinition::class);
         $this->loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
         $this->entityWriter = $this->getContainer()->get(EntityWriter::class);
-        $this->migrationProfileRepo = $this->getContainer()->get('swag_migration_profile.repository');
         $this->migrationDataRepo = $this->getContainer()->get('swag_migration_data.repository');
         $this->migrationRunRepo = $this->getContainer()->get('swag_migration_run.repository');
         $this->mediaFileRepo = $this->getContainer()->get('swag_migration_media_file.repository');
@@ -239,7 +233,6 @@ class MigrationWriteDataCommandTest extends TestCase
         $this->application->add(new MigrationFetchDataCommand(
             $this->migrationDataFetcher,
             $this->migrationRunRepo,
-            $this->migrationProfileRepo,
             $this->migrationDataRepo,
             'migration:fetch:data'
         ));

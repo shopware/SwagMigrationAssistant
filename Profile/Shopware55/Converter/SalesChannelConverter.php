@@ -14,7 +14,7 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware55\Logging\Shopware55LogTypes;
+use SwagMigrationAssistant\Profile\Shopware\Logging\LogTypes;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
 class SalesChannelConverter extends Shopware55Converter
@@ -111,7 +111,7 @@ class SalesChannelConverter extends Shopware55Converter
         if ($customerGroupUuid === null) {
             $this->loggingService->addWarning(
                 $migrationContext->getRunUuid(),
-                Shopware55LogTypes::ASSOCIATION_REQUIRED_MISSING,
+                LogTypes::ASSOCIATION_REQUIRED_MISSING,
                 'Associated customer group not found',
                 'Customer group for the sales channel can not be found.',
                 [
@@ -136,7 +136,7 @@ class SalesChannelConverter extends Shopware55Converter
         if ($languageUuid === null) {
             $this->loggingService->addWarning(
                 $migrationContext->getRunUuid(),
-                Shopware55LogTypes::ASSOCIATION_REQUIRED_MISSING,
+                LogTypes::ASSOCIATION_REQUIRED_MISSING,
                 'Associated language not found',
                 'Language for the sales channel can not be found.',
                 [
@@ -162,7 +162,7 @@ class SalesChannelConverter extends Shopware55Converter
         if ($currencyUuid === null) {
             $this->loggingService->addWarning(
                 $migrationContext->getRunUuid(),
-                Shopware55LogTypes::ASSOCIATION_REQUIRED_MISSING,
+                LogTypes::ASSOCIATION_REQUIRED_MISSING,
                 'Associated currency not found',
                 'Currency for the sales channel can not be found.',
                 [
@@ -193,7 +193,7 @@ class SalesChannelConverter extends Shopware55Converter
         if ($categoryUuid === null) {
             $this->loggingService->addWarning(
                 $migrationContext->getRunUuid(),
-                Shopware55LogTypes::ASSOCIATION_REQUIRED_MISSING,
+                LogTypes::ASSOCIATION_REQUIRED_MISSING,
                 'Associated category not found',
                 'Navigation category root for the sales channel can not be found.',
                 [

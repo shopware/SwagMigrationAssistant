@@ -8,10 +8,10 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\NewsletterRecipientDataSet;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
+use SwagMigrationAssistant\Profile\Shopware\Premapping\SalutationReader;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\NewsletterRecipientConverter;
-use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\NewsletterRecipientDataSet;
-use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
-use SwagMigrationAssistant\Profile\Shopware55\Premapping\SalutationReader;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
@@ -64,7 +64,7 @@ class NewsletterRecipientConverterTest extends TestCase
         $this->connectionId = Uuid::randomHex();
         $this->connection->setId($this->connectionId);
         $this->connection->setProfileName(Shopware55Profile::PROFILE_NAME);
-        $this->connection->setGatewayName(Shopware55LocalGateway::GATEWAY_NAME);
+        $this->connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
 
         $this->context = new MigrationContext(
             $this->connection,
@@ -73,6 +73,7 @@ class NewsletterRecipientConverterTest extends TestCase
             0,
             250
         );
+        $this->context->setProfile(new Shopware55Profile());
 
         $context = Context::createDefaultContext();
         $this->mappingService->createNewUuid($this->connectionId, SalutationReader::getMappingName(), 'mr',

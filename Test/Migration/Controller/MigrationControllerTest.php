@@ -19,19 +19,22 @@ use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistryInterface;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
+use SwagMigrationAssistant\Migration\Gateway\GatewayRegistryInterface;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Media\MediaFileService;
 use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\Profile\ProfileRegistry;
+use SwagMigrationAssistant\Migration\Profile\ProfileRegistryInterface;
 use SwagMigrationAssistant\Migration\Run\RunService;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationAssistant\Migration\Service\MigrationDataWriter;
 use SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService;
-use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\MediaDataSet;
-use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
-use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDataSet;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
-use SwagMigrationAssistant\Test\Migration\Services\MigrationProfileUuidService;
 use SwagMigrationAssistant\Test\MigrationServicesTrait;
 use SwagMigrationAssistant\Test\Mock\Migration\Service\DummyMediaFileProcessorService;
 use Symfony\Component\HttpFoundation\Request;
@@ -53,11 +56,6 @@ class MigrationControllerTest extends TestCase
     private $runUuid;
 
     /**
-     * @var MigrationProfileUuidService
-     */
-    private $profileUuidService;
-
-    /**
      * @var EntityRepositoryInterface
      */
     private $runRepo;
@@ -70,17 +68,22 @@ class MigrationControllerTest extends TestCase
     /**
      * @var EntityRepositoryInterface
      */
-    private $profileRepo;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
     private $connectionRepo;
 
     /**
      * @var string
      */
     private $connectionId;
+
+    /**
+     * @var ProfileRegistryInterface
+     */
+    private $profileRegistry;
+
+    /**
+     * @var GatewayRegistryInterface
+     */
+    private $gatewayRegistry;
 
     /**
      * @var DataSetRegistryInterface
@@ -115,10 +118,11 @@ class MigrationControllerTest extends TestCase
         $this->dataRepo = $this->getContainer()->get('swag_migration_data.repository');
         $currencyRepo = $this->getContainer()->get('currency.repository');
         $loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
-        $this->profileRepo = $this->getContainer()->get('swag_migration_profile.repository');
         $this->connectionRepo = $this->getContainer()->get('swag_migration_connection.repository');
         $this->generalSettingRepo = $this->getContainer()->get('swag_migration_general_setting.repository');
         $this->runRepo = $this->getContainer()->get('swag_migration_run.repository');
+        $this->profileRegistry = $this->getContainer()->get(ProfileRegistry::class);
+        $this->gatewayRegistry = $this->getContainer()->get(GatewayRegistry::class);
         $this->dataSetRegistry = $this->getContainer()->get(DataSetRegistry::class);
 
         $this->context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) {
@@ -134,7 +138,7 @@ class MigrationControllerTest extends TestCase
                             'apiKey' => 'testKey',
                         ],
                         'profileName' => Shopware55Profile::PROFILE_NAME,
-                        'gatewayName' => Shopware55LocalGateway::GATEWAY_NAME,
+                        'gatewayName' => ShopwareLocalGateway::GATEWAY_NAME,
                     ],
                 ],
                 $context
@@ -204,6 +208,8 @@ class MigrationControllerTest extends TestCase
                 $this->connectionRepo,
                 $dataFetcher,
                 $accessTokenService,
+                $this->profileRegistry,
+                $this->gatewayRegistry,
                 new DataSelectionRegistry([]),
                 $this->dataRepo,
                 $this->mediaFileRepo,
@@ -214,6 +220,8 @@ class MigrationControllerTest extends TestCase
                 $this->getContainer()->get(Connection::class)
             ),
             $this->runRepo,
+            $this->profileRegistry,
+            $this->gatewayRegistry,
             $this->dataSetRegistry
         );
     }

@@ -4,7 +4,7 @@ namespace SwagMigrationAssistant\Profile\Shopware55\Converter;
 
 use Shopware\Core\Framework\Context;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
-use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\OrderAttributeDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderAttributeDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
 class OrderAttributeConverter extends AttributeConverter

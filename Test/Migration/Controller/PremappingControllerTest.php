@@ -17,9 +17,9 @@ use SwagMigrationAssistant\Migration\Premapping\PremappingReaderRegistry;
 use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationAssistant\Migration\Service\PremappingService;
-use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
-use SwagMigrationAssistant\Profile\Shopware55\Premapping\OrderStateReader;
-use SwagMigrationAssistant\Profile\Shopware55\Premapping\TransactionStateReader;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
+use SwagMigrationAssistant\Profile\Shopware\Premapping\OrderStateReader;
+use SwagMigrationAssistant\Profile\Shopware\Premapping\TransactionStateReader;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\MigrationServicesTrait;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -78,7 +78,6 @@ class PremappingControllerTest extends TestCase
     protected function setUp(): void
     {
         $this->context = Context::createDefaultContext();
-        $profileRepo = $this->getContainer()->get('swag_migration_profile.repository');
         $runRepo = $this->getContainer()->get('swag_migration_run.repository');
         $connectionRepo = $this->getContainer()->get('swag_migration_connection.repository');
         $this->runRepo = $this->getContainer()->get('swag_migration_run.repository');
@@ -118,7 +117,7 @@ class PremappingControllerTest extends TestCase
                             'apiKey' => 'testKey',
                         ],
                         'profileName' => Shopware55Profile::PROFILE_NAME,
-                        'gatewayName' => Shopware55LocalGateway::GATEWAY_NAME,
+                        'gatewayName' => ShopwareLocalGateway::GATEWAY_NAME,
                     ],
                 ],
                 $context

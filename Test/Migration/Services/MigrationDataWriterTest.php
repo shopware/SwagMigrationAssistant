@@ -31,19 +31,18 @@ use SwagMigrationAssistant\Migration\Service\MigrationDataWriterInterface;
 use SwagMigrationAssistant\Migration\Writer\CustomerWriter;
 use SwagMigrationAssistant\Migration\Writer\ProductWriter;
 use SwagMigrationAssistant\Migration\Writer\WriterRegistry;
-use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\CategoryDataSet;
-use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\CustomerDataSet;
-use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\MediaDataSet;
-use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\OrderDataSet;
-use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
-use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
-use SwagMigrationAssistant\Profile\Shopware55\Premapping\DeliveryTimeReader;
-use SwagMigrationAssistant\Profile\Shopware55\Premapping\OrderStateReader;
-use SwagMigrationAssistant\Profile\Shopware55\Premapping\PaymentMethodReader;
-use SwagMigrationAssistant\Profile\Shopware55\Premapping\SalutationReader;
-use SwagMigrationAssistant\Profile\Shopware55\Premapping\TransactionStateReader;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CategoryDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CustomerDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDataSet;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
+use SwagMigrationAssistant\Profile\Shopware\Premapping\DeliveryTimeReader;
+use SwagMigrationAssistant\Profile\Shopware\Premapping\OrderStateReader;
+use SwagMigrationAssistant\Profile\Shopware\Premapping\PaymentMethodReader;
+use SwagMigrationAssistant\Profile\Shopware\Premapping\SalutationReader;
+use SwagMigrationAssistant\Profile\Shopware\Premapping\TransactionStateReader;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
-use SwagMigrationAssistant\Test\Migration\Services\MigrationProfileUuidService;
 use SwagMigrationAssistant\Test\MigrationServicesTrait;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Media\DummyMediaFileService;
@@ -109,11 +108,6 @@ class MigrationDataWriterTest extends TestCase
     private $runUuid;
 
     /**
-     * @var MigrationProfileUuidService
-     */
-    private $profileUuidService;
-
-    /**
      * @var MigrationDataWriterInterface
      */
     private $dummyDataWriter;
@@ -162,11 +156,6 @@ class MigrationDataWriterTest extends TestCase
      * @var EntityRepositoryInterface
      */
     private $runRepo;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $profileRepo;
 
     /**
      * @var EntityRepositoryInterface
@@ -482,7 +471,6 @@ class MigrationDataWriterTest extends TestCase
         $this->dbConnection = $this->getContainer()->get(Connection::class);
         $this->entityWriter = $this->getContainer()->get(EntityWriter::class);
         $this->runRepo = $this->getContainer()->get('swag_migration_run.repository');
-        $this->profileRepo = $this->getContainer()->get('swag_migration_profile.repository');
         $this->paymentRepo = $this->getContainer()->get('payment_method.repository');
         $this->mediaRepo = $this->getContainer()->get('media.repository');
         $this->productRepo = $this->getContainer()->get('product.repository');
@@ -519,7 +507,7 @@ class MigrationDataWriterTest extends TestCase
                             'apiKey' => 'testKey',
                         ],
                         'profileName' => Shopware55Profile::PROFILE_NAME,
-                        'gatewayName' => Shopware55LocalGateway::GATEWAY_NAME,
+                        'gatewayName' => ShopwareLocalGateway::GATEWAY_NAME,
                     ],
                 ],
                 $context

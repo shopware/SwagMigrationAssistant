@@ -66,7 +66,7 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
         foreach ($mediaFiles->getElements() as $mediaFile) {
             if ($currentDataSet === null) {
                 try {
-                    $currentDataSet = $this->dataSetRegistry->getDataSet($profileName, $mediaFile->getEntity());
+                    $currentDataSet = $this->dataSetRegistry->getDataSet($migrationContext, $mediaFile->getEntity());
                 } catch (DataSetNotFoundException $e) {
                     $this->logDataSetNotFoundException($migrationContext, $mediaFile);
                     continue;
@@ -79,7 +79,7 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
                 try {
                     $messageMediaUuids = [];
                     $currentCount = 0;
-                    $currentDataSet = $this->dataSetRegistry->getDataSet($profileName, $mediaFile->getEntity());
+                    $currentDataSet = $this->dataSetRegistry->getDataSet($migrationContext, $mediaFile->getEntity());
                 } catch (DataSetNotFoundException $e) {
                     $this->logDataSetNotFoundException($migrationContext, $mediaFile);
                     continue;

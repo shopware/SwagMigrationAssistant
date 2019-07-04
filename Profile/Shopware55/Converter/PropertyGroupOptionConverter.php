@@ -9,8 +9,8 @@ use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\MediaDataSet;
-use SwagMigrationAssistant\Profile\Shopware55\Logging\Shopware55LogTypes;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
+use SwagMigrationAssistant\Profile\Shopware\Logging\LogTypes;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
 class PropertyGroupOptionConverter extends Shopware55Converter
@@ -85,7 +85,7 @@ class PropertyGroupOptionConverter extends Shopware55Converter
         if (!isset($data['group']['name'])) {
             $this->loggingService->addError(
                 $this->runId,
-                Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
+                LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
                 'Empty necessary data fields',
                 'Property-Group-Option-Entity could not be converted cause of empty necessary field(s): group.',
                 [
@@ -135,7 +135,7 @@ class PropertyGroupOptionConverter extends Shopware55Converter
         if (!isset($data['media']['id'])) {
             $this->loggingService->addInfo(
                 $this->runId,
-                Shopware55LogTypes::PROPERTY_MEDIA_NOT_CONVERTED,
+                LogTypes::PROPERTY_MEDIA_NOT_CONVERTED,
                 'Property-Group-Option-Media could not be converted',
                 'Property-Group-Option-Media could not be converted.',
                 [

@@ -8,11 +8,11 @@ use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorRegistry;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorRegistryInterface;
 use SwagMigrationAssistant\Migration\MigrationContext;
-use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\DummyCollection;
 use SwagMigrationAssistant\Test\Mock\Migration\Media\DummyHttpMediaDownloadService;
-use SwagMigrationAssistant\Test\Profile\Shopware55\DataSet\FooDataSet;
+use SwagMigrationAssistant\Test\Profile\Shopware\DataSet\FooDataSet;
 use Symfony\Component\HttpFoundation\Response;
 
 class MediaFileProcessorRegistryTest extends TestCase
@@ -37,7 +37,7 @@ class MediaFileProcessorRegistryTest extends TestCase
     {
         $connection = new SwagMigrationConnectionEntity();
         $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
-        $connection->setGatewayName(Shopware55LocalGateway::GATEWAY_NAME);
+        $connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
         $connection->setCredentialFields([]);
 
         $context = new MigrationContext(
@@ -45,6 +45,7 @@ class MediaFileProcessorRegistryTest extends TestCase
             '',
             new FooDataSet()
         );
+        $context->setProfile(new Shopware55Profile());
 
         try {
             $this->processorRegistry->getProcessor($context);

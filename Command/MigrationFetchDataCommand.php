@@ -38,11 +38,6 @@ class MigrationFetchDataCommand extends Command
     /**
      * @var EntityRepositoryInterface
      */
-    private $migrationProfileRepo;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
     private $migrationDataRepo;
 
     /**
@@ -83,7 +78,6 @@ class MigrationFetchDataCommand extends Command
     public function __construct(
         MigrationDataFetcherInterface $migrationCollectService,
         EntityRepositoryInterface $migrationRunRepo,
-        EntityRepositoryInterface $migrationProfileRepo,
         EntityRepositoryInterface $migrationDataRepo,
         DataSetRegistryInterface $dataSetRegistry,
         ?string $name = null
@@ -91,7 +85,6 @@ class MigrationFetchDataCommand extends Command
         parent::__construct($name);
         $this->migrationDataFetcher = $migrationCollectService;
         $this->migrationRunRepo = $migrationRunRepo;
-        $this->migrationProfileRepo = $migrationProfileRepo;
         $this->migrationDataRepo = $migrationDataRepo;
         $this->dataSetRegistry = $dataSetRegistry;
     }
@@ -155,18 +148,18 @@ class MigrationFetchDataCommand extends Command
 
     private function getProfile($context): void
     {
-        $searchProfileCriteria = new Criteria();
-        $searchProfileCriteria->addFilter(new EqualsFilter('name', $this->profileName));
-        $searchProfileCriteria->addFilter(new EqualsFilter('gatewayName', $this->gatewayName));
-        $profileStruct = $this->migrationProfileRepo->search($searchProfileCriteria, $context)->first();
-
-        if ($profileStruct === null) {
-            throw new \InvalidArgumentException('No valid profile found');
-        }
-
-        /* @var SwagMigrationProfileEntity $profileStruct */
-        $this->credentials = $profileStruct->getCredentialFields();
-        $this->profileId = $profileStruct->getId();
+//        $searchProfileCriteria = new Criteria();
+//        $searchProfileCriteria->addFilter(new EqualsFilter('name', $this->profileName));
+//        $searchProfileCriteria->addFilter(new EqualsFilter('gatewayName', $this->gatewayName));
+//        $profileStruct = $this->migrationProfileRepo->search($searchProfileCriteria, $context)->first();
+//
+//        if ($profileStruct === null) {
+//            throw new \InvalidArgumentException('No valid profile found');
+//        }
+//
+//        /* @var SwagMigrationProfileEntity $profileStruct */
+//        $this->credentials = $profileStruct->getCredentialFields();
+//        $this->profileId = $profileStruct->getId();
     }
 
     private function createRun($runUuid, $total, $context): void
@@ -190,7 +183,11 @@ class MigrationFetchDataCommand extends Command
         $progressBar = new ProgressBar($output, $total);
         $progressBar->start();
 
-        $dataSet = $this->dataSetRegistry->getDataSet($this->profileName, $this->entityName);
+        $migrationContext = new MigrationContext(
+            new SwagMigrationConnectionEntity()
+        );
+
+        $dataSet = $this->dataSetRegistry->getDataSet($migrationContext, $this->entityName);
 
         for ($offset = 0; $offset < $total; $offset += $this->limit) {
             $migrationContext = new MigrationContext(

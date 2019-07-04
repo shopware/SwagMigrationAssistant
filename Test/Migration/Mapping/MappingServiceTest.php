@@ -15,9 +15,8 @@ use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition;
 use SwagMigrationAssistant\Migration\MigrationContext;
-use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
-use SwagMigrationAssistant\Test\Migration\Services\MigrationProfileUuidService;
 use Symfony\Component\HttpFoundation\Response;
 
 class MappingServiceTest extends TestCase
@@ -28,11 +27,6 @@ class MappingServiceTest extends TestCase
      * @var MappingServiceInterface
      */
     private $mappingService;
-
-    /**
-     * @var MigrationProfileUuidService
-     */
-    private $profileUuidService;
 
     /**
      * @var EntityRepositoryInterface
@@ -69,7 +63,7 @@ class MappingServiceTest extends TestCase
                             'apiKey' => 'testKey',
                         ],
                         'profileName' => Shopware55Profile::PROFILE_NAME,
-                        'gatewayName' => Shopware55LocalGateway::GATEWAY_NAME,
+                        'gatewayName' => ShopwareLocalGateway::GATEWAY_NAME,
                     ],
                 ],
                 $context

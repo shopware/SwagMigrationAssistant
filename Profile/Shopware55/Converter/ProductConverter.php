@@ -13,10 +13,10 @@ use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\MediaDataSet;
-use SwagMigrationAssistant\Profile\Shopware55\Exception\ParentEntityForChildNotFoundException;
-use SwagMigrationAssistant\Profile\Shopware55\Logging\Shopware55LogTypes;
-use SwagMigrationAssistant\Profile\Shopware55\Premapping\ProductManufacturerReader;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
+use SwagMigrationAssistant\Profile\Shopware\Exception\ParentEntityForChildNotFoundException;
+use SwagMigrationAssistant\Profile\Shopware\Logging\LogTypes;
+use SwagMigrationAssistant\Profile\Shopware\Premapping\ProductManufacturerReader;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
 class ProductConverter extends Shopware55Converter
@@ -135,7 +135,7 @@ class ProductConverter extends Shopware55Converter
         if (!empty($fields)) {
             $this->loggingService->addWarning(
                 $this->runId,
-                Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
+                LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
                 'Empty necessary data fields',
                 sprintf('Product-Entity could not be converted cause of empty necessary field(s): %s.', implode(', ', $fields)),
                 [
@@ -330,7 +330,7 @@ class ProductConverter extends Shopware55Converter
             } else {
                 $this->loggingService->addWarning(
                     $this->runId,
-                    Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
+                    LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
                     'Empty necessary data fields',
                     'Product-Entity could not be converted cause of empty necessary field(s): manufacturer.',
                     [
@@ -357,7 +357,7 @@ class ProductConverter extends Shopware55Converter
         if (empty($converted['price'])) {
             $this->loggingService->addWarning(
                 $this->runId,
-                Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
+                LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
                 'Empty necessary data fields',
                 sprintf('Product-Entity could not be converted cause of empty necessary field: currency.'),
                 [
@@ -760,7 +760,7 @@ class ProductConverter extends Shopware55Converter
             if (!isset($mediaData['media']['id'])) {
                 $this->loggingService->addInfo(
                     $this->runId,
-                    Shopware55LogTypes::PRODUCT_MEDIA_NOT_CONVERTED,
+                    LogTypes::PRODUCT_MEDIA_NOT_CONVERTED,
                     'Product-Media could not be converted',
                     'Product-Media could not be converted.',
                     [
@@ -996,7 +996,7 @@ class ProductConverter extends Shopware55Converter
             if (empty($priceArray)) {
                 $this->loggingService->addWarning(
                     $this->runId,
-                    Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
+                    LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
                     'Empty necessary data fields',
                     'Product-Price-Entity could not be converted cause of empty necessary field: currencyId.',
                     ['id' => $this->oldProductId]

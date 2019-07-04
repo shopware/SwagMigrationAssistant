@@ -13,8 +13,8 @@ use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\OrderDocumentDataSet;
-use SwagMigrationAssistant\Profile\Shopware55\Logging\Shopware55LogTypes;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderDocumentDataSet;
+use SwagMigrationAssistant\Profile\Shopware\Logging\LogTypes;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
 class OrderDocumentConverter extends Shopware55Converter
@@ -99,7 +99,7 @@ class OrderDocumentConverter extends Shopware55Converter
         if ($orderUuid === null) {
             $this->loggingService->addWarning(
                 $migrationContext->getRunUuid(),
-                Shopware55LogTypes::ASSOCIATION_REQUIRED_MISSING,
+                LogTypes::ASSOCIATION_REQUIRED_MISSING,
                 'Associated order not found',
                 'Order for the order document can not be found.',
                 [

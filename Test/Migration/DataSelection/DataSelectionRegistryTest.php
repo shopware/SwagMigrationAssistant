@@ -10,10 +10,10 @@ use SwagMigrationAssistant\Migration\DataSelection\DataSelectionStruct;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\TotalStruct;
-use SwagMigrationAssistant\Profile\Shopware55\DataSelection\CustomerAndOrderDataSelection;
-use SwagMigrationAssistant\Profile\Shopware55\DataSelection\MediaDataSelection;
-use SwagMigrationAssistant\Profile\Shopware55\DataSelection\ProductDataSelection;
-use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\CustomerAndOrderDataSelection;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\MediaDataSelection;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\ProductDataSelection;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\DummyCollection;
 
@@ -50,7 +50,7 @@ class DataSelectionRegistryTest extends TestCase
         $this->connection = new SwagMigrationConnectionEntity();
         $this->connection->setId(Uuid::randomHex());
         $this->connection->setProfileName(Shopware55Profile::PROFILE_NAME);
-        $this->connection->setGatewayName(Shopware55LocalGateway::GATEWAY_NAME);
+        $this->connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
         $this->connection->setCredentialFields([]);
 
         $this->dataSelectionRegistry = new DataSelectionRegistry(new DummyCollection([
@@ -65,6 +65,8 @@ class DataSelectionRegistryTest extends TestCase
         $migrationContext = new MigrationContext(
           $this->connection
         );
+        $profile = new Shopware55Profile();
+        $migrationContext->setProfile($profile);
 
         $expected = [
             0 => (new ProductDataSelection())->getData()->getId(),
@@ -89,6 +91,8 @@ class DataSelectionRegistryTest extends TestCase
         $migrationContext = new MigrationContext(
             $this->connection
         );
+        $profile = new Shopware55Profile();
+        $migrationContext->setProfile($profile);
 
         $dataSelections = $this->dataSelectionRegistry->getDataSelections($migrationContext, $this->environmentInformation);
 

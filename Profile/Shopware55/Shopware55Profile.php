@@ -2,9 +2,9 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware55;
 
-use SwagMigrationAssistant\Migration\Profile\ProfileInterface;
+use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
-class Shopware55Profile implements ProfileInterface
+class Shopware55Profile implements ShopwareProfileInterface
 {
     public const PROFILE_NAME = 'shopware55';
 

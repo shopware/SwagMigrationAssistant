@@ -24,7 +24,9 @@ use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistryInterfac
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
+use SwagMigrationAssistant\Migration\Gateway\GatewayRegistryInterface;
 use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\Profile\ProfileRegistryInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationAssistant\Migration\Service\ProgressState;
 use SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService;
@@ -51,6 +53,16 @@ class RunService implements RunServiceInterface
      * @var SwagMigrationAccessTokenService
      */
     private $accessTokenService;
+
+    /**
+     * @var ProfileRegistryInterface
+     */
+    private $profileRegistry;
+
+    /**
+     * @var GatewayRegistryInterface
+     */
+    private $gatewayRegistry;
 
     /**
      * @var DataSelectionRegistryInterface
@@ -97,6 +109,8 @@ class RunService implements RunServiceInterface
         EntityRepositoryInterface $connectionRepo,
         MigrationDataFetcherInterface $migrationDataFetcher,
         SwagMigrationAccessTokenService $accessTokenService,
+        ProfileRegistryInterface $profileRegistry,
+        GatewayRegistryInterface $gatewayRegistry,
         DataSelectionRegistryInterface $dataSelectionRegistry,
         EntityRepositoryInterface $migrationDataRepository,
         EntityRepositoryInterface $mediaFileRepository,
@@ -110,6 +124,8 @@ class RunService implements RunServiceInterface
         $this->connectionRepo = $connectionRepo;
         $this->migrationDataFetcher = $migrationDataFetcher;
         $this->accessTokenService = $accessTokenService;
+        $this->profileRegistry = $profileRegistry;
+        $this->gatewayRegistry = $gatewayRegistry;
         $this->dataSelectionRegistry = $dataSelectionRegistry;
         $this->migrationDataRepository = $migrationDataRepository;
         $this->mediaFileRepository = $mediaFileRepository;
@@ -500,6 +516,10 @@ class RunService implements RunServiceInterface
         $migrationContext = new MigrationContext(
             $connection
         );
+        $profile = $this->profileRegistry->getProfile($migrationContext);
+        $migrationContext->setProfile($profile);
+        $gateway = $this->gatewayRegistry->getGateway($migrationContext);
+        $migrationContext->setGateway($gateway);
 
         return $this->dataSelectionRegistry->getDataSelectionsByIds($migrationContext, $environmentInformation, $dataSelectionIds);
     }

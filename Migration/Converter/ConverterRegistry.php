@@ -20,15 +20,14 @@ class ConverterRegistry implements ConverterRegistryInterface
     /**
      * @throws ConverterNotFoundException
      */
-    public function getConverter(MigrationContextInterface $context): ConverterInterface
+    public function getConverter(MigrationContextInterface $migrationContext): ConverterInterface
     {
-        $profileName = $context->getConnection()->getProfileName();
         foreach ($this->converters as $converter) {
-            if ($converter->supports($profileName, $context->getDataSet())) {
+            if ($converter->supports($migrationContext)) {
                 return $converter;
             }
         }
 
-        throw new ConverterNotFoundException($profileName);
+        throw new ConverterNotFoundException($migrationContext->getConnection()->getProfileName());
     }
 }

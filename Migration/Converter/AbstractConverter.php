@@ -2,16 +2,16 @@
 
 namespace SwagMigrationAssistant\Migration\Converter;
 
-use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 abstract class AbstractConverter implements ConverterInterface
 {
     /**
      * Identifier which internal entity this converter supports
      */
-    public function supports(string $profileName, DataSet $dataSet): bool
+    public function supports(MigrationContextInterface $migrationContext): bool
     {
-        return $this->getSupportedProfileName() === $profileName
-            && $this->getSupportedEntityName() === $dataSet::getEntity();
+        return $this->getSupportedProfileName() === $migrationContext->getConnection()->getProfileName()
+            && $this->getSupportedEntityName() === $migrationContext->getDataSet()::getEntity();
     }
 }

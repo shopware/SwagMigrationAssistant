@@ -11,13 +11,13 @@ use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CategoryDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\TranslationDataSet;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\CategoryConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\ProductConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\TranslationConverter;
-use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\CategoryDataSet;
-use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
-use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\TranslationDataSet;
-use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
@@ -74,11 +74,13 @@ class TranslationConverterTest extends TestCase
         $connection = new SwagMigrationConnectionEntity();
         $connection->setId(Uuid::randomHex());
         $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
-        $connection->setGatewayName(Shopware55LocalGateway::GATEWAY_NAME);
+        $connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
         $connection->setCredentialFields([]);
 
         $this->runId = Uuid::randomHex();
         $this->profileId = Uuid::randomHex();
+
+        $profile = new Shopware55Profile();
 
         $this->migrationContext = new MigrationContext(
             $connection,
@@ -87,6 +89,7 @@ class TranslationConverterTest extends TestCase
             0,
             250
         );
+        $this->migrationContext->setProfile($profile);
 
         $this->productMigrationContext = new MigrationContext(
             $connection,
@@ -95,6 +98,7 @@ class TranslationConverterTest extends TestCase
             0,
             250
         );
+        $this->productMigrationContext->setProfile($profile);
 
         $this->categoryMigrationContext = new MigrationContext(
             $connection,
@@ -103,13 +107,14 @@ class TranslationConverterTest extends TestCase
             0,
             250
         );
+        $this->categoryMigrationContext->setProfile($profile);
 
         $this->mappingService->createNewUuid($connection->getId(), DefaultEntities::CURRENCY, 'EUR', Context::createDefaultContext(), [], Uuid::randomHex());
     }
 
     public function testSupports(): void
     {
-        $supportsDefinition = $this->translationConverter->supports(Shopware55Profile::PROFILE_NAME, new TranslationDataSet());
+        $supportsDefinition = $this->translationConverter->supports($this->migrationContext);
 
         static::assertTrue($supportsDefinition);
     }

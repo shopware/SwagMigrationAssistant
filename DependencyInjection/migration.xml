@@ -45,6 +45,8 @@
             <argument type="service" id="swag_migration_connection.repository"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Service\MigrationDataFetcher"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Profile\ProfileRegistry" />
+            <argument type="service" id="SwagMigrationAssistant\Migration\Gateway\GatewayRegistry" />
             <argument type="service" id="SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry"/>
             <argument type="service" id="swag_migration_data.repository"/>
             <argument type="service" id="swag_migration_media_file.repository"/>
@@ -118,6 +120,8 @@
             <argument type="service" id="SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Run\RunService"/>
             <argument type="service" id="swag_migration_run.repository"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Profile\ProfileRegistry" />
+            <argument type="service" id="SwagMigrationAssistant\Migration\Gateway\GatewayRegistry" />
             <argument type="service" id="SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry" />
         </service>
 
@@ -140,7 +144,6 @@
                  class="SwagMigrationAssistant\Command\MigrationFetchDataCommand">
             <argument type="service" id="SwagMigrationAssistant\Migration\Service\MigrationDataFetcher"/>
             <argument type="service" id="swag_migration_run.repository"/>
-            <argument type="service" id="swag_migration_profile.repository"/>
             <argument type="service" id="swag_migration_data.repository"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry" />
             <argument>migration:fetch:data</argument>

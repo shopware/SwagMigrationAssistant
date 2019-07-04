@@ -12,7 +12,7 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware55\Logging\Shopware55LogTypes;
+use SwagMigrationAssistant\Profile\Shopware\Logging\LogTypes;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
 class NumberRangeConverter extends Shopware55Converter
@@ -77,7 +77,7 @@ class NumberRangeConverter extends Shopware55Converter
         if (!array_key_exists($data['name'], self::TYPE_MAPPING)) {
             $this->loggingService->addWarning(
                 $migrationContext->getRunUuid(),
-                Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
+                LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
                 'Unsupported number range type',
                 sprintf('NumberRange-Entity could not be converted because of unsupported type: %s.', $data['name']),
                 [
@@ -96,7 +96,7 @@ class NumberRangeConverter extends Shopware55Converter
         if (empty($converted['typeId'])) {
             $this->loggingService->addWarning(
                 $migrationContext->getRunUuid(),
-                Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
+                LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
                 'Empty necessary data',
                 sprintf('NumberRange-Entity could not be converted cause of empty necessary field(s): %s.', implode(', ', ['typeId'])),
                 [

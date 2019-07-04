@@ -3,16 +3,17 @@
 namespace SwagMigrationAssistant\Migration\DataSelection\DataSet;
 
 use SwagMigrationAssistant\Exception\DataSetNotFoundException;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 interface DataSetRegistryInterface
 {
     /**
      * @return DataSet[]
      */
-    public function getDataSets(string $profileName): array;
+    public function getDataSets(MigrationContextInterface $migrationContext): array;
 
     /**
      * @throws DataSetNotFoundException
      */
-    public function getDataSet(string $profileName, string $dataSetName): DataSet;
+    public function getDataSet(MigrationContextInterface $migrationContext, string $dataSetName): DataSet;
 }

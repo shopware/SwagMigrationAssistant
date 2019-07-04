@@ -3,6 +3,7 @@
 namespace SwagMigrationAssistant\Test\Mock\DataSet;
 
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 class InvalidCustomerDataSet extends DataSet
 {
@@ -11,7 +12,7 @@ class InvalidCustomerDataSet extends DataSet
         return 'customerInvalid';
     }
 
-    public function supports(string $profileName): bool
+    public function supports(MigrationContextInterface $migrationContext): bool
     {
         return true;
     }

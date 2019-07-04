@@ -3,7 +3,6 @@
 namespace SwagMigrationAssistant\Migration\Converter;
 
 use Shopware\Core\Framework\Context;
-use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 interface ConverterInterface
@@ -21,7 +20,7 @@ interface ConverterInterface
     /**
      * Identifier which internal entity this converter supports
      */
-    public function supports(string $profileName, DataSet $dataSet): bool;
+    public function supports(MigrationContextInterface $migrationContext): bool;
 
     /**
      * Converts the given data into the internal structure

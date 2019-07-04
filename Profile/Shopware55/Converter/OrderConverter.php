@@ -17,12 +17,12 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware55\Exception\AssociationEntityRequiredMissingException;
-use SwagMigrationAssistant\Profile\Shopware55\Logging\Shopware55LogTypes;
-use SwagMigrationAssistant\Profile\Shopware55\Premapping\OrderStateReader;
-use SwagMigrationAssistant\Profile\Shopware55\Premapping\PaymentMethodReader;
-use SwagMigrationAssistant\Profile\Shopware55\Premapping\SalutationReader;
-use SwagMigrationAssistant\Profile\Shopware55\Premapping\TransactionStateReader;
+use SwagMigrationAssistant\Profile\Shopware\Exception\AssociationEntityRequiredMissingException;
+use SwagMigrationAssistant\Profile\Shopware\Logging\LogTypes;
+use SwagMigrationAssistant\Profile\Shopware\Premapping\OrderStateReader;
+use SwagMigrationAssistant\Profile\Shopware\Premapping\PaymentMethodReader;
+use SwagMigrationAssistant\Profile\Shopware\Premapping\SalutationReader;
+use SwagMigrationAssistant\Profile\Shopware\Premapping\TransactionStateReader;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
 class OrderConverter extends Shopware55Converter
@@ -142,7 +142,7 @@ class OrderConverter extends Shopware55Converter
         if (!empty($fields)) {
             $this->loggingService->addWarning(
                 $this->runId,
-                Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
+                LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
                 'Empty necessary data',
                 sprintf('Order-Entity could not be converted cause of empty necessary field(s): %s.', implode(', ', $fields)),
                 [
@@ -225,7 +225,7 @@ class OrderConverter extends Shopware55Converter
         if ($currencyUuid === null) {
             $this->loggingService->addWarning(
                 $this->runId,
-                Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
+                LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
                 'Empty necessary data fields',
                 'Order-Entity could not be converted cause of empty necessary field: currency.',
                 ['id' => $this->oldId]
@@ -248,7 +248,7 @@ class OrderConverter extends Shopware55Converter
         if (!isset($converted['stateId'])) {
             $this->loggingService->addWarning(
                 $this->runId,
-                Shopware55LogTypes::UNKNOWN_ORDER_STATE,
+                LogTypes::UNKNOWN_ORDER_STATE,
                 'Cannot find order state',
                 'Order-Entity could not be converted cause of unknown order state',
                 [
@@ -307,7 +307,7 @@ class OrderConverter extends Shopware55Converter
             $fields = ['billingaddress'];
             $this->loggingService->addWarning(
                 $this->runId,
-                Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
+                LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
                 'Empty necessary data',
                 sprintf('Order-Entity could not be converted cause of empty necessary field(s): %s.', implode(', ', $fields)),
                 [
@@ -393,7 +393,7 @@ class OrderConverter extends Shopware55Converter
         if ($stateId === null) {
             $this->loggingService->addWarning(
                 $this->runId,
-                Shopware55LogTypes::UNKNOWN_TRANSACTION_STATE,
+                LogTypes::UNKNOWN_TRANSACTION_STATE,
                 'Cannot find transaction state',
                 'Transaction-Order-Entity could not be converted cause of unknown transaction state',
                 [
@@ -447,7 +447,7 @@ class OrderConverter extends Shopware55Converter
         if ($paymentMethodUuid === null) {
             $this->loggingService->addInfo(
                 $this->runId,
-                Shopware55LogTypes::UNKNOWN_PAYMENT_METHOD,
+                LogTypes::UNKNOWN_PAYMENT_METHOD,
                 'Cannot find payment method',
                 'Order-Transaction-Entity could not be converted cause of unknown payment method',
                 [
@@ -467,7 +467,7 @@ class OrderConverter extends Shopware55Converter
         if (!empty($fields)) {
             $this->loggingService->addInfo(
                 $this->runId,
-                Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
+                LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
                 'Empty necessary data fields for address',
                 sprintf('Address-Entity could not be converted cause of empty necessary field(s): %s.', implode(', ', $fields)),
                 [
@@ -733,7 +733,7 @@ class OrderConverter extends Shopware55Converter
         } else {
             $this->loggingService->addWarning(
                 $this->runId,
-                Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
+                LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
                 'Empty necessary data fields',
                 'Order-Entity could not be converted cause of empty necessary field(s): delivery_time.',
                 [
@@ -751,7 +751,7 @@ class OrderConverter extends Shopware55Converter
         } else {
             $this->loggingService->addWarning(
                 $this->runId,
-                Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
+                LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
                 'Empty necessary data fields',
                 'Order-Entity could not be converted cause of empty necessary field(s): availability_rule_id.',
                 [
@@ -862,7 +862,7 @@ class OrderConverter extends Shopware55Converter
             if (!isset($lineItem['identifier'])) {
                 $this->loggingService->addInfo(
                     $this->runId,
-                    Shopware55LogTypes::EMPTY_LINE_ITEM_IDENTIFIER,
+                    LogTypes::EMPTY_LINE_ITEM_IDENTIFIER,
                     'Line item could not be converted',
                     'Order-Line-Item-Entity could not be converted cause of empty identifier',
                     [
@@ -917,7 +917,7 @@ class OrderConverter extends Shopware55Converter
         if ($salutationUuid === null) {
             $this->loggingService->addWarning(
                 $this->runId,
-                Shopware55LogTypes::UNKNOWN_CUSTOMER_SALUTATION,
+                LogTypes::UNKNOWN_CUSTOMER_SALUTATION,
                 'Cannot find customer salutation for order',
                 'Order-Entity could not be converted cause of unknown customer salutation',
                 [

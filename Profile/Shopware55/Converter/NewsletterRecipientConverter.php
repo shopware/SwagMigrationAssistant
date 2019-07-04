@@ -9,9 +9,9 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware55\Logging\Shopware55LogTypes;
-use SwagMigrationAssistant\Profile\Shopware55\Premapping\NewsletterRecipientStatusReader;
-use SwagMigrationAssistant\Profile\Shopware55\Premapping\SalutationReader;
+use SwagMigrationAssistant\Profile\Shopware\Logging\LogTypes;
+use SwagMigrationAssistant\Profile\Shopware\Premapping\NewsletterRecipientStatusReader;
+use SwagMigrationAssistant\Profile\Shopware\Premapping\SalutationReader;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
 class NewsletterRecipientConverter extends Shopware55Converter
@@ -163,7 +163,7 @@ class NewsletterRecipientConverter extends Shopware55Converter
         if ($salutationUuid === null) {
             $this->loggingService->addWarning(
                 $this->runId,
-                Shopware55LogTypes::UNKNOWN_CUSTOMER_SALUTATION,
+                LogTypes::UNKNOWN_CUSTOMER_SALUTATION,
                 'Cannot find customer salutation',
                 'NewsletterRecipient-Entity could not be converted cause of unknown salutation',
                 [
@@ -192,7 +192,7 @@ class NewsletterRecipientConverter extends Shopware55Converter
         if ($salesChannelUuid === null) {
             $this->loggingService->addWarning(
                 $this->runId,
-                Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
+                LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
                 'Empty necessary data fields',
                 'NewsletterRecipient-Entity could not be converted cause of empty necessary field(s): salesChannel.',
                 [
@@ -219,7 +219,7 @@ class NewsletterRecipientConverter extends Shopware55Converter
         if ($status === null) {
             $this->loggingService->addWarning(
                 $this->runId,
-                Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
+                LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
                 'Empty necessary data fields',
                 'NewsletterRecipient-Entity could not be converted cause of empty necessary field(s): status.',
                 [

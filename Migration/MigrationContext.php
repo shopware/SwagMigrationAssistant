@@ -23,7 +23,7 @@ class MigrationContext extends Struct implements MigrationContextInterface
     private $connection;
 
     /**
-     * @var DataSet
+     * @var DataSet|null
      */
     private $dataSet;
 
@@ -74,6 +74,11 @@ class MigrationContext extends Struct implements MigrationContextInterface
     public function getDataSet(): ?DataSet
     {
         return $this->dataSet;
+    }
+
+    public function setDataSet(DataSet $dataSet): void
+    {
+        $this->dataSet = $dataSet;
     }
 
     public function getOffset(): int

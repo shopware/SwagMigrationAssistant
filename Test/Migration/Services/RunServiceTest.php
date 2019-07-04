@@ -22,15 +22,16 @@ use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition;
 use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\Profile\ProfileRegistry;
 use SwagMigrationAssistant\Migration\Run\RunService;
 use SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService;
-use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiEnvironmentReader;
-use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiReader;
-use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiTableCountReader;
-use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiTableReader;
-use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Shopware55ApiGateway;
-use SwagMigrationAssistant\Profile\Shopware55\Gateway\Connection\ConnectionFactory;
-use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiEnvironmentReader;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiReader;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiTableCountReader;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiTableReader;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\ShopwareApiGateway;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\MigrationServicesTrait;
 use SwagMigrationAssistant\Test\Mock\DummyCollection;
@@ -98,7 +99,6 @@ class RunServiceTest extends TestCase
         $this->dbConnection = $this->getContainer()->get(Connection::class);
         $entityWriter = $this->getContainer()->get(EntityWriter::class);
         $this->runRepo = $this->getContainer()->get('swag_migration_run.repository');
-        $profileRepo = $this->getContainer()->get('swag_migration_profile.repository');
         $this->dataRepo = $this->getContainer()->get('swag_migration_data.repository');
         $this->connectionRepo = $this->getContainer()->get('swag_migration_connection.repository');
         $this->mappingRepo = $this->getContainer()->get('swag_migration_mapping.repository');
@@ -140,7 +140,7 @@ class RunServiceTest extends TestCase
                             'apiKey' => 'testKey',
                         ],
                         'profileName' => Shopware55Profile::PROFILE_NAME,
-                        'gatewayName' => Shopware55LocalGateway::GATEWAY_NAME,
+                        'gatewayName' => ShopwareLocalGateway::GATEWAY_NAME,
                     ],
                 ],
                 $context
@@ -150,11 +150,11 @@ class RunServiceTest extends TestCase
 
         $connectionFactory = new ConnectionFactory();
         $gatewayRegistry = new GatewayRegistry(new DummyCollection([
-            new Shopware55ApiGateway(
-                new Shopware55ApiReader($connectionFactory),
-                new Shopware55ApiEnvironmentReader($connectionFactory),
-                new Shopware55ApiTableReader($connectionFactory),
-                new Shopware55ApiTableCountReader($connectionFactory, $this->dataSetRegistry, $loggingService),
+            new ShopwareApiGateway(
+                new ApiReader($connectionFactory),
+                new ApiEnvironmentReader($connectionFactory),
+                new ApiTableReader($connectionFactory),
+                new ApiTableCountReader($connectionFactory, $this->dataSetRegistry, $loggingService),
                 $this->getContainer()->get('currency.repository')
             ),
             new DummyLocalGateway(),

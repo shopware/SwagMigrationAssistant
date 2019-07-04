@@ -9,9 +9,9 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware55\Logging\Shopware55LogTypes;
-use SwagMigrationAssistant\Profile\Shopware55\Premapping\PaymentMethodReader;
-use SwagMigrationAssistant\Profile\Shopware55\Premapping\SalutationReader;
+use SwagMigrationAssistant\Profile\Shopware\Logging\LogTypes;
+use SwagMigrationAssistant\Profile\Shopware\Premapping\PaymentMethodReader;
+use SwagMigrationAssistant\Profile\Shopware\Premapping\SalutationReader;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
 class CustomerConverter extends Shopware55Converter
@@ -110,7 +110,7 @@ class CustomerConverter extends Shopware55Converter
         if (!empty($fields)) {
             $this->loggingService->addWarning(
                 $this->runId,
-                Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
+                LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
                 'Empty necessary data fields',
                 sprintf('Customer-Entity could not be converted cause of empty necessary field(s): %s.', implode(', ', $fields)),
                 [
@@ -213,7 +213,7 @@ class CustomerConverter extends Shopware55Converter
             if (!isset($converted['defaultPaymentMethodId'])) {
                 $this->loggingService->addWarning(
                     $this->runId,
-                    Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
+                    LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
                     'Empty necessary data fields',
                     'Customer-Entity could not be converted cause of empty necessary field(s): defaultpayment.',
                     [
@@ -273,7 +273,7 @@ class CustomerConverter extends Shopware55Converter
 
             $this->loggingService->addWarning(
                 $this->runId,
-                Shopware55LogTypes::NO_ADDRESS_DATA,
+                LogTypes::NO_ADDRESS_DATA,
                 'No address data',
                 'Customer-Entity could not be converted cause of empty address data.',
                 ['id' => $this->oldCustomerId]
@@ -312,7 +312,7 @@ class CustomerConverter extends Shopware55Converter
         if ($paymentMethodUuid === null) {
             $this->loggingService->addWarning(
                 $this->runId,
-                Shopware55LogTypes::UNKNOWN_PAYMENT_METHOD,
+                LogTypes::UNKNOWN_PAYMENT_METHOD,
                 'Cannot find payment method',
                 'Customer-Entity could not be converted cause of unknown payment method',
                 [
@@ -339,7 +339,7 @@ class CustomerConverter extends Shopware55Converter
             if (!empty($fields)) {
                 $this->loggingService->addInfo(
                     $this->runId,
-                    Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
+                    LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
                     'Empty necessary data fields for address',
                     sprintf('Address-Entity could not be converted cause of empty necessary field(s): %s.', implode(', ', $fields)),
                     [
@@ -538,7 +538,7 @@ class CustomerConverter extends Shopware55Converter
 
             $this->loggingService->addInfo(
                 $this->runId,
-                Shopware55LogTypes::NO_DEFAULT_BILLING_AND_SHIPPING_ADDRESS,
+                LogTypes::NO_DEFAULT_BILLING_AND_SHIPPING_ADDRESS,
                 'No default billing and shipping address',
                 'Default billing and shipping address of customer is empty and will set with the first address.',
                 [
@@ -557,7 +557,7 @@ class CustomerConverter extends Shopware55Converter
 
             $this->loggingService->addInfo(
                 $this->runId,
-                Shopware55LogTypes::NO_DEFAULT_SHIPPING_ADDRESS,
+                LogTypes::NO_DEFAULT_SHIPPING_ADDRESS,
                 'No default shipping address',
                 'Default shipping address of customer is empty and will set with the default billing address.',
                 [
@@ -576,7 +576,7 @@ class CustomerConverter extends Shopware55Converter
 
             $this->loggingService->addInfo(
                 $this->runId,
-                Shopware55LogTypes::NO_DEFAULT_BILLING_ADDRESS,
+                LogTypes::NO_DEFAULT_BILLING_ADDRESS,
                 'No default billing address',
                 'Default billing address of customer is empty and will set with the default shipping address.',
                 [
@@ -599,7 +599,7 @@ class CustomerConverter extends Shopware55Converter
         if ($salutationUuid === null) {
             $this->loggingService->addWarning(
                 $this->runId,
-                Shopware55LogTypes::UNKNOWN_CUSTOMER_SALUTATION,
+                LogTypes::UNKNOWN_CUSTOMER_SALUTATION,
                 'Cannot find customer salutation',
                 'Customer-Entity could not be converted cause of unknown salutation',
                 [
