@@ -220,6 +220,35 @@ class MigrationApiService extends ApiService {
                 return ApiService.handleResponse(response);
             });
     }
+
+    getProfiles() {
+        const headers = this.getBasicHeaders();
+
+        return this.httpClient
+            .get(`_action/${this.getApiBasePath()}/get-profiles`, {
+                ...this.basicConfig,
+                headers
+            })
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
+    getGateways(profileName) {
+        const headers = this.getBasicHeaders();
+
+        return this.httpClient
+            .get(`_action/${this.getApiBasePath()}/get-gateways`, {
+                ...this.basicConfig,
+                params: {
+                    profileName
+                },
+                headers
+            })
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
 }
 
 export default MigrationApiService;

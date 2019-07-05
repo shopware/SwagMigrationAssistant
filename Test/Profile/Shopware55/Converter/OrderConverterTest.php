@@ -13,7 +13,6 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContext;
-use SwagMigrationAssistant\Migration\Profile\SwagMigrationProfileEntity;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\CustomerConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\OrderConverter;
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\CustomerDataSet;
@@ -88,11 +87,9 @@ class OrderConverterTest extends TestCase
         $connectionId = Uuid::randomHex();
         $this->runId = Uuid::randomHex();
         $this->connection = new SwagMigrationConnectionEntity();
-        $profile = new SwagMigrationProfileEntity();
-        $profile->setName(Shopware55Profile::PROFILE_NAME);
-        $profile->setGatewayName(Shopware55LocalGateway::GATEWAY_NAME);
         $this->connection->setId($connectionId);
-        $this->connection->setProfile($profile);
+        $this->connection->setProfileName(Shopware55Profile::PROFILE_NAME);
+        $this->connection->setGatewayName(Shopware55LocalGateway::GATEWAY_NAME);
 
         $this->migrationContext = new MigrationContext(
             $this->connection,

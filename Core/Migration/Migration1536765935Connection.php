@@ -20,16 +20,14 @@ CREATE TABLE `swag_migration_connection` (
     `name`                  VARCHAR(255),
     `credential_fields`     LONGTEXT,
     `premapping`            LONGTEXT,
-    `profile_id`            BINARY(16) NOT NULL,
+    `profile_name`          VARCHAR(255) NOT NULL,
+    `gateway_name`          VARCHAR(255) NOT NULL,
     `created_at`            DATETIME(3)  NOT NULL,
     `updated_at`            DATETIME(3),
     PRIMARY KEY (`id`),
     CONSTRAINT `uniq.swag_migration_connection.name` UNIQUE (`name`),
     CONSTRAINT `json.swag_migration_connection.credential_fields` CHECK (JSON_VALID(`credential_fields`)),
-    CONSTRAINT `json.swag_migration_connection.premapping` CHECK (JSON_VALID(`premapping`)),
-    CONSTRAINT `fk.swag_migration_connection.profile_id` FOREIGN KEY (`profile_id`) REFERENCES `swag_migration_profile`(`id`)
-      ON DELETE CASCADE
-      ON UPDATE CASCADE
+    CONSTRAINT `json.swag_migration_connection.premapping` CHECK (JSON_VALID(`premapping`))
 )
     ENGINE = InnoDB
     DEFAULT CHARSET = utf8mb4

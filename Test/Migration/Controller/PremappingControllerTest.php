@@ -21,7 +21,6 @@ use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGatew
 use SwagMigrationAssistant\Profile\Shopware55\Premapping\OrderStateReader;
 use SwagMigrationAssistant\Profile\Shopware55\Premapping\TransactionStateReader;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
-use SwagMigrationAssistant\Test\Migration\Services\MigrationProfileUuidService;
 use SwagMigrationAssistant\Test\MigrationServicesTrait;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -86,7 +85,6 @@ class PremappingControllerTest extends TestCase
         $stateMachineRepo = $this->getContainer()->get('state_machine.repository');
         $stateMachineStateRepo = $this->getContainer()->get('state_machine_state.repository');
         $this->mappingService = $this->getContainer()->get(MappingService::class);
-        $profileUuidService = new MigrationProfileUuidService($profileRepo, Shopware55Profile::PROFILE_NAME, Shopware55LocalGateway::GATEWAY_NAME);
         $mappingRepo = $this->getContainer()->get('swag_migration_mapping.repository');
 
         $gatewayRegistry = $this->getContainer()->get('SwagMigrationAssistant\Migration\Gateway\GatewayRegistry');
@@ -107,7 +105,7 @@ class PremappingControllerTest extends TestCase
             $this->runRepo
         );
 
-        $this->context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use ($connectionRepo, $profileUuidService) {
+        $this->context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use ($connectionRepo) {
             $this->connectionId = Uuid::randomHex();
             $connectionRepo->create(
                 [
@@ -119,7 +117,8 @@ class PremappingControllerTest extends TestCase
                             'apiUser' => 'testUser',
                             'apiKey' => 'testKey',
                         ],
-                        'profileId' => $profileUuidService->getProfileUuid(),
+                        'profileName' => Shopware55Profile::PROFILE_NAME,
+                        'gatewayName' => Shopware55LocalGateway::GATEWAY_NAME,
                     ],
                 ],
                 $context

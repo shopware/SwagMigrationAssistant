@@ -22,8 +22,8 @@ class MediaFileProcessorRegistry implements MediaFileProcessorRegistryInterface
      */
     public function getProcessor(MigrationContextInterface $context): MediaFileProcessorInterface
     {
-        $profileName = $context->getProfileName();
-        $gatewayName = $context->getGatewayName();
+        $profileName = $context->getConnection()->getProfileName();
+        $gatewayName = $context->getConnection()->getGatewayName();
         $entity = $context->getDataSet()::getEntity();
         foreach ($this->processors as $processor) {
             if ($processor->supports($profileName, $gatewayName, $entity)) {

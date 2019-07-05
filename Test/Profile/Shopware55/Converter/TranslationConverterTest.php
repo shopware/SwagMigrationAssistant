@@ -11,7 +11,6 @@ use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Migration\Profile\SwagMigrationProfileEntity;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\CategoryConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\ProductConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\TranslationConverter;
@@ -74,11 +73,8 @@ class TranslationConverterTest extends TestCase
 
         $connection = new SwagMigrationConnectionEntity();
         $connection->setId(Uuid::randomHex());
-        $profile = new SwagMigrationProfileEntity();
-        $profile->setName(Shopware55Profile::PROFILE_NAME);
-        $profile->setGatewayName(Shopware55LocalGateway::GATEWAY_NAME);
-
-        $connection->setProfile($profile);
+        $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
+        $connection->setGatewayName(Shopware55LocalGateway::GATEWAY_NAME);
         $connection->setCredentialFields([]);
 
         $this->runId = Uuid::randomHex();

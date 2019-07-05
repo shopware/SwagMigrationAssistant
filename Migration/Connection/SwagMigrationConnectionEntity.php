@@ -6,7 +6,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
 use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingCollection;
 use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
-use SwagMigrationAssistant\Migration\Profile\SwagMigrationProfileEntity;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
 use SwagMigrationAssistant\Migration\Setting\GeneralSettingCollection;
 
@@ -32,12 +31,12 @@ class SwagMigrationConnectionEntity extends Entity
     /**
      * @var string
      */
-    protected $profileId;
+    protected $profileName;
 
     /**
-     * @var SwagMigrationProfileEntity
+     * @var string
      */
-    protected $profile;
+    protected $gatewayName;
 
     /**
      * @var SwagMigrationRunCollection|null
@@ -87,24 +86,24 @@ class SwagMigrationConnectionEntity extends Entity
         $this->premapping = $premapping;
     }
 
-    public function getProfileId(): ?string
+    public function getProfileName(): string
     {
-        return $this->profileId;
+        return $this->profileName;
     }
 
-    public function setProfileId(string $profileId): void
+    public function setProfileName(string $profileName): void
     {
-        $this->profileId = $profileId;
+        $this->profileName = $profileName;
     }
 
-    public function getProfile(): SwagMigrationProfileEntity
+    public function getGatewayName(): string
     {
-        return $this->profile;
+        return $this->gatewayName;
     }
 
-    public function setProfile(SwagMigrationProfileEntity $profile): void
+    public function setGatewayName(string $gatewayName): void
     {
-        $this->profile = $profile;
+        $this->gatewayName = $gatewayName;
     }
 
     public function getRuns(): ?SwagMigrationRunCollection

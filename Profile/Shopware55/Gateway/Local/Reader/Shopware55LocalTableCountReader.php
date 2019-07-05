@@ -36,7 +36,7 @@ class Shopware55LocalTableCountReader implements TableCountReaderInterface
      */
     public function readTotals(MigrationContextInterface $migrationContext): array
     {
-        $dataSets = $this->dataSetRegistry->getDataSets($migrationContext->getProfileName());
+        $dataSets = $this->dataSetRegistry->getDataSets($migrationContext->getConnection()->getProfileName());
         $countingInformation = $this->getCountingInformation($dataSets);
         $connection = $this->connectionFactory->createDatabaseConnection($migrationContext);
 

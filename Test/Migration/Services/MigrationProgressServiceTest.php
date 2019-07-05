@@ -130,13 +130,6 @@ class MigrationProgressServiceTest extends TestCase
         $this->mediaFileRepo = $this->getContainer()->get('swag_migration_media_file.repository');
         $this->loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
 
-        $profileUuidService = new MigrationProfileUuidService(
-            $this->profileRepo,
-            Shopware55Profile::PROFILE_NAME,
-            Shopware55LocalGateway::GATEWAY_NAME
-        );
-        $this->profileId = $profileUuidService->getProfileUuid();
-
         $this->runUuid = Uuid::randomHex();
         $this->runProgress = require __DIR__ . '/../../_fixtures/run_progress_data.php';
 
@@ -145,7 +138,7 @@ class MigrationProgressServiceTest extends TestCase
             'apiKey' => 'testKey',
         ];
 
-        $context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use ($profileUuidService) {
+        $context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) {
             $this->connectionId = Uuid::randomHex();
             $this->connectionRepo->create(
                 [
@@ -156,7 +149,8 @@ class MigrationProgressServiceTest extends TestCase
                             'apiUser' => 'testUser',
                             'apiKey' => 'testKey',
                         ],
-                        'profileId' => $profileUuidService->getProfileUuid(),
+                        'profileName' => Shopware55Profile::PROFILE_NAME,
+                        'gatewayName' => Shopware55LocalGateway::GATEWAY_NAME,
                     ],
                 ],
                 $context
@@ -218,16 +212,6 @@ class MigrationProgressServiceTest extends TestCase
             'apiKey' => 'bar',
         ];
 
-        $this->profileRepo->update(
-            [
-                [
-                    'id' => $this->profileId,
-                    'credentialFields' => $newCredentialFields,
-                ],
-            ],
-            $context
-        );
-
         $entities = [];
         $this->initEntity($entities, DefaultEntities::CATEGORY, 3, 0);
         $this->dataRepo->create(
@@ -256,16 +240,6 @@ class MigrationProgressServiceTest extends TestCase
             'apiUser' => 'foooo',
             'apiKey' => 'bar',
         ];
-
-        $this->profileRepo->update(
-            [
-                [
-                    'id' => $this->profileId,
-                    'credentialFields' => $newCredentialFields,
-                ],
-            ],
-            $context
-        );
 
         $this->writeArray = [
             'category' => [

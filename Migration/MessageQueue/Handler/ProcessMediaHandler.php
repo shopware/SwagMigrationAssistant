@@ -93,8 +93,8 @@ class ProcessMediaHandler extends AbstractMessageHandler
                 'Processor not found',
                 sprintf(
                     'Processor for profile "%s", gateway "%s" and entity "%s" not found.',
-                    $migrationContext->getProfileName(),
-                    $migrationContext->getGatewayName(),
+                    $migrationContext->getConnection()->getProfileName(),
+                    $migrationContext->getConnection()->getGatewayName(),
                     $migrationContext->getDataSet()::getEntity()
                 ),
                 [

@@ -9,7 +9,6 @@ use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Converter\ConverterRegistry;
 use SwagMigrationAssistant\Migration\Converter\ConverterRegistryInterface;
 use SwagMigrationAssistant\Migration\MigrationContext;
-use SwagMigrationAssistant\Migration\Profile\SwagMigrationProfileEntity;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\ProductConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
@@ -43,11 +42,8 @@ class ConverterRegistryTest extends TestCase
     public function testGetConverterNotFound(): void
     {
         $connection = new SwagMigrationConnectionEntity();
-        $profile = new SwagMigrationProfileEntity();
-        $profile->setName(Shopware55Profile::PROFILE_NAME);
-        $profile->setGatewayName(Shopware55LocalGateway::GATEWAY_NAME);
-        $connection->setProfile($profile);
-
+        $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
+        $connection->setGatewayName(Shopware55LocalGateway::GATEWAY_NAME);
         $migrationContext = new MigrationContext(
             $connection,
             Uuid::randomHex(),

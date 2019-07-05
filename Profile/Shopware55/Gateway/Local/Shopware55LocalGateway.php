@@ -57,9 +57,14 @@ class Shopware55LocalGateway implements Shopware55GatewayInterface
         $this->connectionFactory = $connectionFactory;
     }
 
-    public function supports(string $gatewayIdentifier): bool
+    public function getName(): string
     {
-        return $gatewayIdentifier === Shopware55Profile::PROFILE_NAME . self::GATEWAY_NAME;
+        return self::GATEWAY_NAME;
+    }
+
+    public function supports(MigrationContextInterface $migrationContext): bool
+    {
+        return $migrationContext->getConnection()->getProfileName() === Shopware55Profile::PROFILE_NAME;
     }
 
     public function read(MigrationContextInterface $migrationContext): array

@@ -4,6 +4,8 @@ namespace SwagMigrationAssistant\Migration;
 
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
+use SwagMigrationAssistant\Migration\Gateway\GatewayInterface;
+use SwagMigrationAssistant\Migration\Profile\ProfileInterface;
 
 interface MigrationContextInterface
 {
@@ -11,13 +13,17 @@ interface MigrationContextInterface
 
     public function getConnection(): ?SwagMigrationConnectionEntity;
 
-    public function getProfileName(): ?string;
-
-    public function getGatewayName(): ?string;
-
     public function getDataSet(): ?DataSet;
 
     public function getOffset(): int;
 
     public function getLimit(): int;
+
+    public function getProfile(): ProfileInterface;
+
+    public function setProfile(ProfileInterface $profile): void;
+
+    public function getGateway(): GatewayInterface;
+
+    public function setGateway(GatewayInterface $gateway): void;
 }

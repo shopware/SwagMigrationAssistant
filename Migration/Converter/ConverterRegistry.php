@@ -22,7 +22,7 @@ class ConverterRegistry implements ConverterRegistryInterface
      */
     public function getConverter(MigrationContextInterface $context): ConverterInterface
     {
-        $profileName = $context->getProfileName();
+        $profileName = $context->getConnection()->getProfileName();
         foreach ($this->converters as $converter) {
             if ($converter->supports($profileName, $context->getDataSet())) {
                 return $converter;

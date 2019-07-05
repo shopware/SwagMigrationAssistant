@@ -63,7 +63,6 @@ Component.register('swag-migration-wizard', {
                     titleSnippet: 'swag-migration.wizard.pages.credentials.statusTitle'
                 }
             },
-            profile: {}, // state object
             connection: {},
             connectionName: '',
             selectedProfile: {},
@@ -174,12 +173,12 @@ Component.register('swag-migration-wizard', {
         },
 
         profileInformationComponent() {
-            if (!this.connection || !this.connection.profile) {
+            if (!this.connection || !this.connection.profileName || !this.connection.gatewayName) {
                 return '';
             }
 
-            return `swag-migration-profile-${this.connection.profile.name}-` +
-            `${this.connection.profile.gatewayName}-page-information`;
+            return `swag-migration-profile-${this.connection.profileName}-` +
+                `${this.connection.gatewayName}-page-information`;
         },
 
         profileInformationComponentIsLoaded() {
@@ -187,12 +186,11 @@ Component.register('swag-migration-wizard', {
         },
 
         credentialsComponent() {
-            if (!this.connection || !this.connection.profile) {
+            if (!this.connection || !this.connection.profileName || !this.connection.gatewayName) {
                 return '';
             }
 
-            return `swag-migration-profile-${this.connection.profile.name}-` +
-                `${this.connection.profile.gatewayName}-credential-form`;
+            return `swag-migration-profile-${this.connection.profileName}-${this.connection.gatewayName}-credential-form`;
         }
     },
 
@@ -507,7 +505,8 @@ Component.register('swag-migration-wizard', {
 
                 this.connectionNameErrorCode = '';
                 const newConnection = this.migrationConnectionStore.create();
-                newConnection.profileId = this.selectedProfile.id;
+                newConnection.profileName = this.selectedProfile.profile;
+                newConnection.gatewayName = this.selectedProfile.gateway;
                 newConnection.name = this.connectionName;
                 return newConnection.save().then((savedConnection) => {
                     return this.saveSelectedConnection(savedConnection);

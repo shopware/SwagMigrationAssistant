@@ -4,6 +4,8 @@ namespace SwagMigrationAssistant\Test\Migration\Profile;
 
 use PHPUnit\Framework\TestCase;
 use SwagMigrationAssistant\Exception\ProfileNotFoundException;
+use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\Profile\ProfileRegistry;
 use SwagMigrationAssistant\Migration\Profile\ProfileRegistryInterface;
 use SwagMigrationAssistant\Test\Mock\DummyCollection;
@@ -25,7 +27,11 @@ class ProfileRegistryTest extends TestCase
     public function testGetProfileNotFound(): void
     {
         try {
-            $this->profileRegistry->getProfile('foo');
+            $connection = new SwagMigrationConnectionEntity();
+            $connection->setProfileName('foo');
+            $migrationContext = new MigrationContext($connection);
+
+            $this->profileRegistry->getProfile($migrationContext);
         } catch (\Exception $e) {
             /* @var ProfileNotFoundException $e */
             static::assertInstanceOf(ProfileNotFoundException::class, $e);

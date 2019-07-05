@@ -114,12 +114,12 @@ Component.register('swag-migration-shop-information', {
 
         profile() {
             return this.connection === null ? '' :
-                this.connection.profile.name;
+                this.connection.profileName;
         },
 
         gateway() {
             return this.connection === null ? '' :
-                this.connection.profile.gatewayName;
+                this.connection.gatewayName;
         },
 
         lastConnectionCheckDateTimeParams() {

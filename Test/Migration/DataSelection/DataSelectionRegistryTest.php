@@ -9,7 +9,6 @@ use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionStruct;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\MigrationContext;
-use SwagMigrationAssistant\Migration\Profile\SwagMigrationProfileEntity;
 use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\CustomerAndOrderDataSelection;
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\MediaDataSelection;
@@ -50,11 +49,8 @@ class DataSelectionRegistryTest extends TestCase
         );
         $this->connection = new SwagMigrationConnectionEntity();
         $this->connection->setId(Uuid::randomHex());
-        $profile = new SwagMigrationProfileEntity();
-        $profile->setName(Shopware55Profile::PROFILE_NAME);
-        $profile->setGatewayName(Shopware55LocalGateway::GATEWAY_NAME);
-
-        $this->connection->setProfile($profile);
+        $this->connection->setProfileName(Shopware55Profile::PROFILE_NAME);
+        $this->connection->setGatewayName(Shopware55LocalGateway::GATEWAY_NAME);
         $this->connection->setCredentialFields([]);
 
         $this->dataSelectionRegistry = new DataSelectionRegistry(new DummyCollection([

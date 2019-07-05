@@ -16,11 +16,6 @@ class SwagMigrationProfileEntity extends Entity
     protected $name;
 
     /**
-     * @var string|null
-     */
-    protected $gatewayName;
-
-    /**
      * @var SwagMigrationConnectionCollection|null
      */
     protected $connections;
@@ -33,16 +28,6 @@ class SwagMigrationProfileEntity extends Entity
     public function setName(string $name): void
     {
         $this->name = $name;
-    }
-
-    public function getGatewayName(): ?string
-    {
-        return $this->gatewayName;
-    }
-
-    public function setGatewayName(string $gatewayName): void
-    {
-        $this->gatewayName = $gatewayName;
     }
 
     public function getConnections(): ?SwagMigrationConnectionCollection
