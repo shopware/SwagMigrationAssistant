@@ -65,9 +65,9 @@ class MigrationDownloadMediaCommand extends Command implements EventSubscriberIn
     public static function getSubscribedEvents(): array
     {
         return [
-            MigrationMediaDownloadStartEvent::EVENT_NAME => 'onStart',
-            MigrationMediaDownloadAdvanceEvent::EVENT_NAME => 'onAdvance',
-            MigrationMediaDownloadFinishEvent::EVENT_NAME => 'onFinish',
+            MigrationMediaDownloadStartEvent::class => 'onStart',
+            MigrationMediaDownloadAdvanceEvent::class => 'onAdvance',
+            MigrationMediaDownloadFinishEvent::class => 'onFinish',
         ];
     }
 

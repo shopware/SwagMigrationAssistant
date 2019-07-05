@@ -6,7 +6,6 @@ use Symfony\Component\EventDispatcher\Event;
 
 class MigrationMediaDownloadFinishEvent extends Event
 {
-    public const EVENT_NAME = 'migration.media.download.finish';
     /**
      * @var int
      */
