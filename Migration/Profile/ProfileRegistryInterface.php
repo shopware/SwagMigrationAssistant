@@ -2,10 +2,17 @@
 
 namespace SwagMigrationAssistant\Migration\Profile;
 
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
+
 interface ProfileRegistryInterface
 {
     /**
+     * @return ProfileInterface[]|iterable
+     */
+    public function getProfiles(): iterable;
+
+    /**
      * Returns the profile with the given profile name
      */
-    public function getProfile(string $profileName): ProfileInterface;
+    public function getProfile(MigrationContextInterface $migrationContext): ProfileInterface;
 }

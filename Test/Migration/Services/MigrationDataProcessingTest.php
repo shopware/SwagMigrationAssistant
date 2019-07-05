@@ -429,12 +429,6 @@ class MigrationDataProcessingTest extends TestCase
         $this->connectionId = Uuid::randomHex();
         $this->runUuid = Uuid::randomHex();
 
-        $this->profileUuidService = new MigrationProfileUuidService(
-            $this->profileRepo,
-            Shopware55Profile::PROFILE_NAME,
-            Shopware55LocalGateway::GATEWAY_NAME
-        );
-
         $this->context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) {
             $this->connectionRepo->create(
                 [
@@ -446,7 +440,8 @@ class MigrationDataProcessingTest extends TestCase
                             'apiUser' => 'testUser',
                             'apiKey' => 'testKey',
                         ],
-                        'profileId' => $this->profileUuidService->getProfileUuid(),
+                        'profileName' => Shopware55Profile::PROFILE_NAME,
+                        'gatewayName' => Shopware55LocalGateway::GATEWAY_NAME,
                     ],
                 ],
                 $context
@@ -459,7 +454,8 @@ class MigrationDataProcessingTest extends TestCase
                 [
                     'id' => $this->runUuid,
                     'status' => SwagMigrationRunEntity::STATUS_RUNNING,
-                    'profileId' => $this->profileUuidService->getProfileUuid(),
+                    'profileName' => Shopware55Profile::PROFILE_NAME,
+                    'gatewayName' => Shopware55LocalGateway::GATEWAY_NAME,
                 ],
             ],
             Context::createDefaultContext()

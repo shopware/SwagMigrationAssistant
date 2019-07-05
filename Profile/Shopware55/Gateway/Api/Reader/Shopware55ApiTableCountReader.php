@@ -35,7 +35,7 @@ class Shopware55ApiTableCountReader implements TableCountReaderInterface
 
     public function readTotals(MigrationContextInterface $migrationContext): array
     {
-        $dataSets = $this->dataSetRegistry->getDataSets($migrationContext->getProfileName());
+        $dataSets = $this->dataSetRegistry->getDataSets($migrationContext->getConnection()->getProfileName());
         $countingInformation = $this->getCountingInformation($dataSets);
 
         $client = $this->connectionFactory->createApiClient($migrationContext);

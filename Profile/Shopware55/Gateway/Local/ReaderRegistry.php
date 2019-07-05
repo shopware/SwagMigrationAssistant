@@ -24,7 +24,7 @@ class ReaderRegistry
     public function getReader(MigrationContextInterface $migrationContext): LocalReaderInterface
     {
         foreach ($this->readers as $reader) {
-            if ($reader->supports($migrationContext->getProfileName(), $migrationContext->getDataSet())) {
+            if ($reader->supports($migrationContext->getConnection()->getProfileName(), $migrationContext->getDataSet())) {
                 return $reader;
             }
         }

@@ -119,7 +119,7 @@ class MigrationController extends AbstractController
             throw new EntityNotExistsException(SwagMigrationConnectionEntity::class, $runUuid);
         }
 
-        $dataSet = $this->dataSetRegistry->getDataSet($run->getConnection()->getProfile()->getName(), $entity);
+        $dataSet = $this->dataSetRegistry->getDataSet($run->getConnection()->getProfileName(), $entity);
         $migrationContext = new MigrationContext(
             $run->getConnection(),
             $run->getId(),
@@ -197,7 +197,7 @@ class MigrationController extends AbstractController
             throw new EntityNotExistsException(SwagMigrationRunEntity::class, $runUuid);
         }
 
-        $dataSet = $this->dataSetRegistry->getDataSet($run->getConnection()->getProfile()->getName(), $entity);
+        $dataSet = $this->dataSetRegistry->getDataSet($run->getConnection()->getProfileName(), $entity);
 
         $migrationContext = new MigrationContext(null, $runUuid, $dataSet, $offset, $limit);
         $this->migrationDataWriter->writeData($migrationContext, $context);

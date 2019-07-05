@@ -20,16 +20,32 @@ class GatewayRegistry implements GatewayRegistryInterface
     /**
      * @throws GatewayNotFoundException
      */
+    public function getGateways(MigrationContextInterface $migrationContext): array
+    {
+        $gateways = [];
+        foreach ($this->gateways as $gateway) {
+            if ($gateway->supports($migrationContext)) {
+                $gateways[] = $gateway;
+            }
+        }
+
+        return $gateways;
+    }
+
+    /**
+     * @throws GatewayNotFoundException
+     */
     public function getGateway(MigrationContextInterface $migrationContext): GatewayInterface
     {
-        $gatewayIdentifier = $migrationContext->getProfileName() . $migrationContext->getGatewayName();
+        $profileName = $migrationContext->getConnection()->getProfileName();
+        $gatewayName = $migrationContext->getConnection()->getGatewayName();
 
         foreach ($this->gateways as $gateway) {
-            if ($gateway->supports($gatewayIdentifier)) {
+            if ($gateway->supports($migrationContext) && $gateway->getName() === $gatewayName) {
                 return $gateway;
             }
         }
 
-        throw new GatewayNotFoundException($gatewayIdentifier);
+        throw new GatewayNotFoundException($profileName . '-' . $gatewayName);
     }
 }

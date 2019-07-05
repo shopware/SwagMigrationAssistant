@@ -127,15 +127,9 @@ class RunServiceTest extends TestCase
         $loggingService = new LoggingService($loggingRepo);
         $mediaFileService = new DummyMediaFileService();
 
-        $profileUuidService = new MigrationProfileUuidService(
-            $profileRepo,
-            Shopware55Profile::PROFILE_NAME,
-            Shopware55LocalGateway::GATEWAY_NAME
-        );
-
         $connectionId = Uuid::randomHex();
         $context = $context = Context::createDefaultContext();
-        $context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use ($connectionId, $profileUuidService) {
+        $context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use ($connectionId) {
             $this->connectionRepo->create(
                 [
                     [
@@ -145,7 +139,8 @@ class RunServiceTest extends TestCase
                             'apiUser' => 'testUser',
                             'apiKey' => 'testKey',
                         ],
-                        'profileId' => $profileUuidService->getProfileUuid(),
+                        'profileName' => Shopware55Profile::PROFILE_NAME,
+                        'gatewayName' => Shopware55LocalGateway::GATEWAY_NAME,
                     ],
                 ],
                 $context

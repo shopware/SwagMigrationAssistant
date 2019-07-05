@@ -6,6 +6,11 @@ import template from './swag-migration-wizard-page-connection-create.html.twig';
 Component.register('swag-migration-wizard-page-connection-create', {
     template,
 
+    inject: {
+        /** @var {MigrationApiService} migrationService */
+        migrationService: 'migrationService'
+    },
+
     props: {
         connectionNameErrorCode: {
             type: String,
@@ -84,42 +89,13 @@ Component.register('swag-migration-wizard-page-connection-create', {
             this.setIsLoading(true);
             this.emitOnChildRouteReadyChanged(false);
 
-            this.profileStore.getList({
-                limit: 100,
-                aggregations: [
-                    {
-                        name: 'profileAgg',
-                        field: 'name',
-                        type: 'value'
-                    }
-                ]
-            }).then((profiles) => {
-                this.profiles = profiles.aggregations.profileAgg[0].values;
+            this.migrationService.getProfiles().then((profiles) => {
+                this.profiles = profiles;
 
-                this.generalSettingStore.getList({ limit: 1 }).then((response) => {
-                    if (!response || response.items[0].selectedProfileId === null) {
-                        this.selectDefaultProfile();
-                        this.setIsLoading(false);
-                        return;
-                    }
+                this.selectDefaultProfile();
+                this.setIsLoading(false);
 
-                    this.profileStore.getByIdAsync(response.items[0].selectedProfileId).then((profileResponse) => {
-                        if (profileResponse.id === null) {
-                            this.selectDefaultProfile();
-                            this.setIsLoading(false);
-                            return;
-                        }
-
-                        this.selection.profile = profileResponse.name;
-                        this.onSelectProfile().then(() => {
-                            this.selection.gateway = profileResponse.gatewayName;
-                            this.onSelectGateway().then(() => {
-                                this.emitOnChildRouteReadyChanged(true);
-                                this.setIsLoading(false);
-                            });
-                        });
-                    });
-                });
+                // todo: Select profile and gateway of the current selected connection
             });
         },
 
@@ -145,20 +121,8 @@ Component.register('swag-migration-wizard-page-connection-create', {
                 this.selection.gateway = null;
 
                 if (this.selection.profile !== null) {
-                    const criteria = CriteriaFactory.equals('name', this.selection.profile);
-
-                    this.profileStore.getList({
-                        criteria: criteria,
-                        limit: 100,
-                        aggregations: [
-                            {
-                                name: 'gatewayAgg',
-                                type: 'value',
-                                field: 'gatewayName'
-                            }
-                        ]
-                    }).then((profiles) => {
-                        this.gateways = profiles.aggregations.gatewayAgg[0].values;
+                    this.migrationService.getGateways(this.selection.profile).then((gateways) => {
+                        this.gateways = gateways;
                         this.selection.gateway = null;
                         this.emitOnChildRouteReadyChanged(this.isReady);
                         resolve();
@@ -168,26 +132,9 @@ Component.register('swag-migration-wizard-page-connection-create', {
         },
 
         onSelectGateway() {
-            return new Promise((resolve) => {
-                this.emitOnChildRouteReadyChanged(false);
-
-                const criteria = CriteriaFactory.multi(
-                    'AND',
-                    CriteriaFactory.equals('name', this.selection.profile),
-                    CriteriaFactory.equals('gatewayName', this.selection.gateway)
-                );
-
-                this.profileStore.getList({
-                    criteria: criteria,
-                    limit: 100
-                }).then((profile) => {
-                    if (profile.total !== 0) {
-                        this.$emit('onProfileSelected', profile.items[0]);
-                        this.emitOnChildRouteReadyChanged(this.isReady);
-                    }
-                    resolve();
-                });
-            });
+            this.emitOnChildRouteReadyChanged(false);
+            this.$emit('onProfileSelected', this.selection);
+            this.emitOnChildRouteReadyChanged(this.isReady);
         },
 
         onChangeConnectionName(value) {

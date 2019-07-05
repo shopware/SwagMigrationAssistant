@@ -26,7 +26,6 @@ use SwagMigrationAssistant\Migration\Service\MigrationDataWriterInterface;
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
-use SwagMigrationAssistant\Test\Migration\Services\MigrationProfileUuidService;
 use SwagMigrationAssistant\Test\MigrationServicesTrait;
 
 class MediaDownloadServiceTest extends TestCase
@@ -65,11 +64,6 @@ class MediaDownloadServiceTest extends TestCase
     private $logger;
 
     /**
-     * @var MigrationProfileUuidService
-     */
-    private $profileUuidService;
-
-    /**
      * @var string
      */
     private $runUuid;
@@ -82,18 +76,14 @@ class MediaDownloadServiceTest extends TestCase
         $migrationMapping = $this->getContainer()->get('swag_migration_mapping.repository');
         $this->mediaRepository = $this->getContainer()->get('media.repository');
         $runRepository = $this->getContainer()->get('swag_migration_run.repository');
-        $this->profileUuidService = new MigrationProfileUuidService(
-            $this->getContainer()->get('swag_migration_profile.repository'),
-            Shopware55Profile::PROFILE_NAME,
-            Shopware55LocalGateway::GATEWAY_NAME
-        );
         $this->runUuid = Uuid::randomHex();
         $runRepository->create(
             [
                 [
                     'id' => $this->runUuid,
                     'status' => SwagMigrationRunEntity::STATUS_RUNNING,
-                    'profileId' => $this->profileUuidService->getProfileUuid(),
+                    'profile' => Shopware55Profile::PROFILE_NAME,
+                    'gateway' => Shopware55LocalGateway::GATEWAY_NAME,
                 ],
             ],
             Context::createDefaultContext()

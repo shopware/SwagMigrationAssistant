@@ -5,6 +5,8 @@ namespace SwagMigrationAssistant\Migration;
 use Shopware\Core\Framework\Struct\Struct;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
+use SwagMigrationAssistant\Migration\Gateway\GatewayInterface;
+use SwagMigrationAssistant\Migration\Profile\ProfileInterface;
 
 class MigrationContext extends Struct implements MigrationContextInterface
 {
@@ -35,6 +37,16 @@ class MigrationContext extends Struct implements MigrationContextInterface
      */
     private $limit;
 
+    /**
+     * @var ProfileInterface
+     */
+    private $profile;
+
+    /**
+     * @var GatewayInterface
+     */
+    private $gateway;
+
     public function __construct(
         ?SwagMigrationConnectionEntity $connection,
         string $runUuid = '',
@@ -64,24 +76,6 @@ class MigrationContext extends Struct implements MigrationContextInterface
         return $this->dataSet;
     }
 
-    public function getProfileName(): ?string
-    {
-        if ($this->connection === null) {
-            return null;
-        }
-
-        return $this->connection->getProfile()->getName();
-    }
-
-    public function getGatewayName(): ?string
-    {
-        if ($this->connection === null) {
-            return null;
-        }
-
-        return $this->connection->getProfile()->getGatewayName();
-    }
-
     public function getOffset(): int
     {
         return $this->offset;
@@ -90,5 +84,25 @@ class MigrationContext extends Struct implements MigrationContextInterface
     public function getLimit(): int
     {
         return $this->limit;
+    }
+
+    public function getProfile(): ProfileInterface
+    {
+        return $this->profile;
+    }
+
+    public function setProfile(ProfileInterface $profile): void
+    {
+        $this->profile = $profile;
+    }
+
+    public function getGateway(): GatewayInterface
+    {
+        return $this->gateway;
+    }
+
+    public function setGateway(GatewayInterface $gateway): void
+    {
+        $this->gateway = $gateway;
     }
 }

@@ -9,7 +9,6 @@ use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
 use SwagMigrationAssistant\Migration\MigrationContext;
-use SwagMigrationAssistant\Migration\Profile\SwagMigrationProfileEntity;
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\Exception\Shopware55LocalReaderNotFoundException;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Connection\ConnectionFactory;
@@ -28,11 +27,8 @@ class Shopware55LocalGatewayTest extends TestCase
     public function testReadFailedNoCredentials(): void
     {
         $connection = new SwagMigrationConnectionEntity();
-        $profile = new SwagMigrationProfileEntity();
-        $profile->setName(Shopware55Profile::PROFILE_NAME);
-        $profile->setGatewayName(Shopware55LocalGateway::GATEWAY_NAME);
-
-        $connection->setProfile($profile);
+        $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
+        $connection->setGatewayName(Shopware55LocalGateway::GATEWAY_NAME);
         $connection->setCredentialFields(
             [
                 'dbName' => '',
@@ -74,11 +70,8 @@ class Shopware55LocalGatewayTest extends TestCase
     public function testReadWithUnknownEntityThrowsException(): void
     {
         $connection = new SwagMigrationConnectionEntity();
-        $profile = new SwagMigrationProfileEntity();
-        $profile->setName(Shopware55Profile::PROFILE_NAME);
-        $profile->setGatewayName(Shopware55LocalGateway::GATEWAY_NAME);
-
-        $connection->setProfile($profile);
+        $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
+        $connection->setGatewayName(Shopware55LocalGateway::GATEWAY_NAME);
         $connection->setCredentialFields(
             [
                 'dbName' => '',
@@ -121,9 +114,8 @@ class Shopware55LocalGatewayTest extends TestCase
     public function testReadEnvironmentInformationHasEmptyResult(): void
     {
         $connection = new SwagMigrationConnectionEntity();
-        $profile = new SwagMigrationProfileEntity();
-
-        $connection->setProfile($profile);
+        $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
+        $connection->setGatewayName(Shopware55LocalGateway::GATEWAY_NAME);
         $connection->setCredentialFields([]);
 
         $migrationContext = new MigrationContext(

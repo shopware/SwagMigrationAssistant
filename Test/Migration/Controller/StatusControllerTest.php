@@ -23,9 +23,11 @@ use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Media\MediaFileService;
 use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\Profile\ProfileRegistry;
 use SwagMigrationAssistant\Migration\Run\RunService;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationAssistant\Migration\Service\MigrationProgressService;
@@ -108,7 +110,6 @@ class StatusControllerTest extends TestCase
         $currencyRepo = $this->getContainer()->get('currency.repository');
         $this->profileRepo = $this->getContainer()->get('swag_migration_profile.repository');
         $this->connectionRepo = $this->getContainer()->get('swag_migration_connection.repository');
-        $this->profileUuidService = new MigrationProfileUuidService($this->profileRepo, Shopware55Profile::PROFILE_NAME, Shopware55LocalGateway::GATEWAY_NAME);
         $this->generalSettingRepo = $this->getContainer()->get('swag_migration_general_setting.repository');
         $this->runRepo = $this->getContainer()->get('swag_migration_run.repository');
 
@@ -124,7 +125,8 @@ class StatusControllerTest extends TestCase
                             'apiUser' => 'testUser',
                             'apiKey' => 'testKey',
                         ],
-                        'profileId' => $this->profileUuidService->getProfileUuid(),
+                        'profileName' => Shopware55Profile::PROFILE_NAME,
+                        'gatewayName' => Shopware55LocalGateway::GATEWAY_NAME,
                     ],
                 ],
                 $context
@@ -136,7 +138,8 @@ class StatusControllerTest extends TestCase
                     [
                         'id' => $this->invalidConnectionId,
                         'name' => 'myInvalidConnection',
-                        'profileId' => $this->profileUuidService->getProfileUuid(),
+                        'profileName' => Shopware55Profile::PROFILE_NAME,
+                        'gatewayName' => Shopware55LocalGateway::GATEWAY_NAME,
                     ],
                 ],
                 $context
@@ -193,7 +196,9 @@ class StatusControllerTest extends TestCase
                 new ProductDataSelection(),
                 new CustomerAndOrderDataSelection(),
             ]),
-            $this->connectionRepo
+            $this->connectionRepo,
+            $this->getContainer()->get(ProfileRegistry::class),
+            $this->getContainer()->get(GatewayRegistry::class)
         );
     }
 

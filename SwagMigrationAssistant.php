@@ -9,9 +9,6 @@ use Shopware\Core\Framework\Plugin;
 use Shopware\Core\Framework\Plugin\Context\InstallContext;
 use Shopware\Core\Framework\Plugin\Context\UninstallContext;
 use Shopware\Core\Framework\Uuid\Uuid;
-use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Shopware55ApiGateway;
-use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
-use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
@@ -53,18 +50,6 @@ class SwagMigrationAssistant extends Plugin
 
         $connection->beginTransaction();
         try {
-            $connection->insert('swag_migration_profile', [
-                'id' => Uuid::randomBytes(),
-                'name' => Shopware55Profile::PROFILE_NAME,
-                'gateway_name' => Shopware55ApiGateway::GATEWAY_NAME,
-                'created_at' => $now,
-            ]);
-            $connection->insert('swag_migration_profile', [
-                'id' => Uuid::randomBytes(),
-                'name' => Shopware55Profile::PROFILE_NAME,
-                'gateway_name' => Shopware55LocalGateway::GATEWAY_NAME,
-                'created_at' => $now,
-            ]);
             $connection->insert('swag_migration_general_setting', [
                 'id' => Uuid::randomBytes(),
                 'created_at' => $now,

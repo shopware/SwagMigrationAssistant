@@ -56,6 +56,7 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
 
     public function processMediaFiles(MigrationContextInterface $migrationContext, Context $context, int $fileChunkByteSize): void
     {
+        $profileName = $migrationContext->getConnection()->getProfileName();
         $mediaFiles = $this->getMediaFiles($context, $migrationContext);
 
         $currentDataSet = null;
@@ -65,7 +66,7 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
         foreach ($mediaFiles->getElements() as $mediaFile) {
             if ($currentDataSet === null) {
                 try {
-                    $currentDataSet = $this->dataSetRegistry->getDataSet($migrationContext->getProfileName(), $mediaFile->getEntity());
+                    $currentDataSet = $this->dataSetRegistry->getDataSet($profileName, $mediaFile->getEntity());
                 } catch (DataSetNotFoundException $e) {
                     $this->logDataSetNotFoundException($migrationContext, $mediaFile);
                     continue;
@@ -78,7 +79,7 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
                 try {
                     $messageMediaUuids = [];
                     $currentCount = 0;
-                    $currentDataSet = $this->dataSetRegistry->getDataSet($migrationContext->getProfileName(), $mediaFile->getEntity());
+                    $currentDataSet = $this->dataSetRegistry->getDataSet($profileName, $mediaFile->getEntity());
                 } catch (DataSetNotFoundException $e) {
                     $this->logDataSetNotFoundException($migrationContext, $mediaFile);
                     continue;
@@ -138,7 +139,7 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
           'DataSet not found',
           sprintf(
               'DataSet for profile "%s" and entity "%s" not found. Media with id "%s" could not processed.',
-                $migrationContext->getProfileName(),
+                $migrationContext->getConnection()->getProfileName(),
                 $mediaFile->getEntity(),
                 $mediaFile->getMediaId()
               ),

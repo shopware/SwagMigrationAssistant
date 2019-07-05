@@ -8,7 +8,6 @@ use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistryInterface;
 use SwagMigrationAssistant\Migration\MigrationContext;
-use SwagMigrationAssistant\Migration\Profile\SwagMigrationProfileEntity;
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationAssistant\Test\Mock\DummyCollection;
@@ -30,11 +29,8 @@ class GatewayServiceTest extends TestCase
     public function testGetGatewayNotFound(): void
     {
         $connection = new SwagMigrationConnectionEntity();
-        $profile = new SwagMigrationProfileEntity();
-        $profile->setName('foobar');
-        $profile->setGatewayName(Shopware55LocalGateway::GATEWAY_NAME);
-
-        $connection->setProfile($profile);
+        $connection->setProfileName('foobar');
+        $connection->setGatewayName(Shopware55LocalGateway::GATEWAY_NAME);
         $connection->setCredentialFields([]);
 
         $migrationContext = new MigrationContext(

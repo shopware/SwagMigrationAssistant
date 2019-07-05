@@ -8,7 +8,6 @@ use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorRegistry;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorRegistryInterface;
 use SwagMigrationAssistant\Migration\MigrationContext;
-use SwagMigrationAssistant\Migration\Profile\SwagMigrationProfileEntity;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\DummyCollection;
@@ -37,11 +36,8 @@ class MediaFileProcessorRegistryTest extends TestCase
     public function testGetProcessorNotFound(): void
     {
         $connection = new SwagMigrationConnectionEntity();
-        $profile = new SwagMigrationProfileEntity();
-        $profile->setName(Shopware55Profile::PROFILE_NAME);
-        $profile->setGatewayName(Shopware55LocalGateway::GATEWAY_NAME);
-
-        $connection->setProfile($profile);
+        $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
+        $connection->setGatewayName(Shopware55LocalGateway::GATEWAY_NAME);
         $connection->setCredentialFields([]);
 
         $context = new MigrationContext(

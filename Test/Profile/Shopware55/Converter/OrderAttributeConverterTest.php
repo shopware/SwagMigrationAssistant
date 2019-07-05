@@ -7,9 +7,9 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\MigrationContext;
-use SwagMigrationAssistant\Migration\Profile\SwagMigrationProfileEntity;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\OrderAttributeConverter;
 use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\OrderAttributeDataSet;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 
@@ -31,7 +31,8 @@ class OrderAttributeConverterTest extends TestCase
 
         $runId = Uuid::randomHex();
         $connection = new SwagMigrationConnectionEntity();
-        $connection->setProfile(new SwagMigrationProfileEntity());
+        $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
+        $connection->setGatewayName(Shopware55LocalGateway::GATEWAY_NAME);
         $connection->setId(Uuid::randomHex());
         $connection->setName('ConntectionName');
 

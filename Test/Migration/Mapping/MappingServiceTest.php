@@ -15,6 +15,8 @@ use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition;
 use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
+use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Migration\Services\MigrationProfileUuidService;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -53,7 +55,6 @@ class MappingServiceTest extends TestCase
         $this->entityWriter = $this->getContainer()->get(EntityWriter::class);
         $connectionRepo = $this->getContainer()->get('swag_migration_connection.repository');
         $this->localeRepo = $this->getContainer()->get('locale.repository');
-        $this->profileUuidService = new MigrationProfileUuidService($this->getContainer()->get('swag_migration_profile.repository'));
 
         $context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use ($connectionRepo) {
             $this->connectionId = Uuid::randomHex();
@@ -67,7 +68,8 @@ class MappingServiceTest extends TestCase
                             'apiUser' => 'testUser',
                             'apiKey' => 'testKey',
                         ],
-                        'profileId' => $this->profileUuidService->getProfileUuid(),
+                        'profileName' => Shopware55Profile::PROFILE_NAME,
+                        'gatewayName' => Shopware55LocalGateway::GATEWAY_NAME,
                     ],
                 ],
                 $context
@@ -98,10 +100,10 @@ class MappingServiceTest extends TestCase
     {
         $context = Context::createDefaultContext();
 
-        $uuid1 = $this->mappingService->createNewUuid($this->profileUuidService->getProfileUuid(), 'product', '123', $context);
+        $uuid1 = $this->mappingService->createNewUuid(Uuid::randomHex(), 'product', '123', $context);
         static::assertNotNull($uuid1);
 
-        $uuid2 = $this->mappingService->createNewUuid($this->profileUuidService->getProfileUuid(), 'product', '123', $context);
+        $uuid2 = $this->mappingService->createNewUuid(Uuid::randomHex(), 'product', '123', $context);
         static::assertSame($uuid1, $uuid2);
     }
 
@@ -140,7 +142,7 @@ class MappingServiceTest extends TestCase
     public function testGetUuidReturnsNull(): void
     {
         $context = Context::createDefaultContext();
-        static::assertNull($this->mappingService->getUuid($this->profileUuidService->getProfileUuid(), 'product', '12345', $context));
+        static::assertNull($this->mappingService->getUuid(Uuid::randomHex(), 'product', '12345', $context));
     }
 
     public function testLocaleNotFoundException(): void
@@ -148,7 +150,7 @@ class MappingServiceTest extends TestCase
         $context = Context::createDefaultContext();
 
         try {
-            $this->mappingService->getLanguageUuid($this->profileUuidService->getProfileUuid(), 'swagMigrationTestingLocaleCode', $context);
+            $this->mappingService->getLanguageUuid(Uuid::randomHex(), 'swagMigrationTestingLocaleCode', $context);
         } catch (\Exception $e) {
             /* @var LocaleNotFoundException $e */
             static::assertInstanceOf(LocaleNotFoundException::class, $e);
@@ -172,9 +174,7 @@ class MappingServiceTest extends TestCase
     public function testGetCountryUuidWithNoResult(): void
     {
         $context = Context::createDefaultContext();
-        $profileId = $this->profileUuidService->getProfileUuid();
-
-        $response = $this->mappingService->getCountryUuid('testId', 'testIso', 'testIso3', $profileId, $context);
+        $response = $this->mappingService->getCountryUuid('testId', 'testIso', 'testIso3', Uuid::randomHex(), $context);
         static::assertNull($response);
     }
 
