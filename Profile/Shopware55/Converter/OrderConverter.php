@@ -236,7 +236,7 @@ class OrderConverter extends Shopware55Converter
 
         $converted['currencyId'] = $currencyUuid;
 
-        $this->convertValue($converted, 'orderDate', $data, 'ordertime', self::TYPE_DATETIME);
+        $this->convertValue($converted, 'orderDateTime', $data, 'ordertime', self::TYPE_DATETIME);
 
         $converted['stateId'] = $this->mappingService->getUuid(
             $this->connectionId,
@@ -657,8 +657,8 @@ class OrderConverter extends Shopware55Converter
                 $this->context
             ),
             'stateId' => $converted['stateId'],
-            'shippingDateEarliest' => $converted['orderDate'],
-            'shippingDateLatest' => $converted['orderDate'],
+            'shippingDateEarliest' => $converted['orderDateTime'],
+            'shippingDateLatest' => $converted['orderDateTime'],
         ];
 
         if (isset($data['shippingMethod']['id'])) {
