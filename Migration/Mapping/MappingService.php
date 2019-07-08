@@ -436,41 +436,27 @@ class MappingService implements MappingServiceInterface
         return null;
     }
 
-    public function getCurrencyUuid(string $connectionId, string $oldShortName, Context $context): ?string
+    public function getCurrencyUuid(string $connectionId, string $oldIsoCode, Context $context): ?string
     {
-        $currencyUuid = $this->getUuid($connectionId, DefaultEntities::CURRENCY, $oldShortName, $context);
+        $currencyUuid = $this->getUuid($connectionId, DefaultEntities::CURRENCY, $oldIsoCode, $context);
 
         if ($currencyUuid !== null) {
             return $currencyUuid;
         }
 
-        /** @var EntitySearchResult $result */
-        $result = $context->disableCache(function (Context $context) use ($oldShortName) {
-            $criteria = new Criteria();
-            $criteria->addFilter(new EqualsFilter('shortName', $oldShortName));
-            $criteria->setLimit(1);
-
-            return $this->currencyRepository->search($criteria, $context);
-        });
-
-        if ($result->getTotal() > 0) {
-            /** @var CurrencyEntity $element */
-            $element = $result->getEntities()->first();
-            $currencyUuid = $element->getId();
-
+        $currencyUuid = $this->getCurrencyUuidWithoutMapping($connectionId, $oldIsoCode, $context);
+        if ($currencyUuid !== null) {
             $this->saveMapping(
                 [
                     'connectionId' => $connectionId,
                     'entity' => DefaultEntities::CURRENCY,
-                    'oldIdentifier' => $oldShortName,
+                    'oldIdentifier' => $oldIsoCode,
                     'entityUuid' => $currencyUuid,
                 ]
             );
-
-            return $currencyUuid;
         }
 
-        return null;
+        return $currencyUuid;
     }
 
     public function getDefaultCurrency(Context $context): CurrencyEntity
@@ -489,12 +475,12 @@ class MappingService implements MappingServiceInterface
         return $currency;
     }
 
-    public function getCurrencyUuidWithoutMapping(string $connectionId, string $oldShortName, Context $context): ?string
+    public function getCurrencyUuidWithoutMapping(string $connectionId, string $oldIsoCode, Context $context): ?string
     {
         /** @var EntitySearchResult $result */
-        $result = $context->disableCache(function (Context $context) use ($oldShortName) {
+        $result = $context->disableCache(function (Context $context) use ($oldIsoCode) {
             $criteria = new Criteria();
-            $criteria->addFilter(new EqualsFilter('shortName', $oldShortName));
+            $criteria->addFilter(new EqualsFilter('isoCode', $oldIsoCode));
             $criteria->setLimit(1);
 
             return $this->currencyRepository->search($criteria, $context);

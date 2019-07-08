@@ -33,11 +33,11 @@
         <template #content>
             <sw-card-view class="swag-migration-process-screen" v-if="!migrationUIStore.state.isLoading">
                 {% block swag_migration_index_main_page_flow_chart %}
-                    <sw-step-display class="swag-migration-process-screen__step-display"
-                                               :itemIndex="flowChartItemIndex"
-                                               :itemVariant="flowChartItemVariant"
-                                               :initialItemVariants="flowChartInitialItemVariants"
-                                               v-if="displayFlowChart">
+                    <sw-step-display v-if="displayFlowChart && migrationUIStore.state.componentIndex !== UI_COMPONENT_INDEX.WARNING_CONFIRM"
+                                     class="swag-migration-process-screen__step-display"
+                                     :itemIndex="flowChartItemIndex"
+                                     :itemVariant="flowChartItemVariant"
+                                     :initialItemVariants="flowChartInitialItemVariants">
                         <sw-step-item>
                             {{ $tc('swag-migration.index.loadingScreenCard.flowChart.premapping') }}
                         </sw-step-item>
@@ -54,6 +54,13 @@
                             {{ $tc('swag-migration.index.loadingScreenCard.flowChart.finish') }}
                         </sw-step-item>
                     </sw-step-display>
+                {% endblock %}
+
+                {% block swag_migration_index_main_page_card_confirm_warning %}
+                    <swag-migration-confirm-warning v-if="migrationUIStore.state.componentIndex === UI_COMPONENT_INDEX.WARNING_CONFIRM"
+                                                    class="swag-migration-process-screen__confirm-warning"
+                                                    @confirmation-change="onWarningConfirmationChanged">
+                    </swag-migration-confirm-warning>
                 {% endblock %}
 
                 {% block swag_migration_index_main_page_card_premapping %}

@@ -6,7 +6,7 @@ return [
         'currency' => 'COC',
         'name' => 'Kekse',
         'standard' => '0',
-        'factor' => '100',
+        'factor' => '100.0',
         'templatechar' => 'COOCIES',
         'symbol_position' => '0',
         'position' => '0',

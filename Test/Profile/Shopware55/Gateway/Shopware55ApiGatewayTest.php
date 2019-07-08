@@ -41,7 +41,8 @@ class Shopware55ApiGatewayTest extends TestCase
             $apiReader,
             $environmentReader,
             $tableReader,
-            $tableCountReader
+            $tableCountReader,
+            $this->getContainer()->get('currency.repository')
         );
         $gateway->read($migrationContext);
     }
@@ -62,7 +63,8 @@ class Shopware55ApiGatewayTest extends TestCase
             $apiReader,
             $environmentReader,
             $tableReader,
-            $tableCountReader
+            $tableCountReader,
+            $this->getContainer()->get('currency.repository')
         );
         /** @var EnvironmentInformation $response */
         $response = $gateway->readEnvironmentInformation($migrationContext);

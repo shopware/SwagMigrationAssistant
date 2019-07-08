@@ -11,7 +11,7 @@ class CurrencyMappingService extends BasicSettingsMappingService
         return self::DEFAULT_LANGUAGE_UUID;
     }
 
-    public function getCurrencyUuidWithoutMapping(string $connectionId, string $oldShortName, Context $context): ?string
+    public function getCurrencyUuidWithoutMapping(string $connectionId, string $oldIsoCode, Context $context): ?string
     {
         return null;
     }

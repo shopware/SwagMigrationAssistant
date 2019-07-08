@@ -15,7 +15,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use SwagMigrationAssistant\Exception\MigrationIsRunningException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionCollection;
@@ -281,7 +280,6 @@ class RunService implements RunServiceInterface
 
     private function cleanupMigration(string $runUuid, Context $context): void
     {
-        $this->removeDuplicateCurrencies($context);
         $this->removeWrittenMigrationData($runUuid);
 
         $this->cache->clear();
@@ -522,29 +520,5 @@ class RunService implements RunServiceInterface
             ->andWhere('HEX(run_id) = :runId')
             ->setParameter('runId', $runUuid)
             ->execute();
-    }
-
-    private function removeDuplicateCurrencies(Context $context): void
-    {
-        $currenciesToDelete = [];
-        $existsIsoCodes = [];
-        $criteria = new Criteria();
-        $criteria->addSorting(new FieldSorting('createdAt'));
-        $currencies = $this->currencyRepository->search($criteria, $context)->getEntities();
-
-        foreach ($currencies as $currency) {
-            if (isset($existsIsoCodes[$currency->getIsoCode()])) {
-                $currenciesToDelete[] = ['id' => $currency->getId()];
-                continue;
-            }
-
-            $existsIsoCodes[$currency->getIsoCode()] = $currency->getId();
-        }
-
-        if (empty($currenciesToDelete)) {
-            return;
-        }
-
-        $this->currencyRepository->delete($currenciesToDelete, $context);
     }
 }

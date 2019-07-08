@@ -40,11 +40,11 @@ interface MappingServiceInterface
 
     public function getCountryUuid(string $oldId, string $iso, string $iso3, string $connectionId, Context $context): ?string;
 
-    public function getCurrencyUuid(string $connectionId, string $oldShortName, Context $context): ?string;
+    public function getCurrencyUuid(string $connectionId, string $oldIsoCode, Context $context): ?string;
 
     public function getDefaultCurrency(Context $context): CurrencyEntity;
 
-    public function getCurrencyUuidWithoutMapping(string $connectionId, string $oldShortName, Context $context): ?string;
+    public function getCurrencyUuidWithoutMapping(string $connectionId, string $oldIsoCode, Context $context): ?string;
 
     public function getTaxUuid(string $connectionId, float $taxRate, Context $context): ?string;
 

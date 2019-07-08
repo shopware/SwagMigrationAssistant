@@ -42,6 +42,16 @@ class EnvironmentInformation extends Struct
     protected $updateAvailable;
 
     /**
+     * @var string
+     */
+    protected $targetSystemCurrency;
+
+    /**
+     * @var string
+     */
+    protected $sourceSystemCurrency;
+
+    /**
      * @param TotalStruct[] $totals
      */
     public function __construct(
@@ -51,7 +61,9 @@ class EnvironmentInformation extends Struct
         array $totals = [],
         array $additionalData = [],
         ?RequestStatusStruct $requestStatus = null,
-        bool $updateAvailable = false
+        bool $updateAvailable = false,
+        string $targetSystemCurrency = '',
+        string $sourceSystemCurrency = ''
     ) {
         $this->sourceSystemName = $sourceSystemName;
         $this->sourceSystemVersion = $sourceSystemVersion;
@@ -60,6 +72,8 @@ class EnvironmentInformation extends Struct
         $this->additionalData = $additionalData;
         $this->requestStatus = $requestStatus;
         $this->updateAvailable = $updateAvailable;
+        $this->targetSystemCurrency = $targetSystemCurrency;
+        $this->sourceSystemCurrency = $sourceSystemCurrency;
     }
 
     public function getSourceSystemName(): string
@@ -93,5 +107,15 @@ class EnvironmentInformation extends Struct
     public function getRequestStatus(): ?RequestStatusStruct
     {
         return $this->requestStatus;
+    }
+
+    public function getTargetSystemCurrency(): string
+    {
+        return $this->targetSystemCurrency;
+    }
+
+    public function getSourceSystemCurrency(): string
+    {
+        return $this->sourceSystemCurrency;
     }
 }

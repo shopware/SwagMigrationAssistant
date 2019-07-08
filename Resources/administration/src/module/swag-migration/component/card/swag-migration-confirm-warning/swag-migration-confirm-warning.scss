@@ -1,0 +1,52 @@
+@import "~scss/variables";
+
+.swag-migration-confirm-warning {
+    .swag-migration-confirm-warning__card {
+        text-align: center;
+        font-size: 14px;
+    }
+
+    .swag-migration-confirm-warning__bubble {
+        margin: 12px auto 20px auto;
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        background-color: $color-pumpkin-spice-50;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .swag-migration-confirm-warning__bubble-icon {
+        color: $color-pumpkin-spice-500;
+    }
+
+    h5.swag-migration-confirm-warning__title {
+        font-size: 18px;
+        font-weight: 600;
+        line-height: 25px;
+    }
+
+    .swag-migration-confirm-warning__text {
+        padding-bottom: 24px;
+    }
+
+    .swag-migration-confirm-warning__question {
+        font-weight: 600;
+        padding-bottom: 32px;
+    }
+
+    .swag-migration-confirm-warning__checkbox .sw-field--checkbox__content {
+        display: flex;
+        justify-content: center;
+
+        .sw-field {
+            width: auto;
+        }
+
+        .sw-field__label label {
+            flex-grow: 0;
+        }
+    }
+}

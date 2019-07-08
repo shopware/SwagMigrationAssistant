@@ -2,6 +2,11 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware55\Gateway\Api;
 
+use Shopware\Core\Defaults;
+use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\System\Currency\CurrencyEntity;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Profile\ReaderInterface;
@@ -34,16 +39,23 @@ class Shopware55ApiGateway implements Shopware55GatewayInterface
      */
     private $tableCountReader;
 
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $currencyRepository;
+
     public function __construct(
         ReaderInterface $apiReader,
         ReaderInterface $environmentReader,
         TableReaderInterface $tableReader,
-        TableCountReaderInterface $tableCountReader
+        TableCountReaderInterface $tableCountReader,
+        EntityRepositoryInterface $currencyRepository
     ) {
         $this->apiReader = $apiReader;
         $this->environmentReader = $environmentReader;
         $this->tableReader = $tableReader;
         $this->tableCountReader = $tableCountReader;
+        $this->currencyRepository = $currencyRepository;
     }
 
     public function getName(): string
@@ -86,6 +98,12 @@ class Shopware55ApiGateway implements Shopware55GatewayInterface
             $updateAvailable = $environmentData['environmentInformation']['updateAvailable'];
         }
 
+        /** @var CurrencyEntity $targetSystemCurrency */
+        $targetSystemCurrency = $this->currencyRepository->search(new Criteria([Defaults::CURRENCY]), Context::createDefaultContext())->get(Defaults::CURRENCY);
+        if (!isset($environmentDataArray['defaultCurrency'])) {
+            $environmentDataArray['defaultCurrency'] = $targetSystemCurrency->getIsoCode();
+        }
+
         $totals = $this->readTotals($migrationContext);
         $credentials = $migrationContext->getConnection()->getCredentialFields();
 
@@ -96,7 +114,9 @@ class Shopware55ApiGateway implements Shopware55GatewayInterface
             $totals,
             $environmentDataArray['additionalData'],
             $environmentData['requestStatus'],
-            $updateAvailable
+            $updateAvailable,
+            $targetSystemCurrency->getIsoCode(),
+            $environmentDataArray['defaultCurrency']
         );
     }
 

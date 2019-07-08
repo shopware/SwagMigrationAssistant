@@ -6,6 +6,7 @@ import SimpleStateManagementStore from './SimpleStateManagementStore';
  * migrationProcessStore = Shopware.Application.getContainer('factory').state.getStore('migrationUI')
  */
 export const UI_COMPONENT_INDEX = Object.freeze({
+    WARNING_CONFIRM: -1,
     DATA_SELECTOR: 0,
     PREMAPPING: 1,
     LOADING_SCREEN: 2,
