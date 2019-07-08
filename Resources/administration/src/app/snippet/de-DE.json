@@ -418,6 +418,14 @@
         "dataCount": "Datensätze",
         "close": "Schließen"
       }
+    },
+    "worker-listener": {
+      "mediaProcessing": {
+        "title": "Die Medien werden heruntergeladen",
+        "message": "Keine Dateien verbleibend. | Eine Datei verbleibend. | {n} Dateien verbleibend.",
+        "titleSuccess": "Mediendownload abgeschlossen",
+        "messageSuccess": "Das Herunterladen der Medien wurde abgeschlossen."
+      }
     }
   },
   "global": {
