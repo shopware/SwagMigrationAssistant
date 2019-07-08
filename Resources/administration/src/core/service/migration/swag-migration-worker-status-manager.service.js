@@ -132,7 +132,8 @@ export class WorkerStatusManager {
             /* eslint-disable no-await-in-loop, no-loop-func */
             while (requestRetry) {
                 await this._migrationService.updateMediaFilesProgress(runId).then((response) => {
-                    this._migrationProcessStore.setEntityGroups(response);
+                    const newEntityGroups = response.filter(group => group.id === 'processMediaFiles');
+                    this._migrationProcessStore.setEntityGroups(newEntityGroups);
                     requestRetry = false;
                 }).catch(() => {
                     requestFailedCount += 1;

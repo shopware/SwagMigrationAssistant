@@ -35,8 +35,8 @@
                     {% endblock %}
                     {% block swag_migration_history_grid_column_profile %}
                         <template #column-connection.profile="{ item }">
-                            {{ item.connection.profile.name }} /
-                            {{ item.connection.profile.gatewayName }}
+                            {{ item.connection.profileName }} /
+                            {{ item.connection.gatewayName }}
                         </template>
                     {% endblock %}
                     {% block swag_migration_history_grid_column_createdAt %}

@@ -67,9 +67,9 @@ Component.register('swag-migration-history-detail-errors', {
         },
 
         getErrorDescriptionSnippet(item) {
-            if (`swag-migration.index.error.${item.logEntry.code}` !==
-                this.$t(`swag-migration.index.error.${item.logEntry.code}`, item.logEntry.details)) {
-                return `swag-migration.index.error.${item.logEntry.code}`;
+            const snippetKey = `swag-migration.index.error.${item.logEntry.code}`;
+            if (this.$te(snippetKey)) {
+                return snippetKey;
             }
 
             return 'swag-migration.index.error.unknownError';
