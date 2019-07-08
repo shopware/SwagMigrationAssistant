@@ -417,6 +417,14 @@
         "dataCount": "Datasets",
         "close": "Close"
       }
+    },
+    "worker-listener": {
+      "mediaProcessing": {
+        "title": "The media is being downloaded",
+        "message": "No files remaining. | One file remaining. | {n} files remaining.",
+        "titleSuccess": "Media download completed",
+        "messageSuccess": "The media download has been completed."
+      }
     }
   },
   "global": {
