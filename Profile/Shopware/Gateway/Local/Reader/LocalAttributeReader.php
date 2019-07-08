@@ -4,10 +4,9 @@ namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Schema\ForeignKeyConstraint;
-use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
 class LocalAttributeReader extends LocalAbstractReader implements LocalReaderInterface
 {
@@ -24,10 +23,10 @@ class LocalAttributeReader extends LocalAbstractReader implements LocalReaderInt
         DefaultEntities::PRODUCT_PRICE_CUSTOM_FIELD,
     ];
 
-    public function supports(string $profileName, DataSet $dataSet): bool
+    public function supports(MigrationContextInterface $migrationContext): bool
     {
-        return $profileName === Shopware55Profile::PROFILE_NAME
-            && in_array($dataSet::getEntity(), $this->supportedCustomFields, true);
+        return $migrationContext->getProfile() instanceof ShopwareProfileInterface
+            && in_array($migrationContext->getDataSet()::getEntity(), $this->supportedCustomFields, true);
     }
 
     public function read(MigrationContextInterface $migrationContext, array $params = []): array

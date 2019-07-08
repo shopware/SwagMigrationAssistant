@@ -3,10 +3,9 @@
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
 use Doctrine\DBAL\Connection;
-use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
 class LocalCustomerReader extends LocalAbstractReader implements LocalReaderInterface
 {
@@ -15,9 +14,10 @@ class LocalCustomerReader extends LocalAbstractReader implements LocalReaderInte
      */
     private const MAX_ADDRESS_COUNT = 100;
 
-    public function supports(string $profileName, DataSet $dataSet): bool
+    public function supports(MigrationContextInterface $migrationContext): bool
     {
-        return $profileName === Shopware55Profile::PROFILE_NAME && $dataSet::getEntity() === DefaultEntities::CUSTOMER;
+        return $migrationContext->getProfile() instanceof ShopwareProfileInterface
+            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::CUSTOMER;
     }
 
     public function read(MigrationContextInterface $migrationContext, array $params = []): array

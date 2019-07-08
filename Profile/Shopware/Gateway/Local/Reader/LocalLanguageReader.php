@@ -6,13 +6,14 @@ use Doctrine\DBAL\Connection;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
 class LocalLanguageReader extends LocalAbstractReader implements LocalReaderInterface
 {
-    public function supports(string $profileName, DataSet $dataSet): bool
+    public function supports(MigrationContextInterface $migrationContext): bool
     {
-        return $profileName === Shopware55Profile::PROFILE_NAME && $dataSet::getEntity() === DefaultEntities::LANGUAGE;
+        return $migrationContext->getProfile() instanceof ShopwareProfileInterface
+            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::LANGUAGE;
     }
 
     public function read(MigrationContextInterface $migrationContext, array $params = []): array

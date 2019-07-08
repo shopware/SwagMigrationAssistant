@@ -2,16 +2,16 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
-use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
 class LocalPropertyGroupOptionReader extends LocalAbstractReader implements LocalReaderInterface
 {
-    public function supports(string $profileName, DataSet $dataSet): bool
+    public function supports(MigrationContextInterface $migrationContext): bool
     {
-        return $profileName === Shopware55Profile::PROFILE_NAME && $dataSet::getEntity() === DefaultEntities::PROPERTY_GROUP_OPTION;
+        return $migrationContext->getProfile() instanceof ShopwareProfileInterface
+            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::PROPERTY_GROUP_OPTION;
     }
 
     public function read(MigrationContextInterface $migrationContext, array $params = []): array

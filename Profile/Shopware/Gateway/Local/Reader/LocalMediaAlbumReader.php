@@ -2,16 +2,16 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
-use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
 class LocalMediaAlbumReader extends LocalAbstractReader implements LocalReaderInterface
 {
-    public function supports(string $profileName, DataSet $dataSet): bool
+    public function supports(MigrationContextInterface $migrationContext): bool
     {
-        return $profileName === Shopware55Profile::PROFILE_NAME && $dataSet::getEntity() === DefaultEntities::MEDIA_FOLDER;
+        return $migrationContext->getProfile() instanceof ShopwareProfileInterface
+            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::MEDIA_FOLDER;
     }
 
     public function read(MigrationContextInterface $migrationContext, array $params = []): array

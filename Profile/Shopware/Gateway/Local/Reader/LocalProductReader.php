@@ -3,11 +3,10 @@
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
 use Doctrine\DBAL\Connection;
-use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactoryInterface;
-use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 class LocalProductReader extends LocalAbstractReader implements LocalReaderInterface
@@ -24,9 +23,10 @@ class LocalProductReader extends LocalAbstractReader implements LocalReaderInter
         $this->productMapping = new ParameterBag();
     }
 
-    public function supports(string $profileName, DataSet $dataSet): bool
+    public function supports(MigrationContextInterface $migrationContext): bool
     {
-        return $profileName === Shopware55Profile::PROFILE_NAME && $dataSet::getEntity() === DefaultEntities::PRODUCT;
+        return $migrationContext->getProfile() instanceof ShopwareProfileInterface
+            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::PRODUCT;
     }
 
     public function read(MigrationContextInterface $migrationContext, array $params = []): array
