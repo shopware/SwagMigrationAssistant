@@ -55,7 +55,7 @@ abstract class LanguageConverter extends ShopwareConverter
         $this->context = $context;
         $this->mainLocale = $data['_locale'];
         $this->connectionId = $migrationContext->getConnection()->getId();
-        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $data['locale'], $context);
+        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $data['locale'], $context, true);
 
         if ($languageUuid !== null) {
             $this->loggingService->addInfo(
@@ -63,7 +63,7 @@ abstract class LanguageConverter extends ShopwareConverter
                 LogType::ENTITY_ALREADY_EXISTS,
                 'Entity already exists',
                 'Language-Entity already exists.',
-                ['id' => $data['id'], 'locale' => $data['locale']]
+                ['id' => $data['id'], 'locale' => $data['locale'], 'uuid' => $languageUuid]
             );
 
             return new ConvertStruct(null, $data);

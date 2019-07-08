@@ -3,6 +3,7 @@
 namespace SwagMigrationAssistant\Migration\Service;
 
 use Shopware\Core\Framework\Struct\Struct;
+use SwagMigrationAssistant\Migration\Run\RunProgress;
 
 class ProgressState extends Struct
 {
@@ -124,6 +125,9 @@ class ProgressState extends Struct
         return $this->validMigrationRunToken;
     }
 
+    /**
+     * @return RunProgress[]
+     */
     public function getRunProgress(): array
     {
         return $this->runProgress;

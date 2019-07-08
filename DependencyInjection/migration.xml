@@ -155,6 +155,22 @@
             <tag name="console.command" command="migration:fetch:data"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Command\MigrateDataCommand">
+            <argument type="service" id="swag_migration_general_setting.repository"/>
+            <argument type="service" id="swag_migration_connection.repository"/>
+            <argument type="service" id="swag_migration_run.repository"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry" />
+            <argument type="service" id="SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry" />
+            <argument type="service" id="SwagMigrationAssistant\Migration\Run\RunService" />
+            <argument type="service" id="SwagMigrationAssistant\Migration\Service\PremappingService" />
+            <argument type="service" id="SwagMigrationAssistant\Migration\Service\MigrationDataFetcher" />
+            <argument type="service" id="SwagMigrationAssistant\Migration\Service\MigrationDataConverter" />
+            <argument type="service" id="SwagMigrationAssistant\Migration\Service\MigrationDataWriter" />
+            <argument type="service" id="SwagMigrationAssistant\Migration\Service\MediaFileProcessorService" />
+            <argument>migration:migrate</argument>
+            <tag name="console.command" command="migration:migrate"/>
+        </service>
+
         <service id="SwagMigrationAssistant\Command\MigrationWriteDataCommand"
                  class="SwagMigrationAssistant\Command\MigrationWriteDataCommand">
             <argument type="service" id="SwagMigrationAssistant\Migration\Service\MigrationDataWriter"/>
