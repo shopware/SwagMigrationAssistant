@@ -108,6 +108,7 @@
     "emptyScreen": {
       "title": "No connection",
       "description": "Make sure that a connection has been established between the systems. This is required for the migration. You can find more information here:{linebreak}{link}",
+      "link": "Documentation: Migration to Shopware 6",
       "connectButton": "Create connection"
     },
     "index": {
