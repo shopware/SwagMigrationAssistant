@@ -64,12 +64,12 @@ Component.register('swag-migration-history-detail', {
 
         profileName() {
             return this.migrationRun.connection === null ? '' :
-                this.migrationRun.connection.profile.name;
+                this.migrationRun.connection.profileName;
         },
 
         gatewayName() {
             return this.migrationRun.connection === null ? '' :
-                this.migrationRun.connection.profile.gatewayName;
+                this.migrationRun.connection.gatewayName;
         },
 
         runStatusSnippet() {

@@ -66,7 +66,7 @@ Component.register('swag-migration-history', {
                 },
                 {
                     property: 'connection.profile',
-                    dataIndex: 'connection.profileId',
+                    dataIndex: 'connection.profileName',
                     label: this.$tc('swag-migration.history.profileAndGateway'),
                     allowResize: true
                 },

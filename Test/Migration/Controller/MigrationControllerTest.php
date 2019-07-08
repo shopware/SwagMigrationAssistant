@@ -395,10 +395,10 @@ class MigrationControllerTest extends TestCase
         $result = $this->controller->updateMediaFilesProgress($request, $context);
         $progress = json_decode($result->getContent(), true);
 
-        static::assertSame(14, $progress[0]['entities'][0]['currentCount']);
-        static::assertSame(24, $progress[0]['entities'][0]['total']);
-        static::assertSame(14, $progress[0]['currentCount']);
-        static::assertSame(24, $progress[0]['total']);
+        static::assertSame(14, $progress[2]['entities'][0]['currentCount']);
+        static::assertSame(24, $progress[2]['entities'][0]['total']);
+        static::assertSame(14, $progress[2]['currentCount']);
+        static::assertSame(24, $progress[2]['total']);
     }
 
     public function testUpdateMediaFilesProgressWithoutRunUuid(): void
