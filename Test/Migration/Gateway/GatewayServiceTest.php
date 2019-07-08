@@ -12,6 +12,7 @@ use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDataSet
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Test\Mock\DummyCollection;
 use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGateway;
+use SwagMigrationAssistant\Test\Mock\Profile\Dummy\DummyProfile;
 use Symfony\Component\HttpFoundation\Response;
 
 class GatewayServiceTest extends TestCase
@@ -34,6 +35,7 @@ class GatewayServiceTest extends TestCase
         $connection->setCredentialFields([]);
 
         $migrationContext = new MigrationContext(
+            new DummyProfile(),
             $connection,
             '',
             new ProductDataSet(),

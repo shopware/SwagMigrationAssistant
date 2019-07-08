@@ -17,7 +17,7 @@ use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory
 use SwagMigrationAssistant\Profile\Shopware\Gateway\ShopwareGatewayInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\TableCountReaderInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\TableReaderInterface;
-use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
 class ShopwareLocalGateway implements ShopwareGatewayInterface
 {
@@ -76,7 +76,7 @@ class ShopwareLocalGateway implements ShopwareGatewayInterface
 
     public function supports(MigrationContextInterface $migrationContext): bool
     {
-        return $migrationContext->getConnection()->getProfileName() === Shopware55Profile::PROFILE_NAME;
+        return $migrationContext->getProfile() instanceof ShopwareProfileInterface;
     }
 
     public function read(MigrationContextInterface $migrationContext): array
@@ -92,6 +92,7 @@ class ShopwareLocalGateway implements ShopwareGatewayInterface
     public function readEnvironmentInformation(MigrationContextInterface $migrationContext, Context $context): EnvironmentInformation
     {
         $connection = $this->connectionFactory->createDatabaseConnection($migrationContext);
+        $profile = $migrationContext->getProfile();
 
         try {
             $connection->connect();
@@ -99,8 +100,8 @@ class ShopwareLocalGateway implements ShopwareGatewayInterface
             $error = new DatabaseConnectionException();
 
             return new EnvironmentInformation(
-                Shopware55Profile::SOURCE_SYSTEM_NAME,
-                Shopware55Profile::SOURCE_SYSTEM_VERSION,
+                $profile->getSourceSystemName(),
+                $profile->getVersion(),
                 '-',
                 [],
                 [],
@@ -119,8 +120,8 @@ class ShopwareLocalGateway implements ShopwareGatewayInterface
         $totals = $this->readTotals($migrationContext, $context);
 
         return new EnvironmentInformation(
-            Shopware55Profile::SOURCE_SYSTEM_NAME,
-            Shopware55Profile::SOURCE_SYSTEM_VERSION,
+            $profile->getSourceSystemName(),
+            $profile->getVersion(),
             $environmentData['host'],
             $totals,
             $environmentData['additionalData'],

@@ -21,6 +21,12 @@
             <argument type="tagged" tag="shopware.migration.converter"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Migration\MigrationContextFactory">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Profile\ProfileRegistry" />
+            <argument type="service" id="SwagMigrationAssistant\Migration\Gateway\GatewayRegistry" />
+            <argument type="service" id="SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry" />
+        </service>
+
         <service id="SwagMigrationAssistant\Migration\Mapping\MappingService">
             <argument type="service" id="swag_migration_mapping.repository"/>
             <argument type="service" id="locale.repository"/>
@@ -45,8 +51,6 @@
             <argument type="service" id="swag_migration_connection.repository"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Service\MigrationDataFetcher"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\Profile\ProfileRegistry" />
-            <argument type="service" id="SwagMigrationAssistant\Migration\Gateway\GatewayRegistry" />
             <argument type="service" id="SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry"/>
             <argument type="service" id="swag_migration_data.repository"/>
             <argument type="service" id="swag_migration_media_file.repository"/>
@@ -120,14 +124,13 @@
             <argument type="service" id="SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Run\RunService"/>
             <argument type="service" id="swag_migration_run.repository"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\Profile\ProfileRegistry" />
-            <argument type="service" id="SwagMigrationAssistant\Migration\Gateway\GatewayRegistry" />
-            <argument type="service" id="SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry" />
+            <argument type="service" id="SwagMigrationAssistant\Migration\MigrationContextFactory" />
         </service>
 
         <service id="SwagMigrationAssistant\Controller\PremappingController" public="true">
             <argument type="service" id="SwagMigrationAssistant\Migration\Service\PremappingService"/>
             <argument type="service" id="swag_migration_run.repository"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\MigrationContextFactory" />
         </service>
 
         <service id="SwagMigrationAssistant\Controller\StatusController" public="true">
@@ -138,6 +141,7 @@
             <argument type="service" id="swag_migration_connection.repository"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Profile\ProfileRegistry"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Gateway\GatewayRegistry"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\MigrationContextFactory" />
         </service>
 
         <service id="SwagMigrationAssistant\Command\MigrationFetchDataCommand"

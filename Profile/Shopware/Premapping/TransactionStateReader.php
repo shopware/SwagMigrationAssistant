@@ -11,7 +11,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateEntity;
 use Shopware\Core\System\StateMachine\StateMachineEntity;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistryInterface;
-use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Premapping\AbstractPremappingReader;
 use SwagMigrationAssistant\Migration\Premapping\PremappingChoiceStruct;
 use SwagMigrationAssistant\Migration\Premapping\PremappingEntityStruct;
@@ -65,7 +65,7 @@ class TransactionStateReader extends AbstractPremappingReader
             && in_array(CustomerAndOrderDataSelection::IDENTIFIER, $entityGroupNames, true);
     }
 
-    public function getPremapping(Context $context, MigrationContext $migrationContext): PremappingStruct
+    public function getPremapping(Context $context, MigrationContextInterface $migrationContext): PremappingStruct
     {
         $this->fillConnectionPremappingDictionary($migrationContext);
         $mapping = $this->getMapping($migrationContext);
@@ -78,7 +78,7 @@ class TransactionStateReader extends AbstractPremappingReader
     /**
      * @return PremappingEntityStruct[]
      */
-    private function getMapping(MigrationContext $migrationContext): array
+    private function getMapping(MigrationContextInterface $migrationContext): array
     {
         /** @var ShopwareGatewayInterface $gateway */
         $gateway = $this->gatewayRegistry->getGateway($migrationContext);

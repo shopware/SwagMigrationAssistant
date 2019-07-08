@@ -67,13 +67,13 @@ class NewsletterRecipientConverterTest extends TestCase
         $this->connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
 
         $this->context = new MigrationContext(
+            new Shopware55Profile(),
             $this->connection,
             $this->runId,
             new NewsletterRecipientDataSet(),
             0,
             250
         );
-        $this->context->setProfile(new Shopware55Profile());
 
         $context = Context::createDefaultContext();
         $this->mappingService->createNewUuid($this->connectionId, SalutationReader::getMappingName(), 'mr',

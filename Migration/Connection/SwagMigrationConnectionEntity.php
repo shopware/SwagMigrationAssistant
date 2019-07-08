@@ -14,7 +14,7 @@ class SwagMigrationConnectionEntity extends Entity
     use EntityIdTrait;
 
     /**
-     * @var string|null
+     * @var string
      */
     protected $name;
 
@@ -53,7 +53,7 @@ class SwagMigrationConnectionEntity extends Entity
      */
     protected $settings;
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }

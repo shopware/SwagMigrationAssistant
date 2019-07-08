@@ -85,6 +85,7 @@ class PremappingControllerTest extends TestCase
         $stateMachineStateRepo = $this->getContainer()->get('state_machine_state.repository');
         $this->mappingService = $this->getContainer()->get(MappingService::class);
         $mappingRepo = $this->getContainer()->get('swag_migration_mapping.repository');
+        $migrationContextFactory = $this->getContainer()->get('SwagMigrationAssistant\Migration\MigrationContextFactory');
 
         $gatewayRegistry = $this->getContainer()->get('SwagMigrationAssistant\Migration\Gateway\GatewayRegistry');
 
@@ -101,7 +102,8 @@ class PremappingControllerTest extends TestCase
                 $runRepo,
                 $connectionRepo
             ),
-            $this->runRepo
+            $this->runRepo,
+            $migrationContextFactory
         );
 
         $this->context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use ($connectionRepo) {

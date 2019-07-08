@@ -17,11 +17,9 @@ use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
-use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Media\MediaFileService;
 use SwagMigrationAssistant\Migration\MigrationContext;
-use SwagMigrationAssistant\Migration\Profile\ProfileRegistry;
 use SwagMigrationAssistant\Migration\Run\EntityProgress;
 use SwagMigrationAssistant\Migration\Run\RunProgress;
 use SwagMigrationAssistant\Migration\Run\RunService;
@@ -189,8 +187,6 @@ class MigrationProgressServiceTest extends TestCase
                 $this->connectionRepo,
                 $this->migrationDataFetcher,
                 $this->getContainer()->get(SwagMigrationAccessTokenService::class),
-                $this->getContainer()->get(ProfileRegistry::class),
-                $this->getContainer()->get(GatewayRegistry::class),
                 new DataSelectionRegistry([]),
                 $this->dataRepo,
                 $this->mediaFileRepo,

@@ -70,13 +70,13 @@ class CustomerConverterTest extends TestCase
         $this->connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
 
         $this->migrationContext = new MigrationContext(
+            new Shopware55Profile(),
             $this->connection,
             $this->runId,
             new CustomerDataSet(),
             0,
             250
         );
-        $this->migrationContext->setProfile(new Shopware55Profile());
 
         $context = Context::createDefaultContext();
         $this->mappingService->createNewUuid(

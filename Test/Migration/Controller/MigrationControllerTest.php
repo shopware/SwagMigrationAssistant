@@ -25,6 +25,7 @@ use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Media\MediaFileService;
 use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
 use SwagMigrationAssistant\Migration\Profile\ProfileRegistry;
 use SwagMigrationAssistant\Migration\Profile\ProfileRegistryInterface;
 use SwagMigrationAssistant\Migration\Run\RunService;
@@ -110,6 +111,11 @@ class MigrationControllerTest extends TestCase
      */
     private $mediaFileRepo;
 
+    /**
+     * @var MigrationContextFactoryInterface
+     */
+    private $migrationContextFactory;
+
     protected function setUp(): void
     {
         $this->context = Context::createDefaultContext();
@@ -124,6 +130,7 @@ class MigrationControllerTest extends TestCase
         $this->profileRegistry = $this->getContainer()->get(ProfileRegistry::class);
         $this->gatewayRegistry = $this->getContainer()->get(GatewayRegistry::class);
         $this->dataSetRegistry = $this->getContainer()->get(DataSetRegistry::class);
+        $this->migrationContextFactory = $this->getContainer()->get('SwagMigrationAssistant\Migration\MigrationContextFactory');
 
         $this->context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) {
             $this->connectionId = Uuid::randomHex();
@@ -208,8 +215,6 @@ class MigrationControllerTest extends TestCase
                 $this->connectionRepo,
                 $dataFetcher,
                 $accessTokenService,
-                $this->profileRegistry,
-                $this->gatewayRegistry,
                 new DataSelectionRegistry([]),
                 $this->dataRepo,
                 $this->mediaFileRepo,
@@ -220,9 +225,7 @@ class MigrationControllerTest extends TestCase
                 $this->getContainer()->get(Connection::class)
             ),
             $this->runRepo,
-            $this->profileRegistry,
-            $this->gatewayRegistry,
-            $this->dataSetRegistry
+            $this->migrationContextFactory
         );
     }
 

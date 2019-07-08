@@ -3,6 +3,7 @@
 namespace SwagMigrationAssistant\Migration\Run;
 
 use Shopware\Core\Framework\Context;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Service\ProgressState;
 
 interface RunServiceInterface
@@ -15,7 +16,7 @@ interface RunServiceInterface
      * @param int[] $dataSelectionIds
      */
     public function createMigrationRun(
-        string $connectionId,
+        MigrationContextInterface $migrationContext,
         array $dataSelectionIds,
         Context $context
     ): ?ProgressState;

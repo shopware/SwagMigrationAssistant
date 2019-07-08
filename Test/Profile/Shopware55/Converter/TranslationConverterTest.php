@@ -83,31 +83,31 @@ class TranslationConverterTest extends TestCase
         $profile = new Shopware55Profile();
 
         $this->migrationContext = new MigrationContext(
+            new Shopware55Profile(),
             $connection,
             $this->runId,
             new TranslationDataSet(),
             0,
             250
         );
-        $this->migrationContext->setProfile($profile);
 
         $this->productMigrationContext = new MigrationContext(
+            new Shopware55Profile(),
             $connection,
             $this->runId,
             new ProductDataSet(),
             0,
             250
         );
-        $this->productMigrationContext->setProfile($profile);
 
         $this->categoryMigrationContext = new MigrationContext(
+            new Shopware55Profile(),
             $connection,
             $this->runId,
             new CategoryDataSet(),
             0,
             250
         );
-        $this->categoryMigrationContext->setProfile($profile);
 
         $this->mappingService->createNewUuid($connection->getId(), DefaultEntities::CURRENCY, 'EUR', Context::createDefaultContext(), [], Uuid::randomHex());
     }

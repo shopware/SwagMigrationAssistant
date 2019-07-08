@@ -65,13 +65,13 @@ class ProductConverterTest extends TestCase
         $this->connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
 
         $this->migrationContext = new MigrationContext(
+            new Shopware55Profile(),
             $this->connection,
             $this->runId,
             new ProductDataSet(),
             0,
             250
         );
-        $this->migrationContext->setProfile(new Shopware55Profile());
 
         $this->mappingService->createNewUuid($this->connection->getId(), DefaultEntities::CURRENCY, 'EUR', Context::createDefaultContext(), [], Uuid::randomHex());
     }

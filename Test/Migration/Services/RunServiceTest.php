@@ -22,7 +22,7 @@ use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition;
 use SwagMigrationAssistant\Migration\MigrationContext;
-use SwagMigrationAssistant\Migration\Profile\ProfileRegistry;
+use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
 use SwagMigrationAssistant\Migration\Run\RunService;
 use SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiEnvironmentReader;
@@ -94,6 +94,11 @@ class RunServiceTest extends TestCase
      */
     private $dataSetRegistry;
 
+    /**
+     * @var MigrationContextFactoryInterface
+     */
+    private $migrationContextFactory;
+
     protected function setUp(): void
     {
         $this->dbConnection = $this->getContainer()->get(Connection::class);
@@ -105,6 +110,7 @@ class RunServiceTest extends TestCase
         $loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
         $mediaFileRepo = $this->getContainer()->get('swag_migration_media_file.repository');
         $this->dataSetRegistry = $this->getContainer()->get(DataSetRegistry::class);
+        $this->migrationContextFactory = $this->getContainer()->get('SwagMigrationAssistant\Migration\MigrationContextFactory');
 
         $this->mappingService = new MappingService(
             $this->mappingRepo,
@@ -208,10 +214,12 @@ class RunServiceTest extends TestCase
         $origin = new AdminApiSource($userId);
         $context = Context::createDefaultContext($origin);
 
+        $migrationContext = $this->migrationContextFactory->createByConnection($this->connection);
+
         $beforeRunTotal = $this->runRepo->search(new Criteria(), $context)->getTotal();
         $beforeMappingTotal = $this->mappingRepo->search(new Criteria(), $context)->getTotal();
         $this->runServiceWithoutStructure->createMigrationRun(
-            $this->connection->getId(),
+            $migrationContext,
             [],
             $context
         );

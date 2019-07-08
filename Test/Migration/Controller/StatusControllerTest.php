@@ -27,6 +27,7 @@ use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Media\MediaFileService;
 use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
 use SwagMigrationAssistant\Migration\Profile\ProfileRegistry;
 use SwagMigrationAssistant\Migration\Run\RunService;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
@@ -91,6 +92,11 @@ class StatusControllerTest extends TestCase
      */
     private $invalidConnectionId;
 
+    /**
+     * @var MigrationContextFactoryInterface
+     */
+    private $migrationContextFactory;
+
     protected function setUp(): void
     {
         $this->context = Context::createDefaultContext();
@@ -100,6 +106,7 @@ class StatusControllerTest extends TestCase
         $this->connectionRepo = $this->getContainer()->get('swag_migration_connection.repository');
         $this->generalSettingRepo = $this->getContainer()->get('swag_migration_general_setting.repository');
         $this->runRepo = $this->getContainer()->get('swag_migration_run.repository');
+        $this->migrationContextFactory = $this->getContainer()->get('SwagMigrationAssistant\Migration\MigrationContextFactory');
 
         $this->context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) {
             $this->connectionId = Uuid::randomHex();
@@ -169,8 +176,6 @@ class StatusControllerTest extends TestCase
                 $this->connectionRepo,
                 $dataFetcher,
                 $accessTokenService,
-                $this->getContainer()->get(ProfileRegistry::class),
-                $this->getContainer()->get(GatewayRegistry::class),
                 new DataSelectionRegistry([
                     new ProductDataSelection(),
                     new CustomerAndOrderDataSelection(),
@@ -189,7 +194,8 @@ class StatusControllerTest extends TestCase
             ]),
             $this->connectionRepo,
             $this->getContainer()->get(ProfileRegistry::class),
-            $this->getContainer()->get(GatewayRegistry::class)
+            $this->getContainer()->get(GatewayRegistry::class),
+            $this->migrationContextFactory
         );
     }
 

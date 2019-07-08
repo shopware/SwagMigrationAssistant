@@ -17,7 +17,7 @@ class Migration1536765935Connection extends MigrationStep
         $sql = <<<SQL
 CREATE TABLE `swag_migration_connection` (
     `id`                    BINARY(16)   NOT NULL,
-    `name`                  VARCHAR(255),
+    `name`                  VARCHAR(255) NOT NULL,
     `credential_fields`     LONGTEXT,
     `premapping`            LONGTEXT,
     `profile_name`          VARCHAR(255) NOT NULL,

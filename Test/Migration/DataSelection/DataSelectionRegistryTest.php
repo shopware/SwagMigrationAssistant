@@ -63,10 +63,9 @@ class DataSelectionRegistryTest extends TestCase
     public function testGetDataSelections(): void
     {
         $migrationContext = new MigrationContext(
+            new Shopware55Profile(),
           $this->connection
         );
-        $profile = new Shopware55Profile();
-        $migrationContext->setProfile($profile);
 
         $expected = [
             0 => (new ProductDataSelection())->getData()->getId(),
@@ -89,10 +88,9 @@ class DataSelectionRegistryTest extends TestCase
     {
         $this->dataSelectionRegistry = new DataSelectionRegistry(new DummyCollection([new MediaDataSelection()]));
         $migrationContext = new MigrationContext(
+            new Shopware55Profile(),
             $this->connection
         );
-        $profile = new Shopware55Profile();
-        $migrationContext->setProfile($profile);
 
         $dataSelections = $this->dataSelectionRegistry->getDataSelections($migrationContext, $this->environmentInformation);
 

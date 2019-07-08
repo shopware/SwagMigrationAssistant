@@ -37,13 +37,13 @@ class OrderAttributeConverterTest extends TestCase
         $connection->setName('ConntectionName');
 
         $this->migrationContext = new MigrationContext(
+            new Shopware55Profile(),
             $connection,
             $runId,
             new OrderAttributeDataSet(),
             0,
             250
         );
-        $this->migrationContext->setProfile(new Shopware55Profile());
     }
 
     public function testSupports(): void

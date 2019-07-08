@@ -14,7 +14,7 @@ use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\TranslationDataSet;
-use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 use SwagMigrationAssistant\Test\Mock\DataSet\InvalidCustomerDataSet;
 
 class DummyLocalGateway implements GatewayInterface
@@ -28,7 +28,7 @@ class DummyLocalGateway implements GatewayInterface
 
     public function supports(MigrationContextInterface $migrationContext): bool
     {
-        return $migrationContext->getConnection()->getProfileName() === Shopware55Profile::PROFILE_NAME;
+        return $migrationContext->getProfile() instanceof ShopwareProfileInterface;
     }
 
     public function read(MigrationContextInterface $migrationContext): array
@@ -61,11 +61,12 @@ class DummyLocalGateway implements GatewayInterface
         $environmentData = require __DIR__ . '/../../../../_fixtures/environment_data.php';
 
         $environmentDataArray = $environmentData['environmentInformation'];
+        $profile = $migrationContext->getProfile();
 
         if (empty($environmentDataArray)) {
             return new EnvironmentInformation(
-                Shopware55Profile::SOURCE_SYSTEM_NAME,
-                Shopware55Profile::SOURCE_SYSTEM_VERSION,
+                $profile->getSourceSystemName(),
+                $profile->getVersion(),
                 '',
                 [],
                 [],
@@ -87,7 +88,7 @@ class DummyLocalGateway implements GatewayInterface
         ];
 
         return new EnvironmentInformation(
-            Shopware55Profile::SOURCE_SYSTEM_NAME,
+            $profile->getSourceSystemName(),
             $environmentDataArray['shopwareVersion'],
             $environmentDataArray['additionalData'][0]['host'],
             $totals,

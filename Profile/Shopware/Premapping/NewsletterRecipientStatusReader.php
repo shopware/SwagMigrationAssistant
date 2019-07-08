@@ -3,7 +3,7 @@
 namespace SwagMigrationAssistant\Profile\Shopware\Premapping;
 
 use Shopware\Core\Framework\Context;
-use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Premapping\AbstractPremappingReader;
 use SwagMigrationAssistant\Migration\Premapping\PremappingChoiceStruct;
 use SwagMigrationAssistant\Migration\Premapping\PremappingEntityStruct;
@@ -31,7 +31,7 @@ class NewsletterRecipientStatusReader extends AbstractPremappingReader
             && in_array(NewsletterRecipientDataSelection::IDENTIFIER, $entityGroupNames, true);
     }
 
-    public function getPremapping(Context $context, MigrationContext $migrationContext): PremappingStruct
+    public function getPremapping(Context $context, MigrationContextInterface $migrationContext): PremappingStruct
     {
         $this->fillConnectionPremappingValue($migrationContext);
         $mapping = $this->getMapping();
@@ -40,7 +40,7 @@ class NewsletterRecipientStatusReader extends AbstractPremappingReader
         return new PremappingStruct(self::getMappingName(), $mapping, $choices);
     }
 
-    protected function fillConnectionPremappingValue(MigrationContext $migrationContext): void
+    protected function fillConnectionPremappingValue(MigrationContextInterface $migrationContext): void
     {
         if ($migrationContext->getConnection()->getPremapping() === null) {
             return;

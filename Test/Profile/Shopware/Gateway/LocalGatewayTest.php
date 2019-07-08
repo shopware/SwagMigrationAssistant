@@ -43,6 +43,7 @@ class LocalGatewayTest extends TestCase
         );
 
         $migrationContext = new MigrationContext(
+            new Shopware55Profile(),
             $connection,
             '',
             new ProductDataSet()
@@ -89,6 +90,7 @@ class LocalGatewayTest extends TestCase
         );
 
         $migrationContext = new MigrationContext(
+            new Shopware55Profile(),
             $connection,
             '',
             new FooDataSet()
@@ -128,6 +130,7 @@ class LocalGatewayTest extends TestCase
         $connection->setCredentialFields([]);
 
         $migrationContext = new MigrationContext(
+            new Shopware55Profile(),
             $connection
         );
 

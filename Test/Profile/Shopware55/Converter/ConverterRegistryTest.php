@@ -45,6 +45,7 @@ class ConverterRegistryTest extends TestCase
         $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
         $connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
         $migrationContext = new MigrationContext(
+            new Shopware55Profile(),
             $connection,
             Uuid::randomHex(),
             new FooDataSet(),

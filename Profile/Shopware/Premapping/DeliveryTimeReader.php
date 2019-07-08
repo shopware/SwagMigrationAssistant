@@ -7,7 +7,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
-use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Premapping\AbstractPremappingReader;
 use SwagMigrationAssistant\Migration\Premapping\PremappingChoiceStruct;
 use SwagMigrationAssistant\Migration\Premapping\PremappingEntityStruct;
@@ -45,7 +45,7 @@ class DeliveryTimeReader extends AbstractPremappingReader
             && in_array(CustomerAndOrderDataSelection::IDENTIFIER, $entityGroupNames, true);
     }
 
-    public function getPremapping(Context $context, MigrationContext $migrationContext): PremappingStruct
+    public function getPremapping(Context $context, MigrationContextInterface $migrationContext): PremappingStruct
     {
         $this->fillConnectionPremappingValue($migrationContext);
         $mapping = $this->getMapping();
@@ -54,7 +54,7 @@ class DeliveryTimeReader extends AbstractPremappingReader
         return new PremappingStruct(self::getMappingName(), $mapping, $choices);
     }
 
-    protected function fillConnectionPremappingValue(MigrationContext $migrationContext): void
+    protected function fillConnectionPremappingValue(MigrationContextInterface $migrationContext): void
     {
         if ($migrationContext->getConnection()->getPremapping() === null) {
             return;

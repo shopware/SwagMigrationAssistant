@@ -41,11 +41,11 @@ class MediaFileProcessorRegistryTest extends TestCase
         $connection->setCredentialFields([]);
 
         $context = new MigrationContext(
+            new Shopware55Profile(),
             $connection,
             '',
             new FooDataSet()
         );
-        $context->setProfile(new Shopware55Profile());
 
         try {
             $this->processorRegistry->getProcessor($context);

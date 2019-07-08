@@ -110,6 +110,7 @@ class MediaDownloadServiceTest extends TestCase
         $context = Context::createDefaultContext();
 
         $migrationContext = new MigrationContext(
+            new Shopware55Profile(),
             null,
             $this->runUuid,
             new ProductDataSet(),

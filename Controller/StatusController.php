@@ -11,7 +11,7 @@ use SwagMigrationAssistant\Exception\MigrationContextPropertyMissingException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistryInterface;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistryInterface;
-use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
 use SwagMigrationAssistant\Migration\Profile\ProfileRegistryInterface;
 use SwagMigrationAssistant\Migration\Run\RunServiceInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
@@ -59,6 +59,11 @@ class StatusController extends AbstractController
      */
     private $gatewayRegistry;
 
+    /**
+     * @var MigrationContextFactoryInterface
+     */
+    private $migrationContextFactory;
+
     public function __construct(
         MigrationDataFetcherInterface $migrationDataFetcher,
         MigrationProgressServiceInterface $migrationProgressService,
@@ -66,7 +71,8 @@ class StatusController extends AbstractController
         DataSelectionRegistryInterface $dataSelectionRegistry,
         EntityRepositoryInterface $migrationConnectionRepo,
         ProfileRegistryInterface $profileRegistry,
-        GatewayRegistryInterface $gatewayRegistry
+        GatewayRegistryInterface $gatewayRegistry,
+        MigrationContextFactoryInterface $migrationContextFactory
     ) {
         $this->migrationDataFetcher = $migrationDataFetcher;
         $this->migrationProgressService = $migrationProgressService;
@@ -75,6 +81,7 @@ class StatusController extends AbstractController
         $this->migrationConnectionRepo = $migrationConnectionRepo;
         $this->profileRegistry = $profileRegistry;
         $this->gatewayRegistry = $gatewayRegistry;
+        $this->migrationContextFactory = $migrationContextFactory;
     }
 
     /**
@@ -103,10 +110,7 @@ class StatusController extends AbstractController
             throw new MigrationContextPropertyMissingException('profileName');
         }
 
-        $connection = new SwagMigrationConnectionEntity();
-        $connection->setProfileName($profileName);
-
-        $migrationContext = new MigrationContext($connection);
+        $migrationContext = $this->migrationContextFactory->createByProfileName($profileName);
         $gateways = $this->gatewayRegistry->getGateways($migrationContext);
 
         $gatewayNames = [];
@@ -159,13 +163,7 @@ class StatusController extends AbstractController
             throw new EntityNotExistsException(SwagMigrationConnectionEntity::class, $connectionId);
         }
 
-        $migrationContext = new MigrationContext(
-            $connection
-        );
-        $profile = $this->profileRegistry->getProfile($migrationContext);
-        $migrationContext->setProfile($profile);
-        $gateway = $this->gatewayRegistry->getGateway($migrationContext);
-        $migrationContext->setGateway($gateway);
+        $migrationContext = $this->migrationContextFactory->createByConnection($connection);
 
         $environmentInformation = $this->migrationDataFetcher->getEnvironmentInformation($migrationContext, $context);
 
@@ -196,14 +194,7 @@ class StatusController extends AbstractController
             throw new ConnectionCredentialsMissingException();
         }
 
-        $migrationContext = new MigrationContext(
-            $connection
-        );
-        $profile = $this->profileRegistry->getProfile($migrationContext);
-        $migrationContext->setProfile($profile);
-        $gateway = $this->gatewayRegistry->getGateway($migrationContext);
-        $migrationContext->setGateway($gateway);
-
+        $migrationContext = $this->migrationContextFactory->createByConnection($connection);
         $information = $this->migrationDataFetcher->getEnvironmentInformation($migrationContext, $context);
 
         return new JsonResponse($information);
@@ -232,11 +223,15 @@ class StatusController extends AbstractController
             throw new MigrationContextPropertyMissingException('connectionId');
         }
 
+        /** @var SwagMigrationConnectionEntity|null $connection */
+        $connection = $this->migrationConnectionRepo->search(new Criteria([$connectionId]), $context)->first();
+
         if (empty($dataSelectionIds)) {
             throw new MigrationContextPropertyMissingException('dataSelectionIds');
         }
 
-        $state = $this->runService->createMigrationRun($connectionId, $dataSelectionIds, $context);
+        $migrationContext = $this->migrationContextFactory->createByConnection($connection);
+        $state = $this->runService->createMigrationRun($migrationContext, $dataSelectionIds, $context);
 
         if ($state === null) {
             return $this->getState($request, $context);

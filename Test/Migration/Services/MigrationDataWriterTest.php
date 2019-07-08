@@ -264,6 +264,7 @@ class MigrationDataWriterTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
+            new Shopware55Profile(),
             $this->connection,
             $this->runUuid,
             new CustomerDataSet(),
@@ -305,6 +306,7 @@ class MigrationDataWriterTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
+            new Shopware55Profile(),
             $this->connection,
             $this->runUuid,
             new CustomerDataSet(),
@@ -330,6 +332,7 @@ class MigrationDataWriterTest extends TestCase
         $context = Context::createDefaultContext();
         // Add users, who have ordered
         $userMigrationContext = new MigrationContext(
+            new Shopware55Profile(),
             $this->connection,
             $this->runUuid,
             new CustomerDataSet(),
@@ -347,6 +350,7 @@ class MigrationDataWriterTest extends TestCase
 
         // Add orders
         $migrationContext = new MigrationContext(
+            new Shopware55Profile(),
             $this->connection,
             $this->runUuid,
             new OrderDataSet(),
@@ -376,6 +380,7 @@ class MigrationDataWriterTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
+            new Shopware55Profile(),
             $this->connection,
             $this->runUuid,
             new MediaDataSet(),
@@ -400,6 +405,7 @@ class MigrationDataWriterTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
+            new Shopware55Profile(),
             $this->connection,
             $this->runUuid,
             new CategoryDataSet(),
@@ -424,6 +430,7 @@ class MigrationDataWriterTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
+            new Shopware55Profile(),
             $this->connection,
             $this->runUuid,
             new ProductDataSet(),
@@ -450,6 +457,7 @@ class MigrationDataWriterTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
+            new Shopware55Profile(),
             $this->connection,
             $this->runUuid,
             new MediaDataSet(),

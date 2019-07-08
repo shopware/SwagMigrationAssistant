@@ -60,7 +60,6 @@ trait MigrationServicesTrait
         EntityRepositoryInterface $currencyRepository
     ): MigrationDataFetcherInterface {
         $loggingService = new LoggingService($loggingRepo);
-        $priceRounding = new PriceRounding();
 
         $connectionFactory = new ConnectionFactory();
         $gatewayRegistry = new GatewayRegistry(new DummyCollection([

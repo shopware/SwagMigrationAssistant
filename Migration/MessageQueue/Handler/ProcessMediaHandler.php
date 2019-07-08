@@ -15,7 +15,8 @@ use SwagMigrationAssistant\Migration\Media\MediaFileProcessorInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorRegistryInterface;
 use SwagMigrationAssistant\Migration\Media\MediaProcessWorkloadStruct;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\ProcessMediaMessage;
-use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 
 class ProcessMediaHandler extends AbstractMessageHandler
@@ -37,14 +38,21 @@ class ProcessMediaHandler extends AbstractMessageHandler
      */
     private $loggingService;
 
+    /**
+     * @var MigrationContextFactoryInterface
+     */
+    private $migrationContextFactory;
+
     public function __construct(
         EntityRepositoryInterface $migrationRunRepo,
         MediaFileProcessorRegistryInterface $mediaFileProcessorRegistry,
-        LoggingServiceInterface $loggingService
+        LoggingServiceInterface $loggingService,
+        MigrationContextFactoryInterface $migrationContextFactory
     ) {
         $this->migrationRunRepo = $migrationRunRepo;
         $this->mediaFileProcessorRegistry = $mediaFileProcessorRegistry;
         $this->loggingService = $loggingService;
+        $this->migrationContextFactory = $migrationContextFactory;
     }
 
     /**
@@ -67,12 +75,7 @@ class ProcessMediaHandler extends AbstractMessageHandler
             throw new EntityNotExistsException(SwagMigrationConnectionEntity::class, $message->getRunId());
         }
 
-        $migrationContext = new MigrationContext(
-            $run->getConnection(),
-            $message->getRunId(),
-            $message->getDataSet()
-        );
-
+        $migrationContext = $this->migrationContextFactory->create($run, 0, 0, $message->getDataSet()::getEntity());
         $workload = [];
         foreach ($message->getMediaFileIds() as $mediaFileId) {
             $workload[] = new MediaProcessWorkloadStruct(
@@ -118,7 +121,7 @@ class ProcessMediaHandler extends AbstractMessageHandler
      */
     private function processFailures(
         Context $context,
-        MigrationContext $migrationContext,
+        MigrationContextInterface $migrationContext,
         MediaFileProcessorInterface $processor,
         array $workload,
         int $fileChunkByteSize

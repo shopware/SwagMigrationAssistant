@@ -113,25 +113,25 @@ class MigrationWriteDataCommand extends Command
 
     private function writeData(OutputInterface $output, $total, $context): void
     {
-        $progressBar = new ProgressBar($output, $total);
-        $progressBar->start();
-
-        for ($offset = 0; $offset < $total; $offset += $this->limit) {
-            $migrationContext = new MigrationContext(
-                new SwagMigrationConnectionEntity(), // TODO FIX IT
-                $this->runId,
-                null,
-                $offset,
-                $this->limit
-            );
-            $this->migrationWriteService->writeData($migrationContext, $context);
-
-            if ($offset + $this->limit > $total) {
-                $progressBar->finish();
-            } else {
-                $progressBar->advance($this->limit);
-            }
-        }
+//        $progressBar = new ProgressBar($output, $total);
+//        $progressBar->start();
+//
+//        for ($offset = 0; $offset < $total; $offset += $this->limit) {
+//            $migrationContext = new MigrationContext(
+//                new SwagMigrationConnectionEntity(), // TODO FIX IT
+//                $this->runId,
+//                null,
+//                $offset,
+//                $this->limit
+//            );
+//            $this->migrationWriteService->writeData($migrationContext, $context);
+//
+//            if ($offset + $this->limit > $total) {
+//                $progressBar->finish();
+//            } else {
+//                $progressBar->advance($this->limit);
+//            }
+//        }
     }
 
     private function checkOptions(InputInterface $input): void

@@ -12,6 +12,7 @@ use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory;
+use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Profile\Shopware\DataSet\FooDataSet;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
@@ -42,6 +43,7 @@ class ApiReaderTest extends TestCase
         $client = new Client($options);
 
         $migrationContext = new MigrationContext(
+            new Shopware55Profile(),
             null,
             '',
             new ProductDataSet()
@@ -63,6 +65,7 @@ class ApiReaderTest extends TestCase
 
         $apiReader = new ApiReader(new ConnectionFactory());
         $migrationContext = new MigrationContext(
+            new Shopware55Profile(),
             null,
             '',
             new FooDataSet(),
@@ -89,6 +92,7 @@ class ApiReaderTest extends TestCase
         $client = new Client($options);
 
         $migrationContext = new MigrationContext(
+            new Shopware55Profile(),
             null,
             '',
             new ProductDataSet()

@@ -16,6 +16,7 @@ use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiTableCountRead
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiTableReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\ShopwareApiGateway;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory;
+use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Profile\Shopware\DataSet\FooDataSet;
 
@@ -26,6 +27,7 @@ class ShopwareApiGatewayTest extends TestCase
     public function testReadFailed(): void
     {
         $migrationContext = new MigrationContext(
+            new Shopware55Profile(),
             new SwagMigrationConnectionEntity(),
             '',
             new FooDataSet()
@@ -52,6 +54,7 @@ class ShopwareApiGatewayTest extends TestCase
     public function testReadEnvironmentInformationFailed(): void
     {
         $migrationContext = new MigrationContext(
+            new Shopware55Profile(),
             new SwagMigrationConnectionEntity()
         );
 

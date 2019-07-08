@@ -212,6 +212,7 @@ class MigrationDataProcessingTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
+            new Shopware55Profile(),
             $this->connection,
             $this->runUuid,
             new MediaDataSet(),
@@ -240,6 +241,7 @@ class MigrationDataProcessingTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
+            new Shopware55Profile(),
             $this->connection,
             $this->runUuid,
             new CategoryDataSet(),
@@ -264,6 +266,7 @@ class MigrationDataProcessingTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
+            new Shopware55Profile(),
             $this->connection,
             $this->runUuid,
             new TranslationDataSet(),
@@ -288,6 +291,7 @@ class MigrationDataProcessingTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
+            new Shopware55Profile(),
             $this->connection,
             $this->runUuid,
             new CustomerDataSet(),
@@ -312,6 +316,7 @@ class MigrationDataProcessingTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
+            new Shopware55Profile(),
             $this->connection,
             $this->runUuid,
             new ProductDataSet(),
@@ -335,6 +340,7 @@ class MigrationDataProcessingTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
+            new Shopware55Profile(),
             $this->connection,
             $this->runUuid,
             new ProductDataSet(),
@@ -358,6 +364,7 @@ class MigrationDataProcessingTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
+            new Shopware55Profile(),
             $this->connection,
             $this->runUuid,
             new InvalidCustomerDataSet(),

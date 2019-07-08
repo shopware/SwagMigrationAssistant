@@ -43,13 +43,13 @@ class LanguageConverterTest extends TestCase
         $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
 
         $this->migrationContext = new MigrationContext(
+            new Shopware55Profile(),
             $connection,
             $runId,
             new LanguageDataSet(),
             0,
             250
         );
-        $this->migrationContext->setProfile(new Shopware55Profile());
     }
 
     public function testSupports(): void

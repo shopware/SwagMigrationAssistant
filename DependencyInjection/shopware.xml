@@ -23,6 +23,7 @@
             <argument type="service" id="SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiEnvironmentReader" />
             <argument type="service" id="SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiTableReader" />
             <argument type="service" id="SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiTableCountReader" />
+            <argument type="service" id="currency.repository"/>
             <tag name="shopware.migration.gateway" />
         </service>
 

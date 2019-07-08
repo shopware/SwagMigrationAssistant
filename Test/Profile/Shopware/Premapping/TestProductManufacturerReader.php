@@ -8,6 +8,7 @@ use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\ProductManufacturerReader;
+use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
 class TestProductManufacturerReader extends TestCase
 {
@@ -32,7 +33,7 @@ class TestProductManufacturerReader extends TestCase
 
     public function testGetMapping(): void
     {
-        $migrationContext = new MigrationContext();
+        $migrationContext = new MigrationContext(new Shopware55Profile());
 
         /** @var PremappingStruct $premapping */
         $premapping = $this->productManufacturerReader->getPremapping($this->context, $migrationContext);

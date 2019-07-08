@@ -14,7 +14,7 @@ use SwagMigrationAssistant\Migration\Profile\ReaderInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\ShopwareGatewayInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\TableCountReaderInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\TableReaderInterface;
-use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
 class ShopwareApiGateway implements ShopwareGatewayInterface
 {
@@ -66,7 +66,7 @@ class ShopwareApiGateway implements ShopwareGatewayInterface
 
     public function supports(MigrationContextInterface $migrationContext): bool
     {
-        return $migrationContext->getConnection()->getProfileName() === Shopware55Profile::PROFILE_NAME;
+        return $migrationContext->getProfile() instanceof ShopwareProfileInterface;
     }
 
     public function read(MigrationContextInterface $migrationContext): array
@@ -78,11 +78,12 @@ class ShopwareApiGateway implements ShopwareGatewayInterface
     {
         $environmentData = $this->environmentReader->read($migrationContext);
         $environmentDataArray = $environmentData['environmentInformation'];
+        $profile = $migrationContext->getProfile();
 
         if (empty($environmentDataArray)) {
             return new EnvironmentInformation(
-                Shopware55Profile::SOURCE_SYSTEM_NAME,
-                Shopware55Profile::SOURCE_SYSTEM_VERSION,
+                $profile->getSourceSystemName(),
+                $profile->getVersion(),
                 '',
                 [],
                 [],
@@ -117,7 +118,7 @@ class ShopwareApiGateway implements ShopwareGatewayInterface
         }
 
         return new EnvironmentInformation(
-            Shopware55Profile::SOURCE_SYSTEM_NAME,
+            $profile->getSourceSystemName(),
             $environmentDataArray['shopwareVersion'],
             $credentials['endpoint'],
             $totals,

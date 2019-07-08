@@ -13,14 +13,19 @@ class MigrationContext extends Struct implements MigrationContextInterface
     public const SOURCE_CONTEXT = 'MIGRATION_CONNECTION_CHECK_FOR_RUNNING_MIGRATION';
 
     /**
-     * @var string
+     * @var ProfileInterface
      */
-    private $runUuid;
+    private $profile;
 
     /**
      * @var SwagMigrationConnectionEntity|null
      */
     private $connection;
+
+    /**
+     * @var string
+     */
+    private $runUuid;
 
     /**
      * @var DataSet|null
@@ -38,37 +43,39 @@ class MigrationContext extends Struct implements MigrationContextInterface
     private $limit;
 
     /**
-     * @var ProfileInterface
-     */
-    private $profile;
-
-    /**
      * @var GatewayInterface
      */
     private $gateway;
 
     public function __construct(
-        ?SwagMigrationConnectionEntity $connection,
+        ProfileInterface $profile,
+        ?SwagMigrationConnectionEntity $connection = null,
         string $runUuid = '',
         ?DataSet $dataSet = null,
         int $offset = 0,
         int $limit = 0
     ) {
-        $this->runUuid = $runUuid;
+        $this->profile = $profile;
         $this->connection = $connection;
+        $this->runUuid = $runUuid;
         $this->dataSet = $dataSet;
         $this->offset = $offset;
         $this->limit = $limit;
     }
 
-    public function getRunUuid(): string
+    public function getProfile(): ProfileInterface
     {
-        return $this->runUuid;
+        return $this->profile;
     }
 
     public function getConnection(): ?SwagMigrationConnectionEntity
     {
         return $this->connection;
+    }
+
+    public function getRunUuid(): string
+    {
+        return $this->runUuid;
     }
 
     public function getDataSet(): ?DataSet
@@ -89,16 +96,6 @@ class MigrationContext extends Struct implements MigrationContextInterface
     public function getLimit(): int
     {
         return $this->limit;
-    }
-
-    public function getProfile(): ProfileInterface
-    {
-        return $this->profile;
-    }
-
-    public function setProfile(ProfileInterface $profile): void
-    {
-        $this->profile = $profile;
     }
 
     public function getGateway(): GatewayInterface

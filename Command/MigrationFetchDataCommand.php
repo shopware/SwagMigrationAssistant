@@ -180,28 +180,28 @@ class MigrationFetchDataCommand extends Command
 
     private function fetchData(OutputInterface $output, $total, $runUuid, $context): void
     {
-        $progressBar = new ProgressBar($output, $total);
-        $progressBar->start();
-
-        $migrationContext = new MigrationContext(
-            new SwagMigrationConnectionEntity()
-        );
-
-        $dataSet = $this->dataSetRegistry->getDataSet($migrationContext, $this->entityName);
-
-        for ($offset = 0; $offset < $total; $offset += $this->limit) {
-            $migrationContext = new MigrationContext(
-                new SwagMigrationConnectionEntity(),
-                $runUuid,
-                $dataSet,
-                $offset,
-                $this->limit
-            );
-            $importedCount = $this->migrationDataFetcher->fetchData($migrationContext, $context);
-            $progressBar->advance(\count($importedCount));
-        }
-
-        $progressBar->finish();
+//        $progressBar = new ProgressBar($output, $total);
+//        $progressBar->start();
+//
+//        $migrationContext = new MigrationContext(
+//            new SwagMigrationConnectionEntity()
+//        );
+//
+//        $dataSet = $this->dataSetRegistry->getDataSet($migrationContext, $this->entityName);
+//
+//        for ($offset = 0; $offset < $total; $offset += $this->limit) {
+//            $migrationContext = new MigrationContext(
+//                new SwagMigrationConnectionEntity(),
+//                $runUuid,
+//                $dataSet,
+//                $offset,
+//                $this->limit
+//            );
+//            $importedCount = $this->migrationDataFetcher->fetchData($migrationContext, $context);
+//            $progressBar->advance(\count($importedCount));
+//        }
+//
+//        $progressBar->finish();
     }
 
     private function getImportedCount($runUuid, $context): int

@@ -12,10 +12,10 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\ShopwareHttpException;
 use SwagMigrationAssistant\Exception\GatewayReadException;
 use SwagMigrationAssistant\Exception\RequestCertificateInvalidException;
-use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiEnvironmentReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory;
+use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
 class ApiEnvironmentReaderTest extends TestCase
 {
@@ -77,7 +77,7 @@ class ApiEnvironmentReaderTest extends TestCase
         $client = new Client($options);
 
         $migrationContext = new MigrationContext(
-            new SwagMigrationConnectionEntity()
+            new Shopware55Profile()
         );
 
         $mock = $this->getMockBuilder(ConnectionFactory::class)->getMock();
@@ -111,7 +111,7 @@ class ApiEnvironmentReaderTest extends TestCase
 
         $client = new Client($options);
         $migrationContext = new MigrationContext(
-            new SwagMigrationConnectionEntity()
+            new Shopware55Profile()
         );
         $mock = $this->getMockBuilder(ConnectionFactory::class)->getMock();
         $mock->expects(static::once())
@@ -146,7 +146,7 @@ class ApiEnvironmentReaderTest extends TestCase
         $client = new Client($options);
 
         $migrationContext = new MigrationContext(
-            new SwagMigrationConnectionEntity()
+            new Shopware55Profile()
         );
         $mock = $this->getMockBuilder(ConnectionFactory::class)->getMock();
         $mock->expects(static::once())
@@ -177,7 +177,7 @@ class ApiEnvironmentReaderTest extends TestCase
 
         $client = new Client($options);
         $migrationContext = new MigrationContext(
-            new SwagMigrationConnectionEntity()
+            new Shopware55Profile()
         );
         $mock = $this->getMockBuilder(ConnectionFactory::class)->getMock();
         $mock->expects(static::once())
@@ -209,7 +209,7 @@ class ApiEnvironmentReaderTest extends TestCase
         $client = new Client($options);
 
         $migrationContext = new MigrationContext(
-            new SwagMigrationConnectionEntity()
+            new Shopware55Profile()
         );
         $mock = $this->getMockBuilder(ConnectionFactory::class)->getMock();
         $mock->expects(static::once())
