@@ -4,6 +4,8 @@ namespace SwagMigrationAssistant\Test\Profile\Shopware55\Gateway;
 
 use Doctrine\DBAL\Exception\ConnectionException;
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
@@ -18,6 +20,7 @@ use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55Loc
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\ReaderRegistry;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Profile\Shopware55\DataSet\FooDataSet;
 
 class Shopware55LocalGatewayTest extends TestCase
@@ -49,14 +52,17 @@ class Shopware55LocalGatewayTest extends TestCase
         $readerRegistry = $this->getContainer()->get(ReaderRegistry::class);
         $localEnvironmentReader = new Shopware55LocalEnvironmentReader($connectionFactory);
         $localTableReader = new Shopware55LocalTableReader($connectionFactory);
-        $localTableCountReader = new Shopware55LocalTableCountReader($connectionFactory, $this->getContainer()->get(DataSetRegistry::class));
+        $localTableCountReader = new Shopware55LocalTableCountReader($connectionFactory, $this->getContainer()->get(DataSetRegistry::class), new DummyLoggingService());
+        /** @var EntityRepositoryInterface $currencyRepository */
+        $currencyRepository = $this->getContainer()->get('currency.repository');
 
         $gatewaySource = new Shopware55LocalGateway(
             $readerRegistry,
             $localEnvironmentReader,
             $localTableReader,
             $localTableCountReader,
-            $connectionFactory
+            $connectionFactory,
+            $currencyRepository
         );
         $gatewayRegistry = new GatewayRegistry([
             $gatewaySource,
@@ -92,14 +98,17 @@ class Shopware55LocalGatewayTest extends TestCase
         $readerRegistry = $this->getContainer()->get(ReaderRegistry::class);
         $localEnvironmentReader = new Shopware55LocalEnvironmentReader($connectionFactory);
         $localTableReader = new Shopware55LocalTableReader($connectionFactory);
-        $localTableCountReader = new Shopware55LocalTableCountReader($connectionFactory, $this->getContainer()->get(DataSetRegistry::class));
+        $localTableCountReader = new Shopware55LocalTableCountReader($connectionFactory, $this->getContainer()->get(DataSetRegistry::class), new DummyLoggingService());
+        /** @var EntityRepositoryInterface $currencyRepository */
+        $currencyRepository = $this->getContainer()->get('currency.repository');
 
         $gatewaySource = new Shopware55LocalGateway(
             $readerRegistry,
             $localEnvironmentReader,
             $localTableReader,
             $localTableCountReader,
-            $connectionFactory
+            $connectionFactory,
+            $currencyRepository
         );
         $gatewayRegistry = new GatewayRegistry([
             $gatewaySource,
@@ -126,16 +135,19 @@ class Shopware55LocalGatewayTest extends TestCase
         $connectionFactory = new ConnectionFactory();
         $localEnvironmentReader = new Shopware55LocalEnvironmentReader($connectionFactory);
         $localTableReader = new Shopware55LocalTableReader($connectionFactory);
-        $localTableCountReader = new Shopware55LocalTableCountReader($connectionFactory, $this->getContainer()->get(DataSetRegistry::class));
+        $localTableCountReader = new Shopware55LocalTableCountReader($connectionFactory, $this->getContainer()->get(DataSetRegistry::class), new DummyLoggingService());
+        /** @var EntityRepositoryInterface $currencyRepository */
+        $currencyRepository = $this->getContainer()->get('currency.repository');
 
         $gateway = new Shopware55LocalGateway(
             $readerRegistry,
             $localEnvironmentReader,
             $localTableReader,
             $localTableCountReader,
-            $connectionFactory
+            $connectionFactory,
+            $currencyRepository
         );
-        $response = $gateway->readEnvironmentInformation($migrationContext);
+        $response = $gateway->readEnvironmentInformation($migrationContext, Context::createDefaultContext());
 
         static::assertSame($response->getTotals(), []);
     }

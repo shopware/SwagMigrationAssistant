@@ -113,6 +113,17 @@ abstract class Shopware55LocalAbstractReader implements ReaderInterface
             ->fetch(\PDO::FETCH_COLUMN);
     }
 
+    protected function getDefaultCurrency()
+    {
+        $query = $this->connection->createQueryBuilder();
+
+        return $query->select('currency')
+            ->from('s_core_currencies')
+            ->where('standard = 1')
+            ->execute()
+            ->fetch(\PDO::FETCH_COLUMN);
+    }
+
     protected function mapData(array $data, array $result = [], array $pathsToRemove = []): array
     {
         foreach ($data as $key => $value) {

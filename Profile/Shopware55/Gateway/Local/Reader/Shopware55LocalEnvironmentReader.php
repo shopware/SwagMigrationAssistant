@@ -15,6 +15,7 @@ class Shopware55LocalEnvironmentReader extends Shopware55LocalAbstractReader
             'defaultShopLanguage' => $locale,
             'host' => $this->getHost(),
             'additionalData' => $this->getAdditionalData(),
+            'defaultCurrency' => $this->getDefaultCurrency(),
         ];
 
         return $resultSet;

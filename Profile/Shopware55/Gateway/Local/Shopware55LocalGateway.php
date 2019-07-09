@@ -2,6 +2,11 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware55\Gateway\Local;
 
+use Shopware\Core\Defaults;
+use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\System\Currency\CurrencyEntity;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Profile\ReaderInterface;
@@ -43,18 +48,25 @@ class Shopware55LocalGateway implements Shopware55GatewayInterface
      */
     private $connectionFactory;
 
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $currencyRepository;
+
     public function __construct(
         ReaderRegistry $readerRegistry,
         ReaderInterface $localEnvironmentReader,
         TableReaderInterface $localTableReader,
         TableCountReaderInterface $localTableCountReader,
-        ConnectionFactoryInterface $connectionFactory
+        ConnectionFactoryInterface $connectionFactory,
+        EntityRepositoryInterface $currencyRepository
     ) {
         $this->readerRegistry = $readerRegistry;
         $this->localEnvironmentReader = $localEnvironmentReader;
         $this->localTableReader = $localTableReader;
         $this->localTableCountReader = $localTableCountReader;
         $this->connectionFactory = $connectionFactory;
+        $this->currencyRepository = $currencyRepository;
     }
 
     public function getName(): string
@@ -77,7 +89,7 @@ class Shopware55LocalGateway implements Shopware55GatewayInterface
         return $reader->read($migrationContext, $dataSet->getExtraQueryParameters());
     }
 
-    public function readEnvironmentInformation(MigrationContextInterface $migrationContext): EnvironmentInformation
+    public function readEnvironmentInformation(MigrationContextInterface $migrationContext, Context $context): EnvironmentInformation
     {
         $connection = $this->connectionFactory->createDatabaseConnection($migrationContext);
 
@@ -98,7 +110,13 @@ class Shopware55LocalGateway implements Shopware55GatewayInterface
         $connection->close();
         $environmentData = $this->localEnvironmentReader->read($migrationContext);
 
-        $totals = $this->readTotals($migrationContext);
+        /** @var CurrencyEntity $targetSystemCurrency */
+        $targetSystemCurrency = $this->currencyRepository->search(new Criteria([Defaults::CURRENCY]), $context)->get(Defaults::CURRENCY);
+        if (!isset($environmentData['defaultCurrency'])) {
+            $environmentData['defaultCurrency'] = $targetSystemCurrency->getIsoCode();
+        }
+
+        $totals = $this->readTotals($migrationContext, $context);
 
         return new EnvironmentInformation(
             Shopware55Profile::SOURCE_SYSTEM_NAME,
@@ -106,13 +124,17 @@ class Shopware55LocalGateway implements Shopware55GatewayInterface
             $environmentData['host'],
             $totals,
             $environmentData['additionalData'],
-            new RequestStatusStruct()
+            new RequestStatusStruct(),
+            false,
+            [],
+            $targetSystemCurrency->getIsoCode(),
+            $environmentData['defaultCurrency']
         );
     }
 
-    public function readTotals(MigrationContextInterface $migrationContext): array
+    public function readTotals(MigrationContextInterface $migrationContext, Context $context): array
     {
-        return $this->localTableCountReader->readTotals($migrationContext);
+        return $this->localTableCountReader->readTotals($migrationContext, $context);
     }
 
     public function readTable(MigrationContextInterface $migrationContext, string $tableName, array $filter = []): array

@@ -68,7 +68,7 @@ trait MigrationServicesTrait
                 new Shopware55ApiReader($connectionFactory),
                 new Shopware55ApiEnvironmentReader($connectionFactory),
                 new Shopware55ApiTableReader($connectionFactory),
-                new Shopware55ApiTableCountReader($connectionFactory, $dataSetRegistry),
+                new Shopware55ApiTableCountReader($connectionFactory, $dataSetRegistry, $loggingService),
                 $currencyRepository
             ),
             new DummyLocalGateway(),

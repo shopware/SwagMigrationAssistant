@@ -2,6 +2,7 @@
 
 namespace SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local;
 
+use Shopware\Core\Framework\Context;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\Gateway\GatewayInterface;
@@ -55,7 +56,7 @@ class DummyLocalGateway implements GatewayInterface
         }
     }
 
-    public function readEnvironmentInformation(MigrationContextInterface $migrationContext): EnvironmentInformation
+    public function readEnvironmentInformation(MigrationContextInterface $migrationContext, Context $context): EnvironmentInformation
     {
         $environmentData = require __DIR__ . '/../../../../_fixtures/environment_data.php';
 
@@ -95,7 +96,7 @@ class DummyLocalGateway implements GatewayInterface
         );
     }
 
-    public function readTotals(MigrationContextInterface $migrationContext): array
+    public function readTotals(MigrationContextInterface $migrationContext, Context $context): array
     {
         return [];
     }

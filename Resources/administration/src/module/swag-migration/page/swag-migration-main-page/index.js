@@ -34,11 +34,8 @@ Component.register('swag-migration-main-page', {
     },
 
     computed: {
-        isUpdateAvailable() {
-            return (
-                this.migrationProcessStore.state.environmentInformation.updateAvailable !== null
-                && this.migrationProcessStore.state.environmentInformation.updateAvailable === true
-            );
+        displayWarnings() {
+            return this.migrationProcessStore.state.environmentInformation.displayWarnings;
         },
 
         connectionEstablished() {

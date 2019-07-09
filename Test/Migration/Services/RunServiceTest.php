@@ -154,7 +154,7 @@ class RunServiceTest extends TestCase
                 new Shopware55ApiReader($connectionFactory),
                 new Shopware55ApiEnvironmentReader($connectionFactory),
                 new Shopware55ApiTableReader($connectionFactory),
-                new Shopware55ApiTableCountReader($connectionFactory, $this->dataSetRegistry),
+                new Shopware55ApiTableCountReader($connectionFactory, $this->dataSetRegistry, $loggingService),
                 $this->getContainer()->get('currency.repository')
             ),
             new DummyLocalGateway(),

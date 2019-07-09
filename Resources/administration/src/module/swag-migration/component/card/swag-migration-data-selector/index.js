@@ -24,6 +24,10 @@ Component.register('swag-migration-data-selector', {
     },
 
     computed: {
+        displayWarnings() {
+            return this.migrationProcessStore.state.environmentInformation.displayWarnings;
+        },
+
         uiDataSelectionTableData() {
             return this.migrationUIStore.state.dataSelectionTableData.filter(
                 selection => selection.requiredSelection === false

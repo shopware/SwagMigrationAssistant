@@ -20,6 +20,7 @@
             <argument type="service" id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalTableReader" />
             <argument type="service" id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalTableCountReader" />
             <argument type="service" id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Connection\ConnectionFactory" />
+            <argument type="service" id="currency.repository"/>
             <tag name="shopware.migration.gateway" />
         </service>
 
@@ -48,6 +49,7 @@
         <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiTableCountReader">
             <argument type="service" id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Connection\ConnectionFactory" />
             <argument type="service" id="SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry" />
+            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\ReaderRegistry">
@@ -69,6 +71,7 @@
         <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalTableCountReader">
             <argument type="service" id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Connection\ConnectionFactory" />
             <argument type="service" id="SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry" />
+            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Reader\Shopware55LocalAttributeReader"

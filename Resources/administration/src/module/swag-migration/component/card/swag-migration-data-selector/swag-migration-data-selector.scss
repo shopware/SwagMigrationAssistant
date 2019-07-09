@@ -1,8 +1,14 @@
 @import "~scss/variables";
 
 .swag-migration-data-selector {
-    .swag-migration-index-data-selector__plugin-version {
-        margin: 0;
+    .swag-migration-data-selector__warning {
+        max-width: 800px;
+        margin: 0 auto 40px auto;
+        color: $color-darkgray-200;
+
+        @media screen and (max-width: 1360px) {
+            max-width: 770px;
+        }
     }
 
     .swag-migration-index-data-selector__tou {

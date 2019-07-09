@@ -33,7 +33,8 @@ Component.register('swag-migration-index', {
 
     computed: {
         isMigrationAllowed() {
-            return this.migrationUIStore.getIsMigrationAllowed();
+            return this.migrationUIStore.getIsMigrationAllowed() &&
+                    this.migrationProcessStore.state.environmentInformation.migrationDisabled === false;
         },
 
         /**

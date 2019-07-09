@@ -98,7 +98,7 @@
             "undefinedErrorMsg": "Interner Server-Fehler. Bitte versuche es erneut.",
             "SWAG_MIGRATION__GATEWAY_READ": "Es konnte keine Verbindung zum angegebenen Server hergestellt werden. Bitte überprüfe die angegebene Shop-Domain.",
             "SWAG_MIGRATION__CONNECTION_AUTHENTICATION_INVALID": "Deine Zugangsdaten sind nicht korrekt. Bitte überprüfe sie und versuche es erneut.",
-            "SWAG_MIGRATION__PLUGIN_NOT_INSTALLED": "Das benötigte Plugin „Shopware Playground Connector“ ist nicht in Shopware 5 installiert. Bitte installiere das kostenlose Plugin und versuche es erneut.",
+            "SWAG_MIGRATION__PLUGIN_NOT_INSTALLED": "Das benötigte Plugin „Migration Connector“ ist nicht in Shopware 5 installiert. Bitte installiere das kostenlose Plugin und versuche es erneut.",
             "SWAG_MIGRATION__DATABASE_CONNECTION_ERROR": "Die Datenbank Verbindung konnte nicht hergestellt werden.",
             "SWAG_MIGRATION__IS_RUNNING": "Eine Migration ist zurzeit im Gange. Du kannst deshalb die Zugangsdaten nicht bearbeiten, bis die Migration abgeschlossen ist."
           }
@@ -121,7 +121,7 @@
       "finishButton": "Fertig",
       "backButton": "Migration abschließen",
       "migrationAlreadyRunning": "Die Migration wurde bereits gestartet.",
-      "pluginVersionText": "Wir haben festgestellt, dass ein Plugin-Update verfügbar ist. Bitte update das Plugin „Shopware Playground Connector“. Gegebenenfalls kann die Migration nicht vollständig durchgeführt werden.",
+      "pluginVersionText": "Wir haben festgestellt, dass ein Plugin-Update in deinem Quellsystem {sourceSystem} verfügbar ist. Bitte update das Plugin „{pluginName}“ bevor Du mit der Migration startest.",
       "shopInfoCard": {
         "cardTitle": "Shopsystem",
         "buttonEditSettings": "Verbindung bearbeiten",

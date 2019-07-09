@@ -7,6 +7,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\Currency\CurrencyEntity;
+use SwagMigrationAssistant\Migration\DisplayWarning;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Profile\ReaderInterface;
@@ -73,7 +74,7 @@ class Shopware55ApiGateway implements Shopware55GatewayInterface
         return $this->apiReader->read($migrationContext);
     }
 
-    public function readEnvironmentInformation(MigrationContextInterface $migrationContext): EnvironmentInformation
+    public function readEnvironmentInformation(MigrationContextInterface $migrationContext, Context $context): EnvironmentInformation
     {
         $environmentData = $this->environmentReader->read($migrationContext);
         $environmentDataArray = $environmentData['environmentInformation'];
@@ -99,13 +100,21 @@ class Shopware55ApiGateway implements Shopware55GatewayInterface
         }
 
         /** @var CurrencyEntity $targetSystemCurrency */
-        $targetSystemCurrency = $this->currencyRepository->search(new Criteria([Defaults::CURRENCY]), Context::createDefaultContext())->get(Defaults::CURRENCY);
+        $targetSystemCurrency = $this->currencyRepository->search(new Criteria([Defaults::CURRENCY]), $context)->get(Defaults::CURRENCY);
         if (!isset($environmentDataArray['defaultCurrency'])) {
             $environmentDataArray['defaultCurrency'] = $targetSystemCurrency->getIsoCode();
         }
 
-        $totals = $this->readTotals($migrationContext);
+        $totals = $this->readTotals($migrationContext, $context);
         $credentials = $migrationContext->getConnection()->getCredentialFields();
+
+        $displayWarnings = [];
+        if ($updateAvailable) {
+            $displayWarnings[] = new DisplayWarning('swag-migration.index.pluginVersionText', [
+                'sourceSystem' => 'Shopware 5',
+                'pluginName' => 'Migration Connector',
+            ]);
+        }
 
         return new EnvironmentInformation(
             Shopware55Profile::SOURCE_SYSTEM_NAME,
@@ -115,14 +124,15 @@ class Shopware55ApiGateway implements Shopware55GatewayInterface
             $environmentDataArray['additionalData'],
             $environmentData['requestStatus'],
             $updateAvailable,
+            $displayWarnings,
             $targetSystemCurrency->getIsoCode(),
             $environmentDataArray['defaultCurrency']
         );
     }
 
-    public function readTotals(MigrationContextInterface $migrationContext): array
+    public function readTotals(MigrationContextInterface $migrationContext, Context $context): array
     {
-        return $this->tableCountReader->readTotals($migrationContext);
+        return $this->tableCountReader->readTotals($migrationContext, $context);
     }
 
     public function readTable(MigrationContextInterface $migrationContext, string $tableName, array $filter = []): array

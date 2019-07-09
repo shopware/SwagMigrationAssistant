@@ -2,11 +2,17 @@
     <div class="swag-migration-index-main-page">
         {% block swag_migration_index_main_page_content %}
             <div v-if="!migrationUIStore.state.isLoading">
-                {% block swag_migration_index_main_page_plugin_version %}
-                    <sw-alert variant="warning" v-if="isUpdateAvailable" class="swag-migration-index-main_page__plugin-version">
-                        {{ $tc('swag-migration.index.pluginVersionText') }}
-                    </sw-alert>
+                {% block swag_migration_index_main_page_warnings %}
+                    <div class="swag-migration-index-main-page__warnings">
+                        <sw-alert v-for="warning in displayWarnings"
+                                  :key="warning.snippetKey"
+                                  class="swag-migration-index-main-page__warning"
+                                  variant="warning">
+                            {{ $tc(warning.snippetKey, warning.pluralizationCount, warning.snippetArguments) }}
+                        </sw-alert>
+                    </div>
                 {% endblock %}
+
 
                 {% block swag_migration_index_main_page_card_shopInformation %}
                     <swag-migration-shop-information :connected="connectionEstablished">

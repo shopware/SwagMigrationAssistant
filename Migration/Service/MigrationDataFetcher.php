@@ -49,17 +49,17 @@ class MigrationDataFetcher implements MigrationDataFetcherInterface
         return [];
     }
 
-    public function getEnvironmentInformation(MigrationContextInterface $migrationContext): EnvironmentInformation
+    public function getEnvironmentInformation(MigrationContextInterface $migrationContext, Context $context): EnvironmentInformation
     {
         $gateway = $this->gatewayRegistry->getGateway($migrationContext);
 
-        return $gateway->readEnvironmentInformation($migrationContext);
+        return $gateway->readEnvironmentInformation($migrationContext, $context);
     }
 
-    public function fetchTotals(MigrationContextInterface $migrationContext): array
+    public function fetchTotals(MigrationContextInterface $migrationContext, Context $context): array
     {
         $gateway = $this->gatewayRegistry->getGateway($migrationContext);
 
-        return $gateway->readTotals($migrationContext);
+        return $gateway->readTotals($migrationContext, $context);
     }
 }

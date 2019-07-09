@@ -162,7 +162,7 @@ class StatusController extends AbstractController
         $migrationContext = new MigrationContext(
             $connection
         );
-        $environmentInformation = $this->migrationDataFetcher->getEnvironmentInformation($migrationContext);
+        $environmentInformation = $this->migrationDataFetcher->getEnvironmentInformation($migrationContext, $context);
 
         return new JsonResponse(array_values($this->dataSelectionRegistry->getDataSelections($migrationContext, $environmentInformation)->getElements()));
     }
@@ -200,7 +200,7 @@ class StatusController extends AbstractController
         $gateway = $this->gatewayRegistry->getGateway($migrationContext);
         $migrationContext->setGateway($gateway);
 
-        $information = $this->migrationDataFetcher->getEnvironmentInformation($migrationContext);
+        $information = $this->migrationDataFetcher->getEnvironmentInformation($migrationContext, $context);
 
         return new JsonResponse($information);
     }

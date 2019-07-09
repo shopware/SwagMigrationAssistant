@@ -465,7 +465,7 @@ class RunService implements RunServiceInterface
             $connection
         );
 
-        return $this->migrationDataFetcher->getEnvironmentInformation($migrationContext);
+        return $this->migrationDataFetcher->getEnvironmentInformation($migrationContext, $context);
     }
 
     private function getConnection(string $connectionId, Context $context): SwagMigrationConnectionEntity

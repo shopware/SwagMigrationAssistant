@@ -18,10 +18,10 @@ interface MigrationDataFetcherInterface
     /**
      * Reads the complete environment information from the source system
      */
-    public function getEnvironmentInformation(MigrationContextInterface $migrationContext): EnvironmentInformation;
+    public function getEnvironmentInformation(MigrationContextInterface $migrationContext, Context $context): EnvironmentInformation;
 
     /**
      * Reads the totals of the data sets / db tables
      */
-    public function fetchTotals(MigrationContextInterface $migrationContext): array;
+    public function fetchTotals(MigrationContextInterface $migrationContext, Context $context): array;
 }
