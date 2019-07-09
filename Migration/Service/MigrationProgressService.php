@@ -6,6 +6,9 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\CountAggregation;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\ValueCountAggregation;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\CountResult;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\ValueCountItem;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\ValueCountResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregatorResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
@@ -176,15 +179,26 @@ class MigrationProgressService implements MigrationProgressServiceInterface
         $criteria->setLimit(1);
         /** @var AggregatorResult $result */
         $result = $this->migrationMediaFileRepository->aggregate($criteria, $this->context);
+        /** @var CountResult[] $countResult */
+        $countResult = $result->getAggregations()->get('count')->getResult();
 
-        return (int) $result->getAggregations()->get('count')->getResult()[0]['count'];
+        if (empty($countResult)) {
+            return 0;
+        }
+
+        return $countResult[0]->getCount();
     }
 
-    private function mapCounts($counts): array
+    /**
+     * @param ValueCountItem[] $counts
+     *
+     * @return int[]
+     */
+    private function mapCounts(array $counts): array
     {
         $mappedCounts = [];
         foreach ($counts as $item) {
-            $mappedCounts[$item['key']] = (int) $item['count'];
+            $mappedCounts[$item->getKey()] = $item->getCount();
         }
 
         return $mappedCounts;
@@ -205,8 +219,9 @@ class MigrationProgressService implements MigrationProgressServiceInterface
                 ]),
             ]));
             $result = $this->migrationDataRepository->aggregate($criteria, $this->context);
+            /** @var ValueCountResult[] $totalCountsForWriting */
             $totalCountsForWriting = $result->getAggregations()->get('entityCount')->getResult();
-            $totalCountsForWriting = $this->mapCounts($totalCountsForWriting[0]['values']);
+            $totalCountsForWriting = $this->mapCounts($totalCountsForWriting[0]->getValues());
 
             $runProgress = $this->validateEntityGroupCounts($runProgress, $finishedCount, $totalCountsForWriting);
         } elseif ($state->getStatus() === ProgressState::STATUS_DOWNLOAD_DATA) {
