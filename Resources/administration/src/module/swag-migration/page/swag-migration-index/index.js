@@ -53,9 +53,7 @@ Component.register('swag-migration-index', {
             ) {
                 this.migrationProcessStoreInitService.initProcessStore().then(() => {
                     return this.migrationUiStoreInitService.initUiStore();
-                }).catch(() => {
-                    this.$router.push({ name: 'swag.migration.emptyScreen' });
-                }).finally(() => {
+                }).catch(() => {}).finally(() => {
                     this.storesInitializing = false;
                 });
             } else if (this.migrationUIStore.state.dataSelectionTableData.length === 0) {

@@ -66,6 +66,11 @@ Component.register('swag-migration-main-page', {
                 return;
             }
 
+            if (Object.keys(this.migrationProcessStore.state.environmentInformation).length < 1) {
+                this.$router.push({ name: 'swag.migration.emptyScreen' });
+                return;
+            }
+
             if (this.migrationProcessStore.state.isMigrating) {
                 this.$router.push({ name: 'swag.migration.processScreen' });
                 return;
