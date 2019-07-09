@@ -8,7 +8,7 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
-use SwagMigrationAssistant\Profile\Shopware55\Converter\MediaConverter;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55MediaConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Media\DummyMediaFileService;
@@ -16,7 +16,7 @@ use SwagMigrationAssistant\Test\Mock\Migration\Media\DummyMediaFileService;
 class MediaConverterTest extends TestCase
 {
     /**
-     * @var MediaConverter
+     * @var Shopware55MediaConverter
      */
     private $mediaConverter;
 
@@ -39,7 +39,7 @@ class MediaConverterTest extends TestCase
     {
         $mediaFileService = new DummyMediaFileService();
         $mappingService = new DummyMappingService();
-        $this->mediaConverter = new MediaConverter($mappingService, $mediaFileService);
+        $this->mediaConverter = new Shopware55MediaConverter($mappingService, $mediaFileService);
 
         $this->runId = Uuid::randomHex();
         $this->connection = new SwagMigrationConnectionEntity();

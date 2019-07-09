@@ -9,7 +9,7 @@ use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderAttributeDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
-use SwagMigrationAssistant\Profile\Shopware55\Converter\OrderAttributeConverter;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55OrderAttributeConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 
@@ -21,13 +21,13 @@ class OrderAttributeConverterTest extends TestCase
     private $migrationContext;
 
     /**
-     * @var OrderAttributeConverter
+     * @var Shopware55OrderAttributeConverter
      */
     private $converter;
 
     protected function setUp(): void
     {
-        $this->converter = new OrderAttributeConverter(new DummyMappingService());
+        $this->converter = new Shopware55OrderAttributeConverter(new DummyMappingService());
 
         $runId = Uuid::randomHex();
         $connection = new SwagMigrationConnectionEntity();

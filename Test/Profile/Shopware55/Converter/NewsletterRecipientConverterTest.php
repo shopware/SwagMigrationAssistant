@@ -11,7 +11,7 @@ use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\NewsletterRecipientDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\SalutationReader;
-use SwagMigrationAssistant\Profile\Shopware55\Converter\NewsletterRecipientConverter;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55NewsletterRecipientConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
@@ -29,7 +29,7 @@ class NewsletterRecipientConverterTest extends TestCase
     private $loggingService;
 
     /**
-     * @var NewsletterRecipientConverter
+     * @var Shopware55NewsletterRecipientConverter
      */
     private $newsletterReceiverConverter;
 
@@ -57,7 +57,7 @@ class NewsletterRecipientConverterTest extends TestCase
     {
         $this->mappingService = new DummyMappingService();
         $this->loggingService = new DummyLoggingService();
-        $this->newsletterReceiverConverter = new NewsletterRecipientConverter($this->mappingService, $this->loggingService);
+        $this->newsletterReceiverConverter = new Shopware55NewsletterRecipientConverter($this->mappingService, $this->loggingService);
 
         $this->runId = Uuid::randomHex();
         $this->connection = new SwagMigrationConnectionEntity();

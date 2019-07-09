@@ -10,8 +10,8 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\PropertyGroupOptionDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
-use SwagMigrationAssistant\Profile\Shopware55\Converter\ProductConverter;
-use SwagMigrationAssistant\Profile\Shopware55\Converter\PropertyGroupOptionConverter;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55ProductConverter;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55PropertyGroupOptionConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
@@ -30,7 +30,7 @@ class PropertyGroupOptionConverterTest extends TestCase
     private $loggingService;
 
     /**
-     * @var PropertyGroupOptionConverter
+     * @var Shopware55PropertyGroupOptionConverter
      */
     private $propertyGroupOptionConverter;
 
@@ -55,7 +55,7 @@ class PropertyGroupOptionConverterTest extends TestCase
     private $migrationContext;
 
     /**
-     * @var ProductConverter
+     * @var Shopware55ProductConverter
      */
     private $productConverter;
 
@@ -66,13 +66,13 @@ class PropertyGroupOptionConverterTest extends TestCase
         $this->loggingService = new DummyLoggingService();
         $mediaFileService = new DummyMediaFileService();
 
-        $this->propertyGroupOptionConverter = new PropertyGroupOptionConverter(
+        $this->propertyGroupOptionConverter = new Shopware55PropertyGroupOptionConverter(
             $this->mappingService,
             $mediaFileService,
             $this->loggingService
         );
 
-        $this->productConverter = new ProductConverter(
+        $this->productConverter = new Shopware55ProductConverter(
             $this->mappingService,
             $mediaFileService,
             $this->loggingService

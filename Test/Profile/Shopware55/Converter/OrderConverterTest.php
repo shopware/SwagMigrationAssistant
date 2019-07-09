@@ -23,8 +23,8 @@ use SwagMigrationAssistant\Profile\Shopware\Premapping\OrderStateReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\PaymentMethodReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\SalutationReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\TransactionStateReader;
-use SwagMigrationAssistant\Profile\Shopware55\Converter\CustomerConverter;
-use SwagMigrationAssistant\Profile\Shopware55\Converter\OrderConverter;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55CustomerConverter;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55OrderConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\MigrationServicesTrait;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
@@ -36,12 +36,12 @@ class OrderConverterTest extends TestCase
     use MigrationServicesTrait;
 
     /**
-     * @var OrderConverter
+     * @var Shopware55OrderConverter
      */
     private $orderConverter;
 
     /**
-     * @var CustomerConverter
+     * @var Shopware55CustomerConverter
      */
     private $customerConverter;
 
@@ -81,8 +81,8 @@ class OrderConverterTest extends TestCase
             $rounding,
             $taxRuleCalculator
         );
-        $this->orderConverter = new OrderConverter($mappingService, $taxCalculator, $this->loggingService);
-        $this->customerConverter = new CustomerConverter($mappingService, $this->loggingService);
+        $this->orderConverter = new Shopware55OrderConverter($mappingService, $taxCalculator, $this->loggingService);
+        $this->customerConverter = new Shopware55CustomerConverter($mappingService, $this->loggingService);
 
         $connectionId = Uuid::randomHex();
         $this->runId = Uuid::randomHex();

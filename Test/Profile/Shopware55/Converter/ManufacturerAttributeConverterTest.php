@@ -8,7 +8,7 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ManufacturerAttributeDataSet;
-use SwagMigrationAssistant\Profile\Shopware55\Converter\ManufacturerAttributeConverter;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55ManufacturerAttributeConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 
@@ -20,13 +20,13 @@ class ManufacturerAttributeConverterTest extends TestCase
     private $migrationContext;
 
     /**
-     * @var ManufacturerAttributeConverter
+     * @var Shopware55ManufacturerAttributeConverter
      */
     private $converter;
 
     protected function setUp(): void
     {
-        $this->converter = new ManufacturerAttributeConverter(new DummyMappingService());
+        $this->converter = new Shopware55ManufacturerAttributeConverter(new DummyMappingService());
 
         $runId = Uuid::randomHex();
         $connection = new SwagMigrationConnectionEntity();

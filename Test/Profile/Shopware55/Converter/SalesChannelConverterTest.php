@@ -10,7 +10,7 @@ use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\SalesChannelDataSet;
-use SwagMigrationAssistant\Profile\Shopware55\Converter\SalesChannelConverter;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55SalesChannelConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
@@ -25,7 +25,7 @@ class SalesChannelConverterTest extends TestCase
     private $migrationContext;
 
     /**
-     * @var SalesChannelConverter
+     * @var Shopware55SalesChannelConverter
      */
     private $converter;
 
@@ -47,7 +47,7 @@ class SalesChannelConverterTest extends TestCase
 
         $this->mappingService = new DummyMappingService();
         $this->loggingService = new DummyLoggingService();
-        $this->converter = new SalesChannelConverter(
+        $this->converter = new Shopware55SalesChannelConverter(
             $this->mappingService,
             $this->loggingService,
             $paymentMethodRepo,

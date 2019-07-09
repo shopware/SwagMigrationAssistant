@@ -38,12 +38,12 @@ use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiTableCountRead
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiTableReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\ShopwareApiGateway;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory;
-use SwagMigrationAssistant\Profile\Shopware55\Converter\CategoryConverter;
-use SwagMigrationAssistant\Profile\Shopware55\Converter\CustomerConverter;
-use SwagMigrationAssistant\Profile\Shopware55\Converter\MediaConverter;
-use SwagMigrationAssistant\Profile\Shopware55\Converter\OrderConverter;
-use SwagMigrationAssistant\Profile\Shopware55\Converter\ProductConverter;
-use SwagMigrationAssistant\Profile\Shopware55\Converter\TranslationConverter;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55CategoryConverter;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55CustomerConverter;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55MediaConverter;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55OrderConverter;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55ProductConverter;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55TranslationConverter;
 use SwagMigrationAssistant\Test\Mock\DummyCollection;
 use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGateway;
 use SwagMigrationAssistant\Test\Mock\Profile\Dummy\DummyInvalidCustomerConverter;
@@ -88,13 +88,13 @@ trait MigrationServicesTrait
         $converterRegistry = new ConverterRegistry(
             new DummyCollection(
                 [
-                    new ProductConverter($mappingService, $mediaFileService, $loggingService),
-                    new TranslationConverter($mappingService, $loggingService),
-                    new CategoryConverter($mappingService, $mediaFileService, $loggingService),
-                    new MediaConverter($mappingService, $mediaFileService),
-                    new CustomerConverter($mappingService, $loggingService),
-                    new CustomerConverter($mappingService, $loggingService),
-                    new OrderConverter(
+                    new Shopware55ProductConverter($mappingService, $mediaFileService, $loggingService),
+                    new Shopware55TranslationConverter($mappingService, $loggingService),
+                    new Shopware55CategoryConverter($mappingService, $mediaFileService, $loggingService),
+                    new Shopware55MediaConverter($mappingService, $mediaFileService),
+                    new Shopware55CustomerConverter($mappingService, $loggingService),
+                    new Shopware55CustomerConverter($mappingService, $loggingService),
+                    new Shopware55OrderConverter(
                         $mappingService,
                         new TaxCalculator(
                             $priceRounding,

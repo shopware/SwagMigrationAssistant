@@ -8,8 +8,7 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductPriceAttributeDataSet;
-use SwagMigrationAssistant\Profile\Shopware55\Converter\OrderAttributeConverter;
-use SwagMigrationAssistant\Profile\Shopware55\Converter\ProductPriceAttributeConverter;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55ProductPriceAttributeConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 
@@ -21,13 +20,13 @@ class ProductPriceAttributeConverterTest extends TestCase
     private $migrationContext;
 
     /**
-     * @var OrderAttributeConverter
+     * @var Shopware55ProductPriceAttributeConverter
      */
     private $converter;
 
     protected function setUp(): void
     {
-        $this->converter = new ProductPriceAttributeConverter(new DummyMappingService());
+        $this->converter = new Shopware55ProductPriceAttributeConverter(new DummyMappingService());
 
         $runId = Uuid::randomHex();
         $connection = new SwagMigrationConnectionEntity();

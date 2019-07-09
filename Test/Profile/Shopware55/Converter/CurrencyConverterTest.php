@@ -8,7 +8,7 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CurrencyDataSet;
-use SwagMigrationAssistant\Profile\Shopware55\Converter\CurrencyConverter;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55CurrencyConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\BasicSettingsMappingService;
@@ -23,7 +23,7 @@ class CurrencyConverterTest extends TestCase
     private $loggingService;
 
     /**
-     * @var CurrencyConverter
+     * @var Shopware55CurrencyConverter
      */
     private $converter;
 
@@ -57,7 +57,7 @@ class CurrencyConverterTest extends TestCase
         $this->mappingService = new CurrencyMappingService();
         $this->context = Context::createDefaultContext();
         $this->loggingService = new DummyLoggingService();
-        $this->converter = new CurrencyConverter($this->mappingService, $this->loggingService);
+        $this->converter = new Shopware55CurrencyConverter($this->mappingService, $this->loggingService);
 
         $this->runId = Uuid::randomHex();
         $this->connection = new SwagMigrationConnectionEntity();
@@ -108,7 +108,7 @@ class CurrencyConverterTest extends TestCase
 
     public function testConvertWhichExists(): void
     {
-        $this->converter = new CurrencyConverter(new DummyMappingService(), $this->loggingService);
+        $this->converter = new Shopware55CurrencyConverter(new DummyMappingService(), $this->loggingService);
         $currencyData = require __DIR__ . '/../../../_fixtures/currency_data.php';
         $convertResult = $this->converter->convert($currencyData[0], $this->context, $this->migrationContext);
 

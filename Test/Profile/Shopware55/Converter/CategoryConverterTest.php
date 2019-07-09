@@ -10,7 +10,7 @@ use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CategoryDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Exception\ParentEntityForChildNotFoundException;
-use SwagMigrationAssistant\Profile\Shopware55\Converter\CategoryConverter;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55CategoryConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
 class CategoryConverterTest extends TestCase
 {
     /**
-     * @var CategoryConverter
+     * @var Shopware55CategoryConverter
      */
     private $categoryConverter;
 
@@ -49,7 +49,7 @@ class CategoryConverterTest extends TestCase
         $mediaFileService = new DummyMediaFileService();
         $mappingService = new DummyMappingService();
         $this->loggingService = new DummyLoggingService();
-        $this->categoryConverter = new CategoryConverter($mappingService, $mediaFileService, $this->loggingService);
+        $this->categoryConverter = new Shopware55CategoryConverter($mappingService, $mediaFileService, $this->loggingService);
 
         $this->runId = Uuid::randomHex();
         $this->connection = new SwagMigrationConnectionEntity();

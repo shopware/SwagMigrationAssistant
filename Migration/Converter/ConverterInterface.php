@@ -8,16 +8,6 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 interface ConverterInterface
 {
     /**
-     * Delivers the supported entity name of the converter implementation
-     */
-    public function getSupportedEntityName(): string;
-
-    /**
-     * Delivers the supported profile name of the converter implementation
-     */
-    public function getSupportedProfileName(): string;
-
-    /**
      * Identifier which internal entity this converter supports
      */
     public function supports(MigrationContextInterface $migrationContext): bool;

@@ -8,8 +8,7 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaFolderDataSet;
-use SwagMigrationAssistant\Profile\Shopware55\Converter\LanguageConverter;
-use SwagMigrationAssistant\Profile\Shopware55\Converter\MediaFolderConverter;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55MediaFolderConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
@@ -22,7 +21,7 @@ class MediaFolderConverterTest extends TestCase
     private $migrationContext;
 
     /**
-     * @var LanguageConverter
+     * @var Shopware55MediaFolderConverter
      */
     private $converter;
 
@@ -34,7 +33,7 @@ class MediaFolderConverterTest extends TestCase
     protected function setUp(): void
     {
         $this->loggingService = new DummyLoggingService();
-        $this->converter = new MediaFolderConverter(new DummyMappingService(), $this->loggingService);
+        $this->converter = new Shopware55MediaFolderConverter(new DummyMappingService(), $this->loggingService);
 
         $runId = Uuid::randomHex();
         $connection = new SwagMigrationConnectionEntity();
