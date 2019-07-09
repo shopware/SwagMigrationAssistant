@@ -10,6 +10,8 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Indexing\IndexerRegistryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\CountAggregation;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\ValueCountAggregation;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\CountResult;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\ValueCountResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregatorResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
@@ -193,6 +195,9 @@ class RunService implements RunServiceInterface
         return $currentProgress;
     }
 
+    /**
+     * @return int[]
+     */
     public function calculateCurrentTotals(string $runId, bool $isWritten, Context $context): array
     {
         $criteria = new Criteria();
@@ -222,15 +227,16 @@ class RunService implements RunServiceInterface
         $criteria->addAggregation(new ValueCountAggregation('entity', 'entityCount'));
         /** @var AggregatorResult $result */
         $result = $this->migrationDataRepository->aggregate($criteria, $context);
+        /** @var ValueCountResult[] $counts */
         $counts = $result->getAggregations()->get('entityCount')->getResult();
 
-        if (!isset($counts[0]['values'])) {
+        if (!isset($counts[0]) || empty($counts[0]->getValues())) {
             return [];
         }
 
         $mappedCounts = [];
-        foreach ($counts[0]['values'] as $item) {
-            $mappedCounts[$item['key']] = (int) $item['count'];
+        foreach ($counts[0]->getValues() as $item) {
+            $mappedCounts[$item->getKey()] = $item->getCount();
         }
 
         return $mappedCounts;
@@ -308,8 +314,14 @@ class RunService implements RunServiceInterface
         $criteria->setLimit(1);
         /** @var AggregatorResult $result */
         $result = $this->mediaFileRepository->aggregate($criteria, $context);
+        /** @var CountResult[] $countResult */
+        $countResult = $result->getAggregations()->get('count')->getResult();
 
-        return (int) $result->getAggregations()->get('count')->getResult()[0]['count'];
+        if (empty($countResult)) {
+            return 0;
+        }
+
+        return $countResult[0]->getCount();
     }
 
     private function calculateFetchedTotals(string $runId, Context $context): array
@@ -321,15 +333,16 @@ class RunService implements RunServiceInterface
         $criteria->addAggregation(new ValueCountAggregation('entity', 'entityCount'));
         /** @var AggregatorResult $result */
         $result = $this->migrationDataRepository->aggregate($criteria, $context);
+        /** @var ValueCountResult[] $counts */
         $counts = $result->getAggregations()->get('entityCount')->getResult();
 
-        if (!isset($counts[0]['values'])) {
+        if (empty($counts) || empty($counts[0]->getValues())) {
             return [];
         }
 
         $mappedCounts = [];
-        foreach ($counts[0]['values'] as $item) {
-            $mappedCounts[$item['key']] = (int) $item['count'];
+        foreach ($counts[0]->getValues() as $item) {
+            $mappedCounts[$item->getKey()] = $item->getCount();
         }
 
         return $mappedCounts;
