@@ -1,5 +1,16 @@
 {% block swag_migration_data_selector %}
     <div class="swag-migration-data-selector">
+        {% block swag_migration_data_selector_warnings %}
+            <div class="swag-migration-data-selector__warnings">
+                <sw-alert v-for="warning in displayWarnings"
+                          :key="warning.snippetKey"
+                          class="swag-migration-data-selector__warning"
+                          variant="warning">
+                    {{ $tc(warning.snippetKey, warning.pluralizationCount, warning.snippetArguments) }}
+                </sw-alert>
+            </div>
+        {% endblock %}
+
         <sw-card :title="$tc('swag-migration.index.selectDataCard.cardTitle')"
                  v-if="this.migrationUIStore.state.dataSelectionTableData.length > 0">
             {% block swag_migration_data_selector_grid %}

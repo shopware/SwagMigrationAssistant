@@ -17,7 +17,7 @@ class Migration1538985581Logging extends MigrationStep
         $sql = <<<SQL
 CREATE TABLE `swag_migration_logging` (
     `id`            BINARY(16)   NOT NULL,
-    `run_id`        BINARY(16)   NOT NULL,
+    `run_id`        BINARY(16),
     `type`          VARCHAR(255) NOT NULL,
     `log_entry`     LONGTEXT     NOT NULL,
     `created_at`    DATETIME(3)  NOT NULL,

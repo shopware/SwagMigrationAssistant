@@ -3,6 +3,7 @@
 namespace SwagMigrationAssistant\Test\Profile\Shopware55\Gateway;
 
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use SwagMigrationAssistant\Exception\GatewayReadException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
@@ -15,6 +16,7 @@ use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiTa
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiTableReader;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Shopware55ApiGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Connection\ConnectionFactory;
+use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Profile\Shopware55\DataSet\FooDataSet;
 
 class Shopware55ApiGatewayTest extends TestCase
@@ -35,7 +37,7 @@ class Shopware55ApiGatewayTest extends TestCase
         $apiReader = new Shopware55ApiReader($connectionFactory);
         $environmentReader = new Shopware55ApiEnvironmentReader($connectionFactory);
         $tableReader = new Shopware55ApiTableReader($connectionFactory);
-        $tableCountReader = new Shopware55ApiTableCountReader($connectionFactory, $this->getContainer()->get(DataSetRegistry::class));
+        $tableCountReader = new Shopware55ApiTableCountReader($connectionFactory, $this->getContainer()->get(DataSetRegistry::class), new DummyLoggingService());
 
         $gateway = new Shopware55ApiGateway(
             $apiReader,
@@ -57,7 +59,7 @@ class Shopware55ApiGatewayTest extends TestCase
         $apiReader = new Shopware55ApiReader($connectionFactory);
         $environmentReader = new Shopware55ApiEnvironmentReader($connectionFactory);
         $tableReader = new Shopware55ApiTableReader($connectionFactory);
-        $tableCountReader = new Shopware55ApiTableCountReader($connectionFactory, $this->getContainer()->get(DataSetRegistry::class));
+        $tableCountReader = new Shopware55ApiTableCountReader($connectionFactory, $this->getContainer()->get(DataSetRegistry::class), new DummyLoggingService());
 
         $gateway = new Shopware55ApiGateway(
             $apiReader,
@@ -67,7 +69,7 @@ class Shopware55ApiGatewayTest extends TestCase
             $this->getContainer()->get('currency.repository')
         );
         /** @var EnvironmentInformation $response */
-        $response = $gateway->readEnvironmentInformation($migrationContext);
+        $response = $gateway->readEnvironmentInformation($migrationContext, Context::createDefaultContext());
         $errorException = new GatewayReadException('Shopware 5.5 Api SwagMigrationEnvironment', 466);
 
         static::assertSame($response->getTotals(), []);

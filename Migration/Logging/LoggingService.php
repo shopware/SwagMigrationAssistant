@@ -57,7 +57,7 @@ class LoggingService implements LoggingServiceInterface
         $details['count'] = $counting;
 
         $this->logging[] = [
-            'runId' => $runId,
+            'runId' => $runId !== '' ? $runId : null,
             'type' => $type,
             'logEntry' => [
                 'code' => $code,

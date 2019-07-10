@@ -3,10 +3,13 @@
 namespace SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader;
 
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
+use Shopware\Core\Framework\Context;
 use SwagMigrationAssistant\Exception\GatewayReadException;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\CountingQueryStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistryInterface;
+use SwagMigrationAssistant\Migration\Logging\LoggingService;
+use SwagMigrationAssistant\Migration\Logging\LogType;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware55\Gateway\Connection\ConnectionFactoryInterface;
@@ -25,15 +28,22 @@ class Shopware55ApiTableCountReader implements TableCountReaderInterface
      */
     private $dataSetRegistry;
 
+    /**
+     * @var LoggingService
+     */
+    private $loggingService;
+
     public function __construct(
         ConnectionFactoryInterface $connectionFactory,
-        DataSetRegistryInterface $dataSetRegistry
+        DataSetRegistryInterface $dataSetRegistry,
+        LoggingService $loggingService
     ) {
         $this->connectionFactory = $connectionFactory;
         $this->dataSetRegistry = $dataSetRegistry;
+        $this->loggingService = $loggingService;
     }
 
-    public function readTotals(MigrationContextInterface $migrationContext): array
+    public function readTotals(MigrationContextInterface $migrationContext, Context $context): array
     {
         $dataSets = $this->dataSetRegistry->getDataSets($migrationContext->getConnection()->getProfileName());
         $countingInformation = $this->getCountingInformation($dataSets);
@@ -59,7 +69,11 @@ class Shopware55ApiTableCountReader implements TableCountReaderInterface
             return [];
         }
 
-        return $this->prepareTotals($arrayResult['data']);
+        if (count($arrayResult['data']['exceptions']) > 0) {
+            $this->logExceptions($arrayResult['data']['exceptions'], $migrationContext, $context);
+        }
+
+        return $this->prepareTotals($arrayResult['data']['totals']);
     }
 
     /**
@@ -103,5 +117,31 @@ class Shopware55ApiTableCountReader implements TableCountReaderInterface
         }
 
         return $totals;
+    }
+
+    private function logExceptions(array $exceptionArray, MigrationContextInterface $migrationContext, Context $context): void
+    {
+        foreach ($exceptionArray as $exception) {
+            $this->loggingService->addWarning(
+                $migrationContext->getRunUuid(),
+                LogType::COULD_NOT_READ_ENTITY_COUNT,
+                'Could not read entity count',
+                sprintf(
+                    'Total count for entity %s could not be read. Make the the table %s exists in your source system and the optional condition "%s" is valid.',
+                    $exception['entity'],
+                    $exception['table'],
+                    $exception['condition'] ?? ''
+                ),
+                [
+                    'exceptionCode' => $exception['code'],
+                    'exceptionMessage' => $exception['message'],
+                    'entity' => $exception['entity'],
+                    'table' => $exception['table'],
+                    'condition' => $exception['condition'],
+                ]
+            );
+        }
+
+        $this->loggingService->saveLogging($context);
     }
 }

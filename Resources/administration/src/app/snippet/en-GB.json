@@ -121,7 +121,7 @@
       "finishButton": "Finish",
       "backButton": "Finish migration",
       "migrationAlreadyRunning": "Migration already started.",
-      "pluginVersionText": "Please make sure your Shopware 5 backend is using the latest version of the Migration Connector Plugin.",
+      "pluginVersionText": "We have noticed that a plugin update is available in your source system {sourceSystem}. Please update the plugin \"{pluginName}\" before you start the migration.",
       "shopInfoCard": {
         "cardTitle": "Shop system",
         "buttonEditSettings": "Edit connection",

@@ -1,9 +1,13 @@
 @import "~scss/variables";
 
 .swag-migration-index-main-page {
-  .swag-migration-index-main_page__plugin-version {
-    max-width: 800px;
-    margin: 0 auto 40px auto;
-    color: $color-darkgray-200;
-  }
+    .swag-migration-index-main-page__warning {
+        max-width: 800px;
+        margin: 0 auto 40px auto;
+        color: $color-darkgray-200;
+
+        @media screen and (max-width: 1360px) {
+            max-width: 770px;
+        }
+    }
 }

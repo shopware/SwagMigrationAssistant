@@ -1,5 +1,4 @@
 import { Component, State } from 'src/core/shopware';
-import CriteriaFactory from 'src/core/factory/criteria.factory';
 import ShopwareError from 'src/core/data/ShopwareError';
 import template from './swag-migration-wizard-page-connection-create.html.twig';
 

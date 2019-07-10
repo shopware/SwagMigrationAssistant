@@ -39,7 +39,7 @@ class EnvironmentInformation extends Struct
     /**
      * @var bool
      */
-    protected $updateAvailable;
+    protected $migrationDisabled;
 
     /**
      * @var string
@@ -52,7 +52,13 @@ class EnvironmentInformation extends Struct
     protected $sourceSystemCurrency;
 
     /**
-     * @param TotalStruct[] $totals
+     * @var DisplayWarning[]
+     */
+    protected $displayWarnings;
+
+    /**
+     * @param TotalStruct[]    $totals
+     * @param DisplayWarning[] $displayWarnings
      */
     public function __construct(
         string $sourceSystemName,
@@ -61,7 +67,8 @@ class EnvironmentInformation extends Struct
         array $totals = [],
         array $additionalData = [],
         ?RequestStatusStruct $requestStatus = null,
-        bool $updateAvailable = false,
+        bool $migrationDisabled = false,
+        array $displayWarnings = [],
         string $targetSystemCurrency = '',
         string $sourceSystemCurrency = ''
     ) {
@@ -71,9 +78,10 @@ class EnvironmentInformation extends Struct
         $this->totals = $totals;
         $this->additionalData = $additionalData;
         $this->requestStatus = $requestStatus;
-        $this->updateAvailable = $updateAvailable;
+        $this->migrationDisabled = $migrationDisabled;
         $this->targetSystemCurrency = $targetSystemCurrency;
         $this->sourceSystemCurrency = $sourceSystemCurrency;
+        $this->displayWarnings = $displayWarnings;
     }
 
     public function getSourceSystemName(): string
@@ -107,6 +115,19 @@ class EnvironmentInformation extends Struct
     public function getRequestStatus(): ?RequestStatusStruct
     {
         return $this->requestStatus;
+    }
+
+    public function isMigrationDisabled(): bool
+    {
+        return $this->migrationDisabled;
+    }
+
+    /**
+     * @return DisplayWarning[]
+     */
+    public function getDisplayWarnings(): array
+    {
+        return $this->displayWarnings;
     }
 
     public function getTargetSystemCurrency(): string

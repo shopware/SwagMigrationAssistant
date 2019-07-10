@@ -2,6 +2,7 @@
 
 namespace SwagMigrationAssistant\Migration\Gateway;
 
+use Shopware\Core\Framework\Context;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
@@ -19,7 +20,7 @@ interface GatewayInterface
      */
     public function read(MigrationContextInterface $migrationContext): array;
 
-    public function readEnvironmentInformation(MigrationContextInterface $migrationContext): EnvironmentInformation;
+    public function readEnvironmentInformation(MigrationContextInterface $migrationContext, Context $context): EnvironmentInformation;
 
-    public function readTotals(MigrationContextInterface $migrationContext): array;
+    public function readTotals(MigrationContextInterface $migrationContext, Context $context): array;
 }
