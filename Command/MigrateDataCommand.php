@@ -6,9 +6,9 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
-use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistryInterface;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistryInterface;
-use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Run\RunServiceInterface;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationAssistant\Migration\Service\MediaFileProcessorServiceInterface;
@@ -18,7 +18,7 @@ use SwagMigrationAssistant\Migration\Service\MigrationDataWriterInterface;
 use SwagMigrationAssistant\Migration\Service\PremappingServiceInterface;
 use SwagMigrationAssistant\Migration\Service\ProgressState;
 use SwagMigrationAssistant\Migration\Setting\GeneralSettingEntity;
-use SwagMigrationAssistant\Profile\Shopware55\DataSelection\BasicSettingsDataSelection;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\BasicSettingsDataSelection;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
@@ -41,11 +41,6 @@ class MigrateDataCommand extends Command
      * @var EntityRepositoryInterface
      */
     private $migrationRunRepo;
-
-    /**
-     * @var DataSelectionRegistryInterface
-     */
-    private $dataSelectionRegistry;
 
     /**
      * @var DataSetRegistryInterface
@@ -88,6 +83,11 @@ class MigrateDataCommand extends Command
     private $processorService;
 
     /**
+     * @var MigrationContextFactoryInterface
+     */
+    private $migrationContextFactory;
+
+    /**
      * @var OutputInterface
      */
     private $output;
@@ -96,7 +96,6 @@ class MigrateDataCommand extends Command
         EntityRepositoryInterface $generalSettingRepo,
         EntityRepositoryInterface $migrationConnectionRepo,
         EntityRepositoryInterface $migrationRunRepo,
-        DataSelectionRegistryInterface $dataSelectionRegistry,
         DataSetRegistryInterface $dataSetRegistry,
         RunServiceInterface $runService,
         PremappingServiceInterface $premappingService,
@@ -104,13 +103,13 @@ class MigrateDataCommand extends Command
         MigrationDataConverterInterface $migrationDataConverter,
         MigrationDataWriterInterface $migrationDataWriter,
         MediaFileProcessorServiceInterface $processorService,
+        MigrationContextFactoryInterface $migrationContextFactory,
         ?string $name = null
     ) {
         parent::__construct($name);
         $this->generalSettingRepo = $generalSettingRepo;
         $this->migrationConnectionRepo = $migrationConnectionRepo;
         $this->migrationRunRepo = $migrationRunRepo;
-        $this->dataSelectionRegistry = $dataSelectionRegistry;
         $this->dataSetRegistry = $dataSetRegistry;
         $this->runService = $runService;
         $this->premappingService = $premappingService;
@@ -118,6 +117,7 @@ class MigrateDataCommand extends Command
         $this->migrationDataConverter = $migrationDataConverter;
         $this->migrationDataWriter = $migrationDataWriter;
         $this->processorService = $processorService;
+        $this->migrationContextFactory = $migrationContextFactory;
     }
 
     protected function configure(): void
@@ -129,7 +129,7 @@ class MigrateDataCommand extends Command
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): ?int
     {
         $this->output = $output;
         $this->checkOptions($input);
@@ -139,25 +139,30 @@ class MigrateDataCommand extends Command
         $generalSetting = $this->generalSettingRepo->search(new Criteria(), $context)->first();
 
         if ($generalSetting->getSelectedConnectionId() === null) {
-            throw new \InvalidArgumentException('Please create first a connection via the administration.');
+            throw new \InvalidArgumentException('At first please create a connection via the administration.');
         }
 
         /** @var SwagMigrationConnectionEntity $connection */
         $connection = $this->migrationConnectionRepo->search(new Criteria([$generalSetting->getSelectedConnectionId()]), $context)->first();
-        $progressState = $this->runService->createMigrationRun($connection->getId(), $this->dataSelectionNames, $context);
+        $migrationContext = $this->migrationContextFactory->createByConnection($connection);
+        $progressState = $this->runService->createMigrationRun($migrationContext, $this->dataSelectionNames, $context);
 
         if ($progressState === null) {
-            throw new \InvalidArgumentException('Another migration run is currently working.');
+            throw new \InvalidArgumentException('Another migration is currently running.');
         }
 
         /** @var SwagMigrationRunEntity|null $run */
         $run = $this->migrationRunRepo->search(new Criteria([$progressState->getRunId()]), $context)->first();
 
-        $this->generatePremapping($connection, $run, $context);
-        $this->fetchData($progressState, $connection, $context);
+        $migrationContext = $this->migrationContextFactory->create($run);
+
+        $this->generatePremapping($run, $context);
+        $this->fetchData($progressState, $migrationContext, $run, $context);
         $this->writeData($run, $context);
         $this->processMedia($run, $context);
         $this->runService->finishMigration($run->getId(), $context);
+
+        return 0;
     }
 
     private function checkOptions(InputInterface $input): void
@@ -170,11 +175,18 @@ class MigrateDataCommand extends Command
         $this->dataSelectionNames = array_merge($this->dataSelectionNames, $dataSelections);
     }
 
-    private function fetchData(ProgressState $progressState, SwagMigrationConnectionEntity $connection, Context $context): void
+    private function fetchData(ProgressState $progressState, MigrationContextInterface $migrationContext, SwagMigrationRunEntity $run, Context $context): void
     {
+        $this->migrationRunRepo->update([
+            [
+                'id' => $progressState->getRunId(),
+                'progress' => $progressState->getRunProgress(),
+            ],
+        ], $context);
+
         foreach ($progressState->getRunProgress() as $progress) {
             foreach ($progress->getEntities() as $entityProgress) {
-                $dataSet = $this->dataSetRegistry->getDataSet($connection->getProfileName(), $entityProgress->getEntityName());
+                $dataSet = $this->dataSetRegistry->getDataSet($migrationContext, $entityProgress->getEntityName());
 
                 if ($entityProgress->getTotal() === 0) {
                     continue;
@@ -185,12 +197,11 @@ class MigrateDataCommand extends Command
                 $progressBar->start();
 
                 while ($entityProgress->getCurrentCount() < $entityProgress->getTotal()) {
-                    $migrationContext = new MigrationContext(
-                        $connection,
-                        $progressState->getRunId(),
-                        $dataSet,
+                    $migrationContext = $this->migrationContextFactory->create(
+                        $run,
                         $entityProgress->getCurrentCount(),
-                        100
+                        100,
+                        $dataSet::getEntity()
                     );
 
                     $data = $this->migrationDataFetcher->fetchData($migrationContext, $context);
@@ -222,7 +233,14 @@ class MigrateDataCommand extends Command
 
         foreach ($writeProgress as $progress) {
             foreach ($progress['entities'] as $entityProgress) {
-                $dataSet = $this->dataSetRegistry->getDataSet($run->getConnection()->getProfileName(), $entityProgress['entityName']);
+                $migrationContext = $this->migrationContextFactory->create(
+                    $run,
+                    0,
+                    100,
+                    $entityProgress['entityName']
+                );
+
+                $dataSet = $this->dataSetRegistry->getDataSet($migrationContext, $entityProgress['entityName']);
 
                 if ($entityProgress['total'] === 0) {
                     continue;
@@ -233,12 +251,11 @@ class MigrateDataCommand extends Command
                 $progressBar->start();
 
                 while ($entityProgress['currentCount'] < $entityProgress['total']) {
-                    $migrationContext = new MigrationContext(
-                        null,
-                        $run->getId(),
-                        $dataSet,
+                    $migrationContext = $this->migrationContextFactory->create(
+                        $run,
                         $entityProgress['currentCount'],
-                        100
+                        100,
+                        $dataSet::getEntity()
                     );
 
                     $this->migrationDataWriter->writeData($migrationContext, $context);
@@ -268,10 +285,8 @@ class MigrateDataCommand extends Command
             if ($progress['id'] === 'processMediaFiles') {
                 foreach ($progress['entities'] as $entityProgress) {
                     while ($entityProgress['currentCount'] < $entityProgress['total']) {
-                        $migrationContext = new MigrationContext(
-                            $run->getConnection(),
-                            $run->getId(),
-                            null,
+                        $migrationContext = $this->migrationContextFactory->create(
+                            $run,
                             $entityProgress['currentCount'],
                             100
                         );
@@ -284,21 +299,20 @@ class MigrateDataCommand extends Command
         }
 
         $this->output->writeln('The download of media files will be executed in the background of the administration.');
+        $this->output->writeln('You can also use the cli worker for that with the bin\console "messenger:consume-messages default" command.');
     }
 
-    private function generatePremapping(SwagMigrationConnectionEntity $connection, SwagMigrationRunEntity $run, Context $context): void
+    private function generatePremapping(SwagMigrationRunEntity $run, Context $context): void
     {
-        $migrationContext = new MigrationContext(
-            $connection,
-            $run->getId()
-        );
+        $migrationContext = $this->migrationContextFactory->create($run);
 
         $premapping = $this->premappingService->generatePremapping($context, $migrationContext, $run);
 
         foreach ($premapping as $item) {
             foreach ($item->getMapping() as $mapping) {
                 if ($mapping->getDestinationUuid() === '') {
-                    throw new \InvalidArgumentException('Premapping is incomplete, please fill the premapping before you execute migration.');
+                    $this->runService->abortMigration($run->getId(), $context);
+                    throw new \InvalidArgumentException('Premapping is incomplete, please fill it in before performing the migration.');
                 }
             }
         }

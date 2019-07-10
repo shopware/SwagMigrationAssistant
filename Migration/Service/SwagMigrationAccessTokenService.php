@@ -5,7 +5,6 @@ namespace SwagMigrationAssistant\Migration\Service;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Context\AdminApiSource;
 use Shopware\Core\Framework\Context\Exception\InvalidContextSourceException;
-use Shopware\Core\Framework\Context\SalesChannelApiSource;
 use Shopware\Core\Framework\Context\SystemSource;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -38,7 +37,7 @@ class SwagMigrationAccessTokenService
         }
 
         if ($sourceContext instanceof SystemSource) {
-            $userId = \mb_strtoupper('cli');
+            $userId = 'CLI';
         }
 
         if (!isset($userId)) {

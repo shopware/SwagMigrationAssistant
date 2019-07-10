@@ -100,13 +100,6 @@
             <argument type="tagged" tag="shopware.migration.media_file_processor"/>
         </service>
 
-        <service id="SwagMigrationAssistant\Migration\Media\CliMediaDownloadService" public="true">
-            <argument type="service" id="swag_migration_media_file.repository"/>
-            <argument type="service" id="Shopware\Core\Content\Media\File\FileSaver"/>
-            <argument type="service" id="event_dispatcher"/>
-            <argument type="service" id="logger"/>
-        </service>
-
         <service id="SwagMigrationAssistant\Migration\Service\MigrationProgressService"
                  class="SwagMigrationAssistant\Migration\Service\MigrationProgressService"
                  public="true">
@@ -159,7 +152,6 @@
             <argument type="service" id="swag_migration_general_setting.repository"/>
             <argument type="service" id="swag_migration_connection.repository"/>
             <argument type="service" id="swag_migration_run.repository"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry" />
             <argument type="service" id="SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry" />
             <argument type="service" id="SwagMigrationAssistant\Migration\Run\RunService" />
             <argument type="service" id="SwagMigrationAssistant\Migration\Service\PremappingService" />
@@ -167,26 +159,9 @@
             <argument type="service" id="SwagMigrationAssistant\Migration\Service\MigrationDataConverter" />
             <argument type="service" id="SwagMigrationAssistant\Migration\Service\MigrationDataWriter" />
             <argument type="service" id="SwagMigrationAssistant\Migration\Service\MediaFileProcessorService" />
+            <argument type="service" id="SwagMigrationAssistant\Migration\MigrationContextFactory" />
             <argument>migration:migrate</argument>
             <tag name="console.command" command="migration:migrate"/>
-        </service>
-
-        <service id="SwagMigrationAssistant\Command\MigrationWriteDataCommand"
-                 class="SwagMigrationAssistant\Command\MigrationWriteDataCommand">
-            <argument type="service" id="SwagMigrationAssistant\Migration\Service\MigrationDataWriter"/>
-            <argument type="service" id="swag_migration_run.repository"/>
-            <argument type="service" id="swag_migration_data.repository"/>
-            <argument type="service" id="swag_migration_media_file.repository"/>
-            <argument>migration:write:data</argument>
-            <tag name="console.command" command="migration:write:data"/>
-        </service>
-
-        <service id="SwagMigrationAssistant\Command\MigrationDownloadMediaCommand">
-            <argument type="service" id="SwagMigrationAssistant\Migration\Media\CliMediaDownloadService"/>
-            <argument type="service" id="swag_migration_run.repository"/>
-            <argument type="service" id="swag_migration_media_file.repository"/>
-            <tag name="console.command" command="migration:media:download"/>
-            <tag name="kernel.event_subscriber"/>
         </service>
 
         <service id="SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry">
