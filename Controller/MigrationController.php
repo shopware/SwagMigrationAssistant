@@ -129,7 +129,10 @@ class MigrationController extends AbstractController
         );
 
         $data = $this->migrationDataFetcher->fetchData($migrationContext, $context);
-        $this->migrationDataConverter->convert($data, $migrationContext, $context);
+
+        if (!empty($data)) {
+            $this->migrationDataConverter->convert($data, $migrationContext, $context);
+        }
 
         return new JsonResponse([
             'validToken' => true,
