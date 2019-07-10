@@ -61,7 +61,7 @@ abstract class ShopwareConverter implements ConverterInterface
         return $emptyFields;
     }
 
-    private function validDate(string $value): bool
+    protected function validDate(string $value): bool
     {
         try {
             new \DateTime($value);

@@ -9,44 +9,43 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
 abstract class MediaFolderConverter extends ShopwareConverter
 {
     /**
      * @var MappingServiceInterface
      */
-    private $mappingService;
+    protected $mappingService;
 
     /**
      * @var LoggingServiceInterface
      */
-    private $loggingService;
+    protected $loggingService;
 
     /**
      * @var Context
      */
-    private $context;
+    protected $context;
 
     /**
      * @var string
      */
-    private $connectionId;
+    protected $connectionId;
 
     /**
      * @var string
      */
-    private $mainLocale;
+    protected $mainLocale;
 
     /**
      * @var MigrationContextInterface
      */
-    private $migrationContext;
+    protected $migrationContext;
 
     /**
      * @var string
      */
-    private $oldId;
+    protected $oldId;
 
     public function __construct(
         MappingServiceInterface $mappingService,
@@ -54,16 +53,6 @@ abstract class MediaFolderConverter extends ShopwareConverter
     ) {
         $this->mappingService = $mappingService;
         $this->loggingService = $loggingService;
-    }
-
-    public function getSupportedEntityName(): string
-    {
-        return DefaultEntities::MEDIA_FOLDER;
-    }
-
-    public function getSupportedProfileName(): string
-    {
-        return Shopware55Profile::PROFILE_NAME;
     }
 
     /**
@@ -155,7 +144,7 @@ abstract class MediaFolderConverter extends ShopwareConverter
         $this->mappingService->writeMapping($context);
     }
 
-    private function getConfiguration(array &$setting): array
+    protected function getConfiguration(array &$setting): array
     {
         $configuration = [];
         $configuration['id'] = $this->mappingService->createNewUuid(
@@ -201,7 +190,7 @@ abstract class MediaFolderConverter extends ShopwareConverter
         return $configuration;
     }
 
-    private function getDefaultFolderId(): ?string
+    protected function getDefaultFolderId(): ?string
     {
         switch ($this->oldId) {
             case '1':

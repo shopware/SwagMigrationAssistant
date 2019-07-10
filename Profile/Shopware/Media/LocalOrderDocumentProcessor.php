@@ -12,16 +12,16 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\NoFileSystemPermissionsException;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
-use SwagMigrationAssistant\Migration\Media\AbstractMediaFileProcessor;
+use SwagMigrationAssistant\Migration\Media\MediaFileProcessorInterface;
 use SwagMigrationAssistant\Migration\Media\MediaProcessWorkloadStruct;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileEntity;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderDocumentDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\Logging\LogTypes;
-use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
-class LocalOrderDocumentProcessor extends AbstractMediaFileProcessor
+class LocalOrderDocumentProcessor implements MediaFileProcessorInterface
 {
     /**
      * @var EntityRepositoryInterface
@@ -48,19 +48,11 @@ class LocalOrderDocumentProcessor extends AbstractMediaFileProcessor
         $this->loggingService = $loggingService;
     }
 
-    public function getSupportedProfileName(): string
+    public function supports(MigrationContextInterface $migrationContext): bool
     {
-        return Shopware55Profile::PROFILE_NAME;
-    }
-
-    public function getSupportedGatewayIdentifier(): string
-    {
-        return ShopwareLocalGateway::GATEWAY_NAME;
-    }
-
-    public function getSupportedEntity(): string
-    {
-        return OrderDocumentDataSet::getEntity();
+        return $migrationContext->getProfile() instanceof ShopwareProfileInterface
+            && $migrationContext->getGateway()->getName() === ShopwareLocalGateway::GATEWAY_NAME
+            && $migrationContext->getDataSet()::getEntity() === OrderDocumentDataSet::getEntity();
     }
 
     public function process(

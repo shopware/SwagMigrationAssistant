@@ -15,34 +15,33 @@ use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Logging\LogTypes;
-use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
 abstract class TranslationConverter extends ShopwareConverter
 {
     /**
      * @var MappingServiceInterface
      */
-    private $mappingService;
+    protected $mappingService;
 
     /**
      * @var string
      */
-    private $connectionId;
+    protected $connectionId;
 
     /**
      * @var Context
      */
-    private $context;
+    protected $context;
 
     /**
      * @var string
      */
-    private $runId;
+    protected $runId;
 
     /**
      * @var LoggingServiceInterface
      */
-    private $loggingService;
+    protected $loggingService;
 
     public function __construct(
         MappingServiceInterface $mappingService,
@@ -50,16 +49,6 @@ abstract class TranslationConverter extends ShopwareConverter
     ) {
         $this->mappingService = $mappingService;
         $this->loggingService = $loggingService;
-    }
-
-    public function getSupportedEntityName(): string
-    {
-        return 'translation';
-    }
-
-    public function getSupportedProfileName(): string
-    {
-        return Shopware55Profile::PROFILE_NAME;
     }
 
     public function writeMapping(Context $context): void
@@ -126,7 +115,7 @@ abstract class TranslationConverter extends ShopwareConverter
         return new ConvertStruct(null, $data);
     }
 
-    private function createProductTranslation(array &$data): ConvertStruct
+    protected function createProductTranslation(array &$data): ConvertStruct
     {
         $sourceData = $data;
         $product = [];
@@ -228,7 +217,7 @@ abstract class TranslationConverter extends ShopwareConverter
         return new ConvertStruct($product, $data);
     }
 
-    private function createManufacturerProductTranslation(array &$data): ConvertStruct
+    protected function createManufacturerProductTranslation(array &$data): ConvertStruct
     {
         $sourceData = $data;
         $manufacturer = [];
@@ -316,7 +305,7 @@ abstract class TranslationConverter extends ShopwareConverter
         return new ConvertStruct($manufacturer, $data);
     }
 
-    private function createUnitTranslation(array $data): ConvertStruct
+    protected function createUnitTranslation(array $data): ConvertStruct
     {
         $sourceData = $data;
 
@@ -411,7 +400,7 @@ abstract class TranslationConverter extends ShopwareConverter
         return new ConvertStruct($unit, $data);
     }
 
-    private function createCategoryTranslation(array $data): ConvertStruct
+    protected function createCategoryTranslation(array $data): ConvertStruct
     {
         $sourceData = $data;
 
@@ -514,7 +503,7 @@ abstract class TranslationConverter extends ShopwareConverter
         return new ConvertStruct($category, $data);
     }
 
-    private function createConfiguratorOptionTranslation(array $data): ConvertStruct
+    protected function createConfiguratorOptionTranslation(array $data): ConvertStruct
     {
         $sourceData = $data;
 
@@ -605,7 +594,7 @@ abstract class TranslationConverter extends ShopwareConverter
         return new ConvertStruct($configuratorOption, $data);
     }
 
-    private function createConfiguratorOptionGroupTranslation(array $data): ConvertStruct
+    protected function createConfiguratorOptionGroupTranslation(array $data): ConvertStruct
     {
         $sourceData = $data;
 
@@ -696,7 +685,7 @@ abstract class TranslationConverter extends ShopwareConverter
         return new ConvertStruct($configuratorOptionGroup, $data);
     }
 
-    private function createPropertyValueTranslation(array $data): ConvertStruct
+    protected function createPropertyValueTranslation(array $data): ConvertStruct
     {
         $sourceData = $data;
 
@@ -783,7 +772,7 @@ abstract class TranslationConverter extends ShopwareConverter
         return new ConvertStruct($propertyValue, $data);
     }
 
-    private function createPropertyOptionTranslation(array $data): ConvertStruct
+    protected function createPropertyOptionTranslation(array $data): ConvertStruct
     {
         $sourceData = $data;
 
@@ -870,7 +859,7 @@ abstract class TranslationConverter extends ShopwareConverter
         return new ConvertStruct($propertyOption, $data);
     }
 
-    private function getAttribute(string $entityName, string $key, string $value, array &$translation, array &$objectData): void
+    protected function getAttribute(string $entityName, string $key, string $value, array &$translation, array &$objectData): void
     {
         $isAttribute = strpos($key, '__attribute_');
         if ($isAttribute !== false) {

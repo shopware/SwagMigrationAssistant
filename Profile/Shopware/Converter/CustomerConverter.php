@@ -12,49 +12,48 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Logging\LogTypes;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\PaymentMethodReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\SalutationReader;
-use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
 abstract class CustomerConverter extends ShopwareConverter
 {
     /**
      * @var MappingServiceInterface
      */
-    private $mappingService;
+    protected $mappingService;
 
     /**
      * @var string
      */
-    private $connectionId;
+    protected $connectionId;
 
     /**
      * @var Context
      */
-    private $context;
+    protected $context;
 
     /**
      * @var string
      */
-    private $mainLocale;
+    protected $mainLocale;
 
     /**
      * @var string
      */
-    private $oldCustomerId;
+    protected $oldCustomerId;
 
     /**
      * @var LoggingServiceInterface
      */
-    private $loggingService;
+    protected $loggingService;
 
     /**
      * @var string
      */
-    private $runId;
+    protected $runId;
 
     /**
      * @var string[]
      */
-    private $requiredDataFieldKeys = [
+    protected $requiredDataFieldKeys = [
         'firstname',
         'lastname',
         'email',
@@ -65,7 +64,7 @@ abstract class CustomerConverter extends ShopwareConverter
     /**
      * @var string[]
      */
-    private $requiredAddressDataFieldKeys = [
+    protected $requiredAddressDataFieldKeys = [
         'firstname',
         'lastname',
         'zipcode',
@@ -80,16 +79,6 @@ abstract class CustomerConverter extends ShopwareConverter
     ) {
         $this->mappingService = $mappingService;
         $this->loggingService = $loggingService;
-    }
-
-    public function getSupportedEntityName(): string
-    {
-        return DefaultEntities::CUSTOMER;
-    }
-
-    public function getSupportedProfileName(): string
-    {
-        return Shopware55Profile::PROFILE_NAME;
     }
 
     public function writeMapping(Context $context): void
@@ -300,7 +289,7 @@ abstract class CustomerConverter extends ShopwareConverter
         unset($data['password'], $data['encoder']);
     }
 
-    private function getDefaultPaymentMethod(array $originalData): ?string
+    protected function getDefaultPaymentMethod(array $originalData): ?string
     {
         $paymentMethodUuid = $this->mappingService->getUuid(
             $this->connectionId,
@@ -329,7 +318,7 @@ abstract class CustomerConverter extends ShopwareConverter
     /**
      * @param array[] $originalData
      */
-    private function getAddresses(array &$originalData, array &$converted, string $customerUuid): void
+    protected function getAddresses(array &$originalData, array &$converted, string $customerUuid): void
     {
         $addresses = [];
         foreach ($originalData['addresses'] as $address) {
@@ -419,7 +408,7 @@ abstract class CustomerConverter extends ShopwareConverter
         $this->checkUnsetDefaultBillingAddress($originalData, $converted, $customerUuid);
     }
 
-    private function getCountry(array $oldCountryData): array
+    protected function getCountry(array $oldCountryData): array
     {
         $country = [];
         $countryUuid = null;
@@ -459,7 +448,7 @@ abstract class CustomerConverter extends ShopwareConverter
         return $country;
     }
 
-    private function getCountryTranslation(array &$country, array $data): void
+    protected function getCountryTranslation(array &$country, array $data): void
     {
         $language = $this->mappingService->getDefaultLanguage($this->context);
         if ($language->getLocale()->getCode() === $this->mainLocale) {
@@ -484,7 +473,7 @@ abstract class CustomerConverter extends ShopwareConverter
         $country['translations'][$languageUuid] = $localeTranslation;
     }
 
-    private function getCountryState(array $oldStateData, array $newCountryData): array
+    protected function getCountryState(array $oldStateData, array $newCountryData): array
     {
         $state = [];
         $state['id'] = $this->mappingService->createNewUuid(
@@ -504,7 +493,7 @@ abstract class CustomerConverter extends ShopwareConverter
         return $state;
     }
 
-    private function getCountryStateTranslation(array &$state, array $data): void
+    protected function getCountryStateTranslation(array &$state, array $data): void
     {
         $language = $this->mappingService->getDefaultLanguage($this->context);
         if ($language->getLocale()->getCode() === $this->mainLocale) {
@@ -529,7 +518,7 @@ abstract class CustomerConverter extends ShopwareConverter
         $state['translations'][$languageUuid] = $localeTranslation;
     }
 
-    private function checkUnsetDefaultShippingAndDefaultBillingAddress(array &$originalData, array &$converted, string $customerUuid, $addresses): void
+    protected function checkUnsetDefaultShippingAndDefaultBillingAddress(array &$originalData, array &$converted, string $customerUuid, $addresses): void
     {
         if (!isset($converted['defaultBillingAddressId']) && !isset($converted['defaultShippingAddressId'])) {
             $converted['defaultBillingAddressId'] = $addresses[0]['id'];
@@ -549,7 +538,7 @@ abstract class CustomerConverter extends ShopwareConverter
         }
     }
 
-    private function checkUnsetDefaultShippingAddress(array &$originalData, array &$converted, string $customerUuid): void
+    protected function checkUnsetDefaultShippingAddress(array &$originalData, array &$converted, string $customerUuid): void
     {
         if (!isset($converted['defaultShippingAddressId']) && isset($converted['defaultBillingAddressId'])) {
             $converted['defaultShippingAddressId'] = $converted['defaultBillingAddressId'];
@@ -568,7 +557,7 @@ abstract class CustomerConverter extends ShopwareConverter
         }
     }
 
-    private function checkUnsetDefaultBillingAddress(array &$originalData, array &$converted, string $customerUuid): void
+    protected function checkUnsetDefaultBillingAddress(array &$originalData, array &$converted, string $customerUuid): void
     {
         if (!isset($converted['defaultBillingAddressId']) && isset($converted['defaultShippingAddressId'])) {
             $converted['defaultBillingAddressId'] = $converted['defaultShippingAddressId'];
@@ -587,7 +576,7 @@ abstract class CustomerConverter extends ShopwareConverter
         }
     }
 
-    private function getSalutation(string $salutation): ?string
+    protected function getSalutation(string $salutation): ?string
     {
         $salutationUuid = $this->mappingService->getUuid(
             $this->connectionId,
@@ -613,7 +602,7 @@ abstract class CustomerConverter extends ShopwareConverter
         return $salutationUuid;
     }
 
-    private function getAttributes(array $attributes): array
+    protected function getAttributes(array $attributes): array
     {
         $result = [];
 

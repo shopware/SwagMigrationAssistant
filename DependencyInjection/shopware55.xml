@@ -120,6 +120,5 @@
                  parent="SwagMigrationAssistant\Profile\Shopware\Converter\NewsletterRecipientConverter">
             <tag name="shopware.migration.converter"/>
         </service>
-
     </services>
 </container>

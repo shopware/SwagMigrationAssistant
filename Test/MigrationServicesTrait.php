@@ -67,7 +67,7 @@ trait MigrationServicesTrait
                 new ApiReader($connectionFactory),
                 new ApiEnvironmentReader($connectionFactory),
                 new ApiTableReader($connectionFactory),
-                new ApiTableCountReader($connectionFactory, $dataSetRegistry),
+                new ApiTableCountReader($connectionFactory, $dataSetRegistry, $loggingService),
                 $currencyRepository
             ),
             new DummyLocalGateway(),

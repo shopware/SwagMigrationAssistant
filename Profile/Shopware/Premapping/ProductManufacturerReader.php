@@ -13,7 +13,7 @@ use SwagMigrationAssistant\Migration\Premapping\PremappingChoiceStruct;
 use SwagMigrationAssistant\Migration\Premapping\PremappingEntityStruct;
 use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\ProductDataSelection;
-use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
 class ProductManufacturerReader extends AbstractPremappingReader
 {
@@ -42,9 +42,9 @@ class ProductManufacturerReader extends AbstractPremappingReader
     /**
      * @param string[] $entityGroupNames
      */
-    public function supports(string $profileName, string $gatewayIdentifier, array $entityGroupNames): bool
+    public function supports(MigrationContextInterface $migrationContext, array $entityGroupNames): bool
     {
-        return $profileName === Shopware55Profile::PROFILE_NAME
+        return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && in_array(ProductDataSelection::IDENTIFIER, $entityGroupNames, true);
     }
 

@@ -127,7 +127,7 @@ abstract class AttributeConverter implements ConverterInterface
         return $attributeData;
     }
 
-    private function getConfiguredCustomFieldData(array $data, string $locale): array
+    protected function getConfiguredCustomFieldData(array $data, string $locale): array
     {
         $attributeData = ['componentName' => 'sw-field'];
 

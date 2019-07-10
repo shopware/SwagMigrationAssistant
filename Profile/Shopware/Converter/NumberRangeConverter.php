@@ -13,14 +13,13 @@ use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Logging\LogTypes;
-use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
 abstract class NumberRangeConverter extends ShopwareConverter
 {
     /**
      * @var array
      */
-    private const TYPE_MAPPING = [
+    protected const TYPE_MAPPING = [
         'user' => 'customer',
         'invoice' => 'order',
         'articleordernumber' => 'product',
@@ -31,22 +30,22 @@ abstract class NumberRangeConverter extends ShopwareConverter
     /**
      * @var MappingServiceInterface
      */
-    private $mappingService;
+    protected $mappingService;
 
     /**
      * @var EntityRepositoryInterface
      */
-    private $numberRangeTypeRepo;
+    protected $numberRangeTypeRepo;
 
     /**
      * @var EntityCollection
      */
-    private $numberRangeTypes;
+    protected $numberRangeTypes;
 
     /**
      * @var LoggingServiceInterface
      */
-    private $loggingService;
+    protected $loggingService;
 
     public function __construct(
         MappingServiceInterface $mappingService,
@@ -56,16 +55,6 @@ abstract class NumberRangeConverter extends ShopwareConverter
         $this->mappingService = $mappingService;
         $this->numberRangeTypeRepo = $numberRangeTypeRepo;
         $this->loggingService = $loggingService;
-    }
-
-    public function getSupportedEntityName(): string
-    {
-        return DefaultEntities::NUMBER_RANGE;
-    }
-
-    public function getSupportedProfileName(): string
-    {
-        return Shopware55Profile::PROFILE_NAME;
     }
 
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
@@ -147,7 +136,7 @@ abstract class NumberRangeConverter extends ShopwareConverter
         $this->mappingService->writeMapping($context);
     }
 
-    private function getUuid(array $data, MigrationContextInterface $migrationContext, Context $context): string
+    protected function getUuid(array $data, MigrationContextInterface $migrationContext, Context $context): string
     {
         $id = $this->mappingService->getUuid(
             $migrationContext->getConnection()->getId(),
@@ -177,7 +166,7 @@ abstract class NumberRangeConverter extends ShopwareConverter
         return $id;
     }
 
-    private function getProductNumberRangeTypeUuid(string $type): ?string
+    protected function getProductNumberRangeTypeUuid(string $type): ?string
     {
         $collection = $this->numberRangeTypes->filterByProperty('technicalName', self::TYPE_MAPPING[$type]);
 
@@ -190,12 +179,12 @@ abstract class NumberRangeConverter extends ShopwareConverter
         return $numberRange->getId();
     }
 
-    private function getGlobal(string $name): bool
+    protected function getGlobal(string $name): bool
     {
         return $name === 'articleordernumber' ?? false;
     }
 
-    private function setNumberRangeTranslation(
+    protected function setNumberRangeTranslation(
         array &$converted,
         array $data,
         MigrationContextInterface $migrationContext,
@@ -225,7 +214,7 @@ abstract class NumberRangeConverter extends ShopwareConverter
         $converted['translations'][$languageUuid] = $localeTranslation;
     }
 
-    private function setNumberRangeSalesChannels(array &$converted, MigrationContextInterface $migrationContext, Context $context): void
+    protected function setNumberRangeSalesChannels(array &$converted, MigrationContextInterface $migrationContext, Context $context): void
     {
         $connectionId = $migrationContext->getConnection()->getId();
         $saleschannelIds = $this->mappingService->getMigratedSalesChannelUuids($connectionId, $context);

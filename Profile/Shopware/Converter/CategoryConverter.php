@@ -12,49 +12,48 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Exception\ParentEntityForChildNotFoundException;
 use SwagMigrationAssistant\Profile\Shopware\Logging\LogTypes;
-use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
 abstract class CategoryConverter extends ShopwareConverter
 {
     /**
      * @var MappingServiceInterface
      */
-    private $mappingService;
+    protected $mappingService;
 
     /**
      * @var MediaFileServiceInterface
      */
-    private $mediaFileService;
+    protected $mediaFileService;
 
     /**
      * @var string
      */
-    private $connectionId;
+    protected $connectionId;
 
     /**
      * @var Context
      */
-    private $context;
+    protected $context;
 
     /**
      * @var string
      */
-    private $oldCategoryId;
+    protected $oldCategoryId;
 
     /**
      * @var LoggingServiceInterface
      */
-    private $loggingService;
+    protected $loggingService;
 
     /**
      * @var string
      */
-    private $locale;
+    protected $locale;
 
     /**
      * @var string
      */
-    private $runId;
+    protected $runId;
 
     public function __construct(
         MappingServiceInterface $mappingService,
@@ -64,16 +63,6 @@ abstract class CategoryConverter extends ShopwareConverter
         $this->mappingService = $mappingService;
         $this->mediaFileService = $mediaFileService;
         $this->loggingService = $loggingService;
-    }
-
-    public function getSupportedEntityName(): string
-    {
-        return DefaultEntities::CATEGORY;
-    }
-
-    public function getSupportedProfileName(): string
-    {
-        return Shopware55Profile::PROFILE_NAME;
     }
 
     public function writeMapping(Context $context): void
@@ -186,7 +175,7 @@ abstract class CategoryConverter extends ShopwareConverter
         return new ConvertStruct($converted, $data);
     }
 
-    private function setGivenCategoryTranslation(array &$data, array &$converted): void
+    protected function setGivenCategoryTranslation(array &$data, array &$converted): void
     {
         $originalData = $data;
         $this->convertValue($converted, 'name', $data, 'description');
@@ -224,7 +213,7 @@ abstract class CategoryConverter extends ShopwareConverter
         $converted['translations'][$languageUuid] = $localeTranslation;
     }
 
-    private function getAttributes(array $attributes): array
+    protected function getAttributes(array $attributes): array
     {
         $result = [];
 
@@ -238,7 +227,7 @@ abstract class CategoryConverter extends ShopwareConverter
         return $result;
     }
 
-    private function getCategoryMedia(array $media): array
+    protected function getCategoryMedia(array $media): array
     {
         $categoryMedia['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
@@ -278,7 +267,7 @@ abstract class CategoryConverter extends ShopwareConverter
         return $categoryMedia;
     }
 
-    private function getMediaTranslation(array &$media, array $data): void
+    protected function getMediaTranslation(array &$media, array $data): void
     {
         $language = $this->mappingService->getDefaultLanguage($this->context);
         if ($language->getLocale()->getCode() === $this->locale) {

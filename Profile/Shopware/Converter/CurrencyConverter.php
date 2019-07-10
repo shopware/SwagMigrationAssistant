@@ -8,34 +8,33 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
 abstract class CurrencyConverter extends ShopwareConverter
 {
     /**
      * @var MappingServiceInterface
      */
-    private $mappingService;
+    protected $mappingService;
 
     /**
      * @var LoggingServiceInterface
      */
-    private $loggingService;
+    protected $loggingService;
 
     /**
      * @var string
      */
-    private $mainLocale;
+    protected $mainLocale;
 
     /**
      * @var Context
      */
-    private $context;
+    protected $context;
 
     /**
      * @var string
      */
-    private $connectionId;
+    protected $connectionId;
 
     public function __construct(
         MappingServiceInterface $mappingService,
@@ -43,16 +42,6 @@ abstract class CurrencyConverter extends ShopwareConverter
     ) {
         $this->mappingService = $mappingService;
         $this->loggingService = $loggingService;
-    }
-
-    public function getSupportedEntityName(): string
-    {
-        return DefaultEntities::CURRENCY;
-    }
-
-    public function getSupportedProfileName(): string
-    {
-        return Shopware55Profile::PROFILE_NAME;
     }
 
     public function writeMapping(Context $context): void
@@ -100,7 +89,7 @@ abstract class CurrencyConverter extends ShopwareConverter
         return new ConvertStruct($converted, $data);
     }
 
-    private function getCurrencyTranslation(array &$currency, array $data): void
+    protected function getCurrencyTranslation(array &$currency, array $data): void
     {
         $language = $this->mappingService->getDefaultLanguage($this->context);
         if ($language->getLocale()->getCode() === $this->mainLocale) {

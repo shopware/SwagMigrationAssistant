@@ -15,7 +15,6 @@ use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Logging\LogTypes;
-use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
 abstract class SalesChannelConverter extends ShopwareConverter
 {
@@ -36,27 +35,27 @@ abstract class SalesChannelConverter extends ShopwareConverter
     /**
      * @var MappingServiceInterface
      */
-    private $mappingService;
+    protected $mappingService;
 
     /**
      * @var LoggingServiceInterface
      */
-    private $loggingService;
+    protected $loggingService;
 
     /**
      * @var string
      */
-    private $mainLocale;
+    protected $mainLocale;
 
     /**
      * @var Context
      */
-    private $context;
+    protected $context;
 
     /**
      * @var string
      */
-    private $connectionId;
+    protected $connectionId;
 
     public function __construct(
         MappingServiceInterface $mappingService,
@@ -70,16 +69,6 @@ abstract class SalesChannelConverter extends ShopwareConverter
         $this->paymentRepository = $paymentRepository;
         $this->shippingMethodRepo = $shippingMethodRepo;
         $this->countryRepository = $countryRepo;
-    }
-
-    public function getSupportedEntityName(): string
-    {
-        return DefaultEntities::SALES_CHANNEL;
-    }
-
-    public function getSupportedProfileName(): string
-    {
-        return Shopware55Profile::PROFILE_NAME;
     }
 
     public function writeMapping(Context $context): void
@@ -270,7 +259,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
         return new ConvertStruct($converted, $data);
     }
 
-    private function getSalesChannelTranslation(array &$salesChannel, array $data): void
+    protected function getSalesChannelTranslation(array &$salesChannel, array $data): void
     {
         $language = $this->mappingService->getDefaultLanguage($this->context);
         if ($language->getLocale()->getCode() === $this->mainLocale) {
@@ -293,7 +282,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
         $salesChannel['translations'][$languageUuid] = $localeTranslation;
     }
 
-    private function getFirstActiveShippingMethodId(): string
+    protected function getFirstActiveShippingMethodId(): string
     {
         $criteria = (new Criteria())
             ->setLimit(1)
@@ -302,7 +291,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
         return $this->shippingMethodRepo->searchIds($criteria, Context::createDefaultContext())->getIds()[0];
     }
 
-    private function getFirstActivePaymentMethodId(): string
+    protected function getFirstActivePaymentMethodId(): string
     {
         $criteria = (new Criteria())
             ->setLimit(1)
@@ -312,7 +301,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
         return $this->paymentRepository->searchIds($criteria, Context::createDefaultContext())->getIds()[0];
     }
 
-    private function getFirstActiveCountryId(): string
+    protected function getFirstActiveCountryId(): string
     {
         $criteria = (new Criteria())
             ->setLimit(1)
@@ -322,7 +311,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
         return $this->countryRepository->searchIds($criteria, Context::createDefaultContext())->getIds()[0];
     }
 
-    private function getSalesChannelLanguages(string $languageUuid, array $data, Context $context): array
+    protected function getSalesChannelLanguages(string $languageUuid, array $data, Context $context): array
     {
         $languages[] = [
             'id' => $languageUuid,

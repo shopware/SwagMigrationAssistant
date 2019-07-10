@@ -12,44 +12,43 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Logging\LogTypes;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\NewsletterRecipientStatusReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\SalutationReader;
-use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
 abstract class NewsletterRecipientConverter extends ShopwareConverter
 {
     /**
      * @var LoggingServiceInterface
      */
-    private $loggingService;
+    protected $loggingService;
 
     /**
      * @var MappingServiceInterface
      */
-    private $mappingService;
+    protected $mappingService;
 
     /**
      * @var Context
      */
-    private $context;
+    protected $context;
 
     /**
      * @var string
      */
-    private $locale;
+    protected $locale;
 
     /**
      * @var string
      */
-    private $connectionId;
+    protected $connectionId;
 
     /**
      * @var string
      */
-    private $oldNewsletterRecipientId;
+    protected $oldNewsletterRecipientId;
 
     /**
      * @var string
      */
-    private $runId;
+    protected $runId;
 
     public function __construct(
         MappingServiceInterface $mappingService,
@@ -57,16 +56,6 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
     ) {
         $this->mappingService = $mappingService;
         $this->loggingService = $loggingService;
-    }
-
-    public function getSupportedEntityName(): string
-    {
-        return DefaultEntities::NEWSLETTER_RECIPIENT;
-    }
-
-    public function getSupportedProfileName(): string
-    {
-        return Shopware55Profile::PROFILE_NAME;
     }
 
     public function writeMapping(Context $context): void
@@ -151,7 +140,7 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         return new ConvertStruct($converted, $data);
     }
 
-    private function getSalutation(string $salutation): ?string
+    protected function getSalutation(string $salutation): ?string
     {
         $salutationUuid = $this->mappingService->getUuid(
             $this->connectionId,
@@ -177,7 +166,7 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         return $salutationUuid;
     }
 
-    private function getSalesChannel(array $data): ?string
+    protected function getSalesChannel(array $data): ?string
     {
         $salesChannelUuid = null;
         if (isset($data['shopId'])) {
@@ -207,7 +196,7 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         return $salesChannelUuid;
     }
 
-    private function getStatus(): ?string
+    protected function getStatus(): ?string
     {
         $status = $this->mappingService->getValue(
             $this->connectionId,

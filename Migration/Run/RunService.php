@@ -135,7 +135,7 @@ class RunService implements RunServiceInterface
         $runUuid = $this->createPlainMigrationRun($migrationContext, $context);
         $accessToken = $this->accessTokenService->updateRunAccessToken($runUuid, $context);
 
-        $environmentInformation = $this->getEnvironmentInformation($migrationContext);
+        $environmentInformation = $this->getEnvironmentInformation($migrationContext, $context);
         $dataSelectionCollection = $this->getDataSelectionCollection($migrationContext, $environmentInformation, $dataSelectionIds);
         $runProgress = $this->calculateRunProgress($environmentInformation, $dataSelectionCollection);
 
@@ -460,9 +460,9 @@ class RunService implements RunServiceInterface
         return array_pop($ids);
     }
 
-    private function getEnvironmentInformation(MigrationContextInterface $migrationContext): EnvironmentInformation
+    private function getEnvironmentInformation(MigrationContextInterface $migrationContext, Context $context): EnvironmentInformation
     {
-        return $this->migrationDataFetcher->getEnvironmentInformation($migrationContext);
+        return $this->migrationDataFetcher->getEnvironmentInformation($migrationContext, $context);
     }
 
     private function getConnection(string $connectionId, Context $context): SwagMigrationConnectionEntity

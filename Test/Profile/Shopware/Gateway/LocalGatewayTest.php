@@ -53,7 +53,7 @@ class LocalGatewayTest extends TestCase
         $readerRegistry = $this->getContainer()->get(ReaderRegistry::class);
         $localEnvironmentReader = new LocalEnvironmentReader($connectionFactory);
         $localTableReader = new LocalTableReader($connectionFactory);
-        $localTableCountReader = new LocalTableCountReader($connectionFactory, $this->getContainer()->get(DataSetRegistry::class));
+        $localTableCountReader = new LocalTableCountReader($connectionFactory, $this->getContainer()->get(DataSetRegistry::class), new DummyLoggingService());
         /** @var EntityRepositoryInterface $currencyRepository */
         $currencyRepository = $this->getContainer()->get('currency.repository');
 
@@ -100,7 +100,7 @@ class LocalGatewayTest extends TestCase
         $readerRegistry = $this->getContainer()->get(ReaderRegistry::class);
         $localEnvironmentReader = new LocalEnvironmentReader($connectionFactory);
         $localTableReader = new LocalTableReader($connectionFactory);
-        $localTableCountReader = new LocalTableCountReader($connectionFactory, $this->getContainer()->get(DataSetRegistry::class));
+        $localTableCountReader = new LocalTableCountReader($connectionFactory, $this->getContainer()->get(DataSetRegistry::class), new DummyLoggingService());
         /** @var EntityRepositoryInterface $currencyRepository */
         $currencyRepository = $this->getContainer()->get('currency.repository');
 
@@ -138,7 +138,7 @@ class LocalGatewayTest extends TestCase
         $connectionFactory = new ConnectionFactory();
         $localEnvironmentReader = new LocalEnvironmentReader($connectionFactory);
         $localTableReader = new LocalTableReader($connectionFactory);
-        $localTableCountReader = new LocalTableCountReader($connectionFactory, $this->getContainer()->get(DataSetRegistry::class));
+        $localTableCountReader = new LocalTableCountReader($connectionFactory, $this->getContainer()->get(DataSetRegistry::class), new DummyLoggingService());
         /** @var EntityRepositoryInterface $currencyRepository */
         $currencyRepository = $this->getContainer()->get('currency.repository');
 

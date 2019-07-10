@@ -7,43 +7,32 @@ use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
 abstract class CustomerGroupConverter extends ShopwareConverter
 {
     /**
      * @var MappingServiceInterface
      */
-    private $mappingService;
+    protected $mappingService;
 
     /**
      * @var string
      */
-    private $connectionId;
+    protected $connectionId;
 
     /**
      * @var Context
      */
-    private $context;
+    protected $context;
 
     /**
      * @var string
      */
-    private $locale;
+    protected $locale;
 
     public function __construct(MappingServiceInterface $mappingService)
     {
         $this->mappingService = $mappingService;
-    }
-
-    public function getSupportedEntityName(): string
-    {
-        return DefaultEntities::CUSTOMER_GROUP;
-    }
-
-    public function getSupportedProfileName(): string
-    {
-        return Shopware55Profile::PROFILE_NAME;
     }
 
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
@@ -115,7 +104,7 @@ abstract class CustomerGroupConverter extends ShopwareConverter
         $this->mappingService->writeMapping($context);
     }
 
-    private function getAttributes(array $attributes): array
+    protected function getAttributes(array $attributes): array
     {
         $result = [];
 

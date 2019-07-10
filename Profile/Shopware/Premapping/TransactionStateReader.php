@@ -18,7 +18,7 @@ use SwagMigrationAssistant\Migration\Premapping\PremappingEntityStruct;
 use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\CustomerAndOrderDataSelection;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\ShopwareGatewayInterface;
-use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
 class TransactionStateReader extends AbstractPremappingReader
 {
@@ -59,9 +59,9 @@ class TransactionStateReader extends AbstractPremappingReader
         return self::MAPPING_NAME;
     }
 
-    public function supports(string $profileName, string $gatewayIdentifier, array $entityGroupNames): bool
+    public function supports(MigrationContextInterface $migrationContext, array $entityGroupNames): bool
     {
-        return $profileName === Shopware55Profile::PROFILE_NAME
+        return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && in_array(CustomerAndOrderDataSelection::IDENTIFIER, $entityGroupNames, true);
     }
 

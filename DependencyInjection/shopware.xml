@@ -15,6 +15,7 @@
             <argument type="service" id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalTableReader" />
             <argument type="service" id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalTableCountReader" />
             <argument type="service" id="SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory" />
+            <argument type="service" id="currency.repository"/>
             <tag name="shopware.migration.gateway" />
         </service>
 
@@ -198,6 +199,7 @@
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiTableCountReader">
             <argument type="service" id="SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory" />
             <argument type="service" id="SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry" />
+            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ReaderRegistry">
@@ -219,6 +221,7 @@
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalTableCountReader">
             <argument type="service" id="SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory" />
             <argument type="service" id="SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry" />
+            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalAttributeReader"
@@ -292,6 +295,11 @@
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalTranslationReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalAbstractReader">
+            <tag name="shopware.migration.local_reader" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalOrderDocumentReader"
                  parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalAbstractReader">
             <tag name="shopware.migration.local_reader" />
         </service>

@@ -15,49 +15,48 @@ use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderDocumentDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Logging\LogTypes;
-use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
 abstract class OrderDocumentConverter extends ShopwareConverter
 {
     /**
      * @var MappingServiceInterface
      */
-    private $mappingService;
+    protected $mappingService;
 
     /**
      * @var LoggingServiceInterface
      */
-    private $loggingService;
+    protected $loggingService;
 
     /**
      * @var MediaFileServiceInterface
      */
-    private $mediaFileService;
+    protected $mediaFileService;
 
     /**
      * @var string
      */
-    private $oldId;
+    protected $oldId;
 
     /**
      * @var string
      */
-    private $runId;
+    protected $runId;
 
     /**
      * @var string
      */
-    private $connectionId;
+    protected $connectionId;
 
     /**
      * @var Context
      */
-    private $context;
+    protected $context;
 
     /**
      * @var MigrationContextInterface
      */
-    private $migrationContext;
+    protected $migrationContext;
 
     public function __construct(
         MappingServiceInterface $mappingService,
@@ -67,16 +66,6 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         $this->mappingService = $mappingService;
         $this->loggingService = $loggingService;
         $this->mediaFileService = $mediaFileService;
-    }
-
-    public function getSupportedEntityName(): string
-    {
-        return DefaultEntities::ORDER_DOCUMENT;
-    }
-
-    public function getSupportedProfileName(): string
-    {
-        return Shopware55Profile::PROFILE_NAME;
     }
 
     public function writeMapping(Context $context): void
@@ -130,7 +119,11 @@ abstract class OrderDocumentConverter extends ShopwareConverter
             unset($data['docID']);
         }
 
-        $converted['documentType'] = $this->getDocumentType($data['documenttype']);
+        $documentType = $this->getDocumentType($data['documenttype']);
+        if ($documentType === null) {
+            return new ConvertStruct(null, $oldData);
+        }
+        $converted['documentType'] = $documentType;
         unset($data['documenttype']);
 
         $converted['documentMediaFile'] = $this->getMediaFile($data);
@@ -147,8 +140,14 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         return new ConvertStruct($converted, $data);
     }
 
-    private function getDocumentType(array $data): array
+    protected function getDocumentType(array $data): ?array
     {
+        $knownTypes = ['invoice', 'delivery_note', 'storno', 'credit_note'];
+
+        if (!in_array($data['key'], $knownTypes, true)) {
+            return null;
+        }
+
         $documentType['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
             DocumentTypeDefinition::ENTITY_NAME,
@@ -162,7 +161,7 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         return $documentType;
     }
 
-    private function getMediaFile(array $data): array
+    protected function getMediaFile(array $data): array
     {
         $newMedia['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,

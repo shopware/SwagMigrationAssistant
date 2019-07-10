@@ -20,17 +20,14 @@ class MediaFileProcessorRegistry implements MediaFileProcessorRegistryInterface
     /**
      * @throws ProcessorNotFoundException
      */
-    public function getProcessor(MigrationContextInterface $context): MediaFileProcessorInterface
+    public function getProcessor(MigrationContextInterface $migrationContext): MediaFileProcessorInterface
     {
-        $profileName = $context->getConnection()->getProfileName();
-        $gatewayName = $context->getConnection()->getGatewayName();
-        $entity = $context->getDataSet()::getEntity();
         foreach ($this->processors as $processor) {
-            if ($processor->supports($profileName, $gatewayName, $entity)) {
+            if ($processor->supports($migrationContext)) {
                 return $processor;
             }
         }
 
-        throw new ProcessorNotFoundException($profileName, $gatewayName);
+        throw new ProcessorNotFoundException($migrationContext->getConnection()->getProfileName(), $migrationContext->getConnection()->getGatewayName());
     }
 }

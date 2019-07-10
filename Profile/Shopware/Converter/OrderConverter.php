@@ -23,59 +23,58 @@ use SwagMigrationAssistant\Profile\Shopware\Premapping\OrderStateReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\PaymentMethodReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\SalutationReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\TransactionStateReader;
-use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
 abstract class OrderConverter extends ShopwareConverter
 {
     /**
      * @var MappingServiceInterface
      */
-    private $mappingService;
+    protected $mappingService;
 
     /**
      * @var string
      */
-    private $mainLocale;
+    protected $mainLocale;
 
     /**
      * @var TaxCalculator
      */
-    private $taxCalculator;
+    protected $taxCalculator;
 
     /**
      * @var Context
      */
-    private $context;
+    protected $context;
 
     /**
      * @var string
      */
-    private $connectionId;
+    protected $connectionId;
 
     /**
      * @var LoggingServiceInterface
      */
-    private $loggingService;
+    protected $loggingService;
 
     /**
      * @var string
      */
-    private $oldId;
+    protected $oldId;
 
     /**
      * @var string
      */
-    private $uuid;
+    protected $uuid;
 
     /**
      * @var string
      */
-    private $runId;
+    protected $runId;
 
     /**
      * @var string[]
      */
-    private $requiredDataFieldKeys = [
+    protected $requiredDataFieldKeys = [
         'customer',
         'currency',
         'currencyFactor',
@@ -86,7 +85,7 @@ abstract class OrderConverter extends ShopwareConverter
     /**
      * @var string[]
      */
-    private $requiredAddressDataFieldKeys = [
+    protected $requiredAddressDataFieldKeys = [
         'firstname',
         'lastname',
         'zipcode',
@@ -103,16 +102,6 @@ abstract class OrderConverter extends ShopwareConverter
         $this->mappingService = $mappingService;
         $this->taxCalculator = $taxCalculator;
         $this->loggingService = $loggingService;
-    }
-
-    public function getSupportedEntityName(): string
-    {
-        return DefaultEntities::ORDER;
-    }
-
-    public function getSupportedProfileName(): string
-    {
-        return Shopware55Profile::PROFILE_NAME;
     }
 
     public function writeMapping(Context $context): void
@@ -374,7 +363,7 @@ abstract class OrderConverter extends ShopwareConverter
         return new ConvertStruct($converted, $data);
     }
 
-    private function getTransactions(array $data, array &$converted): void
+    protected function getTransactions(array $data, array &$converted): void
     {
         $converted['transactions'] = [];
         if (!isset($converted['lineItems'])) {
@@ -435,7 +424,7 @@ abstract class OrderConverter extends ShopwareConverter
         $converted['transactions'] = $transactions;
     }
 
-    private function getPaymentMethod(array $originalData): ?string
+    protected function getPaymentMethod(array $originalData): ?string
     {
         $paymentMethodUuid = $this->mappingService->getUuid(
             $this->connectionId,
@@ -461,7 +450,7 @@ abstract class OrderConverter extends ShopwareConverter
         return $paymentMethodUuid;
     }
 
-    private function getAddress(array $originalData): array
+    protected function getAddress(array $originalData): array
     {
         $fields = $this->checkForEmptyRequiredDataFields($originalData, $this->requiredAddressDataFieldKeys);
         if (!empty($fields)) {
@@ -538,7 +527,7 @@ abstract class OrderConverter extends ShopwareConverter
         return $address;
     }
 
-    private function getCountry(array $oldCountryData): array
+    protected function getCountry(array $oldCountryData): array
     {
         $country = [];
         if (isset($oldCountryData['countryiso'], $oldCountryData['iso3'])) {
@@ -575,7 +564,7 @@ abstract class OrderConverter extends ShopwareConverter
         return $country;
     }
 
-    private function getCountryTranslation(array &$country, array $data): void
+    protected function getCountryTranslation(array &$country, array $data): void
     {
         $language = $this->mappingService->getDefaultLanguage($this->context);
         if ($language->getLocale()->getCode() === $this->mainLocale) {
@@ -600,7 +589,7 @@ abstract class OrderConverter extends ShopwareConverter
         $country['translations'][$languageUuid] = $localeTranslation;
     }
 
-    private function getCountryState(array $oldStateData, string $newCountryId): array
+    protected function getCountryState(array $oldStateData, string $newCountryId): array
     {
         $state = [];
         $state['id'] = $this->mappingService->createNewUuid(
@@ -620,7 +609,7 @@ abstract class OrderConverter extends ShopwareConverter
         return $state;
     }
 
-    private function getCountryStateTranslation(array &$state, array $data): void
+    protected function getCountryStateTranslation(array &$state, array $data): void
     {
         $language = $this->mappingService->getDefaultLanguage($this->context);
         if ($language->getLocale()->getCode() === $this->mainLocale) {
@@ -645,7 +634,7 @@ abstract class OrderConverter extends ShopwareConverter
         $state['translations'][$languageUuid] = $localeTranslation;
     }
 
-    private function getDeliveries(array $data, array $converted, CalculatedPrice $shippingCosts): array
+    protected function getDeliveries(array $data, array $converted, CalculatedPrice $shippingCosts): array
     {
         $deliveries = [];
 
@@ -703,7 +692,7 @@ abstract class OrderConverter extends ShopwareConverter
         return $deliveries;
     }
 
-    private function getShippingMethod(array $originalData): array
+    protected function getShippingMethod(array $originalData): array
     {
         $shippingMethod = [];
         $shippingMethod['id'] = $this->mappingService->createNewUuid(
@@ -766,7 +755,7 @@ abstract class OrderConverter extends ShopwareConverter
         return $shippingMethod;
     }
 
-    private function getShippingMethodTranslation(array &$shippingMethod, array $data): void
+    protected function getShippingMethodTranslation(array &$shippingMethod, array $data): void
     {
         $language = $this->mappingService->getDefaultLanguage($this->context);
         if ($language->getLocale()->getCode() === $this->mainLocale) {
@@ -793,7 +782,7 @@ abstract class OrderConverter extends ShopwareConverter
         $shippingMethod['translations'][$languageUuid] = $localeTranslation;
     }
 
-    private function getLineItems(array $originalData, array &$converted, TaxRuleCollection $taxRules, string $taxStatus, Context $context): array
+    protected function getLineItems(array $originalData, array &$converted, TaxRuleCollection $taxRules, string $taxStatus, Context $context): array
     {
         $lineItems = [];
 
@@ -880,7 +869,7 @@ abstract class OrderConverter extends ShopwareConverter
         return $lineItems;
     }
 
-    private function getTaxRules(array $originalData): TaxRuleCollection
+    protected function getTaxRules(array $originalData): TaxRuleCollection
     {
         $taxRates = array_unique(array_column($originalData['details'], 'tax_rate'));
 
@@ -892,7 +881,7 @@ abstract class OrderConverter extends ShopwareConverter
         return new TaxRuleCollection($taxRules);
     }
 
-    private function getTaxStatus(array $originalData): string
+    protected function getTaxStatus(array $originalData): string
     {
         $taxStatus = CartPrice::TAX_STATE_GROSS;
         if (isset($originalData['net']) && (bool) $originalData['net']) {
@@ -905,7 +894,7 @@ abstract class OrderConverter extends ShopwareConverter
         return $taxStatus;
     }
 
-    private function getSalutation(string $salutation): ?string
+    protected function getSalutation(string $salutation): ?string
     {
         $salutationUuid = $this->mappingService->getUuid(
             $this->connectionId,
@@ -931,7 +920,7 @@ abstract class OrderConverter extends ShopwareConverter
         return $salutationUuid;
     }
 
-    private function getAttributes(array $attributes): array
+    protected function getAttributes(array $attributes): array
     {
         $result = [];
 

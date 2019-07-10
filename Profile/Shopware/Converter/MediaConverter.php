@@ -9,34 +9,33 @@ use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
-use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
 abstract class MediaConverter extends ShopwareConverter
 {
     /**
      * @var MappingServiceInterface
      */
-    private $mappingService;
+    protected $mappingService;
 
     /**
      * @var MediaFileServiceInterface
      */
-    private $mediaFileService;
+    protected $mediaFileService;
 
     /**
      * @var Context
      */
-    private $context;
+    protected $context;
 
     /**
      * @var string
      */
-    private $locale;
+    protected $locale;
 
     /**
      * @var string
      */
-    private $connectionId;
+    protected $connectionId;
 
     public function __construct(
         MappingServiceInterface $mappingService,
@@ -44,16 +43,6 @@ abstract class MediaConverter extends ShopwareConverter
     ) {
         $this->mappingService = $mappingService;
         $this->mediaFileService = $mediaFileService;
-    }
-
-    public function getSupportedEntityName(): string
-    {
-        return DefaultEntities::MEDIA;
-    }
-
-    public function getSupportedProfileName(): string
-    {
-        return Shopware55Profile::PROFILE_NAME;
     }
 
     public function writeMapping(Context $context): void
@@ -133,7 +122,7 @@ abstract class MediaConverter extends ShopwareConverter
     }
 
     // Todo: Check if this is necessary, because name and description is currently not translatable
-    private function getMediaTranslation(array &$media, array $data): void
+    protected function getMediaTranslation(array &$media, array $data): void
     {
         $language = $this->mappingService->getDefaultLanguage($this->context);
         if ($language->getLocale()->getCode() === $this->locale) {

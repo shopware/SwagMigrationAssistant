@@ -17,7 +17,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\NoFileSystemPermissionsException;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
-use SwagMigrationAssistant\Migration\Media\AbstractMediaFileProcessor;
+use SwagMigrationAssistant\Migration\Media\MediaFileProcessorInterface;
 use SwagMigrationAssistant\Migration\Media\MediaProcessWorkloadStruct;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileEntity;
 use SwagMigrationAssistant\Migration\MessageQueue\Handler\ProcessMediaHandler;
@@ -25,9 +25,9 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\ShopwareApiGateway;
 use SwagMigrationAssistant\Profile\Shopware\Logging\LogTypes;
-use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
-class HttpMediaDownloadService extends AbstractMediaFileProcessor
+class HttpMediaDownloadService implements MediaFileProcessorInterface
 {
     /**
      * @var FileSaver
@@ -54,19 +54,11 @@ class HttpMediaDownloadService extends AbstractMediaFileProcessor
         $this->loggingService = $loggingService;
     }
 
-    public function getSupportedProfileName(): string
+    public function supports(MigrationContextInterface $migrationContext): bool
     {
-        return Shopware55Profile::PROFILE_NAME;
-    }
-
-    public function getSupportedGatewayIdentifier(): string
-    {
-        return ShopwareApiGateway::GATEWAY_NAME;
-    }
-
-    public function getSupportedEntity(): string
-    {
-        return MediaDataSet::getEntity();
+        return $migrationContext->getProfile() instanceof ShopwareProfileInterface
+            && $migrationContext->getGateway()->getName() === ShopwareApiGateway::GATEWAY_NAME
+            && $migrationContext->getDataSet()::getEntity() === MediaDataSet::getEntity();
     }
 
     /**

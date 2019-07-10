@@ -11,6 +11,7 @@ use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\DummyCollection;
+use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGateway;
 use SwagMigrationAssistant\Test\Mock\Migration\Media\DummyHttpMediaDownloadService;
 use SwagMigrationAssistant\Test\Profile\Shopware\DataSet\FooDataSet;
 use Symfony\Component\HttpFoundation\Response;
@@ -46,6 +47,7 @@ class MediaFileProcessorRegistryTest extends TestCase
             '',
             new FooDataSet()
         );
+        $context->setGateway(new DummyLocalGateway());
 
         try {
             $this->processorRegistry->getProcessor($context);

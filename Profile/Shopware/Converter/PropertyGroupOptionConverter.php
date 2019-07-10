@@ -11,44 +11,43 @@ use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Logging\LogTypes;
-use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
 abstract class PropertyGroupOptionConverter extends ShopwareConverter
 {
     /**
      * @var MappingServiceInterface
      */
-    private $mappingService;
+    protected $mappingService;
 
     /**
      * @var string
      */
-    private $connectionId;
+    protected $connectionId;
 
     /**
      * @var Context
      */
-    private $context;
+    protected $context;
 
     /**
      * @var LoggingServiceInterface
      */
-    private $loggingService;
+    protected $loggingService;
 
     /**
      * @var string
      */
-    private $runId;
+    protected $runId;
 
     /**
      * @var MediaFileServiceInterface
      */
-    private $mediaFileService;
+    protected $mediaFileService;
 
     /**
      * @var string
      */
-    private $locale;
+    protected $locale;
 
     public function __construct(
         MappingServiceInterface $mappingService,
@@ -58,16 +57,6 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         $this->mappingService = $mappingService;
         $this->loggingService = $loggingService;
         $this->mediaFileService = $mediaFileService;
-    }
-
-    public function getSupportedEntityName(): string
-    {
-        return DefaultEntities::PROPERTY_GROUP_OPTION;
-    }
-
-    public function getSupportedProfileName(): string
-    {
-        return Shopware55Profile::PROFILE_NAME;
     }
 
     public function writeMapping(Context $context): void
@@ -130,7 +119,7 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         return new ConvertStruct($converted, null);
     }
 
-    private function getMedia(array &$converted, array $data): void
+    protected function getMedia(array &$converted, array $data): void
     {
         if (!isset($data['media']['id'])) {
             $this->loggingService->addInfo(
@@ -189,7 +178,7 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
     }
 
     // Todo: Check if this is necessary, because name and description is currently not translatable
-    private function getMediaTranslation(array &$media, array $data): void
+    protected function getMediaTranslation(array &$media, array $data): void
     {
         $language = $this->mappingService->getDefaultLanguage($this->context);
         if ($language->getLocale()->getCode() === $this->locale) {
@@ -214,7 +203,7 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         $media['translations'][$languageUuid] = $localeTranslation;
     }
 
-    private function getConfiguratorSettings(array &$data, array &$converted): void
+    protected function getConfiguratorSettings(array &$data, array &$converted): void
     {
         $variantOptionsToProductContainer = $this->mappingService->getUuidList(
             $this->connectionId,
@@ -237,7 +226,7 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         }
     }
 
-    private function getProperties(array $data, array &$converted): void
+    protected function getProperties(array $data, array &$converted): void
     {
         $propertyOptionsToProductContainer = $this->mappingService->getUuidList(
             $this->connectionId,
@@ -253,7 +242,7 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         }
     }
 
-    private function createAndDeleteNecessaryMappings(array $data, array $converted): void
+    protected function createAndDeleteNecessaryMappings(array $data, array $converted): void
     {
         $this->mappingService->createNewUuid(
             $this->connectionId,
@@ -320,7 +309,7 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         }
     }
 
-    private function getTranslation(array &$data, array &$converted): void
+    protected function getTranslation(array &$data, array &$converted): void
     {
         $language = $this->mappingService->getDefaultLanguage($this->context);
         $defaultLanguageUuid = $language->getId();

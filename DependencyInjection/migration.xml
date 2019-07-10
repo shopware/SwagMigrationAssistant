@@ -193,10 +193,11 @@
         </service>
 
         <service id="SwagMigrationAssistant\Migration\MessageQueue\Handler\ProcessMediaHandler">
-            <tag name="messenger.message_handler" />
-            <argument type="service" id="swag_migration_run.repository"></argument>
+            <argument type="service" id="swag_migration_run.repository" />
             <argument type="service" id="SwagMigrationAssistant\Migration\Media\MediaFileProcessorRegistry"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\MigrationContextFactory" />
+            <tag name="messenger.message_handler" />
         </service>
     </services>
 </container>

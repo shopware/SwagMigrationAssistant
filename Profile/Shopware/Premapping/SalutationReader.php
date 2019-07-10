@@ -16,7 +16,7 @@ use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\CustomerAndOrderDataSelection;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\NewsletterRecipientDataSelection;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\ShopwareGatewayInterface;
-use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
 class SalutationReader extends AbstractPremappingReader
 {
@@ -50,9 +50,9 @@ class SalutationReader extends AbstractPremappingReader
         return self::MAPPING_NAME;
     }
 
-    public function supports(string $profileName, string $gatewayIdentifier, array $entityGroupNames): bool
+    public function supports(MigrationContextInterface $migrationContext, array $entityGroupNames): bool
     {
-        return $profileName === Shopware55Profile::PROFILE_NAME
+        return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && (in_array(CustomerAndOrderDataSelection::IDENTIFIER, $entityGroupNames, true)
             || in_array(NewsletterRecipientDataSelection::IDENTIFIER, $entityGroupNames, true));
     }

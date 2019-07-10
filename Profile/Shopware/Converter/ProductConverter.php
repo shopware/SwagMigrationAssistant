@@ -17,7 +17,6 @@ use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Exception\ParentEntityForChildNotFoundException;
 use SwagMigrationAssistant\Profile\Shopware\Logging\LogTypes;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\ProductManufacturerReader;
-use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
 abstract class ProductConverter extends ShopwareConverter
 {
@@ -27,47 +26,47 @@ abstract class ProductConverter extends ShopwareConverter
     /**
      * @var MappingServiceInterface
      */
-    private $mappingService;
+    protected $mappingService;
 
     /**
      * @var Context
      */
-    private $context;
+    protected $context;
 
     /**
      * @var string
      */
-    private $oldProductId;
+    protected $oldProductId;
 
     /**
      * @var string
      */
-    private $connectionId;
+    protected $connectionId;
 
     /**
      * @var string
      */
-    private $runId;
+    protected $runId;
 
     /**
      * @var MediaFileServiceInterface
      */
-    private $mediaFileService;
+    protected $mediaFileService;
 
     /**
      * @var LoggingServiceInterface
      */
-    private $loggingService;
+    protected $loggingService;
 
     /**
      * @var string[]
      */
-    private $requiredDataFieldKeys = [
+    protected $requiredDataFieldKeys = [
         'tax',
         'prices',
     ];
 
-    private $defaultValues = [
+    protected $defaultValues = [
         'minPurchase' => 1,
         'purchaseSteps' => 1,
         'shippingFree' => false,
@@ -79,17 +78,17 @@ abstract class ProductConverter extends ShopwareConverter
     /**
      * @var string
      */
-    private $locale;
+    protected $locale;
 
     /**
      * @var int
      */
-    private $productType;
+    protected $productType;
 
     /**
      * @var string
      */
-    private $mainProductId;
+    protected $mainProductId;
 
     public function __construct(
         MappingServiceInterface $mappingService,
@@ -99,16 +98,6 @@ abstract class ProductConverter extends ShopwareConverter
         $this->mappingService = $mappingService;
         $this->mediaFileService = $mediaFileService;
         $this->loggingService = $loggingService;
-    }
-
-    public function getSupportedEntityName(): string
-    {
-        return DefaultEntities::PRODUCT;
-    }
-
-    public function getSupportedProfileName(): string
-    {
-        return Shopware55Profile::PROFILE_NAME;
     }
 
     public function writeMapping(Context $context): void
@@ -191,7 +180,7 @@ abstract class ProductConverter extends ShopwareConverter
         return new ConvertStruct($converted, $data);
     }
 
-    private function convertMainProduct(array $data): ConvertStruct
+    protected function convertMainProduct(array $data): ConvertStruct
     {
         $containerUuid = $this->mappingService->createNewUuid(
             $this->connectionId,
@@ -260,7 +249,7 @@ abstract class ProductConverter extends ShopwareConverter
     /**
      * @throws ParentEntityForChildNotFoundException
      */
-    private function convertVariantProduct(array $data): ConvertStruct
+    protected function convertVariantProduct(array $data): ConvertStruct
     {
         $parentUuid = $this->mappingService->getUuid(
             $this->connectionId,
