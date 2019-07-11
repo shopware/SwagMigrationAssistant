@@ -16,7 +16,6 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Exception\ParentEntityForChildNotFoundException;
 use SwagMigrationAssistant\Profile\Shopware\Logging\LogTypes;
-use SwagMigrationAssistant\Profile\Shopware\Premapping\ProductManufacturerReader;
 
 abstract class ProductConverter extends ShopwareConverter
 {
@@ -165,10 +164,6 @@ abstract class ProductConverter extends ShopwareConverter
 
         unset($data['detail']['id'], $data['detail']['articleID']);
 
-        if (!isset($converted['manufacturerId']) && !isset($converted['manufacturer'])) {
-            return new ConvertStruct(null, $data);
-        }
-
         if (empty($data['detail'])) {
             unset($data['detail']);
         }
@@ -303,34 +298,8 @@ abstract class ProductConverter extends ShopwareConverter
     {
         if (isset($data['manufacturer'])) {
             $converted['manufacturer'] = $this->getManufacturer($data['manufacturer']);
-            unset($data['manufacturer'], $data['supplierID']);
-        } else {
-            $manufacturerUuid = $this->mappingService->getUuid(
-                $this->connectionId,
-                ProductManufacturerReader::getMappingName(),
-                'default_manufacturer',
-                $this->context
-            );
-
-            if ($manufacturerUuid !== null) {
-                $converted['manufacturerId'] = $manufacturerUuid;
-
-                unset($data['supplierID']);
-            } else {
-                $this->loggingService->addWarning(
-                    $this->runId,
-                    LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
-                    'Empty necessary data fields',
-                    'Product-Entity could not be converted cause of empty necessary field(s): manufacturer.',
-                    [
-                        'id' => $this->oldProductId,
-                        'entity' => DefaultEntities::PRODUCT,
-                        'fields' => ['manufacturer'],
-                    ],
-                    1
-                );
-            }
         }
+        unset($data['manufacturer'], $data['supplierID']);
 
         $converted['tax'] = $this->getTax($data['tax']);
         unset($data['tax'], $data['taxID']);
@@ -390,7 +359,6 @@ abstract class ProductConverter extends ShopwareConverter
         $this->convertValue($converted, 'isCloseout', $data, 'laststock', self::TYPE_BOOLEAN);
         $this->convertValue($converted, 'markAsTopseller', $data, 'topseller', self::TYPE_BOOLEAN);
         $this->convertValue($converted, 'allowNotification', $data, 'notification', self::TYPE_BOOLEAN);
-
         $this->convertValue($converted, 'manufacturerNumber', $data['detail'], 'suppliernumber');
         $this->convertValue($converted, 'active', $data['detail'], 'active', self::TYPE_BOOLEAN);
         $this->convertValue($converted, 'sales', $data['detail'], 'sales', self::TYPE_INTEGER);

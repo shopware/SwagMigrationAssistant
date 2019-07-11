@@ -439,11 +439,6 @@
             <tag name="shopware.migration.pre_mapping_reader"/>
         </service>
 
-        <service id="SwagMigrationAssistant\Profile\Shopware\Premapping\ProductManufacturerReader">
-            <argument type="service" id="product_manufacturer.repository"/>
-            <tag name="shopware.migration.pre_mapping_reader"/>
-        </service>
-
         <service id="SwagMigrationAssistant\Profile\Shopware\Premapping\SalutationReader">
             <argument type="service" id="salutation.repository" />
             <argument type="service" id="SwagMigrationAssistant\Migration\Gateway\GatewayRegistry"/>
