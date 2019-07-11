@@ -70,4 +70,6 @@ interface MappingServiceInterface
     public function writeMapping(Context $context): void;
 
     public function getDefaultAvailabilityRule(Context $context): ?string;
+
+    public function getLowestRootCategoryUuid(Context $context): ?string;
 }

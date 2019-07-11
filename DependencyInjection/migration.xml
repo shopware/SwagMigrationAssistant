@@ -42,6 +42,7 @@
             <argument type="service" id="rule.repository"/>
             <argument type="service" id="media_thumbnail_size.repository"/>
             <argument type="service" id="media_default_folder.repository"/>
+            <argument type="service" id="category.repository"/>
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition"/>
         </service>

@@ -157,4 +157,9 @@ class DummyMappingService extends MappingService
     {
         return Uuid::randomHex();
     }
+
+    public function getLowestRootCategoryUuid(Context $context): ?string
+    {
+        return null;
+    }
 }

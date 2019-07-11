@@ -130,8 +130,27 @@ abstract class CategoryConverter extends ShopwareConverter
             }
 
             $converted['parentId'] = $parentUuid;
+        // get last root category as previous sibling
+        } elseif (!isset($data['previousSiblingId'])) {
+            $previousSiblingUuid = $this->mappingService->getLowestRootCategoryUuid($context);
+
+            if ($previousSiblingUuid !== null) {
+                $converted['afterCategoryId'] = $previousSiblingUuid;
+            }
         }
         unset($data['parent']);
+
+        if (isset($data['previousSiblingId'])) {
+            $previousSiblingUuid = $this->mappingService->getUuid(
+                $this->connectionId,
+                DefaultEntities::CATEGORY,
+                $data['previousSiblingId'],
+                $this->context
+            );
+
+            $converted['afterCategoryId'] = $previousSiblingUuid;
+        }
+        unset($data['previousSiblingId']);
 
         $converted['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
@@ -142,7 +161,6 @@ abstract class CategoryConverter extends ShopwareConverter
         unset($data['id']);
 
         $this->convertValue($converted, 'description', $data, 'cmstext', self::TYPE_STRING);
-        $this->convertValue($converted, 'position', $data, 'position', self::TYPE_INTEGER);
         $this->convertValue($converted, 'level', $data, 'level', self::TYPE_INTEGER);
         $this->convertValue($converted, 'active', $data, 'active', self::TYPE_BOOLEAN);
         $this->convertValue($converted, 'isBlog', $data, 'blog', self::TYPE_BOOLEAN);
@@ -153,6 +171,7 @@ abstract class CategoryConverter extends ShopwareConverter
         $this->convertValue($converted, 'hideSortings', $data, 'hide_sortings', self::TYPE_BOOLEAN);
         $this->convertValue($converted, 'sortingIds', $data, 'sorting_ids');
         $this->convertValue($converted, 'facetIds', $data, 'facet_ids');
+        unset($data['position']);
 
         if (isset($data['asset'])) {
             $converted['media'] = $this->getCategoryMedia($data['asset']);
