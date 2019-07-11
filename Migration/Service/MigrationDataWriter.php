@@ -16,6 +16,7 @@ use Shopware\Core\Framework\ShopwareHttpException;
 use SwagMigrationAssistant\Exception\WriterNotFoundException;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -113,7 +114,11 @@ class MigrationDataWriter implements MigrationDataWriterInterface
                 $code = $writerNotFoundException->getErrorCode();
             }
 
-            $this->loggingService->addError($migrationContext->getRunUuid(), (string) $code, '', $writerNotFoundException->getMessage(), ['entity' => $dataSet::getEntity()]);
+            $this->loggingService->addLogEntry(new ExceptionRunLog(
+                $migrationContext->getRunUuid(),
+                $dataSet::getEntity(),
+                $writerNotFoundException
+            ));
             $this->loggingService->saveLogging($context);
 
             return;
@@ -157,7 +162,11 @@ class MigrationDataWriter implements MigrationDataWriterInterface
                     $code = $exception->getErrorCode();
                 }
 
-                $this->loggingService->addError($migrationContext->getRunUuid(), (string) $code, '', $exception->getMessage(), ['entity' => $entityName]);
+                $this->loggingService->addLogEntry(new ExceptionRunLog(
+                    $migrationContext->getRunUuid(),
+                    $entityName,
+                    $exception
+                ));
                 $this->loggingService->saveLogging($context);
 
                 $updateWrittenData[$dataId]['written'] = false;

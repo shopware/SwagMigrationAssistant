@@ -5,8 +5,8 @@ namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 use Shopware\Core\Framework\Context;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\EntityAlreadyExistsRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
-use SwagMigrationAssistant\Migration\Logging\LogType;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
@@ -58,13 +58,11 @@ abstract class LanguageConverter extends ShopwareConverter
         $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $data['locale'], $context, true);
 
         if ($languageUuid !== null) {
-            $this->loggingService->addInfo(
+            $this->loggingService->addLogEntry(new EntityAlreadyExistsRunLog(
                 $migrationContext->getRunUuid(),
-                LogType::ENTITY_ALREADY_EXISTS,
-                'Entity already exists',
-                'Language-Entity already exists.',
-                ['id' => $data['id'], 'locale' => $data['locale'], 'uuid' => $languageUuid]
-            );
+                DefaultEntities::LANGUAGE,
+                $data['id']
+            ));
 
             return new ConvertStruct(null, $data);
         }

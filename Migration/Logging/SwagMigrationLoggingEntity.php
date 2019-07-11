@@ -13,59 +13,164 @@ class SwagMigrationLoggingEntity extends Entity
     /**
      * @var string
      */
-    protected $runId;
+    protected $level;
 
     /**
      * @var string
      */
-    protected $type;
+    protected $code;
+
+    /**
+     * @var string
+     */
+    protected $title;
+
+    /**
+     * @var string
+     */
+    protected $description;
 
     /**
      * @var array
      */
-    protected $logEntry;
+    protected $descriptionArguments;
 
     /**
-     * @var SwagMigrationRunEntity
+     * @var string
+     */
+    protected $titleSnippet;
+
+    /**
+     * @var string
+     */
+    protected $descriptionSnippet;
+
+    /**
+     * @var ?string
+     */
+    protected $entity;
+
+    /**
+     * @var ?string
+     */
+    protected $sourceId;
+
+    /**
+     * @var ?string
+     */
+    protected $runId;
+
+    /**
+     * @var ?SwagMigrationRunEntity
      */
     protected $run;
 
-    public function getRunId(): string
+    public function getLevel(): string
+    {
+        return $this->level;
+    }
+
+    public function setLevel(string $level): void
+    {
+        $this->level = $level;
+    }
+
+    public function getCode(): string
+    {
+        return $this->code;
+    }
+
+    public function setCode(string $code): void
+    {
+        $this->code = $code;
+    }
+
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
+    public function setTitle(string $title): void
+    {
+        $this->title = $title;
+    }
+
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): void
+    {
+        $this->description = $description;
+    }
+
+    public function getDescriptionArguments(): array
+    {
+        return $this->descriptionArguments;
+    }
+
+    public function setDescriptionArguments(array $descriptionArguments): void
+    {
+        $this->descriptionArguments = $descriptionArguments;
+    }
+
+    public function getTitleSnippet(): string
+    {
+        return $this->titleSnippet;
+    }
+
+    public function setTitleSnippet(string $titleSnippet): void
+    {
+        $this->titleSnippet = $titleSnippet;
+    }
+
+    public function getDescriptionSnippet(): string
+    {
+        return $this->descriptionSnippet;
+    }
+
+    public function setDescriptionSnippet(string $descriptionSnippet): void
+    {
+        $this->descriptionSnippet = $descriptionSnippet;
+    }
+
+    public function getEntity(): ?string
+    {
+        return $this->entity;
+    }
+
+    public function setEntity(?string $entity): void
+    {
+        $this->entity = $entity;
+    }
+
+    public function getSourceId(): ?string
+    {
+        return $this->sourceId;
+    }
+
+    public function setSourceId(?string $sourceId): void
+    {
+        $this->sourceId = $sourceId;
+    }
+
+    public function getRunId(): ?string
     {
         return $this->runId;
     }
 
-    public function setRunId(string $runId): void
+    public function setRunId(?string $runId): void
     {
         $this->runId = $runId;
     }
 
-    public function getType(): string
-    {
-        return $this->type;
-    }
-
-    public function setType(string $type): void
-    {
-        $this->type = $type;
-    }
-
-    public function getLogEntry(): array
-    {
-        return $this->logEntry;
-    }
-
-    public function setLogEntry(array $logEntry): void
-    {
-        $this->logEntry = $logEntry;
-    }
-
-    public function getRun(): SwagMigrationRunEntity
+    public function getRun(): ?SwagMigrationRunEntity
     {
         return $this->run;
     }
 
-    public function setRun(SwagMigrationRunEntity $run): void
+    public function setRun(?SwagMigrationRunEntity $run): void
     {
         $this->run = $run;
     }

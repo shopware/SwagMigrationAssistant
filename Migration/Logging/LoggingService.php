@@ -4,6 +4,7 @@ namespace SwagMigrationAssistant\Migration\Logging;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use SwagMigrationAssistant\Migration\Logging\Log\LogEntryInterface;
 
 class LoggingService implements LoggingServiceInterface
 {
@@ -28,17 +29,14 @@ class LoggingService implements LoggingServiceInterface
 
     public function addInfo(string $runId, string $code, string $title, string $description, array $details = [], int $counting = 0): void
     {
-        $this->addLog($runId, self::INFO_TYPE, $code, $title, $description, $details, $counting);
     }
 
     public function addWarning(string $runId, string $code, string $title, string $description, array $details = [], int $counting = 0): void
     {
-        $this->addLog($runId, self::WARNING_TYPE, $code, $title, $description, $details, $counting);
     }
 
     public function addError(string $runId, string $code, string $title, string $description, array $details = [], int $counting = 0): void
     {
-        $this->addLog($runId, self::ERROR_TYPE, $code, $title, $description, $details, $counting);
     }
 
     public function saveLogging(Context $context): void
@@ -52,19 +50,45 @@ class LoggingService implements LoggingServiceInterface
         $this->logging = [];
     }
 
-    private function addLog(string $runId, string $type, string $code, string $title, string $description, array $details = [], int $counting = 0): void
+    public function addLogEntry(LogEntryInterface $logEntry): void
     {
-        $details['count'] = $counting;
+        $this->addLog(
+            $logEntry->getLevel(),
+            $logEntry->getCode(),
+            $logEntry->getTitle(),
+            $logEntry->getDescription(),
+            $logEntry->getDescriptionArguments(),
+            $logEntry->getTitleSnippet(),
+            $logEntry->getDescriptionSnippet(),
+            $logEntry->getEntity(),
+            $logEntry->getSourceId(),
+            $logEntry->getRunId()
+        );
+    }
 
+    private function addLog(
+        string $level,
+        string $code,
+        string $title,
+        string $description,
+        array $descriptionArguments,
+        string $titleSnippet,
+        string $descriptionSnippet,
+        ?string $entity,
+        ?string $sourceId,
+        ?string $runId
+    ): void {
         $this->logging[] = [
-            'runId' => $runId !== '' ? $runId : null,
-            'type' => $type,
-            'logEntry' => [
-                'code' => $code,
-                'title' => $title,
-                'description' => $description,
-                'details' => $details,
-            ],
+            'level' => $level,
+            'code' => $code,
+            'title' => $title,
+            'description' => $description,
+            'descriptionArguments' => $descriptionArguments,
+            'titleSnippet' => $titleSnippet,
+            'descriptionSnippet' => $descriptionSnippet,
+            'entity' => $entity,
+            'sourceId' => $sourceId,
+            'runId' => $runId,
         ];
     }
 }

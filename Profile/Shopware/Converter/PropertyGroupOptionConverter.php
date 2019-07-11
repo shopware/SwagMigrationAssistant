@@ -5,12 +5,13 @@ namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 use Shopware\Core\Framework\Context;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\CannotConvertEntity;
+use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
-use SwagMigrationAssistant\Profile\Shopware\Logging\LogTypes;
 
 abstract class PropertyGroupOptionConverter extends ShopwareConverter
 {
@@ -72,18 +73,12 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         $this->connectionId = $migrationContext->getConnection()->getId();
 
         if (!isset($data['group']['name'])) {
-            $this->loggingService->addError(
+            $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
                 $this->runId,
-                LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
-                'Empty necessary data fields',
-                'Property-Group-Option-Entity could not be converted cause of empty necessary field(s): group.',
-                [
-                    'id' => $data['id'],
-                    'entity' => 'Property-Group-Option',
-                    'fields' => ['group'],
-                ],
-                1
-            );
+                DefaultEntities::PROPERTY_GROUP_OPTION,
+                $data['id'],
+                'group'
+            ));
 
             return new ConvertStruct(null, $data);
         }
@@ -122,16 +117,10 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
     protected function getMedia(array &$converted, array $data): void
     {
         if (!isset($data['media']['id'])) {
-            $this->loggingService->addInfo(
+            $this->loggingService->addLogEntry(new CannotConvertEntity(
                 $this->runId,
-                LogTypes::PROPERTY_MEDIA_NOT_CONVERTED,
-                'Property-Group-Option-Media could not be converted',
-                'Property-Group-Option-Media could not be converted.',
-                [
-                    'uuid' => $converted['id'],
-                    'id' => $data['id'],
-                ]
-            );
+                'property_group_option_media'
+            ));
 
             return;
         }

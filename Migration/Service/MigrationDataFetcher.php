@@ -6,6 +6,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\ShopwareHttpException;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistryInterface;
+use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
@@ -42,7 +43,11 @@ class MigrationDataFetcher implements MigrationDataFetcherInterface
             }
 
             $dataSet = $migrationContext->getDataSet();
-            $this->loggingService->addError($migrationContext->getRunUuid(), (string) $code, '', $exception->getMessage(), ['entity' => $dataSet::getEntity()]);
+            $this->loggingService->addLogEntry(new ExceptionRunLog(
+                $migrationContext->getRunUuid(),
+                $dataSet::getEntity(),
+                $exception
+            ));
             $this->loggingService->saveLogging($context);
         }
 

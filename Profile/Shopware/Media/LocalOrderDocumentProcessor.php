@@ -11,6 +11,9 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\NoFileSystemPermissionsException;
+use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\CannotGetFileRunLog;
+use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorInterface;
 use SwagMigrationAssistant\Migration\Media\MediaProcessWorkloadStruct;
@@ -18,7 +21,6 @@ use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileEntity;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderDocumentDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
-use SwagMigrationAssistant\Profile\Shopware\Logging\LogTypes;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
 class LocalOrderDocumentProcessor implements MediaFileProcessorInterface
@@ -70,7 +72,11 @@ class LocalOrderDocumentProcessor implements MediaFileProcessorInterface
 
         if (!is_dir('_temp') && !mkdir('_temp') && !is_dir('_temp')) {
             $exception = new NoFileSystemPermissionsException();
-            $this->loggingService->addError($runId, (string) $exception->getCode(), '', $exception->getMessage());
+            $this->loggingService->addLogEntry(new ExceptionRunLog(
+                $runId,
+                DefaultEntities::ORDER_DOCUMENT,
+                $exception
+            ));
             $this->loggingService->saveLogging($context);
 
             return $workload;
@@ -111,15 +117,12 @@ class LocalOrderDocumentProcessor implements MediaFileProcessorInterface
 
             if (!file_exists($sourcePath)) {
                 $mappedWorkload[$mediaFile->getMediaId()]->setState(MediaProcessWorkloadStruct::ERROR_STATE);
-                $this->loggingService->addError(
+                $this->loggingService->addLogEntry(new CannotGetFileRunLog(
                     $mappedWorkload[$mediaFile->getMediaId()]->getRunId(),
-                    LogTypes::SOURCE_FILE_NOT_FOUND,
-                    '',
-                    'File not found in source system.',
-                    [
-                        'path' => $sourcePath,
-                    ]
-                );
+                    DefaultEntities::ORDER_DOCUMENT,
+                    $mediaFile->getMediaId(),
+                    $sourcePath
+                ));
                 $processedMedia[] = $mediaFile->getMediaId();
 
                 continue;

@@ -26,9 +26,16 @@ class SwagMigrationLoggingDefinition extends EntityDefinition
     {
         return new FieldCollection([
             (new IdField('id', 'id'))->setFlags(new PrimaryKey(), new Required()),
+            (new StringField('level', 'level'))->setFlags(new Required()),
+            (new StringField('code', 'code'))->setFlags(new Required()),
+            (new StringField('title', 'title'))->setFlags(new Required()),
+            (new StringField('description', 'description'))->setFlags(new Required()),
+            (new JsonField('description_arguments', 'descriptionArguments'))->setFlags(new Required()),
+            (new StringField('title_snippet', 'titleSnippet'))->setFlags(new Required()),
+            (new StringField('description_snippet', 'descriptionSnippet'))->setFlags(new Required()),
+            new StringField('entity', 'entity'),
+            new StringField('source_id', 'sourceId'),
             new FkField('run_id', 'runId', SwagMigrationRunDefinition::class),
-            (new StringField('type', 'type'))->setFlags(new Required()),
-            (new JsonField('log_entry', 'logEntry'))->setFlags(new Required()),
             new CreatedAtField(),
             new UpdatedAtField(),
             new ManyToOneAssociationField('run', 'run_id', SwagMigrationRunDefinition::class),

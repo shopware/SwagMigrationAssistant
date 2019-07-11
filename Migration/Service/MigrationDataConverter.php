@@ -10,6 +10,7 @@ use Shopware\Core\Framework\ShopwareHttpException;
 use SwagMigrationAssistant\Migration\Converter\ConverterInterface;
 use SwagMigrationAssistant\Migration\Converter\ConverterRegistryInterface;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
+use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -83,7 +84,12 @@ class MigrationDataConverter implements MigrationDataConverterInterface
             }
 
             $dataSet = $migrationContext->getDataSet();
-            $this->loggingService->addError($migrationContext->getRunUuid(), (string) $code, '', $exception->getMessage(), ['entity' => $dataSet::getEntity()]);
+
+            $this->loggingService->addLogEntry(new ExceptionRunLog(
+                $migrationContext->getRunUuid(),
+                $dataSet::getEntity(),
+                $exception
+            ));
             $this->loggingService->saveLogging($context);
         }
     }
@@ -112,21 +118,12 @@ class MigrationDataConverter implements MigrationDataConverterInterface
                     'convertFailure' => $convertFailureFlag,
                 ];
             } catch (\Exception $exception) {
-                $errorCode = $exception->getCode();
-                if (is_subclass_of($exception, ShopwareHttpException::class)) {
-                    $errorCode = $exception->getErrorCode();
-                }
-
-                $this->loggingService->addError(
+                $this->loggingService->addLogEntry(new ExceptionRunLog(
                     $runUuid,
-                    (string) $errorCode,
-                    '',
-                    $exception->getMessage(),
-                    [
-                        'entity' => $dataSet::getEntity(),
-                        'raw' => $item,
-                    ]
-                );
+                    $dataSet::getEntity(),
+                    $exception,
+                    $item['id'] ?? null
+                ));
 
                 $createData[] = [
                     'entity' => $dataSet::getEntity(),

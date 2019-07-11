@@ -11,6 +11,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\System\Unit\UnitDefinition;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -66,18 +67,12 @@ abstract class TranslationConverter extends ShopwareConverter
         $this->runId = $migrationContext->getRunUuid();
 
         if (!isset($data['locale'])) {
-            $this->loggingService->addWarning(
+            $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
                 $this->runId,
-                LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
-                'Empty necessary data',
-                'Order-Entity could not converted cause of empty necessary field: locale.',
-                [
-                    'id' => $data['id'],
-                    'entity' => 'Translation',
-                    'fields' => ['locale'],
-                ],
-                1
-            );
+                DefaultEntities::TRANSLATION,
+                $data['id'],
+                'locale'
+            ));
 
             return new ConvertStruct(null, $data);
         }
