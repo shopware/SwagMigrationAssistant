@@ -3,7 +3,6 @@
 namespace SwagMigrationAssistant\Migration\Profile;
 
 use SwagMigrationAssistant\Exception\ProfileNotFoundException;
-use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 class ProfileRegistry implements ProfileRegistryInterface
 {
@@ -28,14 +27,14 @@ class ProfileRegistry implements ProfileRegistryInterface
     /**
      * @throws ProfileNotFoundException
      */
-    public function getProfile(MigrationContextInterface $migrationContext): ProfileInterface
+    public function getProfile(string $profileName): ProfileInterface
     {
         foreach ($this->profiles as $profile) {
-            if ($profile->getName() === $migrationContext->getConnection()->getProfileName()) {
+            if ($profile->getName() === $profileName) {
                 return $profile;
             }
         }
 
-        throw new ProfileNotFoundException($migrationContext->getConnection()->getProfileName());
+        throw new ProfileNotFoundException($profileName);
     }
 }

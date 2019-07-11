@@ -29,8 +29,8 @@ use SwagMigrationAssistant\Migration\Service\MigrationProgressService;
 use SwagMigrationAssistant\Migration\Service\MigrationProgressServiceInterface;
 use SwagMigrationAssistant\Migration\Service\ProgressState;
 use SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService;
-use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\MediaDataSet;
-use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\MigrationServicesTrait;
 use Symfony\Component\HttpFoundation\Request;
@@ -44,11 +44,6 @@ class MigrationProgressServiceTest extends TestCase
      * @var EntityRepositoryInterface
      */
     private $runRepo;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $profileRepo;
 
     /**
      * @var EntityRepositoryInterface
@@ -126,7 +121,6 @@ class MigrationProgressServiceTest extends TestCase
         $this->connectionRepo = $this->getContainer()->get('swag_migration_connection.repository');
         $this->runRepo = $this->getContainer()->get('swag_migration_run.repository');
         $this->dataRepo = $this->getContainer()->get('swag_migration_data.repository');
-        $this->profileRepo = $this->getContainer()->get('swag_migration_profile.repository');
         $this->mediaFileRepo = $this->getContainer()->get('swag_migration_media_file.repository');
         $this->loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
 
@@ -150,7 +144,7 @@ class MigrationProgressServiceTest extends TestCase
                             'apiKey' => 'testKey',
                         ],
                         'profileName' => Shopware55Profile::PROFILE_NAME,
-                        'gatewayName' => Shopware55LocalGateway::GATEWAY_NAME,
+                        'gatewayName' => ShopwareLocalGateway::GATEWAY_NAME,
                     ],
                 ],
                 $context

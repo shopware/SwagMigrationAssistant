@@ -3,27 +3,19 @@
 namespace SwagMigrationAssistant\Test\Mock\Migration\Media;
 
 use Shopware\Core\Framework\Context;
-use SwagMigrationAssistant\Migration\Media\AbstractMediaFileProcessor;
+use SwagMigrationAssistant\Migration\Media\MediaFileProcessorInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\MediaDataSet;
-use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Shopware55ApiGateway;
-use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\ShopwareApiGateway;
+use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
-class DummyHttpMediaDownloadService extends AbstractMediaFileProcessor
+class DummyHttpMediaDownloadService implements MediaFileProcessorInterface
 {
-    public function getSupportedProfileName(): string
+    public function supports(MigrationContextInterface $migrationContext): bool
     {
-        return Shopware55Profile::PROFILE_NAME;
-    }
-
-    public function getSupportedGatewayIdentifier(): string
-    {
-        return Shopware55ApiGateway::GATEWAY_NAME;
-    }
-
-    public function getSupportedEntity(): string
-    {
-        return MediaDataSet::getEntity();
+        return $migrationContext->getProfile() instanceof ShopwareProfileInterface
+            && $migrationContext->getGateway()->getName() === ShopwareApiGateway::GATEWAY_NAME
+            && $migrationContext->getDataSet()::getEntity() === MediaDataSet::getEntity();
     }
 
     public function process(

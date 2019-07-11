@@ -7,8 +7,8 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\MigrationContext;
-use SwagMigrationAssistant\Profile\Shopware55\Converter\CustomerAttributeConverter;
-use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\CustomerAttributeDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CustomerAttributeDataSet;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55CustomerAttributeConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 
@@ -20,20 +20,22 @@ class CustomerAttributeConverterTest extends TestCase
     private $migrationContext;
 
     /**
-     * @var CustomerAttributeConverter
+     * @var Shopware55CustomerAttributeConverter
      */
     private $converter;
 
     protected function setUp(): void
     {
-        $this->converter = new CustomerAttributeConverter(new DummyMappingService());
+        $this->converter = new Shopware55CustomerAttributeConverter(new DummyMappingService());
 
         $runId = Uuid::randomHex();
         $connection = new SwagMigrationConnectionEntity();
         $connection->setId(Uuid::randomHex());
         $connection->setName('ConntectionName');
+        $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
 
         $this->migrationContext = new MigrationContext(
+            new Shopware55Profile(),
             $connection,
             $runId,
             new CustomerAttributeDataSet(),
@@ -44,7 +46,7 @@ class CustomerAttributeConverterTest extends TestCase
 
     public function testSupports(): void
     {
-        $supportsDefinition = $this->converter->supports(Shopware55Profile::PROFILE_NAME, new CustomerAttributeDataSet());
+        $supportsDefinition = $this->converter->supports($this->migrationContext);
 
         static::assertTrue($supportsDefinition);
     }

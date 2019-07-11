@@ -11,7 +11,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\IdSearchResult;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
-use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Premapping\PremappingReaderRegistryInterface;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 
@@ -56,7 +56,7 @@ class PremappingService implements PremappingServiceInterface
         $this->connectionRepo = $connectionRepo;
     }
 
-    public function generatePremapping(Context $context, MigrationContext $migrationContext, SwagMigrationRunEntity $run): array
+    public function generatePremapping(Context $context, MigrationContextInterface $migrationContext, SwagMigrationRunEntity $run): array
     {
         $dataSelectionIds = array_column($run->getProgress(), 'id');
         $readers = $this->mappingReaderRegistry->getPremappingReaders($migrationContext, $dataSelectionIds);
@@ -69,7 +69,7 @@ class PremappingService implements PremappingServiceInterface
         return $preMapping;
     }
 
-    public function writePremapping(Context $context, MigrationContext $migrationContext, array $premapping): void
+    public function writePremapping(Context $context, MigrationContextInterface $migrationContext, array $premapping): void
     {
         $this->mappingService->bulkDeleteMapping($this->getExistingMapping($context, $premapping), $context);
         $this->addPremappingToRun($context, $migrationContext, $premapping);
@@ -104,7 +104,7 @@ class PremappingService implements PremappingServiceInterface
         $this->mappingService->writeMapping($context);
     }
 
-    private function updateConnectionPremapping(Context $context, MigrationContext $migrationContext, array $premapping): void
+    private function updateConnectionPremapping(Context $context, MigrationContextInterface $migrationContext, array $premapping): void
     {
         $premapping = $this->updateConnectionPremappingStruct($migrationContext, $premapping);
 
@@ -119,7 +119,7 @@ class PremappingService implements PremappingServiceInterface
         );
     }
 
-    private function updateConnectionPremappingStruct(MigrationContext $migrationContext, array $premapping): array
+    private function updateConnectionPremappingStruct(MigrationContextInterface $migrationContext, array $premapping): array
     {
         $connectionPremapping = $migrationContext->getConnection()->getPremapping();
 
@@ -144,7 +144,7 @@ class PremappingService implements PremappingServiceInterface
         return $connectionPremapping;
     }
 
-    private function addPremappingToRun(Context $context, MigrationContext $migrationContext, array $premapping): void
+    private function addPremappingToRun(Context $context, MigrationContextInterface $migrationContext, array $premapping): void
     {
         $this->runRepo->update(
             [

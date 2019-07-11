@@ -21,12 +21,9 @@ class PremappingReaderRegistry implements PremappingReaderRegistryInterface
      */
     public function getPremappingReaders(MigrationContextInterface $migrationContext, array $dataSelectionIds): array
     {
-        $profileName = $migrationContext->getConnection()->getProfileName();
-        $gatewayName = $migrationContext->getConnection()->getGatewayName();
-
         $preMapping = [];
         foreach ($this->preMappingReaders as $preMappingReader) {
-            if ($preMappingReader->supports($profileName, $gatewayName, $dataSelectionIds)) {
+            if ($preMappingReader->supports($migrationContext, $dataSelectionIds)) {
                 $preMapping[] = $preMappingReader;
             }
         }

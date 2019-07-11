@@ -9,11 +9,11 @@ use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware55\Converter\CategoryConverter;
-use SwagMigrationAssistant\Profile\Shopware55\Converter\ProductConverter;
-use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
-use SwagMigrationAssistant\Profile\Shopware55\Exception\ParentEntityForChildNotFoundException;
-use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDataSet;
+use SwagMigrationAssistant\Profile\Shopware\Exception\ParentEntityForChildNotFoundException;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55CategoryConverter;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55ProductConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
@@ -22,7 +22,7 @@ use SwagMigrationAssistant\Test\Mock\Migration\Media\DummyMediaFileService;
 class ProductConverterTest extends TestCase
 {
     /**
-     * @var ProductConverter
+     * @var Shopware55ProductConverter
      */
     private $productConverter;
 
@@ -56,15 +56,16 @@ class ProductConverterTest extends TestCase
         $mediaFileService = new DummyMediaFileService();
         $this->mappingService = new DummyMappingService();
         $this->loggingService = new DummyLoggingService();
-        $this->productConverter = new ProductConverter($this->mappingService, $mediaFileService, $this->loggingService);
+        $this->productConverter = new Shopware55ProductConverter($this->mappingService, $mediaFileService, $this->loggingService);
 
         $this->runId = Uuid::randomHex();
         $this->connection = new SwagMigrationConnectionEntity();
         $this->connection->setId(Uuid::randomHex());
         $this->connection->setProfileName(Shopware55Profile::PROFILE_NAME);
-        $this->connection->setGatewayName(Shopware55LocalGateway::GATEWAY_NAME);
+        $this->connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
 
         $this->migrationContext = new MigrationContext(
+            new Shopware55Profile(),
             $this->connection,
             $this->runId,
             new ProductDataSet(),
@@ -77,7 +78,7 @@ class ProductConverterTest extends TestCase
 
     public function testSupports(): void
     {
-        $supportsDefinition = $this->productConverter->supports(Shopware55Profile::PROFILE_NAME, new ProductDataSet());
+        $supportsDefinition = $this->productConverter->supports($this->migrationContext);
 
         static::assertTrue($supportsDefinition);
     }
@@ -106,7 +107,7 @@ class ProductConverterTest extends TestCase
     public function testConvertWithCategory(): void
     {
         $mediaFileService = new DummyMediaFileService();
-        $categoryConverter = new CategoryConverter($this->mappingService, $mediaFileService, $this->loggingService);
+        $categoryConverter = new Shopware55CategoryConverter($this->mappingService, $mediaFileService, $this->loggingService);
         $categoryData = require __DIR__ . '/../../../_fixtures/category_data.php';
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
         $context = Context::createDefaultContext();

@@ -2,14 +2,14 @@
 
 namespace SwagMigrationAssistant\Test\Mock\Profile\Dummy;
 
-use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
-use SwagMigrationAssistant\Profile\Shopware55\Converter\CustomerConverter;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55CustomerConverter;
 use SwagMigrationAssistant\Test\Mock\DataSet\InvalidCustomerDataSet;
 
-class DummyInvalidCustomerConverter extends CustomerConverter
+class DummyInvalidCustomerConverter extends Shopware55CustomerConverter
 {
-    public function supports(string $profileName, DataSet $dataSet): bool
+    public function supports(MigrationContextInterface $migrationContext): bool
     {
-        return $dataSet::getEntity() === InvalidCustomerDataSet::getEntity();
+        return $migrationContext->getDataSet()::getEntity() === InvalidCustomerDataSet::getEntity();
     }
 }

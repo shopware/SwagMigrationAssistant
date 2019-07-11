@@ -9,8 +9,8 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContext;
-use SwagMigrationAssistant\Profile\Shopware55\Converter\SalesChannelConverter;
-use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\SalesChannelDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\SalesChannelDataSet;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55SalesChannelConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
@@ -25,7 +25,7 @@ class SalesChannelConverterTest extends TestCase
     private $migrationContext;
 
     /**
-     * @var SalesChannelConverter
+     * @var Shopware55SalesChannelConverter
      */
     private $converter;
 
@@ -47,7 +47,7 @@ class SalesChannelConverterTest extends TestCase
 
         $this->mappingService = new DummyMappingService();
         $this->loggingService = new DummyLoggingService();
-        $this->converter = new SalesChannelConverter(
+        $this->converter = new Shopware55SalesChannelConverter(
             $this->mappingService,
             $this->loggingService,
             $paymentMethodRepo,
@@ -58,8 +58,10 @@ class SalesChannelConverterTest extends TestCase
         $runId = Uuid::randomHex();
         $connection = new SwagMigrationConnectionEntity();
         $connection->setId(Uuid::randomHex());
+        $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
 
         $this->migrationContext = new MigrationContext(
+            new Shopware55Profile(),
             $connection,
             $runId,
             new SaleschannelDataSet(),
@@ -70,7 +72,7 @@ class SalesChannelConverterTest extends TestCase
 
     public function testSupports(): void
     {
-        $supportsDefinition = $this->converter->supports(Shopware55Profile::PROFILE_NAME, new SaleschannelDataSet());
+        $supportsDefinition = $this->converter->supports($this->migrationContext);
 
         static::assertTrue($supportsDefinition);
     }

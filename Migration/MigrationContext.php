@@ -13,9 +13,9 @@ class MigrationContext extends Struct implements MigrationContextInterface
     public const SOURCE_CONTEXT = 'MIGRATION_CONNECTION_CHECK_FOR_RUNNING_MIGRATION';
 
     /**
-     * @var string
+     * @var ProfileInterface
      */
-    private $runUuid;
+    private $profile;
 
     /**
      * @var SwagMigrationConnectionEntity|null
@@ -23,7 +23,12 @@ class MigrationContext extends Struct implements MigrationContextInterface
     private $connection;
 
     /**
-     * @var DataSet
+     * @var string
+     */
+    private $runUuid;
+
+    /**
+     * @var DataSet|null
      */
     private $dataSet;
 
@@ -38,32 +43,29 @@ class MigrationContext extends Struct implements MigrationContextInterface
     private $limit;
 
     /**
-     * @var ProfileInterface
-     */
-    private $profile;
-
-    /**
      * @var GatewayInterface
      */
     private $gateway;
 
     public function __construct(
-        ?SwagMigrationConnectionEntity $connection,
+        ProfileInterface $profile,
+        ?SwagMigrationConnectionEntity $connection = null,
         string $runUuid = '',
         ?DataSet $dataSet = null,
         int $offset = 0,
         int $limit = 0
     ) {
-        $this->runUuid = $runUuid;
+        $this->profile = $profile;
         $this->connection = $connection;
+        $this->runUuid = $runUuid;
         $this->dataSet = $dataSet;
         $this->offset = $offset;
         $this->limit = $limit;
     }
 
-    public function getRunUuid(): string
+    public function getProfile(): ProfileInterface
     {
-        return $this->runUuid;
+        return $this->profile;
     }
 
     public function getConnection(): ?SwagMigrationConnectionEntity
@@ -71,9 +73,19 @@ class MigrationContext extends Struct implements MigrationContextInterface
         return $this->connection;
     }
 
+    public function getRunUuid(): string
+    {
+        return $this->runUuid;
+    }
+
     public function getDataSet(): ?DataSet
     {
         return $this->dataSet;
+    }
+
+    public function setDataSet(DataSet $dataSet): void
+    {
+        $this->dataSet = $dataSet;
     }
 
     public function getOffset(): int
@@ -84,16 +96,6 @@ class MigrationContext extends Struct implements MigrationContextInterface
     public function getLimit(): int
     {
         return $this->limit;
-    }
-
-    public function getProfile(): ProfileInterface
-    {
-        return $this->profile;
-    }
-
-    public function setProfile(ProfileInterface $profile): void
-    {
-        $this->profile = $profile;
     }
 
     public function getGateway(): GatewayInterface

@@ -10,11 +10,11 @@ use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware55\Converter\CustomerConverter;
-use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\CustomerDataSet;
-use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
-use SwagMigrationAssistant\Profile\Shopware55\Premapping\PaymentMethodReader;
-use SwagMigrationAssistant\Profile\Shopware55\Premapping\SalutationReader;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CustomerDataSet;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
+use SwagMigrationAssistant\Profile\Shopware\Premapping\PaymentMethodReader;
+use SwagMigrationAssistant\Profile\Shopware\Premapping\SalutationReader;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55CustomerConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
@@ -22,7 +22,7 @@ use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 class CustomerConverterTest extends TestCase
 {
     /**
-     * @var CustomerConverter
+     * @var Shopware55CustomerConverter
      */
     private $customerConverter;
 
@@ -60,16 +60,17 @@ class CustomerConverterTest extends TestCase
     {
         $this->loggingService = new DummyLoggingService();
         $this->mappingService = new DummyMappingService();
-        $this->customerConverter = new CustomerConverter($this->mappingService, $this->loggingService);
+        $this->customerConverter = new Shopware55CustomerConverter($this->mappingService, $this->loggingService);
 
         $this->connectionId = Uuid::randomHex();
         $this->runId = Uuid::randomHex();
         $this->connection = new SwagMigrationConnectionEntity();
         $this->connection->setId($this->connectionId);
         $this->connection->setProfileName(Shopware55Profile::PROFILE_NAME);
-        $this->connection->setGatewayName(Shopware55LocalGateway::GATEWAY_NAME);
+        $this->connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
 
         $this->migrationContext = new MigrationContext(
+            new Shopware55Profile(),
             $this->connection,
             $this->runId,
             new CustomerDataSet(),
@@ -100,7 +101,7 @@ class CustomerConverterTest extends TestCase
 
     public function testSupports(): void
     {
-        $supportsDefinition = $this->customerConverter->supports(Shopware55Profile::PROFILE_NAME, new CustomerDataSet());
+        $supportsDefinition = $this->customerConverter->supports($this->migrationContext);
 
         static::assertTrue($supportsDefinition);
     }

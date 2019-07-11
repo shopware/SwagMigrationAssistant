@@ -7,7 +7,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use SwagMigrationAssistant\Exception\EntityNotExistsException;
 use SwagMigrationAssistant\Exception\MigrationContextPropertyMissingException;
-use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationAssistant\Migration\Service\PremappingServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -27,12 +27,19 @@ class PremappingController extends AbstractController
      */
     private $migrationRunRepo;
 
+    /**
+     * @var MigrationContextFactoryInterface
+     */
+    private $migrationContextFactory;
+
     public function __construct(
         PremappingServiceInterface $premappingService,
-        EntityRepositoryInterface $migrationRunRepo
+        EntityRepositoryInterface $migrationRunRepo,
+        MigrationContextFactoryInterface $migrationContextFactory
     ) {
         $this->premappingService = $premappingService;
         $this->migrationRunRepo = $migrationRunRepo;
+        $this->migrationContextFactory = $migrationContextFactory;
     }
 
     /**
@@ -53,10 +60,7 @@ class PremappingController extends AbstractController
             throw new EntityNotExistsException(SwagMigrationRunEntity::class, $runUuid);
         }
 
-        $migrationContext = new MigrationContext(
-            $run->getConnection(),
-            $runUuid
-        );
+        $migrationContext = $this->migrationContextFactory->create($run);
 
         return new JsonResponse($this->premappingService->generatePremapping($context, $migrationContext, $run));
     }
@@ -84,10 +88,7 @@ class PremappingController extends AbstractController
             throw new EntityNotExistsException(SwagMigrationRunEntity::class, $runUuid);
         }
 
-        $migrationContext = new MigrationContext(
-            $run->getConnection(),
-            $runUuid
-        );
+        $migrationContext = $this->migrationContextFactory->create($run);
 
         $this->premappingService->writePremapping($context, $migrationContext, $premapping);
 

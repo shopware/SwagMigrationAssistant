@@ -34,11 +34,6 @@ class MigrationFetchDataCommandTest extends TestCase
     /**
      * @var EntityRepositoryInterface
      */
-    private $migrationProfileRepo;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
     private $migrationDataRepo;
 
     /**
@@ -62,7 +57,6 @@ class MigrationFetchDataCommandTest extends TestCase
         );
 
         $this->migrationRunRepo = $this->getContainer()->get('swag_migration_run.repository');
-        $this->migrationProfileRepo = $this->getContainer()->get('swag_migration_profile.repository');
     }
 
     public function getRequiredOption(): array
@@ -130,7 +124,6 @@ class MigrationFetchDataCommandTest extends TestCase
         $application->add(new MigrationFetchDataCommand(
             $this->migrationDataFetcher,
             $this->migrationRunRepo,
-            $this->migrationProfileRepo,
             $this->migrationDataRepo,
             'migration:fetch:data'
         ));

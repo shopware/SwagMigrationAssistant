@@ -9,19 +9,17 @@ use SwagMigrationAssistant\Migration\Profile\ProfileInterface;
 
 interface MigrationContextInterface
 {
-    public function getRunUuid(): string;
+    public function getProfile(): ProfileInterface;
 
     public function getConnection(): ?SwagMigrationConnectionEntity;
+
+    public function getRunUuid(): string;
 
     public function getDataSet(): ?DataSet;
 
     public function getOffset(): int;
 
     public function getLimit(): int;
-
-    public function getProfile(): ProfileInterface;
-
-    public function setProfile(ProfileInterface $profile): void;
 
     public function getGateway(): GatewayInterface;
 

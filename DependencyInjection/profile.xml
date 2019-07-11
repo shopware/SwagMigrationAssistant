@@ -9,10 +9,5 @@
                  class="SwagMigrationAssistant\Migration\Profile\ProfileRegistry">
             <argument type="tagged" tag="shopware.migration.profile"/>
         </service>
-
-        <service id="SwagMigrationAssistant\Migration\Profile\SwagMigrationProfileDefinition"
-                 class="SwagMigrationAssistant\Migration\Profile\SwagMigrationProfileDefinition">
-            <tag name="shopware.entity.definition" entity="swag_migration_profile"/>
-        </service>
     </services>
 </container>

@@ -2,11 +2,9 @@
 
 namespace SwagMigrationAssistant\Test\Mock\Profile\Dummy;
 
-use Shopware\Core\Framework\Context;
-use SwagMigrationAssistant\Migration\Gateway\GatewayInterface;
-use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\Profile\ProfileInterface;
 
-class DummyProfile
+class DummyProfile implements ProfileInterface
 {
     public const PROFILE_NAME = 'dummy';
 
@@ -15,7 +13,13 @@ class DummyProfile
         return self::PROFILE_NAME;
     }
 
-    public function collectData(GatewayInterface $gateway, MigrationContextInterface $migrationContext, Context $context): void
+    public function getSourceSystemName(): string
     {
+        return 'unknown';
+    }
+
+    public function getVersion(): string
+    {
+        return '1.0';
     }
 }

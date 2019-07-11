@@ -8,8 +8,8 @@ use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\MigrationContext;
-use SwagMigrationAssistant\Profile\Shopware55\Converter\NumberRangeConverter;
-use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\NumberRangeDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\NumberRangeDataSet;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55NumberRangeConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
@@ -24,7 +24,7 @@ class NumberRangeConverterTest extends TestCase
     private $migrationContext;
 
     /**
-     * @var NumberRangeConverter
+     * @var Shopware55NumberRangeConverter
      */
     private $converter;
 
@@ -33,13 +33,15 @@ class NumberRangeConverterTest extends TestCase
         $numberRangeRepo = $this->getContainer()->get('number_range_type.repository');
         $mappingService = new DummyMappingService();
         $loggingService = new DummyLoggingService();
-        $this->converter = new NumberRangeConverter($mappingService, $numberRangeRepo, $loggingService);
+        $this->converter = new Shopware55NumberRangeConverter($mappingService, $numberRangeRepo, $loggingService);
 
         $runId = Uuid::randomHex();
         $connection = new SwagMigrationConnectionEntity();
         $connection->setId(Uuid::randomHex());
+        $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
 
         $this->migrationContext = new MigrationContext(
+            new Shopware55Profile(),
             $connection,
             $runId,
             new NumberRangeDataSet(),
@@ -50,7 +52,7 @@ class NumberRangeConverterTest extends TestCase
 
     public function testSupports(): void
     {
-        $supportsDefinition = $this->converter->supports(Shopware55Profile::PROFILE_NAME, new NumberRangeDataSet());
+        $supportsDefinition = $this->converter->supports($this->migrationContext);
 
         static::assertTrue($supportsDefinition);
     }

@@ -7,8 +7,8 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\MigrationContext;
-use SwagMigrationAssistant\Profile\Shopware55\Converter\ProductAttributeConverter;
-use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\ProductAttributeDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductAttributeDataSet;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55ProductAttributeConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
@@ -21,7 +21,7 @@ class ProductAttributeConverterTest extends TestCase
     private $loggingService;
 
     /**
-     * @var ProductAttributeConverter
+     * @var Shopware55ProductAttributeConverter
      */
     private $converter;
 
@@ -44,14 +44,16 @@ class ProductAttributeConverterTest extends TestCase
     {
         $mappingService = new DummyMappingService();
         $this->loggingService = new DummyLoggingService();
-        $this->converter = new ProductAttributeConverter($mappingService);
+        $this->converter = new Shopware55ProductAttributeConverter($mappingService);
 
         $this->runId = Uuid::randomHex();
         $this->connection = new SwagMigrationConnectionEntity();
         $this->connection->setId(Uuid::randomHex());
         $this->connection->setName('ConntectionName');
+        $this->connection->setProfileName(Shopware55Profile::PROFILE_NAME);
 
         $this->migrationContext = new MigrationContext(
+            new Shopware55Profile(),
             $this->connection,
             $this->runId,
             new ProductAttributeDataSet(),
@@ -62,7 +64,7 @@ class ProductAttributeConverterTest extends TestCase
 
     public function testSupports(): void
     {
-        $supportsDefinition = $this->converter->supports(Shopware55Profile::PROFILE_NAME, new ProductAttributeDataSet());
+        $supportsDefinition = $this->converter->supports($this->migrationContext);
 
         static::assertTrue($supportsDefinition);
     }

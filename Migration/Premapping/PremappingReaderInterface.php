@@ -3,7 +3,7 @@
 namespace SwagMigrationAssistant\Migration\Premapping;
 
 use Shopware\Core\Framework\Context;
-use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 interface PremappingReaderInterface
 {
@@ -12,7 +12,7 @@ interface PremappingReaderInterface
     /**
      * @param string[] $entityGroupNames
      */
-    public function supports(string $profileName, string $gatewayIdentifier, array $entityGroupNames): bool;
+    public function supports(MigrationContextInterface $migrationContext, array $entityGroupNames): bool;
 
-    public function getPremapping(Context $context, MigrationContext $migrationContext): PremappingStruct;
+    public function getPremapping(Context $context, MigrationContextInterface $migrationContext): PremappingStruct;
 }

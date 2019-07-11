@@ -7,8 +7,8 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\MigrationContext;
-use SwagMigrationAssistant\Profile\Shopware55\Converter\CurrencyConverter;
-use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\CurrencyDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CurrencyDataSet;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55CurrencyConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\BasicSettingsMappingService;
@@ -23,7 +23,7 @@ class CurrencyConverterTest extends TestCase
     private $loggingService;
 
     /**
-     * @var CurrencyConverter
+     * @var Shopware55CurrencyConverter
      */
     private $converter;
 
@@ -57,13 +57,15 @@ class CurrencyConverterTest extends TestCase
         $this->mappingService = new CurrencyMappingService();
         $this->context = Context::createDefaultContext();
         $this->loggingService = new DummyLoggingService();
-        $this->converter = new CurrencyConverter($this->mappingService, $this->loggingService);
+        $this->converter = new Shopware55CurrencyConverter($this->mappingService, $this->loggingService);
 
         $this->runId = Uuid::randomHex();
         $this->connection = new SwagMigrationConnectionEntity();
         $this->connection->setId(Uuid::randomHex());
+        $this->connection->setProfileName(Shopware55Profile::PROFILE_NAME);
 
         $this->migrationContext = new MigrationContext(
+            new Shopware55Profile(),
             $this->connection,
             $this->runId,
             new CurrencyDataSet(),
@@ -74,7 +76,7 @@ class CurrencyConverterTest extends TestCase
 
     public function testSupports(): void
     {
-        $supportsDefinition = $this->converter->supports(Shopware55Profile::PROFILE_NAME, new CurrencyDataSet());
+        $supportsDefinition = $this->converter->supports($this->migrationContext);
 
         static::assertTrue($supportsDefinition);
     }
@@ -106,7 +108,7 @@ class CurrencyConverterTest extends TestCase
 
     public function testConvertWhichExists(): void
     {
-        $this->converter = new CurrencyConverter(new DummyMappingService(), $this->loggingService);
+        $this->converter = new Shopware55CurrencyConverter(new DummyMappingService(), $this->loggingService);
         $currencyData = require __DIR__ . '/../../../_fixtures/currency_data.php';
         $convertResult = $this->converter->convert($currencyData[0], $this->context, $this->migrationContext);
 

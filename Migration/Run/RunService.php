@@ -25,6 +25,7 @@ use SwagMigrationAssistant\Migration\DataSelection\DataSelectionStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationAssistant\Migration\Service\ProgressState;
 use SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService;
@@ -125,21 +126,20 @@ class RunService implements RunServiceInterface
         return $this->accessTokenService->updateRunAccessToken($runUuid, $context);
     }
 
-    public function createMigrationRun(string $connectionId, array $dataSelectionIds, Context $context): ?ProgressState
+    public function createMigrationRun(MigrationContextInterface $migrationContext, array $dataSelectionIds, Context $context): ?ProgressState
     {
         if ($this->isMigrationRunning($context)) {
             return null;
         }
 
-        $runUuid = $this->createPlainMigrationRun($connectionId, $context);
+        $runUuid = $this->createPlainMigrationRun($migrationContext, $context);
         $accessToken = $this->accessTokenService->updateRunAccessToken($runUuid, $context);
-        $connection = $this->getConnection($connectionId, $context);
 
-        $environmentInformation = $this->getEnvironmentInformation($connection, $context);
-        $dataSelectionCollection = $this->getDataSelectionCollection($connection, $environmentInformation, $dataSelectionIds);
+        $environmentInformation = $this->getEnvironmentInformation($migrationContext, $context);
+        $dataSelectionCollection = $this->getDataSelectionCollection($migrationContext, $environmentInformation, $dataSelectionIds);
         $runProgress = $this->calculateRunProgress($environmentInformation, $dataSelectionCollection);
 
-        $this->updateMigrationRun($runUuid, $connection, $environmentInformation, $runProgress, $context);
+        $this->updateMigrationRun($runUuid, $migrationContext, $environmentInformation, $runProgress, $context);
 
         return new ProgressState(false, true, $runUuid, $accessToken, -1, null, 0, 0, $runProgress);
     }
@@ -350,11 +350,12 @@ class RunService implements RunServiceInterface
 
     private function updateMigrationRun(
         string $runUuid,
-        SwagMigrationConnectionEntity $connection,
+        MigrationContextInterface $migrationContext,
         EnvironmentInformation $environmentInformation,
         array $runProgress,
         Context $context
     ): void {
+        $connection = $migrationContext->getConnection();
         $credentials = $connection->getCredentialFields();
 
         if (empty($credentials)) {
@@ -442,12 +443,12 @@ class RunService implements RunServiceInterface
         return $total > 0;
     }
 
-    private function createPlainMigrationRun(string $connectionId, Context $context): string
+    private function createPlainMigrationRun(MigrationContextInterface $migrationContext, Context $context): string
     {
         $writtenEvent = $this->migrationRunRepo->create(
             [
                 [
-                    'connectionId' => $connectionId,
+                    'connectionId' => $migrationContext->getConnection()->getId(),
                     'status' => SwagMigrationRunEntity::STATUS_RUNNING,
                 ],
             ],
@@ -459,12 +460,8 @@ class RunService implements RunServiceInterface
         return array_pop($ids);
     }
 
-    private function getEnvironmentInformation(SwagMigrationConnectionEntity $connection, Context $context): EnvironmentInformation
+    private function getEnvironmentInformation(MigrationContextInterface $migrationContext, Context $context): EnvironmentInformation
     {
-        $migrationContext = new MigrationContext(
-            $connection
-        );
-
         return $this->migrationDataFetcher->getEnvironmentInformation($migrationContext, $context);
     }
 
@@ -495,12 +492,8 @@ class RunService implements RunServiceInterface
         );
     }
 
-    private function getDataSelectionCollection(SwagMigrationConnectionEntity $connection, EnvironmentInformation $environmentInformation, array $dataSelectionIds): DataSelectionCollection
+    private function getDataSelectionCollection(MigrationContextInterface $migrationContext, EnvironmentInformation $environmentInformation, array $dataSelectionIds): DataSelectionCollection
     {
-        $migrationContext = new MigrationContext(
-            $connection
-        );
-
         return $this->dataSelectionRegistry->getDataSelectionsByIds($migrationContext, $environmentInformation, $dataSelectionIds);
     }
 

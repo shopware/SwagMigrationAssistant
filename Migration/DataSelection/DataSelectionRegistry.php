@@ -19,12 +19,9 @@ class DataSelectionRegistry implements DataSelectionRegistryInterface
 
     public function getDataSelections(MigrationContextInterface $migrationContext, EnvironmentInformation $environmentInformation): DataSelectionCollection
     {
-        $profileName = $migrationContext->getConnection()->getProfileName();
-        $gatewayName = $migrationContext->getConnection()->getGatewayName();
-
         $resultDataSelections = new DataSelectionCollection();
         foreach ($this->dataSelections as $dataSelection) {
-            if ($dataSelection->supports($profileName, $gatewayName)) {
+            if ($dataSelection->supports($migrationContext)) {
                 $data = $dataSelection->getData();
                 $this->setTotals($data, $environmentInformation);
 

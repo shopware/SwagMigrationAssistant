@@ -8,9 +8,8 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Logging\LogType;
 use SwagMigrationAssistant\Migration\MigrationContext;
-use SwagMigrationAssistant\Profile\Shopware55\Converter\LanguageConverter;
-use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\CustomerGroupDataSet;
-use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\LanguageDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\LanguageDataSet;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55LanguageConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\BasicSettingsMappingService;
@@ -24,7 +23,7 @@ class LanguageConverterTest extends TestCase
     private $migrationContext;
 
     /**
-     * @var LanguageConverter
+     * @var Shopware55LanguageConverter
      */
     private $converter;
 
@@ -36,16 +35,18 @@ class LanguageConverterTest extends TestCase
     protected function setUp(): void
     {
         $this->loggingService = new DummyLoggingService();
-        $this->converter = new LanguageConverter(new BasicSettingsMappingService(), $this->loggingService);
+        $this->converter = new Shopware55LanguageConverter(new BasicSettingsMappingService(), $this->loggingService);
 
         $runId = Uuid::randomHex();
         $connection = new SwagMigrationConnectionEntity();
         $connection->setId(Uuid::randomHex());
+        $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
 
         $this->migrationContext = new MigrationContext(
+            new Shopware55Profile(),
             $connection,
             $runId,
-            new CustomerGroupDataSet(),
+            new LanguageDataSet(),
             0,
             250
         );
@@ -53,7 +54,7 @@ class LanguageConverterTest extends TestCase
 
     public function testSupports(): void
     {
-        $supportsDefinition = $this->converter->supports(Shopware55Profile::PROFILE_NAME, new LanguageDataSet());
+        $supportsDefinition = $this->converter->supports($this->migrationContext);
 
         static::assertTrue($supportsDefinition);
     }
@@ -78,7 +79,7 @@ class LanguageConverterTest extends TestCase
         $languageData = require __DIR__ . '/../../../_fixtures/language_data.php';
 
         $context = Context::createDefaultContext();
-        $this->converter = new LanguageConverter(new DummyMappingService(), $this->loggingService);
+        $this->converter = new Shopware55LanguageConverter(new DummyMappingService(), $this->loggingService);
         $convertResult = $this->converter->convert($languageData[0], $context, $this->migrationContext);
         $this->converter->writeMapping($context);
 

@@ -25,22 +25,21 @@ use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationAssistant\Migration\Service\MigrationDataConverterInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcher;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
-use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\CategoryDataSet;
-use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\CustomerDataSet;
-use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\MediaDataSet;
-use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
-use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\TranslationDataSet;
-use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiEnvironmentReader;
-use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiReader;
-use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiTableCountReader;
-use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Reader\Shopware55ApiTableReader;
-use SwagMigrationAssistant\Profile\Shopware55\Gateway\Api\Shopware55ApiGateway;
-use SwagMigrationAssistant\Profile\Shopware55\Gateway\Connection\ConnectionFactory;
-use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
-use SwagMigrationAssistant\Profile\Shopware55\Premapping\PaymentMethodReader;
-use SwagMigrationAssistant\Profile\Shopware55\Premapping\SalutationReader;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CategoryDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CustomerDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\TranslationDataSet;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiEnvironmentReader;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiReader;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiTableCountReader;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiTableReader;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\ShopwareApiGateway;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
+use SwagMigrationAssistant\Profile\Shopware\Premapping\PaymentMethodReader;
+use SwagMigrationAssistant\Profile\Shopware\Premapping\SalutationReader;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
-use SwagMigrationAssistant\Test\Migration\Services\MigrationProfileUuidService;
 use SwagMigrationAssistant\Test\MigrationServicesTrait;
 use SwagMigrationAssistant\Test\Mock\DataSet\InvalidCustomerDataSet;
 use SwagMigrationAssistant\Test\Mock\DummyCollection;
@@ -91,11 +90,6 @@ class MigrationDataProcessingTest extends TestCase
     private $runUuid;
 
     /**
-     * @var MigrationProfileUuidService
-     */
-    private $profileUuidService;
-
-    /**
      * @var MigrationDataFetcherInterface
      */
     private $dummyDataFetcher;
@@ -140,11 +134,6 @@ class MigrationDataProcessingTest extends TestCase
      */
     private $mappingService;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $profileRepo;
-
     protected function setUp(): void
     {
         $this->context = Context::createDefaultContext();
@@ -178,11 +167,11 @@ class MigrationDataProcessingTest extends TestCase
         $connectionFactory = new ConnectionFactory();
         $this->dummyDataFetcher = new MigrationDataFetcher(
             new GatewayRegistry(new DummyCollection([
-                new Shopware55ApiGateway(
-                    new Shopware55ApiReader($connectionFactory),
-                    new Shopware55ApiEnvironmentReader($connectionFactory),
-                    new Shopware55ApiTableReader($connectionFactory),
-                    new Shopware55ApiTableCountReader($connectionFactory, $this->getContainer()->get(DataSetRegistry::class), $this->loggingService),
+                new ShopwareApiGateway(
+                    new ApiReader($connectionFactory),
+                    new ApiEnvironmentReader($connectionFactory),
+                    new ApiTableReader($connectionFactory),
+                    new ApiTableCountReader($connectionFactory, $this->getContainer()->get(DataSetRegistry::class), $this->loggingService),
                     $this->getContainer()->get('currency.repository')
                 ),
                 new DummyLocalGateway(),
@@ -223,6 +212,7 @@ class MigrationDataProcessingTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
+            new Shopware55Profile(),
             $this->connection,
             $this->runUuid,
             new MediaDataSet(),
@@ -251,6 +241,7 @@ class MigrationDataProcessingTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
+            new Shopware55Profile(),
             $this->connection,
             $this->runUuid,
             new CategoryDataSet(),
@@ -275,6 +266,7 @@ class MigrationDataProcessingTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
+            new Shopware55Profile(),
             $this->connection,
             $this->runUuid,
             new TranslationDataSet(),
@@ -299,6 +291,7 @@ class MigrationDataProcessingTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
+            new Shopware55Profile(),
             $this->connection,
             $this->runUuid,
             new CustomerDataSet(),
@@ -323,6 +316,7 @@ class MigrationDataProcessingTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
+            new Shopware55Profile(),
             $this->connection,
             $this->runUuid,
             new ProductDataSet(),
@@ -346,6 +340,7 @@ class MigrationDataProcessingTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
+            new Shopware55Profile(),
             $this->connection,
             $this->runUuid,
             new ProductDataSet(),
@@ -369,6 +364,7 @@ class MigrationDataProcessingTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
+            new Shopware55Profile(),
             $this->connection,
             $this->runUuid,
             new InvalidCustomerDataSet(),
@@ -422,7 +418,6 @@ class MigrationDataProcessingTest extends TestCase
         $this->migrationDataRepo = $this->getContainer()->get('swag_migration_data.repository');
         $this->productRepo = $this->getContainer()->get('product.repository');
         $this->paymentRepo = $this->getContainer()->get('payment_method.repository');
-        $this->profileRepo = $this->getContainer()->get('swag_migration_profile.repository');
         $this->salutationRepo = $this->getContainer()->get('salutation.repository');
     }
 
@@ -443,7 +438,7 @@ class MigrationDataProcessingTest extends TestCase
                             'apiKey' => 'testKey',
                         ],
                         'profileName' => Shopware55Profile::PROFILE_NAME,
-                        'gatewayName' => Shopware55LocalGateway::GATEWAY_NAME,
+                        'gatewayName' => ShopwareLocalGateway::GATEWAY_NAME,
                     ],
                 ],
                 $context
@@ -457,7 +452,7 @@ class MigrationDataProcessingTest extends TestCase
                     'id' => $this->runUuid,
                     'status' => SwagMigrationRunEntity::STATUS_RUNNING,
                     'profileName' => Shopware55Profile::PROFILE_NAME,
-                    'gatewayName' => Shopware55LocalGateway::GATEWAY_NAME,
+                    'gatewayName' => ShopwareLocalGateway::GATEWAY_NAME,
                 ],
             ],
             Context::createDefaultContext()

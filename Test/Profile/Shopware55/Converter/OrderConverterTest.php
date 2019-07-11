@@ -13,18 +13,18 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContext;
-use SwagMigrationAssistant\Profile\Shopware55\Converter\CustomerConverter;
-use SwagMigrationAssistant\Profile\Shopware55\Converter\OrderConverter;
-use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\CustomerDataSet;
-use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\OrderDataSet;
-use SwagMigrationAssistant\Profile\Shopware55\Exception\AssociationEntityRequiredMissingException;
-use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
-use SwagMigrationAssistant\Profile\Shopware55\Logging\Shopware55LogTypes;
-use SwagMigrationAssistant\Profile\Shopware55\Premapping\DeliveryTimeReader;
-use SwagMigrationAssistant\Profile\Shopware55\Premapping\OrderStateReader;
-use SwagMigrationAssistant\Profile\Shopware55\Premapping\PaymentMethodReader;
-use SwagMigrationAssistant\Profile\Shopware55\Premapping\SalutationReader;
-use SwagMigrationAssistant\Profile\Shopware55\Premapping\TransactionStateReader;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CustomerDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderDataSet;
+use SwagMigrationAssistant\Profile\Shopware\Exception\AssociationEntityRequiredMissingException;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
+use SwagMigrationAssistant\Profile\Shopware\Logging\LogTypes;
+use SwagMigrationAssistant\Profile\Shopware\Premapping\DeliveryTimeReader;
+use SwagMigrationAssistant\Profile\Shopware\Premapping\OrderStateReader;
+use SwagMigrationAssistant\Profile\Shopware\Premapping\PaymentMethodReader;
+use SwagMigrationAssistant\Profile\Shopware\Premapping\SalutationReader;
+use SwagMigrationAssistant\Profile\Shopware\Premapping\TransactionStateReader;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55CustomerConverter;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55OrderConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\MigrationServicesTrait;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
@@ -36,12 +36,12 @@ class OrderConverterTest extends TestCase
     use MigrationServicesTrait;
 
     /**
-     * @var OrderConverter
+     * @var Shopware55OrderConverter
      */
     private $orderConverter;
 
     /**
-     * @var CustomerConverter
+     * @var Shopware55CustomerConverter
      */
     private $customerConverter;
 
@@ -81,17 +81,18 @@ class OrderConverterTest extends TestCase
             $rounding,
             $taxRuleCalculator
         );
-        $this->orderConverter = new OrderConverter($mappingService, $taxCalculator, $this->loggingService);
-        $this->customerConverter = new CustomerConverter($mappingService, $this->loggingService);
+        $this->orderConverter = new Shopware55OrderConverter($mappingService, $taxCalculator, $this->loggingService);
+        $this->customerConverter = new Shopware55CustomerConverter($mappingService, $this->loggingService);
 
         $connectionId = Uuid::randomHex();
         $this->runId = Uuid::randomHex();
         $this->connection = new SwagMigrationConnectionEntity();
         $this->connection->setId($connectionId);
         $this->connection->setProfileName(Shopware55Profile::PROFILE_NAME);
-        $this->connection->setGatewayName(Shopware55LocalGateway::GATEWAY_NAME);
+        $this->connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
 
         $this->migrationContext = new MigrationContext(
+            new Shopware55Profile(),
             $this->connection,
             $this->runId,
             new OrderDataSet(),
@@ -100,6 +101,7 @@ class OrderConverterTest extends TestCase
         );
 
         $this->customerMigrationContext = new MigrationContext(
+            new Shopware55Profile(),
             $this->connection,
             $this->runId,
             new CustomerDataSet(),
@@ -135,7 +137,7 @@ class OrderConverterTest extends TestCase
 
     public function testSupports(): void
     {
-        $supportsDefinition = $this->orderConverter->supports(Shopware55Profile::PROFILE_NAME, new OrderDataSet());
+        $supportsDefinition = $this->orderConverter->supports($this->migrationContext);
 
         static::assertTrue($supportsDefinition);
     }
@@ -394,7 +396,7 @@ class OrderConverterTest extends TestCase
         static::assertCount(2, $this->loggingService->getLoggingArray());
 
         foreach ($this->loggingService->getLoggingArray() as $log) {
-            static::assertSame(Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS, $log['logEntry']['code']);
+            static::assertSame(LogTypes::EMPTY_NECESSARY_DATA_FIELDS, $log['logEntry']['code']);
             static::assertCount(1, $log['logEntry']['details']['fields']);
             static::assertTrue(
                 $log['logEntry']['details']['fields'][0] === 'billingaddress'
@@ -435,7 +437,7 @@ class OrderConverterTest extends TestCase
         static::assertCount(1, $this->loggingService->getLoggingArray());
 
         foreach ($this->loggingService->getLoggingArray() as $log) {
-            static::assertSame(Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS, $log['logEntry']['code']);
+            static::assertSame(LogTypes::EMPTY_NECESSARY_DATA_FIELDS, $log['logEntry']['code']);
         }
     }
 
@@ -472,7 +474,7 @@ class OrderConverterTest extends TestCase
         static::assertCount(3, $this->loggingService->getLoggingArray());
 
         foreach ($this->loggingService->getLoggingArray() as $log) {
-            static::assertSame(Shopware55LogTypes::EMPTY_LINE_ITEM_IDENTIFIER, $log['logEntry']['code']);
+            static::assertSame(LogTypes::EMPTY_LINE_ITEM_IDENTIFIER, $log['logEntry']['code']);
         }
     }
 
@@ -502,7 +504,7 @@ class OrderConverterTest extends TestCase
         static::assertCount(1, $this->loggingService->getLoggingArray());
 
         foreach ($this->loggingService->getLoggingArray() as $log) {
-            static::assertSame(Shopware55LogTypes::EMPTY_NECESSARY_DATA_FIELDS, $log['logEntry']['code']);
+            static::assertSame(LogTypes::EMPTY_NECESSARY_DATA_FIELDS, $log['logEntry']['code']);
             static::assertCount(1, $log['logEntry']['details']['fields']);
             static::assertSame($log['logEntry']['details']['fields']['0'], 'paymentMethod');
         }
@@ -534,7 +536,7 @@ class OrderConverterTest extends TestCase
         static::assertCount(1, $this->loggingService->getLoggingArray());
 
         foreach ($this->loggingService->getLoggingArray() as $log) {
-            static::assertSame(Shopware55LogTypes::UNKNOWN_ORDER_STATE, $log['logEntry']['code']);
+            static::assertSame(LogTypes::UNKNOWN_ORDER_STATE, $log['logEntry']['code']);
         }
     }
 }

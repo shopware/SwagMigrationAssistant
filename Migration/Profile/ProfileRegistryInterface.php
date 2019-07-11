@@ -2,8 +2,6 @@
 
 namespace SwagMigrationAssistant\Migration\Profile;
 
-use SwagMigrationAssistant\Migration\MigrationContextInterface;
-
 interface ProfileRegistryInterface
 {
     /**
@@ -14,5 +12,5 @@ interface ProfileRegistryInterface
     /**
      * Returns the profile with the given profile name
      */
-    public function getProfile(MigrationContextInterface $migrationContext): ProfileInterface;
+    public function getProfile(string $profileName): ProfileInterface;
 }

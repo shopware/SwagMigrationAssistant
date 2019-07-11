@@ -3,6 +3,7 @@
 namespace SwagMigrationAssistant\Migration\DataSelection\DataSet;
 
 use SwagMigrationAssistant\Exception\DataSetNotFoundException;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 class DataSetRegistry implements DataSetRegistryInterface
 {
@@ -19,11 +20,11 @@ class DataSetRegistry implements DataSetRegistryInterface
     /**
      * {@inheritdoc}
      */
-    public function getDataSets(string $profileName): array
+    public function getDataSets(MigrationContextInterface $migrationContext): array
     {
         $resultSet = [];
         foreach ($this->dataSets as $dataSet) {
-            if ($dataSet->supports($profileName)) {
+            if ($dataSet->supports($migrationContext)) {
                 $resultSet[] = $dataSet;
             }
         }
@@ -34,10 +35,10 @@ class DataSetRegistry implements DataSetRegistryInterface
     /**
      * {@inheritdoc}
      */
-    public function getDataSet(string $profileName, string $entity): DataSet
+    public function getDataSet(MigrationContextInterface $migrationContext, string $entity): DataSet
     {
         foreach ($this->dataSets as $dataSet) {
-            if ($dataSet->supports($profileName) && $dataSet::getEntity() === $entity) {
+            if ($dataSet->supports($migrationContext) && $dataSet::getEntity() === $entity) {
                 return $dataSet;
             }
         }

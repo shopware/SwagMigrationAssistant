@@ -8,10 +8,10 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContext;
-use SwagMigrationAssistant\Profile\Shopware55\Converter\ProductConverter;
-use SwagMigrationAssistant\Profile\Shopware55\Converter\PropertyGroupOptionConverter;
-use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\PropertyGroupOptionDataSet;
-use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\PropertyGroupOptionDataSet;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55ProductConverter;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55PropertyGroupOptionConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
@@ -30,7 +30,7 @@ class PropertyGroupOptionConverterTest extends TestCase
     private $loggingService;
 
     /**
-     * @var PropertyGroupOptionConverter
+     * @var Shopware55PropertyGroupOptionConverter
      */
     private $propertyGroupOptionConverter;
 
@@ -55,7 +55,7 @@ class PropertyGroupOptionConverterTest extends TestCase
     private $migrationContext;
 
     /**
-     * @var ProductConverter
+     * @var Shopware55ProductConverter
      */
     private $productConverter;
 
@@ -66,13 +66,13 @@ class PropertyGroupOptionConverterTest extends TestCase
         $this->loggingService = new DummyLoggingService();
         $mediaFileService = new DummyMediaFileService();
 
-        $this->propertyGroupOptionConverter = new PropertyGroupOptionConverter(
+        $this->propertyGroupOptionConverter = new Shopware55PropertyGroupOptionConverter(
             $this->mappingService,
             $mediaFileService,
             $this->loggingService
         );
 
-        $this->productConverter = new ProductConverter(
+        $this->productConverter = new Shopware55ProductConverter(
             $this->mappingService,
             $mediaFileService,
             $this->loggingService
@@ -82,9 +82,10 @@ class PropertyGroupOptionConverterTest extends TestCase
         $this->connection = new SwagMigrationConnectionEntity();
         $this->connection->setId(Uuid::randomHex());
         $this->connection->setProfileName(Shopware55Profile::PROFILE_NAME);
-        $this->connection->setGatewayName(Shopware55LocalGateway::GATEWAY_NAME);
+        $this->connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
 
         $this->migrationContext = new MigrationContext(
+            new Shopware55Profile(),
             $this->connection,
             $this->runId,
             new PropertyGroupOptionDataSet(),
@@ -97,7 +98,7 @@ class PropertyGroupOptionConverterTest extends TestCase
 
     public function testSupports(): void
     {
-        $supportsDefinition = $this->propertyGroupOptionConverter->supports(Shopware55Profile::PROFILE_NAME, new PropertyGroupOptionDataSet());
+        $supportsDefinition = $this->propertyGroupOptionConverter->supports($this->migrationContext);
 
         static::assertTrue($supportsDefinition);
     }

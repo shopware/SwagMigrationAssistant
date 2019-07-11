@@ -9,14 +9,14 @@ use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Converter\ConverterRegistry;
 use SwagMigrationAssistant\Migration\Converter\ConverterRegistryInterface;
 use SwagMigrationAssistant\Migration\MigrationContext;
-use SwagMigrationAssistant\Profile\Shopware55\Converter\ProductConverter;
-use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55ProductConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\DummyCollection;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Media\DummyMediaFileService;
-use SwagMigrationAssistant\Test\Profile\Shopware55\DataSet\FooDataSet;
+use SwagMigrationAssistant\Test\Profile\Shopware\DataSet\FooDataSet;
 use Symfony\Component\HttpFoundation\Response;
 
 class ConverterRegistryTest extends TestCase
@@ -30,7 +30,7 @@ class ConverterRegistryTest extends TestCase
     {
         $this->converterRegistry = new ConverterRegistry(
             new DummyCollection([
-                new ProductConverter(
+                new Shopware55ProductConverter(
                     new DummyMappingService(),
                     new DummyMediaFileService(),
                     new DummyLoggingService()
@@ -43,8 +43,9 @@ class ConverterRegistryTest extends TestCase
     {
         $connection = new SwagMigrationConnectionEntity();
         $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
-        $connection->setGatewayName(Shopware55LocalGateway::GATEWAY_NAME);
+        $connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
         $migrationContext = new MigrationContext(
+            new Shopware55Profile(),
             $connection,
             Uuid::randomHex(),
             new FooDataSet(),

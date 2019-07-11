@@ -1,0 +1,463 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <!-- Shopware ConnectionFactory -->
+        <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory" />
+
+        <!-- Shopware Profile Gateways -->
+        <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway">
+            <argument type="service" id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ReaderRegistry" />
+            <argument type="service" id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalEnvironmentReader" />
+            <argument type="service" id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalTableReader" />
+            <argument type="service" id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalTableCountReader" />
+            <argument type="service" id="SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory" />
+            <argument type="service" id="currency.repository"/>
+            <tag name="shopware.migration.gateway" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Api\ShopwareApiGateway">
+            <argument type="service" id="SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiReader" />
+            <argument type="service" id="SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiEnvironmentReader" />
+            <argument type="service" id="SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiTableReader" />
+            <argument type="service" id="SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiTableCountReader" />
+            <argument type="service" id="currency.repository"/>
+            <tag name="shopware.migration.gateway" />
+        </service>
+
+        <!-- Shopware MediaHandler -->
+        <service id="SwagMigrationAssistant\Profile\Shopware\Media\HttpMediaDownloadService">
+            <argument type="service" id="swag_migration_media_file.repository"/>
+            <argument type="service" id="Shopware\Core\Content\Media\File\FileSaver"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
+            <tag name="shopware.migration.media_file_processor"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Media\LocalMediaProcessor">
+            <argument type="service" id="swag_migration_media_file.repository"/>
+            <argument type="service" id="Shopware\Core\Content\Media\File\FileSaver"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
+            <argument type="tagged" tag="shopware.migration.media_strategy_resolver"/>
+            <tag name="shopware.migration.media_file_processor"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Media\Strategy\Md5StrategyResolver">
+            <tag name="shopware.migration.media_strategy_resolver"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Media\Strategy\PlainStrategyResolver">
+            <tag name="shopware.migration.media_strategy_resolver"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Media\HttpOrderDocumentProcessor">
+            <argument type="service" id="swag_migration_media_file.repository"/>
+            <argument type="service" id="Shopware\Core\Content\Media\MediaService"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
+            <argument type="service" id="SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory"/>
+            <tag name="shopware.migration.media_file_processor"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Media\LocalOrderDocumentProcessor">
+            <argument type="service" id="swag_migration_media_file.repository"/>
+            <argument type="service" id="Shopware\Core\Content\Media\MediaService"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
+            <tag name="shopware.migration.media_file_processor"/>
+        </service>
+
+        <!-- Shopware Converter Base classes -->
+        <service id="SwagMigrationAssistant\Profile\Shopware\Converter\AttributeConverter" abstract="true">
+            <argument id="SwagMigrationAssistant\Migration\Mapping\MappingService" type="service"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Converter\ProductAttributeConverter" abstract="true"
+                 parent="SwagMigrationAssistant\Profile\Shopware\Converter\AttributeConverter">
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Converter\ProductPriceAttributeConverter" abstract="true"
+                 parent="SwagMigrationAssistant\Profile\Shopware\Converter\AttributeConverter">
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Converter\ManufacturerAttributeConverter" abstract="true"
+                 parent="SwagMigrationAssistant\Profile\Shopware\Converter\AttributeConverter">
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Converter\CustomerAttributeConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware\Converter\AttributeConverter">
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Converter\OrderAttributeConverter" abstract="true"
+                 parent="SwagMigrationAssistant\Profile\Shopware\Converter\AttributeConverter">
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Converter\ProductConverter" abstract="true">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\MappingService"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Media\MediaFileService"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Converter\TranslationConverter" abstract="true">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\MappingService"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Converter\CategoryAttributeConverter" abstract="true"
+                 parent="SwagMigrationAssistant\Profile\Shopware\Converter\AttributeConverter">
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Converter\CategoryConverter" abstract="true">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\MappingService"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Media\MediaFileService"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Converter\MediaFolderConverter" abstract="true">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\MappingService"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Converter\MediaConverter" abstract="true">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\MappingService"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Media\MediaFileService"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Converter\CustomerConverter" abstract="true">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\MappingService"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Converter\OrderConverter" abstract="true">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\MappingService"/>
+            <argument type="service" id="Shopware\Core\Checkout\Cart\Tax\TaxCalculator"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Converter\OrderDocumentConverter" abstract="true">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\MappingService"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Media\MediaFileService"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Converter\CustomerGroupAttributeConverter" abstract="true"
+                 parent="SwagMigrationAssistant\Profile\Shopware\Converter\AttributeConverter">
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Converter\CustomerGroupConverter" abstract="true">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\MappingService"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Converter\PropertyGroupOptionConverter" abstract="true">
+            <argument id="SwagMigrationAssistant\Migration\Mapping\MappingService" type="service"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Media\MediaFileService"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Converter\NumberRangeConverter" abstract="true">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\MappingService" />
+            <argument type="service" id="number_range_type.repository" />
+            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Converter\CurrencyConverter" abstract="true">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\MappingService"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Converter\LanguageConverter" abstract="true">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\MappingService"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Converter\SalesChannelConverter" abstract="true">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\MappingService"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
+            <argument type="service" id="payment_method.repository"/>
+            <argument type="service" id="shipping_method.repository"/>
+            <argument type="service" id="country.repository"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Converter\NewsletterRecipientConverter" abstract="true">
+            <argument id="SwagMigrationAssistant\Migration\Mapping\MappingService" type="service"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
+        </service>
+
+        <!-- Shopware Reader -->
+        <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiReader">
+            <argument type="service" id="SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiEnvironmentReader">
+            <argument type="service" id="SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiTableReader">
+            <argument type="service" id="SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiTableCountReader">
+            <argument type="service" id="SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory" />
+            <argument type="service" id="SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry" />
+            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ReaderRegistry">
+            <argument type="tagged" tag="shopware.migration.local_reader"/>
+        </service>
+
+        <!-- Local reader -->
+        <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalAbstractReader" abstract="true">
+            <argument type="service" id="SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalEnvironmentReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalAbstractReader" />
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalTableReader">
+            <argument type="service" id="SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalTableCountReader">
+            <argument type="service" id="SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory" />
+            <argument type="service" id="SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry" />
+            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalAttributeReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalAbstractReader">
+            <tag name="shopware.migration.local_reader" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalCategoryReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalAbstractReader">
+            <tag name="shopware.migration.local_reader" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalCurrencyReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalAbstractReader">
+            <tag name="shopware.migration.local_reader" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalNewsletterRecipientReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalAbstractReader">
+            <tag name="shopware.migration.local_reader" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalCustomerGroupReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalAbstractReader">
+            <tag name="shopware.migration.local_reader" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalCustomerReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalAbstractReader">
+            <tag name="shopware.migration.local_reader" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalLanguageReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalAbstractReader">
+            <tag name="shopware.migration.local_reader" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalMediaAlbumReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalAbstractReader">
+            <tag name="shopware.migration.local_reader" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalMediaReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalAbstractReader">
+            <tag name="shopware.migration.local_reader" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalNumberRangeReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalAbstractReader">
+            <tag name="shopware.migration.local_reader" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalOrderReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalAbstractReader">
+            <tag name="shopware.migration.local_reader" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalProductReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalAbstractReader">
+            <tag name="shopware.migration.local_reader" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalPropertyGroupOptionReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalAbstractReader">
+            <tag name="shopware.migration.local_reader" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalSalesChannelReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalAbstractReader">
+            <tag name="shopware.migration.local_reader" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalTranslationReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalAbstractReader">
+            <tag name="shopware.migration.local_reader" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalOrderDocumentReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalAbstractReader">
+            <tag name="shopware.migration.local_reader" />
+        </service>
+
+        <!-- Shopware Dataselections -->
+        <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\BasicSettingsDataSelection">
+            <tag name="shopware.migration.data_selection"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\ProductDataSelection">
+            <tag name="shopware.migration.data_selection"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\CustomerAndOrderDataSelection">
+            <tag name="shopware.migration.data_selection"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\MediaDataSelection">
+            <tag name="shopware.migration.data_selection"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\NumberRangeDataSelection">
+            <tag name="shopware.migration.data_selection"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\NewsletterRecipientDataSelection">
+            <tag name="shopware.migration.data_selection"/>
+        </service>
+
+        <!-- Shopware DataSets -->
+        <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductAttributeDataSet">
+            <tag name="shopware.migration.data_set" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductPriceAttributeDataSet">
+            <tag name="shopware.migration.data_set" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ManufacturerAttributeDataSet">
+            <tag name="shopware.migration.data_set" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDataSet">
+            <tag name="shopware.migration.data_set" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CustomerAttributeDataSet">
+            <tag name="shopware.migration.data_set" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CustomerDataSet">
+            <tag name="shopware.migration.data_set" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderAttributeDataSet">
+            <tag name="shopware.migration.data_set" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderDataSet">
+            <tag name="shopware.migration.data_set" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CategoryAttributeDataSet">
+            <tag name="shopware.migration.data_set" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CategoryDataSet">
+            <tag name="shopware.migration.data_set" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CustomerGroupAttributeDataSet">
+            <tag name="shopware.migration.data_set" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CustomerGroupDataSet">
+            <tag name="shopware.migration.data_set" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaFolderDataSet">
+            <tag name="shopware.migration.data_set" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet">
+            <tag name="shopware.migration.data_set" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\NumberRangeDataSet">
+            <tag name="shopware.migration.data_set" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\TranslationDataSet">
+            <tag name="shopware.migration.data_set" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\PropertyGroupOptionDataSet">
+            <tag name="shopware.migration.data_set" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\NewsletterRecipientDataSet">
+            <tag name="shopware.migration.data_set" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\LanguageDataSet">
+            <tag name="shopware.migration.data_set" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CurrencyDataSet">
+            <tag name="shopware.migration.data_set" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\SalesChannelDataSet">
+            <tag name="shopware.migration.data_set" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderDocumentDataSet">
+            <tag name="shopware.migration.data_set" />
+        </service>
+
+        <!-- Shopware PreMappingReader -->
+        <service id="SwagMigrationAssistant\Profile\Shopware\Premapping\OrderStateReader">
+            <argument type="service" id="state_machine.repository"/>
+            <argument type="service" id="state_machine_state.repository"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Gateway\GatewayRegistry"/>
+            <tag name="shopware.migration.pre_mapping_reader"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Premapping\TransactionStateReader">
+            <argument type="service" id="state_machine.repository"/>
+            <argument type="service" id="state_machine_state.repository"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Gateway\GatewayRegistry"/>
+            <tag name="shopware.migration.pre_mapping_reader"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Premapping\PaymentMethodReader">
+            <argument type="service" id="payment_method.repository"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Gateway\GatewayRegistry"/>
+            <tag name="shopware.migration.pre_mapping_reader"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Premapping\ProductManufacturerReader">
+            <argument type="service" id="product_manufacturer.repository"/>
+            <tag name="shopware.migration.pre_mapping_reader"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Premapping\SalutationReader">
+            <argument type="service" id="salutation.repository" />
+            <argument type="service" id="SwagMigrationAssistant\Migration\Gateway\GatewayRegistry"/>
+            <tag name="shopware.migration.pre_mapping_reader"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Premapping\DeliveryTimeReader">
+            <argument type="service" id="delivery_time.repository"/>
+            <tag name="shopware.migration.pre_mapping_reader"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Premapping\NewsletterRecipientStatusReader">
+            <tag name="shopware.migration.pre_mapping_reader"/>
+        </service>
+
+    </services>
+</container>

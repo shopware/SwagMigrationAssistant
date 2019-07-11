@@ -23,8 +23,8 @@ use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataWriter;
 use SwagMigrationAssistant\Migration\Service\MigrationDataWriterInterface;
-use SwagMigrationAssistant\Profile\Shopware55\DataSelection\DataSet\ProductDataSet;
-use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDataSet;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\MigrationServicesTrait;
 
@@ -83,7 +83,7 @@ class MediaDownloadServiceTest extends TestCase
                     'id' => $this->runUuid,
                     'status' => SwagMigrationRunEntity::STATUS_RUNNING,
                     'profile' => Shopware55Profile::PROFILE_NAME,
-                    'gateway' => Shopware55LocalGateway::GATEWAY_NAME,
+                    'gateway' => ShopwareLocalGateway::GATEWAY_NAME,
                 ],
             ],
             Context::createDefaultContext()
@@ -110,6 +110,7 @@ class MediaDownloadServiceTest extends TestCase
         $context = Context::createDefaultContext();
 
         $migrationContext = new MigrationContext(
+            new Shopware55Profile(),
             null,
             $this->runUuid,
             new ProductDataSet(),

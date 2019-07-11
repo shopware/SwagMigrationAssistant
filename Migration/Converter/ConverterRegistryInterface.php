@@ -9,5 +9,5 @@ interface ConverterRegistryInterface
     /**
      * Returns the converter which supports the given internal entity
      */
-    public function getConverter(MigrationContextInterface $context): ConverterInterface;
+    public function getConverter(MigrationContextInterface $migrationContext): ConverterInterface;
 }

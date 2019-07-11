@@ -2,7 +2,7 @@
 
 namespace SwagMigrationAssistant\Migration\Premapping;
 
-use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 abstract class AbstractPremappingReader implements PremappingReaderInterface
 {
@@ -11,7 +11,7 @@ abstract class AbstractPremappingReader implements PremappingReaderInterface
      */
     protected $connectionPremappingDictionary = [];
 
-    protected function fillConnectionPremappingDictionary(MigrationContext $migrationContext): void
+    protected function fillConnectionPremappingDictionary(MigrationContextInterface $migrationContext): void
     {
         if ($migrationContext->getConnection()->getPremapping() === null) {
             return;

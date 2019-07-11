@@ -27,17 +27,17 @@ use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Media\MediaFileService;
 use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
 use SwagMigrationAssistant\Migration\Profile\ProfileRegistry;
 use SwagMigrationAssistant\Migration\Run\RunService;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationAssistant\Migration\Service\MigrationProgressService;
 use SwagMigrationAssistant\Migration\Service\ProgressState;
 use SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService;
-use SwagMigrationAssistant\Profile\Shopware55\DataSelection\CustomerAndOrderDataSelection;
-use SwagMigrationAssistant\Profile\Shopware55\DataSelection\ProductDataSelection;
-use SwagMigrationAssistant\Profile\Shopware55\Gateway\Local\Shopware55LocalGateway;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\CustomerAndOrderDataSelection;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\ProductDataSelection;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
-use SwagMigrationAssistant\Test\Migration\Services\MigrationProfileUuidService;
 use SwagMigrationAssistant\Test\MigrationServicesTrait;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -58,11 +58,6 @@ class StatusControllerTest extends TestCase
     private $runUuid;
 
     /**
-     * @var MigrationProfileUuidService
-     */
-    private $profileUuidService;
-
-    /**
      * @var EntityRepositoryInterface
      */
     private $runRepo;
@@ -71,11 +66,6 @@ class StatusControllerTest extends TestCase
      * @var EntityRepositoryInterface
      */
     private $generalSettingRepo;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $profileRepo;
 
     /**
      * @var EntityRepositoryInterface
@@ -102,16 +92,21 @@ class StatusControllerTest extends TestCase
      */
     private $invalidConnectionId;
 
+    /**
+     * @var MigrationContextFactoryInterface
+     */
+    private $migrationContextFactory;
+
     protected function setUp(): void
     {
         $this->context = Context::createDefaultContext();
         $mediaFileRepo = $this->getContainer()->get('swag_migration_media_file.repository');
         $dataRepo = $this->getContainer()->get('swag_migration_data.repository');
         $currencyRepo = $this->getContainer()->get('currency.repository');
-        $this->profileRepo = $this->getContainer()->get('swag_migration_profile.repository');
         $this->connectionRepo = $this->getContainer()->get('swag_migration_connection.repository');
         $this->generalSettingRepo = $this->getContainer()->get('swag_migration_general_setting.repository');
         $this->runRepo = $this->getContainer()->get('swag_migration_run.repository');
+        $this->migrationContextFactory = $this->getContainer()->get('SwagMigrationAssistant\Migration\MigrationContextFactory');
 
         $this->context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) {
             $this->connectionId = Uuid::randomHex();
@@ -126,7 +121,7 @@ class StatusControllerTest extends TestCase
                             'apiKey' => 'testKey',
                         ],
                         'profileName' => Shopware55Profile::PROFILE_NAME,
-                        'gatewayName' => Shopware55LocalGateway::GATEWAY_NAME,
+                        'gatewayName' => ShopwareLocalGateway::GATEWAY_NAME,
                     ],
                 ],
                 $context
@@ -139,7 +134,7 @@ class StatusControllerTest extends TestCase
                         'id' => $this->invalidConnectionId,
                         'name' => 'myInvalidConnection',
                         'profileName' => Shopware55Profile::PROFILE_NAME,
-                        'gatewayName' => Shopware55LocalGateway::GATEWAY_NAME,
+                        'gatewayName' => ShopwareLocalGateway::GATEWAY_NAME,
                     ],
                 ],
                 $context
@@ -199,7 +194,8 @@ class StatusControllerTest extends TestCase
             ]),
             $this->connectionRepo,
             $this->getContainer()->get(ProfileRegistry::class),
-            $this->getContainer()->get(GatewayRegistry::class)
+            $this->getContainer()->get(GatewayRegistry::class),
+            $this->migrationContextFactory
         );
     }
 

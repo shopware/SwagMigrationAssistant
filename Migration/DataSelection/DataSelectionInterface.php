@@ -2,9 +2,11 @@
 
 namespace SwagMigrationAssistant\Migration\DataSelection;
 
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
+
 interface DataSelectionInterface
 {
-    public function supports(string $profileName, string $gatewayIdentifier): bool;
+    public function supports(MigrationContextInterface $migrationContext): bool;
 
     public function getData(): DataSelectionStruct;
 
