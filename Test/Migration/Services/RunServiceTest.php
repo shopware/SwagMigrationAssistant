@@ -127,6 +127,7 @@ class RunServiceTest extends TestCase
             $this->getContainer()->get('rule.repository'),
             $this->getContainer()->get('media_thumbnail_size.repository'),
             $this->getContainer()->get('media_default_folder.repository'),
+            $this->getContainer()->get('category.repository'),
             $entityWriter,
             $this->getContainer()->get(SwagMigrationMappingDefinition::class)
         );

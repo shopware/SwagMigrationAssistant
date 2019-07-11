@@ -2,6 +2,7 @@
 
 namespace SwagMigrationAssistant\Migration\Mapping;
 
+use Shopware\Core\Content\Category\CategoryCollection;
 use Shopware\Core\Content\Media\Aggregate\MediaDefaultFolder\MediaDefaultFolderEntity;
 use Shopware\Core\Content\Media\Aggregate\MediaThumbnailSize\MediaThumbnailSizeEntity;
 use Shopware\Core\Content\Rule\RuleEntity;
@@ -31,61 +32,6 @@ class MappingService implements MappingServiceInterface
     /**
      * @var EntityRepositoryInterface
      */
-    protected $migrationMappingRepo;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    protected $localeRepository;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    protected $languageRepository;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    protected $countryRepository;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    protected $currencyRepository;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    protected $salesChannelRepo;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    protected $salesChannelTypeRepo;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    protected $paymentRepository;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    protected $shippingMethodRepo;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    protected $taxRepo;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    protected $numberRangeRepo;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
     protected $mediaDefaultFolderRepo;
 
     protected $uuids = [];
@@ -101,11 +47,65 @@ class MappingService implements MappingServiceInterface
     protected $languageData = [];
 
     protected $locales = [];
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $migrationMappingRepo;
+
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $localeRepository;
+
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $languageRepository;
+
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $countryRepository;
+
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $currencyRepository;
+
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $salesChannelRepo;
+
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $salesChannelTypeRepo;
+
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $paymentRepository;
+
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $shippingMethodRepo;
+
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $taxRepo;
+
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $numberRangeRepo;
 
     /**
      * @var LanguageEntity
      */
-    protected $defaultLanguageData;
+    private $defaultLanguageData;
 
     /**
      * @var EntityRepositoryInterface
@@ -116,6 +116,11 @@ class MappingService implements MappingServiceInterface
      * @var EntityRepositoryInterface
      */
     private $thumbnailSizeRepo;
+
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $categoryRepo;
 
     /**
      * @var EntityWriterInterface
@@ -147,6 +152,7 @@ class MappingService implements MappingServiceInterface
         EntityRepositoryInterface $ruleRepo,
         EntityRepositoryInterface $thumbnailSizeRepo,
         EntityRepositoryInterface $mediaDefaultRepo,
+        EntityRepositoryInterface $categoryRepo,
         EntityWriterInterface $entityWriter,
         EntityDefinition $mappingDefinition
     ) {
@@ -164,6 +170,7 @@ class MappingService implements MappingServiceInterface
         $this->ruleRepo = $ruleRepo;
         $this->thumbnailSizeRepo = $thumbnailSizeRepo;
         $this->mediaDefaultFolderRepo = $mediaDefaultRepo;
+        $this->categoryRepo = $categoryRepo;
         $this->entityWriter = $entityWriter;
         $this->mappingDefinition = $mappingDefinition;
     }
@@ -780,6 +787,22 @@ class MappingService implements MappingServiceInterface
             'oldIdentifier' => $oldIdentifier,
             'entityValue' => $value,
         ]);
+    }
+
+    public function getLowestRootCategoryUuid(Context $context): ?string
+    {
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('parentId', null));
+
+        $result = $this->categoryRepo->search($criteria, $context);
+
+        if ($result->getTotal() > 0) {
+            /** @var CategoryCollection $collection */
+            $collection = $result->getEntities();
+            $collection->sortByPosition()->last()->getId();
+        }
+
+        return null;
     }
 
     protected function saveMapping(array $mapping): void

@@ -24,7 +24,7 @@ class LocalCategoryReader extends LocalAbstractReader implements LocalReaderInte
         $topMostParentIds = $this->getTopMostParentIds($fetchedCategories);
         $topMostCategories = $this->fetchCategoriesById($topMostParentIds);
 
-        $categories = $this->mapData($fetchedCategories, [], ['category', 'categorypath']);
+        $categories = $this->mapData($fetchedCategories, [], ['category', 'categorypath', 'previousSiblingId']);
 
         $resultSet = $this->setAllLocales($categories, $topMostCategories);
 
@@ -44,8 +44,12 @@ class LocalCategoryReader extends LocalAbstractReader implements LocalReaderInte
         $query->leftJoin('category', 's_media', 'asset', 'category.mediaID = asset.id');
         $this->addTableSelection($query, 's_media', 'asset');
 
+        $query->leftJoin('category', 's_categories', 'sibling', 'category.parent = sibling.parent AND CAST(category.position AS SIGNED) - 1 = CAST(sibling.position AS SIGNED)');
+        $query->addSelect('sibling.id as previousSiblingId');
+
         $query->andWhere('category.parent IS NOT NULL');
         $query->orderBy('LENGTH(categorypath)');
+        $query->addOrderBy('category.position');
         $query->setFirstResult($migrationContext->getOffset());
         $query->setMaxResults($migrationContext->getLimit());
 
