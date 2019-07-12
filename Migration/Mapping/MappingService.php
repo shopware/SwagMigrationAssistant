@@ -340,14 +340,14 @@ class MappingService implements MappingServiceInterface
         return $uuid;
     }
 
-    public function getLanguageUuid(string $connectionId, string $localeCode, Context $context): ?string
+    public function getLanguageUuid(string $connectionId, string $localeCode, Context $context, bool $withoutMapping = false): ?string
     {
-        if (isset($this->languageData[$localeCode])) {
+        if (!$withoutMapping && isset($this->languageData[$localeCode])) {
             return $this->languageData[$localeCode];
         }
 
         $languageUuid = $this->searchLanguageInMapping($localeCode, $context);
-        if ($languageUuid !== null) {
+        if (!$withoutMapping && $languageUuid !== null) {
             return $languageUuid;
         }
 
@@ -709,6 +709,7 @@ class MappingService implements MappingServiceInterface
         foreach ($this->writeArray as $key => $writeMapping) {
             if ($writeMapping['connectionId'] === $connectionId && $writeMapping['entityUuid'] === $entityUuid) {
                 unset($this->writeArray[$key]);
+                $this->writeArray = array_values($this->writeArray);
                 break;
             }
         }

@@ -13,7 +13,7 @@ interface RunServiceInterface
     public function abortMigration(string $runUuid, Context $context): void;
 
     /**
-     * @param int[] $dataSelectionIds
+     * @param string[] $dataSelectionIds
      */
     public function createMigrationRun(
         MigrationContextInterface $migrationContext,

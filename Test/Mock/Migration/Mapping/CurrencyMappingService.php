@@ -6,7 +6,7 @@ use Shopware\Core\Framework\Context;
 
 class CurrencyMappingService extends BasicSettingsMappingService
 {
-    public function getLanguageUuid(string $connectionId, string $localeCode, Context $context): ?string
+    public function getLanguageUuid(string $connectionId, string $localeCode, Context $context, bool $withoutMapping = false): ?string
     {
         return self::DEFAULT_LANGUAGE_UUID;
     }

@@ -7,7 +7,7 @@ use Shopware\Core\Framework\Uuid\Uuid;
 
 class BasicSettingsMappingService extends DummyMappingService
 {
-    public function getLanguageUuid(string $connectionId, string $localeCode, Context $context): ?string
+    public function getLanguageUuid(string $connectionId, string $localeCode, Context $context, bool $withoutMapping = false): ?string
     {
         return null;
     }

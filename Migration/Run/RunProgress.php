@@ -46,6 +46,9 @@ class RunProgress extends Struct
         $this->id = $id;
     }
 
+    /**
+     * @return EntityProgress[]
+     */
     public function getEntities(): array
     {
         return $this->entities;
