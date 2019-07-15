@@ -3,6 +3,8 @@
 namespace SwagMigrationAssistant\Migration\Mapping;
 
 use Shopware\Core\Content\Category\CategoryCollection;
+use Shopware\Core\Content\Cms\CmsPageDefinition;
+use Shopware\Core\Content\Cms\CmsPageEntity;
 use Shopware\Core\Content\Media\Aggregate\MediaDefaultFolder\MediaDefaultFolderEntity;
 use Shopware\Core\Content\Media\Aggregate\MediaThumbnailSize\MediaThumbnailSizeEntity;
 use Shopware\Core\Content\Rule\RuleEntity;
@@ -137,6 +139,11 @@ class MappingService implements MappingServiceInterface
      */
     private $mappingDefinition;
 
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $cmsPageRepo;
+
     public function __construct(
         EntityRepositoryInterface $migrationMappingRepo,
         EntityRepositoryInterface $localeRepository,
@@ -153,6 +160,7 @@ class MappingService implements MappingServiceInterface
         EntityRepositoryInterface $thumbnailSizeRepo,
         EntityRepositoryInterface $mediaDefaultRepo,
         EntityRepositoryInterface $categoryRepo,
+        EntityRepositoryInterface $cmsPageRepo,
         EntityWriterInterface $entityWriter,
         EntityDefinition $mappingDefinition
     ) {
@@ -171,6 +179,7 @@ class MappingService implements MappingServiceInterface
         $this->thumbnailSizeRepo = $thumbnailSizeRepo;
         $this->mediaDefaultFolderRepo = $mediaDefaultRepo;
         $this->categoryRepo = $categoryRepo;
+        $this->cmsPageRepo = $cmsPageRepo;
         $this->entityWriter = $entityWriter;
         $this->mappingDefinition = $mappingDefinition;
     }
@@ -338,6 +347,38 @@ class MappingService implements MappingServiceInterface
         );
 
         return $uuid;
+    }
+
+    public function getDefaultCmsPageUuid(string $connectionId, Context $context): ?string
+    {
+        $uuid = $this->getUuid($connectionId, CmsPageDefinition::ENTITY_NAME, 'standard_cms_page', $context);
+        if ($uuid !== null) {
+            return $uuid;
+        }
+
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('type', 'product_list'));
+        $criteria->addFilter(new EqualsFilter('locked', true));
+
+        /** @var CmsPageEntity|null $cmsPage */
+        $cmsPage = $this->cmsPageRepo->search($criteria, $context)->first();
+
+        if ($cmsPage !== null) {
+            $uuid = $cmsPage->getId();
+
+            $this->saveMapping(
+                [
+                    'connectionId' => $connectionId,
+                    'entity' => CmsPageDefinition::ENTITY_NAME,
+                    'oldIdentifier' => 'standard_cms_page',
+                    'entityUuid' => $uuid,
+                ]
+            );
+
+            return $uuid;
+        }
+
+        return null;
     }
 
     public function getLanguageUuid(string $connectionId, string $localeCode, Context $context, bool $withoutMapping = false): ?string

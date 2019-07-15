@@ -43,6 +43,7 @@
             <argument type="service" id="media_thumbnail_size.repository"/>
             <argument type="service" id="media_default_folder.repository"/>
             <argument type="service" id="category.repository"/>
+            <argument type="service" id="cms_page.repository"/>
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition"/>
         </service>
@@ -136,16 +137,6 @@
             <argument type="service" id="SwagMigrationAssistant\Migration\Profile\ProfileRegistry"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Gateway\GatewayRegistry"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\MigrationContextFactory" />
-        </service>
-
-        <service id="SwagMigrationAssistant\Command\MigrationFetchDataCommand"
-                 class="SwagMigrationAssistant\Command\MigrationFetchDataCommand">
-            <argument type="service" id="SwagMigrationAssistant\Migration\Service\MigrationDataFetcher"/>
-            <argument type="service" id="swag_migration_run.repository"/>
-            <argument type="service" id="swag_migration_data.repository"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry" />
-            <argument>migration:fetch:data</argument>
-            <tag name="console.command" command="migration:fetch:data"/>
         </service>
 
         <service id="SwagMigrationAssistant\Command\MigrateDataCommand">

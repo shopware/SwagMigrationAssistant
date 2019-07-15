@@ -162,4 +162,9 @@ class DummyMappingService extends MappingService
     {
         return null;
     }
+
+    public function getDefaultCmsPageUuid(string $connectionId, Context $context): ?string
+    {
+        return Uuid::randomHex();
+    }
 }

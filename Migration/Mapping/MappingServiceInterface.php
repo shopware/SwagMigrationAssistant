@@ -32,6 +32,8 @@ interface MappingServiceInterface
         ?string $newUuid = null
     ): string;
 
+    public function getDefaultCmsPageUuid(string $connectionId, Context $context): ?string;
+
     public function getLanguageUuid(string $connectionId, string $localeCode, Context $context, bool $withoutMapping = false): ?string;
 
     public function getLocaleUuid(string $connectionId, string $localeCode, Context $context): string;

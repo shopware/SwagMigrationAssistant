@@ -117,6 +117,11 @@ abstract class CategoryConverter extends ShopwareConverter
             $data['mediaID']
         );
 
+        $cmsPageUuid = $this->mappingService->getDefaultCmsPageUuid($migrationContext->getConnection()->getId(), $context);
+        if ($cmsPageUuid !== null) {
+            $converted['cmsPageId'] = $cmsPageUuid;
+        }
+
         if (isset($data['parent'])) {
             $parentUuid = $this->mappingService->getUuid(
                 $this->connectionId,
