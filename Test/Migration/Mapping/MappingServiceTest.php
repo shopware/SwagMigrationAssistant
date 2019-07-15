@@ -86,6 +86,7 @@ class MappingServiceTest extends TestCase
             $this->getContainer()->get('media_thumbnail_size.repository'),
             $this->getContainer()->get('media_default_folder.repository'),
             $this->getContainer()->get('category.repository'),
+            $this->getContainer()->get('cms_page.repository'),
             $this->entityWriter,
             $this->getContainer()->get(SwagMigrationMappingDefinition::class)
         );
@@ -126,6 +127,7 @@ class MappingServiceTest extends TestCase
             $this->getContainer()->get('media_thumbnail_size.repository'),
             $this->getContainer()->get('media_default_folder.repository'),
             $this->getContainer()->get('category.repository'),
+            $this->getContainer()->get('cms_page.repository'),
             $this->entityWriter,
             $this->getContainer()->get(SwagMigrationMappingDefinition::class)
         );
