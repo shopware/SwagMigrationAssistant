@@ -40,4 +40,19 @@ abstract class BaseRunLogEntry implements LogEntryInterface
     {
         return $this->sourceId;
     }
+
+    public function getSnippetRoot(): string
+    {
+        return 'swag-migration.index.error';
+    }
+
+    public function getTitleSnippet(): string
+    {
+        return sprintf('%s.%s.title', $this->getSnippetRoot(), $this->getCode());
+    }
+
+    public function getDescriptionSnippet(): string
+    {
+        return sprintf('%s.%s.description', $this->getSnippetRoot(), $this->getCode());
+    }
 }

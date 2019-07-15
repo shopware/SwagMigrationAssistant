@@ -370,25 +370,78 @@
         },
         "unknownError": "Unknown error. You can check the logging table of your database for more information.",
         "mediaProcessConnectionError": "A connection error occurred while copying the media data. Please check the connection.",
-        "SWAG_MIGRATION__WRITER_NOT_FOUND": "File writer for \"{entity}\" entity not found.",
-        "SWAG_MIGRATION__SHOPWARE_CANNOT_DOWNLOAD_DATA": "Cannot download media. Affected file: {uri}",
-        "SWAG_MIGRATION__SHOPWARE_PARENT_ENTITY_NOT_FOUND": "Parent entity for \"{entity}\" child not found.",
-        "SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING": "Mapping of \"{missingEntity}\" is missing, but it is a required association for \"{requiredFor}\". Please migrate \"{missingImportEntity}\" first to continue.",
-        "SWAG_MIGRATION__SHOPWARE_EMPTY_NECESSARY_DATA_FIELDS": "{entity} entity could not be converted, because of the empty required field: {fields} | {entity} entity could not be converted, because of the empty required fields: {fields}",
-        "SWAG_MIGRATION__SHOPWARE_NO_DEFAULT_SHIPPING_ADDRESS": "Default shipping address of the customer is empty, therefore the default billing address will be used.",
-        "SWAG_MIGRATION__SHOPWARE_NO_DEFAULT_BILLING_ADDRESS": "Default billing address of customer is empty, therefore the default shipping address will be used.",
-        "SWAG_MIGRATION__SHOPWARE_NO_DEFAULT_BILLING_AND_SHIPPING_ADDRESS": "Default billing and shipping address of customer are empty, therefore the first address will be used.",
-        "SWAG_MIGRATION__SHOPWARE_PRODUCT_MEDIA_NOT_CONVERTED": "Product media could not be converted.",
-        "SWAG_MIGRATION__SHOPWARE_PROPERTY_MEDIA_NOT_CONVERTED": "Property media could not be converted.",
-        "SWAG_MIGRATION__SHOPWARE_EMPTY_LOCALE": "Category entity could not be converted, because of empty locale.",
-        "SWAG_MIGRATION__SHOPWARE_NO_ADDRESS_DATA": "Customer entity could not be converted, because of empty address data.",
-        "SWAG_MIGRATION__SHOPWARE_NOT_CONVERT_ABLE_OBJECT_TYPE": "Translation of object type “{objectType}“ could not be converted.",
-        "SWAG_MIGRATION__SHOPWARE_INVALID_UNSERIALIZED_DATA": "{entity} translation entity could not be converted, because of invalid, unserialized object data.",
-        "SWAG_MIGRATION__SHOPWARE_SOURCE_FILE_NOT_FOUND": "The source file could not be found. File: {path}",
-        "SWAG_MIGRATION__SHOPWARE_CANNOT_COPY_DATA": "The source file could not be copied. File: {path}",
-        "SWAG_MIGRATION__SHOPWARE_UNKNOWN_ORDER_STATE": "Order entity could not be converted, because of unknown order state.",
-        "SWAG_MIGRATION__SHOPWARE_UNKNOWN_TRANSACTION_STATE": "Transaction entity could not be converted, because of unknown transaction state.",
-        "SWAG_MIGRATION__SHOPWARE_UNKNOWN_CUSTOMER_SALUTATION": "Customer data could not be converted due to unknown salutation."
+        "SWAG_MIGRATION__WRITER_NOT_FOUND": {
+          "title": "File writer not found",
+          "description": "File writer for \"{entity}\" entity not found."
+        },
+        "SWAG_MIGRATION__SHOPWARE_CANNOT_DOWNLOAD_DATA": {
+          "title": "Cannot download media",
+          "description": "Cannot download media. Affected file: {uri}"
+        },
+        "SWAG_MIGRATION__SHOPWARE_PARENT_ENTITY_NOT_FOUND": {
+          "title": "Parent entity not found",
+          "description": "Parent entity for \"{entity}\" child not found."
+        },
+        "SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING": {
+          "title": "Mapping is missing",
+          "description": "Mapping of \"{missingEntity}\" is missing, but it is a required association for \"{requiredFor}\". Please migrate \"{missingImportEntity}\" first to continue."
+        },
+        "SWAG_MIGRATION__SHOPWARE_EMPTY_NECESSARY_DATA_FIELDS": {
+          "title": "Required field is empty",
+          "description": "{entity} entity could not be converted, because of the empty required field: {fields} | {entity} entity could not be converted, because of the empty required fields: {fields}"
+        },
+        "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_OBJECT_TYPE": {
+          "title": "Translation not converted",
+          "description": "Translation of object type “{objectType}“ could not be converted."
+        },
+        "SWAG_MIGRATION__SHOPWARE_INVALID_UNSERIALIZED_DATA": {
+          "title": "Translation not converted",
+          "description": "{entity} translation entity could not be converted, because of invalid, unserialized object data."
+        },
+        "SWAG_MIGRATION__SHOPWARE_CANNOT_COPY_DATA": {
+          "title": "Source file not found",
+          "description": "The source file could not be copied. File: {path}"
+        },
+        "SWAG_MIGRATION_CANNOT_CONVERT_CHILD_ENTITY": {
+          "title": "Child entity not converted",
+          "description": "The {entity} child entity could not be converted."
+        },
+        "SWAG_MIGRATION_CANNOT_CONVERT_ENTITY": {
+          "title": "Entity not converted",
+          "description": "The {entity} entity with the source id \"{sourceId}\" could not be converted."
+        },
+        "SWAG_MIGRATION_CANNOT_GET_FILE": {
+          "title": "The {entity} file cannot be downloaded / copied",
+          "description": "The {entity} file with the uri \"{uri}\" and media id \"{sourceId}\" cannot be downloaded / copied."
+        },
+        "SWAG_MIGRATION__COULD_NOT_READ_ENTITY_COUNT": {
+          "title": "Could not read entity count",
+          "description": "Total count for entity {entity} could not be read. Make the the table {table} exists in your source system and the optional condition \"{condition}\" is valid."
+        },
+        "SWAG_MIGRATION__DATASET_NOT_FOUND": {
+          "title": "DataSet not found",
+          "description": "DataSet for profile \"{profileName}\" and entity \"{entity}\" not found. Media with id \"{mediaId}\" could not processed."
+        },
+        "SWAG_MIGRATION_ENTITY_ALREADY_EXISTS": {
+          "title": "The {entity} entity already exists",
+          "description": "The {entity} entity with source id \"{sourceId}\" already exists and cannot be written."
+        },
+        "SWAG_MIGRATION_ENTITY_FIELD_REASSIGNED": {
+          "title": "The {entity} entity has a field that was reassigned",
+          "description": "The {entity} entity with the source id \"{sourceId}\" got the field {emptyField} replaced with {replacementField}."
+        },
+        "SWAG_MIGRATION__PROCESSOR_NOT_FOUND": {
+          "title": "Processor not found",
+          "description": "Processor for profile \"{profileName}\", gateway \"{gatewayName}\" and entity \"{entity}\" not found."
+        },
+        "SWAG_MIGRATION_ENTITY_UNKNOWN": {
+          "title": "Cannot find {entity}",
+          "description": "The {requiredForEntity} entity with the source id \"{requiredForSourceId}\" cannot find the depended {entity} entity with the source id \"{sourceId}\"."
+        },
+        "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_NUMBER_RANGE_TYPE": {
+          "title": "Unsupported number range type",
+          "description": "NumberRange-Entity could not be converted because of unsupported type: {type}."
+        }
       }
     },
     "history": {

@@ -3,6 +3,7 @@
 namespace SwagMigrationAssistant\Migration\Logging\Log;
 
 use Shopware\Core\Framework\ShopwareHttpException;
+use SwagMigrationAssistant\Migration\Logging\LogType;
 
 class ExceptionRunLog extends BaseRunLogEntry
 {
@@ -24,7 +25,7 @@ class ExceptionRunLog extends BaseRunLogEntry
 
     public function getCode(): string
     {
-        return 'SWAG_MIGRATION_RUN_EXCEPTION';
+        return LogType::RUN_EXCEPTION;
     }
 
     public function getTitle(): string
@@ -50,15 +51,5 @@ class ExceptionRunLog extends BaseRunLogEntry
     public function getDescription(): string
     {
         return $this->exception->getMessage();
-    }
-
-    public function getTitleSnippet(): string
-    {
-        return '...';
-    }
-
-    public function getDescriptionSnippet(): string
-    {
-        return '...';
     }
 }

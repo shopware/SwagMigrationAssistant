@@ -234,7 +234,7 @@ abstract class OrderConverter extends ShopwareConverter
             $this->loggingService->addLogEntry(new UnknownEntityLog(
                 $this->runId,
                 'order_state',
-                $data['status'],
+                (string) $data['status'],
                 DefaultEntities::ORDER,
                 $this->oldId
             ));

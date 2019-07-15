@@ -204,8 +204,8 @@ class ProductConverterTest extends TestCase
         static::assertArrayNotHasKey('media', $converted);
 
         $logs = $this->loggingService->getLoggingArray();
-        $description = 'Product-Media could not be converted.';
-        static::assertSame($description, $logs[0]['logEntry']['description']);
+        $description = 'The product_media child entity from the product parent entity with the id "SW10006" could not be converted.';
+        static::assertSame($description, $logs[0]['description']);
         static::assertCount(1, $logs);
     }
 }

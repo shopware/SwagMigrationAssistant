@@ -2,6 +2,8 @@
 
 namespace SwagMigrationAssistant\Migration\Logging\Log;
 
+use SwagMigrationAssistant\Migration\Logging\LogType;
+
 class EmptyNecessaryFieldRunLog extends BaseRunLogEntry
 {
     /**
@@ -53,11 +55,11 @@ class EmptyNecessaryFieldRunLog extends BaseRunLogEntry
 
     public function getTitleSnippet(): string
     {
-        return sprintf('....emptyNecessaryField.%s.title', $this->getEntity());
+        return sprintf('%s.%s.title', $this->getSnippetRoot(), LogType::EMPTY_NECESSARY_DATA_FIELDS);
     }
 
     public function getDescriptionSnippet(): string
     {
-        return sprintf('....emptyNecessaryField.%s.description', $this->getEntity());
+        return sprintf('%s.%s.description', $this->getSnippetRoot(), LogType::EMPTY_NECESSARY_DATA_FIELDS);
     }
 }

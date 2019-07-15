@@ -11,11 +11,13 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\System\Unit\UnitDefinition;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
 use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware\Logging\LogTypes;
+use SwagMigrationAssistant\Profile\Shopware\Logging\Log\InvalidUnserializedData;
+use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedObjectType;
 
 abstract class TranslationConverter extends ShopwareConverter
 {
@@ -96,16 +98,13 @@ abstract class TranslationConverter extends ShopwareConverter
                 return $this->createPropertyOptionTranslation($data);
         }
 
-        $this->loggingService->addWarning(
-            $this->runId,
-            LogTypes::NOT_CONVERTABLE_OBJECT_TYPE,
-            'Not convert able object type',
-            sprintf('Translation of object type "%s" could not be converted.', $data['objecttype']),
-            [
-                'objectType' => $data['objecttype'],
-                'data' => $data,
-            ]
-        );
+        $this->loggingService->addLogEntry(
+            new UnsupportedObjectType(
+                $migrationContext->getRunUuid(),
+                $data['objecttype'],
+                DefaultEntities::TRANSLATION,
+                $data['id']
+        ));
 
         return new ConvertStruct(null, $data);
     }
@@ -131,37 +130,20 @@ abstract class TranslationConverter extends ShopwareConverter
         }
 
         if (!isset($product['id'])) {
-            $this->loggingService->addWarning(
-                $this->runId,
-                LogTypes::ASSOCIATION_REQUIRED_MISSING,
-                'Associated product not found',
-                'Mapping of "product" is missing, but it is a required association for "translation". Import "product" first.',
-                [
-                    'data' => $data,
-                    'missingEntity' => 'product',
-                    'requiredFor' => 'translation',
-                    'missingImportEntity' => 'product',
-                ]
-            );
+            $this->loggingService->addLogEntry(
+                new AssociationRequiredMissingLog(
+                    $this->runId,
+                    DefaultEntities::TRANSLATION,
+                    DefaultEntities::PRODUCT,
+                    $data['id']
+            ));
 
             return new ConvertStruct(null, $sourceData);
         }
         $product['entityDefinitionClass'] = ProductDefinition::class;
 
-        $objectData = unserialize($data['objectdata'], ['allowed_classes' => false]);
-
-        if (!\is_array($objectData)) {
-            $this->loggingService->addWarning(
-                $this->runId,
-                LogTypes::INVALID_UNSERIALIZED_DATA,
-                'Invalid unserialized data',
-                'Product-Translation-Entity could not be converted cause of invalid unserialized object data.',
-                [
-                    'entity' => 'Product',
-                    'data' => $data['objectdata'],
-                ]
-            );
-
+        $objectData = $this->unserializeTranslation($data, DefaultEntities::PRODUCT_TRANSLATION);
+        if ($objectData === null) {
             return new ConvertStruct(null, $sourceData);
         }
 
@@ -224,38 +206,21 @@ abstract class TranslationConverter extends ShopwareConverter
         );
 
         if (!isset($manufacturer['id'])) {
-            $this->loggingService->addWarning(
-                $this->runId,
-                LogTypes::ASSOCIATION_REQUIRED_MISSING,
-                'Associated manufacturer not found',
-                'Mapping of "manufacturer" is missing, but it is a required association for "translation". Import "product" first.',
-                [
-                    'data' => $data,
-                    'missingEntity' => 'manufacturer',
-                    'requiredFor' => 'translation',
-                    'missingImportEntity' => 'product',
-                ]
-            );
+            $this->loggingService->addLogEntry(
+                new AssociationRequiredMissingLog(
+                    $this->runId,
+                    DefaultEntities::TRANSLATION,
+                    DefaultEntities::PRODUCT_MANUFACTURER,
+                    $data['id']
+                ));
 
             return new ConvertStruct(null, $sourceData);
         }
 
         $manufacturer['entityDefinitionClass'] = ProductManufacturerDefinition::class;
 
-        $objectData = unserialize($data['objectdata'], ['allowed_classes' => false]);
-
-        if (!\is_array($objectData)) {
-            $this->loggingService->addWarning(
-                $this->runId,
-                LogTypes::INVALID_UNSERIALIZED_DATA,
-                'Invalid unserialized data',
-                'Manufacturer-Translation-Entity could not be converted cause of invalid unserialized object data.',
-                [
-                    'entity' => 'Manufacturer',
-                    'data' => $data['objectdata'],
-                ]
-            );
-
+        $objectData = $this->unserializeTranslation($data, DefaultEntities::PRODUCT_MANUFACTURER_TRANSLATION);
+        if ($objectData === null) {
             return new ConvertStruct(null, $sourceData);
         }
 
@@ -314,38 +279,21 @@ abstract class TranslationConverter extends ShopwareConverter
         unset($data['objectkey']);
 
         if (!isset($unit['id'])) {
-            $this->loggingService->addWarning(
-                $this->runId,
-                LogTypes::ASSOCIATION_REQUIRED_MISSING,
-                'Associated unit not found',
-                'Mapping of "unit" is missing, but it is a required association for "translation". Import "product" first.',
-                [
-                    'data' => $data,
-                    'missingEntity' => 'unit',
-                    'requiredFor' => 'translation',
-                    'missingImportEntity' => 'product',
-                ]
-            );
+            $this->loggingService->addLogEntry(
+                new AssociationRequiredMissingLog(
+                    $this->runId,
+                    DefaultEntities::TRANSLATION,
+                    DefaultEntities::UNIT,
+                    $data['id']
+                ));
 
             return new ConvertStruct(null, $sourceData);
         }
 
         $unit['entityDefinitionClass'] = UnitDefinition::class;
 
-        $objectData = unserialize($data['objectdata'], ['allowed_classes' => false]);
-
-        if (!\is_array($objectData)) {
-            $this->loggingService->addWarning(
-                $this->runId,
-                LogTypes::INVALID_UNSERIALIZED_DATA,
-                'Invalid unserialized data',
-                'Unit-Translation-Entity could not be converted cause of invalid unserialized object data.',
-                [
-                    'entity' => 'Unit',
-                    'data' => $data['objectdata'],
-                ]
-            );
-
+        $objectData = $this->unserializeTranslation($data, DefaultEntities::UNIT_TRANSLATION);
+        if ($objectData === null) {
             return new ConvertStruct(null, $sourceData);
         }
 
@@ -409,38 +357,21 @@ abstract class TranslationConverter extends ShopwareConverter
         unset($data['objectkey']);
 
         if (!isset($category['id'])) {
-            $this->loggingService->addWarning(
-                $this->runId,
-                LogTypes::ASSOCIATION_REQUIRED_MISSING,
-                'Associated category not found',
-                'Mapping of "category" is missing, but it is a required association for "translation". Import "category" first.',
-                [
-                    'data' => $data,
-                    'missingEntity' => 'category',
-                    'requiredFor' => 'translation',
-                    'missingImportEntity' => 'category',
-                ]
-            );
+            $this->loggingService->addLogEntry(
+                new AssociationRequiredMissingLog(
+                    $this->runId,
+                    DefaultEntities::TRANSLATION,
+                    DefaultEntities::CATEGORY,
+                    $data['id']
+                ));
 
             return new ConvertStruct(null, $sourceData);
         }
 
         $category['entityDefinitionClass'] = CategoryDefinition::class;
 
-        $objectData = unserialize($data['objectdata'], ['allowed_classes' => false]);
-
-        if (!\is_array($objectData)) {
-            $this->loggingService->addWarning(
-                $this->runId,
-                LogTypes::INVALID_UNSERIALIZED_DATA,
-                'Invalid unserialized data',
-                'Category-Translation-Entity could not be converted cause of invalid unserialized object data.',
-                [
-                    'entity' => 'Category',
-                    'data' => $data['objectdata'],
-                ]
-            );
-
+        $objectData = $this->unserializeTranslation($data, DefaultEntities::CATEGORY_TRANSLATION);
+        if ($objectData === null) {
             return new ConvertStruct(null, $sourceData);
         }
 
@@ -512,38 +443,21 @@ abstract class TranslationConverter extends ShopwareConverter
         unset($data['objectkey']);
 
         if (!isset($configuratorOption['id'])) {
-            $this->loggingService->addWarning(
-                $this->runId,
-                LogTypes::ASSOCIATION_REQUIRED_MISSING,
-                'Associated configuration group option not found',
-                'Mapping of "configuration group option" is missing, but it is a required association for "translation". Import "configuration group option" first.',
-                [
-                    'data' => $data,
-                    'missingEntity' => 'Configuration group option',
-                    'requiredFor' => 'translation',
-                    'missingImportEntity' => 'Configuration group option',
-                ]
-            );
+            $this->loggingService->addLogEntry(
+                new AssociationRequiredMissingLog(
+                    $this->runId,
+                    DefaultEntities::TRANSLATION,
+                    DefaultEntities::PROPERTY_GROUP_OPTION,
+                    $data['id']
+                ));
 
             return new ConvertStruct(null, $sourceData);
         }
 
         $configuratorOption['entityDefinitionClass'] = PropertyGroupOptionDefinition::class;
 
-        $objectData = unserialize($data['objectdata'], ['allowed_classes' => false]);
-
-        if (!\is_array($objectData)) {
-            $this->loggingService->addWarning(
-                $this->runId,
-                LogTypes::INVALID_UNSERIALIZED_DATA,
-                'Invalid unserialized data',
-                'Configuration-Group-Option-Translation-Entity could not be converted cause of invalid unserialized object data.',
-                [
-                    'entity' => 'Configuration group option',
-                    'data' => $data['objectdata'],
-                ]
-            );
-
+        $objectData = $this->unserializeTranslation($data, DefaultEntities::PROPERTY_GROUP_OPTION_TRANSLATION);
+        if ($objectData === null) {
             return new ConvertStruct(null, $sourceData);
         }
 
@@ -603,38 +517,21 @@ abstract class TranslationConverter extends ShopwareConverter
         unset($data['objectkey']);
 
         if (!isset($configuratorOptionGroup['id'])) {
-            $this->loggingService->addWarning(
-                $this->runId,
-                LogTypes::ASSOCIATION_REQUIRED_MISSING,
-                'Associated configuration group not found',
-                'Mapping of "configuration group" is missing, but it is a required association for "translation". Import "configuration group" first.',
-                [
-                    'data' => $data,
-                    'missingEntity' => 'Configuration group',
-                    'requiredFor' => 'translation',
-                    'missingImportEntity' => 'Configuration group',
-                ]
-            );
+            $this->loggingService->addLogEntry(
+                new AssociationRequiredMissingLog(
+                    $this->runId,
+                    DefaultEntities::TRANSLATION,
+                    DefaultEntities::PROPERTY_GROUP,
+                    $data['id']
+                ));
 
             return new ConvertStruct(null, $sourceData);
         }
 
         $configuratorOptionGroup['entityDefinitionClass'] = PropertyGroupDefinition::class;
 
-        $objectData = unserialize($data['objectdata'], ['allowed_classes' => false]);
-
-        if (!\is_array($objectData)) {
-            $this->loggingService->addWarning(
-                $this->runId,
-                LogTypes::INVALID_UNSERIALIZED_DATA,
-                'Invalid unserialized data',
-                'Configuration-Group-Translation-Entity could not be converted cause of invalid unserialized object data.',
-                [
-                    'entity' => 'Configuration group',
-                    'data' => $data['objectdata'],
-                ]
-            );
-
+        $objectData = $this->unserializeTranslation($data, DefaultEntities::PROPERTY_GROUP_TRANSLATION);
+        if ($objectData === null) {
             return new ConvertStruct(null, $sourceData);
         }
 
@@ -694,38 +591,21 @@ abstract class TranslationConverter extends ShopwareConverter
         unset($data['objectkey']);
 
         if (!isset($propertyValue['id'])) {
-            $this->loggingService->addWarning(
-                $this->runId,
-                LogTypes::ASSOCIATION_REQUIRED_MISSING,
-                'Associated property value not found',
-                'Mapping of "property value" is missing, but it is a required association for "translation". Import "property value" first.',
-                [
-                    'data' => $data,
-                    'missingEntity' => 'Property value',
-                    'requiredFor' => 'translation',
-                    'missingImportEntity' => 'Property value',
-                ]
-            );
+            $this->loggingService->addLogEntry(
+                new AssociationRequiredMissingLog(
+                    $this->runId,
+                    DefaultEntities::TRANSLATION,
+                    DefaultEntities::PROPERTY_GROUP_OPTION,
+                    $data['id']
+                ));
 
             return new ConvertStruct(null, $sourceData);
         }
 
         $propertyValue['entityDefinitionClass'] = PropertyGroupOptionDefinition::class;
 
-        $objectData = unserialize($data['objectdata'], ['allowed_classes' => false]);
-
-        if (!\is_array($objectData)) {
-            $this->loggingService->addWarning(
-                $this->runId,
-                LogTypes::INVALID_UNSERIALIZED_DATA,
-                'Invalid unserialized data',
-                'Property-Value-Option-Translation-Entity could not be converted cause of invalid unserialized object data.',
-                [
-                    'entity' => 'Property value',
-                    'data' => $data['objectdata'],
-                ]
-            );
-
+        $objectData = $this->unserializeTranslation($data, DefaultEntities::PROPERTY_GROUP_OPTION_TRANSLATION);
+        if ($objectData === null) {
             return new ConvertStruct(null, $sourceData);
         }
 
@@ -781,38 +661,21 @@ abstract class TranslationConverter extends ShopwareConverter
         unset($data['objectkey']);
 
         if (!isset($propertyOption['id'])) {
-            $this->loggingService->addWarning(
-                $this->runId,
-                LogTypes::ASSOCIATION_REQUIRED_MISSING,
-                'Associated property option not found',
-                'Mapping of "property option" is missing, but it is a required association for "translation". Import "property option" first.',
-                [
-                    'data' => $data,
-                    'missingEntity' => 'Property option',
-                    'requiredFor' => 'translation',
-                    'missingImportEntity' => 'Property option',
-                ]
-            );
+            $this->loggingService->addLogEntry(
+                new AssociationRequiredMissingLog(
+                    $this->runId,
+                    DefaultEntities::TRANSLATION,
+                    DefaultEntities::PROPERTY_GROUP,
+                    $data['id']
+                ));
 
             return new ConvertStruct(null, $sourceData);
         }
 
         $propertyOption['entityDefinitionClass'] = PropertyGroupDefinition::class;
 
-        $objectData = unserialize($data['objectdata'], ['allowed_classes' => false]);
-
-        if (!\is_array($objectData)) {
-            $this->loggingService->addWarning(
-                $this->runId,
-                LogTypes::INVALID_UNSERIALIZED_DATA,
-                'Invalid unserialized data',
-                'Property-Option-Translation-Entity could not be converted cause of invalid unserialized object data.',
-                [
-                    'entity' => 'Property option',
-                    'data' => $data['objectdata'],
-                ]
-            );
-
+        $objectData = $this->unserializeTranslation($data, DefaultEntities::PROPERTY_GROUP_TRANSLATION);
+        if ($objectData === null) {
             return new ConvertStruct(null, $sourceData);
         }
 
@@ -862,5 +725,29 @@ abstract class TranslationConverter extends ShopwareConverter
             $translation['customFields'][$key] = $value;
             unset($objectData[$key]);
         }
+    }
+
+    protected function unserializeTranslation(array $data, string $entity): ?array
+    {
+        try {
+            $objectData = unserialize($data['objectdata'], ['allowed_classes' => false]);
+        } catch (\Exception $error) {
+            $objectData = null;
+        }
+
+        if (!\is_array($objectData)) {
+            $this->loggingService->addLogEntry(
+                new InvalidUnserializedData(
+                    $this->runId,
+                    $entity,
+                    $data['objectdata'],
+                    DefaultEntities::TRANSLATION,
+                    $data['id']
+            ));
+
+            return null;
+        }
+
+        return $objectData;
     }
 }

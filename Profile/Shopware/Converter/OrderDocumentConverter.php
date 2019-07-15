@@ -9,12 +9,12 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Util\Random;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderDocumentDataSet;
-use SwagMigrationAssistant\Profile\Shopware\Logging\LogTypes;
 
 abstract class OrderDocumentConverter extends ShopwareConverter
 {
@@ -86,17 +86,13 @@ abstract class OrderDocumentConverter extends ShopwareConverter
 
         $orderUuid = $this->mappingService->getUuid($this->connectionId, DefaultEntities::ORDER, $data['orderID'], $context);
         if ($orderUuid === null) {
-            $this->loggingService->addWarning(
-                $migrationContext->getRunUuid(),
-                LogTypes::ASSOCIATION_REQUIRED_MISSING,
-                'Associated order not found',
-                'Order for the order document can not be found.',
-                [
-                    'data' => $data,
-                    'missingEntity' => 'order',
-                    'requiredFor' => 'order_document',
-                    'missingImportEntity' => 'order_document',
-                ]
+            $this->loggingService->addLogEntry(
+                new AssociationRequiredMissingLog(
+                    $this->migrationContext->getRunUuid(),
+                    DefaultEntities::ORDER_DOCUMENT,
+                    DefaultEntities::ORDER,
+                    $this->oldId
+                )
             );
 
             return new ConvertStruct(null, $oldData);

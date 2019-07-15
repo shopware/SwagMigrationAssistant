@@ -2,6 +2,8 @@
 
 namespace SwagMigrationAssistant\Migration\Logging\Log;
 
+use SwagMigrationAssistant\Migration\Logging\LogType;
+
 class CannotGetFileRunLog extends BaseRunLogEntry
 {
     /**
@@ -17,7 +19,7 @@ class CannotGetFileRunLog extends BaseRunLogEntry
 
     public function getLevel(): string
     {
-        return self::LOG_LEVEL_ERROR;
+        return self::LOG_LEVEL_WARNING;
     }
 
     public function getCode(): string
@@ -53,11 +55,11 @@ class CannotGetFileRunLog extends BaseRunLogEntry
 
     public function getTitleSnippet(): string
     {
-        return '...';
+        return sprintf('%s.%s.title', $this->getSnippetRoot(), LogType::CANNOT_GET_FILE);
     }
 
     public function getDescriptionSnippet(): string
     {
-        return '...';
+        return sprintf('%s.%s.description', $this->getSnippetRoot(), LogType::CANNOT_GET_FILE);
     }
 }

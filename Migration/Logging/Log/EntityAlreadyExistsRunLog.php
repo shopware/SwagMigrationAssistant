@@ -2,6 +2,8 @@
 
 namespace SwagMigrationAssistant\Migration\Logging\Log;
 
+use SwagMigrationAssistant\Migration\Logging\LogType;
+
 class EntityAlreadyExistsRunLog extends BaseRunLogEntry
 {
     public function __construct(string $runId, ?string $entity = null, ?string $sourceId = null)
@@ -45,11 +47,11 @@ class EntityAlreadyExistsRunLog extends BaseRunLogEntry
 
     public function getTitleSnippet(): string
     {
-        return '...';
+        return sprintf('%s.%s.title', $this->getSnippetRoot(), LogType::ENTITY_ALREADY_EXISTS);
     }
 
     public function getDescriptionSnippet(): string
     {
-        return '...';
+        return sprintf('%s.%s.description', $this->getSnippetRoot(), LogType::ENTITY_ALREADY_EXISTS);
     }
 }

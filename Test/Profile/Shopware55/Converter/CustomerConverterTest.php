@@ -147,8 +147,8 @@ class CustomerConverterTest extends TestCase
         $logs = $this->loggingService->getLoggingArray();
         static::assertCount(1, $logs);
 
-        $description = sprintf('Customer-Entity could not be converted cause of empty necessary field(s): %s.', $property);
-        static::assertSame($description, $logs[0]['logEntry']['description']);
+        $description = sprintf('The customer entity with the source id %s has not the necessary data for the field %s', $logs[0]['descriptionArguments']['sourceId'], $property);
+        static::assertSame($description, $logs[0]['description']);
     }
 
     public function requiredProperties(): array
@@ -258,8 +258,8 @@ class CustomerConverterTest extends TestCase
         $logs = $this->loggingService->getLoggingArray();
         static::assertCount(1, $logs);
 
-        $description = 'Customer-Entity could not be converted cause of empty address data.';
-        static::assertSame($description, $logs[0]['logEntry']['description']);
+        $description = 'The customer entity with the source id test@example.com has not the necessary data for the field address data';
+        static::assertSame($description, $logs[0]['description']);
     }
 
     public function testConvertCustomerWithoutValidAddresses(): void
@@ -282,14 +282,14 @@ class CustomerConverterTest extends TestCase
         $logs = $this->loggingService->getLoggingArray();
         static::assertCount(3, $logs);
 
-        $description = 'Address-Entity could not be converted cause of empty necessary field(s): firstname.';
-        static::assertSame($description, $logs[0]['logEntry']['description']);
+        $description = 'The customer_address entity with the source id 2 has not the necessary data for the field firstname';
+        static::assertSame($description, $logs[0]['description']);
 
-        $description = 'Address-Entity could not be converted cause of empty necessary field(s): lastname.';
-        static::assertSame($description, $logs[1]['logEntry']['description']);
+        $description = 'The customer_address entity with the source id 4 has not the necessary data for the field lastname';
+        static::assertSame($description, $logs[1]['description']);
 
-        $description = 'Customer-Entity could not be converted cause of empty address data.';
-        static::assertSame($description, $logs[2]['logEntry']['description']);
+        $description = 'The customer entity with the source id mustermann@b2b.de has not the necessary data for the field address data';
+        static::assertSame($description, $logs[2]['description']);
     }
 
     public function requiredAddressProperties(): array
@@ -336,11 +336,11 @@ class CustomerConverterTest extends TestCase
 
         $logs = $this->loggingService->getLoggingArray();
 
-        $description = sprintf('Address-Entity could not be converted cause of empty necessary field(s): %s.', $property);
-        static::assertSame($description, $logs[0]['logEntry']['description']);
+        $description = sprintf('The customer_address entity with the source id 1 has not the necessary data for the field %s', $property);
+        static::assertSame($description, $logs[0]['description']);
 
-        $description = 'Default billing address of customer is empty and will set with the default shipping address.';
-        static::assertSame($description, $logs[1]['logEntry']['description']);
+        $description = 'The customer entity with the source id "test@example.com" got the field default billing address replaced with default shipping address.';
+        static::assertSame($description, $logs[1]['description']);
 
         static::assertCount(2, $logs);
     }
@@ -373,11 +373,11 @@ class CustomerConverterTest extends TestCase
 
         $logs = $this->loggingService->getLoggingArray();
 
-        $description = sprintf('Address-Entity could not be converted cause of empty necessary field(s): %s.', $property);
-        static::assertSame($description, $logs[0]['logEntry']['description']);
+        $description = sprintf('The customer_address entity with the source id 3 has not the necessary data for the field %s', $property);
+        static::assertSame($description, $logs[0]['description']);
 
-        $description = 'Default shipping address of customer is empty and will set with the default billing address.';
-        static::assertSame($description, $logs[1]['logEntry']['description']);
+        $description = 'The customer entity with the source id "test@example.com" got the field default shipping address replaced with default billing address.';
+        static::assertSame($description, $logs[1]['description']);
 
         static::assertCount(2, $logs);
     }
@@ -411,12 +411,11 @@ class CustomerConverterTest extends TestCase
 
         $logs = $this->loggingService->getLoggingArray();
 
-        $description = sprintf('Address-Entity could not be converted cause of empty necessary field(s): %s.', $property);
-        static::assertSame($description, $logs[0]['logEntry']['description']);
-        static::assertSame($description, $logs[1]['logEntry']['description']);
+        static::assertSame(sprintf('The customer_address entity with the source id 1 has not the necessary data for the field %s', $property), $logs[0]['description']);
+        static::assertSame(sprintf('The customer_address entity with the source id 3 has not the necessary data for the field %s', $property), $logs[1]['description']);
 
-        $description = 'Default billing and shipping address of customer is empty and will set with the first address.';
-        static::assertSame($description, $logs[2]['logEntry']['description']);
+        $description = 'The customer entity with the source id "test@example.com" got the field default billing and shipping address replaced with first address.';
+        static::assertSame($description, $logs[2]['description']);
 
         static::assertCount(3, $logs);
     }

@@ -2,6 +2,8 @@
 
 namespace SwagMigrationAssistant\Migration\Logging\Log;
 
+use SwagMigrationAssistant\Migration\Logging\LogType;
+
 class ProcessorNotFoundLog implements LogEntryInterface
 {
     /**
@@ -39,7 +41,7 @@ class ProcessorNotFoundLog implements LogEntryInterface
 
     public function getCode(): string
     {
-        return 'SWAG_MIGRATION_PROCESSOR_NOT_FOUND';
+        return LogType::PROCESSOR_NOT_FOUND;
     }
 
     public function getTitle(): string
@@ -68,16 +70,6 @@ class ProcessorNotFoundLog implements LogEntryInterface
         );
     }
 
-    public function getTitleSnippet(): string
-    {
-        return '...';
-    }
-
-    public function getDescriptionSnippet(): string
-    {
-        return '...';
-    }
-
     public function getEntity(): ?string
     {
         return $this->entity;
@@ -91,5 +83,20 @@ class ProcessorNotFoundLog implements LogEntryInterface
     public function getRunId(): ?string
     {
         return $this->runId;
+    }
+
+    public function getSnippetRoot(): string
+    {
+        return 'swag-migration.index.error';
+    }
+
+    public function getTitleSnippet(): string
+    {
+        return sprintf('%s.%s.title', $this->getSnippetRoot(), $this->getCode());
+    }
+
+    public function getDescriptionSnippet(): string
+    {
+        return sprintf('%s.%s.description', $this->getSnippetRoot(), $this->getCode());
     }
 }

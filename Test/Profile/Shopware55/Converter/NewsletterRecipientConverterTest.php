@@ -100,8 +100,8 @@ class NewsletterRecipientConverterTest extends TestCase
         $logs = $this->loggingService->getLoggingArray();
         static::assertCount(1, $logs);
 
-        $description = sprintf('NewsletterRecipient-Entity could not be converted cause of empty necessary field(s): %s.', 'status');
-        static::assertSame($description, $logs[0]['logEntry']['description']);
+        $description = sprintf('The newsletter_recipient entity with the source id 1 has not the necessary data for the field %s', 'status');
+        static::assertSame($description, $logs[0]['description']);
     }
 
     public function testConvertWithNotExistingSalutation(): void
@@ -120,8 +120,8 @@ class NewsletterRecipientConverterTest extends TestCase
         $logs = $this->loggingService->getLoggingArray();
         static::assertCount(1, $logs);
 
-        $description = sprintf('NewsletterRecipient-Entity could not be converted cause of unknown salutation');
-        static::assertSame($description, $logs[0]['logEntry']['description']);
+        $description = 'The newsletter_recipient entity with the source id "1" cannot find the depended salutation entity with the source id "xx".';
+        static::assertSame($description, $logs[0]['description']);
     }
 
     public function testConvert(): void

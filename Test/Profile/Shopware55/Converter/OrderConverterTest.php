@@ -17,7 +17,6 @@ use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CustomerDataSe
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Exception\AssociationEntityRequiredMissingException;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
-use SwagMigrationAssistant\Profile\Shopware\Logging\LogTypes;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\DeliveryTimeReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\OrderStateReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\PaymentMethodReader;
@@ -248,8 +247,8 @@ class OrderConverterTest extends TestCase
         static::assertNull($convertResult->getConverted());
 
         $logs = $this->loggingService->getLoggingArray();
-        $description = sprintf('Order-Entity could not be converted cause of empty necessary field(s): %s.', $missingProperty);
-        static::assertSame($description, $logs[0]['logEntry']['description']);
+        $description = sprintf('The order entity with the source id 67 has not the necessary data for the field %s', $missingProperty);
+        static::assertSame($description, $logs[0]['description']);
         static::assertCount(1, $logs);
     }
 
@@ -395,14 +394,14 @@ class OrderConverterTest extends TestCase
         static::assertNull($converted);
         static::assertCount(2, $this->loggingService->getLoggingArray());
 
+        $validLog = 0;
         foreach ($this->loggingService->getLoggingArray() as $log) {
-            static::assertSame(LogTypes::EMPTY_NECESSARY_DATA_FIELDS, $log['logEntry']['code']);
-            static::assertCount(1, $log['logEntry']['details']['fields']);
-            static::assertTrue(
-                $log['logEntry']['details']['fields'][0] === 'billingaddress'
-                || $missingAddressProperty === $log['logEntry']['details']['fields'][0]
-            );
+            if ($log['code'] === 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_ORDER_ADDRESS' || $log['code'] === 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_ORDER') {
+                ++$validLog;
+            }
         }
+
+        static::assertSame(2, $validLog);
     }
 
     /**
@@ -437,7 +436,7 @@ class OrderConverterTest extends TestCase
         static::assertCount(1, $this->loggingService->getLoggingArray());
 
         foreach ($this->loggingService->getLoggingArray() as $log) {
-            static::assertSame(LogTypes::EMPTY_NECESSARY_DATA_FIELDS, $log['logEntry']['code']);
+            static::assertSame('SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_ORDER_ADDRESS', $log['code']);
         }
     }
 
@@ -474,7 +473,7 @@ class OrderConverterTest extends TestCase
         static::assertCount(3, $this->loggingService->getLoggingArray());
 
         foreach ($this->loggingService->getLoggingArray() as $log) {
-            static::assertSame(LogTypes::EMPTY_LINE_ITEM_IDENTIFIER, $log['logEntry']['code']);
+            static::assertSame('SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_ORDER_LINE_ITEM', $log['code']);
         }
     }
 
@@ -504,9 +503,8 @@ class OrderConverterTest extends TestCase
         static::assertCount(1, $this->loggingService->getLoggingArray());
 
         foreach ($this->loggingService->getLoggingArray() as $log) {
-            static::assertSame(LogTypes::EMPTY_NECESSARY_DATA_FIELDS, $log['logEntry']['code']);
-            static::assertCount(1, $log['logEntry']['details']['fields']);
-            static::assertSame($log['logEntry']['details']['fields']['0'], 'paymentMethod');
+            static::assertSame('SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_ORDER', $log['code']);
+            static::assertSame($log['descriptionArguments']['emptyField'], 'paymentMethod');
         }
     }
 
@@ -536,7 +534,7 @@ class OrderConverterTest extends TestCase
         static::assertCount(1, $this->loggingService->getLoggingArray());
 
         foreach ($this->loggingService->getLoggingArray() as $log) {
-            static::assertSame(LogTypes::UNKNOWN_ORDER_STATE, $log['logEntry']['code']);
+            static::assertSame('SWAG_MIGRATION_ORDER_STATE_ENTITY_UNKNOWN', $log['code']);
         }
     }
 }

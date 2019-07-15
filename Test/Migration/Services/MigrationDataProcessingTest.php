@@ -16,7 +16,7 @@ use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
-use SwagMigrationAssistant\Migration\Logging\LoggingService;
+use SwagMigrationAssistant\Migration\Logging\Log\LogEntryInterface;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingEntity;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Media\MediaFileService;
@@ -397,15 +397,12 @@ class MigrationDataProcessingTest extends TestCase
 
         /** @var SwagMigrationLoggingEntity $log */
         foreach ($result->getElements() as $log) {
-            $type = $log->getType();
-            $logEntry = $log->getLogEntry();
+            $type = $log->getLevel();
 
             if (
-                ($type === LoggingService::INFO_TYPE && $logEntry['title'] === 'Empty necessary data fields for address')
-                || ($type === LoggingService::WARNING_TYPE && $logEntry['title'] === 'Empty necessary data fields')
-                || ($type === LoggingService::INFO_TYPE && $logEntry['title'] === 'No default shipping address')
-                || ($type === LoggingService::INFO_TYPE && $logEntry['title'] === 'No default billing and shipping address')
-                || ($type === LoggingService::WARNING_TYPE && $logEntry['title'] === 'No address data')
+                ($type === LogEntryInterface::LOG_LEVEL_INFO && $log->getCode() === 'SWAG_MIGRATION_CUSTOMER_ENTITY_FIELD_REASSIGNED')
+                || ($type === LogEntryInterface::LOG_LEVEL_WARNING && $log->getCode() === 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_CUSTOMER_ADDRESS')
+                || ($type === LogEntryInterface::LOG_LEVEL_WARNING && $log->getCode() === 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_CUSTOMER')
             ) {
                 ++$countValidLogging;
                 continue;
@@ -414,7 +411,7 @@ class MigrationDataProcessingTest extends TestCase
             ++$countInvalidLogging;
         }
 
-        static::assertSame(5, $countValidLogging);
+        static::assertSame(7, $countValidLogging);
         static::assertSame(0, $countInvalidLogging);
 
         $failureConvertCriteria = new Criteria();

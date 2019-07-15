@@ -128,7 +128,7 @@ class TranslationConverterTest extends TestCase
 
         $logs = $this->loggingService->getLoggingArray();
         $description = 'Translation of object type "invalid" could not be converted.';
-        static::assertSame($description, $logs[0]['logEntry']['description']);
+        static::assertSame($description, $logs[0]['description']);
         static::assertCount(1, $logs);
     }
 
@@ -194,8 +194,8 @@ class TranslationConverterTest extends TestCase
         static::assertNull($convertResult->getConverted());
 
         $logs = $this->loggingService->getLoggingArray();
-        $description = 'Manufacturer-Translation-Entity could not be converted cause of invalid unserialized object data.';
-        static::assertSame($description, $logs[0]['logEntry']['description']);
+        $description = 'The product_manufacturer_translation entity could not be converted cause of invalid unserialized object data.';
+        static::assertSame($description, $logs[0]['description']);
         static::assertCount(1, $logs);
     }
 
@@ -228,8 +228,8 @@ class TranslationConverterTest extends TestCase
         static::assertNull($convertResult->getConverted());
 
         $logs = $this->loggingService->getLoggingArray();
-        $description = 'Mapping of "unit" is missing, but it is a required association for "translation". Import "product" first.';
-        static::assertSame($description, $logs[0]['logEntry']['description']);
+        $description = 'The unit for the translation can not be found.';
+        static::assertSame($description, $logs[0]['description']);
         static::assertCount(1, $logs);
     }
 
@@ -249,8 +249,8 @@ class TranslationConverterTest extends TestCase
         static::assertNull($convertResult->getConverted());
 
         $logs = $this->loggingService->getLoggingArray();
-        $description = 'Unit-Translation-Entity could not be converted cause of invalid unserialized object data.';
-        static::assertSame($description, $logs[0]['logEntry']['description']);
+        $description = 'The unit_translation entity could not be converted cause of invalid unserialized object data.';
+        static::assertSame($description, $logs[0]['description']);
         static::assertCount(1, $logs);
     }
 
@@ -284,8 +284,8 @@ class TranslationConverterTest extends TestCase
         static::assertNull($convertResult->getConverted());
 
         $logs = $this->loggingService->getLoggingArray();
-        $description = 'Mapping of "category" is missing, but it is a required association for "translation". Import "category" first.';
-        static::assertSame($description, $logs[0]['logEntry']['description']);
+        $description = 'The category for the translation can not be found.';
+        static::assertSame($description, $logs[0]['description']);
         static::assertCount(1, $logs);
     }
 
@@ -305,8 +305,8 @@ class TranslationConverterTest extends TestCase
         static::assertNull($convertResult->getConverted());
 
         $logs = $this->loggingService->getLoggingArray();
-        $description = 'Category-Translation-Entity could not be converted cause of invalid unserialized object data.';
-        static::assertSame($description, $logs[0]['logEntry']['description']);
+        $description = 'The category_translation entity could not be converted cause of invalid unserialized object data.';
+        static::assertSame($description, $logs[0]['description']);
         static::assertCount(1, $logs);
     }
 

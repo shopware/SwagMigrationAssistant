@@ -2,6 +2,8 @@
 
 namespace SwagMigrationAssistant\Migration\Logging\Log;
 
+use SwagMigrationAssistant\Migration\Logging\LogType;
+
 class CannotConvertChildEntity extends BaseRunLogEntry
 {
     /**
@@ -59,11 +61,11 @@ class CannotConvertChildEntity extends BaseRunLogEntry
 
     public function getTitleSnippet(): string
     {
-        return '...';
+        return sprintf('%s.%s.title', $this->getSnippetRoot(), LogType::CANNOT_CONVERT_CHILD_ENTITY);
     }
 
     public function getDescriptionSnippet(): string
     {
-        return '...';
+        return sprintf('%s.%s.description', $this->getSnippetRoot(), LogType::CANNOT_CONVERT_CHILD_ENTITY);
     }
 }

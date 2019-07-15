@@ -13,7 +13,7 @@ use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware\Logging\LogTypes;
+use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedNumberRangeTypeLog;
 
 abstract class NumberRangeConverter extends ShopwareConverter
 {
@@ -65,17 +65,13 @@ abstract class NumberRangeConverter extends ShopwareConverter
         }
 
         if (!array_key_exists($data['name'], self::TYPE_MAPPING)) {
-            $this->loggingService->addWarning(
-                $migrationContext->getRunUuid(),
-                LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
-                'Unsupported number range type',
-                sprintf('NumberRange-Entity could not be converted because of unsupported type: %s.', $data['name']),
-                [
-                    'id' => $data['id'],
-                    'entity' => 'NumberRange',
-                ],
-                1
-            );
+            $this->loggingService->addLogEntry(
+                new UnsupportedNumberRangeTypeLog(
+                    $migrationContext->getRunUuid(),
+                    $data['name'],
+                    DefaultEntities::NUMBER_RANGE,
+                    $data['id']
+            ));
 
             return new ConvertStruct(null, $data);
         }
