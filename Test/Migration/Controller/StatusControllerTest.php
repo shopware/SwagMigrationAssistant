@@ -13,6 +13,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Storefront\Theme\ThemeService;
 use SwagMigrationAssistant\Controller\StatusController;
 use SwagMigrationAssistant\Exception\ConnectionCredentialsMissingException;
 use SwagMigrationAssistant\Exception\EntityNotExistsException;
@@ -105,6 +106,8 @@ class StatusControllerTest extends TestCase
         $currencyRepo = $this->getContainer()->get('currency.repository');
         $this->connectionRepo = $this->getContainer()->get('swag_migration_connection.repository');
         $this->generalSettingRepo = $this->getContainer()->get('swag_migration_general_setting.repository');
+        $salesChannelRepo = $this->getContainer()->get('sales_channel.repository');
+        $themeRepo = $this->getContainer()->get('theme.repository');
         $this->runRepo = $this->getContainer()->get('swag_migration_run.repository');
         $this->migrationContextFactory = $this->getContainer()->get('SwagMigrationAssistant\Migration\MigrationContextFactory');
 
@@ -183,7 +186,11 @@ class StatusControllerTest extends TestCase
                 $dataRepo,
                 $mediaFileRepo,
                 $currencyRepo,
+                $salesChannelRepo,
+                $themeRepo,
                 $this->getContainer()->get(IndexerRegistryInterface::class),
+                $this->getContainer()->get(ThemeService::class),
+                $mappingService,
                 $this->getContainer()->get('shopware.cache'),
                 $this->getContainer()->get(SwagMigrationDataDefinition::class),
                 $this->getContainer()->get(Connection::class)

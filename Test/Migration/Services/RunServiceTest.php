@@ -12,6 +12,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Storefront\Theme\ThemeService;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry;
@@ -99,6 +100,16 @@ class RunServiceTest extends TestCase
      */
     private $migrationContextFactory;
 
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $salesChannelRepo;
+
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $themeRepo;
+
     protected function setUp(): void
     {
         $this->dbConnection = $this->getContainer()->get(Connection::class);
@@ -109,6 +120,8 @@ class RunServiceTest extends TestCase
         $this->mappingRepo = $this->getContainer()->get('swag_migration_mapping.repository');
         $loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
         $mediaFileRepo = $this->getContainer()->get('swag_migration_media_file.repository');
+        $this->salesChannelRepo = $this->getContainer()->get('sales_channel.repository');
+        $this->themeRepo = $this->getContainer()->get('theme.repository');
         $this->dataSetRegistry = $this->getContainer()->get(DataSetRegistry::class);
         $this->migrationContextFactory = $this->getContainer()->get('SwagMigrationAssistant\Migration\MigrationContextFactory');
 
@@ -185,7 +198,11 @@ class RunServiceTest extends TestCase
             $this->dataRepo,
             $mediaFileRepo,
             $this->getContainer()->get('currency.repository'),
+            $this->salesChannelRepo,
+            $this->themeRepo,
             $this->getContainer()->get(IndexerRegistryInterface::class),
+            $this->getContainer()->get(ThemeService::class),
+            $this->mappingService,
             $this->getContainer()->get('shopware.cache'),
             $this->getContainer()->get(SwagMigrationDataDefinition::class),
             $this->getContainer()->get(Connection::class)
@@ -203,7 +220,11 @@ class RunServiceTest extends TestCase
             $this->dataRepo,
             $mediaFileRepo,
             $this->getContainer()->get('currency.repository'),
+            $this->salesChannelRepo,
+            $this->themeRepo,
             $this->getContainer()->get(IndexerRegistryInterface::class),
+            $this->getContainer()->get(ThemeService::class),
+            $this->mappingService,
             $this->getContainer()->get('shopware.cache'),
             $this->getContainer()->get(SwagMigrationDataDefinition::class),
             $this->getContainer()->get(Connection::class)

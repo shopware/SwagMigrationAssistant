@@ -8,6 +8,7 @@ use Shopware\Core\Checkout\Cart\Tax\TaxRuleCalculator;
 use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryStates;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStates;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
+use Shopware\Core\Content\Category\CategoryEntity;
 use Shopware\Core\Content\DeliveryTime\DeliveryTimeEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
@@ -43,6 +44,7 @@ use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55CustomerConver
 use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55MediaConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55OrderConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55ProductConverter;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55SalesChannelConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55TranslationConverter;
 use SwagMigrationAssistant\Test\Mock\DummyCollection;
 use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGateway;
@@ -81,7 +83,10 @@ trait MigrationServicesTrait
         MappingService $mappingService,
         MediaFileServiceInterface $mediaFileService,
         EntityRepositoryInterface $loggingRepo,
-        EntityDefinition $dataDefinition
+        EntityDefinition $dataDefinition,
+        EntityRepositoryInterface $paymentRepo,
+        EntityRepositoryInterface $shippingRepo,
+        EntityRepositoryInterface $countryRepo
     ): MigrationDataConverterInterface {
         $priceRounding = new PriceRounding();
         $loggingService = new LoggingService($loggingRepo);
@@ -102,6 +107,7 @@ trait MigrationServicesTrait
                         ),
                         $loggingService
                     ),
+                    new Shopware55SalesChannelConverter($mappingService, $loggingService, $paymentRepo, $shippingRepo, $countryRepo),
                     new DummyInvalidCustomerConverter($mappingService, $loggingService),
                 ]
             )
@@ -358,5 +364,13 @@ trait MigrationServicesTrait
         }
 
         return null;
+    }
+
+    private function getCategoryUuid(EntityRepositoryInterface $categoryRepo, Context $context): string
+    {
+        /** @var CategoryEntity $category */
+        $category = $categoryRepo->search(new Criteria(), $context)->first();
+
+        return $category->getId();
     }
 }

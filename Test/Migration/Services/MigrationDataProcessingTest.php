@@ -134,6 +134,16 @@ class MigrationDataProcessingTest extends TestCase
      */
     private $mappingService;
 
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $shippingRepo;
+
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $countryRepo;
+
     protected function setUp(): void
     {
         $this->context = Context::createDefaultContext();
@@ -160,7 +170,10 @@ class MigrationDataProcessingTest extends TestCase
             $this->mappingService,
             $this->getContainer()->get(MediaFileService::class),
             $this->loggingRepo,
-            $this->getContainer()->get(SwagMigrationDataDefinition::class)
+            $this->getContainer()->get(SwagMigrationDataDefinition::class),
+            $this->paymentRepo,
+            $this->shippingRepo,
+            $this->countryRepo
         );
 
         $this->loggingService = new DummyLoggingService();
@@ -419,6 +432,8 @@ class MigrationDataProcessingTest extends TestCase
         $this->productRepo = $this->getContainer()->get('product.repository');
         $this->paymentRepo = $this->getContainer()->get('payment_method.repository');
         $this->salutationRepo = $this->getContainer()->get('salutation.repository');
+        $this->shippingRepo = $this->getContainer()->get('shipping_method.repository');
+        $this->countryRepo = $this->getContainer()->get('country.repository');
     }
 
     private function initConnectionAndRun(): void

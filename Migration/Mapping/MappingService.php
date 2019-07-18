@@ -144,6 +144,11 @@ class MappingService implements MappingServiceInterface
      */
     private $cmsPageRepo;
 
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $themeRepo;
+
     public function __construct(
         EntityRepositoryInterface $migrationMappingRepo,
         EntityRepositoryInterface $localeRepository,
@@ -182,6 +187,25 @@ class MappingService implements MappingServiceInterface
         $this->cmsPageRepo = $cmsPageRepo;
         $this->entityWriter = $entityWriter;
         $this->mappingDefinition = $mappingDefinition;
+    }
+
+    public function getUuidsByEntity(string $connectionId, string $entityName, Context $context): array
+    {
+        /** @var SwagMigrationMappingEntity[] $entities */
+        $entities = $context->disableCache(function (Context $context) use ($connectionId, $entityName) {
+            $criteria = new Criteria();
+            $criteria->addFilter(new EqualsFilter('connectionId', $connectionId));
+            $criteria->addFilter(new EqualsFilter('entity', $entityName));
+
+            return $this->migrationMappingRepo->search($criteria, $context)->getEntities();
+        });
+
+        $entityUuids = [];
+        foreach ($entities as $entity) {
+            $entityUuids[] = $entity->getEntityUuid();
+        }
+
+        return $entityUuids;
     }
 
     public function getUuid(string $connectionId, string $entityName, string $oldId, Context $context): ?string
@@ -351,7 +375,7 @@ class MappingService implements MappingServiceInterface
 
     public function getDefaultCmsPageUuid(string $connectionId, Context $context): ?string
     {
-        $uuid = $this->getUuid($connectionId, CmsPageDefinition::ENTITY_NAME, 'standard_cms_page', $context);
+        $uuid = $this->getUuid($connectionId, CmsPageDefinition::ENTITY_NAME, 'default_cms_page', $context);
         if ($uuid !== null) {
             return $uuid;
         }
@@ -363,22 +387,22 @@ class MappingService implements MappingServiceInterface
         /** @var CmsPageEntity|null $cmsPage */
         $cmsPage = $this->cmsPageRepo->search($criteria, $context)->first();
 
-        if ($cmsPage !== null) {
-            $uuid = $cmsPage->getId();
-
-            $this->saveMapping(
-                [
-                    'connectionId' => $connectionId,
-                    'entity' => CmsPageDefinition::ENTITY_NAME,
-                    'oldIdentifier' => 'standard_cms_page',
-                    'entityUuid' => $uuid,
-                ]
-            );
-
-            return $uuid;
+        if ($cmsPage === null) {
+            return null;
         }
 
-        return null;
+        $uuid = $cmsPage->getId();
+
+        $this->saveMapping(
+            [
+                'connectionId' => $connectionId,
+                'entity' => CmsPageDefinition::ENTITY_NAME,
+                'oldIdentifier' => 'default_cms_page',
+                'entityUuid' => $uuid,
+            ]
+        );
+
+        return $uuid;
     }
 
     public function getLanguageUuid(string $connectionId, string $localeCode, Context $context, bool $withoutMapping = false): ?string
