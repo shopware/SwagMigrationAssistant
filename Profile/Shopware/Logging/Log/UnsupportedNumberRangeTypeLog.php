@@ -3,7 +3,6 @@
 namespace SwagMigrationAssistant\Profile\Shopware\Logging\Log;
 
 use SwagMigrationAssistant\Migration\Logging\Log\BaseRunLogEntry;
-use SwagMigrationAssistant\Profile\Shopware\Logging\LogType;
 
 class UnsupportedNumberRangeTypeLog extends BaseRunLogEntry
 {
@@ -12,7 +11,7 @@ class UnsupportedNumberRangeTypeLog extends BaseRunLogEntry
      */
     private $type;
 
-    public function __construct(string $runId, string $type, ?string $entity = null, ?string $sourceId = null)
+    public function __construct(string $runId, string $type, string $entity, string $sourceId)
     {
         parent::__construct($runId, $entity, $sourceId);
         $this->type = $type;
@@ -25,7 +24,7 @@ class UnsupportedNumberRangeTypeLog extends BaseRunLogEntry
 
     public function getCode(): string
     {
-        return LogType::UNSUPPORTED_NUMBER_RANGE_TYPE;
+        return 'SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_NUMBER_RANGE_TYPE';
     }
 
     public function getTitle(): string
@@ -33,17 +32,23 @@ class UnsupportedNumberRangeTypeLog extends BaseRunLogEntry
         return 'Unsupported number range type';
     }
 
-    public function getDescriptionArguments(): array
+    public function getParameters(): array
     {
         return [
+            'entity' => $this->getEntity(),
+            'sourceId' => $this->getSourceId(),
             'type' => $this->type,
         ];
     }
 
     public function getDescription(): string
     {
-        $args = $this->getDescriptionArguments();
+        $args = $this->getParameters();
 
-        return sprintf('NumberRange-Entity could not be converted because of unsupported type: %s.', $args['type']);
+        return sprintf(
+            'NumberRange-Entity with source id "%s" could not be converted because of unsupported type: %s.',
+            $args['sourceId'],
+            $args['type']
+        );
     }
 }

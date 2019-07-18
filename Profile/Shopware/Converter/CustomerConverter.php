@@ -292,7 +292,7 @@ abstract class CustomerConverter extends ShopwareConverter
         if ($paymentMethodUuid === null) {
             $this->loggingService->addLogEntry(new UnknownEntityLog(
                 $this->runId,
-                'payment_method',
+                DefaultEntities::PAYMENT_METHOD,
                 $originalData['id'],
                 DefaultEntities::CUSTOMER,
                 $this->oldCustomerId
@@ -510,7 +510,7 @@ abstract class CustomerConverter extends ShopwareConverter
             $this->loggingService->addLogEntry(new FieldReassignedRunLog(
                 $this->runId,
                 DefaultEntities::CUSTOMER,
-                $this->oldCustomerId,
+                $customerUuid,
                 'default billing and shipping address',
                 'first address'
             ));
@@ -526,7 +526,7 @@ abstract class CustomerConverter extends ShopwareConverter
             $this->loggingService->addLogEntry(new FieldReassignedRunLog(
                 $this->runId,
                 DefaultEntities::CUSTOMER,
-                $this->oldCustomerId,
+                $customerUuid,
                 'default shipping address',
                 'default billing address'
             ));
@@ -542,7 +542,7 @@ abstract class CustomerConverter extends ShopwareConverter
             $this->loggingService->addLogEntry(new FieldReassignedRunLog(
                 $this->runId,
                 DefaultEntities::CUSTOMER,
-                $this->oldCustomerId,
+                $customerUuid,
                 'default billing address',
                 'default shipping address'
             ));
@@ -561,7 +561,7 @@ abstract class CustomerConverter extends ShopwareConverter
         if ($salutationUuid === null) {
             $this->loggingService->addLogEntry(new UnknownEntityLog(
                 $this->runId,
-                'salutation',
+                DefaultEntities::SALUTATION,
                 $salutation,
                 DefaultEntities::CUSTOMER,
                 $this->oldCustomerId

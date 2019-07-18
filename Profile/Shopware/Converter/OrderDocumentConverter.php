@@ -89,9 +89,9 @@ abstract class OrderDocumentConverter extends ShopwareConverter
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
                     $this->migrationContext->getRunUuid(),
-                    DefaultEntities::ORDER_DOCUMENT,
                     DefaultEntities::ORDER,
-                    $this->oldId
+                    $this->oldId,
+                    DefaultEntities::ORDER_DOCUMENT
                 )
             );
 

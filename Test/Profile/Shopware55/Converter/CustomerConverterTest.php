@@ -147,8 +147,8 @@ class CustomerConverterTest extends TestCase
         $logs = $this->loggingService->getLoggingArray();
         static::assertCount(1, $logs);
 
-        $description = sprintf('The customer entity with the source id %s has not the necessary data for the field %s', $logs[0]['descriptionArguments']['sourceId'], $property);
-        static::assertSame($description, $logs[0]['description']);
+        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_CUSTOMER');
+        static::assertSame($logs[0]['parameters']['emptyField'], $property);
     }
 
     public function requiredProperties(): array
@@ -258,8 +258,9 @@ class CustomerConverterTest extends TestCase
         $logs = $this->loggingService->getLoggingArray();
         static::assertCount(1, $logs);
 
-        $description = 'The customer entity with the source id test@example.com has not the necessary data for the field address data';
-        static::assertSame($description, $logs[0]['description']);
+        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_CUSTOMER');
+        static::assertSame($logs[0]['parameters']['sourceId'], $customerData['email']);
+        static::assertSame($logs[0]['parameters']['emptyField'], 'address data');
     }
 
     public function testConvertCustomerWithoutValidAddresses(): void
@@ -282,14 +283,17 @@ class CustomerConverterTest extends TestCase
         $logs = $this->loggingService->getLoggingArray();
         static::assertCount(3, $logs);
 
-        $description = 'The customer_address entity with the source id 2 has not the necessary data for the field firstname';
-        static::assertSame($description, $logs[0]['description']);
+        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_CUSTOMER_ADDRESS');
+        static::assertSame($logs[0]['parameters']['sourceId'], $customerData['addresses'][0]['id']);
+        static::assertSame($logs[0]['parameters']['emptyField'], 'firstname');
 
-        $description = 'The customer_address entity with the source id 4 has not the necessary data for the field lastname';
-        static::assertSame($description, $logs[1]['description']);
+        static::assertSame($logs[1]['code'], 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_CUSTOMER_ADDRESS');
+        static::assertSame($logs[1]['parameters']['sourceId'], $customerData['addresses'][1]['id']);
+        static::assertSame($logs[1]['parameters']['emptyField'], 'lastname');
 
-        $description = 'The customer entity with the source id mustermann@b2b.de has not the necessary data for the field address data';
-        static::assertSame($description, $logs[2]['description']);
+        static::assertSame($logs[2]['code'], 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_CUSTOMER');
+        static::assertSame($logs[2]['parameters']['sourceId'], $customerData['email']);
+        static::assertSame($logs[2]['parameters']['emptyField'], 'address data');
     }
 
     public function requiredAddressProperties(): array
@@ -335,14 +339,15 @@ class CustomerConverterTest extends TestCase
         static::assertSame($converted['addresses'][0]['id'], $converted['defaultShippingAddressId']);
 
         $logs = $this->loggingService->getLoggingArray();
-
-        $description = sprintf('The customer_address entity with the source id 1 has not the necessary data for the field %s', $property);
-        static::assertSame($description, $logs[0]['description']);
-
-        $description = 'The customer entity with the source id "test@example.com" got the field default billing address replaced with default shipping address.';
-        static::assertSame($description, $logs[1]['description']);
-
         static::assertCount(2, $logs);
+
+        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_CUSTOMER_ADDRESS');
+        static::assertSame($logs[0]['parameters']['sourceId'], $customerData['addresses'][0]['id']);
+        static::assertSame($logs[0]['parameters']['emptyField'], $property);
+
+        static::assertSame($logs[1]['code'], 'SWAG_MIGRATION_CUSTOMER_ENTITY_FIELD_REASSIGNED');
+        static::assertSame($logs[1]['parameters']['emptyField'], 'default billing address');
+        static::assertSame($logs[1]['parameters']['replacementField'], 'default shipping address');
     }
 
     /**
@@ -372,14 +377,15 @@ class CustomerConverterTest extends TestCase
         static::assertSame($converted['addresses'][0]['id'], $converted['defaultShippingAddressId']);
 
         $logs = $this->loggingService->getLoggingArray();
-
-        $description = sprintf('The customer_address entity with the source id 3 has not the necessary data for the field %s', $property);
-        static::assertSame($description, $logs[0]['description']);
-
-        $description = 'The customer entity with the source id "test@example.com" got the field default shipping address replaced with default billing address.';
-        static::assertSame($description, $logs[1]['description']);
-
         static::assertCount(2, $logs);
+
+        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_CUSTOMER_ADDRESS');
+        static::assertSame($logs[0]['parameters']['sourceId'], $customerData['addresses'][1]['id']);
+        static::assertSame($logs[0]['parameters']['emptyField'], $property);
+
+        static::assertSame($logs[1]['code'], 'SWAG_MIGRATION_CUSTOMER_ENTITY_FIELD_REASSIGNED');
+        static::assertSame($logs[1]['parameters']['emptyField'], 'default shipping address');
+        static::assertSame($logs[1]['parameters']['replacementField'], 'default billing address');
     }
 
     /**
@@ -410,13 +416,18 @@ class CustomerConverterTest extends TestCase
         static::assertSame($converted['addresses'][0]['id'], $converted['defaultShippingAddressId']);
 
         $logs = $this->loggingService->getLoggingArray();
-
-        static::assertSame(sprintf('The customer_address entity with the source id 1 has not the necessary data for the field %s', $property), $logs[0]['description']);
-        static::assertSame(sprintf('The customer_address entity with the source id 3 has not the necessary data for the field %s', $property), $logs[1]['description']);
-
-        $description = 'The customer entity with the source id "test@example.com" got the field default billing and shipping address replaced with first address.';
-        static::assertSame($description, $logs[2]['description']);
-
         static::assertCount(3, $logs);
+
+        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_CUSTOMER_ADDRESS');
+        static::assertSame($logs[0]['parameters']['sourceId'], $customerData['addresses'][0]['id']);
+        static::assertSame($logs[0]['parameters']['emptyField'], $property);
+
+        static::assertSame($logs[1]['code'], 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_CUSTOMER_ADDRESS');
+        static::assertSame($logs[1]['parameters']['sourceId'], $customerData['addresses'][1]['id']);
+        static::assertSame($logs[1]['parameters']['emptyField'], $property);
+
+        static::assertSame($logs[2]['code'], 'SWAG_MIGRATION_CUSTOMER_ENTITY_FIELD_REASSIGNED');
+        static::assertSame($logs[2]['parameters']['emptyField'], 'default billing and shipping address');
+        static::assertSame($logs[2]['parameters']['replacementField'], 'first address');
     }
 }

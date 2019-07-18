@@ -126,7 +126,9 @@ class ApiTableCountReader implements TableCountReaderInterface
                 $migrationContext->getRunUuid(),
                 $exception['entity'],
                 $exception['table'],
-                $exception['condition']
+                $exception['condition'],
+                $exception['code'],
+                $exception['message']
             ));
         }
 

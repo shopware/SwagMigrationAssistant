@@ -2,8 +2,6 @@
 
 namespace SwagMigrationAssistant\Migration\Logging\Log;
 
-use SwagMigrationAssistant\Migration\Logging\LogType;
-
 class ProcessorNotFoundLog implements LogEntryInterface
 {
     /**
@@ -41,7 +39,7 @@ class ProcessorNotFoundLog implements LogEntryInterface
 
     public function getCode(): string
     {
-        return LogType::PROCESSOR_NOT_FOUND;
+        return 'SWAG_MIGRATION__PROCESSOR_NOT_FOUND';
     }
 
     public function getTitle(): string
@@ -49,7 +47,7 @@ class ProcessorNotFoundLog implements LogEntryInterface
         return 'Processor not found';
     }
 
-    public function getDescriptionArguments(): array
+    public function getParameters(): array
     {
         return [
             'profileName' => $this->profileName,
@@ -60,7 +58,7 @@ class ProcessorNotFoundLog implements LogEntryInterface
 
     public function getDescription(): string
     {
-        $args = $this->getDescriptionArguments();
+        $args = $this->getParameters();
 
         return sprintf(
             'Processor for profile "%s", gateway "%s" and entity "%s" not found.',

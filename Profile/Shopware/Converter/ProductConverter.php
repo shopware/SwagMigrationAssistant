@@ -17,7 +17,6 @@ use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Exception\ParentEntityForChildNotFoundException;
-use SwagMigrationAssistant\Profile\Shopware\Logging\LogTypes;
 
 abstract class ProductConverter extends ShopwareConverter
 {

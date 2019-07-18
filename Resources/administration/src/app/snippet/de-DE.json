@@ -379,64 +379,68 @@
           "description": "Eltern-Entität für das „{entity}“-Kind konnte nicht gefunden werden."
         },
         "SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING": {
-          "title": "Mapping konnte nicht gefunden werden",
-          "description": "Das Mapping von „{missingEntity}“ konnte nicht gefunden werden. Diese ist allerdings erforderlich für „{requiredFor}“. Bitte migriere zuerst „{missingImportEntity}“ um fortzufahren."
+          "title": "Zugehörige {missingEntity} Entität nicht gefunden",
+          "description": "Die {missingEntity} Entität mit der Quell-ID „{sourceId}“ kann nicht gefunden werden, ist aber für {requiredFor} erforderlich."
         },
         "SWAG_MIGRATION__SHOPWARE_EMPTY_NECESSARY_DATA_FIELDS": {
-          "title": "Pflichtfeld nicht gefüllt",
-          "description": "{entity}-Entität konnte aufgrund eines leeren Pflichtfeldes nicht konvertiert werden: {fields} | {entity}-Entität konnte aufgrund leerer Pflichtfelder nicht konvertiert werden: {fields}"
+          "title": "Der {entity} Entität fehlt ein Pflichtfeld",
+          "description": "Der {entity} Entität mit der Quell-ID „{sourceId}“ fehlen die Daten für das Pflichtfeld „{emptyField}“."
         },
         "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_OBJECT_TYPE": {
-          "title": "Übersetzung nicht konvertiert",
-          "description": "Die Übersetzung des Objekttyps „{objectType}“ konnte nicht konvertiert werden."
+          "title": "Nicht unterstützter Objekttyp",
+          "description": "Die {entity} des Objekttyps „{objectType}“ mit der Quell-ID „{sourceId}“ konnte nicht konvertiert werden."
         },
         "SWAG_MIGRATION__SHOPWARE_INVALID_UNSERIALIZED_DATA": {
-          "title": "Übersetzung nicht konvertiert",
-          "description": "{entity}-Übersetzungsentität konnte aufgrund ungültiger Objektdaten nicht konvertiert werden."
+          "title": "Invalide unserialisierte Daten",
+          "description": "Die {entity} Entität mit der Quell-ID „{sourceId}“ konnte aufgrund ungültiger deserialisierter Objektdaten für die Entität „{unserializedEntity}“ und folgenden Rohdaten nicht konvertiert werden: {serializedData}"
         },
         "SWAG_MIGRATION__SHOPWARE_CANNOT_COPY_DATA": {
           "title": "Quelldatei nicht gefunden",
           "description": "Die Quelldatei konnte nicht kopiert werden. Betroffene Datei: {path}"
         },
         "SWAG_MIGRATION_CANNOT_CONVERT_CHILD_ENTITY": {
-          "title": "Kind-Entität nicht konvertiert",
-          "description": "Die {entity} Kind-Entität konnte nicht konvertiert werden."
+          "title": "Die Kind-Entität {entity} konnte nicht konvertiert werden",
+          "description": "Die Kind {entity} Entität aus der Eltern {parentEntity} Entität mit der ID \"{parentSourceId}\" konnte nicht konvertiert werden."
         },
         "SWAG_MIGRATION_CANNOT_CONVERT_ENTITY": {
-          "title": "Entität nicht konvertiert",
-          "description": "Die {entity} Entität mit der Quell-ID \"{sourceId}\" konnte nicht konvertiert werden."
+          "title": "Die Entität {entity} konnte nicht konvertiert werden.",
+          "description": "Die {entity} Entität mit der Quell-ID „{sourceId}“ konnte nicht konvertiert werden."
         },
         "SWAG_MIGRATION_CANNOT_GET_FILE": {
           "title": "Die {entity} Datei konnte nicht heruntergeladen / kopiert werden",
-          "description": "Die {entity} Datei mit der URI \"{uri}\" und der Media-Id \"{sourceId}\" konnte nicht heruntergeladen / kopiert werden."
+          "description": "Die {entity} Datei mit der URI „{uri}“ und der Media-Id „{sourceId}“ konnte nicht heruntergeladen / kopiert werden."
         },
         "SWAG_MIGRATION__COULD_NOT_READ_ENTITY_COUNT": {
           "title": "Die Entität-Anzahl konnte nicht gelesen werden",
-          "description": "Gesamtanzahl für die {entity} Entität konnte nicht gelesen werden. Überprüfe ob die Tabelle {table} in dem Quellsystem existiert und die optionale Bedingung \"{condition}\" valide ist."
+          "description": "Gesamtanzahl für die {entity} Entität konnte nicht gelesen werden. Überprüfe ob die Tabelle „{table}“ in dem Quellsystem existiert und die optionale Bedingung „{condition}“ valide ist. Fehlermeldung: {exceptionMessage}"
         },
         "SWAG_MIGRATION__DATASET_NOT_FOUND": {
           "title": "DataSet nicht gefunden",
-          "description": "DataSet für Profile \"{profileName}\" und Entität \"{entity}\" wurde nicht gefunden. Media mit ID \"{mediaId}\" konnte nicht heruntergeladen / kopiert werden."
+          "description": "DataSet für Profile „{profileName}“ und Entität „{entity}“ wurde nicht gefunden. Entität mit der ID „{sourceId}“ konnte nicht verarbeitet werden."
         },
         "SWAG_MIGRATION_ENTITY_ALREADY_EXISTS": {
           "title": "Die {entity} Entität existiert bereits",
-          "description": "Die {entity} Entität mit der Quell-Id \"{sourceId}\" existiert bereits und konnte nicht geschrieben werden."
+          "description": "Die {entity} Entität mit der Quell-Id „{sourceId}“ existiert bereits und konnte nicht geschrieben werden."
         },
         "SWAG_MIGRATION_ENTITY_FIELD_REASSIGNED": {
           "title": "Ein Feld der {entity} Entität wurde neu zugeordnet",
-          "description": "Das Feld {emptyField} der {entity} Entität mit der Quell-Id \"{sourceId}\" wurde mit dem {replacementField} Feld ersetzt."
+          "description": "Das Feld „{emptyField}“ der {entity} Entität mit der Quell-Id „{sourceId}“ wurde mit dem „{replacementField}“ Feld ersetzt."
         },
         "SWAG_MIGRATION__PROCESSOR_NOT_FOUND": {
           "title": "Processor nicht gefunden",
-          "description": "Processor für Profile \"{profileName}\", Gateway \"{gatewayName}\" und Entität \"{entity}\" wurde nicht gefunden."
+          "description": "Processor für Profil „{profileName}“, Gateway „{gatewayName}“ und Entität „{entity}“ wurde nicht gefunden."
         },
         "SWAG_MIGRATION_ENTITY_UNKNOWN": {
-          "title": "Konnte nicht {entity} finden",
-          "description": "Die {requiredForEntity} Entität mit der Quell-Id \"{requiredForSourceId}\" konnte nicht die abhängige {entity} Entität mit der Quell-Id \"{sourceId}\" finden."
+          "title": "Konnte {entity} nicht finden",
+          "description": "Die {requiredForEntity} Entität mit der Quell-Id „{requiredForSourceId}“ konnte nicht die abhängige {entity} Entität mit der Quell-Id „{sourceId}“ finden."
         },
         "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_NUMBER_RANGE_TYPE": {
-          "title": "Nummernkreis-Type nicht unterstützt",
-          "description": "Der Nummernkreis-Type wird nicht unterstützt, somit kann der Nummernkreis nicht konvertiert werden: {type}."
+          "title": "Nummernkreis-Typ nicht unterstützt",
+          "description": "Die Nummernkreis-Entität mit der Quell-ID \"{sourceId}\" konnte wegen folgendem nicht unterstützten Typs nicht konvertiert werden: {type}"
+        },
+        "SWAG_MIGRATION_RUN_EXCEPTION": {
+          "title": "Systemfehler aufgetreten",
+          "description": "{exceptionMessage}"
         }
       }
     },

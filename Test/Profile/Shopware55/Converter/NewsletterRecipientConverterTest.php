@@ -100,8 +100,9 @@ class NewsletterRecipientConverterTest extends TestCase
         $logs = $this->loggingService->getLoggingArray();
         static::assertCount(1, $logs);
 
-        $description = sprintf('The newsletter_recipient entity with the source id 1 has not the necessary data for the field %s', 'status');
-        static::assertSame($description, $logs[0]['description']);
+        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_NEWSLETTER_RECIPIENT');
+        static::assertSame($logs[0]['parameters']['sourceId'], '1');
+        static::assertSame($logs[0]['parameters']['emptyField'], 'status');
     }
 
     public function testConvertWithNotExistingSalutation(): void
@@ -120,8 +121,9 @@ class NewsletterRecipientConverterTest extends TestCase
         $logs = $this->loggingService->getLoggingArray();
         static::assertCount(1, $logs);
 
-        $description = 'The newsletter_recipient entity with the source id "1" cannot find the depended salutation entity with the source id "xx".';
-        static::assertSame($description, $logs[0]['description']);
+        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION_SALUTATION_ENTITY_UNKNOWN');
+        static::assertSame($logs[0]['parameters']['sourceId'], 'xx');
+        static::assertSame($logs[0]['parameters']['requiredForSourceId'], '1');
     }
 
     public function testConvert(): void

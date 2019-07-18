@@ -247,9 +247,11 @@ class OrderConverterTest extends TestCase
         static::assertNull($convertResult->getConverted());
 
         $logs = $this->loggingService->getLoggingArray();
-        $description = sprintf('The order entity with the source id 67 has not the necessary data for the field %s', $missingProperty);
-        static::assertSame($description, $logs[0]['description']);
         static::assertCount(1, $logs);
+
+        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_ORDER');
+        static::assertSame($logs[0]['parameters']['sourceId'], $orderData['id']);
+        static::assertSame($logs[0]['parameters']['emptyField'], $missingProperty);
     }
 
     public function requiredProperties(): array
@@ -504,7 +506,7 @@ class OrderConverterTest extends TestCase
 
         foreach ($this->loggingService->getLoggingArray() as $log) {
             static::assertSame('SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_ORDER', $log['code']);
-            static::assertSame($log['descriptionArguments']['emptyField'], 'paymentMethod');
+            static::assertSame($log['parameters']['emptyField'], 'paymentMethod');
         }
     }
 

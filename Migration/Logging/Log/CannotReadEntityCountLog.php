@@ -2,8 +2,6 @@
 
 namespace SwagMigrationAssistant\Migration\Logging\Log;
 
-use SwagMigrationAssistant\Migration\Logging\LogType;
-
 class CannotReadEntityCountLog extends BaseRunLogEntry
 {
     /**
@@ -16,11 +14,23 @@ class CannotReadEntityCountLog extends BaseRunLogEntry
      */
     private $condition;
 
-    public function __construct(string $runUuid, string $entity, string $table, ?string $condition = null)
+    /**
+     * @var string
+     */
+    private $exceptionCode;
+
+    /**
+     * @var string
+     */
+    private $exceptionMessage;
+
+    public function __construct(string $runUuid, string $entity, string $table, ?string $condition, string $exceptionCode, string $exceptionMessage)
     {
         parent::__construct($runUuid, $entity);
         $this->table = $table;
         $this->condition = $condition ?? '';
+        $this->exceptionCode = $exceptionCode;
+        $this->exceptionMessage = $exceptionMessage;
     }
 
     public function getLevel(): string
@@ -30,7 +40,7 @@ class CannotReadEntityCountLog extends BaseRunLogEntry
 
     public function getCode(): string
     {
-        return LogType::COULD_NOT_READ_ENTITY_COUNT;
+        return 'SWAG_MIGRATION__COULD_NOT_READ_ENTITY_COUNT';
     }
 
     public function getTitle(): string
@@ -38,23 +48,26 @@ class CannotReadEntityCountLog extends BaseRunLogEntry
         return 'Could not read entity count';
     }
 
-    public function getDescriptionArguments(): array
+    public function getParameters(): array
     {
         return [
             'entity' => $this->getEntity(),
             'table' => $this->table,
             'condition' => $this->condition,
+            'exceptionCode' => $this->exceptionCode,
+            'exceptionMessage' => $this->exceptionMessage,
         ];
     }
 
     public function getDescription(): string
     {
-        $args = $this->getDescriptionArguments();
+        $args = $this->getParameters();
 
-        return sprintf('Total count for entity %s could not be read. Make the the table %s exists in your source system and the optional condition "%s" is valid.',
+        return sprintf('Total count for entity %s could not be read. Make sure the table %s exists in your source system and the optional condition "%s" is valid. Exception message: %s',
             $args['entity'],
             $args['table'],
-            $args['condition']
+            $args['condition'],
+            $args['exceptionMessage']
         );
     }
 }

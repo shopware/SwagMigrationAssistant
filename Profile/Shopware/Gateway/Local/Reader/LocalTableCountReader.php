@@ -77,7 +77,9 @@ class LocalTableCountReader implements TableCountReaderInterface
                         $migrationContext->getRunUuid(),
                         $entityName,
                         $queryStruct->getTableName(),
-                        $queryStruct->getCondition()
+                        $queryStruct->getCondition(),
+                        (string) $exception->getCode(),
+                        $exception->getMessage()
                     ));
                 }
             }

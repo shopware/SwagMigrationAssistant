@@ -5,7 +5,7 @@ namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 use Shopware\Core\Framework\Context;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
-use SwagMigrationAssistant\Migration\Logging\Log\CannotConvertEntity;
+use SwagMigrationAssistant\Migration\Logging\Log\CannotConvertChildEntity;
 use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
@@ -117,9 +117,11 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
     protected function getMedia(array &$converted, array $data): void
     {
         if (!isset($data['media']['id'])) {
-            $this->loggingService->addLogEntry(new CannotConvertEntity(
+            $this->loggingService->addLogEntry(new CannotConvertChildEntity(
                 $this->runId,
-                'property_group_option_media'
+                'property_group_option_media',
+                DefaultEntities::PROPERTY_GROUP_OPTION,
+                $data['id']
             ));
 
             return;

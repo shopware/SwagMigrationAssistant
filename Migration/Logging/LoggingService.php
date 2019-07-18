@@ -41,7 +41,7 @@ class LoggingService implements LoggingServiceInterface
             'code' => $logEntry->getCode(),
             'title' => $logEntry->getTitle(),
             'description' => $logEntry->getDescription(),
-            'descriptionArguments' => $logEntry->getDescriptionArguments(),
+            'parameters' => $logEntry->getParameters(),
             'titleSnippet' => $logEntry->getTitleSnippet(),
             'descriptionSnippet' => $logEntry->getDescriptionSnippet(),
             'entity' => $logEntry->getEntity(),

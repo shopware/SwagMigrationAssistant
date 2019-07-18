@@ -2,11 +2,9 @@
 
 namespace SwagMigrationAssistant\Migration\Logging\Log;
 
-use SwagMigrationAssistant\Migration\Logging\LogType;
-
 class EntityAlreadyExistsRunLog extends BaseRunLogEntry
 {
-    public function __construct(string $runId, ?string $entity = null, ?string $sourceId = null)
+    public function __construct(string $runId, string $entity, string $sourceId)
     {
         parent::__construct($runId, $entity, $sourceId);
     }
@@ -26,7 +24,7 @@ class EntityAlreadyExistsRunLog extends BaseRunLogEntry
         return sprintf('The %s entity already exists', $this->getEntity());
     }
 
-    public function getDescriptionArguments(): array
+    public function getParameters(): array
     {
         return [
             'entity' => $this->getEntity(),
@@ -36,7 +34,7 @@ class EntityAlreadyExistsRunLog extends BaseRunLogEntry
 
     public function getDescription(): string
     {
-        $args = $this->getDescriptionArguments();
+        $args = $this->getParameters();
 
         return sprintf(
             'The %s entity with source id "%s" already exists and cannot be written.',
@@ -47,11 +45,11 @@ class EntityAlreadyExistsRunLog extends BaseRunLogEntry
 
     public function getTitleSnippet(): string
     {
-        return sprintf('%s.%s.title', $this->getSnippetRoot(), LogType::ENTITY_ALREADY_EXISTS);
+        return sprintf('%s.%s.title', $this->getSnippetRoot(), 'SWAG_MIGRATION_ENTITY_ALREADY_EXISTS');
     }
 
     public function getDescriptionSnippet(): string
     {
-        return sprintf('%s.%s.description', $this->getSnippetRoot(), LogType::ENTITY_ALREADY_EXISTS);
+        return sprintf('%s.%s.description', $this->getSnippetRoot(), 'SWAG_MIGRATION_ENTITY_ALREADY_EXISTS');
     }
 }

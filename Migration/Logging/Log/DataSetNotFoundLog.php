@@ -2,8 +2,6 @@
 
 namespace SwagMigrationAssistant\Migration\Logging\Log;
 
-use SwagMigrationAssistant\Migration\Logging\LogType;
-
 class DataSetNotFoundLog extends BaseRunLogEntry
 {
     /**
@@ -24,7 +22,7 @@ class DataSetNotFoundLog extends BaseRunLogEntry
 
     public function getCode(): string
     {
-        return LogType::DATASET_NOT_FOUND;
+        return 'SWAG_MIGRATION__DATASET_NOT_FOUND';
     }
 
     public function getTitle(): string
@@ -32,24 +30,24 @@ class DataSetNotFoundLog extends BaseRunLogEntry
         return 'DataSet not found';
     }
 
-    public function getDescriptionArguments(): array
+    public function getParameters(): array
     {
         return [
             'profileName' => $this->profileName,
             'entity' => $this->getEntity(),
-            'mediaId' => $this->getSourceId(),
+            'sourceId' => $this->getSourceId(),
         ];
     }
 
     public function getDescription(): string
     {
-        $args = $this->getDescriptionArguments();
+        $args = $this->getParameters();
 
         return sprintf(
-            'DataSet for profile "%s" and entity "%s" not found. Media with id "%s" could not processed.',
+            'DataSet for profile "%s" and entity "%s" not found. Entity with id "%s" could not be processed.',
             $args['profileName'],
             $args['entity'],
-            $args['mediaId']
+            $args['sourceId']
         );
     }
 }

@@ -1,9 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationAssistant\Profile\Shopware\Logging\Log;
-
-use SwagMigrationAssistant\Migration\Logging\Log\BaseRunLogEntry;
-use SwagMigrationAssistant\Profile\Shopware\Logging\LogType;
+namespace SwagMigrationAssistant\Migration\Logging\Log;
 
 class InvalidUnserializedData extends BaseRunLogEntry
 {
@@ -19,10 +16,10 @@ class InvalidUnserializedData extends BaseRunLogEntry
 
     public function __construct(
         string $runId,
+        string $entity,
+        string $sourceId,
         string $unserializedEntity,
-        string $serializedData,
-        ?string $entity = null,
-        ?string $sourceId = null
+        string $serializedData
     ) {
         parent::__construct($runId, $entity, $sourceId);
         $this->unserializedEntity = $unserializedEntity;
@@ -36,7 +33,7 @@ class InvalidUnserializedData extends BaseRunLogEntry
 
     public function getCode(): string
     {
-        return LogType::INVALID_UNSERIALIZED_DATA;
+        return 'SWAG_MIGRATION__SHOPWARE_INVALID_UNSERIALIZED_DATA';
     }
 
     public function getTitle(): string
@@ -44,18 +41,26 @@ class InvalidUnserializedData extends BaseRunLogEntry
         return 'Invalid unserialized data';
     }
 
-    public function getDescriptionArguments(): array
+    public function getParameters(): array
     {
         return [
-            'translationEntity' => $this->unserializedEntity,
+            'entity' => $this->getEntity(),
+            'sourceId' => $this->getSourceId(),
+            'unserializedEntity' => $this->unserializedEntity,
             'serializedData' => $this->serializedData,
         ];
     }
 
     public function getDescription(): string
     {
-        $args = $this->getDescriptionArguments();
+        $args = $this->getParameters();
 
-        return sprintf('The %s entity could not be converted cause of invalid unserialized object data.', $args['translationEntity']);
+        return sprintf(
+            'The %s entity with source id "%s" could not be converted because of invalid unserialized object data for the "%s" entity and the raw data is: %s',
+            $args['entity'],
+            $args['sourceId'],
+            $args['unserializedEntity'],
+            $args['serializedData']
+        );
     }
 }

@@ -1,9 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SwagMigrationAssistant\Profile\Shopware\Logging\Log;
-
-use SwagMigrationAssistant\Migration\Logging\Log\BaseRunLogEntry;
-use SwagMigrationAssistant\Profile\Shopware\Logging\LogType;
+namespace SwagMigrationAssistant\Migration\Logging\Log;
 
 class UnsupportedObjectType extends BaseRunLogEntry
 {
@@ -12,7 +9,7 @@ class UnsupportedObjectType extends BaseRunLogEntry
      */
     private $type;
 
-    public function __construct(string $runId, string $type, ?string $entity = null, ?string $sourceId = null)
+    public function __construct(string $runId, string $type, string $entity, string $sourceId)
     {
         parent::__construct($runId, $entity, $sourceId);
         $this->type = $type;
@@ -25,7 +22,7 @@ class UnsupportedObjectType extends BaseRunLogEntry
 
     public function getCode(): string
     {
-        return LogType::UNSUPPORTED_OBJECT_TYPE;
+        return 'SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_OBJECT_TYPE';
     }
 
     public function getTitle(): string
@@ -33,17 +30,24 @@ class UnsupportedObjectType extends BaseRunLogEntry
         return 'Unsupported object type';
     }
 
-    public function getDescriptionArguments(): array
+    public function getParameters(): array
     {
         return [
             'objectType' => $this->type,
+            'entity' => $this->getEntity(),
+            'sourceId' => $this->getSourceId(),
         ];
     }
 
     public function getDescription(): string
     {
-        $args = $this->getDescriptionArguments();
+        $args = $this->getParameters();
 
-        return sprintf('Translation of object type "%s" could not be converted.', $args['objectType']);
+        return sprintf(
+            '%s of object type "%s" with source id "%s" could not be converted.',
+            $args['entity'],
+            $args['objectType'],
+            $args['sourceId']
+        );
     }
 }

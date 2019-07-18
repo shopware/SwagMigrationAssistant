@@ -13,11 +13,11 @@ use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
 use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
+use SwagMigrationAssistant\Migration\Logging\Log\InvalidUnserializedData;
+use SwagMigrationAssistant\Migration\Logging\Log\UnsupportedObjectType;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware\Logging\Log\InvalidUnserializedData;
-use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedObjectType;
 
 abstract class TranslationConverter extends ShopwareConverter
 {
@@ -132,10 +132,7 @@ abstract class TranslationConverter extends ShopwareConverter
         if (!isset($product['id'])) {
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
-                    $this->runId,
-                    DefaultEntities::TRANSLATION,
-                    DefaultEntities::PRODUCT,
-                    $data['id']
+                    $this->runId, DefaultEntities::PRODUCT, $data['id'], DefaultEntities::TRANSLATION
             ));
 
             return new ConvertStruct(null, $sourceData);
@@ -208,10 +205,7 @@ abstract class TranslationConverter extends ShopwareConverter
         if (!isset($manufacturer['id'])) {
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
-                    $this->runId,
-                    DefaultEntities::TRANSLATION,
-                    DefaultEntities::PRODUCT_MANUFACTURER,
-                    $data['id']
+                    $this->runId, DefaultEntities::PRODUCT_MANUFACTURER, $data['id'], DefaultEntities::TRANSLATION
                 ));
 
             return new ConvertStruct(null, $sourceData);
@@ -281,10 +275,7 @@ abstract class TranslationConverter extends ShopwareConverter
         if (!isset($unit['id'])) {
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
-                    $this->runId,
-                    DefaultEntities::TRANSLATION,
-                    DefaultEntities::UNIT,
-                    $data['id']
+                    $this->runId, DefaultEntities::UNIT, $data['id'], DefaultEntities::TRANSLATION
                 ));
 
             return new ConvertStruct(null, $sourceData);
@@ -359,10 +350,7 @@ abstract class TranslationConverter extends ShopwareConverter
         if (!isset($category['id'])) {
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
-                    $this->runId,
-                    DefaultEntities::TRANSLATION,
-                    DefaultEntities::CATEGORY,
-                    $data['id']
+                    $this->runId, DefaultEntities::CATEGORY, $data['id'], DefaultEntities::TRANSLATION
                 ));
 
             return new ConvertStruct(null, $sourceData);
@@ -445,10 +433,7 @@ abstract class TranslationConverter extends ShopwareConverter
         if (!isset($configuratorOption['id'])) {
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
-                    $this->runId,
-                    DefaultEntities::TRANSLATION,
-                    DefaultEntities::PROPERTY_GROUP_OPTION,
-                    $data['id']
+                    $this->runId, DefaultEntities::PROPERTY_GROUP_OPTION, $data['id'], DefaultEntities::TRANSLATION
                 ));
 
             return new ConvertStruct(null, $sourceData);
@@ -519,10 +504,7 @@ abstract class TranslationConverter extends ShopwareConverter
         if (!isset($configuratorOptionGroup['id'])) {
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
-                    $this->runId,
-                    DefaultEntities::TRANSLATION,
-                    DefaultEntities::PROPERTY_GROUP,
-                    $data['id']
+                    $this->runId, DefaultEntities::PROPERTY_GROUP, $data['id'], DefaultEntities::TRANSLATION
                 ));
 
             return new ConvertStruct(null, $sourceData);
@@ -593,10 +575,7 @@ abstract class TranslationConverter extends ShopwareConverter
         if (!isset($propertyValue['id'])) {
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
-                    $this->runId,
-                    DefaultEntities::TRANSLATION,
-                    DefaultEntities::PROPERTY_GROUP_OPTION,
-                    $data['id']
+                    $this->runId, DefaultEntities::PROPERTY_GROUP_OPTION, $data['id'], DefaultEntities::TRANSLATION
                 ));
 
             return new ConvertStruct(null, $sourceData);
@@ -663,10 +642,7 @@ abstract class TranslationConverter extends ShopwareConverter
         if (!isset($propertyOption['id'])) {
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
-                    $this->runId,
-                    DefaultEntities::TRANSLATION,
-                    DefaultEntities::PROPERTY_GROUP,
-                    $data['id']
+                    $this->runId, DefaultEntities::PROPERTY_GROUP, $data['id'], DefaultEntities::TRANSLATION
                 ));
 
             return new ConvertStruct(null, $sourceData);
@@ -739,10 +715,10 @@ abstract class TranslationConverter extends ShopwareConverter
             $this->loggingService->addLogEntry(
                 new InvalidUnserializedData(
                     $this->runId,
-                    $entity,
-                    $data['objectdata'],
                     DefaultEntities::TRANSLATION,
-                    $data['id']
+                    $data['id'],
+                    $entity,
+                    $data['objectdata']
             ));
 
             return null;

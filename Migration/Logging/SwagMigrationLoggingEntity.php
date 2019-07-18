@@ -33,7 +33,7 @@ class SwagMigrationLoggingEntity extends Entity
     /**
      * @var array
      */
-    protected $descriptionArguments;
+    protected $parameters;
 
     /**
      * @var string
@@ -105,14 +105,14 @@ class SwagMigrationLoggingEntity extends Entity
         $this->description = $description;
     }
 
-    public function getDescriptionArguments(): array
+    public function getParameters(): array
     {
-        return $this->descriptionArguments;
+        return $this->parameters;
     }
 
-    public function setDescriptionArguments(array $descriptionArguments): void
+    public function setParameters(array $parameters): void
     {
-        $this->descriptionArguments = $descriptionArguments;
+        $this->parameters = $parameters;
     }
 
     public function getTitleSnippet(): string

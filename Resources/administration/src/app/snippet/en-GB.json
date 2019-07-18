@@ -383,31 +383,31 @@
           "description": "Parent entity for \"{entity}\" child not found."
         },
         "SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING": {
-          "title": "Mapping is missing",
-          "description": "Mapping of \"{missingEntity}\" is missing, but it is a required association for \"{requiredFor}\". Please migrate \"{missingImportEntity}\" first to continue."
+          "title": "Associated {missingEntity} not found",
+          "description": "The {missingEntity} with the source id \"{sourceId}\" can not be found but is required for {requiredFor}."
         },
         "SWAG_MIGRATION__SHOPWARE_EMPTY_NECESSARY_DATA_FIELDS": {
-          "title": "Required field is empty",
-          "description": "{entity} entity could not be converted, because of the empty required field: {fields} | {entity} entity could not be converted, because of the empty required fields: {fields}"
+          "title": "The {entity} entity has an empty necessary field",
+          "description": "The {entity} entity with the source id \"{sourceId}\" has not the necessary data for the field \"{emptyField}\""
         },
         "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_OBJECT_TYPE": {
-          "title": "Translation not converted",
-          "description": "Translation of object type “{objectType}“ could not be converted."
+          "title": "Unsupported object type",
+          "description": "{entity} of object type “{objectType}“ with source id “{sourceId}“ could not be converted."
         },
         "SWAG_MIGRATION__SHOPWARE_INVALID_UNSERIALIZED_DATA": {
-          "title": "Translation not converted",
-          "description": "{entity} translation entity could not be converted, because of invalid, unserialized object data."
+          "title": "Invalid unserialized data",
+          "description": "The {entity} entity with source id \"{sourceId}\" could not be converted because of invalid unserialized object data for the \"{unserializedEntity}\" entity and the raw data is: {serializedData}"
         },
         "SWAG_MIGRATION__SHOPWARE_CANNOT_COPY_DATA": {
           "title": "Source file not found",
           "description": "The source file could not be copied. File: {path}"
         },
         "SWAG_MIGRATION_CANNOT_CONVERT_CHILD_ENTITY": {
-          "title": "Child entity not converted",
-          "description": "The {entity} child entity could not be converted."
+          "title": "The {entity} child entity could not be converted",
+          "description": "The {entity} child entity from the {parentEntity} parent entity with the id \"{parentSourceId}\" could not be converted."
         },
         "SWAG_MIGRATION_CANNOT_CONVERT_ENTITY": {
-          "title": "Entity not converted",
+          "title": "The {entity} entity could not be converted",
           "description": "The {entity} entity with the source id \"{sourceId}\" could not be converted."
         },
         "SWAG_MIGRATION_CANNOT_GET_FILE": {
@@ -416,11 +416,11 @@
         },
         "SWAG_MIGRATION__COULD_NOT_READ_ENTITY_COUNT": {
           "title": "Could not read entity count",
-          "description": "Total count for entity {entity} could not be read. Make the the table {table} exists in your source system and the optional condition \"{condition}\" is valid."
+          "description": "Total count for entity {entity} could not be read. Make sure the table \"{table}\" exists in your source system and the optional condition \"{condition}\" is valid. Exception message: {exceptionMessage}"
         },
         "SWAG_MIGRATION__DATASET_NOT_FOUND": {
           "title": "DataSet not found",
-          "description": "DataSet for profile \"{profileName}\" and entity \"{entity}\" not found. Media with id \"{mediaId}\" could not processed."
+          "description": "DataSet for profile \"{profileName}\" and entity \"{entity}\" not found. Entity with id \"{sourceId}\" could not be processed."
         },
         "SWAG_MIGRATION_ENTITY_ALREADY_EXISTS": {
           "title": "The {entity} entity already exists",
@@ -428,7 +428,7 @@
         },
         "SWAG_MIGRATION_ENTITY_FIELD_REASSIGNED": {
           "title": "The {entity} entity has a field that was reassigned",
-          "description": "The {entity} entity with the source id \"{sourceId}\" got the field {emptyField} replaced with {replacementField}."
+          "description": "The {entity} entity with the source id \"{sourceId}\" got the field \"{emptyField}\" replaced with \"{replacementField}\"."
         },
         "SWAG_MIGRATION__PROCESSOR_NOT_FOUND": {
           "title": "Processor not found",
@@ -440,7 +440,11 @@
         },
         "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_NUMBER_RANGE_TYPE": {
           "title": "Unsupported number range type",
-          "description": "NumberRange-Entity could not be converted because of unsupported type: {type}."
+          "description": "NumberRange-Entity with source id \"{sourceId}\" could not be converted because of unsupported type: {type}."
+        },
+        "SWAG_MIGRATION_RUN_EXCEPTION": {
+          "title": "An exception occurred",
+          "description": "{exceptionMessage}"
         }
       }
     },

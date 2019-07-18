@@ -16,28 +16,14 @@ class Migration1538985581Logging extends MigrationStep
     {
         $sql = <<<SQL
 CREATE TABLE `swag_migration_logging` (
-    `id`                        BINARY(16)   NOT NULL,
-    `level`                     VARCHAR(64)  NOT NULL,
-    `code`                      VARCHAR(255) NOT NULL,
-    `title`                     LONGTEXT     NOT NULL,
-    `description`               LONGTEXT     NOT NULL,
-    `description_arguments`     LONGTEXT     NOT NULL,
-    `title_snippet`             TEXT     NOT NULL,
-    `description_snippet`       TEXT     NOT NULL,
-    `entity`                    VARCHAR(128),
-    `source_id`                 VARCHAR(64),
-    `run_id`                    BINARY(16),
-    `created_at`                DATETIME(3)  NOT NULL,
-    `updated_at`                DATETIME(3),
+    `id`            BINARY(16)   NOT NULL,
+    `run_id`        BINARY(16),
+    `type`          VARCHAR(255) NOT NULL,
+    `log_entry`     LONGTEXT     NOT NULL,
+    `created_at`    DATETIME(3)  NOT NULL,
+    `updated_at`    DATETIME(3),
     PRIMARY KEY (`id`),
-    KEY `idx.swag_migration_logging.run_id_level` (`run_id`, `level`),
-    KEY `idx.swag_migration_logging.run_id_code` (`run_id`, `code`),
-    KEY `idx.swag_migration_logging.run_id_entity` (`run_id`, `entity`),
-    KEY `idx.swag_migration_logging.run_id_source_id` (`run_id`, `source_id`),
-    CONSTRAINT `json.swag_migration_logging.log_entry` CHECK (JSON_VALID(`description_arguments`)),
-    CONSTRAINT `fk.swag_migration_logging.run_id` FOREIGN KEY (`run_id`) REFERENCES `swag_migration_run` (`id`)
-      ON DELETE RESTRICT
-      ON UPDATE CASCADE
+    CONSTRAINT `json.swag_migration_logging.log_entry` CHECK (JSON_VALID(`log_entry`))
 )
     ENGINE = InnoDB
     DEFAULT CHARSET = utf8mb4

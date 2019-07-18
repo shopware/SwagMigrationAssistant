@@ -2,8 +2,6 @@
 
 namespace SwagMigrationAssistant\Migration\Logging\Log;
 
-use SwagMigrationAssistant\Migration\Logging\LogType;
-
 class UnknownEntityLog extends BaseRunLogEntry
 {
     /**
@@ -38,7 +36,7 @@ class UnknownEntityLog extends BaseRunLogEntry
         return sprintf('Cannot find %s', $this->getEntity());
     }
 
-    public function getDescriptionArguments(): array
+    public function getParameters(): array
     {
         return [
             'requiredForEntity' => $this->requiredForEntity,
@@ -50,7 +48,7 @@ class UnknownEntityLog extends BaseRunLogEntry
 
     public function getDescription(): string
     {
-        $args = $this->getDescriptionArguments();
+        $args = $this->getParameters();
 
         return sprintf(
             'The %s entity with the source id "%s" cannot find the depended %s entity with the source id "%s".',
@@ -63,11 +61,11 @@ class UnknownEntityLog extends BaseRunLogEntry
 
     public function getTitleSnippet(): string
     {
-        return sprintf('%s.%s.title', $this->getSnippetRoot(), LogType::ENTITY_UNKNOWN);
+        return sprintf('%s.%s.title', $this->getSnippetRoot(), 'SWAG_MIGRATION_ENTITY_UNKNOWN');
     }
 
     public function getDescriptionSnippet(): string
     {
-        return sprintf('%s.%s.description', $this->getSnippetRoot(), LogType::ENTITY_UNKNOWN);
+        return sprintf('%s.%s.description', $this->getSnippetRoot(), 'SWAG_MIGRATION_ENTITY_UNKNOWN');
     }
 }

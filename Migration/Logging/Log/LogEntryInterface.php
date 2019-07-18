@@ -15,7 +15,7 @@ interface LogEntryInterface
 
     public function getTitle(): string;
 
-    public function getDescriptionArguments(): array;
+    public function getParameters(): array;
 
     public function getDescription(): string;
 

@@ -84,6 +84,8 @@ final class DefaultEntities
 
     public const ORDER_CUSTOM_FIELD = 'order_custom_field';
 
+    public const PAYMENT_METHOD = 'payment_method';
+
     public const PRODUCT = 'product';
 
     public const PRODUCT_CUSTOM_FIELD = 'product_custom_field';
@@ -115,6 +117,8 @@ final class DefaultEntities
     public const PROPERTY_GROUP_OPTION_TRANSLATION = 'property_group_option_translation';
 
     public const RULE = 'rule';
+
+    public const SALUTATION = 'salutation';
 
     public const SALES_CHANNEL = 'sales_channel';
 

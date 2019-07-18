@@ -2,8 +2,6 @@
 
 namespace SwagMigrationAssistant\Migration\Logging\Log;
 
-use SwagMigrationAssistant\Migration\Logging\LogType;
-
 class FieldReassignedRunLog extends BaseRunLogEntry
 {
     /**
@@ -38,7 +36,7 @@ class FieldReassignedRunLog extends BaseRunLogEntry
         return sprintf('The %s entity has a field that was reassigned', $this->getEntity());
     }
 
-    public function getDescriptionArguments(): array
+    public function getParameters(): array
     {
         return [
             'entity' => $this->getEntity(),
@@ -50,7 +48,7 @@ class FieldReassignedRunLog extends BaseRunLogEntry
 
     public function getDescription(): string
     {
-        $args = $this->getDescriptionArguments();
+        $args = $this->getParameters();
 
         return sprintf(
             'The %s entity with the source id "%s" got the field %s replaced with %s.',
@@ -63,11 +61,11 @@ class FieldReassignedRunLog extends BaseRunLogEntry
 
     public function getTitleSnippet(): string
     {
-        return sprintf('%s.%s.title', $this->getSnippetRoot(), LogType::ENTITY_FIELD_REASSIGNED);
+        return sprintf('%s.%s.title', $this->getSnippetRoot(), 'SWAG_MIGRATION_ENTITY_FIELD_REASSIGNED');
     }
 
     public function getDescriptionSnippet(): string
     {
-        return sprintf('%s.%s.description', $this->getSnippetRoot(), LogType::ENTITY_FIELD_REASSIGNED);
+        return sprintf('%s.%s.description', $this->getSnippetRoot(), 'SWAG_MIGRATION_ENTITY_FIELD_REASSIGNED');
     }
 }

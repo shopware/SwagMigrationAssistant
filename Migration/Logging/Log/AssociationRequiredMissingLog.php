@@ -2,8 +2,6 @@
 
 namespace SwagMigrationAssistant\Migration\Logging\Log;
 
-use SwagMigrationAssistant\Migration\Logging\LogType;
-
 class AssociationRequiredMissingLog extends BaseRunLogEntry
 {
     /**
@@ -11,7 +9,7 @@ class AssociationRequiredMissingLog extends BaseRunLogEntry
      */
     private $requiredFor;
 
-    public function __construct(string $runId, string $requiredFor, string $entity, string $sourceId)
+    public function __construct(string $runId, string $entity, string $sourceId, string $requiredFor)
     {
         parent::__construct($runId, $entity, $sourceId);
         $this->requiredFor = $requiredFor;
@@ -24,7 +22,7 @@ class AssociationRequiredMissingLog extends BaseRunLogEntry
 
     public function getCode(): string
     {
-        return LogType::ASSOCIATION_REQUIRED_MISSING;
+        return sprintf('SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING_%s', strtoupper($this->getEntity()));
     }
 
     public function getTitle(): string
@@ -32,22 +30,34 @@ class AssociationRequiredMissingLog extends BaseRunLogEntry
         return sprintf('Associated %s not found', $this->getEntity());
     }
 
-    public function getDescriptionArguments(): array
+    public function getParameters(): array
     {
         return [
             'missingEntity' => $this->getEntity(),
             'requiredFor' => $this->requiredFor,
+            'sourceId' => $this->getSourceId(),
         ];
     }
 
     public function getDescription(): string
     {
-        $args = $this->getDescriptionArguments();
+        $args = $this->getParameters();
 
         return sprintf(
-            'The %s for the %s can not be found.',
+            'The %s with the source id "%s" can not be found but is required for %s.',
             $args['missingEntity'],
+            $args['sourceId'],
             $args['requiredFor']
         );
+    }
+
+    public function getTitleSnippet(): string
+    {
+        return sprintf('%s.%s.title', $this->getSnippetRoot(), 'SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING');
+    }
+
+    public function getDescriptionSnippet(): string
+    {
+        return sprintf('%s.%s.description', $this->getSnippetRoot(), 'SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING');
     }
 }
