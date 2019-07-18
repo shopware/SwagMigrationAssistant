@@ -12,6 +12,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Storefront\Theme\ThemeService;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry;
@@ -115,6 +116,16 @@ class MigrationProgressServiceTest extends TestCase
      */
     private $connectionRepo;
 
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $salesChannelRepo;
+
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $themeRepo;
+
     protected function setUp(): void
     {
         $context = Context::createDefaultContext();
@@ -123,6 +134,8 @@ class MigrationProgressServiceTest extends TestCase
         $this->dataRepo = $this->getContainer()->get('swag_migration_data.repository');
         $this->mediaFileRepo = $this->getContainer()->get('swag_migration_media_file.repository');
         $this->loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
+        $this->salesChannelRepo = $this->getContainer()->get('sales_channel.repository');
+        $this->themeRepo = $this->getContainer()->get('theme.repository');
 
         $this->runUuid = Uuid::randomHex();
         $this->runProgress = require __DIR__ . '/../../_fixtures/run_progress_data.php';
@@ -191,7 +204,11 @@ class MigrationProgressServiceTest extends TestCase
                 $this->dataRepo,
                 $this->mediaFileRepo,
                 $this->getContainer()->get('currency.repository'),
+                $this->salesChannelRepo,
+                $this->themeRepo,
                 $this->getContainer()->get(IndexerRegistryInterface::class),
+                $this->getContainer()->get(ThemeService::class),
+                $this->getContainer()->get(MappingService::class),
                 $this->getContainer()->get('shopware.cache'),
                 $this->getContainer()->get(SwagMigrationDataDefinition::class),
                 $this->getContainer()->get(Connection::class)

@@ -13,6 +13,7 @@ use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CustomerDataSe
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\SalesChannelDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\TranslationDataSet;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 use SwagMigrationAssistant\Test\Mock\DataSet\InvalidCustomerDataSet;
@@ -48,6 +49,8 @@ class DummyLocalGateway implements GatewayInterface
                 return require __DIR__ . '/../../../../_fixtures/customer_data.php';
             case OrderDataSet::getEntity():
                 return require __DIR__ . '/../../../../_fixtures/order_data.php';
+            case SalesChannelDataSet::getEntity():
+                return require __DIR__ . '/../../../../_fixtures/sales_channel_data.php';
             //Invalid data
             case InvalidCustomerDataSet::getEntity():
                 return require __DIR__ . '/../../../../_fixtures/invalid/customer_data.php';

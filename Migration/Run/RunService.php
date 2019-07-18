@@ -17,6 +17,8 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
+use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
+use Shopware\Storefront\Theme\ThemeService;
 use SwagMigrationAssistant\Exception\MigrationIsRunningException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionCollection;
@@ -24,6 +26,7 @@ use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistryInterfac
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
+use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
@@ -84,6 +87,16 @@ class RunService implements RunServiceInterface
     private $currencyRepository;
 
     /**
+     * @var EntityRepositoryInterface
+     */
+    private $salesChannelRepository;
+
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $themeRepository;
+
+    /**
      * @var EntityDefinition
      */
     private $migrationDataDefinition;
@@ -92,6 +105,16 @@ class RunService implements RunServiceInterface
      * @var Connection
      */
     private $dbalConnection;
+
+    /**
+     * @var ThemeService
+     */
+    private $themeService;
+
+    /**
+     * @var MappingServiceInterface
+     */
+    private $mappingService;
 
     public function __construct(
         EntityRepositoryInterface $migrationRunRepo,
@@ -102,7 +125,11 @@ class RunService implements RunServiceInterface
         EntityRepositoryInterface $migrationDataRepository,
         EntityRepositoryInterface $mediaFileRepository,
         EntityRepositoryInterface $currencyRepository,
+        EntityRepositoryInterface $salesChannelRepository,
+        EntityRepositoryInterface $themeRepository,
         IndexerRegistryInterface $indexer,
+        ThemeService $themeService,
+        MappingServiceInterface $mappingService,
         TagAwareAdapter $cache,
         EntityDefinition $migrationDataDefinition,
         Connection $dbalConnection
@@ -115,7 +142,11 @@ class RunService implements RunServiceInterface
         $this->migrationDataRepository = $migrationDataRepository;
         $this->mediaFileRepository = $mediaFileRepository;
         $this->currencyRepository = $currencyRepository;
+        $this->salesChannelRepository = $salesChannelRepository;
+        $this->themeRepository = $themeRepository;
         $this->indexer = $indexer;
+        $this->themeService = $themeService;
+        $this->mappingService = $mappingService;
         $this->cache = $cache;
         $this->migrationDataDefinition = $migrationDataDefinition;
         $this->dbalConnection = $dbalConnection;
@@ -284,6 +315,7 @@ class RunService implements RunServiceInterface
     private function cleanupMigration(string $runUuid, Context $context): void
     {
         $this->removeWrittenMigrationData($runUuid);
+        $this->assignThemeToSalesChannel($runUuid, $context);
 
         $this->cache->clear();
         $this->indexer->index(new \DateTime());
@@ -523,5 +555,56 @@ class RunService implements RunServiceInterface
             ->andWhere('HEX(run_id) = :runId')
             ->setParameter('runId', $runUuid)
             ->execute();
+    }
+
+    private function assignThemeToSalesChannel(string $runUuid, Context $context): void
+    {
+        /** @var SwagMigrationRunEntity|null $run */
+        $run = $this->migrationRunRepo->search(new Criteria([$runUuid]), $context)->first();
+
+        if ($run === null || $run->getConnection() === null) {
+            return;
+        }
+
+        $connectionId = $run->getConnection()->getId();
+        $salesChannels = $this->getSalesChannels($connectionId, $context);
+        $defaultTheme = $this->getDefaultTheme($context);
+
+        if ($defaultTheme === null) {
+            return;
+        }
+
+        foreach ($salesChannels as $salesChannel) {
+            $this->themeService->assignTheme($defaultTheme, $salesChannel, $context);
+        }
+    }
+
+    private function getSalesChannels(string $connectionId, Context $context): array
+    {
+        $salesChannelUuids = $this->mappingService->getUuidsByEntity(
+            $connectionId,
+            SalesChannelDefinition::ENTITY_NAME,
+            $context
+        );
+
+        if (empty($salesChannelUuids)) {
+            return [];
+        }
+
+        return $this->salesChannelRepository->search(new Criteria($salesChannelUuids), $context)->getIds();
+    }
+
+    private function getDefaultTheme(Context $context): ?string
+    {
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('technicalName', 'Storefront'));
+
+        $ids = $this->themeRepository->search($criteria, $context)->getIds();
+
+        if (empty($ids)) {
+            return null;
+        }
+
+        return reset($ids);
     }
 }
