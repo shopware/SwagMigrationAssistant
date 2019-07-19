@@ -9,6 +9,8 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 interface MappingServiceInterface
 {
+    public function getUuidsByEntity(string $connectionId, string $entityName, Context $context): array;
+
     public function getUuid(string $connectionId, string $entityName, string $oldId, Context $context): ?string;
 
     public function getValue(string $connectionId, string $entityName, string $oldId, Context $context): ?string;

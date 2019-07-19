@@ -167,4 +167,9 @@ class DummyMappingService extends MappingService
     {
         return Uuid::randomHex();
     }
+
+    public function getDefaultSalesChannelTheme(string $connectionId, Context $context): ?string
+    {
+        return Uuid::randomHex();
+    }
 }

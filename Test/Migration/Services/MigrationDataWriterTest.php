@@ -9,6 +9,7 @@ use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\InvoicePayment;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Indexing\IndexerRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
@@ -17,17 +18,21 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataEntity;
+use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
 use SwagMigrationAssistant\Migration\Logging\LogType;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Media\MediaFileService;
 use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\Run\RunService;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationAssistant\Migration\Service\MigrationDataConverterInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataWriter;
 use SwagMigrationAssistant\Migration\Service\MigrationDataWriterInterface;
+use SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService;
 use SwagMigrationAssistant\Migration\Writer\CustomerWriter;
 use SwagMigrationAssistant\Migration\Writer\ProductWriter;
 use SwagMigrationAssistant\Migration\Writer\WriterRegistry;
@@ -36,6 +41,7 @@ use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CustomerDataSe
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\SalesChannelDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\DeliveryTimeReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\OrderStateReader;
@@ -44,8 +50,11 @@ use SwagMigrationAssistant\Profile\Shopware\Premapping\SalutationReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\TransactionStateReader;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\MigrationServicesTrait;
+use SwagMigrationAssistant\Test\Mock\DummyThemeService;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Media\DummyMediaFileService;
+use SwagMigrationAssistant\Test\Mock\Migration\Service\DummyMigrationDataFetcher;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class MigrationDataWriterTest extends TestCase
 {
@@ -202,6 +211,36 @@ class MigrationDataWriterTest extends TestCase
      */
     private $languageRepo;
 
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $salesChannelRepo;
+
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $shippingRepo;
+
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $countryRepo;
+
+    /**
+     * @var RunService
+     */
+    private $runService;
+
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $themeSalesChannelRepo;
+
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $themeRepo;
+
     protected function setUp(): void
     {
         $this->context = Context::createDefaultContext();
@@ -230,7 +269,10 @@ class MigrationDataWriterTest extends TestCase
             $this->mappingService,
             $this->getContainer()->get(MediaFileService::class),
             $this->loggingRepo,
-            $this->getContainer()->get(SwagMigrationDataDefinition::class)
+            $this->getContainer()->get(SwagMigrationDataDefinition::class),
+            $this->paymentRepo,
+            $this->shippingRepo,
+            $this->countryRepo
         );
 
         $this->dummyDataWriter = new MigrationDataWriter(
@@ -245,6 +287,25 @@ class MigrationDataWriterTest extends TestCase
             new DummyMediaFileService(),
             $this->loggingService,
             $this->getContainer()->get(SwagMigrationDataDefinition::class)
+        );
+
+        $this->runService = new RunService(
+          $this->runRepo,
+          $this->connectionRepo,
+          new DummyMigrationDataFetcher(new GatewayRegistry([]), $this->loggingService),
+          new SwagMigrationAccessTokenService($this->runRepo),
+          new DataSelectionRegistry([]),
+          $this->migrationDataRepo,
+          $this->mediaRepo,
+          $this->currencyRepo,
+          $this->salesChannelRepo,
+          $this->themeRepo,
+          new IndexerRegistry([], new EventDispatcher()),
+          new DummyThemeService($this->themeSalesChannelRepo),
+          $this->mappingService,
+          $this->getContainer()->get('shopware.cache'),
+          new SwagMigrationDataDefinition(),
+          $this->dbConnection
         );
     }
 
@@ -300,6 +361,36 @@ class MigrationDataWriterTest extends TestCase
         $failureConvertCriteria->addFilter(new EqualsFilter('writeFailure', true));
         $result = $this->migrationDataRepo->search($failureConvertCriteria, $context);
         static::assertSame(1, $result->getTotal());
+    }
+
+    public function testWriteSalesChannelData(): void
+    {
+        $context = Context::createDefaultContext();
+        $migrationContext = new MigrationContext(
+            new Shopware55Profile(),
+            $this->connection,
+            $this->runUuid,
+            new SalesChannelDataSet(),
+            0,
+            250
+        );
+
+        $beforeThemeSalesChannel = $this->dbConnection->query('select count(*) from theme_sales_channel')->fetchColumn();
+        $data = $this->migrationDataFetcher->fetchData($migrationContext, $context);
+        $this->migrationDataConverter->convert($data, $migrationContext, $context);
+        $criteria = new Criteria();
+        $salesChannelTotalBefore = $this->salesChannelRepo->search($criteria, $context)->getTotal();
+
+        $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext) {
+            $this->migrationDataWriter->writeData($migrationContext, $context);
+        });
+        $salesChannelTotalAfter = $this->dbConnection->query('select count(*) from sales_channel')->fetchColumn();
+
+        $this->runService->finishMigration($this->runUuid, $context);
+        $afterThemeSalesChannel = $this->dbConnection->query('select count(*) from theme_sales_channel')->fetchColumn();
+
+        static::assertSame(2, $salesChannelTotalAfter - $salesChannelTotalBefore);
+        static::assertSame(2, $afterThemeSalesChannel - $beforeThemeSalesChannel);
     }
 
     public function testWriteCustomerData(): void
@@ -496,6 +587,11 @@ class MigrationDataWriterTest extends TestCase
         $this->deliveryTimeRepo = $this->getContainer()->get('delivery_time.repository');
         $this->localeRepo = $this->getContainer()->get('locale.repository');
         $this->languageRepo = $this->getContainer()->get('language.repository');
+        $this->salesChannelRepo = $this->getContainer()->get('sales_channel.repository');
+        $this->themeRepo = $this->getContainer()->get('theme.repository');
+        $this->shippingRepo = $this->getContainer()->get('shipping_method.repository');
+        $this->countryRepo = $this->getContainer()->get('country.repository');
+        $this->themeSalesChannelRepo = $this->getContainer()->get('theme_sales_channel.repository');
     }
 
     private function initConnectionAndRun(): void
@@ -528,6 +624,7 @@ class MigrationDataWriterTest extends TestCase
                 [
                     'id' => $this->runUuid,
                     'status' => SwagMigrationRunEntity::STATUS_RUNNING,
+                    'connectionId' => $this->connectionId,
                 ],
             ],
             $this->context
@@ -596,9 +693,16 @@ class MigrationDataWriterTest extends TestCase
             $this->context
         );
         $this->mappingService->createNewUuid($this->connectionId, DefaultEntities::LANGUAGE, 'en-US', $this->context, [], $languageUuid);
+        $this->mappingService->createNewUuid($this->connectionId, DefaultEntities::LANGUAGE, 'en-GB', $this->context, [], $languageUuid);
+        $this->mappingService->createNewUuid($this->connectionId, DefaultEntities::LANGUAGE, 'nl-NL', $this->context, [], $languageUuid);
+        $this->mappingService->createNewUuid($this->connectionId, DefaultEntities::LANGUAGE, 'bn-IN', $this->context, [], $languageUuid);
 
         $this->mappingService->createNewUuid($this->connectionId, DefaultEntities::CUSTOMER_GROUP, '1', $this->context, [], 'cfbd5018d38d41d8adca10d94fc8bdd6');
         $this->mappingService->createNewUuid($this->connectionId, DefaultEntities::CUSTOMER_GROUP, '2', $this->context, [], 'cfbd5018d38d41d8adca10d94fc8bdd6');
+
+        $categoryUuid = $this->getCategoryUuid($this->categoryRepo, $this->context);
+        $this->mappingService->createNewUuid($this->connectionId, DefaultEntities::CATEGORY, '3', $this->context, [], $categoryUuid);
+        $this->mappingService->createNewUuid($this->connectionId, DefaultEntities::CATEGORY, '39', $this->context, [], $categoryUuid);
 
         $this->mappingService->writeMapping($this->context);
         $this->clearCacheBefore();

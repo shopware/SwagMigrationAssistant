@@ -10,6 +10,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Indexing\IndexerRegistryInterfa
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Storefront\Theme\ThemeService;
 use SwagMigrationAssistant\Controller\MigrationController;
 use SwagMigrationAssistant\Exception\EntityNotExistsException;
 use SwagMigrationAssistant\Exception\MigrationContextPropertyMissingException;
@@ -127,6 +128,11 @@ class MigrationControllerTest extends TestCase
         $this->connectionRepo = $this->getContainer()->get('swag_migration_connection.repository');
         $this->generalSettingRepo = $this->getContainer()->get('swag_migration_general_setting.repository');
         $this->runRepo = $this->getContainer()->get('swag_migration_run.repository');
+        $paymentRepo = $this->getContainer()->get('payment_method.repository');
+        $shippingRepo = $this->getContainer()->get('shipping_method.repository');
+        $countryRepo = $this->getContainer()->get('country.repository');
+        $salesChannelRepo = $this->getContainer()->get('sales_channel.repository');
+        $themeRepo = $this->getContainer()->get('theme.repository');
         $this->profileRegistry = $this->getContainer()->get(ProfileRegistry::class);
         $this->gatewayRegistry = $this->getContainer()->get(GatewayRegistry::class);
         $this->dataSetRegistry = $this->getContainer()->get(DataSetRegistry::class);
@@ -197,7 +203,10 @@ class MigrationControllerTest extends TestCase
             $mappingService,
             $this->getContainer()->get(MediaFileService::class),
             $loggingRepo,
-            $dataDefinition
+            $dataDefinition,
+            $paymentRepo,
+            $shippingRepo,
+            $countryRepo
         );
         $this->controller = new MigrationController(
             $dataFetcher,
@@ -219,7 +228,11 @@ class MigrationControllerTest extends TestCase
                 $this->dataRepo,
                 $this->mediaFileRepo,
                 $currencyRepo,
+                $salesChannelRepo,
+                $themeRepo,
                 $this->getContainer()->get(IndexerRegistryInterface::class),
+                $this->getContainer()->get(ThemeService::class),
+                $mappingService,
                 $this->getContainer()->get('shopware.cache'),
                 $dataDefinition,
                 $this->getContainer()->get(Connection::class)
