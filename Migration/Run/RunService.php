@@ -319,6 +319,7 @@ class RunService implements RunServiceInterface
 
         $this->cache->clear();
         $this->indexer->index(new \DateTime());
+        $this->indexer->index(new \DateTime());
     }
 
     private function isMigrationRunningWithGivenConnection(Context $context, string $connectionUuid): bool
