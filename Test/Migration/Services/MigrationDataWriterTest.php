@@ -22,6 +22,7 @@ use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
+use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Media\MediaFileService;
 use SwagMigrationAssistant\Migration\MigrationContext;
@@ -304,7 +305,8 @@ class MigrationDataWriterTest extends TestCase
           $this->mappingService,
           $this->getContainer()->get('shopware.cache'),
           new SwagMigrationDataDefinition(),
-          $this->dbConnection
+          $this->dbConnection,
+          new LoggingService($this->loggingRepo)
         );
     }
 

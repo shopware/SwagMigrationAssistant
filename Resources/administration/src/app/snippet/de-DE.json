@@ -436,7 +436,11 @@
         },
         "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_NUMBER_RANGE_TYPE": {
           "title": "Nummernkreis-Typ nicht unterstützt",
-          "description": "Die Nummernkreis-Entität mit der Quell-ID \"{sourceId}\" konnte wegen folgendem nicht unterstützten Typs nicht konvertiert werden: {type}"
+          "description": "Die Nummernkreis-Entität mit der Quell-ID „{sourceId}“ konnte wegen folgendem nicht unterstützten Typs nicht konvertiert werden: {type}"
+        },
+        "SWAG_MIGRATION__THEME_COMPILING_ERROR": {
+          "title": "Theme Kompilierungsfehler",
+          "description": "Das Theme mit der ID „{sourceId}“ konnte nicht kompiliert werden."
         },
         "SWAG_MIGRATION_RUN_EXCEPTION": {
           "title": "Systemfehler aufgetreten",

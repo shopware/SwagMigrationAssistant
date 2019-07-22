@@ -65,6 +65,7 @@
             <argument type="service" id="shopware.cache" />
             <argument type="service" id="SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition"/>
             <argument type="service" id="Doctrine\DBAL\Connection"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
         </service>
 
         <service id="SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService">

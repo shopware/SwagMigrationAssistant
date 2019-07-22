@@ -442,6 +442,10 @@
           "title": "Unsupported number range type",
           "description": "NumberRange-Entity with source id \"{sourceId}\" could not be converted because of unsupported type: {type}."
         },
+        "SWAG_MIGRATION__THEME_COMPILING_ERROR": {
+          "title": "Theme compiling error",
+          "description": "The theme with id \"{sourceId}\" could not be compiled."
+        },
         "SWAG_MIGRATION_RUN_EXCEPTION": {
           "title": "An exception occurred",
           "description": "{exceptionMessage}"

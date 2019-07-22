@@ -1,0 +1,43 @@
+<?php declare(strict_types=1);
+
+namespace SwagMigrationAssistant\Migration\Logging\Log;
+
+class ThemeCompilingErrorRunLog extends BaseRunLogEntry
+{
+    public function __construct(string $runId, string $sourceId)
+    {
+        parent::__construct($runId, null, $sourceId);
+    }
+
+    public function getLevel(): string
+    {
+        return self::LOG_LEVEL_ERROR;
+    }
+
+    public function getCode(): string
+    {
+        return 'SWAG_MIGRATION__THEME_COMPILING_ERROR';
+    }
+
+    public function getTitle(): string
+    {
+        return 'Theme compiling error';
+    }
+
+    public function getParameters(): array
+    {
+        return [
+            'sourceId' => $this->getSourceId(),
+        ];
+    }
+
+    public function getDescription(): string
+    {
+        $args = $this->getParameters();
+
+        return sprintf(
+            'The theme with id "%s" could not be compiled.',
+            $args['sourceId']
+        );
+    }
+}
