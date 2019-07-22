@@ -25,6 +25,7 @@ use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
+use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Media\MediaFileService;
 use SwagMigrationAssistant\Migration\MigrationContext;
@@ -110,6 +111,7 @@ class StatusControllerTest extends TestCase
         $themeRepo = $this->getContainer()->get('theme.repository');
         $this->runRepo = $this->getContainer()->get('swag_migration_run.repository');
         $this->migrationContextFactory = $this->getContainer()->get('SwagMigrationAssistant\Migration\MigrationContextFactory');
+        $loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
 
         $this->context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) {
             $this->connectionId = Uuid::randomHex();
@@ -193,7 +195,8 @@ class StatusControllerTest extends TestCase
                 $mappingService,
                 $this->getContainer()->get('shopware.cache'),
                 $this->getContainer()->get(SwagMigrationDataDefinition::class),
-                $this->getContainer()->get(Connection::class)
+                $this->getContainer()->get(Connection::class),
+                new LoggingService($loggingRepo)
             ),
             new DataSelectionRegistry([
                 new ProductDataSelection(),

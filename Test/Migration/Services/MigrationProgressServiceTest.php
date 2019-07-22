@@ -18,6 +18,7 @@ use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Media\MediaFileService;
 use SwagMigrationAssistant\Migration\MigrationContext;
@@ -211,7 +212,8 @@ class MigrationProgressServiceTest extends TestCase
                 $this->getContainer()->get(MappingService::class),
                 $this->getContainer()->get('shopware.cache'),
                 $this->getContainer()->get(SwagMigrationDataDefinition::class),
-                $this->getContainer()->get(Connection::class)
+                $this->getContainer()->get(Connection::class),
+                new LoggingService($this->loggingRepo)
             )
         );
     }

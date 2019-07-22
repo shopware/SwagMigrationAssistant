@@ -305,7 +305,8 @@ class MigrationDataWriterTest extends TestCase
           $this->mappingService,
           $this->getContainer()->get('shopware.cache'),
           new SwagMigrationDataDefinition(),
-          $this->dbConnection
+          $this->dbConnection,
+          $this->loggingService
         );
     }
 

@@ -208,6 +208,7 @@ class MigrationControllerTest extends TestCase
             $shippingRepo,
             $countryRepo
         );
+        $loggingService = new LoggingService($loggingRepo);
         $this->controller = new MigrationController(
             $dataFetcher,
             $dataConverter,
@@ -216,7 +217,7 @@ class MigrationControllerTest extends TestCase
                 $this->mediaFileRepo,
                 $this->getContainer()->get('messenger.bus.shopware'),
                 $this->getContainer()->get(DataSetRegistry::class),
-                new LoggingService($loggingRepo)
+                $loggingService
             ),
             $accessTokenService,
             new RunService(
@@ -235,7 +236,8 @@ class MigrationControllerTest extends TestCase
                 $mappingService,
                 $this->getContainer()->get('shopware.cache'),
                 $dataDefinition,
-                $this->getContainer()->get(Connection::class)
+                $this->getContainer()->get(Connection::class),
+                $loggingService
             ),
             $this->runRepo,
             $this->migrationContextFactory
