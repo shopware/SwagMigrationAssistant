@@ -388,7 +388,8 @@
         "SWAG_MIGRATION__SHOPWARE_CANNOT_COPY_DATA": "Die Quelldatei konnte nicht kopiert werden. Betroffene Datei: {path}",
         "SWAG_MIGRATION__SHOPWARE_UNKNOWN_ORDER_STATE": "Bestellungsentität konnte aufgrund eines unbekannten Bestellstatus nicht konvertiert werden.",
         "SWAG_MIGRATION__SHOPWARE_UNKNOWN_TRANSACTION_STATE": "Zahlungsentität konnte aufgrund eines unbekannten Zahlungsstatus nicht konvertiert werden.",
-        "SWAG_MIGRATION__SHOPWARE_UNKNOWN_CUSTOMER_SALUTATION": "Kundendaten konnten aufgrund einer unbekannten Anrede nicht konvertiert werden."
+        "SWAG_MIGRATION__SHOPWARE_UNKNOWN_CUSTOMER_SALUTATION": "Kundendaten konnten aufgrund einer unbekannten Anrede nicht konvertiert werden.",
+        "SWAG_MIGRATION__THEME_COMPILING_ERROR": "Das Theme mit der ID „{themeId}“ konnte nicht kompiliert werden."
       }
     },
     "history": {

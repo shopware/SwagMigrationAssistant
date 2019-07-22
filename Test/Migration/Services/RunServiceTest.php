@@ -205,7 +205,8 @@ class RunServiceTest extends TestCase
             $this->mappingService,
             $this->getContainer()->get('shopware.cache'),
             $this->getContainer()->get(SwagMigrationDataDefinition::class),
-            $this->getContainer()->get(Connection::class)
+            $this->getContainer()->get(Connection::class),
+            $loggingService
         );
 
         $this->runServiceWithoutStructure = new RunService(
@@ -227,7 +228,8 @@ class RunServiceTest extends TestCase
             $this->mappingService,
             $this->getContainer()->get('shopware.cache'),
             $this->getContainer()->get(SwagMigrationDataDefinition::class),
-            $this->getContainer()->get(Connection::class)
+            $this->getContainer()->get(Connection::class),
+            $loggingService
         );
     }
 
