@@ -249,6 +249,26 @@ class MigrationApiService extends ApiService {
                 return ApiService.handleResponse(response);
             });
     }
+
+    getGroupedLogsOfRun(runUuid, offset, limit, sortBy, sortDirection) {
+        const headers = this.getBasicHeaders();
+
+        return this.httpClient
+            .get(`${this.getApiBasePath()}/get-grouped-logs-of-run`, {
+                ...this.basicConfig,
+                params: {
+                    runUuid,
+                    offset,
+                    limit,
+                    sortBy,
+                    sortDirection
+                },
+                headers
+            })
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
 }
 
 export default MigrationApiService;

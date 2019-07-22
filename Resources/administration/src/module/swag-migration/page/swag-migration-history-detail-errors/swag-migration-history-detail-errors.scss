@@ -7,4 +7,14 @@
     .swag-migration-history-detail-errors__loading-placeholder {
         height: 100px;
     }
+
+    .swag-migration-history-detail-errors__download-form {
+        padding: 20px 0;
+        display: flex;
+        align-items: center;
+    }
+
+    .swag-migration-history-detail-errors__download-description {
+        padding-left: 12px;
+    }
 }

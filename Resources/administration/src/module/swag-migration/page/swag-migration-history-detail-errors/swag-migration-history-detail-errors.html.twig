@@ -1,6 +1,23 @@
 {% block swag_migration_history_detail_errors %}
     <div class="swag-migration-history-detail-errors">
         <div v-if="!isLoading">
+            {% block swag_migration_history_detail_errors_download %}
+                <form class="swag-migration-history-detail-errors__download-form"
+                      :action="downloadUrl"
+                      method="POST">
+                    <input type="hidden"
+                           name="runUuid"
+                           :value="migrationRun.id">
+                    <button class="sw-button swag-migration-history-detail-errors__download-button"
+                            type="submit">
+                        {{ $t('swag-migration.history.detailPage.logDownload') }}
+                    </button>
+                    <p class="swag-migration-history-detail-errors__download-description">
+                        {{ $t('swag-migration.history.detailPage.logDescription') }}
+                    </p>
+                </form>
+            {% endblock %}
+
             {% block swag_migration_history_detail_errors_grid %}
                 <sw-data-grid v-if="migrationErrors.length > 0"
                               identifier="swag-migration-history-detail-errors"
@@ -13,15 +30,15 @@
                               :sortBy="sortBy"
                               :sortDirection="sortDirection"
                               @column-sort="onSortColumn">
-                    {% block swag_migration_history_detail_errors_grid_type %}
-                        <template #column-type="{ item }">
+                    {% block swag_migration_history_detail_errors_grid_code%}
+                        <template #column-code="{ item }">
                             {{ $t(getErrorTitleSnippet(item), item.parameters) }}
                         </template>
                     {% endblock %}
 
-                    {% block swag_migration_history_detail_errors_grid_description %}
-                        <template #column-logEntry.code="{ item }">
-                            {{ $t(getErrorDescriptionSnippet(item), item.parameters) }}
+                    {% block swag_migration_history_detail_errors_grid_count %}
+                        <template #column-count="{ item }">
+                            {{ item.count }}
                         </template>
                     {% endblock %}
 
@@ -41,7 +58,7 @@
             {% block swag_migration_history_detail_errors_noError %}
                 <p v-if="migrationErrors.length === 0"
                    class="swag-migration-history-detail-errors__no-error">
-                    {{ $t('swag-migration.index.noErrorsOccurred') }}
+                    {{ $t('swag-migration.history.detailPage.noErrorsOccurred') }}
                 </p>
             {% endblock %}
         </div>

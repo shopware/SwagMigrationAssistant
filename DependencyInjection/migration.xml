@@ -68,6 +68,11 @@
             <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Migration\History\HistoryService">
+            <argument type="service" id="swag_migration_logging.repository"/>
+            <argument type="service" id="swag_migration_run.repository"/>
+        </service>
+
         <service id="SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService">
             <argument type="service" id="swag_migration_run.repository"/>
         </service>
@@ -142,6 +147,10 @@
             <argument type="service" id="SwagMigrationAssistant\Migration\Profile\ProfileRegistry"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Gateway\GatewayRegistry"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\MigrationContextFactory" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Controller\HistoryController" public="true">
+            <argument type="service" id="SwagMigrationAssistant\Migration\History\HistoryService"/>
         </service>
 
         <service id="SwagMigrationAssistant\Command\MigrateDataCommand">
