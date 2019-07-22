@@ -6,10 +6,12 @@ use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
+use SwagMigrationAssistant\Migration\Logging\Log\FieldReassignedRunLog;
+use SwagMigrationAssistant\Migration\Logging\Log\UnknownEntityLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware\Logging\LogTypes;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\PaymentMethodReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\SalutationReader;
 
@@ -97,18 +99,14 @@ abstract class CustomerConverter extends ShopwareConverter
         $fields = $this->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
 
         if (!empty($fields)) {
-            $this->loggingService->addWarning(
-                $this->runId,
-                LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
-                'Empty necessary data fields',
-                sprintf('Customer-Entity could not be converted cause of empty necessary field(s): %s.', implode(', ', $fields)),
-                [
-                    'id' => $data['id'],
-                    'entity' => 'Customer',
-                    'fields' => $fields,
-                ],
-                \count($fields)
-            );
+            foreach ($fields as $field) {
+                $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
+                    $this->runId,
+                    DefaultEntities::CUSTOMER,
+                    $data['id'],
+                    $field
+                ));
+            }
 
             return new ConvertStruct(null, $oldData);
         }
@@ -200,18 +198,12 @@ abstract class CustomerConverter extends ShopwareConverter
             );
 
             if (!isset($converted['defaultPaymentMethodId'])) {
-                $this->loggingService->addWarning(
+                $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
                     $this->runId,
-                    LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
-                    'Empty necessary data fields',
-                    'Customer-Entity could not be converted cause of empty necessary field(s): defaultpayment.',
-                    [
-                        'id' => $this->oldCustomerId,
-                        'entity' => 'Customer',
-                        'fields' => ['defaultpayment'],
-                    ],
-                    1
-                );
+                    DefaultEntities::CUSTOMER,
+                    $this->oldCustomerId,
+                    'defaultpayment'
+                ));
 
                 return new ConvertStruct(null, $oldData);
             }
@@ -260,13 +252,12 @@ abstract class CustomerConverter extends ShopwareConverter
         if (!isset($converted['defaultBillingAddressId'], $converted['defaultShippingAddressId'])) {
             $this->mappingService->deleteMapping($converted['id'], $this->connectionId, $this->context);
 
-            $this->loggingService->addWarning(
+            $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
                 $this->runId,
-                LogTypes::NO_ADDRESS_DATA,
-                'No address data',
-                'Customer-Entity could not be converted cause of empty address data.',
-                ['id' => $this->oldCustomerId]
-            );
+                DefaultEntities::CUSTOMER,
+                $this->oldCustomerId,
+                'address data'
+            ));
 
             return new ConvertStruct(null, $oldData);
         }
@@ -299,17 +290,13 @@ abstract class CustomerConverter extends ShopwareConverter
         );
 
         if ($paymentMethodUuid === null) {
-            $this->loggingService->addWarning(
+            $this->loggingService->addLogEntry(new UnknownEntityLog(
                 $this->runId,
-                LogTypes::UNKNOWN_PAYMENT_METHOD,
-                'Cannot find payment method',
-                'Customer-Entity could not be converted cause of unknown payment method',
-                [
-                    'id' => $this->oldCustomerId,
-                    'entity' => DefaultEntities::CUSTOMER,
-                    'paymentMethod' => $originalData['id'],
-                ]
-            );
+                DefaultEntities::PAYMENT_METHOD,
+                $originalData['id'],
+                DefaultEntities::CUSTOMER,
+                $this->oldCustomerId
+            ));
         }
 
         return $paymentMethodUuid;
@@ -326,19 +313,14 @@ abstract class CustomerConverter extends ShopwareConverter
 
             $fields = $this->checkForEmptyRequiredDataFields($address, $this->requiredAddressDataFieldKeys);
             if (!empty($fields)) {
-                $this->loggingService->addInfo(
-                    $this->runId,
-                    LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
-                    'Empty necessary data fields for address',
-                    sprintf('Address-Entity could not be converted cause of empty necessary field(s): %s.', implode(', ', $fields)),
-                    [
-                        'id' => $this->oldCustomerId,
-                        'uuid' => $customerUuid,
-                        'entity' => 'Address',
-                        'fields' => $fields,
-                    ],
-                    \count($fields)
-                );
+                foreach ($fields as $field) {
+                    $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
+                        $this->runId,
+                        DefaultEntities::CUSTOMER_ADDRESS,
+                        $address['id'],
+                        $field
+                    ));
+                }
 
                 continue;
             }
@@ -525,16 +507,13 @@ abstract class CustomerConverter extends ShopwareConverter
             $converted['defaultShippingAddressId'] = $addresses[0]['id'];
             unset($originalData['default_billing_address_id'], $originalData['default_shipping_address_id']);
 
-            $this->loggingService->addInfo(
+            $this->loggingService->addLogEntry(new FieldReassignedRunLog(
                 $this->runId,
-                LogTypes::NO_DEFAULT_BILLING_AND_SHIPPING_ADDRESS,
-                'No default billing and shipping address',
-                'Default billing and shipping address of customer is empty and will set with the first address.',
-                [
-                    'id' => $this->oldCustomerId,
-                    'uuid' => $customerUuid,
-                ]
-            );
+                DefaultEntities::CUSTOMER,
+                $customerUuid,
+                'default billing and shipping address',
+                'first address'
+            ));
         }
     }
 
@@ -544,16 +523,13 @@ abstract class CustomerConverter extends ShopwareConverter
             $converted['defaultShippingAddressId'] = $converted['defaultBillingAddressId'];
             unset($originalData['default_shipping_address_id']);
 
-            $this->loggingService->addInfo(
+            $this->loggingService->addLogEntry(new FieldReassignedRunLog(
                 $this->runId,
-                LogTypes::NO_DEFAULT_SHIPPING_ADDRESS,
-                'No default shipping address',
-                'Default shipping address of customer is empty and will set with the default billing address.',
-                [
-                    'id' => $this->oldCustomerId,
-                    'uuid' => $customerUuid,
-                ]
-            );
+                DefaultEntities::CUSTOMER,
+                $customerUuid,
+                'default shipping address',
+                'default billing address'
+            ));
         }
     }
 
@@ -563,16 +539,13 @@ abstract class CustomerConverter extends ShopwareConverter
             $converted['defaultBillingAddressId'] = $converted['defaultShippingAddressId'];
             unset($originalData['default_billing_address_id']);
 
-            $this->loggingService->addInfo(
+            $this->loggingService->addLogEntry(new FieldReassignedRunLog(
                 $this->runId,
-                LogTypes::NO_DEFAULT_BILLING_ADDRESS,
-                'No default billing address',
-                'Default billing address of customer is empty and will set with the default shipping address.',
-                [
-                    'id' => $this->oldCustomerId,
-                    'uuid' => $customerUuid,
-                ]
-            );
+                DefaultEntities::CUSTOMER,
+                $customerUuid,
+                'default billing address',
+                'default shipping address'
+            ));
         }
     }
 
@@ -586,17 +559,13 @@ abstract class CustomerConverter extends ShopwareConverter
         );
 
         if ($salutationUuid === null) {
-            $this->loggingService->addWarning(
+            $this->loggingService->addLogEntry(new UnknownEntityLog(
                 $this->runId,
-                LogTypes::UNKNOWN_CUSTOMER_SALUTATION,
-                'Cannot find customer salutation',
-                'Customer-Entity could not be converted cause of unknown salutation',
-                [
-                    'id' => $this->oldCustomerId,
-                    'entity' => DefaultEntities::CUSTOMER,
-                    'salutation' => $salutation,
-                ]
-            );
+                DefaultEntities::SALUTATION,
+                $salutation,
+                DefaultEntities::CUSTOMER,
+                $this->oldCustomerId
+            ));
         }
 
         return $salutationUuid;

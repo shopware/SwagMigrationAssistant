@@ -15,13 +15,13 @@
                               @column-sort="onSortColumn">
                     {% block swag_migration_history_detail_errors_grid_type %}
                         <template #column-type="{ item }">
-                            {{ $t(`swag-migration.index.errorTypes.${item.type}`) }}
+                            {{ $t(getErrorTitleSnippet(item), item.parameters) }}
                         </template>
                     {% endblock %}
 
                     {% block swag_migration_history_detail_errors_grid_description %}
                         <template #column-logEntry.code="{ item }">
-                            {{ $t(getErrorDescriptionSnippet(item), item.logEntry.details) }}
+                            {{ $t(getErrorDescriptionSnippet(item), item.parameters) }}
                         </template>
                     {% endblock %}
 

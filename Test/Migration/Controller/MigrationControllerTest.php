@@ -137,6 +137,7 @@ class MigrationControllerTest extends TestCase
         $this->gatewayRegistry = $this->getContainer()->get(GatewayRegistry::class);
         $this->dataSetRegistry = $this->getContainer()->get(DataSetRegistry::class);
         $this->migrationContextFactory = $this->getContainer()->get('SwagMigrationAssistant\Migration\MigrationContextFactory');
+        $loggingService = new LoggingService($loggingRepo);
 
         $this->context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) {
             $this->connectionId = Uuid::randomHex();
@@ -216,7 +217,7 @@ class MigrationControllerTest extends TestCase
                 $this->mediaFileRepo,
                 $this->getContainer()->get('messenger.bus.shopware'),
                 $this->getContainer()->get(DataSetRegistry::class),
-                new LoggingService($loggingRepo)
+                $loggingService
             ),
             $accessTokenService,
             new RunService(
@@ -235,7 +236,8 @@ class MigrationControllerTest extends TestCase
                 $mappingService,
                 $this->getContainer()->get('shopware.cache'),
                 $dataDefinition,
-                $this->getContainer()->get(Connection::class)
+                $this->getContainer()->get(Connection::class),
+                $loggingService
             ),
             $this->runRepo,
             $this->migrationContextFactory

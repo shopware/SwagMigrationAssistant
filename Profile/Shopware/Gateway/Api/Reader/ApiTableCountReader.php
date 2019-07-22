@@ -8,8 +8,8 @@ use SwagMigrationAssistant\Exception\GatewayReadException;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\CountingQueryStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistryInterface;
+use SwagMigrationAssistant\Migration\Logging\Log\CannotReadEntityCountLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
-use SwagMigrationAssistant\Migration\Logging\LogType;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactoryInterface;
@@ -122,24 +122,14 @@ class ApiTableCountReader implements TableCountReaderInterface
     private function logExceptions(array $exceptionArray, MigrationContextInterface $migrationContext, Context $context): void
     {
         foreach ($exceptionArray as $exception) {
-            $this->loggingService->addWarning(
+            $this->loggingService->addLogEntry(new CannotReadEntityCountLog(
                 $migrationContext->getRunUuid(),
-                LogType::COULD_NOT_READ_ENTITY_COUNT,
-                'Could not read entity count',
-                sprintf(
-                    'Total count for entity %s could not be read. Make the the table %s exists in your source system and the optional condition "%s" is valid.',
-                    $exception['entity'],
-                    $exception['table'],
-                    $exception['condition'] ?? ''
-                ),
-                [
-                    'exceptionCode' => $exception['code'],
-                    'exceptionMessage' => $exception['message'],
-                    'entity' => $exception['entity'],
-                    'table' => $exception['table'],
-                    'condition' => $exception['condition'],
-                ]
-            );
+                $exception['entity'],
+                $exception['table'],
+                $exception['condition'],
+                $exception['code'],
+                $exception['message']
+            ));
         }
 
         $this->loggingService->saveLogging($context);

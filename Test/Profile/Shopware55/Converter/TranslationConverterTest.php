@@ -127,9 +127,11 @@ class TranslationConverterTest extends TestCase
         static::assertNull($convertResult->getConverted());
 
         $logs = $this->loggingService->getLoggingArray();
-        $description = 'Translation of object type "invalid" could not be converted.';
-        static::assertSame($description, $logs[0]['logEntry']['description']);
         static::assertCount(1, $logs);
+
+        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_OBJECT_TYPE');
+        static::assertSame($logs[0]['parameters']['sourceId'], '276');
+        static::assertSame($logs[0]['parameters']['objectType'], 'invalid');
     }
 
     public function testConvertProductTranslation(): void
@@ -194,9 +196,11 @@ class TranslationConverterTest extends TestCase
         static::assertNull($convertResult->getConverted());
 
         $logs = $this->loggingService->getLoggingArray();
-        $description = 'Manufacturer-Translation-Entity could not be converted cause of invalid unserialized object data.';
-        static::assertSame($description, $logs[0]['logEntry']['description']);
         static::assertCount(1, $logs);
+
+        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION__SHOPWARE_INVALID_UNSERIALIZED_DATA');
+        static::assertSame($logs[0]['parameters']['sourceId'], '273');
+        static::assertSame($logs[0]['parameters']['unserializedEntity'], 'product_manufacturer_translation');
     }
 
     public function testConvertUnitTranslation(): void
@@ -228,9 +232,11 @@ class TranslationConverterTest extends TestCase
         static::assertNull($convertResult->getConverted());
 
         $logs = $this->loggingService->getLoggingArray();
-        $description = 'Mapping of "unit" is missing, but it is a required association for "translation". Import "product" first.';
-        static::assertSame($description, $logs[0]['logEntry']['description']);
         static::assertCount(1, $logs);
+
+        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING_UNIT');
+        static::assertSame($logs[0]['parameters']['sourceId'], '275');
+        static::assertSame($logs[0]['parameters']['missingEntity'], 'unit');
     }
 
     public function testConvertUnitTranslationWithInvalidTranslationObject(): void
@@ -249,9 +255,11 @@ class TranslationConverterTest extends TestCase
         static::assertNull($convertResult->getConverted());
 
         $logs = $this->loggingService->getLoggingArray();
-        $description = 'Unit-Translation-Entity could not be converted cause of invalid unserialized object data.';
-        static::assertSame($description, $logs[0]['logEntry']['description']);
         static::assertCount(1, $logs);
+
+        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION__SHOPWARE_INVALID_UNSERIALIZED_DATA');
+        static::assertSame($logs[0]['parameters']['sourceId'], '275');
+        static::assertSame($logs[0]['parameters']['unserializedEntity'], 'unit_translation');
     }
 
     public function testConvertCategoryTranslation(): void
@@ -284,9 +292,11 @@ class TranslationConverterTest extends TestCase
         static::assertNull($convertResult->getConverted());
 
         $logs = $this->loggingService->getLoggingArray();
-        $description = 'Mapping of "category" is missing, but it is a required association for "translation". Import "category" first.';
-        static::assertSame($description, $logs[0]['logEntry']['description']);
         static::assertCount(1, $logs);
+
+        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING_CATEGORY');
+        static::assertSame($logs[0]['parameters']['sourceId'], '276');
+        static::assertSame($logs[0]['parameters']['missingEntity'], 'category');
     }
 
     public function testConvertCategoryTranslationWithInvalidTranslationObject(): void
@@ -305,9 +315,11 @@ class TranslationConverterTest extends TestCase
         static::assertNull($convertResult->getConverted());
 
         $logs = $this->loggingService->getLoggingArray();
-        $description = 'Category-Translation-Entity could not be converted cause of invalid unserialized object data.';
-        static::assertSame($description, $logs[0]['logEntry']['description']);
         static::assertCount(1, $logs);
+
+        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION__SHOPWARE_INVALID_UNSERIALIZED_DATA');
+        static::assertSame($logs[0]['parameters']['sourceId'], '276');
+        static::assertSame($logs[0]['parameters']['unserializedEntity'], 'category_translation');
     }
 
     public function testCreateConfiguratorOptionTranslation(): void

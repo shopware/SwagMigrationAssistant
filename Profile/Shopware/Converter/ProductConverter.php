@@ -9,13 +9,14 @@ use Shopware\Core\Framework\Rule\Container\AndRule;
 use Shopware\Core\Framework\Rule\Container\OrRule;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\CannotConvertChildEntity;
+use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Exception\ParentEntityForChildNotFoundException;
-use SwagMigrationAssistant\Profile\Shopware\Logging\LogTypes;
 
 abstract class ProductConverter extends ShopwareConverter
 {
@@ -121,18 +122,14 @@ abstract class ProductConverter extends ShopwareConverter
 
         $fields = $this->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
         if (!empty($fields)) {
-            $this->loggingService->addWarning(
-                $this->runId,
-                LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
-                'Empty necessary data fields',
-                sprintf('Product-Entity could not be converted cause of empty necessary field(s): %s.', implode(', ', $fields)),
-                [
-                    'id' => $this->oldProductId,
-                    'entity' => 'Product',
-                    'fields' => $fields,
-                ],
-                \count($fields)
-            );
+            foreach ($fields as $field) {
+                $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
+                    $this->runId,
+                    DefaultEntities::PRODUCT,
+                    $this->oldProductId,
+                    $field
+                ));
+            }
 
             return new ConvertStruct(null, $data);
         }
@@ -313,18 +310,12 @@ abstract class ProductConverter extends ShopwareConverter
         $converted['price'] = $this->getPrice($data['prices'][0], $converted['tax']['taxRate'], $setInGross);
 
         if (empty($converted['price'])) {
-            $this->loggingService->addWarning(
+            $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
                 $this->runId,
-                LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
-                'Empty necessary data fields',
-                sprintf('Product-Entity could not be converted cause of empty necessary field: currency.'),
-                [
-                    'id' => $this->oldProductId,
-                    'entity' => 'Product',
-                    'fields' => 'currency',
-                ],
-                1
-            );
+                DefaultEntities::PRODUCT,
+                $this->oldProductId,
+                'currency'
+            ));
         }
 
         $converted['prices'] = $this->getPrices($data['prices'], $converted);
@@ -715,16 +706,12 @@ abstract class ProductConverter extends ShopwareConverter
         $cover = null;
         foreach ($media as $mediaData) {
             if (!isset($mediaData['media']['id'])) {
-                $this->loggingService->addInfo(
+                $this->loggingService->addLogEntry(new CannotConvertChildEntity(
                     $this->runId,
-                    LogTypes::PRODUCT_MEDIA_NOT_CONVERTED,
-                    'Product-Media could not be converted',
-                    'Product-Media could not be converted.',
-                    [
-                        'uuid' => $converted['id'],
-                        'id' => $this->oldProductId,
-                    ]
-                );
+                    DefaultEntities::PRODUCT_MEDIA,
+                    DefaultEntities::PRODUCT,
+                    $this->oldProductId
+                ));
 
                 continue;
             }
@@ -951,13 +938,12 @@ abstract class ProductConverter extends ShopwareConverter
             $priceArray = $this->getPrice($price, $converted['tax']['taxRate'], $setInGross);
 
             if (empty($priceArray)) {
-                $this->loggingService->addWarning(
+                $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
                     $this->runId,
-                    LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
-                    'Empty necessary data fields',
-                    'Product-Price-Entity could not be converted cause of empty necessary field: currencyId.',
-                    ['id' => $this->oldProductId]
-                );
+                    DefaultEntities::PRODUCT_PRICE,
+                    $this->oldProductId,
+                    'currencyId'
+                ));
 
                 continue;
             }

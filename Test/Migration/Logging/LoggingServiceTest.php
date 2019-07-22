@@ -8,6 +8,9 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
+use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
+use SwagMigrationAssistant\Migration\Logging\Log\CannotConvertChildEntity;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingEntity;
 
@@ -30,31 +33,37 @@ class LoggingServiceTest extends TestCase
      */
     private $context;
 
-    private static $firstLog = [
-        'code' => 'First-Code',
-        'title' => 'First-Title',
-        'description' => 'First-Description',
-        'name' => 'First-Name',
-    ];
-
-    private static $secondLog = [
-        'code' => 'Second-Code',
-        'title' => 'First-Title',
-        'description' => 'First-Description',
-        'name' => 'First-Name',
-    ];
+    /**
+     * @var string
+     */
+    private $runUuid;
 
     protected function setUp(): void
     {
         $this->context = Context::createDefaultContext();
         $this->loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
         $this->loggingService = new LoggingService($this->loggingRepo);
+
+        $runRepo = $this->getContainer()->get('swag_migration_run.repository');
+        $this->runUuid = Uuid::randomHex();
+        $runRepo->create(
+            [
+                [
+                    'id' => $this->runUuid,
+                    'status' => 'inProgress',
+                ],
+            ],
+            $this->context
+        );
     }
 
-    public function testAddInfo(): void
+    public function testAddLogEntry(): void
     {
-        $this->loggingService->addInfo(Uuid::randomHex(), self::$firstLog['code'], self::$firstLog['title'], self::$firstLog['description'], ['name' => self::$firstLog['name']]);
-        $this->loggingService->addInfo(Uuid::randomHex(), self::$firstLog['code'], self::$secondLog['title'], self::$secondLog['description'], ['name' => self::$secondLog['name']]);
+        $log1 = new AssociationRequiredMissingLog($this->runUuid, DefaultEntities::PRODUCT, '2', DefaultEntities::PRODUCT_MANUFACTURER);
+        $log2 = new CannotConvertChildEntity($this->runUuid, DefaultEntities::PRODUCT_MANUFACTURER, DefaultEntities::PRODUCT, '200');
+
+        $this->loggingService->addLogEntry($log1);
+        $this->loggingService->addLogEntry($log2);
 
         $result = $this->loggingRepo->search(new Criteria(), $this->context);
         static::assertSame(0, $result->getTotal());
@@ -65,80 +74,13 @@ class LoggingServiceTest extends TestCase
         $result = $this->loggingRepo->search(new Criteria(), $this->context);
         static::assertSame(2, $result->getTotal());
 
-        static::assertTrue($this->areLoggingEntriesValid($result->getElements(), LoggingService::INFO_TYPE));
-    }
-
-    public function testAddWarning(): void
-    {
-        $this->loggingService->addWarning(Uuid::randomHex(), self::$firstLog['code'], self::$firstLog['title'], self::$firstLog['description'], ['name' => self::$firstLog['name']]);
-        $this->loggingService->addWarning(Uuid::randomHex(), self::$secondLog['code'], self::$secondLog['title'], self::$secondLog['description'], ['name' => self::$secondLog['name']]);
-
-        $result = $this->loggingRepo->search(new Criteria(), $this->context);
-        static::assertSame(0, $result->getTotal());
-
-        $this->loggingService->saveLogging($this->context);
-        $this->clearCacheBefore();
-
-        $result = $this->loggingRepo->search(new Criteria(), $this->context);
-        static::assertSame(2, $result->getTotal());
-
-        static::assertTrue($this->areLoggingEntriesValid($result->getElements(), LoggingService::WARNING_TYPE));
-    }
-
-    public function testAddError(): void
-    {
-        $this->loggingService->addError(Uuid::randomHex(), self::$firstLog['code'], self::$firstLog['title'], self::$firstLog['description'], ['name' => self::$firstLog['name']]);
-        $this->loggingService->addError(Uuid::randomHex(), self::$secondLog['code'], self::$secondLog['title'], self::$firstLog['description'], ['name' => self::$secondLog['name']]);
-
-        $result = $this->loggingRepo->search(new Criteria(), $this->context);
-        static::assertSame(0, $result->getTotal());
-
-        $this->loggingService->saveLogging($this->context);
-        $this->clearCacheBefore();
-
-        $result = $this->loggingRepo->search(new Criteria(), $this->context);
-        static::assertSame(2, $result->getTotal());
-
-        static::assertTrue($this->areLoggingEntriesValid($result->getElements(), LoggingService::ERROR_TYPE));
-    }
-
-    /**
-     * @param SwagMigrationLoggingEntity[] $loggins
-     */
-    private function areLoggingEntriesValid(array $loggins, string $type): bool
-    {
-        $firstLogValid = false;
-        $secondLogValid = false;
-        foreach ($loggins as $log) {
-            $logEntry = $log->getLogEntry();
-
-            if (
-                (isset($logEntry['title']) && $logEntry['title'] === self::$firstLog['title'])
-                && (isset($logEntry['details']['name']) && self::$firstLog['name'] === $logEntry['details']['name'])
-            ) {
-                if (($type === LoggingService::INFO_TYPE || $type === LoggingService::WARNING_TYPE) && (isset($logEntry['description']) && $logEntry['description'] === self::$firstLog['description'])) {
-                    $firstLogValid = true;
-                }
-
-                if ($type === LoggingService::ERROR_TYPE && (isset($logEntry['code']) && $logEntry['code'] === self::$firstLog['code'])) {
-                    $firstLogValid = true;
-                }
-            }
-
-            if (
-                (isset($logEntry['title']) && $logEntry['title'] === self::$secondLog['title'])
-                && (isset($logEntry['details']['name']) && self::$secondLog['name'] === $logEntry['details']['name'])
-            ) {
-                if (($type === LoggingService::INFO_TYPE || $type === LoggingService::WARNING_TYPE) && (isset($logEntry['description']) && $logEntry['description'] === self::$secondLog['description'])) {
-                    $secondLogValid = true;
-                }
-
-                if ($type === LoggingService::ERROR_TYPE && (isset($logEntry['code']) && $logEntry['code'] === self::$secondLog['code'])) {
-                    $secondLogValid = true;
-                }
+        $validCount = 0;
+        /** @var SwagMigrationLoggingEntity $element */
+        foreach ($result->getElements() as $element) {
+            if ($log1->getCode() === $element->getCode() || $log2->getCode() === $element->getCode()) {
+                ++$validCount;
             }
         }
-
-        return $firstLogValid && $secondLogValid;
+        static::assertSame(2, $validCount);
     }
 }

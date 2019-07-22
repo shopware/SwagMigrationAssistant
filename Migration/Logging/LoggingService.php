@@ -4,13 +4,10 @@ namespace SwagMigrationAssistant\Migration\Logging;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use SwagMigrationAssistant\Migration\Logging\Log\LogEntryInterface;
 
 class LoggingService implements LoggingServiceInterface
 {
-    public const ERROR_TYPE = 'error';
-    public const WARNING_TYPE = 'warning';
-    public const INFO_TYPE = 'info';
-
     /**
      * @var array
      */
@@ -26,21 +23,6 @@ class LoggingService implements LoggingServiceInterface
         $this->loggingRepo = $loggingRepo;
     }
 
-    public function addInfo(string $runId, string $code, string $title, string $description, array $details = [], int $counting = 0): void
-    {
-        $this->addLog($runId, self::INFO_TYPE, $code, $title, $description, $details, $counting);
-    }
-
-    public function addWarning(string $runId, string $code, string $title, string $description, array $details = [], int $counting = 0): void
-    {
-        $this->addLog($runId, self::WARNING_TYPE, $code, $title, $description, $details, $counting);
-    }
-
-    public function addError(string $runId, string $code, string $title, string $description, array $details = [], int $counting = 0): void
-    {
-        $this->addLog($runId, self::ERROR_TYPE, $code, $title, $description, $details, $counting);
-    }
-
     public function saveLogging(Context $context): void
     {
         if (empty($this->logging)) {
@@ -52,19 +34,19 @@ class LoggingService implements LoggingServiceInterface
         $this->logging = [];
     }
 
-    private function addLog(string $runId, string $type, string $code, string $title, string $description, array $details = [], int $counting = 0): void
+    public function addLogEntry(LogEntryInterface $logEntry): void
     {
-        $details['count'] = $counting;
-
         $this->logging[] = [
-            'runId' => $runId !== '' ? $runId : null,
-            'type' => $type,
-            'logEntry' => [
-                'code' => $code,
-                'title' => $title,
-                'description' => $description,
-                'details' => $details,
-            ],
+            'level' => $logEntry->getLevel(),
+            'code' => $logEntry->getCode(),
+            'title' => $logEntry->getTitle(),
+            'description' => $logEntry->getDescription(),
+            'parameters' => $logEntry->getParameters(),
+            'titleSnippet' => $logEntry->getTitleSnippet(),
+            'descriptionSnippet' => $logEntry->getDescriptionSnippet(),
+            'entity' => $logEntry->getEntity(),
+            'sourceId' => $logEntry->getSourceId(),
+            'runId' => $logEntry->getRunId(),
         ];
     }
 }

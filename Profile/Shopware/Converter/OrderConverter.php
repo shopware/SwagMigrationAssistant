@@ -14,11 +14,12 @@ use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
+use SwagMigrationAssistant\Migration\Logging\Log\UnknownEntityLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Exception\AssociationEntityRequiredMissingException;
-use SwagMigrationAssistant\Profile\Shopware\Logging\LogTypes;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\OrderStateReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\PaymentMethodReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\SalutationReader;
@@ -129,18 +130,14 @@ abstract class OrderConverter extends ShopwareConverter
         }
 
         if (!empty($fields)) {
-            $this->loggingService->addWarning(
-                $this->runId,
-                LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
-                'Empty necessary data',
-                sprintf('Order-Entity could not be converted cause of empty necessary field(s): %s.', implode(', ', $fields)),
-                [
-                    'id' => $this->oldId,
-                    'entity' => 'Order',
-                    'fields' => $fields,
-                ],
-                \count($fields)
-            );
+            foreach ($fields as $field) {
+                $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
+                    $this->runId,
+                    DefaultEntities::ORDER,
+                    $this->oldId,
+                    $field
+                ));
+            }
 
             return new ConvertStruct(null, $data);
         }
@@ -212,13 +209,12 @@ abstract class OrderConverter extends ShopwareConverter
             );
         }
         if ($currencyUuid === null) {
-            $this->loggingService->addWarning(
+            $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
                 $this->runId,
-                LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
-                'Empty necessary data fields',
-                'Order-Entity could not be converted cause of empty necessary field: currency.',
-                ['id' => $this->oldId]
-            );
+                DefaultEntities::ORDER,
+                $this->oldId,
+                'currency'
+            ));
 
             return new ConvertStruct(null, $data);
         }
@@ -235,16 +231,13 @@ abstract class OrderConverter extends ShopwareConverter
         );
 
         if (!isset($converted['stateId'])) {
-            $this->loggingService->addWarning(
+            $this->loggingService->addLogEntry(new UnknownEntityLog(
                 $this->runId,
-                LogTypes::UNKNOWN_ORDER_STATE,
-                'Cannot find order state',
-                'Order-Entity could not be converted cause of unknown order state',
-                [
-                    'id' => $this->oldId,
-                    'orderState' => $data['status'],
-                ]
-            );
+                'order_state',
+                (string) $data['status'],
+                DefaultEntities::ORDER,
+                $this->oldId
+            ));
 
             return new ConvertStruct(null, $data);
         }
@@ -293,19 +286,12 @@ abstract class OrderConverter extends ShopwareConverter
 
         $billingAddress = $this->getAddress($data['billingaddress']);
         if (empty($billingAddress)) {
-            $fields = ['billingaddress'];
-            $this->loggingService->addWarning(
+            $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
                 $this->runId,
-                LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
-                'Empty necessary data',
-                sprintf('Order-Entity could not be converted cause of empty necessary field(s): %s.', implode(', ', $fields)),
-                [
-                    'id' => $this->oldId,
-                    'entity' => 'Order',
-                    'fields' => $fields,
-                ],
-                \count($fields)
-            );
+                DefaultEntities::ORDER,
+                $this->oldId,
+                'billingaddress'
+            ));
 
             return new ConvertStruct(null, $data);
         }
@@ -380,16 +366,13 @@ abstract class OrderConverter extends ShopwareConverter
         );
 
         if ($stateId === null) {
-            $this->loggingService->addWarning(
+            $this->loggingService->addLogEntry(new UnknownEntityLog(
                 $this->runId,
-                LogTypes::UNKNOWN_TRANSACTION_STATE,
-                'Cannot find transaction state',
-                'Transaction-Order-Entity could not be converted cause of unknown transaction state',
-                [
-                    'id' => $this->oldId,
-                    'transactionState' => $data['cleared'],
-                ]
-            );
+                'transaction_state',
+                $data['cleared'],
+                DefaultEntities::ORDER_TRANSACTION,
+                $this->oldId
+            ));
 
             return;
         }
@@ -434,17 +417,13 @@ abstract class OrderConverter extends ShopwareConverter
         );
 
         if ($paymentMethodUuid === null) {
-            $this->loggingService->addInfo(
+            $this->loggingService->addLogEntry(new UnknownEntityLog(
                 $this->runId,
-                LogTypes::UNKNOWN_PAYMENT_METHOD,
-                'Cannot find payment method',
-                'Order-Transaction-Entity could not be converted cause of unknown payment method',
-                [
-                    'id' => $this->oldId,
-                    'entity' => DefaultEntities::ORDER,
-                    'paymentMethod' => $originalData['payment']['id'],
-                ]
-            );
+                'payment_method',
+                $originalData['payment']['id'],
+                DefaultEntities::ORDER_TRANSACTION,
+                $this->oldId
+            ));
         }
 
         return $paymentMethodUuid;
@@ -454,19 +433,14 @@ abstract class OrderConverter extends ShopwareConverter
     {
         $fields = $this->checkForEmptyRequiredDataFields($originalData, $this->requiredAddressDataFieldKeys);
         if (!empty($fields)) {
-            $this->loggingService->addInfo(
-                $this->runId,
-                LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
-                'Empty necessary data fields for address',
-                sprintf('Address-Entity could not be converted cause of empty necessary field(s): %s.', implode(', ', $fields)),
-                [
-                    'id' => $this->oldId,
-                    'uuid' => $this->uuid,
-                    'entity' => 'Address',
-                    'fields' => $fields,
-                ],
-                \count($fields)
-            );
+            foreach ($fields as $field) {
+                $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
+                    $this->runId,
+                    DefaultEntities::ORDER_ADDRESS,
+                    $originalData['id'],
+                    $field
+                ));
+            }
 
             return [];
         }
@@ -720,36 +694,24 @@ abstract class OrderConverter extends ShopwareConverter
         if ($defaultDeliveryTimeUuid !== null) {
             $shippingMethod['deliveryTimeId'] = $defaultDeliveryTimeUuid;
         } else {
-            $this->loggingService->addWarning(
+            $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
                 $this->runId,
-                LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
-                'Empty necessary data fields',
-                'Order-Entity could not be converted cause of empty necessary field(s): delivery_time.',
-                [
-                    'id' => $this->oldId,
-                    'entity' => DefaultEntities::ORDER,
-                    'fields' => ['delivery_time'],
-                ],
-                1
-            );
+                DefaultEntities::ORDER,
+                $this->oldId,
+                'delivery_time'
+            ));
         }
 
         $defaultAvailabilityRuleUuid = $this->mappingService->getDefaultAvailabilityRule($this->context);
         if ($defaultAvailabilityRuleUuid !== null) {
             $shippingMethod['availabilityRuleId'] = $defaultAvailabilityRuleUuid;
         } else {
-            $this->loggingService->addWarning(
+            $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
                 $this->runId,
-                LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
-                'Empty necessary data fields',
-                'Order-Entity could not be converted cause of empty necessary field(s): availability_rule_id.',
-                [
-                    'id' => $this->oldId,
-                    'entity' => DefaultEntities::ORDER,
-                    'fields' => ['availability_rule_id'],
-                ],
-                1
-            );
+                DefaultEntities::ORDER,
+                $this->oldId,
+                'availability_rule_id'
+            ));
         }
 
         return $shippingMethod;
@@ -849,16 +811,12 @@ abstract class OrderConverter extends ShopwareConverter
             }
 
             if (!isset($lineItem['identifier'])) {
-                $this->loggingService->addInfo(
+                $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
                     $this->runId,
-                    LogTypes::EMPTY_LINE_ITEM_IDENTIFIER,
-                    'Line item could not be converted',
-                    'Order-Line-Item-Entity could not be converted cause of empty identifier',
-                    [
-                        'orderId' => $this->oldId,
-                        'lineItemId' => $originalLineItem['id'],
-                    ]
-                );
+                    DefaultEntities::ORDER_LINE_ITEM,
+                    $originalLineItem['id'],
+                    'identifier'
+                ));
 
                 continue;
             }
@@ -904,17 +862,13 @@ abstract class OrderConverter extends ShopwareConverter
         );
 
         if ($salutationUuid === null) {
-            $this->loggingService->addWarning(
+            $this->loggingService->addLogEntry(new UnknownEntityLog(
                 $this->runId,
-                LogTypes::UNKNOWN_CUSTOMER_SALUTATION,
-                'Cannot find customer salutation for order',
-                'Order-Entity could not be converted cause of unknown customer salutation',
-                [
-                    'id' => $this->oldId,
-                    'entity' => DefaultEntities::ORDER,
-                    'salutation' => $salutation,
-                ]
-            );
+                'salutation',
+                $salutation,
+                DefaultEntities::ORDER,
+                $this->oldId
+            ));
         }
 
         return $salutationUuid;

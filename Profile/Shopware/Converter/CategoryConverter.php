@@ -5,13 +5,13 @@ namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 use Shopware\Core\Framework\Context;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Exception\ParentEntityForChildNotFoundException;
-use SwagMigrationAssistant\Profile\Shopware\Logging\LogTypes;
 
 abstract class CategoryConverter extends ShopwareConverter
 {
@@ -84,13 +84,12 @@ abstract class CategoryConverter extends ShopwareConverter
         $this->runId = $migrationContext->getRunUuid();
 
         if (!isset($data['_locale'])) {
-            $this->loggingService->addWarning(
+            $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
                 $migrationContext->getRunUuid(),
-                LogTypes::EMPTY_LOCALE,
-                'Empty locale',
-                'Category-Entity could not be converted cause of empty locale.',
-                ['id' => $this->oldCategoryId]
-            );
+                DefaultEntities::CATEGORY,
+                $this->oldCategoryId,
+                'locale'
+            ));
 
             return new ConvertStruct(null, $data);
         }

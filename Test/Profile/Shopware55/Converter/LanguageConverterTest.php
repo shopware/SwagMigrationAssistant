@@ -6,7 +6,6 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
-use SwagMigrationAssistant\Migration\Logging\LogType;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\LanguageDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55LanguageConverter;
@@ -87,6 +86,6 @@ class LanguageConverterTest extends TestCase
         static::assertNotNull($convertResult->getUnmapped());
 
         $logs = $this->loggingService->getLoggingArray();
-        static::assertSame(LogType::ENTITY_ALREADY_EXISTS, $logs[0]['logEntry']['code']);
+        static::assertSame('SWAG_MIGRATION_LANGUAGE_ENTITY_ALREADY_EXISTS', $logs[0]['code']);
     }
 }

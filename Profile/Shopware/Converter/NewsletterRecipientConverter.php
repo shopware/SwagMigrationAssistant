@@ -6,10 +6,11 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
+use SwagMigrationAssistant\Migration\Logging\Log\UnknownEntityLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware\Logging\LogTypes;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\NewsletterRecipientStatusReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\SalutationReader;
 
@@ -150,17 +151,13 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         );
 
         if ($salutationUuid === null) {
-            $this->loggingService->addWarning(
+            $this->loggingService->addLogEntry(new UnknownEntityLog(
                 $this->runId,
-                LogTypes::UNKNOWN_CUSTOMER_SALUTATION,
-                'Cannot find customer salutation',
-                'NewsletterRecipient-Entity could not be converted cause of unknown salutation',
-                [
-                    'id' => $this->oldNewsletterRecipientId,
-                    'entity' => DefaultEntities::NEWSLETTER_RECIPIENT,
-                    'salutation' => $salutation,
-                ]
-            );
+                'salutation',
+                $salutation,
+                DefaultEntities::NEWSLETTER_RECIPIENT,
+                $this->oldNewsletterRecipientId
+            ));
         }
 
         return $salutationUuid;
@@ -179,18 +176,12 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         }
 
         if ($salesChannelUuid === null) {
-            $this->loggingService->addWarning(
+            $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
                 $this->runId,
-                LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
-                'Empty necessary data fields',
-                'NewsletterRecipient-Entity could not be converted cause of empty necessary field(s): salesChannel.',
-                [
-                    'id' => $this->oldNewsletterRecipientId,
-                    'entity' => DefaultEntities::NEWSLETTER_RECIPIENT,
-                    'fields' => ['salesChannel'],
-                ],
-                1
-            );
+                DefaultEntities::NEWSLETTER_RECIPIENT,
+                $this->oldNewsletterRecipientId,
+                'salesChannel'
+            ));
         }
 
         return $salesChannelUuid;
@@ -206,18 +197,12 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         );
 
         if ($status === null) {
-            $this->loggingService->addWarning(
+            $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
                 $this->runId,
-                LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
-                'Empty necessary data fields',
-                'NewsletterRecipient-Entity could not be converted cause of empty necessary field(s): status.',
-                [
-                    'id' => $this->oldNewsletterRecipientId,
-                    'entity' => DefaultEntities::NEWSLETTER_RECIPIENT,
-                    'fields' => ['status'],
-                ],
-                1
-            );
+                DefaultEntities::NEWSLETTER_RECIPIENT,
+                $this->oldNewsletterRecipientId,
+                'status'
+            ));
         }
 
         return $status;

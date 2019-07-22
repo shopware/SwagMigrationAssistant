@@ -11,10 +11,10 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware\Logging\LogTypes;
 
 abstract class SalesChannelConverter extends ShopwareConverter
 {
@@ -98,17 +98,13 @@ abstract class SalesChannelConverter extends ShopwareConverter
         );
 
         if ($customerGroupUuid === null) {
-            $this->loggingService->addWarning(
-                $migrationContext->getRunUuid(),
-                LogTypes::ASSOCIATION_REQUIRED_MISSING,
-                'Associated customer group not found',
-                'Customer group for the sales channel can not be found.',
-                [
-                    'data' => $data,
-                    'missingEntity' => 'customer_group',
-                    'requiredFor' => 'sales_channel',
-                    'missingImportEntity' => 'customer_group',
-                ]
+            $this->loggingService->addLogEntry(
+                new AssociationRequiredMissingLog(
+                    $migrationContext->getRunUuid(),
+                    DefaultEntities::CUSTOMER_GROUP,
+                    $data['customer_group_id'],
+                    DefaultEntities::SALES_CHANNEL
+                )
             );
 
             return new ConvertStruct(null, $data);
@@ -123,17 +119,13 @@ abstract class SalesChannelConverter extends ShopwareConverter
         );
 
         if ($languageUuid === null) {
-            $this->loggingService->addWarning(
-                $migrationContext->getRunUuid(),
-                LogTypes::ASSOCIATION_REQUIRED_MISSING,
-                'Associated language not found',
-                'Language for the sales channel can not be found.',
-                [
-                    'data' => $data,
-                    'missingEntity' => 'language',
-                    'requiredFor' => 'sales_channel',
-                    'missingImportEntity' => 'language',
-                ]
+            $this->loggingService->addLogEntry(
+                new AssociationRequiredMissingLog(
+                    $migrationContext->getRunUuid(),
+                    DefaultEntities::LANGUAGE,
+                    $data['locale'],
+                    DefaultEntities::SALES_CHANNEL
+                )
             );
 
             return new ConvertStruct(null, $data);
@@ -149,17 +141,13 @@ abstract class SalesChannelConverter extends ShopwareConverter
         );
 
         if ($currencyUuid === null) {
-            $this->loggingService->addWarning(
-                $migrationContext->getRunUuid(),
-                LogTypes::ASSOCIATION_REQUIRED_MISSING,
-                'Associated currency not found',
-                'Currency for the sales channel can not be found.',
-                [
-                    'data' => $data,
-                    'missingEntity' => 'currency',
-                    'requiredFor' => 'sales_channel',
-                    'missingImportEntity' => 'currency',
-                ]
+            $this->loggingService->addLogEntry(
+                new AssociationRequiredMissingLog(
+                    $migrationContext->getRunUuid(),
+                    DefaultEntities::CURRENCY,
+                    $data['currency'],
+                    DefaultEntities::SALES_CHANNEL
+                )
             );
 
             return new ConvertStruct(null, $data);
@@ -180,17 +168,13 @@ abstract class SalesChannelConverter extends ShopwareConverter
         );
 
         if ($categoryUuid === null) {
-            $this->loggingService->addWarning(
-                $migrationContext->getRunUuid(),
-                LogTypes::ASSOCIATION_REQUIRED_MISSING,
-                'Associated category not found',
-                'Navigation category root for the sales channel can not be found.',
-                [
-                    'data' => $data,
-                    'missingEntity' => 'category',
-                    'requiredFor' => 'sales_channel',
-                    'missingImportEntity' => 'category',
-                ]
+            $this->loggingService->addLogEntry(
+                new AssociationRequiredMissingLog(
+                    $migrationContext->getRunUuid(),
+                    DefaultEntities::CATEGORY,
+                    $data['category_id'],
+                    DefaultEntities::SALES_CHANNEL
+                )
             );
 
             return new ConvertStruct(null, $data);

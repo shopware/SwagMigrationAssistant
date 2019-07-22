@@ -22,7 +22,7 @@ use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
-use SwagMigrationAssistant\Migration\Logging\LogType;
+use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Media\MediaFileService;
 use SwagMigrationAssistant\Migration\MigrationContext;
@@ -305,7 +305,8 @@ class MigrationDataWriterTest extends TestCase
           $this->mappingService,
           $this->getContainer()->get('shopware.cache'),
           new SwagMigrationDataDefinition(),
-          $this->dbConnection
+          $this->dbConnection,
+          new LoggingService($this->loggingRepo)
         );
     }
 
@@ -561,7 +562,8 @@ class MigrationDataWriterTest extends TestCase
 
         $logs = $this->loggingService->getLoggingArray();
 
-        static::assertSame(LogType::WRITER_NOT_FOUND, $logs[0]['logEntry']['code']);
+        static::assertSame('SWAG_MIGRATION_RUN_EXCEPTION', $logs[0]['code']);
+        static::assertSame('SWAG_MIGRATION__WRITER_NOT_FOUND', $logs[0]['parameters']['exceptionCode']);
         static::assertCount(1, $logs);
     }
 

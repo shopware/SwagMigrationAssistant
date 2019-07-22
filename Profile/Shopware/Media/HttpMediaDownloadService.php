@@ -16,6 +16,9 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\NoFileSystemPermissionsException;
+use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\CannotGetFileRunLog;
+use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorInterface;
 use SwagMigrationAssistant\Migration\Media\MediaProcessWorkloadStruct;
@@ -24,7 +27,6 @@ use SwagMigrationAssistant\Migration\MessageQueue\Handler\ProcessMediaHandler;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\ShopwareApiGateway;
-use SwagMigrationAssistant\Profile\Shopware\Logging\LogTypes;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
 class HttpMediaDownloadService implements MediaFileProcessorInterface
@@ -84,7 +86,11 @@ class HttpMediaDownloadService implements MediaFileProcessorInterface
 
         if (!is_dir('_temp') && !mkdir('_temp') && !is_dir('_temp')) {
             $exception = new NoFileSystemPermissionsException();
-            $this->loggingService->addError($runId, (string) $exception->getCode(), '', $exception->getMessage());
+            $this->loggingService->addLogEntry(new ExceptionRunLog(
+                $runId,
+                DefaultEntities::MEDIA,
+                $exception
+            ));
             $this->loggingService->saveLogging($context);
 
             return $workload;
@@ -128,15 +134,12 @@ class HttpMediaDownloadService implements MediaFileProcessorInterface
                 if ($mappedWorkload[$uuid]->getErrorCount() > ProcessMediaHandler::MEDIA_ERROR_THRESHOLD) {
                     $failureUuids[] = $uuid;
                     $mappedWorkload[$uuid]->setState(MediaProcessWorkloadStruct::ERROR_STATE);
-                    $this->loggingService->addError(
+                    $this->loggingService->addLogEntry(new CannotGetFileRunLog(
                         $mappedWorkload[$uuid]->getRunId(),
-                        LogTypes::CANNOT_DOWNLOAD_MEDIA,
-                        '',
-                        'Cannot download media.',
-                        [
-                            'uri' => $mappedWorkload[$uuid]->getAdditionalData()['uri'],
-                        ]
-                    );
+                        DefaultEntities::MEDIA,
+                        $mappedWorkload[$uuid]->getMediaId(),
+                        $mappedWorkload[$uuid]->getAdditionalData()['uri']
+                    ));
                 }
 
                 continue;

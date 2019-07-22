@@ -26,6 +26,8 @@ use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistryInterfac
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
+use SwagMigrationAssistant\Migration\Logging\Log\ThemeCompilingErrorRunLog;
+use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -116,6 +118,11 @@ class RunService implements RunServiceInterface
      */
     private $mappingService;
 
+    /**
+     * @var LoggingServiceInterface
+     */
+    private $loggingService;
+
     public function __construct(
         EntityRepositoryInterface $migrationRunRepo,
         EntityRepositoryInterface $connectionRepo,
@@ -132,7 +139,8 @@ class RunService implements RunServiceInterface
         MappingServiceInterface $mappingService,
         TagAwareAdapter $cache,
         EntityDefinition $migrationDataDefinition,
-        Connection $dbalConnection
+        Connection $dbalConnection,
+        LoggingServiceInterface $loggingService
     ) {
         $this->migrationRunRepo = $migrationRunRepo;
         $this->connectionRepo = $connectionRepo;
@@ -150,6 +158,7 @@ class RunService implements RunServiceInterface
         $this->cache = $cache;
         $this->migrationDataDefinition = $migrationDataDefinition;
         $this->dbalConnection = $dbalConnection;
+        $this->loggingService = $loggingService;
     }
 
     public function takeoverMigration(string $runUuid, Context $context): string
@@ -575,8 +584,17 @@ class RunService implements RunServiceInterface
         }
 
         foreach ($salesChannels as $salesChannel) {
-            $this->themeService->assignTheme($defaultTheme, $salesChannel, $context);
+            try {
+                $this->themeService->assignTheme($defaultTheme, $salesChannel, $context);
+            } catch (\Exception $exception) {
+                $this->loggingService->addLogEntry(new ThemeCompilingErrorRunLog(
+                    $runUuid,
+                    $defaultTheme
+                ));
+            }
         }
+
+        $this->loggingService->saveLogging($context);
     }
 
     private function getSalesChannels(string $connectionId, Context $context): array

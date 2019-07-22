@@ -7,8 +7,8 @@ use SwagMigrationAssistant\Migration\DataSelection\DataSet\CountingInformationSt
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\CountingQueryStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistryInterface;
+use SwagMigrationAssistant\Migration\Logging\Log\CannotReadEntityCountLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
-use SwagMigrationAssistant\Migration\Logging\LogType;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactoryInterface;
@@ -73,24 +73,14 @@ class LocalTableCountReader implements TableCountReaderInterface
                     }
                     $total += (int) $query->execute()->fetchColumn();
                 } catch (\Exception $exception) {
-                    $this->loggingService->addWarning(
+                    $this->loggingService->addLogEntry(new CannotReadEntityCountLog(
                         $migrationContext->getRunUuid(),
-                        LogType::COULD_NOT_READ_ENTITY_COUNT,
-                        'Could not read entity count',
-                        sprintf(
-                            'Total count for entity %s could not be read. Make the the table %s exists in your source system and the optional condition "%s" is valid.',
-                            $entityName,
-                            $queryStruct->getTableName(),
-                            $queryStruct->getCondition() ?? ''
-                        ),
-                        [
-                            'exceptionCode' => $exception->getCode(),
-                            'exceptionMessage' => $exception->getMessage(),
-                            'entity' => $entityName,
-                            'table' => $queryStruct->getTableName(),
-                            'condition' => $queryStruct->getCondition(),
-                        ]
-                    );
+                        $entityName,
+                        $queryStruct->getTableName(),
+                        $queryStruct->getCondition(),
+                        (string) $exception->getCode(),
+                        $exception->getMessage()
+                    ));
                 }
             }
 

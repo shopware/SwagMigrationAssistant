@@ -11,8 +11,8 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use SwagMigrationAssistant\Exception\DataSetNotFoundException;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
+use SwagMigrationAssistant\Migration\Logging\Log\DataSetNotFoundLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
-use SwagMigrationAssistant\Migration\Logging\LogType;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileEntity;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\ProcessMediaMessage;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -56,7 +56,6 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
 
     public function processMediaFiles(MigrationContextInterface $migrationContext, Context $context, int $fileChunkByteSize): void
     {
-        $profileName = $migrationContext->getConnection()->getProfileName();
         $mediaFiles = $this->getMediaFiles($context, $migrationContext);
 
         $currentDataSet = null;
@@ -133,20 +132,12 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
         MigrationContextInterface $migrationContext,
         SwagMigrationMediaFileEntity $mediaFile
     ): void {
-        $this->loggingService->addWarning(
-          $migrationContext->getRunUuid(),
-          LogType::DATASET_NOT_FOUND,
-          'DataSet not found',
-          sprintf(
-              'DataSet for profile "%s" and entity "%s" not found. Media with id "%s" could not processed.',
-                $migrationContext->getConnection()->getProfileName(),
-                $mediaFile->getEntity(),
-                $mediaFile->getMediaId()
-              ),
-            [
-                'migrationContext' => $migrationContext,
-                'mediaFile' => $mediaFile,
-            ]
-        );
+        $this->loggingService->addLogEntry(
+          new DataSetNotFoundLog(
+              $migrationContext->getRunUuid(),
+              $mediaFile->getEntity(),
+              $mediaFile->getId(),
+              $migrationContext->getConnection()->getProfileName()
+          ));
     }
 }

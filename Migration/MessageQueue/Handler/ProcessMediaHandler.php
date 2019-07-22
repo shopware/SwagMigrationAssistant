@@ -9,8 +9,8 @@ use Shopware\Core\Framework\MessageQueue\Handler\AbstractMessageHandler;
 use SwagMigrationAssistant\Exception\EntityNotExistsException;
 use SwagMigrationAssistant\Exception\ProcessorNotFoundException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationAssistant\Migration\Logging\Log\ProcessorNotFoundLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
-use SwagMigrationAssistant\Migration\Logging\LogType;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorRegistryInterface;
 use SwagMigrationAssistant\Migration\Media\MediaProcessWorkloadStruct;
@@ -90,20 +90,12 @@ class ProcessMediaHandler extends AbstractMessageHandler
             $workload = $processor->process($migrationContext, $context, $workload, $message->getFileChunkByteSize());
             $this->processFailures($context, $migrationContext, $processor, $workload, $message->getFileChunkByteSize());
         } catch (ProcessorNotFoundException $e) {
-            $this->loggingService->addError(
+            $this->loggingService->addLogEntry(new ProcessorNotFoundLog(
                 $migrationContext->getRunUuid(),
-                LogType::PROCESSOR_NOT_FOUND,
-                'Processor not found',
-                sprintf(
-                    'Processor for profile "%s", gateway "%s" and entity "%s" not found.',
-                    $migrationContext->getConnection()->getProfileName(),
-                    $migrationContext->getConnection()->getGatewayName(),
-                    $migrationContext->getDataSet()::getEntity()
-                ),
-                [
-                    'migrationContext' => $migrationContext,
-                ]
-            );
+                $migrationContext->getDataSet()::getEntity(),
+                $migrationContext->getConnection()->getProfileName(),
+                $migrationContext->getConnection()->getGatewayName()
+            ));
 
             $this->loggingService->saveLogging($context);
         }
