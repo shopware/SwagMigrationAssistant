@@ -265,6 +265,10 @@ class LocalProductReader extends LocalAbstractReader implements LocalReaderInter
             }
 
             foreach ($productAssets as $productAsset) {
+                if (!isset($productAsset['article_detail_id'])) {
+                    continue;
+                }
+
                 if (!isset($assets[$articleId][$productAsset['article_detail_id']])) {
                     $assets[$articleId][$productAsset['article_detail_id']] = [];
                 }
