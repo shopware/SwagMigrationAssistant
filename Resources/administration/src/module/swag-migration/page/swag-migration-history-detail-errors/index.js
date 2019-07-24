@@ -9,6 +9,11 @@ Component.register('swag-migration-history-detail-errors', {
         Mixin.getByName('listing')
     ],
 
+    inject: {
+        /** @var {MigrationApiService} migrationService */
+        migrationService: 'migrationService'
+    },
+
     props: {
         migrationRun: {
             type: Object,
@@ -20,10 +25,11 @@ Component.register('swag-migration-history-detail-errors', {
         return {
             isLoading: true,
             migrationErrors: [],
-            sortBy: 'createdAt',
+            sortBy: 'count',
             sortDirection: 'DESC',
             disableRouteParams: true,
-            limit: 10
+            limit: 10,
+            downloadUrl: ''
         };
     },
 
@@ -37,17 +43,20 @@ Component.register('swag-migration-history-detail-errors', {
         columns() {
             return [
                 {
-                    property: 'type',
-                    dataIndex: 'type',
-                    label: this.$t('swag-migration.index.errorType'),
-                    allowResize: true
+                    property: 'code',
+                    dataIndex: 'code',
+                    label: this.$t('swag-migration.history.detailPage.errorCode'),
+                    primary: true,
+                    allowResize: true,
+                    sortable: false // TODO: change this if the core supports aggregate sorting
                 },
                 {
-                    property: 'logEntry.code',
-                    dataIndex: 'logEntry.code',
-                    label: this.$t('swag-migration.index.errorDescription'),
+                    property: 'count',
+                    dataIndex: 'count',
+                    label: this.$t('swag-migration.history.detailPage.errorCount'),
                     primary: true,
-                    allowResize: true
+                    allowResize: true,
+                    sortable: false // TODO: change this if the core supports aggregate sorting
                 }
             ];
         }
@@ -58,9 +67,16 @@ Component.register('swag-migration-history-detail-errors', {
             this.isLoading = true;
             const params = this.getListingParams();
 
-            return this.migrationRun.getAssociation('logs').getList(params).then((response) => {
+            return this.migrationService.getGroupedLogsOfRun(
+                this.migrationRun.id,
+                (params.page - 1) * this.limit,
+                params.limit,
+                params.sortBy,
+                params.sortDirection
+            ).then((response) => {
                 this.total = response.total;
                 this.migrationErrors = response.items;
+                this.downloadUrl = response.downloadUrl;
                 this.isLoading = false;
                 return this.migrationErrors;
             });
@@ -68,15 +84,6 @@ Component.register('swag-migration-history-detail-errors', {
 
         getErrorTitleSnippet(item) {
             const snippetKey = item.titleSnippet;
-            if (this.$te(snippetKey)) {
-                return snippetKey;
-            }
-
-            return 'swag-migration.index.error.unknownError';
-        },
-
-        getErrorDescriptionSnippet(item) {
-            const snippetKey = item.descriptionSnippet;
             if (this.$te(snippetKey)) {
                 return snippetKey;
             }

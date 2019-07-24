@@ -326,9 +326,6 @@
         "cancelPause": "Pausieren",
         "confirm": "Migration beenden"
       },
-      "noErrorsOccurred": "Es sind keine Fehler aufgetreten.",
-      "errorType": "Fehlertyp",
-      "errorDescription": "Fehlerbeschreibung",
       "errorTypes": {
         "error": "Fehler",
         "warning": "Warnung",
@@ -445,6 +442,10 @@
         "SWAG_MIGRATION_RUN_EXCEPTION": {
           "title": "Systemfehler aufgetreten",
           "description": "{exceptionMessage}"
+        },
+        "SWAG_MIGRATION__DEBUG": {
+          "title": "Debug-Ausgabe",
+          "description": "{logData}"
         }
       }
     },
@@ -471,6 +472,11 @@
         },
         "data": "Daten",
         "errors": "Details",
+        "logDownload": "Log-Datei herunterladen",
+        "logDescription": "In der Übersicht der Log-Einträge unten siehst Du eine Zusammenfassung der aufgetretenen Fehler und deren Häufigkeit. Falls Du genauere Details benötigst, lade dir die Log-Datei herunter, um die Fehler bei der Migration zu beseitigen.",
+        "errorCode": "Titel",
+        "errorCount": "Anzahl",
+        "noErrorsOccurred": "Es sind keine Fehler aufgetreten.",
         "dataName": "Name",
         "dataCount": "Datensätze",
         "close": "Schließen"

@@ -326,9 +326,6 @@
         "cancelPause": "Pause",
         "confirm": "Stop migration"
       },
-      "noErrorsOccurred": "No errors have occurred.",
-      "errorType": "Error type",
-      "errorDescription": "Error description",
       "errorTypes": {
         "error": "Error",
         "warning": "Warning",
@@ -449,6 +446,10 @@
         "SWAG_MIGRATION_RUN_EXCEPTION": {
           "title": "An exception occurred",
           "description": "{exceptionMessage}"
+        },
+        "SWAG_MIGRATION__DEBUG": {
+          "title": "Debug-Output",
+          "description": "{logData}"
         }
       }
     },
@@ -475,6 +476,11 @@
         },
         "data": "Data",
         "errors": "Details",
+        "logDownload": "Download log file",
+        "logDescription": "In the overview of the log entries below you can see a summary of the errors that occurred and their frequency. If you need more details, download the log file to fix the migration errors.",
+        "errorCode": "Title",
+        "errorCount": "Count",
+        "noErrorsOccurred": "No errors have occurred.",
         "dataName": "Name",
         "dataCount": "Datasets",
         "close": "Close"
