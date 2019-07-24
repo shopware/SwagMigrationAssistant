@@ -31,7 +31,12 @@ export class WorkerRequest {
     ) {
         this._MAX_REQUEST_TIME = 10000; // in ms
         this._DEFAULT_CHUNK_SIZE = 25; // in data sets
-        this._CHUNK_PROPORTION_BUFFER = 0.5; // chunk buffer
+
+        // how much does the chunk factor manipulate the chunk size for under target request times
+        this._CHUNK_PROPORTION_UP_WEIGHT = 0.1;
+
+        // how much does the chunk factor manipulate the chunk size for above target request times
+        this._CHUNK_PROPORTION_DOWN_WEIGHT = 0.9;
 
         this._migrationProcessStore = State.getStore('migrationProcess');
         this._runId = requestParams.runUuid;
@@ -41,6 +46,7 @@ export class WorkerRequest {
         this._interrupt = '';
         this._chunkSize = this._DEFAULT_CHUNK_SIZE;
         this._lastChunkSize = this._DEFAULT_CHUNK_SIZE;
+        this._successfulChunk = this._DEFAULT_CHUNK_SIZE;
 
         // callbacks
         this._onInterruptCB = onInterruptCB;
@@ -161,9 +167,8 @@ export class WorkerRequest {
                 return;
             }
 
-            const oldChunkSize = this._chunkSize;
             await this._migrateEntityRequest(entityName, currentOffset);
-            let newOffset = currentOffset + oldChunkSize;
+            let newOffset = currentOffset + this._successfulChunk;
             if (newOffset > entityCount) {
                 newOffset = entityCount;
             }
@@ -176,7 +181,7 @@ export class WorkerRequest {
                 group.total
             );
 
-            currentOffset += oldChunkSize;
+            currentOffset += this._successfulChunk;
         }
         /* eslint-enable no-await-in-loop */
 
@@ -210,9 +215,12 @@ export class WorkerRequest {
                         });
                         requestFailedCount += 1;
                         if (this._requestParams.limit === this._lastChunkSize) {
-                            this._requestParams.limit = this._DEFAULT_CHUNK_SIZE;
+                            this._chunkSize = this._DEFAULT_CHUNK_SIZE;
+                            this._requestParams.limit = this._chunkSize;
                         } else {
-                            this._requestParams.limit = this._lastChunkSize;
+                            this._handleChunkSize();
+                            this._lastChunkSize = this._chunkSize; // next time reset to default chunk size
+                            this._requestParams.limit = this._chunkSize;
                         }
                         return;
                     }
@@ -223,6 +231,7 @@ export class WorkerRequest {
                         return;
                     }
 
+                    this._successfulChunk = this._requestParams.limit;
                     const afterRequestTime = new Date();
                     this._handleChunkSize(afterRequestTime.getTime() - beforeRequestTime.getTime());
                     requestRetry = false;
@@ -234,9 +243,12 @@ export class WorkerRequest {
                         });
                         requestFailedCount += 1;
                         if (this._requestParams.limit === this._lastChunkSize) {
-                            this._requestParams.limit = this._DEFAULT_CHUNK_SIZE;
+                            this._chunkSize = this._DEFAULT_CHUNK_SIZE;
+                            this._requestParams.limit = this._chunkSize;
                         } else {
-                            this._requestParams.limit = this._lastChunkSize;
+                            this._handleChunkSize();
+                            this._lastChunkSize = this._chunkSize; // next time reset to default chunk size
+                            this._requestParams.limit = this._chunkSize;
                         }
                         return;
                     }
@@ -282,23 +294,26 @@ export class WorkerRequest {
     /**
      * Update the chunkSize depending on the requestTime / maxRequestTime proportion
      *
-     * @param {number} requestTime Request time in milliseconds
+     * @param {number} requestTime Request time in milliseconds (fallback to 30s for timeout simulation)
      * @private
      */
-    _handleChunkSize(requestTime) {
+    _handleChunkSize(requestTime = 30000) {
         this._lastChunkSize = this._chunkSize;
+        const factor = this._MAX_REQUEST_TIME / requestTime;
+
         if (requestTime < this._MAX_REQUEST_TIME) {
-            const factor = this._MAX_REQUEST_TIME / requestTime;
-            this._chunkSize = Math.ceil((this._chunkSize * factor) * this._CHUNK_PROPORTION_BUFFER);
+            // Scale chunk size up
+            const weightedFactor = (factor - 1) * this._CHUNK_PROPORTION_UP_WEIGHT + 1;
+            this._chunkSize = Math.ceil(this._chunkSize * weightedFactor);
+            return;
         }
 
-        if (requestTime > this._MAX_REQUEST_TIME) {
-            const ratio = 1 - requestTime / this._MAX_REQUEST_TIME;
-            this._chunkSize = Math.ceil(this._chunkSize * (1 + ratio));
+        // Scale chunk size down
+        const weightedFactor = (factor - 1) * this._CHUNK_PROPORTION_DOWN_WEIGHT + 1;
+        this._chunkSize = Math.ceil(this._chunkSize * weightedFactor);
 
-            if (this._chunkSize < this._DEFAULT_CHUNK_SIZE) {
-                this._chunkSize = this._DEFAULT_CHUNK_SIZE;
-            }
+        if (this._chunkSize < this._DEFAULT_CHUNK_SIZE) {
+            this._chunkSize = this._DEFAULT_CHUNK_SIZE;
         }
     }
 
