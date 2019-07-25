@@ -624,9 +624,11 @@ abstract class OrderConverter extends ShopwareConverter
             'shippingDateLatest' => $converted['orderDateTime'],
         ];
 
-        if (isset($data['shippingMethod']['id'])) {
-            $delivery['shippingMethod'] = $this->getShippingMethod($data['shippingMethod']);
-        } else {
+        if (isset($data['dispatchID'])) {
+            $delivery['shippingMethodId'] = $this->getShippingMethod($data['dispatchID']);
+        }
+
+        if (!isset($delivery['shippingMethodId'])) {
             return [];
         }
 
@@ -666,82 +668,26 @@ abstract class OrderConverter extends ShopwareConverter
         return $deliveries;
     }
 
-    protected function getShippingMethod(array $originalData): array
+    protected function getShippingMethod(string $shippingMethodId): ?string
     {
-        $shippingMethod = [];
-        $shippingMethod['id'] = $this->mappingService->createNewUuid(
+        $shippingMethodUuid = $this->mappingService->getUuid(
             $this->connectionId,
             DefaultEntities::SHIPPING_METHOD,
-            $originalData['id'],
+            $shippingMethodId,
             $this->context
         );
 
-        $this->getShippingMethodTranslation($shippingMethod, $originalData);
-        $this->convertValue($shippingMethod, 'bindShippingfree', $originalData, 'bind_shippingfree', self::TYPE_BOOLEAN);
-        $this->convertValue($shippingMethod, 'active', $originalData, 'active', self::TYPE_BOOLEAN);
-        $this->convertValue($shippingMethod, 'shippingFree', $originalData, 'shippingfree', self::TYPE_FLOAT);
-        $this->convertValue($shippingMethod, 'name', $originalData, 'name');
-        $this->convertValue($shippingMethod, 'description', $originalData, 'description');
-        $this->convertValue($shippingMethod, 'comment', $originalData, 'comment');
-
-        $defaultDeliveryTimeUuid = $this->mappingService->getUuid(
-            $this->connectionId,
-            DefaultEntities::DELIVERY_TIME,
-            'default_delivery_time',
-            $this->context
-        );
-
-        if ($defaultDeliveryTimeUuid !== null) {
-            $shippingMethod['deliveryTimeId'] = $defaultDeliveryTimeUuid;
-        } else {
-            $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
+        if ($shippingMethodUuid === null) {
+            $this->loggingService->addLogEntry(new UnknownEntityLog(
                 $this->runId,
+                DefaultEntities::SHIPPING_METHOD,
+                $shippingMethodId,
                 DefaultEntities::ORDER,
-                $this->oldId,
-                'delivery_time'
+                $this->oldId
             ));
         }
 
-        $defaultAvailabilityRuleUuid = $this->mappingService->getDefaultAvailabilityRule($this->context);
-        if ($defaultAvailabilityRuleUuid !== null) {
-            $shippingMethod['availabilityRuleId'] = $defaultAvailabilityRuleUuid;
-        } else {
-            $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
-                $this->runId,
-                DefaultEntities::ORDER,
-                $this->oldId,
-                'availability_rule_id'
-            ));
-        }
-
-        return $shippingMethod;
-    }
-
-    protected function getShippingMethodTranslation(array &$shippingMethod, array $data): void
-    {
-        $language = $this->mappingService->getDefaultLanguage($this->context);
-        if ($language->getLocale()->getCode() === $this->mainLocale) {
-            return;
-        }
-
-        $localeTranslation = [];
-        $localeTranslation['shippingMethodId'] = $shippingMethod['id'];
-
-        $this->convertValue($localeTranslation, 'name', $data, 'name');
-        $this->convertValue($localeTranslation, 'description', $data, 'description');
-        $this->convertValue($localeTranslation, 'comment', $data, 'comment');
-
-        $localeTranslation['id'] = $this->mappingService->createNewUuid(
-            $this->connectionId,
-            DefaultEntities::SHIPPING_METHOD_TRANSLATION,
-            $data['id'] . ':' . $this->mainLocale,
-            $this->context
-        );
-
-        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);
-        $localeTranslation['languageId'] = $languageUuid;
-
-        $shippingMethod['translations'][$languageUuid] = $localeTranslation;
+        return $shippingMethodUuid;
     }
 
     protected function getLineItems(array $originalData, array &$converted, TaxRuleCollection $taxRules, string $taxStatus, Context $context): array

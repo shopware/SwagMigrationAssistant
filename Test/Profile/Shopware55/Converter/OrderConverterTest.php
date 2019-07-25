@@ -132,6 +132,8 @@ class OrderConverterTest extends TestCase
 
         $mappingService->createNewUuid($connectionId, DefaultEntities::CUSTOMER_GROUP, '1', $context, [], 'cfbd5018d38d41d8adca10d94fc8bdd6');
         $mappingService->createNewUuid($connectionId, DefaultEntities::CUSTOMER_GROUP, '2', $context, [], 'cfbd5018d38d41d8adca10d94fc8bdd6');
+
+        $mappingService->createNewUuid($connectionId, DefaultEntities::SHIPPING_METHOD, '14', $context, [], Uuid::randomHex());
     }
 
     public function testSupports(): void
@@ -302,7 +304,7 @@ class OrderConverterTest extends TestCase
         $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
         $orderData = require __DIR__ . '/../../../_fixtures/order_data.php';
         $orderData = $orderData[0];
-        unset($orderData['shippingMethod']);
+        unset($orderData['dispatchID']);
         $context = Context::createDefaultContext();
 
         $this->customerConverter->convert(

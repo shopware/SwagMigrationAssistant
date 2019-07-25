@@ -4,7 +4,7 @@ namespace SwagMigrationAssistant\Profile\Shopware\Logging\Log;
 
 use SwagMigrationAssistant\Migration\Logging\Log\BaseRunLogEntry;
 
-class UnsupportedNumberRangeTypeLog extends BaseRunLogEntry
+class UnsupportedShippingCalculationType extends BaseRunLogEntry
 {
     /**
      * @var string
@@ -24,12 +24,12 @@ class UnsupportedNumberRangeTypeLog extends BaseRunLogEntry
 
     public function getCode(): string
     {
-        return 'SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_NUMBER_RANGE_TYPE';
+        return 'SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_SHIPPING_CALCULATION_TYPE';
     }
 
     public function getTitle(): string
     {
-        return 'Unsupported number range type';
+        return 'Unsupported shipping calculation type';
     }
 
     public function getParameters(): array
@@ -46,7 +46,7 @@ class UnsupportedNumberRangeTypeLog extends BaseRunLogEntry
         $args = $this->getParameters();
 
         return sprintf(
-            'NumberRange-Entity with source id "%s" could not be converted because of unsupported type: %s.',
+            'ShippingMethod-Entity with source id "%s" could not be converted because of unsupported calculation type "%s".',
             $args['sourceId'],
             $args['type']
         );

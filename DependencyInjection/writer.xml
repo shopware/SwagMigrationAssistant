@@ -142,5 +142,11 @@
             <argument type="service" id="Shopware\Core\Content\Newsletter\Aggregate\NewsletterRecipient\NewsletterRecipientDefinition"/>
             <tag name="shopware.migration.writer"/>
         </service>
+
+        <service id="SwagMigrationAssistant\Migration\Writer\ShippingMethodWriter">
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
+            <argument type="service" id="Shopware\Core\Checkout\Shipping\ShippingMethodDefinition"/>
+            <tag name="shopware.migration.writer"/>
+        </service>
     </services>
 </container>

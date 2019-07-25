@@ -48,9 +48,6 @@ class LocalOrderReader extends LocalAbstractReader implements LocalReaderInterfa
         $query->leftJoin('ordering', 's_order_attributes', 'attributes', 'ordering.id = attributes.orderID');
         $this->addTableSelection($query, 's_order_attributes', 'attributes');
 
-        $query->leftJoin('ordering', 's_premium_dispatch', 'shippingMethod', 'ordering.dispatchID = shippingMethod.id');
-        $this->addTableSelection($query, 's_premium_dispatch', 'shippingMethod');
-
         $query->leftJoin('ordering', 's_user', 'customer', 'customer.id = ordering.userID');
         $this->addTableSelection($query, 's_user', 'customer');
 

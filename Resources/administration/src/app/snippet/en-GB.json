@@ -192,7 +192,8 @@
           "translation": "Translations:",
           "customer_group": "Customer groups:",
           "property_group_option": "Properties:",
-          "order_document": "Order documents: "
+          "order_document": "Order documents: ",
+          "shipping_method": "Shipping methods: "
         },
         "noData": "Nothing found to migrate."
       },
@@ -438,6 +439,14 @@
         "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_NUMBER_RANGE_TYPE": {
           "title": "Unsupported number range type",
           "description": "NumberRange-Entity with source id \"{sourceId}\" could not be converted because of unsupported type: {type}."
+        },
+        "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_SHIPPING_PRICE": {
+          "title": "Unsupported shipping factor price calculation",
+          "description": "The shipping price entity with source id \"{sourceId}\" of shipping method \"{shippingMethodId}\" could not be converted because of unsupported factor price calculation."
+        },
+        "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_SHIPPING_CALCULATION_TYPE": {
+          "title": "Unsupported shipping calculation type",
+          "description": "The shipping method entity with source id \"{sourceId}\" could not be converted because of unsupported calculation type: {type}."
         },
         "SWAG_MIGRATION__THEME_COMPILING_ERROR": {
           "title": "Theme compiling error",

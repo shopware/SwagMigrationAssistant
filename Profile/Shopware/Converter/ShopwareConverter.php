@@ -61,6 +61,23 @@ abstract class ShopwareConverter implements ConverterInterface
         return $emptyFields;
     }
 
+    /**
+     * @param string[] $requiredDataFields
+     *
+     * @return string[]
+     */
+    protected function checkForEmptyRequiredConvertedFields(array $converted, array $requiredDataFields): array
+    {
+        $emptyFields = [];
+        foreach ($requiredDataFields as $requiredDataFieldKey => $requiredDataFieldValue) {
+            if (!isset($converted[$requiredDataFieldKey]) || $converted[$requiredDataFieldKey] === '') {
+                $emptyFields[] = $requiredDataFieldValue;
+            }
+        }
+
+        return $emptyFields;
+    }
+
     protected function validDate(string $value): bool
     {
         try {

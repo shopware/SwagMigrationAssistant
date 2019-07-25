@@ -183,6 +183,11 @@
             <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware\Converter\ShippingMethodConverter" abstract="true">
+            <argument id="SwagMigrationAssistant\Migration\Mapping\MappingService" type="service"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
+        </service>
+
         <!-- Shopware Reader -->
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiReader">
             <argument type="service" id="SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory" />
@@ -304,6 +309,11 @@
             <tag name="shopware.migration.local_reader" />
         </service>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\ShippingMethodReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalAbstractReader">
+            <tag name="shopware.migration.local_reader"/>
+        </service>
+
         <!-- Shopware Dataselections -->
         <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\BasicSettingsDataSelection">
             <tag name="shopware.migration.data_selection"/>
@@ -416,6 +426,10 @@
 
         <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderDocumentDataSet">
             <tag name="shopware.migration.data_set" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ShippingMethodDataSet">
+            <tag name="shopware.migration.data_set"/>
         </service>
 
         <!-- Shopware PreMappingReader -->
