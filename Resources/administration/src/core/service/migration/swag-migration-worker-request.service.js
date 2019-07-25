@@ -209,10 +209,7 @@ export class WorkerRequest {
                 const beforeRequestTime = new Date();
                 await this._migrationService[this.operation](this._requestParams).then((response) => {
                     if (!response) {
-                        this._migrationProcessStore.addError({
-                            code: 'canNotConnectToServer',
-                            internalError: true
-                        });
+                        // Request timeout behavior: scale chunk size down on first occur and back to default on second
                         requestFailedCount += 1;
                         if (this._requestParams.limit === this._lastChunkSize) {
                             this._chunkSize = this._DEFAULT_CHUNK_SIZE;
@@ -225,8 +222,25 @@ export class WorkerRequest {
                         return;
                     }
 
+                    if (response.validToken === undefined) {
+                        // Memory limit behavior: If occurs the validToken is not in the response
+                        // Then we scale the limit down to default and retry
+                        // If the retry also fails with memory limit exceeded we skip this chunk
+                        if (this._requestParams.limit === this._lastChunkSize) {
+                            this._successfulChunk = this._requestParams.limit;
+                            requestRetry = false;
+                            return;
+                        }
+
+                        this._chunkSize = this._DEFAULT_CHUNK_SIZE;
+                        this._lastChunkSize = this._chunkSize;
+                        this._requestParams.limit = this._chunkSize;
+                        return;
+                    }
+
                     if (!response.validToken) {
                         this.interrupt = WORKER_INTERRUPT_TYPE.TAKEOVER;
+                        this._successfulChunk = 0;
                         requestRetry = false;
                         return;
                     }
@@ -237,10 +251,7 @@ export class WorkerRequest {
                     requestRetry = false;
                 }).catch((response) => {
                     if (!response || !response.response) {
-                        this._migrationProcessStore.addError({
-                            code: 'canNotConnectToServer',
-                            internalError: true
-                        });
+                        // Request timeout behavior: scale chunk size down on first occur and back to default on second
                         requestFailedCount += 1;
                         if (this._requestParams.limit === this._lastChunkSize) {
                             this._chunkSize = this._DEFAULT_CHUNK_SIZE;
@@ -253,30 +264,21 @@ export class WorkerRequest {
                         return;
                     }
 
-                    if (response.response.data && response.response.data.errors) {
-                        response.response.data.errors.forEach((error) => {
-                            this._migrationProcessStore.addError(error);
-                        });
+                    if (response.response.status === 500) {
+                        // Don't retry if server errors happen, only if something is wrong with the connection.
+                        this._successfulChunk = this._requestParams.limit;
+                        requestRetry = false;
+                        return;
                     }
 
                     const afterRequestTime = new Date();
                     this._handleChunkSize(afterRequestTime.getTime() - beforeRequestTime.getTime());
 
-                    if (response.response.status === 500) {
-                        // Don't retry if server errors happen, only if something is wrong with the connection.
-                        requestRetry = false;
-                        return;
-                    }
-
-                    this._migrationProcessStore.addError({
-                        code: 'canNotConnectToServer',
-                        internalError: true
-                    });
-
                     requestFailedCount += 1;
                 });
 
                 if (requestFailedCount >= 3) {
+                    this._successfulChunk = 0;
                     requestRetry = false;
                     if (this.operation === WORKER_API_OPERATION[1]) {
                         this.interrupt = WORKER_INTERRUPT_TYPE.CONNECTION_LOST;

@@ -10,7 +10,6 @@ class ProcessStoreInitService {
     initProcessStore() {
         return new Promise((resolve, reject) => {
             this._migrationProcessStore.setEntityGroups([]);
-            this._migrationProcessStore.setErrors([]);
             this._migrationProcessStore.setEnvironmentInformation({});
             this._migrationGeneralSettingStore.getList({ limit: 1 }).then((settings) => {
                 if (!settings || settings.items.length === 0) {
