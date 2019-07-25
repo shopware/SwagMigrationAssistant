@@ -16,8 +16,7 @@ class MigrationProcessStore extends SimpleStateManagementStore {
             isMigrating: false,
             entityGroups: [],
             currentEntityGroupId: '',
-            statusIndex: MIGRATION_STATUS.WAITING,
-            errors: []
+            statusIndex: MIGRATION_STATUS.WAITING
         };
     }
 
@@ -105,25 +104,6 @@ class MigrationProcessStore extends SimpleStateManagementStore {
             data.currentCount = 0;
         });
     }
-
-    /**
-     * @param {Object[]} newErrors
-     */
-    setErrors(newErrors) {
-        const newErrorsCopy = object.deepCopyObject(newErrors);
-        this._checkDebugging(this.state.errors, newErrorsCopy);
-        this.state.errors = newErrorsCopy;
-    }
-
-    /**
-     * @param {Object} error
-     */
-    addError(error) {
-        const errorCopy = object.deepCopyObject(error);
-        this._checkDebugging(this.state.errors, errorCopy);
-        this.state.errors.push(errorCopy);
-    }
-
 
     // getters (to use as computed properties)
     /**
