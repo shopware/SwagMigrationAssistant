@@ -4,7 +4,7 @@
       "mainMenuItemGeneral": "Migration Assistant",
       "descriptionTextModule": "Module to migrate data",
       "tabMain": "General",
-      "tabHistory": "Summary",
+      "tabHistory": "History",
       "tabDataSelector": "Data selection"
     },
     "wizard": {
@@ -260,14 +260,10 @@
           "finish": "Done"
         },
         "result": {
-          "success": {
-            "title": "The migration was successful",
-            "caption": "We've created a summary for you with all details about the migration process. Media downloads are processed in the background. "
-          },
-          "warning": {
-            "title": "The migration was successful",
-            "caption": "Some data could not be migrated. You can see which data was migrated and which errors occurred in the summary."
-          }
+          "title": "The migration of data is almost finished",
+          "caption": "Media data will continue to be downloaded in the background. Large image files / videos may take some time.",
+          "hint": "For a detailed report on the migration please have a look at the",
+          "historyLink": "history."
         },
         "pauseScreen": {
           "title": "The migration is paused",
@@ -316,6 +312,10 @@
           "title": "The connection has been lost",
           "message": "The migration ended the process to avoid data loss. Check the internet connection and start a new migration.",
           "buttonNavigateToMain": "General"
+        },
+        "mediaProcessScreen": {
+          "title": "Starting media download",
+          "message": "The process is running in the background"
         }
       },
       "confirmAbortDialog": {

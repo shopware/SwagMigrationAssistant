@@ -2,22 +2,30 @@
     <sw-card class="swag-migration-result-screen">
         {% block swag_migration_result_screen_content %}
             <div class="swag-migration-result-screen__content">
-                <slot>
-                    {% block swag_migration_result_screen_icon %}
-                        <div class="swag-migration-result-screen__bubble">
-                            <sw-icon size="36px" class="swag-migration-result-screen__icon" name="default-action-thumb-up" decorative></sw-icon>
-                        </div>
-                    {% endblock %}
+                {% block swag_migration_result_screen_icon %}
+                    <div class="swag-migration-result-screen__bubble">
+                        <sw-icon size="36px" class="swag-migration-result-screen__icon" name="default-action-thumb-up" decorative></sw-icon>
+                    </div>
+                {% endblock %}
 
-                    {% block swag_migration_result_screen_title %}
-                        <div class="swag-migration-result-screen__title">
-                            {{ title }}
-                        </div>
-                        <div class="swag-migration-result-screen__caption">
-                            {{ caption }}
-                        </div>
-                    {% endblock %}
-                </slot>
+                {% block swag_migration_result_screen_title %}
+                    <div class="swag-migration-result-screen__title">
+                        {{ $tc('swag-migration.index.loadingScreenCard.result.title') }}
+                    </div>
+                    <div class="swag-migration-result-screen__caption">
+                        {{ $tc('swag-migration.index.loadingScreenCard.result.caption') }}
+                    </div>
+                {% endblock %}
+
+                {% block swag_migration_result_screen_alert %}
+                    <sw-alert class="swag-migration-result-screen__alert">
+                        {{ $tc('swag-migration.index.loadingScreenCard.result.hint') }}
+                        <router-link class="swag-migration-result-screen__link"
+                                     :to="{ name: 'swag.migration.index.history.detail', params: { id: runId } }">
+                            {{ $tc('swag-migration.index.loadingScreenCard.result.historyLink') }}
+                        </router-link>
+                    </sw-alert>
+                {% endblock %}
             </div>
         {% endblock %}
     </sw-card>

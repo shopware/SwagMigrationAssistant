@@ -191,6 +191,11 @@ Component.register('swag-migration-process-screen', {
                         }
                     }
                 });
+
+                if (status === MIGRATION_STATUS.PROCESS_MEDIA_FILES) {
+                    this.onProcessMediaFiles();
+                }
+
                 if (status === MIGRATION_STATUS.FINISHED) {
                     this.isOtherMigrationRunning = false;
                     this.onFinishWithoutErrors();
@@ -332,6 +337,8 @@ Component.register('swag-migration-process-screen', {
                 this.migrationUIStore.setComponentIndex(UI_COMPONENT_INDEX.WARNING_CONFIRM);
             } else if (this.migrationProcessStore.state.statusIndex === MIGRATION_STATUS.PREMAPPING) {
                 this.migrationUIStore.setComponentIndex(UI_COMPONENT_INDEX.PREMAPPING);
+            } else if (this.migrationProcessStore.state.statusIndex === MIGRATION_STATUS.PROCESS_MEDIA_FILES) {
+                this.onProcessMediaFiles();
             } else if (this.migrationProcessStore.state.statusIndex === MIGRATION_STATUS.FINISHED) {
                 this.onFinishWithoutErrors();
             } else {
@@ -674,6 +681,11 @@ Component.register('swag-migration-process-screen', {
 
         onWarningConfirmationChanged(confirmed) {
             this.isWarningConfirmed = confirmed;
+        },
+
+        onProcessMediaFiles() {
+            this.migrationUIStore.setComponentIndex(UI_COMPONENT_INDEX.MEDIA_SCREEN);
+            this.$root.$emit('on-change-notification-center-visibility', true);
         }
     }
 });
