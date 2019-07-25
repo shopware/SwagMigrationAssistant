@@ -1,3 +1,7 @@
+# 0.10.2
+- Improve write performance 
+- PT-10680 - Optimize request chunk size
+
 # 0.10.1
 - Add default theme to sales channels
 - Fix indexing after migration
