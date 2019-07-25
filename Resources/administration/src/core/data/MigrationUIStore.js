@@ -11,7 +11,6 @@ export const UI_COMPONENT_INDEX = Object.freeze({
     PREMAPPING: 1,
     LOADING_SCREEN: 2,
     RESULT_SUCCESS: 3,
-    RESULT_WARNING: 4,
     PAUSE_SCREEN: 5,
     TAKEOVER: 6,
     CONNECTION_LOST: 7

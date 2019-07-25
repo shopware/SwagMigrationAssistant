@@ -80,12 +80,6 @@
                     </swag-migration-result-screen>
                 {% endblock %}
 
-                {% block swag_migration_index_main_page_card_loadingScreen_warning %}
-                    <swag-migration-result-screen v-if="migrationUIStore.state.componentIndex === UI_COMPONENT_INDEX.RESULT_WARNING"
-                                                  :errorList="errorList">
-                    </swag-migration-result-screen>
-                {% endblock %}
-
                 {% block swag_migration_index_main_page_card_loadingScreen_takeover %}
                     <swag-migration-loading-screen-takeover v-if="migrationUIStore.state.componentIndex === UI_COMPONENT_INDEX.TAKEOVER"
                                                             ref="loadingScreenTakeover"
