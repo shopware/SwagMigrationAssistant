@@ -69,9 +69,7 @@ Component.register('swag-migration-process-screen', {
          * @returns {boolean}
          */
         componentIndexIsResult() {
-            return (this.migrationUIStore.state.componentIndex === UI_COMPONENT_INDEX.RESULT_SUCCESS ||
-                this.migrationUIStore.state.componentIndex === UI_COMPONENT_INDEX.RESULT_WARNING ||
-                this.migrationUIStore.state.componentIndex === UI_COMPONENT_INDEX.RESULT_FAILURE);
+            return this.migrationUIStore.state.componentIndex === UI_COMPONENT_INDEX.RESULT_SUCCESS;
         },
 
         /**
@@ -195,11 +193,7 @@ Component.register('swag-migration-process-screen', {
                 });
                 if (status === MIGRATION_STATUS.FINISHED) {
                     this.isOtherMigrationRunning = false;
-                    if (this.migrationProcessStore.state.errors.length > 0) {
-                        this.onFinishWithErrors(this.migrationProcessStore.state.errors);
-                    } else {
-                        this.onFinishWithoutErrors();
-                    }
+                    this.onFinishWithoutErrors();
                 }
             }
         },
@@ -339,11 +333,7 @@ Component.register('swag-migration-process-screen', {
             } else if (this.migrationProcessStore.state.statusIndex === MIGRATION_STATUS.PREMAPPING) {
                 this.migrationUIStore.setComponentIndex(UI_COMPONENT_INDEX.PREMAPPING);
             } else if (this.migrationProcessStore.state.statusIndex === MIGRATION_STATUS.FINISHED) {
-                if (this.migrationProcessStore.state.errors.length > 0) {
-                    this.onFinishWithErrors(this.migrationProcessStore.state.errors);
-                } else {
-                    this.onFinishWithoutErrors();
-                }
+                this.onFinishWithoutErrors();
             } else {
                 this.migrationUIStore.setComponentIndex(UI_COMPONENT_INDEX.LOADING_SCREEN);
             }
@@ -518,19 +508,6 @@ Component.register('swag-migration-process-screen', {
 
         onFinishWithoutErrors() {
             this.migrationUIStore.setComponentIndex(UI_COMPONENT_INDEX.RESULT_SUCCESS);
-            this.$root.$emit('sales-channel-change');
-        },
-
-        onFinishWithErrors(errors) {
-            errors.forEach((error) => {
-                const snippetName = `swag-migration.index.error.${error.code}`;
-                this.errorList.push(Object.assign(error, { snippet: { snippetName: snippetName, details: error.details } }));
-            });
-
-            this.errorList = this.errorList.map((item) => item.snippet);
-            this.errorList = [...new Set(this.errorList)];
-
-            this.migrationUIStore.setComponentIndex(UI_COMPONENT_INDEX.RESULT_WARNING);
             this.$root.$emit('sales-channel-change');
         },
 

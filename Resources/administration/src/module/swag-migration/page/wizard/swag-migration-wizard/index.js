@@ -256,7 +256,6 @@ Component.register('swag-migration-wizard', {
             this.migrationService.checkConnection(this.connection.id).then((connectionCheckResponse) => {
                 this.migrationProcessStore.setConnectionId(this.connection.id);
                 this.migrationProcessStore.setEntityGroups([]);
-                this.migrationProcessStore.setErrors([]);
                 this.isLoading = false;
 
                 if (!connectionCheckResponse) {
@@ -296,7 +295,6 @@ Component.register('swag-migration-wizard', {
                 this.isLoading = false;
                 this.migrationProcessStore.setConnectionId(this.connection.id);
                 this.migrationProcessStore.setEntityGroups([]);
-                this.migrationProcessStore.setErrors([]);
                 this.migrationProcessStore.setEnvironmentInformation({});
                 this.migrationUIStore.setDataSelectionIds([]);
                 this.migrationUIStore.setPremapping([]);

@@ -225,7 +225,6 @@ class MigrationWorkerService {
         this._migrationProcessStore.setRunId(this._restoreState.runId);
         this._migrationProcessStore.setEntityGroups(this._restoreState.runProgress);
         this._migrationProcessStore.setStatusIndex(this._restoreState.status);
-        this._migrationProcessStore.setErrors([]);
 
         if (!startMigration) {
             return;
@@ -338,7 +337,6 @@ class MigrationWorkerService {
     ) {
         return new Promise(async (resolve) => {
             // Wait for the 'migrationWanted' request and response to allow or deny the migration
-            this._migrationProcessStore.setErrors([]);
             this._migrationProcessStore.setIsMigrating(true);
             this._migrationProcessStore.setRunId(runId);
 
@@ -405,7 +403,7 @@ class MigrationWorkerService {
 
             // finish
             await this._migrateFinish();
-            resolve(this._migrationProcessStore.state.errors);
+            resolve();
         });
     }
 
@@ -508,24 +506,6 @@ class MigrationWorkerService {
 
     _resetProgress() {
         this._migrationProcessStore.resetProgress();
-    }
-
-    _addError(error) {
-        if (error.internalError && this._errorCodeExists(error.code)) {
-            return;
-        }
-
-        this._migrationProcessStore.addError(error);
-    }
-
-    _errorCodeExists(errorCode) {
-        for (let index = 0; index < this._migrationProcessStore.state.errors.length; index += 1) {
-            if (errorCode === this._migrationProcessStore.state.errors[index].code) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     /**
