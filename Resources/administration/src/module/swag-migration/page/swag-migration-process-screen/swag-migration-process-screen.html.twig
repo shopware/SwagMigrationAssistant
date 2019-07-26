@@ -75,8 +75,14 @@
                     </swag-migration-loading-screen>
                 {% endblock %}
 
+                {% block swag_migration_index_main_page_card_loadingScreen_media %}
+                    <swag-migration-media-process v-if="migrationUIStore.state.componentIndex === UI_COMPONENT_INDEX.MEDIA_SCREEN">
+                    </swag-migration-media-process>
+                {% endblock %}
+
                 {% block swag_migration_index_main_page_card_loadingScreen_success %}
-                    <swag-migration-result-screen v-if="migrationUIStore.state.componentIndex === UI_COMPONENT_INDEX.RESULT_SUCCESS">
+                    <swag-migration-result-screen v-if="migrationUIStore.state.componentIndex === UI_COMPONENT_INDEX.RESULT_SUCCESS"
+                                                  :runId="migrationProcessStore.state.runId">
                     </swag-migration-result-screen>
                 {% endblock %}
 

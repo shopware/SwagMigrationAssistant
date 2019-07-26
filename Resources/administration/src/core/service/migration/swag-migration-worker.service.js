@@ -59,7 +59,8 @@ class MigrationWorkerService {
      * @returns {string}
      */
     onBrowserTabClosing(e) {
-        if (this._migrationProcessStore.state.isMigrating) {
+        if (this._migrationProcessStore.state.isMigrating &&
+            this._migrationProcessStore.state.statusIndex !== MIGRATION_STATUS.FINISHED) {
             e.preventDefault();
             e.returnValue = '';
             return '';

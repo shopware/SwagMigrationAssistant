@@ -260,14 +260,10 @@
           "finish": "Fertig"
         },
         "result": {
-          "success": {
-            "title": "Die Migration war erfolgreich",
-            "caption": "Alle Details zum Prozess findest Du in der Historie. Die Medien-Downloads werden im Hintergrund durchgeführt."
-          },
-          "warning": {
-            "title": "Die Migration war erfolgreich",
-            "caption": "Manche Daten konnten nicht migriert werden. Um welche Daten es sich handelt und welche Fehler aufgetreten ist, kannst Du in der Historie einsehen."
-          }
+          "title": "Die Migration der Daten ist fast fertig",
+          "caption": "Die Mediendaten werden weiter im Hintergrund heruntergeladen. Große Bilddateien / Videos können etwas Zeit in Anspruch nehmen.",
+          "hint": "Für einen ausführlichen Bericht über die Migration, schaue bitte in die",
+          "historyLink": "Historie."
         },
         "pauseScreen": {
           "title": "Die Migration ist pausiert",
@@ -316,6 +312,10 @@
           "title": "Die Verbindung wurde unterbrochen",
           "message": "Die Migration hat den Prozess beendet um einen Datenverlust zu vermeiden. Prüfe die Internetverbindung und starte eine neue Migration.",
           "buttonNavigateToMain": "Zur Übersicht"
+        },
+        "mediaProcessScreen": {
+          "title": "Der Download der Medien wird gestartet",
+          "message": "Der Prozess läuft im Hintergrund"
         }
       },
       "confirmAbortDialog": {

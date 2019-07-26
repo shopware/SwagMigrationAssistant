@@ -15,7 +15,7 @@
     .swag-migration-result-screen__caption {
         margin: 0 135px 28px 135px;
         font-size: 14px;
-        color: $color-gray-500;
+        color: $color-darkgray-200;
     }
 
     .swag-migration-result-screen__link a {
@@ -33,11 +33,6 @@
         margin-bottom: 40px;
     }
 
-    .swag-migration-result-screen__alert-header {
-        font-weight: bold;
-        display: inline;
-    }
-
     .swag-migration-result-screen__error-list-header {
         font-weight: bold;
         padding-top: 10px;
@@ -49,10 +44,7 @@
     }
 
     .swag-migration-result-screen__alert {
-        margin-top: 50px;
-        margin-bottom: 30px;
-        max-height: 300px;
-        overflow: scroll;
+        margin-bottom: 0;
     }
 
     .swag-migration-result-screen__bubble {
