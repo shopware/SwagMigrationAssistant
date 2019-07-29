@@ -450,6 +450,10 @@
         "SWAG_MIGRATION__DEBUG": {
           "title": "Debug-Output",
           "description": "{logData}"
+        },
+        "SWAG_MIGRATION__DOCUMENT_TYPE_NOT_SUPPORTED": {
+          "title": "Document type is not supported",
+          "description": "The document with the source id \"{sourceId}\" could not be converted because the document type \"{type}\" is not supported."
         }
       }
     },

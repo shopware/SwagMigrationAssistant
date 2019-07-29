@@ -10,6 +10,7 @@ use Shopware\Core\Framework\Util\Random;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
+use SwagMigrationAssistant\Migration\Logging\Log\DocumentTypeNotSupported;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
@@ -141,6 +142,12 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         $knownTypes = ['invoice', 'delivery_note', 'storno', 'credit_note'];
 
         if (!in_array($data['key'], $knownTypes, true)) {
+            $this->loggingService->addLogEntry(new DocumentTypeNotSupported(
+                $this->runId,
+                $data['id'],
+                $data['key']
+            ));
+
             return null;
         }
 
