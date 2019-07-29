@@ -446,6 +446,10 @@
         "SWAG_MIGRATION__DEBUG": {
           "title": "Debug-Ausgabe",
           "description": "{logData}"
+        },
+        "SWAG_MIGRATION__DOCUMENT_TYPE_NOT_SUPPORTED": {
+          "title": "Dokumenttyp wird nicht unterstützt",
+          "description": "Das Dokument mit der Quell-ID „{sourceId}“ konnte nicht konvertiert werden, da der Dokumenttyp „{type}“ nicht unterstützt wird."
         }
       }
     },
