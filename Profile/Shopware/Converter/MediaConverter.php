@@ -85,8 +85,8 @@ abstract class MediaConverter extends ShopwareConverter
         unset($data['uri'], $data['file_size']);
 
         $this->getMediaTranslation($converted, $data);
-        $this->convertValue($converted, 'name', $data, 'name');
-        $this->convertValue($converted, 'description', $data, 'description');
+        $this->convertValue($converted, 'title', $data, 'name');
+        $this->convertValue($converted, 'alt', $data, 'description');
 
         $albumUuid = $this->mappingService->getUuid(
           $this->connectionId,
@@ -121,7 +121,6 @@ abstract class MediaConverter extends ShopwareConverter
         return new ConvertStruct($converted, $data);
     }
 
-    // Todo: Check if this is necessary, because name and description is currently not translatable
     protected function getMediaTranslation(array &$media, array $data): void
     {
         $language = $this->mappingService->getDefaultLanguage($this->context);
@@ -131,8 +130,8 @@ abstract class MediaConverter extends ShopwareConverter
 
         $localeTranslation = [];
 
-        $this->convertValue($media, 'name', $data, 'name');
-        $this->convertValue($media, 'description', $data, 'description');
+        $this->convertValue($localeTranslation, 'title', $data, 'name');
+        $this->convertValue($localeTranslation, 'alt', $data, 'description');
 
         $localeTranslation['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
