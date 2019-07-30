@@ -40,16 +40,24 @@ class ExceptionRunLog extends BaseRunLogEntry
         }
 
         return [
+            'entity' => $this->getEntity(),
+            'sourceId' => $this->getSourceId(),
             'exceptionCode' => $errorCode,
             'exceptionMessage' => $this->exception->getMessage(),
             'exceptionFile' => $this->exception->getFile(),
             'exceptionLine' => $this->exception->getLine(),
             'exceptionTrace' => $this->exception->getTraceAsString(),
+            'description' => sprintf(
+                'Entity: %s, sourceId: %s' . PHP_EOL . '%s',
+                $this->getEntity(),
+                $this->getSourceId() ?? '-',
+                $this->exception->getMessage()
+            ),
         ];
     }
 
     public function getDescription(): string
     {
-        return $this->exception->getMessage();
+        return $this->getParameters()['description'];
     }
 }

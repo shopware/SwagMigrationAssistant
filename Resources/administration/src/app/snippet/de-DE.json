@@ -441,7 +441,7 @@
         },
         "SWAG_MIGRATION_RUN_EXCEPTION": {
           "title": "Systemfehler aufgetreten",
-          "description": "{exceptionMessage}"
+          "description": "{description}"
         },
         "SWAG_MIGRATION__DEBUG": {
           "title": "Debug-Ausgabe",
@@ -450,6 +450,10 @@
         "SWAG_MIGRATION__DOCUMENT_TYPE_NOT_SUPPORTED": {
           "title": "Dokumenttyp wird nicht unterstützt",
           "description": "Das Dokument mit der Quell-ID „{sourceId}“ konnte nicht konvertiert werden, da der Dokumenttyp „{type}“ nicht unterstützt wird."
+        },
+        "SWAG_MIGRATION__WRITE_EXCEPTION_OCCURRED": {
+          "title": "Ein Schreibfehler ist aufgetreten",
+          "description": "{description}"
         }
       }
     },

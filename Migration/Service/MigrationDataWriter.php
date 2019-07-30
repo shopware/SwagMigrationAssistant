@@ -10,11 +10,13 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
+use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteException;
 use Shopware\Core\Framework\ShopwareHttpException;
 use SwagMigrationAssistant\Exception\WriterNotFoundException;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
+use SwagMigrationAssistant\Migration\Logging\Log\WriteExceptionRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -120,7 +122,18 @@ class MigrationDataWriter implements MigrationDataWriterInterface
             $this->loggingService->saveLogging($context);
 
             return;
+        } catch (WriteException $exception) {
+            $this->handleWriteException(
+                $exception,
+                $converted,
+                $dataSet::getEntity(),
+                $updateWrittenData,
+                $migrationContext,
+                $context
+            );
         } catch (\Exception $exception) {
+            // Worst case: something unkown goes wrong (most likely some foreign key constraint that fails)
+            // TODO: If the core catches the exceptions and writes the remaining valid data this must be refactored.
             $this->writePerEntity($converted, $dataSet::getEntity(), $updateWrittenData, $migrationContext, $context);
         } finally {
             // Update written-Flag of the entity in the data table
@@ -129,6 +142,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
                 array_values($updateWrittenData),
                 WriteContext::createFromContext($context)
             );
+            $this->loggingService->saveLogging($context);
         }
 
         // Update written-Flag of the media file in the media file table
@@ -143,29 +157,75 @@ class MigrationDataWriter implements MigrationDataWriterInterface
         }
     }
 
+    private function handleWriteException(
+        WriteException $exception,
+        array $converted,
+        string $entityName,
+        array &$updateWrittenData,
+        MigrationContextInterface $migrationContext,
+        Context $context
+    ): void {
+        $writeErrors = $this->extractWriteErrorsWithIndex($exception);
+        $currentWriter = $this->writerRegistry->getWriter($entityName);
+        $newData = [];
+
+        $index = 0;
+        foreach ($converted as $dataId => $entity) {
+            if (!isset($writeErrors[$index])) {
+                $newData[] = $entity;
+                ++$index;
+                continue;
+            }
+
+            $updateWrittenData[$dataId]['written'] = false;
+            $updateWrittenData[$dataId]['writeFailure'] = true;
+            $this->loggingService->addLogEntry(new WriteExceptionRunLog(
+                $migrationContext->getRunUuid(),
+                $entityName,
+                $writeErrors[$index],
+                $dataId
+            ));
+
+            ++$index;
+        }
+
+        $currentWriter->writeData($newData, $context);
+    }
+
+    private function extractWriteErrorsWithIndex(WriteException $exception): array
+    {
+        $writeErrors = [];
+        foreach ($exception->getErrors() as $error) {
+            $pointer = $error['source']['pointer'] ?? '/';
+            preg_match('/^\/(\d+)\//', $pointer, $matches, PREG_UNMATCHED_AS_NULL);
+
+            if (isset($matches[1])) {
+                $index = (int) $matches[1];
+                $writeErrors[$index] = $error;
+            }
+        }
+
+        return $writeErrors;
+    }
+
     private function writePerEntity(
         array $converted,
         string $entityName,
         array &$updateWrittenData,
         MigrationContextInterface $migrationContext,
         Context $context
-    ) {
+    ): void {
         foreach ($converted as $dataId => $entity) {
             try {
                 $currentWriter = $this->writerRegistry->getWriter($entityName);
                 $currentWriter->writeData([$entity], $context);
             } catch (\Exception $exception) {
-                $code = $exception->getCode();
-                if (is_subclass_of($exception, ShopwareHttpException::class, false)) {
-                    $code = $exception->getErrorCode();
-                }
-
                 $this->loggingService->addLogEntry(new ExceptionRunLog(
                     $migrationContext->getRunUuid(),
                     $entityName,
-                    $exception
+                    $exception,
+                    $dataId
                 ));
-                $this->loggingService->saveLogging($context);
 
                 $updateWrittenData[$dataId]['written'] = false;
                 $updateWrittenData[$dataId]['writeFailure'] = true;
