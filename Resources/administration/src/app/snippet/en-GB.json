@@ -445,7 +445,7 @@
         },
         "SWAG_MIGRATION_RUN_EXCEPTION": {
           "title": "An exception occurred",
-          "description": "{exceptionMessage}"
+          "description": "{description}"
         },
         "SWAG_MIGRATION__DEBUG": {
           "title": "Debug-Output",
@@ -454,6 +454,10 @@
         "SWAG_MIGRATION__DOCUMENT_TYPE_NOT_SUPPORTED": {
           "title": "Document type is not supported",
           "description": "The document with the source id \"{sourceId}\" could not be converted because the document type \"{type}\" is not supported."
+        },
+        "SWAG_MIGRATION__WRITE_EXCEPTION_OCCURRED": {
+          "title": "A write exception has occurred",
+          "description": "{description}"
         }
       }
     },
