@@ -120,7 +120,7 @@ class DummyMappingService extends MappingService
 
     public function getDefaultAvailabilityRule(Context $context): string
     {
-        return '';
+        return Uuid::randomHex();
     }
 
     public function getDefaultLanguage(Context $context): LanguageEntity

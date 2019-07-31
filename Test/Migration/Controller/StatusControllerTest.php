@@ -299,8 +299,9 @@ class StatusControllerTest extends TestCase
         static::assertSame($state[1]['id'], 'customersOrders');
         static::assertSame($state[1]['entityNames'][0], DefaultEntities::CUSTOMER_CUSTOM_FIELD);
         static::assertSame($state[1]['entityNames'][1], DefaultEntities::CUSTOMER);
-        static::assertSame($state[1]['entityNames'][2], DefaultEntities::ORDER_CUSTOM_FIELD);
-        static::assertSame($state[1]['entityNames'][3], DefaultEntities::ORDER);
+        static::assertSame($state[1]['entityNames'][2], DefaultEntities::SHIPPING_METHOD);
+        static::assertSame($state[1]['entityNames'][3], DefaultEntities::ORDER_CUSTOM_FIELD);
+        static::assertSame($state[1]['entityNames'][4], DefaultEntities::ORDER);
     }
 
     public function testGetDataSelectionWithoutConnectionId(): void

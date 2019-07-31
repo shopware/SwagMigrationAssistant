@@ -68,9 +68,9 @@ abstract class NumberRangeConverter extends ShopwareConverter
             $this->loggingService->addLogEntry(
                 new UnsupportedNumberRangeTypeLog(
                     $migrationContext->getRunUuid(),
-                    $data['name'],
                     DefaultEntities::NUMBER_RANGE,
-                    $data['id']
+                    $data['id'],
+                    $data['name']
             ));
 
             return new ConvertStruct(null, $data);

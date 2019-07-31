@@ -126,6 +126,8 @@ final class DefaultEntities
 
     public const SHIPPING_METHOD = 'shipping_method';
 
+    public const SHIPPING_METHOD_PRICE = 'shipping_method_price';
+
     public const SHIPPING_METHOD_TRANSLATION = 'shipping_method_translation';
 
     public const TAX = 'tax';

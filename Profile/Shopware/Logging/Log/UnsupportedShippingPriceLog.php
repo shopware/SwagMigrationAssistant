@@ -4,17 +4,17 @@ namespace SwagMigrationAssistant\Profile\Shopware\Logging\Log;
 
 use SwagMigrationAssistant\Migration\Logging\Log\BaseRunLogEntry;
 
-class UnsupportedNumberRangeTypeLog extends BaseRunLogEntry
+class UnsupportedShippingPriceLog extends BaseRunLogEntry
 {
     /**
      * @var string
      */
-    private $type;
+    private $shippingMethodId;
 
-    public function __construct(string $runId, string $entity, string $sourceId, string $type)
+    public function __construct(string $runId, string $entity, string $sourceId, string $shippingMethodId)
     {
         parent::__construct($runId, $entity, $sourceId);
-        $this->type = $type;
+        $this->shippingMethodId = $shippingMethodId;
     }
 
     public function getLevel(): string
@@ -24,12 +24,12 @@ class UnsupportedNumberRangeTypeLog extends BaseRunLogEntry
 
     public function getCode(): string
     {
-        return 'SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_NUMBER_RANGE_TYPE';
+        return 'SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_SHIPPING_PRICE';
     }
 
     public function getTitle(): string
     {
-        return 'Unsupported number range type';
+        return 'Unsupported shipping factor price calculation';
     }
 
     public function getParameters(): array
@@ -37,7 +37,7 @@ class UnsupportedNumberRangeTypeLog extends BaseRunLogEntry
         return [
             'entity' => $this->getEntity(),
             'sourceId' => $this->getSourceId(),
-            'type' => $this->type,
+            'shippingMethodId' => $this->shippingMethodId,
         ];
     }
 
@@ -46,9 +46,9 @@ class UnsupportedNumberRangeTypeLog extends BaseRunLogEntry
         $args = $this->getParameters();
 
         return sprintf(
-            'NumberRange-Entity with source id "%s" could not be converted because of unsupported type: %s.',
+            'ShippingPrice-Entity with source id "%s" of shipping method "%s" could not be converted because of unsupported factor price calculation.',
             $args['sourceId'],
-            $args['type']
+            $args['shippingMethodId']
         );
     }
 }

@@ -10,6 +10,7 @@ use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CustomerDataSe
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderAttributeDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderDocumentDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ShippingMethodDataSet;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
 class CustomerAndOrderDataSelection implements DataSelectionInterface
@@ -40,6 +41,7 @@ class CustomerAndOrderDataSelection implements DataSelectionInterface
         return [
             CustomerAttributeDataSet::getEntity(),
             CustomerDataSet::getEntity(),
+            ShippingMethodDataSet::getEntity(),
             OrderAttributeDataSet::getEntity(),
             OrderDataSet::getEntity(),
             OrderDocumentDataSet::getEntity(),

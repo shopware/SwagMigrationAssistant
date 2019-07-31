@@ -192,7 +192,8 @@
           "translation": "Übersetzungen:",
           "customer_group": "Kundengruppen:",
           "property_group_option": "Eigenschaften:",
-          "order_document": "Bestelldokumente: "
+          "order_document": "Bestelldokumente: ",
+          "shipping_method": "Versandmethoden: "
         },
         "noData": "Es wurden keine Daten zum Migrieren gefunden."
       },
@@ -421,7 +422,7 @@
         },
         "SWAG_MIGRATION_ENTITY_FIELD_REASSIGNED": {
           "title": "Ein Feld der {entity} Entität wurde neu zugeordnet",
-          "description": "Das Feld „{emptyField}“ der {entity} Entität mit der Quell-Id „{sourceId}“ wurde mit dem „{replacementField}“ Feld ersetzt."
+          "description": "Das Feld „{emptyField}“ der {entity} Entität mit der Quell-ID „{sourceId}“ wurde mit dem „{replacementField}“ Feld ersetzt."
         },
         "SWAG_MIGRATION__PROCESSOR_NOT_FOUND": {
           "title": "Processor nicht gefunden",
@@ -429,11 +430,19 @@
         },
         "SWAG_MIGRATION_ENTITY_UNKNOWN": {
           "title": "Konnte {entity} nicht finden",
-          "description": "Die {requiredForEntity} Entität mit der Quell-Id „{requiredForSourceId}“ konnte nicht die abhängige {entity} Entität mit der Quell-Id „{sourceId}“ finden."
+          "description": "Die {requiredForEntity} Entität mit der Quell-ID „{requiredForSourceId}“ konnte nicht die abhängige {entity} Entität mit der Quell-Id „{sourceId}“ finden."
         },
         "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_NUMBER_RANGE_TYPE": {
           "title": "Nummernkreis-Typ nicht unterstützt",
-          "description": "Die Nummernkreis-Entität mit der Quell-ID „{sourceId}“ konnte wegen folgendem nicht unterstützten Typs nicht konvertiert werden: {type}"
+          "description": "Die Nummernkreis Entität mit der Quell-ID „{sourceId}“ konnte wegen folgendem nicht unterstützten Typs nicht konvertiert werden: {type}"
+        },
+        "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_SHIPPING_PRICE": {
+          "title": "Faktor-Preisberechnung bei Versandkosten nicht unterstützt",
+          "description": "Die Versandkosten Entität mit der Quell-ID „{sourceId}“ der Versandmethode „{shippingMethodId}“ konnte aufgrund von nicht unterstützter Faktor-Preisberechnung, nicht konvertiert werden."
+        },
+        "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_SHIPPING_CALCULATION_TYPE": {
+          "title": "Versandkosten-Berechnungstyp nicht unterstützt",
+          "description": "Die Versandmethoden Entität mit der Quell-ID „{sourceId}“ konnte aufgrund eines nicht unterstützten Versandkosten-Berechnungstyp „{type}“, nicht konvertiert werden."
         },
         "SWAG_MIGRATION__THEME_COMPILING_ERROR": {
           "title": "Theme Kompilierungsfehler",
