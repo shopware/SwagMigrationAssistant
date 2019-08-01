@@ -13,15 +13,16 @@
     }
 
     .swag-migration-result-screen__caption {
-        margin: 0 135px 28px 135px;
+        margin: 0 135px 24px 135px;
         font-size: 14px;
         color: $color-darkgray-200;
     }
 
-    .swag-migration-result-screen__link a {
+    a.swag-migration-result-screen__link {
         font-size: 12px;
         font-weight: 600;
         color: $color-shopware-brand-500;
+        text-decoration: none;
     }
 
     .swag-migration-result-screen__image {
@@ -41,10 +42,6 @@
 
     .swag-migration-result-screen__error-list {
         padding-left: 20px;
-    }
-
-    .swag-migration-result-screen__alert {
-        margin-bottom: 0;
     }
 
     .swag-migration-result-screen__bubble {

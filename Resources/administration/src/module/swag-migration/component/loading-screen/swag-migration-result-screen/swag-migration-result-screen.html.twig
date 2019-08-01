@@ -17,14 +17,11 @@
                     </div>
                 {% endblock %}
 
-                {% block swag_migration_result_screen_alert %}
-                    <sw-alert class="swag-migration-result-screen__alert">
-                        {{ $tc('swag-migration.index.loadingScreenCard.result.hint') }}
-                        <router-link class="swag-migration-result-screen__link"
-                                     :to="{ name: 'swag.migration.index.history.detail', params: { id: runId } }">
-                            {{ $tc('swag-migration.index.loadingScreenCard.result.historyLink') }}
-                        </router-link>
-                    </sw-alert>
+                {% block swag_migration_result_screen_link %}
+                    <router-link class="swag-migration-result-screen__link"
+                                 :to="{ name: 'swag.migration.index.history.detail', params: { id: runId } }">
+                        {{ $tc('swag-migration.index.loadingScreenCard.result.historyLink') }}
+                    </router-link>
                 {% endblock %}
             </div>
         {% endblock %}

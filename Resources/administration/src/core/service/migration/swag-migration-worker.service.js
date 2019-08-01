@@ -500,8 +500,24 @@ class MigrationWorkerService {
             this._migrationProcessStore.state.runId,
             MIGRATION_STATUS.FINISHED
         ).then(() => {
+            this._showFinishNotification(this._migrationProcessStore.state.runId);
             this._resetProgress();
             return Promise.resolve();
+        });
+    }
+
+    _showFinishNotification(runId) {
+        this.applicationRoot.$store.dispatch('notification/createNotification', {
+            title: this.applicationRoot.$t('swag-migration.index.loadingScreenCard.result.notification.title'),
+            message: this.applicationRoot.$t('swag-migration.index.loadingScreenCard.result.notification.message'),
+            variant: 'info',
+            growl: false,
+            actions: [
+                {
+                    label: this.applicationRoot.$t('swag-migration.index.loadingScreenCard.result.notification.actionLabel'),
+                    route: { name: 'swag.migration.index.history.detail', params: { id: runId } }
+                }
+            ]
         });
     }
 

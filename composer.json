@@ -17,8 +17,8 @@
         "plugin-icon": "Resources/config/plugin.png",
         "copyright": "(c) by shopware AG",
         "label": {
-            "de-DE": "Shopware Migrationsassistent",
-            "en-GB": "Shopware Migration Assistant"
+            "de-DE": "Migrationsassistent",
+            "en-GB": "Migration Assistant"
         }
     },
     "autoload": {
