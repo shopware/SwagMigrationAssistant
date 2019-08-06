@@ -1,3 +1,6 @@
+# 0.10.3
+- Add core compatibility 
+
 # 0.10.2
 - Improve write performance 
 - PT-10680 - Optimize request chunk size
