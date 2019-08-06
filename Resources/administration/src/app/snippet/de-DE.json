@@ -1,7 +1,7 @@
 {
   "swag-migration": {
     "general": {
-      "mainMenuItemGeneral": "Migration Assistant",
+      "mainMenuItemGeneral": "Migrationsassistent",
       "descriptionTextModule": "Modul zum Migrieren der Daten",
       "tabMain": "Übersicht",
       "tabHistory": "Historie",
@@ -119,7 +119,7 @@
       "continueButton": "Fortsetzen",
       "abortButton": "Beenden",
       "finishButton": "Fertig",
-      "backButton": "Migration abschließen",
+      "backButton": "Zur Übersicht",
       "migrationAlreadyRunning": "Die Migration wurde bereits gestartet.",
       "pluginVersionText": "Wir haben festgestellt, dass ein Plugin-Update in deinem Quellsystem {sourceSystem} verfügbar ist. Bitte update das Plugin „{pluginName}“ bevor Du mit der Migration startest.",
       "shopInfoCard": {
@@ -261,10 +261,14 @@
           "finish": "Fertig"
         },
         "result": {
-          "title": "Die Migration der Daten ist fast fertig",
-          "caption": "Die Mediendaten werden weiter im Hintergrund heruntergeladen. Große Bilddateien / Videos können etwas Zeit in Anspruch nehmen.",
-          "hint": "Für einen ausführlichen Bericht über die Migration, schaue bitte in die",
-          "historyLink": "Historie."
+          "title": "Der Migrationsassistent ist fertig",
+          "caption": "Die Medien werden weiter im Hintergrund heruntergeladen. Große Dateien können etwas Zeit in Anspruch nehmen.",
+          "historyLink": "Details der Migration ansehen",
+          "notification": {
+            "title": "Migration - Historie",
+            "message": "Logfile einsehen oder herunterladen",
+            "actionLabel": "Historie öffnen"
+          }
         },
         "pauseScreen": {
           "title": "Die Migration ist pausiert",

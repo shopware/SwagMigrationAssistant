@@ -165,6 +165,10 @@ Component.register('swag-migration-process-screen', {
              * @param {number} status
              */
             handler(status) {
+                if (this.migrationUIStore.state.isLoading) {
+                    return;
+                }
+
                 if (status === MIGRATION_STATUS.WAITING) {
                     return;
                 }
@@ -287,8 +291,9 @@ Component.register('swag-migration-process-screen', {
                     this.migrationWorkerService.restoreRunningMigration(false);
 
                     if (
-                        this.migrationProcessStore.state.isMigrating ||
-                        this.migrationWorkerService.status === MIGRATION_STATUS.FINISHED
+                        (this.migrationProcessStore.state.isMigrating ||
+                        this.migrationWorkerService.status === MIGRATION_STATUS.FINISHED) &&
+                        !this.$route.params.startMigration
                     ) {
                         this.restoreRunningMigration();
                     }
@@ -516,6 +521,7 @@ Component.register('swag-migration-process-screen', {
         onFinishWithoutErrors() {
             this.migrationUIStore.setComponentIndex(UI_COMPONENT_INDEX.RESULT_SUCCESS);
             this.$root.$emit('sales-channel-change');
+            this.$root.$emit('on-change-notification-center-visibility', true);
         },
 
         onCloseAbortMigrationConfirmDialog() {
@@ -685,7 +691,6 @@ Component.register('swag-migration-process-screen', {
 
         onProcessMediaFiles() {
             this.migrationUIStore.setComponentIndex(UI_COMPONENT_INDEX.MEDIA_SCREEN);
-            this.$root.$emit('on-change-notification-center-visibility', true);
         }
     }
 });
