@@ -1,3 +1,6 @@
+# 0.10.3
+- Kompatibilität zum Core
+
 # 0.10.2
 - Geschwindigkeit beim Schreiben verbessert 
 - PT-10680 - Request chunk size optimiert

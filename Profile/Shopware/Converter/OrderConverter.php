@@ -80,6 +80,7 @@ abstract class OrderConverter extends ShopwareConverter
         'currencyFactor',
         'payment',
         'status',
+        '_locale',
     ];
 
     /**
@@ -159,6 +160,23 @@ abstract class OrderConverter extends ShopwareConverter
         );
         unset($data['id']);
         $this->uuid = $converted['id'];
+        $converted['languageId'] = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $context);
+        if (!isset($converted['languageId'])) {
+            $this->loggingService->addWarning(
+                $this->runId,
+                LogTypes::EMPTY_NECESSARY_DATA_FIELDS,
+                'Empty necessary data',
+                'Order-Entity could not be converted cause of empty necessary field(s): language',
+                [
+                    'id' => $this->oldId,
+                    'entity' => 'Order',
+                    'fields' => ['language'],
+                ],
+                \count($fields)
+            );
+
+            return new ConvertStruct(null, $data);
+        }
 
         $this->convertValue($converted, 'orderNumber', $data, 'ordernumber');
 
