@@ -11,6 +11,7 @@ use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
 use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\Profile\ProfileInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Exception\LocalReaderNotFoundException;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory;
@@ -19,7 +20,9 @@ use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalTableCount
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalTableReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ReaderRegistry;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
+use SwagMigrationAssistant\Profile\Shopware54\Shopware54Profile;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Profile\Shopware56\Shopware56Profile;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Profile\Shopware\DataSet\FooDataSet;
 
@@ -27,10 +30,13 @@ class LocalGatewayTest extends TestCase
 {
     use KernelTestBehaviour;
 
-    public function testReadFailedNoCredentials(): void
+    /**
+     * @dataProvider profileProvider
+     */
+    public function testReadFailedNoCredentials(string $profileName, ProfileInterface $profile): void
     {
         $connection = new SwagMigrationConnectionEntity();
-        $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
+        $connection->setProfileName($profileName);
         $connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
         $connection->setCredentialFields(
             [
@@ -43,7 +49,7 @@ class LocalGatewayTest extends TestCase
         );
 
         $migrationContext = new MigrationContext(
-            new Shopware55Profile(),
+            $profile,
             $connection,
             '',
             new ProductDataSet()
@@ -74,10 +80,13 @@ class LocalGatewayTest extends TestCase
         $gateway->read($migrationContext);
     }
 
-    public function testReadWithUnknownEntityThrowsException(): void
+    /**
+     * @dataProvider profileProvider
+     */
+    public function testReadWithUnknownEntityThrowsException(string $profileName, ProfileInterface $profile): void
     {
         $connection = new SwagMigrationConnectionEntity();
-        $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
+        $connection->setProfileName($profileName);
         $connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
         $connection->setCredentialFields(
             [
@@ -90,7 +99,7 @@ class LocalGatewayTest extends TestCase
         );
 
         $migrationContext = new MigrationContext(
-            new Shopware55Profile(),
+            $profile,
             $connection,
             '',
             new FooDataSet()
@@ -122,15 +131,18 @@ class LocalGatewayTest extends TestCase
         $gateway->read($migrationContext);
     }
 
-    public function testReadEnvironmentInformationHasEmptyResult(): void
+    /**
+     * @dataProvider profileProvider
+     */
+    public function testReadEnvironmentInformationHasEmptyResult(string $profileName, ProfileInterface $profile): void
     {
         $connection = new SwagMigrationConnectionEntity();
-        $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
+        $connection->setProfileName($profileName);
         $connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
         $connection->setCredentialFields([]);
 
         $migrationContext = new MigrationContext(
-            new Shopware55Profile(),
+            $profile,
             $connection
         );
 
@@ -153,5 +165,23 @@ class LocalGatewayTest extends TestCase
         $response = $gateway->readEnvironmentInformation($migrationContext, Context::createDefaultContext());
 
         static::assertSame($response->getTotals(), []);
+    }
+
+    public function profileProvider()
+    {
+        return [
+            [
+                Shopware54Profile::PROFILE_NAME,
+                new Shopware54Profile(),
+            ],
+            [
+                Shopware55Profile::PROFILE_NAME,
+                new Shopware55Profile(),
+            ],
+            [
+                Shopware56Profile::PROFILE_NAME,
+                new Shopware56Profile(),
+            ],
+        ];
     }
 }

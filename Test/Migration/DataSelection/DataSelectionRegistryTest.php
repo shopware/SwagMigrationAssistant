@@ -10,8 +10,11 @@ use SwagMigrationAssistant\Migration\DataSelection\DataSelectionStruct;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\TotalStruct;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\BasicSettingsDataSelection;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\CustomerAndOrderDataSelection;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\MediaDataSelection;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\NewsletterRecipientDataSelection;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\NumberRangeDataSelection;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\ProductDataSelection;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
@@ -44,6 +47,9 @@ class DataSelectionRegistryTest extends TestCase
                 'product' => new TotalStruct('product', 100),
                 'customer' => new TotalStruct('customer', 5),
                 'media' => new TotalStruct('media', 100),
+                'number_range' => new TotalStruct('number_range', 5),
+                'newsletter_recipient' => new TotalStruct('newsletter_recipient', 50),
+                'language' => new TotalStruct('language', 1),
             ],
             []
         );
@@ -57,6 +63,9 @@ class DataSelectionRegistryTest extends TestCase
             new MediaDataSelection(),
             new ProductDataSelection(),
             new CustomerAndOrderDataSelection(),
+            new BasicSettingsDataSelection(),
+            new NewsletterRecipientDataSelection(),
+            new NumberRangeDataSelection(),
         ]));
     }
 
@@ -68,13 +77,16 @@ class DataSelectionRegistryTest extends TestCase
         );
 
         $expected = [
-            0 => (new ProductDataSelection())->getData()->getId(),
-            1 => (new CustomerAndOrderDataSelection())->getData()->getId(),
-            2 => (new MediaDataSelection())->getData()->getId(),
+            0 => (new BasicSettingsDataSelection())->getData()->getId(),
+            1 => (new NumberRangeDataSelection())->getData()->getId(),
+            2 => (new ProductDataSelection())->getData()->getId(),
+            3 => (new CustomerAndOrderDataSelection())->getData()->getId(),
+            4 => (new MediaDataSelection())->getData()->getId(),
+            5 => (new NewsletterRecipientDataSelection())->getData()->getId(),
         ];
 
         $dataSelections = $this->dataSelectionRegistry->getDataSelections($migrationContext, $this->environmentInformation);
-        static::assertCount(3, $dataSelections->getElements());
+        static::assertCount(6, $dataSelections->getElements());
 
         $i = 0;
         /** @var DataSelectionStruct $selection */
@@ -96,5 +108,19 @@ class DataSelectionRegistryTest extends TestCase
 
         static::assertCount(1, $dataSelections);
         static::assertSame($dataSelections->first()->getId(), (new MediaDataSelection())->getData()->getId());
+    }
+
+    public function testGetDataSelectionById(): void
+    {
+        $this->dataSelectionRegistry = new DataSelectionRegistry(new DummyCollection([new MediaDataSelection()]));
+        $migrationContext = new MigrationContext(
+            new Shopware55Profile(),
+            $this->connection
+        );
+
+        $dataSelections = $this->dataSelectionRegistry->getDataSelectionsByIds($migrationContext, $this->environmentInformation, ['media']);
+
+        static::assertCount(1, $dataSelections);
+        static::assertInstanceOf(DataSelectionStruct::class, $dataSelections->get('media'));
     }
 }

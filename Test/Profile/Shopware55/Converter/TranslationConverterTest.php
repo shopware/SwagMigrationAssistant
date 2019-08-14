@@ -409,4 +409,21 @@ class TranslationConverterTest extends TestCase
         static::assertSame(PropertyGroupDefinition::class, $converted['entityDefinitionClass']);
         static::assertSame('Size', $converted['translations'][$defaultLanguage]['optionName']);
     }
+
+    public function testConvertProductWithoutLocale(): void
+    {
+        $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
+        $context = Context::createDefaultContext();
+
+        $productConverter = new Shopware55ProductConverter($this->mappingService, new DummyMediaFileService(), $this->loggingService);
+        $productConverter->convert($productData[0], $context, $this->productMigrationContext);
+
+        $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
+        $convertResult = $this->translationConverter->convert($translationData['productnolocale'], $context, $this->migrationContext);
+
+        static::assertNull($convertResult->getConverted());
+        static::assertCount(1, $this->loggingService->getLoggingArray());
+        $logs = $this->loggingService->getLoggingArray();
+        static::assertSame('SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_TRANSLATION', $logs[0]['code']);
+    }
 }

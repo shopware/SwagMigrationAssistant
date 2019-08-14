@@ -524,6 +524,18 @@ class MigrationControllerTest extends TestCase
         ], $result);
     }
 
+    public function testDownloadMediaWithoutRunUuid(): void
+    {
+        $properties = [
+            'fileChunkByteSize' => 1000,
+        ];
+
+        $request = new Request([], $properties);
+
+        $this->expectException(MigrationContextPropertyMissingException::class);
+        $this->controller->processMedia($request, $this->context);
+    }
+
     public function testDownloadMediaWithInvalidRunUuid(): void
     {
         $inputWorkload = [

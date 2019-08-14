@@ -4,6 +4,7 @@ namespace SwagMigrationAssistant\Profile\Shopware54\Converter;
 
 use Shopware\Core\Framework\Context;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
+use SwagMigrationAssistant\Migration\Logging\Log\DocumentTypeNotSupported;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Converter\OrderDocumentConverter;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderDocumentDataSet;
@@ -20,6 +21,8 @@ class Shopware54OrderDocumentConverter extends OrderDocumentConverter
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
         $data['id'] = $data['ID'];
+
+        unset($data['ID']);
 
         return parent::convert($data, $context, $migrationContext);
     }
@@ -40,6 +43,12 @@ class Shopware54OrderDocumentConverter extends OrderDocumentConverter
                 $key = 'storno';
                 break;
             default:
+                $this->loggingService->addLogEntry(new DocumentTypeNotSupported(
+                    $this->runId,
+                    $data['id'],
+                    $data['key']
+                ));
+
                 return null;
         }
 

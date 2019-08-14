@@ -46,6 +46,10 @@ class DummyMappingService extends MappingService
         return $uuid;
     }
 
+    public function writeMapping(Context $context): void
+    {
+    }
+
     public function saveMapping(array $mapping): void
     {
     }
@@ -57,6 +61,11 @@ class DummyMappingService extends MappingService
     public function getUuid(string $connectionId, string $entityName, string $oldId, Context $context): ?string
     {
         return $this->uuids[$entityName][$oldId] ?? null;
+    }
+
+    public function getUuidsByEntity(string $connectionId, string $entityName, Context $context): array
+    {
+        return [];
     }
 
     public function getValue(string $connectionId, string $entityName, string $oldId, Context $context): ?string
