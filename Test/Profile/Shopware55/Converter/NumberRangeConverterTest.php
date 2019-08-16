@@ -60,8 +60,9 @@ class NumberRangeConverterTest extends TestCase
     public function testConvert(): void
     {
         $numberRangeData = require __DIR__ . '/../../../_fixtures/number_range_data.php';
-
         $context = Context::createDefaultContext();
+
+        // Artikelbestellnummer
         $convertResult = $this->converter->convert($numberRangeData[0], $context, $this->migrationContext);
         $this->converter->writeMapping($context);
         $converted = $convertResult->getConverted();
@@ -73,6 +74,7 @@ class NumberRangeConverterTest extends TestCase
         static::assertSame('SW{n}', $converted['pattern']);
         static::assertSame(10002, $converted['start']);
 
+        // Kunden
         $convertResult = $this->converter->convert($numberRangeData[1], $context, $this->migrationContext);
         $this->converter->writeMapping($context);
         $converted = $convertResult->getConverted();
@@ -83,6 +85,42 @@ class NumberRangeConverterTest extends TestCase
         static::assertFalse($converted['global']);
         static::assertSame('SW{n}', $converted['pattern']);
         static::assertSame(20006, $converted['start']);
+
+        // Rechnungen
+        $convertResult = $this->converter->convert($numberRangeData[3], $context, $this->migrationContext);
+        $this->converter->writeMapping($context);
+        $converted = $convertResult->getConverted();
+
+        static::assertNull($convertResult->getUnmapped());
+        static::assertArrayHasKey('id', $converted);
+
+        static::assertFalse($converted['global']);
+        static::assertSame('SW{n}', $converted['pattern']);
+        static::assertSame(30006, $converted['start']);
+
+        // Lieferscheine
+        $convertResult = $this->converter->convert($numberRangeData[4], $context, $this->migrationContext);
+        $this->converter->writeMapping($context);
+        $converted = $convertResult->getConverted();
+
+        static::assertNull($convertResult->getUnmapped());
+        static::assertArrayHasKey('id', $converted);
+
+        static::assertFalse($converted['global']);
+        static::assertSame('SW{n}', $converted['pattern']);
+        static::assertSame(40006, $converted['start']);
+
+        // Gutschriften
+        $convertResult = $this->converter->convert($numberRangeData[5], $context, $this->migrationContext);
+        $this->converter->writeMapping($context);
+        $converted = $convertResult->getConverted();
+
+        static::assertNull($convertResult->getUnmapped());
+        static::assertArrayHasKey('id', $converted);
+
+        static::assertFalse($converted['global']);
+        static::assertSame('SW{n}', $converted['pattern']);
+        static::assertSame(50006, $converted['start']);
     }
 
     public function testConvertWithUnknownType(): void
