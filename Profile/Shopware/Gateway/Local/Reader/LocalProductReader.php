@@ -81,8 +81,7 @@ class LocalProductReader extends LocalAbstractReader implements LocalReaderInter
         $query->addSelect('category.id');
 
         $query->innerJoin('category', 's_core_shops', 'shop', 'category.id = shop.category_id');
-        $query->addSelect('shop.id');
-        $query->addSelect('shop.main_id');
+        $query->addSelect('IFNULL(shop.main_id, shop.id) AS "id"');
 
         $query->where('category.id IN (:ids)');
         $query->setParameter('ids', $categories, Connection::PARAM_INT_ARRAY);
@@ -331,11 +330,20 @@ class LocalProductReader extends LocalAbstractReader implements LocalReaderInter
 
     private function getShops(array $topMostCategoriesByProduct): array
     {
+        $productToCategory = [];
         $ids = [];
-        foreach ($topMostCategoriesByProduct as $product) {
+        foreach ($topMostCategoriesByProduct as $productKey => $product) {
             foreach ($product as $category) {
                 if (!isset($ids[$category])) {
                     $ids[$category] = $category;
+                }
+
+                $key = $productKey . '_' . $category;
+                if (!isset($productToCategory[$key])) {
+                    $productToCategory[$key] = [
+                        'productId' => $productKey,
+                        'categoryId' => $category,
+                    ];
                 }
             }
         }
@@ -343,19 +351,16 @@ class LocalProductReader extends LocalAbstractReader implements LocalReaderInter
         $shops = $this->fetchShopsByCategories($ids);
 
         $ids = [];
-        foreach ($topMostCategoriesByProduct as $productKey => $product) {
-            foreach ($product as $key => $category) {
-                if (isset($shops[$key]) && !isset($ids[$productKey][$key])) {
-                    foreach ($shops[$key] as $shop) {
-                        if (empty($shop['main_id'])) {
-                            $shopId = $shop['id'];
-                        } else {
-                            $shopId = $shop['main_id'];
-                        }
+        foreach ($productToCategory as $content) {
+            $productId = $content['productId'];
+            $categoryId = $content['categoryId'];
 
-                        if (!isset($ids[$productKey][$shopId])) {
-                            $ids[$productKey][$shopId] = $shopId;
-                        }
+            if (isset($shops[$categoryId])) {
+                foreach ($shops[$categoryId] as $shop) {
+                    $shopId = $shop['id'];
+
+                    if (!isset($ids[$productId][$shopId])) {
+                        $ids[$productId][$shopId] = $shopId;
                     }
                 }
             }
