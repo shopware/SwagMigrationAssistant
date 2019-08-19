@@ -10,7 +10,9 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\Aggreg
 use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\CountResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
+use SwagMigrationAssistant\Migration\Logging\Log\LogEntryInterface;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingCollection;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingEntity;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
@@ -48,6 +50,12 @@ class HistoryService implements HistoryServiceInterface
     ): array {
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('runId', $runUuid));
+        $criteria->addFilter(new NotFilter(
+                NotFilter::CONNECTION_AND, [
+                    new EqualsFilter('level', LogEntryInterface::LOG_LEVEL_INFO),
+                ]
+            )
+        );
         $criteria->addAggregation(new CountAggregation('code', 'count', 'code'));
 
         // Currently not working, maybe it will never work - TODO: check if this works after core change (NEXT-4144)

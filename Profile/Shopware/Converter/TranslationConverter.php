@@ -14,10 +14,10 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
 use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
 use SwagMigrationAssistant\Migration\Logging\Log\InvalidUnserializedData;
-use SwagMigrationAssistant\Migration\Logging\Log\UnsupportedObjectType;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedTranslationType;
 
 abstract class TranslationConverter extends ShopwareConverter
 {
@@ -99,7 +99,7 @@ abstract class TranslationConverter extends ShopwareConverter
         }
 
         $this->loggingService->addLogEntry(
-            new UnsupportedObjectType(
+            new UnsupportedTranslationType(
                 $migrationContext->getRunUuid(),
                 $data['objecttype'],
                 DefaultEntities::TRANSLATION,

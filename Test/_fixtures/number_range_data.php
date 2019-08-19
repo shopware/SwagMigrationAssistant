@@ -27,4 +27,31 @@ return [
         '_locale' => 'de-DE',
         'prefix' => 'SW',
     ],
+
+    3 => [
+        'id' => '928',
+        'number' => '30005',
+        'name' => 'doc_0',
+        'desc' => 'Rechnungen',
+        '_locale' => 'de-DE',
+        'prefix' => 'SW',
+    ],
+
+    4 => [
+        'id' => '929',
+        'number' => '40005',
+        'name' => 'doc_1',
+        'desc' => 'Lieferscheine',
+        '_locale' => 'de-DE',
+        'prefix' => 'SW',
+    ],
+
+    5 => [
+        'id' => '930',
+        'number' => '50005',
+        'name' => 'doc_2',
+        'desc' => 'Gutschriften',
+        '_locale' => 'de-DE',
+        'prefix' => 'SW',
+    ],
 ];

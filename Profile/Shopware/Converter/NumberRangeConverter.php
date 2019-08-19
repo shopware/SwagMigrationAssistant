@@ -24,7 +24,7 @@ abstract class NumberRangeConverter extends ShopwareConverter
         'user' => 'customer',
         'invoice' => 'order',
         'articleordernumber' => 'product',
-        'doc_0' => 'document_inovice',
+        'doc_0' => 'document_invoice',
         'doc_1' => 'document_delivery_note',
         'doc_2' => 'document_credit_note',
     ];
