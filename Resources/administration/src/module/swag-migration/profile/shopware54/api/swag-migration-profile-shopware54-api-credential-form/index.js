@@ -1,4 +1,4 @@
-import { Component } from 'src/core/shopware';
+const { Component } = Shopware;
 
 Component.extend(
     'swag-migration-profile-shopware54-api-credential-form',

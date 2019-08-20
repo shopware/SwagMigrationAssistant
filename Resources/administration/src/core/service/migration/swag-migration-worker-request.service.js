@@ -1,5 +1,6 @@
-import { Application, State } from 'src/core/shopware';
 import { WORKER_INTERRUPT_TYPE } from './swag-migration-worker.service';
+
+const { Application, State } = Shopware;
 
 /**
  * Describes the current API endpoint.

@@ -1,6 +1,7 @@
-import { Component } from 'src/core/shopware';
-import utils from 'src/core/service/util.service';
 import template from './swag-migration-tab-card-item.html.twig';
+
+const { Component } = Shopware;
+const utils = Shopware.Utils;
 
 Component.register('swag-migration-tab-card-item', {
     template,

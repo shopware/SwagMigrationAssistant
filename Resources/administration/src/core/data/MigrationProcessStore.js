@@ -1,6 +1,7 @@
-import { object } from 'src/core/service/util.service';
 import { MIGRATION_STATUS } from '../service/migration/swag-migration-worker-status-manager.service';
 import SimpleStateManagementStore from './SimpleStateManagementStore';
+
+const { object } = Shopware.Utils;
 
 /**
  * To get this store in the browser console execute:
