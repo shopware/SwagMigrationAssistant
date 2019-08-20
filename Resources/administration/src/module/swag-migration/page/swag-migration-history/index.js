@@ -1,6 +1,7 @@
-import { Component, State, Mixin } from 'src/core/shopware';
 import template from './swag-migration-history.html.twig';
 import './swag-migration-history.scss';
+
+const { Component, State, Mixin } = Shopware;
 
 Component.register('swag-migration-history', {
     template,

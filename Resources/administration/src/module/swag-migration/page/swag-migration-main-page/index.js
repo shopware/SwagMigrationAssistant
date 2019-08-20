@@ -1,6 +1,7 @@
-import { Component, State } from 'src/core/shopware';
 import template from './swag-migration-main-page.html.twig';
 import './swag-migration-main-page.scss';
+
+const { Component, State } = Shopware;
 
 Component.register('swag-migration-main-page', {
     template,

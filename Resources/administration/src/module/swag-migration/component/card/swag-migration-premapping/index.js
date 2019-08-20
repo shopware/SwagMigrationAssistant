@@ -1,7 +1,8 @@
-import { Component, State } from 'src/core/shopware';
 import template from './swag-migration-premapping.html.twig';
 import { UI_COMPONENT_INDEX } from '../../../../../core/data/MigrationUIStore';
 import './swag-migration-premapping.scss';
+
+const { Component, State } = Shopware;
 
 Component.register('swag-migration-premapping', {
     template,
