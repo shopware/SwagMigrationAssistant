@@ -1,5 +1,6 @@
-import { Component, State } from 'src/core/shopware';
 import template from './swag-migration-wizard-page-connection-select.html.twig';
+
+const { Component, State } = Shopware;
 
 Component.register('swag-migration-wizard-page-connection-select', {
     template,

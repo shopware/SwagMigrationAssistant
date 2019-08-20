@@ -1,6 +1,7 @@
-import { Component } from 'src/core/shopware';
 import template from './swag-migration-expand-div.html.twig';
 import './swag-migration-expand-div.scss';
+
+const { Component } = Shopware;
 
 Component.register('swag-migration-expand-div', {
     template,

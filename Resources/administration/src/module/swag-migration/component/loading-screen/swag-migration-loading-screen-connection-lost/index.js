@@ -1,6 +1,7 @@
-import { Component } from 'src/core/shopware';
 import template from './swag-migration-loading-screen-connection-lost.html.twig';
 import './swag-migration-loading-screen-connection-lost.scss';
+
+const { Component } = Shopware;
 
 Component.register('swag-migration-loading-screen-connection-lost', {
     template,

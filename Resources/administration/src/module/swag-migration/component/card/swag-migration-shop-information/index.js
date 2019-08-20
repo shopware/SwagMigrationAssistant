@@ -1,8 +1,9 @@
-import { Component, State } from 'src/core/shopware';
-import { format } from 'src/core/service/util.service';
 import CriteriaFactory from 'src/core/factory/criteria.factory';
 import template from './swag-migration-shop-information.html.twig';
 import './swag-migration-shop-information.scss';
+
+const { Component, State } = Shopware;
+const { format } = Shopware.Utils;
 
 const BADGE_TYPE = Object.freeze({
     SUCCESS: 'success',

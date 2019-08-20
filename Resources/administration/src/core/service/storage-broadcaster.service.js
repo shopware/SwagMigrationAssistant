@@ -1,4 +1,4 @@
-import utils from 'src/core/service/util.service';
+const utils = Shopware.Utils;
 
 export default class StorageBroadcastService {
     constructor(receiveCallback = () => {}, channelKey) {
