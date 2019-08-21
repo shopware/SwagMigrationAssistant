@@ -1,6 +1,7 @@
-import { Component, Mixin } from 'src/core/shopware';
 import template from './swag-migration-grid-selection.html.twig';
 import './swag-migration-grid-selection.scss';
+
+const { Component, Mixin } = Shopware;
 
 Component.register('swag-migration-grid-selection', {
     template,

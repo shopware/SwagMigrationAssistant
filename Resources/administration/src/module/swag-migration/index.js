@@ -1,10 +1,10 @@
-import { Module } from 'src/core/shopware';
-
 import './mixin';
 import './component';
 import './page';
 import './extension/sw-settings-index';
 import './profile';
+
+const { Module } = Shopware;
 
 Module.register('swag-migration', {
     type: 'plugin',

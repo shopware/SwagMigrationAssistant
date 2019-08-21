@@ -1,8 +1,8 @@
-import { Component, Mixin, State } from 'src/core/shopware';
-import CriteriaFactory from 'src/core/factory/criteria.factory';
 import template from './swag-migration-wizard.html.twig';
 import './swag-migration-wizard.scss';
 
+const { Component, Mixin, State } = Shopware;
+const CriteriaFactory = Shopware.DataDeprecated.CriteriaFactory;
 
 const CONNECTION_NAME_ERRORS = Object.freeze({
     NAME_TO_SHORT: 'SWAG_MIGRATION_CONNECTION_NAME_TO_SHORT',

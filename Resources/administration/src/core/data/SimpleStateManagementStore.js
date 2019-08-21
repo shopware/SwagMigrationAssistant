@@ -1,4 +1,4 @@
-import { types, object } from 'src/core/service/util.service';
+const { types, object } = Shopware.Utils;
 
 /**
  * This store can be used for simple state management. For more details read the following:
