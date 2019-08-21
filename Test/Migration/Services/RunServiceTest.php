@@ -237,7 +237,6 @@ class RunServiceTest extends TestCase
     {
         $userId = Uuid::randomHex();
         $origin = new AdminApiSource($userId);
-        $origin->setIsAdmin(true);
         $context = Context::createDefaultContext($origin);
 
         $migrationContext = $this->migrationContextFactory->createByConnection($this->connection);

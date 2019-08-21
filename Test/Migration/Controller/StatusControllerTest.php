@@ -328,7 +328,6 @@ class StatusControllerTest extends TestCase
     {
         $userId = Uuid::randomHex();
         $origin = new AdminApiSource($userId);
-        $origin->setIsAdmin(true);
         $context = Context::createDefaultContext($origin);
 
         $params = [
@@ -468,7 +467,6 @@ class StatusControllerTest extends TestCase
 
         $userId = Uuid::randomHex();
         $origin = new AdminApiSource($userId);
-        $origin->setIsAdmin(true);
         $context = Context::createDefaultContext($origin);
 
         $request = new Request([], $params);
