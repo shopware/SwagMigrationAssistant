@@ -1,8 +1,8 @@
-import CriteriaFactory from 'src/core/factory/criteria.factory';
 import template from './swag-migration-history-detail.html.twig';
 import './swag-migration-history-detail.scss';
 
 const { Component, State } = Shopware;
+const CriteriaFactory = Shopware.DataDeprecated.CriteriaFactory;
 
 Component.register('swag-migration-history-detail', {
     template,
