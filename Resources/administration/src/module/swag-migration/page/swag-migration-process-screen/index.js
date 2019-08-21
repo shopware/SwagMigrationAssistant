@@ -1,4 +1,3 @@
-import { Component, State } from 'src/core/shopware';
 import template from './swag-migration-process-screen.html.twig';
 import './swag-migration-process-screen.scss';
 import { UI_COMPONENT_INDEX } from '../../../../core/data/MigrationUIStore';
@@ -7,6 +6,8 @@ import {
     MIGRATION_ACCESS_TOKEN_NAME,
     WORKER_INTERRUPT_TYPE
 } from '../../../../core/service/migration/swag-migration-worker.service';
+
+const { Component, State } = Shopware;
 
 Component.register('swag-migration-process-screen', {
     template,

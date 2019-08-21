@@ -1,5 +1,6 @@
-import { Application } from 'src/core/shopware';
 import MigrationWorkerService from '../core/service/migration/swag-migration-worker.service';
+
+const { Application } = Shopware;
 
 Application.addServiceProvider('migrationWorkerService', (container) => {
     return new MigrationWorkerService(

@@ -1,6 +1,7 @@
-import { Component } from 'src/core/shopware';
 import template from './swag-migration-progress-bar.html.twig';
 import './swag-migration-progress-bar.scss';
+
+const { Component } = Shopware;
 
 Component.register('swag-migration-progress-bar', {
     template,

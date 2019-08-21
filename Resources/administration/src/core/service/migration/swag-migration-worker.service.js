@@ -1,7 +1,8 @@
-import { Application, State } from 'src/core/shopware';
 import StorageBroadcastService from '../storage-broadcaster.service';
 import { WorkerRequest } from './swag-migration-worker-request.service';
 import { MIGRATION_STATUS, WorkerStatusManager } from './swag-migration-worker-status-manager.service';
+
+const { Application, State } = Shopware;
 
 export const MIGRATION_ACCESS_TOKEN_NAME = 'swagMigrationAccessToken';
 

@@ -1,4 +1,4 @@
-import { State } from 'src/core/shopware';
+const { State } = Shopware;
 
 /**
  * Describes the current step in the migration (status).

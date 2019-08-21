@@ -1,4 +1,4 @@
-import { State } from 'src/core/shopware';
+const { State } = Shopware;
 
 class UiStoreInitService {
     constructor(migrationService) {

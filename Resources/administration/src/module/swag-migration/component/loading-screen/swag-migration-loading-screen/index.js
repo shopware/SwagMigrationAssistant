@@ -1,8 +1,9 @@
-import { Component, State } from 'src/core/shopware';
 import template from './swag-migration-loading-screen.html.twig';
 import './swag-migration-loading-screen.scss';
 import { MIGRATION_DISPLAY_STATUS } from
     '../../../../../core/service/migration/swag-migration-worker-status-manager.service';
+
+const { Component, State } = Shopware;
 
 Component.register('swag-migration-loading-screen', {
     template,

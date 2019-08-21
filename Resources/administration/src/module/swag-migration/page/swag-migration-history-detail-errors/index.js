@@ -1,6 +1,7 @@
-import { Component, Mixin } from 'src/core/shopware';
 import template from './swag-migration-history-detail-errors.html.twig';
 import './swag-migration-history-detail-errors.scss';
+
+const { Component, Mixin } = Shopware;
 
 Component.register('swag-migration-history-detail-errors', {
     template,
