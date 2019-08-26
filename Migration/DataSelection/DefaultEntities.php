@@ -76,6 +76,8 @@ final class DefaultEntities
 
     public const ORDER_DOCUMENT = 'order_document';
 
+    public const ORDER_DOCUMENT_CUSTOM_FIELD = 'order_document_custom_field';
+
     public const ORDER_DOCUMENT_MEDIA = 'order_document_media';
 
     public const ORDER_LINE_ITEM = 'order_line_item';

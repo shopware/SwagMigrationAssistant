@@ -88,6 +88,13 @@
             <tag name="shopware.migration.writer"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Migration\Writer\OrderDocumentAttributeWriter"
+                 parent="SwagMigrationAssistant\Migration\Writer\AbstractWriter">
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
+            <argument type="service" id="Shopware\Core\Framework\CustomField\Aggregate\CustomFieldSet\CustomFieldSetDefinition"/>
+            <tag name="shopware.migration.writer"/>
+        </service>
+
         <service id="SwagMigrationAssistant\Migration\Writer\OrderDocumentWriter"
                  parent="SwagMigrationAssistant\Migration\Writer\AbstractWriter">
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>

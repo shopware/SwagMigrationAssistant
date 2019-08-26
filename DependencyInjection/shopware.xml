@@ -92,6 +92,10 @@
                  parent="SwagMigrationAssistant\Profile\Shopware\Converter\AttributeConverter">
         </service>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware\Converter\OrderDocumentAttributeConverter" abstract="true"
+                 parent="SwagMigrationAssistant\Profile\Shopware\Converter\AttributeConverter">
+        </service>
+
         <service id="SwagMigrationAssistant\Profile\Shopware\Converter\ProductConverter" abstract="true">
             <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\MappingService"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Media\MediaFileService"/>
@@ -421,6 +425,10 @@
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\SalesChannelDataSet">
+            <tag name="shopware.migration.data_set" />
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderDocumentAttributeDataSet">
             <tag name="shopware.migration.data_set" />
         </service>
 

@@ -76,6 +76,11 @@
             <tag name="shopware.migration.converter"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware56\Converter\Shopware56OrderDocumentAttributeConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware\Converter\OrderDocumentAttributeConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
         <service id="SwagMigrationAssistant\Profile\Shopware56\Converter\Shopware56OrderDocumentConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware\Converter\OrderDocumentConverter">
             <tag name="shopware.migration.converter"/>

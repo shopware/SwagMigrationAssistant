@@ -123,6 +123,11 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         $converted['documentType'] = $documentType;
         unset($data['documenttype']);
 
+        if (isset($data['attributes'])) {
+            $converted['customFields'] = $this->getAttributes($data['attributes']);
+        }
+        unset($data['attributes']);
+
         $converted['documentMediaFile'] = $this->getMediaFile($data);
         unset(
             $data['id'],
@@ -198,5 +203,19 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         }
 
         return $newMedia;
+    }
+
+    protected function getAttributes(array $attributes): array
+    {
+        $result = [];
+
+        foreach ($attributes as $attribute => $value) {
+            if ($attribute === 'id' || $attribute === 'documentID') {
+                continue;
+            }
+            $result[DefaultEntities::ORDER_DOCUMENT . '_' . $attribute] = $value;
+        }
+
+        return $result;
     }
 }
