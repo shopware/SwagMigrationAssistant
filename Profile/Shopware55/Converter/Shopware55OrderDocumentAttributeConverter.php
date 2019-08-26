@@ -1,8 +1,6 @@
 <?php declare(strict_types=1);
 
-
 namespace SwagMigrationAssistant\Profile\Shopware55\Converter;
-
 
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Converter\OrderDocumentAttributeConverter;

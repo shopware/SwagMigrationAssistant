@@ -98,6 +98,7 @@ abstract class OrderDocumentConverter extends ShopwareConverter
 
             return new ConvertStruct(null, $oldData);
         }
+        unset($data['orderID']);
 
         $converted['id'] = $this->mappingService->createNewUuid(
             $this->connectionId,
@@ -131,8 +132,15 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         $converted['documentMediaFile'] = $this->getMediaFile($data);
         unset(
             $data['id'],
+            $data['hash'],
+            $data['_locale'],
+
+            // Unused but not necessary
             $data['description'],
-            $data['hash']
+            $data['date'],
+            $data['type'],
+            $data['userID'],
+            $data['amount']
         );
 
         if (empty($data)) {

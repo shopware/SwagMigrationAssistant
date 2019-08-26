@@ -2,10 +2,6 @@
 
 namespace SwagMigrationAssistant\Migration\Writer;
 
-use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
-use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 
 class OrderDocumentAttributeWriter extends AbstractWriter
