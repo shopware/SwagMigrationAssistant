@@ -11,6 +11,16 @@ return [
         'locale' => 'en-US',
         'name' => null,
     ],
+    'productnolocale' => [
+        'id' => '277',
+        'objecttype' => 'article',
+        'objectdata' => 'a:2:{s:10:"txtArtikel";s:65:"Main product with marking free of shipping costs and highlighting";s:19:"txtshortdescription";s:25:"short english description";}',
+        'objectkey' => '6',
+        'objectlanguage' => '2',
+        'dirty' => '1',
+        'locale' => null,
+        'name' => null,
+    ],
     'manufacturer' => [
         'id' => '273',
         'objecttype' => 'supplier',

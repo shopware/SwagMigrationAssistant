@@ -29,6 +29,7 @@ use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Media\MediaFileService;
 use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\MigrationContextFactory;
 use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
 use SwagMigrationAssistant\Migration\Profile\ProfileRegistry;
 use SwagMigrationAssistant\Migration\Run\RunService;
@@ -39,8 +40,11 @@ use SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\CustomerAndOrderDataSelection;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\ProductDataSelection;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
+use SwagMigrationAssistant\Profile\Shopware54\Shopware54Profile;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Profile\Shopware56\Shopware56Profile;
 use SwagMigrationAssistant\Test\MigrationServicesTrait;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -110,7 +114,7 @@ class StatusControllerTest extends TestCase
         $salesChannelRepo = $this->getContainer()->get('sales_channel.repository');
         $themeRepo = $this->getContainer()->get('theme.repository');
         $this->runRepo = $this->getContainer()->get('swag_migration_run.repository');
-        $this->migrationContextFactory = $this->getContainer()->get('SwagMigrationAssistant\Migration\MigrationContextFactory');
+        $this->migrationContextFactory = $this->getContainer()->get(MigrationContextFactory::class);
         $loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
 
         $this->context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) {
@@ -209,6 +213,55 @@ class StatusControllerTest extends TestCase
         );
     }
 
+    public function connectionProvider()
+    {
+        return [
+            [
+                Uuid::randomHex(),
+                Shopware54Profile::PROFILE_NAME,
+                'myConnection54',
+            ],
+            [
+                Uuid::randomHex(),
+                Shopware55Profile::PROFILE_NAME,
+                'myConnection55',
+            ],
+            [
+                Uuid::randomHex(),
+                Shopware56Profile::PROFILE_NAME,
+                'myConnection56',
+            ],
+        ];
+    }
+
+    public function testGetProfiles(): void
+    {
+        $response = $this->controller->getProfiles();
+
+        static::assertInstanceOf(JsonResponse::class, $response);
+        $this->assertJSON($response->getContent());
+    }
+
+    public function testGetGatewaysWithoutProfileName(): void
+    {
+        $request = new Request();
+        $this->expectException(MigrationContextPropertyMissingException::class);
+        $this->controller->getGateways($request);
+    }
+
+    public function testGetGateways(): void
+    {
+        $request = new Request(['profileName' => 'shopware55'], []);
+        $response = $this->controller->getGateways($request);
+
+        static::assertInstanceOf(JsonResponse::class, $response);
+        $this->assertJSON($response->getContent());
+
+        $gateways = json_decode($response->getContent(), true);
+        static::assertSame('local', $gateways[0]);
+        static::assertSame('api', $gateways[1]);
+    }
+
     public function testUpdateConnectionCredentials(): void
     {
         $context = Context::createDefaultContext();
@@ -280,10 +333,15 @@ class StatusControllerTest extends TestCase
         $this->controller->updateConnectionCredentials($request, $context);
     }
 
-    public function testGetDataSelection(): void
+    /**
+     * @dataProvider connectionProvider
+     */
+    public function testGetDataSelection(string $connectionId, string $profileName, string $connectionName): void
     {
+        $this->createConnection($connectionId, $profileName, $connectionName);
+
         $context = Context::createDefaultContext();
-        $request = new Request(['connectionId' => $this->connectionId]);
+        $request = new Request(['connectionId' => $connectionId]);
         $result = $this->controller->getDataSelection($request, $context);
         $state = json_decode($result->getContent(), true);
 
@@ -572,5 +630,27 @@ class StatusControllerTest extends TestCase
             && array_key_exists('runId', $state)
             && array_key_exists('runProgress', $state)
         ;
+    }
+
+    private function createConnection(string $connectionId, string $profileName, string $connectionName)
+    {
+        $this->context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use ($connectionId, $profileName, $connectionName) {
+            $this->connectionRepo->create(
+                [
+                    [
+                        'id' => $connectionId,
+                        'name' => $connectionName,
+                        'credentialFields' => [
+                            'endpoint' => 'testEndpoint',
+                            'apiUser' => 'testUser',
+                            'apiKey' => 'testKey',
+                        ],
+                        'profileName' => $profileName,
+                        'gatewayName' => ShopwareLocalGateway::GATEWAY_NAME,
+                    ],
+                ],
+                $context
+            );
+        });
     }
 }

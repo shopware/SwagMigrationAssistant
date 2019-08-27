@@ -17,6 +17,8 @@ use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiTableReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\ShopwareApiGateway;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Api\Reader\ApiEnvironmentDummyReader;
+use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Api\Reader\ApiTableCountDummyReader;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Profile\Shopware\DataSet\FooDataSet;
 
@@ -79,5 +81,37 @@ class ShopwareApiGatewayTest extends TestCase
         static::assertSame($response->getRequestStatus()->getCode(), $errorException->getErrorCode());
         static::assertSame($response->getRequestStatus()->getMessage(), $errorException->getMessage());
         static::assertFalse($response->getRequestStatus()->getIsWarning());
+    }
+
+    public function testReadEnvironmentInformation(): void
+    {
+        $connection = new SwagMigrationConnectionEntity();
+        $connection->setCredentialFields(['endpoint' => 'foo']);
+
+        $migrationContext = new MigrationContext(
+            new Shopware55Profile(),
+            $connection
+        );
+
+        $connectionFactory = new ConnectionFactory();
+        $apiReader = new ApiReader($connectionFactory);
+        $environmentReader = new ApiEnvironmentDummyReader($connectionFactory);
+        $tableReader = new ApiTableReader($connectionFactory);
+        $tableCountReader = new ApiTableCountDummyReader($connectionFactory, $this->getContainer()->get(DataSetRegistry::class), new DummyLoggingService());
+
+        $gateway = new ShopwareApiGateway(
+            $apiReader,
+            $environmentReader,
+            $tableReader,
+            $tableCountReader,
+            $this->getContainer()->get('currency.repository')
+        );
+        /** @var EnvironmentInformation $response */
+        $response = $gateway->readEnvironmentInformation($migrationContext, Context::createDefaultContext());
+        static::assertInstanceOf(EnvironmentInformation::class, $response);
+
+        static::assertSame('Shopware', $response->getSourceSystemName());
+        static::assertSame('___VERSION___', $response->getSourceSystemVersion());
+        static::assertSame('foo', $response->getSourceSystemDomain());
     }
 }

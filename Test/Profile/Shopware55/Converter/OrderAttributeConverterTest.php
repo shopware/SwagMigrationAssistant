@@ -59,6 +59,7 @@ class OrderAttributeConverterTest extends TestCase
 
         $context = Context::createDefaultContext();
         $convertResult = $this->converter->convert($categoryData[3], $context, $this->migrationContext);
+        $this->converter->writeMapping($context);
 
         $converted = $convertResult->getConverted();
 

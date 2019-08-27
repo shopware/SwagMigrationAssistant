@@ -153,7 +153,6 @@ class MigrateDataCommand extends Command
 
         /** @var SwagMigrationRunEntity|null $run */
         $run = $this->migrationRunRepo->search(new Criteria([$progressState->getRunId()]), $context)->first();
-
         $migrationContext = $this->migrationContextFactory->create($run);
 
         $this->generatePremapping($run, $context);

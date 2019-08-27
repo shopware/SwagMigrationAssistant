@@ -85,6 +85,7 @@ class CurrencyConverterTest extends TestCase
     {
         $currencyData = require __DIR__ . '/../../../_fixtures/currency_data.php';
         $convertResult = $this->converter->convert($currencyData[0], $this->context, $this->migrationContext);
+        $this->converter->writeMapping($this->context);
         $converted = $convertResult->getConverted();
         $defaultLanguage = BasicSettingsMappingService::DEFAULT_LANGUAGE_UUID;
 

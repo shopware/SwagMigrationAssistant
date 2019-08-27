@@ -26,6 +26,7 @@ use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Media\MediaFileService;
 use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\MigrationContextFactory;
 use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
 use SwagMigrationAssistant\Migration\Profile\ProfileRegistry;
 use SwagMigrationAssistant\Migration\Profile\ProfileRegistryInterface;
@@ -136,7 +137,7 @@ class MigrationControllerTest extends TestCase
         $this->profileRegistry = $this->getContainer()->get(ProfileRegistry::class);
         $this->gatewayRegistry = $this->getContainer()->get(GatewayRegistry::class);
         $this->dataSetRegistry = $this->getContainer()->get(DataSetRegistry::class);
-        $this->migrationContextFactory = $this->getContainer()->get('SwagMigrationAssistant\Migration\MigrationContextFactory');
+        $this->migrationContextFactory = $this->getContainer()->get(MigrationContextFactory::class);
         $loggingService = new LoggingService($loggingRepo);
 
         $this->context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) {
@@ -522,6 +523,18 @@ class MigrationControllerTest extends TestCase
         static::assertSame([
             'validToken' => true,
         ], $result);
+    }
+
+    public function testDownloadMediaWithoutRunUuid(): void
+    {
+        $properties = [
+            'fileChunkByteSize' => 1000,
+        ];
+
+        $request = new Request([], $properties);
+
+        $this->expectException(MigrationContextPropertyMissingException::class);
+        $this->controller->processMedia($request, $this->context);
     }
 
     public function testDownloadMediaWithInvalidRunUuid(): void
