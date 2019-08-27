@@ -15,7 +15,7 @@ class Migration1536765935Connection extends MigrationStep
     public function update(Connection $connection): void
     {
         $sql = <<<SQL
-CREATE TABLE `swag_migration_connection` (
+CREATE TABLE IF NOT EXISTS `swag_migration_connection` (
     `id`                    BINARY(16)   NOT NULL,
     `name`                  VARCHAR(255) NOT NULL,
     `credential_fields`     LONGTEXT,

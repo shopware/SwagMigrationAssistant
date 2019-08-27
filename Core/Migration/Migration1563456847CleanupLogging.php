@@ -20,7 +20,7 @@ SQL;
         $connection->executeQuery($sql);
 
         $sql = <<<SQL
-CREATE TABLE `swag_migration_logging` (
+CREATE TABLE IF NOT EXISTS `swag_migration_logging` (
     `id`                        BINARY(16)   NOT NULL,
     `level`                     VARCHAR(64)  NOT NULL,
     `code`                      VARCHAR(255) NOT NULL,

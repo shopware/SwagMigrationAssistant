@@ -15,7 +15,7 @@ class Migration1538046469MediaFile extends MigrationStep
     public function update(Connection $connection): void
     {
         $sql = <<<SQL
-CREATE TABLE `swag_migration_media_file` (
+CREATE TABLE IF NOT EXISTS `swag_migration_media_file` (
     `id`              BINARY(16)  NOT NULL,
     `run_id`          BINARY(16)  NOT NULL,
     `entity`          LONGTEXT    NOT NULL,

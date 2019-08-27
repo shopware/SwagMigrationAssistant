@@ -15,7 +15,7 @@ class Migration1544535797GeneralSetting extends MigrationStep
     public function update(Connection $connection): void
     {
         $sql = <<<SQL
-CREATE TABLE `swag_migration_general_setting` (
+CREATE TABLE IF NOT EXISTS `swag_migration_general_setting` (
     `id`                      BINARY(16)   NOT NULL,
     `selected_connection_id`  BINARY(16),
     `created_at`              DATETIME(3)  NOT NULL,
