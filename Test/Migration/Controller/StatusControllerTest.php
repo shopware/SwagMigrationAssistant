@@ -29,6 +29,7 @@ use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Media\MediaFileService;
 use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\MigrationContextFactory;
 use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
 use SwagMigrationAssistant\Migration\Profile\ProfileRegistry;
 use SwagMigrationAssistant\Migration\Run\RunService;
@@ -113,7 +114,7 @@ class StatusControllerTest extends TestCase
         $salesChannelRepo = $this->getContainer()->get('sales_channel.repository');
         $themeRepo = $this->getContainer()->get('theme.repository');
         $this->runRepo = $this->getContainer()->get('swag_migration_run.repository');
-        $this->migrationContextFactory = $this->getContainer()->get('SwagMigrationAssistant\Migration\MigrationContextFactory');
+        $this->migrationContextFactory = $this->getContainer()->get(MigrationContextFactory::class);
         $loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
 
         $this->context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) {

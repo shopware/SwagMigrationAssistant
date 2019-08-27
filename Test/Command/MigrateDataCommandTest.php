@@ -22,12 +22,17 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistryInterface;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
+use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Media\MediaFileService;
 use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\MigrationContextFactory;
 use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
 use SwagMigrationAssistant\Migration\Profile\ProfileRegistry;
 use SwagMigrationAssistant\Migration\Profile\ProfileRegistryInterface;
 use SwagMigrationAssistant\Migration\Run\RunService;
+use SwagMigrationAssistant\Migration\Service\MediaFileProcessorService;
+use SwagMigrationAssistant\Migration\Service\MigrationDataWriter;
+use SwagMigrationAssistant\Migration\Service\PremappingService;
 use SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\CustomerAndOrderDataSelection;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\ProductDataSelection;
@@ -141,11 +146,11 @@ class MigrateDataCommandTest extends TestCase
         $this->profileRegistry = $this->getContainer()->get(ProfileRegistry::class);
         $this->gatewayRegistry = $this->getContainer()->get(GatewayRegistry::class);
         $this->dataSetRegistry = $this->getContainer()->get(DataSetRegistry::class);
-        $this->migrationContextFactory = $this->getContainer()->get('SwagMigrationAssistant\Migration\MigrationContextFactory');
+        $this->migrationContextFactory = $this->getContainer()->get(MigrationContextFactory::class);
         $salesChannelRepo = $this->getContainer()->get('sales_channel.repository');
         $currencyRepo = $this->getContainer()->get('currency.repository');
         $themeRepo = $this->getContainer()->get('theme.repository');
-        $mappingService = $this->getContainer()->get('SwagMigrationAssistant\Migration\Mapping\MappingService');
+        $mappingService = $this->getContainer()->get(MappingService::class);
         $loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
         $languageRepo = $this->getContainer()->get('language.repository');
 
@@ -212,7 +217,7 @@ class MigrateDataCommandTest extends TestCase
             new GeneralSettingRepo($this->connectionId),
             $this->getContainer()->get('swag_migration_connection.repository'),
             $this->getContainer()->get('swag_migration_run.repository'),
-            $this->getContainer()->get('SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry'),
+            $this->getContainer()->get(DataSetRegistry::class),
             new RunService(
                 $this->runRepo,
                 $this->connectionRepo,
@@ -237,7 +242,7 @@ class MigrateDataCommandTest extends TestCase
                 $this->getContainer()->get(Connection::class),
                 new LoggingService($loggingRepo)
             ),
-            $this->getContainer()->get('SwagMigrationAssistant\Migration\Service\PremappingService'),
+            $this->getContainer()->get(PremappingService::class),
             $dataFetcher,
             $this->getMigrationDataConverter(
                 $this->getContainer()->get(EntityWriter::class),
@@ -249,9 +254,9 @@ class MigrateDataCommandTest extends TestCase
                 $this->getContainer()->get('shipping_method.repository'),
                 $this->getContainer()->get('country.repository')
             ),
-            $this->getContainer()->get('SwagMigrationAssistant\Migration\Service\MigrationDataWriter'),
-            $this->getContainer()->get('SwagMigrationAssistant\Migration\Service\MediaFileProcessorService'),
-            $this->getContainer()->get('SwagMigrationAssistant\Migration\MigrationContextFactory'),
+            $this->getContainer()->get(MigrationDataWriter::class),
+            $this->getContainer()->get(MediaFileProcessorService::class),
+            $this->getContainer()->get(MigrationContextFactory::class),
             'migration:migrate'
         ));
         $this->command = $this->application->find('migration:migrate');

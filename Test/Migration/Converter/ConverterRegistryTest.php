@@ -7,6 +7,7 @@ use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\ConverterNotFoundException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationAssistant\Migration\Converter\ConverterRegistry;
 use SwagMigrationAssistant\Migration\Converter\ConverterRegistryInterface;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\MigrationContext;
@@ -113,7 +114,7 @@ class ConverterRegistryTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->converterRegistry = $this->getContainer()->get('SwagMigrationAssistant\Migration\Converter\ConverterRegistry');
+        $this->converterRegistry = $this->getContainer()->get(ConverterRegistry::class);
     }
 
     /**

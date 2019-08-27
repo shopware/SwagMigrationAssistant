@@ -8,6 +8,7 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\DataSetNotFoundException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
+use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistryInterface;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDataSet;
@@ -43,7 +44,7 @@ class DataSetRegistryTest extends TestCase
         $this->connection->setProfileName(Shopware55Profile::PROFILE_NAME);
         $this->connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
         $this->connection->setCredentialFields([]);
-        $this->dataSetRegistry = $this->getContainer()->get('SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry');
+        $this->dataSetRegistry = $this->getContainer()->get(DataSetRegistry::class);
     }
 
     public function testSupports(): void

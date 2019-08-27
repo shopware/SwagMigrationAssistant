@@ -10,8 +10,10 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Controller\PremappingController;
 use SwagMigrationAssistant\Exception\EntityNotExistsException;
 use SwagMigrationAssistant\Exception\MigrationContextPropertyMissingException;
+use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\MigrationContextFactory;
 use SwagMigrationAssistant\Migration\Premapping\PremappingEntityStruct;
 use SwagMigrationAssistant\Migration\Premapping\PremappingReaderRegistry;
 use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
@@ -85,9 +87,9 @@ class PremappingControllerTest extends TestCase
         $stateMachineStateRepo = $this->getContainer()->get('state_machine_state.repository');
         $this->mappingService = $this->getContainer()->get(MappingService::class);
         $mappingRepo = $this->getContainer()->get('swag_migration_mapping.repository');
-        $migrationContextFactory = $this->getContainer()->get('SwagMigrationAssistant\Migration\MigrationContextFactory');
+        $migrationContextFactory = $this->getContainer()->get(MigrationContextFactory::class);
 
-        $gatewayRegistry = $this->getContainer()->get('SwagMigrationAssistant\Migration\Gateway\GatewayRegistry');
+        $gatewayRegistry = $this->getContainer()->get(GatewayRegistry::class);
 
         $this->controller = new PremappingController(
             new PremappingService(

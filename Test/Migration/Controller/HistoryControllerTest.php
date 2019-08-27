@@ -10,6 +10,7 @@ use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Controller\HistoryController;
 use SwagMigrationAssistant\Exception\MigrationContextPropertyMissingException;
+use SwagMigrationAssistant\Migration\History\HistoryService;
 use SwagMigrationAssistant\Migration\History\HistoryServiceInterface;
 use SwagMigrationAssistant\Migration\Logging\Log\LogEntryInterface;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingCollection;
@@ -59,7 +60,7 @@ class HistoryControllerTest extends TestCase
     {
         $this->context = Context::createDefaultContext();
         $this->runUuid = Uuid::randomHex();
-        $this->historyService = $this->getContainer()->get('SwagMigrationAssistant\Migration\History\HistoryService');
+        $this->historyService = $this->getContainer()->get(HistoryService::class);
         $this->controller = new HistoryController(
             $this->historyService
         );

@@ -23,6 +23,7 @@ use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition;
 use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\MigrationContextFactory;
 use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
 use SwagMigrationAssistant\Migration\Run\RunService;
 use SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService;
@@ -123,7 +124,7 @@ class RunServiceTest extends TestCase
         $this->salesChannelRepo = $this->getContainer()->get('sales_channel.repository');
         $this->themeRepo = $this->getContainer()->get('theme.repository');
         $this->dataSetRegistry = $this->getContainer()->get(DataSetRegistry::class);
-        $this->migrationContextFactory = $this->getContainer()->get('SwagMigrationAssistant\Migration\MigrationContextFactory');
+        $this->migrationContextFactory = $this->getContainer()->get(MigrationContextFactory::class);
 
         $this->mappingService = new MappingService(
             $this->mappingRepo,
