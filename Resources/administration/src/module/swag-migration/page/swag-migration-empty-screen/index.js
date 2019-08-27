@@ -1,6 +1,7 @@
-import { Component } from 'src/core/shopware';
 import template from './swag-migration-empty-screen.html.twig';
 import './swag-migration-empty-screen.scss';
+
+const { Component } = Shopware;
 
 Component.register('swag-migration-empty-screen', {
     template,

@@ -1,5 +1,5 @@
-import { Mixin } from 'src/core/shopware';
-import { debug } from 'src/core/service/util.service';
+const { Mixin } = Shopware;
+const { debug } = Shopware.Utils;
 
 /**
  * Mixin for the navigation logic inside a wizard.
