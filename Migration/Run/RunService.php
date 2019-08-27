@@ -86,11 +86,6 @@ class RunService implements RunServiceInterface
     /**
      * @var EntityRepositoryInterface
      */
-    private $currencyRepository;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
     private $salesChannelRepository;
 
     /**
@@ -131,7 +126,6 @@ class RunService implements RunServiceInterface
         DataSelectionRegistryInterface $dataSelectionRegistry,
         EntityRepositoryInterface $migrationDataRepository,
         EntityRepositoryInterface $mediaFileRepository,
-        EntityRepositoryInterface $currencyRepository,
         EntityRepositoryInterface $salesChannelRepository,
         EntityRepositoryInterface $themeRepository,
         IndexerRegistryInterface $indexer,
@@ -149,7 +143,6 @@ class RunService implements RunServiceInterface
         $this->dataSelectionRegistry = $dataSelectionRegistry;
         $this->migrationDataRepository = $migrationDataRepository;
         $this->mediaFileRepository = $mediaFileRepository;
-        $this->currencyRepository = $currencyRepository;
         $this->salesChannelRepository = $salesChannelRepository;
         $this->themeRepository = $themeRepository;
         $this->indexer = $indexer;
@@ -506,13 +499,6 @@ class RunService implements RunServiceInterface
         return $this->migrationDataFetcher->getEnvironmentInformation($migrationContext, $context);
     }
 
-    private function getConnection(string $connectionId, Context $context): SwagMigrationConnectionEntity
-    {
-        $criteria = new Criteria([$connectionId]);
-
-        return $this->connectionRepo->search($criteria, $context)->first();
-    }
-
     private function updateRunWithProgress(
         string $runId,
         array $credentials,
@@ -560,7 +546,6 @@ class RunService implements RunServiceInterface
     {
         $qb = new QueryBuilder($this->dbalConnection);
         $qb->delete($this->migrationDataDefinition->getEntityName())
-            ->where('written = 1')
             ->andWhere('HEX(run_id) = :runId')
             ->setParameter('runId', $runUuid)
             ->execute();

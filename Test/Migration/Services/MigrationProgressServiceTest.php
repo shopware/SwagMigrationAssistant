@@ -204,7 +204,6 @@ class MigrationProgressServiceTest extends TestCase
                 new DataSelectionRegistry([]),
                 $this->dataRepo,
                 $this->mediaFileRepo,
-                $this->getContainer()->get('currency.repository'),
                 $this->salesChannelRepo,
                 $this->themeRepo,
                 $this->getContainer()->get(IndexerRegistryInterface::class),

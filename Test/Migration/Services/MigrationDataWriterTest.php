@@ -297,7 +297,6 @@ class MigrationDataWriterTest extends TestCase
           new DataSelectionRegistry([]),
           $this->migrationDataRepo,
           $this->mediaRepo,
-          $this->currencyRepo,
           $this->salesChannelRepo,
           $this->themeRepo,
           new IndexerRegistry([], new EventDispatcher()),

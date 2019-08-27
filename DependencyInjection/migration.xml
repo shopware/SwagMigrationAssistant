@@ -56,7 +56,6 @@
             <argument type="service" id="SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry"/>
             <argument type="service" id="swag_migration_data.repository"/>
             <argument type="service" id="swag_migration_media_file.repository"/>
-            <argument type="service" id="currency.repository"/>
             <argument type="service" id="sales_channel.repository"/>
             <argument type="service" id="theme.repository"/>
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Indexing\MessageQueue\IndexerMessageSender"/>
