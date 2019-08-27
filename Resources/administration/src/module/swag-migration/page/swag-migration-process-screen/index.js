@@ -640,14 +640,12 @@ Component.register('swag-migration-process-screen', {
          * If the current migration was stopped
          */
         onStop() {
-            this.swagMigrationRunService.updateById(this.migrationProcessStore.state.runId, { status: 'aborted' });
-
-            this.showAbortMigrationConfirmDialog = false;
-            this.isMigrationInterrupted = false;
-            this.migrationProcessStore.setIsMigrating(false);
-            this.migrationUIStore.setIsPaused(false);
-            this.migrationUIStore.setIsLoading(false);
-            this.$nextTick(() => {
+            this.migrationService.abortMigration(this.migrationProcessStore.state.runId).then(() => {
+                this.showAbortMigrationConfirmDialog = false;
+                this.isMigrationInterrupted = false;
+                this.migrationProcessStore.setIsMigrating(false);
+                this.migrationUIStore.setIsPaused(false);
+                this.migrationUIStore.setIsLoading(false);
                 this.$router.push({ name: 'swag.migration.index.main' });
             });
         },
