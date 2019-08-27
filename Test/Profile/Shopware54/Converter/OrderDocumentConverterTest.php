@@ -107,7 +107,7 @@ class OrderDocumentConverterTest extends TestCase
         );
         $converted = $convertResult->getConverted();
 
-        static::assertNotEmpty($convertResult->getUnmapped());
+        static::assertEmpty($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('orderId', $converted);
         static::assertArrayHasKey('deepLinkCode', $converted);
