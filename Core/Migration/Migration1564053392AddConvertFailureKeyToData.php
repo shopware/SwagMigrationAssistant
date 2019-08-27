@@ -16,7 +16,7 @@ class Migration1564053392AddConvertFailureKeyToData extends MigrationStep
     {
         $sql = <<<SQL
 ALTER TABLE swag_migration_data
-ADD KEY `idx.swag_migration_data.entity__run_id__convert_failure` (`entity`, `run_id`, `convert_failure`);
+ADD KEY IF NOT EXISTS `idx.swag_migration_data.entity__run_id__convert_failure` (`entity`, `run_id`, `convert_failure`);
 SQL;
         $connection->executeQuery($sql);
     }

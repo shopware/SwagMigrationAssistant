@@ -16,7 +16,7 @@ class Migration1564041870AddConnectionKeyToMapping extends MigrationStep
     {
         $sql = <<<SQL
 ALTER TABLE swag_migration_mapping
-ADD KEY `idx.swag_migration_mapping.connection_id_entity_old_identifier` (`connection_id`, `entity`, `old_identifier`);
+ADD KEY IF NOT EXISTS `idx.swag_migration_mapping.connection_id_entity_old_identifier` (`connection_id`, `entity`, `old_identifier`);
 SQL;
         $connection->executeQuery($sql);
     }
