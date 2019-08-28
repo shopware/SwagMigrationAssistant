@@ -108,7 +108,6 @@ class StatusControllerTest extends TestCase
         $this->context = Context::createDefaultContext();
         $mediaFileRepo = $this->getContainer()->get('swag_migration_media_file.repository');
         $dataRepo = $this->getContainer()->get('swag_migration_data.repository');
-        $currencyRepo = $this->getContainer()->get('currency.repository');
         $this->connectionRepo = $this->getContainer()->get('swag_migration_connection.repository');
         $this->generalSettingRepo = $this->getContainer()->get('swag_migration_general_setting.repository');
         $salesChannelRepo = $this->getContainer()->get('sales_channel.repository');
@@ -191,7 +190,6 @@ class StatusControllerTest extends TestCase
                 ]),
                 $dataRepo,
                 $mediaFileRepo,
-                $currencyRepo,
                 $salesChannelRepo,
                 $themeRepo,
                 $this->getContainer()->get(IndexerRegistryInterface::class),

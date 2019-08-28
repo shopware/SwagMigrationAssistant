@@ -148,7 +148,6 @@ class MigrateDataCommandTest extends TestCase
         $this->dataSetRegistry = $this->getContainer()->get(DataSetRegistry::class);
         $this->migrationContextFactory = $this->getContainer()->get(MigrationContextFactory::class);
         $salesChannelRepo = $this->getContainer()->get('sales_channel.repository');
-        $currencyRepo = $this->getContainer()->get('currency.repository');
         $themeRepo = $this->getContainer()->get('theme.repository');
         $mappingService = $this->getContainer()->get(MappingService::class);
         $loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
@@ -231,7 +230,6 @@ class MigrateDataCommandTest extends TestCase
                 ]),
                 $this->dataRepo,
                 $this->mediaFileRepo,
-                $currencyRepo,
                 $salesChannelRepo,
                 $themeRepo,
                 $this->getContainer()->get(IndexerRegistryInterface::class),

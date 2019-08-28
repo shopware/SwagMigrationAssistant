@@ -124,7 +124,6 @@ class MigrationControllerTest extends TestCase
         $dataDefinition = $this->getContainer()->get(SwagMigrationDataDefinition::class);
         $this->mediaFileRepo = $this->getContainer()->get('swag_migration_media_file.repository');
         $this->dataRepo = $this->getContainer()->get('swag_migration_data.repository');
-        $currencyRepo = $this->getContainer()->get('currency.repository');
         $loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
         $this->connectionRepo = $this->getContainer()->get('swag_migration_connection.repository');
         $this->generalSettingRepo = $this->getContainer()->get('swag_migration_general_setting.repository');
@@ -229,7 +228,6 @@ class MigrationControllerTest extends TestCase
                 new DataSelectionRegistry([]),
                 $this->dataRepo,
                 $this->mediaFileRepo,
-                $currencyRepo,
                 $salesChannelRepo,
                 $themeRepo,
                 $this->getContainer()->get(IndexerRegistryInterface::class),
