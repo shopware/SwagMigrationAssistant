@@ -44,7 +44,7 @@ class EmptyNecessaryFieldRunLog extends BaseRunLogEntry
         $args = $this->getParameters();
 
         return sprintf(
-            'The %s entity with the source id %s has not the necessary data for the field %s',
+            'The %s entity with the source id %s does not have the necessary data for the field %s',
                 $args['entity'],
                 $args['sourceId'],
                 $args['emptyField']
