@@ -1,9 +1,15 @@
 import template from './swag-migration-wizard-page-connection-select.html.twig';
 
-const { Component, State } = Shopware;
+const { Component } = Shopware;
+const { Criteria } = Shopware.Data;
 
 Component.register('swag-migration-wizard-page-connection-select', {
     template,
+
+    inject: {
+        context: 'context',
+        repositoryFactory: 'repositoryFactory'
+    },
 
     props: {
         currentConnectionId: {
@@ -25,17 +31,17 @@ Component.register('swag-migration-wizard-page-connection-select', {
     },
 
     computed: {
-        migrationConnectionStore() {
-            return State.getStore('swag_migration_connection');
+        migrationConnectionRepository() {
+            return this.repositoryFactory.create('swag_migration_connection');
         }
     },
 
     created() {
         this.$emit('onChildRouteReadyChanged', false);
-        this.migrationConnectionStore.getList({
-            limit: 100
-        }).then((res) => {
-            this.connections = res.items;
+        const criteria = new Criteria(1, 100);
+
+        this.migrationConnectionRepository.search(criteria, this.context).then((items) => {
+            this.connections = items;
             this.onConnectionSelected();
         });
     },

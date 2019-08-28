@@ -1,11 +1,16 @@
 import template from './swag-migration-history-detail.html.twig';
 import './swag-migration-history-detail.scss';
 
-const { Component, State } = Shopware;
-const CriteriaFactory = Shopware.DataDeprecated.CriteriaFactory;
+const { Component } = Shopware;
+const { Criteria } = Shopware.Data;
 
 Component.register('swag-migration-history-detail', {
     template,
+
+    inject: {
+        context: 'context',
+        repositoryFactory: 'repositoryFactory'
+    },
 
     data() {
         return {
@@ -23,8 +28,8 @@ Component.register('swag-migration-history-detail', {
     },
 
     computed: {
-        migrationRunStore() {
-            return State.getStore('swag_migration_run');
+        migrationRunRepository() {
+            return this.repositoryFactory.create('swag_migration_run');
         },
 
         shopFirstLetter() {
@@ -98,20 +103,17 @@ Component.register('swag-migration-history-detail', {
         }
 
         this.runId = this.$route.params.id;
-        const params = {
-            limit: 1,
-            criteria: CriteriaFactory.equals('id', this.runId)
-        };
+        const criteria = new Criteria(1, 1);
+        criteria.addFilter(Criteria.equals('id', this.runId));
 
-        this.migrationRunStore.getList(params).then((response) => {
-            if (!response ||
-                (response && response.items.length < 1)) {
+        this.migrationRunRepository.search(criteria, this.context).then((runs) => {
+            if (runs.length < 1) {
                 this.isLoading = false;
                 this.onCloseModal();
                 return;
             }
 
-            this.migrationRun = response.items[0];
+            this.migrationRun = runs.first();
             this.isLoading = false;
             this.$nextTick(() => {
                 this.$refs.tabReference.setActiveItem(this.$refs.dataTabItem);

@@ -33,8 +33,6 @@ Component.register('swag-migration-process-screen', {
             isOtherMigrationRunning: false,
             showAbortMigrationConfirmDialog: false,
             isPausedBeforeAbortDialog: false,
-            /** @type ApiService */
-            migrationGeneralSettingStore: State.getStore('swag_migration_general_setting'),
             /** @type MigrationProcessStore */
             migrationProcessStore: State.getStore('migrationProcess'),
             /** @type MigrationUIStore */

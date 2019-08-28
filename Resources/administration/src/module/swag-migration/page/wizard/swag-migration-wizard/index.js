@@ -2,7 +2,7 @@ import template from './swag-migration-wizard.html.twig';
 import './swag-migration-wizard.scss';
 
 const { Component, Mixin, State } = Shopware;
-const CriteriaFactory = Shopware.DataDeprecated.CriteriaFactory;
+const { Criteria } = Shopware.Data;
 
 const CONNECTION_NAME_ERRORS = Object.freeze({
     NAME_TO_SHORT: 'SWAG_MIGRATION_CONNECTION_NAME_TO_SHORT',
@@ -14,7 +14,9 @@ Component.register('swag-migration-wizard', {
 
     inject: {
         /** @var {MigrationApiService} migrationService */
-        migrationService: 'migrationService'
+        migrationService: 'migrationService',
+        context: 'context',
+        repositoryFactory: 'repositoryFactory'
     },
 
     mixins: [
@@ -81,6 +83,14 @@ Component.register('swag-migration-wizard', {
     },
 
     computed: {
+        migrationConnectionRepository() {
+            return this.repositoryFactory.create('swag_migration_connection');
+        },
+
+        migrationGeneralSettingRepository() {
+            return this.repositoryFactory.create('swag_migration_general_setting');
+        },
+
         modalSize() {
             if ([
                 this.routes.credentialsSuccess,
@@ -158,18 +168,6 @@ Component.register('swag-migration-wizard', {
             }
 
             return this.isLoading;
-        },
-
-        migrationConnectionStore() {
-            return State.getStore('swag_migration_connection');
-        },
-
-        migrationProfileStore() {
-            return State.getStore('swag_migration_profile');
-        },
-
-        migrationGeneralSettingStore() {
-            return State.getStore('swag_migration_general_setting');
         },
 
         profileInformationComponent() {
@@ -440,41 +438,41 @@ Component.register('swag-migration-wizard', {
                     return;
                 }
 
-                this.migrationGeneralSettingStore.getList({ limit: 1 }).then((response) => {
-                    if (!response) {
+                const criteria = new Criteria(1, 1);
+                this.migrationGeneralSettingRepository.search(criteria, this.context).then((items) => {
+                    if (items.length < 1) {
                         this.isLoading = false;
                         this.onNoConnectionSelected();
                         resolve();
                         return;
                     }
 
-                    if (response.items[0].selectedConnectionId === null) {
+                    if (items.first().selectedConnectionId === null) {
                         this.isLoading = false;
                         this.onNoConnectionSelected();
                         resolve();
                         return;
                     }
 
-                    this.fetchConnection(response.items[0].selectedConnectionId);
+                    this.fetchConnection(items.first().selectedConnectionId);
                 });
             });
         },
 
         fetchConnection(connectionId) {
             return new Promise((resolve) => {
-                const params = {
-                    limit: 1,
-                    criteria: CriteriaFactory.equals('id', connectionId)
-                };
-                this.migrationConnectionStore.getList(params).then((connectionResponse) => {
-                    if (connectionResponse.items[0].id === null) {
+                const criteria = new Criteria(1, 1);
+                criteria.addFilter(Criteria.equals('id', connectionId));
+
+                this.migrationConnectionRepository.search(criteria, this.context).then((connectionResponse) => {
+                    if (connectionResponse.length === 0 || connectionResponse.first().id === null) {
                         this.isLoading = false;
                         this.onNoConnectionSelected();
                         resolve();
                         return;
                     }
 
-                    this.connection = connectionResponse.items[0];
+                    this.connection = connectionResponse.first();
                     this.isLoading = false;
                     resolve();
                 });
@@ -502,21 +500,22 @@ Component.register('swag-migration-wizard', {
                 }
 
                 this.connectionNameErrorCode = '';
-                const newConnection = this.migrationConnectionStore.create();
+                const newConnection = this.migrationConnectionRepository.create(this.context);
                 newConnection.profileName = this.selectedProfile.profile;
                 newConnection.gatewayName = this.selectedProfile.gateway;
                 newConnection.name = this.connectionName;
-                return newConnection.save().then((savedConnection) => {
-                    return this.saveSelectedConnection(savedConnection);
+                return this.migrationConnectionRepository.save(newConnection, this.context).then(() => {
+                    return this.saveSelectedConnection(newConnection);
                 });
             });
         },
 
         checkConnectionName(name) {
-            return this.migrationConnectionStore.getList({
-                criteria: CriteriaFactory.equals('name', name)
-            }).then((res) => {
-                return res.items.length === 0;
+            const criteria = new Criteria();
+            criteria.addFilter(Criteria.equals('name', name));
+
+            return this.migrationConnectionRepository.search(criteria, this.context).then((res) => {
+                return res.length === 0;
             });
         },
 
@@ -524,18 +523,18 @@ Component.register('swag-migration-wizard', {
             return new Promise((resolve, reject) => {
                 this.isLoading = true;
 
-                this.migrationGeneralSettingStore.getList({ limit: 1 }).then((response) => {
-                    if (!response ||
-                        (response && response.items.length < 1)
-                    ) {
+                const criteria = new Criteria(1, 1);
+
+                this.migrationGeneralSettingRepository.search(criteria, this.context).then((items) => {
+                    if (items.length < 1) {
                         this.isLoading = false;
                         reject();
                         return;
                     }
 
-                    const setting = response.items[0];
+                    const setting = items.first();
                     setting.selectedConnectionId = connection.id;
-                    setting.save().then(() => {
+                    this.migrationGeneralSettingRepository.save(setting, this.context).then(() => {
                         this.connection = connection;
                         this.isLoading = false;
                         resolve();
