@@ -3,7 +3,7 @@ import './swag-migration-shop-information.scss';
 
 const { Component, State } = Shopware;
 const { format } = Shopware.Utils;
-const CriteriaFactory = Shopware.DataDeprecated.CriteriaFactory;
+const { Criteria } = Shopware.Data;
 
 const BADGE_TYPE = Object.freeze({
     SUCCESS: 'success',
@@ -15,7 +15,9 @@ Component.register('swag-migration-shop-information', {
 
     inject: {
         /** @var {MigrationApiService} migrationService */
-        migrationService: 'migrationService'
+        migrationService: 'migrationService',
+        context: 'context',
+        repositoryFactory: 'repositoryFactory'
     },
 
     props: {
@@ -32,10 +34,6 @@ Component.register('swag-migration-shop-information', {
             lastConnectionCheck: '-',
             lastMigrationDate: '-',
             connection: null,
-            /** @type ApiService */
-            migrationRunStore: State.getStore('swag_migration_run'),
-            /** @type ApiService */
-            migrationConnectionStore: State.getStore('swag_migration_connection'),
             /** @type MigrationProcessStore */
             migrationProcessStore: State.getStore('migrationProcess'),
             /** @type MigrationUIStore */
@@ -52,6 +50,14 @@ Component.register('swag-migration-shop-information', {
     },
 
     computed: {
+        migrationRunRepository() {
+            return this.repositoryFactory.create('swag_migration_run');
+        },
+
+        migrationConnectionRepository() {
+            return this.repositoryFactory.create('swag_migration_connection');
+        },
+
         environmentInformation() {
             return this.migrationProcessStore.state.environmentInformation === null ? {} :
                 this.migrationProcessStore.state.environmentInformation;
@@ -156,16 +162,13 @@ Component.register('swag-migration-shop-information', {
 
     methods: {
         updateLastMigrationDate() {
-            const params = {
-                limit: 1,
-                criteria: CriteriaFactory.equals('status', 'finished'),
-                sortBy: 'createdAt',
-                sortDirection: 'desc'
-            };
+            const criteria = new Criteria(1, 1);
+            criteria.addFilter(Criteria.equals('status', 'finished'));
+            criteria.addSorting(Criteria.sort('createdAt', 'DESC'));
 
-            this.migrationRunStore.getList(params).then((res) => {
-                if (res && res.items.length > 0) {
-                    this.lastMigrationDate = res.items[0].createdAt;
+            this.migrationRunRepository.search(criteria, this.context).then((runs) => {
+                if (runs.length > 0) {
+                    this.lastMigrationDate = runs.first().createdAt;
                 } else {
                     this.lastMigrationDate = '-';
                 }
@@ -176,7 +179,7 @@ Component.register('swag-migration-shop-information', {
          * @param {string} connectionId
          */
         fetchConnection(connectionId) {
-            this.migrationConnectionStore.getByIdAsync(connectionId).then((connection) => {
+            this.migrationConnectionRepository.get(connectionId, this.context).then((connection) => {
                 delete connection.credentialFields;
                 this.connection = connection;
                 this.lastConnectionCheck = new Date();

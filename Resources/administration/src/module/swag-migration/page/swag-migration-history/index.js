@@ -1,10 +1,16 @@
 import template from './swag-migration-history.html.twig';
 import './swag-migration-history.scss';
 
-const { Component, State, Mixin } = Shopware;
+const { Component, Mixin } = Shopware;
+const { Criteria } = Shopware.Data;
 
 Component.register('swag-migration-history', {
     template,
+
+    inject: {
+        context: 'context',
+        repositoryFactory: 'repositoryFactory'
+    },
 
     mixins: [
         Mixin.getByName('listing')
@@ -32,8 +38,8 @@ Component.register('swag-migration-history', {
     },
 
     computed: {
-        migrationRunStore() {
-            return State.getStore('swag_migration_run');
+        migrationRunRepository() {
+            return this.repositoryFactory.create('swag_migration_run');
         },
 
         migrationColumns() {
@@ -97,6 +103,7 @@ Component.register('swag-migration-history', {
 
         getList() {
             this.isLoading = true;
+
             const params = this.normalizeListingParams(
                 this.getListingParams()
             );
@@ -109,9 +116,12 @@ Component.register('swag-migration-history', {
             }
 
             this.oldParams = params;
-            return this.migrationRunStore.getList(params).then((response) => {
-                this.total = response.total;
-                this.migrationRuns = response.items;
+            const criteria = new Criteria(params.page, params.limit);
+            criteria.addSorting(Criteria.sort(params.sortBy, params.sortDirection, params.naturalSorting));
+
+            return this.migrationRunRepository.search(criteria, this.context).then((runs) => {
+                this.total = runs.total;
+                this.migrationRuns = runs;
                 this.isLoading = false;
 
                 return this.migrationRuns;

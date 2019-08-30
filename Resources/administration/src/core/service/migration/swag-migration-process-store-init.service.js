@@ -1,23 +1,27 @@
 const { State } = Shopware;
+const { Criteria } = Shopware.Data;
 
 class ProcessStoreInitService {
-    constructor(migrationService) {
+    constructor(migrationService, repositoryFactory, context) {
         this._migrationService = migrationService;
         this._migrationProcessStore = State.getStore('migrationProcess');
-        this._migrationGeneralSettingStore = State.getStore('swag_migration_general_setting');
+        this._migrationGeneralSettingRepository = repositoryFactory.create('swag_migration_general_setting');
+        this._context = context;
     }
 
     initProcessStore() {
         return new Promise((resolve, reject) => {
             this._migrationProcessStore.setEntityGroups([]);
             this._migrationProcessStore.setEnvironmentInformation({});
-            this._migrationGeneralSettingStore.getList({ limit: 1 }).then((settings) => {
-                if (!settings || settings.items.length === 0) {
+            const criteria = new Criteria(1, 1);
+
+            this._migrationGeneralSettingRepository.search(criteria, this._context).then((settings) => {
+                if (settings.length === 0) {
                     reject();
                     return null;
                 }
 
-                const connectionId = settings.items[0].selectedConnectionId;
+                const connectionId = settings.first().selectedConnectionId;
 
                 if (connectionId === null) {
                     reject();

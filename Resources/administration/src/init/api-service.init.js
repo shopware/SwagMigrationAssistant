@@ -10,7 +10,11 @@ Application.addServiceProvider('migrationService', (container) => {
 });
 
 Application.addServiceProvider('processStoreInitService', (container) => {
-    return new ProcessStoreInitService(container.migrationService);
+    return new ProcessStoreInitService(
+        container.migrationService,
+        container.repositoryFactory,
+        container.context
+    );
 });
 
 Application.addServiceProvider('uiStoreInitService', (container) => {

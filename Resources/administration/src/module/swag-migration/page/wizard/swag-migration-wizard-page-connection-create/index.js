@@ -1,6 +1,6 @@
 import template from './swag-migration-wizard-page-connection-create.html.twig';
 
-const { Component, State } = Shopware;
+const { Component } = Shopware;
 const ShopwareError = Shopware.Classes.ShopwareError;
 
 Component.register('swag-migration-wizard-page-connection-create', {
@@ -46,14 +46,6 @@ Component.register('swag-migration-wizard-page-connection-create', {
                 this.selection.connectionName !== null &&
                 this.selection.connectionName.length > 5
             );
-        },
-
-        profileStore() {
-            return State.getStore('swag_migration_profile');
-        },
-
-        generalSettingStore() {
-            return State.getStore('swag_migration_general_setting');
         },
 
         connectionNameError() {
