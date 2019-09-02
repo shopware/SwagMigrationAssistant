@@ -102,7 +102,6 @@ trait MigrationServicesTrait
                     new Shopware55OrderConverter(
                         $mappingService,
                         new TaxCalculator(
-                            $priceRounding,
                             new TaxRuleCalculator($priceRounding)
                         ),
                         $loggingService

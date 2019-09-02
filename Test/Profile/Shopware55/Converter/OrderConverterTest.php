@@ -76,10 +76,7 @@ class OrderConverterTest extends TestCase
         $rounding = new PriceRounding();
         $taxRuleCalculator = new TaxRuleCalculator($rounding);
 
-        $taxCalculator = new TaxCalculator(
-            $rounding,
-            $taxRuleCalculator
-        );
+        $taxCalculator = new TaxCalculator($taxRuleCalculator);
         $this->orderConverter = new Shopware55OrderConverter($mappingService, $taxCalculator, $this->loggingService);
         $this->customerConverter = new Shopware55CustomerConverter($mappingService, $this->loggingService);
 

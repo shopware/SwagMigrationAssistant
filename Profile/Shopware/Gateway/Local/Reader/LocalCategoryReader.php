@@ -24,7 +24,7 @@ class LocalCategoryReader extends LocalAbstractReader implements LocalReaderInte
         $topMostParentIds = $this->getTopMostParentIds($fetchedCategories);
         $topMostCategories = $this->fetchCategoriesById($topMostParentIds);
 
-        $categories = $this->mapData($fetchedCategories, [], ['category', 'categorypath', 'previousSiblingId']);
+        $categories = $this->mapData($fetchedCategories, [], ['category', 'categorypath', 'previousSiblingId', 'categoryPosition']);
 
         $resultSet = $this->setAllLocales($categories, $topMostCategories);
 
@@ -44,12 +44,44 @@ class LocalCategoryReader extends LocalAbstractReader implements LocalReaderInte
         $query->leftJoin('category', 's_media', 'asset', 'category.mediaID = asset.id');
         $this->addTableSelection($query, 's_media', 'asset');
 
-        $query->leftJoin('category', 's_categories', 'sibling', 'category.parent = sibling.parent AND CAST(category.position AS SIGNED) - 1 = CAST(sibling.position AS SIGNED)');
+        $query->leftJoin(
+            'category',
+            's_categories',
+            'sibling',
+            'sibling.id = (SELECT previous.id
+                           FROM (SELECT sub_category.id, sub_category.parent,
+                                        IFNULL(sub_category.position, IFNULL(
+                                                                    (SELECT new_position.position + sub_category.id
+                                                                     FROM s_categories new_position
+                                                                     WHERE sub_category.parent = new_position.parent
+                                                                     ORDER BY new_position.position DESC
+                                                                     LIMIT 1),
+                                                                    sub_category.id)) position
+                                 FROM s_categories sub_category) previous
+                           WHERE previous.position < IFNULL(category.position, IFNULL((SELECT previous.position + category.id
+                                                                                       FROM s_categories previous
+                                                                                       WHERE category.parent = previous.parent
+                                                                                       ORDER BY previous.position DESC
+                                                                                       LIMIT 1), category.id))
+                                 AND category.parent = previous.parent
+                           ORDER BY previous.position DESC
+                           LIMIT 1)'
+        );
         $query->addSelect('sibling.id as previousSiblingId');
+        $query->addSelect('IFNULL(category.position, IFNULL((SELECT previous.position + category.id
+                                         FROM s_categories previous
+                                         WHERE category.parent = previous.parent
+                                         ORDER BY previous.position DESC
+                                         LIMIT 1), category.id)) as categoryPosition');
 
         $query->andWhere('category.parent IS NOT NULL');
         $query->orderBy('LENGTH(categorypath)');
-        $query->addOrderBy('category.position');
+        $query->orderBy('category.parent');
+        $query->addOrderBy('IFNULL(category.position, IFNULL((SELECT previous.position + category.id
+                                                                                          FROM s_categories previous
+                                                                                          WHERE category.parent = previous.parent
+                                                                                          ORDER BY previous.position DESC
+                                                                                          LIMIT 1), category.id))');
         $query->setFirstResult($migrationContext->getOffset());
         $query->setMaxResults($migrationContext->getLimit());
 

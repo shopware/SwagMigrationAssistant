@@ -733,11 +733,11 @@ abstract class OrderConverter extends ShopwareConverter
             $calculatedTax = null;
             $totalPrice = $lineItem['quantity'] * $originalLineItem['price'];
             if ($taxStatus === CartPrice::TAX_STATE_NET) {
-                $calculatedTax = $this->taxCalculator->calculateNetTaxes($totalPrice, $context->getCurrencyPrecision(), $taxRules);
+                $calculatedTax = $this->taxCalculator->calculateNetTaxes($totalPrice, $taxRules);
             }
 
             if ($taxStatus === CartPrice::TAX_STATE_GROSS) {
-                $calculatedTax = $this->taxCalculator->calculateGrossTaxes($totalPrice, $context->getCurrencyPrecision(), $taxRules);
+                $calculatedTax = $this->taxCalculator->calculateGrossTaxes($totalPrice, $taxRules);
             }
 
             if ($calculatedTax !== null) {
