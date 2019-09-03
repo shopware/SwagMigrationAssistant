@@ -76,7 +76,7 @@ class LocalCategoryReader extends LocalAbstractReader implements LocalReaderInte
 
         $query->andWhere('category.parent IS NOT NULL');
         $query->orderBy('LENGTH(categorypath)');
-        $query->orderBy('category.parent');
+        $query->addOrderBy('category.parent');
         $query->addOrderBy('IFNULL(category.position, IFNULL((SELECT previous.position + category.id
                                                                                           FROM s_categories previous
                                                                                           WHERE category.parent = previous.parent
