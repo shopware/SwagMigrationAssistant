@@ -18,7 +18,7 @@ class LocalNumberRangeReader extends LocalAbstractReader implements LocalReaderI
     {
         $this->setConnection($migrationContext);
         $numberRanges = $this->fetchNumberRanges();
-        $prefix = unserialize($this->fetchPrefix(), ['allowedClasses' => false]);
+        $prefix = unserialize($this->fetchPrefix(), ['allowed_classes' => false]);
 
         if (!$prefix) {
             $prefix = '';
