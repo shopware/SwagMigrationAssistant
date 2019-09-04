@@ -149,6 +149,10 @@ abstract class AttributeConverter implements ConverterInterface
             }
         }
 
+        if ($data['configuration']['position']) {
+            $attributeData['customFieldPosition'] = $data['configuration']['position'];
+        }
+
         if ($data['configuration']['column_type'] === 'text' || $data['configuration']['column_type'] === 'string') {
             $attributeData['type'] = 'text';
             $attributeData['customFieldType'] = 'text';

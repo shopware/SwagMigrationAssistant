@@ -49,6 +49,7 @@ class MappingService implements MappingServiceInterface
     protected $languageData = [];
 
     protected $locales = [];
+
     /**
      * @var EntityRepositoryInterface
      */
