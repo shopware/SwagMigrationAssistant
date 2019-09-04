@@ -32,6 +32,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
      * @var EntityRepositoryInterface
      */
     protected $shippingMethodRepo;
+
     /**
      * @var MappingServiceInterface
      */

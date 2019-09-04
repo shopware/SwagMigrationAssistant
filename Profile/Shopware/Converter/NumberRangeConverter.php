@@ -28,6 +28,7 @@ abstract class NumberRangeConverter extends ShopwareConverter
         'doc_1' => 'document_delivery_note',
         'doc_2' => 'document_credit_note',
     ];
+
     /**
      * @var MappingServiceInterface
      */
