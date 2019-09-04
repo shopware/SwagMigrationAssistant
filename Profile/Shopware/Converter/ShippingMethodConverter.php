@@ -21,6 +21,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         1 => 2, // Price
         2 => 1, // Quantity
     ];
+
     /**
      * @var MappingServiceInterface
      */

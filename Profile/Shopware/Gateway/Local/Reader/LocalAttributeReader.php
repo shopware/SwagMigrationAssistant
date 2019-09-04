@@ -19,6 +19,7 @@ class LocalAttributeReader extends LocalAbstractReader implements LocalReaderInt
         DefaultEntities::CUSTOMER_GROUP_CUSTOM_FIELD,
         DefaultEntities::PRODUCT_MANUFACTURER_CUSTOM_FIELD,
         DefaultEntities::ORDER_CUSTOM_FIELD,
+        DefaultEntities::ORDER_DOCUMENT_CUSTOM_FIELD,
         DefaultEntities::PRODUCT_CUSTOM_FIELD,
         DefaultEntities::PRODUCT_PRICE_CUSTOM_FIELD,
     ];
