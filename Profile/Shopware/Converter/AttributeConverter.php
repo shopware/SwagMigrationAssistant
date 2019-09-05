@@ -140,6 +140,10 @@ abstract class AttributeConverter implements ConverterInterface
                 $attributeData['label'] = [
                     $locale => $data['configuration']['label'],
                 ];
+            } else {
+                $attributeData['label'] = [
+                    $locale => $data['configuration']['column_name'],
+                ];
             }
 
             if ($data['configuration']['help_text'] !== '') {
