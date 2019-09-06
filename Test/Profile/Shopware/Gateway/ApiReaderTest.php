@@ -52,7 +52,7 @@ class ApiReaderTest extends TestCase
         $mock->expects(static::once())
             ->method('createApiClient')
             ->with($migrationContext)
-            ->will(static::returnValue($client));
+            ->willReturn($client);
 
         $apiReader = new ApiReader($mock);
         $response = $apiReader->read($migrationContext);
@@ -101,7 +101,7 @@ class ApiReaderTest extends TestCase
         $mock->expects(static::once())
             ->method('createApiClient')
             ->with($migrationContext)
-            ->will(static::returnValue($client));
+            ->willReturn($client);
 
         $apiReader = new ApiReader($mock);
 

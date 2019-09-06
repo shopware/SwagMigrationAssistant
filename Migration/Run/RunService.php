@@ -285,7 +285,7 @@ class RunService implements RunServiceInterface
             throw new MigrationIsRunningException();
         }
 
-        $context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use ($connectionUuid, $credentialFields) {
+        $context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use ($connectionUuid, $credentialFields): void {
             $this->connectionRepo->update([
                 [
                     'id' => $connectionUuid,

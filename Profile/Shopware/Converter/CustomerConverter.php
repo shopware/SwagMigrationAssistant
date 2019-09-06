@@ -265,7 +265,7 @@ abstract class CustomerConverter extends ShopwareConverter
         return new ConvertStruct($converted, $data);
     }
 
-    protected function setPassword(array &$data, array &$converted)
+    protected function setPassword(array &$data, array &$converted): void
     {
         $originalEncoder = $data['encoder'];
 

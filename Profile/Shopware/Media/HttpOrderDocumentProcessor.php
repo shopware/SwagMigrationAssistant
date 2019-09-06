@@ -197,7 +197,7 @@ class HttpOrderDocumentProcessor implements MediaFileProcessorInterface
         $fileBlob = file_get_contents($filePath);
 
         try {
-            $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($fileBlob, $fileExtension, $mimeType, $uuid, $name) {
+            $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($fileBlob, $fileExtension, $mimeType, $uuid, $name): void {
                 $this->mediaService->saveFile(
                     $fileBlob,
                     $fileExtension,

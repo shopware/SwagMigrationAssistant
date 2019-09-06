@@ -146,7 +146,7 @@ class MigrationProgressServiceTest extends TestCase
             'apiKey' => 'testKey',
         ];
 
-        $context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) {
+        $context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context): void {
             $this->connectionId = Uuid::randomHex();
             $this->connectionRepo->create(
                 [

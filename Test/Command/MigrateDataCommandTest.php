@@ -155,7 +155,7 @@ class MigrateDataCommandTest extends TestCase
 
         $kernel = self::getKernel();
         $this->application = new Application($kernel);
-        $this->context->scope(MigrationContext::SOURCE_CONTEXT, function () {
+        $this->context->scope(MigrationContext::SOURCE_CONTEXT, function (): void {
             $this->connectionId = Uuid::randomHex();
             $this->connectionRepo->create(
                 [
@@ -176,7 +176,7 @@ class MigrateDataCommandTest extends TestCase
         });
 
         $generalSettingsRepo = $this->getContainer()->get('swag_migration_general_setting.repository');
-        $this->context->scope(MigrationContext::SOURCE_CONTEXT, function () use ($generalSettingsRepo) {
+        $this->context->scope(MigrationContext::SOURCE_CONTEXT, function () use ($generalSettingsRepo): void {
             $generalSettingsRepo->create(
                 [
                     [

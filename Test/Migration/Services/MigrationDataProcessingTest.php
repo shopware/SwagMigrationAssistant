@@ -236,7 +236,7 @@ class MigrationDataProcessingTest extends TestCase
         $data = $this->migrationDataFetcher->fetchData($migrationContext, $context);
         $this->migrationDataConverter->convert($data, $migrationContext, $context);
 
-        static::assertSame(23, \count($data));
+        static::assertCount(23, $data);
         static::arrayHasKey('uri', $data[0]);
         static::arrayHasKey('locale', $data[10]);
         static::assertSame('27', $data[22]['id']);
@@ -265,7 +265,7 @@ class MigrationDataProcessingTest extends TestCase
         $data = $this->migrationDataFetcher->fetchData($migrationContext, $context);
         $this->migrationDataConverter->convert($data, $migrationContext, $context);
 
-        static::assertSame(8, \count($data));
+        static::assertCount(8, $data);
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('runId', $this->runUuid));
@@ -290,7 +290,7 @@ class MigrationDataProcessingTest extends TestCase
         $data = $this->migrationDataFetcher->fetchData($migrationContext, $context);
         $this->migrationDataConverter->convert($data, $migrationContext, $context);
 
-        static::assertSame(10, \count($data));
+        static::assertCount(10, $data);
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('runId', $this->runUuid));
@@ -315,7 +315,7 @@ class MigrationDataProcessingTest extends TestCase
         $data = $this->migrationDataFetcher->fetchData($migrationContext, $context);
         $this->migrationDataConverter->convert($data, $migrationContext, $context);
 
-        static::assertSame(3, \count($data));
+        static::assertCount(3, $data);
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('runId', $this->runUuid));
@@ -339,7 +339,7 @@ class MigrationDataProcessingTest extends TestCase
 
         $data = $this->migrationDataFetcher->fetchData($migrationContext, $context);
         $this->migrationDataConverter->convert($data, $migrationContext, $context);
-        static::assertSame(37, \count($data));
+        static::assertCount(37, $data);
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('runId', $this->runUuid));
@@ -363,7 +363,7 @@ class MigrationDataProcessingTest extends TestCase
 
         $data = $this->migrationDataFetcher->fetchData($migrationContext, $context);
         $this->migrationDataConverter->convert($data, $migrationContext, $context);
-        static::assertSame(37, \count($data));
+        static::assertCount(37, $data);
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('runId', $this->runUuid));
@@ -390,7 +390,7 @@ class MigrationDataProcessingTest extends TestCase
         $this->migrationDataConverter->convert($data, $migrationContext, $context);
         $result = $this->loggingRepo->search(new Criteria(), $context);
 
-        static::assertSame(4, \count($data));
+        static::assertCount(4, $data);
 
         $countValidLogging = 0;
         $countInvalidLogging = 0;
@@ -438,7 +438,7 @@ class MigrationDataProcessingTest extends TestCase
         $this->connectionId = Uuid::randomHex();
         $this->runUuid = Uuid::randomHex();
 
-        $this->context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) {
+        $this->context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context): void {
             $this->connectionRepo->create(
                 [
                     [

@@ -41,7 +41,7 @@ class TranslationWriter implements WriterInterface
         }
 
         foreach ($translationArray as $entityDefinitionClass => $translation) {
-            $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($entityDefinitionClass, $translation) {
+            $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($entityDefinitionClass, $translation): void {
                 $this->entityWriter->upsert(
                     $this->registry->get($entityDefinitionClass),
                     $translation,

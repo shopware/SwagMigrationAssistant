@@ -74,7 +74,7 @@ class HistoryControllerTest extends TestCase
             'apiKey' => 'testKey',
         ];
         $runProgress = require __DIR__ . '/../../_fixtures/run_progress_data.php';
-        $this->context->scope(MigrationContext::SOURCE_CONTEXT, function () use ($connectionRepo, $connectionId) {
+        $this->context->scope(MigrationContext::SOURCE_CONTEXT, function () use ($connectionRepo, $connectionId): void {
             $connectionRepo->create(
                 [
                     [

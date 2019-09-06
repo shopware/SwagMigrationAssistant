@@ -348,7 +348,7 @@ class MigrationDataWriterTest extends TestCase
 
         $this->migrationDataRepo->update([$customer], $context);
         $customerTotalBefore = $this->customerRepo->search(new Criteria(), $context)->getTotal();
-        $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext) {
+        $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext): void {
             $this->dummyDataWriter->writeData($migrationContext, $context);
         });
         $customerTotalAfter = $this->dbConnection->query('select count(*) from customer')->fetchColumn();
@@ -381,7 +381,7 @@ class MigrationDataWriterTest extends TestCase
         $criteria = new Criteria();
         $salesChannelTotalBefore = $this->salesChannelRepo->search($criteria, $context)->getTotal();
 
-        $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext) {
+        $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext): void {
             $this->migrationDataWriter->writeData($migrationContext, $context);
         });
         $salesChannelTotalAfter = $this->dbConnection->query('select count(*) from sales_channel')->fetchColumn();
@@ -410,7 +410,7 @@ class MigrationDataWriterTest extends TestCase
         $criteria = new Criteria();
         $customerTotalBefore = $this->customerRepo->search($criteria, $context)->getTotal();
 
-        $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext) {
+        $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext): void {
             $this->migrationDataWriter->writeData($migrationContext, $context);
         });
         $customerTotalAfter = $this->dbConnection->query('select count(*) from customer')->fetchColumn();
@@ -434,7 +434,7 @@ class MigrationDataWriterTest extends TestCase
         $this->migrationDataConverter->convert($data, $userMigrationContext, $context);
         $this->clearCacheBefore();
 
-        $context->scope(Context::USER_SCOPE, function (Context $context) use ($userMigrationContext) {
+        $context->scope(Context::USER_SCOPE, function (Context $context) use ($userMigrationContext): void {
             $this->migrationDataWriter->writeData($userMigrationContext, $context);
             $this->clearCacheBefore();
         });
@@ -458,7 +458,7 @@ class MigrationDataWriterTest extends TestCase
 
         $orderTotalBefore = $this->orderRepo->search($criteria, $context)->getTotal();
         // Get data after writing
-        $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext) {
+        $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext): void {
             $this->migrationDataWriter->writeData($migrationContext, $context);
             $this->clearCacheBefore();
         });
@@ -484,7 +484,7 @@ class MigrationDataWriterTest extends TestCase
         $criteria = new Criteria();
         $totalBefore = $this->mediaRepo->search($criteria, $context)->getTotal();
 
-        $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext) {
+        $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext): void {
             $this->migrationDataWriter->writeData($migrationContext, $context);
         });
         $totalAfter = $this->dbConnection->query('select count(*) from media')->fetchColumn();
@@ -509,7 +509,7 @@ class MigrationDataWriterTest extends TestCase
         $criteria = new Criteria();
         $totalBefore = $this->categoryRepo->search($criteria, $context)->getTotal();
 
-        $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext) {
+        $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext): void {
             $this->migrationDataWriter->writeData($migrationContext, $context);
         });
         $totalAfter = $this->dbConnection->query('select count(*) from category')->fetchColumn();
@@ -536,7 +536,7 @@ class MigrationDataWriterTest extends TestCase
         $criteria = new Criteria();
         $productTotalBefore = $this->productRepo->search($criteria, $context)->getTotal();
 
-        $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext) {
+        $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext): void {
             $this->migrationDataWriter->writeData($migrationContext, $context);
         });
         $productTotalAfter = $this->dbConnection->query('select count(*) from product')->fetchColumn();
@@ -600,7 +600,7 @@ class MigrationDataWriterTest extends TestCase
         $this->connectionId = Uuid::randomHex();
         $this->runUuid = Uuid::randomHex();
 
-        $this->context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) {
+        $this->context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context): void {
             $this->connectionRepo->create(
                 [
                     [

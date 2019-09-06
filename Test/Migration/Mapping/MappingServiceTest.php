@@ -50,7 +50,7 @@ class MappingServiceTest extends TestCase
         $connectionRepo = $this->getContainer()->get('swag_migration_connection.repository');
         $this->localeRepo = $this->getContainer()->get('locale.repository');
 
-        $context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use ($connectionRepo) {
+        $context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use ($connectionRepo): void {
             $this->connectionId = Uuid::randomHex();
             $connectionRepo->create(
                 [

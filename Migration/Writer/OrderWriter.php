@@ -51,7 +51,7 @@ class OrderWriter implements WriterInterface
         }
         unset($item);
 
-        $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($data) {
+        $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($data): void {
             $this->entityWriter->upsert(
                 $this->definition,
                 $data,

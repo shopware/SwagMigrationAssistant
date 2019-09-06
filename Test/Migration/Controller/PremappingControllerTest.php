@@ -108,7 +108,7 @@ class PremappingControllerTest extends TestCase
             $migrationContextFactory
         );
 
-        $this->context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use ($connectionRepo) {
+        $this->context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use ($connectionRepo): void {
             $this->connectionId = Uuid::randomHex();
             $connectionRepo->create(
                 [
