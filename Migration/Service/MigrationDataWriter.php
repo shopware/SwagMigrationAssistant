@@ -11,7 +11,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteException;
-use Shopware\Core\Framework\ShopwareHttpException;
 use SwagMigrationAssistant\Exception\WriterNotFoundException;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
@@ -109,17 +108,18 @@ class MigrationDataWriter implements MigrationDataWriterInterface
             $currentWriter = $this->writerRegistry->getWriter($dataSet::getEntity());
             $currentWriter->writeData(array_values($converted), $context);
         } catch (WriterNotFoundException $writerNotFoundException) {
-            $code = $writerNotFoundException->getCode();
-            if (is_subclass_of($writerNotFoundException, ShopwareHttpException::class, false)) {
-                $code = $writerNotFoundException->getErrorCode();
-            }
-
             $this->loggingService->addLogEntry(new ExceptionRunLog(
                 $migrationContext->getRunUuid(),
                 $dataSet::getEntity(),
                 $writerNotFoundException
             ));
             $this->loggingService->saveLogging($context);
+
+            foreach ($updateWrittenData as $id => &$data) {
+                $data['written'] = false;
+                $data['writeFailure'] = true;
+            }
+            unset($data);
 
             return;
         } catch (WriteException $exception) {
@@ -132,7 +132,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
                 $context
             );
         } catch (\Exception $exception) {
-            // Worst case: something unkown goes wrong (most likely some foreign key constraint that fails)
+            // Worst case: something unknown goes wrong (most likely some foreign key constraint that fails)
             // TODO: If the core catches the exceptions and writes the remaining valid data this must be refactored.
             $this->writePerEntity($converted, $dataSet::getEntity(), $updateWrittenData, $migrationContext, $context);
         } finally {
