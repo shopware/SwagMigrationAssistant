@@ -139,7 +139,7 @@ class MigrationControllerTest extends TestCase
         $this->migrationContextFactory = $this->getContainer()->get(MigrationContextFactory::class);
         $loggingService = new LoggingService($loggingRepo);
 
-        $this->context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) {
+        $this->context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context): void {
             $this->connectionId = Uuid::randomHex();
             $this->connectionRepo->create(
                 [

@@ -151,7 +151,7 @@ class RunServiceTest extends TestCase
 
         $connectionId = Uuid::randomHex();
         $context = $context = Context::createDefaultContext();
-        $context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use ($connectionId) {
+        $context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use ($connectionId): void {
             $this->connectionRepo->create(
                 [
                     [

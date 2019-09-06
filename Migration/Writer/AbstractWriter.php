@@ -27,7 +27,7 @@ abstract class AbstractWriter implements WriterInterface
 
     public function writeData(array $data, Context $context): void
     {
-        $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($data) {
+        $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($data): void {
             $this->entityWriter->upsert(
                 $this->definition,
                 $data,

@@ -120,7 +120,7 @@ class ConverterRegistryTest extends TestCase
     /**
      * @dataProvider converterProvider
      */
-    public function testConverterCollection(ProfileInterface $profile, DataSet $dataSet, string $converterClass)
+    public function testConverterCollection(ProfileInterface $profile, DataSet $dataSet, string $converterClass): void
     {
         $connection = new SwagMigrationConnectionEntity();
         $connection->setProfileName(Shopware54Profile::PROFILE_NAME);

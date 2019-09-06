@@ -116,7 +116,7 @@ class StatusControllerTest extends TestCase
         $this->migrationContextFactory = $this->getContainer()->get(MigrationContextFactory::class);
         $loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
 
-        $this->context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) {
+        $this->context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context): void {
             $this->connectionId = Uuid::randomHex();
             $this->connectionRepo->create(
                 [
@@ -630,9 +630,9 @@ class StatusControllerTest extends TestCase
         ;
     }
 
-    private function createConnection(string $connectionId, string $profileName, string $connectionName)
+    private function createConnection(string $connectionId, string $profileName, string $connectionName): void
     {
-        $this->context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use ($connectionId, $profileName, $connectionName) {
+        $this->context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use ($connectionId, $profileName, $connectionName): void {
             $this->connectionRepo->create(
                 [
                     [

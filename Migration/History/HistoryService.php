@@ -91,7 +91,7 @@ class HistoryService implements HistoryServiceInterface
         $total = $this->getTotalLogCount($runUuid, $context);
         $run = $this->getMigrationRun($runUuid, $context);
 
-        return function () use ($run, $runUuid, $offset, $total, $context) {
+        return function () use ($run, $runUuid, $offset, $total, $context): void {
             printf('%s%s', $this->getPrefixLogInformation($run), PHP_EOL);
 
             while ($offset < $total) {

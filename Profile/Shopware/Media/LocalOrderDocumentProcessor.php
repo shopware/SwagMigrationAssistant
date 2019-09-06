@@ -149,7 +149,7 @@ class LocalOrderDocumentProcessor implements MediaFileProcessorInterface
         $fileBlob = file_get_contents($sourcePath);
 
         try {
-            $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($fileBlob, $fileExtension, $mimeType, $media) {
+            $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($fileBlob, $fileExtension, $mimeType, $media): void {
                 $this->mediaService->saveFile(
                     $fileBlob,
                     $fileExtension,

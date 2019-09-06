@@ -84,7 +84,7 @@ class ApiEnvironmentReaderTest extends TestCase
         $mock->expects(static::once())
             ->method('createApiClient')
             ->with($migrationContext)
-            ->will(static::returnValue($client));
+            ->willReturn($client);
 
         $environmentReader = new ApiEnvironmentReader($mock);
 
@@ -117,7 +117,7 @@ class ApiEnvironmentReaderTest extends TestCase
         $mock->expects(static::once())
             ->method('createApiClient')
             ->with($migrationContext)
-            ->will(static::returnValue($client));
+            ->willReturn($client);
         $environmentReader = new ApiEnvironmentReader($mock);
 
         $response = $environmentReader->read($migrationContext);
@@ -152,7 +152,7 @@ class ApiEnvironmentReaderTest extends TestCase
         $mock->expects(static::once())
             ->method('createApiClient')
             ->with($migrationContext)
-            ->will(static::returnValue($client));
+            ->willReturn($client);
         $environmentReader = new ApiEnvironmentReader($mock);
 
         $response = $environmentReader->read($migrationContext);
@@ -183,7 +183,7 @@ class ApiEnvironmentReaderTest extends TestCase
         $mock->expects(static::once())
             ->method('createApiClient')
             ->with($migrationContext)
-            ->will(static::returnValue($client));
+            ->willReturn($client);
         $environmentReader = new ApiEnvironmentReader($mock);
 
         $response = $environmentReader->read($migrationContext);
@@ -215,7 +215,7 @@ class ApiEnvironmentReaderTest extends TestCase
         $mock->expects(static::once())
             ->method('createApiClient')
             ->with($migrationContext)
-            ->will(static::returnValue($client));
+            ->willReturn($client);
         $environmentReader = new ApiEnvironmentReader($mock);
 
         $response = $environmentReader->read($migrationContext);

@@ -644,7 +644,9 @@ Component.register('swag-migration-process-screen', {
                 this.migrationProcessStore.setIsMigrating(false);
                 this.migrationUIStore.setIsPaused(false);
                 this.migrationUIStore.setIsLoading(false);
-                this.$router.push({ name: 'swag.migration.index.main' });
+                this.$nextTick(() => {
+                    this.$router.push({ name: 'swag.migration.index.main' });
+                });
             });
         },
 
