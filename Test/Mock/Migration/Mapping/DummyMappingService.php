@@ -46,6 +46,41 @@ class DummyMappingService extends MappingService
         return $uuid;
     }
 
+    public function createNewUuidListItem(
+        string $connectionId,
+        string $entityName,
+        string $oldId,
+        Context $context,
+        ?array $additionalData = null,
+        ?string $newUuid = null
+    ): void {
+        $uuid = Uuid::randomHex();
+        if ($newUuid !== null) {
+            $uuid = $newUuid;
+
+            foreach ($this->writeArray as $item) {
+                if (
+                    $item['connectionId'] === $connectionId
+                    && $item['entity'] === $entityName
+                    && $item['oldIdentifier'] === $oldId
+                    && $item['entityUuid'] === $newUuid
+                ) {
+                    return;
+                }
+            }
+        }
+
+        $this->saveListMapping(
+            [
+                'connectionId' => $connectionId,
+                'entity' => $entityName,
+                'oldIdentifier' => $oldId,
+                'entityUuid' => $uuid,
+                'additionalData' => $additionalData,
+            ]
+        );
+    }
+
     public function writeMapping(Context $context): void
     {
     }

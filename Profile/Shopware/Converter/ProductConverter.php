@@ -476,6 +476,7 @@ abstract class ProductConverter extends ShopwareConverter
                     $this->connectionId,
                     'main_product_options',
                     hash('md5', strtolower($option['name'] . '_' . $option['group']['name'])),
+                    $this->context,
                     null,
                     $productContainerUuid
                 );
@@ -554,6 +555,7 @@ abstract class ProductConverter extends ShopwareConverter
                 $this->connectionId,
                 'main_product_filter',
                 hash('md5', strtolower($option['value'] . '_' . $option['option']['name'])),
+                $this->context,
                 null,
                 $productContainerUuid
             );
