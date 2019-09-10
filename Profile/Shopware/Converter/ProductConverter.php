@@ -346,12 +346,18 @@ abstract class ProductConverter extends ShopwareConverter
 
         $this->convertValue($converted, 'productNumber', $data['detail'], 'ordernumber', self::TYPE_STRING);
 
-        $this->convertValue($converted, 'active', $data, 'active', self::TYPE_BOOLEAN);
+        if ($this->productType === self::MAIN_PRODUCT_TYPE) {
+            $this->convertValue($converted, 'active', $data, 'active', self::TYPE_BOOLEAN);
+            unset($data['detail']['active']);
+        } else {
+            $this->convertValue($converted, 'active', $data['detail'], 'active', self::TYPE_BOOLEAN);
+            unset($data['active']);
+        }
+
         $this->convertValue($converted, 'isCloseout', $data, 'laststock', self::TYPE_BOOLEAN);
         $this->convertValue($converted, 'markAsTopseller', $data, 'topseller', self::TYPE_BOOLEAN);
         $this->convertValue($converted, 'allowNotification', $data, 'notification', self::TYPE_BOOLEAN);
         $this->convertValue($converted, 'manufacturerNumber', $data['detail'], 'suppliernumber');
-        $this->convertValue($converted, 'active', $data['detail'], 'active', self::TYPE_BOOLEAN);
         $this->convertValue($converted, 'sales', $data['detail'], 'sales', self::TYPE_INTEGER);
         $this->convertValue($converted, 'stock', $data['detail'], 'instock', self::TYPE_INTEGER);
         $this->convertValue($converted, 'minStock', $data['detail'], 'stockmin', self::TYPE_INTEGER);
