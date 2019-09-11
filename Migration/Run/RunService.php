@@ -7,7 +7,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Dbal\QueryBuilder;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Indexing\IndexerRegistryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Indexing\MessageQueue\IndexerMessageSender;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\CountAggregation;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\ValueCountAggregation;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\CountResult;
@@ -73,7 +73,7 @@ class RunService implements RunServiceInterface
     private $mediaFileRepository;
 
     /**
-     * @var IndexerRegistryInterface
+     * @var IndexerMessageSender
      */
     private $indexer;
 
@@ -127,7 +127,7 @@ class RunService implements RunServiceInterface
         EntityRepositoryInterface $mediaFileRepository,
         EntityRepositoryInterface $salesChannelRepository,
         EntityRepositoryInterface $themeRepository,
-        IndexerRegistryInterface $indexer,
+        IndexerMessageSender $indexer,
         ThemeService $themeService,
         MappingServiceInterface $mappingService,
         TagAwareAdapter $cache,
@@ -319,7 +319,7 @@ class RunService implements RunServiceInterface
         $this->assignThemeToSalesChannel($runUuid, $context);
 
         $this->cache->clear();
-        $this->indexer->index(new \DateTime());
+        $this->indexer->partial(new \DateTime());
     }
 
     private function isMigrationRunningWithGivenConnection(Context $context, string $connectionUuid): bool
