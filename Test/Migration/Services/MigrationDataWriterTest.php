@@ -9,7 +9,7 @@ use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\InvoicePayment;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Indexing\IndexerRegistry;
+use Shopware\Core\Framework\DataAbstractionLayer\Indexing\MessageQueue\IndexerMessageSender;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
@@ -54,7 +54,6 @@ use SwagMigrationAssistant\Test\Mock\DummyThemeService;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Media\DummyMediaFileService;
 use SwagMigrationAssistant\Test\Mock\Migration\Service\DummyMigrationDataFetcher;
-use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class MigrationDataWriterTest extends TestCase
 {
@@ -299,7 +298,7 @@ class MigrationDataWriterTest extends TestCase
           $this->mediaRepo,
           $this->salesChannelRepo,
           $this->themeRepo,
-          new IndexerRegistry([], new EventDispatcher()),
+          new IndexerMessageSender($this->getContainer()->get('messenger.bus.shopware'), []),
           new DummyThemeService($this->themeSalesChannelRepo),
           $this->mappingService,
           $this->getContainer()->get('shopware.cache'),

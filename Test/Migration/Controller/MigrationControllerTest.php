@@ -6,7 +6,7 @@ use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Indexing\IndexerRegistryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Indexing\MessageQueue\IndexerMessageSender;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
@@ -230,7 +230,7 @@ class MigrationControllerTest extends TestCase
                 $this->mediaFileRepo,
                 $salesChannelRepo,
                 $themeRepo,
-                $this->getContainer()->get(IndexerRegistryInterface::class),
+                $this->getContainer()->get(IndexerMessageSender::class),
                 $this->getContainer()->get(ThemeService::class),
                 $mappingService,
                 $this->getContainer()->get('shopware.cache'),
