@@ -273,15 +273,16 @@ class MappingService implements MappingServiceInterface
         string $connectionId,
         string $entityName,
         string $oldId,
+        Context $context,
         ?array $additionalData = null,
         ?string $newUuid = null
-    ): string {
+    ): void {
         $uuid = Uuid::randomHex();
         if ($newUuid !== null) {
             $uuid = $newUuid;
 
-            if ($this->isUuidDuplicate($connectionId, $entityName, $oldId, $newUuid)) {
-                return $newUuid;
+            if ($this->isUuidDuplicate($connectionId, $entityName, $oldId, $newUuid, $context)) {
+                return;
             }
         }
 
@@ -294,24 +295,6 @@ class MappingService implements MappingServiceInterface
                 'additionalData' => $additionalData,
             ]
         );
-
-        return $uuid;
-    }
-
-    public function isUuidDuplicate(string $connectionId, string $entityName, string $id, string $uuid): bool
-    {
-        foreach ($this->writeArray as $item) {
-            if (
-                $item['connectionId'] === $connectionId
-                && $item['entity'] === $entityName
-                && $item['oldIdentifier'] === $id
-                && $item['entityUuid'] === $uuid
-            ) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     public function getUuidList(string $connectionId, string $entityName, string $identifier, Context $context): array
@@ -895,6 +878,37 @@ class MappingService implements MappingServiceInterface
 
         $this->uuids[$entity][$oldId][] = $uuid;
         $this->writeArray[] = $mapping;
+    }
+
+    private function isUuidDuplicate(string $connectionId, string $entityName, string $id, string $uuid, Context $context): bool
+    {
+        foreach ($this->writeArray as $item) {
+            if (
+                $item['connectionId'] === $connectionId
+                && $item['entity'] === $entityName
+                && $item['oldIdentifier'] === $id
+                && $item['entityUuid'] === $uuid
+            ) {
+                return true;
+            }
+        }
+
+        /** @var EntitySearchResult $result */
+        $result = $context->disableCache(function (Context $context) use ($connectionId, $entityName, $id, $uuid) {
+            $criteria = new Criteria();
+            $criteria->addFilter(new EqualsFilter('connectionId', $connectionId));
+            $criteria->addFilter(new EqualsFilter('entity', $entityName));
+            $criteria->addFilter(new EqualsFilter('oldIdentifier', $id));
+            $criteria->addFilter(new EqualsFilter('entityUuid', $uuid));
+
+            return $this->migrationMappingRepo->searchIds($criteria, $context);
+        });
+
+        if ($result->getTotal() > 0) {
+            return true;
+        }
+
+        return false;
     }
 
     private function searchLanguageInMapping(string $localeCode, Context $context): ?string

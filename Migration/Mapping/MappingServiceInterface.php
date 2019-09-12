@@ -19,9 +19,10 @@ interface MappingServiceInterface
         string $connectionId,
         string $entityName,
         string $oldId,
+        Context $context,
         ?array $additionalData = null,
         ?string $newUuid = null
-    ): string;
+    ): void;
 
     public function getUuidList(string $connectionId, string $entityName, string $identifier, Context $context): array;
 
