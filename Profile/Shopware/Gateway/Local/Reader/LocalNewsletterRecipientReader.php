@@ -84,7 +84,7 @@ class LocalNewsletterRecipientReader extends LocalAbstractReader implements Loca
     {
         $query = $this->connection->createQueryBuilder();
 
-        $query->addSelect('REPLACE(REGEXP_SUBSTR(config.value, \'"[0-9]*"\'), \'"\', \'\') as groupID');
+        $query->addSelect('config.value as groupID');
         $query->addSelect('shop.id as shopId');
         $query->addSelect('locale.locale as locale');
 
@@ -93,14 +93,16 @@ class LocalNewsletterRecipientReader extends LocalAbstractReader implements Loca
         $query->innerJoin('shop', 's_core_locales', 'locale', 'locale.id = shop.locale_id');
         $query->where('config.name = \'newsletterdefaultgroup\'');
 
-        return $query->execute()->fetchAll(\PDO::FETCH_GROUP);
+        $shops = $query->execute()->fetchAll();
+
+        return $this->getGroupedResult($shops);
     }
 
     private function getShopsAndLocalesByGroupId(): array
     {
         $query = $this->connection->createQueryBuilder();
 
-        $query->addSelect('REPLACE(REGEXP_SUBSTR(config_values.value, \'"[0-9]*"\'), \'"\', \'\') as groupID');
+        $query->addSelect('config_values.value as groupID');
         $query->addSelect('shop.id as shopId');
         $query->addSelect('shop.main_id as mainId');
         $query->addSelect('locale.locale as locale');
@@ -111,7 +113,9 @@ class LocalNewsletterRecipientReader extends LocalAbstractReader implements Loca
         $query->innerJoin('shop', 's_core_locales', 'locale', 'locale.id = shop.locale_id');
         $query->where('config.name = \'newsletterdefaultgroup\'');
 
-        return $query->execute()->fetchAll(\PDO::FETCH_GROUP);
+        $shops = $query->execute()->fetchAll();
+
+        return $this->getGroupedResult($shops);
     }
 
     private function getShopsAndLocalesByCustomer(array $ids): array
@@ -133,5 +137,20 @@ class LocalNewsletterRecipientReader extends LocalAbstractReader implements Loca
         $query->setParameter('ids', $ids, Connection::PARAM_STR_ARRAY);
 
         return $query->execute()->fetchAll(\PDO::FETCH_GROUP);
+    }
+
+    private function getGroupedResult(array $shops): array
+    {
+        $resultSet = [];
+
+        foreach ($shops as $shop) {
+            $groupId = unserialize($shop['groupID'], ['allowed_classes' => false]);
+            if (!isset($resultSet[$groupId])) {
+                $resultSet[$groupId] = [];
+            }
+            $resultSet[$groupId][] = $shop;
+        }
+
+        return $resultSet;
     }
 }
