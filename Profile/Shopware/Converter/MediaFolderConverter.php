@@ -177,7 +177,7 @@ abstract class MediaFolderConverter extends ShopwareConverter
                     $uuid = $this->mappingService->createNewUuid(
                         $this->connectionId,
                         DefaultEntities::MEDIA_THUMBNAIL_SIZE,
-                        $thumbnailSize['width'] . '' . $thumbnailSize['height'],
+                        $thumbnailSize['width'] . '-' . $thumbnailSize['height'],
                         $this->context
                     );
                 }
