@@ -66,6 +66,7 @@ class CustomerConverterTest extends TestCase
         $this->runId = Uuid::randomHex();
         $this->connection = new SwagMigrationConnectionEntity();
         $this->connection->setId($this->connectionId);
+        $this->connection->setName('shopware');
         $this->connection->setProfileName(Shopware55Profile::PROFILE_NAME);
         $this->connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
 

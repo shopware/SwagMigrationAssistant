@@ -55,6 +55,7 @@ class CategoryConverterTest extends TestCase
         $this->connection = new SwagMigrationConnectionEntity();
         $this->connection->setId(Uuid::randomHex());
         $this->connection->setProfileName(Shopware55Profile::PROFILE_NAME);
+        $this->connection->setName('shopware');
 
         $this->migrationContext = new MigrationContext(
             new Shopware55Profile(),

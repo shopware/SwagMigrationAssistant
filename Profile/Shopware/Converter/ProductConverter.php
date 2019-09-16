@@ -114,6 +114,7 @@ abstract class ProductConverter extends ShopwareConverter
         MigrationContextInterface $migrationContext
     ): ConvertStruct {
         $this->context = $context;
+        $this->migrationContext = $migrationContext;
         $this->runId = $migrationContext->getRunUuid();
         $this->connectionId = $migrationContext->getConnection()->getId();
         $this->oldProductId = $data['detail']['ordernumber'];
@@ -340,7 +341,7 @@ abstract class ProductConverter extends ShopwareConverter
         unset($data['_locale']);
 
         if (isset($data['attributes'])) {
-            $converted['customFields'] = $this->getAttributes($data['attributes'], DefaultEntities::PRODUCT, ['id', 'articleID', 'articledetailsID']);
+            $converted['customFields'] = $this->getAttributes($data['attributes'], DefaultEntities::PRODUCT, $this->migrationContext->getConnection()->getName(), ['id', 'articleID', 'articledetailsID']);
         }
         unset($data['attributes']);
 
@@ -613,7 +614,7 @@ abstract class ProductConverter extends ShopwareConverter
         }
 
         if (isset($data['attributes'])) {
-            $manufacturer['customFields'] = $this->getAttributes($data['attributes'], DefaultEntities::PRODUCT_MANUFACTURER, ['id', 'supplierID']);
+            $manufacturer['customFields'] = $this->getAttributes($data['attributes'], DefaultEntities::PRODUCT_MANUFACTURER, $this->migrationContext->getConnection()->getName(), ['id', 'supplierID']);
         }
 
         return $manufacturer;
@@ -1000,7 +1001,7 @@ abstract class ProductConverter extends ShopwareConverter
             ];
 
             if (isset($price['attributes'])) {
-                $data['customFields'] = $this->getAttributes($price, DefaultEntities::PRODUCT_PRICE, ['id', 'priceID']);
+                $data['customFields'] = $this->getAttributes($price, DefaultEntities::PRODUCT_PRICE, $this->migrationContext->getConnection()->getName(), ['id', 'priceID']);
             }
 
             $newData[] = $data;
@@ -1044,7 +1045,7 @@ abstract class ProductConverter extends ShopwareConverter
         $localeTranslation['languageId'] = $languageUuid;
 
         if (isset($data['attributes'])) {
-            $localeTranslation['customFields'] = $this->getAttributes($data['attributes'], DefaultEntities::PRODUCT, ['id', 'articleID', 'articledetailsID']);
+            $localeTranslation['customFields'] = $this->getAttributes($data['attributes'], DefaultEntities::PRODUCT, $this->migrationContext->getConnection()->getName(), ['id', 'articleID', 'articledetailsID']);
         }
 
         $converted['translations'][$languageUuid] = $localeTranslation;
@@ -1100,19 +1101,5 @@ abstract class ProductConverter extends ShopwareConverter
         }
 
         return $visibilities;
-    }
-
-    private function getAttributes(array $attributes, string $entityName, array $blacklist = []): array
-    {
-        $result = [];
-
-        foreach ($attributes as $attribute => $value) {
-            if (in_array($attribute, $blacklist, true)) {
-                continue;
-            }
-            $result[$entityName . '_' . $attribute] = $value;
-        }
-
-        return $result;
     }
 }

@@ -54,11 +54,6 @@ abstract class OrderDocumentConverter extends ShopwareConverter
      */
     protected $context;
 
-    /**
-     * @var MigrationContextInterface
-     */
-    protected $migrationContext;
-
     public function __construct(
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
@@ -125,7 +120,7 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         unset($data['documenttype']);
 
         if (isset($data['attributes'])) {
-            $converted['customFields'] = $this->getAttributes($data['attributes']);
+            $converted['customFields'] = $this->getAttributes($data['attributes'], DefaultEntities::ORDER_DOCUMENT, $migrationContext->getConnection()->getName(), ['id', 'documentID']);
         }
         unset($data['attributes']);
 
@@ -211,19 +206,5 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         }
 
         return $newMedia;
-    }
-
-    protected function getAttributes(array $attributes): array
-    {
-        $result = [];
-
-        foreach ($attributes as $attribute => $value) {
-            if ($attribute === 'id' || $attribute === 'documentID') {
-                continue;
-            }
-            $result[DefaultEntities::ORDER_DOCUMENT . '_' . $attribute] = $value;
-        }
-
-        return $result;
     }
 }

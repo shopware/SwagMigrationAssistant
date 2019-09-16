@@ -34,7 +34,7 @@ class OrderAttributeConverterTest extends TestCase
         $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
         $connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
         $connection->setId(Uuid::randomHex());
-        $connection->setName('ConntectionName');
+        $connection->setName('ConnectionName');
 
         $this->migrationContext = new MigrationContext(
             new Shopware55Profile(),
@@ -67,7 +67,7 @@ class OrderAttributeConverterTest extends TestCase
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('relations', $converted);
         static::assertSame('order', $converted['relations'][0]['entityName']);
-        static::assertSame('order_migration_ConntectionName_attr6', $converted['customFields'][0]['name']);
+        static::assertSame('migration_ConnectionName_order_attr6', $converted['customFields'][0]['name']);
         static::assertSame('text', $converted['customFields'][0]['config']['type']);
         static::assertSame('text', $converted['customFields'][0]['config']['customFieldType']);
     }

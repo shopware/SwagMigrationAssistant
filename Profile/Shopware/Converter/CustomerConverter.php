@@ -95,6 +95,7 @@ abstract class CustomerConverter extends ShopwareConverter
     ): ConvertStruct {
         $oldData = $data;
         $this->runId = $migrationContext->getRunUuid();
+        $this->migrationContext = $migrationContext;
 
         $fields = $this->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
 
@@ -220,7 +221,7 @@ abstract class CustomerConverter extends ShopwareConverter
         }
 
         if (isset($data['attributes'])) {
-            $converted['customFields'] = $this->getAttributes($data['attributes']);
+            $converted['customFields'] = $this->getAttributes($data['attributes'], DefaultEntities::CUSTOMER, $migrationContext->getConnection()->getName(), ['id', 'userID']);
         }
         unset($data['attributes']);
 
@@ -569,19 +570,5 @@ abstract class CustomerConverter extends ShopwareConverter
         }
 
         return $salutationUuid;
-    }
-
-    protected function getAttributes(array $attributes): array
-    {
-        $result = [];
-
-        foreach ($attributes as $attribute => $value) {
-            if ($attribute === 'id' || $attribute === 'userID') {
-                continue;
-            }
-            $result[DefaultEntities::CUSTOMER . '_' . $attribute] = $value;
-        }
-
-        return $result;
     }
 }

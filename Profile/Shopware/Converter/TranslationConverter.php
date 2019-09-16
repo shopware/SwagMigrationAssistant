@@ -66,6 +66,7 @@ abstract class TranslationConverter extends ShopwareConverter
     ): ConvertStruct {
         $this->connectionId = $migrationContext->getConnection()->getId();
         $this->context = $context;
+        $this->migrationContext = $migrationContext;
         $this->runId = $migrationContext->getRunUuid();
 
         if (!isset($data['locale'])) {
@@ -697,7 +698,7 @@ abstract class TranslationConverter extends ShopwareConverter
     {
         $isAttribute = strpos($key, '__attribute_');
         if ($isAttribute !== false) {
-            $key = $entityName . '_' . str_replace('__attribute_', '', $key);
+            $key = 'migration_' . $this->migrationContext->getConnection()->getName() . '_' . $entityName . '_' . str_replace('__attribute_', '', $key);
             $translation['customFields'][$key] = $value;
             unset($objectData[$key]);
         }

@@ -183,7 +183,7 @@ abstract class CategoryConverter extends ShopwareConverter
         }
 
         if (isset($data['attributes'])) {
-            $converted['customFields'] = $this->getAttributes($data['attributes']);
+            $converted['customFields'] = $this->getAttributes($data['attributes'], $migrationContext->getDataSet()::getEntity(), $migrationContext->getConnection()->getName(), ['id', 'categoryID']);
         }
         unset($data['attributes']);
 
@@ -234,20 +234,6 @@ abstract class CategoryConverter extends ShopwareConverter
         }
 
         $converted['translations'][$languageUuid] = $localeTranslation;
-    }
-
-    protected function getAttributes(array $attributes): array
-    {
-        $result = [];
-
-        foreach ($attributes as $attribute => $value) {
-            if ($attribute === 'id' || $attribute === 'categoryID') {
-                continue;
-            }
-            $result[DefaultEntities::CATEGORY . '_' . $attribute] = $value;
-        }
-
-        return $result;
     }
 
     protected function getCategoryMedia(array $media): array
