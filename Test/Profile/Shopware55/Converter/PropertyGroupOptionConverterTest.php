@@ -83,6 +83,7 @@ class PropertyGroupOptionConverterTest extends TestCase
         $this->connection->setId(Uuid::randomHex());
         $this->connection->setProfileName(Shopware55Profile::PROFILE_NAME);
         $this->connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
+        $this->connection->setName('shopware');
 
         $this->migrationContext = new MigrationContext(
             new Shopware55Profile(),

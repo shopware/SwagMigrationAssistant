@@ -50,7 +50,7 @@ abstract class CustomerGroupConverter extends ShopwareConverter
         );
 
         if (isset($data['attributes'])) {
-            $converted['customFields'] = $this->getAttributes($data['attributes']);
+            $converted['customFields'] = $this->getAttributes($data['attributes'], DefaultEntities::CUSTOMER_GROUP, $migrationContext->getConnection()->getName(), ['id', 'customerGroupID']);
         }
 
         $this->getCustomerGroupTranslation($converted, $data);
@@ -102,19 +102,5 @@ abstract class CustomerGroupConverter extends ShopwareConverter
     public function writeMapping(Context $context): void
     {
         $this->mappingService->writeMapping($context);
-    }
-
-    protected function getAttributes(array $attributes): array
-    {
-        $result = [];
-
-        foreach ($attributes as $attribute => $value) {
-            if ($attribute === 'id' || $attribute === 'customerGroupID') {
-                continue;
-            }
-            $result[DefaultEntities::CUSTOMER_GROUP . '_' . $attribute] = $value;
-        }
-
-        return $result;
     }
 }

@@ -315,7 +315,7 @@ abstract class OrderConverter extends ShopwareConverter
         }
 
         if (isset($data['attributes'])) {
-            $converted['customFields'] = $this->getAttributes($data['attributes']);
+            $converted['customFields'] = $this->getAttributes($data['attributes'], DefaultEntities::ORDER, $migrationContext->getConnection()->getName(), ['id', 'orderID']);
         }
         unset($data['attributes']);
 
@@ -818,19 +818,5 @@ abstract class OrderConverter extends ShopwareConverter
         }
 
         return $salutationUuid;
-    }
-
-    protected function getAttributes(array $attributes): array
-    {
-        $result = [];
-
-        foreach ($attributes as $attribute => $value) {
-            if ($attribute === 'id' || $attribute === 'orderID') {
-                continue;
-            }
-            $result[DefaultEntities::ORDER . '_' . $attribute] = $value;
-        }
-
-        return $result;
     }
 }

@@ -3,6 +3,7 @@
 namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
 use SwagMigrationAssistant\Migration\Converter\ConverterInterface;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 abstract class ShopwareConverter implements ConverterInterface
 {
@@ -11,6 +12,11 @@ abstract class ShopwareConverter implements ConverterInterface
     protected const TYPE_INTEGER = 'int';
     protected const TYPE_FLOAT = 'float';
     protected const TYPE_DATETIME = 'datetime';
+
+    /**
+     * @var MigrationContextInterface
+     */
+    protected $migrationContext;
 
     protected function convertValue(
         array &$newData,
@@ -87,5 +93,22 @@ abstract class ShopwareConverter implements ConverterInterface
         } catch (\Exception $e) {
             return false;
         }
+    }
+
+    protected function getAttributes(array $attributes, string $entityName, string $connectionName, array $blacklist = []): array
+    {
+        $result = [];
+        // remove unwanted characters from connection name
+        $connectionName = str_replace(' ', '', $connectionName);
+        $connectionName = preg_replace('/[^A-Za-z0-9\-]/', '', $connectionName);
+
+        foreach ($attributes as $attribute => $value) {
+            if (in_array($attribute, $blacklist, true)) {
+                continue;
+            }
+            $result['migration_' . $connectionName . '_' . $entityName . '_' . $attribute] = $value;
+        }
+
+        return $result;
     }
 }

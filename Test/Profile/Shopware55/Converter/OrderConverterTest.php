@@ -86,6 +86,7 @@ class OrderConverterTest extends TestCase
         $this->connection->setId($connectionId);
         $this->connection->setProfileName(Shopware55Profile::PROFILE_NAME);
         $this->connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
+        $this->connection->setName('shopware');
 
         $this->migrationContext = new MigrationContext(
             new Shopware55Profile(),

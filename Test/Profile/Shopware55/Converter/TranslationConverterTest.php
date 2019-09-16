@@ -75,6 +75,7 @@ class TranslationConverterTest extends TestCase
         $connection->setId(Uuid::randomHex());
         $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
         $connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
+        $connection->setName('shopware');
         $connection->setCredentialFields([]);
 
         $this->runId = Uuid::randomHex();

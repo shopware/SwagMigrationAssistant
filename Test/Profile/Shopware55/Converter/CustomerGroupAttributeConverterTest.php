@@ -31,7 +31,7 @@ class CustomerGroupAttributeConverterTest extends TestCase
         $runId = Uuid::randomHex();
         $connection = new SwagMigrationConnectionEntity();
         $connection->setId(Uuid::randomHex());
-        $connection->setName('ConntectionName');
+        $connection->setName('ConnectionName');
         $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
 
         $this->migrationContext = new MigrationContext(
@@ -64,7 +64,7 @@ class CustomerGroupAttributeConverterTest extends TestCase
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('relations', $converted);
         static::assertSame('customer_group', $converted['relations'][0]['entityName']);
-        static::assertSame('customer_group_migration_ConntectionName_attr6', $converted['customFields'][0]['name']);
+        static::assertSame('migration_ConnectionName_customer_group_attr6', $converted['customFields'][0]['name']);
         static::assertSame('text', $converted['customFields'][0]['config']['type']);
         static::assertSame('text', $converted['customFields'][0]['config']['customFieldType']);
     }

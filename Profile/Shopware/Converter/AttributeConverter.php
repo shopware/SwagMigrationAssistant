@@ -32,7 +32,11 @@ abstract class AttributeConverter implements ConverterInterface
             $context
         );
 
-        $converted['name'] = $this->getCustomFieldEntityName() . '_migration_' . $migrationContext->getConnection()->getName();
+        $connectionName = $migrationContext->getConnection()->getName();
+        $connectionName = str_replace(' ', '', $connectionName);
+        $connectionName = preg_replace('/[^A-Za-z0-9\-]/', '', $connectionName);
+
+        $converted['name'] = 'migration_' . $connectionName . '_' . $this->getCustomFieldEntityName();
         $converted['config'] = [
             'label' => [
                 $data['_locale'] => ucfirst($this->getCustomFieldEntityName()) . ' migration custom fields (attributes)',
@@ -154,7 +158,7 @@ abstract class AttributeConverter implements ConverterInterface
         }
 
         if ($data['configuration']['position']) {
-            $attributeData['customFieldPosition'] = $data['configuration']['position'];
+            $attributeData['customFieldPosition'] = (int) $data['configuration']['position'];
         }
 
         if ($data['configuration']['column_type'] === 'text' || $data['configuration']['column_type'] === 'string') {

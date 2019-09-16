@@ -61,6 +61,7 @@ class OrderDocumentConverterTest extends TestCase
         $this->connection->setId($connectionId);
         $this->connection->setProfileName(Shopware54Profile::PROFILE_NAME);
         $this->connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
+        $this->connection->setName('shopware');
         $this->migrationContext = new MigrationContext(
             new Shopware54Profile(),
             $this->connection,

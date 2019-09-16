@@ -49,7 +49,7 @@ class ProductAttributeConverterTest extends TestCase
         $this->runId = Uuid::randomHex();
         $this->connection = new SwagMigrationConnectionEntity();
         $this->connection->setId(Uuid::randomHex());
-        $this->connection->setName('ConntectionName');
+        $this->connection->setName('ConnectionName');
         $this->connection->setProfileName(Shopware55Profile::PROFILE_NAME);
 
         $this->migrationContext = new MigrationContext(
@@ -82,7 +82,7 @@ class ProductAttributeConverterTest extends TestCase
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('relations', $converted);
         static::assertSame('product', $converted['relations'][0]['entityName']);
-        static::assertSame('product_migration_ConntectionName_categorydate1', $converted['customFields'][0]['name']);
+        static::assertSame('migration_ConnectionName_product_categorydate1', $converted['customFields'][0]['name']);
         static::assertSame('date', $converted['customFields'][0]['type']);
         static::assertSame('date', $converted['customFields'][0]['config']['type']);
         static::assertSame('date', $converted['customFields'][0]['config']['dateType']);
@@ -102,7 +102,7 @@ class ProductAttributeConverterTest extends TestCase
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('relations', $converted);
         static::assertSame('product', $converted['relations'][0]['entityName']);
-        static::assertSame('product_migration_ConntectionName_ganzzahlattr', $converted['customFields'][0]['name']);
+        static::assertSame('migration_ConnectionName_product_ganzzahlattr', $converted['customFields'][0]['name']);
         static::assertSame('integer', $converted['customFields'][0]['type']);
         static::assertSame('int', $converted['customFields'][0]['config']['numberType']);
         static::assertSame('number', $converted['customFields'][0]['config']['customFieldType']);
@@ -121,7 +121,7 @@ class ProductAttributeConverterTest extends TestCase
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('relations', $converted);
         static::assertSame('product', $converted['relations'][0]['entityName']);
-        static::assertSame('product_migration_ConntectionName_dezimalzahl1', $converted['customFields'][0]['name']);
+        static::assertSame('migration_ConnectionName_product_dezimalzahl1', $converted['customFields'][0]['name']);
         static::assertSame('float', $converted['customFields'][0]['type']);
         static::assertSame('float', $converted['customFields'][0]['config']['numberType']);
         static::assertSame('number', $converted['customFields'][0]['config']['customFieldType']);
@@ -140,7 +140,7 @@ class ProductAttributeConverterTest extends TestCase
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('relations', $converted);
         static::assertSame('product', $converted['relations'][0]['entityName']);
-        static::assertSame('product_migration_ConntectionName_mediumtext1', $converted['customFields'][0]['name']);
+        static::assertSame('migration_ConnectionName_product_mediumtext1', $converted['customFields'][0]['name']);
         static::assertSame('text', $converted['customFields'][0]['type']);
         static::assertSame('textEditor', $converted['customFields'][0]['config']['customFieldType']);
     }
@@ -158,7 +158,7 @@ class ProductAttributeConverterTest extends TestCase
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('relations', $converted);
         static::assertSame('product', $converted['relations'][0]['entityName']);
-        static::assertSame('product_migration_ConntectionName_combobox1', $converted['customFields'][0]['name']);
+        static::assertSame('migration_ConnectionName_product_combobox1', $converted['customFields'][0]['name']);
         static::assertSame('text', $converted['customFields'][0]['type']);
         static::assertSame('select', $converted['customFields'][0]['config']['customFieldType']);
         static::assertArrayHasKey('options', $converted['customFields'][0]['config']);
@@ -180,7 +180,7 @@ class ProductAttributeConverterTest extends TestCase
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('relations', $converted);
         static::assertSame('product', $converted['relations'][0]['entityName']);
-        static::assertSame('product_migration_ConntectionName_integer2', $converted['customFields'][0]['name']);
+        static::assertSame('migration_ConnectionName_product_integer2', $converted['customFields'][0]['name']);
         static::assertSame('integer', $converted['customFields'][0]['type']);
         static::assertSame('int', $converted['customFields'][0]['config']['numberType']);
         static::assertSame('number', $converted['customFields'][0]['config']['customFieldType']);
@@ -199,7 +199,7 @@ class ProductAttributeConverterTest extends TestCase
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('relations', $converted);
         static::assertSame('product', $converted['relations'][0]['entityName']);
-        static::assertSame('product_migration_ConntectionName_float2', $converted['customFields'][0]['name']);
+        static::assertSame('migration_ConnectionName_product_float2', $converted['customFields'][0]['name']);
         static::assertSame('float', $converted['customFields'][0]['type']);
         static::assertSame('float', $converted['customFields'][0]['config']['numberType']);
         static::assertSame('number', $converted['customFields'][0]['config']['customFieldType']);
