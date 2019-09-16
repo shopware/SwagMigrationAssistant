@@ -32,7 +32,11 @@ abstract class AttributeConverter implements ConverterInterface
             $context
         );
 
-        $converted['name'] = 'migration_' . $migrationContext->getConnection()->getName() . '_' . $this->getCustomFieldEntityName();
+        $connectionName = $migrationContext->getConnection()->getName();
+        $connectionName = str_replace(' ', '', $connectionName);
+        $connectionName = preg_replace('/[^A-Za-z0-9\-]/', '', $connectionName);
+
+        $converted['name'] = 'migration_' . $connectionName . '_' . $this->getCustomFieldEntityName();
         $converted['config'] = [
             'label' => [
                 $data['_locale'] => ucfirst($this->getCustomFieldEntityName()) . ' migration custom fields (attributes)',
