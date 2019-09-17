@@ -107,16 +107,17 @@ class NewsletterRecipientConverterTest extends TestCase
 
     public function testConvertWithNotExistingSalutation(): void
     {
-        $customerData = require __DIR__ . '/../../../_fixtures/invalid/newsletter_recipient_data.php';
+        $data = require __DIR__ . '/../../../_fixtures/invalid/newsletter_recipient_data.php';
 
         $context = Context::createDefaultContext();
         $convertResult = $this->newsletterReceiverConverter->convert(
-            $customerData[1],
+            $data[1],
             $context,
             $this->context
         );
 
-        static::assertNull($convertResult->getConverted());
+        static::assertNull($convertResult->getUnmapped());
+        static::assertArrayNotHasKey('salutationId', $convertResult->getConverted());
 
         $logs = $this->loggingService->getLoggingArray();
         static::assertCount(1, $logs);
