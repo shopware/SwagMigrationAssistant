@@ -20,7 +20,10 @@ class LocalNewsletterRecipientReader extends LocalAbstractReader implements Loca
         $this->setConnection($migrationContext);
 
         $ids = $this->fetchIdentifiers('s_campaigns_mailaddresses', $migrationContext->getOffset(), $migrationContext->getLimit());
-        $newsletterData = $this->fetchData($ids);
+        $fetchedRecipients = $this->fetchData($ids);
+
+        $newsletterData = $this->mapData($fetchedRecipients, [], ['recipient']);
+
         $shopsByCustomer = $this->getShopsAndLocalesByCustomer($ids);
         $defaultShop = $this->getDefaultShopAndLocaleByGroupId();
         $shops = $this->getShopsAndLocalesByGroupId();
@@ -68,14 +71,14 @@ class LocalNewsletterRecipientReader extends LocalAbstractReader implements Loca
     {
         $query = $this->connection->createQueryBuilder();
 
-        $query->select('newsletter.*, addresses.customer');
+        $query->from('s_campaigns_mailaddresses', 'recipient');
+        $this->addTableSelection($query, 's_campaigns_mailaddresses', 'recipient');
 
-        $query->from('s_campaigns_mailaddresses', 'addresses');
-        $query->leftJoin('addresses', 's_campaigns_maildata', 'newsletter', 'addresses.email = newsletter.email');
+        $query->leftJoin('recipient', 's_campaigns_maildata', 'recipient_address', 'recipient.email = recipient_address.email');
+        $this->addTableSelection($query, 's_campaigns_maildata', 'recipient_address');
 
-        $query->where('newsletter.id IN (:ids)');
+        $query->where('recipient.id IN (:ids)');
         $query->setParameter('ids', $ids, Connection::PARAM_STR_ARRAY);
-        $query->addOrderBy('newsletter.id');
 
         return $query->execute()->fetchAll();
     }

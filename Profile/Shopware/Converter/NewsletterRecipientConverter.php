@@ -85,14 +85,26 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
             $context
         );
 
-        $this->convertValue($converted, 'firstName', $data, 'firstname');
         $this->convertValue($converted, 'email', $data, 'email');
-        $this->convertValue($converted, 'lastName', $data, 'lastname');
-        $this->convertValue($converted, 'street', $data, 'street');
-        $this->convertValue($converted, 'zipCode', $data, 'zipcode');
-        $this->convertValue($converted, 'city', $data, 'city');
         $this->convertValue($converted, 'createdAt', $data, 'added', 'datetime');
         $this->convertValue($converted, 'confirmedAt', $data, 'double_optin_confirmed', 'datetime');
+
+        if (isset($data['address'])) {
+            $address = $data['address'];
+            $this->convertValue($converted, 'firstName', $address, 'firstname');
+            $this->convertValue($converted, 'lastName', $address, 'lastname');
+            $this->convertValue($converted, 'street', $address, 'street');
+            $this->convertValue($converted, 'zipCode', $address, 'zipcode');
+            $this->convertValue($converted, 'city', $address, 'city');
+
+            if (isset($address['salutation'])) {
+                $salutationUuid = $this->getSalutation($address['salutation']);
+                if ($salutationUuid !== null) {
+                    $converted['salutationId'] = $salutationUuid;
+                }
+            }
+            unset($data['address'], $address);
+        }
         $converted['hash'] = Uuid::randomHex();
 
         if (isset($converted['confirmedAt'])) {
@@ -106,14 +118,6 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         }
         $converted['status'] = $status;
 
-        if (isset($data['salutation'])) {
-            $salutationUuid = $this->getSalutation($data['salutation']);
-            if ($salutationUuid === null) {
-                return new ConvertStruct(null, $oldData);
-            }
-            $converted['salutationId'] = $salutationUuid;
-        }
-
         $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->locale, $context);
         $converted['languageId'] = $languageUuid;
 
@@ -126,12 +130,10 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
 
         unset(
             $data['id'],
-            $data['salutation'],
-            $data['updated_at'],
-            $data['title'],
             $data['groupID'],
-            $data['double_optin_confirmed'],
-            $data['deleted']
+            $data['lastmailing'],
+            $data['lastread'],
+            $data['customer']
         );
 
         if (empty($data)) {
