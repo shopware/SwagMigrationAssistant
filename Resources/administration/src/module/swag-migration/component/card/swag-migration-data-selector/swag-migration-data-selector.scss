@@ -30,4 +30,8 @@
             letter-spacing: 0.1px;
         }
     }
+
+    .sw-grid-row.is--disabled .sw-grid__cell-content {
+        color: $color-gray-500;
+    }
 }

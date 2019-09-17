@@ -1,4 +1,4 @@
-import template from '../../../shopware/local/swag-migration-profile-shopware-local-credential-form/swag-migration-profile-shopware-local-credential-form.html.twig';
+import template from './swag-migration-profile-shopware-local-credential-form.html.twig';
 
 const { Component } = Shopware;
 

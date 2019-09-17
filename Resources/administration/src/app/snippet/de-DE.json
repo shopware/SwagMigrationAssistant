@@ -192,8 +192,10 @@
           "translation": "Übersetzungen:",
           "customer_group": "Kundengruppen:",
           "property_group_option": "Eigenschaften:",
-          "order_document": "Bestelldokumente: ",
-          "shipping_method": "Versandmethoden: "
+          "order_document": "Bestelldokumente:",
+          "shipping_method": "Versandmethoden:",
+          "currency": "Währungen:",
+          "sales_channel": "Verkaufskanäle:"
         },
         "noData": "Es wurden keine Daten zum Migrieren gefunden."
       },

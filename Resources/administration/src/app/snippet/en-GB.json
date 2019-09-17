@@ -192,8 +192,10 @@
           "translation": "Translations:",
           "customer_group": "Customer groups:",
           "property_group_option": "Properties:",
-          "order_document": "Order documents: ",
-          "shipping_method": "Shipping methods: "
+          "order_document": "Order documents:",
+          "shipping_method": "Shipping methods:",
+          "currency": "Currencies:",
+          "sales_channel": "Sales channels:"
         },
         "noData": "Nothing found to migrate."
       },
