@@ -15,10 +15,13 @@
                  v-if="this.migrationUIStore.state.dataSelectionTableData.length > 0">
             {% block swag_migration_data_selector_grid %}
                 <template #grid>
-                    <sw-grid ref="tableDataGrid"
-                             :items="uiDataSelectionTableData"
-                             @sw-grid-select-item="onGridSelectItem"
-                             @sw-grid-select-all="onGridSelectItem">
+                    <swag-migration-grid-extended
+                        ref="tableDataGrid"
+                        :items="uiDataSelectionTableData"
+                        disabledAttribute="requiredSelection"
+                        @sw-grid-select-item="onGridSelectItem"
+                        @sw-grid-select-all="onGridSelectItem"
+                        table>
                         <template #columns="{ item }">
                             {% block swag_migration_data_selector_grid_column_data %}
                                 <sw-grid-column flex="1fr" :label="$tc('swag-migration.index.selectDataCard.headers.name')">
@@ -37,7 +40,7 @@
                                 </sw-grid-column>
                             {% endblock %}
                         </template>
-                    </sw-grid>
+                    </swag-migration-grid-extended>
                 </template>
             {% endblock %}
         </sw-card>

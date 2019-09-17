@@ -101,7 +101,12 @@ class MigrationUIStore extends SimpleStateManagementStore {
     }
 
     getIsMigrationAllowed() {
-        return this.state.dataSelectionIds.length > 0;
+        const requiredLookup = {};
+        this.state.dataSelectionTableData.forEach((data) => {
+            requiredLookup[data.id] = data.requiredSelection;
+        });
+
+        return this.state.dataSelectionIds.some(id => requiredLookup[id] === false);
     }
 
     _setUnfilledPremapping(unfilledPremapping) {

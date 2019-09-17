@@ -19,6 +19,9 @@ class UiStoreInitService {
             this._migrationService.getDataSelection(connectionId).then((dataSelection) => {
                 this._migrationUiStore.setPremapping([]);
                 this._migrationUiStore.setDataSelectionTableData(dataSelection);
+                const selectedIds = dataSelection.filter(selection => selection.requiredSelection)
+                    .map(selection => selection.id);
+                this._migrationUiStore.setDataSelectionIds(selectedIds);
                 resolve();
             }).catch(() => {
                 reject();
