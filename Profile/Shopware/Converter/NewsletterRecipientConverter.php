@@ -75,10 +75,6 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         MigrationContextInterface $migrationContext
     ): ConvertStruct {
         $this->runId = $migrationContext->getRunUuid();
-        $this->connectionId = $migrationContext->getConnection()->getId();
-        $this->context = $context;
-        $oldData = $data;
-
         $fields = $this->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
 
         if (!empty($fields)) {
@@ -89,20 +85,25 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
                 implode(',', $fields)
             ));
 
-            return new ConvertStruct(null, $oldData);
+            return new ConvertStruct(null, $data);
         }
-
+        $this->connectionId = $migrationContext->getConnection()->getId();
+        $oldData = $data;
+        $checksum = $this->generateChecksum($data);
+        $this->context = $context;
         $this->locale = $data['_locale'];
         unset($data['_locale']);
 
         $converted = [];
         $this->oldNewsletterRecipientId = $data['id'];
-        $converted['id'] = $this->mappingService->createNewUuid(
+        $this->mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::NEWSLETTER_RECIPIENT,
             $this->oldNewsletterRecipientId,
-            $context
+            $context,
+            $checksum
         );
+        $converted['id'] = $this->mapping['entityUuid'];
 
         $this->convertValue($converted, 'email', $data, 'email');
         $this->convertValue($converted, 'createdAt', $data, 'added', 'datetime');
@@ -159,19 +160,29 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
             $data = null;
         }
 
-        return new ConvertStruct($converted, $data);
+        $this->mapping['additionalData']['relatedMappings'] = $this->mappingIds;
+        $this->mappingIds = [];
+        $this->mappingService->updateMapping(
+            $this->connectionId,
+            DefaultEntities::NEWSLETTER_RECIPIENT,
+            $this->mapping['oldIdentifier'],
+            $this->mapping,
+            $context
+        );
+
+        return new ConvertStruct($converted, $data, $this->mapping['id']);
     }
 
     protected function getSalutation(string $salutation): ?string
     {
-        $salutationUuid = $this->mappingService->getUuid(
+        $salutationMapping = $this->mappingService->getMapping(
             $this->connectionId,
             SalutationReader::getMappingName(),
             $salutation,
             $this->context
         );
 
-        if ($salutationUuid === null) {
+        if ($salutationMapping === null) {
             $this->loggingService->addLogEntry(new UnknownEntityLog(
                 $this->runId,
                 'salutation',
@@ -180,15 +191,15 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
                 $this->oldNewsletterRecipientId
             ));
         }
+        $this->mappingIds[] = $salutationMapping['id'];
 
-        return $salutationUuid;
+        return $salutationMapping['entityUuid'];
     }
 
     protected function getSalesChannel(array $data): ?string
     {
-        $salesChannelUuid = null;
         if (isset($data['shopId'])) {
-            $salesChannelUuid = $this->mappingService->getUuid(
+            $salesChannelMapping = $this->mappingService->getMapping(
                 $this->connectionId,
                 DefaultEntities::SALES_CHANNEL,
                 $data['shopId'],
@@ -196,16 +207,19 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
             );
         }
 
-        if ($salesChannelUuid === null) {
+        if (!isset($salesChannelMapping)) {
             $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
                 $this->runId,
                 DefaultEntities::NEWSLETTER_RECIPIENT,
                 $this->oldNewsletterRecipientId,
                 'salesChannel'
             ));
-        }
 
-        return $salesChannelUuid;
+            return null;
+        }
+        $this->mappingIds[] = $salesChannelMapping['id'];
+
+        return $salesChannelMapping['entityUuid'];
     }
 
     protected function getStatus(): ?string

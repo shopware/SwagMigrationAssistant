@@ -18,6 +18,26 @@ abstract class ShopwareConverter implements ConverterInterface
      */
     protected $migrationContext;
 
+    /**
+     * @var array|null
+     */
+    protected $mapping;
+
+    /**
+     * @var array
+     */
+    protected $mappingIds = [];
+
+    public function getSourceIdentifier(array $data): string
+    {
+        return $data['id'];
+    }
+
+    protected function generateChecksum(array $data): string
+    {
+        return md5(serialize($data));
+    }
+
     protected function convertValue(
         array &$newData,
         string $newKey,

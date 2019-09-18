@@ -44,6 +44,11 @@ abstract class CurrencyConverter extends ShopwareConverter
         $this->loggingService = $loggingService;
     }
 
+    public function getSourceIdentifier(array $data): string
+    {
+        return $data['currency'];
+    }
+
     public function writeMapping(Context $context): void
     {
         $this->mappingService->writeMapping($context);
@@ -51,6 +56,7 @@ abstract class CurrencyConverter extends ShopwareConverter
 
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
+        $checksum = $this->generateChecksum($data);
         $this->context = $context;
         $this->mainLocale = $data['_locale'];
         $this->connectionId = $migrationContext->getConnection()->getId();
@@ -61,7 +67,14 @@ abstract class CurrencyConverter extends ShopwareConverter
         }
 
         $converted = [];
-        $converted['id'] = $this->mappingService->createNewUuid($this->connectionId, DefaultEntities::CURRENCY, $data['currency'], $context);
+        $this->mapping = $this->mappingService->getOrCreateMapping(
+            $this->connectionId,
+            DefaultEntities::CURRENCY,
+            $data['currency'],
+            $context,
+            $checksum
+        );
+        $converted['id'] = $this->mapping['entityUuid'];
 
         $converted['isDefault'] = false;
         unset($data['standard']);
@@ -86,7 +99,17 @@ abstract class CurrencyConverter extends ShopwareConverter
             $data = null;
         }
 
-        return new ConvertStruct($converted, $data);
+        $this->mapping['additionalData']['relatedMappings'] = $this->mappingIds;
+        $this->mappingIds = [];
+        $this->mappingService->updateMapping(
+            $this->connectionId,
+            DefaultEntities::CURRENCY,
+            $this->mapping['oldIdentifier'],
+            $this->mapping,
+            $context
+        );
+
+        return new ConvertStruct($converted, $data, $this->mapping['id']);
     }
 
     protected function getCurrencyTranslation(array &$currency, array $data): void
@@ -101,12 +124,14 @@ abstract class CurrencyConverter extends ShopwareConverter
         $this->convertValue($localeTranslation, 'shortName', $data, 'currency');
         $this->convertValue($localeTranslation, 'name', $data, 'name');
 
-        $localeTranslation['id'] = $this->mappingService->createNewUuid(
+        $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::CURRENCY_TRANSLATION,
             $data['id'] . ':' . $this->mainLocale,
             $this->context
         );
+        $localeTranslation['id'] = $mapping['entityUuid'];
+        $this->mappingIds[] = $mapping['id'];
         $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);
         $localeTranslation['languageId'] = $languageUuid;
 

@@ -46,6 +46,11 @@ abstract class TranslationConverter extends ShopwareConverter
      */
     protected $loggingService;
 
+    /**
+     * @var string
+     */
+    private $checksum;
+
     public function __construct(
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService
@@ -64,6 +69,7 @@ abstract class TranslationConverter extends ShopwareConverter
         Context $context,
         MigrationContextInterface $migrationContext
     ): ConvertStruct {
+        $this->checksum = $this->generateChecksum($data);
         $this->connectionId = $migrationContext->getConnection()->getId();
         $this->context = $context;
         $this->migrationContext = $migrationContext;
@@ -115,15 +121,15 @@ abstract class TranslationConverter extends ShopwareConverter
     {
         $sourceData = $data;
         $product = [];
-        $product['id'] = $this->mappingService->getUuid(
+        $mapping = $this->mappingService->getMapping(
             $this->connectionId,
             DefaultEntities::PRODUCT . '_container',
             $data['objectkey'],
             $this->context
         );
 
-        if (!isset($product['id'])) {
-            $product['id'] = $this->mappingService->getUuid(
+        if ($mapping === null) {
+            $mapping = $this->mappingService->getMapping(
                 $this->connectionId,
                 DefaultEntities::PRODUCT . '_mainProduct',
                 $data['objectkey'],
@@ -131,7 +137,7 @@ abstract class TranslationConverter extends ShopwareConverter
             );
         }
 
-        if (!isset($product['id'])) {
+        if ($mapping === null) {
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
                     $this->runId,
@@ -143,6 +149,8 @@ abstract class TranslationConverter extends ShopwareConverter
 
             return new ConvertStruct(null, $sourceData);
         }
+        $product['id'] = $mapping['entityUuid'];
+        $this->mappingIds[] = $mapping['id'];
         $product['entityDefinitionClass'] = ProductDefinition::class;
 
         $objectData = $this->unserializeTranslation($data, DefaultEntities::PRODUCT_TRANSLATION);
@@ -175,12 +183,14 @@ abstract class TranslationConverter extends ShopwareConverter
 
         unset($data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
 
-        $productTranslation['id'] = $this->mappingService->createNewUuid(
+        $this->mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
-            DefaultEntities::PRODUCT_TRANSLATION,
+            DefaultEntities::TRANSLATION,
             $data['id'],
-            $this->context
+            $this->context,
+            $this->checksum
         );
+        $productTranslation['id'] = $this->mapping['entityUuid'];
         unset($data['id'], $data['objectkey']);
 
         $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $data['locale'], $this->context);
@@ -194,21 +204,34 @@ abstract class TranslationConverter extends ShopwareConverter
             $data = null;
         }
 
-        return new ConvertStruct($product, $data);
+        if (!isset($this->mapping['additionalData'])) {
+            $this->mapping['additionalData'] = [];
+        }
+        $this->mapping['additionalData'] = array_merge($this->mapping['additionalData'], ['relatedMappings' => $this->mappingIds]);
+        $this->mappingIds = [];
+        $this->mappingService->updateMapping(
+            $this->connectionId,
+            DefaultEntities::TRANSLATION,
+            $this->mapping['oldIdentifier'],
+            $this->mapping,
+            $this->context
+        );
+
+        return new ConvertStruct($product, $data, $this->mapping['id']);
     }
 
     protected function createManufacturerProductTranslation(array &$data): ConvertStruct
     {
         $sourceData = $data;
         $manufacturer = [];
-        $manufacturer['id'] = $this->mappingService->getUuid(
+        $mapping = $this->mappingService->getMapping(
             $this->connectionId,
             DefaultEntities::PRODUCT_MANUFACTURER,
             $data['objectkey'],
             $this->context
         );
 
-        if (!isset($manufacturer['id'])) {
+        if ($mapping === null) {
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
                     $this->runId,
@@ -220,7 +243,8 @@ abstract class TranslationConverter extends ShopwareConverter
 
             return new ConvertStruct(null, $sourceData);
         }
-
+        $manufacturer['id'] = $mapping['entityUuid'];
+        $this->mappingIds[] = $mapping['id'];
         $manufacturer['entityDefinitionClass'] = ProductManufacturerDefinition::class;
 
         $objectData = $this->unserializeTranslation($data, DefaultEntities::PRODUCT_MANUFACTURER_TRANSLATION);
@@ -229,12 +253,14 @@ abstract class TranslationConverter extends ShopwareConverter
         }
 
         $manufacturerTranslation = [];
-        $manufacturerTranslation['id'] = $this->mappingService->createNewUuid(
+        $this->mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
-            DefaultEntities::PRODUCT_MANUFACTURER_TRANSLATION,
+            DefaultEntities::TRANSLATION,
             $data['id'],
-            $this->context
+            $this->context,
+            $this->checksum
         );
+        $manufacturerTranslation['id'] = $this->mapping['entityUuid'];
         unset($data['id'], $data['objectkey']);
 
         $this->convertValue($manufacturerTranslation, 'name', $data, 'name');
@@ -266,7 +292,20 @@ abstract class TranslationConverter extends ShopwareConverter
             $data = null;
         }
 
-        return new ConvertStruct($manufacturer, $data);
+        if (!isset($this->mapping['additionalData'])) {
+            $this->mapping['additionalData'] = [];
+        }
+        $this->mapping['additionalData'] = array_merge($this->mapping['additionalData'], ['relatedMappings' => $this->mappingIds]);
+        $this->mappingIds = [];
+        $this->mappingService->updateMapping(
+            $this->connectionId,
+            DefaultEntities::TRANSLATION,
+            $this->mapping['oldIdentifier'],
+            $this->mapping,
+            $this->context
+        );
+
+        return new ConvertStruct($manufacturer, $data, $this->mapping['id']);
     }
 
     protected function createUnitTranslation(array $data): ConvertStruct
@@ -274,7 +313,7 @@ abstract class TranslationConverter extends ShopwareConverter
         $sourceData = $data;
 
         $unit = [];
-        $unit['id'] = $this->mappingService->getUuid(
+        $mapping = $this->mappingService->getMapping(
             $this->connectionId,
             DefaultEntities::UNIT,
             $data['objectkey'],
@@ -282,7 +321,7 @@ abstract class TranslationConverter extends ShopwareConverter
         );
         unset($data['objectkey']);
 
-        if (!isset($unit['id'])) {
+        if ($mapping === null) {
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
                     $this->runId,
@@ -294,7 +333,8 @@ abstract class TranslationConverter extends ShopwareConverter
 
             return new ConvertStruct(null, $sourceData);
         }
-
+        $unit['id'] = $mapping['entityUuid'];
+        $this->mappingIds[] = $mapping['id'];
         $unit['entityDefinitionClass'] = UnitDefinition::class;
 
         $objectData = $this->unserializeTranslation($data, DefaultEntities::UNIT_TRANSLATION);
@@ -303,12 +343,14 @@ abstract class TranslationConverter extends ShopwareConverter
         }
 
         $unitTranslation = [];
-        $unitTranslation['id'] = $this->mappingService->createNewUuid(
+        $this->mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
-            DefaultEntities::UNIT_TRANSLATION,
+            DefaultEntities::TRANSLATION,
             $data['id'],
-            $this->context
+            $this->context,
+            $this->checksum
         );
+        $unitTranslation['id'] = $this->mapping['entityUuid'];
 
         /** @var array $objectData */
         $objectData = array_pop($objectData);
@@ -345,7 +387,20 @@ abstract class TranslationConverter extends ShopwareConverter
             $data = null;
         }
 
-        return new ConvertStruct($unit, $data);
+        if (!isset($this->mapping['additionalData'])) {
+            $this->mapping['additionalData'] = [];
+        }
+        $this->mapping['additionalData'] = array_merge($this->mapping['additionalData'], ['relatedMappings' => $this->mappingIds]);
+        $this->mappingIds = [];
+        $this->mappingService->updateMapping(
+            $this->connectionId,
+            DefaultEntities::TRANSLATION,
+            $this->mapping['oldIdentifier'],
+            $this->mapping,
+            $this->context
+        );
+
+        return new ConvertStruct($unit, $data, $this->mapping['id']);
     }
 
     protected function createCategoryTranslation(array $data): ConvertStruct
@@ -353,7 +408,7 @@ abstract class TranslationConverter extends ShopwareConverter
         $sourceData = $data;
 
         $category = [];
-        $category['id'] = $this->mappingService->getUuid(
+        $mapping = $this->mappingService->getMapping(
             $this->connectionId,
             DefaultEntities::CATEGORY,
             $data['objectkey'],
@@ -361,7 +416,7 @@ abstract class TranslationConverter extends ShopwareConverter
         );
         unset($data['objectkey']);
 
-        if (!isset($category['id'])) {
+        if ($mapping === null) {
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
                     $this->runId,
@@ -373,7 +428,8 @@ abstract class TranslationConverter extends ShopwareConverter
 
             return new ConvertStruct(null, $sourceData);
         }
-
+        $category['id'] = $mapping['entityUuid'];
+        $this->mappingIds[] = $mapping['id'];
         $category['entityDefinitionClass'] = CategoryDefinition::class;
 
         $objectData = $this->unserializeTranslation($data, DefaultEntities::CATEGORY_TRANSLATION);
@@ -394,12 +450,14 @@ abstract class TranslationConverter extends ShopwareConverter
         );
 
         $categoryTranslation = [];
-        $categoryTranslation['id'] = $this->mappingService->createNewUuid(
+        $this->mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
-            DefaultEntities::CATEGORY_TRANSLATION,
+            DefaultEntities::TRANSLATION,
             $data['id'],
-            $this->context
+            $this->context,
+            $this->checksum
         );
+        $categoryTranslation['id'] = $this->mapping['entityUuid'];
 
         if (isset($objectData['description'])) {
             $this->convertValue($categoryTranslation, 'name', $objectData, 'description');
@@ -432,7 +490,20 @@ abstract class TranslationConverter extends ShopwareConverter
             $data = null;
         }
 
-        return new ConvertStruct($category, $data);
+        if (!isset($this->mapping['additionalData'])) {
+            $this->mapping['additionalData'] = [];
+        }
+        $this->mapping['additionalData'] = array_merge($this->mapping['additionalData'], ['relatedMappings' => $this->mappingIds]);
+        $this->mappingIds = [];
+        $this->mappingService->updateMapping(
+            $this->connectionId,
+            DefaultEntities::TRANSLATION,
+            $this->mapping['oldIdentifier'],
+            $this->mapping,
+            $this->context
+        );
+
+        return new ConvertStruct($category, $data, $this->mapping['id']);
     }
 
     protected function createConfiguratorOptionTranslation(array $data): ConvertStruct
@@ -440,7 +511,7 @@ abstract class TranslationConverter extends ShopwareConverter
         $sourceData = $data;
 
         $configuratorOption = [];
-        $configuratorOption['id'] = $this->mappingService->getUuid(
+        $mapping = $this->mappingService->getMapping(
             $this->connectionId,
             DefaultEntities::PROPERTY_GROUP_OPTION . '_option',
             $data['objectkey'],
@@ -448,7 +519,7 @@ abstract class TranslationConverter extends ShopwareConverter
         );
         unset($data['objectkey']);
 
-        if (!isset($configuratorOption['id'])) {
+        if ($mapping === null) {
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
                     $this->runId,
@@ -460,7 +531,8 @@ abstract class TranslationConverter extends ShopwareConverter
 
             return new ConvertStruct(null, $sourceData);
         }
-
+        $configuratorOption['id'] = $mapping['entityUuid'];
+        $this->mappingIds[] = $mapping['id'];
         $configuratorOption['entityDefinitionClass'] = PropertyGroupOptionDefinition::class;
 
         $objectData = $this->unserializeTranslation($data, DefaultEntities::PROPERTY_GROUP_OPTION_TRANSLATION);
@@ -469,12 +541,13 @@ abstract class TranslationConverter extends ShopwareConverter
         }
 
         $propertyGroupOptionTranslation = [];
-        $propertyGroupOptionTranslation['id'] = $this->mappingService->createNewUuid(
+        $this->mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
-            DefaultEntities::PROPERTY_GROUP_OPTION_TRANSLATION,
+            DefaultEntities::TRANSLATION,
             $data['id'],
             $this->context
         );
+        $propertyGroupOptionTranslation['id'] = $this->mapping['entityUuid'];
 
         foreach ($objectData as $key => $value) {
             if ($key === 'name') {
@@ -507,7 +580,20 @@ abstract class TranslationConverter extends ShopwareConverter
             $data = null;
         }
 
-        return new ConvertStruct($configuratorOption, $data);
+        if (!isset($this->mapping['additionalData'])) {
+            $this->mapping['additionalData'] = [];
+        }
+        $this->mapping['additionalData'] = array_merge($this->mapping['additionalData'], ['relatedMappings' => $this->mappingIds]);
+        $this->mappingIds = [];
+        $this->mappingService->updateMapping(
+            $this->connectionId,
+            DefaultEntities::TRANSLATION,
+            $this->mapping['oldIdentifier'],
+            $this->mapping,
+            $this->context
+        );
+
+        return new ConvertStruct($configuratorOption, $data, $this->mapping['id']);
     }
 
     protected function createConfiguratorOptionGroupTranslation(array $data): ConvertStruct
@@ -515,7 +601,7 @@ abstract class TranslationConverter extends ShopwareConverter
         $sourceData = $data;
 
         $configuratorOptionGroup = [];
-        $configuratorOptionGroup['id'] = $this->mappingService->getUuid(
+        $mapping = $this->mappingService->getMapping(
             $this->connectionId,
             DefaultEntities::PROPERTY_GROUP . '_option',
             $data['objectkey'],
@@ -523,7 +609,7 @@ abstract class TranslationConverter extends ShopwareConverter
         );
         unset($data['objectkey']);
 
-        if (!isset($configuratorOptionGroup['id'])) {
+        if ($mapping === null) {
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
                     $this->runId,
@@ -535,7 +621,8 @@ abstract class TranslationConverter extends ShopwareConverter
 
             return new ConvertStruct(null, $sourceData);
         }
-
+        $configuratorOptionGroup['id'] = $mapping['entityUuid'];
+        $this->mappingIds[] = $mapping['id'];
         $configuratorOptionGroup['entityDefinitionClass'] = PropertyGroupDefinition::class;
 
         $objectData = $this->unserializeTranslation($data, DefaultEntities::PROPERTY_GROUP_TRANSLATION);
@@ -544,12 +631,14 @@ abstract class TranslationConverter extends ShopwareConverter
         }
 
         $propertyGroupTranslation = [];
-        $propertyGroupTranslation['id'] = $this->mappingService->createNewUuid(
+        $this->mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
-            DefaultEntities::PROPERTY_GROUP_TRANSLATION,
+            DefaultEntities::TRANSLATION,
             $data['id'],
-            $this->context
+            $this->context,
+            $this->checksum
         );
+        $propertyGroupTranslation['id'] = $this->mapping['entityUuid'];
 
         foreach ($objectData as $key => $value) {
             if ($key === 'name') {
@@ -582,7 +671,20 @@ abstract class TranslationConverter extends ShopwareConverter
             $data = null;
         }
 
-        return new ConvertStruct($configuratorOptionGroup, $data);
+        if (!isset($this->mapping['additionalData'])) {
+            $this->mapping['additionalData'] = [];
+        }
+        $this->mapping['additionalData'] = array_merge($this->mapping['additionalData'], ['relatedMappings' => $this->mappingIds]);
+        $this->mappingIds = [];
+        $this->mappingService->updateMapping(
+            $this->connectionId,
+            DefaultEntities::TRANSLATION,
+            $this->mapping['oldIdentifier'],
+            $this->mapping,
+            $this->context
+        );
+
+        return new ConvertStruct($configuratorOptionGroup, $data, $this->mapping['id']);
     }
 
     protected function createPropertyValueTranslation(array $data): ConvertStruct
@@ -590,7 +692,7 @@ abstract class TranslationConverter extends ShopwareConverter
         $sourceData = $data;
 
         $propertyValue = [];
-        $propertyValue['id'] = $this->mappingService->getUuid(
+        $mapping = $this->mappingService->getMapping(
             $this->connectionId,
             DefaultEntities::PROPERTY_GROUP_OPTION . '_property',
             $data['objectkey'],
@@ -598,7 +700,7 @@ abstract class TranslationConverter extends ShopwareConverter
         );
         unset($data['objectkey']);
 
-        if (!isset($propertyValue['id'])) {
+        if ($mapping === null) {
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
                     $this->runId,
@@ -610,7 +712,8 @@ abstract class TranslationConverter extends ShopwareConverter
 
             return new ConvertStruct(null, $sourceData);
         }
-
+        $propertyValue['id'] = $mapping['entityUuid'];
+        $this->mappingIds[] = $mapping['id'];
         $propertyValue['entityDefinitionClass'] = PropertyGroupOptionDefinition::class;
 
         $objectData = $this->unserializeTranslation($data, DefaultEntities::PROPERTY_GROUP_OPTION_TRANSLATION);
@@ -619,12 +722,13 @@ abstract class TranslationConverter extends ShopwareConverter
         }
 
         $propertyValueTranslation = [];
-        $propertyValueTranslation['id'] = $this->mappingService->createNewUuid(
+        $this->mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
-            DefaultEntities::PROPERTY_GROUP_OPTION_TRANSLATION,
+            DefaultEntities::TRANSLATION,
             $data['id'],
             $this->context
         );
+        $propertyValueTranslation['id'] = $this->mapping['entityUuid'];
 
         foreach ($objectData as $key => $value) {
             if ($key === 'optionValue') {
@@ -653,7 +757,20 @@ abstract class TranslationConverter extends ShopwareConverter
             $data = null;
         }
 
-        return new ConvertStruct($propertyValue, $data);
+        if (!isset($this->mapping['additionalData'])) {
+            $this->mapping['additionalData'] = [];
+        }
+        $this->mapping['additionalData'] = array_merge($this->mapping['additionalData'], ['relatedMappings' => $this->mappingIds]);
+        $this->mappingIds = [];
+        $this->mappingService->updateMapping(
+            $this->connectionId,
+            DefaultEntities::TRANSLATION,
+            $this->mapping['oldIdentifier'],
+            $this->mapping,
+            $this->context
+        );
+
+        return new ConvertStruct($propertyValue, $data, $this->mapping['id']);
     }
 
     protected function createPropertyOptionTranslation(array $data): ConvertStruct
@@ -661,7 +778,7 @@ abstract class TranslationConverter extends ShopwareConverter
         $sourceData = $data;
 
         $propertyOption = [];
-        $propertyOption['id'] = $this->mappingService->getUuid(
+        $mapping = $this->mappingService->getMapping(
             $this->connectionId,
             DefaultEntities::PROPERTY_GROUP . '_property',
             $data['objectkey'],
@@ -669,7 +786,7 @@ abstract class TranslationConverter extends ShopwareConverter
         );
         unset($data['objectkey']);
 
-        if (!isset($propertyOption['id'])) {
+        if ($mapping === null) {
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
                     $this->runId,
@@ -681,7 +798,8 @@ abstract class TranslationConverter extends ShopwareConverter
 
             return new ConvertStruct(null, $sourceData);
         }
-
+        $propertyOption['id'] = $mapping['entityUuid'];
+        $this->mappingIds[] = $mapping['id'];
         $propertyOption['entityDefinitionClass'] = PropertyGroupDefinition::class;
 
         $objectData = $this->unserializeTranslation($data, DefaultEntities::PROPERTY_GROUP_TRANSLATION);
@@ -690,12 +808,14 @@ abstract class TranslationConverter extends ShopwareConverter
         }
 
         $propertyOptionTranslation = [];
-        $propertyOptionTranslation['id'] = $this->mappingService->createNewUuid(
+        $this->mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
-            DefaultEntities::PROPERTY_GROUP_TRANSLATION,
+            DefaultEntities::TRANSLATION,
             $data['id'],
-            $this->context
+            $this->context,
+            $this->checksum
         );
+        $propertyOptionTranslation['id'] = $this->mapping['entityUuid'];
 
         foreach ($objectData as $key => $value) {
             if ($key === 'optionName') {
@@ -724,7 +844,17 @@ abstract class TranslationConverter extends ShopwareConverter
             $data = null;
         }
 
-        return new ConvertStruct($propertyOption, $data);
+        $this->mapping['additionalData']['relatedMappings'] = $this->mappingIds;
+        $this->mappingIds = [];
+        $this->mappingService->updateMapping(
+            $this->connectionId,
+            DefaultEntities::TRANSLATION,
+            $this->mapping['oldIdentifier'],
+            $this->mapping,
+            $this->context
+        );
+
+        return new ConvertStruct($propertyOption, $data, $this->mapping['id']);
     }
 
     protected function getAttribute(string $entityName, string $key, string $value, array &$translation, array &$objectData): void

@@ -41,6 +41,11 @@ class SwagMigrationMappingEntity extends Entity
     protected $entityValue;
 
     /**
+     * @var string|null
+     */
+    protected $checksum;
+
+    /**
      * @var array|null
      */
     protected $additionalData;
@@ -103,6 +108,16 @@ class SwagMigrationMappingEntity extends Entity
     public function setEntityValue(?string $entityValue): void
     {
         $this->entityValue = $entityValue;
+    }
+
+    public function getChecksum(): ?string
+    {
+        return $this->checksum;
+    }
+
+    public function setChecksum(?string $checksum): void
+    {
+        $this->checksum = $checksum;
     }
 
     public function getAdditionalData(): ?array

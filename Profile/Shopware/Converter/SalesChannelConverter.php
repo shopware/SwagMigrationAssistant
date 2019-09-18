@@ -86,26 +86,29 @@ abstract class SalesChannelConverter extends ShopwareConverter
 
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
+        $checksum = $this->generateChecksum($data);
         $this->context = $context;
         $this->mainLocale = $data['_locale'];
         $this->connectionId = $migrationContext->getConnection()->getId();
 
         $converted = [];
-        $converted['id'] = $this->mappingService->createNewUuid(
+        $this->mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::SALES_CHANNEL,
             $data['id'],
-            $context
+            $context,
+            $checksum
         );
+        $converted['id'] = $this->mapping['entityUuid'];
 
-        $customerGroupUuid = $this->mappingService->getUuid(
+        $customerGroupMapping = $this->mappingService->getMapping(
             $this->connectionId,
             DefaultEntities::CUSTOMER_GROUP,
             $data['customer_group_id'],
             $context
         );
 
-        if ($customerGroupUuid === null) {
+        if ($customerGroupMapping === null) {
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
                     $migrationContext->getRunUuid(),
@@ -117,7 +120,8 @@ abstract class SalesChannelConverter extends ShopwareConverter
 
             return new ConvertStruct(null, $data);
         }
-
+        $customerGroupUuid = $customerGroupMapping['entityUuid'];
+        $this->mappingIds[] = $customerGroupMapping['id'];
         $converted['customerGroupId'] = $customerGroupUuid;
 
         $languageUuid = $this->mappingService->getLanguageUuid(
@@ -174,14 +178,14 @@ abstract class SalesChannelConverter extends ShopwareConverter
             ],
         ];
 
-        $categoryUuid = $this->mappingService->getUuid(
+        $categoryMapping = $this->mappingService->getMapping(
             $this->connectionId,
             DefaultEntities::CATEGORY,
             $data['category_id'],
             $context
         );
 
-        if ($categoryUuid === null) {
+        if ($categoryMapping === null) {
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
                     $migrationContext->getRunUuid(),
@@ -193,6 +197,8 @@ abstract class SalesChannelConverter extends ShopwareConverter
 
             return new ConvertStruct(null, $data);
         }
+        $categoryUuid = $categoryMapping['entityUuid'];
+        $this->mappingIds[] = $categoryMapping['id'];
         $converted['navigationCategoryId'] = $categoryUuid;
 
         $countryUuid = $this->getFirstActiveCountryId();
@@ -254,7 +260,17 @@ abstract class SalesChannelConverter extends ShopwareConverter
             $data = null;
         }
 
-        return new ConvertStruct($converted, $data);
+        $this->mapping['additionalData']['relatedMappings'] = $this->mappingIds;
+        $this->mappingIds = [];
+        $this->mappingService->updateMapping(
+            $this->connectionId,
+            DefaultEntities::SALES_CHANNEL,
+            $this->mapping['oldIdentifier'],
+            $this->mapping,
+            $context
+        );
+
+        return new ConvertStruct($converted, $data, $this->mapping['id']);
     }
 
     protected function getSalesChannelTranslation(array &$salesChannel, array $data): void
@@ -268,12 +284,14 @@ abstract class SalesChannelConverter extends ShopwareConverter
 
         $this->convertValue($localeTranslation, 'name', $data, 'name');
 
-        $localeTranslation['id'] = $this->mappingService->createNewUuid(
+        $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::SALES_CHANNEL_TRANSLATION,
             $data['id'] . ':' . $this->mainLocale,
             $this->context
         );
+        $localeTranslation['id'] = $mapping['entityUuid'];
+        $this->mappingIds[] = $mapping['id'];
         $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);
         $localeTranslation['languageId'] = $languageUuid;
 

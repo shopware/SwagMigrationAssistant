@@ -37,6 +37,7 @@ class SwagMigrationDataDefinition extends EntityDefinition
             (new JsonField('raw', 'raw'))->setFlags(new Required()),
             new JsonField('converted', 'converted'),
             new JsonField('unmapped', 'unmapped'),
+            new IdField('mapping_uuid', 'mappingUuid'),
             new BoolField('written', 'written'),
             new BoolField('convert_failure', 'convertFailure'),
             new BoolField('write_failure', 'writeFailure'),

@@ -55,18 +55,22 @@ abstract class MediaConverter extends ShopwareConverter
         Context $context,
         MigrationContextInterface $migrationContext
     ): ConvertStruct {
+        $checksum = $this->generateChecksum($data);
         $this->context = $context;
         $this->locale = $data['_locale'];
         unset($data['_locale']);
         $this->connectionId = $migrationContext->getConnection()->getId();
 
         $converted = [];
-        $converted['id'] = $this->mappingService->createNewUuid(
+        $this->mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::MEDIA,
             $data['id'],
-            $context
+            $context,
+            $checksum
         );
+        $this->mapping['checksum'] = $checksum;
+        $converted['id'] = $this->mapping['entityUuid'];
 
         if (!isset($data['name'])) {
             $data['name'] = $converted['id'];
@@ -88,15 +92,16 @@ abstract class MediaConverter extends ShopwareConverter
         $this->convertValue($converted, 'title', $data, 'name');
         $this->convertValue($converted, 'alt', $data, 'description');
 
-        $albumUuid = $this->mappingService->getUuid(
+        $albumMapping = $this->mappingService->getMapping(
             $this->connectionId,
             DefaultEntities::MEDIA_FOLDER,
             $data['albumID'],
             $this->context
         );
 
-        if ($albumUuid !== null) {
-            $converted['mediaFolderId'] = $albumUuid;
+        if ($albumMapping !== null) {
+            $converted['mediaFolderId'] = $albumMapping['entityUuid'];
+            $this->mappingIds[] = $albumMapping['id'];
         }
 
         unset(
@@ -118,7 +123,17 @@ abstract class MediaConverter extends ShopwareConverter
             $data = null;
         }
 
-        return new ConvertStruct($converted, $data);
+        $this->mapping['additionalData']['relatedMappings'] = $this->mappingIds;
+        $this->mappingIds = [];
+        $this->mappingService->updateMapping(
+            $this->connectionId,
+            DefaultEntities::MEDIA,
+            $this->mapping['oldIdentifier'],
+            $this->mapping,
+            $context
+        );
+
+        return new ConvertStruct($converted, $data, $this->mapping['id']);
     }
 
     protected function getMediaTranslation(array &$media, array $data): void
@@ -133,12 +148,14 @@ abstract class MediaConverter extends ShopwareConverter
         $this->convertValue($localeTranslation, 'title', $data, 'name');
         $this->convertValue($localeTranslation, 'alt', $data, 'description');
 
-        $localeTranslation['id'] = $this->mappingService->createNewUuid(
+        $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::MEDIA_TRANSLATION,
             $data['id'] . ':' . $this->locale,
             $this->context
         );
+        $localeTranslation['id'] = $mapping['entityUuid'];
+        $this->mappingIds[] = $mapping['id'];
 
         $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->locale, $this->context);
         $localeTranslation['languageId'] = $languageUuid;

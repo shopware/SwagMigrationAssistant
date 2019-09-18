@@ -37,17 +37,20 @@ abstract class CustomerGroupConverter extends ShopwareConverter
 
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
+        $checksum = $this->generateChecksum($data);
         $this->connectionId = $migrationContext->getConnection()->getId();
         $this->context = $context;
         $this->locale = $data['_locale'];
         unset($data['_locale']);
 
-        $converted['id'] = $this->mappingService->createNewUuid(
+        $this->mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::CUSTOMER_GROUP,
             $data['id'],
-            $context
+            $context,
+            $checksum
         );
+        $converted['id'] = $this->mapping['entityUuid'];
 
         if (isset($data['attributes'])) {
             $converted['customFields'] = $this->getAttributes($data['attributes'], DefaultEntities::CUSTOMER_GROUP, $migrationContext->getConnection()->getName(), ['id', 'customerGroupID']);
@@ -67,7 +70,17 @@ abstract class CustomerGroupConverter extends ShopwareConverter
             $data = null;
         }
 
-        return new ConvertStruct($converted, $data);
+        $this->mapping['additionalData']['relatedMappings'] = $this->mappingIds;
+        $this->mappingIds = [];
+        $this->mappingService->updateMapping(
+            $this->connectionId,
+            DefaultEntities::CUSTOMER_GROUP,
+            $this->mapping['oldIdentifier'],
+            $this->mapping,
+            $context
+        );
+
+        return new ConvertStruct($converted, $data, $this->mapping['id']);
     }
 
     public function getCustomerGroupTranslation(array &$customerGroup, array $data): void
@@ -82,12 +95,14 @@ abstract class CustomerGroupConverter extends ShopwareConverter
 
         $this->convertValue($localeTranslation, 'name', $data, 'description');
 
-        $localeTranslation['id'] = $this->mappingService->createNewUuid(
+        $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::CUSTOMER_GROUP_TRANSLATION,
             $data['id'] . ':' . $this->locale,
             $this->context
         );
+        $localeTranslation['id'] = $mapping['entityUuid'];
+        $this->mappingIds[] = $mapping['id'];
 
         $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->locale, $this->context);
         $localeTranslation['languageId'] = $languageUuid;

@@ -89,6 +89,7 @@
             <argument type="service" id="SwagMigrationAssistant\Migration\Media\MediaFileService" />
             <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService" />
             <argument type="service" id="SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition" />
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\MappingService" />
         </service>
 
         <service id="SwagMigrationAssistant\Migration\Service\MigrationDataWriter" public="true">
@@ -98,6 +99,7 @@
             <argument type="service" id="SwagMigrationAssistant\Migration\Media\MediaFileService"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition"/>
+            <argument type="service" id="swag_migration_mapping.repository"/>
         </service>
 
         <service id="SwagMigrationAssistant\Migration\Service\MediaFileProcessorService" public="true">

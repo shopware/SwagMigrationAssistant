@@ -72,6 +72,7 @@ abstract class OrderDocumentConverter extends ShopwareConverter
 
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
+        $checksum = $this->generateChecksum($data);
         $this->oldId = $data['id'];
         $this->runId = $migrationContext->getRunUuid();
         $this->connectionId = $migrationContext->getConnection()->getId();
@@ -94,8 +95,13 @@ abstract class OrderDocumentConverter extends ShopwareConverter
             return new ConvertStruct(null, $oldData);
         }
 
-        $orderUuid = $this->mappingService->getUuid($this->connectionId, DefaultEntities::ORDER, $data['orderID'], $context);
-        if ($orderUuid === null) {
+        $orderMapping = $this->mappingService->getMapping(
+            $this->connectionId,
+            DefaultEntities::ORDER,
+            $data['orderID'],
+            $context
+        );
+        if ($orderMapping === null) {
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
                     $this->migrationContext->getRunUuid(),
@@ -108,14 +114,17 @@ abstract class OrderDocumentConverter extends ShopwareConverter
             return new ConvertStruct(null, $oldData);
         }
         unset($data['orderID']);
+        $orderUuid = $orderMapping['entityUuid'];
+        $this->mappingIds[] = $orderMapping['id'];
 
-        $converted['id'] = $this->mappingService->createNewUuid(
+        $this->mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::ORDER_DOCUMENT,
             $this->oldId,
-            $context
+            $context,
+            $checksum
         );
-
+        $converted['id'] = $this->mapping['entityUuid'];
         $converted['orderId'] = $orderUuid;
         $converted['fileType'] = FileTypes::PDF;
         $converted['static'] = true;
@@ -156,7 +165,17 @@ abstract class OrderDocumentConverter extends ShopwareConverter
             $data = null;
         }
 
-        return new ConvertStruct($converted, $data);
+        $this->mapping['additionalData']['relatedMappings'] = $this->mappingIds;
+        $this->mappingIds = [];
+        $this->mappingService->updateMapping(
+            $this->connectionId,
+            DefaultEntities::ORDER_DOCUMENT,
+            $this->mapping['oldIdentifier'],
+            $this->mapping,
+            $context
+        );
+
+        return new ConvertStruct($converted, $data, $this->mapping['id']);
     }
 
     protected function getDocumentType(array $data): ?array
@@ -173,13 +192,14 @@ abstract class OrderDocumentConverter extends ShopwareConverter
             return null;
         }
 
-        $documentType['id'] = $this->mappingService->createNewUuid(
+        $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DocumentTypeDefinition::ENTITY_NAME,
             $data['key'],
             $this->context
         );
-
+        $this->mappingIds[] = $mapping['id'];
+        $documentType['id'] = $mapping['entityUuid'];
         $documentType['name'] = $data['name'];
         $documentType['technicalName'] = $data['key'];
 
@@ -188,12 +208,14 @@ abstract class OrderDocumentConverter extends ShopwareConverter
 
     protected function getMediaFile(array $data): array
     {
-        $newMedia['id'] = $this->mappingService->createNewUuid(
+        $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::ORDER_DOCUMENT_MEDIA,
             $data['id'],
             $this->context
         );
+        $newMedia['id'] = $mapping['entityUuid'];
+        $this->mappingIds[] = $mapping['id'];
 
         $this->mediaFileService->saveMediaFile(
             [

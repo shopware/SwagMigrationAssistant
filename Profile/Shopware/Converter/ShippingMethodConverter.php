@@ -80,6 +80,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
 
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
+        $checksum = $this->generateChecksum($data);
         $this->context = $context;
         $this->runId = $migrationContext->getRunUuid();
         $this->connectionId = $migrationContext->getConnection()->getId();
@@ -100,22 +101,25 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         }
 
         $converted = [];
-        $converted['id'] = $this->mappingService->createNewUuid(
+        $this->mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::SHIPPING_METHOD,
             $data['id'],
-            $this->context
+            $this->context,
+            $checksum
         );
+        $converted['id'] = $this->mapping['entityUuid'];
 
-        $defaultDeliveryTimeUuid = $this->mappingService->getUuid(
+        $defaultDeliveryTimeMapping = $this->mappingService->getMapping(
             $this->connectionId,
             DefaultEntities::DELIVERY_TIME,
             'default_delivery_time',
             $this->context
         );
 
-        if ($defaultDeliveryTimeUuid !== null) {
-            $converted['deliveryTimeId'] = $defaultDeliveryTimeUuid;
+        if ($defaultDeliveryTimeMapping !== null) {
+            $converted['deliveryTimeId'] = $defaultDeliveryTimeMapping['entityUuid'];
+            $this->mappingIds[] = $defaultDeliveryTimeMapping['id'];
         }
 
         $defaultAvailabilityRuleUuid = $this->mappingService->getDefaultAvailabilityRule($this->context);
@@ -198,7 +202,17 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             $data = null;
         }
 
-        return new ConvertStruct($converted, $data);
+        $this->mapping['additionalData']['relatedMappings'] = $this->mappingIds;
+        $this->mappingIds = [];
+        $this->mappingService->updateMapping(
+            $this->connectionId,
+            DefaultEntities::SHIPPING_METHOD,
+            $this->mapping['oldIdentifier'],
+            $this->mapping,
+            $this->context
+        );
+
+        return new ConvertStruct($converted, $data, $this->mapping['id']);
     }
 
     protected function getShippingMethodTranslation(array &$shippingMethod, array $data): void
@@ -215,12 +229,14 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         $this->convertValue($localeTranslation, 'description', $data, 'description');
         $this->convertValue($localeTranslation, 'comment', $data, 'comment');
 
-        $localeTranslation['id'] = $this->mappingService->createNewUuid(
+        $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::SHIPPING_METHOD_TRANSLATION,
             $data['id'] . ':' . $this->mainLocale,
             $this->context
         );
+        $localeTranslation['id'] = $mapping['entityUuid'];
+        $this->mappingIds[] = $mapping['id'];
 
         $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);
         $localeTranslation['languageId'] = $languageUuid;
@@ -231,49 +247,57 @@ abstract class ShippingMethodConverter extends ShopwareConverter
     protected function getCustomerGroupCalculationRule(array $data): array
     {
         $customerGroupId = $data['customergroupID'];
-        $customerGroupUuid = $this->mappingService->getUuid(
+        $customerGroupMapping = $this->mappingService->getMapping(
             $this->connectionId,
             DefaultEntities::CUSTOMER_GROUP,
             $customerGroupId,
             $this->context
         );
 
-        if (!isset($customerGroupUuid)) {
+        if ($customerGroupMapping === null) {
             return [];
         }
-
+        $this->mappingIds[] = $customerGroupMapping['id'];
         $customerGroupName = $customerGroupId;
         if (isset($data['customerGroup']['description'])) {
             $customerGroupName = $data['customerGroup']['description'];
         }
 
-        $priceRuleUuid = $this->mappingService->createNewUuid(
+        $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::RULE,
             'customerGroupRule_' . $customerGroupId,
             $this->context
         );
+        $priceRuleUuid = $mapping['entityUuid'];
+        $this->mappingIds[] = $mapping['id'];
 
-        $orContainerUuid = $this->mappingService->createNewUuid(
+        $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::RULE,
             'customerGroupRule_orContainer_' . $customerGroupId,
             $this->context
         );
+        $orContainerUuid = $mapping['entityUuid'];
+        $this->mappingIds[] = $mapping['id'];
 
-        $andContainerUuid = $this->mappingService->createNewUuid(
+        $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::RULE,
             'customerGroupRule_andContainer_' . $customerGroupId,
             $this->context
         );
+        $andContainerUuid = $mapping['entityUuid'];
+        $this->mappingIds[] = $mapping['id'];
 
-        $conditionUuid = $this->mappingService->createNewUuid(
+        $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::RULE,
             'customerGroupRule_condition_' . $customerGroupId,
             $this->context
         );
+        $conditionUuid = $mapping['entityUuid'];
+        $this->mappingIds[] = $mapping['id'];
 
         $rule = [
             'id' => $priceRuleUuid,
@@ -303,7 +327,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
                     'position' => 1,
                     'value' => [
                         'customerGroupIds' => [
-                            $customerGroupUuid,
+                            $customerGroupMapping['entityUuid'],
                         ],
                         'operator' => '=',
                     ],
@@ -317,49 +341,59 @@ abstract class ShippingMethodConverter extends ShopwareConverter
     protected function getSalesChannelCalculationRule(array $data): array
     {
         $shopId = $data['multishopID'];
-        $salesChannelUuid = $this->mappingService->getUuid(
+        $salesChannelMapping = $this->mappingService->getMapping(
             $this->connectionId,
             DefaultEntities::SALES_CHANNEL,
             $shopId,
             $this->context
         );
 
-        if (!isset($salesChannelUuid)) {
+        if ($salesChannelMapping === null) {
             return [];
         }
 
+        $salesChannelUuid = $salesChannelMapping['entityUuid'];
+        $this->mappingIds[] = $salesChannelMapping['id'];
         $salesChannelName = $shopId;
         if (isset($data['shop']['name'])) {
             $salesChannelName = $data['shop']['name'];
         }
 
-        $priceRuleUuid = $this->mappingService->createNewUuid(
+        $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::RULE,
             'salesChannelRule_' . $shopId,
             $this->context
         );
+        $priceRuleUuid = $mapping['entityUuid'];
+        $this->mappingIds[] = $mapping['id'];
 
-        $orContainerUuid = $this->mappingService->createNewUuid(
+        $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::RULE,
             'salesChannelRule_orContainer_' . $shopId,
             $this->context
         );
+        $orContainerUuid = $mapping['entityUuid'];
+        $this->mappingIds[] = $mapping['id'];
 
-        $andContainerUuid = $this->mappingService->createNewUuid(
+        $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::RULE,
             'salesChannelRule_andContainer_' . $shopId,
             $this->context
         );
+        $andContainerUuid = $mapping['entityUuid'];
+        $this->mappingIds[] = $mapping['id'];
 
-        $conditionUuid = $this->mappingService->createNewUuid(
+        $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::RULE,
             'salesChannelRule_condition_' . $shopId,
             $this->context
         );
+        $conditionUuid = $mapping['entityUuid'];
+        $this->mappingIds[] = $mapping['id'];
 
         $rule = [
             'id' => $priceRuleUuid,
@@ -403,24 +437,33 @@ abstract class ShippingMethodConverter extends ShopwareConverter
     protected function getSalesChannelAndCustomerGroupCalculationRule(array $data): array
     {
         $shopId = $data['multishopID'];
-        $salesChannelUuid = $this->mappingService->getUuid(
+        $salesChannelMapping = $this->mappingService->getMapping(
             $this->connectionId,
             DefaultEntities::SALES_CHANNEL,
             $shopId,
             $this->context
         );
 
+        if ($salesChannelMapping === null) {
+            return [];
+        }
+        $salesChannelUuid = $salesChannelMapping['entityUuid'];
+        $this->mappingIds[] = $salesChannelMapping['id'];
+
         $customerGroupId = $data['customergroupID'];
-        $customerGroupUuid = $this->mappingService->getUuid(
+        $customerGroupMapping = $this->mappingService->getMapping(
             $this->connectionId,
             DefaultEntities::CUSTOMER_GROUP,
             $customerGroupId,
             $this->context
         );
 
-        if (!isset($salesChannelUuid, $customerGroupUuid)) {
+        if ($customerGroupMapping === null) {
             return [];
         }
+
+        $customerGroupUuid = $customerGroupMapping['entityUuid'];
+        $this->mappingIds[] = $customerGroupMapping['id'];
 
         $customerGroupName = $customerGroupId;
         if (isset($data['customerGroup']['description'])) {
@@ -432,33 +475,41 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             $salesChannelName = $data['shop']['name'];
         }
 
-        $priceRuleUuid = $this->mappingService->createNewUuid(
+        $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::RULE,
             'salesChannelAndCustomerGroupRule_' . $shopId . '_' . $customerGroupId,
             $this->context
         );
+        $priceRuleUuid = $mapping['entityUuid'];
+        $this->mappingIds[] = $mapping['id'];
 
-        $orContainerUuid = $this->mappingService->createNewUuid(
+        $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::RULE,
             'salesChannelAndCustomerGroupRule_orContainer_' . $shopId . '_' . $customerGroupId,
             $this->context
         );
+        $orContainerUuid = $mapping['entityUuid'];
+        $this->mappingIds[] = $mapping['id'];
 
-        $andContainerUuid = $this->mappingService->createNewUuid(
+        $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::RULE,
             'salesChannelAndCustomerGroupRule_andContainer_' . $shopId . '_' . $customerGroupId,
             $this->context
         );
+        $andContainerUuid = $mapping['entityUuid'];
+        $this->mappingIds[] = $mapping['id'];
 
-        $conditionUuid = $this->mappingService->createNewUuid(
+        $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::RULE,
             'salesChannelAndCustomerGroupRule_condition_' . $shopId . '_' . $customerGroupId,
             $this->context
         );
+        $conditionUuid = $mapping['entityUuid'];
+        $this->mappingIds[] = $mapping['id'];
 
         $rule = [
             'id' => $priceRuleUuid,
@@ -518,19 +569,21 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         foreach ($shippingCosts as $key => $shippingCost) {
             $cost = [];
 
-            $cost['id'] = $this->mappingService->createNewUuid(
+            $mapping = $this->mappingService->getOrCreateMapping(
                 $this->connectionId,
                 DefaultEntities::SHIPPING_METHOD_PRICE,
                 $shippingCost['id'],
                 $this->context
             );
+            $cost['id'] = $mapping['entityUuid'];
+            $this->mappingIds[] = $mapping['id'];
 
             $cost['calculation'] = $calculationType;
             $cost['shippingMethodId'] = $this->oldShippingMethod;
 
             $currencyUuid = null;
             if (isset($shippingCost['currencyShortName'])) {
-                $currencyUuid = $this->mappingService->getUuid(
+                $currencyMapping = $this->mappingService->getMapping(
                     $this->connectionId,
                     DefaultEntities::CURRENCY,
                     $shippingCost['currencyShortName'],
@@ -538,7 +591,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
                 );
             }
 
-            if ($currencyUuid === null) {
+            if (!isset($currencyMapping)) {
                 $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
                     $this->runId,
                     DefaultEntities::SHIPPING_METHOD_PRICE,
@@ -548,7 +601,8 @@ abstract class ShippingMethodConverter extends ShopwareConverter
 
                 continue;
             }
-
+            $currencyUuid = $currencyMapping['entityUuid'];
+            $this->mappingIds[] = $currencyMapping['id'];
             $cost['currencyId'] = $currencyUuid;
             if (isset($shippingCosts[$key + 1])) {
                 $cost['quantityEnd'] = $shippingCosts[$key + 1]['from'] - 0.01;

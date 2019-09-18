@@ -50,6 +50,11 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
      */
     protected $locale;
 
+    /**
+     * @var string
+     */
+    private $checksum;
+
     public function __construct(
         MappingServiceInterface $mappingService,
         MediaFileServiceInterface $mediaFileService,
@@ -60,6 +65,11 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         $this->mediaFileService = $mediaFileService;
     }
 
+    public function getSourceIdentifier(array $data): string
+    {
+        return hash('md5', strtolower($data['name'] . '_' . $data['group']['name'] . '_' . $data['type']));
+    }
+
     public function writeMapping(Context $context): void
     {
         $this->mappingService->writeMapping($context);
@@ -67,6 +77,7 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
 
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
+        $this->checksum = $this->generateChecksum($data);
         $this->context = $context;
         $this->locale = $data['_locale'];
         $this->runId = $migrationContext->getRunUuid();
@@ -83,21 +94,26 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
             return new ConvertStruct(null, $data);
         }
 
-        $converted = [
-            'id' => $this->mappingService->createNewUuid(
-                $this->connectionId,
-                DefaultEntities::PROPERTY_GROUP_OPTION,
-                hash('md5', strtolower($data['name'] . '_' . $data['group']['name'])),
-                $context
-            ),
+        $mapping = $this->mappingService->getOrCreateMapping(
+            $this->connectionId,
+            DefaultEntities::PROPERTY_GROUP_OPTION,
+            hash('md5', strtolower($data['name'] . '_' . $data['group']['name'])),
+            $context
+        );
+        $this->mappingIds[] = $mapping['id'];
 
+        $propertyGroupMapping = $this->mappingService->getOrCreateMapping(
+            $this->connectionId,
+            DefaultEntities::PROPERTY_GROUP,
+            hash('md5', strtolower($data['group']['name'])),
+            $context
+        );
+        $this->mappingIds[] = $propertyGroupMapping['id'];
+
+        $converted = [
+            'id' => $this->mapping['entityUuid'],
             'group' => [
-                'id' => $this->mappingService->createNewUuid(
-                    $this->connectionId,
-                    DefaultEntities::PROPERTY_GROUP,
-                    hash('md5', strtolower($data['group']['name'])),
-                    $context
-                ),
+                'id' => $propertyGroupMapping['entityUuid'],
             ],
         ];
 
@@ -111,7 +127,17 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         $this->getProperties($data, $converted);
         $this->getTranslation($data, $converted);
 
-        return new ConvertStruct($converted, null);
+        $this->mapping['additionalData']['relatedMappings'] = $this->mappingIds;
+        $this->mappingIds = [];
+        $this->mappingService->updateMapping(
+            $this->connectionId,
+            DefaultEntities::PROPERTY_GROUP_OPTION,
+            $this->mapping['oldIdentifier'],
+            $this->mapping,
+            $context
+        );
+
+        return new ConvertStruct($converted, null, $this->mapping['id']);
     }
 
     protected function getMedia(array &$converted, array $data): void
@@ -128,12 +154,14 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         }
 
         $newMedia = [];
-        $newMedia['id'] = $this->mappingService->createNewUuid(
+        $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::MEDIA,
             $data['media']['id'],
             $this->context
         );
+        $newMedia['id'] = $mapping['entityUuid'];
+        $this->mappingIds[] = $mapping['id'];
 
         if (!isset($data['media']['name'])) {
             $data['media']['name'] = $newMedia['id'];
@@ -154,15 +182,16 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         $this->convertValue($newMedia, 'name', $data['media'], 'name');
         $this->convertValue($newMedia, 'description', $data['media'], 'description');
 
-        $albumUuid = $this->mappingService->getUuid(
+        $albumMapping = $this->mappingService->getMapping(
             $this->connectionId,
             DefaultEntities::MEDIA_FOLDER,
             $data['media']['albumID'],
             $this->context
         );
 
-        if ($albumUuid !== null) {
-            $newMedia['mediaFolderId'] = $albumUuid;
+        if ($albumMapping !== null) {
+            $newMedia['mediaFolderId'] = $albumMapping['entityUuid'];
+            $this->mappingIds[] = $albumMapping['id'];
         }
 
         $converted['media'] = $newMedia;
@@ -181,12 +210,14 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         $this->convertValue($localeTranslation, 'name', $data['media'], 'name');
         $this->convertValue($localeTranslation, 'description', $data['media'], 'description');
 
-        $localeTranslation['id'] = $this->mappingService->createNewUuid(
+        $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::MEDIA_TRANSLATION,
             $data['media']['id'] . ':' . $this->locale,
             $this->context
         );
+        $localeTranslation['id'] = $mapping['entityUuid'];
+        $this->mappingIds[] = $mapping['id'];
 
         $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->locale, $this->context);
         $localeTranslation['languageId'] = $languageUuid;
@@ -204,14 +235,16 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         );
 
         foreach ($variantOptionsToProductContainer as $uuid) {
-            $converted['productConfiguratorSettings'][] = [
-                'id' => $this->mappingService->createNewUuid(
-                    $this->connectionId,
-                    DefaultEntities::PRODUCT_PROPERTY,
-                    $data['id'] . '_' . $uuid,
-                    $this->context
-                ),
+            $mapping = $this->mappingService->getOrCreateMapping(
+                $this->connectionId,
+                DefaultEntities::PRODUCT_PROPERTY,
+                $data['id'] . '_' . $uuid,
+                $this->context
+            );
+            $this->mappingIds[] = $mapping['id'];
 
+            $converted['productConfiguratorSettings'][] = [
+                'id' => $mapping['entityUuid'],
                 'productId' => $uuid,
             ];
         }
@@ -235,47 +268,53 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
 
     protected function createAndDeleteNecessaryMappings(array $data, array $converted): void
     {
-        $this->mappingService->createNewUuid(
+        $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::PROPERTY_GROUP_OPTION . '_' . $data['type'],
             $data['id'],
             $this->context,
             null,
+            null,
             $converted['id']
         );
+        $this->mappingIds[] = $mapping['id'];
 
-        $this->mappingService->createNewUuid(
+        $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::PROPERTY_GROUP . '_' . $data['type'],
             $data['group']['id'],
             $this->context,
             null,
+            null,
             $converted['group']['id']
         );
+        $this->mappingIds[] = $mapping['id'];
 
-        $this->mappingService->createNewUuid(
+        $this->mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::PROPERTY_GROUP_OPTION,
             hash('md5', strtolower($data['name'] . '_' . $data['group']['name'] . '_' . $data['type'])),
-            $this->context
+            $this->context,
+            $this->checksum
         );
 
-        $this->mappingService->createNewUuid(
+        $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::PROPERTY_GROUP_OPTION,
             hash('md5', strtolower($data['group']['name'] . '_' . $data['type'])),
             $this->context
         );
+        $this->mappingIds[] = $mapping['id'];
 
         if ($data['type'] === 'option') {
-            $propertyOptionMapping = $this->mappingService->getUuid(
+            $propertyOptionMapping = $this->mappingService->getMapping(
                 $this->connectionId,
                 DefaultEntities::PROPERTY_GROUP_OPTION,
                 hash('md5', strtolower($data['name'] . '_' . $data['group']['name'] . '_property')),
                 $this->context
             );
 
-            $propertyGroupMapping = $this->mappingService->getUuid(
+            $propertyGroupMapping = $this->mappingService->getMapping(
                 $this->connectionId,
                 DefaultEntities::PROPERTY_GROUP,
                 hash('md5', strtolower($data['group']['name'] . '_property')),
@@ -284,7 +323,7 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
 
             if ($propertyOptionMapping !== null) {
                 $this->mappingService->deleteMapping(
-                    $propertyOptionMapping,
+                    $propertyOptionMapping['entityUuid'],
                     $this->connectionId,
                     $this->context
                 );
@@ -292,7 +331,7 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
 
             if ($propertyGroupMapping !== null) {
                 $this->mappingService->deleteMapping(
-                    $propertyGroupMapping,
+                    $propertyGroupMapping['entityUuid'],
                     $this->connectionId,
                     $this->context
                 );

@@ -45,6 +45,11 @@ abstract class LanguageConverter extends ShopwareConverter
         $this->loggingService = $loggingService;
     }
 
+    public function getSourceIdentifier(array $data): string
+    {
+        return $data['locale'];
+    }
+
     public function writeMapping(Context $context): void
     {
         $this->mappingService->writeMapping($context);
@@ -52,6 +57,7 @@ abstract class LanguageConverter extends ShopwareConverter
 
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
+        $checksum = $this->generateChecksum($data);
         $this->context = $context;
         $this->mainLocale = $data['_locale'];
         $this->connectionId = $migrationContext->getConnection()->getId();
@@ -68,7 +74,14 @@ abstract class LanguageConverter extends ShopwareConverter
         }
 
         $converted = [];
-        $converted['id'] = $this->mappingService->createNewUuid($this->connectionId, DefaultEntities::LANGUAGE, $data['locale'], $context);
+        $this->mapping = $this->mappingService->getOrCreateMapping(
+            $this->connectionId,
+            DefaultEntities::LANGUAGE,
+            $data['locale'],
+            $context,
+            $checksum
+        );
+        $converted['id'] = $this->mapping['entityUuid'];
 
         $this->convertValue($converted, 'name', $data, 'language');
 
@@ -87,6 +100,16 @@ abstract class LanguageConverter extends ShopwareConverter
             $data = null;
         }
 
-        return new ConvertStruct($converted, $data);
+        $this->mapping['additionalData']['relatedMappings'] = $this->mappingIds;
+        $this->mappingIds = [];
+        $this->mappingService->updateMapping(
+            $this->connectionId,
+            DefaultEntities::LANGUAGE,
+            $this->mapping['oldIdentifier'],
+            $this->mapping,
+            $context
+        );
+
+        return new ConvertStruct($converted, $data, $this->mapping['id']);
     }
 }

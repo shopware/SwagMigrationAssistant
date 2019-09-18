@@ -68,22 +68,23 @@ abstract class ProductReviewConverter extends ShopwareConverter
         unset($data['_locale']);
 
         $converted = [];
-        $converted['id'] = $this->mappingService->createNewUuid(
+        $this->mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::PRODUCT_REVIEW,
             $data['id'],
             $context
         );
+        $converted['id'] = $this->mapping['entityUuid'];
         unset($data['id']);
 
-        $converted['productId'] = $this->mappingService->getUuid(
+        $mapping = $this->mappingService->getMapping(
             $this->connectionId,
             DefaultEntities::PRODUCT . '_mainProduct',
             $data['articleID'],
             $context
         );
 
-        if ($converted['productId'] === null) {
+        if ($mapping === null) {
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
                     $migrationContext->getRunUuid(),
@@ -95,16 +96,18 @@ abstract class ProductReviewConverter extends ShopwareConverter
 
             return new ConvertStruct(null, $originalData);
         }
+        $converted['productId'] = $mapping['entityUuid'];
+        $this->mappingIds[] = $mapping['id'];
         unset($data['articleID']);
 
-        $converted['customerId'] = $this->mappingService->getUuid(
+        $mapping = $this->mappingService->getMapping(
             $this->connectionId,
             DefaultEntities::CUSTOMER,
             $data['email'],
             $context
         );
 
-        if ($converted['customerId'] === null) {
+        if ($mapping === null) {
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
                     $migrationContext->getRunUuid(),
@@ -116,17 +119,19 @@ abstract class ProductReviewConverter extends ShopwareConverter
 
             return new ConvertStruct(null, $originalData);
         }
+        $converted['customerId'] = $mapping['entityUuid'];
+        $this->mappingIds[] = $mapping['id'];
         unset($data['email']);
 
         $shopId = $data['shop_id'] === null ? $data['mainShopId'] : $data['shop_id'];
-        $converted['salesChannelId'] = $this->mappingService->getUuid(
+        $mapping = $this->mappingService->getMapping(
             $this->connectionId,
             DefaultEntities::SALES_CHANNEL,
             $shopId,
             $context
         );
 
-        if ($converted['salesChannelId'] === null) {
+        if ($mapping === null) {
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
                     $migrationContext->getRunUuid(),
@@ -138,6 +143,8 @@ abstract class ProductReviewConverter extends ShopwareConverter
 
             return new ConvertStruct(null, $originalData);
         }
+        $converted['salesChannelId'] = $mapping['entityUuid'];
+        $this->mappingIds[] = $mapping['id'];
         unset($data['shop_id'], $data['mainShopId']);
 
         $converted['languageId'] = $this->mappingService->getLanguageUuid(

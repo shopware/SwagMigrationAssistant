@@ -60,6 +60,7 @@ abstract class MediaFolderConverter extends ShopwareConverter
      */
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
+        $checksum = $this->generateChecksum($data);
         $this->migrationContext = $migrationContext;
         $this->context = $context;
         $this->connectionId = $migrationContext->getConnection()->getId();
@@ -69,12 +70,14 @@ abstract class MediaFolderConverter extends ShopwareConverter
         unset($data['_locale']);
 
         $converted = [];
-        $converted['id'] = $this->mappingService->createNewUuid(
+        $this->mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::MEDIA_FOLDER,
             $data['id'],
-            $this->context
+            $this->context,
+            $checksum
         );
+        $converted['id'] = $this->mapping['entityUuid'];
         unset($data['id']);
 
         $defaultFolderId = $this->getDefaultFolderId();
@@ -83,36 +86,42 @@ abstract class MediaFolderConverter extends ShopwareConverter
         }
 
         if (isset($data['parentID'])) {
-            $parentUuid = $this->mappingService->getUuid(
+            $parentMapping = $this->mappingService->getMapping(
                 $this->connectionId,
                 DefaultEntities::MEDIA_FOLDER,
                 $data['parentID'],
                 $this->context
             );
 
-            if ($parentUuid !== null) {
-                $converted['parentId'] = $parentUuid;
+            if ($parentMapping !== null) {
+                $converted['parentId'] = $parentMapping['entityUuid'];
+                $this->mappingIds[] = $parentMapping['id'];
             }
+            unset($parentMapping);
         }
         unset($data['parentID']);
 
         if (!isset($converted['parentId'])) {
-            $converted['parent'] = [
-                'id' => $this->mappingService->createNewUuid(
-                    $this->connectionId,
-                    DefaultEntities::MEDIA_FOLDER,
-                    'default_migration_media_folder',
-                    $this->context
-                ),
+            $parentMapping = $this->mappingService->getOrCreateMapping(
+                $this->connectionId,
+                DefaultEntities::MEDIA_FOLDER,
+                'default_migration_media_folder',
+                $this->context
+            );
+            $this->mappingIds[] = $parentMapping['id'];
+            $configurationMapping = $this->mappingService->getOrCreateMapping(
+                $this->connectionId,
+                DefaultEntities::MEDIA_FOLDER_CONFIGURATION,
+                'default_migration_media_folder',
+                $this->context
+            );
+            $this->mappingIds[] = $configurationMapping['id'];
 
+            $converted['parent'] = [
+                'id' => $parentMapping['entityUuid'],
                 'name' => 'Migration media folder',
                 'configuration' => [
-                    'id' => $this->mappingService->createNewUuid(
-                        $this->connectionId,
-                        DefaultEntities::MEDIA_FOLDER_CONFIGURATION,
-                        'default_migration_media_folder',
-                        $this->context
-                    ),
+                    'id' => $configurationMapping['entityUuid'],
                 ],
             ];
         }
@@ -136,7 +145,17 @@ abstract class MediaFolderConverter extends ShopwareConverter
             $data = null;
         }
 
-        return new ConvertStruct($converted, $data);
+        $this->mapping['additionalData']['relatedMappings'] = $this->mappingIds;
+        $this->mappingIds = [];
+        $this->mappingService->updateMapping(
+            $this->connectionId,
+            DefaultEntities::MEDIA_FOLDER,
+            $this->mapping['oldIdentifier'],
+            $this->mapping,
+            $this->context
+        );
+
+        return new ConvertStruct($converted, $data, $this->mapping['id']);
     }
 
     public function writeMapping(Context $context): void
@@ -147,12 +166,14 @@ abstract class MediaFolderConverter extends ShopwareConverter
     protected function getConfiguration(array &$setting): array
     {
         $configuration = [];
-        $configuration['id'] = $this->mappingService->createNewUuid(
+        $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::MEDIA_FOLDER_CONFIGURATION,
             $setting['id'],
             $this->context
         );
+        $configuration['id'] = $mapping['entityUuid'];
+        $this->mappingIds[] = $mapping['id'];
 
         $this->convertValue($configuration, 'createThumbnails', $setting, 'create_thumbnails', self::TYPE_BOOLEAN);
         $this->convertValue($configuration, 'thumbnailQuality', $setting, 'thumbnail_quality', self::TYPE_INTEGER);
@@ -174,12 +195,14 @@ abstract class MediaFolderConverter extends ShopwareConverter
                 );
 
                 if ($uuid === null) {
-                    $uuid = $this->mappingService->createNewUuid(
+                    $mapping = $this->mappingService->getOrCreateMapping(
                         $this->connectionId,
                         DefaultEntities::MEDIA_THUMBNAIL_SIZE,
                         $thumbnailSize['width'] . '-' . $thumbnailSize['height'],
                         $this->context
                     );
+                    $uuid = $mapping['entityUuid'];
+                    $this->mappingIds[] = $mapping['id'];
                 }
 
                 $thumbnailSize['id'] = $uuid;

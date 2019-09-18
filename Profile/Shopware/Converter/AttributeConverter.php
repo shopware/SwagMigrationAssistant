@@ -16,21 +16,39 @@ abstract class AttributeConverter implements ConverterInterface
      */
     protected $mappingService;
 
+    /**
+     * @var array|null
+     */
+    protected $mapping;
+
+    /**
+     * @var array
+     */
+    protected $mappingIds = [];
+
     public function __construct(MappingServiceInterface $mappingService)
     {
         $this->mappingService = $mappingService;
     }
 
+    public function getSourceIdentifier(array $data): string
+    {
+        return $data['name'];
+    }
+
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
+        $checksum = md5(serialize($data));
         $converted = [];
 
-        $converted['id'] = $this->mappingService->createNewUuid(
+        $mapping = $this->mappingService->getOrCreateMapping(
             $migrationContext->getConnection()->getId(),
             DefaultEntities::CUSTOM_FIELD_SET,
             $this->getCustomFieldEntityName() . 'CustomFieldSet',
             $context
         );
+        $converted['id'] = $mapping['entityUuid'];
+        $this->mappingIds[] = $mapping['id'];
 
         $connectionName = $migrationContext->getConnection()->getName();
         $connectionName = str_replace(' ', '', $connectionName);
@@ -43,26 +61,31 @@ abstract class AttributeConverter implements ConverterInterface
             ],
             'translated' => true,
         ];
+        $mapping = $this->mappingService->getOrCreateMapping(
+            $migrationContext->getConnection()->getId(),
+            DefaultEntities::CUSTOM_FIELD_SET_RELATION,
+            $this->getCustomFieldEntityName() . 'CustomFieldSetRelation',
+            $context
+        );
+        $this->mappingIds[] = $mapping['id'];
+
         $converted['relations'] = [
             [
-                'id' => $this->mappingService->createNewUuid(
-                    $migrationContext->getConnection()->getId(),
-                    DefaultEntities::CUSTOM_FIELD_SET_RELATION,
-                    $this->getCustomFieldEntityName() . 'CustomFieldSetRelation',
-                    $context
-                ),
+                'id' => $mapping['entityUuid'],
                 'entityName' => $this->getCustomFieldEntityName(),
             ],
         ];
 
+        $this->mapping = $this->mappingService->getOrCreateMapping(
+            $migrationContext->getConnection()->getId(),
+            $migrationContext->getDataSet()::getEntity(),
+            $data['name'],
+            $context,
+            $checksum
+        );
         $converted['customFields'] = [
             [
-                'id' => $this->mappingService->createNewUuid(
-                    $migrationContext->getConnection()->getId(),
-                    $migrationContext->getDataSet()::getEntity(),
-                    $data['name'],
-                    $context
-                ),
+                'id' => $this->mapping['entityUuid'],
                 'name' => $converted['name'] . '_' . $data['name'],
                 'type' => $data['type'],
                 'config' => $this->getCustomFieldConfiguration($data),
@@ -80,7 +103,17 @@ abstract class AttributeConverter implements ConverterInterface
             $data = null;
         }
 
-        return new ConvertStruct($converted, $data);
+        $this->mapping['additionalData']['relatedMappings'] = $this->mappingIds;
+        $this->mappingIds = [];
+        $this->mappingService->updateMapping(
+            $migrationContext->getConnection()->getId(),
+            $migrationContext->getDataSet()::getEntity(),
+            $this->mapping['oldIdentifier'],
+            $this->mapping,
+            $context
+        );
+
+        return new ConvertStruct($converted, $data, $this->mapping['id']);
     }
 
     abstract protected function getCustomFieldEntityName(): string;

@@ -15,6 +15,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\IdSearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
@@ -50,6 +51,8 @@ class MappingService implements MappingServiceInterface
     protected $languageData = [];
 
     protected $locales = [];
+
+    protected $mappings = [];
 
     /**
      * @var EntityRepositoryInterface
@@ -149,11 +152,6 @@ class MappingService implements MappingServiceInterface
     /**
      * @var EntityRepositoryInterface
      */
-    private $themeRepo;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
     private $deliveryTimeRepo;
 
     public function __construct(
@@ -198,6 +196,183 @@ class MappingService implements MappingServiceInterface
         $this->mappingDefinition = $mappingDefinition;
     }
 
+    public function getOrCreateMapping(
+        string $connectionId,
+        string $entityName,
+        string $oldIdentifier,
+        Context $context,
+        ?string $checksum = null,
+        ?array $additionalData = null,
+        ?string $uuid = null
+    ): array {
+        if (isset($this->mappings[md5($entityName . $oldIdentifier)])) {
+            $mapping = $this->mappings[md5($entityName . $oldIdentifier)];
+        } else {
+            /** @var EntitySearchResult $result */
+            $result = $context->disableCache(function (Context $context) use ($connectionId, $entityName, $oldIdentifier) {
+                $criteria = new Criteria();
+                $criteria->addFilter(new EqualsFilter('connectionId', $connectionId));
+                $criteria->addFilter(new EqualsFilter('entity', $entityName));
+                $criteria->addFilter(new EqualsFilter('oldIdentifier', $oldIdentifier));
+                $criteria->setLimit(1);
+
+                return $this->migrationMappingRepo->search($criteria, $context);
+            });
+
+            if ($result->getTotal() > 0) {
+                /** @var SwagMigrationMappingEntity $element */
+                $element = $result->getEntities()->first();
+                $mapping = [
+                    'id' => $element->getId(),
+                    'connectionId' => $element->getConnectionId(),
+                    'entity' => $element->getEntity(),
+                    'oldIdentifier' => $element->getOldIdentifier(),
+                    'entityUuid' => $element->getEntityUuid(),
+                    'additionalData' => $element->getAdditionalData(),
+                ];
+            }
+        }
+
+        if (!isset($mapping)) {
+            return $this->createMapping($connectionId, $entityName, $oldIdentifier, $checksum, $additionalData, $uuid);
+        }
+
+        if ($uuid !== null) {
+            $mapping['entityUuid'] = $uuid;
+            $this->saveMapping($mapping);
+
+            return $mapping;
+        }
+        $this->mappings[md5($entityName . $oldIdentifier)] = $mapping;
+
+        return $mapping;
+    }
+
+    public function getMapping(
+        string $connectionId,
+        string $entityName,
+        string $oldIdentifier,
+        Context $context
+    ): ?array {
+        if (isset($this->mappings[md5($entityName . $oldIdentifier)])) {
+            return $this->mappings[md5($entityName . $oldIdentifier)];
+        }
+        /** @var EntitySearchResult $result */
+        $result = $context->disableCache(function (Context $context) use ($connectionId, $entityName, $oldIdentifier) {
+            $criteria = new Criteria();
+            $criteria->addFilter(new EqualsFilter('connectionId', $connectionId));
+            $criteria->addFilter(new EqualsFilter('entity', $entityName));
+            $criteria->addFilter(new EqualsFilter('oldIdentifier', $oldIdentifier));
+            $criteria->setLimit(1);
+
+            return $this->migrationMappingRepo->search($criteria, $context);
+        });
+
+        if ($result->getTotal() > 0) {
+            /** @var SwagMigrationMappingEntity $element */
+            $element = $result->getEntities()->first();
+
+            $mapping = [
+                'id' => $element->getId(),
+                'connectionId' => $element->getConnectionId(),
+                'entity' => $element->getEntity(),
+                'oldIdentifier' => $element->getOldIdentifier(),
+                'entityUuid' => $element->getEntityUuid(),
+                'additionalData' => $element->getAdditionalData(),
+            ];
+            $this->mappings[md5($entityName . $oldIdentifier)] = $mapping;
+
+            return $mapping;
+        }
+
+        return null;
+    }
+
+    public function createMapping(
+        string $connectionId,
+        string $entityName,
+        string $oldIdentifier,
+        ?string $checksum = null,
+        ?array $additionalData = null,
+        ?string $uuid = null
+    ): array {
+        $mapping = [
+            'id' => Uuid::randomHex(),
+            'connectionId' => $connectionId,
+            'entity' => $entityName,
+            'oldIdentifier' => $oldIdentifier,
+            'entityUuid' => $uuid ?? Uuid::randomHex(),
+            'checksum' => $checksum,
+            'additionalData' => $additionalData,
+        ];
+        $this->saveMapping($mapping);
+
+        return $mapping;
+    }
+
+    public function updateMapping(
+        string $connectionId,
+        string $entityName,
+        string $oldIdentifier,
+        array $updateData,
+        Context $context
+    ): array {
+        $mapping = $this->getMapping($connectionId, $entityName, $oldIdentifier, $context);
+
+        if ($mapping === null) {
+            return $this->createMapping(
+                $connectionId,
+                $entityName,
+                $oldIdentifier,
+                $updateData['checksum'] ?? null,
+                $updateData['additionalData'] ?? null,
+                $updateData['entityUuid'] ?? null
+            );
+        }
+
+        $mapping = array_merge($mapping, $updateData);
+        $this->saveMapping($mapping);
+
+        return $mapping;
+    }
+
+    public function getMappings(string $connectionId, string $entityName, array $ids, Context $context): EntitySearchResult
+    {
+        return $context->disableCache(function (Context $context) use ($connectionId, $entityName, $ids) {
+            $criteria = new Criteria();
+            $criteria->addFilter(new EqualsFilter('connectionId', $connectionId));
+            $criteria->addFilter(new EqualsFilter('entity', $entityName));
+            $criteria->addFilter(new EqualsAnyFilter('oldIdentifier', $ids));
+
+            return $this->migrationMappingRepo->search($criteria, $context);
+        });
+    }
+
+    public function preloadMappings(array $mappingIds, Context $context): void
+    {
+        /** @var EntitySearchResult $result */
+        $result = $context->disableCache(function (Context $context) use ($mappingIds) {
+            return $this->migrationMappingRepo->search(new Criteria($mappingIds), $context);
+        });
+
+        if ($result->count() > 0) {
+            $elements = $result->getEntities()->getElements();
+            /** @var SwagMigrationMappingEntity $mapping */
+            foreach ($elements as $mapping) {
+                $this->mappings[md5($mapping->getEntity() . $mapping->getOldIdentifier())] = [
+                    'id' => $mapping->getId(),
+                    'connectionId' => $mapping->getConnectionId(),
+                    'entity' => $mapping->getEntity(),
+                    'oldIdentifier' => $mapping->getOldIdentifier(),
+                    'entityUuid' => $mapping->getEntityUuid(),
+                    'checksum' => $mapping->getChecksum(),
+                    'additionalData' => $mapping->getAdditionalData(),
+                ];
+            }
+            unset($result);
+        }
+    }
+
     public function getUuidsByEntity(string $connectionId, string $entityName, Context $context): array
     {
         /** @var SwagMigrationMappingEntity[] $entities */
@@ -240,6 +415,14 @@ class MappingService implements MappingServiceInterface
             $uuid = $element->getEntityUuid();
 
             $this->uuids[$entityName][$oldId] = $uuid;
+            $mapping = [
+                'id' => $element->getId(),
+                'connectionId' => $element->getConnectionId(),
+                'entity' => $element->getEntity(),
+                'oldIdentifier' => $element->getOldIdentifier(),
+                'entityUuid' => $element->getEntityUuid(),
+            ];
+            $this->mappings[$entityName][$oldId] = $mapping;
 
             return $uuid;
         }
@@ -354,6 +537,7 @@ class MappingService implements MappingServiceInterface
 
         $this->saveMapping(
             [
+                'id' => Uuid::randomHex(),
                 'connectionId' => $connectionId,
                 'entity' => $entityName,
                 'oldIdentifier' => $oldId,
@@ -367,9 +551,9 @@ class MappingService implements MappingServiceInterface
 
     public function getDefaultCmsPageUuid(string $connectionId, Context $context): ?string
     {
-        $uuid = $this->getUuid($connectionId, CmsPageDefinition::ENTITY_NAME, 'default_cms_page', $context);
-        if ($uuid !== null) {
-            return $uuid;
+        $cmsPageMapping = $this->getMapping($connectionId, CmsPageDefinition::ENTITY_NAME, 'default_cms_page', $context);
+        if ($cmsPageMapping !== null) {
+            return $cmsPageMapping['entityUuid'];
         }
 
         $criteria = new Criteria();
@@ -387,6 +571,7 @@ class MappingService implements MappingServiceInterface
 
         $this->saveMapping(
             [
+                'id' => Uuid::randomHex(),
                 'connectionId' => $connectionId,
                 'entity' => CmsPageDefinition::ENTITY_NAME,
                 'oldIdentifier' => 'default_cms_page',
@@ -426,12 +611,12 @@ class MappingService implements MappingServiceInterface
             return $this->locales[$localeCode];
         }
 
-        $localeUuid = $this->getUuid($connectionId, DefaultEntities::LOCALE, $localeCode, $context);
+        $localeMapping = $this->getMapping($connectionId, DefaultEntities::LOCALE, $localeCode, $context);
 
-        if ($localeUuid !== null) {
-            $this->locales[$localeCode] = $localeUuid;
+        if ($localeMapping !== null) {
+            $this->locales[$localeCode] = $localeMapping['entityUuid'];
 
-            return $localeUuid;
+            return $localeMapping['entityUuid'];
         }
 
         $localeUuid = $this->searchLocale($localeCode, $context);
@@ -463,10 +648,10 @@ class MappingService implements MappingServiceInterface
 
     public function getDeliveryTime(string $connectionId, Context $context, int $minValue, int $maxValue, string $unit, string $name): string
     {
-        $deliveryTime = $this->getUuid($connectionId, DefaultEntities::DELIVERY_TIME, $name, $context);
+        $deliveryTimeMapping = $this->getMapping($connectionId, DefaultEntities::DELIVERY_TIME, $name, $context);
 
-        if ($deliveryTime !== null) {
-            return $deliveryTime;
+        if ($deliveryTimeMapping !== null) {
+            return $deliveryTimeMapping['entityUuid'];
         }
 
         /** @var EntitySearchResult $result */
@@ -490,6 +675,7 @@ class MappingService implements MappingServiceInterface
 
         $this->saveMapping(
             [
+                'id' => Uuid::randomHex(),
                 'connectionId' => $connectionId,
                 'entity' => DefaultEntities::DELIVERY_TIME,
                 'oldIdentifier' => $name,
@@ -502,10 +688,10 @@ class MappingService implements MappingServiceInterface
 
     public function getCountryUuid(string $oldId, string $iso, string $iso3, string $connectionId, Context $context): ?string
     {
-        $countryUuid = $this->getUuid($connectionId, DefaultEntities::COUNTRY, $oldId, $context);
+        $countryMapping = $this->getMapping($connectionId, DefaultEntities::COUNTRY, $oldId, $context);
 
-        if ($countryUuid !== null) {
-            return $countryUuid;
+        if ($countryMapping !== null) {
+            return $countryMapping['entityUuid'];
         }
 
         /** @var EntitySearchResult $result */
@@ -521,11 +707,11 @@ class MappingService implements MappingServiceInterface
         if ($result->getTotal() > 0) {
             /** @var CountryEntity $element */
             $element = $result->getEntities()->first();
-
             $countryUuid = $element->getId();
 
             $this->saveMapping(
                 [
+                    'id' => Uuid::randomHex(),
                     'connectionId' => $connectionId,
                     'entity' => DefaultEntities::COUNTRY,
                     'oldIdentifier' => $oldId,
@@ -541,16 +727,17 @@ class MappingService implements MappingServiceInterface
 
     public function getCurrencyUuid(string $connectionId, string $oldIsoCode, Context $context): ?string
     {
-        $currencyUuid = $this->getUuid($connectionId, DefaultEntities::CURRENCY, $oldIsoCode, $context);
+        $currencyMapping = $this->getMapping($connectionId, DefaultEntities::CURRENCY, $oldIsoCode, $context);
 
-        if ($currencyUuid !== null) {
-            return $currencyUuid;
+        if ($currencyMapping !== null) {
+            return $currencyMapping['entityUuid'];
         }
 
         $currencyUuid = $this->getCurrencyUuidWithoutMapping($connectionId, $oldIsoCode, $context);
         if ($currencyUuid !== null) {
             $this->saveMapping(
                 [
+                    'id' => Uuid::randomHex(),
                     'connectionId' => $connectionId,
                     'entity' => DefaultEntities::CURRENCY,
                     'oldIdentifier' => $oldIsoCode,
@@ -601,10 +788,10 @@ class MappingService implements MappingServiceInterface
 
     public function getTaxUuid(string $connectionId, float $taxRate, Context $context): ?string
     {
-        $taxUuid = $this->getUuid($connectionId, DefaultEntities::TAX, (string) $taxRate, $context);
+        $taxMapping = $this->getMapping($connectionId, DefaultEntities::TAX, (string) $taxRate, $context);
 
-        if ($taxUuid !== null) {
-            return $taxUuid;
+        if ($taxMapping !== null) {
+            return $taxMapping['entityUuid'];
         }
 
         /** @var EntitySearchResult $result */
@@ -623,6 +810,7 @@ class MappingService implements MappingServiceInterface
 
             $this->saveMapping(
                 [
+                    'id' => Uuid::randomHex(),
                     'connectionId' => $connectionId,
                     'entity' => DefaultEntities::TAX,
                     'oldIdentifier' => (string) $taxRate,
@@ -636,7 +824,7 @@ class MappingService implements MappingServiceInterface
         return null;
     }
 
-    public function getNumberRangeUuid(string $type, string $oldId, MigrationContextInterface $migrationContext, Context $context): ?string
+    public function getNumberRangeUuid(string $type, string $oldId, string $checksum, MigrationContextInterface $migrationContext, Context $context): ?string
     {
         /** @var EntitySearchResult $result */
         $result = $context->disableCache(function (Context $context) use ($type) {
@@ -655,10 +843,12 @@ class MappingService implements MappingServiceInterface
 
             $this->saveMapping(
                 [
+                    'id' => Uuid::randomHex(),
                     'connectionId' => $migrationContext->getConnection()->getId(),
                     'entity' => DefaultEntities::NUMBER_RANGE,
                     'oldIdentifier' => $oldId,
                     'entityUuid' => $numberRange->getId(),
+                    'checksum' => $checksum,
                 ]
             );
 
@@ -671,10 +861,10 @@ class MappingService implements MappingServiceInterface
     public function getDefaultFolderIdByEntity(string $entityName, MigrationContextInterface $migrationContext, Context $context): ?string
     {
         $connectionId = $migrationContext->getConnection()->getId();
-        $defaultFolderUuid = $this->getUuid($connectionId, DefaultEntities::MEDIA_DEFAULT_FOLDER, $entityName, $context);
+        $defaultFolderMapping = $this->getMapping($connectionId, DefaultEntities::MEDIA_DEFAULT_FOLDER, $entityName, $context);
 
-        if ($defaultFolderUuid !== null) {
-            return $defaultFolderUuid;
+        if ($defaultFolderMapping !== null) {
+            return $defaultFolderMapping['entityUuid'];
         }
 
         /** @var EntitySearchResult $result */
@@ -712,10 +902,10 @@ class MappingService implements MappingServiceInterface
     {
         $sizeString = $width . '-' . $height;
         $connectionId = $migrationContext->getConnection()->getId();
-        $thumbnailSizeUuid = $this->getUuid($connectionId, DefaultEntities::MEDIA_THUMBNAIL_SIZE, $sizeString, $context);
+        $thumbnailSizeMapping = $this->getMapping($connectionId, DefaultEntities::MEDIA_THUMBNAIL_SIZE, $sizeString, $context);
 
-        if ($thumbnailSizeUuid !== null) {
-            return $thumbnailSizeUuid;
+        if ($thumbnailSizeMapping !== null) {
+            return $thumbnailSizeMapping['entityUuid'];
         }
 
         /** @var EntitySearchResult $result */
@@ -733,6 +923,7 @@ class MappingService implements MappingServiceInterface
 
             $this->saveMapping(
                 [
+                    'id' => Uuid::randomHex(),
                     'connectionId' => $migrationContext->getConnection()->getId(),
                     'entity' => DefaultEntities::MEDIA_THUMBNAIL_SIZE,
                     'oldIdentifier' => $sizeString,
@@ -856,7 +1047,7 @@ class MappingService implements MappingServiceInterface
             return;
         }
 
-        $this->entityWriter->insert(
+        $this->entityWriter->upsert(
             $this->mappingDefinition,
             $this->writeArray,
             WriteContext::createFromContext($context)
@@ -864,6 +1055,7 @@ class MappingService implements MappingServiceInterface
 
         $this->writeArray = [];
         $this->uuids = [];
+        $this->mappings = [];
     }
 
     public function pushMapping(string $connectionId, string $entity, string $oldIdentifier, string $uuid): void
@@ -914,6 +1106,7 @@ class MappingService implements MappingServiceInterface
         }
 
         $this->uuids[$entity][$oldId] = $newIdentifier;
+        $this->mappings[md5($entity . $oldId)] = $mapping;
         $this->writeArray[] = $mapping;
     }
 

@@ -3,6 +3,7 @@
 namespace SwagMigrationAssistant\Migration\Mapping;
 
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\Language\LanguageEntity;
 use Shopware\Core\System\Currency\CurrencyEntity;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -14,6 +15,40 @@ interface MappingServiceInterface
     public function getUuid(string $connectionId, string $entityName, string $oldId, Context $context): ?string;
 
     public function getValue(string $connectionId, string $entityName, string $oldId, Context $context): ?string;
+
+    public function getOrCreateMapping(
+        string $connectionId,
+        string $entityName,
+        string $oldIdentifier,
+        Context $context,
+        ?string $checksum = null,
+        ?array $additionalData = null,
+        ?string $uuid = null
+    ): array;
+
+    public function getMapping(
+        string $connectionId,
+        string $entityName,
+        string $oldIdentifier,
+        Context $context
+    ): ?array;
+
+    public function createMapping(
+        string $connectionId,
+        string $entityName,
+        string $oldIdentifier,
+        ?string $checksum = null,
+        ?array $additionalData = null,
+        ?string $uuid = null
+    ): array;
+
+    public function updateMapping(
+        string $connectionId,
+        string $entityName,
+        string $oldIdentifier,
+        array $updateData,
+        Context $context
+    ): array;
 
     public function createNewUuidListItem(
         string $connectionId,
@@ -55,7 +90,7 @@ interface MappingServiceInterface
 
     public function getTaxUuid(string $connectionId, float $taxRate, Context $context): ?string;
 
-    public function getNumberRangeUuid(string $type, string $oldId, MigrationContextInterface $migrationContext, Context $context): ?string;
+    public function getNumberRangeUuid(string $type, string $oldId, string $checksum, MigrationContextInterface $migrationContext, Context $context): ?string;
 
     public function getDefaultFolderIdByEntity(string $entityName, MigrationContextInterface $migrationContext, Context $context): ?string;
 
@@ -79,4 +114,8 @@ interface MappingServiceInterface
     public function getDefaultAvailabilityRule(Context $context): ?string;
 
     public function getLowestRootCategoryUuid(Context $context): ?string;
+
+    public function getMappings(string $connectionId, string $entityName, array $ids, Context $context): EntitySearchResult;
+
+    public function preloadMappings(array $mappingIds, Context $context): void;
 }

@@ -17,6 +17,15 @@ class Shopware55OrderDocumentConverter extends OrderDocumentConverter
             && $migrationContext->getDataSet()::getEntity() === OrderDocumentDataSet::getEntity();
     }
 
+    public function getSourceIdentifier(array $data): string
+    {
+        if (isset($data['ID'])) {
+            return $data['ID'];
+        }
+
+        return $data['id'];
+    }
+
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
         if (isset($data['ID'])) {
