@@ -8,6 +8,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\Bucket\TermsAggregation;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\Metric\CountAggregation;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\Bucket\Bucket;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\Bucket\TermsResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\Metric\CountResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
@@ -61,8 +62,9 @@ class HistoryService implements HistoryServiceInterface
         // TODO: implement pagination / sorting (PT-10836)
         $criteria->addAggregation(new TermsAggregation('count', 'code'/*, $limit, new FieldSorting($sortBy, $sortDirection)*/));
         $result = $this->loggingRepo->aggregate($criteria, $context);
-        /** @var Bucket[] $aggregateResult */
-        $aggregateResult = $result->get('count')->getBuckets();
+        /** @var TermsResult $termsResult */
+        $termsResult = $result->get('count');
+        $aggregateResult = $termsResult->getBuckets();
 
         if (count($aggregateResult) < 1) {
             return [];

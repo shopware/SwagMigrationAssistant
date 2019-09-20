@@ -10,7 +10,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Indexing\MessageQueue\IndexerMessageSender;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\Bucket\TermsAggregation;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\Metric\CountAggregation;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\Bucket\Bucket;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\Bucket\TermsResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\Metric\CountResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
@@ -257,8 +257,9 @@ class RunService implements RunServiceInterface
         }
         $criteria->addAggregation(new TermsAggregation('entityCount', 'entity'));
         $result = $this->migrationDataRepository->aggregate($criteria, $context);
-        /** @var Bucket[] $counts */
-        $counts = $result->get('entityCount')->getBuckets();
+        /** @var TermsResult $termsResult */
+        $termsResult = $result->get('entityCount');
+        $counts = $termsResult->getBuckets();
 
         if (empty($counts)) {
             return [];
@@ -358,8 +359,9 @@ class RunService implements RunServiceInterface
         $criteria->addFilter(new NotFilter(MultiFilter::CONNECTION_AND, [new EqualsFilter('converted', null)]));
         $criteria->addAggregation(new TermsAggregation('entityCount', 'entity'));
         $result = $this->migrationDataRepository->aggregate($criteria, $context);
-        /** @var Bucket[] $counts */
-        $counts = $result->get('entityCount')->getBuckets();
+        /** @var TermsResult $termsResult */
+        $termsResult = $result->get('entityCount');
+        $counts = $termsResult->getBuckets();
 
         if (empty($counts)) {
             return [];
