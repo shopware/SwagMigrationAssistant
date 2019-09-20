@@ -8,11 +8,10 @@ use Shopware\Core\Framework\DataAbstractionLayer\Dbal\QueryBuilder;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Indexing\MessageQueue\IndexerMessageSender;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\CountAggregation;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\ValueCountAggregation;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\CountResult;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\ValueCountResult;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregatorResult;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\Bucket\TermsAggregation;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\Metric\CountAggregation;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\Bucket\TermsResult;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\Metric\CountResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
@@ -256,19 +255,19 @@ class RunService implements RunServiceInterface
                 ]
             ));
         }
-        $criteria->addAggregation(new ValueCountAggregation('entity', 'entityCount'));
-        /** @var AggregatorResult $result */
+        $criteria->addAggregation(new TermsAggregation('entityCount', 'entity'));
         $result = $this->migrationDataRepository->aggregate($criteria, $context);
-        /** @var ValueCountResult[] $counts */
-        $counts = $result->getAggregations()->get('entityCount')->getResult();
+        /** @var TermsResult $termsResult */
+        $termsResult = $result->get('entityCount');
+        $counts = $termsResult->getBuckets();
 
-        if (!isset($counts[0]) || empty($counts[0]->getValues())) {
+        if (empty($counts)) {
             return [];
         }
 
         $mappedCounts = [];
-        foreach ($counts[0]->getValues() as $item) {
-            $mappedCounts[$item->getKey()] = $item->getCount();
+        foreach ($counts as $bucket) {
+            $mappedCounts[$bucket->getKey()] = $bucket->getCount();
         }
 
         return $mappedCounts;
@@ -343,18 +342,13 @@ class RunService implements RunServiceInterface
         if ($onlyProcessed) {
             $criteria->addFilter(new EqualsFilter('processed', true));
         }
-        $criteria->addAggregation(new CountAggregation('id', 'count'));
+        $criteria->addAggregation(new CountAggregation('count', 'id'));
         $criteria->setLimit(1);
-        /** @var AggregatorResult $result */
         $result = $this->mediaFileRepository->aggregate($criteria, $context);
-        /** @var CountResult[] $countResult */
-        $countResult = $result->getAggregations()->get('count')->getResult();
+        /** @var CountResult $countResult */
+        $countResult = $result->get('count');
 
-        if (empty($countResult)) {
-            return 0;
-        }
-
-        return $countResult[0]->getCount();
+        return $countResult->getCount();
     }
 
     private function calculateFetchedTotals(string $runId, Context $context): array
@@ -363,19 +357,19 @@ class RunService implements RunServiceInterface
         $criteria->addFilter(new EqualsFilter('runId', $runId));
         $criteria->addFilter(new EqualsFilter('convertFailure', false));
         $criteria->addFilter(new NotFilter(MultiFilter::CONNECTION_AND, [new EqualsFilter('converted', null)]));
-        $criteria->addAggregation(new ValueCountAggregation('entity', 'entityCount'));
-        /** @var AggregatorResult $result */
+        $criteria->addAggregation(new TermsAggregation('entityCount', 'entity'));
         $result = $this->migrationDataRepository->aggregate($criteria, $context);
-        /** @var ValueCountResult[] $counts */
-        $counts = $result->getAggregations()->get('entityCount')->getResult();
+        /** @var TermsResult $termsResult */
+        $termsResult = $result->get('entityCount');
+        $counts = $termsResult->getBuckets();
 
-        if (empty($counts) || empty($counts[0]->getValues())) {
+        if (empty($counts)) {
             return [];
         }
 
         $mappedCounts = [];
-        foreach ($counts[0]->getValues() as $item) {
-            $mappedCounts[$item->getKey()] = $item->getCount();
+        foreach ($counts as $bucket) {
+            $mappedCounts[$bucket->getKey()] = $bucket->getCount();
         }
 
         return $mappedCounts;

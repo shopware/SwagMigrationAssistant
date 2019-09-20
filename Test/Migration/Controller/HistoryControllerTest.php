@@ -109,7 +109,7 @@ class HistoryControllerTest extends TestCase
         $this->loggingRepo->create([
             [
                 'level' => LogEntryInterface::LOG_LEVEL_ERROR,
-                'code' => '110',
+                'code' => 'migration_error_1',
                 'title' => 'Error1',
                 'description' => 'Lorem Ipsum',
                 'parameters' => [],

@@ -1,6 +1,0 @@
-parameters:
-    level: 5
-    reportUnmatchedIgnoredErrors: false
-    excludes_analyse:
-        - %currentWorkingDirectory%/Test/*
-        - %currentWorkingDirectory%/vendor/*

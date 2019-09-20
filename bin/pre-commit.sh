@@ -31,6 +31,7 @@ then
     done
 
     composer dump-autoload
+    php "`dirname \"$0\"`"/../../bin/phpstan-config-generator.php
     php ../../../dev-ops/analyze/vendor/bin/phpstan analyze --level 5 --no-progress --configuration phpstan.neon --autoload-file="$AUTOLOAD_FILE" ${PHP_FILES}
 fi
 
