@@ -4,12 +4,10 @@ namespace SwagMigrationAssistant\Migration\Service;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\CountAggregation;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\ValueCountAggregation;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\CountResult;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\ValueCountItem;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\ValueCountResult;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregatorResult;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\Bucket\TermsAggregation;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\Metric\CountAggregation;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\Bucket\Bucket;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\Metric\CountResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
@@ -175,30 +173,25 @@ class MigrationProgressService implements MigrationProgressServiceInterface
         if ($onlyProcessed) {
             $criteria->addFilter(new EqualsFilter('processed', true));
         }
-        $criteria->addAggregation(new CountAggregation('id', 'count'));
+        $criteria->addAggregation(new CountAggregation('count', 'id'));
         $criteria->setLimit(1);
-        /** @var AggregatorResult $result */
         $result = $this->migrationMediaFileRepository->aggregate($criteria, $this->context);
-        /** @var CountResult[] $countResult */
-        $countResult = $result->getAggregations()->get('count')->getResult();
+        /** @var CountResult $countResult */
+        $countResult = $result->get('count');
 
-        if (empty($countResult)) {
-            return 0;
-        }
-
-        return $countResult[0]->getCount();
+        return $countResult->getCount();
     }
 
     /**
-     * @param ValueCountItem[] $counts
+     * @param Bucket[] $counts
      *
      * @return int[]
      */
     private function mapCounts(array $counts): array
     {
         $mappedCounts = [];
-        foreach ($counts as $item) {
-            $mappedCounts[$item->getKey()] = $item->getCount();
+        foreach ($counts as $bucket) {
+            $mappedCounts[$bucket->getKey()] = $bucket->getCount();
         }
 
         return $mappedCounts;
@@ -211,7 +204,7 @@ class MigrationProgressService implements MigrationProgressServiceInterface
         if ($state->getStatus() === ProgressState::STATUS_WRITE_DATA) {
             // Get totalCounts for write (database totals does not have the total count for every entity in 'toBeWritten'!)
             $criteria = new Criteria();
-            $criteria->addAggregation(new ValueCountAggregation('entity', 'entityCount'));
+            $criteria->addAggregation(new TermsAggregation('entityCount', 'entity'));
             $criteria->addFilter(new MultiFilter(MultiFilter::CONNECTION_AND, [
                 new EqualsFilter('runId', $run->getId()),
                 new NotFilter(NotFilter::CONNECTION_AND, [
@@ -219,9 +212,9 @@ class MigrationProgressService implements MigrationProgressServiceInterface
                 ]),
             ]));
             $result = $this->migrationDataRepository->aggregate($criteria, $this->context);
-            /** @var ValueCountResult[] $totalCountsForWriting */
-            $totalCountsForWriting = $result->getAggregations()->get('entityCount')->getResult();
-            $totalCountsForWriting = $this->mapCounts($totalCountsForWriting[0]->getValues());
+            /** @var Bucket[] $totalCountsForWriting */
+            $totalCountsForWriting = $result->get('entityCount')->getBuckets();
+            $totalCountsForWriting = $this->mapCounts($totalCountsForWriting);
 
             $runProgress = $this->validateEntityGroupCounts($runProgress, $finishedCount, $totalCountsForWriting);
         } elseif ($state->getStatus() === ProgressState::STATUS_DOWNLOAD_DATA) {

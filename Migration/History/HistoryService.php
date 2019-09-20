@@ -5,9 +5,10 @@ namespace SwagMigrationAssistant\Migration\History;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\CountAggregation;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\AggregationResult;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\CountResult;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\Bucket\TermsAggregation;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\Metric\CountAggregation;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\Bucket\Bucket;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\Metric\CountResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
@@ -56,24 +57,20 @@ class HistoryService implements HistoryServiceInterface
                 ]
             )
         );
-        $criteria->addAggregation(new CountAggregation('code', 'count', 'code'));
+        $criteria->setTotalCountMode(Criteria::TOTAL_COUNT_MODE_EXACT);
+        // TODO: implement pagination / sorting (PT-10836)
+        $criteria->addAggregation(new TermsAggregation('count', 'code'/*, $limit, new FieldSorting($sortBy, $sortDirection)*/));
+        $result = $this->loggingRepo->aggregate($criteria, $context);
+        /** @var Bucket[] $aggregateResult */
+        $aggregateResult = $result->get('count')->getBuckets();
 
-        // Currently not working, maybe it will never work - TODO: check if this works after core change (NEXT-4144)
-        $criteria->addSorting(new FieldSorting($sortBy, $sortDirection));
-        $criteria->setOffset($offset);
-        $criteria->setLimit($limit);
-
-        $aggregation = $this->loggingRepo->aggregate($criteria, $context)->getAggregations()->first();
-        if ($aggregation === null) {
+        if (count($aggregateResult) < 1) {
             return [];
         }
 
-        $aggregateResult = $aggregation->getResult();
         $cleanResult = [];
-
-        /** @var CountResult $countResult */
-        foreach ($aggregateResult as $countResult) {
-            $detailInformation = $this->getLogEntryInformationByCode($runUuid, $countResult, $context);
+        foreach ($aggregateResult as $bucket) {
+            $detailInformation = $this->getLogEntryInformationByCode($runUuid, $bucket, $context);
             if ($detailInformation !== null) {
                 $cleanResult[] = $detailInformation;
             }
@@ -119,20 +116,13 @@ class HistoryService implements HistoryServiceInterface
     {
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('runId', $runUuid));
-        $criteria->addAggregation(new CountAggregation('runId', 'count'));
+        $criteria->addAggregation(new CountAggregation('count', 'runId'));
 
-        /** @var AggregationResult $aggregation */
-        $aggregation = $this->loggingRepo->aggregate($criteria, $context)->getAggregations()->first();
-        if ($aggregation !== null) {
-            /** @var CountResult[] $countResult */
-            $countResult = $aggregation->getResult();
+        $result = $this->loggingRepo->aggregate($criteria, $context);
+        /** @var CountResult $countResult */
+        $countResult = $result->get('count');
 
-            if (count($countResult) === 1) {
-                return $countResult[0]->getCount();
-            }
-        }
-
-        return 0;
+        return $countResult->getCount();
     }
 
     private function getMigrationRun(string $runUuid, Context $context): ?SwagMigrationRunEntity
@@ -147,9 +137,9 @@ class HistoryService implements HistoryServiceInterface
         return $run[$runUuid];
     }
 
-    private function getLogEntryInformationByCode($runUuid, CountResult $countResult, Context $context): ?array
+    private function getLogEntryInformationByCode($runUuid, Bucket $countResult, Context $context): ?array
     {
-        $code = $countResult->getKey()['code'];
+        $code = $countResult->getKey();
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('runId', $runUuid));
         $criteria->addFilter(new EqualsFilter('code', $code));
