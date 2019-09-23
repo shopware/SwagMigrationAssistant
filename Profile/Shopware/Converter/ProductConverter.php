@@ -71,8 +71,6 @@ abstract class ProductConverter extends ShopwareConverter
         'purchaseSteps' => 1,
         'shippingFree' => false,
         'restockTime' => 1,
-        'minDeliveryTime' => 1,
-        'maxDeliveryTime' => 2,
     ];
 
     /**
@@ -434,10 +432,6 @@ abstract class ProductConverter extends ShopwareConverter
             if (is_numeric($value) && $value > $converted[$key]) {
                 $converted[$key] = $value;
                 continue;
-            }
-
-            if ($value !== $converted[$key]) {
-                $converted[$key] = $value;
             }
         }
 
