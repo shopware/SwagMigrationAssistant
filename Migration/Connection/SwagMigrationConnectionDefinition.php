@@ -20,9 +20,11 @@ use SwagMigrationAssistant\Migration\Setting\GeneralSettingDefinition;
 
 class SwagMigrationConnectionDefinition extends EntityDefinition
 {
+    public const ENTITY_NAME = 'swag_migration_connection';
+
     public function getEntityName(): string
     {
-        return 'swag_migration_connection';
+        return self::ENTITY_NAME;
     }
 
     public function getCollectionClass(): string

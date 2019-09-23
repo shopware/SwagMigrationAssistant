@@ -18,9 +18,11 @@ use SwagMigrationAssistant\Migration\Run\SwagMigrationRunDefinition;
 
 class SwagMigrationMediaFileDefinition extends EntityDefinition
 {
+    public const ENTITY_NAME = 'swag_migration_media_file';
+
     public function getEntityName(): string
     {
-        return 'swag_migration_media_file';
+        return self::ENTITY_NAME;
     }
 
     public function defineFields(): FieldCollection
