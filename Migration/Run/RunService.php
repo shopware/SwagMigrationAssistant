@@ -482,7 +482,7 @@ class RunService implements RunServiceInterface
             $context
         );
 
-        $ids = $writtenEvent->getEventByDefinition(SwagMigrationRunDefinition::class)->getIds();
+        $ids = $writtenEvent->getEventByEntityName(SwagMigrationRunDefinition::ENTITY_NAME)->getIds();
 
         return array_pop($ids);
     }
