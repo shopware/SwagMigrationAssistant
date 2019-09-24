@@ -182,6 +182,11 @@ class DummyMappingService extends MappingService
         return $defaultLanguage;
     }
 
+    public function getDeliveryTime(string $connectionId, Context $context, int $minValue, int $maxValue, string $unit, string $name): string
+    {
+        return Uuid::randomHex();
+    }
+
     public function getDefaultFolderIdByEntity(string $entityName, MigrationContextInterface $migrationContext, Context $context): ?string
     {
         return Uuid::randomHex();

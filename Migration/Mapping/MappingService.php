@@ -5,6 +5,7 @@ namespace SwagMigrationAssistant\Migration\Mapping;
 use Shopware\Core\Content\Category\CategoryCollection;
 use Shopware\Core\Content\Cms\CmsPageDefinition;
 use Shopware\Core\Content\Cms\CmsPageEntity;
+use Shopware\Core\Content\DeliveryTime\DeliveryTimeEntity;
 use Shopware\Core\Content\Media\Aggregate\MediaDefaultFolder\MediaDefaultFolderEntity;
 use Shopware\Core\Content\Media\Aggregate\MediaThumbnailSize\MediaThumbnailSizeEntity;
 use Shopware\Core\Content\Rule\RuleEntity;
@@ -150,6 +151,11 @@ class MappingService implements MappingServiceInterface
      */
     private $themeRepo;
 
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $deliveryTimeRepo;
+
     public function __construct(
         EntityRepositoryInterface $migrationMappingRepo,
         EntityRepositoryInterface $localeRepository,
@@ -167,6 +173,7 @@ class MappingService implements MappingServiceInterface
         EntityRepositoryInterface $mediaDefaultRepo,
         EntityRepositoryInterface $categoryRepo,
         EntityRepositoryInterface $cmsPageRepo,
+        EntityRepositoryInterface $deliveryTimeRepo,
         EntityWriterInterface $entityWriter,
         EntityDefinition $mappingDefinition
     ) {
@@ -186,6 +193,7 @@ class MappingService implements MappingServiceInterface
         $this->mediaDefaultFolderRepo = $mediaDefaultRepo;
         $this->categoryRepo = $categoryRepo;
         $this->cmsPageRepo = $cmsPageRepo;
+        $this->deliveryTimeRepo = $deliveryTimeRepo;
         $this->entityWriter = $entityWriter;
         $this->mappingDefinition = $mappingDefinition;
     }
@@ -451,6 +459,45 @@ class MappingService implements MappingServiceInterface
         $this->defaultLanguageData = $language;
 
         return $language;
+    }
+
+    public function getDeliveryTime(string $connectionId, Context $context, int $minValue, int $maxValue, string $unit, string $name): string
+    {
+        $deliveryTime = $this->getUuid($connectionId, DefaultEntities::DELIVERY_TIME, $name, $context);
+
+        if ($deliveryTime !== null) {
+            return $deliveryTime;
+        }
+
+        /** @var EntitySearchResult $result */
+        $result = $context->disableCache(function (Context $context) use ($minValue, $maxValue, $unit) {
+            $criteria = new Criteria();
+            $criteria->addFilter(new EqualsFilter('min', $minValue));
+            $criteria->addFilter(new EqualsFilter('max', $maxValue));
+            $criteria->addFilter(new EqualsFilter('unit', $unit));
+            $criteria->setLimit(1);
+
+            return $this->deliveryTimeRepo->search($criteria, $context);
+        });
+
+        $deliveryTimeUuid = Uuid::randomHex();
+        if ($result->getTotal() > 0) {
+            /** @var DeliveryTimeEntity $element */
+            $element = $result->getEntities()->first();
+
+            $deliveryTimeUuid = $element->getId();
+        }
+
+        $this->saveMapping(
+            [
+                'connectionId' => $connectionId,
+                'entity' => DefaultEntities::DELIVERY_TIME,
+                'oldIdentifier' => $name,
+                'entityUuid' => $deliveryTimeUuid,
+            ]
+        );
+
+        return $deliveryTimeUuid;
     }
 
     public function getCountryUuid(string $oldId, string $iso, string $iso3, string $connectionId, Context $context): ?string

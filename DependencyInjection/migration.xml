@@ -44,6 +44,7 @@
             <argument type="service" id="media_default_folder.repository"/>
             <argument type="service" id="category.repository"/>
             <argument type="service" id="cms_page.repository"/>
+            <argument type="service" id="delivery_time.repository"/>
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition"/>
         </service>

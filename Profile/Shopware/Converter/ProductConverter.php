@@ -377,24 +377,12 @@ abstract class ProductConverter extends ShopwareConverter
         $this->convertValue($converted, 'purchasePrice', $data['detail'], 'purchaseprice', self::TYPE_FLOAT);
 
         if (isset($data['detail']['shippingtime'])) {
-            $deliveryTime = [];
-            preg_match('/([0-9]*)\s*-\s*([0-9]*)/', $data['detail']['shippingtime'], $deliveryTime);
+            $deliveryTime = $this->getDeliveryTime($data['detail']['shippingtime']);
 
-            if (empty($deliveryTime)) {
-                preg_match('/([0-9]*)\s*/', $data['detail']['shippingtime'], $deliveryTime);
+            if ($deliveryTime !== null) {
+                $converted['deliveryTime'] = $deliveryTime;
             }
 
-            if (empty($deliveryTime)) {
-                $deliveryTime[1] = (int) $data['detail']['shippingtime'];
-            }
-
-            if (isset($deliveryTime[1])) {
-                $converted['minDeliveryTime'] = (int) $deliveryTime[1];
-            }
-
-            if (isset($deliveryTime[2])) {
-                $converted['maxDeliveryTime'] = (int) $deliveryTime[2];
-            }
             unset($data['detail']['shippingtime']);
         }
 
@@ -440,6 +428,58 @@ abstract class ProductConverter extends ShopwareConverter
         }
 
         return $converted;
+    }
+
+    private function getDeliveryTime($shippingTime): ?array
+    {
+        $convertedDeliveryTime = [
+            'min' => 0,
+            'max' => 0,
+            'unit' => 'day',
+        ];
+
+        $deliveryTime = [];
+        preg_match('/([0-9]*)\s*-\s*([0-9]*)/', $shippingTime, $deliveryTime);
+
+        if (empty($deliveryTime)) {
+            preg_match('/([0-9]*)\s*/', $shippingTime, $deliveryTime);
+        }
+
+        if (empty($deliveryTime)) {
+            $deliveryTime['min'] = (int) $shippingTime;
+        }
+
+        if (isset($deliveryTime[1])) {
+            $convertedDeliveryTime['min'] = (int) $deliveryTime[1];
+        }
+
+        if (isset($deliveryTime[2])) {
+            $convertedDeliveryTime['max'] = (int) $deliveryTime[2];
+        }
+
+        if ($convertedDeliveryTime['min'] !== 0 || $convertedDeliveryTime['max'] !== 0) {
+            $convertedDeliveryTime['name'] = $convertedDeliveryTime['min'] . '-' . $convertedDeliveryTime['max'] . ' ' . $convertedDeliveryTime['unit'] . 's';
+
+            if ($convertedDeliveryTime['max'] === 0) {
+                $convertedDeliveryTime['name'] = $convertedDeliveryTime['min'] . ' ' . $convertedDeliveryTime['unit'];
+                if ($convertedDeliveryTime['min'] > 1) {
+                    $convertedDeliveryTime['name'] = $convertedDeliveryTime['min'] . ' ' . $convertedDeliveryTime['unit'] . 's';
+                }
+            }
+
+            $convertedDeliveryTime['id'] = $this->mappingService->getDeliveryTime(
+                $this->connectionId,
+                $this->context,
+                $convertedDeliveryTime['min'],
+                $convertedDeliveryTime['max'],
+                $convertedDeliveryTime['unit'],
+                $convertedDeliveryTime['name']
+            );
+
+            return $convertedDeliveryTime;
+        }
+
+        return null;
     }
 
     private function getOptions(&$converted, &$data): void

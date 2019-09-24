@@ -211,4 +211,42 @@ class ProductConverterTest extends TestCase
         static::assertSame($logs[0]['parameters']['parentSourceId'], 'SW10006');
         static::assertSame($logs[0]['parameters']['entity'], 'product_media');
     }
+
+    public function testConvertDeliveryTime(): void
+    {
+        $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
+        $productData = $productData[0];
+        $productData['detail']['shippingtime'] = '10';
+
+        $context = Context::createDefaultContext();
+        $convertResult = $this->productConverter->convert($productData, $context, $this->migrationContext);
+        $converted = $convertResult->getConverted();
+
+        static::assertSame(10, $converted['deliveryTime']['min']);
+        static::assertSame(0, $converted['deliveryTime']['max']);
+        static::assertSame('day', $converted['deliveryTime']['unit']);
+        static::assertSame('10 days', $converted['deliveryTime']['name']);
+
+        $productData['detail']['shippingtime'] = '10-20';
+
+        $context = Context::createDefaultContext();
+        $convertResult = $this->productConverter->convert($productData, $context, $this->migrationContext);
+        $converted = $convertResult->getConverted();
+
+        static::assertSame(10, $converted['deliveryTime']['min']);
+        static::assertSame(20, $converted['deliveryTime']['max']);
+        static::assertSame('day', $converted['deliveryTime']['unit']);
+        static::assertSame('10-20 days', $converted['deliveryTime']['name']);
+
+        $productData['detail']['shippingtime'] = '10-20 weeks';
+
+        $context = Context::createDefaultContext();
+        $convertResult = $this->productConverter->convert($productData, $context, $this->migrationContext);
+        $converted = $convertResult->getConverted();
+
+        static::assertSame(10, $converted['deliveryTime']['min']);
+        static::assertSame(20, $converted['deliveryTime']['max']);
+        static::assertSame('day', $converted['deliveryTime']['unit']);
+        static::assertSame('10-20 days', $converted['deliveryTime']['name']);
+    }
 }
