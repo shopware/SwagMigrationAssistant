@@ -10,6 +10,7 @@ use Shopware\Core\Framework\ShopwareHttpException;
 use SwagMigrationAssistant\Exception\GatewayReadException;
 use SwagMigrationAssistant\Exception\InvalidConnectionAuthenticationException;
 use SwagMigrationAssistant\Exception\RequestCertificateInvalidException;
+use SwagMigrationAssistant\Exception\SslRequiredException;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Profile\ReaderInterface;
 use SwagMigrationAssistant\Migration\RequestStatusStruct;
@@ -45,6 +46,16 @@ class ApiEnvironmentReader implements ReaderInterface
 
         if ($this->doSecureCheck($information)) {
             return $information;
+        }
+
+        if (isset($information['requestStatus'])) {
+            /** @var RequestStatusStruct $requestStatus */
+            $requestStatus = $information['requestStatus'];
+            if ($requestStatus->getCode() === (new SslRequiredException())->getErrorCode()) {
+                $requestStatus->setIsWarning(false);
+
+                return $information;
+            }
         }
 
         if ($this->doInsecureCheck($information)) {
@@ -101,6 +112,7 @@ class ApiEnvironmentReader implements ReaderInterface
      * @throws GatewayReadException
      * @throws RequestCertificateInvalidException
      * @throws InvalidConnectionAuthenticationException
+     * @throws SslRequiredException
      */
     private function readData(Client $apiClient, bool $verified = false): array
     {
@@ -162,6 +174,7 @@ class ApiEnvironmentReader implements ReaderInterface
      * @throws GatewayReadException
      * @throws InvalidConnectionAuthenticationException
      * @throws RequestCertificateInvalidException
+     * @throws SslRequiredException
      */
     private function doSecureRequest(Client $apiClient, string $endpoint, array $config): GuzzleResponse
     {
@@ -180,6 +193,10 @@ class ApiEnvironmentReader implements ReaderInterface
 
             throw new GatewayReadException('Shopware 5.5 Api SwagMigrationEnvironment', 466);
         } catch (GuzzleRequestException $e) {
+            if ($e->getResponse() !== null && strpos($e->getResponse()->getBody()->getContents(), 'SSL required')) {
+                throw new SslRequiredException();
+            }
+
             if (isset($e->getHandlerContext()['errno']) && $e->getHandlerContext()['errno'] === 60) {
                 throw new RequestCertificateInvalidException($e->getHandlerContext()['url']);
             }
