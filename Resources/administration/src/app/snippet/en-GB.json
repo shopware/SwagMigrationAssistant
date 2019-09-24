@@ -18,6 +18,7 @@
       "buttonFinish": "Done",
       "buttonEdit": "Edit connection",
       "buttonLater": "Close",
+      "buttonUseSsl": "Use HTTPS",
       "pages": {
         "introduction": {
           "title": "Welcome to the migration",
@@ -101,7 +102,7 @@
             "SWAG_MIGRATION__PLUGIN_NOT_INSTALLED": "The required plugin “Migration Connector” is not installed in Shopware 5. Please install the free plugin and try again.",
             "SWAG_MIGRATION__DATABASE_CONNECTION_ERROR": "Database connection could not be established.",
             "SWAG_MIGRATION__IS_RUNNING": "A migration is currently in progress. Therefore, you cannot edit the credentials until the migration is complete.",
-            "SWAG_MIGRATION__SSL_REQUIRED": "We have determined that the given shop domain is required a SSL connection. Make sure you use HTTPS for the connection."
+            "SWAG_MIGRATION__SSL_REQUIRED": "We have determined that the given shop domain is required a SSL connection."
           }
         }
       }
