@@ -43,15 +43,15 @@ class ExceptionRunLog extends BaseRunLogEntry
             'entity' => $this->getEntity(),
             'sourceId' => $this->getSourceId(),
             'exceptionCode' => $errorCode,
-            'exceptionMessage' => $this->exception->getMessage(),
+            'exceptionMessage' => preg_replace('/[[:^print:]]/', '', $this->exception->getMessage()),
             'exceptionFile' => $this->exception->getFile(),
             'exceptionLine' => $this->exception->getLine(),
-            'exceptionTrace' => $this->exception->getTraceAsString(),
+            'exceptionTrace' => preg_replace('/[[:^print:]]/', '', $this->exception->getTraceAsString()),
             'description' => sprintf(
                 'Entity: %s, sourceId: %s' . PHP_EOL . '%s',
                 $this->getEntity(),
                 $this->getSourceId() ?? '-',
-                $this->exception->getMessage()
+                preg_replace('/[[:^print:]]/', '', $this->exception->getMessage())
             ),
         ];
     }
