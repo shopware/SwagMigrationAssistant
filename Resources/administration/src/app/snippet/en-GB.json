@@ -195,7 +195,8 @@
           "order_document": "Order documents:",
           "shipping_method": "Shipping methods:",
           "currency": "Currencies:",
-          "sales_channel": "Sales channels:"
+          "sales_channel": "Sales channels:",
+          "product_review": "Reviews (requires products):"
         },
         "noData": "Nothing found to migrate."
       },
