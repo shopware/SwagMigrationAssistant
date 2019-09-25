@@ -207,7 +207,8 @@ class MigrationControllerTest extends TestCase
             $dataDefinition,
             $paymentRepo,
             $shippingRepo,
-            $countryRepo
+            $countryRepo,
+            $salesChannelRepo
         );
         $this->controller = new MigrationController(
             $dataFetcher,

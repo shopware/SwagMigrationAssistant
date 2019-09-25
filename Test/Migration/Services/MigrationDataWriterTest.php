@@ -271,7 +271,8 @@ class MigrationDataWriterTest extends TestCase
             $this->getContainer()->get(SwagMigrationDataDefinition::class),
             $this->paymentRepo,
             $this->shippingRepo,
-            $this->countryRepo
+            $this->countryRepo,
+            $this->salesChannelRepo
         );
 
         $this->dummyDataWriter = new MigrationDataWriter(

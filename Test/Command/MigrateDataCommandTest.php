@@ -250,7 +250,8 @@ class MigrateDataCommandTest extends TestCase
                 $this->getContainer()->get(SwagMigrationDataDefinition::class),
                 $this->getContainer()->get('payment_method.repository'),
                 $this->getContainer()->get('shipping_method.repository'),
-                $this->getContainer()->get('country.repository')
+                $this->getContainer()->get('country.repository'),
+                $this->getContainer()->get('sales_channel.repository')
             ),
             $this->getContainer()->get(MigrationDataWriter::class),
             $this->getContainer()->get(MediaFileProcessorService::class),

@@ -44,6 +44,7 @@ class SalesChannelConverterTest extends TestCase
         $paymentMethodRepo = $this->getContainer()->get('payment_method.repository');
         $shippingMethodRepo = $this->getContainer()->get('shipping_method.repository');
         $countryRepo = $this->getContainer()->get('country.repository');
+        $salesChannelRepo = $this->getContainer()->get('sales_channel.repository');
 
         $this->mappingService = new DummyMappingService();
         $this->loggingService = new DummyLoggingService();
@@ -52,7 +53,8 @@ class SalesChannelConverterTest extends TestCase
             $this->loggingService,
             $paymentMethodRepo,
             $shippingMethodRepo,
-            $countryRepo
+            $countryRepo,
+            $salesChannelRepo
         );
 
         $runId = Uuid::randomHex();

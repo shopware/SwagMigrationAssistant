@@ -144,6 +144,11 @@ class MigrationDataProcessingTest extends TestCase
      */
     private $countryRepo;
 
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $salesChannelRepo;
+
     protected function setUp(): void
     {
         $this->context = Context::createDefaultContext();
@@ -173,7 +178,8 @@ class MigrationDataProcessingTest extends TestCase
             $this->getContainer()->get(SwagMigrationDataDefinition::class),
             $this->paymentRepo,
             $this->shippingRepo,
-            $this->countryRepo
+            $this->countryRepo,
+            $this->salesChannelRepo
         );
 
         $this->loggingService = new DummyLoggingService();
@@ -431,6 +437,7 @@ class MigrationDataProcessingTest extends TestCase
         $this->salutationRepo = $this->getContainer()->get('salutation.repository');
         $this->shippingRepo = $this->getContainer()->get('shipping_method.repository');
         $this->countryRepo = $this->getContainer()->get('country.repository');
+        $this->salesChannelRepo = $this->getContainer()->get('sales_channel.repository');
     }
 
     private function initConnectionAndRun(): void
