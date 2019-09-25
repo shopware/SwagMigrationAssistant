@@ -195,7 +195,8 @@
           "order_document": "Bestelldokumente:",
           "shipping_method": "Versandmethoden:",
           "currency": "Währungen:",
-          "sales_channel": "Verkaufskanäle:"
+          "sales_channel": "Verkaufskanäle:",
+          "product_review": "Bewertungen (benötigt Produkte):"
         },
         "noData": "Es wurden keine Daten zum Migrieren gefunden."
       },

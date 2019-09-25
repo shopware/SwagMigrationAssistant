@@ -177,5 +177,12 @@
             <argument type="service" id="Shopware\Core\Checkout\Shipping\ShippingMethodDefinition"/>
             <tag name="shopware.migration.writer"/>
         </service>
+
+        <service id="SwagMigrationAssistant\Migration\Writer\ProductReviewWriter"
+                 parent="SwagMigrationAssistant\Migration\Writer\AbstractWriter">
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
+            <argument type="service" id="Shopware\Core\Content\Product\Aggregate\ProductReview\ProductReviewDefinition"/>
+            <tag name="shopware.migration.writer"/>
+        </service>
     </services>
 </container>

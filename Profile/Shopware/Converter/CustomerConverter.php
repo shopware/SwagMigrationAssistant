@@ -127,8 +127,17 @@ abstract class CustomerConverter extends ShopwareConverter
         $customerUuid = $this->mappingService->createNewUuid(
             $this->connectionId,
             DefaultEntities::CUSTOMER,
-            $this->oldCustomerId,
+            $data['id'],
             $this->context
+        );
+
+        $this->mappingService->createNewUuid(
+            $this->connectionId,
+            DefaultEntities::CUSTOMER,
+            $data['email'],
+            $this->context,
+            null,
+            $customerUuid
         );
 
         $converted['id'] = $customerUuid;
