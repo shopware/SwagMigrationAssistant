@@ -34,6 +34,11 @@ abstract class SalesChannelConverter extends ShopwareConverter
     protected $shippingMethodRepo;
 
     /**
+     * @var EntityRepositoryInterface
+     */
+    protected $salesChannelRepo;
+
+    /**
      * @var MappingServiceInterface
      */
     protected $mappingService;
@@ -63,13 +68,15 @@ abstract class SalesChannelConverter extends ShopwareConverter
         LoggingServiceInterface $loggingService,
         EntityRepositoryInterface $paymentRepository,
         EntityRepositoryInterface $shippingMethodRepo,
-        EntityRepositoryInterface $countryRepo
+        EntityRepositoryInterface $countryRepo,
+        EntityRepositoryInterface $salesChannelRepo
     ) {
         $this->mappingService = $mappingService;
         $this->loggingService = $loggingService;
         $this->paymentRepository = $paymentRepository;
         $this->shippingMethodRepo = $shippingMethodRepo;
         $this->countryRepository = $countryRepo;
+        $this->salesChannelRepo = $salesChannelRepo;
     }
 
     public function writeMapping(Context $context): void
@@ -134,6 +141,12 @@ abstract class SalesChannelConverter extends ShopwareConverter
 
         $converted['languageId'] = $languageUuid;
         $converted['languages'] = $this->getSalesChannelLanguages($languageUuid, $data, $context);
+
+        $this->filterExistingLanguageSalesChannelRelation($converted['id'], $converted['languages']);
+
+        if (empty($converted['languages'])) {
+            unset($converted['languages']);
+        }
 
         $currencyUuid = $this->mappingService->getCurrencyUuid(
             $this->connectionId,
@@ -294,6 +307,23 @@ abstract class SalesChannelConverter extends ShopwareConverter
             ->addSorting(new FieldSorting('position'));
 
         return $this->countryRepository->searchIds($criteria, Context::createDefaultContext())->getIds()[0];
+    }
+
+    protected function filterExistingLanguageSalesChannelRelation(string $salesChannelUuid, array &$languageIds): void
+    {
+        $insertLanguages = [];
+        foreach ($languageIds as $languageId) {
+            $criteria = (new Criteria())
+                ->setLimit(1)
+                ->addFilter(new EqualsFilter('id', $salesChannelUuid))
+                ->addFilter(new EqualsFilter('languages.id', $languageId['id']));
+
+            if ($this->salesChannelRepo->searchIds($criteria, Context::createDefaultContext())->getTotal() === 0) {
+                $insertLanguages[] = $languageId;
+            }
+        }
+
+        $languageIds = $insertLanguages;
     }
 
     protected function getSalesChannelLanguages(string $languageUuid, array $data, Context $context): array

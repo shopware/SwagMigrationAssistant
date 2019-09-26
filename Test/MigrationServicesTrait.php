@@ -86,7 +86,8 @@ trait MigrationServicesTrait
         EntityDefinition $dataDefinition,
         EntityRepositoryInterface $paymentRepo,
         EntityRepositoryInterface $shippingRepo,
-        EntityRepositoryInterface $countryRepo
+        EntityRepositoryInterface $countryRepo,
+        EntityRepositoryInterface $salesChannelRepo
     ): MigrationDataConverterInterface {
         $priceRounding = new PriceRounding();
         $loggingService = new LoggingService($loggingRepo);
@@ -106,7 +107,7 @@ trait MigrationServicesTrait
                         ),
                         $loggingService
                     ),
-                    new Shopware55SalesChannelConverter($mappingService, $loggingService, $paymentRepo, $shippingRepo, $countryRepo),
+                    new Shopware55SalesChannelConverter($mappingService, $loggingService, $paymentRepo, $shippingRepo, $countryRepo, $salesChannelRepo),
                     new DummyInvalidCustomerConverter($mappingService, $loggingService),
                 ]
             )
