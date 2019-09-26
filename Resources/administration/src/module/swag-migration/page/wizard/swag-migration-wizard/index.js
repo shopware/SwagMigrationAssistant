@@ -3,6 +3,7 @@ import './swag-migration-wizard.scss';
 
 const { Component, Mixin, State } = Shopware;
 const { Criteria } = Shopware.Data;
+const SSL_REQUIRED_ERROR_CODE = 'SWAG_MIGRATION__SSL_REQUIRED';
 
 const CONNECTION_NAME_ERRORS = Object.freeze({
     NAME_TO_SHORT: 'SWAG_MIGRATION_CONNECTION_NAME_TO_SHORT',
@@ -72,7 +73,8 @@ Component.register('swag-migration-wizard', {
             errorMessageSnippet: '',
             migrationProcessStore: State.getStore('migrationProcess'),
             migrationUIStore: State.getStore('migrationUI'),
-            connectionNameErrorCode: ''
+            connectionNameErrorCode: '',
+            currentErrorCode: ''
         };
     },
 
@@ -152,6 +154,10 @@ Component.register('swag-migration-wizard', {
             }
 
             if (this.currentRoute === this.routes.credentialsError) {
+                if (this.currentErrorCode === SSL_REQUIRED_ERROR_CODE) {
+                    return 'swag-migration.wizard.buttonUseSsl';
+                }
+
                 return 'swag-migration.wizard.buttonEdit';
             }
 
@@ -312,6 +318,8 @@ Component.register('swag-migration-wizard', {
                 this.errorMessageSnippet = 'swag-migration.wizard.pages.credentials.error.undefinedErrorMsg';
             }
 
+            this.currentErrorCode = errorCode;
+
             this.navigateToRoute(this.routes.credentialsError);
         },
 
@@ -413,6 +421,12 @@ Component.register('swag-migration-wizard', {
             }
 
             if (this.currentRoute === this.routes.credentialsError) {
+                if (this.currentErrorCode === SSL_REQUIRED_ERROR_CODE) {
+                    this.connection.credentialFields.endpoint = this.connection.credentialFields.endpoint.replace('http:', 'https:');
+                    this.onConnect();
+                    return;
+                }
+
                 // clicked Edit
                 this.navigateToRoute(this.routes.credentials);
                 return;
