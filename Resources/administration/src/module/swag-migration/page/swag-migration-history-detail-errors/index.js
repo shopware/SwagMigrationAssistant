@@ -25,6 +25,7 @@ Component.register('swag-migration-history-detail-errors', {
     data() {
         return {
             isLoading: true,
+            allMigrationErrors: null,
             migrationErrors: [],
             sortBy: 'count',
             sortDirection: 'DESC',
@@ -44,12 +45,12 @@ Component.register('swag-migration-history-detail-errors', {
         columns() {
             return [
                 {
-                    property: 'code',
-                    dataIndex: 'code',
+                    property: 'title',
+                    dataIndex: 'title',
                     label: this.$t('swag-migration.history.detailPage.errorCode'),
                     primary: true,
                     allowResize: true,
-                    sortable: false // TODO: change this if the core supports aggregate sorting
+                    sortable: true
                 },
                 {
                     property: 'count',
@@ -57,29 +58,63 @@ Component.register('swag-migration-history-detail-errors', {
                     label: this.$t('swag-migration.history.detailPage.errorCount'),
                     primary: true,
                     allowResize: true,
-                    sortable: false // TODO: change this if the core supports aggregate sorting
+                    sortable: true
                 }
             ];
         }
     },
 
     methods: {
-        getList() {
+        async getList() {
             this.isLoading = true;
             const params = this.getListingParams();
 
+            if (this.allMigrationErrors === null) {
+                await this.loadAllMigrationErrors();
+            }
+
+            this.applySorting(params);
+
+            const startIndex = (params.page - 1) * this.limit;
+            const endIndex = Math.min((params.page - 1) * this.limit + this.limit, this.allMigrationErrors.length);
+            this.migrationErrors = [];
+            for (let i = startIndex; i < endIndex; i += 1) {
+                this.migrationErrors.push(this.allMigrationErrors[i]);
+            }
+
+            this.isLoading = false;
+            return this.migrationErrors;
+        },
+
+        loadAllMigrationErrors() {
             return this.migrationService.getGroupedLogsOfRun(
-                this.migrationRun.id,
-                (params.page - 1) * this.limit,
-                params.limit,
-                params.sortBy,
-                params.sortDirection
+                this.migrationRun.id
             ).then((response) => {
                 this.total = response.total;
-                this.migrationErrors = response.items;
+                this.allMigrationErrors = response.items;
+                this.allMigrationErrors.forEach((item) => {
+                    item.title = this.$t(this.getErrorTitleSnippet(item), item.parameters);
+                });
                 this.downloadUrl = response.downloadUrl;
-                this.isLoading = false;
-                return this.migrationErrors;
+                return this.allMigrationErrors;
+            });
+        },
+
+        applySorting(params) {
+            this.allMigrationErrors.sort((first, second) => {
+                if (params.sortDirection === 'ASC') {
+                    if (first[params.sortBy] < second[params.sortBy]) {
+                        return -1;
+                    }
+
+                    return 1;
+                }
+
+                if (first[params.sortBy] > second[params.sortBy]) {
+                    return -1;
+                }
+
+                return 1;
             });
         },
 

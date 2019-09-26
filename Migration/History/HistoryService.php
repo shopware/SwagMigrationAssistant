@@ -44,10 +44,6 @@ class HistoryService implements HistoryServiceInterface
 
     public function getGroupedLogsOfRun(
         string $runUuid,
-        int $offset,
-        int $limit,
-        string $sortBy,
-        string $sortDirection,
         Context $context
     ): array {
         $criteria = new Criteria();
@@ -58,9 +54,7 @@ class HistoryService implements HistoryServiceInterface
                 ]
             )
         );
-        $criteria->setTotalCountMode(Criteria::TOTAL_COUNT_MODE_EXACT);
-        // TODO: implement pagination / sorting (PT-10836)
-        $criteria->addAggregation(new TermsAggregation('count', 'code'/*, $limit, new FieldSorting($sortBy, $sortDirection)*/));
+        $criteria->addAggregation(new TermsAggregation('count', 'code'));
         $result = $this->loggingRepo->aggregate($criteria, $context);
         /** @var TermsResult $termsResult */
         $termsResult = $result->get('count');
