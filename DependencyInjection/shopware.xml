@@ -353,6 +353,10 @@
             <tag name="shopware.migration.data_selection"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\ProductReviewDataSelection">
+            <tag name="shopware.migration.data_selection"/>
+        </service>
+
         <!-- Shopware DataSets -->
         <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductAttributeDataSet">
             <tag name="shopware.migration.data_set" />

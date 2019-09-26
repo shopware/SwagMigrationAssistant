@@ -183,7 +183,8 @@
           "processMediaFiles": "Media",
           "numberRanges": "Number ranges",
           "basicSettings": "Basic settings",
-          "newsletterRecipient": "Newsletter recipient"
+          "newsletterRecipient": "Newsletter recipient",
+          "productReviews": "Product reviews"
         },
         "entities": {
           "category": "Categories:",
@@ -198,7 +199,7 @@
           "shipping_method": "Shipping methods:",
           "currency": "Currencies:",
           "sales_channel": "Sales channels:",
-          "product_review": "Reviews (requires products):"
+          "product_review": "Reviews:"
         },
         "noData": "Nothing found to migrate."
       },

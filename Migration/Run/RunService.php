@@ -314,7 +314,7 @@ class RunService implements RunServiceInterface
 
     private function cleanupMigration(string $runUuid, Context $context): void
     {
-        $this->removeWrittenMigrationData($runUuid);
+        //$this->removeWrittenMigrationData($runUuid);
         $this->assignThemeToSalesChannel($runUuid, $context);
 
         $this->cache->clear();
@@ -402,12 +402,17 @@ class RunService implements RunServiceInterface
         $totals = $this->calculateToBeFetchedTotals($environmentInformation, $dataSelectionCollection);
         $runProgressArray = [];
         $processMediaFiles = false;
+        $entityNamesInUse = [];
 
         /** @var DataSelectionStruct $dataSelection */
         foreach ($dataSelectionCollection as $dataSelection) {
             $entities = [];
             $sumTotal = 0;
             foreach ($dataSelection->getEntityNames() as $entityName) {
+                if (isset($entityNamesInUse[$entityName])) {
+                    continue;
+                }
+
                 $total = 0;
                 if (isset($totals[$entityName])) {
                     $total = $totals[$entityName];
@@ -420,6 +425,11 @@ class RunService implements RunServiceInterface
 
                 $entities[] = $entityProgress;
                 $sumTotal += $total;
+                $entityNamesInUse[$entityName] = $entityName;
+            }
+
+            if (empty($entities)) {
+                continue;
             }
 
             $runProgress = new RunProgress();

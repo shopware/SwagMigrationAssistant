@@ -7,16 +7,16 @@ use SwagMigrationAssistant\Migration\DataSelection\DataSelectionStruct;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CustomerAttributeDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CustomerDataSet;
-use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderAttributeDataSet;
-use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderDataSet;
-use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderDocumentAttributeDataSet;
-use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderDocumentDataSet;
-use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ShippingMethodDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ManufacturerAttributeDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductReviewDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\PropertyGroupOptionDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\TranslationDataSet;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
-class CustomerAndOrderDataSelection implements DataSelectionInterface
+class ProductReviewDataSelection implements DataSelectionInterface
 {
-    public const IDENTIFIER = 'customersOrders';
+    public const IDENTIFIER = 'productReviews';
 
     public function supports(MigrationContextInterface $migrationContext): bool
     {
@@ -28,8 +28,8 @@ class CustomerAndOrderDataSelection implements DataSelectionInterface
         return new DataSelectionStruct(
             self::IDENTIFIER,
             $this->getEntityNames(),
-            'swag-migration.index.selectDataCard.dataSelection.customersOrders',
-            200,
+            'swag-migration.index.selectDataCard.dataSelection.productReviews',
+            250,
             true
         );
     }
@@ -40,13 +40,13 @@ class CustomerAndOrderDataSelection implements DataSelectionInterface
     public function getEntityNames(): array
     {
         return [
+            ManufacturerAttributeDataSet::getEntity(),
+            ProductDataSet::getEntity(),
+            PropertyGroupOptionDataSet::getEntity(),
+            TranslationDataSet::getEntity(),
             CustomerAttributeDataSet::getEntity(),
             CustomerDataSet::getEntity(),
-            ShippingMethodDataSet::getEntity(),
-            OrderAttributeDataSet::getEntity(),
-            OrderDataSet::getEntity(),
-            OrderDocumentAttributeDataSet::getEntity(),
-            OrderDocumentDataSet::getEntity(),
+            ProductReviewDataSet::getEntity(),
         ];
     }
 }
