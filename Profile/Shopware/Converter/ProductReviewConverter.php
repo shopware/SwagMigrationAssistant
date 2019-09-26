@@ -135,10 +135,10 @@ abstract class ProductReviewConverter extends ShopwareConverter
         }
 
         $this->convertValue($converted, 'title', $data, 'headline');
-        $this->convertValue($converted, 'comment', $data, 'comment');
+        $this->convertValue($converted, 'content', $data, 'comment');
         $this->convertValue($converted, 'points', $data, 'points', self::TYPE_FLOAT);
         $this->convertValue($converted, 'status', $data, 'active', self::TYPE_BOOLEAN);
-        $converted['content'] = $converted['comment'];
+        $this->convertValue($converted, 'comment', $data, 'answer');
 
         return new ConvertStruct($converted, $data);
     }
