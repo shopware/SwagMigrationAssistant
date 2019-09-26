@@ -1007,12 +1007,14 @@ abstract class ProductConverter extends ShopwareConverter
                         [
                             'id' => $orContainerUuid,
                             'type' => (new OrRule())->getName(),
+                            'value' => [],
                         ],
 
                         [
                             'id' => $andContainerUuid,
                             'type' => (new AndRule())->getName(),
                             'parentId' => $orContainerUuid,
+                            'value' => [],
                         ],
 
                         [

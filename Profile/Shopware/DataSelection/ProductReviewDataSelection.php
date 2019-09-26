@@ -8,7 +8,10 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CustomerAttributeDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CustomerDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ManufacturerAttributeDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaFolderDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductAttributeDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductPriceAttributeDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductReviewDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\PropertyGroupOptionDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\TranslationDataSet;
@@ -40,10 +43,14 @@ class ProductReviewDataSelection implements DataSelectionInterface
     public function getEntityNames(): array
     {
         return [
+            MediaFolderDataSet::getEntity(),
+            ProductAttributeDataSet::getEntity(),
+            ProductPriceAttributeDataSet::getEntity(),
             ManufacturerAttributeDataSet::getEntity(),
             ProductDataSet::getEntity(),
             PropertyGroupOptionDataSet::getEntity(),
             TranslationDataSet::getEntity(),
+
             CustomerAttributeDataSet::getEntity(),
             CustomerDataSet::getEntity(),
             ProductReviewDataSet::getEntity(),

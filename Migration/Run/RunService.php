@@ -314,7 +314,7 @@ class RunService implements RunServiceInterface
 
     private function cleanupMigration(string $runUuid, Context $context): void
     {
-        //$this->removeWrittenMigrationData($runUuid);
+        $this->removeWrittenMigrationData($runUuid);
         $this->assignThemeToSalesChannel($runUuid, $context);
 
         $this->cache->clear();
