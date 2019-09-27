@@ -53,14 +53,12 @@ abstract class ProductReviewConverter extends ShopwareConverter
         $fields = $this->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
 
         if (!empty($fields)) {
-            foreach ($fields as $field) {
-                $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
-                    $migrationContext->getRunUuid(),
-                    DefaultEntities::PRODUCT_REVIEW,
-                    $data['id'],
-                    $field
-                ));
-            }
+            $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
+                $migrationContext->getRunUuid(),
+                DefaultEntities::PRODUCT_REVIEW,
+                $data['id'],
+                implode(',', $fields)
+            ));
 
             return new ConvertStruct(null, $data);
         }

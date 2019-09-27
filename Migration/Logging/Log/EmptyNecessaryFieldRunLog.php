@@ -27,7 +27,7 @@ class EmptyNecessaryFieldRunLog extends BaseRunLogEntry
 
     public function getTitle(): string
     {
-        return sprintf('The %s entity has an empty necessary field', $this->getEntity());
+        return sprintf('The %s entity has one or more empty necessary fields', $this->getEntity());
     }
 
     public function getParameters(): array
@@ -44,7 +44,7 @@ class EmptyNecessaryFieldRunLog extends BaseRunLogEntry
         $args = $this->getParameters();
 
         return sprintf(
-            'The %s entity with the source id %s does not have the necessary data for the field %s',
+            'The %s entity with the source id %s does not have the necessary data for the field(s): %s',
                 $args['entity'],
                 $args['sourceId'],
                 $args['emptyField']

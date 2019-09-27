@@ -417,7 +417,7 @@ class MigrationDataProcessingTest extends TestCase
             ++$countInvalidLogging;
         }
 
-        static::assertSame(7, $countValidLogging);
+        static::assertSame(5, $countValidLogging);
         static::assertSame(0, $countInvalidLogging);
 
         $failureConvertCriteria = new Criteria();

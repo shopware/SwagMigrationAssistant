@@ -128,7 +128,7 @@ class CategoryConverterTest extends TestCase
         static::assertNull($convertResult->getConverted());
 
         $logs = $this->loggingService->getLoggingArray();
-        $title = 'The category entity has an empty necessary field';
+        $title = 'The category entity has one or more empty necessary fields';
         static::assertSame($title, $logs[0]['title']);
         static::assertCount(1, $logs);
     }
