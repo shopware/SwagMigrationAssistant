@@ -121,14 +121,12 @@ abstract class ProductConverter extends ShopwareConverter
 
         $fields = $this->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
         if (!empty($fields)) {
-            foreach ($fields as $field) {
-                $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
-                    $this->runId,
-                    DefaultEntities::PRODUCT,
-                    $this->oldProductId,
-                    $field
-                ));
-            }
+            $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
+                $this->runId,
+                DefaultEntities::PRODUCT,
+                $this->oldProductId,
+                implode(',', $fields)
+            ));
 
             return new ConvertStruct(null, $data);
         }

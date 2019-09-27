@@ -130,14 +130,12 @@ abstract class OrderConverter extends ShopwareConverter
         }
 
         if (!empty($fields)) {
-            foreach ($fields as $field) {
-                $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
-                    $this->runId,
-                    DefaultEntities::ORDER,
-                    $this->oldId,
-                    $field
-                ));
-            }
+            $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
+                $this->runId,
+                DefaultEntities::ORDER,
+                $this->oldId,
+                implode(',', $fields)
+            ));
 
             return new ConvertStruct(null, $data);
         }
@@ -433,14 +431,12 @@ abstract class OrderConverter extends ShopwareConverter
     {
         $fields = $this->checkForEmptyRequiredDataFields($originalData, $this->requiredAddressDataFieldKeys);
         if (!empty($fields)) {
-            foreach ($fields as $field) {
-                $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
-                    $this->runId,
-                    DefaultEntities::ORDER_ADDRESS,
-                    $originalData['id'],
-                    $field
-                ));
-            }
+            $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
+                $this->runId,
+                DefaultEntities::ORDER_ADDRESS,
+                $originalData['id'],
+                implode(',', $fields)
+            ));
 
             return [];
         }
