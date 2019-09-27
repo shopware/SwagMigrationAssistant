@@ -93,7 +93,7 @@ Component.register('swag-migration-history-detail-errors', {
                 this.total = response.total;
                 this.allMigrationErrors = response.items;
                 this.allMigrationErrors.forEach((item) => {
-                    item.title = this.$t(this.getErrorTitleSnippet(item), item.parameters);
+                    item.title = this.$t(this.getErrorTitleSnippet(item), { entity: item.entity });
                 });
                 this.downloadUrl = response.downloadUrl;
                 return this.allMigrationErrors;
