@@ -18,6 +18,7 @@ use SwagMigrationAssistant\Migration\Premapping\PremappingChoiceStruct;
 use SwagMigrationAssistant\Migration\Premapping\PremappingEntityStruct;
 use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\CustomerAndOrderDataSelection;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\ProductReviewDataSelection;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\ShopwareGatewayInterface;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
@@ -61,7 +62,10 @@ class PaymentMethodReader extends AbstractPremappingReader
     public function supports(MigrationContextInterface $migrationContext, array $entityGroupNames): bool
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
-            && in_array(CustomerAndOrderDataSelection::IDENTIFIER, $entityGroupNames, true);
+            && (
+                in_array(CustomerAndOrderDataSelection::IDENTIFIER, $entityGroupNames, true)
+                || in_array(ProductReviewDataSelection::IDENTIFIER, $entityGroupNames, true)
+            );
     }
 
     public function getPremapping(Context $context, MigrationContextInterface $migrationContext): PremappingStruct

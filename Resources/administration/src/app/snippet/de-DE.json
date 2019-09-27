@@ -183,7 +183,8 @@
           "processMediaFiles": "Medien",
           "numberRanges": "Nummernkreise",
           "basicSettings": "Grundeinstellungen",
-          "newsletterRecipient": "Newsletter-Empfänger"
+          "newsletterRecipient": "Newsletter-Empfänger",
+          "productReviews": "Produktbewertungen"
         },
         "entities": {
           "category": "Kategorien:",
@@ -198,7 +199,7 @@
           "shipping_method": "Versandmethoden:",
           "currency": "Währungen:",
           "sales_channel": "Verkaufskanäle:",
-          "product_review": "Bewertungen (benötigt Produkte):"
+          "product_review": "Bewertungen:"
         },
         "noData": "Es wurden keine Daten zum Migrieren gefunden."
       },
