@@ -34,7 +34,7 @@ class LocalNewsletterRecipientReader extends LocalAbstractReader implements Loca
                 continue;
             }
 
-            $this->addShopAndLocaleByGroupId($item, $defaultShop, $shops);
+            //$this->addShopAndLocaleByGroupId($item, $defaultShop, $shops);
         }
         unset($item);
 

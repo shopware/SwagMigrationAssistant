@@ -89,8 +89,13 @@ class NewsletterRecipientConverterTest extends TestCase
         $customerData = require __DIR__ . '/../../../_fixtures/invalid/newsletter_recipient_data.php';
 
         $context = Context::createDefaultContext();
+        $customerData = $customerData[1];
+        $customerData['address']['double_optin_confirmed'] = null;
+        $customerData['address']['salutation'] = 'mr';
+        $customerData['double_optin_confirmed'] = null;
+
         $convertResult = $this->newsletterReceiverConverter->convert(
-            $customerData[0],
+            $customerData,
             $context,
             $this->context
         );

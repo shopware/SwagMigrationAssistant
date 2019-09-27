@@ -51,6 +51,11 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
      */
     protected $runId;
 
+    protected $requiredDataFieldKeys = [
+        '_locale',
+        'shopId',
+    ];
+
     public function __construct(
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService
@@ -69,12 +74,28 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         Context $context,
         MigrationContextInterface $migrationContext
     ): ConvertStruct {
-        $this->context = $context;
-        $this->locale = $data['_locale'];
-        $oldData = $data;
-        unset($data['_locale']);
-        $this->connectionId = $migrationContext->getConnection()->getId();
         $this->runId = $migrationContext->getRunUuid();
+        $this->connectionId = $migrationContext->getConnection()->getId();
+        $this->context = $context;
+        $oldData = $data;
+
+        $fields = $this->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
+
+        if (!empty($fields)) {
+            foreach ($fields as $field) {
+                $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
+                    $this->runId,
+                    DefaultEntities::NEWSLETTER_RECIPIENT,
+                    $data['id'],
+                    $field
+                ));
+            }
+
+            return new ConvertStruct(null, $oldData);
+        }
+
+        $this->locale = $data['_locale'];
+        unset($data['_locale']);
 
         $converted = [];
         $this->oldNewsletterRecipientId = $data['id'];
