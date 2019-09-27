@@ -6,12 +6,20 @@ use Shopware\Core\Framework\Context;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
+use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 abstract class ProductReviewConverter extends ShopwareConverter
 {
+    protected $requiredDataFieldKeys = [
+        '_locale',
+        'articleID',
+        'email',
+        'shop_id',
+    ];
+
     /**
      * @var MappingServiceInterface
      */
@@ -42,6 +50,21 @@ abstract class ProductReviewConverter extends ShopwareConverter
 
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
+        $fields = $this->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
+
+        if (!empty($fields)) {
+            foreach ($fields as $field) {
+                $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
+                    $migrationContext->getRunUuid(),
+                    DefaultEntities::PRODUCT_REVIEW,
+                    $data['id'],
+                    $field
+                ));
+            }
+
+            return new ConvertStruct(null, $data);
+        }
+
         $originalData = $data;
         $this->connectionId = $migrationContext->getConnection()->getId();
         $this->mainLocale = $data['_locale'];

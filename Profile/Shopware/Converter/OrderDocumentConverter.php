@@ -11,6 +11,7 @@ use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
 use SwagMigrationAssistant\Migration\Logging\Log\DocumentTypeNotSupported;
+use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
@@ -79,6 +80,19 @@ abstract class OrderDocumentConverter extends ShopwareConverter
 
         $oldData = $data;
         $converted = [];
+
+        if (empty($data['hash'])) {
+            $this->loggingService->addLogEntry(
+                new EmptyNecessaryFieldRunLog(
+                    $this->migrationContext->getRunUuid(),
+                    DefaultEntities::ORDER_DOCUMENT,
+                    $this->oldId,
+                    'hash'
+                )
+            );
+
+            return new ConvertStruct(null, $oldData);
+        }
 
         $orderUuid = $this->mappingService->getUuid($this->connectionId, DefaultEntities::ORDER, $data['orderID'], $context);
         if ($orderUuid === null) {
