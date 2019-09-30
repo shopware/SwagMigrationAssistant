@@ -391,7 +391,7 @@
           "description": "Parent entity for \"{entity}\" child not found."
         },
         "SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING": {
-          "title": "Associated {missingEntity} not found",
+          "title": "Associated {entity} not found",
           "description": "The {missingEntity} with the source id \"{sourceId}\" can not be found but is required for {requiredFor}."
         },
         "SWAG_MIGRATION__SHOPWARE_EMPTY_NECESSARY_DATA_FIELDS": {

@@ -31,8 +31,8 @@
                               :sortDirection="sortDirection"
                               @column-sort="onSortColumn">
                     {% block swag_migration_history_detail_errors_grid_code%}
-                        <template #column-code="{ item }">
-                            {{ $t(getErrorTitleSnippet(item), item.parameters) }}
+                        <template #column-title="{ item }">
+                            {{ item.title }}
                         </template>
                     {% endblock %}
 

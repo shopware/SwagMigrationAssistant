@@ -387,7 +387,7 @@
           "description": "Eltern-Entität für das „{entity}“-Kind konnte nicht gefunden werden."
         },
         "SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING": {
-          "title": "Zugehörige {missingEntity} Entität nicht gefunden",
+          "title": "Zugehörige {entity} Entität nicht gefunden",
           "description": "Die {missingEntity} Entität mit der Quell-ID „{sourceId}“ kann nicht gefunden werden, ist aber für {requiredFor} erforderlich."
         },
         "SWAG_MIGRATION__SHOPWARE_EMPTY_NECESSARY_DATA_FIELDS": {

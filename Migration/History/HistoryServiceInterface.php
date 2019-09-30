@@ -8,10 +8,6 @@ interface HistoryServiceInterface
 {
     public function getGroupedLogsOfRun(
         string $runUuid,
-        int $offset,
-        int $limit,
-        string $sortBy,
-        string $sortDirection,
         Context $context
     ): array;
 

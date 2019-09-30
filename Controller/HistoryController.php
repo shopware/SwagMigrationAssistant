@@ -35,10 +35,6 @@ class HistoryController extends AbstractController
     public function getGroupedLogsOfRun(Request $request, Context $context): JsonResponse
     {
         $runUuid = $request->query->get('runUuid');
-        $offset = (int) $request->query->get('offset', 0);
-        $limit = (int) $request->query->get('limit', 1);
-        $sortBy = $request->query->get('sortBy', 'count');
-        $sortDirection = $request->query->get('sortDirection', 'DESC');
 
         if ($runUuid === null) {
             throw new MigrationContextPropertyMissingException('runUuid');
@@ -46,10 +42,6 @@ class HistoryController extends AbstractController
 
         $cleanResult = $this->historyService->getGroupedLogsOfRun(
             $runUuid,
-            $offset,
-            $limit,
-            $sortBy,
-            $sortDirection,
             $context
         );
 

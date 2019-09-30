@@ -250,18 +250,14 @@ class MigrationApiService extends ApiService {
             });
     }
 
-    getGroupedLogsOfRun(runUuid, offset, limit, sortBy, sortDirection) {
+    getGroupedLogsOfRun(runUuid) {
         const headers = this.getBasicHeaders();
 
         return this.httpClient
             .get(`${this.getApiBasePath()}/get-grouped-logs-of-run`, {
                 ...this.basicConfig,
                 params: {
-                    runUuid,
-                    offset,
-                    limit,
-                    sortBy,
-                    sortDirection
+                    runUuid
                 },
                 headers
             })

@@ -16,7 +16,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use SwagMigrationAssistant\Migration\Logging\Log\LogEntryInterface;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingCollection;
-use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingEntity;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 
 class HistoryService implements HistoryServiceInterface
@@ -44,10 +43,6 @@ class HistoryService implements HistoryServiceInterface
 
     public function getGroupedLogsOfRun(
         string $runUuid,
-        int $offset,
-        int $limit,
-        string $sortBy,
-        string $sortDirection,
         Context $context
     ): array {
         $criteria = new Criteria();
@@ -58,9 +53,25 @@ class HistoryService implements HistoryServiceInterface
                 ]
             )
         );
-        $criteria->setTotalCountMode(Criteria::TOTAL_COUNT_MODE_EXACT);
-        // TODO: implement pagination / sorting (PT-10836)
-        $criteria->addAggregation(new TermsAggregation('count', 'code'/*, $limit, new FieldSorting($sortBy, $sortDirection)*/));
+        $criteria->addAggregation(
+            new TermsAggregation(
+                'count',
+                'code',
+                null,
+                null,
+                new TermsAggregation(
+                    'titleSnippet',
+                    'titleSnippet',
+                    null,
+                    null,
+                    new TermsAggregation(
+                        'entity',
+                        'entity'
+                    )
+                )
+            )
+        );
+
         $result = $this->loggingRepo->aggregate($criteria, $context);
         /** @var TermsResult $termsResult */
         $termsResult = $result->get('count');
@@ -72,7 +83,7 @@ class HistoryService implements HistoryServiceInterface
 
         $cleanResult = [];
         foreach ($aggregateResult as $bucket) {
-            $detailInformation = $this->getLogEntryInformationByCode($runUuid, $bucket, $context);
+            $detailInformation = $this->extractBucketInformation($bucket);
             if ($detailInformation !== null) {
                 $cleanResult[] = $detailInformation;
             }
@@ -114,6 +125,24 @@ class HistoryService implements HistoryServiceInterface
         };
     }
 
+    private function extractBucketInformation(Bucket $bucket): array
+    {
+        /** @var TermsResult $titleResult */
+        $titleResult = $bucket->getResult();
+        $titleBucket = $titleResult->getBuckets()[0];
+
+        /** @var TermsResult $entityResult */
+        $entityResult = $titleBucket->getResult();
+        $entityString = empty($entityResult->getBuckets()) ? '' : $entityResult->getBuckets()[0]->getKey();
+
+        return [
+            'code' => $bucket->getKey(),
+            'count' => $bucket->getCount(),
+            'titleSnippet' => $titleBucket->getKey(),
+            'entity' => $entityString,
+        ];
+    }
+
     private function getTotalLogCount(string $runUuid, Context $context): int
     {
         $criteria = new Criteria();
@@ -137,29 +166,6 @@ class HistoryService implements HistoryServiceInterface
         }
 
         return $run[$runUuid];
-    }
-
-    private function getLogEntryInformationByCode($runUuid, Bucket $countResult, Context $context): ?array
-    {
-        $code = $countResult->getKey();
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('runId', $runUuid));
-        $criteria->addFilter(new EqualsFilter('code', $code));
-        $criteria->setLimit(1);
-
-        /** @var SwagMigrationLoggingEntity|null $result */
-        $result = $this->loggingRepo->search($criteria, $context)->first();
-        if ($result === null) {
-            return null;
-        }
-
-        return [
-            'code' => $code,
-            'count' => $countResult->getCount(),
-            'titleSnippet' => $result->getTitleSnippet(),
-            'parameters' => $result->getParameters(),
-            'level' => $result->getLevel(),
-        ];
     }
 
     private function getLogChunk($runUuid, int $offset, $context): EntityCollection
