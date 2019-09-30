@@ -2,6 +2,7 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
+use Doctrine\DBAL\Connection;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
@@ -17,7 +18,7 @@ class LocalOrderDocumentReader extends LocalAbstractReader implements LocalReade
     public function read(MigrationContextInterface $migrationContext, array $params = []): array
     {
         $this->setConnection($migrationContext);
-        $documents = $this->mapData($this->fetchDocuments(), [], ['document']);
+        $documents = $this->mapData($this->fetchDocuments($migrationContext), [], ['document']);
 
         $locale = $this->getDefaultShopLocale();
 
@@ -28,8 +29,10 @@ class LocalOrderDocumentReader extends LocalAbstractReader implements LocalReade
         return $documents;
     }
 
-    private function fetchDocuments(): array
+    private function fetchDocuments(MigrationContextInterface $migrationContext): array
     {
+        $ids = $this->fetchIdentifiers('s_order_documents', $migrationContext->getOffset(), $migrationContext->getLimit());
+
         $query = $this->connection->createQueryBuilder();
 
         $query->from('s_order_documents', 'document');
@@ -40,6 +43,8 @@ class LocalOrderDocumentReader extends LocalAbstractReader implements LocalReade
 
         $query->leftJoin('document', 's_core_documents', 'document_documenttype', 'document.type = document_documenttype.id');
         $this->addTableSelection($query, 's_core_documents', 'document_documenttype');
+
+        $query->setParameter('ids', $ids, Connection::PARAM_STR_ARRAY);
 
         return $query->execute()->fetchAll();
     }
