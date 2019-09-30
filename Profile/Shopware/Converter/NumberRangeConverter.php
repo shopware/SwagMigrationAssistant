@@ -72,7 +72,8 @@ abstract class NumberRangeConverter extends ShopwareConverter
                     DefaultEntities::NUMBER_RANGE,
                     $data['id'],
                     $data['name']
-            ));
+                )
+            );
 
             return new ConvertStruct(null, $data);
         }

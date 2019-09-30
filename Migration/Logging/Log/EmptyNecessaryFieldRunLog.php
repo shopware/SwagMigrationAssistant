@@ -45,10 +45,10 @@ class EmptyNecessaryFieldRunLog extends BaseRunLogEntry
 
         return sprintf(
             'The %s entity with the source id %s does not have the necessary data for the field(s): %s',
-                $args['entity'],
-                $args['sourceId'],
-                $args['emptyField']
-            );
+            $args['entity'],
+            $args['sourceId'],
+            $args['emptyField']
+        );
     }
 
     public function getTitleSnippet(): string

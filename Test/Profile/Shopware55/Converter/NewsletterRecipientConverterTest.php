@@ -76,12 +76,30 @@ class NewsletterRecipientConverterTest extends TestCase
         );
 
         $context = Context::createDefaultContext();
-        $this->mappingService->createNewUuid($this->connectionId, SalutationReader::getMappingName(), 'mr',
-            $context, [], Uuid::randomHex());
-        $this->mappingService->createNewUuid($this->connectionId, SalutationReader::getMappingName(), 'ms',
-            $context, [], Uuid::randomHex());
-        $this->mappingService->createNewUuid($this->connectionId, SalesChannelDefinition::ENTITY_NAME, '1',
-            $context, [], Uuid::randomHex());
+        $this->mappingService->createNewUuid(
+            $this->connectionId,
+            SalutationReader::getMappingName(),
+            'mr',
+            $context,
+            [],
+            Uuid::randomHex()
+        );
+        $this->mappingService->createNewUuid(
+            $this->connectionId,
+            SalutationReader::getMappingName(),
+            'ms',
+            $context,
+            [],
+            Uuid::randomHex()
+        );
+        $this->mappingService->createNewUuid(
+            $this->connectionId,
+            SalesChannelDefinition::ENTITY_NAME,
+            '1',
+            $context,
+            [],
+            Uuid::randomHex()
+        );
     }
 
     public function testConvertWithoutDoubleOptinConfirmed(): void

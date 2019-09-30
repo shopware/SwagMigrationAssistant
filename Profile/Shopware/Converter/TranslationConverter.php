@@ -105,7 +105,8 @@ abstract class TranslationConverter extends ShopwareConverter
                 $data['objecttype'],
                 DefaultEntities::TRANSLATION,
                 $data['id']
-        ));
+            )
+        );
 
         return new ConvertStruct(null, $data);
     }
@@ -133,8 +134,12 @@ abstract class TranslationConverter extends ShopwareConverter
         if (!isset($product['id'])) {
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
-                    $this->runId, DefaultEntities::PRODUCT, $data['id'], DefaultEntities::TRANSLATION
-            ));
+                    $this->runId,
+                    DefaultEntities::PRODUCT,
+                    $data['id'],
+                    DefaultEntities::TRANSLATION
+                )
+            );
 
             return new ConvertStruct(null, $sourceData);
         }
@@ -206,8 +211,12 @@ abstract class TranslationConverter extends ShopwareConverter
         if (!isset($manufacturer['id'])) {
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
-                    $this->runId, DefaultEntities::PRODUCT_MANUFACTURER, $data['id'], DefaultEntities::TRANSLATION
-                ));
+                    $this->runId,
+                    DefaultEntities::PRODUCT_MANUFACTURER,
+                    $data['id'],
+                    DefaultEntities::TRANSLATION
+                )
+            );
 
             return new ConvertStruct(null, $sourceData);
         }
@@ -276,8 +285,12 @@ abstract class TranslationConverter extends ShopwareConverter
         if (!isset($unit['id'])) {
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
-                    $this->runId, DefaultEntities::UNIT, $data['id'], DefaultEntities::TRANSLATION
-                ));
+                    $this->runId,
+                    DefaultEntities::UNIT,
+                    $data['id'],
+                    DefaultEntities::TRANSLATION
+                )
+            );
 
             return new ConvertStruct(null, $sourceData);
         }
@@ -351,8 +364,12 @@ abstract class TranslationConverter extends ShopwareConverter
         if (!isset($category['id'])) {
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
-                    $this->runId, DefaultEntities::CATEGORY, $data['id'], DefaultEntities::TRANSLATION
-                ));
+                    $this->runId,
+                    DefaultEntities::CATEGORY,
+                    $data['id'],
+                    DefaultEntities::TRANSLATION
+                )
+            );
 
             return new ConvertStruct(null, $sourceData);
         }
@@ -434,8 +451,12 @@ abstract class TranslationConverter extends ShopwareConverter
         if (!isset($configuratorOption['id'])) {
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
-                    $this->runId, DefaultEntities::PROPERTY_GROUP_OPTION, $data['id'], DefaultEntities::TRANSLATION
-                ));
+                    $this->runId,
+                    DefaultEntities::PROPERTY_GROUP_OPTION,
+                    $data['id'],
+                    DefaultEntities::TRANSLATION
+                )
+            );
 
             return new ConvertStruct(null, $sourceData);
         }
@@ -505,8 +526,12 @@ abstract class TranslationConverter extends ShopwareConverter
         if (!isset($configuratorOptionGroup['id'])) {
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
-                    $this->runId, DefaultEntities::PROPERTY_GROUP, $data['id'], DefaultEntities::TRANSLATION
-                ));
+                    $this->runId,
+                    DefaultEntities::PROPERTY_GROUP,
+                    $data['id'],
+                    DefaultEntities::TRANSLATION
+                )
+            );
 
             return new ConvertStruct(null, $sourceData);
         }
@@ -576,8 +601,12 @@ abstract class TranslationConverter extends ShopwareConverter
         if (!isset($propertyValue['id'])) {
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
-                    $this->runId, DefaultEntities::PROPERTY_GROUP_OPTION, $data['id'], DefaultEntities::TRANSLATION
-                ));
+                    $this->runId,
+                    DefaultEntities::PROPERTY_GROUP_OPTION,
+                    $data['id'],
+                    DefaultEntities::TRANSLATION
+                )
+            );
 
             return new ConvertStruct(null, $sourceData);
         }
@@ -643,8 +672,12 @@ abstract class TranslationConverter extends ShopwareConverter
         if (!isset($propertyOption['id'])) {
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
-                    $this->runId, DefaultEntities::PROPERTY_GROUP, $data['id'], DefaultEntities::TRANSLATION
-                ));
+                    $this->runId,
+                    DefaultEntities::PROPERTY_GROUP,
+                    $data['id'],
+                    DefaultEntities::TRANSLATION
+                )
+            );
 
             return new ConvertStruct(null, $sourceData);
         }
@@ -720,7 +753,8 @@ abstract class TranslationConverter extends ShopwareConverter
                     $data['id'],
                     $entity,
                     $data['objectdata']
-            ));
+                )
+            );
 
             return null;
         }

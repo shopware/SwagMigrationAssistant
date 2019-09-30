@@ -89,10 +89,10 @@ abstract class MediaConverter extends ShopwareConverter
         $this->convertValue($converted, 'alt', $data, 'description');
 
         $albumUuid = $this->mappingService->getUuid(
-          $this->connectionId,
+            $this->connectionId,
             DefaultEntities::MEDIA_FOLDER,
-          $data['albumID'],
-          $this->context
+            $data['albumID'],
+            $this->context
         );
 
         if ($albumUuid !== null) {

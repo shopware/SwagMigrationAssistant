@@ -21,7 +21,9 @@ class LocalMediaReader extends LocalAbstractReader implements LocalReaderInterfa
         $fetchedMedia = $this->fetchData($migrationContext);
 
         $media = $this->mapData(
-            $fetchedMedia, [], ['asset']
+            $fetchedMedia,
+            [],
+            ['asset']
         );
 
         $resultSet = $this->prepareMedia($media);

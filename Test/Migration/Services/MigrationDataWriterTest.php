@@ -290,22 +290,22 @@ class MigrationDataWriterTest extends TestCase
         );
 
         $this->runService = new RunService(
-          $this->runRepo,
-          $this->connectionRepo,
-          new DummyMigrationDataFetcher(new GatewayRegistry([]), $this->loggingService),
-          new SwagMigrationAccessTokenService($this->runRepo),
-          new DataSelectionRegistry([]),
-          $this->migrationDataRepo,
-          $this->mediaRepo,
-          $this->salesChannelRepo,
-          $this->themeRepo,
-          new IndexerMessageSender($this->getContainer()->get('messenger.bus.shopware'), []),
-          new DummyThemeService($this->themeSalesChannelRepo),
-          $this->mappingService,
-          $this->getContainer()->get('shopware.cache'),
-          new SwagMigrationDataDefinition(),
-          $this->dbConnection,
-          new LoggingService($this->loggingRepo)
+            $this->runRepo,
+            $this->connectionRepo,
+            new DummyMigrationDataFetcher(new GatewayRegistry([]), $this->loggingService),
+            new SwagMigrationAccessTokenService($this->runRepo),
+            new DataSelectionRegistry([]),
+            $this->migrationDataRepo,
+            $this->mediaRepo,
+            $this->salesChannelRepo,
+            $this->themeRepo,
+            new IndexerMessageSender($this->getContainer()->get('messenger.bus.shopware'), []),
+            new DummyThemeService($this->themeSalesChannelRepo),
+            $this->mappingService,
+            $this->getContainer()->get('shopware.cache'),
+            new SwagMigrationDataDefinition(),
+            $this->dbConnection,
+            new LoggingService($this->loggingRepo)
         );
     }
 

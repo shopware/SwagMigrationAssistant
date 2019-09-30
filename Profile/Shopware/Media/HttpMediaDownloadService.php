@@ -156,8 +156,14 @@ class HttpMediaDownloadService implements MediaFileProcessorInterface
             if ($mappedWorkload[$uuid]->getState() === MediaProcessWorkloadStruct::FINISH_STATE) {
                 //move media to media system
                 $filename = $this->getMediaName($media, $uuid);
-                $this->persistFileToMedia($filePath, $uuid, $filename, (int) $additionalData['file_size'],
-                    $fileExtension, $context);
+                $this->persistFileToMedia(
+                    $filePath,
+                    $uuid,
+                    $filename,
+                    (int) $additionalData['file_size'],
+                    $fileExtension,
+                    $context
+                );
                 unlink($filePath);
                 $finishedUuids[] = $uuid;
             }

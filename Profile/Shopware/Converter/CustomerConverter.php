@@ -336,10 +336,6 @@ abstract class CustomerConverter extends ShopwareConverter
                 continue;
             }
 
-            if (isset($data['addresses'])) {
-                $this->getAddresses($data, $converted, $customerUuid);
-            }
-
             $newAddress['id'] = $this->mappingService->createNewUuid(
                 $this->connectionId,
                 DefaultEntities::CUSTOMER_ADDRESS,

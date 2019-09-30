@@ -29,7 +29,9 @@ class LocalOrderReader extends LocalAbstractReader implements LocalReaderInterfa
 
         $resultSet = $this->appendAssociatedData(
             $this->mapData(
-                $fetchedOrders, [], ['ordering']
+                $fetchedOrders,
+                [],
+                ['ordering']
             )
         );
 

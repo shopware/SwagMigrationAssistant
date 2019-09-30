@@ -92,8 +92,10 @@ class SalutationReader extends AbstractPremappingReader
 
         if (!empty($configuredSalutations)) {
             foreach ($configuredSalutations as $configuredSalutation) {
-                $salutations[] = explode(',',
-                    unserialize($configuredSalutation['value'], ['allowed_classes' => false]));
+                $salutations[] = explode(
+                    ',',
+                    unserialize($configuredSalutation['value'], ['allowed_classes' => false])
+                );
             }
         }
 

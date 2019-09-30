@@ -23,7 +23,9 @@ class ShippingMethodReader extends LocalAbstractReader implements LocalReaderInt
         $fetchedShippingCosts = $this->fetchShippingCosts($ids);
 
         $resultSet = $this->mapData(
-            $fetchedShippingMethods, [], ['dispatch']
+            $fetchedShippingMethods,
+            [],
+            ['dispatch']
         );
 
         $locale = $this->getDefaultShopLocale();

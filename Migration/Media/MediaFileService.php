@@ -156,9 +156,11 @@ class MediaFileService implements MediaFileServiceInterface
         }
 
         $criteria = new Criteria();
-        $criteria->addFilter(new MultiFilter(MultiFilter::CONNECTION_OR,
+        $criteria->addFilter(new MultiFilter(
+            MultiFilter::CONNECTION_OR,
             [
-                new MultiFilter(MultiFilter::CONNECTION_AND,
+                new MultiFilter(
+                    MultiFilter::CONNECTION_AND,
                     [
                         new EqualsAnyFilter('mediaId', $mediaIds),
                         new EqualsFilter('written', true),
@@ -166,7 +168,8 @@ class MediaFileService implements MediaFileServiceInterface
                     ]
                 ),
 
-                new MultiFilter(MultiFilter::CONNECTION_AND,
+                new MultiFilter(
+                    MultiFilter::CONNECTION_AND,
                     [
                         new EqualsAnyFilter('mediaId', $mediaIds),
                         new EqualsFilter('runId', $runId),

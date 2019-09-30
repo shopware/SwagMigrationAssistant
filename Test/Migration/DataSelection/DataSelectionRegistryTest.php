@@ -73,7 +73,7 @@ class DataSelectionRegistryTest extends TestCase
     {
         $migrationContext = new MigrationContext(
             new Shopware55Profile(),
-          $this->connection
+            $this->connection
         );
 
         $expected = [

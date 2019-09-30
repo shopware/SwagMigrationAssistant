@@ -20,7 +20,9 @@ class LocalMediaAlbumReader extends LocalAbstractReader implements LocalReaderIn
         $fetchedAlbums = $this->fetchAlbums();
 
         $albums = $this->mapData(
-            $fetchedAlbums, [], ['album']
+            $fetchedAlbums,
+            [],
+            ['album']
         );
 
         $albums = $this->prepareMediaAlbums($albums);

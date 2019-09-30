@@ -195,7 +195,6 @@ class MigrationDataProcessingTest extends TestCase
                 ),
                 new DummyLocalGateway(),
             ])),
-
             $this->loggingService
         );
     }
