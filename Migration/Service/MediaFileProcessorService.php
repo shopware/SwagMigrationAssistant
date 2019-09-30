@@ -133,11 +133,12 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
         SwagMigrationMediaFileEntity $mediaFile
     ): void {
         $this->loggingService->addLogEntry(
-          new DataSetNotFoundLog(
-              $migrationContext->getRunUuid(),
-              $mediaFile->getEntity(),
-              $mediaFile->getId(),
-              $migrationContext->getConnection()->getProfileName()
-          ));
+            new DataSetNotFoundLog(
+                $migrationContext->getRunUuid(),
+                $mediaFile->getEntity(),
+                $mediaFile->getId(),
+                $migrationContext->getConnection()->getProfileName()
+            )
+        );
     }
 }

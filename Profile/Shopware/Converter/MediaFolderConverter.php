@@ -84,10 +84,10 @@ abstract class MediaFolderConverter extends ShopwareConverter
 
         if (isset($data['parentID'])) {
             $parentUuid = $this->mappingService->getUuid(
-              $this->connectionId,
+                $this->connectionId,
                 DefaultEntities::MEDIA_FOLDER,
-              $data['parentID'],
-              $this->context
+                $data['parentID'],
+                $this->context
             );
 
             if ($parentUuid !== null) {
@@ -99,17 +99,17 @@ abstract class MediaFolderConverter extends ShopwareConverter
         if (!isset($converted['parentId'])) {
             $converted['parent'] = [
                 'id' => $this->mappingService->createNewUuid(
-                  $this->connectionId,
+                    $this->connectionId,
                     DefaultEntities::MEDIA_FOLDER,
-                  'default_migration_media_folder',
-                  $this->context
+                    'default_migration_media_folder',
+                    $this->context
                 ),
 
                 'name' => 'Migration media folder',
                 'configuration' => [
                     'id' => $this->mappingService->createNewUuid(
-                      $this->connectionId,
-                      DefaultEntities::MEDIA_FOLDER_CONFIGURATION,
+                        $this->connectionId,
+                        DefaultEntities::MEDIA_FOLDER_CONFIGURATION,
                         'default_migration_media_folder',
                         $this->context
                     ),

@@ -38,7 +38,9 @@ class LocalProductReader extends LocalAbstractReader implements LocalReaderInter
 
         $resultSet = $this->appendAssociatedData(
             $this->mapData(
-                $fetchedProducts, [], ['product']
+                $fetchedProducts,
+                [],
+                ['product']
             )
         );
 

@@ -47,8 +47,10 @@ class HistoryService implements HistoryServiceInterface
     ): array {
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('runId', $runUuid));
-        $criteria->addFilter(new NotFilter(
-                NotFilter::CONNECTION_AND, [
+        $criteria->addFilter(
+            new NotFilter(
+                NotFilter::CONNECTION_AND,
+                [
                     new EqualsFilter('level', LogEntryInterface::LOG_LEVEL_INFO),
                 ]
             )

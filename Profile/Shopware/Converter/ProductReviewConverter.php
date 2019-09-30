@@ -91,7 +91,8 @@ abstract class ProductReviewConverter extends ShopwareConverter
                     DefaultEntities::PRODUCT,
                     $data['articleID'],
                     DefaultEntities::PRODUCT_REVIEW
-            ));
+                )
+            );
 
             return new ConvertStruct(null, $originalData);
         }
@@ -111,7 +112,8 @@ abstract class ProductReviewConverter extends ShopwareConverter
                     DefaultEntities::CUSTOMER,
                     $data['email'],
                     DefaultEntities::PRODUCT_REVIEW
-                ));
+                )
+            );
 
             return new ConvertStruct(null, $originalData);
         }
@@ -131,7 +133,8 @@ abstract class ProductReviewConverter extends ShopwareConverter
                     DefaultEntities::SALES_CHANNEL,
                     $data['shop_id'],
                     DefaultEntities::PRODUCT_REVIEW
-                ));
+                )
+            );
 
             return new ConvertStruct(null, $originalData);
         }
@@ -150,7 +153,8 @@ abstract class ProductReviewConverter extends ShopwareConverter
                     DefaultEntities::LANGUAGE,
                     $this->mainLocale,
                     DefaultEntities::PRODUCT_REVIEW
-                ));
+                )
+            );
 
             return new ConvertStruct(null, $originalData);
         }

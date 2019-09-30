@@ -63,7 +63,8 @@ class CannotReadEntityCountLog extends BaseRunLogEntry
     {
         $args = $this->getParameters();
 
-        return sprintf('Total count for entity %s could not be read. Make sure the table %s exists in your source system and the optional condition "%s" is valid. Exception message: %s',
+        return sprintf(
+            'Total count for entity %s could not be read. Make sure the table %s exists in your source system and the optional condition "%s" is valid. Exception message: %s',
             $args['entity'],
             $args['table'],
             $args['condition'],

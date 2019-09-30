@@ -21,7 +21,9 @@ class LocalTranslationReader extends LocalAbstractReader implements LocalReaderI
         $fetchedTranslations = $this->fetchTranslations($migrationContext->getOffset(), $migrationContext->getLimit());
 
         $resultSet = $this->mapData(
-            $fetchedTranslations, [], ['translation', 'locale', 'name']
+            $fetchedTranslations,
+            [],
+            ['translation', 'locale', 'name']
         );
 
         return $this->cleanupResultSet($resultSet);
