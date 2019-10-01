@@ -161,18 +161,9 @@ abstract class ProductConverter extends ShopwareConverter
         if (empty($data)) {
             $data = null;
         }
+        $this->updateMainMapping($migrationContext, $context);
 
-        $this->mapping['additionalData']['relatedMappings'] = $this->mappingIds;
-        $this->mappingIds = [];
-        $this->mappingService->updateMapping(
-            $this->connectionId,
-            DefaultEntities::PRODUCT,
-            $this->mapping['oldIdentifier'],
-            $this->mapping,
-            $this->context
-        );
-
-        return new ConvertStruct($converted, $data, $this->mapping['id']);
+        return new ConvertStruct($converted, $data, $this->mainMapping['id']);
     }
 
     protected function convertMainProduct(array $data): ConvertStruct
@@ -192,15 +183,14 @@ abstract class ProductConverter extends ShopwareConverter
 
         $converted['children'][] = $converted;
         $converted['productNumber'] .= 'M';
-        $this->mapping = $this->mappingService->getOrCreateMapping(
+        $this->mainMapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::PRODUCT,
             $this->oldProductId,
             $this->context,
             $this->checksum
         );
-        $this->mappingIds[] = $this->mapping['id'];
-        $converted['children'][0]['id'] = $this->mapping['entityUuid'];
+        $converted['children'][0]['id'] = $this->mainMapping['entityUuid'];
 
         if (isset($converted['children'][0]['media'])) {
             if (isset($converted['children'][0]['cover'])) {
@@ -215,7 +205,7 @@ abstract class ProductConverter extends ShopwareConverter
                 );
                 $productMediaRelationUuid = $productMediaRelationMapping['entityUuid'];
                 $this->mappingIds[] = $productMediaRelationMapping['id'];
-                $media['productId'] = $this->mapping['entityUuid'];
+                $media['productId'] = $this->mainMapping['entityUuid'];
                 $media['id'] = $productMediaRelationUuid;
 
                 if (isset($coverMediaUuid) && $media['media']['id'] === $coverMediaUuid) {
@@ -243,18 +233,9 @@ abstract class ProductConverter extends ShopwareConverter
         if (empty($data)) {
             $data = null;
         }
+        $this->updateMainMapping($this->migrationContext, $this->context);
 
-        $this->mapping['additionalData']['relatedMappings'] = $this->mappingIds;
-        $this->mappingIds = [];
-        $this->mappingService->updateMapping(
-            $this->connectionId,
-            DefaultEntities::PRODUCT,
-            $this->mapping['oldIdentifier'],
-            $this->mapping,
-            $this->context
-        );
-
-        return new ConvertStruct($converted, $data, $this->mapping['id']);
+        return new ConvertStruct($converted, $data, $this->mainMapping['id']);
     }
 
     /**
@@ -286,30 +267,21 @@ abstract class ProductConverter extends ShopwareConverter
         if (empty($data)) {
             $data = null;
         }
+        $this->updateMainMapping($this->migrationContext, $this->context);
 
-        $this->mapping['additionalData']['relatedMappings'] = $this->mappingIds;
-        $this->mappingIds = [];
-        $this->mappingService->updateMapping(
-            $this->connectionId,
-            DefaultEntities::PRODUCT,
-            $this->mapping['oldIdentifier'],
-            $this->mapping,
-            $this->context
-        );
-
-        return new ConvertStruct($converted, $data, $this->mapping['id']);
+        return new ConvertStruct($converted, $data, $this->mainMapping['id']);
     }
 
     private function getUuidForProduct(array &$data): array
     {
-        $this->mapping = $this->mappingService->getOrCreateMapping(
+        $this->mainMapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::PRODUCT,
             $this->oldProductId,
             $this->context,
             $this->checksum
         );
-        $converted['id'] = $this->mapping['entityUuid'];
+        $converted['id'] = $this->mainMapping['entityUuid'];
 
         $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,

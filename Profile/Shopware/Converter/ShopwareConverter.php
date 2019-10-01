@@ -18,16 +18,6 @@ abstract class ShopwareConverter extends Converter
      */
     protected $migrationContext;
 
-    /**
-     * @var array|null
-     */
-    protected $mapping;
-
-    /**
-     * @var array
-     */
-    protected $mappingIds = [];
-
     public function getSourceIdentifier(array $data): string
     {
         return $data['id'];

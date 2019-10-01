@@ -111,18 +111,9 @@ abstract class NumberRangeConverter extends ShopwareConverter
         if (empty($data)) {
             $data = null;
         }
+        $this->updateMainMapping($migrationContext, $context);
 
-        $this->mapping['additionalData']['relatedMappings'] = $this->mappingIds;
-        $this->mappingIds = [];
-        $this->mappingService->updateMapping(
-            $migrationContext->getConnection()->getId(),
-            DefaultEntities::NUMBER_RANGE,
-            $this->mapping['oldIdentifier'],
-            $this->mapping,
-            $context
-        );
-
-        return new ConvertStruct($converted, $data, $this->mapping['id']);
+        return new ConvertStruct($converted, $data, $this->mainMapping['id']);
     }
 
     protected function getUuid(array $data, string $checksum, MigrationContextInterface $migrationContext, Context $context): string
@@ -135,7 +126,7 @@ abstract class NumberRangeConverter extends ShopwareConverter
         );
 
         if ($mapping !== null) {
-            $this->mapping = $mapping;
+            $this->mainMapping = $mapping;
 
             return $mapping['entityUuid'];
         }
@@ -145,7 +136,7 @@ abstract class NumberRangeConverter extends ShopwareConverter
             $this->mappingService->getNumberRangeUuid('product', $data['id'], $checksum, $migrationContext, $context);
         }
 
-        $this->mapping = $this->mappingService->getOrCreateMapping(
+        $this->mainMapping = $this->mappingService->getOrCreateMapping(
             $migrationContext->getConnection()->getId(),
             DefaultEntities::NUMBER_RANGE,
             $data['id'],
@@ -153,7 +144,7 @@ abstract class NumberRangeConverter extends ShopwareConverter
             $checksum
         );
 
-        return $this->mapping['entityUuid'];
+        return $this->mainMapping['entityUuid'];
     }
 
     protected function getProductNumberRangeTypeUuid(string $type): ?string

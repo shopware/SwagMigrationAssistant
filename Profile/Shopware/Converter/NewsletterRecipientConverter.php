@@ -71,14 +71,14 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
 
         $converted = [];
         $this->oldNewsletterRecipientId = $data['id'];
-        $this->mapping = $this->mappingService->getOrCreateMapping(
+        $this->mainMapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::NEWSLETTER_RECIPIENT,
             $this->oldNewsletterRecipientId,
             $context,
             $checksum
         );
-        $converted['id'] = $this->mapping['entityUuid'];
+        $converted['id'] = $this->mainMapping['entityUuid'];
 
         $this->convertValue($converted, 'email', $data, 'email');
         $this->convertValue($converted, 'createdAt', $data, 'added', 'datetime');
@@ -134,18 +134,9 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         if (empty($data)) {
             $data = null;
         }
+        $this->updateMainMapping($migrationContext, $context);
 
-        $this->mapping['additionalData']['relatedMappings'] = $this->mappingIds;
-        $this->mappingIds = [];
-        $this->mappingService->updateMapping(
-            $this->connectionId,
-            DefaultEntities::NEWSLETTER_RECIPIENT,
-            $this->mapping['oldIdentifier'],
-            $this->mapping,
-            $context
-        );
-
-        return new ConvertStruct($converted, $data, $this->mapping['id']);
+        return new ConvertStruct($converted, $data, $this->mainMapping['id']);
     }
 
     protected function getSalutation(string $salutation): ?string

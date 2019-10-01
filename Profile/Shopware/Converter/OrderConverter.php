@@ -133,14 +133,14 @@ abstract class OrderConverter extends ShopwareConverter
         $this->connectionId = $migrationContext->getConnection()->getId();
 
         $converted = [];
-        $this->mapping = $this->mappingService->getOrCreateMapping(
+        $this->mainMapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::ORDER,
             $data['id'],
             $this->context,
             $checksum
         );
-        $converted['id'] = $this->mapping['entityUuid'];
+        $converted['id'] = $this->mainMapping['entityUuid'];
         unset($data['id']);
         $this->uuid = $converted['id'];
 
@@ -343,18 +343,9 @@ abstract class OrderConverter extends ShopwareConverter
         if (empty($data)) {
             $data = null;
         }
+        $this->updateMainMapping($migrationContext, $context);
 
-        $this->mapping['additionalData']['relatedMappings'] = $this->mappingIds;
-        $this->mappingIds = [];
-        $this->mappingService->updateMapping(
-            $this->connectionId,
-            DefaultEntities::ORDER,
-            $this->mapping['oldIdentifier'],
-            $this->mapping,
-            $this->context
-        );
-
-        return new ConvertStruct($converted, $data, $this->mapping['id']);
+        return new ConvertStruct($converted, $data, $this->mainMapping['id']);
     }
 
     protected function getTransactions(array $data, array &$converted): void

@@ -60,15 +60,15 @@ abstract class MediaConverter extends ShopwareConverter
         $this->connectionId = $migrationContext->getConnection()->getId();
 
         $converted = [];
-        $this->mapping = $this->mappingService->getOrCreateMapping(
+        $this->mainMapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::MEDIA,
             $data['id'],
             $context,
             $checksum
         );
-        $this->mapping['checksum'] = $checksum;
-        $converted['id'] = $this->mapping['entityUuid'];
+        $this->mainMapping['checksum'] = $checksum;
+        $converted['id'] = $this->mainMapping['entityUuid'];
 
         if (!isset($data['name'])) {
             $data['name'] = $converted['id'];
@@ -120,18 +120,9 @@ abstract class MediaConverter extends ShopwareConverter
         if (empty($data)) {
             $data = null;
         }
+        $this->updateMainMapping($migrationContext, $context);
 
-        $this->mapping['additionalData']['relatedMappings'] = $this->mappingIds;
-        $this->mappingIds = [];
-        $this->mappingService->updateMapping(
-            $this->connectionId,
-            DefaultEntities::MEDIA,
-            $this->mapping['oldIdentifier'],
-            $this->mapping,
-            $context
-        );
-
-        return new ConvertStruct($converted, $data, $this->mapping['id']);
+        return new ConvertStruct($converted, $data, $this->mainMapping['id']);
     }
 
     protected function getMediaTranslation(array &$media, array $data): void

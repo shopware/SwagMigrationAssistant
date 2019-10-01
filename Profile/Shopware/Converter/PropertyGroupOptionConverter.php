@@ -96,7 +96,7 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         $this->mappingIds[] = $propertyGroupMapping['id'];
 
         $converted = [
-            'id' => $this->mapping['entityUuid'],
+            'id' => $mapping['entityUuid'],
             'group' => [
                 'id' => $propertyGroupMapping['entityUuid'],
             ],
@@ -111,18 +111,9 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         $this->getConfiguratorSettings($data, $converted);
         $this->getProperties($data, $converted);
         $this->getTranslation($data, $converted);
+        $this->updateMainMapping($migrationContext, $context);
 
-        $this->mapping['additionalData']['relatedMappings'] = $this->mappingIds;
-        $this->mappingIds = [];
-        $this->mappingService->updateMapping(
-            $this->connectionId,
-            DefaultEntities::PROPERTY_GROUP_OPTION,
-            $this->mapping['oldIdentifier'],
-            $this->mapping,
-            $context
-        );
-
-        return new ConvertStruct($converted, null, $this->mapping['id']);
+        return new ConvertStruct($converted, null, $this->mainMapping['id']);
     }
 
     protected function getMedia(array &$converted, array $data): void
@@ -275,7 +266,7 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         );
         $this->mappingIds[] = $mapping['id'];
 
-        $this->mapping = $this->mappingService->getOrCreateMapping(
+        $this->mainMapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::PROPERTY_GROUP_OPTION,
             hash('md5', strtolower($data['name'] . '_' . $data['group']['name'] . '_' . $data['type'])),

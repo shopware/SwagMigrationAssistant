@@ -77,14 +77,14 @@ abstract class SalesChannelConverter extends ShopwareConverter
         $this->connectionId = $migrationContext->getConnection()->getId();
 
         $converted = [];
-        $this->mapping = $this->mappingService->getOrCreateMapping(
+        $this->mainMapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::SALES_CHANNEL,
             $data['id'],
             $context,
             $checksum
         );
-        $converted['id'] = $this->mapping['entityUuid'];
+        $converted['id'] = $this->mainMapping['entityUuid'];
 
         $customerGroupMapping = $this->mappingService->getMapping(
             $this->connectionId,
@@ -244,18 +244,9 @@ abstract class SalesChannelConverter extends ShopwareConverter
         if (empty($data)) {
             $data = null;
         }
+        $this->updateMainMapping($migrationContext, $context);
 
-        $this->mapping['additionalData']['relatedMappings'] = $this->mappingIds;
-        $this->mappingIds = [];
-        $this->mappingService->updateMapping(
-            $this->connectionId,
-            DefaultEntities::SALES_CHANNEL,
-            $this->mapping['oldIdentifier'],
-            $this->mapping,
-            $context
-        );
-
-        return new ConvertStruct($converted, $data, $this->mapping['id']);
+        return new ConvertStruct($converted, $data, $this->mainMapping['id']);
     }
 
     protected function getSalesChannelTranslation(array &$salesChannel, array $data): void

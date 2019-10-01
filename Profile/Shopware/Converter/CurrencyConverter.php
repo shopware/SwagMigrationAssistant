@@ -29,11 +29,6 @@ abstract class CurrencyConverter extends ShopwareConverter
         return $data['currency'];
     }
 
-    public function writeMapping(Context $context): void
-    {
-        $this->mappingService->writeMapping($context);
-    }
-
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
         $checksum = $this->generateChecksum($data);
@@ -47,14 +42,14 @@ abstract class CurrencyConverter extends ShopwareConverter
         }
 
         $converted = [];
-        $this->mapping = $this->mappingService->getOrCreateMapping(
+        $this->mainMapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::CURRENCY,
             $data['currency'],
             $context,
             $checksum
         );
-        $converted['id'] = $this->mapping['entityUuid'];
+        $converted['id'] = $this->mainMapping['entityUuid'];
 
         $converted['isDefault'] = false;
         unset($data['standard']);
@@ -78,18 +73,9 @@ abstract class CurrencyConverter extends ShopwareConverter
         if (empty($data)) {
             $data = null;
         }
+        $this->updateMainMapping($migrationContext, $context);
 
-        $this->mapping['additionalData']['relatedMappings'] = $this->mappingIds;
-        $this->mappingIds = [];
-        $this->mappingService->updateMapping(
-            $this->connectionId,
-            DefaultEntities::CURRENCY,
-            $this->mapping['oldIdentifier'],
-            $this->mapping,
-            $context
-        );
-
-        return new ConvertStruct($converted, $data, $this->mapping['id']);
+        return new ConvertStruct($converted, $data, $this->mainMapping['id']);
     }
 
     protected function getCurrencyTranslation(array &$currency, array $data): void

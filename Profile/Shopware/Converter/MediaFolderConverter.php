@@ -44,14 +44,14 @@ abstract class MediaFolderConverter extends ShopwareConverter
         unset($data['_locale']);
 
         $converted = [];
-        $this->mapping = $this->mappingService->getOrCreateMapping(
+        $this->mainMapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::MEDIA_FOLDER,
             $data['id'],
             $this->context,
             $checksum
         );
-        $converted['id'] = $this->mapping['entityUuid'];
+        $converted['id'] = $this->mainMapping['entityUuid'];
         unset($data['id']);
 
         $defaultFolderId = $this->getDefaultFolderId($migrationContext);
@@ -118,18 +118,9 @@ abstract class MediaFolderConverter extends ShopwareConverter
         if (empty($data)) {
             $data = null;
         }
+        $this->updateMainMapping($migrationContext, $context);
 
-        $this->mapping['additionalData']['relatedMappings'] = $this->mappingIds;
-        $this->mappingIds = [];
-        $this->mappingService->updateMapping(
-            $this->connectionId,
-            DefaultEntities::MEDIA_FOLDER,
-            $this->mapping['oldIdentifier'],
-            $this->mapping,
-            $this->context
-        );
-
-        return new ConvertStruct($converted, $data, $this->mapping['id']);
+        return new ConvertStruct($converted, $data, $this->mainMapping['id']);
     }
 
     public function writeMapping(Context $context): void

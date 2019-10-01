@@ -147,14 +147,14 @@ abstract class CategoryConverter extends ShopwareConverter
         }
         unset($data['previousSiblingId'], $data['categoryPosition'], $previousSiblingMapping);
 
-        $this->mapping = $this->mappingService->getOrCreateMapping(
+        $this->mainMapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::CATEGORY,
             $this->oldCategoryId,
             $this->context,
             $checksum
         );
-        $converted['id'] = $this->mapping['entityUuid'];
+        $converted['id'] = $this->mainMapping['entityUuid'];
         unset($data['id']);
 
         $this->convertValue($converted, 'description', $data, 'cmstext', self::TYPE_STRING);
@@ -188,17 +188,9 @@ abstract class CategoryConverter extends ShopwareConverter
             $data = null;
         }
 
-        $this->mapping['additionalData']['relatedMappings'] = $this->mappingIds;
-        $this->mappingIds = [];
-        $this->mappingService->updateMapping(
-            $this->connectionId,
-            DefaultEntities::CATEGORY,
-            $this->mapping['oldIdentifier'],
-            $this->mapping,
-            $this->context
-        );
+        $this->updateMainMapping($migrationContext, $context);
 
-        return new ConvertStruct($converted, $data, $this->mapping['id']);
+        return new ConvertStruct($converted, $data, $this->mainMapping['id']);
     }
 
     protected function setGivenCategoryTranslation(array &$data, array &$converted): void

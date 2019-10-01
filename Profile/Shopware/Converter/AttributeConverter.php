@@ -10,16 +10,6 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 abstract class AttributeConverter extends Converter
 {
-    /**
-     * @var array|null
-     */
-    protected $mapping;
-
-    /**
-     * @var array
-     */
-    protected $mappingIds = [];
-
     public function getSourceIdentifier(array $data): string
     {
         return $data['name'];
@@ -27,7 +17,7 @@ abstract class AttributeConverter extends Converter
 
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
-        $checksum = md5(serialize($data));
+        $checksum = $this->generateChecksum($data);
         $converted = [];
 
         $mapping = $this->mappingService->getOrCreateMapping(
@@ -65,7 +55,7 @@ abstract class AttributeConverter extends Converter
             ],
         ];
 
-        $this->mapping = $this->mappingService->getOrCreateMapping(
+        $this->mainMapping = $this->mappingService->getOrCreateMapping(
             $migrationContext->getConnection()->getId(),
             $migrationContext->getDataSet()::getEntity(),
             $data['name'],
@@ -74,7 +64,7 @@ abstract class AttributeConverter extends Converter
         );
         $converted['customFields'] = [
             [
-                'id' => $this->mapping['entityUuid'],
+                'id' => $this->mainMapping['entityUuid'],
                 'name' => $converted['name'] . '_' . $data['name'],
                 'type' => $data['type'],
                 'config' => $this->getCustomFieldConfiguration($data),
@@ -92,17 +82,9 @@ abstract class AttributeConverter extends Converter
             $data = null;
         }
 
-        $this->mapping['additionalData']['relatedMappings'] = $this->mappingIds;
-        $this->mappingIds = [];
-        $this->mappingService->updateMapping(
-            $migrationContext->getConnection()->getId(),
-            $migrationContext->getDataSet()::getEntity(),
-            $this->mapping['oldIdentifier'],
-            $this->mapping,
-            $context
-        );
+        $this->updateMainMapping($migrationContext, $context);
 
-        return new ConvertStruct($converted, $data, $this->mapping['id']);
+        return new ConvertStruct($converted, $data, $this->mainMapping['id']);
     }
 
     abstract protected function getCustomFieldEntityName(): string;

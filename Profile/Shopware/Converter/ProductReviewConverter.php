@@ -41,20 +41,21 @@ abstract class ProductReviewConverter extends ShopwareConverter
 
             return new ConvertStruct(null, $data);
         }
-
+        $checksum = $this->generateChecksum($data);
         $originalData = $data;
         $this->connectionId = $migrationContext->getConnection()->getId();
         $this->mainLocale = $data['_locale'];
         unset($data['_locale']);
 
         $converted = [];
-        $this->mapping = $this->mappingService->getOrCreateMapping(
+        $this->mainMapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::PRODUCT_REVIEW,
             $data['id'],
-            $context
+            $context,
+            $checksum
         );
-        $converted['id'] = $this->mapping['entityUuid'];
+        $converted['id'] = $this->mainMapping['entityUuid'];
         unset($data['id']);
 
         $mapping = $this->mappingService->getMapping(
@@ -155,6 +156,8 @@ abstract class ProductReviewConverter extends ShopwareConverter
         $this->convertValue($converted, 'status', $data, 'active', self::TYPE_BOOLEAN);
         $this->convertValue($converted, 'comment', $data, 'answer');
 
-        return new ConvertStruct($converted, $data);
+        $this->updateMainMapping($migrationContext, $context);
+
+        return new ConvertStruct($converted, $data, $this->mainMapping['id']);
     }
 }

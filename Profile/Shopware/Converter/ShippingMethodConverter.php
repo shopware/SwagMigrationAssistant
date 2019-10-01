@@ -76,14 +76,14 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         }
 
         $converted = [];
-        $this->mapping = $this->mappingService->getOrCreateMapping(
+        $this->mainMapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::SHIPPING_METHOD,
             $data['id'],
             $this->context,
             $checksum
         );
-        $converted['id'] = $this->mapping['entityUuid'];
+        $converted['id'] = $this->mainMapping['entityUuid'];
 
         $defaultDeliveryTimeMapping = $this->mappingService->getMapping(
             $this->connectionId,
@@ -176,18 +176,9 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         if (empty($data)) {
             $data = null;
         }
+        $this->updateMainMapping($migrationContext, $context);
 
-        $this->mapping['additionalData']['relatedMappings'] = $this->mappingIds;
-        $this->mappingIds = [];
-        $this->mappingService->updateMapping(
-            $this->connectionId,
-            DefaultEntities::SHIPPING_METHOD,
-            $this->mapping['oldIdentifier'],
-            $this->mapping,
-            $this->context
-        );
-
-        return new ConvertStruct($converted, $data, $this->mapping['id']);
+        return new ConvertStruct($converted, $data, $this->mainMapping['id']);
     }
 
     protected function getShippingMethodTranslation(array &$shippingMethod, array $data): void

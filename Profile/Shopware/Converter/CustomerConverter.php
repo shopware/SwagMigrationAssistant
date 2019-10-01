@@ -95,7 +95,7 @@ abstract class CustomerConverter extends ShopwareConverter
         $this->mainLocale = $data['_locale'];
         unset($data['_locale']);
 
-        $this->mapping = $this->mappingService->getOrCreateMapping(
+        $this->mainMapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::CUSTOMER,
             $data['id'],
@@ -110,13 +110,13 @@ abstract class CustomerConverter extends ShopwareConverter
             $this->context,
             null,
             null,
-            $this->mapping['entityUuid']
+            $this->mainMapping['entityUuid']
         );
 
         $converted = [];
         if (isset($data['accountmode']) && $data['accountmode'] === '1') {
             $this->oldCustomerId = $data['id'];
-            $converted['id'] = $this->mapping['entityUuid'];
+            $converted['id'] = $this->mainMapping['entityUuid'];
         } else {
             $this->oldCustomerId = $data['email'];
             $converted['id'] = $emailMapping['entityUuid'];
@@ -217,7 +217,7 @@ abstract class CustomerConverter extends ShopwareConverter
         $converted['salutationId'] = $salutationUuid;
 
         if (isset($data['addresses'])) {
-            $this->getAddresses($data, $converted, $this->mapping['entityUuid']);
+            $this->getAddresses($data, $converted, $this->mainMapping['entityUuid']);
         }
 
         if (isset($data['attributes'])) {
@@ -263,17 +263,9 @@ abstract class CustomerConverter extends ShopwareConverter
             return new ConvertStruct(null, $oldData);
         }
 
-        $this->mapping['additionalData']['relatedMappings'] = $this->mappingIds;
-        $this->mappingIds = [];
-        $this->mappingService->updateMapping(
-            $this->connectionId,
-            DefaultEntities::CUSTOMER,
-            $this->mapping['oldIdentifier'],
-            $this->mapping,
-            $this->context
-        );
+        $this->updateMainMapping($migrationContext, $context);
 
-        return new ConvertStruct($converted, $data, $this->mapping['id']);
+        return new ConvertStruct($converted, $data, $this->mainMapping['id']);
     }
 
     protected function setPassword(array &$data, array &$converted): void
@@ -360,7 +352,7 @@ abstract class CustomerConverter extends ShopwareConverter
                 unset($originalData['default_shipping_address_id']);
             }
 
-            $newAddress['customerId'] = $this->mapping['entityUuid'];
+            $newAddress['customerId'] = $this->mainMapping['entityUuid'];
             $newAddress['country'] = $this->getCountry($address['country']);
             if (isset($address['state'])) {
                 $newAddress['countryState'] = $this->getCountryState($address['state'], $newAddress['country']);

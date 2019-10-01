@@ -102,14 +102,14 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         $orderUuid = $orderMapping['entityUuid'];
         $this->mappingIds[] = $orderMapping['id'];
 
-        $this->mapping = $this->mappingService->getOrCreateMapping(
+        $this->mainMapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::ORDER_DOCUMENT,
             $this->oldId,
             $context,
             $checksum
         );
-        $converted['id'] = $this->mapping['entityUuid'];
+        $converted['id'] = $this->mainMapping['entityUuid'];
         $converted['orderId'] = $orderUuid;
         $converted['fileType'] = FileTypes::PDF;
         $converted['static'] = true;
@@ -149,18 +149,9 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         if (empty($data)) {
             $data = null;
         }
+        $this->updateMainMapping($migrationContext, $context);
 
-        $this->mapping['additionalData']['relatedMappings'] = $this->mappingIds;
-        $this->mappingIds = [];
-        $this->mappingService->updateMapping(
-            $this->connectionId,
-            DefaultEntities::ORDER_DOCUMENT,
-            $this->mapping['oldIdentifier'],
-            $this->mapping,
-            $context
-        );
-
-        return new ConvertStruct($converted, $data, $this->mapping['id']);
+        return new ConvertStruct($converted, $data, $this->mainMapping['id']);
     }
 
     protected function getDocumentType(array $data): ?array

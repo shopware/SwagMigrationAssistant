@@ -5,6 +5,7 @@ namespace SwagMigrationAssistant\Migration\Converter;
 use Shopware\Core\Framework\Context;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 abstract class Converter implements ConverterInterface
 {
@@ -17,6 +18,16 @@ abstract class Converter implements ConverterInterface
      * @var LoggingServiceInterface
      */
     protected $loggingService;
+
+    /**
+     * @var array|null
+     */
+    protected $mainMapping;
+
+    /**
+     * @var array
+     */
+    protected $mappingIds = [];
 
     public function __construct(
         MappingServiceInterface $mappingService,
@@ -38,5 +49,22 @@ abstract class Converter implements ConverterInterface
     protected function generateChecksum(array $data): string
     {
         return md5(serialize($data));
+    }
+
+    /**
+     * Updates the main mapping with all related mapping ids and writes it to mapping service.
+     */
+    protected function updateMainMapping(MigrationContextInterface $migrationContext, Context $context): void
+    {
+        $this->mainMapping['additionalData']['relatedMappings'] = $this->mappingIds;
+        $this->mappingIds = [];
+
+        $this->mappingService->updateMapping(
+            $migrationContext->getConnection()->getId(),
+            $migrationContext->getDataSet()::getEntity(),
+            $this->mainMapping['oldIdentifier'],
+            $this->mainMapping,
+            $context
+        );
     }
 }
