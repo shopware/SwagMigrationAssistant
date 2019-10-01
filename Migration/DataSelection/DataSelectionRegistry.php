@@ -59,17 +59,13 @@ class DataSelectionRegistry implements DataSelectionRegistryInterface
     {
         $totals = $environmentInformation->getTotals();
         $entityTotals = [];
-        $groupTotal = 0;
+
         foreach ($dataSelection->getEntityNames() as $entityName) {
-            if (!isset($totals[$entityName])) {
-                continue;
+            if (isset($totals[$entityName])) {
+                $entityTotals[$entityName] = $totals[$entityName]->getTotal();
             }
-
-            $groupTotal += $totals[$entityName]->getTotal();
-            $entityTotals[$entityName] = $totals[$entityName]->getTotal();
         }
-
-        $dataSelection->setTotal($groupTotal);
+        $dataSelection->setTotal($dataSelection->getCountedTotal($totals));
         $dataSelection->setEntityTotals($entityTotals);
     }
 }

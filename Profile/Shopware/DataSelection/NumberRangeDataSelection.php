@@ -22,6 +22,7 @@ class NumberRangeDataSelection implements DataSelectionInterface
         return new DataSelectionStruct(
             self::IDENTIFIER,
             $this->getEntityNames(),
+            $this->getEntityNamesRequiredForCount(),
             'swag-migration.index.selectDataCard.dataSelection.numberRanges',
             99,
             true
@@ -36,5 +37,10 @@ class NumberRangeDataSelection implements DataSelectionInterface
         return [
             NumberRangeDataSet::getEntity(),
         ];
+    }
+
+    public function getEntityNamesRequiredForCount(): array
+    {
+        return $this->getEntityNames();
     }
 }

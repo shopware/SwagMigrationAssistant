@@ -46,10 +46,17 @@ class DataSelectionRegistryTest extends TestCase
             [
                 'product' => new TotalStruct('product', 100),
                 'customer' => new TotalStruct('customer', 5),
-                'media' => new TotalStruct('media', 100),
+                'media' => new TotalStruct('media', 1200),
                 'number_range' => new TotalStruct('number_range', 5),
                 'newsletter_recipient' => new TotalStruct('newsletter_recipient', 50),
                 'language' => new TotalStruct('language', 1),
+                'category' => new TotalStruct('category', 23),
+                'order' => new TotalStruct('order', 23),
+                'category_custom_field' => new TotalStruct('category_custom_field', 34),
+                'customer_group_custom_field' => new TotalStruct('customer_group_custom_field', 76),
+                'currency' => new TotalStruct('currency', 1),
+                'customer_group' => new TotalStruct('customer_group', 12),
+                'sales_channel' => new TotalStruct('sales_channel', 7),
             ],
             []
         );
@@ -122,5 +129,59 @@ class DataSelectionRegistryTest extends TestCase
 
         static::assertCount(1, $dataSelections);
         static::assertInstanceOf(DataSelectionStruct::class, $dataSelections->get('media'));
+    }
+
+    public function testEntityNamesRequiredForCount(): void
+    {
+        $migrationContext = new MigrationContext(
+            new Shopware55Profile(),
+            $this->connection
+        );
+
+        $dataSelections = $this->dataSelectionRegistry->getDataSelections($migrationContext, $this->environmentInformation);
+        $totals = $this->environmentInformation->getTotals();
+
+        /** @var DataSelectionStruct $dataSelection */
+        foreach ($dataSelections as $dataSelection) {
+            static::assertInstanceOf(DataSelectionStruct::class, $dataSelection);
+
+            if (sizeof($dataSelection->getEntityNamesRequiredForCount()) > 0) {
+                static::assertNotEmpty($dataSelection->getCountedTotal($totals));
+            }
+        }
+    }
+
+    public function testEntityNamesRequiredForCountValues(): void
+    {
+        $migrationContext = new MigrationContext(
+            new Shopware55Profile(),
+            $this->connection
+        );
+
+        $dataSelections = $this->dataSelectionRegistry->getDataSelections($migrationContext, $this->environmentInformation);
+
+        /** @var DataSelectionStruct $dataSelection */
+        foreach ($dataSelections as $dataSelection) {
+            switch ($dataSelection->getId()) {
+                case 'basicSettings':
+                    static::assertSame($dataSelection->getTotal(), 154);
+                    break;
+                case 'numberRanges':
+                    static::assertSame($dataSelection->getTotal(), 5);
+                    break;
+                case 'products':
+                    static::assertSame($dataSelection->getTotal(), 100);
+                    break;
+                case 'customersOrders':
+                    static::assertSame($dataSelection->getTotal(), 28);
+                    break;
+                case 'media':
+                    static::assertSame($dataSelection->getTotal(), 1200);
+                    break;
+                case 'newsletterRecipient':
+                    static::assertSame($dataSelection->getTotal(), 50);
+                    break;
+            }
+        }
     }
 }
