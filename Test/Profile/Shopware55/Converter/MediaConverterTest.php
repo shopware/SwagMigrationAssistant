@@ -10,6 +10,7 @@ use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55MediaConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Media\DummyMediaFileService;
 
@@ -39,7 +40,7 @@ class MediaConverterTest extends TestCase
     {
         $mediaFileService = new DummyMediaFileService();
         $mappingService = new DummyMappingService();
-        $this->mediaConverter = new Shopware55MediaConverter($mappingService, $mediaFileService);
+        $this->mediaConverter = new Shopware55MediaConverter($mappingService, new DummyLoggingService(), $mediaFileService);
 
         $this->runId = Uuid::randomHex();
         $this->connection = new SwagMigrationConnectionEntity();

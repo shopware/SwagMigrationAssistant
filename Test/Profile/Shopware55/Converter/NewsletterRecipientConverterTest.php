@@ -76,27 +76,30 @@ class NewsletterRecipientConverterTest extends TestCase
         );
 
         $context = Context::createDefaultContext();
-        $this->mappingService->createNewUuid(
+        $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             SalutationReader::getMappingName(),
             'mr',
             $context,
+            null,
             [],
             Uuid::randomHex()
         );
-        $this->mappingService->createNewUuid(
+        $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             SalutationReader::getMappingName(),
             'ms',
             $context,
+            null,
             [],
             Uuid::randomHex()
         );
-        $this->mappingService->createNewUuid(
+        $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             SalesChannelDefinition::ENTITY_NAME,
             '1',
             $context,
+            null,
             [],
             Uuid::randomHex()
         );

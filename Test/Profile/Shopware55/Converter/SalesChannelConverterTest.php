@@ -84,9 +84,9 @@ class SalesChannelConverterTest extends TestCase
         $salesChannelData = require __DIR__ . '/../../../_fixtures/sales_channel_data.php';
 
         $context = Context::createDefaultContext();
-        $this->mappingService->createNewUuid($this->migrationContext->getConnection()->getId(), DefaultEntities::CUSTOMER_GROUP, '1', $context);
-        $this->mappingService->createNewUuid($this->migrationContext->getConnection()->getId(), DefaultEntities::CATEGORY, '3', $context);
-        $this->mappingService->createNewUuid($this->migrationContext->getConnection()->getId(), DefaultEntities::CATEGORY, '39', $context);
+        $this->mappingService->getOrCreateMapping($this->migrationContext->getConnection()->getId(), DefaultEntities::CUSTOMER_GROUP, '1', $context);
+        $this->mappingService->getOrCreateMapping($this->migrationContext->getConnection()->getId(), DefaultEntities::CATEGORY, '3', $context);
+        $this->mappingService->getOrCreateMapping($this->migrationContext->getConnection()->getId(), DefaultEntities::CATEGORY, '39', $context);
 
         $convertResult = $this->converter->convert($salesChannelData[0], $context, $this->migrationContext);
         $this->converter->writeMapping($context);

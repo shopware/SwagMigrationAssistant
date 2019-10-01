@@ -12,8 +12,6 @@ interface MappingServiceInterface
 {
     public function getUuidsByEntity(string $connectionId, string $entityName, Context $context): array;
 
-    public function getUuid(string $connectionId, string $entityName, string $oldId, Context $context): ?string;
-
     public function getValue(string $connectionId, string $entityName, string $oldId, Context $context): ?string;
 
     public function getOrCreateMapping(
@@ -60,15 +58,6 @@ interface MappingServiceInterface
     ): void;
 
     public function getUuidList(string $connectionId, string $entityName, string $identifier, Context $context): array;
-
-    public function createNewUuid(
-        string $connectionId,
-        string $entityName,
-        string $oldId,
-        Context $context,
-        ?array $additionalData = null,
-        ?string $newUuid = null
-    ): string;
 
     public function getDefaultCmsPageUuid(string $connectionId, Context $context): ?string;
 

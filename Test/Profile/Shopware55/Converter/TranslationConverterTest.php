@@ -110,7 +110,7 @@ class TranslationConverterTest extends TestCase
             250
         );
 
-        $this->mappingService->createNewUuid($connection->getId(), DefaultEntities::CURRENCY, 'EUR', Context::createDefaultContext(), [], Uuid::randomHex());
+        $this->mappingService->getOrCreateMapping($connection->getId(), DefaultEntities::CURRENCY, 'EUR', Context::createDefaultContext(), null, [], Uuid::randomHex());
     }
 
     public function testSupports(): void
@@ -140,7 +140,7 @@ class TranslationConverterTest extends TestCase
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
         $context = Context::createDefaultContext();
 
-        $productConverter = new Shopware55ProductConverter($this->mappingService, new DummyMediaFileService(), $this->loggingService);
+        $productConverter = new Shopware55ProductConverter($this->mappingService, $this->loggingService, new DummyMediaFileService());
         $productConverter->convert($productData[0], $context, $this->productMigrationContext);
 
         $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
@@ -155,7 +155,7 @@ class TranslationConverterTest extends TestCase
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
         $context = Context::createDefaultContext();
 
-        $productConverter = new Shopware55ProductConverter($this->mappingService, new DummyMediaFileService(), $this->loggingService);
+        $productConverter = new Shopware55ProductConverter($this->mappingService, $this->loggingService, new DummyMediaFileService());
         $productConvertResult = $productConverter->convert($productData[0], $context, $this->productMigrationContext);
 
         $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
@@ -186,7 +186,7 @@ class TranslationConverterTest extends TestCase
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
         $context = Context::createDefaultContext();
 
-        $productConverter = new Shopware55ProductConverter($this->mappingService, new DummyMediaFileService(), $this->loggingService);
+        $productConverter = new Shopware55ProductConverter($this->mappingService, $this->loggingService, new DummyMediaFileService());
         $productConverter->convert($productData[0], $context, $this->productMigrationContext);
 
         $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
@@ -209,7 +209,7 @@ class TranslationConverterTest extends TestCase
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
         $context = Context::createDefaultContext();
 
-        $productConverter = new Shopware55ProductConverter($this->mappingService, new DummyMediaFileService(), $this->loggingService);
+        $productConverter = new Shopware55ProductConverter($this->mappingService, $this->loggingService, new DummyMediaFileService());
         $productConvertResult = $productConverter->convert($productData[0], $context, $this->productMigrationContext);
 
         $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
@@ -236,7 +236,7 @@ class TranslationConverterTest extends TestCase
         static::assertCount(1, $logs);
 
         static::assertSame($logs[0]['code'], 'SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING_UNIT');
-        static::assertSame($logs[0]['parameters']['sourceId'], '275');
+        static::assertSame($logs[0]['parameters']['sourceId'], '274');
         static::assertSame($logs[0]['parameters']['missingEntity'], 'unit');
     }
 
@@ -245,7 +245,7 @@ class TranslationConverterTest extends TestCase
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
         $context = Context::createDefaultContext();
 
-        $productConverter = new Shopware55ProductConverter($this->mappingService, new DummyMediaFileService(), $this->loggingService);
+        $productConverter = new Shopware55ProductConverter($this->mappingService, $this->loggingService, new DummyMediaFileService());
         $productConverter->convert($productData[0], $context, $this->productMigrationContext);
 
         $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
@@ -259,7 +259,7 @@ class TranslationConverterTest extends TestCase
         static::assertCount(1, $logs);
 
         static::assertSame($logs[0]['code'], 'SWAG_MIGRATION__SHOPWARE_INVALID_UNSERIALIZED_DATA');
-        static::assertSame($logs[0]['parameters']['sourceId'], '275');
+        static::assertSame($logs[0]['parameters']['sourceId'], '274');
         static::assertSame($logs[0]['parameters']['unserializedEntity'], 'unit_translation');
     }
 
@@ -269,7 +269,7 @@ class TranslationConverterTest extends TestCase
         $context = Context::createDefaultContext();
         $mediaFileService = new DummyMediaFileService();
 
-        $categoryConverter = new Shopware55CategoryConverter($this->mappingService, $mediaFileService, $this->loggingService);
+        $categoryConverter = new Shopware55CategoryConverter($this->mappingService, $this->loggingService, $mediaFileService);
         $categoryConvertResult = $categoryConverter->convert($categoryData[1], $context, $this->categoryMigrationContext);
 
         $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
@@ -296,7 +296,7 @@ class TranslationConverterTest extends TestCase
         static::assertCount(1, $logs);
 
         static::assertSame($logs[0]['code'], 'SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING_CATEGORY');
-        static::assertSame($logs[0]['parameters']['sourceId'], '276');
+        static::assertSame($logs[0]['parameters']['sourceId'], '275');
         static::assertSame($logs[0]['parameters']['missingEntity'], 'category');
     }
 
@@ -306,7 +306,7 @@ class TranslationConverterTest extends TestCase
         $context = Context::createDefaultContext();
         $mediaFileService = new DummyMediaFileService();
 
-        $categoryConverter = new Shopware55CategoryConverter($this->mappingService, $mediaFileService, $this->loggingService);
+        $categoryConverter = new Shopware55CategoryConverter($this->mappingService, $this->loggingService, $mediaFileService);
         $categoryConverter->convert($categoryData[1], $context, $this->categoryMigrationContext);
 
         $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
@@ -319,7 +319,7 @@ class TranslationConverterTest extends TestCase
         static::assertCount(1, $logs);
 
         static::assertSame($logs[0]['code'], 'SWAG_MIGRATION__SHOPWARE_INVALID_UNSERIALIZED_DATA');
-        static::assertSame($logs[0]['parameters']['sourceId'], '276');
+        static::assertSame($logs[0]['parameters']['sourceId'], '275');
         static::assertSame($logs[0]['parameters']['unserializedEntity'], 'category_translation');
     }
 
@@ -327,7 +327,7 @@ class TranslationConverterTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $defaultLanguage = DummyMappingService::DEFAULT_LANGUAGE_UUID;
-        $this->mappingService->createNewUuid(
+        $this->mappingService->getOrCreateMapping(
             $this->migrationContext->getConnection()->getId(),
             DefaultEntities::PROPERTY_GROUP_OPTION . '_option',
             '11',
@@ -349,7 +349,7 @@ class TranslationConverterTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $defaultLanguage = DummyMappingService::DEFAULT_LANGUAGE_UUID;
-        $this->mappingService->createNewUuid(
+        $this->mappingService->getOrCreateMapping(
             $this->migrationContext->getConnection()->getId(),
             DefaultEntities::PROPERTY_GROUP . '_option',
             '5',
@@ -371,7 +371,7 @@ class TranslationConverterTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $defaultLanguage = DummyMappingService::DEFAULT_LANGUAGE_UUID;
-        $this->mappingService->createNewUuid(
+        $this->mappingService->getOrCreateMapping(
             $this->migrationContext->getConnection()->getId(),
             DefaultEntities::PROPERTY_GROUP_OPTION . '_property',
             '31',
@@ -393,7 +393,7 @@ class TranslationConverterTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $defaultLanguage = DummyMappingService::DEFAULT_LANGUAGE_UUID;
-        $this->mappingService->createNewUuid(
+        $this->mappingService->getOrCreateMapping(
             $this->migrationContext->getConnection()->getId(),
             DefaultEntities::PROPERTY_GROUP . '_property',
             '8',
@@ -416,7 +416,7 @@ class TranslationConverterTest extends TestCase
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
         $context = Context::createDefaultContext();
 
-        $productConverter = new Shopware55ProductConverter($this->mappingService, new DummyMediaFileService(), $this->loggingService);
+        $productConverter = new Shopware55ProductConverter($this->mappingService, $this->loggingService, new DummyMediaFileService());
         $productConverter->convert($productData[0], $context, $this->productMigrationContext);
 
         $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';

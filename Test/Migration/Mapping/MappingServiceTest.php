@@ -93,21 +93,22 @@ class MappingServiceTest extends TestCase
         );
     }
 
-    public function testCreateNewUuid(): void
+    public function testGetOrCreateMapping(): void
     {
         $context = Context::createDefaultContext();
 
-        $uuid1 = $this->mappingService->createNewUuid(Uuid::randomHex(), 'product', '123', $context);
-        static::assertNotNull($uuid1);
+        $mapping1 = $this->mappingService->getOrCreateMapping(Uuid::randomHex(), 'product', '123', $context);
+        static::assertNotNull($mapping1['id']);
+        static::assertNotNull($mapping1['entityUuid']);
 
-        $uuid2 = $this->mappingService->createNewUuid(Uuid::randomHex(), 'product', '123', $context);
-        static::assertSame($uuid1, $uuid2);
+        $mapping2 = $this->mappingService->getOrCreateMapping(Uuid::randomHex(), 'product', '123', $context);
+        static::assertSame($mapping1, $mapping2);
     }
 
     public function testReadExistingMappings(): void
     {
         $context = Context::createDefaultContext();
-        $uuid1 = $this->mappingService->createNewUuid($this->connectionId, 'product', '123', $context);
+        $mapping1 = $this->mappingService->getOrCreateMapping($this->connectionId, 'product', 'abc', $context);
 
         $this->mappingService->writeMapping($context);
         $this->clearCacheBefore();
@@ -134,15 +135,15 @@ class MappingServiceTest extends TestCase
             $this->getContainer()->get(SwagMigrationMappingDefinition::class)
         );
 
-        $uuid2 = $newMappingService->createNewUuid($this->connectionId, 'product', '123', $context);
+        $mapping2 = $newMappingService->getOrCreateMapping($this->connectionId, 'product', 'abc', $context);
 
-        static::assertSame($uuid1, $uuid2);
+        static::assertSame($mapping1['id'], $mapping2['id']);
     }
 
-    public function testGetUuidReturnsNull(): void
+    public function testGetMappingReturnsNull(): void
     {
         $context = Context::createDefaultContext();
-        static::assertNull($this->mappingService->getUuid(Uuid::randomHex(), 'product', '12345', $context));
+        static::assertNull($this->mappingService->getMapping(Uuid::randomHex(), 'product', '12345', $context));
     }
 
     public function testLocaleNotFoundException(): void
@@ -164,11 +165,11 @@ class MappingServiceTest extends TestCase
         $localeCode = 'en-GB';
 
         $this->mappingService->writeMapping($context);
-        $languageUuid = $this->mappingService->createNewUuid($this->connectionId, DefaultEntities::LANGUAGE, $localeCode, $context);
+        $languageMapping = $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::LANGUAGE, $localeCode, $context);
         $this->mappingService->writeMapping($context);
         $response = $this->mappingService->getLanguageUuid($this->connectionId, 'en-GB', $context);
 
-        static::assertSame($languageUuid, $response);
+        static::assertSame($languageMapping['entityUuid'], $response);
     }
 
     public function testGetCountryUuidWithNoResult(): void
@@ -183,19 +184,19 @@ class MappingServiceTest extends TestCase
         $context = Context::createDefaultContext();
         $localeCode = 'swagMigrationTestingLocaleCode';
 
-        $languageUuid = $this->mappingService->createNewUuid($this->connectionId, DefaultEntities::LANGUAGE, $localeCode, $context);
+        $languageMapping = $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::LANGUAGE, $localeCode, $context);
         $this->mappingService->writeMapping($context);
         $this->clearCacheBefore();
 
-        $uuid = $this->mappingService->getUuid($this->connectionId, DefaultEntities::LANGUAGE, $localeCode, $context);
-        static::assertSame($languageUuid, $uuid);
+        $mapping = $this->mappingService->getMapping($this->connectionId, DefaultEntities::LANGUAGE, $localeCode, $context);
+        static::assertSame($languageMapping['id'], $mapping['id']);
 
-        $this->mappingService->createNewUuid($this->connectionId, DefaultEntities::LANGUAGE, 'en-GB', $context);
+        $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::LANGUAGE, 'en-GB', $context);
         $this->mappingService->writeMapping($context);
 
-        $this->mappingService->deleteMapping($languageUuid, $this->connectionId, $context);
-        $uuid = $this->mappingService->getUuid($this->connectionId, DefaultEntities::LANGUAGE, $localeCode, $context);
+        $this->mappingService->deleteMapping($languageMapping['entityUuid'], $this->connectionId, $context);
+        $mapping = $this->mappingService->getMapping($this->connectionId, DefaultEntities::LANGUAGE, $localeCode, $context);
 
-        static::assertNull($uuid);
+        static::assertNull($mapping);
     }
 }

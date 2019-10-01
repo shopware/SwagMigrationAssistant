@@ -49,7 +49,7 @@ class CategoryConverterTest extends TestCase
         $mediaFileService = new DummyMediaFileService();
         $mappingService = new DummyMappingService();
         $this->loggingService = new DummyLoggingService();
-        $this->categoryConverter = new Shopware55CategoryConverter($mappingService, $mediaFileService, $this->loggingService);
+        $this->categoryConverter = new Shopware55CategoryConverter($mappingService, $this->loggingService, $mediaFileService);
 
         $this->runId = Uuid::randomHex();
         $this->connection = new SwagMigrationConnectionEntity();

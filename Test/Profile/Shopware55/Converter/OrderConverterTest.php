@@ -77,7 +77,7 @@ class OrderConverterTest extends TestCase
         $taxRuleCalculator = new TaxRuleCalculator($rounding);
 
         $taxCalculator = new TaxCalculator($taxRuleCalculator);
-        $this->orderConverter = new Shopware55OrderConverter($mappingService, $taxCalculator, $this->loggingService);
+        $this->orderConverter = new Shopware55OrderConverter($mappingService, $this->loggingService, $taxCalculator);
         $this->customerConverter = new Shopware55CustomerConverter($mappingService, $this->loggingService);
 
         $connectionId = Uuid::randomHex();
@@ -107,31 +107,32 @@ class OrderConverterTest extends TestCase
         );
 
         $context = Context::createDefaultContext();
-        $mappingService->createNewUuid(
+        $mappingService->getOrCreateMapping(
             $this->connection->getId(),
             DefaultEntities::SALES_CHANNEL,
             '1',
             $context,
             null,
+            null,
             Defaults::SALES_CHANNEL
         );
 
-        $mappingService->createNewUuid($connectionId, OrderStateReader::getMappingName(), '0', $context, [], Uuid::randomHex());
-        $mappingService->createNewUuid($connectionId, TransactionStateReader::getMappingName(), '17', $context, [], Uuid::randomHex());
+        $mappingService->getOrCreateMapping($connectionId, OrderStateReader::getMappingName(), '0', $context, null, [], Uuid::randomHex());
+        $mappingService->getOrCreateMapping($connectionId, TransactionStateReader::getMappingName(), '17', $context, null, [], Uuid::randomHex());
 
-        $mappingService->createNewUuid($connectionId, PaymentMethodReader::getMappingName(), '3', $context, [], Uuid::randomHex());
-        $mappingService->createNewUuid($connectionId, PaymentMethodReader::getMappingName(), '4', $context, [], Uuid::randomHex());
-        $mappingService->createNewUuid($connectionId, PaymentMethodReader::getMappingName(), '5', $context, [], Uuid::randomHex());
+        $mappingService->getOrCreateMapping($connectionId, PaymentMethodReader::getMappingName(), '3', $context, null, [], Uuid::randomHex());
+        $mappingService->getOrCreateMapping($connectionId, PaymentMethodReader::getMappingName(), '4', $context, null, [], Uuid::randomHex());
+        $mappingService->getOrCreateMapping($connectionId, PaymentMethodReader::getMappingName(), '5', $context, null, [], Uuid::randomHex());
 
-        $mappingService->createNewUuid($connectionId, SalutationReader::getMappingName(), 'mr', $context, [], Uuid::randomHex());
-        $mappingService->createNewUuid($connectionId, SalutationReader::getMappingName(), 'ms', $context, [], Uuid::randomHex());
+        $mappingService->getOrCreateMapping($connectionId, SalutationReader::getMappingName(), 'mr', $context, null, [], Uuid::randomHex());
+        $mappingService->getOrCreateMapping($connectionId, SalutationReader::getMappingName(), 'ms', $context, null, [], Uuid::randomHex());
 
-        $mappingService->createNewUuid($connectionId, DeliveryTimeReader::getMappingName(), 'default_delivery_time', $context, [], Uuid::randomHex());
+        $mappingService->getOrCreateMapping($connectionId, DeliveryTimeReader::getMappingName(), 'default_delivery_time', $context, null, [], Uuid::randomHex());
 
-        $mappingService->createNewUuid($connectionId, DefaultEntities::CUSTOMER_GROUP, '1', $context, [], 'cfbd5018d38d41d8adca10d94fc8bdd6');
-        $mappingService->createNewUuid($connectionId, DefaultEntities::CUSTOMER_GROUP, '2', $context, [], 'cfbd5018d38d41d8adca10d94fc8bdd6');
+        $mappingService->getOrCreateMapping($connectionId, DefaultEntities::CUSTOMER_GROUP, '1', $context, null, [], 'cfbd5018d38d41d8adca10d94fc8bdd6');
+        $mappingService->getOrCreateMapping($connectionId, DefaultEntities::CUSTOMER_GROUP, '2', $context, null, [], 'cfbd5018d38d41d8adca10d94fc8bdd6');
 
-        $mappingService->createNewUuid($connectionId, DefaultEntities::SHIPPING_METHOD, '14', $context, [], Uuid::randomHex());
+        $mappingService->getOrCreateMapping($connectionId, DefaultEntities::SHIPPING_METHOD, '14', $context, null, [], Uuid::randomHex());
     }
 
     public function testSupports(): void

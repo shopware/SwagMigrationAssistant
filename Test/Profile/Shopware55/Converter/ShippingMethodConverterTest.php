@@ -70,29 +70,32 @@ class ShippingMethodConverterTest extends TestCase
             250
         );
 
-        $mappingService->createNewUuid(
+        $mappingService->getOrCreateMapping(
             $this->connection->getId(),
             DefaultEntities::DELIVERY_TIME,
             'default_delivery_time',
             $this->context,
             null,
+            null,
             Uuid::randomHex()
         );
 
-        $mappingService->createNewUuid(
+        $mappingService->getOrCreateMapping(
             $this->connection->getId(),
             DefaultEntities::DELIVERY_TIME,
             'default_delivery_time',
             $this->context,
             null,
+            null,
             Uuid::randomHex()
         );
 
-        $mappingService->createNewUuid(
+        $mappingService->getOrCreateMapping(
             $this->connection->getId(),
             DefaultEntities::CURRENCY,
             'EUR',
             $this->context,
+            null,
             null,
             Uuid::randomHex()
         );

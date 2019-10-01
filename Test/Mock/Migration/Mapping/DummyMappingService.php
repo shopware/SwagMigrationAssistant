@@ -4,6 +4,9 @@ namespace SwagMigrationAssistant\Test\Mock\Migration\Mapping;
 
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\Language\LanguageEntity;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\Locale\LocaleEntity;
@@ -21,29 +24,6 @@ class DummyMappingService extends MappingService
 
     public function readExistingMappings(Context $context): void
     {
-    }
-
-    public function createNewUuid(
-        string $connectionId,
-        string $entityName,
-        string $oldId,
-        Context $context,
-        ?array $additionalData = null,
-        ?string $newUuid = null
-    ): string {
-        $uuid = $this->getUuid($connectionId, $entityName, $oldId, $context);
-        if ($uuid !== null) {
-            return $uuid;
-        }
-
-        $uuid = Uuid::randomHex();
-        if ($newUuid !== null) {
-            $uuid = $newUuid;
-        }
-
-        $this->uuids[$entityName][$oldId] = $uuid;
-
-        return $uuid;
     }
 
     public function createNewUuidListItem(
@@ -72,6 +52,7 @@ class DummyMappingService extends MappingService
 
         $this->saveListMapping(
             [
+                'id' => Uuid::randomHex(),
                 'connectionId' => $connectionId,
                 'entity' => $entityName,
                 'oldIdentifier' => $oldId,
@@ -87,15 +68,19 @@ class DummyMappingService extends MappingService
 
     public function saveMapping(array $mapping): void
     {
+        $entity = $mapping['entity'];
+        $oldId = $mapping['oldIdentifier'];
+        $this->mappings[md5($entity . $oldId)] = $mapping;
     }
 
-    public function setProfile(string $profileName): void
+    public function getMapping(string $connectionId, string $entityName, string $oldId, Context $context): ?array
     {
+        return $this->mappings[md5($entityName . $oldId)] ?? null;
     }
 
-    public function getUuid(string $connectionId, string $entityName, string $oldId, Context $context): ?string
+    public function getMappings(string $connectionId, string $entityName, array $ids, Context $context): EntitySearchResult
     {
-        return $this->uuids[$entityName][$oldId] ?? null;
+        return new EntitySearchResult(0, new EntityCollection(), null, new Criteria(), $context);
     }
 
     public function getUuidsByEntity(string $connectionId, string $entityName, Context $context): array
@@ -157,11 +142,6 @@ class DummyMappingService extends MappingService
         return null;
     }
 
-    public function getPrivateUuidArray(): array
-    {
-        return $this->uuids;
-    }
-
     public function getDefaultAvailabilityRule(Context $context): string
     {
         return Uuid::randomHex();
@@ -197,7 +177,7 @@ class DummyMappingService extends MappingService
         return null;
     }
 
-    public function getNumberRangeUuid(string $type, string $oldId, MigrationContextInterface $migrationContext, Context $context): ?string
+    public function getNumberRangeUuid(string $type, string $oldId, string $checksum, MigrationContextInterface $migrationContext, Context $context): ?string
     {
         return Uuid::randomHex();
     }
@@ -213,11 +193,6 @@ class DummyMappingService extends MappingService
     }
 
     public function getDefaultCmsPageUuid(string $connectionId, Context $context): ?string
-    {
-        return Uuid::randomHex();
-    }
-
-    public function getDefaultSalesChannelTheme(string $connectionId, Context $context): ?string
     {
         return Uuid::randomHex();
     }

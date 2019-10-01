@@ -195,12 +195,12 @@ class MigrateDataCommandTest extends TestCase
             $this->context
         );
 
-        $mappingService->createNewUuid($this->connectionId, DefaultEntities::CURRENCY, 'EUR', Context::createDefaultContext(), [], Uuid::randomHex());
-        $mappingService->createNewUuid($this->connectionId, DefaultEntities::LANGUAGE, 'de-DE', Context::createDefaultContext(), [], $languageUuid);
-        $mappingService->createNewUuid($this->connectionId, DefaultEntities::LANGUAGE, 'en-GB', Context::createDefaultContext(), [], $languageUuid);
-        $mappingService->createNewUuid($this->connectionId, DefaultEntities::LANGUAGE, 'en-US', Context::createDefaultContext(), [], $languageUuid);
-        $mappingService->createNewUuid($this->connectionId, DefaultEntities::LANGUAGE, 'nl-NL', Context::createDefaultContext(), [], $languageUuid);
-        $mappingService->createNewUuid($this->connectionId, DefaultEntities::LANGUAGE, 'bn-IN', Context::createDefaultContext(), [], $languageUuid);
+        $mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::CURRENCY, 'EUR', Context::createDefaultContext(), null, [], Uuid::randomHex());
+        $mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::LANGUAGE, 'de-DE', Context::createDefaultContext(), null, [], $languageUuid);
+        $mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::LANGUAGE, 'en-GB', Context::createDefaultContext(), null, [], $languageUuid);
+        $mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::LANGUAGE, 'en-US', Context::createDefaultContext(), null, [], $languageUuid);
+        $mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::LANGUAGE, 'nl-NL', Context::createDefaultContext(), null, [], $languageUuid);
+        $mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::LANGUAGE, 'bn-IN', Context::createDefaultContext(), null, [], $languageUuid);
 
         $dataFetcher = $this->getMigrationDataFetcher(
             $this->getContainer()->get(EntityWriter::class),
