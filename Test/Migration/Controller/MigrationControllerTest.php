@@ -234,7 +234,7 @@ class MigrationControllerTest extends TestCase
                 $this->getContainer()->get(IndexerMessageSender::class),
                 $this->getContainer()->get(ThemeService::class),
                 $mappingService,
-                $this->getContainer()->get('shopware.cache'),
+                $this->getContainer()->get('cache.object'),
                 $dataDefinition,
                 $this->getContainer()->get(Connection::class),
                 $loggingService
