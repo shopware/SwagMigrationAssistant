@@ -302,7 +302,7 @@ class MigrationDataWriterTest extends TestCase
             new IndexerMessageSender($this->getContainer()->get('messenger.bus.shopware'), []),
             new DummyThemeService($this->themeSalesChannelRepo),
             $this->mappingService,
-            $this->getContainer()->get('shopware.cache'),
+            $this->getContainer()->get('cache.object'),
             new SwagMigrationDataDefinition(),
             $this->dbConnection,
             new LoggingService($this->loggingRepo)

@@ -209,7 +209,7 @@ class MigrationProgressServiceTest extends TestCase
                 $this->getContainer()->get(IndexerMessageSender::class),
                 $this->getContainer()->get(ThemeService::class),
                 $this->getContainer()->get(MappingService::class),
-                $this->getContainer()->get('shopware.cache'),
+                $this->getContainer()->get('cache.object'),
                 $this->getContainer()->get(SwagMigrationDataDefinition::class),
                 $this->getContainer()->get(Connection::class),
                 new LoggingService($this->loggingRepo)

@@ -204,7 +204,7 @@ class RunServiceTest extends TestCase
             $this->getContainer()->get(IndexerMessageSender::class),
             $this->getContainer()->get(ThemeService::class),
             $this->mappingService,
-            $this->getContainer()->get('shopware.cache'),
+            $this->getContainer()->get('cache.object'),
             $this->getContainer()->get(SwagMigrationDataDefinition::class),
             $this->getContainer()->get(Connection::class),
             $loggingService
@@ -226,7 +226,7 @@ class RunServiceTest extends TestCase
             $this->getContainer()->get(IndexerMessageSender::class),
             $this->getContainer()->get(ThemeService::class),
             $this->mappingService,
-            $this->getContainer()->get('shopware.cache'),
+            $this->getContainer()->get('cache.object'),
             $this->getContainer()->get(SwagMigrationDataDefinition::class),
             $this->getContainer()->get(Connection::class),
             $loggingService
