@@ -5,6 +5,7 @@ namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 use Shopware\Core\Framework\Context;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -12,11 +13,6 @@ use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
 
 abstract class MediaConverter extends ShopwareConverter
 {
-    /**
-     * @var MappingServiceInterface
-     */
-    protected $mappingService;
-
     /**
      * @var MediaFileServiceInterface
      */
@@ -39,9 +35,11 @@ abstract class MediaConverter extends ShopwareConverter
 
     public function __construct(
         MappingServiceInterface $mappingService,
+        LoggingServiceInterface $loggingService,
         MediaFileServiceInterface $mediaFileService
     ) {
-        $this->mappingService = $mappingService;
+        parent::__construct($mappingService, $loggingService);
+
         $this->mediaFileService = $mediaFileService;
     }
 

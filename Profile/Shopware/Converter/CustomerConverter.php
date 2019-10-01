@@ -9,19 +9,12 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
 use SwagMigrationAssistant\Migration\Logging\Log\FieldReassignedRunLog;
 use SwagMigrationAssistant\Migration\Logging\Log\UnknownEntityLog;
-use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
-use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\PaymentMethodReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\SalutationReader;
 
 abstract class CustomerConverter extends ShopwareConverter
 {
-    /**
-     * @var MappingServiceInterface
-     */
-    protected $mappingService;
-
     /**
      * @var string
      */
@@ -41,11 +34,6 @@ abstract class CustomerConverter extends ShopwareConverter
      * @var string
      */
     protected $oldCustomerId;
-
-    /**
-     * @var LoggingServiceInterface
-     */
-    protected $loggingService;
 
     /**
      * @var string
@@ -75,22 +63,9 @@ abstract class CustomerConverter extends ShopwareConverter
         'salutation',
     ];
 
-    public function __construct(
-        MappingServiceInterface $mappingService,
-        LoggingServiceInterface $loggingService
-    ) {
-        $this->mappingService = $mappingService;
-        $this->loggingService = $loggingService;
-    }
-
     public function getSourceIdentifier(array $data): string
     {
         return $data['id'];
-    }
-
-    public function writeMapping(Context $context): void
-    {
-        $this->mappingService->writeMapping($context);
     }
 
     public function convert(
@@ -101,7 +76,6 @@ abstract class CustomerConverter extends ShopwareConverter
         $checksum = $this->generateChecksum($data);
         $oldData = $data;
         $this->runId = $migrationContext->getRunUuid();
-        $this->migrationContext = $migrationContext;
 
         $fields = $this->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
 

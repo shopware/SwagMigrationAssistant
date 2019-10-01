@@ -6,22 +6,10 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
-use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
-use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 abstract class MediaFolderConverter extends ShopwareConverter
 {
-    /**
-     * @var MappingServiceInterface
-     */
-    protected $mappingService;
-
-    /**
-     * @var LoggingServiceInterface
-     */
-    protected $loggingService;
-
     /**
      * @var Context
      */
@@ -38,22 +26,9 @@ abstract class MediaFolderConverter extends ShopwareConverter
     protected $mainLocale;
 
     /**
-     * @var MigrationContextInterface
-     */
-    protected $migrationContext;
-
-    /**
      * @var string
      */
     protected $oldId;
-
-    public function __construct(
-        MappingServiceInterface $mappingService,
-        LoggingServiceInterface $loggingService
-    ) {
-        $this->mappingService = $mappingService;
-        $this->loggingService = $loggingService;
-    }
 
     /**
      * Converts the given data into the internal structure
@@ -61,7 +36,6 @@ abstract class MediaFolderConverter extends ShopwareConverter
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
         $checksum = $this->generateChecksum($data);
-        $this->migrationContext = $migrationContext;
         $this->context = $context;
         $this->connectionId = $migrationContext->getConnection()->getId();
         $this->mainLocale = $data['_locale'];
@@ -80,7 +54,7 @@ abstract class MediaFolderConverter extends ShopwareConverter
         $converted['id'] = $this->mapping['entityUuid'];
         unset($data['id']);
 
-        $defaultFolderId = $this->getDefaultFolderId();
+        $defaultFolderId = $this->getDefaultFolderId($migrationContext);
         if ($defaultFolderId !== null) {
             $converted['parentId'] = $defaultFolderId;
         }
@@ -129,7 +103,7 @@ abstract class MediaFolderConverter extends ShopwareConverter
         $this->convertValue($converted, 'name', $data, 'name');
 
         if (isset($data['setting'])) {
-            $converted['configuration'] = $this->getConfiguration($data['setting']);
+            $converted['configuration'] = $this->getConfiguration($data['setting'], $migrationContext);
             unset($data['setting']);
         } else {
             $converted['useParentConfiguration'] = true;
@@ -163,7 +137,7 @@ abstract class MediaFolderConverter extends ShopwareConverter
         $this->mappingService->writeMapping($context);
     }
 
-    protected function getConfiguration(array &$setting): array
+    protected function getConfiguration(array &$setting, MigrationContextInterface $migrationContext): array
     {
         $configuration = [];
         $mapping = $this->mappingService->getOrCreateMapping(
@@ -190,7 +164,7 @@ abstract class MediaFolderConverter extends ShopwareConverter
                 $uuid = $this->mappingService->getThumbnailSizeUuid(
                     $thumbnailSize['width'],
                     $thumbnailSize['height'],
-                    $this->migrationContext,
+                    $migrationContext,
                     $this->context
                 );
 
@@ -213,16 +187,16 @@ abstract class MediaFolderConverter extends ShopwareConverter
         return $configuration;
     }
 
-    protected function getDefaultFolderId(): ?string
+    protected function getDefaultFolderId(MigrationContextInterface $migrationContext): ?string
     {
         switch ($this->oldId) {
             case '1':
             case '-12':
-                return $this->mappingService->getDefaultFolderIdByEntity(DefaultEntities::PRODUCT_MANUFACTURER, $this->migrationContext, $this->context);
+                return $this->mappingService->getDefaultFolderIdByEntity(DefaultEntities::PRODUCT_MANUFACTURER, $migrationContext, $this->context);
             case '-5':
-                return $this->mappingService->getDefaultFolderIdByEntity(DefaultEntities::MAIL_TEMPLATE, $this->migrationContext, $this->context);
+                return $this->mappingService->getDefaultFolderIdByEntity(DefaultEntities::MAIL_TEMPLATE, $migrationContext, $this->context);
             case '-1':
-                return $this->mappingService->getDefaultFolderIdByEntity(DefaultEntities::PRODUCT, $this->migrationContext, $this->context);
+                return $this->mappingService->getDefaultFolderIdByEntity(DefaultEntities::PRODUCT, $migrationContext, $this->context);
         }
 
         return null;

@@ -30,11 +30,6 @@ abstract class NumberRangeConverter extends ShopwareConverter
     ];
 
     /**
-     * @var MappingServiceInterface
-     */
-    protected $mappingService;
-
-    /**
      * @var EntityRepositoryInterface
      */
     protected $numberRangeTypeRepo;
@@ -44,19 +39,14 @@ abstract class NumberRangeConverter extends ShopwareConverter
      */
     protected $numberRangeTypes;
 
-    /**
-     * @var LoggingServiceInterface
-     */
-    protected $loggingService;
-
     public function __construct(
         MappingServiceInterface $mappingService,
-        EntityRepositoryInterface $numberRangeTypeRepo,
-        LoggingServiceInterface $loggingService
+        LoggingServiceInterface $loggingService,
+        EntityRepositoryInterface $numberRangeTypeRepo
     ) {
-        $this->mappingService = $mappingService;
+        parent::__construct($mappingService, $loggingService);
+
         $this->numberRangeTypeRepo = $numberRangeTypeRepo;
-        $this->loggingService = $loggingService;
     }
 
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
@@ -133,11 +123,6 @@ abstract class NumberRangeConverter extends ShopwareConverter
         );
 
         return new ConvertStruct($converted, $data, $this->mapping['id']);
-    }
-
-    public function writeMapping(Context $context): void
-    {
-        $this->mappingService->writeMapping($context);
     }
 
     protected function getUuid(array $data, string $checksum, MigrationContextInterface $migrationContext, Context $context): string

@@ -5,16 +5,10 @@ namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 use Shopware\Core\Framework\Context;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
-use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 abstract class CustomerGroupConverter extends ShopwareConverter
 {
-    /**
-     * @var MappingServiceInterface
-     */
-    protected $mappingService;
-
     /**
      * @var string
      */
@@ -29,11 +23,6 @@ abstract class CustomerGroupConverter extends ShopwareConverter
      * @var string
      */
     protected $locale;
-
-    public function __construct(MappingServiceInterface $mappingService)
-    {
-        $this->mappingService = $mappingService;
-    }
 
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
@@ -112,10 +101,5 @@ abstract class CustomerGroupConverter extends ShopwareConverter
         }
 
         $customerGroup['translations'][$languageUuid] = $localeTranslation;
-    }
-
-    public function writeMapping(Context $context): void
-    {
-        $this->mappingService->writeMapping($context);
     }
 }

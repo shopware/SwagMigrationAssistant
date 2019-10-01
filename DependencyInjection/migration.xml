@@ -16,6 +16,11 @@
             <argument type="service" id="SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileDefinition"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Migration\Converter\Converter" abstract="true">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\MappingService" />
+            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService" />
+        </service>
+
         <service id="SwagMigrationAssistant\Migration\Converter\ConverterRegistry"
                  class="SwagMigrationAssistant\Migration\Converter\ConverterRegistry">
             <argument type="tagged" tag="shopware.migration.converter"/>

@@ -21,16 +21,6 @@ use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderDocumentD
 abstract class OrderDocumentConverter extends ShopwareConverter
 {
     /**
-     * @var MappingServiceInterface
-     */
-    protected $mappingService;
-
-    /**
-     * @var LoggingServiceInterface
-     */
-    protected $loggingService;
-
-    /**
      * @var MediaFileServiceInterface
      */
     protected $mediaFileService;
@@ -60,14 +50,9 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         LoggingServiceInterface $loggingService,
         MediaFileServiceInterface $mediaFileService
     ) {
-        $this->mappingService = $mappingService;
-        $this->loggingService = $loggingService;
-        $this->mediaFileService = $mediaFileService;
-    }
+        parent::__construct($mappingService, $loggingService);
 
-    public function writeMapping(Context $context): void
-    {
-        $this->mappingService->writeMapping($context);
+        $this->mediaFileService = $mediaFileService;
     }
 
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct

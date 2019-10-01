@@ -29,11 +29,6 @@ use SwagMigrationAssistant\Profile\Shopware\Premapping\TransactionStateReader;
 abstract class OrderConverter extends ShopwareConverter
 {
     /**
-     * @var MappingServiceInterface
-     */
-    protected $mappingService;
-
-    /**
      * @var string
      */
     protected $mainLocale;
@@ -52,11 +47,6 @@ abstract class OrderConverter extends ShopwareConverter
      * @var string
      */
     protected $connectionId;
-
-    /**
-     * @var LoggingServiceInterface
-     */
-    protected $loggingService;
 
     /**
      * @var string
@@ -98,17 +88,12 @@ abstract class OrderConverter extends ShopwareConverter
 
     public function __construct(
         MappingServiceInterface $mappingService,
-        TaxCalculator $taxCalculator,
-        LoggingServiceInterface $loggingService
+        LoggingServiceInterface $loggingService,
+        TaxCalculator $taxCalculator
     ) {
-        $this->mappingService = $mappingService;
-        $this->taxCalculator = $taxCalculator;
-        $this->loggingService = $loggingService;
-    }
+        parent::__construct($mappingService, $loggingService);
 
-    public function writeMapping(Context $context): void
-    {
-        $this->mappingService->writeMapping($context);
+        $this->taxCalculator = $taxCalculator;
     }
 
     /**

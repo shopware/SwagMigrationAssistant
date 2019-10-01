@@ -24,11 +24,6 @@ abstract class ProductConverter extends ShopwareConverter
     public const VARIANT_PRODUCT_TYPE = 2;
 
     /**
-     * @var MappingServiceInterface
-     */
-    protected $mappingService;
-
-    /**
      * @var Context
      */
     protected $context;
@@ -52,11 +47,6 @@ abstract class ProductConverter extends ShopwareConverter
      * @var MediaFileServiceInterface
      */
     protected $mediaFileService;
-
-    /**
-     * @var LoggingServiceInterface
-     */
-    protected $loggingService;
 
     /**
      * @var string[]
@@ -95,22 +85,17 @@ abstract class ProductConverter extends ShopwareConverter
 
     public function __construct(
         MappingServiceInterface $mappingService,
-        MediaFileServiceInterface $mediaFileService,
-        LoggingServiceInterface $loggingService
+        LoggingServiceInterface $loggingService,
+        MediaFileServiceInterface $mediaFileService
     ) {
-        $this->mappingService = $mappingService;
+        parent::__construct($mappingService, $loggingService);
+
         $this->mediaFileService = $mediaFileService;
-        $this->loggingService = $loggingService;
     }
 
     public function getSourceIdentifier(array $data): string
     {
         return $data['detail']['ordernumber'];
-    }
-
-    public function writeMapping(Context $context): void
-    {
-        $this->mappingService->writeMapping($context);
     }
 
     /**

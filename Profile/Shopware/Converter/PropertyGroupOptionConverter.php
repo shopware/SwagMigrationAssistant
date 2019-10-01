@@ -16,11 +16,6 @@ use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
 abstract class PropertyGroupOptionConverter extends ShopwareConverter
 {
     /**
-     * @var MappingServiceInterface
-     */
-    protected $mappingService;
-
-    /**
      * @var string
      */
     protected $connectionId;
@@ -29,11 +24,6 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
      * @var Context
      */
     protected $context;
-
-    /**
-     * @var LoggingServiceInterface
-     */
-    protected $loggingService;
 
     /**
      * @var string
@@ -57,22 +47,17 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
 
     public function __construct(
         MappingServiceInterface $mappingService,
-        MediaFileServiceInterface $mediaFileService,
-        LoggingServiceInterface $loggingService
+        LoggingServiceInterface $loggingService,
+        MediaFileServiceInterface $mediaFileService
     ) {
-        $this->mappingService = $mappingService;
-        $this->loggingService = $loggingService;
+        parent::__construct($mappingService, $loggingService);
+
         $this->mediaFileService = $mediaFileService;
     }
 
     public function getSourceIdentifier(array $data): string
     {
         return hash('md5', strtolower($data['name'] . '_' . $data['group']['name'] . '_' . $data['type']));
-    }
-
-    public function writeMapping(Context $context): void
-    {
-        $this->mappingService->writeMapping($context);
     }
 
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct

@@ -16,11 +16,6 @@ use SwagMigrationAssistant\Profile\Shopware\Exception\ParentEntityForChildNotFou
 abstract class CategoryConverter extends ShopwareConverter
 {
     /**
-     * @var MappingServiceInterface
-     */
-    protected $mappingService;
-
-    /**
      * @var MediaFileServiceInterface
      */
     protected $mediaFileService;
@@ -41,11 +36,6 @@ abstract class CategoryConverter extends ShopwareConverter
     protected $oldCategoryId;
 
     /**
-     * @var LoggingServiceInterface
-     */
-    protected $loggingService;
-
-    /**
      * @var string
      */
     protected $locale;
@@ -57,17 +47,12 @@ abstract class CategoryConverter extends ShopwareConverter
 
     public function __construct(
         MappingServiceInterface $mappingService,
-        MediaFileServiceInterface $mediaFileService,
-        LoggingServiceInterface $loggingService
+        LoggingServiceInterface $loggingService,
+        MediaFileServiceInterface $mediaFileService
     ) {
-        $this->mappingService = $mappingService;
-        $this->mediaFileService = $mediaFileService;
-        $this->loggingService = $loggingService;
-    }
+        parent::__construct($mappingService, $loggingService);
 
-    public function writeMapping(Context $context): void
-    {
-        $this->mappingService->writeMapping($context);
+        $this->mediaFileService = $mediaFileService;
     }
 
     /**

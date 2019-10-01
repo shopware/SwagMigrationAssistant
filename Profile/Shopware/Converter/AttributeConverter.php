@@ -3,19 +3,13 @@
 namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
 use Shopware\Core\Framework\Context;
-use SwagMigrationAssistant\Migration\Converter\ConverterInterface;
+use SwagMigrationAssistant\Migration\Converter\Converter;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
-use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
-abstract class AttributeConverter implements ConverterInterface
+abstract class AttributeConverter extends Converter
 {
-    /**
-     * @var MappingServiceInterface
-     */
-    protected $mappingService;
-
     /**
      * @var array|null
      */
@@ -25,11 +19,6 @@ abstract class AttributeConverter implements ConverterInterface
      * @var array
      */
     protected $mappingIds = [];
-
-    public function __construct(MappingServiceInterface $mappingService)
-    {
-        $this->mappingService = $mappingService;
-    }
 
     public function getSourceIdentifier(array $data): string
     {

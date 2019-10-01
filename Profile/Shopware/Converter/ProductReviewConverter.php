@@ -7,8 +7,6 @@ use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
 use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
-use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
-use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 abstract class ProductReviewConverter extends ShopwareConverter
@@ -20,16 +18,6 @@ abstract class ProductReviewConverter extends ShopwareConverter
     ];
 
     /**
-     * @var MappingServiceInterface
-     */
-    private $mappingService;
-
-    /**
-     * @var LoggingServiceInterface
-     */
-    private $loggingService;
-
-    /**
      * @var string
      */
     private $connectionId;
@@ -38,14 +26,6 @@ abstract class ProductReviewConverter extends ShopwareConverter
      * @var string
      */
     private $mainLocale;
-
-    public function __construct(
-        MappingServiceInterface $mappingService,
-        LoggingServiceInterface $loggingService
-    ) {
-        $this->mappingService = $mappingService;
-        $this->loggingService = $loggingService;
-    }
 
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
@@ -176,10 +156,5 @@ abstract class ProductReviewConverter extends ShopwareConverter
         $this->convertValue($converted, 'comment', $data, 'answer');
 
         return new ConvertStruct($converted, $data);
-    }
-
-    public function writeMapping(Context $context): void
-    {
-        $this->mappingService->writeMapping($context);
     }
 }

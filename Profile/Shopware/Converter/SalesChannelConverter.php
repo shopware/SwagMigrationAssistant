@@ -39,16 +39,6 @@ abstract class SalesChannelConverter extends ShopwareConverter
     protected $salesChannelRepo;
 
     /**
-     * @var MappingServiceInterface
-     */
-    protected $mappingService;
-
-    /**
-     * @var LoggingServiceInterface
-     */
-    protected $loggingService;
-
-    /**
      * @var string
      */
     protected $mainLocale;
@@ -71,17 +61,12 @@ abstract class SalesChannelConverter extends ShopwareConverter
         EntityRepositoryInterface $countryRepo,
         EntityRepositoryInterface $salesChannelRepo
     ) {
-        $this->mappingService = $mappingService;
-        $this->loggingService = $loggingService;
+        parent::__construct($mappingService, $loggingService);
+
         $this->paymentRepository = $paymentRepository;
         $this->shippingMethodRepo = $shippingMethodRepo;
         $this->countryRepository = $countryRepo;
         $this->salesChannelRepo = $salesChannelRepo;
-    }
-
-    public function writeMapping(Context $context): void
-    {
-        $this->mappingService->writeMapping($context);
     }
 
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
