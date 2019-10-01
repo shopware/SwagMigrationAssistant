@@ -37,6 +37,7 @@
 
                                     <sw-help-text :text="getHelptext(item.entityTotals)" style="margin-left: 5px" v-if="showHelptext(item.entityTotals)">
                                     </sw-help-text>
+                                    <div v-else class="swag-migration-data-selector__help-text-placeholder"></div>
                                 </sw-grid-column>
                             {% endblock %}
                         </template>
