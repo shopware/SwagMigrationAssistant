@@ -78,11 +78,6 @@ abstract class ProductConverter extends ShopwareConverter
      */
     protected $mainProductId;
 
-    /**
-     * @var string
-     */
-    private $checksum;
-
     public function __construct(
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
@@ -106,7 +101,7 @@ abstract class ProductConverter extends ShopwareConverter
         Context $context,
         MigrationContextInterface $migrationContext
     ): ConvertStruct {
-        $this->checksum = $this->generateChecksum($data);
+        $this->generateChecksum($data);
         $this->context = $context;
         $this->migrationContext = $migrationContext;
         $this->runId = $migrationContext->getRunUuid();

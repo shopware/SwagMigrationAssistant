@@ -35,7 +35,7 @@ abstract class MediaFolderConverter extends ShopwareConverter
      */
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
-        $checksum = $this->generateChecksum($data);
+        $this->generateChecksum($data);
         $this->context = $context;
         $this->connectionId = $migrationContext->getConnection()->getId();
         $this->mainLocale = $data['_locale'];
@@ -49,7 +49,7 @@ abstract class MediaFolderConverter extends ShopwareConverter
             DefaultEntities::MEDIA_FOLDER,
             $data['id'],
             $this->context,
-            $checksum
+            $this->checksum
         );
         $converted['id'] = $this->mainMapping['entityUuid'];
         unset($data['id']);

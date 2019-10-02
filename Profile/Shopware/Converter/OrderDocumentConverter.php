@@ -57,7 +57,7 @@ abstract class OrderDocumentConverter extends ShopwareConverter
 
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
-        $checksum = $this->generateChecksum($data);
+        $this->generateChecksum($data);
         $this->oldId = $data['id'];
         $this->runId = $migrationContext->getRunUuid();
         $this->connectionId = $migrationContext->getConnection()->getId();
@@ -107,7 +107,7 @@ abstract class OrderDocumentConverter extends ShopwareConverter
             DefaultEntities::ORDER_DOCUMENT,
             $this->oldId,
             $context,
-            $checksum
+            $this->checksum
         );
         $converted['id'] = $this->mainMapping['entityUuid'];
         $converted['orderId'] = $orderUuid;

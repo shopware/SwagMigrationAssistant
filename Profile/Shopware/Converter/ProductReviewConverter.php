@@ -41,7 +41,7 @@ abstract class ProductReviewConverter extends ShopwareConverter
 
             return new ConvertStruct(null, $data);
         }
-        $checksum = $this->generateChecksum($data);
+        $this->generateChecksum($data);
         $originalData = $data;
         $this->connectionId = $migrationContext->getConnection()->getId();
         $this->mainLocale = $data['_locale'];
@@ -53,7 +53,7 @@ abstract class ProductReviewConverter extends ShopwareConverter
             DefaultEntities::PRODUCT_REVIEW,
             $data['id'],
             $context,
-            $checksum
+            $this->checksum
         );
         $converted['id'] = $this->mainMapping['entityUuid'];
         unset($data['id']);

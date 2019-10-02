@@ -71,7 +71,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
 
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
-        $checksum = $this->generateChecksum($data);
+        $this->generateChecksum($data);
         $this->context = $context;
         $this->mainLocale = $data['_locale'];
         $this->connectionId = $migrationContext->getConnection()->getId();
@@ -82,7 +82,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
             DefaultEntities::SALES_CHANNEL,
             $data['id'],
             $context,
-            $checksum
+            $this->checksum
         );
         $converted['id'] = $this->mainMapping['entityUuid'];
 

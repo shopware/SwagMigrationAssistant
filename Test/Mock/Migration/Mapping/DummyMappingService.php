@@ -22,11 +22,7 @@ class DummyMappingService extends MappingService
     {
     }
 
-    public function readExistingMappings(Context $context): void
-    {
-    }
-
-    public function createNewUuidListItem(
+    public function createListItemMapping(
         string $connectionId,
         string $entityName,
         string $oldId,
@@ -95,7 +91,9 @@ class DummyMappingService extends MappingService
 
     public function getUuidList(string $connectionId, string $entityName, string $identifier, Context $context): array
     {
-        return $this->uuids[$entityName][$identifier] ?? [];
+        return isset($this->mappings[md5($entityName . $identifier)])
+            ? array_column($this->mappings[md5($entityName . $identifier)], 'entityUuid')
+            : [];
     }
 
     public function deleteMapping(string $entityUuid, string $connectionId, Context $context): void

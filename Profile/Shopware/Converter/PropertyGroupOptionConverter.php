@@ -40,11 +40,6 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
      */
     protected $locale;
 
-    /**
-     * @var string
-     */
-    private $checksum;
-
     public function __construct(
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
@@ -62,7 +57,7 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
 
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
-        $this->checksum = $this->generateChecksum($data);
+        $this->generateChecksum($data);
         $this->context = $context;
         $this->locale = $data['_locale'];
         $this->runId = $migrationContext->getRunUuid();
@@ -281,38 +276,6 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
             $this->context
         );
         $this->mappingIds[] = $mapping['id'];
-
-        if ($data['type'] === 'option') {
-            $propertyOptionMapping = $this->mappingService->getMapping(
-                $this->connectionId,
-                DefaultEntities::PROPERTY_GROUP_OPTION,
-                hash('md5', strtolower($data['name'] . '_' . $data['group']['name'] . '_property')),
-                $this->context
-            );
-
-            $propertyGroupMapping = $this->mappingService->getMapping(
-                $this->connectionId,
-                DefaultEntities::PROPERTY_GROUP,
-                hash('md5', strtolower($data['group']['name'] . '_property')),
-                $this->context
-            );
-
-            if ($propertyOptionMapping !== null) {
-                $this->mappingService->deleteMapping(
-                    $propertyOptionMapping['entityUuid'],
-                    $this->connectionId,
-                    $this->context
-                );
-            }
-
-            if ($propertyGroupMapping !== null) {
-                $this->mappingService->deleteMapping(
-                    $propertyGroupMapping['entityUuid'],
-                    $this->connectionId,
-                    $this->context
-                );
-            }
-        }
     }
 
     protected function getTranslation(array &$data, array &$converted): void

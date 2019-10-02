@@ -39,8 +39,6 @@ class MappingService implements MappingServiceInterface
 
     protected $values = [];
 
-    protected $uuidLists = [];
-
     protected $migratedSalesChannels = [];
 
     protected $writeArray = [];
@@ -424,8 +422,8 @@ class MappingService implements MappingServiceInterface
 
     public function getUuidList(string $connectionId, string $entityName, string $identifier, Context $context): array
     {
-        if (isset($this->uuidLists[md5($entityName . $identifier)])) {
-            return $this->uuidLists[md5($entityName . $identifier)];
+        if (isset($this->mappings[md5($entityName . $identifier)])) {
+            return $this->mappings[md5($entityName . $identifier)];
         }
 
         /** @var EntitySearchResult $result */
@@ -446,7 +444,7 @@ class MappingService implements MappingServiceInterface
             }
         }
 
-        $this->uuidLists[md5($entityName . $identifier)] = $uuidList;
+        $this->mappings[md5($entityName . $identifier)] = $uuidList;
 
         return $uuidList;
     }
@@ -979,13 +977,6 @@ class MappingService implements MappingServiceInterface
     {
         $entity = $mapping['entity'];
         $oldId = $mapping['oldIdentifier'];
-
-        if (isset($mapping['entityUuid'])) {
-            $newIdentifier = $mapping['entityUuid'];
-        } else {
-            $newIdentifier = $mapping['entityValue'];
-        }
-
         $this->mappings[md5($entity . $oldId)] = $mapping;
         $this->writeArray[] = $mapping;
     }

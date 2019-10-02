@@ -63,7 +63,7 @@ abstract class CategoryConverter extends ShopwareConverter
         Context $context,
         MigrationContextInterface $migrationContext
     ): ConvertStruct {
-        $checksum = $this->generateChecksum($data);
+        $this->generateChecksum($data);
         $this->connectionId = $migrationContext->getConnection()->getId();
         $this->context = $context;
         $this->oldCategoryId = $data['id'];
@@ -152,7 +152,7 @@ abstract class CategoryConverter extends ShopwareConverter
             DefaultEntities::CATEGORY,
             $this->oldCategoryId,
             $this->context,
-            $checksum
+            $this->checksum
         );
         $converted['id'] = $this->mainMapping['entityUuid'];
         unset($data['id']);

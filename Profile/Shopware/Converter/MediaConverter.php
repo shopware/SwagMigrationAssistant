@@ -53,7 +53,7 @@ abstract class MediaConverter extends ShopwareConverter
         Context $context,
         MigrationContextInterface $migrationContext
     ): ConvertStruct {
-        $checksum = $this->generateChecksum($data);
+        $this->generateChecksum($data);
         $this->context = $context;
         $this->locale = $data['_locale'];
         unset($data['_locale']);
@@ -65,9 +65,8 @@ abstract class MediaConverter extends ShopwareConverter
             DefaultEntities::MEDIA,
             $data['id'],
             $context,
-            $checksum
+            $this->checksum
         );
-        $this->mainMapping['checksum'] = $checksum;
         $converted['id'] = $this->mainMapping['entityUuid'];
 
         if (!isset($data['name'])) {

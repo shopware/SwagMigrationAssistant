@@ -51,7 +51,7 @@ abstract class NumberRangeConverter extends ShopwareConverter
 
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
-        $checksum = $this->generateChecksum($data);
+        $this->generateChecksum($data);
         if (empty($this->numberRangeTypes)) {
             $this->numberRangeTypes = $this->numberRangeTypeRepo->search(new Criteria(), $context)->getEntities();
         }
@@ -69,7 +69,7 @@ abstract class NumberRangeConverter extends ShopwareConverter
             return new ConvertStruct(null, $data);
         }
 
-        $converted['id'] = $this->getUuid($data, $checksum, $migrationContext, $context);
+        $converted['id'] = $this->getUuid($data, $migrationContext, $context);
         $converted['typeId'] = $this->getProductNumberRangeTypeUuid($data['name']);
 
         if (empty($converted['typeId'])) {
@@ -116,7 +116,7 @@ abstract class NumberRangeConverter extends ShopwareConverter
         return new ConvertStruct($converted, $data, $this->mainMapping['id']);
     }
 
-    protected function getUuid(array $data, string $checksum, MigrationContextInterface $migrationContext, Context $context): string
+    protected function getUuid(array $data, MigrationContextInterface $migrationContext, Context $context): string
     {
         $mapping = $this->mappingService->getMapping(
             $migrationContext->getConnection()->getId(),
@@ -133,7 +133,7 @@ abstract class NumberRangeConverter extends ShopwareConverter
 
         // use global number range uuid for products if available
         if ($data['name'] === 'articleordernumber') {
-            $this->mappingService->getNumberRangeUuid('product', $data['id'], $checksum, $migrationContext, $context);
+            $this->mappingService->getNumberRangeUuid('product', $data['id'], $this->checksum, $migrationContext, $context);
         }
 
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
@@ -141,7 +141,7 @@ abstract class NumberRangeConverter extends ShopwareConverter
             DefaultEntities::NUMBER_RANGE,
             $data['id'],
             $context,
-            $checksum
+            $this->checksum
         );
 
         return $this->mainMapping['entityUuid'];

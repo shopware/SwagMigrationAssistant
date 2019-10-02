@@ -73,7 +73,7 @@ abstract class CustomerConverter extends ShopwareConverter
         Context $context,
         MigrationContextInterface $migrationContext
     ): ConvertStruct {
-        $checksum = $this->generateChecksum($data);
+        $this->generateChecksum($data);
         $oldData = $data;
         $this->runId = $migrationContext->getRunUuid();
 
@@ -100,7 +100,7 @@ abstract class CustomerConverter extends ShopwareConverter
             DefaultEntities::CUSTOMER,
             $data['id'],
             $this->context,
-            $checksum
+            $this->checksum
         );
 
         $emailMapping = $this->mappingService->getOrCreateMapping(

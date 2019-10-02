@@ -26,7 +26,7 @@ abstract class CustomerGroupConverter extends ShopwareConverter
 
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
-        $checksum = $this->generateChecksum($data);
+        $this->generateChecksum($data);
         $this->connectionId = $migrationContext->getConnection()->getId();
         $this->context = $context;
         $this->locale = $data['_locale'];
@@ -37,7 +37,7 @@ abstract class CustomerGroupConverter extends ShopwareConverter
             DefaultEntities::CUSTOMER_GROUP,
             $data['id'],
             $context,
-            $checksum
+            $this->checksum
         );
         $converted['id'] = $this->mainMapping['entityUuid'];
 

@@ -55,7 +55,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
 
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
-        $checksum = $this->generateChecksum($data);
+        $this->generateChecksum($data);
         $this->context = $context;
         $this->runId = $migrationContext->getRunUuid();
         $this->connectionId = $migrationContext->getConnection()->getId();
@@ -81,7 +81,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             DefaultEntities::SHIPPING_METHOD,
             $data['id'],
             $this->context,
-            $checksum
+            $this->checksum
         );
         $converted['id'] = $this->mainMapping['entityUuid'];
 

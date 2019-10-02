@@ -34,17 +34,12 @@ abstract class TranslationConverter extends ShopwareConverter
      */
     protected $runId;
 
-    /**
-     * @var string
-     */
-    private $checksum;
-
     public function convert(
         array $data,
         Context $context,
         MigrationContextInterface $migrationContext
     ): ConvertStruct {
-        $this->checksum = $this->generateChecksum($data);
+        $this->generateChecksum($data);
         $this->connectionId = $migrationContext->getConnection()->getId();
         $this->context = $context;
         $this->migrationContext = $migrationContext;

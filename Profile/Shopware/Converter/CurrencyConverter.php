@@ -31,7 +31,7 @@ abstract class CurrencyConverter extends ShopwareConverter
 
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
-        $checksum = $this->generateChecksum($data);
+        $this->generateChecksum($data);
         $this->context = $context;
         $this->mainLocale = $data['_locale'];
         $this->connectionId = $migrationContext->getConnection()->getId();
@@ -47,7 +47,7 @@ abstract class CurrencyConverter extends ShopwareConverter
             DefaultEntities::CURRENCY,
             $data['currency'],
             $context,
-            $checksum
+            $this->checksum
         );
         $converted['id'] = $this->mainMapping['entityUuid'];
 

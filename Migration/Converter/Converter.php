@@ -29,6 +29,11 @@ abstract class Converter implements ConverterInterface
      */
     protected $mappingIds = [];
 
+    /**
+     * @var string
+     */
+    protected $checksum;
+
     public function __construct(
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService
@@ -46,9 +51,9 @@ abstract class Converter implements ConverterInterface
      * Generates a unique checksum for the data array to recognize changes
      * on repeated migrations.
      */
-    protected function generateChecksum(array $data): string
+    protected function generateChecksum(array $data): void
     {
-        return md5(serialize($data));
+        $this->checksum = md5(serialize($data));
     }
 
     /**
@@ -56,6 +61,7 @@ abstract class Converter implements ConverterInterface
      */
     protected function updateMainMapping(MigrationContextInterface $migrationContext, Context $context): void
     {
+        $this->mainMapping['checksum'] = $this->checksum;
         $this->mainMapping['additionalData']['relatedMappings'] = $this->mappingIds;
         $this->mappingIds = [];
 

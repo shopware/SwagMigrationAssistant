@@ -64,7 +64,7 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         }
         $this->connectionId = $migrationContext->getConnection()->getId();
         $oldData = $data;
-        $checksum = $this->generateChecksum($data);
+        $this->generateChecksum($data);
         $this->context = $context;
         $this->locale = $data['_locale'];
         unset($data['_locale']);
@@ -76,7 +76,7 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
             DefaultEntities::NEWSLETTER_RECIPIENT,
             $this->oldNewsletterRecipientId,
             $context,
-            $checksum
+            $this->checksum
         );
         $converted['id'] = $this->mainMapping['entityUuid'];
 

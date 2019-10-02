@@ -17,7 +17,7 @@ abstract class AttributeConverter extends Converter
 
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
-        $checksum = $this->generateChecksum($data);
+        $this->generateChecksum($data);
         $converted = [];
 
         $mapping = $this->mappingService->getOrCreateMapping(
@@ -60,7 +60,7 @@ abstract class AttributeConverter extends Converter
             $migrationContext->getDataSet()::getEntity(),
             $data['name'],
             $context,
-            $checksum
+            $this->checksum
         );
         $converted['customFields'] = [
             [
