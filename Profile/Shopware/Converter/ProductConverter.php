@@ -514,7 +514,7 @@ abstract class ProductConverter extends ShopwareConverter
 
         foreach ($data['configuratorOptions'] as $option) {
             if ($productContainerMapping !== null) {
-                $this->mappingService->createNewUuidListItem(
+                $this->mappingService->createListItemMapping(
                     $this->connectionId,
                     'main_product_options',
                     hash('md5', strtolower($option['name'] . '_' . $option['group']['name'])),
@@ -598,7 +598,7 @@ abstract class ProductConverter extends ShopwareConverter
                 continue;
             }
 
-            $this->mappingService->createNewUuidListItem(
+            $this->mappingService->createListItemMapping(
                 $this->connectionId,
                 'main_product_filter',
                 hash('md5', strtolower($option['value'] . '_' . $option['option']['name'])),

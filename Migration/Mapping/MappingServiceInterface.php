@@ -5,7 +5,6 @@ namespace SwagMigrationAssistant\Migration\Mapping;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\Language\LanguageEntity;
-use Shopware\Core\System\Currency\CurrencyEntity;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 interface MappingServiceInterface
@@ -48,7 +47,7 @@ interface MappingServiceInterface
         Context $context
     ): array;
 
-    public function createNewUuidListItem(
+    public function createListItemMapping(
         string $connectionId,
         string $entityName,
         string $oldId,
@@ -72,8 +71,6 @@ interface MappingServiceInterface
     public function getCountryUuid(string $oldId, string $iso, string $iso3, string $connectionId, Context $context): ?string;
 
     public function getCurrencyUuid(string $connectionId, string $oldIsoCode, Context $context): ?string;
-
-    public function getDefaultCurrency(Context $context): CurrencyEntity;
 
     public function getCurrencyUuidWithoutMapping(string $connectionId, string $oldIsoCode, Context $context): ?string;
 
