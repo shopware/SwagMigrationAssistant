@@ -40,16 +40,16 @@ Component.register('swag-migration-history-detail-data', {
             return [
                 {
                     property: 'name',
-                    dataIndex: 'name',
                     label: this.$t('swag-migration.history.detailPage.dataName'),
                     primary: true,
-                    allowResize: true
+                    allowResize: true,
+                    sortable: false
                 },
                 {
                     property: 'count',
-                    dataIndex: 'count',
                     label: this.$t('swag-migration.history.detailPage.dataCount'),
-                    allowResize: true
+                    allowResize: true,
+                    sortable: false
                 }
             ];
         },
@@ -62,6 +62,8 @@ Component.register('swag-migration-history-detail-data', {
     methods: {
         getList() {
             this.isLoading = true;
+
+            // ToDo - PT-10881: Implement sorting
 
             this.total = this.entityGroups.length;
             const start = (this.page - 1) * this.limit;
