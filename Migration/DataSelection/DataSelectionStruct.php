@@ -20,6 +20,11 @@ class DataSelectionStruct extends Struct
     protected $entityNames;
 
     /**
+     * @var string[]
+     */
+    protected $entityNamesRequiredForCount;
+
+    /**
      * @var int[]
      */
     protected $entityTotals = [];
@@ -57,6 +62,7 @@ class DataSelectionStruct extends Struct
     public function __construct(
         string $id,
         array $entityNames,
+        array $entityNamesRequiredForCount,
         string $snippet,
         int $position,
         bool $processMediaFiles = false,
@@ -65,6 +71,7 @@ class DataSelectionStruct extends Struct
     ) {
         $this->id = $id;
         $this->entityNames = $entityNames;
+        $this->entityNamesRequiredForCount = $entityNamesRequiredForCount;
         $this->snippet = $snippet;
         $this->position = $position;
         $this->processMediaFiles = $processMediaFiles;
@@ -80,6 +87,24 @@ class DataSelectionStruct extends Struct
     public function getEntityNames(): array
     {
         return $this->entityNames;
+    }
+
+    public function getCountedTotal(array $totals): int
+    {
+        $countedTotal = 0;
+
+        foreach ($this->entityNamesRequiredForCount as $countedEntityName) {
+            if (isset($totals[$countedEntityName])) {
+                $countedTotal += $totals[$countedEntityName]->getTotal();
+            }
+        }
+
+        return $countedTotal;
+    }
+
+    public function getEntityNamesRequiredForCount(): array
+    {
+        return $this->entityNamesRequiredForCount;
     }
 
     public function getProcessMediaFiles(): bool

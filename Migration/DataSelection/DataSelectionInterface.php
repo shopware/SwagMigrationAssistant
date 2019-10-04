@@ -14,4 +14,9 @@ interface DataSelectionInterface
      * @return string[]
      */
     public function getEntityNames(): array;
+
+    /**
+     * @return string[]
+     */
+    public function getEntityNamesRequiredForCount(): array;
 }

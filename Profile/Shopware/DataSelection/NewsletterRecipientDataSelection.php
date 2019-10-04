@@ -22,6 +22,7 @@ class NewsletterRecipientDataSelection implements DataSelectionInterface
         return new DataSelectionStruct(
             self::IDENTIFIER,
             $this->getEntityNames(),
+            $this->getEntityNamesRequiredForCount(),
             'swag-migration.index.selectDataCard.dataSelection.newsletterRecipient',
             400,
             false
@@ -36,5 +37,10 @@ class NewsletterRecipientDataSelection implements DataSelectionInterface
         return [
             NewsletterRecipientDataSet::getEntity(),
         ];
+    }
+
+    public function getEntityNamesRequiredForCount(): array
+    {
+        return $this->getEntityNames();
     }
 }
