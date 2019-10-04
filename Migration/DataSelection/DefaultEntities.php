@@ -128,6 +128,8 @@ final class DefaultEntities
 
     public const SALES_CHANNEL_TRANSLATION = 'sales_channel_translation';
 
+    public const SEO_URL = 'seo_url';
+
     public const SHIPPING_METHOD = 'shipping_method';
 
     public const SHIPPING_METHOD_PRICE = 'shipping_method_price';

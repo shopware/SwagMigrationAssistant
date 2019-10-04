@@ -184,7 +184,8 @@
           "numberRanges": "Nummernkreise",
           "basicSettings": "Grundeinstellungen",
           "newsletterRecipient": "Newsletter-Empfänger",
-          "productReviews": "Produktbewertungen"
+          "productReviews": "Produktbewertungen",
+          "seoUrls": "SEO Urls"
         },
         "entities": {
           "category": "Kategorien:",
