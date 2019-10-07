@@ -467,6 +467,13 @@
             <tag name="shopware.migration.pre_mapping_reader"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware\Premapping\OrderDeliveryStateReader">
+            <argument type="service" id="state_machine.repository"/>
+            <argument type="service" id="state_machine_state.repository"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Gateway\GatewayRegistry"/>
+            <tag name="shopware.migration.pre_mapping_reader"/>
+        </service>
+
         <service id="SwagMigrationAssistant\Profile\Shopware\Premapping\TransactionStateReader">
             <argument type="service" id="state_machine.repository"/>
             <argument type="service" id="state_machine_state.repository"/>

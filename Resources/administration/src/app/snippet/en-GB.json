@@ -228,6 +228,7 @@
         "unfilledCardTitle": "Manual assignments",
         "group": {
           "order_state": "Order states",
+          "order_delivery_state": "Order delivery states",
           "transaction_state": "Transaction states",
           "payment_method": "Payment methods",
           "manufacturer": "Manufacturers",

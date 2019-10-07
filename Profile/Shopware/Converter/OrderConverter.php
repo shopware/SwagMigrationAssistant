@@ -20,6 +20,7 @@ use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Exception\AssociationEntityRequiredMissingException;
+use SwagMigrationAssistant\Profile\Shopware\Premapping\OrderDeliveryStateReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\OrderStateReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\PaymentMethodReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\SalutationReader;
@@ -239,7 +240,6 @@ abstract class OrderConverter extends ShopwareConverter
 
             return new ConvertStruct(null, $data);
         }
-        unset($data['status'], $data['orderstatus']);
 
         $shippingCosts = new CalculatedPrice(
             (float) $data['invoice_shipping'],
@@ -277,7 +277,14 @@ abstract class OrderConverter extends ShopwareConverter
         );
 
         $converted['deliveries'] = $this->getDeliveries($data, $converted, $shippingCosts);
-        unset($data['trackingcode'], $data['shippingMethod'], $data['dispatchID'], $data['shippingaddress']);
+        unset(
+            $data['trackingcode'],
+            $data['shippingMethod'],
+            $data['dispatchID'],
+            $data['shippingaddress'],
+            $data['status'],
+            $data['orderstatus']
+        );
 
         $this->getTransactions($data, $converted);
         unset($data['cleared'], $data['paymentstatus']);
@@ -607,6 +614,13 @@ abstract class OrderConverter extends ShopwareConverter
     protected function getDeliveries(array $data, array $converted, CalculatedPrice $shippingCosts): array
     {
         $deliveries = [];
+
+        $deliveryStateId = $this->mappingService->getUuid(
+            $this->connectionId,
+            OrderDeliveryStateReader::getMappingName(),
+            (string) $data['status'],
+            $this->context
+        );
 
         $delivery = [
             'id' => $this->mappingService->createNewUuid(
