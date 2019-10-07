@@ -228,6 +228,7 @@
         "unfilledCardTitle": "Manuelle Zuordnung",
         "group": {
           "order_state": "Bestellstatus",
+          "order_delivery_state:": "Lieferstatus",
           "transaction_state": "Zahlungsstatus",
           "payment_method": "Zahlungsarten",
           "manufacturer": "Hersteller",
