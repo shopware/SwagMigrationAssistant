@@ -17,7 +17,6 @@ abstract class ProductReviewConverter extends ShopwareConverter
         '_locale',
         'articleID',
         'email',
-        'shop_id',
     ];
 
     /**
@@ -119,10 +118,11 @@ abstract class ProductReviewConverter extends ShopwareConverter
         }
         unset($data['email']);
 
+        $shopId = $data['shop_id'] === null ? $data['mainShopId'] : $data['shop_id'];
         $converted['salesChannelId'] = $this->mappingService->getUuid(
             $this->connectionId,
             DefaultEntities::SALES_CHANNEL,
-            $data['shop_id'],
+            $shopId,
             $context
         );
 
@@ -131,14 +131,14 @@ abstract class ProductReviewConverter extends ShopwareConverter
                 new AssociationRequiredMissingLog(
                     $migrationContext->getRunUuid(),
                     DefaultEntities::SALES_CHANNEL,
-                    $data['shop_id'],
+                    $shopId,
                     DefaultEntities::PRODUCT_REVIEW
                 )
             );
 
             return new ConvertStruct(null, $originalData);
         }
-        unset($data['shop_id']);
+        unset($data['shop_id'], $data['mainShopId']);
 
         $converted['languageId'] = $this->mappingService->getLanguageUuid(
             $this->connectionId,
@@ -160,6 +160,9 @@ abstract class ProductReviewConverter extends ShopwareConverter
         }
 
         $this->convertValue($converted, 'title', $data, 'headline');
+        if (empty($converted['title'])) {
+            $converted['title'] = substr($data['comment'], 0, 30) . '...';
+        }
         $this->convertValue($converted, 'content', $data, 'comment');
         $this->convertValue($converted, 'points', $data, 'points', self::TYPE_FLOAT);
         $this->convertValue($converted, 'status', $data, 'active', self::TYPE_BOOLEAN);
