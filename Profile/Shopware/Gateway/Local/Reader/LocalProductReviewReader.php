@@ -19,7 +19,7 @@ class LocalProductReviewReader extends LocalAbstractReader implements LocalReade
     {
         $this->setConnection($migrationContext);
         $fetchedReviews = $this->fetchReviews($migrationContext);
-        $fetchedReviews = $this->mapData($fetchedReviews, [], ['vote']);
+        $fetchedReviews = $this->mapData($fetchedReviews, [], ['vote', 'mainShopId']);
 
         foreach ($fetchedReviews as &$review) {
             $review['_locale'] = str_replace('_', '-', $review['_locale']);
@@ -37,7 +37,8 @@ class LocalProductReviewReader extends LocalAbstractReader implements LocalReade
         $query->from('s_articles_vote', 'vote');
         $this->addTableSelection($query, 's_articles_vote', 'vote');
 
-        $query->leftJoin('vote', 's_core_shops', 'shop', 'shop.id = vote.shop_id');
+        $query->leftJoin('vote', 's_core_shops', 'shop', 'shop.id = vote.shop_id OR (vote.shop_id IS NULL AND shop.default = 1)');
+        $query->addSelect('shop.id as mainShopId');
         $query->leftJoin('shop', 's_core_locales', 'locale', 'shop.locale_id = locale.id');
         $query->addSelect('locale.locale as _locale');
 
