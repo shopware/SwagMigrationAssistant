@@ -200,7 +200,8 @@
           "shipping_method": "Shipping methods:",
           "currency": "Currencies:",
           "sales_channel": "Sales channels:",
-          "product_review": "Reviews:"
+          "product_review": "Reviews:",
+          "seo_url": "Seo urls:"
         },
         "noData": "Nothing found to migrate."
       },

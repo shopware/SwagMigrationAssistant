@@ -200,7 +200,8 @@
           "shipping_method": "Versandmethoden:",
           "currency": "Währungen:",
           "sales_channel": "Verkaufskanäle:",
-          "product_review": "Bewertungen:"
+          "product_review": "Bewertungen:",
+          "seo_url": "Seo Urls:"
         },
         "noData": "Es wurden keine Daten zum Migrieren gefunden."
       },
