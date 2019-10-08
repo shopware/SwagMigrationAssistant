@@ -45,8 +45,6 @@ class LocalProductReviewReader extends LocalAbstractReader implements LocalReade
         $query->where('vote.id IN (:ids)');
         $query->setParameter('ids', $ids, Connection::PARAM_STR_ARRAY);
 
-        $query->addOrderBy('vote.id');
-
         return $query->execute()->fetchAll();
     }
 }

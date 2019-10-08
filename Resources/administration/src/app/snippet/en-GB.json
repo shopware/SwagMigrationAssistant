@@ -184,7 +184,8 @@
           "numberRanges": "Number ranges",
           "basicSettings": "Basic settings",
           "newsletterRecipient": "Newsletter recipient",
-          "productReviews": "Product reviews"
+          "productReviews": "Product reviews",
+          "seoUrls": "Seo urls"
         },
         "entities": {
           "category": "Categories:",

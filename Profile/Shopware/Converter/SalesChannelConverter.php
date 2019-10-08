@@ -86,6 +86,10 @@ abstract class SalesChannelConverter extends ShopwareConverter
         );
         $converted['id'] = $this->mainMapping['entityUuid'];
 
+        if (isset($data['children']) && \count($data['children']) > 0) {
+            $this->setRelationMappings($data['children']);
+        }
+
         $customerGroupMapping = $this->mappingService->getMapping(
             $this->connectionId,
             DefaultEntities::CUSTOMER_GROUP,
@@ -345,5 +349,21 @@ abstract class SalesChannelConverter extends ShopwareConverter
         }
 
         return $languages;
+    }
+
+    private function setRelationMappings(array $children): void
+    {
+        foreach ($children as $shop) {
+            $mapping = $this->mappingService->getOrCreateMapping(
+                $this->connectionId,
+                DefaultEntities::SALES_CHANNEL,
+                $shop['id'],
+                $this->context,
+                null,
+                null,
+                $this->mainMapping['entityUuid']
+            );
+            $this->mappingIds[] = $mapping['id'];
+        }
     }
 }
