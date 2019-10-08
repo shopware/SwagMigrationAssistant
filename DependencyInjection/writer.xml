@@ -10,7 +10,7 @@
             <argument type="tagged" tag="shopware.migration.writer"/>
         </service>
 
-        <service id="SwagMigrationAssistant\Migration\Writer\AbstractWriter" abstract="true" />
+        <service id="SwagMigrationAssistant\Migration\Writer\AbstractWriter" abstract="true"/>
 
         <service id="SwagMigrationAssistant\Migration\Writer\ProductWriter"
                  parent="SwagMigrationAssistant\Migration\Writer\AbstractWriter">

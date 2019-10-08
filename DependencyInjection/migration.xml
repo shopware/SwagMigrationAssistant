@@ -63,7 +63,7 @@
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Indexing\MessageQueue\IndexerMessageSender"/>
             <argument type="service" id="Shopware\Storefront\Theme\ThemeService"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\MappingService"/>
-            <argument type="service" id="cache.object" />
+            <argument type="service" id="cache.object"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition"/>
             <argument type="service" id="Doctrine\DBAL\Connection"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
@@ -85,12 +85,12 @@
         </service>
 
         <service id="SwagMigrationAssistant\Migration\Service\MigrationDataConverter" public="true">
-            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter" />
-            <argument type="service" id="SwagMigrationAssistant\Migration\Converter\ConverterRegistry" />
-            <argument type="service" id="SwagMigrationAssistant\Migration\Media\MediaFileService" />
-            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService" />
-            <argument type="service" id="SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition" />
-            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\MappingService" />
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Converter\ConverterRegistry"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Media\MediaFileService"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\MappingService"/>
         </service>
 
         <service id="SwagMigrationAssistant\Migration\Service\MigrationDataWriter" public="true">
@@ -126,19 +126,19 @@
 
         <service id="SwagMigrationAssistant\Controller\MigrationController" public="true">
             <argument type="service" id="SwagMigrationAssistant\Migration\Service\MigrationDataFetcher"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\Service\MigrationDataConverter" />
+            <argument type="service" id="SwagMigrationAssistant\Migration\Service\MigrationDataConverter"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Service\MigrationDataWriter"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Service\MediaFileProcessorService"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Run\RunService"/>
             <argument type="service" id="swag_migration_run.repository"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\MigrationContextFactory" />
+            <argument type="service" id="SwagMigrationAssistant\Migration\MigrationContextFactory"/>
         </service>
 
         <service id="SwagMigrationAssistant\Controller\PremappingController" public="true">
             <argument type="service" id="SwagMigrationAssistant\Migration\Service\PremappingService"/>
             <argument type="service" id="swag_migration_run.repository"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\MigrationContextFactory" />
+            <argument type="service" id="SwagMigrationAssistant\Migration\MigrationContextFactory"/>
         </service>
 
         <service id="SwagMigrationAssistant\Controller\StatusController" public="true">
@@ -149,7 +149,7 @@
             <argument type="service" id="swag_migration_connection.repository"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Profile\ProfileRegistry"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Gateway\GatewayRegistry"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\MigrationContextFactory" />
+            <argument type="service" id="SwagMigrationAssistant\Migration\MigrationContextFactory"/>
         </service>
 
         <service id="SwagMigrationAssistant\Controller\HistoryController" public="true">
@@ -160,14 +160,14 @@
             <argument type="service" id="swag_migration_general_setting.repository"/>
             <argument type="service" id="swag_migration_connection.repository"/>
             <argument type="service" id="swag_migration_run.repository"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry" />
-            <argument type="service" id="SwagMigrationAssistant\Migration\Run\RunService" />
-            <argument type="service" id="SwagMigrationAssistant\Migration\Service\PremappingService" />
-            <argument type="service" id="SwagMigrationAssistant\Migration\Service\MigrationDataFetcher" />
-            <argument type="service" id="SwagMigrationAssistant\Migration\Service\MigrationDataConverter" />
-            <argument type="service" id="SwagMigrationAssistant\Migration\Service\MigrationDataWriter" />
-            <argument type="service" id="SwagMigrationAssistant\Migration\Service\MediaFileProcessorService" />
-            <argument type="service" id="SwagMigrationAssistant\Migration\MigrationContextFactory" />
+            <argument type="service" id="SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Run\RunService"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Service\PremappingService"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Service\MigrationDataFetcher"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Service\MigrationDataConverter"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Service\MigrationDataWriter"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Service\MediaFileProcessorService"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\MigrationContextFactory"/>
             <argument>migration:migrate</argument>
             <tag name="console.command" command="migration:migrate"/>
         </service>
@@ -177,7 +177,7 @@
         </service>
 
         <service id="SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry">
-            <argument type="tagged" tag="shopware.migration.data_set" />
+            <argument type="tagged" tag="shopware.migration.data_set"/>
         </service>
 
         <service id="SwagMigrationAssistant\Migration\Premapping\PremappingReaderRegistry">
@@ -193,11 +193,11 @@
         </service>
 
         <service id="SwagMigrationAssistant\Migration\MessageQueue\Handler\ProcessMediaHandler">
-            <argument type="service" id="swag_migration_run.repository" />
+            <argument type="service" id="swag_migration_run.repository"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Media\MediaFileProcessorRegistry"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\MigrationContextFactory" />
-            <tag name="messenger.message_handler" />
+            <argument type="service" id="SwagMigrationAssistant\Migration\MigrationContextFactory"/>
+            <tag name="messenger.message_handler"/>
         </service>
     </services>
 </container>
