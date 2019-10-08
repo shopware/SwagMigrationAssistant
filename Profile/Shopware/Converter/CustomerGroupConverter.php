@@ -5,16 +5,10 @@ namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 use Shopware\Core\Framework\Context;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
-use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 abstract class CustomerGroupConverter extends ShopwareConverter
 {
-    /**
-     * @var MappingServiceInterface
-     */
-    protected $mappingService;
-
     /**
      * @var string
      */
@@ -30,24 +24,22 @@ abstract class CustomerGroupConverter extends ShopwareConverter
      */
     protected $locale;
 
-    public function __construct(MappingServiceInterface $mappingService)
-    {
-        $this->mappingService = $mappingService;
-    }
-
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
+        $this->generateChecksum($data);
         $this->connectionId = $migrationContext->getConnection()->getId();
         $this->context = $context;
         $this->locale = $data['_locale'];
         unset($data['_locale']);
 
-        $converted['id'] = $this->mappingService->createNewUuid(
+        $this->mainMapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::CUSTOMER_GROUP,
             $data['id'],
-            $context
+            $context,
+            $this->checksum
         );
+        $converted['id'] = $this->mainMapping['entityUuid'];
 
         if (isset($data['attributes'])) {
             $converted['customFields'] = $this->getAttributes($data['attributes'], DefaultEntities::CUSTOMER_GROUP, $migrationContext->getConnection()->getName(), ['id', 'customerGroupID']);
@@ -66,8 +58,9 @@ abstract class CustomerGroupConverter extends ShopwareConverter
         if (empty($data)) {
             $data = null;
         }
+        $this->updateMainMapping($migrationContext, $context);
 
-        return new ConvertStruct($converted, $data);
+        return new ConvertStruct($converted, $data, $this->mainMapping['id']);
     }
 
     public function getCustomerGroupTranslation(array &$customerGroup, array $data): void
@@ -82,12 +75,14 @@ abstract class CustomerGroupConverter extends ShopwareConverter
 
         $this->convertValue($localeTranslation, 'name', $data, 'description');
 
-        $localeTranslation['id'] = $this->mappingService->createNewUuid(
+        $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::CUSTOMER_GROUP_TRANSLATION,
             $data['id'] . ':' . $this->locale,
             $this->context
         );
+        $localeTranslation['id'] = $mapping['entityUuid'];
+        $this->mappingIds[] = $mapping['id'];
 
         $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->locale, $this->context);
         $localeTranslation['languageId'] = $languageUuid;
@@ -97,10 +92,5 @@ abstract class CustomerGroupConverter extends ShopwareConverter
         }
 
         $customerGroup['translations'][$languageUuid] = $localeTranslation;
-    }
-
-    public function writeMapping(Context $context): void
-    {
-        $this->mappingService->writeMapping($context);
     }
 }

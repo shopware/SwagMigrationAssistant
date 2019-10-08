@@ -68,14 +68,14 @@ class PropertyGroupOptionConverterTest extends TestCase
 
         $this->propertyGroupOptionConverter = new Shopware55PropertyGroupOptionConverter(
             $this->mappingService,
-            $mediaFileService,
-            $this->loggingService
+            $this->loggingService,
+            $mediaFileService
         );
 
         $this->productConverter = new Shopware55ProductConverter(
             $this->mappingService,
-            $mediaFileService,
-            $this->loggingService
+            $this->loggingService,
+            $mediaFileService
         );
 
         $this->runId = Uuid::randomHex();
@@ -94,7 +94,7 @@ class PropertyGroupOptionConverterTest extends TestCase
             250
         );
 
-        $this->mappingService->createNewUuid($this->connection->getId(), DefaultEntities::CURRENCY, 'EUR', Context::createDefaultContext(), [], Uuid::randomHex());
+        $this->mappingService->getOrCreateMapping($this->connection->getId(), DefaultEntities::CURRENCY, 'EUR', Context::createDefaultContext(), null, [], Uuid::randomHex());
     }
 
     public function testSupports(): void

@@ -10,6 +10,7 @@ use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductPriceAttributeDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55ProductPriceAttributeConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 
 class ProductPriceAttributeConverterTest extends TestCase
@@ -26,7 +27,7 @@ class ProductPriceAttributeConverterTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->converter = new Shopware55ProductPriceAttributeConverter(new DummyMappingService());
+        $this->converter = new Shopware55ProductPriceAttributeConverter(new DummyMappingService(), new DummyLoggingService());
 
         $runId = Uuid::randomHex();
         $connection = new SwagMigrationConnectionEntity();

@@ -29,11 +29,6 @@ use SwagMigrationAssistant\Profile\Shopware\Premapping\TransactionStateReader;
 abstract class OrderConverter extends ShopwareConverter
 {
     /**
-     * @var MappingServiceInterface
-     */
-    protected $mappingService;
-
-    /**
      * @var string
      */
     protected $mainLocale;
@@ -52,11 +47,6 @@ abstract class OrderConverter extends ShopwareConverter
      * @var string
      */
     protected $connectionId;
-
-    /**
-     * @var LoggingServiceInterface
-     */
-    protected $loggingService;
 
     /**
      * @var string
@@ -98,17 +88,12 @@ abstract class OrderConverter extends ShopwareConverter
 
     public function __construct(
         MappingServiceInterface $mappingService,
-        TaxCalculator $taxCalculator,
-        LoggingServiceInterface $loggingService
+        LoggingServiceInterface $loggingService,
+        TaxCalculator $taxCalculator
     ) {
-        $this->mappingService = $mappingService;
-        $this->taxCalculator = $taxCalculator;
-        $this->loggingService = $loggingService;
-    }
+        parent::__construct($mappingService, $loggingService);
 
-    public function writeMapping(Context $context): void
-    {
-        $this->mappingService->writeMapping($context);
+        $this->taxCalculator = $taxCalculator;
     }
 
     /**
@@ -119,6 +104,7 @@ abstract class OrderConverter extends ShopwareConverter
         Context $context,
         MigrationContextInterface $migrationContext
     ): ConvertStruct {
+        $this->generateChecksum($data);
         $this->oldId = $data['id'];
         $this->runId = $migrationContext->getRunUuid();
 
@@ -147,26 +133,28 @@ abstract class OrderConverter extends ShopwareConverter
         $this->connectionId = $migrationContext->getConnection()->getId();
 
         $converted = [];
-        $converted['id'] = $this->mappingService->createNewUuid(
+        $this->mainMapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::ORDER,
             $data['id'],
-            $this->context
+            $this->context,
+            $this->checksum
         );
+        $converted['id'] = $this->mainMapping['entityUuid'];
         unset($data['id']);
         $this->uuid = $converted['id'];
 
         $this->convertValue($converted, 'orderNumber', $data, 'ordernumber');
 
-        $customerId = $this->mappingService->getUuid(
+        $customerMapping = $this->mappingService->getMapping(
             $this->connectionId,
             DefaultEntities::CUSTOMER,
             $data['customer']['email'],
             $this->context
         );
 
-        if ($customerId === null) {
-            $customerId = $this->mappingService->getUuid(
+        if ($customerMapping === null) {
+            $customerMapping = $this->mappingService->getMapping(
                 $this->connectionId,
                 DefaultEntities::CUSTOMER,
                 $data['userID'],
@@ -174,7 +162,7 @@ abstract class OrderConverter extends ShopwareConverter
             );
         }
 
-        if ($customerId === null) {
+        if ($customerMapping === null) {
             throw new AssociationEntityRequiredMissingException(
                 DefaultEntities::ORDER,
                 DefaultEntities::CUSTOMER
@@ -182,8 +170,10 @@ abstract class OrderConverter extends ShopwareConverter
         }
 
         $converted['orderCustomer'] = [
-            'customerId' => $customerId,
+            'customerId' => $customerMapping['entityUuid'],
         ];
+        $this->mappingIds[] = $customerMapping['id'];
+        unset($customerMapping);
 
         $salutationUuid = $this->getSalutation($data['customer']['salutation']);
         if ($salutationUuid === null) {
@@ -222,14 +212,14 @@ abstract class OrderConverter extends ShopwareConverter
 
         $this->convertValue($converted, 'orderDateTime', $data, 'ordertime', self::TYPE_DATETIME);
 
-        $converted['stateId'] = $this->mappingService->getUuid(
+        $stateMapping = $this->mappingService->getMapping(
             $this->connectionId,
             OrderStateReader::getMappingName(),
             (string) $data['status'],
             $this->context
         );
 
-        if (!isset($converted['stateId'])) {
+        if ($stateMapping === null) {
             $this->loggingService->addLogEntry(new UnknownEntityLog(
                 $this->runId,
                 'order_state',
@@ -240,6 +230,8 @@ abstract class OrderConverter extends ShopwareConverter
 
             return new ConvertStruct(null, $data);
         }
+        $converted['stateId'] = $stateMapping['entityUuid'];
+        $this->mappingIds[] = $stateMapping['id'];
 
         $shippingCosts = new CalculatedPrice(
             (float) $data['invoice_shipping'],
@@ -306,15 +298,16 @@ abstract class OrderConverter extends ShopwareConverter
 
         $converted['salesChannelId'] = Defaults::SALES_CHANNEL;
         if (isset($data['subshopID'])) {
-            $salesChannelId = $this->mappingService->getUuid(
+            $mapping = $this->mappingService->getMapping(
                 $this->connectionId,
                 DefaultEntities::SALES_CHANNEL,
                 $data['subshopID'],
                 $this->context
             );
 
-            if ($salesChannelId !== null) {
-                $converted['salesChannelId'] = $salesChannelId;
+            if ($mapping !== null) {
+                $converted['salesChannelId'] = $mapping['entityUuid'];
+                $this->mappingIds[] = $mapping['id'];
                 unset($data['subshopID']);
             }
         }
@@ -350,8 +343,9 @@ abstract class OrderConverter extends ShopwareConverter
         if (empty($data)) {
             $data = null;
         }
+        $this->updateMainMapping($migrationContext, $context);
 
-        return new ConvertStruct($converted, $data);
+        return new ConvertStruct($converted, $data, $this->mainMapping['id']);
     }
 
     protected function getTransactions(array $data, array &$converted): void
@@ -363,14 +357,14 @@ abstract class OrderConverter extends ShopwareConverter
 
         /** @var CartPrice $cartPrice */
         $cartPrice = $converted['price'];
-        $stateId = $this->mappingService->getUuid(
+        $mapping = $this->mappingService->getMapping(
             $this->connectionId,
             TransactionStateReader::getMappingName(),
             $data['cleared'],
             $this->context
         );
 
-        if ($stateId === null) {
+        if ($mapping === null) {
             $this->loggingService->addLogEntry(new UnknownEntityLog(
                 $this->runId,
                 'transaction_state',
@@ -381,8 +375,10 @@ abstract class OrderConverter extends ShopwareConverter
 
             return;
         }
+        $stateId = $mapping['entityUuid'];
+        $this->mappingIds[] = $mapping['id'];
 
-        $id = $this->mappingService->createNewUuid(
+        $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::ORDER_TRANSACTION,
             $this->oldId,
@@ -394,6 +390,8 @@ abstract class OrderConverter extends ShopwareConverter
         if ($paymentMethodUuid === null) {
             return;
         }
+        $id = $mapping['entityUuid'];
+        $this->mappingIds[] = $mapping['id'];
 
         $transactions = [
             [
@@ -414,14 +412,14 @@ abstract class OrderConverter extends ShopwareConverter
 
     protected function getPaymentMethod(array $originalData): ?string
     {
-        $paymentMethodUuid = $this->mappingService->getUuid(
+        $paymentMethodMapping = $this->mappingService->getMapping(
             $this->connectionId,
             PaymentMethodReader::getMappingName(),
             $originalData['payment']['id'],
             $this->context
         );
 
-        if ($paymentMethodUuid === null) {
+        if ($paymentMethodMapping === null) {
             $this->loggingService->addLogEntry(new UnknownEntityLog(
                 $this->runId,
                 'payment_method',
@@ -431,7 +429,9 @@ abstract class OrderConverter extends ShopwareConverter
             ));
         }
 
-        return $paymentMethodUuid;
+        $this->mappingIds[] = $paymentMethodMapping['id'];
+
+        return $paymentMethodMapping['entityUuid'];
     }
 
     protected function getAddress(array $originalData): array
@@ -449,34 +449,45 @@ abstract class OrderConverter extends ShopwareConverter
         }
 
         $address = [];
-        $address['id'] = $this->mappingService->createNewUuid(
+        $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::ORDER_ADDRESS,
             $originalData['id'],
             $this->context
         );
+        $address['id'] = $mapping['entityUuid'];
+        $this->mappingIds[] = $mapping['id'];
 
-        $address['countryId'] = $this->mappingService->getUuid(
+        $mapping = $this->mappingService->getMapping(
             $this->connectionId,
             DefaultEntities::COUNTRY,
             $originalData['countryID'],
             $this->context
         );
+        $address['countryId'] = $mapping['entityUuid'] ?? null;
+        if ($mapping !== null) {
+            $this->mappingIds[] = $mapping['id'];
+        }
 
         if (isset($originalData['country']) && $address['countryId'] === null) {
             $address['country'] = $this->getCountry($originalData['country']);
         }
 
         if (isset($originalData['stateID'])) {
-            $address['countryStateId'] = $this->mappingService->getUuid(
+            $mapping = $this->mappingService->getMapping(
                 $this->connectionId,
                 DefaultEntities::COUNTRY_STATE,
                 $originalData['stateID'],
                 $this->context
             );
+            $address['countryStateId'] = $mapping['entityUuid'] ?? null;
+            if ($mapping !== null) {
+                $this->mappingIds[] = $mapping['id'];
+            }
 
             if (isset($address['countryStateId'], $originalData['state']) && ($address['countryId'] !== null || isset($address['country']['id']))) {
-                $address['countryState'] = $this->getCountryState($originalData['state'], $address['countryId'] ?? $address['country']['id']);
+                $newCountryId = (string) $address['countryId'] ?? $address['country']['id'];
+                $address['countryState'] = $this->getCountryState($originalData['state'], $newCountryId);
             }
         }
 
@@ -518,12 +529,14 @@ abstract class OrderConverter extends ShopwareConverter
         }
 
         if (!isset($country['id'])) {
-            $country['id'] = $this->mappingService->createNewUuid(
+            $mapping = $this->mappingService->getOrCreateMapping(
                 $this->connectionId,
                 DefaultEntities::COUNTRY,
                 $oldCountryData['id'],
                 $this->context
             );
+            $country['id'] = $mapping['entityUuid'];
+            $this->mappingIds[] = $mapping['id'];
         }
 
         $this->getCountryTranslation($country, $oldCountryData);
@@ -553,12 +566,14 @@ abstract class OrderConverter extends ShopwareConverter
 
         $this->convertValue($localeTranslation, 'name', $data, 'countryname');
 
-        $localeTranslation['id'] = $this->mappingService->createNewUuid(
+        $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::COUNTRY_TRANSLATION,
             $data['id'] . ':' . $this->mainLocale,
             $this->context
         );
+        $localeTranslation['id'] = $mapping['entityUuid'];
+        $this->mappingIds[] = $mapping['id'];
 
         $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);
         $localeTranslation['languageId'] = $languageUuid;
@@ -569,12 +584,14 @@ abstract class OrderConverter extends ShopwareConverter
     protected function getCountryState(array $oldStateData, string $newCountryId): array
     {
         $state = [];
-        $state['id'] = $this->mappingService->createNewUuid(
+        $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::COUNTRY_STATE,
             $oldStateData['id'],
             $this->context
         );
+        $state['id'] = $mapping['entityUuid'];
+        $this->mappingIds[] = $mapping['id'];
         $state['countryId'] = $newCountryId;
 
         $this->getCountryStateTranslation($state, $oldStateData);
@@ -598,12 +615,14 @@ abstract class OrderConverter extends ShopwareConverter
 
         $this->convertValue($translation, 'name', $data, 'name');
 
-        $localeTranslation['id'] = $this->mappingService->createNewUuid(
+        $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::COUNTRY_STATE_TRANSLATION,
             $data['id'] . ':' . $this->mainLocale,
             $this->context
         );
+        $localeTranslation['id'] = $mapping['entityUuid'];
+        $this->mappingIds[] = $mapping['id'];
 
         $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);
         $localeTranslation['languageId'] = $languageUuid;
@@ -614,22 +633,25 @@ abstract class OrderConverter extends ShopwareConverter
     protected function getDeliveries(array $data, array $converted, CalculatedPrice $shippingCosts): array
     {
         $deliveries = [];
-
-        $deliveryStateId = $this->mappingService->getUuid(
+        $deliveryStateMapping = $this->mappingService->getMapping(
             $this->connectionId,
             OrderDeliveryStateReader::getMappingName(),
             (string) $data['status'],
             $this->context
         );
+        $this->mappingIds[] = $deliveryStateMapping['id'];
+
+        $mapping = $this->mappingService->getOrCreateMapping(
+            $this->connectionId,
+            DefaultEntities::ORDER_DELIVERY,
+            $this->oldId,
+            $this->context
+        );
+        $this->mappingIds[] = $mapping['id'];
 
         $delivery = [
-            'id' => $this->mappingService->createNewUuid(
-                $this->connectionId,
-                DefaultEntities::ORDER_DELIVERY,
-                $this->oldId,
-                $this->context
-            ),
-            'stateId' => $converted['stateId'],
+            'id' => $mapping['entityUuid'],
+            'stateId' => $deliveryStateMapping['entityUuid'],
             'shippingDateEarliest' => $converted['orderDateTime'],
             'shippingDateLatest' => $converted['orderDateTime'],
         ];
@@ -657,13 +679,15 @@ abstract class OrderConverter extends ShopwareConverter
         if (isset($converted['lineItems'])) {
             $positions = [];
             foreach ($converted['lineItems'] as $lineItem) {
+                $mapping = $this->mappingService->getOrCreateMapping(
+                    $this->connectionId,
+                    DefaultEntities::ORDER_DELIVERY_POSITION,
+                    $lineItem['id'],
+                    $this->context
+                );
+                $this->mappingIds[] = $mapping['id'];
                 $positions[] = [
-                    'id' => $this->mappingService->createNewUuid(
-                        $this->connectionId,
-                        DefaultEntities::ORDER_DELIVERY_POSITION,
-                        $lineItem['id'],
-                        $this->context
-                    ),
+                    'id' => $mapping['entityUuid'],
                     'orderLineItemId' => $lineItem['id'],
                     'price' => $lineItem['price'],
                 ];
@@ -680,14 +704,14 @@ abstract class OrderConverter extends ShopwareConverter
 
     protected function getShippingMethod(string $shippingMethodId): ?string
     {
-        $shippingMethodUuid = $this->mappingService->getUuid(
+        $shippingMethodMapping = $this->mappingService->getMapping(
             $this->connectionId,
             DefaultEntities::SHIPPING_METHOD,
             $shippingMethodId,
             $this->context
         );
 
-        if ($shippingMethodUuid === null) {
+        if ($shippingMethodMapping === null) {
             $this->loggingService->addLogEntry(new UnknownEntityLog(
                 $this->runId,
                 DefaultEntities::SHIPPING_METHOD,
@@ -696,8 +720,9 @@ abstract class OrderConverter extends ShopwareConverter
                 $this->oldId
             ));
         }
+        $this->mappingIds[] = $shippingMethodMapping['id'];
 
-        return $shippingMethodUuid;
+        return $shippingMethodMapping['entityUuid'];
     }
 
     protected function getLineItems(array $originalData, array &$converted, TaxRuleCollection $taxRules, string $taxStatus, Context $context): array
@@ -707,23 +732,31 @@ abstract class OrderConverter extends ShopwareConverter
         foreach ($originalData as $originalLineItem) {
             $isProduct = (int) $originalLineItem['modus'] === 0 && (int) $originalLineItem['articleID'] !== 0;
 
+            $mapping = $this->mappingService->getOrCreateMapping(
+                $this->connectionId,
+                DefaultEntities::ORDER_LINE_ITEM,
+                $originalLineItem['id'],
+                $this->context
+            );
+            $this->mappingIds[] = $mapping['id'];
+
             $lineItem = [
-                'id' => $this->mappingService->createNewUuid(
-                    $this->connectionId,
-                    DefaultEntities::ORDER_LINE_ITEM,
-                    $originalLineItem['id'],
-                    $this->context
-                ),
+                'id' => $mapping['entityUuid'],
             ];
 
             if ($isProduct) {
                 if ($originalLineItem['articleordernumber'] !== null) {
-                    $lineItem['identifier'] = $this->mappingService->getUuid(
+                    $mapping = $this->mappingService->getMapping(
                         $this->connectionId,
                         DefaultEntities::PRODUCT,
                         $originalLineItem['articleordernumber'],
                         $this->context
                     );
+
+                    if ($mapping !== null) {
+                        $lineItem['identifier'] = $mapping['entityUuid'];
+                        $this->mappingIds[] = $mapping['id'];
+                    }
                 }
 
                 if (!isset($lineItem['identifier'])) {
@@ -810,14 +843,14 @@ abstract class OrderConverter extends ShopwareConverter
 
     protected function getSalutation(string $salutation): ?string
     {
-        $salutationUuid = $this->mappingService->getUuid(
+        $salutationMapping = $this->mappingService->getMapping(
             $this->connectionId,
             SalutationReader::getMappingName(),
             $salutation,
             $this->context
         );
 
-        if ($salutationUuid === null) {
+        if ($salutationMapping === null) {
             $this->loggingService->addLogEntry(new UnknownEntityLog(
                 $this->runId,
                 'salutation',
@@ -827,6 +860,8 @@ abstract class OrderConverter extends ShopwareConverter
             ));
         }
 
-        return $salutationUuid;
+        $this->mappingIds[] = $salutationMapping['id'];
+
+        return $salutationMapping['entityUuid'];
     }
 }

@@ -16,11 +16,6 @@ use SwagMigrationAssistant\Profile\Shopware\Exception\ParentEntityForChildNotFou
 abstract class CategoryConverter extends ShopwareConverter
 {
     /**
-     * @var MappingServiceInterface
-     */
-    protected $mappingService;
-
-    /**
      * @var MediaFileServiceInterface
      */
     protected $mediaFileService;
@@ -41,11 +36,6 @@ abstract class CategoryConverter extends ShopwareConverter
     protected $oldCategoryId;
 
     /**
-     * @var LoggingServiceInterface
-     */
-    protected $loggingService;
-
-    /**
      * @var string
      */
     protected $locale;
@@ -57,17 +47,12 @@ abstract class CategoryConverter extends ShopwareConverter
 
     public function __construct(
         MappingServiceInterface $mappingService,
-        MediaFileServiceInterface $mediaFileService,
-        LoggingServiceInterface $loggingService
+        LoggingServiceInterface $loggingService,
+        MediaFileServiceInterface $mediaFileService
     ) {
-        $this->mappingService = $mappingService;
-        $this->mediaFileService = $mediaFileService;
-        $this->loggingService = $loggingService;
-    }
+        parent::__construct($mappingService, $loggingService);
 
-    public function writeMapping(Context $context): void
-    {
-        $this->mappingService->writeMapping($context);
+        $this->mediaFileService = $mediaFileService;
     }
 
     /**
@@ -78,6 +63,7 @@ abstract class CategoryConverter extends ShopwareConverter
         Context $context,
         MigrationContextInterface $migrationContext
     ): ConvertStruct {
+        $this->generateChecksum($data);
         $this->connectionId = $migrationContext->getConnection()->getId();
         $this->context = $context;
         $this->oldCategoryId = $data['id'];
@@ -122,18 +108,19 @@ abstract class CategoryConverter extends ShopwareConverter
         }
 
         if (isset($data['parent'])) {
-            $parentUuid = $this->mappingService->getUuid(
+            $parentMapping = $this->mappingService->getMapping(
                 $this->connectionId,
                 DefaultEntities::CATEGORY,
                 $data['parent'],
                 $this->context
             );
 
-            if ($parentUuid === null) {
+            if ($parentMapping === null) {
                 throw new ParentEntityForChildNotFoundException(DefaultEntities::CATEGORY, $this->oldCategoryId);
             }
-
-            $converted['parentId'] = $parentUuid;
+            $this->mappingIds[] = $parentMapping['id'];
+            $converted['parentId'] = $parentMapping['entityUuid'];
+            unset($parentMapping);
         // get last root category as previous sibling
         } elseif (!isset($data['previousSiblingId'])) {
             $previousSiblingUuid = $this->mappingService->getLowestRootCategoryUuid($context);
@@ -145,23 +132,29 @@ abstract class CategoryConverter extends ShopwareConverter
         unset($data['parent']);
 
         if (isset($data['previousSiblingId'])) {
-            $previousSiblingUuid = $this->mappingService->getUuid(
+            $previousSiblingMapping = $this->mappingService->getMapping(
                 $this->connectionId,
                 DefaultEntities::CATEGORY,
                 $data['previousSiblingId'],
                 $this->context
             );
 
-            $converted['afterCategoryId'] = $previousSiblingUuid;
+            if ($previousSiblingMapping !== null) {
+                $converted['afterCategoryId'] = $previousSiblingMapping['entityUuid'];
+                $this->mappingIds[] = $previousSiblingMapping['id'];
+            }
+            unset($previousSiblingMapping);
         }
-        unset($data['previousSiblingId'], $data['categoryPosition']);
+        unset($data['previousSiblingId'], $data['categoryPosition'], $previousSiblingMapping);
 
-        $converted['id'] = $this->mappingService->createNewUuid(
+        $this->mainMapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::CATEGORY,
             $this->oldCategoryId,
-            $this->context
+            $this->context,
+            $this->checksum
         );
+        $converted['id'] = $this->mainMapping['entityUuid'];
         unset($data['id']);
 
         $this->convertValue($converted, 'description', $data, 'cmstext', self::TYPE_STRING);
@@ -195,7 +188,9 @@ abstract class CategoryConverter extends ShopwareConverter
             $data = null;
         }
 
-        return new ConvertStruct($converted, $data);
+        $this->updateMainMapping($migrationContext, $context);
+
+        return new ConvertStruct($converted, $data, $this->mainMapping['id']);
     }
 
     protected function setGivenCategoryTranslation(array &$data, array &$converted): void
@@ -213,12 +208,14 @@ abstract class CategoryConverter extends ShopwareConverter
 
         $this->convertValue($localeTranslation, 'name', $originalData, 'description');
 
-        $localeTranslation['id'] = $this->mappingService->createNewUuid(
+        $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::CATEGORY_TRANSLATION,
             $this->oldCategoryId . ':' . $data['_locale'],
             $this->context
         );
+        $localeTranslation['id'] = $mapping['entityUuid'];
+        $this->mappingIds[] = $mapping['id'];
 
         try {
             $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $data['_locale'], $this->context);
@@ -238,12 +235,14 @@ abstract class CategoryConverter extends ShopwareConverter
 
     protected function getCategoryMedia(array $media): array
     {
-        $categoryMedia['id'] = $this->mappingService->createNewUuid(
+        $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::MEDIA,
             $media['id'],
             $this->context
         );
+        $categoryMedia['id'] = $mapping['entityUuid'];
+        $this->mappingIds[] = $mapping['id'];
 
         if (empty($media['name'])) {
             $media['name'] = $categoryMedia['id'];
@@ -251,15 +250,16 @@ abstract class CategoryConverter extends ShopwareConverter
 
         $this->getMediaTranslation($categoryMedia, ['media' => $media]);
 
-        $albumUuid = $this->mappingService->getUuid(
+        $albumMapping = $this->mappingService->getMapping(
             $this->connectionId,
             DefaultEntities::MEDIA_FOLDER,
             $media['albumID'],
             $this->context
         );
 
-        if ($albumUuid !== null) {
-            $categoryMedia['mediaFolderId'] = $albumUuid;
+        if ($albumMapping !== null) {
+            $categoryMedia['mediaFolderId'] = $albumMapping['entityUuid'];
+            $this->mappingIds[] = $albumMapping['id'];
         }
 
         $this->mediaFileService->saveMediaFile(
@@ -288,12 +288,14 @@ abstract class CategoryConverter extends ShopwareConverter
         $this->convertValue($localeTranslation, 'name', $data['media'], 'name');
         $this->convertValue($localeTranslation, 'description', $data['media'], 'description');
 
-        $localeTranslation['id'] = $this->mappingService->createNewUuid(
+        $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::MEDIA_TRANSLATION,
             $data['media']['id'] . ':' . $this->locale,
             $this->context
         );
+        $localeTranslation['id'] = $mapping['entityUuid'];
+        $this->mappingIds[] = $mapping['id'];
 
         $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->locale, $this->context);
         $localeTranslation['languageId'] = $languageUuid;

@@ -23,7 +23,7 @@ class OrderDataSet extends ShopwareDataSet
     public function getCountingInformation(): ?CountingInformationStruct
     {
         $information = new CountingInformationStruct(self::getEntity());
-        $information->addQueryStruct(new CountingQueryStruct('s_order'));
+        $information->addQueryStruct(new CountingQueryStruct('s_order', 'status != -1'));
 
         return $information;
     }

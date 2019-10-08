@@ -275,6 +275,8 @@ class MigrationDataWriterTest extends TestCase
             $this->salesChannelRepo
         );
 
+        $mappingRepo = $this->getContainer()->get('swag_migration_mapping.repository');
+
         $this->dummyDataWriter = new MigrationDataWriter(
             $this->entityWriter,
             $this->migrationDataRepo,
@@ -286,7 +288,8 @@ class MigrationDataWriterTest extends TestCase
             ),
             new DummyMediaFileService(),
             $this->loggingService,
-            $this->getContainer()->get(SwagMigrationDataDefinition::class)
+            $this->getContainer()->get(SwagMigrationDataDefinition::class),
+            $mappingRepo
         );
 
         $this->runService = new RunService(
@@ -640,7 +643,7 @@ class MigrationDataWriterTest extends TestCase
             0,
             $this->context
         );
-        $this->mappingService->createNewUuid($this->connectionId, OrderStateReader::getMappingName(), '0', $this->context, [], $orderStateUuid);
+        $this->mappingService->getOrCreateMapping($this->connectionId, OrderStateReader::getMappingName(), '0', $this->context, Uuid::randomHex(), [], $orderStateUuid);
 
         $transactionStateUuid = $this->getTransactionStateUuid(
             $this->stateMachineRepository,
@@ -648,7 +651,7 @@ class MigrationDataWriterTest extends TestCase
             17,
             $this->context
         );
-        $this->mappingService->createNewUuid($this->connectionId, TransactionStateReader::getMappingName(), '17', $this->context, [], $transactionStateUuid);
+        $this->mappingService->getOrCreateMapping($this->connectionId, TransactionStateReader::getMappingName(), '17', $this->context, Uuid::randomHex(), [], $transactionStateUuid);
 
         $paymentUuid = $this->getPaymentUuid(
             $this->paymentRepo,
@@ -656,9 +659,9 @@ class MigrationDataWriterTest extends TestCase
             $this->context
         );
 
-        $this->mappingService->createNewUuid($this->connectionId, PaymentMethodReader::getMappingName(), '3', $this->context, [], $paymentUuid);
-        $this->mappingService->createNewUuid($this->connectionId, PaymentMethodReader::getMappingName(), '4', $this->context, [], $paymentUuid);
-        $this->mappingService->createNewUuid($this->connectionId, PaymentMethodReader::getMappingName(), '5', $this->context, [], $paymentUuid);
+        $this->mappingService->getOrCreateMapping($this->connectionId, PaymentMethodReader::getMappingName(), '3', $this->context, Uuid::randomHex(), [], $paymentUuid);
+        $this->mappingService->getOrCreateMapping($this->connectionId, PaymentMethodReader::getMappingName(), '4', $this->context, Uuid::randomHex(), [], $paymentUuid);
+        $this->mappingService->getOrCreateMapping($this->connectionId, PaymentMethodReader::getMappingName(), '5', $this->context, Uuid::randomHex(), [], $paymentUuid);
 
         $salutationUuid = $this->getSalutationUuid(
             $this->salutationRepo,
@@ -666,26 +669,26 @@ class MigrationDataWriterTest extends TestCase
             $this->context
         );
 
-        $this->mappingService->createNewUuid($this->connectionId, SalutationReader::getMappingName(), 'mr', $this->context, [], $salutationUuid);
-        $this->mappingService->createNewUuid($this->connectionId, SalutationReader::getMappingName(), 'ms', $this->context, [], $salutationUuid);
+        $this->mappingService->getOrCreateMapping($this->connectionId, SalutationReader::getMappingName(), 'mr', $this->context, Uuid::randomHex(), [], $salutationUuid);
+        $this->mappingService->getOrCreateMapping($this->connectionId, SalutationReader::getMappingName(), 'ms', $this->context, Uuid::randomHex(), [], $salutationUuid);
 
         $deliveryTimeUuid = $this->getFirstDeliveryTimeUuid($this->deliveryTimeRepo, $this->context);
-        $this->mappingService->createNewUuid($this->connectionId, DeliveryTimeReader::getMappingName(), 'default_delivery_time', $this->context, [], $deliveryTimeUuid);
+        $this->mappingService->getOrCreateMapping($this->connectionId, DeliveryTimeReader::getMappingName(), 'default_delivery_time', $this->context, null, [], $deliveryTimeUuid);
 
         $currencyUuid = $this->getCurrencyUuid(
             $this->currencyRepo,
             'EUR',
             $this->context
         );
-        $this->mappingService->createNewUuid($this->connectionId, DefaultEntities::CURRENCY, 'JPY', $this->context, [], $currencyUuid);
+        $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::CURRENCY, 'JPY', $this->context, Uuid::randomHex(), [], $currencyUuid);
 
         $currencyUuid = $this->getCurrencyUuid(
             $this->currencyRepo,
             'EUR',
             $this->context
         );
-        $this->mappingService->createNewUuid($this->connectionId, DefaultEntities::CURRENCY, 'JPY', $this->context, [], $currencyUuid);
-        $this->mappingService->createNewUuid($this->connectionId, DefaultEntities::CURRENCY, 'EUR', $this->context, [], $currencyUuid);
+        $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::CURRENCY, 'JPY', $this->context, Uuid::randomHex(), [], $currencyUuid);
+        $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::CURRENCY, 'EUR', $this->context, Uuid::randomHex(), [], $currencyUuid);
 
         $languageUuid = $this->getLanguageUuid(
             $this->localeRepo,
@@ -693,17 +696,17 @@ class MigrationDataWriterTest extends TestCase
             'de-DE',
             $this->context
         );
-        $this->mappingService->createNewUuid($this->connectionId, DefaultEntities::LANGUAGE, 'en-US', $this->context, [], $languageUuid);
-        $this->mappingService->createNewUuid($this->connectionId, DefaultEntities::LANGUAGE, 'en-GB', $this->context, [], $languageUuid);
-        $this->mappingService->createNewUuid($this->connectionId, DefaultEntities::LANGUAGE, 'nl-NL', $this->context, [], $languageUuid);
-        $this->mappingService->createNewUuid($this->connectionId, DefaultEntities::LANGUAGE, 'bn-IN', $this->context, [], $languageUuid);
+        $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::LANGUAGE, 'en-US', $this->context, Uuid::randomHex(), [], $languageUuid);
+        $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::LANGUAGE, 'en-GB', $this->context, Uuid::randomHex(), [], $languageUuid);
+        $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::LANGUAGE, 'nl-NL', $this->context, Uuid::randomHex(), [], $languageUuid);
+        $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::LANGUAGE, 'bn-IN', $this->context, Uuid::randomHex(), [], $languageUuid);
 
-        $this->mappingService->createNewUuid($this->connectionId, DefaultEntities::CUSTOMER_GROUP, '1', $this->context, [], 'cfbd5018d38d41d8adca10d94fc8bdd6');
-        $this->mappingService->createNewUuid($this->connectionId, DefaultEntities::CUSTOMER_GROUP, '2', $this->context, [], 'cfbd5018d38d41d8adca10d94fc8bdd6');
+        $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::CUSTOMER_GROUP, '1', $this->context, Uuid::randomHex(), [], 'cfbd5018d38d41d8adca10d94fc8bdd6');
+        $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::CUSTOMER_GROUP, '2', $this->context, Uuid::randomHex(), [], 'cfbd5018d38d41d8adca10d94fc8bdd6');
 
         $categoryUuid = $this->getCategoryUuid($this->categoryRepo, $this->context);
-        $this->mappingService->createNewUuid($this->connectionId, DefaultEntities::CATEGORY, '3', $this->context, [], $categoryUuid);
-        $this->mappingService->createNewUuid($this->connectionId, DefaultEntities::CATEGORY, '39', $this->context, [], $categoryUuid);
+        $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::CATEGORY, '3', $this->context, Uuid::randomHex(), [], $categoryUuid);
+        $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::CATEGORY, '39', $this->context, Uuid::randomHex(), [], $categoryUuid);
 
         $this->mappingService->writeMapping($this->context);
         $this->clearCacheBefore();

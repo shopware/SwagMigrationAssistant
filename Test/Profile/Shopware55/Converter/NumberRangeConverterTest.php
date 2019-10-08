@@ -33,7 +33,7 @@ class NumberRangeConverterTest extends TestCase
         $numberRangeRepo = $this->getContainer()->get('number_range_type.repository');
         $mappingService = new DummyMappingService();
         $loggingService = new DummyLoggingService();
-        $this->converter = new Shopware55NumberRangeConverter($mappingService, $numberRangeRepo, $loggingService);
+        $this->converter = new Shopware55NumberRangeConverter($mappingService, $loggingService, $numberRangeRepo);
 
         $runId = Uuid::randomHex();
         $connection = new SwagMigrationConnectionEntity();

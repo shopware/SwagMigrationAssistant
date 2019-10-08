@@ -22,7 +22,7 @@ class CannotGetFileRunLog extends BaseRunLogEntry
 
     public function getCode(): string
     {
-        return sprintf('SWAG_MIGRATION_CANNOT_GET_%s_FILE', strtoupper($this->getEntity()));
+        return sprintf('SWAG_MIGRATION_CANNOT_GET_%s_FILE', mb_strtoupper($this->getEntity()));
     }
 
     public function getTitle(): string

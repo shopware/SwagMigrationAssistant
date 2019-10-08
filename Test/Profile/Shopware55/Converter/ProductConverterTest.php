@@ -56,7 +56,7 @@ class ProductConverterTest extends TestCase
         $mediaFileService = new DummyMediaFileService();
         $this->mappingService = new DummyMappingService();
         $this->loggingService = new DummyLoggingService();
-        $this->productConverter = new Shopware55ProductConverter($this->mappingService, $mediaFileService, $this->loggingService);
+        $this->productConverter = new Shopware55ProductConverter($this->mappingService, $this->loggingService, $mediaFileService);
 
         $this->runId = Uuid::randomHex();
         $this->connection = new SwagMigrationConnectionEntity();
@@ -74,7 +74,7 @@ class ProductConverterTest extends TestCase
             250
         );
 
-        $this->mappingService->createNewUuid($this->connection->getId(), DefaultEntities::CURRENCY, 'EUR', Context::createDefaultContext(), [], Uuid::randomHex());
+        $this->mappingService->getOrCreateMapping($this->connection->getId(), DefaultEntities::CURRENCY, 'EUR', Context::createDefaultContext(), null, [], Uuid::randomHex());
     }
 
     public function testSupports(): void
@@ -108,7 +108,7 @@ class ProductConverterTest extends TestCase
     public function testConvertWithCategory(): void
     {
         $mediaFileService = new DummyMediaFileService();
-        $categoryConverter = new Shopware55CategoryConverter($this->mappingService, $mediaFileService, $this->loggingService);
+        $categoryConverter = new Shopware55CategoryConverter($this->mappingService, $this->loggingService, $mediaFileService);
         $categoryData = require __DIR__ . '/../../../_fixtures/category_data.php';
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
         $context = Context::createDefaultContext();

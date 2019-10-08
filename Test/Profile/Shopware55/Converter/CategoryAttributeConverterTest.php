@@ -44,7 +44,7 @@ class CategoryAttributeConverterTest extends TestCase
     {
         $mappingService = new DummyMappingService();
         $this->loggingService = new DummyLoggingService();
-        $this->converter = new Shopware55CategoryAttributeConverter($mappingService);
+        $this->converter = new Shopware55CategoryAttributeConverter($mappingService, $this->loggingService);
 
         $this->runId = Uuid::randomHex();
         $this->connection = new SwagMigrationConnectionEntity();

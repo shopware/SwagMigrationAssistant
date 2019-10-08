@@ -181,22 +181,22 @@ class PremappingControllerTest extends TestCase
             $this->context
         );
 
-        $firstUuid = $this->mappingService->getUuid(
+        $firstMapping = $this->mappingService->getMapping(
             $this->connectionId,
             OrderStateReader::getMappingName(),
             '0',
             $this->context
         );
 
-        $secondUuid = $this->mappingService->getUuid(
+        $secondMapping = $this->mappingService->getMapping(
             $this->connectionId,
             OrderStateReader::getMappingName(),
             '1',
             $this->context
         );
 
-        static::assertSame($this->firstState->getDestinationUuid(), $firstUuid);
-        static::assertSame($this->secondState->getDestinationUuid(), $secondUuid);
+        static::assertSame($this->firstState->getDestinationUuid(), $firstMapping['entityUuid']);
+        static::assertSame($this->secondState->getDestinationUuid(), $secondMapping['entityUuid']);
     }
 
     public function testWritePremappingWithoutRunUuid(): void
@@ -251,22 +251,22 @@ class PremappingControllerTest extends TestCase
             $this->context
         );
 
-        $firstUuid = $this->mappingService->getUuid(
+        $firstMapping = $this->mappingService->getMapping(
             $this->connectionId,
             OrderStateReader::getMappingName(),
             '0',
             $this->context
         );
 
-        $secondUuid = $this->mappingService->getUuid(
+        $secondMapping = $this->mappingService->getMapping(
             $this->connectionId,
             OrderStateReader::getMappingName(),
             '1',
             $this->context
         );
 
-        static::assertSame($this->firstState->getDestinationUuid(), $firstUuid);
-        static::assertSame($this->secondState->getDestinationUuid(), $secondUuid);
+        static::assertSame($this->firstState->getDestinationUuid(), $firstMapping['entityUuid']);
+        static::assertSame($this->secondState->getDestinationUuid(), $secondMapping['entityUuid']);
 
         $firstStateUuid = Uuid::randomHex();
         $firstState = new PremappingEntityStruct('0', 'First State', $firstStateUuid);
@@ -287,21 +287,21 @@ class PremappingControllerTest extends TestCase
             $this->context
         );
 
-        $firstUuid = $this->mappingService->getUuid(
+        $firstMapping = $this->mappingService->getMapping(
             $this->connectionId,
             OrderStateReader::getMappingName(),
             '0',
             $this->context
         );
 
-        $secondUuid = $this->mappingService->getUuid(
+        $secondMapping = $this->mappingService->getMapping(
             $this->connectionId,
             OrderStateReader::getMappingName(),
             '1',
             $this->context
         );
 
-        static::assertSame($firstState->getDestinationUuid(), $firstUuid);
-        static::assertSame($secondState->getDestinationUuid(), $secondUuid);
+        static::assertSame($firstState->getDestinationUuid(), $firstMapping['entityUuid']);
+        static::assertSame($secondState->getDestinationUuid(), $secondMapping['entityUuid']);
     }
 }

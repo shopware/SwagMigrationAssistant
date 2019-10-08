@@ -6,27 +6,10 @@ use Shopware\Core\Framework\Context;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\EntityAlreadyExistsRunLog;
-use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
-use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 abstract class LanguageConverter extends ShopwareConverter
 {
-    /**
-     * @var MappingServiceInterface
-     */
-    protected $mappingService;
-
-    /**
-     * @var LoggingServiceInterface
-     */
-    protected $loggingService;
-
-    /**
-     * @var string
-     */
-    protected $mainLocale;
-
     /**
      * @var Context
      */
@@ -37,23 +20,15 @@ abstract class LanguageConverter extends ShopwareConverter
      */
     protected $connectionId;
 
-    public function __construct(
-        MappingServiceInterface $mappingService,
-        LoggingServiceInterface $loggingService
-    ) {
-        $this->mappingService = $mappingService;
-        $this->loggingService = $loggingService;
-    }
-
-    public function writeMapping(Context $context): void
+    public function getSourceIdentifier(array $data): string
     {
-        $this->mappingService->writeMapping($context);
+        return $data['locale'];
     }
 
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
+        $this->generateChecksum($data);
         $this->context = $context;
-        $this->mainLocale = $data['_locale'];
         $this->connectionId = $migrationContext->getConnection()->getId();
         $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $data['locale'], $context, true);
 
@@ -68,7 +43,14 @@ abstract class LanguageConverter extends ShopwareConverter
         }
 
         $converted = [];
-        $converted['id'] = $this->mappingService->createNewUuid($this->connectionId, DefaultEntities::LANGUAGE, $data['locale'], $context);
+        $this->mainMapping = $this->mappingService->getOrCreateMapping(
+            $this->connectionId,
+            DefaultEntities::LANGUAGE,
+            $data['locale'],
+            $context,
+            $this->checksum
+        );
+        $converted['id'] = $this->mainMapping['entityUuid'];
 
         $this->convertValue($converted, 'name', $data, 'language');
 
@@ -86,7 +68,8 @@ abstract class LanguageConverter extends ShopwareConverter
         if (empty($data)) {
             $data = null;
         }
+        $this->updateMainMapping($migrationContext, $context);
 
-        return new ConvertStruct($converted, $data);
+        return new ConvertStruct($converted, $data, $this->mainMapping['id']);
     }
 }

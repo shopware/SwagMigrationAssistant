@@ -16,6 +16,11 @@
             <argument type="service" id="SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileDefinition"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Migration\Converter\Converter" abstract="true">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\MappingService" />
+            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService" />
+        </service>
+
         <service id="SwagMigrationAssistant\Migration\Converter\ConverterRegistry"
                  class="SwagMigrationAssistant\Migration\Converter\ConverterRegistry">
             <argument type="tagged" tag="shopware.migration.converter"/>
@@ -33,10 +38,6 @@
             <argument type="service" id="language.repository"/>
             <argument type="service" id="country.repository"/>
             <argument type="service" id="currency.repository"/>
-            <argument type="service" id="sales_channel.repository"/>
-            <argument type="service" id="sales_channel_type.repository"/>
-            <argument type="service" id="payment_method.repository"/>
-            <argument type="service" id="shipping_method.repository"/>
             <argument type="service" id="tax.repository"/>
             <argument type="service" id="number_range.repository" />
             <argument type="service" id="rule.repository"/>
@@ -89,6 +90,7 @@
             <argument type="service" id="SwagMigrationAssistant\Migration\Media\MediaFileService" />
             <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService" />
             <argument type="service" id="SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition" />
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\MappingService" />
         </service>
 
         <service id="SwagMigrationAssistant\Migration\Service\MigrationDataWriter" public="true">
@@ -98,6 +100,7 @@
             <argument type="service" id="SwagMigrationAssistant\Migration\Media\MediaFileService"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition"/>
+            <argument type="service" id="swag_migration_mapping.repository"/>
         </service>
 
         <service id="SwagMigrationAssistant\Migration\Service\MediaFileProcessorService" public="true">

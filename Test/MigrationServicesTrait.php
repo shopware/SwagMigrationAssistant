@@ -48,6 +48,7 @@ use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55SalesChannelCo
 use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55TranslationConverter;
 use SwagMigrationAssistant\Test\Mock\DummyCollection;
 use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGateway;
+use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 use SwagMigrationAssistant\Test\Mock\Profile\Dummy\DummyInvalidCustomerConverter;
 
 trait MigrationServicesTrait
@@ -94,18 +95,18 @@ trait MigrationServicesTrait
         $converterRegistry = new ConverterRegistry(
             new DummyCollection(
                 [
-                    new Shopware55ProductConverter($mappingService, $mediaFileService, $loggingService),
+                    new Shopware55ProductConverter($mappingService, $loggingService, $mediaFileService),
                     new Shopware55TranslationConverter($mappingService, $loggingService),
-                    new Shopware55CategoryConverter($mappingService, $mediaFileService, $loggingService),
-                    new Shopware55MediaConverter($mappingService, $mediaFileService),
+                    new Shopware55CategoryConverter($mappingService, $loggingService, $mediaFileService),
+                    new Shopware55MediaConverter($mappingService, $loggingService, $mediaFileService),
                     new Shopware55CustomerConverter($mappingService, $loggingService),
                     new Shopware55CustomerConverter($mappingService, $loggingService),
                     new Shopware55OrderConverter(
                         $mappingService,
+                        $loggingService,
                         new TaxCalculator(
-                            new TaxRuleCalculator($priceRounding)
-                        ),
-                        $loggingService
+                            new TaxRuleCalculator()
+                        )
                     ),
                     new Shopware55SalesChannelConverter($mappingService, $loggingService, $paymentRepo, $shippingRepo, $countryRepo, $salesChannelRepo),
                     new DummyInvalidCustomerConverter($mappingService, $loggingService),
@@ -118,7 +119,8 @@ trait MigrationServicesTrait
             $converterRegistry,
             $mediaFileService,
             $loggingService,
-            $dataDefinition
+            $dataDefinition,
+            new DummyMappingService()
         );
 
         return $migrationDataConverter;

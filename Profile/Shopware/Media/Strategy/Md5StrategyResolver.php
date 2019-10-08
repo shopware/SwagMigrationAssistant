@@ -83,7 +83,7 @@ class Md5StrategyResolver implements StrategyResolverInterface
     private function hasBlacklistParts(string $path): bool
     {
         foreach (self::BLACKLIST as $key => $value) {
-            if (strpos($path, $key) !== false) {
+            if (mb_strpos($path, $key) !== false) {
                 return true;
             }
         }

@@ -17,7 +17,7 @@ class EmptyNecessaryFieldRunLog extends BaseRunLogEntry
 
     public function getCode(): string
     {
-        return sprintf('SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_%s', strtoupper($this->getEntity()));
+        return sprintf('SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_%s', mb_strtoupper($this->getEntity()));
     }
 
     public function getLevel(): string

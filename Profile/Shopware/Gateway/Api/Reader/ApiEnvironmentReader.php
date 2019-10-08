@@ -193,7 +193,7 @@ class ApiEnvironmentReader implements ReaderInterface
 
             throw new GatewayReadException('Shopware 5.5 Api SwagMigrationEnvironment', 466);
         } catch (GuzzleRequestException $e) {
-            if ($e->getResponse() !== null && strpos($e->getResponse()->getBody()->getContents(), 'SSL required')) {
+            if ($e->getResponse() !== null && mb_strpos($e->getResponse()->getBody()->getContents(), 'SSL required')) {
                 throw new SslRequiredException();
             }
 

@@ -5,6 +5,7 @@ namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 use Shopware\Core\Framework\Context;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -12,11 +13,6 @@ use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
 
 abstract class MediaConverter extends ShopwareConverter
 {
-    /**
-     * @var MappingServiceInterface
-     */
-    protected $mappingService;
-
     /**
      * @var MediaFileServiceInterface
      */
@@ -39,9 +35,11 @@ abstract class MediaConverter extends ShopwareConverter
 
     public function __construct(
         MappingServiceInterface $mappingService,
+        LoggingServiceInterface $loggingService,
         MediaFileServiceInterface $mediaFileService
     ) {
-        $this->mappingService = $mappingService;
+        parent::__construct($mappingService, $loggingService);
+
         $this->mediaFileService = $mediaFileService;
     }
 
@@ -55,18 +53,21 @@ abstract class MediaConverter extends ShopwareConverter
         Context $context,
         MigrationContextInterface $migrationContext
     ): ConvertStruct {
+        $this->generateChecksum($data);
         $this->context = $context;
         $this->locale = $data['_locale'];
         unset($data['_locale']);
         $this->connectionId = $migrationContext->getConnection()->getId();
 
         $converted = [];
-        $converted['id'] = $this->mappingService->createNewUuid(
+        $this->mainMapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::MEDIA,
             $data['id'],
-            $context
+            $context,
+            $this->checksum
         );
+        $converted['id'] = $this->mainMapping['entityUuid'];
 
         if (!isset($data['name'])) {
             $data['name'] = $converted['id'];
@@ -88,15 +89,16 @@ abstract class MediaConverter extends ShopwareConverter
         $this->convertValue($converted, 'title', $data, 'name');
         $this->convertValue($converted, 'alt', $data, 'description');
 
-        $albumUuid = $this->mappingService->getUuid(
+        $albumMapping = $this->mappingService->getMapping(
             $this->connectionId,
             DefaultEntities::MEDIA_FOLDER,
             $data['albumID'],
             $this->context
         );
 
-        if ($albumUuid !== null) {
-            $converted['mediaFolderId'] = $albumUuid;
+        if ($albumMapping !== null) {
+            $converted['mediaFolderId'] = $albumMapping['entityUuid'];
+            $this->mappingIds[] = $albumMapping['id'];
         }
 
         unset(
@@ -117,8 +119,9 @@ abstract class MediaConverter extends ShopwareConverter
         if (empty($data)) {
             $data = null;
         }
+        $this->updateMainMapping($migrationContext, $context);
 
-        return new ConvertStruct($converted, $data);
+        return new ConvertStruct($converted, $data, $this->mainMapping['id']);
     }
 
     protected function getMediaTranslation(array &$media, array $data): void
@@ -133,12 +136,14 @@ abstract class MediaConverter extends ShopwareConverter
         $this->convertValue($localeTranslation, 'title', $data, 'name');
         $this->convertValue($localeTranslation, 'alt', $data, 'description');
 
-        $localeTranslation['id'] = $this->mappingService->createNewUuid(
+        $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::MEDIA_TRANSLATION,
             $data['id'] . ':' . $this->locale,
             $this->context
         );
+        $localeTranslation['id'] = $mapping['entityUuid'];
+        $this->mappingIds[] = $mapping['id'];
 
         $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->locale, $this->context);
         $localeTranslation['languageId'] = $languageUuid;

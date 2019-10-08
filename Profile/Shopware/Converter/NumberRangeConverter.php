@@ -30,11 +30,6 @@ abstract class NumberRangeConverter extends ShopwareConverter
     ];
 
     /**
-     * @var MappingServiceInterface
-     */
-    protected $mappingService;
-
-    /**
      * @var EntityRepositoryInterface
      */
     protected $numberRangeTypeRepo;
@@ -44,23 +39,19 @@ abstract class NumberRangeConverter extends ShopwareConverter
      */
     protected $numberRangeTypes;
 
-    /**
-     * @var LoggingServiceInterface
-     */
-    protected $loggingService;
-
     public function __construct(
         MappingServiceInterface $mappingService,
-        EntityRepositoryInterface $numberRangeTypeRepo,
-        LoggingServiceInterface $loggingService
+        LoggingServiceInterface $loggingService,
+        EntityRepositoryInterface $numberRangeTypeRepo
     ) {
-        $this->mappingService = $mappingService;
+        parent::__construct($mappingService, $loggingService);
+
         $this->numberRangeTypeRepo = $numberRangeTypeRepo;
-        $this->loggingService = $loggingService;
     }
 
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
+        $this->generateChecksum($data);
         if (empty($this->numberRangeTypes)) {
             $this->numberRangeTypes = $this->numberRangeTypeRepo->search(new Criteria(), $context)->getEntities();
         }
@@ -120,43 +111,40 @@ abstract class NumberRangeConverter extends ShopwareConverter
         if (empty($data)) {
             $data = null;
         }
+        $this->updateMainMapping($migrationContext, $context);
 
-        return new ConvertStruct($converted, $data);
-    }
-
-    public function writeMapping(Context $context): void
-    {
-        $this->mappingService->writeMapping($context);
+        return new ConvertStruct($converted, $data, $this->mainMapping['id']);
     }
 
     protected function getUuid(array $data, MigrationContextInterface $migrationContext, Context $context): string
     {
-        $id = $this->mappingService->getUuid(
+        $mapping = $this->mappingService->getMapping(
             $migrationContext->getConnection()->getId(),
             DefaultEntities::NUMBER_RANGE,
             $data['id'],
             $context
         );
 
-        if ($id !== null) {
-            return $id;
+        if ($mapping !== null) {
+            $this->mainMapping = $mapping;
+
+            return $mapping['entityUuid'];
         }
 
         // use global number range uuid for products if available
         if ($data['name'] === 'articleordernumber') {
-            $id = $this->mappingService->getNumberRangeUuid('product', $data['id'], $migrationContext, $context);
+            $this->mappingService->getNumberRangeUuid('product', $data['id'], $this->checksum, $migrationContext, $context);
         }
 
-        if ($id === null) {
-            $id = $this->mappingService->createNewUuid(
-                $migrationContext->getConnection()->getId(),
-                DefaultEntities::NUMBER_RANGE,
-                $data['id'],
-                $context
-            );
-        }
+        $this->mainMapping = $this->mappingService->getOrCreateMapping(
+            $migrationContext->getConnection()->getId(),
+            DefaultEntities::NUMBER_RANGE,
+            $data['id'],
+            $context,
+            $this->checksum
+        );
 
-        return $id;
+        return $this->mainMapping['entityUuid'];
     }
 
     protected function getProductNumberRangeTypeUuid(string $type): ?string
@@ -194,12 +182,13 @@ abstract class NumberRangeConverter extends ShopwareConverter
         $localeTranslation['number_range_id'] = $converted['id'];
         $localeTranslation['name'] = (string) $data['desc'];
 
-        $localeTranslation['id'] = $this->mappingService->createNewUuid(
+        $mapping = $this->mappingService->getOrCreateMapping(
             $connectionId,
             DefaultEntities::NUMBER_RANGE_TRANSLATION,
             $data['id'] . ':' . $data['_locale'],
             $context
         );
+        $localeTranslation['id'] = $mapping['entityUuid'];
 
         $languageUuid = $this->mappingService->getLanguageUuid($connectionId, $data['_locale'], $context);
         $localeTranslation['languageId'] = $languageUuid;
@@ -215,17 +204,19 @@ abstract class NumberRangeConverter extends ShopwareConverter
         $numberRangeSaleschannels = [];
 
         foreach ($saleschannelIds as $saleschannelId) {
-            $numberRangeSaleschannel = [];
-            $numberRangeSaleschannel['id'] = $this->mappingService->createNewUuid(
+            $mapping = $this->mappingService->getOrCreateMapping(
                 $connectionId,
                 DefaultEntities::NUMBER_RANGE_SALES_CHANNEL,
                 $converted['id'] . ':' . $saleschannelId,
                 $context
             );
+            $numberRangeSaleschannel = [];
+            $numberRangeSaleschannel['id'] = $mapping['entityUuid'];
             $numberRangeSaleschannel['numberRangeId'] = $converted['id'];
             $numberRangeSaleschannel['salesChannelId'] = $saleschannelId;
             $numberRangeSaleschannel['numberRangeTypeId'] = $converted['typeId'];
             $numberRangeSaleschannels[] = $numberRangeSaleschannel;
+            $this->mappingIds[] = $mapping['id'];
         }
 
         $converted['numberRangeSalesChannels'] = $numberRangeSaleschannels;

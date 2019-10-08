@@ -71,7 +71,7 @@ class OrderDocumentConverterTest extends TestCase
             250
         );
         $context = Context::createDefaultContext();
-        $mappingService->createNewUuid($connectionId, DefaultEntities::ORDER, '15', $context, [], Uuid::randomHex());
+        $mappingService->getOrCreateMapping($connectionId, DefaultEntities::ORDER, '15', $context, null, [], Uuid::randomHex());
     }
 
     public function testSupports(): void

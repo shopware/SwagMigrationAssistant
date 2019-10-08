@@ -11,6 +11,7 @@ use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderAttribute
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55OrderAttributeConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 
 class OrderAttributeConverterTest extends TestCase
@@ -27,7 +28,7 @@ class OrderAttributeConverterTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->converter = new Shopware55OrderAttributeConverter(new DummyMappingService());
+        $this->converter = new Shopware55OrderAttributeConverter(new DummyMappingService(), new DummyLoggingService());
 
         $runId = Uuid::randomHex();
         $connection = new SwagMigrationConnectionEntity();

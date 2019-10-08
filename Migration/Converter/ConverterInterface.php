@@ -13,6 +13,11 @@ interface ConverterInterface
     public function supports(MigrationContextInterface $migrationContext): bool;
 
     /**
+     * Get the identifier of the source data which is only known to converter
+     */
+    public function getSourceIdentifier(array $data): string;
+
+    /**
      * Converts the given data into the internal structure
      */
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct;

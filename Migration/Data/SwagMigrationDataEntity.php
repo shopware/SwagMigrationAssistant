@@ -41,6 +41,11 @@ class SwagMigrationDataEntity extends Entity
     protected $unmapped;
 
     /**
+     * @var string|null
+     */
+    protected $mappingUuid;
+
+    /**
      * @var bool
      */
     protected $written;
@@ -118,6 +123,16 @@ class SwagMigrationDataEntity extends Entity
     public function setUnmapped(array $unmapped): void
     {
         $this->unmapped = $unmapped;
+    }
+
+    public function getMappingUuid(): ?string
+    {
+        return $this->mappingUuid;
+    }
+
+    public function setMappingUuid(?string $mappingUuid): void
+    {
+        $this->mappingUuid = $mappingUuid;
     }
 
     public function getWritten(): bool

@@ -80,24 +80,25 @@ class CustomerConverterTest extends TestCase
         );
 
         $context = Context::createDefaultContext();
-        $this->mappingService->createNewUuid(
+        $this->mappingService->getOrCreateMapping(
             $this->connection->getId(),
             DefaultEntities::SALES_CHANNEL,
             '1',
             $context,
             null,
+            null,
             Defaults::SALES_CHANNEL
         );
 
-        $this->mappingService->createNewUuid($this->connectionId, PaymentMethodReader::getMappingName(), '3', $context, [], Uuid::randomHex());
-        $this->mappingService->createNewUuid($this->connectionId, PaymentMethodReader::getMappingName(), '4', $context, [], Uuid::randomHex());
-        $this->mappingService->createNewUuid($this->connectionId, PaymentMethodReader::getMappingName(), '5', $context, [], Uuid::randomHex());
+        $this->mappingService->getOrCreateMapping($this->connectionId, PaymentMethodReader::getMappingName(), '3', $context, Uuid::randomHex(), [], Uuid::randomHex());
+        $this->mappingService->getOrCreateMapping($this->connectionId, PaymentMethodReader::getMappingName(), '4', $context, Uuid::randomHex(), [], Uuid::randomHex());
+        $this->mappingService->getOrCreateMapping($this->connectionId, PaymentMethodReader::getMappingName(), '5', $context, Uuid::randomHex(), [], Uuid::randomHex());
 
-        $this->mappingService->createNewUuid($this->connectionId, SalutationReader::getMappingName(), 'mr', $context, [], Uuid::randomHex());
-        $this->mappingService->createNewUuid($this->connectionId, SalutationReader::getMappingName(), 'ms', $context, [], Uuid::randomHex());
+        $this->mappingService->getOrCreateMapping($this->connectionId, SalutationReader::getMappingName(), 'mr', $context, Uuid::randomHex(), [], Uuid::randomHex());
+        $this->mappingService->getOrCreateMapping($this->connectionId, SalutationReader::getMappingName(), 'ms', $context, Uuid::randomHex(), [], Uuid::randomHex());
 
-        $this->mappingService->createNewUuid($this->connectionId, DefaultEntities::CUSTOMER_GROUP, '1', $context, [], 'cfbd5018d38d41d8adca10d94fc8bdd6');
-        $this->mappingService->createNewUuid($this->connectionId, DefaultEntities::CUSTOMER_GROUP, '2', $context, [], 'cfbd5018d38d41d8adca10d94fc8bdd6');
+        $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::CUSTOMER_GROUP, '1', $context, Uuid::randomHex(), [], 'cfbd5018d38d41d8adca10d94fc8bdd6');
+        $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::CUSTOMER_GROUP, '2', $context, Uuid::randomHex(), [], 'cfbd5018d38d41d8adca10d94fc8bdd6');
     }
 
     public function testSupports(): void
@@ -220,7 +221,7 @@ class CustomerConverterTest extends TestCase
         unset($customerData['defaultpayment']);
 
         $context = Context::createDefaultContext();
-        $uuid = $this->mappingService->createNewUuid($this->connectionId, PaymentMethodReader::getMappingName(), 'default_payment_method', $context, [], Uuid::randomHex());
+        $mapping = $this->mappingService->getOrCreateMapping($this->connectionId, PaymentMethodReader::getMappingName(), 'default_payment_method', $context, null, [], Uuid::randomHex());
         $convertResult = $this->customerConverter->convert(
             $customerData,
             $context,
@@ -237,7 +238,7 @@ class CustomerConverterTest extends TestCase
         static::assertArrayHasKey('addresses', $converted);
         static::assertSame(Defaults::SALES_CHANNEL, $converted['salesChannelId']);
         static::assertSame('Mustermann', $converted['lastName']);
-        static::assertSame($uuid, $converted['defaultPaymentMethodId']);
+        static::assertSame($mapping['entityUuid'], $converted['defaultPaymentMethodId']);
         static::assertCount(0, $this->loggingService->getLoggingArray());
     }
 

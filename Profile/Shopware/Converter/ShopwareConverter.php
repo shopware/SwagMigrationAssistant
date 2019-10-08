@@ -2,10 +2,10 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
-use SwagMigrationAssistant\Migration\Converter\ConverterInterface;
+use SwagMigrationAssistant\Migration\Converter\Converter;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
-abstract class ShopwareConverter implements ConverterInterface
+abstract class ShopwareConverter extends Converter
 {
     protected const TYPE_STRING = 'string';
     protected const TYPE_BOOLEAN = 'bool';
@@ -17,6 +17,11 @@ abstract class ShopwareConverter implements ConverterInterface
      * @var MigrationContextInterface
      */
     protected $migrationContext;
+
+    public function getSourceIdentifier(array $data): string
+    {
+        return $data['id'];
+    }
 
     protected function convertValue(
         array &$newData,

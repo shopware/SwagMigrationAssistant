@@ -10,6 +10,7 @@ use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CustomerGroupAttributeDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55CustomerGroupAttributeConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 
 class CustomerGroupAttributeConverterTest extends TestCase
@@ -26,7 +27,7 @@ class CustomerGroupAttributeConverterTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->converter = new Shopware55CustomerGroupAttributeConverter(new DummyMappingService());
+        $this->converter = new Shopware55CustomerGroupAttributeConverter(new DummyMappingService(), new DummyLoggingService());
 
         $runId = Uuid::randomHex();
         $connection = new SwagMigrationConnectionEntity();
