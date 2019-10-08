@@ -81,9 +81,7 @@ class MigrationDataConverter implements MigrationDataConverterInterface
                 $createData = $this->convertData($context, $data, $converter, $migrationContext, $migrationContext->getDataSet());
 
                 if (\count($createData) === 0) {
-                    $id = $data['id'] ?? 'unknown';
-
-                    throw new \Exception('Data of entity ' . $migrationContext->getDataSet()::getEntity() . ' (' . $id . ') could not be converted');
+                    return;
                 }
                 $converter->writeMapping($context);
                 $this->mediaFileService->writeMediaFile($context);
@@ -185,10 +183,10 @@ class MigrationDataConverter implements MigrationDataConverterInterface
             foreach ($elements as $mapping) {
                 $checksum = $mapping->getChecksum();
                 $preloadIds[] = $mapping->getId();
-                if (isset($checksums[$mapping->getOldIdentifier()])) {
-                    if ($checksums[$mapping->getOldIdentifier()] === $checksum) {
-                        unset($mappedData[$mapping->getOldIdentifier()]);
-                    }
+                if (isset($checksums[$mapping->getOldIdentifier()])
+                    && $checksums[$mapping->getOldIdentifier()] === $checksum
+                ) {
+                    unset($mappedData[$mapping->getOldIdentifier()]);
                 }
                 $additionalData = $mapping->getAdditionalData();
                 if (isset($additionalData['relatedMappings'])) {

@@ -11,11 +11,6 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 abstract class LanguageConverter extends ShopwareConverter
 {
     /**
-     * @var string
-     */
-    protected $mainLocale;
-
-    /**
      * @var Context
      */
     protected $context;
@@ -34,7 +29,6 @@ abstract class LanguageConverter extends ShopwareConverter
     {
         $this->generateChecksum($data);
         $this->context = $context;
-        $this->mainLocale = $data['_locale'];
         $this->connectionId = $migrationContext->getConnection()->getId();
         $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $data['locale'], $context, true);
 

@@ -26,7 +26,7 @@ class PlainStrategyResolver implements StrategyResolverInterface
 
         if (!empty($matches)) {
             $path = $matches[2] . '/' . $matches[3];
-            if (preg_match('/.*(_[\d]+x[\d]+(@2x)?).(?:.*)$/', $path) && strpos($matches[2], '/thumbnail') === false) {
+            if (preg_match('/.*(_[\d]+x[\d]+(@2x)?).(?:.*)$/', $path) && mb_strpos($matches[2], '/thumbnail') === false) {
                 $path = $matches[2] . '/thumbnail/' . $matches[3];
             }
 

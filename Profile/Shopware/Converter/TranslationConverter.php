@@ -736,7 +736,7 @@ abstract class TranslationConverter extends ShopwareConverter
 
     protected function getAttribute(string $entityName, string $key, string $value, array &$translation, array &$objectData): void
     {
-        $isAttribute = strpos($key, '__attribute_');
+        $isAttribute = mb_strpos($key, '__attribute_');
         if ($isAttribute !== false) {
             $key = 'migration_' . $this->migrationContext->getConnection()->getName() . '_' . $entityName . '_' . str_replace('__attribute_', '', $key);
             $translation['customFields'][$key] = $value;

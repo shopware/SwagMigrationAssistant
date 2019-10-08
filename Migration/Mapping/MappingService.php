@@ -77,26 +77,6 @@ class MappingService implements MappingServiceInterface
     /**
      * @var EntityRepositoryInterface
      */
-    private $salesChannelRepo;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $salesChannelTypeRepo;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $paymentRepository;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $shippingMethodRepo;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
     private $taxRepo;
 
     /**
@@ -155,10 +135,6 @@ class MappingService implements MappingServiceInterface
         EntityRepositoryInterface $languageRepository,
         EntityRepositoryInterface $countryRepository,
         EntityRepositoryInterface $currencyRepository,
-        EntityRepositoryInterface $salesChannelRepo,
-        EntityRepositoryInterface $salesChannelTypeRepo,
-        EntityRepositoryInterface $paymentRepository,
-        EntityRepositoryInterface $shippingMethodRepo,
         EntityRepositoryInterface $taxRepo,
         EntityRepositoryInterface $numberRangeRepo,
         EntityRepositoryInterface $ruleRepo,
@@ -175,10 +151,6 @@ class MappingService implements MappingServiceInterface
         $this->languageRepository = $languageRepository;
         $this->countryRepository = $countryRepository;
         $this->currencyRepository = $currencyRepository;
-        $this->salesChannelRepo = $salesChannelRepo;
-        $this->salesChannelTypeRepo = $salesChannelTypeRepo;
-        $this->paymentRepository = $paymentRepository;
-        $this->shippingMethodRepo = $shippingMethodRepo;
         $this->taxRepo = $taxRepo;
         $this->numberRangeRepo = $numberRangeRepo;
         $this->ruleRepo = $ruleRepo;
@@ -328,11 +300,13 @@ class MappingService implements MappingServiceInterface
             $elements = $result->getEntities()->getElements();
             /** @var SwagMigrationMappingEntity $mapping */
             foreach ($elements as $mapping) {
-                $this->mappings[md5($mapping->getEntity() . $mapping->getOldIdentifier())] = [
+                $entityName = $mapping->getEntity();
+                $oldIdentifier = $mapping->getOldIdentifier();
+                $this->mappings[md5($entityName . $oldIdentifier)] = [
                     'id' => $mapping->getId(),
                     'connectionId' => $mapping->getConnectionId(),
-                    'entity' => $mapping->getEntity(),
-                    'oldIdentifier' => $mapping->getOldIdentifier(),
+                    'entity' => $entityName,
+                    'oldIdentifier' => $oldIdentifier,
                     'entityUuid' => $mapping->getEntityUuid(),
                     'checksum' => $mapping->getChecksum(),
                     'additionalData' => $mapping->getAdditionalData(),
@@ -394,7 +368,7 @@ class MappingService implements MappingServiceInterface
     public function createListItemMapping(
         string $connectionId,
         string $entityName,
-        string $oldId,
+        string $oldIdentifier,
         Context $context,
         ?array $additionalData = null,
         ?string $newUuid = null
@@ -403,7 +377,7 @@ class MappingService implements MappingServiceInterface
         if ($newUuid !== null) {
             $uuid = $newUuid;
 
-            if ($this->isUuidDuplicate($connectionId, $entityName, $oldId, $newUuid, $context)) {
+            if ($this->isUuidDuplicate($connectionId, $entityName, $oldIdentifier, $newUuid, $context)) {
                 return;
             }
         }
@@ -413,7 +387,7 @@ class MappingService implements MappingServiceInterface
                 'id' => Uuid::randomHex(),
                 'connectionId' => $connectionId,
                 'entity' => $entityName,
-                'oldIdentifier' => $oldId,
+                'oldIdentifier' => $oldIdentifier,
                 'entityUuid' => $uuid,
                 'additionalData' => $additionalData,
             ]
@@ -667,9 +641,9 @@ class MappingService implements MappingServiceInterface
         return $deliveryTimeUuid;
     }
 
-    public function getCountryUuid(string $oldId, string $iso, string $iso3, string $connectionId, Context $context): ?string
+    public function getCountryUuid(string $oldIdentifier, string $iso, string $iso3, string $connectionId, Context $context): ?string
     {
-        $countryMapping = $this->getMapping($connectionId, DefaultEntities::COUNTRY, $oldId, $context);
+        $countryMapping = $this->getMapping($connectionId, DefaultEntities::COUNTRY, $oldIdentifier, $context);
 
         if ($countryMapping !== null) {
             return $countryMapping['entityUuid'];
@@ -695,7 +669,7 @@ class MappingService implements MappingServiceInterface
                     'id' => Uuid::randomHex(),
                     'connectionId' => $connectionId,
                     'entity' => DefaultEntities::COUNTRY,
-                    'oldIdentifier' => $oldId,
+                    'oldIdentifier' => $oldIdentifier,
                     'entityUuid' => $countryUuid,
                 ]
             );
@@ -789,7 +763,7 @@ class MappingService implements MappingServiceInterface
         return null;
     }
 
-    public function getNumberRangeUuid(string $type, string $oldId, string $checksum, MigrationContextInterface $migrationContext, Context $context): ?string
+    public function getNumberRangeUuid(string $type, string $oldIdentifier, string $checksum, MigrationContextInterface $migrationContext, Context $context): ?string
     {
         /** @var EntitySearchResult $result */
         $result = $context->disableCache(function (Context $context) use ($type) {
@@ -811,7 +785,7 @@ class MappingService implements MappingServiceInterface
                     'id' => Uuid::randomHex(),
                     'connectionId' => $migrationContext->getConnection()->getId(),
                     'entity' => DefaultEntities::NUMBER_RANGE,
-                    'oldIdentifier' => $oldId,
+                    'oldIdentifier' => $oldIdentifier,
                     'entityUuid' => $numberRange->getId(),
                     'checksum' => $checksum,
                 ]
@@ -976,16 +950,16 @@ class MappingService implements MappingServiceInterface
     protected function saveMapping(array $mapping): void
     {
         $entity = $mapping['entity'];
-        $oldId = $mapping['oldIdentifier'];
-        $this->mappings[md5($entity . $oldId)] = $mapping;
+        $oldIdentifier = $mapping['oldIdentifier'];
+        $this->mappings[md5($entity . $oldIdentifier)] = $mapping;
         $this->writeArray[] = $mapping;
     }
 
     protected function saveListMapping(array $mapping): void
     {
         $entity = $mapping['entity'];
-        $oldId = $mapping['oldIdentifier'];
-        $this->mappings[md5($entity . $oldId)][] = $mapping;
+        $oldIdentifier = $mapping['oldIdentifier'];
+        $this->mappings[md5($entity . $oldIdentifier)][] = $mapping;
         $this->writeArray[] = $mapping;
     }
 

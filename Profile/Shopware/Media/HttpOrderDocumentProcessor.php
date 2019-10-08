@@ -213,7 +213,7 @@ class HttpOrderDocumentProcessor implements MediaFileProcessorInterface
                 $fileBlob,
                 $fileExtension,
                 $mimeType,
-                $name . substr(Uuid::randomHex(), 0, 5),
+                $name . mb_substr(Uuid::randomHex(), 0, 5),
                 $context,
                 'document',
                 $uuid
@@ -231,7 +231,7 @@ class HttpOrderDocumentProcessor implements MediaFileProcessorInterface
     {
         $promises = [];
         foreach ($media as $mediaFile) {
-            $uuid = strtolower($mediaFile->getMediaId());
+            $uuid = mb_strtolower($mediaFile->getMediaId());
             $additionalData = [];
             $additionalData['file_size'] = $mediaFile->getFileSize();
             $additionalData['uri'] = $mediaFile->getUri();

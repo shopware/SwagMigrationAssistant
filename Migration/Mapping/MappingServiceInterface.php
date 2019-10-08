@@ -11,7 +11,7 @@ interface MappingServiceInterface
 {
     public function getUuidsByEntity(string $connectionId, string $entityName, Context $context): array;
 
-    public function getValue(string $connectionId, string $entityName, string $oldId, Context $context): ?string;
+    public function getValue(string $connectionId, string $entityName, string $oldIdentifier, Context $context): ?string;
 
     public function getOrCreateMapping(
         string $connectionId,
@@ -50,7 +50,7 @@ interface MappingServiceInterface
     public function createListItemMapping(
         string $connectionId,
         string $entityName,
-        string $oldId,
+        string $oldIdentifier,
         Context $context,
         ?array $additionalData = null,
         ?string $newUuid = null
@@ -68,7 +68,7 @@ interface MappingServiceInterface
 
     public function getDeliveryTime(string $connectionId, Context $context, int $minValue, int $maxValue, string $unit, string $name): string;
 
-    public function getCountryUuid(string $oldId, string $iso, string $iso3, string $connectionId, Context $context): ?string;
+    public function getCountryUuid(string $oldIdentifier, string $iso, string $iso3, string $connectionId, Context $context): ?string;
 
     public function getCurrencyUuid(string $connectionId, string $oldIsoCode, Context $context): ?string;
 
@@ -76,7 +76,7 @@ interface MappingServiceInterface
 
     public function getTaxUuid(string $connectionId, float $taxRate, Context $context): ?string;
 
-    public function getNumberRangeUuid(string $type, string $oldId, string $checksum, MigrationContextInterface $migrationContext, Context $context): ?string;
+    public function getNumberRangeUuid(string $type, string $oldIdentifier, string $checksum, MigrationContextInterface $migrationContext, Context $context): ?string;
 
     public function getDefaultFolderIdByEntity(string $entityName, MigrationContextInterface $migrationContext, Context $context): ?string;
 

@@ -512,7 +512,7 @@ abstract class ProductConverter extends ShopwareConverter
                 $this->mappingService->createListItemMapping(
                     $this->connectionId,
                     'main_product_options',
-                    hash('md5', strtolower($option['name'] . '_' . $option['group']['name'])),
+                    hash('md5', mb_strtolower($option['name'] . '_' . $option['group']['name'])),
                     $this->context,
                     null,
                     $productContainerMapping['entityUuid']
@@ -524,14 +524,14 @@ abstract class ProductConverter extends ShopwareConverter
             $optionMapping = $this->mappingService->getOrCreateMapping(
                 $this->connectionId,
                 DefaultEntities::PROPERTY_GROUP_OPTION,
-                hash('md5', strtolower($option['name'] . '_' . $option['group']['name'])),
+                hash('md5', mb_strtolower($option['name'] . '_' . $option['group']['name'])),
                 $this->context
             );
             $this->mappingIds[] = $optionMapping['id'];
             $optionGroupMapping = $this->mappingService->getOrCreateMapping(
                 $this->connectionId,
                 DefaultEntities::PROPERTY_GROUP,
-                hash('md5', strtolower($option['group']['name'])),
+                hash('md5', mb_strtolower($option['group']['name'])),
                 $this->context
             );
             $this->mappingIds[] = $optionGroupMapping['id'];
@@ -596,7 +596,7 @@ abstract class ProductConverter extends ShopwareConverter
             $this->mappingService->createListItemMapping(
                 $this->connectionId,
                 'main_product_filter',
-                hash('md5', strtolower($option['value'] . '_' . $option['option']['name'])),
+                hash('md5', mb_strtolower($option['value'] . '_' . $option['option']['name'])),
                 $this->context,
                 null,
                 $productContainerMapping['entityUuid']
@@ -618,7 +618,7 @@ abstract class ProductConverter extends ShopwareConverter
         $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::PROPERTY_GROUP_OPTION_TRANSLATION,
-            hash('md5', strtolower($data['name'] . '_' . $data['group']['name'])) . ':' . $this->locale,
+            hash('md5', mb_strtolower($data['name'] . '_' . $data['group']['name'])) . ':' . $this->locale,
             $this->context
         );
         $localeOptionTranslation['id'] = $mapping['entityUuid'];
@@ -630,7 +630,7 @@ abstract class ProductConverter extends ShopwareConverter
         $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::PROPERTY_GROUP_TRANSLATION,
-            hash('md5', strtolower($data['group']['name'])) . ':' . $this->locale,
+            hash('md5', mb_strtolower($data['group']['name'])) . ':' . $this->locale,
             $this->context
         );
         $localeGroupTranslation['id'] = $mapping['entityUuid'];

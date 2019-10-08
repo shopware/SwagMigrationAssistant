@@ -25,7 +25,7 @@ class DummyMappingService extends MappingService
     public function createListItemMapping(
         string $connectionId,
         string $entityName,
-        string $oldId,
+        string $oldIdentifier,
         Context $context,
         ?array $additionalData = null,
         ?string $newUuid = null
@@ -38,7 +38,7 @@ class DummyMappingService extends MappingService
                 if (
                     $item['connectionId'] === $connectionId
                     && $item['entity'] === $entityName
-                    && $item['oldIdentifier'] === $oldId
+                    && $item['oldIdentifier'] === $oldIdentifier
                     && $item['entityUuid'] === $newUuid
                 ) {
                     return;
@@ -51,7 +51,7 @@ class DummyMappingService extends MappingService
                 'id' => Uuid::randomHex(),
                 'connectionId' => $connectionId,
                 'entity' => $entityName,
-                'oldIdentifier' => $oldId,
+                'oldIdentifier' => $oldIdentifier,
                 'entityUuid' => $uuid,
                 'additionalData' => $additionalData,
             ]
@@ -65,13 +65,13 @@ class DummyMappingService extends MappingService
     public function saveMapping(array $mapping): void
     {
         $entity = $mapping['entity'];
-        $oldId = $mapping['oldIdentifier'];
-        $this->mappings[md5($entity . $oldId)] = $mapping;
+        $oldIdentifier = $mapping['oldIdentifier'];
+        $this->mappings[md5($entity . $oldIdentifier)] = $mapping;
     }
 
-    public function getMapping(string $connectionId, string $entityName, string $oldId, Context $context): ?array
+    public function getMapping(string $connectionId, string $entityName, string $oldIdentifier, Context $context): ?array
     {
-        return $this->mappings[md5($entityName . $oldId)] ?? null;
+        return $this->mappings[md5($entityName . $oldIdentifier)] ?? null;
     }
 
     public function getMappings(string $connectionId, string $entityName, array $ids, Context $context): EntitySearchResult
@@ -84,9 +84,9 @@ class DummyMappingService extends MappingService
         return [];
     }
 
-    public function getValue(string $connectionId, string $entityName, string $oldId, Context $context): ?string
+    public function getValue(string $connectionId, string $entityName, string $oldIdentifier, Context $context): ?string
     {
-        return $this->values[$entityName][$oldId] ?? null;
+        return $this->values[$entityName][$oldIdentifier] ?? null;
     }
 
     public function getUuidList(string $connectionId, string $entityName, string $identifier, Context $context): array
@@ -125,7 +125,7 @@ class DummyMappingService extends MappingService
         return [];
     }
 
-    public function getCountryUuid(string $oldId, string $iso, string $iso3, string $connectionId, Context $context): ?string
+    public function getCountryUuid(string $oldIdentifier, string $iso, string $iso3, string $connectionId, Context $context): ?string
     {
         return null;
     }
@@ -175,7 +175,7 @@ class DummyMappingService extends MappingService
         return null;
     }
 
-    public function getNumberRangeUuid(string $type, string $oldId, string $checksum, MigrationContextInterface $migrationContext, Context $context): ?string
+    public function getNumberRangeUuid(string $type, string $oldIdentifier, string $checksum, MigrationContextInterface $migrationContext, Context $context): ?string
     {
         return Uuid::randomHex();
     }

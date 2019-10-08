@@ -149,7 +149,7 @@ abstract class ProductReviewConverter extends ShopwareConverter
 
         $this->convertValue($converted, 'title', $data, 'headline');
         if (empty($converted['title'])) {
-            $converted['title'] = substr($data['comment'], 0, 30) . '...';
+            $converted['title'] = mb_substr($data['comment'], 0, 30) . '...';
         }
         $this->convertValue($converted, 'content', $data, 'comment');
         $this->convertValue($converted, 'points', $data, 'points', self::TYPE_FLOAT);

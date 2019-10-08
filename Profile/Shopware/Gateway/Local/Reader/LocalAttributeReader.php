@@ -84,8 +84,8 @@ SQL;
         // extract field translations and add them to config
         foreach ($attributeConfigTranslations as $translation) {
             $name = str_replace($table . '_', '', $translation['name']);
-            $field = substr($translation['name'], strrpos($translation['name'], '_') + 1);
-            $column = substr($name, 0, strrpos($name, '_'));
+            $field = mb_substr($translation['name'], mb_strrpos($translation['name'], '_') + 1);
+            $column = mb_substr($name, 0, mb_strrpos($name, '_'));
 
             if (!isset($attributeConfiguration[$column]['translations'][$field])) {
                 $attributeConfiguration[$column]['translations'][$field] = [];

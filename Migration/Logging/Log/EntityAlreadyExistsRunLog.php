@@ -16,7 +16,7 @@ class EntityAlreadyExistsRunLog extends BaseRunLogEntry
 
     public function getCode(): string
     {
-        return sprintf('SWAG_MIGRATION_%s_ENTITY_ALREADY_EXISTS', strtoupper($this->getEntity()));
+        return sprintf('SWAG_MIGRATION_%s_ENTITY_ALREADY_EXISTS', mb_strtoupper($this->getEntity()));
     }
 
     public function getTitle(): string

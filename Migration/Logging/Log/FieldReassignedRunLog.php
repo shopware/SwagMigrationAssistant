@@ -28,7 +28,7 @@ class FieldReassignedRunLog extends BaseRunLogEntry
 
     public function getCode(): string
     {
-        return sprintf('SWAG_MIGRATION_%s_ENTITY_FIELD_REASSIGNED', strtoupper($this->getEntity()));
+        return sprintf('SWAG_MIGRATION_%s_ENTITY_FIELD_REASSIGNED', mb_strtoupper($this->getEntity()));
     }
 
     public function getTitle(): string

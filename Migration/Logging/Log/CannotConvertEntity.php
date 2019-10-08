@@ -16,7 +16,7 @@ class CannotConvertEntity extends BaseRunLogEntry
 
     public function getCode(): string
     {
-        return sprintf('SWAG_MIGRATION_CANNOT_CONVERT_%s', strtoupper($this->getEntity()));
+        return sprintf('SWAG_MIGRATION_CANNOT_CONVERT_%s', mb_strtoupper($this->getEntity()));
     }
 
     public function getTitle(): string

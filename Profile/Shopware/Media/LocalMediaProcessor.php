@@ -216,7 +216,7 @@ class LocalMediaProcessor implements MediaFileProcessorInterface
         try {
             $this->fileSaver->persistFileToMedia($mediaFile, $media->getFileName(), $media->getMediaId(), $context);
         } catch (DuplicatedMediaFileNameException $e) {
-            $this->fileSaver->persistFileToMedia($mediaFile, $media->getFileName() . substr(Uuid::randomHex(), 0, 5), $media->getMediaId(), $context);
+            $this->fileSaver->persistFileToMedia($mediaFile, $media->getFileName() . mb_substr(Uuid::randomHex(), 0, 5), $media->getMediaId(), $context);
         }
     }
 

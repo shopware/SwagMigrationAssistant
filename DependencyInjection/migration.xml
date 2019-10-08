@@ -38,10 +38,6 @@
             <argument type="service" id="language.repository"/>
             <argument type="service" id="country.repository"/>
             <argument type="service" id="currency.repository"/>
-            <argument type="service" id="sales_channel.repository"/>
-            <argument type="service" id="sales_channel_type.repository"/>
-            <argument type="service" id="payment_method.repository"/>
-            <argument type="service" id="shipping_method.repository"/>
             <argument type="service" id="tax.repository"/>
             <argument type="service" id="number_range.repository" />
             <argument type="service" id="rule.repository"/>

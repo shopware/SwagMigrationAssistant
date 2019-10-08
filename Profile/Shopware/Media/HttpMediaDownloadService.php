@@ -203,7 +203,7 @@ class HttpMediaDownloadService implements MediaFileProcessorInterface
     {
         $promises = [];
         foreach ($media as $mediaFile) {
-            $uuid = strtolower($mediaFile->getMediaId());
+            $uuid = mb_strtolower($mediaFile->getMediaId());
             $additionalData = [];
             $additionalData['file_size'] = $mediaFile->getFileSize();
             $additionalData['uri'] = $mediaFile->getUri();
@@ -238,7 +238,7 @@ class HttpMediaDownloadService implements MediaFileProcessorInterface
         try {
             $this->fileSaver->persistFileToMedia($mediaFile, $name, $uuid, $context);
         } catch (DuplicatedMediaFileNameException $e) {
-            $this->fileSaver->persistFileToMedia($mediaFile, $name . substr(Uuid::randomHex(), 0, 5), $uuid, $context);
+            $this->fileSaver->persistFileToMedia($mediaFile, $name . mb_substr(Uuid::randomHex(), 0, 5), $uuid, $context);
         }
     }
 

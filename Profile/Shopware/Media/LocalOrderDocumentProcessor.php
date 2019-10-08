@@ -165,7 +165,7 @@ class LocalOrderDocumentProcessor implements MediaFileProcessorInterface
                 $fileBlob,
                 $fileExtension,
                 $mimeType,
-                $media->getFileName() . substr(Uuid::randomHex(), 0, 5),
+                $media->getFileName() . mb_substr(Uuid::randomHex(), 0, 5),
                 $context,
                 'document',
                 $media->getMediaId()
