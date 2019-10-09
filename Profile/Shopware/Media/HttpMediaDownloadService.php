@@ -42,16 +42,23 @@ class HttpMediaDownloadService implements MediaFileProcessorInterface
     private $mediaFileRepo;
 
     /**
+     * @var EntityRepositoryInterface
+     */
+    private $mediaRepo;
+
+    /**
      * @var LoggingServiceInterface
      */
     private $loggingService;
 
     public function __construct(
         EntityRepositoryInterface $migrationMediaFileRepo,
+        EntityRepositoryInterface $mediaRepo,
         FileSaver $fileSaver,
         LoggingServiceInterface $loggingService
     ) {
         $this->mediaFileRepo = $migrationMediaFileRepo;
+        $this->mediaRepo = $mediaRepo;
         $this->fileSaver = $fileSaver;
         $this->loggingService = $loggingService;
     }
@@ -323,13 +330,19 @@ class HttpMediaDownloadService implements MediaFileProcessorInterface
             $criteria->addFilter(new EqualsFilter('runId', $runId));
             $mediaFiles = $this->mediaFileRepo->search($criteria, $context);
 
+            $mediaFileIds = [];
+            $mediaIds = [];
             foreach ($mediaFiles->getElements() as $data) {
                 /* @var SwagMigrationMediaFileEntity $data */
-                $updateProcessedMediaFiles[] = [
+                $mediaFileIds[] = [
                     'id' => $data->getId(),
-                    'processFailure' => true,
+                ];
+                $mediaIds[] = [
+                    'id' => $data->getMediaId(),
                 ];
             }
+            $this->mediaFileRepo->delete($mediaFileIds, $context);
+            $this->mediaRepo->delete($mediaIds, $context);
         }
 
         if (empty($updateProcessedMediaFiles)) {
