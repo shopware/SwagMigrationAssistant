@@ -52,82 +52,82 @@ class MappingService implements MappingServiceInterface
     /**
      * @var EntityRepositoryInterface
      */
-    private $migrationMappingRepo;
+    protected $migrationMappingRepo;
 
     /**
      * @var EntityRepositoryInterface
      */
-    private $localeRepository;
+    protected $localeRepository;
 
     /**
      * @var EntityRepositoryInterface
      */
-    private $languageRepository;
+    protected $languageRepository;
 
     /**
      * @var EntityRepositoryInterface
      */
-    private $countryRepository;
+    protected $countryRepository;
 
     /**
      * @var EntityRepositoryInterface
      */
-    private $currencyRepository;
+    protected $currencyRepository;
 
     /**
      * @var EntityRepositoryInterface
      */
-    private $taxRepo;
+    protected $taxRepo;
 
     /**
      * @var EntityRepositoryInterface
      */
-    private $numberRangeRepo;
+    protected $numberRangeRepo;
 
     /**
      * @var LanguageEntity
      */
-    private $defaultLanguageData;
+    protected $defaultLanguageData;
 
     /**
      * @var EntityRepositoryInterface
      */
-    private $ruleRepo;
+    protected $ruleRepo;
 
     /**
      * @var EntityRepositoryInterface
      */
-    private $thumbnailSizeRepo;
+    protected $thumbnailSizeRepo;
 
     /**
      * @var EntityRepositoryInterface
      */
-    private $categoryRepo;
+    protected $categoryRepo;
 
     /**
      * @var EntityWriterInterface
      */
-    private $entityWriter;
+    protected $entityWriter;
 
     /**
      * @var string
      */
-    private $defaultAvailabilityRule;
+    protected $defaultAvailabilityRule;
 
     /**
      * @var EntityDefinition
      */
-    private $mappingDefinition;
+    protected $mappingDefinition;
 
     /**
      * @var EntityRepositoryInterface
      */
-    private $cmsPageRepo;
+    protected $cmsPageRepo;
 
     /**
      * @var EntityRepositoryInterface
      */
-    private $deliveryTimeRepo;
+    protected $deliveryTimeRepo;
 
     public function __construct(
         EntityRepositoryInterface $migrationMappingRepo,
