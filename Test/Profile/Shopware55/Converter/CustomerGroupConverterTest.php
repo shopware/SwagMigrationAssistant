@@ -63,6 +63,7 @@ class CustomerGroupConverterTest extends TestCase
         $converted = $convertResult->getConverted();
 
         static::assertNull($convertResult->getUnmapped());
+        static::assertNotNull($convertResult->getMappingUuid());
         static::assertArrayHasKey('id', $converted);
         static::assertSame('Händler', $converted['name']);
         static::assertFalse($converted['displayGross']);

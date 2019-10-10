@@ -143,6 +143,7 @@ class NewsletterRecipientConverterTest extends TestCase
         );
 
         static::assertNull($convertResult->getUnmapped());
+        static::assertNotNull($convertResult->getMappingUuid());
         static::assertArrayNotHasKey('salutationId', $convertResult->getConverted());
 
         $logs = $this->loggingService->getLoggingArray();

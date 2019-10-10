@@ -147,6 +147,7 @@ class TranslationConverterTest extends TestCase
         $convertResult = $this->translationConverter->convert($translationData['product'], $context, $this->migrationContext);
 
         static::assertNull($convertResult->getUnmapped());
+        static::assertNotNull($convertResult->getMappingUuid());
         static::assertCount(0, $this->loggingService->getLoggingArray());
     }
 
@@ -165,6 +166,7 @@ class TranslationConverterTest extends TestCase
         $convertedProduct = $productConvertResult->getConverted();
 
         static::assertCount(1, $convertResult->getUnmapped());
+        static::assertNotNull($convertResult->getMappingUuid());
         static::assertArrayHasKey('objectdata', $convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
         static::assertSame($convertedProduct['manufacturer']['id'], $converted['id']);
@@ -219,6 +221,7 @@ class TranslationConverterTest extends TestCase
         $convertedProduct = $productConvertResult->getConverted();
 
         static::assertNull($convertResult->getUnmapped());
+        static::assertNotNull($convertResult->getMappingUuid());
         static::assertArrayHasKey('id', $converted);
         static::assertSame($convertedProduct['unit']['id'], $converted['id']);
         static::assertCount(0, $this->loggingService->getLoggingArray());
@@ -279,6 +282,7 @@ class TranslationConverterTest extends TestCase
         $convertedCategory = $categoryConvertResult->getConverted();
 
         static::assertNull($convertResult->getUnmapped());
+        static::assertNotNull($convertResult->getMappingUuid());
         static::assertArrayHasKey('id', $converted);
         static::assertSame($convertedCategory['id'], $converted['id']);
         static::assertCount(0, $this->loggingService->getLoggingArray());
@@ -339,6 +343,7 @@ class TranslationConverterTest extends TestCase
         $convertResult = $this->translationConverter->convert($translationData, $context, $this->migrationContext);
         $converted = $convertResult->getConverted();
         static::assertNull($convertResult->getUnmapped());
+        static::assertNotNull($convertResult->getMappingUuid());
         static::assertNotNull($converted);
 
         static::assertSame(PropertyGroupOptionDefinition::class, $converted['entityDefinitionClass']);
@@ -361,6 +366,7 @@ class TranslationConverterTest extends TestCase
         $convertResult = $this->translationConverter->convert($translationData, $context, $this->migrationContext);
         $converted = $convertResult->getConverted();
         static::assertNull($convertResult->getUnmapped());
+        static::assertNotNull($convertResult->getMappingUuid());
         static::assertNotNull($converted);
 
         static::assertSame(PropertyGroupDefinition::class, $converted['entityDefinitionClass']);
@@ -383,6 +389,7 @@ class TranslationConverterTest extends TestCase
         $convertResult = $this->translationConverter->convert($translationData, $context, $this->migrationContext);
         $converted = $convertResult->getConverted();
         static::assertNull($convertResult->getUnmapped());
+        static::assertNotNull($convertResult->getMappingUuid());
         static::assertNotNull($converted);
 
         static::assertSame(PropertyGroupOptionDefinition::class, $converted['entityDefinitionClass']);
@@ -405,6 +412,7 @@ class TranslationConverterTest extends TestCase
         $convertResult = $this->translationConverter->convert($translationData, $context, $this->migrationContext);
         $converted = $convertResult->getConverted();
         static::assertNull($convertResult->getUnmapped());
+        static::assertNotNull($convertResult->getMappingUuid());
         static::assertNotNull($converted);
 
         static::assertSame(PropertyGroupDefinition::class, $converted['entityDefinitionClass']);

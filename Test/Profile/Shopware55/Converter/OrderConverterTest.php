@@ -18,6 +18,7 @@ use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Exception\AssociationEntityRequiredMissingException;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\DeliveryTimeReader;
+use SwagMigrationAssistant\Profile\Shopware\Premapping\OrderDeliveryStateReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\OrderStateReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\PaymentMethodReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\SalutationReader;
@@ -133,6 +134,8 @@ class OrderConverterTest extends TestCase
         $mappingService->getOrCreateMapping($connectionId, DefaultEntities::CUSTOMER_GROUP, '2', $context, null, [], 'cfbd5018d38d41d8adca10d94fc8bdd6');
 
         $mappingService->getOrCreateMapping($connectionId, DefaultEntities::SHIPPING_METHOD, '14', $context, null, [], Uuid::randomHex());
+
+        $mappingService->getOrCreateMapping($connectionId, OrderDeliveryStateReader::getMappingName(), '0', $context, null, [], Uuid::randomHex());
     }
 
     public function testSupports(): void
@@ -163,6 +166,7 @@ class OrderConverterTest extends TestCase
         $converted = $convertResult->getConverted();
 
         static::assertNull($convertResult->getUnmapped());
+        static::assertNotNull($convertResult->getMappingUuid());
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('orderCustomer', $converted);
         static::assertArrayHasKey('deliveries', $converted);
