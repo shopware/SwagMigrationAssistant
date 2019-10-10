@@ -13,9 +13,11 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\Metric\Count
 use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\Bucket\TermsResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\Metric\CountResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 use Shopware\Storefront\Theme\ThemeService;
 use SwagMigrationAssistant\Exception\MigrationIsRunningException;
@@ -162,6 +164,7 @@ class RunService implements RunServiceInterface
         if ($this->isMigrationRunning($context)) {
             return null;
         }
+        $this->cleanupUnwrittenRunData($migrationContext, $context);
 
         $runUuid = $this->createPlainMigrationRun($migrationContext, $context);
         $accessToken = $this->accessTokenService->updateRunAccessToken($runUuid, $context);
@@ -309,12 +312,12 @@ class RunService implements RunServiceInterface
             ],
         ], $context);
 
-        $this->cleanupMigration($runUuid, $context);
+        $this->cleanupMigration($runUuid, $context, true);
     }
 
-    private function cleanupMigration(string $runUuid, Context $context): void
+    private function cleanupMigration(string $runUuid, Context $context, bool $removeOnlyWrittenData = false): void
     {
-        $this->removeWrittenMigrationData($runUuid);
+        $this->removeMigrationData($runUuid, $removeOnlyWrittenData);
         $this->assignThemeToSalesChannel($runUuid, $context);
 
         $this->cache->clear();
@@ -545,12 +548,17 @@ class RunService implements RunServiceInterface
         return $totals;
     }
 
-    private function removeWrittenMigrationData(string $runUuid): void
+    private function removeMigrationData(string $runUuid, bool $onlyWritten = false): void
     {
         $qb = new QueryBuilder($this->dbalConnection);
         $qb->delete($this->migrationDataDefinition->getEntityName())
-            ->andWhere('HEX(run_id) = :runId')
-            ->setParameter('runId', $runUuid)
+            ->andWhere('HEX(run_id) = :runId');
+
+        if ($onlyWritten === true) {
+            $qb->andWhere('written = 1');
+        }
+
+        $qb->setParameter('runId', $runUuid)
             ->execute();
     }
 
@@ -612,5 +620,28 @@ class RunService implements RunServiceInterface
         }
 
         return reset($ids);
+    }
+
+    private function cleanupUnwrittenRunData(MigrationContextInterface $migrationContext, Context $context): void
+    {
+        $criteria = new Criteria();
+        $criteria->addFilter(
+            new EqualsFilter('connectionId', $migrationContext->getConnection()->getId()),
+            new EqualsAnyFilter('status', [SwagMigrationRunEntity::STATUS_FINISHED, SwagMigrationRunEntity::STATUS_ABORTED])
+        );
+        $criteria->addSorting(new FieldSorting('createdAt', 'DESC'));
+        $criteria->setLimit(1);
+
+        $idSearchResult = $this->migrationRunRepo->searchIds($criteria, $context);
+
+        if ($idSearchResult->firstId() !== null) {
+            $lastRunUuid = $idSearchResult->firstId();
+
+            $qb = new QueryBuilder($this->dbalConnection);
+            $qb->delete($this->migrationDataDefinition->getEntityName())
+                ->andWhere('HEX(run_id) = :runId')
+                ->setParameter('runId', $lastRunUuid)
+                ->execute();
+        }
     }
 }
