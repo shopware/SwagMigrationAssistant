@@ -38,6 +38,11 @@ class LocalMediaProcessor implements MediaFileProcessorInterface
     private $mediaFileRepo;
 
     /**
+     * @var EntityRepositoryInterface
+     */
+    private $mediaRepo;
+
+    /**
      * @var LoggingServiceInterface
      */
     private $loggingService;
@@ -49,11 +54,13 @@ class LocalMediaProcessor implements MediaFileProcessorInterface
 
     public function __construct(
         EntityRepositoryInterface $migrationMediaFileRepo,
+        EntityRepositoryInterface $mediaRepo,
         FileSaver $fileSaver,
         LoggingServiceInterface $loggingService,
         iterable $resolver
     ) {
         $this->mediaFileRepo = $migrationMediaFileRepo;
+        $this->mediaRepo = $mediaRepo;
         $this->fileSaver = $fileSaver;
         $this->loggingService = $loggingService;
         $this->resolver = $resolver;
@@ -155,6 +162,7 @@ class LocalMediaProcessor implements MediaFileProcessorInterface
         Context $context
     ): array {
         $processedMedia = [];
+        $failureUuids = [];
 
         /** @var SwagMigrationMediaFileEntity[] $media */
         foreach ($media as $mediaFile) {
@@ -172,6 +180,7 @@ class LocalMediaProcessor implements MediaFileProcessorInterface
                         $sourcePath
                     ));
                     $processedMedia[] = $mediaFile->getMediaId();
+                    $failureUuids[$mediaFile->getId()] = $mediaFile->getMediaId();
 
                     continue;
                 }
@@ -193,11 +202,11 @@ class LocalMediaProcessor implements MediaFileProcessorInterface
                     $mediaFile->getMediaId(),
                     $sourcePath
                 ));
+                $failureUuids[$mediaFile->getId()] = $mediaFile->getMediaId();
             }
             $processedMedia[] = $mediaFile->getMediaId();
         }
-
-        $this->setProcessedFlag($migrationContext->getRunUuid(), $context, $processedMedia);
+        $this->setProcessedFlag($migrationContext->getRunUuid(), $context, $processedMedia, $failureUuids);
         $this->loggingService->saveLogging($context);
 
         return array_values($mappedWorkload);
@@ -220,7 +229,7 @@ class LocalMediaProcessor implements MediaFileProcessorInterface
         }
     }
 
-    private function setProcessedFlag(string $runId, Context $context, array $finishedUuids): void
+    private function setProcessedFlag(string $runId, Context $context, array $finishedUuids, array $failureUuids): void
     {
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsAnyFilter('mediaId', $finishedUuids));
@@ -234,6 +243,22 @@ class LocalMediaProcessor implements MediaFileProcessorInterface
                 'id' => $mediaFile->getId(),
                 'processed' => true,
             ];
+        }
+
+        if (!empty($failureUuids)) {
+            $mediaFileIds = [];
+            $mediaIds = [];
+            foreach ($failureUuids as $mediaFileId => $mediaId) {
+                $mediaFileIds[] = [
+                    'id' => $mediaFileId,
+                ];
+                $mediaIds[] = [
+                    'id' => $mediaId,
+                ];
+            }
+
+            $this->mediaFileRepo->delete($mediaFileIds, $context);
+            $this->mediaRepo->delete($mediaIds, $context);
         }
 
         if (empty($updateableMediaEntities)) {
