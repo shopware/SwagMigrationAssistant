@@ -193,9 +193,12 @@ class MigrationDataConverter implements MigrationDataConverterInterface
                     $relatedMappings[] = $additionalData['relatedMappings'];
                 }
             }
-            $preloadIds = array_values(
-                array_unique(array_merge($preloadIds, ...$relatedMappings))
-            );
+
+            if ($relatedMappings !== []) {
+                $preloadIds = array_values(
+                    array_unique(array_merge($preloadIds, ...$relatedMappings))
+                );
+            }
         }
         $resultSet = new MappingDeltaResult(array_values($mappedData), $preloadIds);
         unset($checksums, $mappedData);
