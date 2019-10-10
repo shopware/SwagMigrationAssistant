@@ -156,6 +156,8 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
                 DefaultEntities::NEWSLETTER_RECIPIENT,
                 $this->oldNewsletterRecipientId
             ));
+
+            return null;
         }
         $this->mappingIds[] = $salutationMapping['id'];
 

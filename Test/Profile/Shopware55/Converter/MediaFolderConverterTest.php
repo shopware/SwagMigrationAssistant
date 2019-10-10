@@ -67,6 +67,7 @@ class MediaFolderConverterTest extends TestCase
         $converted = $convertResult->getConverted();
 
         static::assertNull($convertResult->getUnmapped());
+        static::assertNotNull($convertResult->getMappingUuid());
         static::assertArrayHasKey('id', $converted);
 
         static::assertSame($mediaFolderData[0]['name'], $converted['name']);

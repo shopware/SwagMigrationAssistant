@@ -113,6 +113,7 @@ class PropertyGroupOptionConverterTest extends TestCase
         $converted = $convertResult->getConverted();
 
         static::assertNull($convertResult->getUnmapped());
+        static::assertNotNull($convertResult->getMappingUuid());
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('group', $converted);
         static::assertArrayHasKey('translations', $converted);

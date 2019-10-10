@@ -62,6 +62,7 @@ class CustomerAttributeConverterTest extends TestCase
         $converted = $convertResult->getConverted();
 
         static::assertNull($convertResult->getUnmapped());
+        static::assertNotNull($convertResult->getMappingUuid());
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('relations', $converted);
         static::assertSame('customer', $converted['relations'][0]['entityName']);

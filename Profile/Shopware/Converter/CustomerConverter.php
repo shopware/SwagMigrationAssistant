@@ -300,6 +300,8 @@ abstract class CustomerConverter extends ShopwareConverter
                 DefaultEntities::CUSTOMER,
                 $this->oldCustomerId
             ));
+
+            return null;
         }
         $this->mappingIds[] = $paymentMethodMapping['id'];
 
@@ -574,6 +576,8 @@ abstract class CustomerConverter extends ShopwareConverter
                 DefaultEntities::CUSTOMER,
                 $this->oldCustomerId
             ));
+
+            return null;
         }
         $this->mappingIds[] = $mapping['id'];
 

@@ -90,6 +90,7 @@ class CurrencyConverterTest extends TestCase
         $defaultLanguage = BasicSettingsMappingService::DEFAULT_LANGUAGE_UUID;
 
         static::assertNull($convertResult->getUnmapped());
+        static::assertNotNull($convertResult->getMappingUuid());
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('translations', $converted);
         static::assertSame('COC', $converted['translations'][$defaultLanguage]['shortName']);

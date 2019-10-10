@@ -93,6 +93,7 @@ class SalesChannelConverterTest extends TestCase
         $converted = $convertResult->getConverted();
 
         static::assertNull($convertResult->getUnmapped());
+        static::assertNotNull($convertResult->getMappingUuid());
         static::assertArrayHasKey('id', $converted);
         static::assertCount(3, $converted['languages']);
         static::assertSame('Deutsch', $converted['name']);
@@ -102,6 +103,7 @@ class SalesChannelConverterTest extends TestCase
         $converted = $convertResult->getConverted();
 
         static::assertNull($convertResult->getUnmapped());
+        static::assertNotNull($convertResult->getMappingUuid());
         static::assertArrayHasKey('id', $converted);
         static::assertCount(2, $converted['languages']);
         static::assertSame('Gartensubshop', $converted['name']);

@@ -68,6 +68,7 @@ class LanguageConverterTest extends TestCase
         $converted = $convertResult->getConverted();
 
         static::assertNull($convertResult->getUnmapped());
+        static::assertNotNull($convertResult->getMappingUuid());
         static::assertArrayHasKey('id', $converted);
         static::assertSame('Niederländisch', $converted['name']);
         static::assertSame($converted['translationCodeId'], $converted['localeId']);
