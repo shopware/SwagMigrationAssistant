@@ -427,6 +427,8 @@ abstract class OrderConverter extends ShopwareConverter
                 DefaultEntities::ORDER_TRANSACTION,
                 $this->oldId
             ));
+
+            return null;
         }
 
         $this->mappingIds[] = $paymentMethodMapping['id'];
@@ -639,6 +641,18 @@ abstract class OrderConverter extends ShopwareConverter
             (string) $data['status'],
             $this->context
         );
+
+        if ($deliveryStateMapping === null) {
+            $this->loggingService->addLogEntry(new UnknownEntityLog(
+                $this->runId,
+                'order_delivery_state',
+                (string) $data['status'],
+                DefaultEntities::ORDER,
+                $this->oldId
+            ));
+
+            return [];
+        }
         $this->mappingIds[] = $deliveryStateMapping['id'];
 
         $mapping = $this->mappingService->getOrCreateMapping(
@@ -719,6 +733,8 @@ abstract class OrderConverter extends ShopwareConverter
                 DefaultEntities::ORDER,
                 $this->oldId
             ));
+
+            return null;
         }
         $this->mappingIds[] = $shippingMethodMapping['id'];
 
@@ -858,6 +874,8 @@ abstract class OrderConverter extends ShopwareConverter
                 DefaultEntities::ORDER,
                 $this->oldId
             ));
+
+            return null;
         }
 
         $this->mappingIds[] = $salutationMapping['id'];
