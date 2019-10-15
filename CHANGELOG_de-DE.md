@@ -1,3 +1,27 @@
+# 0.30.0
+PT-10629 - Erhöhung der Testabdeckung
+PT-10761 - Neues Frontend data handling
+PT-10783 - Migration von Attributen ohne Label optimiert
+PT-10797 - Behebt ein Problem bei der Produktmigration (Sichtbarkeit)
+NTR - Partielles Indexing über die Message Queue implementiert
+PT-10800 - Behebt ein Problem mit dem Anlegen der Mappings
+PT-10818 - Behebt ein Problem bei der Attributmigration
+PT-10819 - Behebt ein Problem bei der Migration von Newsletter-Empfängern
+PT-10835 - Behebt ein Problem bei der Migration von versandkostenfreien Produkten
+PT-10844 - Migration der Lieferzeit von Produkten
+PT-10769 - Behebt ein Problem im Logging
+PT-10846 - Migration von Produktbewertungen
+PT-10847 - Behebt ein Problem bei der Migration der Shopstruktur von SW5
+NTR - Behebt ein Problem beim Premapping der Bestellstati
+PT-10793 - Nutzen einer Daten Checksumme für wiederholte Migration (Deltas)
+PT-10861 - Migration von Seo Urls
+PT-10718 - Entfernen von nicht behandelten Media Einträgen
+PT-10875 - Cleanup der nicht geschriebenen Migrationsdaten wenn ein neuer Run startet
+
+# 0.20.0
+- Refaktorierung von imports zu global object
+- Refaktorierung von abgelaufenen data handling Importen
+
 # 0.10.1
 - Standard-Theme zu den Verkaufskanälen hinzugefügt
 - Indexierung nach der Migration verbessert
