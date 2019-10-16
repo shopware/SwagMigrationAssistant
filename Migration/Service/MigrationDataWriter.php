@@ -13,7 +13,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteException;
 use SwagMigrationAssistant\Exception\WriterNotFoundException;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataEntity;
-use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
 use SwagMigrationAssistant\Migration\Logging\Log\WriteExceptionRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
@@ -158,15 +157,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
         }
 
         // Update written-Flag of the media file in the media file table
-        if (
-            $dataSet::getEntity() === DefaultEntities::MEDIA
-            || $dataSet::getEntity() === DefaultEntities::PRODUCT
-            || $dataSet::getEntity() === DefaultEntities::PROPERTY_GROUP_OPTION
-            || $dataSet::getEntity() === DefaultEntities::CATEGORY
-            || $dataSet::getEntity() === DefaultEntities::ORDER_DOCUMENT
-        ) {
-            $this->mediaFileService->setWrittenFlag($converted, $migrationContext, $context);
-        }
+        $this->mediaFileService->setWrittenFlag($converted, $migrationContext, $context);
     }
 
     private function handleWriteException(

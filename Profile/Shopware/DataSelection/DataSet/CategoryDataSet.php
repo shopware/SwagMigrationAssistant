@@ -37,4 +37,18 @@ class CategoryDataSet extends ShopwareDataSet
     {
         return [];
     }
+
+    public function getMediaUuids(array $converted): ?array
+    {
+        $mediaUuids = [];
+        foreach ($converted as $data) {
+            if (!isset($data['media']['id'])) {
+                continue;
+            }
+
+            $mediaUuids[] = $data['media']['id'];
+        }
+
+        return $mediaUuids;
+    }
 }
