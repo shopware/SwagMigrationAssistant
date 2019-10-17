@@ -14,4 +14,9 @@ abstract class DataSet
     {
         return null;
     }
+
+    public function getMediaUuids(array $converted): ?array
+    {
+        return null;
+    }
 }

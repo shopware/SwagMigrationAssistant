@@ -37,4 +37,18 @@ class OrderDocumentDataSet extends ShopwareDataSet
     {
         return [];
     }
+
+    public function getMediaUuids(array $converted): ?array
+    {
+        $mediaUuids = [];
+        foreach ($converted as $data) {
+            if (!isset($data['documentMediaFile']['id'])) {
+                continue;
+            }
+
+            $mediaUuids[] = $data['documentMediaFile']['id'];
+        }
+
+        return $mediaUuids;
+    }
 }
