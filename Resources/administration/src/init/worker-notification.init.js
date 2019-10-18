@@ -1,16 +1,8 @@
-const { Application } = Shopware;
-
 let notificationId = null;
 
-Application.addInitializerDecorator('worker', (service) => {
-    const factory = Application.getContainer('factory').workerNotification;
-
-    factory.register('newsletterRecipientTask', {
-        name: 'SwagMigrationAssistant\\Migration\\MessageQueue\\Message\\ProcessMediaMessage',
-        fn: onMediaProcessingMessageFound
-    });
-
-    return service;
+Shopware.WorkerNotification.register('newsletterRecipientTask', {
+    name: 'SwagMigrationAssistant\\Migration\\MessageQueue\\Message\\ProcessMediaMessage',
+    fn: onMediaProcessingMessageFound
 });
 
 function onMediaProcessingMessageFound(next, { $root, entry, notification }) {
