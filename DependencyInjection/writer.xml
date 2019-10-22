@@ -188,7 +188,7 @@
         <service id="SwagMigrationAssistant\Migration\Writer\SeoUrlWriter"
                  parent="SwagMigrationAssistant\Migration\Writer\AbstractWriter">
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
-            <argument type="service" id="Shopware\Storefront\Framework\Seo\SeoUrl\SeoUrlDefinition"/>
+            <argument type="service" id="Shopware\Core\Framework\Seo\SeoUrl\SeoUrlDefinition"/>
             <tag name="shopware.migration.writer"/>
         </service>
     </services>
