@@ -86,16 +86,19 @@ abstract class LocalAbstractReader implements ReaderInterface
         return $data;
     }
 
-    protected function fetchIdentifiers(string $table, int $offset = 0, int $limit = 250): array
+    protected function fetchIdentifiers(string $table, int $offset = 0, int $limit = 250, array $orderBy = []): array
     {
         $query = $this->connection->createQueryBuilder();
 
         $query->select('id');
         $query->from($table);
-        $query->addOrderBy('id');
 
         $query->setFirstResult($offset);
         $query->setMaxResults($limit);
+
+        foreach ($orderBy as $order) {
+            $query->addOrderBy($order);
+        }
 
         return $query->execute()->fetchAll(\PDO::FETCH_COLUMN);
     }

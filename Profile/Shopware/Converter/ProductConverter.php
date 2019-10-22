@@ -307,8 +307,7 @@ abstract class ProductConverter extends ShopwareConverter
         }
         unset($data['unit'], $data['detail']['unitID']);
 
-        $setInGross = isset($data['prices'][0]['customergroup']) ? (bool) $data['prices'][0]['customergroup']['taxinput'] : false;
-        $converted['price'] = $this->getPrice($data['prices'][0], $converted['tax']['taxRate'], $setInGross);
+        $converted['price'] = $this->getPrice($data['prices'][0], $converted['tax']['taxRate']);
 
         if (empty($converted['price'])) {
             $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
@@ -918,10 +917,9 @@ abstract class ProductConverter extends ShopwareConverter
         return $manufacturerMedia;
     }
 
-    private function getPrice(array $priceData, float $taxRate, bool $setInGross): array
+    private function getPrice(array $priceData, float $taxRate): array
     {
-        $gross = (float) $priceData['price'] * (1 + $taxRate / 100);
-        $gross = $setInGross ? round($gross, 4) : $gross;
+        $gross = round((float) $priceData['price'] * (1 + $taxRate / 100), $this->context->getCurrencyPrecision());
 
         $currencyUuid = null;
         if (isset($priceData['currencyShortName'])) {
@@ -1024,9 +1022,7 @@ abstract class ProductConverter extends ShopwareConverter
             $conditionUuid = $mapping['entityUuid'];
             $this->mappingIds[] = $mapping['id'];
 
-            $setInGross = (bool) $price['customergroup']['taxinput'];
-
-            $priceArray = $this->getPrice($price, $converted['tax']['taxRate'], $setInGross);
+            $priceArray = $this->getPrice($price, $converted['tax']['taxRate']);
 
             if (empty($priceArray)) {
                 $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
