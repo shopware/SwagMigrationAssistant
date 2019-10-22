@@ -150,7 +150,7 @@ class LocalProductReader extends LocalAbstractReader implements LocalReaderInter
 
     private function fetchData(MigrationContextInterface $migrationContext): array
     {
-        $ids = $this->fetchIdentifiers('s_articles_details', $migrationContext->getOffset(), $migrationContext->getLimit());
+        $ids = $this->fetchIdentifiers('s_articles_details', $migrationContext->getOffset(), $migrationContext->getLimit(), ['kind']);
 
         $query = $this->connection->createQueryBuilder();
 
