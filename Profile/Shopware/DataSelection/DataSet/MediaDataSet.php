@@ -37,4 +37,9 @@ class MediaDataSet extends ShopwareDataSet
     {
         return [];
     }
+
+    public function getMediaUuids(array $converted): ?array
+    {
+        return array_column($converted, 'id');
+    }
 }
