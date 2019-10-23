@@ -277,6 +277,16 @@
             "title": "Migration - Historie",
             "message": "Logfile einsehen oder herunterladen",
             "actionLabel": "Historie öffnen"
+          },
+          "indexingNotification": {
+            "running": {
+              "title": "Indexierung läuft",
+              "message": "Die Indexierung läuft momentan im Hintergrund."
+            },
+            "finished": {
+              "title": "Indexierung abgeschlossen",
+              "message": "Die Indexierung wurde fertiggestellt."
+            }
           }
         },
         "pauseScreen": {

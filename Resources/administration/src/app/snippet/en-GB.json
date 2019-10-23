@@ -277,6 +277,16 @@
             "title": "Migration history",
             "message": "View or download the logfile",
             "actionLabel": "Open history"
+          },
+          "indexingNotification": {
+            "running": {
+              "title": "Indexing in progress",
+              "message": "Currently indexing in the background."
+            },
+            "finished": {
+              "title": "Indexing completed",
+              "message": "The indexing has been completed."
+            }
           }
         },
         "pauseScreen": {
