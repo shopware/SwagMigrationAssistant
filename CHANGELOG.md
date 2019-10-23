@@ -1,3 +1,6 @@
+# 0.30.1
+NTR - Solves an issue fetching products from Shopware 5 via local profile
+
 # 0.30.0
 PT-10629 - Raise test coverage
 PT-10761 - Implement new frontend data handling
