@@ -18,11 +18,13 @@ class MigrationWorkerService {
      * @param {MigrationApiService} migrationService
      * @param {MigrationRunService} migrationRunService
      * @param {MigrationLoggingService} migrationLoggingService
+     * @param {MigrationIndexingWorker} migrationIndexingWorker
      */
     constructor(
         migrationService,
         migrationRunService,
-        migrationLoggingService
+        migrationLoggingService,
+        migrationIndexingWorker
     ) {
         // will be toggled when we receive a response for our 'migrationWanted' request
         this._broadcastResponseFlag = false;
@@ -36,6 +38,7 @@ class MigrationWorkerService {
         this._migrationService = migrationService;
         this._migrationRunService = migrationRunService;
         this._migrationLoggingService = migrationLoggingService;
+        this._migrationIndexingWorker = migrationIndexingWorker;
         this._workerStatusManager = new WorkerStatusManager(
             this._migrationService
         );
@@ -503,6 +506,7 @@ class MigrationWorkerService {
         ).then(() => {
             this._showFinishNotification(this._migrationProcessStore.state.runId);
             this._resetProgress();
+            this._handleIndexing();
             return Promise.resolve();
         });
     }
@@ -519,6 +523,31 @@ class MigrationWorkerService {
                     route: { name: 'swag.migration.index.history.detail', params: { id: runId } }
                 }
             ]
+        });
+    }
+
+    _handleIndexing() {
+        let notificationId = null;
+        this.applicationRoot.$store.dispatch('notification/createNotification', {
+            title: this.applicationRoot.$t('swag-migration.index.loadingScreenCard.result.indexingNotification.running.title'),
+            message: this.applicationRoot.$t('swag-migration.index.loadingScreenCard.result.indexingNotification.running.message'),
+            variant: 'info',
+            isLoading: true,
+            growl: false
+        }).then((id) => {
+            notificationId = id;
+            return this._migrationIndexingWorker.start();
+        }).then(() => {
+            // indexing finished
+            this.applicationRoot.$store.dispatch('notification/updateNotification', {
+                uuid: notificationId,
+                title: this.applicationRoot.$t('swag-migration.index.loadingScreenCard.result.indexingNotification.finished.title'),
+                message: this.applicationRoot.$t('swag-migration.index.loadingScreenCard.result.indexingNotification.finished.message'),
+                variant: 'info',
+                isLoading: false,
+                visited: false,
+                growl: true
+            });
         });
     }
 
