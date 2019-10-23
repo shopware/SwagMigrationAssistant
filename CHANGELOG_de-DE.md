@@ -1,3 +1,6 @@
+# 0.30.1
+NTR - Behebt ein Problem beim Lesen der Produkte über das lokale Profil
+
 # 0.30.0
 PT-10629 - Erhöhung der Testabdeckung
 PT-10761 - Neues Frontend data handling
