@@ -99,6 +99,8 @@ interface MappingServiceInterface
 
     public function getDefaultAvailabilityRule(Context $context): ?string;
 
+    public function getDocumentTypeUuid(string $technicalName, Context $context, MigrationContextInterface $migrationContext): ?string;
+
     public function getLowestRootCategoryUuid(Context $context): ?string;
 
     public function getMappings(string $connectionId, string $entityName, array $ids, Context $context): EntitySearchResult;

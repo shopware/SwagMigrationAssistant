@@ -194,4 +194,9 @@ class DummyMappingService extends MappingService
     {
         return Uuid::randomHex();
     }
+
+    public function getDocumentTypeUuid(string $technicalName, Context $context, MigrationContextInterface $migrationContext): ?string
+    {
+        return null;
+    }
 }

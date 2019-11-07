@@ -84,6 +84,7 @@ class MappingServiceTest extends TestCase
             $this->getContainer()->get('category.repository'),
             $this->getContainer()->get('cms_page.repository'),
             $this->getContainer()->get('delivery_time.repository'),
+            $this->getContainer()->get('document_type.repository'),
             $this->entityWriter,
             $this->getContainer()->get(SwagMigrationMappingDefinition::class)
         );
@@ -123,6 +124,7 @@ class MappingServiceTest extends TestCase
             $this->getContainer()->get('category.repository'),
             $this->getContainer()->get('cms_page.repository'),
             $this->getContainer()->get('delivery_time.repository'),
+            $this->getContainer()->get('document_type.repository'),
             $this->entityWriter,
             $this->getContainer()->get(SwagMigrationMappingDefinition::class)
         );

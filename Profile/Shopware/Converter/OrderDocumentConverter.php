@@ -156,6 +156,18 @@ abstract class OrderDocumentConverter extends ShopwareConverter
 
     protected function getDocumentType(array $data): ?array
     {
+        $documentTypeUuid = $this->mappingService->getDocumentTypeUuid(
+            $data['key'],
+            $this->context,
+            $this->migrationContext
+        );
+
+        if ($documentTypeUuid !== null) {
+            $documentType['id'] = $documentTypeUuid;
+
+            return $documentType;
+        }
+
         $knownTypes = ['invoice', 'delivery_note', 'storno', 'credit_note'];
 
         if (!in_array($data['key'], $knownTypes, true)) {
