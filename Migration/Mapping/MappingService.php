@@ -2,6 +2,7 @@
 
 namespace SwagMigrationAssistant\Migration\Mapping;
 
+use Shopware\Core\Checkout\Document\Aggregate\DocumentType\DocumentTypeEntity;
 use Shopware\Core\Content\Category\CategoryCollection;
 use Shopware\Core\Content\Cms\CmsPageDefinition;
 use Shopware\Core\Content\Cms\CmsPageEntity;
@@ -129,6 +130,11 @@ class MappingService implements MappingServiceInterface
      */
     protected $deliveryTimeRepo;
 
+    /**
+     * @var EntityRepositoryInterface
+     */
+    protected $documentTypeRepo;
+
     public function __construct(
         EntityRepositoryInterface $migrationMappingRepo,
         EntityRepositoryInterface $localeRepository,
@@ -143,6 +149,7 @@ class MappingService implements MappingServiceInterface
         EntityRepositoryInterface $categoryRepo,
         EntityRepositoryInterface $cmsPageRepo,
         EntityRepositoryInterface $deliveryTimeRepo,
+        EntityRepositoryInterface $documentTypeRepo,
         EntityWriterInterface $entityWriter,
         EntityDefinition $mappingDefinition
     ) {
@@ -159,6 +166,7 @@ class MappingService implements MappingServiceInterface
         $this->categoryRepo = $categoryRepo;
         $this->cmsPageRepo = $cmsPageRepo;
         $this->deliveryTimeRepo = $deliveryTimeRepo;
+        $this->documentTypeRepo = $documentTypeRepo;
         $this->entityWriter = $entityWriter;
         $this->mappingDefinition = $mappingDefinition;
     }
@@ -929,6 +937,43 @@ class MappingService implements MappingServiceInterface
         }
 
         return $uuids;
+    }
+
+    public function getDocumentTypeUuid(string $technicalName, Context $context, MigrationContextInterface $migrationContext): ?string
+    {
+        $connectionId = $migrationContext->getConnection()->getId();
+        $documentTypeMapping = $this->getMapping($connectionId, DefaultEntities::ORDER_DOCUMENT_TYPE, $technicalName, $context);
+
+        if ($documentTypeMapping !== null) {
+            return $documentTypeMapping['entityUuid'];
+        }
+
+        /** @var EntitySearchResult $result */
+        $result = $context->disableCache(function (Context $context) use ($technicalName) {
+            $criteria = new Criteria();
+            $criteria->addFilter(new EqualsFilter('technicalName', $technicalName));
+
+            return $this->documentTypeRepo->search($criteria, $context);
+        });
+
+        if ($result->getTotal() > 0) {
+            /** @var DocumentTypeEntity $documentType */
+            $documentType = $result->getEntities()->first();
+
+            $this->saveMapping(
+                [
+                    'id' => Uuid::randomHex(),
+                    'connectionId' => $migrationContext->getConnection()->getId(),
+                    'entity' => DefaultEntities::ORDER_DOCUMENT_TYPE,
+                    'oldIdentifier' => $technicalName,
+                    'entityUuid' => $documentType->getId(),
+                ]
+            );
+
+            return $documentType->getId();
+        }
+
+        return null;
     }
 
     public function getLowestRootCategoryUuid(Context $context): ?string

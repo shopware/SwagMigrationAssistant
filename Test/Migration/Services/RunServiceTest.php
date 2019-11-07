@@ -140,6 +140,7 @@ class RunServiceTest extends TestCase
             $this->getContainer()->get('category.repository'),
             $this->getContainer()->get('cms_page.repository'),
             $this->getContainer()->get('delivery_time.repository'),
+            $this->getContainer()->get('document_type.repository'),
             $entityWriter,
             $this->getContainer()->get(SwagMigrationMappingDefinition::class)
         );
