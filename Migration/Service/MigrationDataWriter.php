@@ -192,6 +192,10 @@ class MigrationDataWriter implements MigrationDataWriterInterface
             ++$index;
         }
 
+        if (empty($newData)) {
+            return;
+        }
+
         $currentWriter->writeData($newData, $context);
     }
 
