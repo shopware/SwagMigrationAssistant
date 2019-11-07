@@ -1,7 +1,7 @@
 import template from './swag-migration-confirm-warning.html.twig';
 import './swag-migration-confirm-warning.scss';
 
-const { Component, State } = Shopware;
+const { Component, StateDeprecated } = Shopware;
 
 Component.register('swag-migration-confirm-warning', {
     template,
@@ -9,7 +9,7 @@ Component.register('swag-migration-confirm-warning', {
     data() {
         return {
             /** @type MigrationProcessStore */
-            migrationProcessStore: State.getStore('migrationProcess')
+            migrationProcessStore: StateDeprecated.getStore('migrationProcess')
         };
     },
 

@@ -1,10 +1,10 @@
-const { State } = Shopware;
+const { StateDeprecated } = Shopware;
 const { Criteria } = Shopware.Data;
 
 class ProcessStoreInitService {
     constructor(migrationService, repositoryFactory, context) {
         this._migrationService = migrationService;
-        this._migrationProcessStore = State.getStore('migrationProcess');
+        this._migrationProcessStore = StateDeprecated.getStore('migrationProcess');
         this._migrationGeneralSettingRepository = repositoryFactory.create('swag_migration_general_setting');
         this._context = context;
     }

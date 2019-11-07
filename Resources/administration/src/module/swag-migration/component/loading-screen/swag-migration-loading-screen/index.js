@@ -3,7 +3,7 @@ import './swag-migration-loading-screen.scss';
 import { MIGRATION_DISPLAY_STATUS } from
     '../../../../../core/service/migration/swag-migration-worker-status-manager.service';
 
-const { Component, State } = Shopware;
+const { Component, StateDeprecated } = Shopware;
 
 Component.register('swag-migration-loading-screen', {
     template,
@@ -11,9 +11,9 @@ Component.register('swag-migration-loading-screen', {
     data() {
         return {
             /** @type MigrationProcessStore */
-            migrationProcessStore: State.getStore('migrationProcess'),
+            migrationProcessStore: StateDeprecated.getStore('migrationProcess'),
             /** @type MigrationUIStore */
-            migrationUIStore: State.getStore('migrationUI')
+            migrationUIStore: StateDeprecated.getStore('migrationUI')
         };
     },
 

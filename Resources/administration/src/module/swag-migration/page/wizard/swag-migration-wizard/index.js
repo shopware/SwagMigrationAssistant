@@ -1,7 +1,7 @@
 import template from './swag-migration-wizard.html.twig';
 import './swag-migration-wizard.scss';
 
-const { Component, Mixin, State } = Shopware;
+const { Component, Mixin, StateDeprecated } = Shopware;
 const { Criteria } = Shopware.Data;
 const SSL_REQUIRED_ERROR_CODE = 'SWAG_MIGRATION__SSL_REQUIRED';
 
@@ -16,7 +16,7 @@ Component.register('swag-migration-wizard', {
     inject: {
         /** @var {MigrationApiService} migrationService */
         migrationService: 'migrationService',
-        context: 'context',
+        context: 'apiContext',
         repositoryFactory: 'repositoryFactory'
     },
 
@@ -71,8 +71,8 @@ Component.register('swag-migration-wizard', {
             selectedProfile: {},
             childRouteReady: false, // child routes with forms will emit and change this value depending on their validation.
             errorMessageSnippet: '',
-            migrationProcessStore: State.getStore('migrationProcess'),
-            migrationUIStore: State.getStore('migrationUI'),
+            migrationProcessStore: StateDeprecated.getStore('migrationProcess'),
+            migrationUIStore: StateDeprecated.getStore('migrationUI'),
             connectionNameErrorCode: '',
             currentErrorCode: ''
         };

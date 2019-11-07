@@ -2,7 +2,7 @@ import StorageBroadcastService from '../storage-broadcaster.service';
 import { WorkerRequest } from './swag-migration-worker-request.service';
 import { MIGRATION_STATUS, WorkerStatusManager } from './swag-migration-worker-status-manager.service';
 
-const { Application, State } = Shopware;
+const { Application, StateDeprecated } = Shopware;
 
 export const MIGRATION_ACCESS_TOKEN_NAME = 'swagMigrationAccessToken';
 
@@ -45,7 +45,7 @@ class MigrationWorkerService {
         this._workRunner = null;
 
         /** @type MigrationProcessStore */
-        this._migrationProcessStore = State.getStore('migrationProcess');
+        this._migrationProcessStore = StateDeprecated.getStore('migrationProcess');
         // state variables
         this._interruptSubscriber = null;
         this._restoreState = {};

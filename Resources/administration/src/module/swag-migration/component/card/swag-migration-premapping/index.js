@@ -2,7 +2,7 @@ import template from './swag-migration-premapping.html.twig';
 import { UI_COMPONENT_INDEX } from '../../../../../core/data/MigrationUIStore';
 import './swag-migration-premapping.scss';
 
-const { Component, State } = Shopware;
+const { Component, StateDeprecated } = Shopware;
 
 Component.register('swag-migration-premapping', {
     template,
@@ -19,9 +19,9 @@ Component.register('swag-migration-premapping', {
             isLoading: false,
             premappingInput: [],
             /** @type MigrationProcessStore */
-            migrationProcessStore: State.getStore('migrationProcess'),
+            migrationProcessStore: StateDeprecated.getStore('migrationProcess'),
             /** @type MigrationUIStore */
-            migrationUIStore: State.getStore('migrationUI')
+            migrationUIStore: StateDeprecated.getStore('migrationUI')
         };
     },
 

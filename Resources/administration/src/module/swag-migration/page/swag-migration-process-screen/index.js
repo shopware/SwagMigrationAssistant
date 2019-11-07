@@ -7,7 +7,7 @@ import {
     WORKER_INTERRUPT_TYPE
 } from '../../../../core/service/migration/swag-migration-worker.service';
 
-const { Component, State } = Shopware;
+const { Component, StateDeprecated } = Shopware;
 
 Component.register('swag-migration-process-screen', {
     template,
@@ -34,9 +34,9 @@ Component.register('swag-migration-process-screen', {
             showAbortMigrationConfirmDialog: false,
             isPausedBeforeAbortDialog: false,
             /** @type MigrationProcessStore */
-            migrationProcessStore: State.getStore('migrationProcess'),
+            migrationProcessStore: StateDeprecated.getStore('migrationProcess'),
             /** @type MigrationUIStore */
-            migrationUIStore: State.getStore('migrationUI'),
+            migrationUIStore: StateDeprecated.getStore('migrationUI'),
             UI_COMPONENT_INDEX: UI_COMPONENT_INDEX,
             displayFlowChart: true,
             flowChartItemIndex: 0,

@@ -2,7 +2,7 @@ import template from './swag-migration-loading-screen-takeover.html.twig';
 import './swag-migration-loading-screen-takeover.scss';
 import { MIGRATION_STATUS } from '../../../../../core/service/migration/swag-migration-worker-status-manager.service';
 
-const { Component, State } = Shopware;
+const { Component, StateDeprecated } = Shopware;
 
 const TAKEOVER_STATE = Object.freeze({
     RUNNING: 'running',
@@ -37,9 +37,9 @@ Component.register('swag-migration-loading-screen-takeover', {
             showAbortModal: false,
             showRedirectModal: false,
             /** @type MigrationProcessStore */
-            migrationProcessStore: State.getStore('migrationProcess'),
+            migrationProcessStore: StateDeprecated.getStore('migrationProcess'),
             /** @type MigrationUIStore */
-            migrationUIStore: State.getStore('migrationUI')
+            migrationUIStore: StateDeprecated.getStore('migrationUI')
         };
     },
 

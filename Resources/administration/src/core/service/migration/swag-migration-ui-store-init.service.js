@@ -1,10 +1,10 @@
-const { State } = Shopware;
+const { StateDeprecated } = Shopware;
 
 class UiStoreInitService {
     constructor(migrationService) {
         this._migrationService = migrationService;
-        this._migrationProcessStore = State.getStore('migrationProcess');
-        this._migrationUiStore = State.getStore('migrationUI');
+        this._migrationProcessStore = StateDeprecated.getStore('migrationProcess');
+        this._migrationUiStore = StateDeprecated.getStore('migrationUI');
     }
 
     initUiStore() {

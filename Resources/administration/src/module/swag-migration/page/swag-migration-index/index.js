@@ -1,6 +1,6 @@
 import template from './swag-migration-index.html.twig';
 
-const { Component, State } = Shopware;
+const { Component, StateDeprecated } = Shopware;
 
 Component.register('swag-migration-index', {
     template,
@@ -15,9 +15,9 @@ Component.register('swag-migration-index', {
     data() {
         return {
             /** @type MigrationUIStore */
-            migrationUIStore: State.getStore('migrationUI'),
+            migrationUIStore: StateDeprecated.getStore('migrationUI'),
             /** @type MigrationProcessStore */
-            migrationProcessStore: State.getStore('migrationProcess'),
+            migrationProcessStore: StateDeprecated.getStore('migrationProcess'),
             storesInitializing: true
         };
     },
