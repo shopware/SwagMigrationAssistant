@@ -1,4 +1,4 @@
-const { State } = Shopware;
+const { StateDeprecated } = Shopware;
 
 /**
  * Describes the current step in the migration (status).
@@ -38,7 +38,7 @@ export class WorkerStatusManager {
      */
     constructor(migrationService) {
         this._migrationService = migrationService;
-        this._migrationProcessStore = State.getStore('migrationProcess');
+        this._migrationProcessStore = StateDeprecated.getStore('migrationProcess');
     }
 
     /**

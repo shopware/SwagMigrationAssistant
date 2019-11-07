@@ -1,7 +1,7 @@
 import template from './swag-migration-data-selector.html.twig';
 import './swag-migration-data-selector.scss';
 
-const { Component, State } = Shopware;
+const { Component, StateDeprecated } = Shopware;
 
 Component.register('swag-migration-data-selector', {
     template,
@@ -18,9 +18,9 @@ Component.register('swag-migration-data-selector', {
     data() {
         return {
             /** @type MigrationProcessStore */
-            migrationProcessStore: State.getStore('migrationProcess'),
+            migrationProcessStore: StateDeprecated.getStore('migrationProcess'),
             /** @type MigrationUIStore */
-            migrationUIStore: State.getStore('migrationUI')
+            migrationUIStore: StateDeprecated.getStore('migrationUI')
         };
     },
 

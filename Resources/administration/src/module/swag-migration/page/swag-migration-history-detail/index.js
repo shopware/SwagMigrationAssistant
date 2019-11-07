@@ -8,7 +8,7 @@ Component.register('swag-migration-history-detail', {
     template,
 
     inject: {
-        context: 'context',
+        context: 'apiContext',
         repositoryFactory: 'repositoryFactory'
     },
 

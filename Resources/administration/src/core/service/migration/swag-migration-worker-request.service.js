@@ -1,6 +1,6 @@
 import { WORKER_INTERRUPT_TYPE } from './swag-migration-worker.service';
 
-const { Application, State } = Shopware;
+const { Application, StateDeprecated } = Shopware;
 
 /**
  * Describes the current API endpoint.
@@ -39,7 +39,7 @@ export class WorkerRequest {
         // how much does the chunk factor manipulate the chunk size for above target request times
         this._CHUNK_PROPORTION_DOWN_WEIGHT = 0.9;
 
-        this._migrationProcessStore = State.getStore('migrationProcess');
+        this._migrationProcessStore = StateDeprecated.getStore('migrationProcess');
         this._runId = requestParams.runUuid;
         this._requestParams = requestParams;
         this._workerStatusManager = workerStatusManager;

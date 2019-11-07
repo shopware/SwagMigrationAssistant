@@ -7,7 +7,7 @@ Component.register('swag-migration-wizard-page-connection-select', {
     template,
 
     inject: {
-        context: 'context',
+        context: 'apiContext',
         repositoryFactory: 'repositoryFactory'
     },
 

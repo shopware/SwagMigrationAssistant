@@ -1,7 +1,7 @@
 import template from './swag-migration-shop-information.html.twig';
 import './swag-migration-shop-information.scss';
 
-const { Component, State } = Shopware;
+const { Component, StateDeprecated } = Shopware;
 const { format } = Shopware.Utils;
 const { Criteria } = Shopware.Data;
 
@@ -16,7 +16,7 @@ Component.register('swag-migration-shop-information', {
     inject: {
         /** @var {MigrationApiService} migrationService */
         migrationService: 'migrationService',
-        context: 'context',
+        context: 'apiContext',
         repositoryFactory: 'repositoryFactory'
     },
 
@@ -35,15 +35,15 @@ Component.register('swag-migration-shop-information', {
             lastMigrationDate: '-',
             connection: null,
             /** @type MigrationProcessStore */
-            migrationProcessStore: State.getStore('migrationProcess'),
+            migrationProcessStore: StateDeprecated.getStore('migrationProcess'),
             /** @type MigrationUIStore */
-            migrationUIStore: State.getStore('migrationUI')
+            migrationUIStore: StateDeprecated.getStore('migrationUI')
         };
     },
 
     filters: {
         localizedNumberFormat(value) {
-            const locale = State.getStore('adminLocale').locale;
+            const locale = StateDeprecated.getStore('adminLocale').locale;
             const formatter = new Intl.NumberFormat(locale);
             return formatter.format(value);
         }
