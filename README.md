@@ -39,3 +39,7 @@ The Migration Connector provides API endpoints that allow Shopware 6 to establis
 - Download the Shopware Migration Assistant from the Community Store
 - Activate the plugin in your Shopware 6 installation – this can be done in the Plugin Manager under “Purchases”. Alternatively, you can use the Plugin Manager to upload the plugin ZIP file.
 - The Migration Assistant will then guide you through the migration process.
+
+## Documentation
+
+If you need further information. You can have a look at our [user documentation](https://docs.shopware.com/en/migration-en/Migrationprocess?category=migration-en) and our [developer documentation](https://docs.shopware.com/en/shopware-platform-dev-en/internals/plugins/shopware-migration-assistant)
