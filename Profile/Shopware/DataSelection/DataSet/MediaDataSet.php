@@ -20,7 +20,7 @@ class MediaDataSet extends ShopwareDataSet
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface;
     }
 
-    public function getCountingInformation(): ?CountingInformationStruct
+    public function getCountingInformation(?MigrationContextInterface $migrationContext = null): ?CountingInformationStruct
     {
         $information = new CountingInformationStruct(self::getEntity());
         $information->addQueryStruct(new CountingQueryStruct('s_media'));

@@ -10,7 +10,7 @@ abstract class DataSet
 
     abstract public function supports(MigrationContextInterface $migrationContext): bool;
 
-    public function getCountingInformation(): ?CountingInformationStruct
+    public function getCountingInformation(?MigrationContextInterface $migrationContext = null): ?CountingInformationStruct
     {
         return null;
     }
