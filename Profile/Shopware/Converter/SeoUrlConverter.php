@@ -85,7 +85,7 @@ abstract class SeoUrlConverter extends ShopwareConverter
         if ($data['type'] === self::TYPE_PRODUCT) {
             $mapping = $this->mappingService->getMapping(
                 $this->connectionId,
-                DefaultEntities::PRODUCT . '_mainProduct',
+                DefaultEntities::PRODUCT_MAIN,
                 $data['typeId'],
                 $context
             );
