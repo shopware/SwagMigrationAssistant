@@ -165,7 +165,7 @@ abstract class ProductConverter extends ShopwareConverter
     {
         $containerMapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
-            DefaultEntities::PRODUCT . '_container',
+            DefaultEntities::PRODUCT_CONTAINER,
             $data['id'],
             $this->context
         );
@@ -240,7 +240,7 @@ abstract class ProductConverter extends ShopwareConverter
     {
         $parentMapping = $this->mappingService->getMapping(
             $this->connectionId,
-            DefaultEntities::PRODUCT . '_container',
+            DefaultEntities::PRODUCT_CONTAINER,
             $data['detail']['articleID'],
             $this->context
         );
@@ -280,7 +280,7 @@ abstract class ProductConverter extends ShopwareConverter
 
         $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
-            DefaultEntities::PRODUCT . '_mainProduct',
+            DefaultEntities::PRODUCT_MAIN,
             $data['detail']['articleID'],
             $this->context,
             null,
@@ -495,7 +495,7 @@ abstract class ProductConverter extends ShopwareConverter
         $options = [];
         $productContainerMapping = $this->mappingService->getMapping(
             $this->connectionId,
-            DefaultEntities::PRODUCT . '_container',
+            DefaultEntities::PRODUCT_CONTAINER,
             $this->mainProductId,
             $this->context
         );
@@ -569,7 +569,7 @@ abstract class ProductConverter extends ShopwareConverter
 
         $productContainerMapping = $this->mappingService->getMapping(
             $this->connectionId,
-            DefaultEntities::PRODUCT . '_container',
+            DefaultEntities::PRODUCT_CONTAINER,
             $this->mainProductId,
             $this->context
         );
@@ -577,7 +577,7 @@ abstract class ProductConverter extends ShopwareConverter
         if ($productContainerMapping === null) {
             $productContainerMapping = $this->mappingService->getMapping(
                 $this->connectionId,
-                DefaultEntities::PRODUCT . '_mainProduct',
+                DefaultEntities::PRODUCT_MAIN,
                 $this->mainProductId,
                 $this->context
             );

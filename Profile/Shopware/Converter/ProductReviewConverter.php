@@ -60,7 +60,7 @@ abstract class ProductReviewConverter extends ShopwareConverter
 
         $mapping = $this->mappingService->getMapping(
             $this->connectionId,
-            DefaultEntities::PRODUCT . '_mainProduct',
+            DefaultEntities::PRODUCT_MAIN,
             $data['articleID'],
             $context
         );

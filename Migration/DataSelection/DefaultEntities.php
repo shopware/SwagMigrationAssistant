@@ -92,7 +92,11 @@ final class DefaultEntities
 
     public const PRODUCT = 'product';
 
+    public const PRODUCT_CONTAINER = 'product_container';
+
     public const PRODUCT_CUSTOM_FIELD = 'product_custom_field';
+
+    public const PRODUCT_MAIN = 'product_mainProduct';
 
     public const PRODUCT_MANUFACTURER = 'product_manufacturer';
 
@@ -118,9 +122,17 @@ final class DefaultEntities
 
     public const PROPERTY_GROUP_TRANSLATION = 'property_group_translation';
 
+    public const PROPERTY_GROUP_TYPE_OPTION = 'property_group_option';
+
+    public const PROPERTY_GROUP_TYPE_PROPERTY = 'property_group_property';
+
     public const PROPERTY_GROUP_OPTION = 'property_group_option';
 
     public const PROPERTY_GROUP_OPTION_TRANSLATION = 'property_group_option_translation';
+
+    public const PROPERTY_GROUP_OPTION_TYPE_OPTION = 'property_group_option_option';
+
+    public const PROPERTY_GROUP_OPTION_TYPE_PROPERTY = 'property_group_option_property';
 
     public const RULE = 'rule';
 

@@ -93,7 +93,7 @@ abstract class TranslationConverter extends ShopwareConverter
         $product = [];
         $mapping = $this->mappingService->getMapping(
             $this->connectionId,
-            DefaultEntities::PRODUCT . '_container',
+            DefaultEntities::PRODUCT_CONTAINER,
             $data['objectkey'],
             $this->context
         );
@@ -101,7 +101,7 @@ abstract class TranslationConverter extends ShopwareConverter
         if ($mapping === null) {
             $mapping = $this->mappingService->getMapping(
                 $this->connectionId,
-                DefaultEntities::PRODUCT . '_mainProduct',
+                DefaultEntities::PRODUCT_MAIN,
                 $data['objectkey'],
                 $this->context
             );
@@ -435,7 +435,7 @@ abstract class TranslationConverter extends ShopwareConverter
         $configuratorOption = [];
         $mapping = $this->mappingService->getMapping(
             $this->connectionId,
-            DefaultEntities::PROPERTY_GROUP_OPTION . '_option',
+            DefaultEntities::PROPERTY_GROUP_OPTION_TYPE_OPTION,
             $data['objectkey'],
             $this->context
         );
@@ -513,7 +513,7 @@ abstract class TranslationConverter extends ShopwareConverter
         $configuratorOptionGroup = [];
         $mapping = $this->mappingService->getMapping(
             $this->connectionId,
-            DefaultEntities::PROPERTY_GROUP . '_option',
+            DefaultEntities::PROPERTY_GROUP_TYPE_OPTION,
             $data['objectkey'],
             $this->context
         );
@@ -592,7 +592,7 @@ abstract class TranslationConverter extends ShopwareConverter
         $propertyValue = [];
         $mapping = $this->mappingService->getMapping(
             $this->connectionId,
-            DefaultEntities::PROPERTY_GROUP_OPTION . '_property',
+            DefaultEntities::PROPERTY_GROUP_OPTION_TYPE_PROPERTY,
             $data['objectkey'],
             $this->context
         );
@@ -666,7 +666,7 @@ abstract class TranslationConverter extends ShopwareConverter
         $propertyOption = [];
         $mapping = $this->mappingService->getMapping(
             $this->connectionId,
-            DefaultEntities::PROPERTY_GROUP . '_property',
+            DefaultEntities::PROPERTY_GROUP_TYPE_PROPERTY,
             $data['objectkey'],
             $this->context
         );
