@@ -16,7 +16,6 @@ Component.register('swag-migration-wizard', {
     inject: {
         /** @var {MigrationApiService} migrationService */
         migrationService: 'migrationService',
-        context: 'apiContext',
         repositoryFactory: 'repositoryFactory'
     },
 
@@ -26,6 +25,7 @@ Component.register('swag-migration-wizard', {
 
     data() {
         return {
+            context: Shopware.Context.api,
             showModal: true,
             isLoading: true,
             childIsLoading: false,

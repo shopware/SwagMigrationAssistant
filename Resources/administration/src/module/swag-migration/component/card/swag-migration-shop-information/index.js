@@ -16,7 +16,6 @@ Component.register('swag-migration-shop-information', {
     inject: {
         /** @var {MigrationApiService} migrationService */
         migrationService: 'migrationService',
-        context: 'apiContext',
         repositoryFactory: 'repositoryFactory'
     },
 
@@ -37,7 +36,8 @@ Component.register('swag-migration-shop-information', {
             /** @type MigrationProcessStore */
             migrationProcessStore: StateDeprecated.getStore('migrationProcess'),
             /** @type MigrationUIStore */
-            migrationUIStore: StateDeprecated.getStore('migrationUI')
+            migrationUIStore: StateDeprecated.getStore('migrationUI'),
+            context: Shopware.Context.api
         };
     },
 

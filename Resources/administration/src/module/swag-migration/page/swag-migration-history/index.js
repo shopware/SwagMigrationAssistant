@@ -8,7 +8,6 @@ Component.register('swag-migration-history', {
     template,
 
     inject: {
-        context: 'apiContext',
         repositoryFactory: 'repositoryFactory'
     },
 
@@ -27,7 +26,8 @@ Component.register('swag-migration-history', {
             },
             sortBy: 'createdAt',
             sortDirection: 'DESC',
-            oldParams: {}
+            oldParams: {},
+            context: Shopware.Context.api
         };
     },
 
