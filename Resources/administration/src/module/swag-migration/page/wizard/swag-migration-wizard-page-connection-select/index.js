@@ -7,7 +7,6 @@ Component.register('swag-migration-wizard-page-connection-select', {
     template,
 
     inject: {
-        context: 'apiContext',
         repositoryFactory: 'repositoryFactory'
     },
 
@@ -20,7 +19,8 @@ Component.register('swag-migration-wizard-page-connection-select', {
     data() {
         return {
             selectedConnectionId: null,
-            connections: []
+            connections: [],
+            context: Shopware.Context.api
         };
     },
 
