@@ -54,6 +54,14 @@ then
     php ../../../dev-ops/analyze/vendor/bin/php-cs-fixer fix --config=../../../vendor/shopware/platform/.php_cs.dist --quiet -vv ${PHP_FILES}
 fi
 
+if [[ -n "$JS_FILES" ]]
+then
+    cd ../../../
+    ./psh.phar administration:build
+    cd - > /dev/null
+    git add Resources/public/administration
+fi
+
 if [[ -n "$JS_FILES" && -x ../../../vendor/shopware/platform/src/Administration/Resources/app/administration/node_modules/.bin/eslint ]]
 then
     ../../../vendor/shopware/platform/src/Administration/Resources/app/administration/node_modules/.bin/eslint --config ../../../vendor/shopware/platform/src/Administration/Resources/app/administration/.eslintrc.js --ext .js,.vue --fix ${JS_FILES}
