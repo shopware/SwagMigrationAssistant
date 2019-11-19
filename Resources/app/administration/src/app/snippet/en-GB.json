@@ -9,7 +9,7 @@
     },
     "wizard": {
       "buttonAbort": "Cancel",
-      "buttonLetsGo": "Next",
+      "buttonLetsGo": "Start",
       "buttonConnectionCreate": "Establish connection",
       "buttonConnectionSelect": "Change connection",
       "buttonConnect": "Connect",
@@ -21,9 +21,9 @@
       "buttonUseSsl": "Use HTTPS",
       "pages": {
         "introduction": {
-          "title": "Welcome to the migration",
-          "contentHeadline": "Pick up where you left off",
-          "contentInformation": "The Migration Assistant will help establish a connection between your shop system and Shopware 6 to transfer and migrate your data."
+          "title": "Migration Assistant",
+          "contentHeadline": "Let's move some things",
+          "contentInformation": "Together we will connect your shop system to Shopware 6. Afterwards the Migration Assistant will help you to migrate your data step by step."
         },
         "profileInstallation": {
           "title": "Migration - Shopsystem-Profile",

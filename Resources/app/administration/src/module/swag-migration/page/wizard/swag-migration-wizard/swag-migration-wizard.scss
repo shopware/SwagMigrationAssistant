@@ -9,7 +9,7 @@
 
     .swag-migration-wizard__content {
         max-width: 520px;
-        margin: 8px auto 16px auto;
+        margin: 8px auto 60px auto;
     }
 
     .swag-migration-wizard__content-information {
@@ -31,7 +31,7 @@
     }
 
     .swag-migration-wizard__illustration {
-        width: 380px;
+        width: 219px;
         margin-bottom: 40px;
     }
 
@@ -91,5 +91,14 @@
 
     .sw-url-input-ssl-switch__field {
         grid-template-columns: 24px 1fr;
+    }
+
+    .swag-migration-wizard__description {
+        line-height: 22px;
+    }
+
+    .swag-migration-wizard__headline {
+        font-size: 32px;
+        font-weight: normal;
     }
 }

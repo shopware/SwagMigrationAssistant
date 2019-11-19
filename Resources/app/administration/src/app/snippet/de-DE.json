@@ -9,7 +9,7 @@
     },
     "wizard": {
       "buttonAbort": "Abbrechen",
-      "buttonLetsGo": "Los geht's",
+      "buttonLetsGo": "Starten",
       "buttonConnectionCreate": "Verbindung anlegen",
       "buttonConnectionSelect": "Verbindung wechseln",
       "buttonConnect": "Verbindung herstellen",
@@ -21,9 +21,9 @@
       "buttonUseSsl": "Nutze HTTPS",
       "pages": {
         "introduction": {
-          "title": "Willkommen in der Migration",
-          "contentHeadline": "Mache dort weiter, wo du aufgehört hast",
-          "contentInformation": "Der Migrationsassistent hilft Dir dabei eine Verbindung zwischen Deinem Shopsystem und Shopware 6 herzustellen, um Daten zu übertragen und zu migrieren."
+          "title": "Migrations-Assistent",
+          "contentHeadline": "Lass uns was bewegen",
+          "contentInformation": "Gemeinsam verbinden wir Dein Shopsystem mit Shopware 6. Im Anschluss daran kannst Du mit Hilfe des Migrations-Assistenten Schritt für Schritt Deine Daten migrieren."
         },
         "profileInstallation": {
           "title": "Migration - Shopsystem-Profile",
