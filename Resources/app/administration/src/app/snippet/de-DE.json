@@ -25,6 +25,17 @@
           "contentHeadline": "Mache dort weiter, wo du aufgehört hast",
           "contentInformation": "Der Migrationsassistent hilft Dir dabei eine Verbindung zwischen Deinem Shopsystem und Shopware 6 herzustellen, um Daten zu übertragen und zu migrieren."
         },
+        "profileInstallation": {
+          "title": "Migration - Shopsystem-Profile",
+          "content": "Wähle das Shopsystem, von dem aus Deine Daten migriert werden sollen und installiere das passende Profil-Plugin",
+          "availabilityHeadline": "Bisher verfügbar:",
+          "availableVersionHeadline": "Unterstützt:",
+          "installedHint": "Installiert",
+          "installationButton": "Installieren",
+          "shopwareProfileHeadline": "Shopware 5 - Profil",
+          "magentoProfileHeadline": "Magento - Profil",
+          "profileManufacturer": "shopware AG"
+        },
         "connectionSelect": {
           "title": "Migration - Verbindung wechseln",
           "contentInformation": "Wähle eine bestehende Verbindung aus der Liste aus, um Daten zu aktualisieren.",

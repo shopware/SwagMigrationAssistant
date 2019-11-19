@@ -80,6 +80,10 @@ Module.register('swag-migration', {
                     path: 'introduction',
                     component: 'swag-migration-wizard-page-introduction'
                 },
+                profileInstallation: {
+                    path: 'profile/installation',
+                    component: 'swag-migration-wizard-page-profile-installation'
+                },
                 connectionCreate: {
                     path: 'connection/create',
                     component: 'swag-migration-wizard-page-connection-create'
