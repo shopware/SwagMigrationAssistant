@@ -35,14 +35,19 @@ Component.register('swag-migration-wizard', {
                     index: 0,
                     titleSnippet: 'swag-migration.wizard.pages.introduction.title'
                 },
+                profileInstallation: {
+                    name: 'swag.migration.wizard.profileInstallation',
+                    index: 0.1,
+                    titleSnippet: 'swag-migration.wizard.pages.profileInstallation.title'
+                },
                 connectionCreate: {
                     name: 'swag.migration.wizard.connectionCreate',
-                    index: 0.1, // not available through nextRoute (child from profile)
+                    index: 0.2, // not available through nextRoute (child from profile)
                     titleSnippet: 'swag-migration.wizard.pages.connectionCreate.title'
                 },
                 connectionSelect: {
                     name: 'swag.migration.wizard.connectionSelect',
-                    index: 0.1, // not available through nextRoute (child from profile)
+                    index: 0.3, // not available through nextRoute (child from profile)
                     titleSnippet: 'swag-migration.wizard.pages.connectionSelect.title'
                 },
                 profileInformation: {
@@ -432,6 +437,11 @@ Component.register('swag-migration-wizard', {
                 return;
             }
 
+            if (this.currentRoute === this.routes.profileInstallation) {
+                this.navigateToRoute(this.routes.connectionCreate);
+                return;
+            }
+
             this.navigateToNext();
         },
 
@@ -501,7 +511,7 @@ Component.register('swag-migration-wizard', {
                 this.routes.credentialsSuccess,
                 this.routes.credentialsError
             ].includes(this.currentRoute)) {
-                this.navigateToRoute(this.routes.connectionCreate);
+                this.navigateToRoute(this.routes.profileInstallation);
             }
         },
 

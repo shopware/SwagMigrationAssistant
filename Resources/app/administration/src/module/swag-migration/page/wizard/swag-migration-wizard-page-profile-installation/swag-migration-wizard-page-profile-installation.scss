@@ -1,0 +1,94 @@
+@import "~scss/variables";
+
+.swag-migration-wizard-page-profile-installation {
+    .swag-migration-wizard-profile-installation__plugin-icon {
+        height: 80px;
+        width: 80px;
+    }
+
+    .swag-migration-wizard-profile-installation__wrapper {
+        grid-template-columns: 1fr 1fr;
+        gap: 0 35px;
+        place-items: stretch;
+        width: 100%;
+        display: grid;
+        margin-bottom: 60px;
+    }
+
+    .swag-migration-wizard-profile-installation__inner_wrapper {
+        grid-template-columns: 80px 1fr;
+        place-items: stretch;
+        gap: 0 15px;
+        width: 100%;
+        display: grid;
+    }
+
+    .swag-migration-wizard-profile-installation__version_box {
+        background-color: $color-gray-100;
+        margin-right: 8px;
+        padding-left: 8px;
+        padding-right: 8px;
+        border-radius: 2px;
+        font-weight: 600;
+        font-size: 12px;
+    }
+
+    .swag-migration-wizard-profile-installation__last_version_box {
+        background-color: $color-gray-100;
+        padding-left: 8px;
+        padding-right: 8px;
+        border-radius: 2px;
+        font-weight: 600;
+        font-size: 12px;
+    }
+
+    .swag-migration-wizard-profile-installation__profile_headline {
+        font-size: $font-size-default;
+        font-weight: 600;
+    }
+
+    .swag-migration-wizard-profile-installation__profile_manufacturer {
+        font-size: 12px;
+        font-weight: 600;
+        color: $color-gray-500;
+        margin-bottom: 8px;
+    }
+
+    .swag-migration-wizard-profile-installation__available_version_headline {
+        font-size: 12px;
+        margin-bottom: 5px;
+    }
+
+    .swag-migration-wizard-profile-installation__footer {
+        margin-top: 18px;
+    }
+
+    .swag-migration-wizard-profile-installation__installed_box {
+        font-size: $font-size-small;
+        font-weight: 600;
+        position: relative;
+        color: $color-emerald-500;
+    }
+
+    .swag-migration-wizard-profile-installation__installed_title {
+        position: absolute;
+        top: 1px;
+        left: 20px;
+    }
+
+    .swag-migration-wizard-profile-installation__availability-headline {
+        font-size: 12px;
+        font-weight: 600;
+        margin-bottom: 20px;
+    }
+
+    .swag-migration-wizard-profile-installation__plugins {
+        margin-top: 35px;
+    }
+
+    .swag-migration-shop-avatar {
+        font-size: 48px;
+        line-height: 78px;
+        background-color: #eb5200;
+    }
+}
