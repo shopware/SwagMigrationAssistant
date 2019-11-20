@@ -10,6 +10,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Indexing\MessageQueue\IndexerMessageSender;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
+use Shopware\Core\Framework\Store\Services\StoreService;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Storefront\Theme\ThemeService;
@@ -204,7 +205,8 @@ class RunServiceTest extends TestCase
             $this->getContainer()->get('cache.object'),
             $this->getContainer()->get(SwagMigrationDataDefinition::class),
             $this->getContainer()->get(Connection::class),
-            $loggingService
+            $loggingService,
+            $this->getContainer()->get(StoreService::class)
         );
 
         $this->runServiceWithoutStructure = new RunService(
@@ -226,7 +228,8 @@ class RunServiceTest extends TestCase
             $this->getContainer()->get('cache.object'),
             $this->getContainer()->get(SwagMigrationDataDefinition::class),
             $this->getContainer()->get(Connection::class),
-            $loggingService
+            $loggingService,
+            $this->getContainer()->get(StoreService::class)
         );
     }
 

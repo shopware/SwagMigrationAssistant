@@ -13,6 +13,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Indexing\MessageQueue\IndexerMe
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
+use Shopware\Core\Framework\Store\Services\StoreService;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
@@ -308,7 +309,8 @@ class MigrationDataWriterTest extends TestCase
             $this->getContainer()->get('cache.object'),
             new SwagMigrationDataDefinition(),
             $this->dbConnection,
-            new LoggingService($this->loggingRepo)
+            new LoggingService($this->loggingRepo),
+            $this->getContainer()->get(StoreService::class)
         );
     }
 

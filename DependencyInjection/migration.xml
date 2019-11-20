@@ -68,6 +68,7 @@
             <argument type="service" id="SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition"/>
             <argument type="service" id="Doctrine\DBAL\Connection"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
+            <argument type="service" id="Shopware\Core\Framework\Store\Services\StoreService"/>
         </service>
 
         <service id="SwagMigrationAssistant\Migration\History\HistoryService">

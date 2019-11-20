@@ -18,6 +18,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
+use Shopware\Core\Framework\Store\Services\StoreService;
 use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 use Shopware\Storefront\Theme\ThemeService;
 use SwagMigrationAssistant\Exception\MigrationIsRunningException;
@@ -38,6 +39,10 @@ use Symfony\Component\Cache\Adapter\TagAwareAdapter;
 
 class RunService implements RunServiceInterface
 {
+    private const TRACKING_EVENT_MIGRATION_STARTED = 'Migration started';
+    private const TRACKING_EVENT_MIGRATION_FINISHED = 'Migration finished';
+    private const TRACKING_EVENT_MIGRATION_ABORTED = 'Migration aborted';
+
     /**
      * @var EntityRepositoryInterface
      */
@@ -118,6 +123,11 @@ class RunService implements RunServiceInterface
      */
     private $loggingService;
 
+    /**
+     * @var StoreService
+     */
+    private $storeService;
+
     public function __construct(
         EntityRepositoryInterface $migrationRunRepo,
         EntityRepositoryInterface $connectionRepo,
@@ -134,7 +144,8 @@ class RunService implements RunServiceInterface
         TagAwareAdapter $cache,
         EntityDefinition $migrationDataDefinition,
         Connection $dbalConnection,
-        LoggingServiceInterface $loggingService
+        LoggingServiceInterface $loggingService,
+        StoreService $storeService
     ) {
         $this->migrationRunRepo = $migrationRunRepo;
         $this->connectionRepo = $connectionRepo;
@@ -152,6 +163,7 @@ class RunService implements RunServiceInterface
         $this->migrationDataDefinition = $migrationDataDefinition;
         $this->dbalConnection = $dbalConnection;
         $this->loggingService = $loggingService;
+        $this->storeService = $storeService;
     }
 
     public function takeoverMigration(string $runUuid, Context $context): string
@@ -174,6 +186,8 @@ class RunService implements RunServiceInterface
         $runProgress = $this->calculateRunProgress($environmentInformation, $dataSelectionCollection);
 
         $this->updateMigrationRun($runUuid, $migrationContext, $environmentInformation, $runProgress, $context);
+
+        $this->fireTrackingInformation(self::TRACKING_EVENT_MIGRATION_STARTED, $runUuid, $context);
 
         return new ProgressState(false, true, $runUuid, $accessToken, -1, null, 0, 0, $runProgress);
     }
@@ -300,6 +314,7 @@ class RunService implements RunServiceInterface
     public function abortMigration(string $runUuid, Context $context): void
     {
         $this->accessTokenService->invalidateRunAccessToken($runUuid, $context);
+        $this->fireTrackingInformation(self::TRACKING_EVENT_MIGRATION_ABORTED, $runUuid, $context);
         $this->cleanupMigration($runUuid, $context);
     }
 
@@ -312,7 +327,68 @@ class RunService implements RunServiceInterface
             ],
         ], $context);
 
+        $this->fireTrackingInformation(self::TRACKING_EVENT_MIGRATION_FINISHED, $runUuid, $context);
+
         $this->cleanupMigration($runUuid, $context, true);
+    }
+
+    private function fireTrackingInformation(string $eventName, string $runUuid, Context $context): void
+    {
+        /** @var SwagMigrationRunEntity $run */
+        $run = $this->migrationRunRepo->search(new Criteria([$runUuid]), $context)->first();
+        $progress = $run->getProgress();
+        $timestamp = $run->getUpdatedAt()->getTimestamp();
+
+        if ($eventName === self::TRACKING_EVENT_MIGRATION_ABORTED) {
+            if ($run->getConnection() !== null) {
+                $information['profileName'] = $run->getConnection()->getProfileName();
+                $information['gatewayName'] = $run->getConnection()->getGatewayName();
+            }
+
+            $information['abortedAt'] = $timestamp;
+            $this->storeService->fireTrackingEvent($eventName, $information);
+
+            return;
+        }
+
+        if ($progress === null) {
+            return;
+        }
+
+        $information = [];
+        foreach ($progress as $entityGroup) {
+            if ($entityGroup['total'] === 0) {
+                continue;
+            }
+
+            foreach ($entityGroup['entities'] as $entity) {
+                if ($entity['total'] === 0) {
+                    continue;
+                }
+
+                $entityName = $entity['entityName'];
+                $information['totals'][$entityName] = $entity['total'];
+            }
+        }
+
+        if ($information === []) {
+            return;
+        }
+
+        if ($run->getConnection() !== null) {
+            $information['profileName'] = $run->getConnection()->getProfileName();
+            $information['gatewayName'] = $run->getConnection()->getGatewayName();
+        }
+
+        if ($eventName === self::TRACKING_EVENT_MIGRATION_STARTED) {
+            $information['startedAt'] = $timestamp;
+        }
+
+        if ($eventName === self::TRACKING_EVENT_MIGRATION_FINISHED) {
+            $information['finishedAt'] = $timestamp;
+        }
+
+        $this->storeService->fireTrackingEvent($eventName, $information);
     }
 
     private function cleanupMigration(string $runUuid, Context $context, bool $removeOnlyWrittenData = false): void
