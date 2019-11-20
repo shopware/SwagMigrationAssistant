@@ -8,14 +8,14 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\Currency\CurrencyEntity;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
+use SwagMigrationAssistant\Migration\Gateway\Reader\EnvironmentReaderInterface;
+use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistry;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Migration\Profile\ReaderInterface;
 use SwagMigrationAssistant\Migration\RequestStatusStruct;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ShopwareDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Exception\DatabaseConnectionException;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactoryInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\ShopwareGatewayInterface;
-use SwagMigrationAssistant\Profile\Shopware\Gateway\TableCountReaderInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\TableReaderInterface;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
@@ -29,7 +29,7 @@ class ShopwareLocalGateway implements ShopwareGatewayInterface
     private $readerRegistry;
 
     /**
-     * @var ReaderInterface
+     * @var EnvironmentReaderInterface
      */
     private $localEnvironmentReader;
 
@@ -37,11 +37,6 @@ class ShopwareLocalGateway implements ShopwareGatewayInterface
      * @var TableReaderInterface
      */
     private $localTableReader;
-
-    /**
-     * @var TableCountReaderInterface
-     */
-    private $localTableCountReader;
 
     /**
      * @var ConnectionFactoryInterface
@@ -55,16 +50,14 @@ class ShopwareLocalGateway implements ShopwareGatewayInterface
 
     public function __construct(
         ReaderRegistry $readerRegistry,
-        ReaderInterface $localEnvironmentReader,
+        EnvironmentReaderInterface $localEnvironmentReader,
         TableReaderInterface $localTableReader,
-        TableCountReaderInterface $localTableCountReader,
         ConnectionFactoryInterface $connectionFactory,
         EntityRepositoryInterface $currencyRepository
     ) {
         $this->readerRegistry = $readerRegistry;
         $this->localEnvironmentReader = $localEnvironmentReader;
         $this->localTableReader = $localTableReader;
-        $this->localTableCountReader = $localTableCountReader;
         $this->connectionFactory = $connectionFactory;
         $this->currencyRepository = $currencyRepository;
     }
@@ -140,7 +133,15 @@ class ShopwareLocalGateway implements ShopwareGatewayInterface
 
     public function readTotals(MigrationContextInterface $migrationContext, Context $context): array
     {
-        return $this->localTableCountReader->readTotals($migrationContext, $context);
+        $readers = $this->readerRegistry->getReaderForTotal($migrationContext);
+
+        $totals = [];
+        foreach ($readers as $reader) {
+            $total = $reader->readTotal($migrationContext);
+            $totals[$total->getEntityName()] = $total;
+        }
+
+        return $totals;
     }
 
     public function readTable(MigrationContextInterface $migrationContext, string $tableName, array $filter = []): array

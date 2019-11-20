@@ -9,8 +9,9 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\Currency\CurrencyEntity;
 use SwagMigrationAssistant\Migration\DisplayWarning;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
+use SwagMigrationAssistant\Migration\Gateway\Reader\EnvironmentReaderInterface;
+use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistryInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Migration\Profile\ReaderInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\ShopwareGatewayInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\TableCountReaderInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\TableReaderInterface;
@@ -21,12 +22,12 @@ class ShopwareApiGateway implements ShopwareGatewayInterface
     public const GATEWAY_NAME = 'api';
 
     /**
-     * @var ReaderInterface
+     * @var ReaderRegistryInterface
      */
-    private $apiReader;
+    private $readerRegistry;
 
     /**
-     * @var ReaderInterface
+     * @var EnvironmentReaderInterface
      */
     private $environmentReader;
 
@@ -46,13 +47,13 @@ class ShopwareApiGateway implements ShopwareGatewayInterface
     private $currencyRepository;
 
     public function __construct(
-        ReaderInterface $apiReader,
-        ReaderInterface $environmentReader,
+        ReaderRegistryInterface $readerRegistry,
+        EnvironmentReaderInterface $environmentReader,
         TableReaderInterface $tableReader,
         TableCountReaderInterface $tableCountReader,
         EntityRepositoryInterface $currencyRepository
     ) {
-        $this->apiReader = $apiReader;
+        $this->readerRegistry = $readerRegistry;
         $this->environmentReader = $environmentReader;
         $this->tableReader = $tableReader;
         $this->tableCountReader = $tableCountReader;
@@ -76,7 +77,9 @@ class ShopwareApiGateway implements ShopwareGatewayInterface
 
     public function read(MigrationContextInterface $migrationContext): array
     {
-        return $this->apiReader->read($migrationContext);
+        $reader = $this->readerRegistry->getReader($migrationContext);
+
+        return $reader->read($migrationContext);
     }
 
     public function readEnvironmentInformation(MigrationContextInterface $migrationContext, Context $context): EnvironmentInformation

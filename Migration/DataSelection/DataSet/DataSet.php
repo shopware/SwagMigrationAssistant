@@ -10,11 +10,6 @@ abstract class DataSet
 
     abstract public function supports(MigrationContextInterface $migrationContext): bool;
 
-    public function getCountingInformation(?MigrationContextInterface $migrationContext = null): ?CountingInformationStruct
-    {
-        return null;
-    }
-
     public function getMediaUuids(array $converted): ?array
     {
         return null;

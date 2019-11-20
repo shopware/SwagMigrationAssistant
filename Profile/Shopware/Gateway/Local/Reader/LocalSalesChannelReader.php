@@ -3,15 +3,24 @@
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\TotalStruct;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
-class LocalSalesChannelReader extends LocalAbstractReader implements LocalReaderInterface
+class LocalSalesChannelReader extends LocalAbstractReader implements ReaderInterface
 {
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getDataSet()::getEntity() === DefaultEntities::SALES_CHANNEL;
+    }
+
+    public function supportsTotal(MigrationContextInterface $migrationContext): bool
+    {
+        return $migrationContext->getProfile() instanceof ShopwareProfileInterface
+            && $migrationContext->getGateway()->getName() === ShopwareLocalGateway::GATEWAY_NAME;
     }
 
     public function read(MigrationContextInterface $migrationContext, array $params = []): array
@@ -34,6 +43,19 @@ class LocalSalesChannelReader extends LocalAbstractReader implements LocalReader
         $salesChannels = array_values($salesChannels);
 
         return $this->cleanupResultSet($salesChannels);
+    }
+
+    public function readTotal(MigrationContextInterface $migrationContext): ?TotalStruct
+    {
+        $this->setConnection($migrationContext);
+
+        $total = (int) $this->connection->createQueryBuilder()
+            ->select('COUNT(*)')
+            ->from('s_core_shops')
+            ->execute()
+            ->fetchColumn();
+
+        return new TotalStruct(DefaultEntities::SALES_CHANNEL, $total);
     }
 
     private function fetchData()

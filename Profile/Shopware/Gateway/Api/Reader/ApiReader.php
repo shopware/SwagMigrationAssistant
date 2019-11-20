@@ -4,10 +4,13 @@ namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader;
 
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
 use SwagMigrationAssistant\Exception\GatewayReadException;
+use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Migration\Profile\ReaderInterface;
+use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ShopwareDataSet;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\ShopwareApiGateway;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactoryInterface;
+use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class ApiReader implements ReaderInterface
@@ -20,6 +23,17 @@ class ApiReader implements ReaderInterface
     public function __construct(ConnectionFactoryInterface $connectionFactory)
     {
         $this->connectionFactory = $connectionFactory;
+    }
+
+    public function supports(MigrationContextInterface $migrationContext): bool
+    {
+        return $migrationContext->getProfile() instanceof ShopwareProfileInterface
+            && $migrationContext->getGateway()->getName() === ShopwareApiGateway::GATEWAY_NAME;
+    }
+
+    public function supportsTotal(MigrationContextInterface $migrationContext): bool
+    {
+        return false;
     }
 
     /**
@@ -58,5 +72,10 @@ class ApiReader implements ReaderInterface
         $arrayResult = json_decode($result->getBody()->getContents(), true);
 
         return $arrayResult['data'];
+    }
+
+    public function readTotal(MigrationContextInterface $migrationContext): ?TotalStruct
+    {
+        return null;
     }
 }

@@ -11,14 +11,14 @@ use SwagMigrationAssistant\Exception\GatewayReadException;
 use SwagMigrationAssistant\Exception\InvalidConnectionAuthenticationException;
 use SwagMigrationAssistant\Exception\RequestCertificateInvalidException;
 use SwagMigrationAssistant\Exception\SslRequiredException;
+use SwagMigrationAssistant\Migration\Gateway\Reader\EnvironmentReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Migration\Profile\ReaderInterface;
 use SwagMigrationAssistant\Migration\RequestStatusStruct;
 use SwagMigrationAssistant\Profile\Shopware\Exception\PluginNotInstalledException;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactoryInterface;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
-class ApiEnvironmentReader implements ReaderInterface
+class ApiEnvironmentReader implements EnvironmentReaderInterface
 {
     /**
      * @var Client
@@ -35,7 +35,7 @@ class ApiEnvironmentReader implements ReaderInterface
         $this->connectionFactory = $connectionFactory;
     }
 
-    public function read(MigrationContextInterface $migrationContext, array $params = []): array
+    public function read(MigrationContextInterface $migrationContext): array
     {
         $this->client = $this->connectionFactory->createApiClient($migrationContext);
 

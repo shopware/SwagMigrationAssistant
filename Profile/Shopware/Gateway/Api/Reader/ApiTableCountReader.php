@@ -46,21 +46,16 @@ class ApiTableCountReader implements TableCountReaderInterface
     public function readTotals(MigrationContextInterface $migrationContext, Context $context): array
     {
         $dataSets = $this->dataSetRegistry->getDataSets($migrationContext);
-        $countingInformation = $this->getCountingInformation($dataSets);
+//        $countingInformation = $this->getCountingInformation($dataSets);
 
         $client = $this->connectionFactory->createApiClient($migrationContext);
         /** @var GuzzleResponse $result */
         $result = $client->get(
-            'SwagMigrationTotals',
-            [
-                'query' => [
-                    'countInfos' => $countingInformation,
-                ],
-            ]
+            'SwagMigrationTotals'
         );
 
         if ($result->getStatusCode() !== SymfonyResponse::HTTP_OK) {
-            throw new GatewayReadException('Shopware 5.5 Api table count.');
+            throw new GatewayReadException('Shopware Api table count.');
         }
 
         $arrayResult = json_decode($result->getBody()->getContents(), true);
@@ -76,35 +71,35 @@ class ApiTableCountReader implements TableCountReaderInterface
         return $this->prepareTotals($arrayResult['data']['totals']);
     }
 
-    /**
-     * @param DataSet[] $dataSets
-     */
-    private function getCountingInformation(array $dataSets): array
-    {
-        $countingInformation = [];
-
-        foreach ($dataSets as $dataSet) {
-            if ($dataSet->getCountingInformation() !== null) {
-                $info = $dataSet->getCountingInformation();
-                $queryData = [
-                    'entity' => $dataSet::getEntity(),
-                    'queryRules' => [],
-                ];
-
-                $queries = $info->getQueries();
-                /** @var CountingQueryStruct $queryStruct */
-                foreach ($queries as $queryStruct) {
-                    $queryData['queryRules'][] = [
-                        'table' => $queryStruct->getTableName(),
-                        'condition' => $queryStruct->getCondition(),
-                    ];
-                }
-                $countingInformation[] = $queryData;
-            }
-        }
-
-        return $countingInformation;
-    }
+//    /**
+//     * @param DataSet[] $dataSets
+//     */
+//    private function getCountingInformation(array $dataSets): array
+//    {
+//        $countingInformation = [];
+//
+//        foreach ($dataSets as $dataSet) {
+//            if ($dataSet->getCountingInformation() !== null) {
+//                $info = $dataSet->getCountingInformation();
+//                $queryData = [
+//                    'entity' => $dataSet::getEntity(),
+//                    'queryRules' => [],
+//                ];
+//
+//                $queries = $info->getQueries();
+//                /** @var CountingQueryStruct $queryStruct */
+//                foreach ($queries as $queryStruct) {
+//                    $queryData['queryRules'][] = [
+//                        'table' => $queryStruct->getTableName(),
+//                        'condition' => $queryStruct->getCondition(),
+//                    ];
+//                }
+//                $countingInformation[] = $queryData;
+//            }
+//        }
+//
+//        return $countingInformation;
+//    }
 
     /**
      * @return TotalStruct[]

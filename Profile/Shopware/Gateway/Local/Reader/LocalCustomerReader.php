@@ -4,10 +4,13 @@ namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
 use Doctrine\DBAL\Connection;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\TotalStruct;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
-class LocalCustomerReader extends LocalAbstractReader implements LocalReaderInterface
+class LocalCustomerReader extends LocalAbstractReader implements ReaderInterface
 {
     /**
      * @var int
@@ -18,6 +21,12 @@ class LocalCustomerReader extends LocalAbstractReader implements LocalReaderInte
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getDataSet()::getEntity() === DefaultEntities::CUSTOMER;
+    }
+
+    public function supportsTotal(MigrationContextInterface $migrationContext): bool
+    {
+        return $migrationContext->getProfile() instanceof ShopwareProfileInterface
+            && $migrationContext->getGateway()->getName() === ShopwareLocalGateway::GATEWAY_NAME;
     }
 
     public function read(MigrationContextInterface $migrationContext, array $params = []): array
@@ -31,6 +40,19 @@ class LocalCustomerReader extends LocalAbstractReader implements LocalReaderInte
         $resultSet = $this->assignAssociatedData($customers, $ids);
 
         return $this->cleanupResultSet($resultSet);
+    }
+
+    public function readTotal(MigrationContextInterface $migrationContext): ?TotalStruct
+    {
+        $this->setConnection($migrationContext);
+
+        $total = (int) $this->connection->createQueryBuilder()
+            ->select('COUNT(*)')
+            ->from('s_user')
+            ->execute()
+            ->fetchColumn();
+
+        return new TotalStruct(DefaultEntities::CUSTOMER, $total);
     }
 
     private function fetchCustomers(MigrationContextInterface $migrationContext): array

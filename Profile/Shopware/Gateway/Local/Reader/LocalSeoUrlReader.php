@@ -4,15 +4,24 @@ namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
 use Doctrine\DBAL\Connection;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\TotalStruct;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
-class LocalSeoUrlReader extends LocalAbstractReader implements LocalReaderInterface
+class LocalSeoUrlReader extends LocalAbstractReader implements ReaderInterface
 {
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getDataSet()::getEntity() === DefaultEntities::SEO_URL;
+    }
+
+    public function supportsTotal(MigrationContextInterface $migrationContext): bool
+    {
+        return $migrationContext->getProfile() instanceof ShopwareProfileInterface
+            && $migrationContext->getGateway()->getName() === ShopwareLocalGateway::GATEWAY_NAME;
     }
 
     public function read(MigrationContextInterface $migrationContext, array $params = []): array
@@ -27,6 +36,19 @@ class LocalSeoUrlReader extends LocalAbstractReader implements LocalReaderInterf
         }
 
         return $this->cleanupResultSet($seoUrls);
+    }
+
+    public function readTotal(MigrationContextInterface $migrationContext): ?TotalStruct
+    {
+        $this->setConnection($migrationContext);
+
+        $total = (int) $this->connection->createQueryBuilder()
+            ->select('COUNT(*)')
+            ->from('s_core_rewrite_urls')
+            ->execute()
+            ->fetchColumn();
+
+        return new TotalStruct(DefaultEntities::SEO_URL, $total);
     }
 
     private function fetchSeoUrls(MigrationContextInterface $migrationContext): array

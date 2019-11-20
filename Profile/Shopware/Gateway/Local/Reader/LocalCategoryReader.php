@@ -4,15 +4,24 @@ namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
 use Doctrine\DBAL\Connection;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\TotalStruct;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
-class LocalCategoryReader extends LocalAbstractReader implements LocalReaderInterface
+class LocalCategoryReader extends LocalAbstractReader implements ReaderInterface
 {
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getDataSet()::getEntity() === DefaultEntities::CATEGORY;
+    }
+
+    public function supportsTotal(MigrationContextInterface $migrationContext): bool
+    {
+        return $migrationContext->getProfile() instanceof ShopwareProfileInterface
+            && $migrationContext->getGateway()->getName() === ShopwareLocalGateway::GATEWAY_NAME;
     }
 
     public function read(MigrationContextInterface $migrationContext, array $params = []): array
@@ -29,6 +38,20 @@ class LocalCategoryReader extends LocalAbstractReader implements LocalReaderInte
         $resultSet = $this->setAllLocales($categories, $topMostCategories);
 
         return $this->cleanupResultSet($resultSet);
+    }
+
+    public function readTotal(MigrationContextInterface $migrationContext): TotalStruct
+    {
+        $this->setConnection($migrationContext);
+
+        $total = (int) $this->connection->createQueryBuilder()
+            ->select('COUNT(*)')
+            ->from('s_categories')
+            ->where('path IS NOT NULL AND parent IS NOT NULL')
+            ->execute()
+            ->fetchColumn();
+
+        return new TotalStruct(DefaultEntities::CATEGORY, $total);
     }
 
     private function fetchData(MigrationContextInterface $migrationContext): array

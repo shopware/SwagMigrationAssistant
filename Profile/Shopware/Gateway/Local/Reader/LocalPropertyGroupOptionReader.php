@@ -3,15 +3,24 @@
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\TotalStruct;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
-class LocalPropertyGroupOptionReader extends LocalAbstractReader implements LocalReaderInterface
+class LocalPropertyGroupOptionReader extends LocalAbstractReader implements ReaderInterface
 {
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getDataSet()::getEntity() === DefaultEntities::PROPERTY_GROUP_OPTION;
+    }
+
+    public function supportsTotal(MigrationContextInterface $migrationContext): bool
+    {
+        return $migrationContext->getProfile() instanceof ShopwareProfileInterface
+            && $migrationContext->getGateway()->getName() === ShopwareLocalGateway::GATEWAY_NAME;
     }
 
     public function read(MigrationContextInterface $migrationContext, array $params = []): array
@@ -27,6 +36,34 @@ class LocalPropertyGroupOptionReader extends LocalAbstractReader implements Loca
         unset($option);
 
         return $this->cleanupResultSet($options);
+    }
+
+    public function readTotal(MigrationContextInterface $migrationContext): ?TotalStruct
+    {
+        $this->setConnection($migrationContext);
+
+        $sql = <<<SQL
+SELECT 
+    COUNT(*)
+FROM
+    (
+        SELECT
+            'property' AS "property.type",
+            filter.id AS "property.id"
+        FROM s_filter_values AS filter
+        
+        UNION
+        
+        SELECT 
+            'option' AS "property.type",
+            opt.id AS "property.id"
+        FROM s_article_configurator_options AS opt
+    ) AS result
+SQL;
+
+        $total = (int) $this->connection->executeQuery($sql)->fetchColumn();
+
+        return new TotalStruct(DefaultEntities::PROPERTY_GROUP_OPTION, $total);
     }
 
     private function fetchData(MigrationContextInterface $migrationContext): array

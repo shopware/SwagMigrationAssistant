@@ -4,12 +4,15 @@ namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
 use Doctrine\DBAL\Connection;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactoryInterface;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
-class LocalProductReader extends LocalAbstractReader implements LocalReaderInterface
+class LocalProductReader extends LocalAbstractReader implements ReaderInterface
 {
     /**
      * @var ParameterBag
@@ -29,6 +32,12 @@ class LocalProductReader extends LocalAbstractReader implements LocalReaderInter
             && $migrationContext->getDataSet()::getEntity() === DefaultEntities::PRODUCT;
     }
 
+    public function supportsTotal(MigrationContextInterface $migrationContext): bool
+    {
+        return $migrationContext->getProfile() instanceof ShopwareProfileInterface
+            && $migrationContext->getGateway()->getName() === ShopwareLocalGateway::GATEWAY_NAME;
+    }
+
     public function read(MigrationContextInterface $migrationContext, array $params = []): array
     {
         $this->setConnection($migrationContext);
@@ -45,6 +54,19 @@ class LocalProductReader extends LocalAbstractReader implements LocalReaderInter
         );
 
         return $this->cleanupResultSet($resultSet);
+    }
+
+    public function readTotal(MigrationContextInterface $migrationContext): ?TotalStruct
+    {
+        $this->setConnection($migrationContext);
+
+        $total = (int) $this->connection->createQueryBuilder()
+            ->select('COUNT(*)')
+            ->from('s_articles_details')
+            ->execute()
+            ->fetchColumn();
+
+        return new TotalStruct(DefaultEntities::PRODUCT, $total);
     }
 
     public function getFilterOptionValues(): array

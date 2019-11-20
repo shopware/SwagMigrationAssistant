@@ -5,8 +5,9 @@ namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\DBAL\Schema\Column;
+use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Migration\Profile\ReaderInterface;
+use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactoryInterface;
 
 abstract class LocalAbstractReader implements ReaderInterface
@@ -24,6 +25,16 @@ abstract class LocalAbstractReader implements ReaderInterface
     public function __construct(ConnectionFactoryInterface $connectionFactory)
     {
         $this->connectionFactory = $connectionFactory;
+    }
+
+    public function supportsTotal(MigrationContextInterface $migrationContext): bool
+    {
+        return false;
+    }
+
+    public function readTotal(MigrationContextInterface $migrationContext): ?TotalStruct
+    {
+        return null;
     }
 
     protected function setConnection(MigrationContextInterface $migrationContext): void
@@ -112,17 +123,6 @@ abstract class LocalAbstractReader implements ReaderInterface
             ->innerJoin('locale', 's_core_shops', 'shop', 'locale.id = shop.locale_id')
             ->where('shop.default = 1')
             ->andWhere('shop.active = 1')
-            ->execute()
-            ->fetch(\PDO::FETCH_COLUMN);
-    }
-
-    protected function getDefaultCurrency()
-    {
-        $query = $this->connection->createQueryBuilder();
-
-        return $query->select('currency')
-            ->from('s_core_currencies')
-            ->where('standard = 1')
             ->execute()
             ->fetch(\PDO::FETCH_COLUMN);
     }
