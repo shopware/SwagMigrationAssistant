@@ -1,5 +1,11 @@
 {
   "swag-migration": {
+    "dashboard": {
+      "title": "Migration Assistant",
+      "headline": "Moving to Shopware",
+      "information": "First thing is to link up your existing shop system - the Migration Assistant will help you along the way.",
+      "button": "Open Migration Assistant"
+    },
     "general": {
       "mainMenuItemGeneral": "Migration Assistant",
       "descriptionTextModule": "Module to migrate data",

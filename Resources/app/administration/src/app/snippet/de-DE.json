@@ -1,5 +1,11 @@
 {
   "swag-migration": {
+    "dashboard": {
+      "title": "Migrations-Assistent",
+      "headline": "Beginne mit Deinem Umzug zu Shopware",
+      "information": "Verbinde zunächst Dein bisheriges Shopsystem – der Migrations-Assistent hilft Dir dabei.",
+      "button": "Migrations-Assistenten öffnen"
+    },
     "general": {
       "mainMenuItemGeneral": "Migrationsassistent",
       "descriptionTextModule": "Modul zum Migrieren der Daten",

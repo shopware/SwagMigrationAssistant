@@ -2,6 +2,7 @@ import './mixin';
 import './component';
 import './page';
 import './extension/sw-settings-index';
+import './extension/sw-dashboard-index';
 import './profile';
 
 const { Module } = Shopware;
