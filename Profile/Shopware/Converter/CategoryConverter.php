@@ -81,27 +81,6 @@ abstract class CategoryConverter extends ShopwareConverter
         }
         $this->locale = $data['_locale'];
 
-        // Legacy data which don't need a mapping or there is no equivalent field
-        unset(
-            $data['path'], // will be generated
-            $data['left'],
-            $data['right'],
-            $data['added'],
-            $data['changed'],
-            $data['stream_id'],
-            $data['metakeywords'],
-            $data['metadescription'],
-            $data['cmsheadline'],
-            $data['meta_title'],
-            $data['categorypath'],
-            $data['shops'],
-
-            // TODO check how to handle these
-            $data['template'],
-            $data['external_target'],
-            $data['mediaID']
-        );
-
         $cmsPageUuid = $this->mappingService->getDefaultCmsPageUuid($migrationContext->getConnection()->getId(), $context);
         if ($cmsPageUuid !== null) {
             $converted['cmsPageId'] = $cmsPageUuid;
@@ -160,15 +139,11 @@ abstract class CategoryConverter extends ShopwareConverter
         $this->convertValue($converted, 'description', $data, 'cmstext', self::TYPE_STRING);
         $this->convertValue($converted, 'level', $data, 'level', self::TYPE_INTEGER);
         $this->convertValue($converted, 'active', $data, 'active', self::TYPE_BOOLEAN);
-        $this->convertValue($converted, 'isBlog', $data, 'blog', self::TYPE_BOOLEAN);
-        $this->convertValue($converted, 'external', $data, 'external');
-        $this->convertValue($converted, 'hideFilter', $data, 'hidefilter', self::TYPE_BOOLEAN);
-        $this->convertValue($converted, 'hideTop', $data, 'hidetop', self::TYPE_BOOLEAN);
-        $this->convertValue($converted, 'productBoxLayout', $data, 'product_box_layout');
-        $this->convertValue($converted, 'hideSortings', $data, 'hide_sortings', self::TYPE_BOOLEAN);
-        $this->convertValue($converted, 'sortingIds', $data, 'sorting_ids');
-        $this->convertValue($converted, 'facetIds', $data, 'facet_ids');
-        unset($data['position']);
+        $this->convertValue($converted, 'externalLink', $data, 'external');
+        $this->convertValue($converted, 'visible', $data, 'hidetop', self::TYPE_INVERT_BOOLEAN);
+        $this->convertValue($converted, 'metaTitle', $data, 'meta_title');
+        $this->convertValue($converted, 'metaDescription', $data, 'metadescription');
+        $this->convertValue($converted, 'keywords', $data, 'metakeywords');
 
         if (isset($data['asset'])) {
             $converted['media'] = $this->getCategoryMedia($data['asset']);
@@ -182,7 +157,31 @@ abstract class CategoryConverter extends ShopwareConverter
 
         $converted['translations'] = [];
         $this->setGivenCategoryTranslation($data, $converted);
-        unset($data['_locale']);
+
+        unset(
+            $data['position'],
+            $data['blog'],
+            $data['product_box_layout'],
+            $data['hide_sortings'],
+            $data['hidefilter'],
+            $data['sorting_ids'],
+            $data['facet_ids'],
+            $data['path'], // will be generated
+            $data['left'],
+            $data['right'],
+            $data['added'],
+            $data['changed'],
+            $data['stream_id'],
+            $data['cmsheadline'],
+            $data['categorypath'],
+            $data['shops'],
+
+            // TODO check how to handle these
+            $data['template'],
+            $data['external_target'],
+            $data['mediaID'],
+            $data['_locale']
+        );
 
         if (empty($data)) {
             $data = null;
