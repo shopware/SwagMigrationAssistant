@@ -9,6 +9,7 @@ abstract class ShopwareConverter extends Converter
 {
     protected const TYPE_STRING = 'string';
     protected const TYPE_BOOLEAN = 'bool';
+    protected const TYPE_INVERT_BOOLEAN = 'invert_bool';
     protected const TYPE_INTEGER = 'int';
     protected const TYPE_FLOAT = 'float';
     protected const TYPE_DATETIME = 'datetime';
@@ -34,6 +35,9 @@ abstract class ShopwareConverter extends Converter
             switch ($castType) {
                 case self::TYPE_BOOLEAN:
                     $sourceValue = (bool) $sourceData[$sourceKey];
+                    break;
+                case self::TYPE_INVERT_BOOLEAN:
+                    $sourceValue = !(bool) $sourceData[$sourceKey];
                     break;
                 case self::TYPE_INTEGER:
                     $sourceValue = (int) $sourceData[$sourceKey];
