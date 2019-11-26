@@ -49,17 +49,21 @@
           "connectionPlaceholder": "Bitte Verbindung auswählen"
         },
         "connectionCreate": {
-          "title": "Migration - Verbindung anlegen",
+          "title": "Migration - Neue Verbindung anlegen",
           "contentInformation": "Gib die Daten an, die für die Migration benötigt werden.",
-          "profileLabel": "Profil",
-          "profileTooltip": "Bezeichnet die Art des Quellsystems.",
+          "profileLabel": "Shopsystem-Profil",
           "profilePlaceholder": "Bitte wählen",
           "gatewayLabel": "Schnittstelle",
           "gatewayTooltip": "Bezeichnet die Art der Verbindung zwischen den Systemen.",
           "gatewayPlaceholder": "Bitte wählen",
-          "connectionLabel": "Name",
+          "connectionLabel": "Verbindungsname",
           "connectionPlaceholder": "Namen eintragen",
           "connectionTooltip": "Einen eindeutigen Namen für die Verbindung eingeben.",
+          "gateways": {
+            "shopwareApi": "API",
+            "shopwareLocal": "Lokale Datenbank",
+            "magentoLocal": "Lokale Datenbank"
+          },
           "hint": {
             "local": "Beachte: Die Shopsysteme müssen auf demselben Server liegen. Du benötigst die Zugangsdaten der Datenbank."
           }
@@ -144,9 +148,10 @@
       "shopInfoCard": {
         "cardTitle": "Shopsystem",
         "buttonEditSettings": "Verbindung bearbeiten",
-        "buttonCreateConnection": "Verbindung anlegen",
+        "buttonCreateConnection": "Neue Verbindung anlegen",
         "buttonSelectConnection": "Verbindung wechseln",
         "buttonRemoveCredentials": "Zugangsdaten löschen",
+        "buttonProfileInstallation": "Weiteres Profil installieren",
         "connected": "Verbunden",
         "notConnected": "Nicht verbunden",
         "profile": "System-Profil:",

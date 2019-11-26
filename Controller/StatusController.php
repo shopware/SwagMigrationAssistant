@@ -95,12 +95,17 @@ class StatusController extends AbstractController
     {
         $profiles = $this->profileRegistry->getProfiles();
 
-        $profileNames = [];
+        $returnProfiles = [];
         foreach ($profiles as $profile) {
-            $profileNames[] = $profile->getName();
+            $returnProfiles[] = [
+                'name' => $profile->getName(),
+                'sourceSystemName' => $profile->getSourceSystemName(),
+                'version' => $profile->getVersion(),
+                'author' => $profile->getAuthorName(),
+            ];
         }
 
-        return new JsonResponse($profileNames);
+        return new JsonResponse($returnProfiles);
     }
 
     /**
@@ -119,7 +124,10 @@ class StatusController extends AbstractController
 
         $gatewayNames = [];
         foreach ($gateways as $gateway) {
-            $gatewayNames[] = $gateway->getName();
+            $gatewayNames[] = [
+                'name' => $gateway->getName(),
+                'snippet' => $gateway->getSnippetName(),
+            ];
         }
 
         return new JsonResponse($gatewayNames);

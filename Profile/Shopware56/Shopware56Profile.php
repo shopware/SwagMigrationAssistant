@@ -12,6 +12,8 @@ class Shopware56Profile implements ShopwareProfileInterface
 
     public const SOURCE_SYSTEM_VERSION = '5.6';
 
+    public const AUTHOR_NAME = 'shopware AG';
+
     public function getName(): string
     {
         return self::PROFILE_NAME;
@@ -25,5 +27,10 @@ class Shopware56Profile implements ShopwareProfileInterface
     public function getVersion(): string
     {
         return self::SOURCE_SYSTEM_VERSION;
+    }
+
+    public function getAuthorName(): string
+    {
+        return self::AUTHOR_NAME;
     }
 }

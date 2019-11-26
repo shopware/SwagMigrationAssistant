@@ -49,10 +49,9 @@
           "connectionPlaceholder": "Please select a connection"
         },
         "connectionCreate": {
-          "title": "Migration – Create a connection",
+          "title": "Migration – Create new connection",
           "contentInformation": "The following information is required to perform the migration.",
-          "profileLabel": "Profile",
-          "profileTooltip": "Describes the type of source system.",
+          "profileLabel": "Shop system profile",
           "profilePlaceholder": "Select profile",
           "gatewayLabel": "Gateway",
           "gatewayTooltip": "The type of connection between the systems.",
@@ -60,6 +59,11 @@
           "connectionLabel": "Connection name",
           "connectionPlaceholder": "Enter name",
           "connectionTooltip": "Enter a unique name for the connection.",
+          "gateways": {
+            "shopwareApi": "API",
+            "shopwareLocal": "Local database",
+            "magentoLocal": "Local database"
+          },
           "hint": {
             "local": "Note: The shop systems have to be on the same server. You need access data to the database."
           }
@@ -144,9 +148,10 @@
       "shopInfoCard": {
         "cardTitle": "Shop system",
         "buttonEditSettings": "Edit connection",
-        "buttonCreateConnection": "Create a new connection",
+        "buttonCreateConnection": "Create new connection",
         "buttonSelectConnection": "Change the connection",
         "buttonRemoveCredentials": "Delete access data",
+        "buttonProfileInstallation": "Install another profile",
         "connected": "Connected",
         "notConnected": "Not connected",
         "profile": "System profile:",

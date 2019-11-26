@@ -25,17 +25,25 @@
                                   >
                         </sw-text-field>
 
-                        <sw-field type="select"
+                        <sw-single-select
                                   :label="$tc('swag-migration.wizard.pages.connectionCreate.profileLabel')"
                                   :placeholder="$tc('swag-migration.wizard.pages.connectionCreate.profilePlaceholder')"
-                                  :helpText="$tc('swag-migration.wizard.pages.connectionCreate.profileTooltip')"
-                                  v-model="selection.profile"
+                                  :options="profiles"
+                                  :value="selection.profile"
+                                  valueProperty="name"
                                   @change="onSelectProfile"
+                                  :searchFunction="profileSearch"
                                   validation="required">
                             {% block swag_migration_wizard_page_create_profile_form_profile_field_options %}
-                                <option v-for="profile in profiles" :value="profile">{{ profile }}</option>
+                                <template #selection-label-property="{ item: singleSelection, labelProperty, valueProperty, searchTerm, getKey }">
+                                    <span v-html="getText(singleSelection)"></span>
+                                </template>
+
+                                <template #result-label-property="{ item, index, labelProperty, valueProperty, searchTerm, highlightSearchTerm, getKey }">
+                                    <span v-html="getText(item)"></span>
+                                </template>
                             {% endblock %}
-                        </sw-field>
+                        </sw-single-select>
 
                         <sw-field type="select"
                                   :label="$tc('swag-migration.wizard.pages.connectionCreate.gatewayLabel')"
@@ -45,7 +53,7 @@
                                   @change="onSelectGateway"
                                   validation="required">
                             {% block swag_migration_wizard_page_create_profile_form_gateway_field_options %}
-                                <option v-for="gateway in gateways" :value="gateway">{{ gateway }}</option>
+                                <option v-for="gateway in gateways" :value="gateway.name">{{ $tc(gateway.snippet) }}</option>
                             {% endblock %}
                         </sw-field>
 

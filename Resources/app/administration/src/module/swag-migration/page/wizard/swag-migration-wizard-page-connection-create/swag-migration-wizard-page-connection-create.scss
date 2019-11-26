@@ -1,0 +1,8 @@
+@import "~scss/variables";
+
+.swag-migration-wizard .sw-select-result__result-item-text > span > i,
+.swag-migration-wizard .sw-single-select__selection-text > span > i {
+    color: $color-gray-500;
+    font-style: normal;
+    font-size: 12px;
+}

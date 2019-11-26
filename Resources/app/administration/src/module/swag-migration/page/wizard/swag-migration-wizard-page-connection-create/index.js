@@ -1,4 +1,5 @@
 import template from './swag-migration-wizard-page-connection-create.html.twig';
+import './swag-migration-wizard-page-connection-create.scss';
 
 const { Component } = Shopware;
 const ShopwareError = Shopware.Classes.ShopwareError;
@@ -77,6 +78,18 @@ Component.register('swag-migration-wizard-page-connection-create', {
     },
 
     methods: {
+        profileSearch(searchParams) {
+            const searchTerm = searchParams.searchTerm;
+            return searchParams.options.filter(option => {
+                const label = `${option.sourceSystemName} ${option.version} - ${option.author}`;
+                return label.toLowerCase().includes(searchTerm.toLowerCase());
+            });
+        },
+
+        getText(item) {
+            return `${item.sourceSystemName} ${item.version} - <i>${item.author}</i>`;
+        },
+
         createdComponent() {
             this.setIsLoading(true);
             this.emitOnChildRouteReadyChanged(false);
@@ -86,8 +99,6 @@ Component.register('swag-migration-wizard-page-connection-create', {
 
                 this.selectDefaultProfile();
                 this.setIsLoading(false);
-
-                // todo: Select profile and gateway of the current selected connection
             });
         },
 
@@ -106,7 +117,15 @@ Component.register('swag-migration-wizard-page-connection-create', {
             this.$emit('onIsLoadingChanged', this.isLoading);
         },
 
-        onSelectProfile() {
+        onSelectProfile(value) {
+            if (this.selection.profile === value || value === null) {
+                return new Promise();
+            }
+
+            if (value !== null && value !== undefined) {
+                this.selection.profile = value;
+            }
+
             return new Promise((resolve) => {
                 this.emitOnChildRouteReadyChanged(false);
                 this.gateways = null;
@@ -116,6 +135,14 @@ Component.register('swag-migration-wizard-page-connection-create', {
                     this.migrationService.getGateways(this.selection.profile).then((gateways) => {
                         this.gateways = gateways;
                         this.selection.gateway = null;
+
+                        if (this.gateways.length === 1) {
+                            this.$nextTick(() => {
+                                this.selection.gateway = this.gateways[0].name;
+                                this.emitOnChildRouteReadyChanged(this.isReady);
+                            });
+                        }
+
                         this.emitOnChildRouteReadyChanged(this.isReady);
                         resolve();
                     });
