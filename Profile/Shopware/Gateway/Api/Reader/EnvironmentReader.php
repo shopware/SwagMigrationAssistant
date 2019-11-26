@@ -18,7 +18,7 @@ use SwagMigrationAssistant\Profile\Shopware\Exception\PluginNotInstalledExceptio
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactoryInterface;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
-class ApiEnvironmentReader implements EnvironmentReaderInterface
+class EnvironmentReader implements EnvironmentReaderInterface
 {
     /**
      * @var Client

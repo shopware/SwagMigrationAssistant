@@ -10,12 +10,12 @@ use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
-class LocalTranslationReader extends LocalAbstractReader implements ReaderInterface
+class MediaReader extends AbstractReader implements ReaderInterface
 {
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
-            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::TRANSLATION;
+            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::MEDIA;
     }
 
     public function supportsTotal(MigrationContextInterface $migrationContext): bool
@@ -27,13 +27,15 @@ class LocalTranslationReader extends LocalAbstractReader implements ReaderInterf
     public function read(MigrationContextInterface $migrationContext, array $params = []): array
     {
         $this->setConnection($migrationContext);
-        $fetchedTranslations = $this->fetchTranslations($migrationContext->getOffset(), $migrationContext->getLimit());
+        $fetchedMedia = $this->fetchData($migrationContext);
 
-        $resultSet = $this->mapData(
-            $fetchedTranslations,
+        $media = $this->mapData(
+            $fetchedMedia,
             [],
-            ['translation', 'locale', 'name']
+            ['asset']
         );
+
+        $resultSet = $this->prepareMedia($media);
 
         return $this->cleanupResultSet($resultSet);
     }
@@ -44,34 +46,42 @@ class LocalTranslationReader extends LocalAbstractReader implements ReaderInterf
 
         $total = (int) $this->connection->createQueryBuilder()
             ->select('COUNT(*)')
-            ->from('s_core_translations')
+            ->from('s_media')
             ->execute()
             ->fetchColumn();
 
-        return new TotalStruct(DefaultEntities::TRANSLATION, $total);
+        return new TotalStruct(DefaultEntities::MEDIA, $total);
     }
 
-    private function fetchTranslations(int $offset, int $limit): array
+    private function fetchData(MigrationContextInterface $migrationContext): array
     {
-        $ids = $this->fetchIdentifiers('s_core_translations', $offset, $limit);
-
+        $ids = $this->fetchIdentifiers('s_media', $migrationContext->getOffset(), $migrationContext->getLimit());
         $query = $this->connection->createQueryBuilder();
 
-        $query->from('s_core_translations', 'translation');
-        $this->addTableSelection($query, 's_core_translations', 'translation');
+        $query->from('s_media', 'asset');
+        $this->addTableSelection($query, 's_media', 'asset');
 
-        $query->innerJoin('translation', 's_core_shops', 'shop', 'shop.id = translation.objectlanguage');
-        $query->leftJoin('shop', 's_core_locales', 'locale', 'locale.id = shop.locale_id');
-        $query->addSelect('REPLACE(locale.locale, "_", "-") as locale');
+        $query->leftJoin('asset', 's_media_attributes', 'attributes', 'asset.id = attributes.mediaID');
+        $this->addTableSelection($query, 's_media_attributes', 'attributes');
 
-        $query->leftJoin('translation', 's_articles_supplier', 'manufacturer', 'translation.objecttype = "supplier" AND translation.objectkey = manufacturer.id');
-        $query->addSelect('manufacturer.name');
-
-        $query->where('translation.id IN (:ids)');
+        $query->where('asset.id IN (:ids)');
         $query->setParameter('ids', $ids, Connection::PARAM_STR_ARRAY);
 
-        $query->addOrderBy('translation.id');
+        $query->addOrderBy('asset.id');
 
         return $query->execute()->fetchAll();
+    }
+
+    private function prepareMedia(array $media): array
+    {
+        // represents the main language of the migrated shop
+        $locale = $this->getDefaultShopLocale();
+
+        foreach ($media as &$mediaData) {
+            $mediaData['_locale'] = str_replace('_', '-', $locale);
+        }
+        unset($mediaData);
+
+        return $media;
     }
 }

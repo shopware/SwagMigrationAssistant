@@ -9,7 +9,7 @@ use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
-class LocalAttributeReader extends LocalAbstractReader implements ReaderInterface
+class AttributeReader extends AbstractReader implements ReaderInterface
 {
     /**
      * @var string[]

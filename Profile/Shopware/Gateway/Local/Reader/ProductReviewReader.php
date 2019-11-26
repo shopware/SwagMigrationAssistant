@@ -10,12 +10,12 @@ use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
-class LocalMediaReader extends LocalAbstractReader implements ReaderInterface
+class ProductReviewReader extends AbstractReader implements ReaderInterface
 {
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
-            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::MEDIA;
+            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::PRODUCT_REVIEW;
     }
 
     public function supportsTotal(MigrationContextInterface $migrationContext): bool
@@ -27,17 +27,14 @@ class LocalMediaReader extends LocalAbstractReader implements ReaderInterface
     public function read(MigrationContextInterface $migrationContext, array $params = []): array
     {
         $this->setConnection($migrationContext);
-        $fetchedMedia = $this->fetchData($migrationContext);
+        $fetchedReviews = $this->fetchReviews($migrationContext);
+        $fetchedReviews = $this->mapData($fetchedReviews, [], ['vote', 'mainShopId']);
 
-        $media = $this->mapData(
-            $fetchedMedia,
-            [],
-            ['asset']
-        );
+        foreach ($fetchedReviews as &$review) {
+            $review['_locale'] = str_replace('_', '-', $review['_locale']);
+        }
 
-        $resultSet = $this->prepareMedia($media);
-
-        return $this->cleanupResultSet($resultSet);
+        return $this->cleanupResultSet($fetchedReviews);
     }
 
     public function readTotal(MigrationContextInterface $migrationContext): ?TotalStruct
@@ -46,42 +43,30 @@ class LocalMediaReader extends LocalAbstractReader implements ReaderInterface
 
         $total = (int) $this->connection->createQueryBuilder()
             ->select('COUNT(*)')
-            ->from('s_media')
+            ->from('s_articles_vote')
             ->execute()
             ->fetchColumn();
 
-        return new TotalStruct(DefaultEntities::MEDIA, $total);
+        return new TotalStruct(DefaultEntities::PRODUCT_REVIEW, $total);
     }
 
-    private function fetchData(MigrationContextInterface $migrationContext): array
+    private function fetchReviews(MigrationContextInterface $migrationContext): array
     {
-        $ids = $this->fetchIdentifiers('s_media', $migrationContext->getOffset(), $migrationContext->getLimit());
+        $ids = $this->fetchIdentifiers('s_articles_vote', $migrationContext->getOffset(), $migrationContext->getLimit());
+
         $query = $this->connection->createQueryBuilder();
 
-        $query->from('s_media', 'asset');
-        $this->addTableSelection($query, 's_media', 'asset');
+        $query->from('s_articles_vote', 'vote');
+        $this->addTableSelection($query, 's_articles_vote', 'vote');
 
-        $query->leftJoin('asset', 's_media_attributes', 'attributes', 'asset.id = attributes.mediaID');
-        $this->addTableSelection($query, 's_media_attributes', 'attributes');
+        $query->leftJoin('vote', 's_core_shops', 'shop', 'shop.id = vote.shop_id OR (vote.shop_id IS NULL AND shop.default = 1)');
+        $query->addSelect('shop.id as mainShopId');
+        $query->leftJoin('shop', 's_core_locales', 'locale', 'shop.locale_id = locale.id');
+        $query->addSelect('locale.locale as _locale');
 
-        $query->where('asset.id IN (:ids)');
+        $query->where('vote.id IN (:ids)');
         $query->setParameter('ids', $ids, Connection::PARAM_STR_ARRAY);
 
-        $query->addOrderBy('asset.id');
-
         return $query->execute()->fetchAll();
-    }
-
-    private function prepareMedia(array $media): array
-    {
-        // represents the main language of the migrated shop
-        $locale = $this->getDefaultShopLocale();
-
-        foreach ($media as &$mediaData) {
-            $mediaData['_locale'] = str_replace('_', '-', $locale);
-        }
-        unset($mediaData);
-
-        return $media;
     }
 }

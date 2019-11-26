@@ -14,7 +14,7 @@ use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactoryInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\TableCountReaderInterface;
 
-class LocalTableCountReader implements TableCountReaderInterface
+class TableCountReader implements TableCountReaderInterface
 {
     /**
      * @var ConnectionFactoryInterface

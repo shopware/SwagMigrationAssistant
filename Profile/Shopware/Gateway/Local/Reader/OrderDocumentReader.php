@@ -2,6 +2,7 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
+use Doctrine\DBAL\Connection;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -9,12 +10,12 @@ use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
-class LocalNumberRangeReader extends LocalAbstractReader implements ReaderInterface
+class OrderDocumentReader extends AbstractReader implements ReaderInterface
 {
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
-            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::NUMBER_RANGE;
+            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::ORDER_DOCUMENT;
     }
 
     public function supportsTotal(MigrationContextInterface $migrationContext): bool
@@ -26,21 +27,15 @@ class LocalNumberRangeReader extends LocalAbstractReader implements ReaderInterf
     public function read(MigrationContextInterface $migrationContext, array $params = []): array
     {
         $this->setConnection($migrationContext);
-        $numberRanges = $this->fetchNumberRanges();
-        $prefix = unserialize($this->fetchPrefix(), ['allowed_classes' => false]);
-
-        if (!$prefix) {
-            $prefix = '';
-        }
+        $documents = $this->mapData($this->fetchDocuments($migrationContext), [], ['document']);
 
         $locale = $this->getDefaultShopLocale();
 
-        foreach ($numberRanges as &$numberRange) {
-            $numberRange['_locale'] = str_replace('_', '-', $locale);
-            $numberRange['prefix'] = $prefix;
+        foreach ($documents as &$document) {
+            $document['_locale'] = str_replace('_', '-', $locale);
         }
 
-        return $numberRanges;
+        return $documents;
     }
 
     public function readTotal(MigrationContextInterface $migrationContext): ?TotalStruct
@@ -49,29 +44,30 @@ class LocalNumberRangeReader extends LocalAbstractReader implements ReaderInterf
 
         $total = (int) $this->connection->createQueryBuilder()
             ->select('COUNT(*)')
-            ->from('s_order_number')
+            ->from('s_order_documents')
             ->execute()
             ->fetchColumn();
 
-        return new TotalStruct(DefaultEntities::NUMBER_RANGE, $total);
+        return new TotalStruct(DefaultEntities::ORDER_DOCUMENT, $total);
     }
 
-    private function fetchNumberRanges(): array
+    private function fetchDocuments(MigrationContextInterface $migrationContext): array
     {
-        return $this->connection->createQueryBuilder()
-            ->select('*')
-            ->from('s_order_number')
-            ->execute()
-            ->fetchAll();
-    }
+        $ids = $this->fetchIdentifiers('s_order_documents', $migrationContext->getOffset(), $migrationContext->getLimit());
 
-    private function fetchPrefix(): string
-    {
-        return $this->connection->createQueryBuilder()
-            ->select('value')
-            ->from('s_core_config_elements')
-            ->where('name = "backendautoordernumberprefix"')
-            ->execute()
-            ->fetch(\PDO::FETCH_COLUMN);
+        $query = $this->connection->createQueryBuilder();
+
+        $query->from('s_order_documents', 'document');
+        $this->addTableSelection($query, 's_order_documents', 'document');
+
+        $query->leftJoin('document', 's_order_documents_attributes', 'attributes', 'document.id = attributes.documentID');
+        $this->addTableSelection($query, 's_order_documents_attributes', 'attributes');
+
+        $query->leftJoin('document', 's_core_documents', 'document_documenttype', 'document.type = document_documenttype.id');
+        $this->addTableSelection($query, 's_core_documents', 'document_documenttype');
+
+        $query->setParameter('ids', $ids, Connection::PARAM_STR_ARRAY);
+
+        return $query->execute()->fetchAll();
     }
 }

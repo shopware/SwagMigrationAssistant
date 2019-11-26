@@ -6,7 +6,7 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactoryInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\TableReaderInterface;
 
-class LocalTableReader implements TableReaderInterface
+class TableReader implements TableReaderInterface
 {
     /**
      * @var ConnectionFactoryInterface

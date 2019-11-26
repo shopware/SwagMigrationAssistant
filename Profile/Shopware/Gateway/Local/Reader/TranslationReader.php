@@ -10,12 +10,12 @@ use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
-class LocalOrderDocumentReader extends LocalAbstractReader implements ReaderInterface
+class TranslationReader extends AbstractReader implements ReaderInterface
 {
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
-            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::ORDER_DOCUMENT;
+            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::TRANSLATION;
     }
 
     public function supportsTotal(MigrationContextInterface $migrationContext): bool
@@ -27,15 +27,15 @@ class LocalOrderDocumentReader extends LocalAbstractReader implements ReaderInte
     public function read(MigrationContextInterface $migrationContext, array $params = []): array
     {
         $this->setConnection($migrationContext);
-        $documents = $this->mapData($this->fetchDocuments($migrationContext), [], ['document']);
+        $fetchedTranslations = $this->fetchTranslations($migrationContext->getOffset(), $migrationContext->getLimit());
 
-        $locale = $this->getDefaultShopLocale();
+        $resultSet = $this->mapData(
+            $fetchedTranslations,
+            [],
+            ['translation', 'locale', 'name']
+        );
 
-        foreach ($documents as &$document) {
-            $document['_locale'] = str_replace('_', '-', $locale);
-        }
-
-        return $documents;
+        return $this->cleanupResultSet($resultSet);
     }
 
     public function readTotal(MigrationContextInterface $migrationContext): ?TotalStruct
@@ -44,29 +44,33 @@ class LocalOrderDocumentReader extends LocalAbstractReader implements ReaderInte
 
         $total = (int) $this->connection->createQueryBuilder()
             ->select('COUNT(*)')
-            ->from('s_order_documents')
+            ->from('s_core_translations')
             ->execute()
             ->fetchColumn();
 
-        return new TotalStruct(DefaultEntities::ORDER_DOCUMENT, $total);
+        return new TotalStruct(DefaultEntities::TRANSLATION, $total);
     }
 
-    private function fetchDocuments(MigrationContextInterface $migrationContext): array
+    private function fetchTranslations(int $offset, int $limit): array
     {
-        $ids = $this->fetchIdentifiers('s_order_documents', $migrationContext->getOffset(), $migrationContext->getLimit());
+        $ids = $this->fetchIdentifiers('s_core_translations', $offset, $limit);
 
         $query = $this->connection->createQueryBuilder();
 
-        $query->from('s_order_documents', 'document');
-        $this->addTableSelection($query, 's_order_documents', 'document');
+        $query->from('s_core_translations', 'translation');
+        $this->addTableSelection($query, 's_core_translations', 'translation');
 
-        $query->leftJoin('document', 's_order_documents_attributes', 'attributes', 'document.id = attributes.documentID');
-        $this->addTableSelection($query, 's_order_documents_attributes', 'attributes');
+        $query->innerJoin('translation', 's_core_shops', 'shop', 'shop.id = translation.objectlanguage');
+        $query->leftJoin('shop', 's_core_locales', 'locale', 'locale.id = shop.locale_id');
+        $query->addSelect('REPLACE(locale.locale, "_", "-") as locale');
 
-        $query->leftJoin('document', 's_core_documents', 'document_documenttype', 'document.type = document_documenttype.id');
-        $this->addTableSelection($query, 's_core_documents', 'document_documenttype');
+        $query->leftJoin('translation', 's_articles_supplier', 'manufacturer', 'translation.objecttype = "supplier" AND translation.objectkey = manufacturer.id');
+        $query->addSelect('manufacturer.name');
 
+        $query->where('translation.id IN (:ids)');
         $query->setParameter('ids', $ids, Connection::PARAM_STR_ARRAY);
+
+        $query->addOrderBy('translation.id');
 
         return $query->execute()->fetchAll();
     }

@@ -12,7 +12,7 @@ use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
-class LocalProductReader extends LocalAbstractReader implements ReaderInterface
+class ProductReader extends AbstractReader implements ReaderInterface
 {
     /**
      * @var ParameterBag

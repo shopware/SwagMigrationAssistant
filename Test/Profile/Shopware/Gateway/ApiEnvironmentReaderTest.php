@@ -13,7 +13,7 @@ use Shopware\Core\Framework\ShopwareHttpException;
 use SwagMigrationAssistant\Exception\GatewayReadException;
 use SwagMigrationAssistant\Exception\RequestCertificateInvalidException;
 use SwagMigrationAssistant\Migration\MigrationContext;
-use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiEnvironmentReader;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\EnvironmentReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
@@ -86,7 +86,7 @@ class ApiEnvironmentReaderTest extends TestCase
             ->with($migrationContext)
             ->willReturn($client);
 
-        $environmentReader = new ApiEnvironmentReader($mock);
+        $environmentReader = new EnvironmentReader($mock);
 
         $response = $environmentReader->read($migrationContext);
         static::assertSame($response['environmentInformation'], $this->dataArray);
@@ -118,7 +118,7 @@ class ApiEnvironmentReaderTest extends TestCase
             ->method('createApiClient')
             ->with($migrationContext)
             ->willReturn($client);
-        $environmentReader = new ApiEnvironmentReader($mock);
+        $environmentReader = new EnvironmentReader($mock);
 
         $response = $environmentReader->read($migrationContext);
         static::assertSame($response['environmentInformation'], $this->dataArray);
@@ -153,7 +153,7 @@ class ApiEnvironmentReaderTest extends TestCase
             ->method('createApiClient')
             ->with($migrationContext)
             ->willReturn($client);
-        $environmentReader = new ApiEnvironmentReader($mock);
+        $environmentReader = new EnvironmentReader($mock);
 
         $response = $environmentReader->read($migrationContext);
         static::assertSame($response['environmentInformation'], []);
@@ -184,7 +184,7 @@ class ApiEnvironmentReaderTest extends TestCase
             ->method('createApiClient')
             ->with($migrationContext)
             ->willReturn($client);
-        $environmentReader = new ApiEnvironmentReader($mock);
+        $environmentReader = new EnvironmentReader($mock);
 
         $response = $environmentReader->read($migrationContext);
         static::assertSame($response['environmentInformation'], []);
@@ -216,7 +216,7 @@ class ApiEnvironmentReaderTest extends TestCase
             ->method('createApiClient')
             ->with($migrationContext)
             ->willReturn($client);
-        $environmentReader = new ApiEnvironmentReader($mock);
+        $environmentReader = new EnvironmentReader($mock);
 
         $response = $environmentReader->read($migrationContext);
         static::assertSame($response['environmentInformation'], []);

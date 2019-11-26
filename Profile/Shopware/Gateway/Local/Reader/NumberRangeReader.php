@@ -9,12 +9,12 @@ use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
-class LocalCurrencyReader extends LocalAbstractReader implements ReaderInterface
+class NumberRangeReader extends AbstractReader implements ReaderInterface
 {
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
-            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::CURRENCY;
+            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::NUMBER_RANGE;
     }
 
     public function supportsTotal(MigrationContextInterface $migrationContext): bool
@@ -26,19 +26,21 @@ class LocalCurrencyReader extends LocalAbstractReader implements ReaderInterface
     public function read(MigrationContextInterface $migrationContext, array $params = []): array
     {
         $this->setConnection($migrationContext);
+        $numberRanges = $this->fetchNumberRanges();
+        $prefix = unserialize($this->fetchPrefix(), ['allowed_classes' => false]);
 
-        $currencies = $this->fetchData($migrationContext);
-
-        // represents the main language of the migrated shop
-        $locale = $this->getDefaultShopLocale();
-
-        foreach ($currencies as $key => &$currency) {
-            $currency['_locale'] = str_replace('_', '-', $locale);
+        if (!$prefix) {
+            $prefix = '';
         }
 
-        $currencies = $this->mapData($currencies, [], ['currency']);
+        $locale = $this->getDefaultShopLocale();
 
-        return $this->cleanupResultSet($currencies);
+        foreach ($numberRanges as &$numberRange) {
+            $numberRange['_locale'] = str_replace('_', '-', $locale);
+            $numberRange['prefix'] = $prefix;
+        }
+
+        return $numberRanges;
     }
 
     public function readTotal(MigrationContextInterface $migrationContext): ?TotalStruct
@@ -47,23 +49,29 @@ class LocalCurrencyReader extends LocalAbstractReader implements ReaderInterface
 
         $total = (int) $this->connection->createQueryBuilder()
             ->select('COUNT(*)')
-            ->from('s_core_currencies')
+            ->from('s_order_number')
             ->execute()
             ->fetchColumn();
 
-        return new TotalStruct(DefaultEntities::CURRENCY, $total);
+        return new TotalStruct(DefaultEntities::NUMBER_RANGE, $total);
     }
 
-    private function fetchData(MigrationContextInterface $migrationContext): array
+    private function fetchNumberRanges(): array
     {
-        $query = $this->connection->createQueryBuilder();
-        $query->from('s_core_currencies', 'currency');
-        $this->addTableSelection($query, 's_core_currencies', 'currency');
+        return $this->connection->createQueryBuilder()
+            ->select('*')
+            ->from('s_order_number')
+            ->execute()
+            ->fetchAll();
+    }
 
-        $query->addOrderBy('standard', 'DESC');
-        $query->setFirstResult($migrationContext->getOffset());
-        $query->setMaxResults($migrationContext->getLimit());
-
-        return $query->execute()->fetchAll();
+    private function fetchPrefix(): string
+    {
+        return $this->connection->createQueryBuilder()
+            ->select('value')
+            ->from('s_core_config_elements')
+            ->where('name = "backendautoordernumberprefix"')
+            ->execute()
+            ->fetch(\PDO::FETCH_COLUMN);
     }
 }

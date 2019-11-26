@@ -10,7 +10,7 @@ use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
-class LocalCustomerReader extends LocalAbstractReader implements ReaderInterface
+class CustomerReader extends AbstractReader implements ReaderInterface
 {
     /**
      * @var int

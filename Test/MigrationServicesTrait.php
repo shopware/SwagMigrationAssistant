@@ -33,10 +33,10 @@ use SwagMigrationAssistant\Migration\Service\MigrationDataConverter;
 use SwagMigrationAssistant\Migration\Service\MigrationDataConverterInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcher;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
-use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiEnvironmentReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiReader;
-use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiTableCountReader;
-use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiTableReader;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\EnvironmentReader;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\TableCountReader;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\TableReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\ShopwareApiGateway;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55CategoryConverter;
@@ -68,9 +68,9 @@ trait MigrationServicesTrait
         $gatewayRegistry = new GatewayRegistry(new DummyCollection([
             new ShopwareApiGateway(
                 new ApiReader($connectionFactory),
-                new ApiEnvironmentReader($connectionFactory),
-                new ApiTableReader($connectionFactory),
-                new ApiTableCountReader($connectionFactory, $dataSetRegistry, $loggingService),
+                new EnvironmentReader($connectionFactory),
+                new TableReader($connectionFactory),
+                new TableCountReader($connectionFactory, $dataSetRegistry, $loggingService),
                 $currencyRepository
             ),
             new DummyLocalGateway(),

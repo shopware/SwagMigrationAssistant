@@ -10,7 +10,7 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactoryInterface;
 
-abstract class LocalAbstractReader implements ReaderInterface
+abstract class AbstractReader implements ReaderInterface
 {
     /**
      * @var ConnectionFactoryInterface

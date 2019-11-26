@@ -4,9 +4,9 @@ namespace SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Api\Reader;
 
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\RequestStatusStruct;
-use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiEnvironmentReader;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\EnvironmentReader;
 
-class ApiEnvironmentDummyReader extends ApiEnvironmentReader
+class EnvironmentDummyReader extends EnvironmentReader
 {
     public function read(MigrationContextInterface $migrationContext, array $params = []): array
     {

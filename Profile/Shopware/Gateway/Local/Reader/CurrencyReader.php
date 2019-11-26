@@ -9,12 +9,12 @@ use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
-class LocalSalesChannelReader extends LocalAbstractReader implements ReaderInterface
+class CurrencyReader extends AbstractReader implements ReaderInterface
 {
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
-            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::SALES_CHANNEL;
+            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::CURRENCY;
     }
 
     public function supportsTotal(MigrationContextInterface $migrationContext): bool
@@ -26,23 +26,19 @@ class LocalSalesChannelReader extends LocalAbstractReader implements ReaderInter
     public function read(MigrationContextInterface $migrationContext, array $params = []): array
     {
         $this->setConnection($migrationContext);
-        $fetchedSalesChannels = $this->fetchData();
-        $salesChannels = $this->mapData($fetchedSalesChannels, [], ['shop', 'locale', 'currency']);
+
+        $currencies = $this->fetchData($migrationContext);
 
         // represents the main language of the migrated shop
         $locale = $this->getDefaultShopLocale();
 
-        foreach ($salesChannels as $key => &$salesChannel) {
-            $salesChannel['locale'] = str_replace('_', '-', $salesChannel['locale']);
-            $salesChannel['_locale'] = str_replace('_', '-', $locale);
-            if (!empty($salesChannel['main_id'])) {
-                $salesChannels[$salesChannel['main_id']]['children'][] = $salesChannel;
-                unset($salesChannels[$key]);
-            }
+        foreach ($currencies as $key => &$currency) {
+            $currency['_locale'] = str_replace('_', '-', $locale);
         }
-        $salesChannels = array_values($salesChannels);
 
-        return $this->cleanupResultSet($salesChannels);
+        $currencies = $this->mapData($currencies, [], ['currency']);
+
+        return $this->cleanupResultSet($currencies);
     }
 
     public function readTotal(MigrationContextInterface $migrationContext): ?TotalStruct
@@ -51,29 +47,23 @@ class LocalSalesChannelReader extends LocalAbstractReader implements ReaderInter
 
         $total = (int) $this->connection->createQueryBuilder()
             ->select('COUNT(*)')
-            ->from('s_core_shops')
+            ->from('s_core_currencies')
             ->execute()
             ->fetchColumn();
 
-        return new TotalStruct(DefaultEntities::SALES_CHANNEL, $total);
+        return new TotalStruct(DefaultEntities::CURRENCY, $total);
     }
 
-    private function fetchData()
+    private function fetchData(MigrationContextInterface $migrationContext): array
     {
         $query = $this->connection->createQueryBuilder();
+        $query->from('s_core_currencies', 'currency');
+        $this->addTableSelection($query, 's_core_currencies', 'currency');
 
-        $query->from('s_core_shops', 'shop');
-        $query->addSelect('shop.id as identifier');
-        $this->addTableSelection($query, 's_core_shops', 'shop');
+        $query->addOrderBy('standard', 'DESC');
+        $query->setFirstResult($migrationContext->getOffset());
+        $query->setMaxResults($migrationContext->getLimit());
 
-        $query->leftJoin('shop', 's_core_locales', 'locale', 'shop.locale_id = locale.id');
-        $query->addSelect('locale.locale');
-
-        $query->leftJoin('shop', 's_core_currencies', 'currency', 'shop.currency_id = currency.id');
-        $query->addSelect('currency.currency');
-
-        $query->orderBy('shop.main_id');
-
-        return $query->execute()->fetchAll(\PDO::FETCH_GROUP | \PDO::FETCH_UNIQUE);
+        return $query->execute()->fetchAll();
     }
 }

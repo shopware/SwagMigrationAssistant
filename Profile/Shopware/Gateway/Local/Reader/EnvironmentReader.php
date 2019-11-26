@@ -9,7 +9,7 @@ use SwagMigrationAssistant\Migration\Gateway\Reader\EnvironmentReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactoryInterface;
 
-class LocalEnvironmentReader implements EnvironmentReaderInterface
+class EnvironmentReader implements EnvironmentReaderInterface
 {
     /**
      * @var ConnectionFactoryInterface

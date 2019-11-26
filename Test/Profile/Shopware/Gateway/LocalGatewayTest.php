@@ -15,9 +15,9 @@ use SwagMigrationAssistant\Migration\Profile\ProfileInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Exception\LocalReaderNotFoundException;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory;
-use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalEnvironmentReader;
-use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalTableCountReader;
-use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LocalTableReader;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\EnvironmentReader;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\TableCountReader;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\TableReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ReaderRegistry;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware54\Shopware54Profile;
@@ -57,9 +57,9 @@ class LocalGatewayTest extends TestCase
 
         $connectionFactory = new ConnectionFactory();
         $readerRegistry = $this->getContainer()->get(ReaderRegistry::class);
-        $localEnvironmentReader = new LocalEnvironmentReader($connectionFactory);
-        $localTableReader = new LocalTableReader($connectionFactory);
-        $localTableCountReader = new LocalTableCountReader($connectionFactory, $this->getContainer()->get(DataSetRegistry::class), new DummyLoggingService());
+        $localEnvironmentReader = new EnvironmentReader($connectionFactory);
+        $localTableReader = new TableReader($connectionFactory);
+        $localTableCountReader = new TableCountReader($connectionFactory, $this->getContainer()->get(DataSetRegistry::class), new DummyLoggingService());
         /** @var EntityRepositoryInterface $currencyRepository */
         $currencyRepository = $this->getContainer()->get('currency.repository');
 
@@ -107,9 +107,9 @@ class LocalGatewayTest extends TestCase
 
         $connectionFactory = new ConnectionFactory();
         $readerRegistry = $this->getContainer()->get(ReaderRegistry::class);
-        $localEnvironmentReader = new LocalEnvironmentReader($connectionFactory);
-        $localTableReader = new LocalTableReader($connectionFactory);
-        $localTableCountReader = new LocalTableCountReader($connectionFactory, $this->getContainer()->get(DataSetRegistry::class), new DummyLoggingService());
+        $localEnvironmentReader = new EnvironmentReader($connectionFactory);
+        $localTableReader = new TableReader($connectionFactory);
+        $localTableCountReader = new TableCountReader($connectionFactory, $this->getContainer()->get(DataSetRegistry::class), new DummyLoggingService());
         /** @var EntityRepositoryInterface $currencyRepository */
         $currencyRepository = $this->getContainer()->get('currency.repository');
 
@@ -148,9 +148,9 @@ class LocalGatewayTest extends TestCase
 
         $readerRegistry = $this->getContainer()->get(ReaderRegistry::class);
         $connectionFactory = new ConnectionFactory();
-        $localEnvironmentReader = new LocalEnvironmentReader($connectionFactory);
-        $localTableReader = new LocalTableReader($connectionFactory);
-        $localTableCountReader = new LocalTableCountReader($connectionFactory, $this->getContainer()->get(DataSetRegistry::class), new DummyLoggingService());
+        $localEnvironmentReader = new EnvironmentReader($connectionFactory);
+        $localTableReader = new TableReader($connectionFactory);
+        $localTableCountReader = new TableCountReader($connectionFactory, $this->getContainer()->get(DataSetRegistry::class), new DummyLoggingService());
         /** @var EntityRepositoryInterface $currencyRepository */
         $currencyRepository = $this->getContainer()->get('currency.repository');
 

@@ -2,7 +2,6 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
-use Doctrine\DBAL\Connection;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -10,12 +9,12 @@ use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
-class LocalProductReviewReader extends LocalAbstractReader implements ReaderInterface
+class SalesChannelReader extends AbstractReader implements ReaderInterface
 {
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
-            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::PRODUCT_REVIEW;
+            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::SALES_CHANNEL;
     }
 
     public function supportsTotal(MigrationContextInterface $migrationContext): bool
@@ -27,14 +26,23 @@ class LocalProductReviewReader extends LocalAbstractReader implements ReaderInte
     public function read(MigrationContextInterface $migrationContext, array $params = []): array
     {
         $this->setConnection($migrationContext);
-        $fetchedReviews = $this->fetchReviews($migrationContext);
-        $fetchedReviews = $this->mapData($fetchedReviews, [], ['vote', 'mainShopId']);
+        $fetchedSalesChannels = $this->fetchData();
+        $salesChannels = $this->mapData($fetchedSalesChannels, [], ['shop', 'locale', 'currency']);
 
-        foreach ($fetchedReviews as &$review) {
-            $review['_locale'] = str_replace('_', '-', $review['_locale']);
+        // represents the main language of the migrated shop
+        $locale = $this->getDefaultShopLocale();
+
+        foreach ($salesChannels as $key => &$salesChannel) {
+            $salesChannel['locale'] = str_replace('_', '-', $salesChannel['locale']);
+            $salesChannel['_locale'] = str_replace('_', '-', $locale);
+            if (!empty($salesChannel['main_id'])) {
+                $salesChannels[$salesChannel['main_id']]['children'][] = $salesChannel;
+                unset($salesChannels[$key]);
+            }
         }
+        $salesChannels = array_values($salesChannels);
 
-        return $this->cleanupResultSet($fetchedReviews);
+        return $this->cleanupResultSet($salesChannels);
     }
 
     public function readTotal(MigrationContextInterface $migrationContext): ?TotalStruct
@@ -43,30 +51,29 @@ class LocalProductReviewReader extends LocalAbstractReader implements ReaderInte
 
         $total = (int) $this->connection->createQueryBuilder()
             ->select('COUNT(*)')
-            ->from('s_articles_vote')
+            ->from('s_core_shops')
             ->execute()
             ->fetchColumn();
 
-        return new TotalStruct(DefaultEntities::PRODUCT_REVIEW, $total);
+        return new TotalStruct(DefaultEntities::SALES_CHANNEL, $total);
     }
 
-    private function fetchReviews(MigrationContextInterface $migrationContext): array
+    private function fetchData()
     {
-        $ids = $this->fetchIdentifiers('s_articles_vote', $migrationContext->getOffset(), $migrationContext->getLimit());
-
         $query = $this->connection->createQueryBuilder();
 
-        $query->from('s_articles_vote', 'vote');
-        $this->addTableSelection($query, 's_articles_vote', 'vote');
+        $query->from('s_core_shops', 'shop');
+        $query->addSelect('shop.id as identifier');
+        $this->addTableSelection($query, 's_core_shops', 'shop');
 
-        $query->leftJoin('vote', 's_core_shops', 'shop', 'shop.id = vote.shop_id OR (vote.shop_id IS NULL AND shop.default = 1)');
-        $query->addSelect('shop.id as mainShopId');
         $query->leftJoin('shop', 's_core_locales', 'locale', 'shop.locale_id = locale.id');
-        $query->addSelect('locale.locale as _locale');
+        $query->addSelect('locale.locale');
 
-        $query->where('vote.id IN (:ids)');
-        $query->setParameter('ids', $ids, Connection::PARAM_STR_ARRAY);
+        $query->leftJoin('shop', 's_core_currencies', 'currency', 'shop.currency_id = currency.id');
+        $query->addSelect('currency.currency');
 
-        return $query->execute()->fetchAll();
+        $query->orderBy('shop.main_id');
+
+        return $query->execute()->fetchAll(\PDO::FETCH_GROUP | \PDO::FETCH_UNIQUE);
     }
 }

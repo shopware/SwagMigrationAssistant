@@ -9,7 +9,7 @@ use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory
 use SwagMigrationAssistant\Profile\Shopware\Gateway\TableReaderInterface;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
-class ApiTableReader implements TableReaderInterface
+class TableReader implements TableReaderInterface
 {
     /**
      * @var ConnectionFactoryInterface
