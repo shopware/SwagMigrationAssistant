@@ -15,7 +15,7 @@ class MediaAlbumReader extends AbstractReader implements ReaderInterface
             && $migrationContext->getDataSet()::getEntity() === DefaultEntities::MEDIA_FOLDER;
     }
 
-    public function read(MigrationContextInterface $migrationContext, array $params = []): array
+    public function read(MigrationContextInterface $migrationContext): array
     {
         $this->setConnection($migrationContext);
         $fetchedAlbums = $this->fetchAlbums();

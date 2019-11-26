@@ -19,7 +19,7 @@ class ApiReader implements ReaderInterface
     /**
      * SwagMigrationConnector API endpoints for API gateway.
      *
-     * @var array
+     * @var string[]
      */
     protected $apiEndpoints = [
         DefaultEntities::CATEGORY_CUSTOM_FIELD => 'SwagMigrationAttributes',
@@ -106,7 +106,7 @@ class ApiReader implements ReaderInterface
     /**
      * @throws GatewayReadException
      */
-    public function read(MigrationContextInterface $migrationContext, array $params = []): array
+    public function read(MigrationContextInterface $migrationContext): array
     {
         /** @var DataSet $dataSet */
         $dataSet = $migrationContext->getDataSet();

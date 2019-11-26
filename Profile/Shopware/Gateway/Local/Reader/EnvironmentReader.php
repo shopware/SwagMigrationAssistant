@@ -26,7 +26,7 @@ class EnvironmentReader implements EnvironmentReaderInterface
         $this->connectionFactory = $connectionFactory;
     }
 
-    public function read(MigrationContextInterface $migrationContext, array $params = []): array
+    public function read(MigrationContextInterface $migrationContext): array
     {
         $this->setConnection($migrationContext);
         $locale = $this->getDefaultShopLocale();

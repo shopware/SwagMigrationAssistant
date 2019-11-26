@@ -17,7 +17,7 @@ class LanguageReader extends AbstractReader implements ReaderInterface
             && $migrationContext->getDataSet()::getEntity() === DefaultEntities::LANGUAGE;
     }
 
-    public function read(MigrationContextInterface $migrationContext, array $params = []): array
+    public function read(MigrationContextInterface $migrationContext): array
     {
         $this->setConnection($migrationContext);
         $fetchedShopLocaleIds = array_unique($this->fetchShopLocaleIds());

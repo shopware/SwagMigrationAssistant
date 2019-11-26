@@ -14,7 +14,7 @@ interface ReaderInterface
     /**
      * Reads data from source via the given gateway based on implementation
      */
-    public function read(MigrationContextInterface $migrationContext, array $params = []): array;
+    public function read(MigrationContextInterface $migrationContext): array;
 
     public function readTotal(MigrationContextInterface $migrationContext): ?TotalStruct;
 }

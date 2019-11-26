@@ -37,7 +37,7 @@ class TableReader implements TableReaderInterface
         );
 
         if ($result->getStatusCode() !== SymfonyResponse::HTTP_OK) {
-            throw new GatewayReadException('Shopware 5.5 Api ' . $tableName);
+            throw new GatewayReadException('Shopware Api ' . $tableName);
         }
 
         $arrayResult = json_decode($result->getBody()->getContents(), true);

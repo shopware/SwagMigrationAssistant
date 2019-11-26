@@ -208,12 +208,6 @@
             <argument type="service" id="SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory"/>
         </service>
 
-        <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\TableCountReader">
-            <argument type="service" id="SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
-        </service>
-
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AttributeReader"
                  parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader">
             <tag name="shopware.migration.reader"/>
