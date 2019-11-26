@@ -2,11 +2,12 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet;
 
+use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
-class OrderDocumentAttributeDataSet extends ShopwareDataSet
+class OrderDocumentAttributeDataSet extends DataSet
 {
     public static function getEntity(): string
     {
@@ -16,17 +17,5 @@ class OrderDocumentAttributeDataSet extends ShopwareDataSet
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface;
-    }
-
-    public function getApiRoute(): string
-    {
-        return 'SwagMigrationAttributes';
-    }
-
-    public function getExtraQueryParameters(): array
-    {
-        return [
-            'attribute_table' => 's_order_documents_attributes',
-        ];
     }
 }

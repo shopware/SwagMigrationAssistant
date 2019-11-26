@@ -12,7 +12,6 @@ use SwagMigrationAssistant\Migration\Gateway\Reader\EnvironmentReaderInterface;
 use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistry;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\RequestStatusStruct;
-use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ShopwareDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Exception\DatabaseConnectionException;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactoryInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\ShopwareGatewayInterface;
@@ -79,12 +78,9 @@ class ShopwareLocalGateway implements ShopwareGatewayInterface
 
     public function read(MigrationContextInterface $migrationContext): array
     {
-        /** @var ShopwareDataSet $dataSet */
-        $dataSet = $migrationContext->getDataSet();
-
         $reader = $this->readerRegistry->getReader($migrationContext);
 
-        return $reader->read($migrationContext, $dataSet->getExtraQueryParameters());
+        return $reader->read($migrationContext);
     }
 
     public function readEnvironmentInformation(MigrationContextInterface $migrationContext, Context $context): EnvironmentInformation

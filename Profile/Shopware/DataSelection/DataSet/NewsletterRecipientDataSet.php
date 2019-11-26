@@ -2,11 +2,12 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet;
 
+use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
-class NewsletterRecipientDataSet extends ShopwareDataSet
+class NewsletterRecipientDataSet extends DataSet
 {
     public static function getEntity(): string
     {
@@ -16,15 +17,5 @@ class NewsletterRecipientDataSet extends ShopwareDataSet
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface;
-    }
-
-    public function getApiRoute(): string
-    {
-        return 'SwagMigrationNewsletterRecipients';
-    }
-
-    public function getExtraQueryParameters(): array
-    {
-        return [];
     }
 }

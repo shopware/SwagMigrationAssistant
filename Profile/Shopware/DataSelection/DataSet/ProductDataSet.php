@@ -2,11 +2,12 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet;
 
+use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
-class ProductDataSet extends ShopwareDataSet
+class ProductDataSet extends DataSet
 {
     public static function getEntity(): string
     {
@@ -16,16 +17,6 @@ class ProductDataSet extends ShopwareDataSet
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface;
-    }
-
-    public function getApiRoute(): string
-    {
-        return 'SwagMigrationProducts';
-    }
-
-    public function getExtraQueryParameters(): array
-    {
-        return [];
     }
 
     public function getMediaUuids(array $converted): ?array
