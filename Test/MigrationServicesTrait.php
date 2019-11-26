@@ -26,6 +26,7 @@ use Shopware\Core\System\StateMachine\StateMachineEntity;
 use SwagMigrationAssistant\Migration\Converter\ConverterRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistryInterface;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
+use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistry;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
@@ -67,7 +68,7 @@ trait MigrationServicesTrait
         $connectionFactory = new ConnectionFactory();
         $gatewayRegistry = new GatewayRegistry(new DummyCollection([
             new ShopwareApiGateway(
-                new ApiReader($connectionFactory),
+                new ReaderRegistry([new ApiReader($connectionFactory)]),
                 new EnvironmentReader($connectionFactory),
                 new TableReader($connectionFactory),
                 new TableCountReader($connectionFactory, $dataSetRegistry, $loggingService),

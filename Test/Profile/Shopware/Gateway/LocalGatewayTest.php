@@ -7,23 +7,20 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
+use SwagMigrationAssistant\Exception\ReaderNotFoundException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
-use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
+use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistry;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\Profile\ProfileInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDataSet;
-use SwagMigrationAssistant\Profile\Shopware\Exception\LocalReaderNotFoundException;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\EnvironmentReader;
-use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\TableCountReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\TableReader;
-use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ReaderRegistry;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware54\Shopware54Profile;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Profile\Shopware56\Shopware56Profile;
-use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Profile\Shopware\DataSet\FooDataSet;
 
 class LocalGatewayTest extends TestCase
@@ -59,7 +56,6 @@ class LocalGatewayTest extends TestCase
         $readerRegistry = $this->getContainer()->get(ReaderRegistry::class);
         $localEnvironmentReader = new EnvironmentReader($connectionFactory);
         $localTableReader = new TableReader($connectionFactory);
-        $localTableCountReader = new TableCountReader($connectionFactory, $this->getContainer()->get(DataSetRegistry::class), new DummyLoggingService());
         /** @var EntityRepositoryInterface $currencyRepository */
         $currencyRepository = $this->getContainer()->get('currency.repository');
 
@@ -67,10 +63,10 @@ class LocalGatewayTest extends TestCase
             $readerRegistry,
             $localEnvironmentReader,
             $localTableReader,
-            $localTableCountReader,
             $connectionFactory,
             $currencyRepository
         );
+        $migrationContext->setGateway($gatewaySource);
         $gatewayRegistry = new GatewayRegistry([
             $gatewaySource,
         ]);
@@ -109,7 +105,6 @@ class LocalGatewayTest extends TestCase
         $readerRegistry = $this->getContainer()->get(ReaderRegistry::class);
         $localEnvironmentReader = new EnvironmentReader($connectionFactory);
         $localTableReader = new TableReader($connectionFactory);
-        $localTableCountReader = new TableCountReader($connectionFactory, $this->getContainer()->get(DataSetRegistry::class), new DummyLoggingService());
         /** @var EntityRepositoryInterface $currencyRepository */
         $currencyRepository = $this->getContainer()->get('currency.repository');
 
@@ -117,17 +112,17 @@ class LocalGatewayTest extends TestCase
             $readerRegistry,
             $localEnvironmentReader,
             $localTableReader,
-            $localTableCountReader,
             $connectionFactory,
             $currencyRepository
         );
+        $migrationContext->setGateway($gatewaySource);
         $gatewayRegistry = new GatewayRegistry([
             $gatewaySource,
         ]);
 
         $gateway = $gatewayRegistry->getGateway($migrationContext);
 
-        $this->expectException(LocalReaderNotFoundException::class);
+        $this->expectException(ReaderNotFoundException::class);
         $gateway->read($migrationContext);
     }
 
@@ -150,7 +145,6 @@ class LocalGatewayTest extends TestCase
         $connectionFactory = new ConnectionFactory();
         $localEnvironmentReader = new EnvironmentReader($connectionFactory);
         $localTableReader = new TableReader($connectionFactory);
-        $localTableCountReader = new TableCountReader($connectionFactory, $this->getContainer()->get(DataSetRegistry::class), new DummyLoggingService());
         /** @var EntityRepositoryInterface $currencyRepository */
         $currencyRepository = $this->getContainer()->get('currency.repository');
 
@@ -158,10 +152,10 @@ class LocalGatewayTest extends TestCase
             $readerRegistry,
             $localEnvironmentReader,
             $localTableReader,
-            $localTableCountReader,
             $connectionFactory,
             $currencyRepository
         );
+        $migrationContext->setGateway($gateway);
         $response = $gateway->readEnvironmentInformation($migrationContext, Context::createDefaultContext());
 
         static::assertSame($response->getTotals(), []);

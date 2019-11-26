@@ -9,6 +9,7 @@ use SwagMigrationAssistant\Exception\GatewayReadException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
+use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistry;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\EnvironmentReader;
@@ -44,12 +45,13 @@ class ShopwareApiGatewayTest extends TestCase
         $tableCountReader = new TableCountReader($connectionFactory, $this->getContainer()->get(DataSetRegistry::class), new DummyLoggingService());
 
         $gateway = new ShopwareApiGateway(
-            $apiReader,
+            new ReaderRegistry([$apiReader]),
             $environmentReader,
             $tableReader,
             $tableCountReader,
             $this->getContainer()->get('currency.repository')
         );
+        $migrationContext->setGateway($gateway);
         $gateway->read($migrationContext);
     }
 
@@ -67,7 +69,7 @@ class ShopwareApiGatewayTest extends TestCase
         $tableCountReader = new TableCountReader($connectionFactory, $this->getContainer()->get(DataSetRegistry::class), new DummyLoggingService());
 
         $gateway = new ShopwareApiGateway(
-            $apiReader,
+            new ReaderRegistry([$apiReader]),
             $environmentReader,
             $tableReader,
             $tableCountReader,
@@ -100,7 +102,7 @@ class ShopwareApiGatewayTest extends TestCase
         $tableCountReader = new TableCountDummyReader($connectionFactory, $this->getContainer()->get(DataSetRegistry::class), new DummyLoggingService());
 
         $gateway = new ShopwareApiGateway(
-            $apiReader,
+            new ReaderRegistry([$apiReader]),
             $environmentReader,
             $tableReader,
             $tableCountReader,

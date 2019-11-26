@@ -20,6 +20,7 @@ use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistryInterface;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
+use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistry;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition;
@@ -172,7 +173,7 @@ class RunServiceTest extends TestCase
         $connectionFactory = new ConnectionFactory();
         $gatewayRegistry = new GatewayRegistry(new DummyCollection([
             new ShopwareApiGateway(
-                new ApiReader($connectionFactory),
+                new ReaderRegistry([new ApiReader($connectionFactory)]),
                 new EnvironmentReader($connectionFactory),
                 new TableReader($connectionFactory),
                 new TableCountReader($connectionFactory, $this->dataSetRegistry, $loggingService),

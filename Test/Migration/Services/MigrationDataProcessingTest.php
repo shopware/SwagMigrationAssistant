@@ -16,6 +16,7 @@ use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
+use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistry;
 use SwagMigrationAssistant\Migration\Logging\Log\LogEntryInterface;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingEntity;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
@@ -187,7 +188,7 @@ class MigrationDataProcessingTest extends TestCase
         $this->dummyDataFetcher = new MigrationDataFetcher(
             new GatewayRegistry(new DummyCollection([
                 new ShopwareApiGateway(
-                    new ApiReader($connectionFactory),
+                    new ReaderRegistry([new ApiReader($connectionFactory)]),
                     new EnvironmentReader($connectionFactory),
                     new TableReader($connectionFactory),
                     new TableCountReader($connectionFactory, $this->getContainer()->get(DataSetRegistry::class), $this->loggingService),
