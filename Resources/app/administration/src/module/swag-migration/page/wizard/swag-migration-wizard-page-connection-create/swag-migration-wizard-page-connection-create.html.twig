@@ -45,17 +45,25 @@
                             {% endblock %}
                         </sw-single-select>
 
-                        <sw-field type="select"
+                        <sw-single-select
                                   :label="$tc('swag-migration.wizard.pages.connectionCreate.gatewayLabel')"
                                   :placeholder="$tc('swag-migration.wizard.pages.connectionCreate.gatewayPlaceholder')"
                                   :helpText="$tc('swag-migration.wizard.pages.connectionCreate.gatewayTooltip')"
-                                  v-model="selection.gateway"
+                                  :options="gateways"
+                                  :value="selection.gateway"
+                                  valueProperty="name"
                                   @change="onSelectGateway"
                                   validation="required">
                             {% block swag_migration_wizard_page_create_profile_form_gateway_field_options %}
-                                <option v-for="gateway in gateways" :value="gateway.name">{{ $tc(gateway.snippet) }}</option>
+                                <template #selection-label-property="{ item: singleSelection, labelProperty, valueProperty, searchTerm, getKey }">
+                                    {{ $tc(singleSelection.snippet) }}
+                                </template>
+
+                                <template #result-label-property="{ item, index, labelProperty, valueProperty, searchTerm, highlightSearchTerm, getKey }">
+                                    {{ $tc(item.snippet) }}
+                                </template>
                             {% endblock %}
-                        </sw-field>
+                        </sw-single-select>
 
                         <sw-alert v-if="profileHint">
                             {{ profileHint }}

@@ -128,7 +128,7 @@ Component.register('swag-migration-wizard-page-connection-create', {
 
             return new Promise((resolve) => {
                 this.emitOnChildRouteReadyChanged(false);
-                this.gateways = null;
+                this.gateways = [];
                 this.selection.gateway = null;
 
                 if (this.selection.profile !== null) {
@@ -150,7 +150,11 @@ Component.register('swag-migration-wizard-page-connection-create', {
             });
         },
 
-        onSelectGateway() {
+        onSelectGateway(value) {
+            if (value !== null && value !== undefined) {
+                this.selection.gateway = value;
+            }
+
             this.emitOnChildRouteReadyChanged(false);
             this.$emit('onProfileSelected', this.selection);
             this.emitOnChildRouteReadyChanged(this.isReady);
