@@ -62,6 +62,7 @@ class HistoryControllerTest extends TestCase
         $this->runUuid = Uuid::randomHex();
         $this->historyService = $this->getContainer()->get(HistoryService::class);
         $this->controller = $this->getContainer()->get(HistoryController::class);
+        $this->controller->setContainer($this->getContainer());
         $this->loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
 
         $connectionId = Uuid::randomHex();
