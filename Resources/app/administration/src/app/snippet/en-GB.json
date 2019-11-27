@@ -53,6 +53,7 @@
           "contentInformation": "The following information is required to perform the migration.",
           "profileLabel": "Shop system profile",
           "profilePlaceholder": "Select profile",
+          "profileInstall": "Install another profile",
           "gatewayLabel": "Gateway",
           "gatewayTooltip": "The type of connection between the systems.",
           "gatewayPlaceholder": "Select gateway",

@@ -40,7 +40,15 @@
                                 </template>
 
                                 <template #result-label-property="{ item, index, labelProperty, valueProperty, searchTerm, highlightSearchTerm, getKey }">
-                                    <span v-html="getText(item)"></span>
+                                    <div v-if="item.name === 'profileLink'" class="swag-migration-wizard-create-connection__install-profile-link-wrapper">
+                                        <div>
+                                            {{ $tc('swag-migration.wizard.pages.connectionCreate.profileInstall') }}
+                                        </div>
+                                        <div>
+                                            <sw-icon name="default-arrow-head-right" size="10"></sw-icon>
+                                        </div>
+                                    </div>
+                                    <span v-else v-html="getText(item)"></span>
                                 </template>
                             {% endblock %}
                         </sw-single-select>
@@ -53,6 +61,7 @@
                                   :value="selection.gateway"
                                   valueProperty="name"
                                   @change="onSelectGateway"
+                                  :searchFunction="gatewaySearch"
                                   validation="required">
                             {% block swag_migration_wizard_page_create_profile_form_gateway_field_options %}
                                 <template #selection-label-property="{ item: singleSelection, labelProperty, valueProperty, searchTerm, getKey }">

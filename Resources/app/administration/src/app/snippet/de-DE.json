@@ -53,6 +53,7 @@
           "contentInformation": "Gib die Daten an, die für die Migration benötigt werden.",
           "profileLabel": "Shopsystem-Profil",
           "profilePlaceholder": "Bitte wählen",
+          "profileInstall": "Weiteres Profil installieren",
           "gatewayLabel": "Schnittstelle",
           "gatewayTooltip": "Bezeichnet die Art der Verbindung zwischen den Systemen.",
           "gatewayPlaceholder": "Bitte wählen",

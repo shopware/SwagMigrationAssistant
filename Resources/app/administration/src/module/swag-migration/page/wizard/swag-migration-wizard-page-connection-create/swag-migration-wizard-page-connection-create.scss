@@ -6,3 +6,17 @@
     font-style: normal;
     font-size: 12px;
 }
+
+.swag-migration-wizard-create-connection__install-profile-link-wrapper {
+    grid-template-columns: 1fr 10px;
+    width: 100%;
+    display: grid;
+}
+
+.is--active .sw-icon {
+    color: $color-shopware-brand-500;
+}
+
+.swag-migration-wizard .sw-select-result__result-item-text {
+    width: 100%;
+}

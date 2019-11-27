@@ -256,8 +256,10 @@ class StatusControllerTest extends TestCase
         $this->assertJSON($response->getContent());
 
         $gateways = json_decode($response->getContent(), true);
-        static::assertSame('local', $gateways[0]);
-        static::assertSame('api', $gateways[1]);
+        static::assertSame('local', $gateways[0]['name']);
+        static::assertNotNull($gateways[0]['snippet']);
+        static::assertSame('api', $gateways[1]['name']);
+        static::assertNotNull($gateways[1]['snippet']);
     }
 
     public function testUpdateConnectionCredentials(): void

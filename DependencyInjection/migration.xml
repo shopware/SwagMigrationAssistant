@@ -126,6 +126,10 @@
         </service>
 
         <service id="SwagMigrationAssistant\Controller\MigrationController" public="true">
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+
             <argument type="service" id="SwagMigrationAssistant\Migration\Service\MigrationDataFetcher"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Service\MigrationDataConverter"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Service\MigrationDataWriter"/>
@@ -137,12 +141,20 @@
         </service>
 
         <service id="SwagMigrationAssistant\Controller\PremappingController" public="true">
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+
             <argument type="service" id="SwagMigrationAssistant\Migration\Service\PremappingService"/>
             <argument type="service" id="swag_migration_run.repository"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\MigrationContextFactory"/>
         </service>
 
         <service id="SwagMigrationAssistant\Controller\StatusController" public="true">
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+
             <argument type="service" id="SwagMigrationAssistant\Migration\Service\MigrationDataFetcher"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Service\MigrationProgressService"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Run\RunService"/>
@@ -154,6 +166,9 @@
         </service>
 
         <service id="SwagMigrationAssistant\Controller\HistoryController" public="true">
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
             <argument type="service" id="SwagMigrationAssistant\Migration\History\HistoryService"/>
         </service>
 
