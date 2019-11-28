@@ -10,6 +10,8 @@ interface GatewayInterface
 {
     public function getName(): string;
 
+    public function getSnippetName(): string;
+
     /**
      * Identifier for a gateway registry
      */

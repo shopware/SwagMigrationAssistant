@@ -64,6 +64,11 @@ class ShopwareApiGateway implements ShopwareGatewayInterface
         return self::GATEWAY_NAME;
     }
 
+    public function getSnippetName(): string
+    {
+        return 'swag-migration.wizard.pages.connectionCreate.gateways.shopwareApi';
+    }
+
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface;

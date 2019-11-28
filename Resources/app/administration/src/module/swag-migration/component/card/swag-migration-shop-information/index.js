@@ -221,6 +221,12 @@ Component.register('swag-migration-shop-information', {
             });
         },
 
+        onClickProfileInstallation() {
+            this.$router.push({
+                name: 'swag.migration.wizard.profileInstallation'
+            });
+        },
+
         onClickRemoveConnectionCredentials() {
             this.migrationService.updateConnectionCredentials(
                 this.migrationProcessStore.state.connectionId,

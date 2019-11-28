@@ -12,4 +12,6 @@ interface ProfileInterface
     public function getSourceSystemName(): string;
 
     public function getVersion(): string;
+
+    public function getAuthorName(): string;
 }

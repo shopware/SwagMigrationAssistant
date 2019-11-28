@@ -104,4 +104,9 @@ class DummyLocalGateway implements GatewayInterface
     {
         return [];
     }
+
+    public function getSnippetName(): string
+    {
+        return 'mySnippetName';
+    }
 }

@@ -22,4 +22,9 @@ class DummyProfile implements ProfileInterface
     {
         return '1.0';
     }
+
+    public function getAuthorName(): string
+    {
+        return 'shopware AG';
+    }
 }

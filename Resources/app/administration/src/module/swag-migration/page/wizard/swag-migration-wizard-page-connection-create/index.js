@@ -1,4 +1,5 @@
 import template from './swag-migration-wizard-page-connection-create.html.twig';
+import './swag-migration-wizard-page-connection-create.scss';
 
 const { Component } = Shopware;
 const ShopwareError = Shopware.Classes.ShopwareError;
@@ -83,21 +84,38 @@ Component.register('swag-migration-wizard-page-connection-create', {
 
             this.migrationService.getProfiles().then((profiles) => {
                 this.profiles = profiles;
+                this.profiles.push({
+                    name: 'profileLink'
+                });
 
                 this.selectDefaultProfile();
                 this.setIsLoading(false);
-
-                // todo: Select profile and gateway of the current selected connection
             });
         },
 
+        profileSearch(searchParams) {
+            const searchTerm = searchParams.searchTerm;
+            return searchParams.options.filter(option => {
+                const label = `${option.sourceSystemName} ${option.version} - ${option.author}`;
+                return label.toLowerCase().includes(searchTerm.toLowerCase());
+            });
+        },
+
+        gatewaySearch(searchParams) {
+            const searchTerm = searchParams.searchTerm;
+            return searchParams.options.filter(option => {
+                const label = this.$tc(option.snippet);
+                return label.toLowerCase().includes(searchTerm.toLowerCase());
+            });
+        },
+
+        getText(item) {
+            return `${item.sourceSystemName} ${item.version} - <i>${item.author}</i>`;
+        },
+
         selectDefaultProfile() {
-            this.selection.profile = 'shopware55';
-            this.onSelectProfile().then(() => {
-                this.selection.gateway = 'api';
-                this.$nextTick(() => {
-                    this.onSelectGateway();
-                });
+            this.onSelectProfile('shopware55').then(() => {
+                this.onSelectGateway('api');
             });
         },
 
@@ -106,16 +124,35 @@ Component.register('swag-migration-wizard-page-connection-create', {
             this.$emit('onIsLoadingChanged', this.isLoading);
         },
 
-        onSelectProfile() {
+        onSelectProfile(value) {
+            if (this.selection.profile === value || value === null || value === undefined) {
+                return Promise.resolve();
+            }
+
+            if (value === 'profileLink') {
+                this.$router.push({ name: 'swag.migration.wizard.profileInstallation' });
+                return Promise.resolve();
+            }
+
+            this.selection.profile = value;
+
             return new Promise((resolve) => {
                 this.emitOnChildRouteReadyChanged(false);
-                this.gateways = null;
+                this.gateways = [];
                 this.selection.gateway = null;
 
                 if (this.selection.profile !== null) {
                     this.migrationService.getGateways(this.selection.profile).then((gateways) => {
                         this.gateways = gateways;
                         this.selection.gateway = null;
+
+                        if (this.gateways.length === 1) {
+                            this.$nextTick(() => {
+                                this.selection.gateway = this.gateways[0].name;
+                                this.emitOnChildRouteReadyChanged(this.isReady);
+                            });
+                        }
+
                         this.emitOnChildRouteReadyChanged(this.isReady);
                         resolve();
                     });
@@ -123,7 +160,11 @@ Component.register('swag-migration-wizard-page-connection-create', {
             });
         },
 
-        onSelectGateway() {
+        onSelectGateway(value) {
+            if (value !== null && value !== undefined) {
+                this.selection.gateway = value;
+            }
+
             this.emitOnChildRouteReadyChanged(false);
             this.$emit('onProfileSelected', this.selection);
             this.emitOnChildRouteReadyChanged(this.isReady);
