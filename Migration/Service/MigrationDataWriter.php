@@ -196,7 +196,11 @@ class MigrationDataWriter implements MigrationDataWriterInterface
             return;
         }
 
-        $currentWriter->writeData($newData, $context);
+        try {
+            $currentWriter->writeData($newData, $context);
+        } catch (\Exception $exception) {
+            $this->writePerEntity($converted, $entityName, $updateWrittenData, $migrationContext, $context);
+        }
     }
 
     private function extractWriteErrorsWithIndex(WriteException $exception): array
