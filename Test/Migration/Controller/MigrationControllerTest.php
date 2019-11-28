@@ -8,6 +8,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Indexing\MessageQueue\IndexerMessageSender;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
+use Shopware\Core\Framework\Store\Services\StoreService;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Storefront\Theme\ThemeService;
@@ -237,7 +238,8 @@ class MigrationControllerTest extends TestCase
                 $this->getContainer()->get('cache.object'),
                 $dataDefinition,
                 $this->getContainer()->get(Connection::class),
-                $loggingService
+                $loggingService,
+                $this->getContainer()->get(StoreService::class)
             ),
             $this->runRepo,
             $this->migrationContextFactory
