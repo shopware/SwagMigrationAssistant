@@ -13,6 +13,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Indexing\MessageQueue\IndexerMe
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
+use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteException;
 use Shopware\Core\Framework\Store\Services\StoreService;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
@@ -24,6 +25,7 @@ use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
+use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingEntity;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Media\MediaFileService;
 use SwagMigrationAssistant\Migration\MigrationContext;
@@ -323,6 +325,44 @@ class MigrationDataWriterTest extends TestCase
         ];
     }
 
+    public function testHandleWriteException(): void
+    {
+        $migrationContext = new MigrationContext(
+            new Shopware55Profile(),
+            $this->connection,
+            $this->runUuid,
+            new ProductDataSet(),
+            0,
+            250
+        );
+
+        $updateWrittenData = [];
+        $this->invokeMethod($this->migrationDataWriter, 'handleWriteException', [
+            new WriteException(),
+            [
+                'randomId' => [
+                    'name' => 'myProduct',
+                ],
+            ],
+            'product',
+            &$updateWrittenData,
+            $migrationContext,
+            $this->context,
+        ]);
+
+        $reflection = new \ReflectionClass(get_class($this->migrationDataWriter));
+        $loggingService = $reflection->getProperty('loggingService');
+        $loggingService->setAccessible(true);
+
+        /** @var LoggingService $loggingService */
+        $loggingService = $loggingService->getValue($this->migrationDataWriter);
+        $loggingService->saveLogging($this->context);
+
+        /** @var SwagMigrationLoggingEntity $log */
+        $log = $this->loggingRepo->search(new Criteria(), $this->context)->first();
+        static::assertSame('SWAG_MIGRATION_RUN_EXCEPTION', $log->getCode());
+    }
+
     /**
      * @dataProvider requiredProperties
      */
@@ -569,6 +609,15 @@ class MigrationDataWriterTest extends TestCase
         static::assertSame('SWAG_MIGRATION_RUN_EXCEPTION', $logs[0]['code']);
         static::assertSame('SWAG_MIGRATION__WRITER_NOT_FOUND', $logs[0]['parameters']['exceptionCode']);
         static::assertCount(1, $logs);
+    }
+
+    private function invokeMethod(&$object, $methodName, array $parameters = [])
+    {
+        $reflection = new \ReflectionClass(get_class($object));
+        $method = $reflection->getMethod($methodName);
+        $method->setAccessible(true);
+
+        return $method->invokeArgs($object, $parameters);
     }
 
     private function initRepos(): void
