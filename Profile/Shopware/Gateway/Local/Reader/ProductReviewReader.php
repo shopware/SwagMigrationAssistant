@@ -15,6 +15,7 @@ class ProductReviewReader extends AbstractReader implements ReaderInterface
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
+            && $migrationContext->getGateway()->getName() === ShopwareLocalGateway::GATEWAY_NAME
             && $migrationContext->getDataSet()::getEntity() === DefaultEntities::PRODUCT_REVIEW;
     }
 

@@ -5,9 +5,6 @@ namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
 use Shopware\Core\Framework\Context;
 use SwagMigrationAssistant\Exception\GatewayReadException;
-use SwagMigrationAssistant\Migration\DataSelection\DataSet\CountingQueryStruct;
-use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
-use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistryInterface;
 use SwagMigrationAssistant\Migration\Logging\Log\CannotReadEntityCountLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -24,30 +21,20 @@ class TableCountReader implements TableCountReaderInterface
     private $connectionFactory;
 
     /**
-     * @var DataSetRegistryInterface
-     */
-    private $dataSetRegistry;
-
-    /**
      * @var LoggingService
      */
     private $loggingService;
 
     public function __construct(
         ConnectionFactoryInterface $connectionFactory,
-        DataSetRegistryInterface $dataSetRegistry,
         LoggingService $loggingService
     ) {
         $this->connectionFactory = $connectionFactory;
-        $this->dataSetRegistry = $dataSetRegistry;
         $this->loggingService = $loggingService;
     }
 
     public function readTotals(MigrationContextInterface $migrationContext, Context $context): array
     {
-        $dataSets = $this->dataSetRegistry->getDataSets($migrationContext);
-//        $countingInformation = $this->getCountingInformation($dataSets);
-
         $client = $this->connectionFactory->createApiClient($migrationContext);
         /** @var GuzzleResponse $result */
         $result = $client->get(
@@ -70,36 +57,6 @@ class TableCountReader implements TableCountReaderInterface
 
         return $this->prepareTotals($arrayResult['data']['totals']);
     }
-
-//    /**
-//     * @param DataSet[] $dataSets
-//     */
-//    private function getCountingInformation(array $dataSets): array
-//    {
-//        $countingInformation = [];
-//
-//        foreach ($dataSets as $dataSet) {
-//            if ($dataSet->getCountingInformation() !== null) {
-//                $info = $dataSet->getCountingInformation();
-//                $queryData = [
-//                    'entity' => $dataSet::getEntity(),
-//                    'queryRules' => [],
-//                ];
-//
-//                $queries = $info->getQueries();
-//                /** @var CountingQueryStruct $queryStruct */
-//                foreach ($queries as $queryStruct) {
-//                    $queryData['queryRules'][] = [
-//                        'table' => $queryStruct->getTableName(),
-//                        'condition' => $queryStruct->getCondition(),
-//                    ];
-//                }
-//                $countingInformation[] = $queryData;
-//            }
-//        }
-//
-//        return $countingInformation;
-//    }
 
     /**
      * @return TotalStruct[]

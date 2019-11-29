@@ -4,66 +4,20 @@ namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Schema\ForeignKeyConstraint;
-use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
-class AttributeReader extends AbstractReader implements ReaderInterface
+abstract class AttributeReader extends AbstractReader implements ReaderInterface
 {
-    /**
-     * @var array
-     */
-    protected $supportedCustomFields = [
-        DefaultEntities::CATEGORY_CUSTOM_FIELD => [
-            'attribute_table' => 's_categories_attributes',
-        ],
-        DefaultEntities::CUSTOMER_CUSTOM_FIELD => [
-            'attribute_table' => 's_user_attributes',
-        ],
-        DefaultEntities::CUSTOMER_GROUP_CUSTOM_FIELD => [
-            'attribute_table' => 's_core_customergroups_attributes',
-        ],
-        DefaultEntities::PRODUCT_MANUFACTURER_CUSTOM_FIELD => [
-            'attribute_table' => 's_articles_supplier_attributes',
-        ],
-        DefaultEntities::ORDER_CUSTOM_FIELD => [
-            'attribute_table' => 's_order_attributes',
-        ],
-        DefaultEntities::ORDER_DOCUMENT_CUSTOM_FIELD => [
-            'attribute_table' => 's_order_documents_attributes',
-        ],
-        DefaultEntities::PRODUCT_CUSTOM_FIELD => [
-            'attribute_table' => 's_articles_attributes',
-        ],
-        DefaultEntities::PRODUCT_PRICE_CUSTOM_FIELD => [
-            'attribute_table' => 's_articles_prices_attributes',
-        ],
-    ];
-
-    public function supports(MigrationContextInterface $migrationContext): bool
-    {
-        return $migrationContext->getProfile() instanceof ShopwareProfileInterface
-            && in_array($migrationContext->getDataSet()::getEntity(), array_keys($this->supportedCustomFields), true);
-    }
-
     public function read(MigrationContextInterface $migrationContext): array
     {
         $this->setConnection($migrationContext);
-        $entity = $migrationContext->getDataSet()::getEntity();
-
-        if (!isset($this->supportedCustomFields[$entity])) {
-            return [];
-        }
-        $table = $this->supportedCustomFields[$entity];
-        $schemaManager = $this->connection->getSchemaManager();
-
-        if (!$schemaManager->tablesExist([$table])) {
-            return [];
-        }
+        $table = $this->getAttributeTable();
 
         return $this->getAttributeConfiguration($table);
     }
+
+    abstract protected function getAttributeTable(): string;
 
     private function getAttributeConfiguration(string $table): array
     {
