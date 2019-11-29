@@ -65,7 +65,7 @@ Component.register('swag-migration-wizard-page-connection-create', {
             }
 
             const snippet = `swag-migration.wizard.pages.connectionCreate.hint.${this.selection.gateway}`;
-            if (this.$te(snippet)) {
+            if (this.$tc(snippet) !== `swag-migration.wizard.pages.connectionCreate.hint.${this.selection.gateway}`) {
                 return this.$t(snippet);
             }
 
