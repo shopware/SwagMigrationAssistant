@@ -62,8 +62,7 @@
           "connectionTooltip": "Einen eindeutigen Namen für die Verbindung eingeben.",
           "gateways": {
             "shopwareApi": "API",
-            "shopwareLocal": "Lokale Datenbank",
-            "magentoLocal": "Lokale Datenbank"
+            "shopwareLocal": "Lokale Datenbank"
           },
           "hint": {
             "local": "Beachte: Die Shopsysteme müssen auf demselben Server liegen. Du benötigst die Zugangsdaten der Datenbank."
