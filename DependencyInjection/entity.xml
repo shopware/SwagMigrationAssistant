@@ -8,22 +8,18 @@
             <tag name="shopware.entity.definition" entity="swag_migration_logging"/>
         </service>
 
-        <service id="SwagMigrationAssistant\Migration\Run\SwagMigrationRunDefinition"
-                 class="SwagMigrationAssistant\Migration\Run\SwagMigrationRunDefinition">
+        <service id="SwagMigrationAssistant\Migration\Run\SwagMigrationRunDefinition">
             <tag name="shopware.entity.definition" entity="swag_migration_run"/>
         </service>
-        <service id="SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition"
-                 class="SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition">
+        <service id="SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition">
             <tag name="shopware.entity.definition" entity="swag_migration_data"/>
         </service>
 
-        <service id="SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition"
-                 class="SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition">
+        <service id="SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition">
             <tag name="shopware.entity.definition" entity="swag_migration_mapping"/>
         </service>
 
-        <service id="SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileDefinition"
-                 class="SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileDefinition">
+        <service id="SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileDefinition">
             <tag name="shopware.entity.definition" entity="swag_migration_media_file"/>
         </service>
 
