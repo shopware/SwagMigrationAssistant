@@ -10,10 +10,9 @@ use PHPUnit\Framework\TestCase;
 use SwagMigrationAssistant\Exception\GatewayReadException;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDataSet;
-use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiReader;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ProductReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
-use SwagMigrationAssistant\Test\Profile\Shopware\DataSet\FooDataSet;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class ApiReaderTest extends TestCase
@@ -54,26 +53,9 @@ class ApiReaderTest extends TestCase
             ->with($migrationContext)
             ->willReturn($client);
 
-        $apiReader = new ApiReader($mock);
+        $apiReader = new ProductReader($mock);
         $response = $apiReader->read($migrationContext);
         static::assertSame($response, $dataArray);
-    }
-
-    public function testReadNoRouteMapping(): void
-    {
-        $this->expectException(GatewayReadException::class);
-
-        $apiReader = new ApiReader(new ConnectionFactory());
-        $migrationContext = new MigrationContext(
-            new Shopware55Profile(),
-            null,
-            '',
-            new FooDataSet(),
-            0,
-            0
-        );
-
-        $apiReader->read($migrationContext);
     }
 
     public function testReadGatewayException(): void
@@ -103,7 +85,7 @@ class ApiReaderTest extends TestCase
             ->with($migrationContext)
             ->willReturn($client);
 
-        $apiReader = new ApiReader($mock);
+        $apiReader = new ProductReader($mock);
 
         try {
             $apiReader->read($migrationContext);

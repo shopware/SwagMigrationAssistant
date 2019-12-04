@@ -29,7 +29,6 @@ use SwagMigrationAssistant\Migration\MigrationContextFactory;
 use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
 use SwagMigrationAssistant\Migration\Run\RunService;
 use SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService;
-use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\EnvironmentReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\TableCountReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\TableReader;
@@ -173,10 +172,10 @@ class RunServiceTest extends TestCase
         $connectionFactory = new ConnectionFactory();
         $gatewayRegistry = new GatewayRegistry(new DummyCollection([
             new ShopwareApiGateway(
-                new ReaderRegistry([new ApiReader($connectionFactory)]),
+                $this->getContainer()->get(ReaderRegistry::class),
                 new EnvironmentReader($connectionFactory),
                 new TableReader($connectionFactory),
-                new TableCountReader($connectionFactory, $this->dataSetRegistry, $loggingService),
+                new TableCountReader($connectionFactory, $loggingService),
                 $this->getContainer()->get('currency.repository')
             ),
             new DummyLocalGateway(),
@@ -192,7 +191,8 @@ class RunServiceTest extends TestCase
                 $loggingRepo,
                 $this->getContainer()->get(SwagMigrationDataDefinition::class),
                 $this->dataSetRegistry,
-                $this->getContainer()->get('currency.repository')
+                $this->getContainer()->get('currency.repository'),
+                $this->getContainer()->get(ReaderRegistry::class)
             ),
             new SwagMigrationAccessTokenService($this->runRepo),
             new DataSelectionRegistry([]),

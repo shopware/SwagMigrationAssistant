@@ -2,7 +2,6 @@
 
 namespace SwagMigrationAssistant\Test;
 
-use Shopware\Core\Checkout\Cart\Price\PriceRounding;
 use Shopware\Core\Checkout\Cart\Tax\TaxCalculator;
 use Shopware\Core\Checkout\Cart\Tax\TaxRuleCalculator;
 use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryStates;
@@ -26,7 +25,7 @@ use Shopware\Core\System\StateMachine\StateMachineEntity;
 use SwagMigrationAssistant\Migration\Converter\ConverterRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistryInterface;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
-use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistry;
+use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistryInterface;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
@@ -34,7 +33,6 @@ use SwagMigrationAssistant\Migration\Service\MigrationDataConverter;
 use SwagMigrationAssistant\Migration\Service\MigrationDataConverterInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcher;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
-use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\EnvironmentReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\TableCountReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\TableReader;
@@ -61,17 +59,18 @@ trait MigrationServicesTrait
         EntityRepositoryInterface $loggingRepo,
         EntityDefinition $dataDefinition,
         DataSetRegistryInterface $dataSetRegistry,
-        EntityRepositoryInterface $currencyRepository
+        EntityRepositoryInterface $currencyRepository,
+        ReaderRegistryInterface $readerRegistry
     ): MigrationDataFetcherInterface {
         $loggingService = new LoggingService($loggingRepo);
 
         $connectionFactory = new ConnectionFactory();
         $gatewayRegistry = new GatewayRegistry(new DummyCollection([
             new ShopwareApiGateway(
-                new ReaderRegistry([new ApiReader($connectionFactory)]),
+                $readerRegistry,
                 new EnvironmentReader($connectionFactory),
                 new TableReader($connectionFactory),
-                new TableCountReader($connectionFactory, $dataSetRegistry, $loggingService),
+                new TableCountReader($connectionFactory, $loggingService),
                 $currencyRepository
             ),
             new DummyLocalGateway(),
@@ -91,7 +90,6 @@ trait MigrationServicesTrait
         EntityRepositoryInterface $countryRepo,
         EntityRepositoryInterface $salesChannelRepo
     ): MigrationDataConverterInterface {
-        $priceRounding = new PriceRounding();
         $loggingService = new LoggingService($loggingRepo);
         $converterRegistry = new ConverterRegistry(
             new DummyCollection(

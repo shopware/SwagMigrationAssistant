@@ -26,6 +26,7 @@ use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
+use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistry;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Media\MediaFileService;
@@ -175,7 +176,8 @@ class StatusControllerTest extends TestCase
             $this->getContainer()->get('swag_migration_logging.repository'),
             $this->getContainer()->get(SwagMigrationDataDefinition::class),
             $this->getContainer()->get(DataSetRegistry::class),
-            $this->getContainer()->get('currency.repository')
+            $this->getContainer()->get('currency.repository'),
+            $this->getContainer()->get(ReaderRegistry::class)
         );
         $this->controller = new StatusController(
             $dataFetcher,

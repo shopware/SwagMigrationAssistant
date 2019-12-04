@@ -22,6 +22,7 @@ use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistryInterf
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistryInterface;
+use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistry;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Media\MediaFileService;
@@ -210,7 +211,8 @@ class MigrateDataCommandTest extends TestCase
             $this->getContainer()->get('swag_migration_logging.repository'),
             $this->getContainer()->get(SwagMigrationDataDefinition::class),
             $this->getContainer()->get(DataSetRegistry::class),
-            $this->getContainer()->get('currency.repository')
+            $this->getContainer()->get('currency.repository'),
+            $this->getContainer()->get(ReaderRegistry::class)
         );
 
         $this->application->add(new MigrateDataCommand(

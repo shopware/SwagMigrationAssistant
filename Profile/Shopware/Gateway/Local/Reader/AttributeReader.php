@@ -4,10 +4,9 @@ namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Schema\ForeignKeyConstraint;
-use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
-abstract class AttributeReader extends AbstractReader implements ReaderInterface
+abstract class AttributeReader extends AbstractReader
 {
     public function read(MigrationContextInterface $migrationContext): array
     {

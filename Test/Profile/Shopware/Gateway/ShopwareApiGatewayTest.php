@@ -6,13 +6,13 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use SwagMigrationAssistant\Exception\GatewayReadException;
+use SwagMigrationAssistant\Exception\ReaderNotFoundException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
-use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistry;
 use SwagMigrationAssistant\Migration\MigrationContext;
-use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\EnvironmentReader;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ProductReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\TableCountReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\TableReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\ShopwareApiGateway;
@@ -36,13 +36,13 @@ class ShopwareApiGatewayTest extends TestCase
             new FooDataSet()
         );
 
-        $this->expectException(GatewayReadException::class);
+        $this->expectException(ReaderNotFoundException::class);
 
         $connectionFactory = new ConnectionFactory();
-        $apiReader = new ApiReader($connectionFactory);
+        $apiReader = new ProductReader($connectionFactory);
         $environmentReader = new EnvironmentReader($connectionFactory);
         $tableReader = new TableReader($connectionFactory);
-        $tableCountReader = new TableCountReader($connectionFactory, $this->getContainer()->get(DataSetRegistry::class), new DummyLoggingService());
+        $tableCountReader = new TableCountReader($connectionFactory, new DummyLoggingService());
 
         $gateway = new ShopwareApiGateway(
             new ReaderRegistry([$apiReader]),
@@ -63,10 +63,10 @@ class ShopwareApiGatewayTest extends TestCase
         );
 
         $connectionFactory = new ConnectionFactory();
-        $apiReader = new ApiReader($connectionFactory);
+        $apiReader = new ProductReader($connectionFactory);
         $environmentReader = new EnvironmentReader($connectionFactory);
         $tableReader = new TableReader($connectionFactory);
-        $tableCountReader = new TableCountReader($connectionFactory, $this->getContainer()->get(DataSetRegistry::class), new DummyLoggingService());
+        $tableCountReader = new TableCountReader($connectionFactory, new DummyLoggingService());
 
         $gateway = new ShopwareApiGateway(
             new ReaderRegistry([$apiReader]),
@@ -96,10 +96,10 @@ class ShopwareApiGatewayTest extends TestCase
         );
 
         $connectionFactory = new ConnectionFactory();
-        $apiReader = new ApiReader($connectionFactory);
+        $apiReader = new ProductReader($connectionFactory);
         $environmentReader = new EnvironmentDummyReader($connectionFactory);
         $tableReader = new TableReader($connectionFactory);
-        $tableCountReader = new TableCountDummyReader($connectionFactory, $this->getContainer()->get(DataSetRegistry::class), new DummyLoggingService());
+        $tableCountReader = new TableCountDummyReader($connectionFactory, new DummyLoggingService());
 
         $gateway = new ShopwareApiGateway(
             new ReaderRegistry([$apiReader]),
