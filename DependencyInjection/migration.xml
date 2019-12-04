@@ -4,16 +4,15 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
-        <service id="SwagMigrationAssistant\Migration\Logging\LoggingService"
-                 class="SwagMigrationAssistant\Migration\Logging\LoggingService">
+        <service id="SwagMigrationAssistant\Migration\Logging\LoggingService">
             <argument type="service" id="swag_migration_logging.repository"/>
         </service>
 
-        <service id="SwagMigrationAssistant\Migration\Media\MediaFileService"
-                 class="SwagMigrationAssistant\Migration\Media\MediaFileService">
+        <service id="SwagMigrationAssistant\Migration\Media\MediaFileService">
             <argument type="service" id="swag_migration_media_file.repository"/>
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileDefinition"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Converter\ConverterRegistry"/>
         </service>
 
         <service id="SwagMigrationAssistant\Migration\Converter\Converter" abstract="true">
@@ -21,8 +20,7 @@
             <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService" />
         </service>
 
-        <service id="SwagMigrationAssistant\Migration\Converter\ConverterRegistry"
-                 class="SwagMigrationAssistant\Migration\Converter\ConverterRegistry">
+        <service id="SwagMigrationAssistant\Migration\Converter\ConverterRegistry">
             <argument type="tagged" tag="shopware.migration.converter"/>
         </service>
 

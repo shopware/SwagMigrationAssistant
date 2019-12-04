@@ -55,6 +55,20 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         return hash('md5', mb_strtolower($data['name'] . '_' . $data['group']['name'] . '_' . $data['type']));
     }
 
+    public function getMediaUuids(array $converted): ?array
+    {
+        $mediaUuids = [];
+        foreach ($converted as $data) {
+            if (!isset($data['media']['id'])) {
+                continue;
+            }
+
+            $mediaUuids[] = $data['media']['id'];
+        }
+
+        return $mediaUuids;
+    }
+
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
         $this->generateChecksum($data);

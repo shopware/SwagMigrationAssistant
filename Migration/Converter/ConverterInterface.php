@@ -18,6 +18,11 @@ interface ConverterInterface
     public function getSourceIdentifier(array $data): string;
 
     /**
+     * Gets the contained media uuids from converted entity data.
+     */
+    public function getMediaUuids(array $converted): ?array;
+
+    /**
      * Converts the given data into the internal structure
      */
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct;

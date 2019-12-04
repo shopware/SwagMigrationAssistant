@@ -18,9 +18,4 @@ class MediaDataSet extends DataSet
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface;
     }
-
-    public function getMediaUuids(array $converted): ?array
-    {
-        return array_column($converted, 'id');
-    }
 }
