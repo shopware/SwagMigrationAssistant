@@ -860,7 +860,7 @@ abstract class ProductConverter extends ShopwareConverter
             $newProductMedia['media'] = $newMedia;
             $mediaObjects[] = $newProductMedia;
 
-            if ($cover === null && (int) $mediaData['main'] === 1) {
+            if ($cover === null && ((int) $mediaData['main'] === 1 || count($media) === 1)) {
                 $cover = $newProductMedia;
             }
         }
