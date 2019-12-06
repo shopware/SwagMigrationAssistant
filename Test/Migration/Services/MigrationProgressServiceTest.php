@@ -19,6 +19,7 @@ use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistry;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Media\MediaFileService;
@@ -187,7 +188,8 @@ class MigrationProgressServiceTest extends TestCase
             $this->loggingRepo,
             $this->getContainer()->get(SwagMigrationDataDefinition::class),
             $this->getContainer()->get(DataSetRegistry::class),
-            $this->getContainer()->get('currency.repository')
+            $this->getContainer()->get('currency.repository'),
+            $this->getContainer()->get(ReaderRegistry::class)
         );
 
         $this->progressService = new MigrationProgressService(

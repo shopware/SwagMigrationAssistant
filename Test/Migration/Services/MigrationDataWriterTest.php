@@ -24,6 +24,7 @@ use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
+use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistry;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingEntity;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
@@ -264,7 +265,8 @@ class MigrationDataWriterTest extends TestCase
             $this->loggingRepo,
             $this->getContainer()->get(SwagMigrationDataDefinition::class),
             $this->getContainer()->get(DataSetRegistry::class),
-            $this->getContainer()->get('currency.repository')
+            $this->getContainer()->get('currency.repository'),
+            $this->getContainer()->get(ReaderRegistry::class)
         );
         $this->migrationDataConverter = $this->getMigrationDataConverter(
             $this->entityWriter,

@@ -2,10 +2,10 @@
 
 namespace SwagMigrationAssistant\Test\Profile\Shopware\DataSet;
 
+use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ShopwareDataSet;
 
-class FooDataSet extends ShopwareDataSet
+class FooDataSet extends DataSet
 {
     public static function getEntity(): string
     {
@@ -15,15 +15,5 @@ class FooDataSet extends ShopwareDataSet
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return true;
-    }
-
-    public function getApiRoute(): string
-    {
-        return '';
-    }
-
-    public function getExtraQueryParameters(): array
-    {
-        return [];
     }
 }

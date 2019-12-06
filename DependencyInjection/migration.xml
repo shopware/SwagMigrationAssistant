@@ -86,6 +86,10 @@
             <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistry">
+            <argument type="tagged" tag="shopware.migration.reader"/>
+        </service>
+
         <service id="SwagMigrationAssistant\Migration\Service\MigrationDataConverter" public="true">
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Converter\ConverterRegistry"/>

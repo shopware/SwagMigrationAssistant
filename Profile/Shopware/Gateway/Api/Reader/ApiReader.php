@@ -4,13 +4,13 @@ namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader;
 
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
 use SwagMigrationAssistant\Exception\GatewayReadException;
+use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Migration\Profile\ReaderInterface;
-use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ShopwareDataSet;
+use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactoryInterface;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
-class ApiReader implements ReaderInterface
+abstract class ApiReader implements ReaderInterface
 {
     /**
      * @var ConnectionFactoryInterface
@@ -22,41 +22,53 @@ class ApiReader implements ReaderInterface
         $this->connectionFactory = $connectionFactory;
     }
 
+    public function supportsTotal(MigrationContextInterface $migrationContext): bool
+    {
+        return false;
+    }
+
     /**
      * @throws GatewayReadException
      */
-    public function read(MigrationContextInterface $migrationContext, array $params = []): array
+    public function read(MigrationContextInterface $migrationContext): array
     {
-        /** @var ShopwareDataSet $dataSet */
-        $dataSet = $migrationContext->getDataSet();
-
-        if (empty($dataSet->getApiRoute())) {
-            throw new GatewayReadException('No endpoint for entity ' . $dataSet::getEntity() . ' available.');
-        }
-
         $queryParams = [
             'offset' => $migrationContext->getOffset(),
             'limit' => $migrationContext->getLimit(),
         ];
 
-        $queryParams = array_merge($queryParams, $dataSet->getExtraQueryParameters());
-
+        $queryParams = array_merge($queryParams, $this->getExtraParameters());
         $client = $this->connectionFactory->createApiClient($migrationContext);
 
         /** @var GuzzleResponse $result */
         $result = $client->get(
-            $dataSet->getApiRoute(),
+            $this->getApiRoute(),
             [
                 'query' => $queryParams,
             ]
         );
 
         if ($result->getStatusCode() !== SymfonyResponse::HTTP_OK) {
-            throw new GatewayReadException('Shopware 5.5 Api ' . $dataSet::getEntity());
+            throw new GatewayReadException('Shopware Api ' . $migrationContext->getDataSet()::getEntity());
         }
 
         $arrayResult = json_decode($result->getBody()->getContents(), true);
 
         return $arrayResult['data'];
+    }
+
+    public function readTotal(MigrationContextInterface $migrationContext): ?TotalStruct
+    {
+        return null;
+    }
+
+    abstract protected function getApiRoute(): string;
+
+    /**
+     * @return string[]
+     */
+    protected function getExtraParameters(): array
+    {
+        return [];
     }
 }

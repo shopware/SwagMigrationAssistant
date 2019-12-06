@@ -20,6 +20,7 @@ use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistryInterface;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
+use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistry;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition;
@@ -28,10 +29,9 @@ use SwagMigrationAssistant\Migration\MigrationContextFactory;
 use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
 use SwagMigrationAssistant\Migration\Run\RunService;
 use SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService;
-use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiEnvironmentReader;
-use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiReader;
-use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiTableCountReader;
-use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiTableReader;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\EnvironmentReader;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\TableCountReader;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\TableReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\ShopwareApiGateway;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
@@ -172,10 +172,10 @@ class RunServiceTest extends TestCase
         $connectionFactory = new ConnectionFactory();
         $gatewayRegistry = new GatewayRegistry(new DummyCollection([
             new ShopwareApiGateway(
-                new ApiReader($connectionFactory),
-                new ApiEnvironmentReader($connectionFactory),
-                new ApiTableReader($connectionFactory),
-                new ApiTableCountReader($connectionFactory, $this->dataSetRegistry, $loggingService),
+                $this->getContainer()->get(ReaderRegistry::class),
+                new EnvironmentReader($connectionFactory),
+                new TableReader($connectionFactory),
+                new TableCountReader($connectionFactory, $loggingService),
                 $this->getContainer()->get('currency.repository')
             ),
             new DummyLocalGateway(),
@@ -191,7 +191,8 @@ class RunServiceTest extends TestCase
                 $loggingRepo,
                 $this->getContainer()->get(SwagMigrationDataDefinition::class),
                 $this->dataSetRegistry,
-                $this->getContainer()->get('currency.repository')
+                $this->getContainer()->get('currency.repository'),
+                $this->getContainer()->get(ReaderRegistry::class)
             ),
             new SwagMigrationAccessTokenService($this->runRepo),
             new DataSelectionRegistry([]),

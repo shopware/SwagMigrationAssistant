@@ -16,6 +16,7 @@ use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
+use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistry;
 use SwagMigrationAssistant\Migration\Logging\Log\LogEntryInterface;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingEntity;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
@@ -30,10 +31,9 @@ use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CustomerDataSe
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\TranslationDataSet;
-use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiEnvironmentReader;
-use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiReader;
-use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiTableCountReader;
-use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiTableReader;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\EnvironmentReader;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\TableCountReader;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\TableReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\ShopwareApiGateway;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
@@ -168,7 +168,8 @@ class MigrationDataProcessingTest extends TestCase
             $this->loggingRepo,
             $this->getContainer()->get(SwagMigrationDataDefinition::class),
             $this->getContainer()->get(DataSetRegistry::class),
-            $this->getContainer()->get('currency.repository')
+            $this->getContainer()->get('currency.repository'),
+            $this->getContainer()->get(ReaderRegistry::class)
         );
         $this->migrationDataConverter = $this->getMigrationDataConverter(
             $this->getContainer()->get(EntityWriter::class),
@@ -187,10 +188,10 @@ class MigrationDataProcessingTest extends TestCase
         $this->dummyDataFetcher = new MigrationDataFetcher(
             new GatewayRegistry(new DummyCollection([
                 new ShopwareApiGateway(
-                    new ApiReader($connectionFactory),
-                    new ApiEnvironmentReader($connectionFactory),
-                    new ApiTableReader($connectionFactory),
-                    new ApiTableCountReader($connectionFactory, $this->getContainer()->get(DataSetRegistry::class), $this->loggingService),
+                    $this->getContainer()->get(ReaderRegistry::class),
+                    new EnvironmentReader($connectionFactory),
+                    new TableReader($connectionFactory),
+                    new TableCountReader($connectionFactory, $this->loggingService),
                     $this->getContainer()->get('currency.repository')
                 ),
                 new DummyLocalGateway(),

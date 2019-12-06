@@ -23,6 +23,7 @@ use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistryInterf
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistryInterface;
+use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistry;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Media\MediaFileService;
@@ -198,7 +199,8 @@ class MigrationControllerTest extends TestCase
             $this->getContainer()->get('swag_migration_logging.repository'),
             $dataDefinition,
             $this->dataSetRegistry,
-            $this->getContainer()->get('currency.repository')
+            $this->getContainer()->get('currency.repository'),
+            $this->getContainer()->get(ReaderRegistry::class)
         );
         $dataConverter = $this->getMigrationDataConverter(
             $this->getContainer()->get(EntityWriter::class),
