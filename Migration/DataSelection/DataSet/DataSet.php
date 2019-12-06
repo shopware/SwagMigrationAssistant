@@ -9,9 +9,4 @@ abstract class DataSet
     abstract public static function getEntity(): string;
 
     abstract public function supports(MigrationContextInterface $migrationContext): bool;
-
-    public function getMediaUuids(array $converted): ?array
-    {
-        return null;
-    }
 }

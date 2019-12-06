@@ -47,6 +47,11 @@ abstract class Converter implements ConverterInterface
         $this->mappingService->writeMapping($context);
     }
 
+    public function getMediaUuids(array $converted): ?array
+    {
+        return null;
+    }
+
     /**
      * Generates a unique checksum for the data array to recognize changes
      * on repeated migrations.

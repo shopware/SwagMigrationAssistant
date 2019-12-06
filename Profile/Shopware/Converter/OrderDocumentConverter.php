@@ -55,6 +55,20 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         $this->mediaFileService = $mediaFileService;
     }
 
+    public function getMediaUuids(array $converted): ?array
+    {
+        $mediaUuids = [];
+        foreach ($converted as $data) {
+            if (!isset($data['documentMediaFile']['id'])) {
+                continue;
+            }
+
+            $mediaUuids[] = $data['documentMediaFile']['id'];
+        }
+
+        return $mediaUuids;
+    }
+
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
         $this->generateChecksum($data);

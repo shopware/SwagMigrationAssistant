@@ -55,6 +55,20 @@ abstract class CategoryConverter extends ShopwareConverter
         $this->mediaFileService = $mediaFileService;
     }
 
+    public function getMediaUuids(array $converted): ?array
+    {
+        $mediaUuids = [];
+        foreach ($converted as $data) {
+            if (!isset($data['media']['id'])) {
+                continue;
+            }
+
+            $mediaUuids[] = $data['media']['id'];
+        }
+
+        return $mediaUuids;
+    }
+
     /**
      * @throws ParentEntityForChildNotFoundException
      */

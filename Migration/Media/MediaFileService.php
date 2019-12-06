@@ -11,6 +11,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
+use SwagMigrationAssistant\Migration\Converter\ConverterRegistryInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 class MediaFileService implements MediaFileServiceInterface
@@ -22,26 +23,33 @@ class MediaFileService implements MediaFileServiceInterface
     /**
      * @var EntityRepositoryInterface
      */
-    private $mediaFileRepo;
+    protected $mediaFileRepo;
 
     /**
      * @var EntityWriterInterface
      */
-    private $entityWriter;
+    protected $entityWriter;
 
     /**
      * @var EntityDefinition
      */
-    private $mediaFileDefinition;
+    protected $mediaFileDefinition;
+
+    /**
+     * @var ConverterRegistryInterface
+     */
+    protected $converterRegistry;
 
     public function __construct(
         EntityRepositoryInterface $mediaFileRepo,
         EntityWriterInterface $entityWriter,
-        EntityDefinition $mediaFileDefinition
+        EntityDefinition $mediaFileDefinition,
+        ConverterRegistryInterface $converterRegistry
     ) {
         $this->mediaFileRepo = $mediaFileRepo;
         $this->entityWriter = $entityWriter;
         $this->mediaFileDefinition = $mediaFileDefinition;
+        $this->converterRegistry = $converterRegistry;
     }
 
     public function writeMediaFile(Context $context): void
@@ -75,8 +83,8 @@ class MediaFileService implements MediaFileServiceInterface
 
     public function setWrittenFlag(array $converted, MigrationContextInterface $migrationContext, Context $context): void
     {
-        $dataSet = $migrationContext->getDataSet();
-        $mediaUuids = $dataSet->getMediaUuids($converted);
+        $converter = $this->converterRegistry->getConverter($migrationContext);
+        $mediaUuids = $converter->getMediaUuids($converted);
 
         if (empty($mediaUuids)) {
             return;

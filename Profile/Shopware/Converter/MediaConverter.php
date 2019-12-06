@@ -43,6 +43,11 @@ abstract class MediaConverter extends ShopwareConverter
         $this->mediaFileService = $mediaFileService;
     }
 
+    public function getMediaUuids(array $converted): ?array
+    {
+        return array_column($converted, 'id');
+    }
+
     public function writeMapping(Context $context): void
     {
         $this->mappingService->writeMapping($context);
