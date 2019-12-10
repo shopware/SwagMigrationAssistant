@@ -1,7 +1,7 @@
 @import "~scss/variables";
 
-.swag-migration-wizard .sw-select-result__result-item-text > span > i,
-.swag-migration-wizard .sw-single-select__selection-text > span > i {
+.sw-select-result__result-item-text > span > i,
+.sw-single-select__selection-text > span > i {
     color: $color-gray-500;
     font-style: normal;
     font-size: 12px;
@@ -17,6 +17,6 @@
     color: $color-shopware-brand-500;
 }
 
-.swag-migration-wizard .sw-select-result__result-item-text {
+.sw-select-result__result-item-text {
     width: 100%;
 }
