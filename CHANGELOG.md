@@ -1,3 +1,6 @@
+# 0.40.0
+
+
 # 0.30.0
 PT-10629 - Raise test coverage
 PT-10761 - Implement new frontend data handling
