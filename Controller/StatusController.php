@@ -94,6 +94,68 @@ class StatusController extends AbstractController
     }
 
     /**
+     * @Route("/api/v{version}/_action/migration/get-profile-information", name="api.admin.migration.get-profile-information", methods={"GET"})
+     */
+    public function getProfileInformation(Request $request): ?Response
+    {
+        $profileName = $request->query->get('profileName');
+        $gatewayName = $request->query->get('gatewayName');
+
+        if ($profileName === null) {
+            throw new MigrationContextPropertyMissingException('profileName');
+        }
+
+        if ($gatewayName === null) {
+            throw new MigrationContextPropertyMissingException('gatewayName');
+        }
+
+        $profiles = $this->profileRegistry->getProfiles();
+
+        $currentProfile = null;
+        foreach ($profiles as $profile) {
+            if ($profile->getName() === $profileName) {
+                $currentProfile = [
+                    'name' => $profile->getName(),
+                    'sourceSystemName' => $profile->getSourceSystemName(),
+                    'version' => $profile->getVersion(),
+                    'author' => $profile->getAuthorName(),
+                    'icon' => $profile->getIconPath(),
+                ];
+                break;
+            }
+        }
+
+        if ($currentProfile === null) {
+            return new Response();
+        }
+
+        $migrationContext = $this->migrationContextFactory->createByProfileName($profileName);
+        $gateways = $this->gatewayRegistry->getGateways($migrationContext);
+
+        $currentGateway = null;
+        foreach ($gateways as $gateway) {
+            if ($gateway->getName() === $gatewayName) {
+                $currentGateway = [
+                    'name' => $gateway->getName(),
+                    'snippet' => $gateway->getSnippetName(),
+                ];
+                break;
+            }
+        }
+
+        if ($currentGateway === null) {
+            return new Response();
+        }
+
+        return new JsonResponse(
+            [
+                'profile' => $currentProfile,
+                'gateway' => $currentGateway,
+            ]
+        );
+    }
+
+    /**
      * @Route("/api/v{version}/_action/migration/get-profiles", name="api.admin.migration.get-profiles", methods={"GET"})
      */
     public function getProfiles(): Response

@@ -250,6 +250,23 @@ class MigrationApiService extends ApiService {
             });
     }
 
+    getProfileInformation(profileName, gatewayName) {
+        const headers = this.getBasicHeaders();
+
+        return this.httpClient
+            .get(`_action/${this.getApiBasePath()}/get-profile-information`, {
+                ...this.basicConfig,
+                params: {
+                    profileName,
+                    gatewayName
+                },
+                headers
+            })
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
     getGroupedLogsOfRun(runUuid) {
         const headers = this.getBasicHeaders();
 

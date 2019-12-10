@@ -8,6 +8,8 @@ Component.register('swag-migration-history-detail', {
     template,
 
     inject: {
+        /** @var {MigrationApiService} migrationService */
+        migrationService: 'migrationService',
         repositoryFactory: 'repositoryFactory'
     },
 
@@ -35,6 +37,12 @@ Component.register('swag-migration-history-detail', {
         shopFirstLetter() {
             return this.migrationRun.environmentInformation.sourceSystemName === undefined ? 'S' :
                 this.migrationRun.environmentInformation.sourceSystemName[0];
+        },
+
+        profileIcon() {
+            return this.migrationRun.connection === null ||
+                this.migrationRun.connection.profile === undefined ||
+                this.migrationRun.connection.profile.icon === undefined ? null : this.migrationRun.connection.profile.icon;
         },
 
         connectionName() {
@@ -114,9 +122,14 @@ Component.register('swag-migration-history-detail', {
             }
 
             this.migrationRun = runs.first();
-            this.isLoading = false;
-            this.$nextTick(() => {
-                this.$refs.tabReference.setActiveItem(this.$refs.dataTabItem);
+
+            this.migrationService.getProfileInformation(this.migrationRun.connection.profileName, this.migrationRun.connection.gatewayName).then((profileInformation) => {
+                this.migrationRun.connection.profile = profileInformation.profile;
+
+                this.isLoading = false;
+                this.$nextTick(() => {
+                    this.$refs.tabReference.setActiveItem(this.$refs.dataTabItem);
+                });
             });
         }).catch(() => {
             this.isLoading = false;
