@@ -1,3 +1,22 @@
+# 0.40.0
+PT-11014- Add magento onboarding to migration wizard
+PT-11016 - Refactor first migration wizard page
+PT-11017 - Add migration card to dashboard
+PT-11033 - Fix migration of categories
+PT-11020 - Implement measurement call
+NTR - Fix new plugin folder structure
+NTR - Stabilize migration data writer
+NTR - Refactor datasets
+NTR - Refactor api total fetching
+NTR - Refactor reader interface and classes
+NTR - Fix product image cover when only 1 image exists
+
+# 0.30.1
+PT-10925 - Call indexing controller after every migration
+PT-10948 - Prevent duplicate document types
+PT-10946 - Migrate customer language
+
+
 # 0.30.0
 PT-10629 - Raise test coverage
 PT-10761 - Implement new frontend data handling

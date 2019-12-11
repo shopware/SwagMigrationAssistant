@@ -1,3 +1,21 @@
+# 0.40.0
+PT-11014- Magento-Onboarding zum Migration-Wizard hinzufügen
+PT-11016 - Anpassen der ersten Migration-Wizard-Seite
+PT-11017 - Hinzufügen einer Migration-Card zum Dashboard
+PT-11033 - Fixen der Migration der Kategorien
+PT-11020 - Implementieren von measurement calls
+NTR - Anpassung an die neue Plugin-Struktur
+NTR - Stabilisieren des Migration-Writers
+NTR - Überarbeitung der Datasets
+NTR - Überarbeitung der Abfrage der Anzahlen per API
+NTR - Überarbeitung der Reader-Interfaces und Klassen
+NTR - Fixen des Produktcovers bei nur einem Produktbild
+
+# 0.30.1
+PT-10925 - Indexing-Controller nach jeder Migration aufrufen
+PT-10948 - Doppelte Dokumententypen verhindern
+PT-10946 - Migrieren der Kundensprache
+
 # 0.30.0
 PT-10629 - Erhöhung der Testabdeckung
 PT-10761 - Neues Frontend data handling

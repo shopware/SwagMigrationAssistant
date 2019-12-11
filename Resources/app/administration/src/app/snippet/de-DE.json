@@ -7,7 +7,7 @@
       "button": "Migrations-Assistenten öffnen"
     },
     "general": {
-      "mainMenuItemGeneral": "Migrationsassistent",
+      "mainMenuItemGeneral": "Migrations-Assistent",
       "descriptionTextModule": "Modul zum Migrieren der Daten",
       "tabMain": "Übersicht",
       "tabHistory": "Historie",
@@ -292,7 +292,7 @@
           "finish": "Fertig"
         },
         "result": {
-          "title": "Der Migrationsassistent ist fertig",
+          "title": "Der Migrations-Assistent ist fertig",
           "caption": "Die Medien werden weiter im Hintergrund heruntergeladen. Große Dateien können etwas Zeit in Anspruch nehmen.",
           "historyLink": "Details der Migration ansehen",
           "notification": {
