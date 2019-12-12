@@ -322,6 +322,8 @@ abstract class OrderConverter extends ShopwareConverter
         }
         unset($data['attributes']);
 
+        $converted['deepLinkCode'] = md5($converted['id']);
+
         // Legacy data which don't need a mapping or there is no equivalent field
         unset(
             $data['invoice_shipping_tax_rate'],
