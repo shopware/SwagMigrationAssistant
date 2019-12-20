@@ -26,7 +26,7 @@ Component.register('swag-migration-wizard-page-profile-installation', {
             pluginIsLoading: false,
             pluginIsSaveSuccessful: false,
             isInstalled: false,
-            pluginName: 'SwagI18nPolish' // Todo: Replace with SwagMigrationMagento
+            pluginName: 'SwagMigrationMagento'
         };
     },
 
