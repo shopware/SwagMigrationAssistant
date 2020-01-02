@@ -141,7 +141,6 @@ abstract class CategoryConverter extends ShopwareConverter
                 $converted['afterCategoryId'] = $previousSiblingMapping['entityUuid'];
                 $this->mappingIds[] = $previousSiblingMapping['id'];
             }
-            unset($previousSiblingMapping);
         }
         unset($data['previousSiblingId'], $data['categoryPosition'], $previousSiblingMapping);
 
