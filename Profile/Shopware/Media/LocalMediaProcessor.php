@@ -128,7 +128,7 @@ class LocalMediaProcessor implements MediaFileProcessorInterface
      */
     private function getMediaPathMapping(array $media, array $mappedWorkload, MigrationContextInterface $migrationContext): array
     {
-        /** @var SwagMigrationMediaFileEntity[] $media */
+        /** @var SwagMigrationMediaFileEntity $mediaFile */
         foreach ($media as $mediaFile) {
             $resolver = $this->getResolver($mediaFile, $migrationContext);
 
@@ -169,7 +169,7 @@ class LocalMediaProcessor implements MediaFileProcessorInterface
         $processedMedia = [];
         $failureUuids = [];
 
-        /** @var SwagMigrationMediaFileEntity[] $media */
+        /** @var SwagMigrationMediaFileEntity $mediaFile */
         foreach ($media as $mediaFile) {
             $sourcePath = $mappedWorkload[$mediaFile->getMediaId()]->getAdditionalData()['path'];
 

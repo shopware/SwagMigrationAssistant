@@ -116,7 +116,7 @@ class LocalOrderDocumentProcessor implements MediaFileProcessorInterface
     ): array {
         $processedMedia = [];
 
-        /** @var SwagMigrationMediaFileEntity[] $media */
+        /** @var SwagMigrationMediaFileEntity $mediaFile */
         foreach ($media as $mediaFile) {
             $sourcePath = $migrationContext->getConnection()->getCredentialFields()['installationRoot'] . '/files/documents/' . $mediaFile->getFileName() . '.pdf';
 

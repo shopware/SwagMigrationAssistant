@@ -9,3 +9,5 @@ parameters:
     excludes_analyse:
         - %currentWorkingDirectory%/Test/*
         - %currentWorkingDirectory%/vendor/*
+        # because of phpstan core failure
+        - %currentWorkingDirectory%/Migration/Writer/OrderWriter.php
