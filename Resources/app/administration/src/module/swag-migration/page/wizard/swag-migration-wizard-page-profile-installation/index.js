@@ -73,8 +73,9 @@ Component.register('swag-migration-wizard-page-profile-installation', {
                 })
                 .finally(() => {
                     this.pluginIsLoading = false;
-                    this.cacheApiService.clear();
-                    this.refreshPlugin();
+                    this.cacheApiService.clear().then(() => {
+                        window.location.reload();
+                    });
                 });
         }
     }
