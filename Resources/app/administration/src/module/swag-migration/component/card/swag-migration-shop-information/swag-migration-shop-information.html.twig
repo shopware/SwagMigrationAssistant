@@ -7,11 +7,19 @@
                         {% block swag_migration_shop_information_connection %}
                             <div class="swag-migration-shop-information__connection">
                                 {% block swag_migration_shop_information_connection_avatar %}
-                                    <swag-migration-shop-avatar class="swag-migration-shop-information__connection-avatar"
-                                                                color="#189EFF"
-                                                                size="80px">
-                                        {{ shopFirstLetter }}
-                                    </swag-migration-shop-avatar>
+                                    <template v-if="profileIcon === null || profileIcon === ''">
+                                        <swag-migration-shop-avatar class="swag-migration-shop-information__connection-avatar"
+                                                                    color="#189EFF"
+                                                                    size="80px">
+                                            {{ shopFirstLetter }}
+                                        </swag-migration-shop-avatar>
+                                    </template>
+
+                                    <template v-else>
+                                        <img class="swag-migration-shop-information__profile-avatar"
+                                             :src="profileIcon | asset"
+                                             size="80px">
+                                    </template>
                                 {% endblock %}
 
                                 {% block swag_migration_shop_information_connection_info %}
@@ -107,7 +115,7 @@
                                         {% block swag_migration_shop_information_metadata_gateway %}
                                             <sw-description-list>
                                                     <dt>{{ $tc('swag-migration.index.shopInfoCard.gateway') }}</dt>
-                                                    <dd>{{ gateway.toUpperCase() }}</dd>
+                                                    <dd>{{ $tc(gateway) }}</dd>
                                             </sw-description-list>
                                         {% endblock %}
                                     {% endblock %}

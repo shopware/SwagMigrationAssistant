@@ -19,6 +19,8 @@ class Shopware56Profile implements ShopwareProfileInterface
 
     public const AUTHOR_NAME = 'shopware AG';
 
+    public const ICON_PATH = '/swagmigrationassistant/static/img/migration-assistant-plugin.svg';
+
     public function getName(): string
     {
         return self::PROFILE_NAME;
@@ -37,5 +39,10 @@ class Shopware56Profile implements ShopwareProfileInterface
     public function getAuthorName(): string
     {
         return self::AUTHOR_NAME;
+    }
+
+    public function getIconPath(): string
+    {
+        return self::ICON_PATH;
     }
 }

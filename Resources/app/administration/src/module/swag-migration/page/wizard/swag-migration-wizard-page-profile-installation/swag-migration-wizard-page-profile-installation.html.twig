@@ -27,7 +27,8 @@
 
                                         {% block swag_migration_wizard_page_profile_installation_shopware_plugin_icon %}
                                             <div class="swag-migration-wizard-profile-installation__plugin_icon_column">
-                                                <img class="swag-migration-wizard-profile-installation__plugin-icon" :src="'/swagmigrationassistant/static/img/wizard-shopware-profile-avatar.svg' | asset">
+                                                <img class="swag-migration-wizard-profile-installation__plugin-icon"
+                                                     :src="'/swagmigrationassistant/static/img/migration-assistant-plugin.svg'|asset">
                                             </div>
                                         {% endblock %}
 
@@ -78,11 +79,8 @@
 
                                         {% block swag_migration_wizard_page_profile_installation_magento_plugin_icon %}
                                             <div class="swag-migration-wizard-profile-installation__plugin_icon_column">
-                                                <span class="swag-migration-shop-avatar"
-                                                      role="img"
-                                                      ref="shopAvatar">
-                                                    M
-                                                </span>
+                                                <img class="swag-migration-wizard-profile-installation__plugin-icon"
+                                                     :src="'/swagmigrationassistant/static/img/magento-profile-icon.svg'|asset">
                                             </div>
                                         {% endblock %}
 

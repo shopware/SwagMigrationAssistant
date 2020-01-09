@@ -120,13 +120,19 @@ Component.register('swag-migration-shop-information', {
         },
 
         profile() {
-            return this.connection === null ? '' :
-                this.connection.profileName;
+            return this.connection === null || this.connection.profile === undefined ? '' :
+                `${this.connection.profile.sourceSystemName} ${this.connection.profile.version} - ${this.connection.profile.author}`;
+        },
+
+        profileIcon() {
+            return this.connection === null ||
+                this.connection.profile === undefined ||
+                this.connection.profile.icon === undefined ? null : this.connection.profile.icon;
         },
 
         gateway() {
-            return this.connection === null ? '' :
-                this.connection.gatewayName;
+            return this.connection === null || this.connection.gateway === undefined ? '' :
+                this.connection.gateway.snippet;
         },
 
         lastConnectionCheckDateTimeParams() {
@@ -183,6 +189,11 @@ Component.register('swag-migration-shop-information', {
                 delete connection.credentialFields;
                 this.connection = connection;
                 this.lastConnectionCheck = new Date();
+
+                this.migrationService.getProfileInformation(connection.profileName, connection.gatewayName).then((profileInformation) => {
+                    this.connection.profile = profileInformation.profile;
+                    this.connection.gateway = profileInformation.gateway;
+                });
             });
         },
 

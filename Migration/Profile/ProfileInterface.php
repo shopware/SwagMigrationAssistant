@@ -19,4 +19,6 @@ interface ProfileInterface
     public function getVersion(): string;
 
     public function getAuthorName(): string;
+
+    public function getIconPath(): string;
 }

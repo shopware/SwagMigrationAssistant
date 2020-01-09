@@ -32,4 +32,9 @@ class DummyProfile implements ProfileInterface
     {
         return 'shopware AG';
     }
+
+    public function getIconPath(): string
+    {
+        return '';
+    }
 }
