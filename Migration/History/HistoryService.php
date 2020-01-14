@@ -122,13 +122,9 @@ class HistoryService implements HistoryServiceInterface
                 }
 
                 $offset += self::LOG_FETCH_LIMIT;
-                ob_flush();
-                flush();
             }
 
             printf('%s%s%s', $this->getSuffixLogInformation($run), PHP_EOL, PHP_EOL);
-            ob_flush();
-            flush();
         };
     }
 
