@@ -16,6 +16,7 @@ use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CurrencyDataSe
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CustomerGroupAttributeDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CustomerGroupDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\LanguageDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\NumberRangeDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\SalesChannelDataSet;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
@@ -52,6 +53,7 @@ class BasicSettingsDataSelection implements DataSelectionInterface
             CustomerGroupDataSet::getEntity(),
             CurrencyDataSet::getEntity(),
             SalesChannelDataSet::getEntity(),
+            NumberRangeDataSet::getEntity(),
         ];
     }
 

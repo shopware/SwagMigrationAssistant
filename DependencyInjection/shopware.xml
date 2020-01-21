@@ -488,10 +488,6 @@
             <tag name="shopware.migration.data_selection"/>
         </service>
 
-        <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\NumberRangeDataSelection">
-            <tag name="shopware.migration.data_selection"/>
-        </service>
-
         <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\NewsletterRecipientDataSelection">
             <tag name="shopware.migration.data_selection"/>
         </service>
