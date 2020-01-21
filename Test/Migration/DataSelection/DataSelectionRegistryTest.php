@@ -19,7 +19,6 @@ use SwagMigrationAssistant\Profile\Shopware\DataSelection\BasicSettingsDataSelec
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\CustomerAndOrderDataSelection;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\MediaDataSelection;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\NewsletterRecipientDataSelection;
-use SwagMigrationAssistant\Profile\Shopware\DataSelection\NumberRangeDataSelection;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\ProductDataSelection;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
@@ -77,7 +76,6 @@ class DataSelectionRegistryTest extends TestCase
             new CustomerAndOrderDataSelection(),
             new BasicSettingsDataSelection(),
             new NewsletterRecipientDataSelection(),
-            new NumberRangeDataSelection(),
         ]));
     }
 
@@ -90,15 +88,14 @@ class DataSelectionRegistryTest extends TestCase
 
         $expected = [
             0 => (new BasicSettingsDataSelection())->getData()->getId(),
-            1 => (new NumberRangeDataSelection())->getData()->getId(),
-            2 => (new ProductDataSelection())->getData()->getId(),
-            3 => (new CustomerAndOrderDataSelection())->getData()->getId(),
-            4 => (new MediaDataSelection())->getData()->getId(),
-            5 => (new NewsletterRecipientDataSelection())->getData()->getId(),
+            1 => (new ProductDataSelection())->getData()->getId(),
+            2 => (new CustomerAndOrderDataSelection())->getData()->getId(),
+            3 => (new MediaDataSelection())->getData()->getId(),
+            4 => (new NewsletterRecipientDataSelection())->getData()->getId(),
         ];
 
         $dataSelections = $this->dataSelectionRegistry->getDataSelections($migrationContext, $this->environmentInformation);
-        static::assertCount(6, $dataSelections->getElements());
+        static::assertCount(5, $dataSelections->getElements());
 
         $i = 0;
         /** @var DataSelectionStruct $selection */
@@ -169,7 +166,7 @@ class DataSelectionRegistryTest extends TestCase
         foreach ($dataSelections as $dataSelection) {
             switch ($dataSelection->getId()) {
                 case 'basicSettings':
-                    static::assertSame($dataSelection->getTotal(), 154);
+                    static::assertSame($dataSelection->getTotal(), 159);
                     break;
                 case 'numberRanges':
                     static::assertSame($dataSelection->getTotal(), 5);
