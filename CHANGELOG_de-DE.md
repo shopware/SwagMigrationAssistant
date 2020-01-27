@@ -1,3 +1,10 @@
+# 1.0.0
+- PT-11113 - Anpassung der Plugin icons
+- PT-11111 - Anpassung des Profilicons für externe Profile
+- NTR - Behebt ein Problem nach dem Installieren von extern Profilen 
+- NTR - Snippet renaming
+- PT-11252 - Nummernkreise werden jetzt in den Basisdaten migriert
+
 # 0.40.0
 - PT-11014- Magento-Onboarding zum Migration-Wizard hinzufügen
 - PT-11016 - Anpassen der ersten Migration-Wizard-Seite

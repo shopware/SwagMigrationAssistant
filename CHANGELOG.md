@@ -1,3 +1,10 @@
+# 1.0.0
+- PT-11113 - Refactor plugin icons
+- PT-11111 - Refactor profile icon for external profile
+- NTR - Fix refresh after wizard install of external profile
+- NTR - Snippet renaming
+- PT-11252 - Force number range migration
+
 # 0.40.0
 - PT-11014- Add magento onboarding to migration wizard
 - PT-11016 - Refactor first migration wizard page
