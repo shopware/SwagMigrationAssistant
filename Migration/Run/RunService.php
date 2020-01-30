@@ -35,6 +35,7 @@ use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\Logging\Log\ThemeCompilingErrorRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
@@ -398,6 +399,11 @@ class RunService implements RunServiceInterface
 
     private function cleanupMigration(string $runUuid, Context $context, bool $removeOnlyWrittenData = false): void
     {
+        $dataCount = $this->getMigrationDataCount($runUuid, $context);
+        if ($dataCount > 0) {
+            $this->cleanupMappingChecksums($runUuid, $context);
+        }
+
         $this->removeMigrationData($runUuid, $removeOnlyWrittenData);
         $this->assignThemeToSalesChannel($runUuid, $context);
 
@@ -724,5 +730,30 @@ class RunService implements RunServiceInterface
                 ->setParameter('runId', $lastRunUuid)
                 ->execute();
         }
+    }
+
+    private function getMigrationDataCount(string $runUuid, Context $context): int
+    {
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('runId', $runUuid));
+        $criteria->addAggregation(new CountAggregation('count', 'id'));
+        $result = $this->migrationDataRepository->aggregate($criteria, $context);
+
+        /** @var CountResult $countResult */
+        $countResult = $result->get('count');
+
+        return $countResult->getCount();
+    }
+
+    private function cleanupMappingChecksums(string $runUuid, Context $context): void
+    {
+        /** @var SwagMigrationRunEntity $run */
+        $run = $this->migrationRunRepo->search(new Criteria([$runUuid]), $context)->first();
+        $qb = new QueryBuilder($this->dbalConnection);
+        $qb->update(SwagMigrationMappingDefinition::ENTITY_NAME)
+            ->set('checksum', 'null')
+            ->where('HEX(connection_id) = :connection_id')
+            ->setParameter('connection_id', $run->getConnection()->getId())
+            ->execute();
     }
 }
