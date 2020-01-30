@@ -321,6 +321,10 @@ class RunService implements RunServiceInterface
     {
         $this->accessTokenService->invalidateRunAccessToken($runUuid, $context);
         $this->fireTrackingInformation(self::TRACKING_EVENT_MIGRATION_ABORTED, $runUuid, $context);
+        $dataCount = $this->getMigrationDataCount($runUuid, $context);
+        if ($dataCount > 0) {
+            $this->cleanupMappingChecksums($runUuid, $context);
+        }
         $this->cleanupMigration($runUuid, $context);
     }
 
@@ -399,11 +403,6 @@ class RunService implements RunServiceInterface
 
     private function cleanupMigration(string $runUuid, Context $context, bool $removeOnlyWrittenData = false): void
     {
-        $dataCount = $this->getMigrationDataCount($runUuid, $context);
-        if ($dataCount > 0) {
-            $this->cleanupMappingChecksums($runUuid, $context);
-        }
-
         $this->removeMigrationData($runUuid, $removeOnlyWrittenData);
         $this->assignThemeToSalesChannel($runUuid, $context);
 
