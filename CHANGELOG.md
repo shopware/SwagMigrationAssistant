@@ -1,3 +1,6 @@
+# 1.0.1
+- NTR - Solves an issue with delta checksums when aborting migration
+
 # 1.0.0
 - PT-11113 - Refactor plugin icons
 - PT-11111 - Refactor profile icon for external profile

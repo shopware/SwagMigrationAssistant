@@ -1,3 +1,6 @@
+# 1.0.1
+- NTR - Behebt ein Problem mit den Checksummen der Delta-Migration beim Abbruch der Migration
+
 # 1.0.0
 - PT-11113 - Anpassung der Plugin icons
 - PT-11111 - Anpassung des Profilicons für externe Profile
