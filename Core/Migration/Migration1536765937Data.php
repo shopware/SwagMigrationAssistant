@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS `swag_migration_data` (
     DEFAULT CHARSET = utf8mb4
     COLLATE = utf8mb4_unicode_ci;
 SQL;
-        $connection->executeQuery($sql);
+        $connection->executeUpdate($sql);
     }
 
     public function updateDestructive(Connection $connection): void

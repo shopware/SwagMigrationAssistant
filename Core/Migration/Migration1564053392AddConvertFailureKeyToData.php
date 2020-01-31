@@ -19,7 +19,7 @@ class Migration1564053392AddConvertFailureKeyToData extends MigrationStep
 
     public function update(Connection $connection): void
     {
-        $connection->executeQuery('ALTER TABLE swag_migration_data ADD INDEX `idx.swag_migration_data.entity__run_id__convert_failure` (`entity`, `run_id`, `convert_failure`);');
+        $connection->executeUpdate('ALTER TABLE swag_migration_data ADD INDEX `idx.swag_migration_data.entity__run_id__convert_failure` (`entity`, `run_id`, `convert_failure`);');
     }
 
     public function updateDestructive(Connection $connection): void
