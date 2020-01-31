@@ -22,7 +22,7 @@ class Migration1568882302AddMappingReferenceToData extends MigrationStep
         $sql = <<<SQL
 ALTER TABLE `swag_migration_data` ADD `mapping_uuid` binary(16) NULL AFTER `unmapped`; 
 SQL;
-        $connection->executeQuery($sql);
+        $connection->executeUpdate($sql);
     }
 
     public function updateDestructive(Connection $connection): void

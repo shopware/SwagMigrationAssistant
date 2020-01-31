@@ -19,7 +19,7 @@ class Migration1564041870AddConnectionKeyToMapping extends MigrationStep
 
     public function update(Connection $connection): void
     {
-        $connection->executeQuery('ALTER TABLE swag_migration_mapping ADD INDEX `idx.swag_migration_mapping.connection_id_entity_old_identifier` (`connection_id`, `entity`, `old_identifier`);');
+        $connection->executeUpdate('ALTER TABLE swag_migration_mapping ADD INDEX `idx.swag_migration_mapping.connection_id_entity_old_identifier` (`connection_id`, `entity`, `old_identifier`);');
     }
 
     public function updateDestructive(Connection $connection): void
