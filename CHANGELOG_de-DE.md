@@ -1,3 +1,7 @@
+# 1.0.3
+- PT-11329 - Metadaten für Produkte und Kategorien migrieren
+- NTR - Behebt ein Problem mit Differenz der Datenbank Feldlänge zwischen SW5 und SW6
+
 # 1.0.2
 - NTR - Verbessert die Performanz beim Berechnen des Fortschritts
 
