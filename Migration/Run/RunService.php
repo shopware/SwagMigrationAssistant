@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Migration\Run;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\FetchMode;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Dbal\QueryBuilder;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
@@ -21,7 +22,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\Store\Services\StoreService;
 use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
@@ -442,23 +442,20 @@ class RunService implements RunServiceInterface
 
     private function calculateFetchedTotals(string $runId, Context $context): array
     {
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('runId', $runId));
-        $criteria->addFilter(new EqualsFilter('convertFailure', false));
-        $criteria->addFilter(new NotFilter(MultiFilter::CONNECTION_AND, [new EqualsFilter('converted', null)]));
-        $criteria->addAggregation(new TermsAggregation('entityCount', 'entity'));
-        $result = $this->migrationDataRepository->aggregate($criteria, $context);
-        /** @var TermsResult $termsResult */
-        $termsResult = $result->get('entityCount');
-        $counts = $termsResult->getBuckets();
-
-        if (empty($counts)) {
-            return [];
-        }
+        $queryBuilder = $this->dbalConnection->createQueryBuilder();
+        $results = $queryBuilder
+            ->select('entity, COUNT(id) AS total')
+            ->from('swag_migration_data')
+            ->where('HEX(run_id) = :runId')
+            ->andWhere('convert_failure = 0 AND converted IS NOT NULL')
+            ->groupBy('entity')
+            ->setParameter('runId', $runId)
+            ->execute()
+            ->fetchAll(FetchMode::ASSOCIATIVE);
 
         $mappedCounts = [];
-        foreach ($counts as $bucket) {
-            $mappedCounts[$bucket->getKey()] = $bucket->getCount();
+        foreach ($results as $result) {
+            $mappedCounts[$result['entity']] = (int) $result['total'];
         }
 
         return $mappedCounts;
