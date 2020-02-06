@@ -113,7 +113,10 @@ SQL;
         foreach ($foreignKeys as $foreignKey) {
             $fks[] = $foreignKey->getLocalColumns();
         }
-        $fks = array_merge(...$fks);
+
+        if ($fks !== []) {
+            $fks = array_merge(...$fks);
+        }
 
         foreach ($columns as $column) {
             if ($column->getAutoincrement() === true || in_array($column->getName(), $fks, true)) {
