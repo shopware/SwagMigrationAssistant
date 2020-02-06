@@ -1125,7 +1125,11 @@ abstract class ProductConverter extends ShopwareConverter
         $this->convertValue($converted, 'description', $data, 'description_long');
         $this->convertValue($converted, 'metaTitle', $data, 'metaTitle');
         $this->convertValue($converted, 'packUnit', $data['detail'], 'packunit');
-        unset($data['description']); // Todo: Use this for meta_description
+        $this->convertValue($converted, 'metaDescription', $data, 'description');
+        if (isset($converted['metaDescription'])) {
+            // meta description is limited to 255 characters in Shopware 6
+            $converted['metaDescription'] = mb_substr($converted['metaDescription'], 0, 255);
+        }
 
         $language = $this->mappingService->getDefaultLanguage($this->context);
         if ($language->getLocale()->getCode() === $this->locale) {
