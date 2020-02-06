@@ -1,3 +1,6 @@
+# 1.0.2
+- NTR - Improve progress calculation for big amounts of data
+
 # 1.0.1
 - NTR - Solves an issue with delta checksums when aborting migration
 

@@ -1,3 +1,6 @@
+# 1.0.2
+- NTR - Verbessert die Performanz beim Berechnen des Fortschritts
+
 # 1.0.1
 - NTR - Behebt ein Problem mit den Checksummen der Delta-Migration beim Abbruch der Migration
 
