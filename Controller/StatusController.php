@@ -361,4 +361,20 @@ class StatusController extends AbstractController
 
         return new Response();
     }
+
+    /**
+     * @Route("/api/v{version}/_action/migration/assign-themes", name="api.admin.migration.assign-themes", methods={"POST"})
+     */
+    public function assignThemes(Request $request, Context $context): Response
+    {
+        $runUuid = $request->request->get('runUuid');
+
+        if ($runUuid === null) {
+            throw new MigrationContextPropertyMissingException('runUuid');
+        }
+
+        $this->runService->assignThemeToSalesChannel($runUuid, $context);
+
+        return new Response();
+    }
 }

@@ -427,7 +427,6 @@ class MigrationDataWriterTest extends TestCase
             250
         );
 
-        $beforeThemeSalesChannel = $this->dbConnection->query('select count(*) from theme_sales_channel')->fetchColumn();
         $data = $this->migrationDataFetcher->fetchData($migrationContext, $context);
         $this->migrationDataConverter->convert($data, $migrationContext, $context);
         $criteria = new Criteria();
@@ -439,9 +438,33 @@ class MigrationDataWriterTest extends TestCase
         $salesChannelTotalAfter = $this->dbConnection->query('select count(*) from sales_channel')->fetchColumn();
 
         $this->runService->finishMigration($this->runUuid, $context);
-        $afterThemeSalesChannel = $this->dbConnection->query('select count(*) from theme_sales_channel')->fetchColumn();
 
         static::assertSame(2, $salesChannelTotalAfter - $salesChannelTotalBefore);
+    }
+
+    public function testAssignThemeToSalesChannel(): void
+    {
+        $context = Context::createDefaultContext();
+        $migrationContext = new MigrationContext(
+            new Shopware55Profile(),
+            $this->connection,
+            $this->runUuid,
+            new SalesChannelDataSet(),
+            0,
+            250
+        );
+
+        $data = $this->migrationDataFetcher->fetchData($migrationContext, $context);
+        $this->migrationDataConverter->convert($data, $migrationContext, $context);
+        $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext): void {
+            $this->migrationDataWriter->writeData($migrationContext, $context);
+        });
+        $this->runService->finishMigration($this->runUuid, $context);
+
+        $beforeThemeSalesChannel = $this->dbConnection->query('select count(*) from theme_sales_channel')->fetchColumn();
+        $this->runService->assignThemeToSalesChannel($this->runUuid, $context);
+        $afterThemeSalesChannel = $this->dbConnection->query('select count(*) from theme_sales_channel')->fetchColumn();
+
         static::assertSame(2, $afterThemeSalesChannel - $beforeThemeSalesChannel);
     }
 

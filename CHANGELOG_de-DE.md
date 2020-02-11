@@ -1,6 +1,7 @@
 # NEXT-VERSION
 - PT-10832 - Verhindern eines unerwünschten Zustands beim Anlegen neuer Verbindungen
 - PT-10983 - Technisches Konzept der Oberflächen auf Vuex geändert
+- PT-11331 - Zeitüberschreitung bei Anfragen für größere Migrationen behoben
 - PT-11400 - Migrationsfehler bei falsch definierten Thumbnail Größen behoben
 
 # 1.0.3

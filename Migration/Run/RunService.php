@@ -342,6 +342,37 @@ class RunService implements RunServiceInterface
         $this->cleanupMigration($runUuid, $context, true);
     }
 
+    public function assignThemeToSalesChannel(string $runUuid, Context $context): void
+    {
+        /** @var SwagMigrationRunEntity|null $run */
+        $run = $this->migrationRunRepo->search(new Criteria([$runUuid]), $context)->first();
+
+        if ($run === null || $run->getConnection() === null) {
+            return;
+        }
+
+        $connectionId = $run->getConnection()->getId();
+        $salesChannels = $this->getSalesChannels($connectionId, $context);
+        $defaultTheme = $this->getDefaultTheme($context);
+
+        if ($defaultTheme === null) {
+            return;
+        }
+
+        foreach ($salesChannels as $salesChannel) {
+            try {
+                $this->themeService->assignTheme($defaultTheme, $salesChannel, $context);
+            } catch (\Exception $exception) {
+                $this->loggingService->addLogEntry(new ThemeCompilingErrorRunLog(
+                    $runUuid,
+                    $defaultTheme
+                ));
+            }
+        }
+
+        $this->loggingService->saveLogging($context);
+    }
+
     private function fireTrackingInformation(string $eventName, string $runUuid, Context $context): void
     {
         /** @var SwagMigrationRunEntity $run */
@@ -404,7 +435,6 @@ class RunService implements RunServiceInterface
     private function cleanupMigration(string $runUuid, Context $context, bool $removeOnlyWrittenData = false): void
     {
         $this->removeMigrationData($runUuid, $removeOnlyWrittenData);
-        $this->assignThemeToSalesChannel($runUuid, $context);
 
         $this->cache->clear();
         $this->indexer->partial(new \DateTime());
@@ -643,37 +673,6 @@ class RunService implements RunServiceInterface
 
         $qb->setParameter('runId', $runUuid)
             ->execute();
-    }
-
-    private function assignThemeToSalesChannel(string $runUuid, Context $context): void
-    {
-        /** @var SwagMigrationRunEntity|null $run */
-        $run = $this->migrationRunRepo->search(new Criteria([$runUuid]), $context)->first();
-
-        if ($run === null || $run->getConnection() === null) {
-            return;
-        }
-
-        $connectionId = $run->getConnection()->getId();
-        $salesChannels = $this->getSalesChannels($connectionId, $context);
-        $defaultTheme = $this->getDefaultTheme($context);
-
-        if ($defaultTheme === null) {
-            return;
-        }
-
-        foreach ($salesChannels as $salesChannel) {
-            try {
-                $this->themeService->assignTheme($defaultTheme, $salesChannel, $context);
-            } catch (\Exception $exception) {
-                $this->loggingService->addLogEntry(new ThemeCompilingErrorRunLog(
-                    $runUuid,
-                    $defaultTheme
-                ));
-            }
-        }
-
-        $this->loggingService->saveLogging($context);
     }
 
     private function getSalesChannels(string $connectionId, Context $context): array

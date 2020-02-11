@@ -506,7 +506,10 @@ class MigrationWorkerService {
         ).then(() => {
             this._showFinishNotification(this._migrationProcessState.runId);
             this._resetProgress();
-            this._handleIndexing();
+            this._assignThemes().finally(() => {
+                this._handleIndexing();
+            });
+
             return Promise.resolve();
         });
     }
@@ -524,6 +527,10 @@ class MigrationWorkerService {
                 }
             ]
         });
+    }
+
+    _assignThemes() {
+        return this._migrationService.assignThemes(this._migrationProcessState.runId);
     }
 
     _handleIndexing() {
