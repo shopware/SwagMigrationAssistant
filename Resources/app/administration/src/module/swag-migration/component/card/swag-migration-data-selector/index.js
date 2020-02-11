@@ -1,7 +1,7 @@
 import template from './swag-migration-data-selector.html.twig';
 import './swag-migration-data-selector.scss';
 
-const { Component, StateDeprecated } = Shopware;
+const { Component } = Shopware;
 
 Component.register('swag-migration-data-selector', {
     template,
@@ -17,25 +17,22 @@ Component.register('swag-migration-data-selector', {
 
     data() {
         return {
-            /** @type MigrationProcessStore */
-            migrationProcessStore: StateDeprecated.getStore('migrationProcess'),
-            /** @type MigrationUIStore */
-            migrationUIStore: StateDeprecated.getStore('migrationUI')
+            migrationUIState: this.$store.state['swagMigration/ui']
         };
     },
 
     computed: {
         displayWarnings() {
-            return this.migrationProcessStore.state.environmentInformation.displayWarnings;
+            return this.$store.state['swagMigration/process'].environmentInformation.displayWarnings;
         },
 
         uiDataSelectionTableData() {
-            return this.migrationUIStore.state.dataSelectionTableData;
+            return this.migrationUIState.dataSelectionTableData;
         },
 
         uiDataSelectionTableDataIdLookup() {
             const lookUp = {};
-            this.migrationUIStore.state.dataSelectionTableData.forEach((data) => {
+            this.migrationUIState.dataSelectionTableData.forEach((data) => {
                 lookUp[data.id] = data;
             });
 
@@ -49,9 +46,9 @@ Component.register('swag-migration-data-selector', {
         },
 
         fetchTableData() {
-            if (this.migrationUIStore.state.dataSelectionTableData.length > 0) {
+            if (this.migrationUIState.dataSelectionTableData.length > 0) {
                 this.$nextTick(() => {
-                    this.migrationUIStore.state.dataSelectionIds.forEach((id) => {
+                    this.migrationUIState.dataSelectionIds.forEach((id) => {
                         this.$refs.tableDataGrid.selectItem(true, { id });
                     });
                 });
@@ -61,7 +58,7 @@ Component.register('swag-migration-data-selector', {
         onGridSelectItem(selection) {
             const selectionIds = Object.keys(selection);
 
-            this.migrationUIStore.state.dataSelectionTableData.forEach((data) => {
+            this.migrationUIState.dataSelectionTableData.forEach((data) => {
                 if (data.requiredSelection !== true) {
                     return;
                 }
@@ -74,7 +71,7 @@ Component.register('swag-migration-data-selector', {
                 }
             });
 
-            this.migrationUIStore.setDataSelectionIds(selectionIds);
+            this.$store.commit('swagMigration/ui/setDataSelectionIds', selectionIds);
         },
 
         showHelptext(entityTotals) {

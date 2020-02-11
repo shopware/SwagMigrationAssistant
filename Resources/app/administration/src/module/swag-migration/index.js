@@ -4,8 +4,13 @@ import './page';
 import './extension/sw-settings-index';
 import './extension/sw-dashboard-index';
 import './profile';
+import MigrationProcessStore from '../../core/data/migrationProcess.store';
+import MigrationUIStore from '../../core/data/migrationUI.store';
 
-const { Module } = Shopware;
+const { Module, State } = Shopware;
+
+State.registerModule('swagMigration/process', MigrationProcessStore);
+State.registerModule('swagMigration/ui', MigrationUIStore);
 
 Module.register('swag-migration', {
     type: 'plugin',

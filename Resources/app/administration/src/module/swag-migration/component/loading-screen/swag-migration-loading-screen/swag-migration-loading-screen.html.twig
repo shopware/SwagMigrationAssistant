@@ -1,7 +1,7 @@
 {% block swag_migration_loading_screen %}
     <div class="swag-migration-loading-screen">
         {% block swag_migration_loading_screen_card %}
-            <sw-card class="swag-migration-loading-screen__card" v-show="!migrationUIStore.state.isPaused">
+            <sw-card v-show="!migrationUIState.isPaused" class="swag-migration-loading-screen__card">
                 {% block swag_migration_index_loading_screen_content %}
                     <div class="swag-migration-loading-screen__content">
                         {% block swag_migration_index_loading_screen_header %}
@@ -43,7 +43,7 @@
         {% endblock %}
 
         {% block swag_migration_index_loading_screen_pause_overlay %}
-            <swag-migration-pause-screen v-show="migrationUIStore.state.isPaused"></swag-migration-pause-screen>
+            <swag-migration-pause-screen v-show="migrationUIState.isPaused"></swag-migration-pause-screen>
         {% endblock %}
     </div>
 {% endblock %}

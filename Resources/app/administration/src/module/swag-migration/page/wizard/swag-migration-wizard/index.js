@@ -1,7 +1,7 @@
 import template from './swag-migration-wizard.html.twig';
 import './swag-migration-wizard.scss';
 
-const { Component, Mixin, StateDeprecated } = Shopware;
+const { Component, Mixin } = Shopware;
 const { Criteria } = Shopware.Data;
 const SSL_REQUIRED_ERROR_CODE = 'SWAG_MIGRATION__SSL_REQUIRED';
 
@@ -76,8 +76,6 @@ Component.register('swag-migration-wizard', {
             selectedProfile: {},
             childRouteReady: false, // child routes with forms will emit and change this value depending on their validation.
             errorMessageSnippet: '',
-            migrationProcessStore: StateDeprecated.getStore('migrationProcess'),
-            migrationUIStore: StateDeprecated.getStore('migrationUI'),
             connectionNameErrorCode: '',
             currentErrorCode: ''
         };
@@ -263,18 +261,18 @@ Component.register('swag-migration-wizard', {
         doConnectionCheck() {
             this.isLoading = true;
             this.migrationService.checkConnection(this.connection.id).then((connectionCheckResponse) => {
-                this.migrationProcessStore.setConnectionId(this.connection.id);
-                this.migrationProcessStore.setEntityGroups([]);
+                this.$store.commit('swagMigration/process/setConnectionId', this.connection.id);
+                this.$store.commit('swagMigration/process/setEntityGroups', []);
                 this.isLoading = false;
 
                 if (!connectionCheckResponse) {
                     this.onResponseError(-1);
                     return;
                 }
-                this.migrationProcessStore.setEnvironmentInformation(connectionCheckResponse);
-                this.migrationUIStore.setDataSelectionIds([]);
-                this.migrationUIStore.setPremapping([]);
-                this.migrationUIStore.setDataSelectionTableData([]);
+                this.$store.commit('swagMigration/process/setEnvironmentInformation', connectionCheckResponse);
+                this.$store.commit('swagMigration/ui/setDataSelectionIds', []);
+                this.$store.commit('swagMigration/ui/setPremapping', []);
+                this.$store.commit('swagMigration/ui/setDataSelectionTableData', []);
 
                 if (connectionCheckResponse.requestStatus === undefined) {
                     this.navigateToRoute(this.routes.credentialsSuccess);
@@ -302,12 +300,12 @@ Component.register('swag-migration-wizard', {
                 this.navigateToRoute(this.routes.credentialsSuccess);
             }).catch((error) => {
                 this.isLoading = false;
-                this.migrationProcessStore.setConnectionId(this.connection.id);
-                this.migrationProcessStore.setEntityGroups([]);
-                this.migrationProcessStore.setEnvironmentInformation({});
-                this.migrationUIStore.setDataSelectionIds([]);
-                this.migrationUIStore.setPremapping([]);
-                this.migrationUIStore.setDataSelectionTableData([]);
+                this.$store.commit('swagMigration/process/setConnectionId', this.connection.id);
+                this.$store.commit('swagMigration/process/setEntityGroups', []);
+                this.$store.commit('swagMigration/process/setEnvironmentInformation', {});
+                this.$store.commit('swagMigration/ui/setDataSelectionIds', []);
+                this.$store.commit('swagMigration/ui/setPremapping', []);
+                this.$store.commit('swagMigration/ui/setDataSelectionTableData', []);
                 this.onResponseError(error.response.data.errors[0].code);
             });
         },

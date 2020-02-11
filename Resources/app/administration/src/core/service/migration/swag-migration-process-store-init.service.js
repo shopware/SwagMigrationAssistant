@@ -1,18 +1,17 @@
-const { StateDeprecated } = Shopware;
+const { State } = Shopware;
 const { Criteria } = Shopware.Data;
 
 class ProcessStoreInitService {
     constructor(migrationService, repositoryFactory, context) {
         this._migrationService = migrationService;
-        this._migrationProcessStore = StateDeprecated.getStore('migrationProcess');
         this._migrationGeneralSettingRepository = repositoryFactory.create('swag_migration_general_setting');
         this._context = context;
     }
 
     initProcessStore() {
         return new Promise((resolve, reject) => {
-            this._migrationProcessStore.setEntityGroups([]);
-            this._migrationProcessStore.setEnvironmentInformation({});
+            State.commit('swagMigration/process/setEntityGroups', []);
+            State.commit('swagMigration/process/setEnvironmentInformation', {});
             const criteria = new Criteria(1, 1);
 
             this._migrationGeneralSettingRepository.search(criteria, this._context).then((settings) => {
@@ -28,7 +27,7 @@ class ProcessStoreInitService {
                     return null;
                 }
 
-                this._migrationProcessStore.setConnectionId(connectionId);
+                State.commit('swagMigration/process/setConnectionId', connectionId);
                 return connectionId;
             }).then((connectionId) => {
                 if (connectionId === null) {
@@ -36,9 +35,9 @@ class ProcessStoreInitService {
                     return;
                 }
 
-                this._migrationService.checkConnection(this._migrationProcessStore.state.connectionId)
+                this._migrationService.checkConnection(connectionId)
                     .then((connectionCheckResponse) => {
-                        this._migrationProcessStore.setEnvironmentInformation(connectionCheckResponse);
+                        State.commit('swagMigration/process/setEnvironmentInformation', connectionCheckResponse);
                         resolve();
                     }).catch(() => {
                         reject();

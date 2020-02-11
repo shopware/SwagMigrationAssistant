@@ -2,7 +2,7 @@ import template from './swag-migration-loading-screen-takeover.html.twig';
 import './swag-migration-loading-screen-takeover.scss';
 import { MIGRATION_STATUS } from '../../../../../core/service/migration/swag-migration-worker-status-manager.service';
 
-const { Component, StateDeprecated } = Shopware;
+const { Component } = Shopware;
 
 const TAKEOVER_STATE = Object.freeze({
     RUNNING: 'running',
@@ -35,11 +35,7 @@ Component.register('swag-migration-loading-screen-takeover', {
             state: TAKEOVER_STATE.RUNNING,
             showTakeoverModal: false,
             showAbortModal: false,
-            showRedirectModal: false,
-            /** @type MigrationProcessStore */
-            migrationProcessStore: StateDeprecated.getStore('migrationProcess'),
-            /** @type MigrationUIStore */
-            migrationUIStore: StateDeprecated.getStore('migrationUI')
+            showRedirectModal: false
         };
     },
 
@@ -155,8 +151,8 @@ Component.register('swag-migration-loading-screen-takeover', {
         onRedirect() {
             this.showRedirectModal = false;
             this.$nextTick(() => {
-                this.migrationProcessStore.setIsMigrating(false);
-                this.migrationUIStore.setIsLoading(false);
+                this.$store.commit('swagMigration/process/setIsMigrating', false);
+                this.$store.commit('swagMigration/ui/setIsLoading', false);
                 this.$router.push({ name: 'swag.migration.index.main' });
             });
         }

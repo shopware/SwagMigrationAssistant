@@ -1,4 +1,4 @@
-const { StateDeprecated } = Shopware;
+const { State } = Shopware;
 
 /**
  * Describes the current step in the migration (status).
@@ -38,7 +38,7 @@ export class WorkerStatusManager {
      */
     constructor(migrationService) {
         this._migrationService = migrationService;
-        this._migrationProcessStore = StateDeprecated.getStore('migrationProcess');
+        this._migrationProcessState = State.get('swagMigration/process');
     }
 
     /**
@@ -51,7 +51,7 @@ export class WorkerStatusManager {
      */
     changeStatus(runId, newStatus = null) {
         if (newStatus === null) {
-            newStatus = this._migrationProcessStore.state.statusIndex;
+            newStatus = this._migrationProcessState.statusIndex;
         }
 
         return new Promise((resolve, reject) => {
@@ -94,7 +94,7 @@ export class WorkerStatusManager {
     }
 
     onStatusPreparationFinished(newStatus) {
-        this._migrationProcessStore.setStatusIndex(newStatus);
+        State.commit('swagMigration/process/setStatusIndex', newStatus);
     }
 
     beforeWriteProgress(runId) {
@@ -107,7 +107,7 @@ export class WorkerStatusManager {
                     response = response.filter((group) => {
                         return group.id !== 'processMediaFiles';
                     });
-                    this._migrationProcessStore.setEntityGroups(response);
+                    State.commit('swagMigration/process/setEntityGroups', response);
                     requestRetry = false;
                 }).catch(() => {
                     requestFailedCount += 1;
@@ -133,7 +133,7 @@ export class WorkerStatusManager {
             while (requestRetry) {
                 await this._migrationService.updateMediaFilesProgress(runId).then((response) => {
                     const newEntityGroups = response.filter(group => group.id === 'processMediaFiles');
-                    this._migrationProcessStore.setEntityGroups(newEntityGroups);
+                    State.commit('swagMigration/process/setEntityGroups', newEntityGroups);
                     requestRetry = false;
                 }).catch(() => {
                     requestFailedCount += 1;
