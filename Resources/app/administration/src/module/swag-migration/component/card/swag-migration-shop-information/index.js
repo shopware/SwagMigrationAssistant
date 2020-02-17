@@ -2,6 +2,7 @@ import template from './swag-migration-shop-information.html.twig';
 import './swag-migration-shop-information.scss';
 
 const { Component } = Shopware;
+const { mapState, mapGetters } = Shopware.Component.getComponentHelper();
 const { format } = Shopware.Utils;
 const { Criteria } = Shopware.Data;
 
@@ -33,22 +34,32 @@ Component.register('swag-migration-shop-information', {
             lastConnectionCheck: '-',
             lastMigrationDate: '-',
             connection: null,
-            context: Shopware.Context.api,
-            migrationProcessState: this.$store.state['swagMigration/process']
+            context: Shopware.Context.api
         };
     },
 
     filters: {
         localizedNumberFormat(value) {
-            const locale = `${this.$store.getters.adminLocaleLanguage}-${this.$store.getters.adminLocaleRegion}`;
+            const locale = `${this.adminLocaleLanguage}-${this.adminLocaleRegion}`;
             const formatter = new Intl.NumberFormat(locale);
             return formatter.format(value);
         }
     },
 
     computed: {
-        connectionId() {
-            return this.migrationProcessState.connectionId;
+        ...mapState('swagMigration/process', [
+            'connectionId',
+            'environmentInformation'
+        ]),
+
+        ...mapGetters([
+            'adminLocaleLanguage',
+            'adminLocaleRegion'
+        ]),
+
+        displayEnvironmentInformation() {
+            return this.environmentInformation === null ? {} :
+                this.environmentInformation;
         },
 
         migrationRunRepository() {
@@ -59,27 +70,22 @@ Component.register('swag-migration-shop-information', {
             return this.repositoryFactory.create('swag_migration_connection');
         },
 
-        environmentInformation() {
-            return this.migrationProcessState.environmentInformation === null ? {} :
-                this.migrationProcessState.environmentInformation;
-        },
-
         connectionName() {
             return this.connection === null ? '' :
                 this.connection.name;
         },
 
         shopUrl() {
-            return this.environmentInformation.sourceSystemDomain === undefined ? '' :
-                this.environmentInformation.sourceSystemDomain.replace(/^\s*https?:\/\//, '');
+            return this.displayEnvironmentInformation.sourceSystemDomain === undefined ? '' :
+                this.displayEnvironmentInformation.sourceSystemDomain.replace(/^\s*https?:\/\//, '');
         },
 
         shopUrlPrefix() {
-            if (this.environmentInformation.sourceSystemDomain === undefined) {
+            if (this.displayEnvironmentInformation.sourceSystemDomain === undefined) {
                 return '';
             }
 
-            const match = this.environmentInformation.sourceSystemDomain.match(/^\s*https?:\/\//);
+            const match = this.displayEnvironmentInformation.sourceSystemDomain.match(/^\s*https?:\/\//);
             if (match === null) {
                 return '';
             }
@@ -116,8 +122,8 @@ Component.register('swag-migration-shop-information', {
         },
 
         shopFirstLetter() {
-            return this.environmentInformation.sourceSystemName === undefined ? 'S' :
-                this.environmentInformation.sourceSystemName[0];
+            return this.displayEnvironmentInformation.sourceSystemName === undefined ? 'S' :
+                this.displayEnvironmentInformation.sourceSystemName[0];
         },
 
         profile() {

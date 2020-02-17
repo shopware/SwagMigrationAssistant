@@ -1,7 +1,7 @@
 {% block swag_migration_index_main_page %}
     <div class="swag-migration-index-main-page">
         {% block swag_migration_index_main_page_content %}
-            <div v-if="!migrationUIState.isLoading">
+            <div v-if="!isLoading">
                 {% block swag_migration_index_main_page_warnings %}
                     <div class="swag-migration-index-main-page__warnings">
                         <sw-alert v-for="warning in displayWarnings"
@@ -22,11 +22,11 @@
         {% endblock %}
 
         {% block swag_migration_index_main_page_assistant %}
-            <swag-migration-assistant v-if="!migrationUIState.isLoading"></swag-migration-assistant>
+            <swag-migration-assistant v-if="!isLoading"></swag-migration-assistant>
         {% endblock %}
 
         {% block swag_migration_index_main_page_loader %}
-            <sw-loader v-if="migrationUIState.isLoading"></sw-loader>
+            <sw-loader v-if="isLoading"></sw-loader>
         {% endblock %}
     </div>
 {% endblock %}

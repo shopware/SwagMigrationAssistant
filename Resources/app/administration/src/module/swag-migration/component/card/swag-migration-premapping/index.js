@@ -2,7 +2,8 @@ import template from './swag-migration-premapping.html.twig';
 import { UI_COMPONENT_INDEX } from '../../../../../core/data/migrationUI.store';
 import './swag-migration-premapping.scss';
 
-const { Component } = Shopware;
+const { Component, State } = Shopware;
+const { mapState } = Shopware.Component.getComponentHelper();
 
 Component.register('swag-migration-premapping', {
     template,
@@ -17,13 +18,12 @@ Component.register('swag-migration-premapping', {
     data() {
         return {
             isLoading: false,
-            premappingInput: [],
-            migrationUIState: this.$store.state['swagMigration/ui']
+            premappingInput: []
         };
     },
 
     created() {
-        this.$store.commit('swagMigration/ui/setIsPremappingValid', false);
+        State.commit('swagMigration/ui/setIsPremappingValid', false);
     },
 
     watch: {
@@ -38,20 +38,23 @@ Component.register('swag-migration-premapping', {
     },
 
     computed: {
-        runId() {
-            return this.$store.state['swagMigration/process'].runId;
-        },
+        ...mapState('swagMigration/process', [
+            'runId'
+        ]),
+
+        ...mapState('swagMigration/ui', [
+            'unfilledPremapping',
+            'filledPremapping',
+            'isPremappingValid',
+            'premapping'
+        ]),
 
         displayUnfilledPremapping() {
-            return this.migrationUIState.unfilledPremapping.length > 0;
+            return this.unfilledPremapping.length > 0;
         },
 
         displayFilledPremapping() {
-            return this.migrationUIState.filledPremapping.length > 0;
-        },
-
-        premappingValid() {
-            return this.migrationUIState.isPremappingValid;
+            return this.filledPremapping.length > 0;
         }
     },
 
@@ -59,7 +62,7 @@ Component.register('swag-migration-premapping', {
         fetchPremapping(runId) {
             this.isLoading = true;
 
-            if (this.migrationUIState.premapping !== null && this.migrationUIState.premapping.length > 0) {
+            if (this.premapping !== null && this.premapping.length > 0) {
                 this.$nextTick(() => {
                     this.notifyPremappingValidWatchers(
                         this.validatePremapping(false)
@@ -71,12 +74,12 @@ Component.register('swag-migration-premapping', {
 
             this.migrationService.generatePremapping(runId).then((premapping) => {
                 if (premapping.length === 0) {
-                    this.$store.commit('swagMigration/ui/setComponentIndex', UI_COMPONENT_INDEX.LOADING_SCREEN);
+                    State.commit('swagMigration/ui/setComponentIndex', UI_COMPONENT_INDEX.LOADING_SCREEN);
                     this.migrationWorkerService.startMigration(this.runId).catch(() => {
                         this.onInvalidMigrationAccessToken();
                     });
                 } else {
-                    this.$store.commit('swagMigration/ui/setPremapping', premapping);
+                    State.commit('swagMigration/ui/setPremapping', premapping);
                     this.notifyPremappingValidWatchers(
                         this.validatePremapping(false)
                     );
@@ -87,27 +90,27 @@ Component.register('swag-migration-premapping', {
         },
 
         notifyPremappingValidWatchers(isValid) {
-            if (isValid !== this.migrationUIState.isPremappingValid) {
-                this.$store.commit('swagMigration/ui/setIsPremappingValid', isValid);
+            if (isValid !== this.isPremappingValid) {
+                State.commit('swagMigration/ui/setIsPremappingValid', isValid);
                 return;
             }
 
             // It is needed to trigger a watcher event here, even if the value does not have been changed.
-            this.$store.commit('swagMigration/ui/setIsPremappingValid', !isValid);
+            State.commit('swagMigration/ui/setIsPremappingValid', !isValid);
             this.$nextTick(() => {
-                this.$store.commit('swagMigration/ui/setIsPremappingValid', isValid);
+                State.commit('swagMigration/ui/setIsPremappingValid', isValid);
             });
         },
 
         validatePremapping(updateStore = true) {
-            const isValid = !this.migrationUIState.premapping.some((group) => {
+            const isValid = !this.premapping.some((group) => {
                 return group.mapping.some((mapping) => {
                     return mapping.destinationUuid === null || mapping.destinationUuid.length === 0;
                 });
             });
 
             if (updateStore) {
-                this.$store.commit('swagMigration/ui/setIsPremappingValid', isValid);
+                State.commit('swagMigration/ui/setIsPremappingValid', isValid);
             }
 
             return isValid;

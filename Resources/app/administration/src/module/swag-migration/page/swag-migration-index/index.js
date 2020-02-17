@@ -1,6 +1,7 @@
 import template from './swag-migration-index.html.twig';
 
 const { Component } = Shopware;
+const { mapState, mapGetters } = Shopware.Component.getComponentHelper();
 
 Component.register('swag-migration-index', {
     template,
@@ -14,8 +15,6 @@ Component.register('swag-migration-index', {
 
     data() {
         return {
-            migrationUIState: this.$store.state['swagMigration/ui'],
-            migrationProcessState: this.$store.state['swagMigration/process'],
             storesInitializing: true
         };
     },
@@ -31,32 +30,47 @@ Component.register('swag-migration-index', {
     },
 
     computed: {
+        ...mapState('swagMigration/process', [
+            'isMigrating',
+            'environmentInformation',
+            'connectionId'
+        ]),
+
+        ...mapState('swagMigration/ui', [
+            'isLoading',
+            'dataSelectionTableData'
+        ]),
+
+        ...mapGetters({
+            storeIsMigrationAllowed: 'swagMigration/ui/isMigrationAllowed'
+        }),
+
         isMigrationAllowed() {
-            return this.$store.getters['swagMigration/ui/isMigrationAllowed'] &&
-                this.migrationProcessState.environmentInformation.migrationDisabled === false;
+            return this.storeIsMigrationAllowed &&
+                this.environmentInformation.migrationDisabled === false;
         },
 
         /**
          * @returns {boolean}
          */
         migrateButtonDisabled() {
-            return this.migrationUIState.isLoading ||
-                this.migrationProcessState.isMigrating ||
+            return this.isLoading ||
+                this.isMigrating ||
                 !this.isMigrationAllowed;
         }
     },
 
     methods: {
         createdComponent() {
-            if (this.migrationProcessState.connectionId === null
-                || Object.keys(this.migrationProcessState.environmentInformation).length === 0
+            if (this.connectionId === null
+                || Object.keys(this.environmentInformation).length === 0
             ) {
                 this.migrationProcessStoreInitService.initProcessStore().then(() => {
                     return this.migrationUiStoreInitService.initUiStore();
                 }).catch(() => {}).finally(() => {
                     this.storesInitializing = false;
                 });
-            } else if (this.migrationUIState.dataSelectionTableData.length === 0) {
+            } else if (this.dataSelectionTableData.length === 0) {
                 this.migrationUiStoreInitService.initUiStore().then(() => {
                     this.storesInitializing = false;
                 }).catch(() => {

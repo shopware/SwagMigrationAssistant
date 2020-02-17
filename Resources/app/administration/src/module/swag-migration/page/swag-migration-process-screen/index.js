@@ -7,7 +7,8 @@ import {
     WORKER_INTERRUPT_TYPE
 } from '../../../../core/service/migration/swag-migration-worker.service';
 
-const { Component } = Shopware;
+const { Component, State } = Shopware;
+const { mapState } = Shopware.Component.getComponentHelper();
 
 Component.register('swag-migration-process-screen', {
     template,
@@ -33,8 +34,6 @@ Component.register('swag-migration-process-screen', {
             isOtherMigrationRunning: false,
             showAbortMigrationConfirmDialog: false,
             isPausedBeforeAbortDialog: false,
-            migrationProcessState: this.$store.state['swagMigration/process'],
-            migrationUIState: this.$store.state['swagMigration/ui'],
             UI_COMPONENT_INDEX: UI_COMPONENT_INDEX,
             displayFlowChart: true,
             flowChartItemIndex: 0,
@@ -51,9 +50,23 @@ Component.register('swag-migration-process-screen', {
     },
 
     computed: {
-        statusIndex() {
-            return this.migrationProcessState.statusIndex;
-        },
+        ...mapState('swagMigration/process', [
+            'statusIndex',
+            'isMigrating',
+            'connectionId',
+            'environmentInformation',
+            'runId'
+        ]),
+
+        ...mapState('swagMigration/ui', [
+            'componentIndex',
+            'isPaused',
+            'isLoading',
+            'isPremappingValid',
+            'unfilledPremapping',
+            'premapping',
+            'dataSelectionIds'
+        ]),
 
         /**
          * @returns {string}
@@ -70,16 +83,16 @@ Component.register('swag-migration-process-screen', {
          * @returns {boolean}
          */
         componentIndexIsResult() {
-            return this.migrationUIState.componentIndex === UI_COMPONENT_INDEX.RESULT_SUCCESS;
+            return this.componentIndex === UI_COMPONENT_INDEX.RESULT_SUCCESS;
         },
 
         /**
          * @returns {boolean}
          */
         abortButtonVisible() {
-            return this.migrationUIState.isPaused || (
-                this.migrationProcessState.isMigrating &&
-                !this.migrationUIState.isLoading &&
+            return this.isPaused || (
+                this.isMigrating &&
+                !this.isLoading &&
                 !this.componentIndexIsResult
             );
         },
@@ -95,22 +108,22 @@ Component.register('swag-migration-process-screen', {
          * @returns {boolean}
          */
         migrateButtonVisible() {
-            return (!this.migrationProcessState.isMigrating && !this.migrationUIState.isPaused) ||
-                (this.migrationProcessState.statusIndex === MIGRATION_STATUS.FETCH_DATA &&
-                    this.migrationProcessState.isMigrating) ||
-                (this.componentIndexIsResult && this.migrationProcessState.isMigrating);
+            return (!this.isMigrating && !this.isPaused) ||
+                (this.statusIndex === MIGRATION_STATUS.FETCH_DATA &&
+                    this.isMigrating) ||
+                (this.componentIndexIsResult && this.isMigrating);
         },
 
         isFetching() {
-            return this.migrationProcessState.statusIndex === MIGRATION_STATUS.FETCH_DATA &&
-                this.migrationProcessState.isMigrating;
+            return this.statusIndex === MIGRATION_STATUS.FETCH_DATA &&
+                this.isMigrating;
         },
 
         /**
          * @returns {boolean}
          */
         migrateButtonDisabled() {
-            return this.migrationUIState.isLoading ||
+            return this.isLoading ||
                 this.isFetching ||
                 this.componentIndexIsResult;
         },
@@ -119,20 +132,20 @@ Component.register('swag-migration-process-screen', {
          * @returns {boolean}
          */
         startButtonVisible() {
-            return !this.migrationUIState.isLoading &&
-                this.migrationProcessState.statusIndex === MIGRATION_STATUS.PREMAPPING &&
-                this.migrationProcessState.isMigrating;
+            return !this.isLoading &&
+                this.statusIndex === MIGRATION_STATUS.PREMAPPING &&
+                this.isMigrating;
         },
 
         premappingIsNotReady() {
-            return this.migrationProcessState.statusIndex === MIGRATION_STATUS.PREMAPPING &&
-                this.migrationUIState.componentIndex !== UI_COMPONENT_INDEX.WARNING_CONFIRM &&
-                this.migrationProcessState.isMigrating &&
-                !this.migrationUIState.isPremappingValid;
+            return this.statusIndex === MIGRATION_STATUS.PREMAPPING &&
+                this.componentIndex !== UI_COMPONENT_INDEX.WARNING_CONFIRM &&
+                this.isMigrating &&
+                !this.isPremappingValid;
         },
 
         warningIsNotReady() {
-            return this.migrationUIState.componentIndex === UI_COMPONENT_INDEX.WARNING_CONFIRM &&
+            return this.componentIndex === UI_COMPONENT_INDEX.WARNING_CONFIRM &&
                 this.isWarningConfirmed === false;
         },
 
@@ -140,7 +153,7 @@ Component.register('swag-migration-process-screen', {
          * @returns {boolean}
          */
         startButtonDisabled() {
-            return this.migrationUIState.isLoading ||
+            return this.isLoading ||
                 this.premappingIsNotReady ||
                 this.warningIsNotReady;
         },
@@ -149,28 +162,28 @@ Component.register('swag-migration-process-screen', {
          * @returns {boolean}
          */
         pauseButtonVisible() {
-            return this.migrationProcessState.isMigrating &&
-                !this.migrationUIState.isPaused &&
+            return this.isMigrating &&
+                !this.isPaused &&
                 !this.componentIndexIsResult &&
                 [
                     MIGRATION_STATUS.WAITING,
                     MIGRATION_STATUS.FETCH_DATA,
                     MIGRATION_STATUS.PREMAPPING
-                ].includes(this.migrationProcessState.statusIndex) === false;
+                ].includes(this.statusIndex) === false;
         },
 
         /**
          * @returns {boolean}
          */
         pauseButtonDisabled() {
-            return this.migrationUIState.isLoading;
+            return this.isLoading;
         },
 
         /**
          * @returns {boolean}
          */
         continueButtonVisible() {
-            return this.migrationUIState.isPaused;
+            return this.isPaused;
         }
     },
 
@@ -181,7 +194,7 @@ Component.register('swag-migration-process-screen', {
              * @param {number} status
              */
             handler(status) {
-                if (this.migrationUIState.isLoading) {
+                if (this.isLoading) {
                     return;
                 }
 
@@ -223,7 +236,7 @@ Component.register('swag-migration-process-screen', {
             }
         },
 
-        'migrationUIState.isPremappingValid': {
+        isPremappingValid: {
             handler(valid) {
                 if (valid) {
                     this.flowChartItemVariant = 'success';
@@ -245,10 +258,10 @@ Component.register('swag-migration-process-screen', {
 
     methods: {
         async createdComponent() {
-            this.$store.commit('swagMigration/ui/setIsLoading', true);
+            State.commit('swagMigration/ui/setIsLoading', true);
 
-            let otherInstanceMigrating = this.migrationProcessState.isMigrating;
-            if (this.migrationProcessState.isMigrating === false) {
+            let otherInstanceMigrating = this.isMigrating;
+            if (this.isMigrating === false) {
                 await this.migrationWorkerService.isMigrationRunningInOtherTab().then((isRunning) => {
                     if (isRunning) {
                         otherInstanceMigrating = true;
@@ -265,10 +278,10 @@ Component.register('swag-migration-process-screen', {
                             return;
                         }
 
-                        this.$store.commit('swagMigration/ui/setIsPaused', runState.isMigrationRunning);
-                        if (this.migrationUIState.isPaused) {
+                        State.commit('swagMigration/ui/setIsPaused', runState.isMigrationRunning);
+                        if (this.isPaused) {
                             otherInstanceMigrating = true;
-                            this.$store.commit('swagMigration/ui/setComponentIndex', UI_COMPONENT_INDEX.LOADING_SCREEN);
+                            State.commit('swagMigration/ui/setComponentIndex', UI_COMPONENT_INDEX.LOADING_SCREEN);
                         }
 
                         this.restoreFlowChart(runState.status);
@@ -277,21 +290,21 @@ Component.register('swag-migration-process-screen', {
             }
 
             if (
-                this.migrationProcessState.connectionId === null
-                || this.migrationProcessState.environmentInformation === null
+                this.connectionId === null
+                || this.environmentInformation === null
             ) {
                 await this.migrationProcessStoreInitService.initProcessStore();
             }
 
-            if (this.migrationProcessState.connectionId === null) {
+            if (this.connectionId === null) {
                 this.$router.push({ name: 'swag.migration.wizard.introduction' });
                 return;
             }
 
             // Do connection check
-            this.migrationService.checkConnection(this.migrationProcessState.connectionId)
+            this.migrationService.checkConnection(this.connectionId)
                 .then(async (connectionCheckResponse) => {
-                    this.$store.commit('swagMigration/process/setEnvironmentInformation', connectionCheckResponse);
+                    State.commit('swagMigration/process/setEnvironmentInformation', connectionCheckResponse);
 
                     if (
                         (
@@ -307,7 +320,7 @@ Component.register('swag-migration-process-screen', {
                     this.migrationWorkerService.restoreRunningMigration(false);
 
                     if (
-                        (this.migrationProcessState.isMigrating ||
+                        (this.isMigrating ||
                         this.migrationWorkerService.status === MIGRATION_STATUS.FINISHED) &&
                         !this.$route.params.startMigration
                     ) {
@@ -318,9 +331,9 @@ Component.register('swag-migration-process-screen', {
                         await this.onMigrate();
                     }
 
-                    this.$store.commit('swagMigration/ui/setIsLoading', false);
+                    State.commit('swagMigration/ui/setIsLoading', false);
                 }).catch(() => {
-                    this.$store.commit('swagMigration/ui/setIsLoading', false);
+                    State.commit('swagMigration/ui/setIsLoading', false);
                 });
         },
 
@@ -333,7 +346,7 @@ Component.register('swag-migration-process-screen', {
                 this.flowChartItemVariant = 'success';
             }
 
-            if (currentStatus === MIGRATION_STATUS.PREMAPPING && this.migrationUIState.unfilledPremapping.length > 0) {
+            if (currentStatus === MIGRATION_STATUS.PREMAPPING && this.unfilledPremapping.length > 0) {
                 this.flowChartItemVariant = 'error';
             }
 
@@ -353,21 +366,21 @@ Component.register('swag-migration-process-screen', {
             this.displayFlowChart = true;
 
             // show loading or premapping screen
-            if (this.migrationProcessState.statusIndex === MIGRATION_STATUS.PREMAPPING &&
-                this.migrationUIState.componentIndex === UI_COMPONENT_INDEX.WARNING_CONFIRM) {
-                this.$store.commit('swagMigration/ui/setComponentIndex', UI_COMPONENT_INDEX.WARNING_CONFIRM);
-            } else if (this.migrationProcessState.statusIndex === MIGRATION_STATUS.PREMAPPING) {
-                this.$store.commit('swagMigration/ui/setComponentIndex', UI_COMPONENT_INDEX.PREMAPPING);
-            } else if (this.migrationProcessState.statusIndex === MIGRATION_STATUS.PROCESS_MEDIA_FILES) {
+            if (this.statusIndex === MIGRATION_STATUS.PREMAPPING &&
+                this.componentIndex === UI_COMPONENT_INDEX.WARNING_CONFIRM) {
+                State.commit('swagMigration/ui/setComponentIndex', UI_COMPONENT_INDEX.WARNING_CONFIRM);
+            } else if (this.statusIndex === MIGRATION_STATUS.PREMAPPING) {
+                State.commit('swagMigration/ui/setComponentIndex', UI_COMPONENT_INDEX.PREMAPPING);
+            } else if (this.statusIndex === MIGRATION_STATUS.PROCESS_MEDIA_FILES) {
                 this.onProcessMediaFiles();
-            } else if (this.migrationProcessState.statusIndex === MIGRATION_STATUS.FINISHED) {
+            } else if (this.statusIndex === MIGRATION_STATUS.FINISHED) {
                 this.onFinishWithoutErrors();
             } else {
-                this.$store.commit('swagMigration/ui/setComponentIndex', UI_COMPONENT_INDEX.LOADING_SCREEN);
+                State.commit('swagMigration/ui/setComponentIndex', UI_COMPONENT_INDEX.LOADING_SCREEN);
             }
 
-            if (this.migrationProcessState.statusIndex !== MIGRATION_STATUS.WAITING) {
-                this.restoreFlowChart(this.migrationProcessState.statusIndex);
+            if (this.statusIndex !== MIGRATION_STATUS.WAITING) {
+                this.restoreFlowChart(this.statusIndex);
             }
 
             // subscribe to the interrupt event again
@@ -377,51 +390,51 @@ Component.register('swag-migration-process-screen', {
         onAbortButtonClick() {
             this.isOtherMigrationRunning = false;
 
-            if (this.migrationProcessState.statusIndex === MIGRATION_STATUS.PREMAPPING) {
-                this.$store.commit('swagMigration/ui/setIsLoading', true);
+            if (this.statusIndex === MIGRATION_STATUS.PREMAPPING) {
+                State.commit('swagMigration/ui/setIsLoading', true);
                 this.onInterrupt(WORKER_INTERRUPT_TYPE.STOP);
                 return;
             }
 
-            if (this.migrationProcessState.statusIndex === MIGRATION_STATUS.FETCH_DATA) {
-                this.$store.commit('swagMigration/ui/setIsLoading', true);
+            if (this.statusIndex === MIGRATION_STATUS.FETCH_DATA) {
+                State.commit('swagMigration/ui/setIsLoading', true);
                 this.migrationWorkerService.stopMigration();
                 return;
             }
 
             this.showAbortMigrationConfirmDialog = true;
-            this.isPausedBeforeAbortDialog = this.migrationUIState.isPaused;
+            this.isPausedBeforeAbortDialog = this.isPaused;
 
-            if (!this.migrationUIState.isPaused) {
-                this.$store.commit('swagMigration/ui/setIsLoading', true);
+            if (!this.isPaused) {
+                State.commit('swagMigration/ui/setIsLoading', true);
                 this.migrationWorkerService.pauseMigration();
             }
         },
 
         onBackButtonClick() {
             this.migrationWorkerService.status = MIGRATION_STATUS.WAITING;
-            this.$store.commit('swagMigration/process/setIsMigrating', false);
+            State.commit('swagMigration/process/setIsMigrating', false);
             this.isOtherMigrationRunning = false;
             this.$router.push({ name: 'swag.migration.index.main' });
         },
 
         onStartButtonClick() {
-            if (this.migrationUIState.componentIndex === UI_COMPONENT_INDEX.WARNING_CONFIRM) {
-                this.$store.commit('swagMigration/ui/setComponentIndex', UI_COMPONENT_INDEX.PREMAPPING);
+            if (this.componentIndex === UI_COMPONENT_INDEX.WARNING_CONFIRM) {
+                State.commit('swagMigration/ui/setComponentIndex', UI_COMPONENT_INDEX.PREMAPPING);
                 return;
             }
 
-            this.$store.commit('swagMigration/ui/setIsLoading', true);
+            State.commit('swagMigration/ui/setIsLoading', true);
             this.migrationService.writePremapping(
-                this.migrationProcessState.runId,
-                this.migrationUIState.premapping
+                this.runId,
+                this.premapping
             ).then(() => {
-                this.$store.commit('swagMigration/ui/setComponentIndex', UI_COMPONENT_INDEX.LOADING_SCREEN);
-                this.$store.commit('swagMigration/ui/setIsLoading', false);
+                State.commit('swagMigration/ui/setComponentIndex', UI_COMPONENT_INDEX.LOADING_SCREEN);
+                State.commit('swagMigration/ui/setIsLoading', false);
                 this.migrationWorkerService.startMigration(
-                    this.migrationProcessState.runId
+                    this.runId
                 ).then(() => {
-                    this.$store.commit('swagMigration/ui/setIsLoading', false);
+                    State.commit('swagMigration/ui/setIsLoading', false);
                 }).catch(() => {
                     this.onInvalidMigrationAccessToken();
                 });
@@ -430,18 +443,18 @@ Component.register('swag-migration-process-screen', {
 
         onPauseButtonClick() {
             this.migrationWorkerService.pauseMigration();
-            this.$store.commit('swagMigration/process/setIsMigrating', false);
-            this.$store.commit('swagMigration/ui/setIsLoading', true);
+            State.commit('swagMigration/process/setIsMigrating', false);
+            State.commit('swagMigration/ui/setIsLoading', true);
         },
 
         async onContinueButtonClick() {
-            this.$store.commit('swagMigration/ui/setIsLoading', true);
+            State.commit('swagMigration/ui/setIsLoading', true);
             this.isOtherMigrationRunning = false;
-            this.$store.commit('swagMigration/process/setIsMigrating', true);
+            State.commit('swagMigration/process/setIsMigrating', true);
 
             await this.migrationWorkerService.isMigrationRunningInOtherTab().then((isRunning) => {
                 if (isRunning) {
-                    this.$store.commit('swagMigration/ui/setIsLoading', false);
+                    State.commit('swagMigration/ui/setIsLoading', false);
                     this.isTakeoverForbidden = true;
                     this.onInvalidMigrationAccessToken();
                 }
@@ -452,12 +465,12 @@ Component.register('swag-migration-process-screen', {
                     if (runState.requestErrorCode !== undefined &&
                         runState.requestErrorCode !== '500') {
                         // Something is wrong with the connection
-                        this.$store.commit('swagMigration/ui/setIsLoading', false);
+                        State.commit('swagMigration/ui/setIsLoading', false);
                         return;
                     }
 
-                    this.$store.commit('swagMigration/ui/setIsLoading', false);
-                    this.$store.commit('swagMigration/ui/setIsPaused', false);
+                    State.commit('swagMigration/ui/setIsLoading', false);
+                    State.commit('swagMigration/ui/setIsPaused', false);
 
                     if (runState.isMigrationAccessTokenValid === false) {
                         this.onInterrupt(WORKER_INTERRUPT_TYPE.TAKEOVER);
@@ -465,7 +478,7 @@ Component.register('swag-migration-process-screen', {
                     }
 
                     if (runState.isMigrationRunning === false) {
-                        this.$store.commit('swagMigration/process/setIsMigrating', false);
+                        State.commit('swagMigration/process/setIsMigrating', false);
                         this.$router.push({ name: 'swag.migration.index.main' });
                         return;
                     }
@@ -481,12 +494,12 @@ Component.register('swag-migration-process-screen', {
 
             this.$nextTick().then(async () => {
                 this.resetFlowChart();
-                this.$store.commit('swagMigration/process/setIsMigrating', true);
+                State.commit('swagMigration/process/setIsMigrating', true);
                 this.errorList = [];
 
                 // show loading screen
-                this.$store.commit('swagMigration/ui/setIsLoading', true);
-                this.$store.commit('swagMigration/process/resetProgress');
+                State.commit('swagMigration/ui/setIsLoading', true);
+                State.commit('swagMigration/process/resetProgress');
 
                 let isMigrationRunningInOtherTab = false;
                 await this.migrationWorkerService.isMigrationRunningInOtherTab().then((isRunning) => {
@@ -494,7 +507,7 @@ Component.register('swag-migration-process-screen', {
                 });
 
                 if (isMigrationRunningInOtherTab) {
-                    this.$store.commit('swagMigration/ui/setIsLoading', false);
+                    State.commit('swagMigration/ui/setIsLoading', false);
                     this.isTakeoverForbidden = true;
                     this.onInvalidMigrationAccessToken();
                     return;
@@ -503,9 +516,9 @@ Component.register('swag-migration-process-screen', {
                 this.migrationWorkerService.subscribeInterrupt(this.onInterrupt.bind(this));
 
                 await this.migrationWorkerService.createMigration(
-                    this.migrationUIState.dataSelectionIds
+                    this.dataSelectionIds
                 ).then((runState) => {
-                    this.$store.commit('swagMigration/process/setEntityGroups', runState.runProgress);
+                    State.commit('swagMigration/process/setEntityGroups', runState.runProgress);
 
                     if (
                         runState.isMigrationAccessTokenValid === false ||
@@ -518,24 +531,24 @@ Component.register('swag-migration-process-screen', {
                     }
 
                     localStorage.setItem(MIGRATION_ACCESS_TOKEN_NAME, runState.accessToken);
-                    this.$store.commit('swagMigration/process/setRunId', runState.runUuid);
+                    State.commit('swagMigration/process/setRunId', runState.runUuid);
 
-                    if (this.migrationProcessState.environmentInformation.sourceSystemCurrency !== '' &&
-                        this.migrationProcessState.environmentInformation.targetSystemCurrency !== '' &&
-                        this.migrationProcessState.environmentInformation.sourceSystemCurrency !==
-                            this.migrationProcessState.environmentInformation.targetSystemCurrency) {
-                        this.$store.commit('swagMigration/ui/setComponentIndex', UI_COMPONENT_INDEX.WARNING_CONFIRM);
+                    if (this.environmentInformation.sourceSystemCurrency !== '' &&
+                        this.environmentInformation.targetSystemCurrency !== '' &&
+                        this.environmentInformation.sourceSystemCurrency !==
+                            this.environmentInformation.targetSystemCurrency) {
+                        State.commit('swagMigration/ui/setComponentIndex', UI_COMPONENT_INDEX.WARNING_CONFIRM);
                     } else {
-                        this.$store.commit('swagMigration/ui/setComponentIndex', UI_COMPONENT_INDEX.PREMAPPING);
+                        State.commit('swagMigration/ui/setComponentIndex', UI_COMPONENT_INDEX.PREMAPPING);
                     }
 
-                    this.$store.commit('swagMigration/ui/setIsLoading', false);
+                    State.commit('swagMigration/ui/setIsLoading', false);
                 });
             });
         },
 
         onFinishWithoutErrors() {
-            this.$store.commit('swagMigration/ui/setComponentIndex', UI_COMPONENT_INDEX.RESULT_SUCCESS);
+            State.commit('swagMigration/ui/setComponentIndex', UI_COMPONENT_INDEX.RESULT_SUCCESS);
             this.$root.$emit('sales-channel-change');
             this.$root.$emit('on-change-notification-center-visibility', true);
         },
@@ -554,12 +567,12 @@ Component.register('swag-migration-process-screen', {
          * Check if a takeover is allowed, takeover migration and restore state
          */
         async onTakeoverMigration() {
-            this.$store.commit('swagMigration/process/setIsMigrating', true);
-            this.$store.commit('swagMigration/ui/setIsLoading', true);
+            State.commit('swagMigration/process/setIsMigrating', true);
+            State.commit('swagMigration/ui/setIsLoading', true);
 
             await this.migrationWorkerService.isMigrationRunningInOtherTab().then((isRunning) => {
                 if (isRunning) {
-                    this.$store.commit('swagMigration/ui/setIsLoading', false);
+                    State.commit('swagMigration/ui/setIsLoading', false);
                     this.isTakeoverForbidden = true;
                     this.onInvalidMigrationAccessToken();
                 }
@@ -571,15 +584,15 @@ Component.register('swag-migration-process-screen', {
 
             await this.migrationWorkerService.checkForRunningMigration().then((runState) => {
                 if (runState.isMigrationRunning === false) {
-                    this.$store.commit('swagMigration/process/setIsMigrating', false);
-                    this.$store.commit('swagMigration/ui/setIsLoading', false);
+                    State.commit('swagMigration/process/setIsMigrating', false);
+                    State.commit('swagMigration/ui/setIsLoading', false);
                     this.isOtherMigrationRunning = false;
                     this.$router.push({ name: 'swag.migration.index.main' });
                     return;
                 }
 
                 this.migrationWorkerService.takeoverMigration(runState.runUuid).then(() => {
-                    this.$store.commit('swagMigration/ui/setIsLoading', false);
+                    State.commit('swagMigration/ui/setIsLoading', false);
                     this.migrationWorkerService.restoreRunningMigration();
                     this.restoreRunningMigration();
                 });
@@ -590,12 +603,12 @@ Component.register('swag-migration-process-screen', {
          * Abort the running migration on the other client so this client can start a new one.
          */
         async onAbortOtherMigration() {
-            this.$store.commit('swagMigration/ui/setIsLoading', true);
-            this.$store.commit('swagMigration/process/setIsMigrating', true);
+            State.commit('swagMigration/ui/setIsLoading', true);
+            State.commit('swagMigration/process/setIsMigrating', true);
 
             await this.migrationWorkerService.isMigrationRunningInOtherTab().then((isRunning) => {
                 if (isRunning) {
-                    this.$store.commit('swagMigration/ui/setIsLoading', false);
+                    State.commit('swagMigration/ui/setIsLoading', false);
                     this.isTakeoverForbidden = true;
                     this.onInvalidMigrationAccessToken();
                 }
@@ -607,16 +620,16 @@ Component.register('swag-migration-process-screen', {
 
             await this.migrationWorkerService.checkForRunningMigration().then((runState) => {
                 if (runState.isMigrationRunning === false) {
-                    this.$store.commit('swagMigration/process/setIsMigrating', false);
-                    this.$store.commit('swagMigration/ui/setIsLoading', false);
+                    State.commit('swagMigration/process/setIsMigrating', false);
+                    State.commit('swagMigration/ui/setIsLoading', false);
                     this.isOtherMigrationRunning = false;
                     this.$router.push({ name: 'swag.migration.index.main' });
                     return;
                 }
 
                 this.migrationService.abortMigration(runState.runUuid).then(() => {
-                    this.$store.commit('swagMigration/process/setIsMigrating', false);
-                    this.$store.commit('swagMigration/ui/setIsLoading', false);
+                    State.commit('swagMigration/process/setIsMigrating', false);
+                    State.commit('swagMigration/ui/setIsLoading', false);
                     this.isOtherMigrationRunning = false;
                     this.$router.push({ name: 'swag.migration.index.main' });
                 });
@@ -655,12 +668,12 @@ Component.register('swag-migration-process-screen', {
          * If the current migration was stopped
          */
         onStop() {
-            this.migrationService.abortMigration(this.migrationProcessState.runId).then(() => {
+            this.migrationService.abortMigration(this.runId).then(() => {
                 this.showAbortMigrationConfirmDialog = false;
                 this.isMigrationInterrupted = false;
-                this.$store.commit('swagMigration/process/setIsMigrating', false);
-                this.$store.commit('swagMigration/ui/setIsPaused', false);
-                this.$store.commit('swagMigration/ui/setIsLoading', false);
+                State.commit('swagMigration/process/setIsMigrating', false);
+                State.commit('swagMigration/ui/setIsPaused', false);
+                State.commit('swagMigration/ui/setIsLoading', false);
                 this.$nextTick(() => {
                     this.$router.push({ name: 'swag.migration.index.main' });
                 });
@@ -672,20 +685,20 @@ Component.register('swag-migration-process-screen', {
          */
         onPause() {
             this.isMigrationInterrupted = false;
-            this.$store.commit('swagMigration/process/setIsMigrating', false);
-            this.$store.commit('swagMigration/ui/setIsPaused', true);
-            this.$store.commit('swagMigration/ui/setIsLoading', false);
+            State.commit('swagMigration/process/setIsMigrating', false);
+            State.commit('swagMigration/ui/setIsPaused', true);
+            State.commit('swagMigration/ui/setIsLoading', false);
             this.isOtherMigrationRunning = false;
-            this.$store.commit('swagMigration/ui/setComponentIndex', UI_COMPONENT_INDEX.PAUSE_SCREEN);
+            State.commit('swagMigration/ui/setComponentIndex', UI_COMPONENT_INDEX.PAUSE_SCREEN);
         },
 
         onConnectionLost() {
-            this.$store.commit('swagMigration/process/setIsMigrating', false);
-            this.$store.commit('swagMigration/ui/setIsPaused', false);
-            this.$store.commit('swagMigration/ui/setDataSelectionIds', []);
-            this.$store.commit('swagMigration/ui/setDataSelectionTableData', []);
-            this.$store.commit('swagMigration/ui/setIsLoading', false);
-            this.$store.commit('swagMigration/ui/setComponentIndex', UI_COMPONENT_INDEX.CONNECTION_LOST);
+            State.commit('swagMigration/process/setIsMigrating', false);
+            State.commit('swagMigration/ui/setIsPaused', false);
+            State.commit('swagMigration/ui/setDataSelectionIds', []);
+            State.commit('swagMigration/ui/setDataSelectionTableData', []);
+            State.commit('swagMigration/ui/setIsLoading', false);
+            State.commit('swagMigration/ui/setComponentIndex', UI_COMPONENT_INDEX.CONNECTION_LOST);
         },
 
         /**
@@ -694,11 +707,11 @@ Component.register('swag-migration-process-screen', {
         onInvalidMigrationAccessToken() {
             this.displayFlowChart = false;
             this.isMigrationInterrupted = false;
-            this.$store.commit('swagMigration/process/setIsMigrating', false);
-            this.$store.commit('swagMigration/ui/setIsPaused', false);
+            State.commit('swagMigration/process/setIsMigrating', false);
+            State.commit('swagMigration/ui/setIsPaused', false);
             this.isOtherMigrationRunning = true;
-            this.$store.commit('swagMigration/ui/setComponentIndex', UI_COMPONENT_INDEX.TAKEOVER);
-            this.$store.commit('swagMigration/ui/setIsLoading', false);
+            State.commit('swagMigration/ui/setComponentIndex', UI_COMPONENT_INDEX.TAKEOVER);
+            State.commit('swagMigration/ui/setIsLoading', false);
         },
 
         onWarningConfirmationChanged(confirmed) {
@@ -706,7 +719,7 @@ Component.register('swag-migration-process-screen', {
         },
 
         onProcessMediaFiles() {
-            this.$store.commit('swagMigration/ui/setComponentIndex', UI_COMPONENT_INDEX.MEDIA_SCREEN);
+            State.commit('swagMigration/ui/setComponentIndex', UI_COMPONENT_INDEX.MEDIA_SCREEN);
         }
     }
 });

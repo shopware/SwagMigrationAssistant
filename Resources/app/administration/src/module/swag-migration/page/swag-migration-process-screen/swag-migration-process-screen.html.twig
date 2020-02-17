@@ -31,9 +31,9 @@
         {% endblock %}
 
         <template #content>
-            <sw-card-view v-if="!migrationUIState.isLoading" class="swag-migration-process-screen">
+            <sw-card-view v-if="!isLoading" class="swag-migration-process-screen">
                 {% block swag_migration_index_main_page_flow_chart %}
-                    <sw-step-display v-if="displayFlowChart && migrationUIState.componentIndex !== UI_COMPONENT_INDEX.WARNING_CONFIRM"
+                    <sw-step-display v-if="displayFlowChart && componentIndex !== UI_COMPONENT_INDEX.WARNING_CONFIRM"
                                      class="swag-migration-process-screen__step-display"
                                      :itemIndex="flowChartItemIndex"
                                      :itemVariant="flowChartItemVariant"
@@ -57,37 +57,37 @@
                 {% endblock %}
 
                 {% block swag_migration_index_main_page_card_confirm_warning %}
-                    <swag-migration-confirm-warning v-if="migrationUIState.componentIndex === UI_COMPONENT_INDEX.WARNING_CONFIRM"
+                    <swag-migration-confirm-warning v-if="componentIndex === UI_COMPONENT_INDEX.WARNING_CONFIRM"
                                                     class="swag-migration-process-screen__confirm-warning"
                                                     @confirmation-change="onWarningConfirmationChanged">
                     </swag-migration-confirm-warning>
                 {% endblock %}
 
                 {% block swag_migration_index_main_page_card_premapping %}
-                    <swag-migration-premapping v-if="migrationUIState.componentIndex === UI_COMPONENT_INDEX.PREMAPPING">
+                    <swag-migration-premapping v-if="componentIndex === UI_COMPONENT_INDEX.PREMAPPING">
                     </swag-migration-premapping>
                 {% endblock %}
 
                 {% block swag_migration_index_main_page_card_loadingScreen %}
                     <swag-migration-loading-screen
-                            v-if="migrationUIState.componentIndex === UI_COMPONENT_INDEX.LOADING_SCREEN || migrationUIState.componentIndex === UI_COMPONENT_INDEX.PAUSE_SCREEN"
+                            v-if="componentIndex === UI_COMPONENT_INDEX.LOADING_SCREEN || componentIndex === UI_COMPONENT_INDEX.PAUSE_SCREEN"
                     >
                     </swag-migration-loading-screen>
                 {% endblock %}
 
                 {% block swag_migration_index_main_page_card_loadingScreen_media %}
-                    <swag-migration-media-process v-if="migrationUIState.componentIndex === UI_COMPONENT_INDEX.MEDIA_SCREEN">
+                    <swag-migration-media-process v-if="componentIndex === UI_COMPONENT_INDEX.MEDIA_SCREEN">
                     </swag-migration-media-process>
                 {% endblock %}
 
                 {% block swag_migration_index_main_page_card_loadingScreen_success %}
-                    <swag-migration-result-screen v-if="migrationUIState.componentIndex === UI_COMPONENT_INDEX.RESULT_SUCCESS"
-                                                  :runId="migrationProcessState.runId">
+                    <swag-migration-result-screen v-if="componentIndex === UI_COMPONENT_INDEX.RESULT_SUCCESS"
+                                                  :runId="runId">
                     </swag-migration-result-screen>
                 {% endblock %}
 
                 {% block swag_migration_index_main_page_card_loadingScreen_takeover %}
-                    <swag-migration-loading-screen-takeover v-if="migrationUIState.componentIndex === UI_COMPONENT_INDEX.TAKEOVER"
+                    <swag-migration-loading-screen-takeover v-if="componentIndex === UI_COMPONENT_INDEX.TAKEOVER"
                                                             ref="loadingScreenTakeover"
                                                             @onTakeoverMigration="onTakeoverMigration"
                                                             @onAbortMigration="onAbortOtherMigration"
@@ -97,7 +97,7 @@
                 {% endblock %}
 
                 {% block swag_migration_index_main_page_card_loadingScreen_connectionLost %}
-                    <swag-migration-loading-screen-connection-lost v-if="migrationUIState.componentIndex === UI_COMPONENT_INDEX.CONNECTION_LOST">
+                    <swag-migration-loading-screen-connection-lost v-if="componentIndex === UI_COMPONENT_INDEX.CONNECTION_LOST">
                     </swag-migration-loading-screen-connection-lost>
                 {% endblock %}
 
@@ -141,7 +141,7 @@
                     </sw-modal>
                 {% endblock %}
             </sw-card-view>
-            <sw-loader v-if="migrationUIState.isLoading"></sw-loader>
+            <sw-loader v-if="isLoading"></sw-loader>
         </template>
     </sw-page>
 {% endblock %}

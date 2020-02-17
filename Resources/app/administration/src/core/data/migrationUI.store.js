@@ -98,12 +98,14 @@ export default {
 
     getters: {
         isMigrationAllowed(state) {
-            const requiredLookup = {};
-            state.dataSelectionTableData.forEach((data) => {
-                requiredLookup[data.id] = data.requiredSelection;
-            });
+            const tableDataIds = state.dataSelectionTableData.map((data) => {
+                if (data.requiredSelection === false) {
+                    return data.id;
+                }
 
-            return state.dataSelectionIds.some(id => requiredLookup[id] === false);
+                return null;
+            });
+            return state.dataSelectionIds.some(id => tableDataIds.includes(id));
         }
     }
 };

@@ -4,24 +4,27 @@ import { MIGRATION_DISPLAY_STATUS } from
     '../../../../../core/service/migration/swag-migration-worker-status-manager.service';
 
 const { Component } = Shopware;
+const { mapState, mapGetters } = Shopware.Component.getComponentHelper();
 
 Component.register('swag-migration-loading-screen', {
     template,
 
-    data() {
-        return {
-            migrationUIState: this.$store.state['swagMigration/ui'],
-            migrationProcessState: this.$store.state['swagMigration/process']
-        };
-    },
-
     computed: {
-        displayEntityGroups() {
-            return this.$store.getters['swagMigration/process/displayEntityGroups'];
-        },
+        ...mapState('swagMigration/process', [
+            'statusIndex',
+            'currentEntityGroupId'
+        ]),
+
+        ...mapState('swagMigration/ui', [
+            'isPaused'
+        ]),
+
+        ...mapGetters('swagMigration/process', [
+            'displayEntityGroups'
+        ]),
 
         currentStatus() {
-            return MIGRATION_DISPLAY_STATUS[this.migrationProcessState.statusIndex];
+            return MIGRATION_DISPLAY_STATUS[this.statusIndex];
         },
 
         progressBarValue() {
@@ -33,12 +36,12 @@ Component.register('swag-migration-loading-screen', {
         },
 
         progressBarTitle() {
-            if (this.migrationProcessState.currentEntityGroupId === '') {
+            if (this.currentEntityGroupId === '') {
                 return '';
             }
 
             return `${this.$t(
-                `swag-migration.index.selectDataCard.dataSelection.${this.migrationProcessState.currentEntityGroupId}`
+                `swag-migration.index.selectDataCard.dataSelection.${this.currentEntityGroupId}`
             )}`;
         },
 

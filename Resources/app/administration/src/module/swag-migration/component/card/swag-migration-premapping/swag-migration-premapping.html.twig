@@ -2,7 +2,7 @@
     <div class="swag-migration-premapping">
         {% block swag_migration_premapping_unfilled_alert %}
             <sw-alert variant="error"
-                      v-if="!isLoading && !premappingValid"
+                      v-if="!isLoading && !isPremappingValid"
                       class="swag-migration-premapping__alert">
                 {{ $tc('swag-migration.index.premappingCard.unfilledAlert') }}
             </sw-alert>
@@ -10,7 +10,7 @@
 
         {% block swag_migration_premapping_unfilled_card %}
             <sw-card class="swag-migration-premapping__unfilled-card"
-                     v-if="!isLoading && !premappingValid">
+                     v-if="!isLoading && !isPremappingValid">
                 {% block swag_migration_premapping_unfilled_title %}
                     <div class="swag-migration-premapping__unfilled-title">
                         {{ $t('swag-migration.index.premappingCard.unfilledTitle') }}
@@ -27,7 +27,7 @@
 
         {% block swag_migration_premapping_success_card %}
             <sw-card class="swag-migration-premapping__success-card"
-                     v-if="!isLoading && premappingValid">
+                     v-if="!isLoading && isPremappingValid">
                 {% block swag_migration_premapping_success_bubble %}
                     <div class="swag-migration-premapping__success-bubble">
                         <sw-icon size="36px"
@@ -56,7 +56,7 @@
             <swag-migration-tab-card v-if="displayUnfilledPremapping"
                                      class="swag-migration-premapping__tab-card"
                                      :title="$tc('swag-migration.index.premappingCard.unfilledCardTitle')">
-                <swag-migration-tab-card-item v-for="group in migrationUIState.unfilledPremapping"
+                <swag-migration-tab-card-item v-for="group in unfilledPremapping"
                                               :key="group.entity"
                                               :title="$tc(`swag-migration.index.premappingCard.group.${group.entity}`)"
                                               :isGrid="true"
@@ -79,7 +79,7 @@
                     <swag-migration-tab-card v-if="displayFilledPremapping"
                                              class="swag-migration-premapping__filled-tab-card swag-migration-premapping__tab-card"
                                              :title="$tc('swag-migration.index.premappingCard.filledCardTitle')">
-                        <swag-migration-tab-card-item v-for="group in migrationUIState.filledPremapping"
+                        <swag-migration-tab-card-item v-for="group in filledPremapping"
                                                       :key="group.entity"
                                                       :title="$tc(`swag-migration.index.premappingCard.group.${group.entity}`)"
                                                       :isGrid="true"

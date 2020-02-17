@@ -1,7 +1,8 @@
 import template from './swag-migration-data-selector.html.twig';
 import './swag-migration-data-selector.scss';
 
-const { Component } = Shopware;
+const { Component, State } = Shopware;
+const { mapState } = Shopware.Component.getComponentHelper();
 
 Component.register('swag-migration-data-selector', {
     template,
@@ -15,28 +16,18 @@ Component.register('swag-migration-data-selector', {
         this.createdComponent();
     },
 
-    data() {
-        return {
-            migrationUIState: this.$store.state['swagMigration/ui']
-        };
-    },
-
     computed: {
+        ...mapState('swagMigration/process', [
+            'environmentInformation'
+        ]),
+
+        ...mapState('swagMigration/ui', [
+            'dataSelectionTableData',
+            'dataSelectionIds'
+        ]),
+
         displayWarnings() {
-            return this.$store.state['swagMigration/process'].environmentInformation.displayWarnings;
-        },
-
-        uiDataSelectionTableData() {
-            return this.migrationUIState.dataSelectionTableData;
-        },
-
-        uiDataSelectionTableDataIdLookup() {
-            const lookUp = {};
-            this.migrationUIState.dataSelectionTableData.forEach((data) => {
-                lookUp[data.id] = data;
-            });
-
-            return lookUp;
+            return this.environmentInformation.displayWarnings;
         }
     },
 
@@ -46,9 +37,9 @@ Component.register('swag-migration-data-selector', {
         },
 
         fetchTableData() {
-            if (this.migrationUIState.dataSelectionTableData.length > 0) {
+            if (this.dataSelectionTableData.length > 0) {
                 this.$nextTick(() => {
-                    this.migrationUIState.dataSelectionIds.forEach((id) => {
+                    this.dataSelectionIds.forEach((id) => {
                         this.$refs.tableDataGrid.selectItem(true, { id });
                     });
                 });
@@ -58,7 +49,7 @@ Component.register('swag-migration-data-selector', {
         onGridSelectItem(selection) {
             const selectionIds = Object.keys(selection);
 
-            this.migrationUIState.dataSelectionTableData.forEach((data) => {
+            this.dataSelectionTableData.forEach((data) => {
                 if (data.requiredSelection !== true) {
                     return;
                 }
@@ -71,7 +62,7 @@ Component.register('swag-migration-data-selector', {
                 }
             });
 
-            this.$store.commit('swagMigration/ui/setDataSelectionIds', selectionIds);
+            State.commit('swagMigration/ui/setDataSelectionIds', selectionIds);
         },
 
         showHelptext(entityTotals) {
