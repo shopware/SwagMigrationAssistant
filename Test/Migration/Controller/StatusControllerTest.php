@@ -21,7 +21,6 @@ use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Storefront\Theme\ThemeService;
 use SwagMigrationAssistant\Controller\StatusController;
-use SwagMigrationAssistant\Exception\ConnectionCredentialsMissingException;
 use SwagMigrationAssistant\Exception\EntityNotExistsException;
 use SwagMigrationAssistant\Exception\MigrationContextPropertyMissingException;
 use SwagMigrationAssistant\Exception\MigrationIsRunningException;
@@ -597,8 +596,14 @@ class StatusControllerTest extends TestCase
     public function testCheckConnectionWithoutCredentials(): void
     {
         $request = new Request([], ['connectionId' => $this->invalidConnectionId]);
-        $this->expectException(ConnectionCredentialsMissingException::class);
-        $this->controller->checkConnection($request, $this->context);
+        $response = $this->controller->checkConnection($request, $this->context);
+        static::assertSame(Response::HTTP_OK, $response->getStatusCode());
+
+        $jsonResponse = json_decode($response->getContent(), true);
+        //this is not the actual expected response because of the DummyMigrationDataFetcher
+        static::assertSame('Shopware', $jsonResponse['sourceSystemName']);
+        static::assertSame('', $jsonResponse['requestStatus']['code']);
+        static::assertSame('No error.', $jsonResponse['requestStatus']['message']);
     }
 
     public function testAbortMigrationWithoutRunUuid(): void

@@ -1,3 +1,7 @@
+# NEXT-VERSION
+- PT-10983 - Technical concept of the user interfaces changed to Vuex
+- PT-10832 - Preventing an undesired state when creating new connections
+
 # 1.0.3
 - PT-11329 - Migrate meta data for products and categories
 - NTR - Solves an issue with database field length difference between SW5 and SW6

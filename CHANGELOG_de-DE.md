@@ -1,3 +1,7 @@
+# NEXT-VERSION
+- PT-10983 - Technisches Konzept der Oberflächen auf Vuex geändert
+- PT-10832 - Verhindern eines unerwünschten Zustands beim Anlegen neuer Verbindungen
+
 # 1.0.3
 - PT-11329 - Metadaten für Produkte und Kategorien migrieren
 - NTR - Behebt ein Problem mit Differenz der Datenbank Feldlänge zwischen SW5 und SW6
