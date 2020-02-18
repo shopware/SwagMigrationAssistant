@@ -11,7 +11,6 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
-use SwagMigrationAssistant\Exception\ConnectionCredentialsMissingException;
 use SwagMigrationAssistant\Exception\EntityNotExistsException;
 use SwagMigrationAssistant\Exception\MigrationContextPropertyMissingException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
@@ -265,12 +264,6 @@ class StatusController extends AbstractController
 
         if ($connection === null) {
             throw new EntityNotExistsException(SwagMigrationConnectionEntity::class, $connectionId);
-        }
-
-        $credentials = $connection->getCredentialFields();
-
-        if ($credentials === null) {
-            throw new ConnectionCredentialsMissingException();
         }
 
         $migrationContext = $this->migrationContextFactory->createByConnection($connection);

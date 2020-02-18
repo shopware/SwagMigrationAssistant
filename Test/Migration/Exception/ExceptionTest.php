@@ -10,7 +10,6 @@ namespace SwagMigrationAssistant\Test\Migration\Exception;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\ShopwareHttpException;
 use Shopware\Core\Framework\Uuid\Uuid;
-use SwagMigrationAssistant\Exception\ConnectionCredentialsMissingException;
 use SwagMigrationAssistant\Exception\ConverterNotFoundException;
 use SwagMigrationAssistant\Exception\DataSetNotFoundException;
 use SwagMigrationAssistant\Exception\EntityNotExistsException;
@@ -48,7 +47,6 @@ class ExceptionTest extends TestCase
     public function exceptionProvider(): array
     {
         return [
-            [new ConnectionCredentialsMissingException(), ConnectionCredentialsMissingException::class, Response::HTTP_BAD_REQUEST, 'SWAG_MIGRATION__CONNECTION_CREDENTIALS_MISSING'],
             [new ConverterNotFoundException('foo'), ConverterNotFoundException::class, Response::HTTP_NOT_FOUND, 'SWAG_MIGRATION__CONVERTER_NOT_FOUND'],
             [new DataSetNotFoundException('foo'), DataSetNotFoundException::class, Response::HTTP_NOT_FOUND, 'SWAG_MIGRATION__DATASET_NOT_FOUND'],
             [new EntityNotExistsException(SwagMigrationRunEntity::class, Uuid::randomHex()), EntityNotExistsException::class, Response::HTTP_BAD_REQUEST, 'SWAG_MIGRATION__ENTITY_NOT_EXISTS'],

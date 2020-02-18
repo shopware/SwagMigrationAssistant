@@ -43,8 +43,10 @@ Component.register('swag-migration-profile-shopware-api-credential-form', {
 
             return new ShopwareError({
                 code: this.apiKeyErrorCode,
-                parameters: {
-                    length: this.apiKeyLength
+                meta: {
+                    parameters: {
+                        length: this.apiKeyLength
+                    }
                 }
             });
         }

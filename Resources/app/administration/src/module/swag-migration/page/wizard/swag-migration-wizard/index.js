@@ -545,6 +545,13 @@ Component.register('swag-migration-wizard', {
             return new Promise((resolve, reject) => {
                 this.isLoading = true;
 
+                State.commit('swagMigration/process/setConnectionId', connection.id);
+                State.commit('swagMigration/process/setEntityGroups', []);
+                State.commit('swagMigration/process/setEnvironmentInformation', {});
+                State.commit('swagMigration/ui/setDataSelectionIds', []);
+                State.commit('swagMigration/ui/setPremapping', []);
+                State.commit('swagMigration/ui/setDataSelectionTableData', []);
+
                 const criteria = new Criteria(1, 1);
 
                 this.migrationGeneralSettingRepository.search(criteria, this.context).then((items) => {
