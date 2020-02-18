@@ -1,15 +1,14 @@
-const { StateDeprecated } = Shopware;
+const { State } = Shopware;
 
 class UiStoreInitService {
     constructor(migrationService) {
         this._migrationService = migrationService;
-        this._migrationProcessStore = StateDeprecated.getStore('migrationProcess');
-        this._migrationUiStore = StateDeprecated.getStore('migrationUI');
+        this._migrationProcessState = State.get('swagMigration/process');
     }
 
     initUiStore() {
         return new Promise((resolve, reject) => {
-            const connectionId = this._migrationProcessStore.state.connectionId;
+            const connectionId = this._migrationProcessState.connectionId;
 
             if (connectionId === undefined) {
                 resolve();
@@ -17,11 +16,11 @@ class UiStoreInitService {
             }
 
             this._migrationService.getDataSelection(connectionId).then((dataSelection) => {
-                this._migrationUiStore.setPremapping([]);
-                this._migrationUiStore.setDataSelectionTableData(dataSelection);
+                State.commit('swagMigration/ui/setPremapping', []);
+                State.commit('swagMigration/ui/setDataSelectionTableData', dataSelection);
                 const selectedIds = dataSelection.filter(selection => selection.requiredSelection)
                     .map(selection => selection.id);
-                this._migrationUiStore.setDataSelectionIds(selectedIds);
+                State.commit('swagMigration/ui/setDataSelectionIds', selectedIds);
                 resolve();
             }).catch(() => {
                 reject();

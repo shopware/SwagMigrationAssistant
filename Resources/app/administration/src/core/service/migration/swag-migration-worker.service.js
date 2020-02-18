@@ -2,7 +2,7 @@ import StorageBroadcastService from '../storage-broadcaster.service';
 import { WorkerRequest } from './swag-migration-worker-request.service';
 import { MIGRATION_STATUS, WorkerStatusManager } from './swag-migration-worker-status-manager.service';
 
-const { Application, StateDeprecated } = Shopware;
+const { Application, State } = Shopware;
 
 export const MIGRATION_ACCESS_TOKEN_NAME = 'swagMigrationAccessToken';
 
@@ -45,7 +45,7 @@ class MigrationWorkerService {
         this._workRunner = null;
 
         /** @type MigrationProcessStore */
-        this._migrationProcessStore = StateDeprecated.getStore('migrationProcess');
+        this._migrationProcessState = State.get('swagMigration/process');
         // state variables
         this._interruptSubscriber = null;
         this._restoreState = {};
@@ -63,8 +63,8 @@ class MigrationWorkerService {
      * @returns {string}
      */
     onBrowserTabClosing(e) {
-        if (this._migrationProcessStore.state.isMigrating &&
-            this._migrationProcessStore.state.statusIndex !== MIGRATION_STATUS.FINISHED) {
+        if (this._migrationProcessState.isMigrating &&
+            this._migrationProcessState.statusIndex !== MIGRATION_STATUS.FINISHED) {
             e.preventDefault();
             e.returnValue = '';
             return '';
@@ -89,7 +89,7 @@ class MigrationWorkerService {
     }
 
     _onInterrupt(value) {
-        this._migrationProcessStore.setIsMigrating(false);
+        State.commit('swagMigration/process/setIsMigrating', false);
         this._callInterruptSubscriber(value);
     }
 
@@ -141,16 +141,16 @@ class MigrationWorkerService {
     createMigration(dataSelectionIds) {
         return new Promise((resolve) => {
             this._migrationService.createMigration(
-                this._migrationProcessStore.state.connectionId,
+                this._migrationProcessState.connectionId,
                 dataSelectionIds
             ).then((state) => {
                 const returnState = this.processStateResponse(state);
 
                 if (returnState.isMigrationRunning === false && returnState.isMigrationAccessTokenValid === true) {
-                    this._migrationProcessStore.setStatusIndex(MIGRATION_STATUS.PREMAPPING);
+                    State.commit('swagMigration/process/setStatusIndex', MIGRATION_STATUS.PREMAPPING);
                 }
 
-                this._migrationProcessStore.setRunId(returnState.runUuid);
+                State.commit('swagMigration/process/setRunId', returnState.runUuid);
                 resolve(returnState);
             }).catch(() => {
                 const returnValue = {
@@ -195,7 +195,7 @@ class MigrationWorkerService {
         returnValue.runProgress = state.runProgress;
 
         if (state.validMigrationRunToken === false) {
-            this._migrationProcessStore.setRunId(state.runId);
+            State.commit('swagMigration/process/setRunId', state.runId);
             returnValue.isMigrationRunning = true;
             returnValue.status = state.status;
 
@@ -203,7 +203,7 @@ class MigrationWorkerService {
         }
 
         if (state.migrationRunning === true) {
-            this._migrationProcessStore.setRunId(this._restoreState.runId);
+            State.commit('swagMigration/process/setRunId', this._restoreState.runId);
             returnValue.isMigrationRunning = true;
             returnValue.isMigrationAccessTokenValid = true;
             returnValue.status = state.status;
@@ -227,9 +227,9 @@ class MigrationWorkerService {
             return;
         }
 
-        this._migrationProcessStore.setRunId(this._restoreState.runId);
-        this._migrationProcessStore.setEntityGroups(this._restoreState.runProgress);
-        this._migrationProcessStore.setStatusIndex(this._restoreState.status);
+        State.commit('swagMigration/process/setRunId', this._restoreState.runId);
+        State.commit('swagMigration/process/setEntityGroups', this._restoreState.runProgress);
+        State.commit('swagMigration/process/setStatusIndex', this._restoreState.status);
 
         if (!startMigration) {
             return;
@@ -239,8 +239,8 @@ class MigrationWorkerService {
         const indicies = this._getIndiciesByEntityName(this._restoreState.entity);
 
         this.startMigration(
-            this._migrationProcessStore.state.runId,
-            this._migrationProcessStore.state.statusIndex,
+            this._migrationProcessState.runId,
+            this._migrationProcessState.statusIndex,
             indicies.groupIndex,
             indicies.entityIndex,
             this._restoreState.finishedCount
@@ -267,7 +267,7 @@ class MigrationWorkerService {
      */
     takeoverMigration() {
         return new Promise((resolve) => {
-            this._migrationService.takeoverMigration(this._migrationProcessStore.state.runId)
+            this._migrationService.takeoverMigration(this._migrationProcessState.runId)
                 .then((migrationAccessToken) => {
                     localStorage.setItem(MIGRATION_ACCESS_TOKEN_NAME, migrationAccessToken.accessToken);
                     resolve();
@@ -283,12 +283,12 @@ class MigrationWorkerService {
      * @private
      */
     _getIndiciesByEntityName(entityName) {
-        for (let groupIndex = 0; groupIndex < this._migrationProcessStore.state.entityGroups.length; groupIndex += 1) {
+        for (let groupIndex = 0; groupIndex < this._migrationProcessState.entityGroups.length; groupIndex += 1) {
             for (let entityIndex = 0;
-                entityIndex < this._migrationProcessStore.state.entityGroups[groupIndex].entities.length;
+                entityIndex < this._migrationProcessState.entityGroups[groupIndex].entities.length;
                 entityIndex += 1
             ) {
-                if (this._migrationProcessStore.state.entityGroups[groupIndex]
+                if (this._migrationProcessState.entityGroups[groupIndex]
                     .entities[entityIndex].entityName === entityName
                 ) {
                     return {
@@ -342,11 +342,11 @@ class MigrationWorkerService {
     ) {
         return new Promise(async (resolve) => {
             // Wait for the 'migrationWanted' request and response to allow or deny the migration
-            this._migrationProcessStore.setIsMigrating(true);
-            this._migrationProcessStore.setRunId(runId);
+            State.commit('swagMigration/process/setIsMigrating', true);
+            State.commit('swagMigration/process/setRunId', runId);
 
             let processMediaFiles = false;
-            this._migrationProcessStore.state.entityGroups.forEach((group) => {
+            this._migrationProcessState.entityGroups.forEach((group) => {
                 if (group.processMediaFiles) {
                     processMediaFiles = true;
                 }
@@ -354,7 +354,7 @@ class MigrationWorkerService {
 
             const params = {
                 swagMigrationAccessToken: MigrationWorkerService.migrationAccessToken,
-                runUuid: this._migrationProcessStore.state.runId
+                runUuid: this._migrationProcessState.runId
             };
 
             this._workRunner = new WorkerRequest(
@@ -424,7 +424,7 @@ class MigrationWorkerService {
      */
     _startWorkRunner(status, groupStartIndex, entityStartIndex, entityOffset) {
         return new Promise(async (resolve) => {
-            if (!this._migrationProcessStore.state.isMigrating) {
+            if (!this._migrationProcessState.isMigrating) {
                 resolve();
                 return;
             }
@@ -478,7 +478,7 @@ class MigrationWorkerService {
     _onBroadcastReceived(data) {
         // answer incoming migration wanted request based on current migration state.
         if (data.migrationMessage === 'migrationWanted') {
-            if (this._migrationProcessStore.state.isMigrating) {
+            if (this._migrationProcessState.isMigrating) {
                 this._broadcastService.sendMessage({
                     migrationMessage: 'migrationDenied'
                 });
@@ -496,15 +496,15 @@ class MigrationWorkerService {
      * @private
      */
     _migrateFinish() {
-        if (!this._migrationProcessStore.state.isMigrating) {
+        if (!this._migrationProcessState.isMigrating) {
             return Promise.resolve();
         }
 
         return this._workerStatusManager.changeStatus(
-            this._migrationProcessStore.state.runId,
+            this._migrationProcessState.runId,
             MIGRATION_STATUS.FINISHED
         ).then(() => {
-            this._showFinishNotification(this._migrationProcessStore.state.runId);
+            this._showFinishNotification(this._migrationProcessState.runId);
             this._resetProgress();
             this._handleIndexing();
             return Promise.resolve();
@@ -512,7 +512,7 @@ class MigrationWorkerService {
     }
 
     _showFinishNotification(runId) {
-        this.applicationRoot.$store.dispatch('notification/createNotification', {
+        State.dispatch('notification/createNotification', {
             title: this.applicationRoot.$t('swag-migration.index.loadingScreenCard.result.notification.title'),
             message: this.applicationRoot.$t('swag-migration.index.loadingScreenCard.result.notification.message'),
             variant: 'info',
@@ -528,7 +528,7 @@ class MigrationWorkerService {
 
     _handleIndexing() {
         let notificationId = null;
-        this.applicationRoot.$store.dispatch('notification/createNotification', {
+        State.dispatch('notification/createNotification', {
             title: this.applicationRoot.$t('swag-migration.index.loadingScreenCard.result.indexingNotification.running.title'),
             message: this.applicationRoot.$t('swag-migration.index.loadingScreenCard.result.indexingNotification.running.message'),
             variant: 'info',
@@ -539,7 +539,7 @@ class MigrationWorkerService {
             return this._migrationIndexingWorker.start();
         }).then(() => {
             // indexing finished
-            this.applicationRoot.$store.dispatch('notification/updateNotification', {
+            State.dispatch('notification/updateNotification', {
                 uuid: notificationId,
                 title: this.applicationRoot.$t('swag-migration.index.loadingScreenCard.result.indexingNotification.finished.title'),
                 message: this.applicationRoot.$t('swag-migration.index.loadingScreenCard.result.indexingNotification.finished.message'),
@@ -552,7 +552,7 @@ class MigrationWorkerService {
     }
 
     _resetProgress() {
-        this._migrationProcessStore.resetProgress();
+        State.commit('swagMigration/process/resetProgress');
     }
 
     /**

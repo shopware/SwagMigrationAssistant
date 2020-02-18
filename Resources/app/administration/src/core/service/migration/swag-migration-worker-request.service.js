@@ -1,6 +1,6 @@
 import { WORKER_INTERRUPT_TYPE } from './swag-migration-worker.service';
 
-const { Application, StateDeprecated } = Shopware;
+const { Application, State } = Shopware;
 
 /**
  * Describes the current API endpoint.
@@ -39,7 +39,7 @@ export class WorkerRequest {
         // how much does the chunk factor manipulate the chunk size for above target request times
         this._CHUNK_PROPORTION_DOWN_WEIGHT = 0.9;
 
-        this._migrationProcessStore = StateDeprecated.getStore('migrationProcess');
+        this._migrationProcessState = State.get('swagMigration/process');
         this._runId = requestParams.runUuid;
         this._requestParams = requestParams;
         this._workerStatusManager = workerStatusManager;
@@ -57,7 +57,7 @@ export class WorkerRequest {
      * @returns {string}
      */
     get operation() {
-        return WORKER_API_OPERATION[this._migrationProcessStore.state.statusIndex];
+        return WORKER_API_OPERATION[this._migrationProcessState.statusIndex];
     }
 
     /**
@@ -115,7 +115,7 @@ export class WorkerRequest {
             }
 
             // Reference to store state, don't mutate this!
-            const entityGroups = this._migrationProcessStore.state.entityGroups;
+            const entityGroups = this._migrationProcessState.entityGroups;
             for (let groupIndex = groupStartIndex; groupIndex < entityGroups.length; groupIndex += 1) {
                 let groupProgress = 0;
                 for (let entityIndex = 0; entityIndex < entityGroups[groupIndex].entities.length; entityIndex += 1) {
@@ -175,12 +175,11 @@ export class WorkerRequest {
             }
 
             // update State
-            this._migrationProcessStore.setEntityProgress(
-                group.id,
-                entityName,
-                groupProgress + newOffset,
-                group.total
-            );
+            State.commit('swagMigration/process/setEntityProgress', {
+                groupId: group.id,
+                groupCurrentCount: groupProgress + newOffset,
+                groupTotal: group.total
+            });
 
             currentOffset += this._successfulChunk;
         }

@@ -11,13 +11,13 @@
             </div>
         {% endblock %}
 
-        <sw-card :title="$tc('swag-migration.index.selectDataCard.cardTitle')"
-                 v-if="this.migrationUIStore.state.dataSelectionTableData.length > 0">
+        <sw-card v-if="this.dataSelectionTableData.length > 0"
+                 :title="$tc('swag-migration.index.selectDataCard.cardTitle')">
             {% block swag_migration_data_selector_grid %}
                 <template #grid>
                     <swag-migration-grid-extended
                         ref="tableDataGrid"
-                        :items="uiDataSelectionTableData"
+                        :items="dataSelectionTableData"
                         disabledAttribute="requiredSelection"
                         @sw-grid-select-item="onGridSelectItem"
                         @sw-grid-select-all="onGridSelectItem"

@@ -1,25 +1,23 @@
 import template from './swag-migration-confirm-warning.html.twig';
 import './swag-migration-confirm-warning.scss';
 
-const { Component, StateDeprecated } = Shopware;
+const { Component } = Shopware;
+const { mapState } = Shopware.Component.getComponentHelper();
 
 Component.register('swag-migration-confirm-warning', {
     template,
 
-    data() {
-        return {
-            /** @type MigrationProcessStore */
-            migrationProcessStore: StateDeprecated.getStore('migrationProcess')
-        };
-    },
-
     computed: {
+        ...mapState('swagMigration/process', [
+            'environmentInformation'
+        ]),
+
         sourceSystemCurrency() {
-            return this.migrationProcessStore.state.environmentInformation.sourceSystemCurrency;
+            return this.environmentInformation.sourceSystemCurrency;
         },
 
         targetSystemCurrency() {
-            return this.migrationProcessStore.state.environmentInformation.targetSystemCurrency;
+            return this.environmentInformation.targetSystemCurrency;
         }
     },
 
