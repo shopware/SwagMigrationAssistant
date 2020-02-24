@@ -195,6 +195,19 @@ class MigrationApiService extends ApiService {
             });
     }
 
+    assignThemes(runUuid) {
+        const headers = this.getBasicHeaders();
+
+        return this.httpClient
+            .post(`_action/${this.getApiBasePath()}/assign-themes`, { runUuid }, {
+                ...this.basicConfig,
+                headers
+            })
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
     generatePremapping(runUuid) {
         const headers = this.getBasicHeaders();
 

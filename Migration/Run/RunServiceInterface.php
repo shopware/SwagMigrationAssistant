@@ -35,4 +35,6 @@ interface RunServiceInterface
     public function updateConnectionCredentials(Context $context, string $connectionUuid, array $credentialFields): void;
 
     public function finishMigration(string $runUuid, Context $context): void;
+
+    public function assignThemeToSalesChannel(string $runUuid, Context $context): void;
 }
