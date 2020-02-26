@@ -1,4 +1,4 @@
-# NEXT-VERSION
+# 1.1.0
 - PT-10832 - Preventing an undesired state when creating new connections
 - PT-10983 - Technical concept of the user interfaces changed to Vuex
 - PT-11331 - Fix request timeout for bigger migrations
