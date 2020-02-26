@@ -136,7 +136,7 @@ class ProductReader extends AbstractReader
             if (isset($filterValues[$product['detail']['id']])) {
                 $product['filters'] = $filterValues[$product['detail']['id']];
             }
-            if (isset($shops[$product['id']])) {
+            if (isset($productVisibility[$product['id']])) {
                 $product['shops'] = array_values($productVisibility[$product['id']]);
             }
         }
@@ -344,7 +344,7 @@ class ProductReader extends AbstractReader
         $query = $this->connection->createQueryBuilder();
 
         $query->from('s_core_shops', 'shop');
-        $query->addSelect('shop.category_id, shop.id');
+        $query->addSelect('shop.category_id, IFNULL(shop.main_id, shop.id)');
 
         return $query->execute()->fetchAll(\PDO::FETCH_KEY_PAIR);
     }

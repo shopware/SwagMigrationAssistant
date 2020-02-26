@@ -2,6 +2,7 @@
 - PT-10832 - Preventing an undesired state when creating new connections
 - PT-10983 - Technical concept of the user interfaces changed to Vuex
 - PT-11331 - Fix request timeout for bigger migrations
+- PT-11394 - Fix product visibility for nested shop structures
 - PT-11400 - Migration error at wrong defined thumbnail sizes fixed
 
 # 1.0.3
