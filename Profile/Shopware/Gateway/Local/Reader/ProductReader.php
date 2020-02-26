@@ -99,30 +99,12 @@ class ProductReader extends AbstractReader
         return $this->mapData($fetchedFilterOptionValues, [], ['filter', 'values']);
     }
 
-    /**
-     * @return array
-     */
-    public function fetchShopsByCategories(array $categories)
-    {
-        $query = $this->connection->createQueryBuilder();
-
-        $query->from('s_categories', 'category');
-        $query->addSelect('category.id');
-
-        $query->innerJoin('category', 's_core_shops', 'shop', 'category.id = shop.category_id');
-        $query->addSelect('IFNULL(shop.main_id, shop.id) AS "id"');
-
-        $query->where('category.id IN (:ids)');
-        $query->setParameter('ids', $categories, Connection::PARAM_INT_ARRAY);
-
-        return $query->execute()->fetchAll(\PDO::FETCH_GROUP);
-    }
-
     protected function appendAssociatedData(array $products): array
     {
         $categories = $this->getCategories();
-        $topMostParentIds = $this->getTopMostParentIds($categories);
-        $shops = $this->getShops($topMostParentIds);
+        $mainCategoryShops = $this->fetchMainCategoryShops();
+        $productVisibility = $this->getProductVisibility($categories, $mainCategoryShops);
+
         $prices = $this->getPrices();
         $media = $this->getMedia();
         $options = $this->getConfiguratorOptions();
@@ -155,7 +137,7 @@ class ProductReader extends AbstractReader
                 $product['filters'] = $filterValues[$product['detail']['id']];
             }
             if (isset($shops[$product['id']])) {
-                $product['shops'] = array_values($shops[$product['id']]);
+                $product['shops'] = array_values($productVisibility[$product['id']]);
             }
         }
         unset(
@@ -357,65 +339,35 @@ class ProductReader extends AbstractReader
         return $this->mapData($fetchedConfiguratorOptions, [], ['configurator', 'option']);
     }
 
-    private function getShops(array $topMostCategoriesByProduct): array
+    private function fetchMainCategoryShops(): array
     {
-        $productToCategory = [];
-        $ids = [];
-        foreach ($topMostCategoriesByProduct as $productKey => $product) {
-            foreach ($product as $category) {
-                if (!isset($ids[$category])) {
-                    $ids[$category] = $category;
+        $query = $this->connection->createQueryBuilder();
+
+        $query->from('s_core_shops', 'shop');
+        $query->addSelect('shop.category_id, shop.id');
+
+        return $query->execute()->fetchAll(\PDO::FETCH_KEY_PAIR);
+    }
+
+    private function getProductVisibility(array $categories, array $mainCategoryShops): array
+    {
+        $productVisibility = [];
+        foreach ($categories as $productId => $productCategories) {
+            foreach ($productCategories as $category) {
+                if (empty($category['path'])) {
+                    continue;
                 }
-
-                $key = $productKey . '_' . $category;
-                if (!isset($productToCategory[$key])) {
-                    $productToCategory[$key] = [
-                        'productId' => $productKey,
-                        'categoryId' => $category,
-                    ];
-                }
-            }
-        }
-
-        $shops = $this->fetchShopsByCategories($ids);
-
-        $ids = [];
-        foreach ($productToCategory as $content) {
-            $productId = $content['productId'];
-            $categoryId = $content['categoryId'];
-
-            if (isset($shops[$categoryId])) {
-                foreach ($shops[$categoryId] as $shop) {
-                    $shopId = $shop['id'];
-
-                    if (!isset($ids[$productId][$shopId])) {
-                        $ids[$productId][$shopId] = $shopId;
+                $parentCategoryIds = array_values(
+                    array_filter(explode('|', $category['path']))
+                );
+                foreach ($parentCategoryIds as $parentCategoryId) {
+                    if (isset($mainCategoryShops[$parentCategoryId])) {
+                        $productVisibility[$productId][$mainCategoryShops[$parentCategoryId]] = $mainCategoryShops[$parentCategoryId];
                     }
                 }
             }
         }
 
-        return $ids;
-    }
-
-    private function getTopMostParentIds(array $categories): array
-    {
-        $ids = [];
-        foreach ($categories as $productKey => $product) {
-            foreach ($product as $key => $category) {
-                if (empty($category['path'])) {
-                    continue;
-                }
-                $parentCategoryIds = array_values(
-                    array_filter(explode('|', (string) $category['path']))
-                );
-                $topMostParent = end($parentCategoryIds);
-                if (!isset($ids[$productKey]) || !in_array($topMostParent, $ids[$productKey], true)) {
-                    $ids[$productKey][$topMostParent] = $topMostParent;
-                }
-            }
-        }
-
-        return $ids;
+        return $productVisibility;
     }
 }

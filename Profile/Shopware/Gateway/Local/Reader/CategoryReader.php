@@ -7,7 +7,6 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
-use Doctrine\DBAL\Connection;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
@@ -34,13 +33,10 @@ class CategoryReader extends AbstractReader
         $this->setConnection($migrationContext);
 
         $fetchedCategories = $this->fetchData($migrationContext);
-
-        $topMostParentIds = $this->getTopMostParentIds($fetchedCategories);
-        $topMostCategories = $this->fetchCategoriesById($topMostParentIds);
+        $mainCategoryLocales = $this->fetchMainCategoryLocales();
 
         $categories = $this->mapData($fetchedCategories, [], ['category', 'categorypath', 'previousSiblingId', 'categoryPosition']);
-
-        $resultSet = $this->setAllLocales($categories, $topMostCategories);
+        $resultSet = $this->setAllLocales($categories, $mainCategoryLocales);
 
         return $this->cleanupResultSet($resultSet);
     }
@@ -116,45 +112,7 @@ class CategoryReader extends AbstractReader
         return $query->execute()->fetchAll();
     }
 
-    private function getTopMostParentIds(array $categories): array
-    {
-        $ids = [];
-        foreach ($categories as $key => $category) {
-            if (empty($category['category.path'])) {
-                continue;
-            }
-            $parentCategoryIds = array_values(
-                array_filter(explode('|', (string) $category['category.path']))
-            );
-            $topMostParent = end($parentCategoryIds);
-            if (!in_array($topMostParent, $ids, true)) {
-                $ids[] = $topMostParent;
-            }
-        }
-
-        return $ids;
-    }
-
-    private function fetchCategoriesById(array $topMostParentIds): array
-    {
-        $query = $this->connection->createQueryBuilder();
-
-        $query->from('s_categories', 'category');
-        $query->addSelect('category.id');
-
-        $query->leftJoin('category', 's_core_shops', 'shop', 'category.id = shop.category_id');
-        $query->leftJoin('shop', 's_core_locales', 'locale', 'locale.id = shop.locale_id');
-        $query->addSelect('locale.locale');
-
-        $query->where('category.id IN (:ids)');
-        $query->setParameter('ids', $topMostParentIds, Connection::PARAM_INT_ARRAY);
-
-        $query->orderBy('category.parent');
-
-        return $query->execute()->fetchAll(\PDO::FETCH_KEY_PAIR);
-    }
-
-    private function setAllLocales(array $categories, array $topMostCategories): array
+    private function setAllLocales(array $categories, array $mainCategoryLocales): array
     {
         $resultSet = [];
         $ignoredCategories = $this->getIgnoredCategories();
@@ -165,15 +123,16 @@ class CategoryReader extends AbstractReader
             if (in_array($category['parent'], $ignoredCategories, true)) {
                 $category['parent'] = null;
             }
-            $topMostParent = $category['id'];
             if (!empty($category['path'])) {
                 $parentCategoryIds = array_values(
                     array_filter(explode('|', $category['path']))
                 );
-                $topMostParent = end($parentCategoryIds);
-            }
-            if (isset($topMostCategories[$topMostParent])) {
-                $locale = str_replace('_', '-', $topMostCategories[$topMostParent]);
+                foreach ($parentCategoryIds as $parentCategoryId) {
+                    if (isset($mainCategoryLocales[$parentCategoryId])) {
+                        $locale = str_replace('_', '-', $mainCategoryLocales[$parentCategoryId]);
+                        break;
+                    }
+                }
             }
 
             if (empty($locale)) {
@@ -195,5 +154,17 @@ class CategoryReader extends AbstractReader
         $query->andWhere('category.parent IS NULL AND category.path IS NULL');
 
         return $query->execute()->fetchAll(\PDO::FETCH_COLUMN);
+    }
+
+    private function fetchMainCategoryLocales(): array
+    {
+        $query = $this->connection->createQueryBuilder();
+
+        $query->from('s_core_shops', 'shop');
+        $query->addSelect('shop.category_id');
+        $query->leftJoin('shop', 's_core_locales', 'locale', 'locale.id = shop.locale_id');
+        $query->addSelect('locale.locale');
+
+        return $query->execute()->fetchAll(\PDO::FETCH_KEY_PAIR);
     }
 }
