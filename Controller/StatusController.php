@@ -377,4 +377,27 @@ class StatusController extends AbstractController
 
         return new Response();
     }
+
+    /**
+     * @Route("/api/v{version}/_action/migration/reset-checksums", name="api.admin.migration.reset-checksums", methods={"POST"})
+     */
+    public function resetChecksums(Request $request, Context $context): Response
+    {
+        $connectionId = $request->request->get('connectionId');
+
+        if ($connectionId === null) {
+            throw new MigrationContextPropertyMissingException('connectionId');
+        }
+
+        /** @var SwagMigrationConnectionEntity|null $connection */
+        $connection = $this->migrationConnectionRepo->search(new Criteria([$connectionId]), $context)->first();
+
+        if ($connection === null) {
+            throw new EntityNotExistsException(SwagMigrationConnectionEntity::class, $connectionId);
+        }
+
+        $this->runService->cleanupMappingChecksums($connectionId, $context);
+
+        return new Response();
+    }
 }

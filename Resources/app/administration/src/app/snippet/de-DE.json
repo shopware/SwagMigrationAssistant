@@ -152,6 +152,7 @@
         "buttonSelectConnection": "Verbindung wechseln",
         "buttonRemoveCredentials": "Zugangsdaten löschen",
         "buttonProfileInstallation": "Weiteres Profil installieren",
+        "buttonResetChecksums": "Reset der Prüfsummen",
         "connected": "Verbunden",
         "notConnected": "Nicht verbunden",
         "profile": "System-Profil:",
@@ -160,12 +161,19 @@
         "lastMigration": "Letzte Migration:",
         "displayDateTime": "{time} Uhr - {date}",
         "noMigrationDoneYet": "bisher keine durchgeführt",
-        "confirmDialog": {
+        "removeCredentialsConfirmDialog": {
           "title": "Zugangsdaten löschen",
           "content": "Danach besteht keine aktive Verbindung mehr. Gib Deine Zugangsdaten erneut ein, um die Verbindung wiederherzustellen.",
           "contentHint": "Möchtest Du die aktuellen Zugangsdaten löschen?",
           "abortButtonText": "Abbrechen",
           "confirmButtonText": "Ja, löschen"
+        },
+        "resetChecksumsConfirmDialog": {
+          "title": "Reset der Prüfsummen",
+          "content": "Wenn Du die sogenannten Prüfsummen zurücksetzt, werden bei der nächsten Migration garantiert alle Daten aus dem Quellsystem erkannt. Aber: Änderungen der Datensätze, die Du seit der letzten Migration in Shopware 6 vorgenommen hast, gehen verloren.",
+          "contentHint": "Möchtest du die Prüfsummen zurücksetzen?",
+          "abortButtonText": "Abbrechen",
+          "confirmButtonText": "Ja, zurücksetzen"
         }
       },
       "assistantCard": {

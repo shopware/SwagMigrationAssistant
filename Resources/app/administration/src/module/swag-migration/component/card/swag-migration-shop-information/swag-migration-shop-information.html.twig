@@ -74,8 +74,11 @@
                                                         <sw-context-menu-item @click="onClickProfileInstallation">
                                                             {{ $tc('swag-migration.index.shopInfoCard.buttonProfileInstallation') }}
                                                         </sw-context-menu-item>
-                                                        <sw-context-menu-item variant="danger" @click="showConfirmModal = true">
+                                                        <sw-context-menu-item variant="danger" @click="showRemoveCredentialsConfirmModal = true">
                                                             {{ $tc('swag-migration.index.shopInfoCard.buttonRemoveCredentials') }}
+                                                        </sw-context-menu-item>
+                                                        <sw-context-menu-item variant="danger" @click="showResetChecksumsConfirmModal = true">
+                                                            {{ $tc('swag-migration.index.shopInfoCard.buttonResetChecksums') }}
                                                         </sw-context-menu-item>
                                                     </sw-context-button>
                                                 {% endblock %}
@@ -112,6 +115,7 @@
                                                 <dd>{{ profile }}</dd>
                                             </sw-description-list>
                                         {% endblock %}
+
                                         {% block swag_migration_shop_information_metadata_gateway %}
                                             <sw-description-list>
                                                     <dt>{{ $tc('swag-migration.index.shopInfoCard.gateway') }}</dt>
@@ -150,37 +154,105 @@
                 </sw-container>
 
                 {% block swag_migration_shop_information_confirm_modal %}
-                    <sw-modal v-if="showConfirmModal"
+                    {# @deprecated tag:REPLACE-GLOBAL-WITH-NEXT-VERSION #}
+                    {% block swag_migration_shop_information_confirm_modal_content %}
+                        {# @deprecated tag:REPLACE-GLOBAL-WITH-NEXT-VERSION #}
+                    {% endblock %}
+                    {% block swag_migration_shop_information_confirm_modal_content_hint %}
+                        {# @deprecated tag:REPLACE-GLOBAL-WITH-NEXT-VERSION #}
+                    {% endblock %}
+                    {% block swag_migration_shop_information_confirm_modal_footer %}
+                        {# @deprecated tag:REPLACE-GLOBAL-WITH-NEXT-VERSION #}
+                        {% block swag_migration_shop_information_confirm_modal_abort %}
+                            {# @deprecated tag:REPLACE-GLOBAL-WITH-NEXT-VERSION #}
+                        {% endblock %}
+                        {% block swag_migration_shop_information_confirm_modal_confirm %}
+                            {# @deprecated tag:REPLACE-GLOBAL-WITH-NEXT-VERSION #}
+                        {% endblock %}
+                    {% endblock %}
+                {% endblock %}
+
+                {% block swag_migration_shop_information_remove_credentials_confirm_modal %}
+                    <sw-modal v-if="showRemoveCredentialsConfirmModal"
                               class="swag-migration-shop-information__confirm-modal"
-                              :title="$tc('swag-migration.index.shopInfoCard.confirmDialog.title')"
+                              :title="$tc('swag-migration.index.shopInfoCard.removeCredentialsConfirmDialog.title')"
+                              :isLoading="confirmModalIsLoading"
                               size="460px"
-                              @modal-close="showConfirmModal = false">
+                              @modal-close="showRemoveCredentialsConfirmModal = false">
 
-                        {% block swag_migration_shop_information_confirm_modal_content %}
+                        {% block swag_migration_shop_information_remove_credentials_confirm_modal_content %}
                             <p class="swag-migration-shop-information__confirm-modal-content">
-                                {{ $tc('swag-migration.index.shopInfoCard.confirmDialog.content') }}
+                                {{ $tc('swag-migration.index.shopInfoCard.removeCredentialsConfirmDialog.content') }}
                             </p>
                         {% endblock %}
 
-                        {% block swag_migration_shop_information_confirm_modal_content_hint %}
+                        {% block swag_migration_shop_information_remove_credentials_confirm_modal_content_hint %}
                             <p class="swag-migration-shop-information__confirm-modal-content-hint">
-                                {{ $tc('swag-migration.index.shopInfoCard.confirmDialog.contentHint') }}
+                                {{ $tc('swag-migration.index.shopInfoCard.removeCredentialsConfirmDialog.contentHint') }}
                             </p>
                         {% endblock %}
 
-                        {% block swag_migration_shop_information_confirm_modal_footer %}
+                        {% block swag_migration_shop_information_remove_credentials_confirm_modal_footer %}
                             <template #modal-footer>
-                                {% block swag_migration_shop_information_confirm_modal_abort %}
+
+                                {% block swag_migration_shop_information_remove_credentials_confirm_modal_abort %}
                                     <sw-button size="small"
-                                               @click="showConfirmModal = false">
-                                        {{ $tc('swag-migration.index.shopInfoCard.confirmDialog.abortButtonText') }}
+                                               :disabled="confirmModalIsLoading"
+                                               @click="showRemoveCredentialsConfirmModal = false">
+                                        {{ $tc('swag-migration.index.shopInfoCard.removeCredentialsConfirmDialog.abortButtonText') }}
                                     </sw-button>
                                 {% endblock %}
-                                {% block swag_migration_shop_information_confirm_modal_confirm %}
+
+                                {% block swag_migration_shop_information_remove_credentials_confirm_modal_confirm %}
                                     <sw-button size="small"
                                                variant="primary"
+                                               :disabled="confirmModalIsLoading"
                                                @click="onClickRemoveConnectionCredentials">
-                                        {{ $tc('swag-migration.index.shopInfoCard.confirmDialog.confirmButtonText') }}
+                                        {{ $tc('swag-migration.index.shopInfoCard.removeCredentialsConfirmDialog.confirmButtonText') }}
+                                    </sw-button>
+                                {% endblock %}
+                            </template>
+                        {% endblock %}
+                    </sw-modal>
+                {% endblock %}
+
+                {% block swag_migration_shop_information_reset_checksums_confirm_modal %}
+                    <sw-modal v-if="showResetChecksumsConfirmModal"
+                              class="swag-migration-shop-information__confirm-modal"
+                              :title="$tc('swag-migration.index.shopInfoCard.resetChecksumsConfirmDialog.title')"
+                              :isLoading="confirmModalIsLoading"
+                              size="460px"
+                              @modal-close="showResetChecksumsConfirmModal = false">
+
+                        {% block swag_migration_shop_information_reset_checksums_confirm_modal_content %}
+                            <p class="swag-migration-shop-information__confirm-modal-content">
+                                {{ $tc('swag-migration.index.shopInfoCard.resetChecksumsConfirmDialog.content') }}
+                            </p>
+                        {% endblock %}
+
+                        {% block swag_migration_shop_information_reset_checksums_confirm_modal_content_hint %}
+                            <p class="swag-migration-shop-information__confirm-modal-content-hint">
+                                {{ $tc('swag-migration.index.shopInfoCard.resetChecksumsConfirmDialog.contentHint') }}
+                            </p>
+                        {% endblock %}
+
+                        {% block swag_migration_shop_information_reset_checksums_confirm_modal_footer %}
+                            <template #modal-footer>
+
+                                {% block swag_migration_shop_information_reset_checksums_confirm_modal_abort %}
+                                    <sw-button size="small"
+                                               :disabled="confirmModalIsLoading"
+                                               @click="showResetChecksumsConfirmModal = false">
+                                        {{ $tc('swag-migration.index.shopInfoCard.resetChecksumsConfirmDialog.abortButtonText') }}
+                                    </sw-button>
+                                {% endblock %}
+
+                                {% block swag_migration_shop_information_reset_checksums_confirm_modal_confirm %}
+                                    <sw-button size="small"
+                                               variant="primary"
+                                               :disabled="confirmModalIsLoading"
+                                               @click="onClickResetChecksums">
+                                        {{ $tc('swag-migration.index.shopInfoCard.resetChecksumsConfirmDialog.confirmButtonText') }}
                                     </sw-button>
                                 {% endblock %}
                             </template>

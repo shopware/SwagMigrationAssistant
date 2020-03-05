@@ -152,6 +152,7 @@
         "buttonSelectConnection": "Change the connection",
         "buttonRemoveCredentials": "Delete access data",
         "buttonProfileInstallation": "Install another profile",
+        "buttonResetChecksums": "Reset checksums",
         "connected": "Connected",
         "notConnected": "Not connected",
         "profile": "System profile:",
@@ -160,12 +161,19 @@
         "lastMigration": "Last migration:",
         "displayDateTime": "{time} - {date}",
         "noMigrationDoneYet": "-",
-        "confirmDialog": {
+        "removeCredentialsConfirmDialog": {
           "title": "Delete access data",
           "content": "There will be no active connection after this. Enter your access data again to restore the connection.",
           "contentHint": "Would you like to delete the current access data?",
           "abortButtonText": "Cancel",
           "confirmButtonText": "Yes, delete"
+        },
+        "resetChecksumsConfirmDialog": {
+          "title": "Reset checksums",
+          "content": "If you reset the checksums, the next migration is guaranteed to recognize all data from the source system. But: Changes to the data records you have made since the last migration in Shopware 6 will be lost.",
+          "contentHint": "Do you want to reset the checksums?",
+          "abortButtonText": "Cancel",
+          "confirmButtonText": "Yes, reset"
         }
       },
       "assistantCard": {

@@ -1,3 +1,6 @@
+# REPLACE-GLOBAL-WITH-NEXT-VERSION
+- PT-11450 - It is now possible to reset the checksums via a button in the connection management drop-down menu.
+
 # 1.1.0
 - PT-10832 - Preventing an undesired state when creating new connections
 - PT-10983 - Technical concept of the user interfaces changed to Vuex

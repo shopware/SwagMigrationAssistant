@@ -323,9 +323,21 @@ class RunService implements RunServiceInterface
         $this->fireTrackingInformation(self::TRACKING_EVENT_MIGRATION_ABORTED, $runUuid, $context);
         $dataCount = $this->getMigrationDataCount($runUuid, $context);
         if ($dataCount > 0) {
-            $this->cleanupMappingChecksums($runUuid, $context);
+            /** @var SwagMigrationRunEntity $run */
+            $run = $this->migrationRunRepo->search(new Criteria([$runUuid]), $context)->first();
+            $this->cleanupMappingChecksums($run->getConnection()->getId(), $context);
         }
         $this->cleanupMigration($runUuid, $context);
+    }
+
+    public function cleanupMappingChecksums(string $connectionUuid, Context $context): void
+    {
+        $qb = new QueryBuilder($this->dbalConnection);
+        $qb->update(SwagMigrationMappingDefinition::ENTITY_NAME)
+            ->set('checksum', 'null')
+            ->where('HEX(connection_id) = :connection_id')
+            ->setParameter('connection_id', $connectionUuid)
+            ->execute();
     }
 
     public function finishMigration(string $runUuid, Context $context): void
@@ -738,17 +750,5 @@ class RunService implements RunServiceInterface
         $countResult = $result->get('count');
 
         return $countResult->getCount();
-    }
-
-    private function cleanupMappingChecksums(string $runUuid, Context $context): void
-    {
-        /** @var SwagMigrationRunEntity $run */
-        $run = $this->migrationRunRepo->search(new Criteria([$runUuid]), $context)->first();
-        $qb = new QueryBuilder($this->dbalConnection);
-        $qb->update(SwagMigrationMappingDefinition::ENTITY_NAME)
-            ->set('checksum', 'null')
-            ->where('HEX(connection_id) = :connection_id')
-            ->setParameter('connection_id', $run->getConnection()->getId())
-            ->execute();
     }
 }
