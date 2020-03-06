@@ -295,6 +295,21 @@ class MigrationApiService extends ApiService {
                 return ApiService.handleResponse(response);
             });
     }
+
+    resetChecksums(connectionId, additionalHeaders = {}) {
+        const headers = this.getBasicHeaders(additionalHeaders);
+
+        return this.httpClient
+            .post(`_action/${this.getApiBasePath()}/reset-checksums`, {
+                connectionId
+            }, {
+                ...this.basicConfig,
+                headers
+            })
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
 }
 
 export default MigrationApiService;

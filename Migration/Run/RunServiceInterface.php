@@ -17,6 +17,8 @@ interface RunServiceInterface
 
     public function abortMigration(string $runUuid, Context $context): void;
 
+    public function cleanupMappingChecksums(string $connectionUuid, Context $context): void;
+
     /**
      * @param string[] $dataSelectionIds
      */

@@ -30,7 +30,9 @@ Component.register('swag-migration-shop-information', {
     data() {
         return {
             showMoreInformation: true,
-            showConfirmModal: false,
+            confirmModalIsLoading: false,
+            showRemoveCredentialsConfirmModal: false,
+            showResetChecksumsConfirmModal: false,
             lastConnectionCheck: '-',
             lastMigrationDate: '-',
             connection: null,
@@ -246,11 +248,20 @@ Component.register('swag-migration-shop-information', {
         },
 
         onClickRemoveConnectionCredentials() {
+            this.confirmModalIsLoading = true;
             this.migrationService.updateConnectionCredentials(
                 this.connectionId,
                 null
             ).then(() => {
                 this.$router.go(); // Refresh the page
+            });
+        },
+
+        onClickResetChecksums() {
+            this.confirmModalIsLoading = true;
+            this.migrationService.resetChecksums(this.connectionId).then(() => {
+                this.showResetChecksumsConfirmModal = false;
+                this.confirmModalIsLoading = false;
             });
         }
     }

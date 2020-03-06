@@ -1,3 +1,6 @@
+# REPLACE-GLOBAL-WITH-NEXT-VERSION
+- PT-11450 - Es ist jetzt möglich die Prüfsummen über einen Button im Dropdown für die Verbindungsverwaltung zurückzusetzen.
+
 # 1.1.0
 - PT-10832 - Verhindern eines unerwünschten Zustands beim Anlegen neuer Verbindungen
 - PT-10983 - Technisches Konzept der Oberflächen auf Vuex geändert
