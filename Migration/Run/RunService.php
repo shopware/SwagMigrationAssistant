@@ -35,7 +35,6 @@ use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\Logging\Log\ThemeCompilingErrorRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
-use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
@@ -325,19 +324,35 @@ class RunService implements RunServiceInterface
         if ($dataCount > 0) {
             /** @var SwagMigrationRunEntity $run */
             $run = $this->migrationRunRepo->search(new Criteria([$runUuid]), $context)->first();
-            $this->cleanupMappingChecksums($run->getConnection()->getId(), $context);
+            $this->cleanupMappingChecksums($run->getConnection()->getId(), $context, false);
         }
         $this->cleanupMigration($runUuid, $context);
     }
 
-    public function cleanupMappingChecksums(string $connectionUuid, Context $context): void
+    public function cleanupMappingChecksums(string $connectionUuid, Context $context, bool $resetAll = true): void
     {
-        $qb = new QueryBuilder($this->dbalConnection);
-        $qb->update(SwagMigrationMappingDefinition::ENTITY_NAME)
-            ->set('checksum', 'null')
-            ->where('HEX(connection_id) = :connection_id')
-            ->setParameter('connection_id', $connectionUuid)
-            ->execute();
+        $sql = <<<SQL
+UPDATE swag_migration_mapping
+SET checksum = null
+WHERE HEX(connection_id) = ?
+AND checksum IS NOT NULL;
+SQL;
+        if ($resetAll === false) {
+            $sql = <<<SQL
+UPDATE swag_migration_mapping AS m
+INNER JOIN swag_migration_data d ON d.mapping_uuid = m.id
+SET m.checksum = null
+WHERE HEX(m.connection_id) = ?
+AND d.written = 0
+AND m.checksum IS NOT NULL;
+SQL;
+        }
+
+        $this->dbalConnection->executeQuery(
+            $sql,
+            [$connectionUuid],
+            [\PDO::PARAM_STR]
+        );
     }
 
     public function finishMigration(string $runUuid, Context $context): void
