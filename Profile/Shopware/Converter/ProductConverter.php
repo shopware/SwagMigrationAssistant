@@ -366,6 +366,10 @@ abstract class ProductConverter extends ShopwareConverter
         $this->setGivenProductTranslation($data, $converted);
         unset($data['_locale']);
 
+        if ($converted['translations'] === []) {
+            unset($converted['translations']);
+        }
+
         if (isset($data['attributes'])) {
             $converted['customFields'] = $this->getAttributes($data['attributes'], DefaultEntities::PRODUCT, $this->migrationContext->getConnection()->getName(), ['id', 'articleID', 'articledetailsID']);
         }

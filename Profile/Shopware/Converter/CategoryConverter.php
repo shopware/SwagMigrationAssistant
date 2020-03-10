@@ -185,6 +185,10 @@ abstract class CategoryConverter extends ShopwareConverter
         $converted['translations'] = [];
         $this->setGivenCategoryTranslation($data, $converted);
 
+        if ($converted['translations'] === []) {
+            unset($converted['translations']);
+        }
+
         unset(
             $data['position'],
             $data['blog'],
