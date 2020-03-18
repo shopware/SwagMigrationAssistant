@@ -323,31 +323,12 @@ class HttpMediaDownloadService implements MediaFileProcessorInterface
         $updateProcessedMediaFiles = [];
         foreach ($mediaFiles->getElements() as $data) {
             /* @var SwagMigrationMediaFileEntity $data */
-            $updateProcessedMediaFiles[] = [
-                'id' => $data->getId(),
-                'processed' => true,
-            ];
-        }
-
-        if (!empty($failureUuids)) {
-            $criteria = new Criteria();
-            $criteria->addFilter(new EqualsAnyFilter('mediaId', $failureUuids));
-            $criteria->addFilter(new EqualsFilter('runId', $runId));
-            $mediaFiles = $this->mediaFileRepo->search($criteria, $context);
-
-            $mediaFileIds = [];
-            $mediaIds = [];
-            foreach ($mediaFiles->getElements() as $data) {
-                /* @var SwagMigrationMediaFileEntity $data */
-                $mediaFileIds[] = [
+            if (!in_array($data->getMediaId(), $failureUuids, true)) {
+                $updateProcessedMediaFiles[] = [
                     'id' => $data->getId(),
-                ];
-                $mediaIds[] = [
-                    'id' => $data->getMediaId(),
+                    'processed' => true,
                 ];
             }
-            $this->mediaFileRepo->delete($mediaFileIds, $context);
-            $this->mediaRepo->delete($mediaIds, $context);
         }
 
         if (empty($updateProcessedMediaFiles)) {
