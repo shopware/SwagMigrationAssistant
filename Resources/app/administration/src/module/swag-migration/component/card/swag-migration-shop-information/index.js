@@ -172,16 +172,20 @@ Component.register('swag-migration-shop-information', {
     },
 
     created() {
-        this.updateLastMigrationDate();
+        this.createdComponent();
     },
 
     methods: {
+        createdComponent() {
+            this.updateLastMigrationDate();
+        },
+
         updateLastMigrationDate() {
             const criteria = new Criteria(1, 1);
             criteria.addFilter(Criteria.equals('status', 'finished'));
             criteria.addSorting(Criteria.sort('createdAt', 'DESC'));
 
-            this.migrationRunRepository.search(criteria, this.context).then((runs) => {
+            return this.migrationRunRepository.search(criteria, this.context).then((runs) => {
                 if (runs.length > 0) {
                     this.lastMigrationDate = runs.first().createdAt;
                 } else {
@@ -194,12 +198,15 @@ Component.register('swag-migration-shop-information', {
          * @param {string} connectionId
          */
         fetchConnection(connectionId) {
-            this.migrationConnectionRepository.get(connectionId, this.context).then((connection) => {
+            return this.migrationConnectionRepository.get(connectionId, this.context).then((connection) => {
                 delete connection.credentialFields;
                 this.connection = connection;
                 this.lastConnectionCheck = new Date();
 
-                this.migrationService.getProfileInformation(connection.profileName, connection.gatewayName).then((profileInformation) => {
+                return this.migrationService.getProfileInformation(
+                    connection.profileName,
+                    connection.gatewayName
+                ).then((profileInformation) => {
                     this.connection.profile = profileInformation.profile;
                     this.connection.gateway = profileInformation.gateway;
                 });
@@ -249,7 +256,7 @@ Component.register('swag-migration-shop-information', {
 
         onClickRemoveConnectionCredentials() {
             this.confirmModalIsLoading = true;
-            this.migrationService.updateConnectionCredentials(
+            return this.migrationService.updateConnectionCredentials(
                 this.connectionId,
                 null
             ).then(() => {
@@ -259,7 +266,7 @@ Component.register('swag-migration-shop-information', {
 
         onClickResetChecksums() {
             this.confirmModalIsLoading = true;
-            this.migrationService.resetChecksums(this.connectionId).then(() => {
+            return this.migrationService.resetChecksums(this.connectionId).then(() => {
                 this.showResetChecksumsConfirmModal = false;
                 this.confirmModalIsLoading = false;
             });

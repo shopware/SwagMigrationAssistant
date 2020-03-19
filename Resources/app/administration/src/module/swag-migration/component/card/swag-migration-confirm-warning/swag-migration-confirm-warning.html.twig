@@ -1,31 +1,37 @@
 {% block swag_migration_confirm_warning %}
     <div class="swag-migration-confirm-warning">
+
         {% block swag_migration_confirm_warning_card %}
             <sw-card class="swag-migration-confirm-warning__card">
+
                 {% block swag_migration_confirm_warning_bubble %}
                     <div class="swag-migration-confirm-warning__bubble">
-                        <sw-icon size="36px"
-                                 class="swag-migration-confirm-warning__bubble-icon"
+                        <sw-icon class="swag-migration-confirm-warning__bubble-icon"
                                  name="default-badge-warning"
+                                 size="36px"
                                  decorative>
                         </sw-icon>
                     </div>
                 {% endblock %}
+
                 {% block swag_migration_confirm_warning_title %}
                     <h5 class="swag-migration-confirm-warning__title">
                         {{ $tc('swag-migration.index.confirmWarningCard.currencyMismatch.title') }}
                     </h5>
                 {% endblock %}
+
                 {% block swag_migration_confirm_warning_text %}
                     <p class="swag-migration-confirm-warning__text">
-                        {{ $t('swag-migration.index.confirmWarningCard.currencyMismatch.text', { sourceSystemCurrency, targetSystemCurrency }) }}
+                        {{ $tc('swag-migration.index.confirmWarningCard.currencyMismatch.text', 0, { sourceSystemCurrency, targetSystemCurrency }) }}
                     </p>
                 {% endblock %}
+
                 {% block swag_migration_confirm_warning_question %}
                     <p class="swag-migration-confirm-warning__question">
-                        {{ $t('swag-migration.index.confirmWarningCard.currencyMismatch.question', { targetSystemCurrency }) }}
+                        {{ $tc('swag-migration.index.confirmWarningCard.currencyMismatch.question', 0, { targetSystemCurrency }) }}
                     </p>
                 {% endblock %}
+
                 {% block swag_migration_confirm_warning_checkbox %}
                     <sw-checkbox-field class="swag-migration-confirm-warning__checkbox"
                                        :label="$tc('swag-migration.index.confirmWarningCard.currencyMismatch.checkboxLabel')"

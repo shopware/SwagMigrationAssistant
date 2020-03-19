@@ -1,9 +1,12 @@
 {% block swag_migration_wizard_page_select_profile %}
     <div class="swag-migration-wizard-page-select-profile">
+
         {% block swag_migration_wizard_page_select_profile_content %}
             <div class="swag-migration-wizard__content">
+
                 {% block swag_migration_wizard_page_select_profile_information %}
                     <div class="swag-migration-wizard__content-information">
+
                         {% block swag_migration_wizard_page_select_profile_description %}
                             <p class="swag-migration-wizard__description">
                                 {{ $tc('swag-migration.wizard.pages.connectionSelect.contentInformation') }}
@@ -11,13 +14,14 @@
                         {% endblock %}
                     </div>
                 {% endblock %}
+
                 {% block swag_migration_wizard_page_select_profile_selection %}
                     <div class="swag-migration-wizard__form">
-                        <sw-select-field :options="connections"
-                                         v-model="selectedConnectionId"
-                                         @change="onConnectionSelected"
+                        <sw-select-field v-model="selectedConnectionId"
+                                         :options="connections"
                                          :label="$tc('swag-migration.wizard.pages.connectionSelect.connectionLabel')"
-                                         :placeholder="$tc('swag-migration.wizard.pages.connectionSelect.connectionPlaceholder')">
+                                         :placeholder="$tc('swag-migration.wizard.pages.connectionSelect.connectionPlaceholder')"
+                                         @change="onConnectionSelected">
                         </sw-select-field>
                     </div>
                 {% endblock %}

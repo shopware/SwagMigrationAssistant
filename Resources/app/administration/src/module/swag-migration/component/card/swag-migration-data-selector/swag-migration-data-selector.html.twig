@@ -1,10 +1,11 @@
 {% block swag_migration_data_selector %}
     <div class="swag-migration-data-selector">
+
         {% block swag_migration_data_selector_warnings %}
             <div class="swag-migration-data-selector__warnings">
                 <sw-alert v-for="warning in displayWarnings"
-                          :key="warning.snippetKey"
                           class="swag-migration-data-selector__warning"
+                          :key="warning.snippetKey"
                           variant="warning">
                     {{ $tc(warning.snippetKey, warning.pluralizationCount, warning.snippetArguments) }}
                 </sw-alert>
@@ -13,16 +14,18 @@
 
         <sw-card v-if="this.dataSelectionTableData.length > 0"
                  :title="$tc('swag-migration.index.selectDataCard.cardTitle')">
+
             {% block swag_migration_data_selector_grid %}
                 <template #grid>
                     <swag-migration-grid-extended
                         ref="tableDataGrid"
                         :items="dataSelectionTableData"
                         disabledAttribute="requiredSelection"
+                        table
                         @sw-grid-select-item="onGridSelectItem"
-                        @sw-grid-select-all="onGridSelectItem"
-                        table>
+                        @sw-grid-select-all="onGridSelectItem">
                         <template #columns="{ item }">
+
                             {% block swag_migration_data_selector_grid_column_data %}
                                 <sw-grid-column flex="1fr" :label="$tc('swag-migration.index.selectDataCard.headers.name')">
                                     {{ $tc(item.snippet) }}
@@ -35,7 +38,9 @@
                                 <sw-grid-column flex="1fr" :label="$tc('swag-migration.index.selectDataCard.headers.total')" align="right">
                                     {{ item.total }}
 
-                                    <sw-help-text :text="getHelptext(item.entityTotals)" style="margin-left: 5px" v-if="showHelptext(item.entityTotals)">
+                                    <sw-help-text v-if="showHelptext(item.entityTotals)"
+                                                  class="swag-migration-data-selector__help-text"
+                                                  :text="getHelptext(item.entityTotals)">
                                     </sw-help-text>
                                     <div v-else class="swag-migration-data-selector__help-text-placeholder"></div>
                                 </sw-grid-column>
@@ -46,7 +51,8 @@
             {% endblock %}
         </sw-card>
 
-        <sw-card class="swag-migration-data-selector" v-else>
+        <sw-card v-else class="swag-migration-data-selector">
+
             {% block swag_migration_data_selector_no_data %}
                 <div class="swag-migration-index-data-selector__no-data">
                     <p class="swag-migration-index-data-selector__no-data-label">

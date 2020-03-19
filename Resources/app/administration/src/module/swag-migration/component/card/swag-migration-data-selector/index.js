@@ -12,10 +12,6 @@ Component.register('swag-migration-data-selector', {
         migrationService: 'migrationService'
     },
 
-    created() {
-        this.createdComponent();
-    },
-
     computed: {
         ...mapState('swagMigration/process', [
             'environmentInformation'
@@ -31,8 +27,12 @@ Component.register('swag-migration-data-selector', {
         }
     },
 
+    created() {
+        this.createdComponent();
+    },
+
     methods: {
-        async createdComponent() {
+        createdComponent() {
             this.fetchTableData();
         },
 

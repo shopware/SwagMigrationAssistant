@@ -22,21 +22,6 @@ Component.register('swag-migration-premapping', {
         };
     },
 
-    created() {
-        State.commit('swagMigration/ui/setIsPremappingValid', false);
-    },
-
-    watch: {
-        runId: {
-            immediate: true,
-            handler(newRunId) {
-                if (newRunId.length > 0) {
-                    this.fetchPremapping(newRunId);
-                }
-            }
-        }
-    },
-
     computed: {
         ...mapState('swagMigration/process', [
             'runId'
@@ -58,7 +43,28 @@ Component.register('swag-migration-premapping', {
         }
     },
 
+    watch: {
+        runId: {
+            immediate: true,
+            handler(newRunId) {
+                if (newRunId.length < 1) {
+                    return;
+                }
+
+                this.fetchPremapping(newRunId);
+            }
+        }
+    },
+
+    created() {
+        this.createdComponent();
+    },
+
     methods: {
+        createdComponent() {
+            State.commit('swagMigration/ui/setIsPremappingValid', false);
+        },
+
         fetchPremapping(runId) {
             this.isLoading = true;
 
@@ -69,10 +75,10 @@ Component.register('swag-migration-premapping', {
                     );
                     this.isLoading = false;
                 });
-                return;
+                return Promise.resolve();
             }
 
-            this.migrationService.generatePremapping(runId).then((premapping) => {
+            return this.migrationService.generatePremapping(runId).then((premapping) => {
                 if (premapping.length === 0) {
                     State.commit('swagMigration/ui/setComponentIndex', UI_COMPONENT_INDEX.LOADING_SCREEN);
                     this.migrationWorkerService.startMigration(this.runId).catch(() => {

@@ -40,14 +40,14 @@ Component.register('swag-migration-history-detail-data', {
             return [
                 {
                     property: 'name',
-                    label: this.$t('swag-migration.history.detailPage.dataName'),
+                    label: this.$tc('swag-migration.history.detailPage.dataName'),
                     primary: true,
                     allowResize: true,
                     sortable: false
                 },
                 {
                     property: 'count',
-                    label: this.$t('swag-migration.history.detailPage.dataCount'),
+                    label: this.$tc('swag-migration.history.detailPage.dataCount'),
                     allowResize: true,
                     sortable: false
                 }

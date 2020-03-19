@@ -29,6 +29,7 @@
 
                 {% block swag_migration_progress_bar_center_bar %}
                     <div class="swag-migration-progress-bar__center-bar">
+
                         {% block swag_migration_progress_bar_progress_bar %}
                             <sw-progress-bar class="swag-migration-progress-bar__progress-bar" :value="value" :maxValue="maxValue"></sw-progress-bar>
                         {% endblock %}
@@ -43,6 +44,7 @@
 
                 {% block swag_migration_progress_bar_right_point %}
                     <div class="swag-migration-progress-bar__point swag-migration-progress-bar__right-point">
+
                         {% block swag_migration_progress_bar_right_bubble %}
                             <div :class="rightPointClasses">
                                 <sw-icon class="swag-migration-progress-bar__icon" name="small-default-checkmark-line-medium" size="16px" small></sw-icon>

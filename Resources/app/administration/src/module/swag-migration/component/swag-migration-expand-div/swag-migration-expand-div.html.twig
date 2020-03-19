@@ -5,24 +5,24 @@
                  @click="onClick">
                 <div v-if="isExpanded">
                     {{ expandTitle }}
-                    <sw-icon size="16px"
+                    <sw-icon class="swag-migration-expand-div__icon"
                              name="default-arrow-circle-up"
-                             class="swag-migration-expand-div__icon" >
+                             size="16px">
                     </sw-icon>
                 </div>
                 <div v-else>
                     {{ collapseTitle }}
-                    <sw-icon size="16px"
+                    <sw-icon class="swag-migration-expand-div__icon"
                              name="default-arrow-circle-down"
-                             class="swag-migration-expand-div__icon" >
+                             size="16px">
                     </sw-icon>
                 </div>
             </div>
         </div>
 
-        <div class="swag-migration-expand-div__slot"
-             v-if="isExpanded">
+        <div v-if="isExpanded" class="swag-migration-expand-div__slot">
             <slot>
+
                 {% block swag_migration_expand_div_slot %}
                 {% endblock %}
             </slot>

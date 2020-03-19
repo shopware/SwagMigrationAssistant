@@ -36,16 +36,6 @@ Component.register('swag-migration-wizard-page-connection-select', {
         }
     },
 
-    created() {
-        this.$emit('onChildRouteReadyChanged', false);
-        const criteria = new Criteria(1, 100);
-
-        this.migrationConnectionRepository.search(criteria, this.context).then((items) => {
-            this.connections = items;
-            this.onConnectionSelected();
-        });
-    },
-
     watch: {
         currentConnectionId: {
             immediate: true,
@@ -56,7 +46,21 @@ Component.register('swag-migration-wizard-page-connection-select', {
         }
     },
 
+    created() {
+        this.createdComponent();
+    },
+
     methods: {
+        createdComponent() {
+            this.$emit('onChildRouteReadyChanged', false);
+            const criteria = new Criteria(1, 100);
+
+            return this.migrationConnectionRepository.search(criteria, this.context).then((items) => {
+                this.connections = items;
+                this.onConnectionSelected();
+            });
+        },
+
         onConnectionSelected() {
             const connection = this.connections.find((con) => {
                 return con.id === this.selectedConnectionId;

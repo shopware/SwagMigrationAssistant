@@ -1,17 +1,20 @@
 {% block swag_migration_tab_card %}
     <div class="swag-migration-tab-card">
-        <sw-card ref="card" :class="cardClasses" :title="title">
+        <sw-card :class="cardClasses" ref="card" :title="title">
             <template #tabs>
+
                 {% block swag_migration_tab_card_item_tab %}
-                    <sw-tabs @new-item-active="onNewActiveItem" :small="false" ref="tabs">
+                    <sw-tabs :small="false" ref="tabs" @new-item-active="onNewActiveItem">
                         <sw-tabs-item v-for="item in items" :name="item.id" :key="item.id" ref="swTabsItems">
+
                             {% block swag_migration_tab_card_item_tab_content %}
                                 <span class="swag-migration-tab-card__title">
                                     {{ item.title }}
                                 </span>
                             {% endblock %}
+
                             {% block swag_migration_tab_card_item_tab_invalid_badge %}
-                                <span class="swag-migration-tab-card__invalid-badge" v-show="item.errorBadgeNumber">
+                                <span v-show="item.errorBadgeNumber" class="swag-migration-tab-card__invalid-badge">
                                     {{ item.errorBadgeNumber }}
                                 </span>
                             {% endblock %}
@@ -20,8 +23,7 @@
                 {% endblock %}
             </template>
             <slot>
-                {% block swag_migration_tab_card_slot %}
-                {% endblock %}
+                {% block swag_migration_tab_card_slot %}{% endblock %}
             </slot>
         </sw-card>
     </div>

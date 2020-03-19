@@ -12,15 +12,15 @@ Component.register('swag-migration-wizard-page-profile-information', {
         }
     },
 
-    computed: {
-        componentIsLoaded() {
-            return Component.getComponentRegistry().has(this.profileInformationComponent);
-        }
-    },
-
     metaInfo() {
         return {
             title: this.$createTitle()
         };
+    },
+
+    computed: {
+        componentIsLoaded() {
+            return Component.getComponentRegistry().has(this.profileInformationComponent);
+        }
     }
 });

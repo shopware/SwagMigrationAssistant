@@ -50,28 +50,32 @@ Component.register('swag-migration-tab-card', {
     },
 
     mounted() {
-        // read tab-card items
-        this.$refs.card.$children.forEach((child) => {
-            if (child.$options._componentTag === 'swag-migration-tab-card-item') {
-                this.items.push(child);
-                this.itemDictionary[child.id] = child;
-            }
-        });
-
-        this.$nextTick(() => {
-            // let the tabs component know that the content may need a scrollbar
-            this.$refs.tabs.checkIfNeedScroll();
-            this.$refs.tabs.addScrollbarOffset();
-
-            // select first tab
-            if (this.tabItems !== undefined && this.tabItems.length > 0) {
-                this.selectedItemName = this.tabItems[0].name;
-                this.$refs.tabs.setActiveItem(this.tabItems[0]);
-            }
-        });
+        this.mountedComponent();
     },
 
     methods: {
+        mountedComponent() {
+            // read tab-card items
+            this.$refs.card.$children.forEach((child) => {
+                if (child.$options._componentTag === 'swag-migration-tab-card-item') {
+                    this.items.push(child);
+                    this.itemDictionary[child.id] = child;
+                }
+            });
+
+            this.$nextTick(() => {
+                // let the tabs component know that the content may need a scrollbar
+                this.$refs.tabs.checkIfNeedScroll();
+                this.$refs.tabs.addScrollbarOffset();
+
+                // select first tab
+                if (this.tabItems !== undefined && this.tabItems.length > 0) {
+                    this.selectedItemName = this.tabItems[0].name;
+                    this.$refs.tabs.setActiveItem(this.tabItems[0]);
+                }
+            });
+        },
+
         onNewActiveItem(item) {
             this.itemDictionary[this.selectedItemName].setActive(false);
             this.selectedItemName = item.name;

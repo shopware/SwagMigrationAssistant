@@ -1,6 +1,7 @@
 {% block swag_migration_history_detail_data %}
     <div class="swag-migration-history-detail-data">
         <div v-if="!isLoading">
+
             {% block swag_migration_history_detail_data_grid %}
                 <sw-data-grid identifier="swag-migration-history-detail-data"
                               :dataSource="migrationData"
@@ -12,6 +13,7 @@
                               :sortBy="sortBy"
                               :sortDirection="sortDirection"
                               @column-sort="onSortColumn">
+
                     {% block swag_migration_history_detail_data_grid_name %}
                         <template #column-name="{ item }">
                             {{ $tc(item.snippet) }}
@@ -38,6 +40,7 @@
                 </sw-data-grid>
             {% endblock %}
         </div>
+
         {% block swag_migration_history_detail_data_noError__loader %}
             <div v-if="isLoading"
                  class="swag-migration-history-detail-data__loading-placeholder"></div>

@@ -222,7 +222,7 @@ Component.register('swag-migration-wizard', {
 
     methods: {
         createdComponent() {
-            this.loadSelectedConnection(this.$route.params.connectionId).then(() => {
+            return this.loadSelectedConnection(this.$route.params.connectionId).then(() => {
                 this.onChildRouteChanged(); // update strings for current child
                 this.isLoading = false;
             });
@@ -242,7 +242,7 @@ Component.register('swag-migration-wizard', {
             this.errorMessageSnippet = '';
 
             this.trimCredentials();
-            this.migrationService.updateConnectionCredentials(
+            return this.migrationService.updateConnectionCredentials(
                 this.connection.id,
                 this.connection.credentialFields
             ).then((response) => {
@@ -251,7 +251,7 @@ Component.register('swag-migration-wizard', {
                     this.onResponseError('');
                 }
 
-                this.doConnectionCheck();
+                return this.doConnectionCheck();
             }).catch((error) => {
                 this.isLoading = false;
                 this.onResponseError(error.response.data.errors[0].code);
@@ -260,7 +260,7 @@ Component.register('swag-migration-wizard', {
 
         doConnectionCheck() {
             this.isLoading = true;
-            this.migrationService.checkConnection(this.connection.id).then((connectionCheckResponse) => {
+            return this.migrationService.checkConnection(this.connection.id).then((connectionCheckResponse) => {
                 State.commit('swagMigration/process/setConnectionId', this.connection.id);
                 State.commit('swagMigration/process/setEntityGroups', []);
                 this.isLoading = false;

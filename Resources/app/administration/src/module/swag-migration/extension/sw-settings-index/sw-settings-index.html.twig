@@ -1,10 +1,10 @@
 {% block sw_settings_content_card_slot_plugins %}
     {% parent %}
 
-    <sw-settings-item :label="$tc('swag-migration.general.mainMenuItemGeneral')"
+    <sw-settings-item class="sw-settings-index-migration"
+                      :label="$tc('swag-migration.general.mainMenuItemGeneral')"
                       :to="{ name: 'swag.migration.index' }"
-                      :backgroundEnabled="false"
-                      class="sw-settings-index-migration">
+                      :backgroundEnabled="false">
         <template #icon>
             <img class="swag-migration-modul__plugin" :src="'/swagmigrationassistant/static/img/migration-assistant-plugin.svg' | asset">
         </template>

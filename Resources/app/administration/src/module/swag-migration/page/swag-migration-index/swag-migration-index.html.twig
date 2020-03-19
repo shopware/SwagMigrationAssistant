@@ -1,5 +1,6 @@
 {% block swag_migration_index %}
     <sw-page class="swag-migration-index">
+
         {% block swag_migration_index_smart_bar_header %}
             <template #smart-bar-header>
                 <h2>
@@ -9,7 +10,6 @@
                 </h2>
             </template>
         {% endblock %}
-
 
         {% block swag_migration_index_smart_bar_actions %}
             <template v-if="!storesInitializing" #smart-bar-actions>
@@ -22,8 +22,10 @@
         {% block swag_migration_index_content %}
             <template #content>
                 <sw-card-view v-if="!storesInitializing">
+
                     {% block swag_migration_index_tabs %}
                         <sw-tabs class="swag-migration-index-tabs">
+
                             {% block swag_migration_index_tab_main %}
                                 <sw-tabs-item :route="{ name: 'swag.migration.index.main' }"
                                               :title="$tc('swag-migration.general.tabMain')">

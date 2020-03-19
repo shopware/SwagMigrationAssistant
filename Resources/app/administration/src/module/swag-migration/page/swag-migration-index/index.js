@@ -25,10 +25,6 @@ Component.register('swag-migration-index', {
         };
     },
 
-    created() {
-        this.createdComponent();
-    },
-
     computed: {
         ...mapState('swagMigration/process', [
             'isMigrating',
@@ -60,25 +56,32 @@ Component.register('swag-migration-index', {
         }
     },
 
+    created() {
+        this.createdComponent();
+    },
+
     methods: {
         createdComponent() {
             if (this.connectionId === null
                 || Object.keys(this.environmentInformation).length === 0
             ) {
-                this.migrationProcessStoreInitService.initProcessStore().then(() => {
+                return this.migrationProcessStoreInitService.initProcessStore().then(() => {
                     return this.migrationUiStoreInitService.initUiStore();
                 }).catch(() => {}).finally(() => {
                     this.storesInitializing = false;
                 });
-            } else if (this.dataSelectionTableData.length === 0) {
-                this.migrationUiStoreInitService.initUiStore().then(() => {
+            }
+
+            if (this.dataSelectionTableData.length === 0) {
+                return this.migrationUiStoreInitService.initUiStore().then(() => {
                     this.storesInitializing = false;
                 }).catch(() => {
                     this.storesInitializing = false;
                 });
-            } else {
-                this.storesInitializing = false;
             }
+
+            this.storesInitializing = false;
+            return Promise.resolve();
         },
 
         onMigrate() {

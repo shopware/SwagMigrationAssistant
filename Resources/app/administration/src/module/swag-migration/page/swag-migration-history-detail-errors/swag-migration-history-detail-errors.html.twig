@@ -1,6 +1,7 @@
 {% block swag_migration_history_detail_errors %}
     <div class="swag-migration-history-detail-errors">
         <div v-if="!isLoading">
+
             {% block swag_migration_history_detail_errors_download %}
                 <form class="swag-migration-history-detail-errors__download-form"
                       :action="downloadUrl"
@@ -10,10 +11,10 @@
                            :value="migrationRun.id">
                     <button class="sw-button swag-migration-history-detail-errors__download-button"
                             type="submit">
-                        {{ $t('swag-migration.history.detailPage.logDownload') }}
+                        {{ $tc('swag-migration.history.detailPage.logDownload') }}
                     </button>
                     <p class="swag-migration-history-detail-errors__download-description">
-                        {{ $t('swag-migration.history.detailPage.logDescription') }}
+                        {{ $tc('swag-migration.history.detailPage.logDescription') }}
                     </p>
                 </form>
             {% endblock %}
@@ -30,6 +31,7 @@
                               :sortBy="sortBy"
                               :sortDirection="sortDirection"
                               @column-sort="onSortColumn">
+
                     {% block swag_migration_history_detail_errors_grid_code%}
                         <template #column-title="{ item }">
                             {{ item.title }}
@@ -55,13 +57,15 @@
                     {% endblock %}
                 </sw-data-grid>
             {% endblock %}
+
             {% block swag_migration_history_detail_errors_noError %}
                 <p v-if="migrationErrors.length === 0"
                    class="swag-migration-history-detail-errors__no-error">
-                    {{ $t('swag-migration.history.detailPage.noErrorsOccurred') }}
+                    {{ $tc('swag-migration.history.detailPage.noErrorsOccurred') }}
                 </p>
             {% endblock %}
         </div>
+
         {% block swag_migration_history_detail_errors_noError__loader %}
             <div v-if="isLoading"
                  class="swag-migration-history-detail-errors__loading-placeholder"></div>

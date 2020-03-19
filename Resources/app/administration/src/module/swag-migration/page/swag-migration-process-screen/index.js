@@ -253,7 +253,7 @@ Component.register('swag-migration-process-screen', {
     },
 
     beforeDestroy() {
-        this.migrationWorkerService.unsubscribeInterrupt();
+        this.beforeDestroyedComponent();
     },
 
     methods: {
@@ -298,11 +298,11 @@ Component.register('swag-migration-process-screen', {
 
             if (this.connectionId === null) {
                 this.$router.push({ name: 'swag.migration.wizard.introduction' });
-                return;
+                return Promise.resolve();
             }
 
             // Do connection check
-            this.migrationService.checkConnection(this.connectionId)
+            return this.migrationService.checkConnection(this.connectionId)
                 .then(async (connectionCheckResponse) => {
                     State.commit('swagMigration/process/setEnvironmentInformation', connectionCheckResponse);
 
@@ -314,7 +314,7 @@ Component.register('swag-migration-process-screen', {
                         (!otherInstanceMigrating && !this.$route.params.startMigration)
                     ) {
                         this.$router.push({ name: 'swag.migration.index.main' });
-                        return;
+                        return Promise.resolve();
                     }
 
                     this.migrationWorkerService.restoreRunningMigration(false);
@@ -332,9 +332,15 @@ Component.register('swag-migration-process-screen', {
                     }
 
                     State.commit('swagMigration/ui/setIsLoading', false);
+
+                    return Promise.resolve();
                 }).catch(() => {
                     State.commit('swagMigration/ui/setIsLoading', false);
                 });
+        },
+
+        beforeDestroyedComponent() {
+            this.migrationWorkerService.unsubscribeInterrupt();
         },
 
         restoreFlowChart(currentStatus) {
@@ -421,17 +427,17 @@ Component.register('swag-migration-process-screen', {
         onStartButtonClick() {
             if (this.componentIndex === UI_COMPONENT_INDEX.WARNING_CONFIRM) {
                 State.commit('swagMigration/ui/setComponentIndex', UI_COMPONENT_INDEX.PREMAPPING);
-                return;
+                return Promise.resolve();
             }
 
             State.commit('swagMigration/ui/setIsLoading', true);
-            this.migrationService.writePremapping(
+            return this.migrationService.writePremapping(
                 this.runId,
                 this.premapping
             ).then(() => {
                 State.commit('swagMigration/ui/setComponentIndex', UI_COMPONENT_INDEX.LOADING_SCREEN);
                 State.commit('swagMigration/ui/setIsLoading', false);
-                this.migrationWorkerService.startMigration(
+                return this.migrationWorkerService.startMigration(
                     this.runId
                 ).then(() => {
                     State.commit('swagMigration/ui/setIsLoading', false);
@@ -668,7 +674,7 @@ Component.register('swag-migration-process-screen', {
          * If the current migration was stopped
          */
         onStop() {
-            this.migrationService.abortMigration(this.runId).then(() => {
+            return this.migrationService.abortMigration(this.runId).then(() => {
                 this.showAbortMigrationConfirmDialog = false;
                 this.isMigrationInterrupted = false;
                 State.commit('swagMigration/process/setIsMigrating', false);

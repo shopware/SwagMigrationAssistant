@@ -22,14 +22,12 @@ class MigrationIndexingApiService extends ApiService {
             params.timestamp = timestamp;
         }
 
-        return this.httpClient
-            .post(`_action/${this.getApiBasePath()}`, params, {
-                ...this.basicConfig,
-                headers
-            })
-            .then((response) => {
-                return ApiService.handleResponse(response);
-            });
+        return this.httpClient.post(`_action/${this.getApiBasePath()}`, params, {
+            ...this.basicConfig,
+            headers
+        }).then((response) => {
+            return ApiService.handleResponse(response);
+        });
     }
 }
 

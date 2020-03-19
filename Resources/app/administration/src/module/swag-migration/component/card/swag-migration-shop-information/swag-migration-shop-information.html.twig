@@ -1,11 +1,14 @@
 {% block swag_migration_shop_information %}
     <sw-card class="swag-migration-shop-information" :title="$tc('swag-migration.index.shopInfoCard.cardTitle')">
+
         {% block swag_migration_shop_information_content %}
             <template #grid>
                 <sw-container rows="auto auto">
                     <sw-card-section :divider="showMoreInformation ? 'bottom' : ''">
+
                         {% block swag_migration_shop_information_connection %}
                             <div class="swag-migration-shop-information__connection">
+
                                 {% block swag_migration_shop_information_connection_avatar %}
                                     <template v-if="profileIcon === null || profileIcon === ''">
                                         <swag-migration-shop-avatar class="swag-migration-shop-information__connection-avatar"
@@ -24,6 +27,7 @@
 
                                 {% block swag_migration_shop_information_connection_info %}
                                     <div class="swag-migration-shop-information__connection-info">
+
                                         {% block swag_migration_shop_information_shop_system %}
                                             <div class="swag-migration-shop-information__connection-name">
                                                 {{ connectionName }}
@@ -31,18 +35,18 @@
                                         {% endblock %}
 
                                         {% block swag_migration_shop_information_shop_domain %}
-                                            <div class="swag-migration-shop-information__shop-domain" v-if="shopUrl !== ''">
+                                            <div v-if="shopUrl !== ''" class="swag-migration-shop-information__shop-domain">
                                                 <span class="swag-migration-shop-information__shop-domain-prefix"
                                                       :class="shopUrlPrefixClass">
-                                                    <sw-icon name="small-lock-closed"
-                                                             size="12px"
+                                                    <sw-icon v-if="sslActive"
                                                              class="swag-migration-shop-information__shop-domain-prefix-icon"
-                                                             v-if="sslActive">
+                                                             name="small-lock-closed"
+                                                             size="12px">
                                                     </sw-icon>
-                                                    <sw-icon name="small-lock-open"
-                                                             size="12px"
+                                                    <sw-icon v-else
                                                              class="swag-migration-shop-information__shop-domain-prefix-icon"
-                                                             v-else>
+                                                             name="small-lock-open"
+                                                             size="12px">
                                                     </sw-icon>
                                                     {{ shopUrlPrefix }}</span>{{ shopUrl }}
                                             </div>
@@ -50,6 +54,7 @@
 
                                         {% block swag_migration_shop_information_actions %}
                                             <div class="swag-migration-shop-information__actions">
+
                                                 {% block swag_migration_shop_information_actions_editSettings %}
                                                     <sw-button size="small"
                                                                @click="onClickEditConnectionCredentials">
@@ -90,8 +95,12 @@
                                 {% block swag_migration_shop_information_connection %}
                                     <div class="swag-migration-shop-information__connection">
                                         <div class="swag-migration-shop-information__connection-badge">
-                                            <sw-label class="swag-migration-shop-information__connection-status" :variant="connectionBadgeVariant" appearance="pill">
-                                                <sw-color-badge class="swag-migration-shop-information__connection-status-dot" :variant="connectionBadgeVariant" rounded>
+                                            <sw-label class="swag-migration-shop-information__connection-status"
+                                                      :variant="connectionBadgeVariant"
+                                                      appearance="pill">
+                                                <sw-color-badge class="swag-migration-shop-information__connection-status-dot"
+                                                                :variant="connectionBadgeVariant"
+                                                                rounded>
                                                 </sw-color-badge>
                                                 <span class="swag-migration-shop-information__connection-status-text">
                                                     {{ $tc(connectionBadgeLabel) }}
@@ -104,10 +113,14 @@
                         {% endblock %}
                     </sw-card-section>
 
-                    <sw-card-section secondary slim v-if="showMoreInformation">
-                        <sw-container class="swag-migration-shop-information__metadata" columns="repeat(auto-fit, minmax(250px, 1fr)" gap="0px 15px">
+                    <sw-card-section v-if="showMoreInformation" secondary slim>
+                        <sw-container class="swag-migration-shop-information__metadata"
+                                      columns="repeat(auto-fit, minmax(250px, 1fr)"
+                                      gap="0px 15px">
+
                             {% block swag_migration_shop_information_metadata_columns %}
                                 <div class="swag-migration-shop-information__metadata-columns">
+
                                     {% block swag_migration_shop_information_metadata_column_left %}
                                         {% block swag_migration_shop_information_metadata_profile %}
                                             <sw-description-list>
@@ -125,24 +138,26 @@
                                     {% endblock %}
                                 </div>
                                 <div class="swag-migration-shop-information__metadata-columns">
+
                                     {% block swag_migration_shop_information_column_right %}
                                         {% block swag_migration_shop_information_metadata_lastConnectionCheck %}
                                             <sw-description-list>
                                                 <dt>{{ $tc('swag-migration.index.shopInfoCard.connectionCheck') }}</dt>
                                                 <dd v-if="lastConnectionCheck !== '-'">
-                                                    {{ $t('swag-migration.index.shopInfoCard.displayDateTime', lastConnectionCheckDateTimeParams) }}
+                                                    {{ $tc('swag-migration.index.shopInfoCard.displayDateTime', 0, lastConnectionCheckDateTimeParams) }}
                                                 </dd>
                                                 <dd v-else>-</dd>
                                             </sw-description-list>
                                         {% endblock %}
+
                                         {% block swag_migration_shop_information_metadata_lastMigration %}
                                             <sw-description-list>
                                                     <dt>{{ $tc('swag-migration.index.shopInfoCard.lastMigration') }}</dt>
                                                     <dd v-if="lastMigrationDate !== '-'">
-                                                        {{ $t('swag-migration.index.shopInfoCard.displayDateTime', lastMigrationDateTimeParams) }}
+                                                        {{ $tc('swag-migration.index.shopInfoCard.displayDateTime', 0, lastMigrationDateTimeParams) }}
                                                     </dd>
                                                     <dd v-else>
-                                                        {{ $t('swag-migration.index.shopInfoCard.noMigrationDoneYet') }}
+                                                        {{ $tc('swag-migration.index.shopInfoCard.noMigrationDoneYet') }}
                                                     </dd>
                                             </sw-description-list>
                                         {% endblock %}
