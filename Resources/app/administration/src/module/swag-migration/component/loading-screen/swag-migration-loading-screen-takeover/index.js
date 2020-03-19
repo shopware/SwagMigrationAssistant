@@ -57,25 +57,29 @@ Component.register('swag-migration-loading-screen-takeover', {
     },
 
     created() {
-        if (this.isMigrationInterrupted) {
-            this.state = TAKEOVER_STATE.INTERRUPTED;
-        } else {
-            this.state = TAKEOVER_STATE.RUNNING;
-        }
-
-        this.isLoading = false;
+        this.createdComponent();
     },
 
     methods: {
+        createdComponent() {
+            if (this.isMigrationInterrupted) {
+                this.state = TAKEOVER_STATE.INTERRUPTED;
+            } else {
+                this.state = TAKEOVER_STATE.RUNNING;
+            }
+
+            this.isLoading = false;
+        },
+
         refreshState() {
             this.isLoading = true;
-            this.migrationWorkerService.isMigrationRunningInOtherTab().then((isRunning) => {
+            return this.migrationWorkerService.isMigrationRunningInOtherTab().then((isRunning) => {
                 if (isRunning) {
                     this.isLoading = false;
-                    return;
+                    return Promise.resolve();
                 }
 
-                this.migrationWorkerService.checkForRunningMigration().then((runState) => {
+                return this.migrationWorkerService.checkForRunningMigration().then((runState) => {
                     if (runState.isMigrationRunning === false) {
                         this.isLoading = false;
                         this.state = TAKEOVER_STATE.ABORTED;
@@ -99,7 +103,7 @@ Component.register('swag-migration-loading-screen-takeover', {
 
         onCheckButtonClick() {
             this.isLoading = true;
-            this.migrationWorkerService.checkForRunningMigration().then((runState) => {
+            return this.migrationWorkerService.checkForRunningMigration().then((runState) => {
                 if (runState.isMigrationRunning === false) {
                     this.isLoading = false;
                     this.showRedirectModal = true;

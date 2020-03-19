@@ -9,10 +9,13 @@ Component.register('swag-migration-wizard-page-profile-installation', {
 
     inject: ['storeService', 'pluginService', 'cacheApiService', 'repositoryFactory'],
 
-    computed: {
-        pluginRepository() {
-            return this.repositoryFactory.create('plugin');
-        }
+    data() {
+        return {
+            pluginIsLoading: false,
+            pluginIsSaveSuccessful: false,
+            isInstalled: false,
+            pluginName: 'SwagMigrationMagento'
+        };
     },
 
     metaInfo() {
@@ -21,13 +24,10 @@ Component.register('swag-migration-wizard-page-profile-installation', {
         };
     },
 
-    data() {
-        return {
-            pluginIsLoading: false,
-            pluginIsSaveSuccessful: false,
-            isInstalled: false,
-            pluginName: 'SwagMigrationMagento'
-        };
+    computed: {
+        pluginRepository() {
+            return this.repositoryFactory.create('plugin');
+        }
     },
 
     created() {
@@ -45,7 +45,7 @@ Component.register('swag-migration-wizard-page-profile-installation', {
                 .addFilter(Criteria.equals('plugin.active', true))
                 .setLimit(1);
 
-            this.pluginRepository.search(pluginCriteria, Shopware.Context.api).then((result) => {
+            return this.pluginRepository.search(pluginCriteria, Shopware.Context.api).then((result) => {
                 if (result.total < 1) {
                     return;
                 }

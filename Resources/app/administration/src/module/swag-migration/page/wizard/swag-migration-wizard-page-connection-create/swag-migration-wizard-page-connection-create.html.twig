@@ -1,10 +1,13 @@
 {% block swag_migration_wizard_page_create_profile %}
     <div class="swag-migration-wizard swag-migration-wizard-page-create-profile"
          @keypress.enter="onKeyPressEnter">
+
         {% block swag_migration_wizard_page_create_profile_content %}
-            <div class="swag-migration-wizard__content" v-if="!isLoading">
+            <div v-if="!isLoading" class="swag-migration-wizard__content">
+
                 {% block swag_migration_wizard_page_create_profile_information %}
                     <div class="swag-migration-wizard__content-information">
+
                         {% block swag_migration_wizard_page_create_profile_content_information %}
                             <p class="swag-migration-wizard__description">
                                 {{ $tc('swag-migration.wizard.pages.connectionCreate.contentInformation') }}
@@ -12,29 +15,29 @@
                         {% endblock %}
                     </div>
                 {% endblock %}
+
                 {% block swag_migration_wizard_page_create_profile_selection %}
                     <div class="swag-migration-wizard__form">
                         <sw-text-field v-autofocus
+                                       v-model="selection.connectionName"
                                        :label="$tc('swag-migration.wizard.pages.connectionCreate.connectionLabel')"
                                        :placeholder="$tc('swag-migration.wizard.pages.connectionCreate.connectionPlaceholder')"
-                                       v-model="selection.connectionName"
-                                       @input="onChangeConnectionName"
                                        validation="required"
                                        :helpText="$tc('swag-migration.wizard.pages.connectionCreate.connectionTooltip')"
                                        :error="connectionNameError"
-                                  >
+                                       @input="onChangeConnectionName">
                         </sw-text-field>
 
-                        <sw-single-select
-                                  :label="$tc('swag-migration.wizard.pages.connectionCreate.profileLabel')"
-                                  :placeholder="$tc('swag-migration.wizard.pages.connectionCreate.profilePlaceholder')"
-                                  :popoverConfig="{active: true, resizeWidth: true, style: { zIndex: 1000, marginLeft: '8px' }}"
-                                  :options="profiles"
-                                  :value="selection.profile"
-                                  valueProperty="name"
-                                  @change="onSelectProfile"
-                                  :searchFunction="profileSearch"
-                                  validation="required">
+                        <sw-single-select :label="$tc('swag-migration.wizard.pages.connectionCreate.profileLabel')"
+                                          :placeholder="$tc('swag-migration.wizard.pages.connectionCreate.profilePlaceholder')"
+                                          :popoverConfig="{active: true, resizeWidth: true, style: { zIndex: 1000, marginLeft: '8px' }}"
+                                          :options="profiles"
+                                          :value="selection.profile"
+                                          valueProperty="name"
+                                          :searchFunction="profileSearch"
+                                          validation="required"
+                                          @change="onSelectProfile">
+
                             {% block swag_migration_wizard_page_create_profile_form_profile_field_options %}
                                 <template #selection-label-property="{ item: singleSelection, labelProperty, valueProperty, searchTerm, getKey }">
                                     <span v-html="getText(singleSelection)"></span>
@@ -54,17 +57,17 @@
                             {% endblock %}
                         </sw-single-select>
 
-                        <sw-single-select
-                                  :label="$tc('swag-migration.wizard.pages.connectionCreate.gatewayLabel')"
-                                  :placeholder="$tc('swag-migration.wizard.pages.connectionCreate.gatewayPlaceholder')"
-                                  :helpText="$tc('swag-migration.wizard.pages.connectionCreate.gatewayTooltip')"
-                                  :popoverConfig="{active: true, resizeWidth: true, style: { zIndex: 1000, marginLeft: '8px' }}"
-                                  :options="gateways"
-                                  :value="selection.gateway"
-                                  valueProperty="name"
-                                  @change="onSelectGateway"
-                                  :searchFunction="gatewaySearch"
-                                  validation="required">
+                        <sw-single-select :label="$tc('swag-migration.wizard.pages.connectionCreate.gatewayLabel')"
+                                          :placeholder="$tc('swag-migration.wizard.pages.connectionCreate.gatewayPlaceholder')"
+                                          :helpText="$tc('swag-migration.wizard.pages.connectionCreate.gatewayTooltip')"
+                                          :popoverConfig="{active: true, resizeWidth: true, style: { zIndex: 1000, marginLeft: '8px' }}"
+                                          :options="gateways"
+                                          :value="selection.gateway"
+                                          valueProperty="name"
+                                          :searchFunction="gatewaySearch"
+                                          validation="required"
+                                          @change="onSelectGateway">
+
                             {% block swag_migration_wizard_page_create_profile_form_gateway_field_options %}
                                 <template #selection-label-property="{ item: singleSelection, labelProperty, valueProperty, searchTerm, getKey }">
                                     {{ $tc(singleSelection.snippet) }}

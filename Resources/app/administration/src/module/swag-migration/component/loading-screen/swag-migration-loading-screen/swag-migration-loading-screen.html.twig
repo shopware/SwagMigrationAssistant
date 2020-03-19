@@ -1,11 +1,15 @@
 {% block swag_migration_loading_screen %}
     <div class="swag-migration-loading-screen">
+
         {% block swag_migration_loading_screen_card %}
             <sw-card v-show="!isPaused" class="swag-migration-loading-screen__card">
+
                 {% block swag_migration_index_loading_screen_content %}
                     <div class="swag-migration-loading-screen__content">
+
                         {% block swag_migration_index_loading_screen_header %}
                             <div class="swag-migration-loading-screen__header">
+
                                 {% block swag_migration_index_loading_screen_title %}
                                     <div class="swag-migration-loading-screen__title">
                                         {{ statusLong }}
@@ -24,16 +28,20 @@
                             <swag-migration-progress-bar
                                     :title="progressBarTitle"
                                     :leftPointDescription="progressBarLeftPointDescription"
-                                    :rightPointDescription="$t('swag-migration.index.loadingScreenCard.status.finish')"
+                                    :rightPointDescription="$tc('swag-migration.index.loadingScreenCard.status.finish')"
                                     :value="progressBarValue"
                                     :maxValue="progressBarMaxValue"></swag-migration-progress-bar>
                         {% endblock %}
 
                         {% block swag_migration_index_loading_screen_alert %}
-                            <sw-alert variant="success" class="swag-migration-loading-screen__hint">
+                            <sw-alert class="swag-migration-loading-screen__hint" variant="success">
                                 {{ hint }}
                                 <template #customIcon>
-                                    <sw-icon size="20px" class="swag-migration-loading-screen__alert-icon" name="default-object-lightbulb" decorative></sw-icon>
+                                    <sw-icon class="swag-migration-loading-screen__alert-icon"
+                                             name="default-object-lightbulb"
+                                             size="20px"
+                                             decorative>
+                                    </sw-icon>
                                 </template>
                             </sw-alert>
                         {% endblock %}

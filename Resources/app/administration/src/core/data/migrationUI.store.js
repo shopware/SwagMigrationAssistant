@@ -10,18 +10,60 @@ export const UI_COMPONENT_INDEX = Object.freeze({
     CONNECTION_LOST: 7
 });
 
+/**
+ * The vuex store for global data handling inside the UI components of the migration module.
+ * These are used for preparing and supporting the migration process (which is running in the background)
+ * and to display the correct things to the user.
+ * @module
+ */
 export default {
     namespaced: true,
 
     state: {
+        /**
+         * The current component to display in the migration process. This is very similar to the migration status,
+         * but only represents which component to render at the moment.
+         */
         componentIndex: UI_COMPONENT_INDEX.DATA_SELECTOR,
+
+        /**
+         * Flag which sets the whole module into a loading state
+         */
         isLoading: false,
+
+        /**
+         * Flag to set the migration ui into a pause state
+         */
         isPaused: false,
+
+        /**
+         * Flag to specify that the premapping is valid
+         */
         isPremappingValid: false,
+
+        /**
+         * The selected data ids that the user wants to migrate.
+         */
         dataSelectionIds: [],
+
+        /**
+         * The possible data that the user can migrate.
+         */
         dataSelectionTableData: [],
+
+        /**
+         * The premapping structure, that the user must match.
+         */
         premapping: [],
+
+        /**
+         * Only the unfilled part of the premapping.
+         */
         unfilledPremapping: [],
+
+        /**
+         * Only the filled part of the premapping.
+         */
         filledPremapping: []
     },
 

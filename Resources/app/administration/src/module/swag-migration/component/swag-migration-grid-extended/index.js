@@ -15,6 +15,19 @@ Component.extend('swag-migration-grid-extended', 'sw-grid', {
     methods: {
         isDisabled(item) {
             return item[this.disabledAttribute];
+        },
+
+        extendedGridRowClasses(item, index) {
+            const classes = {
+                'is--selected': this.isSelected(item.id) && !this.isDisabled(item),
+                'is--deleted': item.isDeleted,
+                'is--new': item.isLocal,
+                'is--disabled': this.isDisabled(item)
+            };
+
+            classes[`sw-grid__row--${index}`] = true;
+
+            return classes;
         }
     }
 });

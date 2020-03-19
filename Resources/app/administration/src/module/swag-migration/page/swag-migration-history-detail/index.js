@@ -107,23 +107,23 @@ Component.register('swag-migration-history-detail', {
         if (!this.$route.params.id) {
             this.isLoading = false;
             this.onCloseModal();
-            return;
+            return Promise.resolve();
         }
 
         this.runId = this.$route.params.id;
         const criteria = new Criteria(1, 1);
         criteria.addFilter(Criteria.equals('id', this.runId));
 
-        this.migrationRunRepository.search(criteria, this.context).then((runs) => {
+        return this.migrationRunRepository.search(criteria, this.context).then((runs) => {
             if (runs.length < 1) {
                 this.isLoading = false;
                 this.onCloseModal();
-                return;
+                return Promise.resolve();
             }
 
             this.migrationRun = runs.first();
 
-            this.migrationService.getProfileInformation(this.migrationRun.connection.profileName, this.migrationRun.connection.gatewayName).then((profileInformation) => {
+            return this.migrationService.getProfileInformation(this.migrationRun.connection.profileName, this.migrationRun.connection.gatewayName).then((profileInformation) => {
                 this.migrationRun.connection.profile = profileInformation.profile;
 
                 this.isLoading = false;

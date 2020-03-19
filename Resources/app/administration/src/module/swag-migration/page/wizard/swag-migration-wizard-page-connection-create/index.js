@@ -66,7 +66,7 @@ Component.register('swag-migration-wizard-page-connection-create', {
 
             const snippet = `swag-migration.wizard.pages.connectionCreate.hint.${this.selection.gateway}`;
             if (this.$tc(snippet) !== `swag-migration.wizard.pages.connectionCreate.hint.${this.selection.gateway}`) {
-                return this.$t(snippet);
+                return this.$tc(snippet);
             }
 
             return '';
@@ -82,7 +82,7 @@ Component.register('swag-migration-wizard-page-connection-create', {
             this.setIsLoading(true);
             this.emitOnChildRouteReadyChanged(false);
 
-            this.migrationService.getProfiles().then((profiles) => {
+            return this.migrationService.getProfiles().then((profiles) => {
                 this.profiles = profiles;
                 this.profiles.push({
                     name: 'profileLink'

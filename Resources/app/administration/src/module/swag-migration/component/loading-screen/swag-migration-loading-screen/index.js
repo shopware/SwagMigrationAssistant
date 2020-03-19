@@ -40,29 +40,29 @@ Component.register('swag-migration-loading-screen', {
                 return '';
             }
 
-            return `${this.$t(
+            return `${this.$tc(
                 `swag-migration.index.selectDataCard.dataSelection.${this.currentEntityGroupId}`
             )}`;
         },
 
         progressBarLeftPointDescription() {
             return this.currentStatus === undefined ? '' :
-                `${this.$t(`swag-migration.index.loadingScreenCard.status.${this.currentStatus}.short`)}`;
+                `${this.$tc(`swag-migration.index.loadingScreenCard.status.${this.currentStatus}.short`)}`;
         },
 
         caption() {
             return this.currentStatus === undefined ? '' :
-                this.$t(`swag-migration.index.loadingScreenCard.status.${this.currentStatus}.caption`);
+                this.$tc(`swag-migration.index.loadingScreenCard.status.${this.currentStatus}.caption`);
         },
 
         statusLong() {
             return this.currentStatus === undefined ? '' :
-                this.$t(`swag-migration.index.loadingScreenCard.status.${this.currentStatus}.long`);
+                this.$tc(`swag-migration.index.loadingScreenCard.status.${this.currentStatus}.long`);
         },
 
         hint() {
             return this.currentStatus === undefined ? '' :
-                this.$t(`swag-migration.index.loadingScreenCard.status.${this.currentStatus}.hint`);
+                this.$tc(`swag-migration.index.loadingScreenCard.status.${this.currentStatus}.hint`);
         }
     }
 });

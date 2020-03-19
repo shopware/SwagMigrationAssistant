@@ -3,6 +3,7 @@
              :isLoading="isLoading"
              :large="true">
         <template #grid>
+
             {% block swag_migration_history_grid %}
                 <sw-data-grid v-if="migrationRuns.length > 0"
                               identifier="swag-migration-history"
@@ -14,48 +15,54 @@
                               :sortBy="sortBy"
                               :sortDirection="sortDirection"
                               @column-sort="onSortColumn">
+
                     {% block swag_migration_history_grid_column_status %}
                         <template #column-status="{ item }">
                             <sw-icon v-if="item.status === 'finished'"
+                                     class="swag-migration-history__status-icon swag-migration-history__status-icon--finished"
                                      name="default-basic-checkmark-line"
-                                     size="16px"
-                                     class="swag-migration-history__status-icon swag-migration-history__status-icon--finished">
+                                     size="16px">
                             </sw-icon>
                             <sw-icon v-else-if="item.status === 'aborted'"
+                                     class="swag-migration-history__status-icon swag-migration-history__status-icon--aborted"
                                      name="default-basic-x-line"
-                                     size="16px"
-                                     class="swag-migration-history__status-icon swag-migration-history__status-icon--aborted">
+                                     size="16px">
                             </sw-icon>
                             <sw-icon v-else-if="item.status === 'running'"
+                                     class="swag-migration-history__status-icon swag-migration-history__status-icon--loading"
                                      name="default-basic-shape-circle"
-                                     size="16px"
-                                     class="swag-migration-history__status-icon swag-migration-history__status-icon--loading">
+                                     size="16px">
                             </sw-icon>
                         </template>
                     {% endblock %}
+
                     {% block swag_migration_history_grid_column_profile %}
                         <template #column-connection.profile="{ item }">
                             {{ item.connection.profileName }} /
                             {{ item.connection.gatewayName }}
                         </template>
                     {% endblock %}
+
                     {% block swag_migration_history_grid_column_createdAt %}
                         <template #column-createdAt="{ item }">
                             {{ item.createdAt | date(migrationDateOptions) }}
                         </template>
                     {% endblock %}
+
                     {% block swag_migration_history_grid_column_sourceSystemName %}
                         <template #column-environmentInformation.sourceSystemName="{ item }">
                             {{ item.environmentInformation.sourceSystemName }}
                             {{ item.environmentInformation.sourceSystemVersion }}
                         </template>
                     {% endblock %}
+
                     {% block swag_migration_history_grid_column_selectedData %}
                         <template #column-progress="{ item }">
                             <swag-migration-history-selected-data :entityGroups="item.progress">
                             </swag-migration-history-selected-data>
                         </template>
                     {% endblock %}
+
                     {% block swag_migration_history_grid_actions %}
                         <template #actions="{ item }">
                             <sw-context-menu-item :routerLink="{ name: 'swag.migration.index.history.detail', params:{ id:item.id } }">
@@ -63,13 +70,14 @@
                             </sw-context-menu-item>
                         </template>
                     {% endblock %}
+
                     {% block swag_migration_history_grid_pagination %}
                         <template #pagination>
                                 <sw-pagination :page="page"
                                                :limit="limit"
                                                :total="total"
                                                :total-visible="7"
-                                                @page-change="onPageChange">
+                                               @page-change="onPageChange">
                                 </sw-pagination>
                         </template>
                     {% endblock %}
@@ -77,7 +85,7 @@
             {% endblock %}
 
             {% block swag_migration_history_no_data %}
-                <div class="swag-migration-history__no-data" v-if="migrationRuns.length === 0">
+                <div v-if="migrationRuns.length === 0" class="swag-migration-history__no-data">
                     <p class="swag-migration-history__no-data-label">
                         {{ $tc('swag-migration.history.noData') }}
                     </p>

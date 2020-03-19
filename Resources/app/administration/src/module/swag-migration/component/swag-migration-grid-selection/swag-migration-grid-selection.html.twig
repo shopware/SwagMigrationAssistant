@@ -1,25 +1,29 @@
 {% block swag_migration_grid_selection %}
     <div class="swag-migration-grid-selection">
+
         {% block swag_migration_grid_selection_grid %}
             <sw-grid ref="tableDataGrid"
                      :items="items"
                      :selectable="false">
                 <template #columns="{ item }">
+
                     {% block swag_migration_grid_selection_grid_column_description %}
                         <sw-grid-column flex="1fr" :label="$tc('swag-migration.index.premappingCard.previousTitle')">
                             {{ item.description }}
                         </sw-grid-column>
                     {% endblock %}
+
                     {% block swag_migration_grid_selection_grid_column_choice %}
                         <sw-grid-column class="swag-migration-grid-selection__choice-column"
                                         flex="1fr"
                                         :label="$tc('swag-migration.index.premappingCard.newAssignmentTitle')">
+
                             {% block swag_migration_grid_selection_grid_column_choice_field %}
-                                <sw-select-field class="swag-migration-grid-selection__choice-field"
-                                          v-model="item.destinationUuid"
-                                          @change="onInput"
-                                          :placeholder="$tc('swag-migration.index.premappingCard.placeholder')"
-                                          :class="getClassesAfterValidation(item)">
+                                <sw-select-field v-model="item.destinationUuid"
+                                                 class="swag-migration-grid-selection__choice-field"
+                                                 :class="getClassesAfterValidation(item)"
+                                                 :placeholder="$tc('swag-migration.index.premappingCard.placeholder')"
+                                                 @change="onInput">
                                     <option v-for="choice in choices" :key="choice.uuid" :value="choice.uuid">
                                         {{ choice.description }}
                                     </option>
@@ -28,6 +32,7 @@
                         </sw-grid-column>
                     {% endblock %}
                 </template>
+
                 {% block swag_migration_grid_selection_grid_pagination %}
                     <template #pagination>
                         <sw-pagination

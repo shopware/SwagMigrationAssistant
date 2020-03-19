@@ -47,7 +47,7 @@ Component.register('swag-migration-history-detail-errors', {
                 {
                     property: 'title',
                     dataIndex: 'title',
-                    label: this.$t('swag-migration.history.detailPage.errorCode'),
+                    label: this.$tc('swag-migration.history.detailPage.errorCode'),
                     primary: true,
                     allowResize: true,
                     sortable: true
@@ -55,7 +55,7 @@ Component.register('swag-migration-history-detail-errors', {
                 {
                     property: 'count',
                     dataIndex: 'count',
-                    label: this.$t('swag-migration.history.detailPage.errorCount'),
+                    label: this.$tc('swag-migration.history.detailPage.errorCount'),
                     primary: true,
                     allowResize: true,
                     sortable: true
@@ -93,7 +93,7 @@ Component.register('swag-migration-history-detail-errors', {
                 this.total = response.total;
                 this.allMigrationErrors = response.items;
                 this.allMigrationErrors.forEach((item) => {
-                    item.title = this.$t(this.getErrorTitleSnippet(item), { entity: item.entity });
+                    item.title = this.$tc(this.getErrorTitleSnippet(item), 0, { entity: item.entity });
                 });
                 this.downloadUrl = response.downloadUrl;
                 return this.allMigrationErrors;

@@ -5,9 +5,11 @@
         <sw-card class="swag-migration-dashboard-card">
 
             {%  block swag_migration_dashboard_card_title %}
-                <span class="swag-migration-dashboard-card__title" slot="title">
-                    {{ $tc('swag-migration.dashboard.title') }}
-                </span>
+                <template #title>
+                    <span class="swag-migration-dashboard-card__title">
+                        {{ $tc('swag-migration.dashboard.title') }}
+                    </span>
+                </template>
             {% endblock %}
 
             {%  block swag_migration_dashboard_card_content %}

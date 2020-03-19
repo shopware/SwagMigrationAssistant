@@ -446,7 +446,7 @@ class MigrationWorkerService {
 
     /**
      * Resolves with true if a migration is already running in another tab. otherwise false.
-     * It will resolve after 100ms.
+     * It will resolve after 300ms.
      *
      * @returns {Promise}
      * @private
