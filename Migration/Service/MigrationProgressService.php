@@ -86,7 +86,11 @@ class MigrationProgressService implements MigrationProgressServiceInterface
         $this->validMigrationAccessToken = $this->migrationAccessTokenService->validateMigrationAccessToken($run->getId(), $request, $context);
 
         // Get the current entity counts
-        $totals = $this->getTotals($run->getProgress());
+        $progress = [];
+        if ($run->getProgress()) {
+            $progress = $run->getProgress();
+        }
+        $totals = $this->getTotals($progress);
         $fetchedEntityCounts = $this->runService->calculateCurrentTotals($run->getId(), false, $context);
 
         if (empty($totals) || empty($fetchedEntityCounts)) {
@@ -103,7 +107,7 @@ class MigrationProgressService implements MigrationProgressServiceInterface
                 null,
                 0,
                 0,
-                $run->getProgress()
+                $progress
             );
         }
 

@@ -191,6 +191,7 @@ class RunService implements RunServiceInterface
         $runProgress = $this->calculateRunProgress($environmentInformation, $dataSelectionCollection);
 
         $this->updateMigrationRun($runUuid, $migrationContext, $environmentInformation, $runProgress, $context);
+        $this->updateUnprocessedMediaFiles($migrationContext, $runUuid);
 
         $this->fireTrackingInformation(self::TRACKING_EVENT_MIGRATION_STARTED, $runUuid, $context);
 
@@ -765,5 +766,24 @@ SQL;
         $countResult = $result->get('count');
 
         return $countResult->getCount();
+    }
+
+    private function updateUnprocessedMediaFiles(MigrationContextInterface $migrationContext, string $runUuid): void
+    {
+        $connectionId = $migrationContext->getConnection()->getId();
+
+        $sql = <<<SQL
+UPDATE swag_migration_media_file AS mediafile
+INNER JOIN swag_migration_run AS run ON run.id = mediafile.run_id
+SET mediafile.run_id = UNHEX(?)
+WHERE HEX(run.connection_id) = ?
+AND mediafile.processed = 0
+AND mediafile.written = 1;
+SQL;
+        $this->dbalConnection->executeQuery(
+            $sql,
+            [$runUuid, $connectionId],
+            [\PDO::PARAM_STR, \PDO::PARAM_STR]
+        );
     }
 }
