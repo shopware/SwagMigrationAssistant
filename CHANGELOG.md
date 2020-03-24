@@ -1,5 +1,6 @@
-# REPLACE-GLOBAL-WITH-NEXT-VERSION
+# 1.2.0
 - PT-11450 - It is now possible to reset the checksums via a button in the connection management drop-down menu.
+- PT-11525 - Optimize media migration process
 
 # 1.1.0
 - PT-10832 - Preventing an undesired state when creating new connections
