@@ -1,5 +1,6 @@
-# REPLACE-GLOBAL-WITH-NEXT-VERSION
+# 1.2.0
 - PT-11450 - Es ist jetzt möglich die Prüfsummen über einen Button im Dropdown für die Verbindungsverwaltung zurückzusetzen.
+- PT-11525 - Optimiert den Migrationsprozess für Medien
 
 # 1.1.0
 - PT-10832 - Verhindern eines unerwünschten Zustands beim Anlegen neuer Verbindungen
