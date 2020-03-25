@@ -1,3 +1,6 @@
+# 1.2.1
+- NTR - Behebt ein Problem bei der Migration der Medienordner-Einstellungen aus Shopware 5
+
 # 1.2.0
 - PT-11450 - Es ist jetzt möglich die Prüfsummen über einen Button im Dropdown für die Verbindungsverwaltung zurückzusetzen.
 - PT-11525 - Optimiert den Migrationsprozess für Medien

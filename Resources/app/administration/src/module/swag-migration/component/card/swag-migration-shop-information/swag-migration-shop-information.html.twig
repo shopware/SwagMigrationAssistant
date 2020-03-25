@@ -240,8 +240,8 @@
                               @modal-close="showResetChecksumsConfirmModal = false">
 
                         {% block swag_migration_shop_information_reset_checksums_confirm_modal_content %}
-                            <p class="swag-migration-shop-information__confirm-modal-content">
-                                {{ $tc('swag-migration.index.shopInfoCard.resetChecksumsConfirmDialog.content') }}
+                            <p class="swag-migration-shop-information__confirm-modal-content"
+                               v-html="$tc('swag-migration.index.shopInfoCard.resetChecksumsConfirmDialog.content')">
                             </p>
                         {% endblock %}
 

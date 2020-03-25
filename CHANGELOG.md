@@ -1,3 +1,6 @@
+# 1.2.1
+- NTR - Fixes an issue migrating media folder thumbnail settings from Shopware 5
+
 # 1.2.0
 - PT-11450 - It is now possible to reset the checksums via a button in the connection management drop-down menu.
 - PT-11525 - Optimize media migration process

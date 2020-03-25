@@ -109,6 +109,7 @@ abstract class MediaFolderConverter extends ShopwareConverter
 
         if (isset($data['setting'])) {
             $converted['configuration'] = $this->getConfiguration($data['setting'], $migrationContext);
+            $converted['useParentConfiguration'] = false;
             unset($data['setting']);
         } else {
             $converted['useParentConfiguration'] = true;
