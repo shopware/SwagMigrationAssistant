@@ -1,3 +1,6 @@
+# 1.2.2
+- NTR - Fixes an issue with the layout when resetting the checksums
+
 # 1.2.1
 - NTR - Fixes an issue migrating media folder thumbnail settings from Shopware 5
 

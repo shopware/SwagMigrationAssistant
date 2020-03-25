@@ -1,3 +1,6 @@
+# 1.2.2
+- NTR - Behebt ein Problem mit dem Layout beim Zurücksetzen der Checksummen
+
 # 1.2.1
 - NTR - Behebt ein Problem bei der Migration der Medienordner-Einstellungen aus Shopware 5
 
