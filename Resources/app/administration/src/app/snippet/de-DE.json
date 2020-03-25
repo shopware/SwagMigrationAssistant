@@ -170,7 +170,7 @@
         },
         "resetChecksumsConfirmDialog": {
           "title": "Reset der Prüfsummen",
-          "content": "Wenn Du die sogenannten Prüfsummen zurücksetzt, werden bei der nächsten Migration garantiert alle Daten aus dem Quellsystem erkannt. Aber: Änderungen der Datensätze, die Du seit der letzten Migration in Shopware 6 vorgenommen hast, gehen verloren.",
+          "content": "Wenn Du die sogenannten Prüfsummen zurücksetzt, werden bei der nächsten Migration alle Daten aus dem Quellsystem noch einmal berücksichtigt. Dies beinhaltet auch bereits migrierte, unveränderte Datensätze. <br><br><b>Wichtig:</b> Änderungen der Datensätze, die Du seit der letzten Migration in Shopware 6 vorgenommen hast, werden wieder überschrieben. Die Daten aus dem Quellsystem haben Vorrang.",
           "contentHint": "Möchtest du die Prüfsummen zurücksetzen?",
           "abortButtonText": "Abbrechen",
           "confirmButtonText": "Ja, zurücksetzen"

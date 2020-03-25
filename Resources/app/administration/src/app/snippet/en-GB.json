@@ -170,7 +170,7 @@
         },
         "resetChecksumsConfirmDialog": {
           "title": "Reset checksums",
-          "content": "If you reset the checksums, the next migration is guaranteed to recognize all data from the source system. But: Changes to the data records you have made since the last migration in Shopware 6 will be lost.",
+          "content": "If you reset the checksums, all data from the source system will be recognized in the next migration. This includes already migrated or unchanged data sets. <br><br><b>Important:</b> Changes to the data records you have made in Shopware 6 since the last migration, will be overwritten. The source system data has priority.",
           "contentHint": "Do you want to reset the checksums?",
           "abortButtonText": "Cancel",
           "confirmButtonText": "Yes, reset"
