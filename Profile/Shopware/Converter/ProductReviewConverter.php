@@ -71,16 +71,25 @@ abstract class ProductReviewConverter extends ShopwareConverter
         );
 
         if ($mapping === null) {
-            $this->loggingService->addLogEntry(
-                new AssociationRequiredMissingLog(
-                    $migrationContext->getRunUuid(),
-                    DefaultEntities::PRODUCT,
-                    $data['articleID'],
-                    DefaultEntities::PRODUCT_REVIEW
-                )
+            $mapping = $this->mappingService->getMapping(
+                $this->connectionId,
+                DefaultEntities::PRODUCT_CONTAINER,
+                $data['articleID'],
+                $context
             );
 
-            return new ConvertStruct(null, $originalData);
+            if ($mapping === null) {
+                $this->loggingService->addLogEntry(
+                    new AssociationRequiredMissingLog(
+                        $migrationContext->getRunUuid(),
+                        DefaultEntities::PRODUCT,
+                        $data['articleID'],
+                        DefaultEntities::PRODUCT_REVIEW
+                    )
+                );
+
+                return new ConvertStruct(null, $originalData);
+            }
         }
         $converted['productId'] = $mapping['entityUuid'];
         $this->mappingIds[] = $mapping['id'];

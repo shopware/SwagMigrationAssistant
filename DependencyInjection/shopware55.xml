@@ -41,6 +41,16 @@
             <tag name="shopware.migration.converter"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55ProductOptionRelationConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware\Converter\ProductOptionRelationConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55ProductPropertyRelationConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware\Converter\ProductPropertyRelationConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
         <service id="SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55TranslationConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware\Converter\TranslationConverter">
             <tag name="shopware.migration.converter"/>

@@ -224,6 +224,8 @@
           "media": "Medien:",
           "translation": "Übersetzungen:",
           "customer_group": "Kundengruppen:",
+          "product_option_relation": "Produktoptionen:",
+          "product_property_relation": "Produkteigenschaften:",
           "property_group_option": "Eigenschaften:",
           "order_document": "Bestelldokumente:",
           "number_range": "Nummernkreise:",

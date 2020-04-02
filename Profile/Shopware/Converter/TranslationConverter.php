@@ -98,7 +98,7 @@ abstract class TranslationConverter extends ShopwareConverter
         $product = [];
         $mapping = $this->mappingService->getMapping(
             $this->connectionId,
-            DefaultEntities::PRODUCT_CONTAINER,
+            DefaultEntities::PRODUCT_MAIN,
             $data['objectkey'],
             $this->context
         );
@@ -106,7 +106,7 @@ abstract class TranslationConverter extends ShopwareConverter
         if ($mapping === null) {
             $mapping = $this->mappingService->getMapping(
                 $this->connectionId,
-                DefaultEntities::PRODUCT_MAIN,
+                DefaultEntities::PRODUCT_CONTAINER,
                 $data['objectkey'],
                 $this->context
             );

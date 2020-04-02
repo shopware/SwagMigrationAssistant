@@ -122,8 +122,6 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
             $this->getMedia($converted, $data);
         }
 
-        $this->getConfiguratorSettings($data, $converted);
-        $this->getProperties($data, $converted);
         $this->getTranslation($data, $converted);
         $this->updateMainMapping($migrationContext, $context);
 
@@ -213,47 +211,6 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         $localeTranslation['languageId'] = $languageUuid;
 
         $media['translations'][$languageUuid] = $localeTranslation;
-    }
-
-    protected function getConfiguratorSettings(array &$data, array &$converted): void
-    {
-        $variantOptionsToProductContainer = $this->mappingService->getUuidList(
-            $this->connectionId,
-            'main_product_options',
-            hash('md5', mb_strtolower($data['name'] . '_' . $data['group']['name'])),
-            $this->context
-        );
-
-        foreach ($variantOptionsToProductContainer as $uuid) {
-            $mapping = $this->mappingService->getOrCreateMapping(
-                $this->connectionId,
-                DefaultEntities::PRODUCT_PROPERTY,
-                $data['id'] . '_' . $uuid,
-                $this->context
-            );
-            $this->mappingIds[] = $mapping['id'];
-
-            $converted['productConfiguratorSettings'][] = [
-                'id' => $mapping['entityUuid'],
-                'productId' => $uuid,
-            ];
-        }
-    }
-
-    protected function getProperties(array $data, array &$converted): void
-    {
-        $propertyOptionsToProductContainer = $this->mappingService->getUuidList(
-            $this->connectionId,
-            'main_product_filter',
-            hash('md5', mb_strtolower($data['name'] . '_' . $data['group']['name'])),
-            $this->context
-        );
-
-        foreach ($propertyOptionsToProductContainer as $uuid) {
-            $converted['productProperties'][] = [
-                'id' => $uuid,
-            ];
-        }
     }
 
     protected function createAndDeleteNecessaryMappings(array $data, array $converted): void
