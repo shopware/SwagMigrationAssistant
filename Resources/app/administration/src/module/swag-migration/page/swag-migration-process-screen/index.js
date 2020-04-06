@@ -167,7 +167,6 @@ Component.register('swag-migration-process-screen', {
                 !this.componentIndexIsResult &&
                 [
                     MIGRATION_STATUS.WAITING,
-                    MIGRATION_STATUS.FETCH_DATA,
                     MIGRATION_STATUS.PREMAPPING
                 ].includes(this.statusIndex) === false;
         },
@@ -399,12 +398,6 @@ Component.register('swag-migration-process-screen', {
             if (this.statusIndex === MIGRATION_STATUS.PREMAPPING) {
                 State.commit('swagMigration/ui/setIsLoading', true);
                 this.onInterrupt(WORKER_INTERRUPT_TYPE.STOP);
-                return;
-            }
-
-            if (this.statusIndex === MIGRATION_STATUS.FETCH_DATA) {
-                State.commit('swagMigration/ui/setIsLoading', true);
-                this.migrationWorkerService.stopMigration();
                 return;
             }
 

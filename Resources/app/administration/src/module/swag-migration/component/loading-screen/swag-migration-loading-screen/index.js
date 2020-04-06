@@ -3,7 +3,7 @@ import './swag-migration-loading-screen.scss';
 import { MIGRATION_DISPLAY_STATUS } from
     '../../../../../core/service/migration/swag-migration-worker-status-manager.service';
 
-const { Component } = Shopware;
+const { Component, State } = Shopware;
 const { mapState, mapGetters } = Shopware.Component.getComponentHelper();
 
 Component.register('swag-migration-loading-screen', {
@@ -63,6 +63,16 @@ Component.register('swag-migration-loading-screen', {
         hint() {
             return this.currentStatus === undefined ? '' :
                 this.$tc(`swag-migration.index.loadingScreenCard.status.${this.currentStatus}.hint`);
+        }
+    },
+
+    created() {
+        this.createdComponent();
+    },
+
+    methods: {
+        createdComponent() {
+            State.commit('swagMigration/process/resetProgress');
         }
     }
 });

@@ -229,11 +229,6 @@ class MigrationProgressServiceTest extends TestCase
     public function testGetProgressFetchInProgress(): void
     {
         $context = Context::createDefaultContext();
-        $newCredentialFields = [
-            'apiUser' => 'foooo',
-            'apiKey' => 'bar',
-        ];
-
         $entities = [];
         $this->initEntity($entities, DefaultEntities::CATEGORY, 3, 0);
         $this->dataRepo->create(
@@ -250,18 +245,15 @@ class MigrationProgressServiceTest extends TestCase
         /** @var SwagMigrationRunEntity $run */
         $run = $this->runRepo->search($criteria, $context)->first();
 
-        static::assertNotTrue($progress->isMigrationRunning());
+        static::assertTrue($progress->isMigrationRunning());
         static::assertSame($this->credentialFields, $credentialFields);
-        static::assertSame($run->getStatus(), SwagMigrationRunEntity::STATUS_ABORTED);
+        static::assertSame(SwagMigrationRunEntity::STATUS_RUNNING, $run->getStatus());
+        static::assertSame(ProgressState::STATUS_FETCH_DATA, $progress->getStatus());
     }
 
     public function testGetProgressWriteNotStarted(): void
     {
         $context = Context::createDefaultContext();
-        $newCredentialFields = [
-            'apiUser' => 'foooo',
-            'apiKey' => 'bar',
-        ];
 
         $this->writeArray = [
             'category' => [
@@ -289,9 +281,9 @@ class MigrationProgressServiceTest extends TestCase
         $this->initAllEntities($context);
         $progress = $this->progressService->getProgress(new Request(), $context);
 
-        static::assertSame($progress->getFinishedCount(), 0);
+        static::assertSame(0, $progress->getFinishedCount());
         static::assertTrue($progress->isMigrationRunning());
-        static::assertSame($progress->getStatus(), ProgressState::STATUS_WRITE_DATA);
+        static::assertSame(ProgressState::STATUS_WRITE_DATA, $progress->getStatus());
         static::assertSame(
             $progress->getRunProgress(),
             $this->serializeRunProgressForCompare()
@@ -343,13 +335,10 @@ class MigrationProgressServiceTest extends TestCase
         unset($entityGroup);
 
         static::assertTrue($progress->isMigrationRunning());
-        static::assertSame($progress->getFinishedCount(), 5);
-        static::assertSame($progress->getEntity(), DefaultEntities::CATEGORY);
-        static::assertSame($progress->getStatus(), ProgressState::STATUS_WRITE_DATA);
-        static::assertSame(
-            $progress->getRunProgress(),
-            $runProgress
-        );
+        static::assertSame(5, $progress->getFinishedCount());
+        static::assertSame(DefaultEntities::CATEGORY, $progress->getEntity());
+        static::assertSame(ProgressState::STATUS_WRITE_DATA, $progress->getStatus());
+        static::assertSame($runProgress, $progress->getRunProgress());
     }
 
     public function testGetProgressWriteDoneWithFirstThreeEntities(): void
@@ -414,13 +403,10 @@ class MigrationProgressServiceTest extends TestCase
         unset($entityGroup);
 
         static::assertTrue($progress->isMigrationRunning());
-        static::assertSame($progress->getFinishedCount(), 0);
-        static::assertSame($progress->getEntity(), DefaultEntities::ORDER);
-        static::assertSame($progress->getStatus(), ProgressState::STATUS_WRITE_DATA);
-        static::assertSame(
-            $progress->getRunProgress(),
-            $runProgress
-        );
+        static::assertSame(0, $progress->getFinishedCount());
+        static::assertSame(DefaultEntities::ORDER, $progress->getEntity());
+        static::assertSame(ProgressState::STATUS_WRITE_DATA, $progress->getStatus());
+        static::assertSame($runProgress, $progress->getRunProgress());
     }
 
     public function testGetProgressMediaProcessNotStarted(): void
@@ -456,13 +442,10 @@ class MigrationProgressServiceTest extends TestCase
         $progress = $this->progressService->getProgress(new Request(), $context);
 
         static::assertTrue($progress->isMigrationRunning());
-        static::assertSame($progress->getFinishedCount(), 0);
-        static::assertSame($progress->getEntity(), DefaultEntities::MEDIA);
-        static::assertSame($progress->getStatus(), ProgressState::STATUS_DOWNLOAD_DATA);
-        static::assertSame(
-            $progress->getRunProgress(),
-            $this->serializeRunProgressForCompare()
-        );
+        static::assertSame(0, $progress->getFinishedCount());
+        static::assertSame(DefaultEntities::MEDIA, $progress->getEntity());
+        static::assertSame(ProgressState::STATUS_DOWNLOAD_DATA, $progress->getStatus());
+        static::assertSame($this->serializeRunProgressForCompare(), $progress->getRunProgress());
     }
 
     public function testGetProgressMediaProcessStarted(): void
@@ -511,15 +494,11 @@ class MigrationProgressServiceTest extends TestCase
         unset($entityGroup);
 
         static::assertTrue($progress->isMigrationRunning());
-        static::assertSame($progress->getFinishedCount(), 20);
+        static::assertSame(20, $progress->getFinishedCount());
         static::assertSame($progress->getRunId(), $this->runUuid);
-        static::assertSame($progress->getRunId(), $this->runUuid);
-        static::assertSame($progress->getEntity(), DefaultEntities::MEDIA);
-        static::assertSame($progress->getStatus(), ProgressState::STATUS_DOWNLOAD_DATA);
-        static::assertSame(
-            $progress->getRunProgress(),
-            $runProgress
-        );
+        static::assertSame(DefaultEntities::MEDIA, $progress->getEntity());
+        static::assertSame(ProgressState::STATUS_DOWNLOAD_DATA, $progress->getStatus());
+        static::assertSame($runProgress, $progress->getRunProgress());
     }
 
     public function testGetProgressMediaProcessDone(): void
@@ -613,9 +592,9 @@ class MigrationProgressServiceTest extends TestCase
         $progress = $this->progressService->getProgress(new Request(), $context);
 
         static::assertTrue($progress->isMigrationRunning());
-        static::assertSame($progress->getFinishedCount(), 0);
-        static::assertSame($progress->getEntity(), DefaultEntities::CATEGORY);
-        static::assertSame($progress->getStatus(), ProgressState::STATUS_WRITE_DATA);
+        static::assertSame(0, $progress->getFinishedCount());
+        static::assertSame(DefaultEntities::CATEGORY, $progress->getEntity());
+        static::assertSame(ProgressState::STATUS_WRITE_DATA, $progress->getStatus());
     }
 
     public function testGetProgressWithFinishedRun(): void
