@@ -268,6 +268,14 @@ class MigrationApiService extends ApiService {
             return ApiService.handleResponse(response);
         });
     }
+
+    indexing(additionalHeaders = {}) {
+        const headers = this.getBasicHeaders(additionalHeaders);
+        return this.httpClient.post('_action/index', {
+            ...this.basicConfig,
+            headers
+        });
+    }
 }
 
 export default MigrationApiService;

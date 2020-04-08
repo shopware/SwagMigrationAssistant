@@ -38,7 +38,7 @@ class Md5StrategyResolver implements StrategyResolverInterface
             return '';
         }
 
-        $realPath = array_slice(str_split($md5hash, 2), 0, 3);
+        $realPath = array_slice(mb_str_split($md5hash, 2), 0, 3);
         $realPath = $pathElements[0] . '/' . $pathElements[1] . '/' . implode('/', $realPath) . '/' . $pathInfo['basename'];
 
         if (!$this->hasBlacklistParts($realPath)) {
