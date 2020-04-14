@@ -27,12 +27,22 @@ class AssociationRequiredMissingLog extends BaseRunLogEntry
 
     public function getCode(): string
     {
-        return sprintf('SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING_%s', mb_strtoupper($this->getEntity()));
+        $entity = $this->getEntity();
+        if ($entity === null) {
+            return 'SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING';
+        }
+
+        return sprintf('SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING_%s', mb_strtoupper($entity));
     }
 
     public function getTitle(): string
     {
-        return sprintf('Associated %s not found', $this->getEntity());
+        $entity = $this->getEntity();
+        if ($entity === null) {
+            return 'Associated not found';
+        }
+
+        return sprintf('Associated %s not found', $entity);
     }
 
     public function getParameters(): array

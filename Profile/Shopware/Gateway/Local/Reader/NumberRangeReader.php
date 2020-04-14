@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
+use Doctrine\DBAL\Driver\ResultStatement;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
@@ -52,31 +53,46 @@ class NumberRangeReader extends AbstractReader
     {
         $this->setConnection($migrationContext);
 
-        $total = (int) $this->connection->createQueryBuilder()
+        $query = $this->connection->createQueryBuilder()
             ->select('COUNT(*)')
             ->from('s_order_number')
-            ->execute()
-            ->fetchColumn();
+            ->execute();
+
+        $total = 0;
+        if ($query instanceof ResultStatement) {
+            $total = (int) $query->fetchColumn();
+        }
 
         return new TotalStruct(DefaultEntities::NUMBER_RANGE, $total);
     }
 
     private function fetchNumberRanges(): array
     {
-        return $this->connection->createQueryBuilder()
+        $query = $this->connection->createQueryBuilder()
             ->select('*')
-            ->from('s_order_number')
-            ->execute()
-            ->fetchAll();
+            ->from('s_order_number');
+
+        $query = $query->execute();
+        if (!($query instanceof ResultStatement)) {
+            return [];
+        }
+
+        return $query->fetchAll();
     }
 
     private function fetchPrefix(): string
     {
-        return $this->connection->createQueryBuilder()
+        $query = $this->connection->createQueryBuilder()
             ->select('value')
             ->from('s_core_config_elements')
             ->where('name = "backendautoordernumberprefix"')
-            ->execute()
-            ->fetch(\PDO::FETCH_COLUMN);
+            ->execute();
+
+        $prefix = '';
+        if ($query instanceof ResultStatement) {
+            $prefix = (string) $query->fetchColumn();
+        }
+
+        return $prefix;
     }
 }

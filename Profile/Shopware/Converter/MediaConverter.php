@@ -67,7 +67,12 @@ abstract class MediaConverter extends ShopwareConverter
         $this->context = $context;
         $this->locale = $data['_locale'];
         unset($data['_locale']);
-        $this->connectionId = $migrationContext->getConnection()->getId();
+
+        $connection = $migrationContext->getConnection();
+        $this->connectionId = '';
+        if ($connection !== null) {
+            $this->connectionId = $connection->getId();
+        }
 
         $converted = [];
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
@@ -126,18 +131,24 @@ abstract class MediaConverter extends ShopwareConverter
             $data['created']
         );
 
-        if (empty($data)) {
-            $data = null;
+        $returnData = $data;
+        if (empty($returnData)) {
+            $returnData = null;
         }
         $this->updateMainMapping($migrationContext, $context);
 
-        return new ConvertStruct($converted, $data, $this->mainMapping['id']);
+        return new ConvertStruct($converted, $returnData, $this->mainMapping['id']);
     }
 
     protected function getMediaTranslation(array &$media, array $data): void
     {
         $language = $this->mappingService->getDefaultLanguage($this->context);
-        if ($language->getLocale()->getCode() === $this->locale) {
+        if ($language === null) {
+            return;
+        }
+
+        $locale = $language->getLocale();
+        if ($locale === null || $locale->getCode() === $this->locale) {
             return;
         }
 
@@ -156,8 +167,10 @@ abstract class MediaConverter extends ShopwareConverter
         $this->mappingIds[] = $mapping['id'];
 
         $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->locale, $this->context);
-        $localeTranslation['languageId'] = $languageUuid;
 
-        $media['translations'][$languageUuid] = $localeTranslation;
+        if ($languageUuid !== null) {
+            $localeTranslation['languageId'] = $languageUuid;
+            $media['translations'][$languageUuid] = $localeTranslation;
+        }
     }
 }

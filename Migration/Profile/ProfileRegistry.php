@@ -16,6 +16,9 @@ class ProfileRegistry implements ProfileRegistryInterface
      */
     private $profiles;
 
+    /**
+     * @param ProfileInterface[] $profiles
+     */
     public function __construct(iterable $profiles)
     {
         $this->profiles = $profiles;

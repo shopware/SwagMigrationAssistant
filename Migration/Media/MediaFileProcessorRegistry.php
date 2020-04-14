@@ -7,7 +7,9 @@
 
 namespace SwagMigrationAssistant\Migration\Media;
 
+use SwagMigrationAssistant\Exception\EntityNotExistsException;
 use SwagMigrationAssistant\Exception\ProcessorNotFoundException;
+use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 class MediaFileProcessorRegistry implements MediaFileProcessorRegistryInterface
@@ -17,6 +19,9 @@ class MediaFileProcessorRegistry implements MediaFileProcessorRegistryInterface
      */
     private $processors;
 
+    /**
+     * @param MediaFileProcessorInterface[] $processors
+     */
     public function __construct(iterable $processors)
     {
         $this->processors = $processors;
@@ -33,6 +38,11 @@ class MediaFileProcessorRegistry implements MediaFileProcessorRegistryInterface
             }
         }
 
-        throw new ProcessorNotFoundException($migrationContext->getConnection()->getProfileName(), $migrationContext->getConnection()->getGatewayName());
+        $connection = $migrationContext->getConnection();
+        if ($connection === null) {
+            throw new EntityNotExistsException(SwagMigrationConnectionEntity::class, $migrationContext->getRunUuid());
+        }
+
+        throw new ProcessorNotFoundException($connection->getProfileName(), $connection->getGatewayName());
     }
 }

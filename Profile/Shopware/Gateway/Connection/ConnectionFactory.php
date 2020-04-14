@@ -14,9 +14,19 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 class ConnectionFactory implements ConnectionFactoryInterface
 {
-    public function createApiClient(MigrationContextInterface $migrationContext): Client
+    public function createApiClient(MigrationContextInterface $migrationContext): ?Client
     {
-        $credentials = $migrationContext->getConnection()->getCredentialFields();
+        $connection = $migrationContext->getConnection();
+
+        if ($connection === null) {
+            return null;
+        }
+
+        $credentials = $connection->getCredentialFields();
+
+        if ($credentials === null) {
+            return null;
+        }
 
         $options = [
             'base_uri' => $credentials['endpoint'] . '/api/',
@@ -28,9 +38,19 @@ class ConnectionFactory implements ConnectionFactoryInterface
         return new Client($options);
     }
 
-    public function createDatabaseConnection(MigrationContextInterface $migrationContext): Connection
+    public function createDatabaseConnection(MigrationContextInterface $migrationContext): ?Connection
     {
-        $credentials = $migrationContext->getConnection()->getCredentialFields();
+        $connection = $migrationContext->getConnection();
+
+        if ($connection === null) {
+            return null;
+        }
+
+        $credentials = $connection->getCredentialFields();
+
+        if ($credentials === null) {
+            return null;
+        }
 
         $connectionParams = [
             'dbname' => $credentials['dbName'] ?? '',

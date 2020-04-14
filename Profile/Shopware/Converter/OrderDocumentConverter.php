@@ -46,6 +46,11 @@ abstract class OrderDocumentConverter extends ShopwareConverter
     protected $connectionId;
 
     /**
+     * @var string
+     */
+    protected $connectionName;
+
+    /**
      * @var Context
      */
     protected $context;
@@ -79,9 +84,16 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         $this->generateChecksum($data);
         $this->oldId = $data['id'];
         $this->runId = $migrationContext->getRunUuid();
-        $this->connectionId = $migrationContext->getConnection()->getId();
         $this->migrationContext = $migrationContext;
         $this->context = $context;
+
+        $connection = $migrationContext->getConnection();
+        $this->connectionName = '';
+        $this->connectionId = '';
+        if ($connection !== null) {
+            $this->connectionId = $connection->getId();
+            $this->connectionName = $connection->getName();
+        }
 
         $oldData = $data;
         $converted = [];
@@ -147,7 +159,7 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         unset($data['documenttype']);
 
         if (isset($data['attributes'])) {
-            $converted['customFields'] = $this->getAttributes($data['attributes'], DefaultEntities::ORDER_DOCUMENT, $migrationContext->getConnection()->getName(), ['id', 'documentID']);
+            $converted['customFields'] = $this->getAttributes($data['attributes'], DefaultEntities::ORDER_DOCUMENT, $this->connectionName, ['id', 'documentID']);
         }
         unset($data['attributes']);
 
@@ -175,6 +187,7 @@ abstract class OrderDocumentConverter extends ShopwareConverter
 
     protected function getDocumentType(array $data): ?array
     {
+        $documentType = [];
         $documentTypeUuid = $this->mappingService->getDocumentTypeUuid(
             $data['key'],
             $this->context,
@@ -206,6 +219,7 @@ abstract class OrderDocumentConverter extends ShopwareConverter
             $this->context
         );
         $this->mappingIds[] = $mapping['id'];
+
         $documentType['id'] = $mapping['entityUuid'];
         $documentType['name'] = $data['name'];
         $documentType['technicalName'] = $data['key'];
@@ -221,6 +235,8 @@ abstract class OrderDocumentConverter extends ShopwareConverter
             $data['id'],
             $this->context
         );
+
+        $newMedia = [];
         $newMedia['id'] = $mapping['entityUuid'];
         $this->mappingIds[] = $mapping['id'];
 

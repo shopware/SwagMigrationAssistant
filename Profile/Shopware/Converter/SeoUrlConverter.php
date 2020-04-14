@@ -30,8 +30,13 @@ abstract class SeoUrlConverter extends ShopwareConverter
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
         $this->generateChecksum($data);
-        $this->connectionId = $migrationContext->getConnection()->getId();
         $originalData = $data;
+
+        $connection = $migrationContext->getConnection();
+        $this->connectionId = '';
+        if ($connection !== null) {
+            $this->connectionId = $connection->getId();
+        }
 
         $converted = [];
         $this->mainMapping = $this->mappingService->getOrCreateMapping(

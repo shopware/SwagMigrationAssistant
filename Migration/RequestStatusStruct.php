@@ -38,7 +38,7 @@ class RequestStatusStruct extends Struct
         return $this->isWarning;
     }
 
-    public function setIsWarning($isWarning): void
+    public function setIsWarning(bool $isWarning): void
     {
         $this->isWarning = $isWarning;
     }
@@ -48,7 +48,7 @@ class RequestStatusStruct extends Struct
         return $this->code;
     }
 
-    public function setCode($code): void
+    public function setCode(string $code): void
     {
         $this->code = $code;
     }
@@ -58,7 +58,7 @@ class RequestStatusStruct extends Struct
         return $this->message;
     }
 
-    public function setMessage($message): void
+    public function setMessage(string $message): void
     {
         $this->message = $message;
     }

@@ -61,11 +61,18 @@ class DeliveryTimeReader extends AbstractPremappingReader
 
     protected function fillConnectionPremappingValue(MigrationContextInterface $migrationContext): void
     {
-        if ($migrationContext->getConnection()->getPremapping() === null) {
+        $connection = $migrationContext->getConnection();
+        if ($connection === null) {
             return;
         }
 
-        foreach ($migrationContext->getConnection()->getPremapping() as $premapping) {
+        $mappingArray = $connection->getPremapping();
+
+        if ($mappingArray === null) {
+            return;
+        }
+
+        foreach ($mappingArray as $premapping) {
             if ($premapping['entity'] === self::MAPPING_NAME) {
                 foreach ($premapping['mapping'] as $mapping) {
                     $this->connectionPremappingValue = $mapping['destinationUuid'];
@@ -79,6 +86,7 @@ class DeliveryTimeReader extends AbstractPremappingReader
      */
     private function getMapping(): array
     {
+        $entityData = [];
         $entityData[] = new PremappingEntityStruct('default_delivery_time', 'Standard delivery time', $this->connectionPremappingValue);
 
         return $entityData;

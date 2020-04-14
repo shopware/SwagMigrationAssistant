@@ -43,9 +43,6 @@ class OrderWriter implements WriterInterface
         return DefaultEntities::ORDER;
     }
 
-    /**
-     * @param array[][] $data
-     */
     public function writeData(array $data, Context $context): void
     {
         foreach ($data as &$item) {

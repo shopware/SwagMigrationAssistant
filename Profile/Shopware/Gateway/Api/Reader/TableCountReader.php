@@ -41,6 +41,11 @@ class TableCountReader implements TableCountReaderInterface
     public function readTotals(MigrationContextInterface $migrationContext, Context $context): array
     {
         $client = $this->connectionFactory->createApiClient($migrationContext);
+
+        if ($client === null) {
+            return [];
+        }
+
         /** @var GuzzleResponse $result */
         $result = $client->get(
             'SwagMigrationTotals'

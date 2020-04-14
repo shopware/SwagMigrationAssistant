@@ -74,7 +74,7 @@ class LoggingServiceTest extends TestCase
         static::assertSame(0, $result->getTotal());
 
         $this->loggingService->saveLogging($this->context);
-        $this->clearCacheBefore();
+        $this->clearCacheData();
 
         $result = $this->loggingRepo->search(new Criteria(), $this->context);
         static::assertSame(2, $result->getTotal());

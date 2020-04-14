@@ -16,6 +16,9 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 abstract class ProductReviewConverter extends ShopwareConverter
 {
+    /**
+     * @var string[]
+     */
     protected $requiredDataFieldKeys = [
         '_locale',
         'articleID',
@@ -48,9 +51,14 @@ abstract class ProductReviewConverter extends ShopwareConverter
         }
         $this->generateChecksum($data);
         $originalData = $data;
-        $this->connectionId = $migrationContext->getConnection()->getId();
         $this->mainLocale = $data['_locale'];
         unset($data['_locale']);
+
+        $connection = $migrationContext->getConnection();
+        $this->connectionId = '';
+        if ($connection !== null) {
+            $this->connectionId = $connection->getId();
+        }
 
         $converted = [];
         $this->mainMapping = $this->mappingService->getOrCreateMapping(

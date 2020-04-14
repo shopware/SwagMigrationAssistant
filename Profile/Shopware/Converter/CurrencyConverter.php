@@ -39,7 +39,12 @@ abstract class CurrencyConverter extends ShopwareConverter
         $this->generateChecksum($data);
         $this->context = $context;
         $this->mainLocale = $data['_locale'];
-        $this->connectionId = $migrationContext->getConnection()->getId();
+
+        $connection = $migrationContext->getConnection();
+        $this->connectionId = '';
+        if ($connection !== null) {
+            $this->connectionId = $connection->getId();
+        }
 
         $currencyUuid = $this->mappingService->getCurrencyUuid($this->connectionId, $data['currency'], $context);
         if ($currencyUuid !== null) {
@@ -75,18 +80,24 @@ abstract class CurrencyConverter extends ShopwareConverter
             $data['_locale']
         );
 
-        if (empty($data)) {
-            $data = null;
+        $returnData = $data;
+        if (empty($returnData)) {
+            $returnData = null;
         }
         $this->updateMainMapping($migrationContext, $context);
 
-        return new ConvertStruct($converted, $data, $this->mainMapping['id']);
+        return new ConvertStruct($converted, $returnData, $this->mainMapping['id']);
     }
 
     protected function getCurrencyTranslation(array &$currency, array $data): void
     {
         $language = $this->mappingService->getDefaultLanguage($this->context);
-        if ($language->getLocale()->getCode() === $this->mainLocale) {
+        if ($language === null) {
+            return;
+        }
+
+        $locale = $language->getLocale();
+        if ($locale === null || $locale->getCode() === $this->mainLocale) {
             return;
         }
 
@@ -104,8 +115,10 @@ abstract class CurrencyConverter extends ShopwareConverter
         $localeTranslation['id'] = $mapping['entityUuid'];
         $this->mappingIds[] = $mapping['id'];
         $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);
-        $localeTranslation['languageId'] = $languageUuid;
 
-        $currency['translations'][$languageUuid] = $localeTranslation;
+        if ($languageUuid !== null) {
+            $localeTranslation['languageId'] = $languageUuid;
+            $currency['translations'][$languageUuid] = $localeTranslation;
+        }
     }
 }

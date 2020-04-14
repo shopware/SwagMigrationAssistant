@@ -69,7 +69,7 @@ interface MappingServiceInterface
 
     public function getLocaleUuid(string $connectionId, string $localeCode, Context $context): string;
 
-    public function getDefaultLanguage(Context $context): LanguageEntity;
+    public function getDefaultLanguage(Context $context): ?LanguageEntity;
 
     public function getDeliveryTime(string $connectionId, Context $context, int $minValue, int $maxValue, string $unit, string $name): string;
 

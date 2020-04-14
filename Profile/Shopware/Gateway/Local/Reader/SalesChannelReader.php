@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
+use Doctrine\DBAL\Driver\ResultStatement;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
@@ -54,16 +55,20 @@ class SalesChannelReader extends AbstractReader
     {
         $this->setConnection($migrationContext);
 
-        $total = (int) $this->connection->createQueryBuilder()
+        $query = $this->connection->createQueryBuilder()
             ->select('COUNT(*)')
             ->from('s_core_shops')
-            ->execute()
-            ->fetchColumn();
+            ->execute();
+
+        $total = 0;
+        if ($query instanceof ResultStatement) {
+            $total = (int) $query->fetchColumn();
+        }
 
         return new TotalStruct(DefaultEntities::SALES_CHANNEL, $total);
     }
 
-    private function fetchData()
+    private function fetchData(): array
     {
         $query = $this->connection->createQueryBuilder();
 
@@ -79,6 +84,11 @@ class SalesChannelReader extends AbstractReader
 
         $query->orderBy('shop.main_id');
 
-        return $query->execute()->fetchAll(\PDO::FETCH_GROUP | \PDO::FETCH_UNIQUE);
+        $query = $query->execute();
+        if (!($query instanceof ResultStatement)) {
+            return [];
+        }
+
+        return $query->fetchAll(\PDO::FETCH_GROUP | \PDO::FETCH_UNIQUE);
     }
 }

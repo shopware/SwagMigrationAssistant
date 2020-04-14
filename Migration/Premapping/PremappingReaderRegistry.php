@@ -16,6 +16,9 @@ class PremappingReaderRegistry implements PremappingReaderRegistryInterface
      */
     private $preMappingReaders;
 
+    /**
+     * @param PremappingReaderInterface[] $preMappingReaders
+     */
     public function __construct(iterable $preMappingReaders)
     {
         $this->preMappingReaders = $preMappingReaders;

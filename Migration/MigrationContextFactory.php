@@ -45,12 +45,16 @@ class MigrationContextFactory implements MigrationContextFactoryInterface
         int $offset = 0,
         int $limit = 0,
         string $entity = ''
-    ): MigrationContextInterface {
-        $profile = $this->profileRegistry->getProfile($run->getConnection()->getProfileName());
+    ): ?MigrationContextInterface {
+        $connection = $run->getConnection();
+        if ($connection === null) {
+            return null;
+        }
 
+        $profile = $this->profileRegistry->getProfile($connection->getProfileName());
         $migrationContext = new MigrationContext(
             $profile,
-            $run->getConnection(),
+            $connection,
             $run->getId(),
             null,
             $offset,

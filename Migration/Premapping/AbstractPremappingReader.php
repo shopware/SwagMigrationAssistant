@@ -18,11 +18,17 @@ abstract class AbstractPremappingReader implements PremappingReaderInterface
 
     protected function fillConnectionPremappingDictionary(MigrationContextInterface $migrationContext): void
     {
-        if ($migrationContext->getConnection()->getPremapping() === null) {
+        $connection = $migrationContext->getConnection();
+        if ($connection === null) {
             return;
         }
 
-        foreach ($migrationContext->getConnection()->getPremapping() as $premapping) {
+        $connectionMapping = $connection->getPremapping();
+        if ($connectionMapping === null) {
+            return;
+        }
+
+        foreach ($connectionMapping as $premapping) {
             if ($premapping['entity'] === static::getMappingName()) {
                 foreach ($premapping['mapping'] as $mapping) {
                     $this->connectionPremappingDictionary[$mapping['sourceId']] = $mapping;

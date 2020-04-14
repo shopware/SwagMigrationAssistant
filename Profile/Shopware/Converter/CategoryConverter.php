@@ -31,6 +31,11 @@ abstract class CategoryConverter extends ShopwareConverter
     protected $connectionId;
 
     /**
+     * @var string
+     */
+    protected $connectionName;
+
+    /**
      * @var Context
      */
     protected $context;
@@ -83,10 +88,17 @@ abstract class CategoryConverter extends ShopwareConverter
         MigrationContextInterface $migrationContext
     ): ConvertStruct {
         $this->generateChecksum($data);
-        $this->connectionId = $migrationContext->getConnection()->getId();
         $this->context = $context;
         $this->oldCategoryId = $data['id'];
         $this->runId = $migrationContext->getRunUuid();
+
+        $connection = $migrationContext->getConnection();
+        $this->connectionId = '';
+        $this->connectionName = '';
+        if ($connection !== null) {
+            $this->connectionId = $connection->getId();
+            $this->connectionName = $connection->getName();
+        }
 
         if (!isset($data['_locale'])) {
             $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
@@ -99,8 +111,9 @@ abstract class CategoryConverter extends ShopwareConverter
             return new ConvertStruct(null, $data);
         }
         $this->locale = $data['_locale'];
+        $converted = [];
 
-        $cmsPageUuid = $this->mappingService->getDefaultCmsPageUuid($migrationContext->getConnection()->getId(), $context);
+        $cmsPageUuid = $this->mappingService->getDefaultCmsPageUuid($this->connectionId, $context);
         if ($cmsPageUuid !== null) {
             $converted['cmsPageId'] = $cmsPageUuid;
         }
@@ -151,6 +164,7 @@ abstract class CategoryConverter extends ShopwareConverter
             $this->context,
             $this->checksum
         );
+
         $converted['id'] = $this->mainMapping['entityUuid'];
         unset($data['id']);
 
@@ -178,7 +192,7 @@ abstract class CategoryConverter extends ShopwareConverter
         }
 
         if (isset($data['attributes'])) {
-            $converted['customFields'] = $this->getAttributes($data['attributes'], $migrationContext->getDataSet()::getEntity(), $migrationContext->getConnection()->getName(), ['id', 'categoryID']);
+            $converted['customFields'] = $this->getAttributes($data['attributes'], $migrationContext->getDataSet()::getEntity(), $this->connectionName, ['id', 'categoryID']);
         }
         unset($data['attributes']);
 
@@ -214,13 +228,14 @@ abstract class CategoryConverter extends ShopwareConverter
             $data['_locale']
         );
 
-        if (empty($data)) {
-            $data = null;
+        $returnData = $data;
+        if (empty($returnData)) {
+            $returnData = null;
         }
 
         $this->updateMainMapping($migrationContext, $context);
 
-        return new ConvertStruct($converted, $data, $this->mainMapping['id']);
+        return new ConvertStruct($converted, $returnData, $this->mainMapping['id']);
     }
 
     protected function setGivenCategoryTranslation(array &$data, array &$converted): void
@@ -229,7 +244,12 @@ abstract class CategoryConverter extends ShopwareConverter
         $this->convertValue($converted, 'name', $data, 'description');
 
         $language = $this->mappingService->getDefaultLanguage($this->context);
-        if ($language->getLocale()->getCode() === $data['_locale']) {
+        if ($language === null) {
+            return;
+        }
+
+        $locale = $language->getLocale();
+        if ($locale === null || $locale->getCode() === $data['_locale']) {
             return;
         }
 
@@ -254,13 +274,15 @@ abstract class CategoryConverter extends ShopwareConverter
             throw $exception;
         }
 
-        $localeTranslation['languageId'] = $languageUuid;
+        if ($languageUuid !== null) {
+            $localeTranslation['languageId'] = $languageUuid;
 
-        if (isset($converted['customFields'])) {
-            $localeTranslation['customFields'] = $converted['customFields'];
+            if (isset($converted['customFields'])) {
+                $localeTranslation['customFields'] = $converted['customFields'];
+            }
+
+            $converted['translations'][$languageUuid] = $localeTranslation;
         }
-
-        $converted['translations'][$languageUuid] = $localeTranslation;
     }
 
     protected function getCategoryMedia(array $media): array
@@ -271,6 +293,8 @@ abstract class CategoryConverter extends ShopwareConverter
             $media['id'],
             $this->context
         );
+
+        $categoryMedia = [];
         $categoryMedia['id'] = $mapping['entityUuid'];
         $this->mappingIds[] = $mapping['id'];
 
@@ -309,7 +333,12 @@ abstract class CategoryConverter extends ShopwareConverter
     protected function getMediaTranslation(array &$media, array $data): void
     {
         $language = $this->mappingService->getDefaultLanguage($this->context);
-        if ($language->getLocale()->getCode() === $this->locale) {
+        if ($language === null) {
+            return;
+        }
+
+        $locale = $language->getLocale();
+        if ($locale === null || $locale->getCode() === $this->locale) {
             return;
         }
 
@@ -328,8 +357,10 @@ abstract class CategoryConverter extends ShopwareConverter
         $this->mappingIds[] = $mapping['id'];
 
         $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->locale, $this->context);
-        $localeTranslation['languageId'] = $languageUuid;
 
-        $media['translations'][$languageUuid] = $localeTranslation;
+        if ($languageUuid !== null) {
+            $localeTranslation['languageId'] = $languageUuid;
+            $media['translations'][$languageUuid] = $localeTranslation;
+        }
     }
 }

@@ -39,6 +39,7 @@ class ExceptionRunLog extends BaseRunLogEntry
 
     public function getParameters(): array
     {
+        $entity = $this->getEntity() ?? '-';
         $errorCode = $this->exception->getCode();
         if (is_subclass_of($this->exception, ShopwareHttpException::class)) {
             $errorCode = $this->exception->getErrorCode();
@@ -54,7 +55,7 @@ class ExceptionRunLog extends BaseRunLogEntry
             'exceptionTrace' => preg_replace('/[[:^print:]]/', '', $this->exception->getTraceAsString()),
             'description' => sprintf(
                 'Entity: %s, sourceId: %s' . PHP_EOL . '%s',
-                $this->getEntity(),
+                $entity,
                 $this->getSourceId() ?? '-',
                 preg_replace('/[[:^print:]]/', '', $this->exception->getMessage())
             ),

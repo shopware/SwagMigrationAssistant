@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Driver\ResultStatement;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
@@ -51,11 +52,15 @@ class CustomerReader extends AbstractReader
     {
         $this->setConnection($migrationContext);
 
-        $total = (int) $this->connection->createQueryBuilder()
+        $query = $this->connection->createQueryBuilder()
             ->select('COUNT(*)')
             ->from('s_user')
-            ->execute()
-            ->fetchColumn();
+            ->execute();
+
+        $total = 0;
+        if ($query instanceof ResultStatement) {
+            $total = (int) $query->fetchColumn();
+        }
 
         return new TotalStruct(DefaultEntities::CUSTOMER, $total);
     }
@@ -89,7 +94,12 @@ class CustomerReader extends AbstractReader
 
         $query->addOrderBy('customer.id');
 
-        return $query->execute()->fetchAll();
+        $query = $query->execute();
+        if (!($query instanceof ResultStatement)) {
+            return [];
+        }
+
+        return $query->fetchAll();
     }
 
     private function assignAssociatedData(array $customers, array $ids): array
@@ -140,7 +150,12 @@ class CustomerReader extends AbstractReader
         $query->where('address.user_id IN (:ids)');
         $query->setParameter('ids', $ids, Connection::PARAM_INT_ARRAY);
 
-        return $query->execute()->fetchAll(\PDO::FETCH_GROUP);
+        $query = $query->execute();
+        if (!($query instanceof ResultStatement)) {
+            return [];
+        }
+
+        return $query->fetchAll(\PDO::FETCH_GROUP);
     }
 
     private function fetchPaymentData(array $ids): array
@@ -154,6 +169,11 @@ class CustomerReader extends AbstractReader
         $query->where('paymentdata.user_id IN (:ids)');
         $query->setParameter('ids', $ids, Connection::PARAM_INT_ARRAY);
 
-        return $query->execute()->fetchAll(\PDO::FETCH_GROUP);
+        $query = $query->execute();
+        if (!($query instanceof ResultStatement)) {
+            return [];
+        }
+
+        return $query->fetchAll(\PDO::FETCH_GROUP);
     }
 }

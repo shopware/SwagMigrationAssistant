@@ -33,12 +33,22 @@ class FieldReassignedRunLog extends BaseRunLogEntry
 
     public function getCode(): string
     {
-        return sprintf('SWAG_MIGRATION_%s_ENTITY_FIELD_REASSIGNED', mb_strtoupper($this->getEntity()));
+        $entity = $this->getEntity();
+        if ($entity === null) {
+            return 'SWAG_MIGRATION_ENTITY_FIELD_REASSIGNED';
+        }
+
+        return sprintf('SWAG_MIGRATION_%s_ENTITY_FIELD_REASSIGNED', mb_strtoupper($entity));
     }
 
     public function getTitle(): string
     {
-        return sprintf('The %s entity has a field that was reassigned', $this->getEntity());
+        $entity = $this->getEntity();
+        if ($entity === null) {
+            return 'The entity has a field that was reassigned';
+        }
+
+        return sprintf('The %s entity has a field that was reassigned', $entity);
     }
 
     public function getParameters(): array

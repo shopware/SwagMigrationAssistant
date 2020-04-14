@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Driver\ResultStatement;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
@@ -56,12 +57,16 @@ class OrderReader extends AbstractReader
     {
         $this->setConnection($migrationContext);
 
-        $total = (int) $this->connection->createQueryBuilder()
+        $query = $this->connection->createQueryBuilder()
             ->select('COUNT(*)')
             ->from('s_order')
             ->where('status != -1')
-            ->execute()
-            ->fetchColumn();
+            ->execute();
+
+        $total = 0;
+        if ($query instanceof ResultStatement) {
+            $total = (int) $query->fetchColumn();
+        }
 
         return new TotalStruct(DefaultEntities::ORDER, $total);
     }
@@ -119,7 +124,12 @@ class OrderReader extends AbstractReader
 
         $query->addOrderBy('ordering.id');
 
-        return $query->execute()->fetchAll();
+        $query = $query->execute();
+        if (!($query instanceof ResultStatement)) {
+            return [];
+        }
+
+        return $query->fetchAll();
     }
 
     private function appendAssociatedData(array $orders): array
@@ -160,7 +170,12 @@ class OrderReader extends AbstractReader
         $query->where('detail.orderID IN (:ids)');
         $query->setParameter('ids', $this->orderIds, Connection::PARAM_INT_ARRAY);
 
-        $fetchedOrderDetails = $query->execute()->fetchAll(\PDO::FETCH_GROUP);
+        $query = $query->execute();
+        if (!($query instanceof ResultStatement)) {
+            return [];
+        }
+
+        $fetchedOrderDetails = $query->fetchAll(\PDO::FETCH_GROUP);
 
         return $this->mapData($fetchedOrderDetails, [], ['detail']);
     }
@@ -182,7 +197,12 @@ class OrderReader extends AbstractReader
         $query->where('document.orderID IN (:ids)');
         $query->setParameter('ids', $this->orderIds, Connection::PARAM_INT_ARRAY);
 
-        $fetchedOrderDocuments = $query->execute()->fetchAll(\PDO::FETCH_GROUP);
+        $query = $query->execute();
+        if (!($query instanceof ResultStatement)) {
+            return [];
+        }
+
+        $fetchedOrderDocuments = $query->fetchAll(\PDO::FETCH_GROUP);
 
         return $this->mapData($fetchedOrderDocuments, [], ['document']);
     }

@@ -18,7 +18,18 @@ class PlainStrategyResolver implements StrategyResolverInterface
 
     public function resolve(string $path, MigrationContextInterface $migrationContext): string
     {
-        $installationRoot = $migrationContext->getConnection()->getCredentialFields()['installationRoot'];
+        $connection = $migrationContext->getConnection();
+        if ($connection === null) {
+            return '';
+        }
+
+        $credentials = $connection->getCredentialFields();
+
+        if ($credentials === null) {
+            return '';
+        }
+
+        $installationRoot = $credentials['installationRoot'] ?? '';
         $path = $this->normalize($path);
         $path = ltrim($path, '/');
         $pathInfo = pathinfo($path);

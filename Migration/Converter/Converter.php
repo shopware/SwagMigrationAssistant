@@ -75,9 +75,15 @@ abstract class Converter implements ConverterInterface
         $this->mainMapping['additionalData']['relatedMappings'] = $this->mappingIds;
         $this->mappingIds = [];
 
+        $dataSet = $migrationContext->getDataSet();
+        $connection = $migrationContext->getConnection();
+        if ($dataSet === null || $connection === null) {
+            return;
+        }
+
         $this->mappingService->updateMapping(
-            $migrationContext->getConnection()->getId(),
-            $migrationContext->getDataSet()::getEntity(),
+            $connection->getId(),
+            $dataSet::getEntity(),
             $this->mainMapping['oldIdentifier'],
             $this->mainMapping,
             $context

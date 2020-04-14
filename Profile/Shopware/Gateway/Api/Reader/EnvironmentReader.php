@@ -26,7 +26,7 @@ use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 class EnvironmentReader implements EnvironmentReaderInterface
 {
     /**
-     * @var Client
+     * @var ?Client
      */
     private $client;
 
@@ -48,6 +48,10 @@ class EnvironmentReader implements EnvironmentReaderInterface
             'environmentInformation' => [],
             'requestStatus' => new RequestStatusStruct(),
         ];
+
+        if ($this->client === null) {
+            return $information;
+        }
 
         if ($this->doSecureCheck($information)) {
             return $information;
@@ -76,6 +80,10 @@ class EnvironmentReader implements EnvironmentReaderInterface
 
     private function doSecureCheck(array &$information): bool
     {
+        if ($this->client === null) {
+            return false;
+        }
+
         try {
             $information['environmentInformation'] = $this->readData($this->client, true);
 
@@ -89,6 +97,10 @@ class EnvironmentReader implements EnvironmentReaderInterface
 
     private function doInsecureCheck(array &$information): bool
     {
+        if ($this->client === null) {
+            return false;
+        }
+
         try {
             $information['environmentInformation'] = $this->readData($this->client, false);
 
@@ -100,6 +112,10 @@ class EnvironmentReader implements EnvironmentReaderInterface
 
     private function doShopwareCheck(array &$information): bool
     {
+        if ($this->client === null) {
+            return false;
+        }
+
         try {
             if ($this->checkForShopware($this->client)) {
                 throw new PluginNotInstalledException();
@@ -198,7 +214,8 @@ class EnvironmentReader implements EnvironmentReaderInterface
 
             throw new GatewayReadException('Shopware 5.5 Api SwagMigrationEnvironment', 466);
         } catch (GuzzleRequestException $e) {
-            if ($e->getResponse() !== null && mb_strpos($e->getResponse()->getBody()->getContents(), 'SSL required')) {
+            $response = $e->getResponse();
+            if ($response !== null && mb_strpos($response->getBody()->getContents(), 'SSL required')) {
                 throw new SslRequiredException();
             }
 

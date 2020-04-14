@@ -8,8 +8,8 @@
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Driver\ResultStatement;
 use Doctrine\DBAL\Query\QueryBuilder;
-use Doctrine\DBAL\Schema\Column;
 use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
@@ -48,14 +48,19 @@ abstract class AbstractReader implements ReaderInterface
             return;
         }
 
-        $this->connection = $this->connectionFactory->createDatabaseConnection($migrationContext);
+        $connection = $this->connectionFactory->createDatabaseConnection($migrationContext);
+
+        if ($connection === null) {
+            return;
+        }
+
+        $this->connection = $connection;
     }
 
     protected function addTableSelection(QueryBuilder $query, string $table, string $tableAlias): void
     {
         $columns = $this->connection->getSchemaManager()->listTableColumns($table);
 
-        /** @var Column $column */
         foreach ($columns as $column) {
             $selection = str_replace(
                 ['#tableAlias#', '#column#'],
@@ -67,6 +72,9 @@ abstract class AbstractReader implements ReaderInterface
         }
     }
 
+    /**
+     * @psalm-suppress MissingParamType
+     */
     protected function buildArrayFromChunks(array &$array, array $path, string $fieldKey, $value): void
     {
         $key = array_shift($path);
@@ -120,20 +128,30 @@ abstract class AbstractReader implements ReaderInterface
             $query->addOrderBy($order);
         }
 
-        return $query->execute()->fetchAll(\PDO::FETCH_COLUMN);
+        $query = $query->execute();
+        if (!($query instanceof ResultStatement)) {
+            return [];
+        }
+
+        return $query->fetchAll(\PDO::FETCH_COLUMN);
     }
 
-    protected function getDefaultShopLocale()
+    protected function getDefaultShopLocale(): string
     {
-        $query = $this->connection->createQueryBuilder();
-
-        return $query->select('locale.locale')
+        $query = $this->connection->createQueryBuilder()
+            ->select('locale.locale')
             ->from('s_core_locales', 'locale')
             ->innerJoin('locale', 's_core_shops', 'shop', 'locale.id = shop.locale_id')
             ->where('shop.default = 1')
             ->andWhere('shop.active = 1')
-            ->execute()
-            ->fetch(\PDO::FETCH_COLUMN);
+            ->execute();
+
+        $defaultShopLocale = '';
+        if ($query instanceof ResultStatement) {
+            $defaultShopLocale = $query->fetchColumn();
+        }
+
+        return $defaultShopLocale;
     }
 
     protected function mapData(array $data, array $result = [], array $pathsToRemove = []): array

@@ -12,7 +12,7 @@ use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 
 interface MigrationContextFactoryInterface
 {
-    public function create(SwagMigrationRunEntity $run, int $offset = 0, int $limit = 0, string $entity = ''): MigrationContextInterface;
+    public function create(SwagMigrationRunEntity $run, int $offset = 0, int $limit = 0, string $entity = ''): ?MigrationContextInterface;
 
     public function createByProfileName(string $profileName): MigrationContextInterface;
 

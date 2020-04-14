@@ -57,6 +57,9 @@ class LocalMediaProcessor implements MediaFileProcessorInterface
      */
     private $resolver;
 
+    /**
+     * @param StrategyResolverInterface[] $resolver
+     */
     public function __construct(
         EntityRepositoryInterface $migrationMediaFileRepo,
         EntityRepositoryInterface $mediaRepo,
@@ -78,11 +81,6 @@ class LocalMediaProcessor implements MediaFileProcessorInterface
             && $migrationContext->getDataSet()::getEntity() === MediaDataSet::getEntity();
     }
 
-    /**
-     * @param MediaProcessWorkloadStruct[] $workload
-     *
-     * @return MediaProcessWorkloadStruct[]
-     */
     public function process(MigrationContextInterface $migrationContext, Context $context, array $workload, int $fileChunkByteSize): array
     {
         $mappedWorkload = [];

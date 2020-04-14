@@ -34,7 +34,13 @@ abstract class LanguageConverter extends ShopwareConverter
     {
         $this->generateChecksum($data);
         $this->context = $context;
-        $this->connectionId = $migrationContext->getConnection()->getId();
+
+        $connection = $migrationContext->getConnection();
+        $this->connectionId = '';
+        if ($connection !== null) {
+            $this->connectionId = $connection->getId();
+        }
+
         $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $data['locale'], $context, true);
 
         if ($languageUuid !== null) {
@@ -70,11 +76,12 @@ abstract class LanguageConverter extends ShopwareConverter
             $data['translations']
         );
 
-        if (empty($data)) {
-            $data = null;
+        $returnData = $data;
+        if (empty($returnData)) {
+            $returnData = null;
         }
         $this->updateMainMapping($migrationContext, $context);
 
-        return new ConvertStruct($converted, $data, $this->mainMapping['id']);
+        return new ConvertStruct($converted, $returnData, $this->mainMapping['id']);
     }
 }

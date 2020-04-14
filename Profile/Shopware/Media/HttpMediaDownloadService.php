@@ -115,7 +115,7 @@ class HttpMediaDownloadService implements MediaFileProcessorInterface
         $client = new Client([
             'verify' => false,
         ]);
-        $promises = $this->doMediaDownloadRequests($media, $fileChunkByteSize, $mappedWorkload, $client);
+        $promises = $this->doMediaDownloadRequests($media, $mappedWorkload, $client);
 
         // Wait for the requests to complete, even if some of them fail
         /** @var array $results */
@@ -211,7 +211,7 @@ class HttpMediaDownloadService implements MediaFileProcessorInterface
      * @param SwagMigrationMediaFileEntity[] $media
      * @param MediaProcessWorkloadStruct[]   $mappedWorkload
      */
-    private function doMediaDownloadRequests(array $media, int $fileChunkByteSize, array &$mappedWorkload, Client $client): array
+    private function doMediaDownloadRequests(array $media, array &$mappedWorkload, Client $client): array
     {
         $promises = [];
         foreach ($media as $mediaFile) {
@@ -220,14 +220,6 @@ class HttpMediaDownloadService implements MediaFileProcessorInterface
             $additionalData['file_size'] = $mediaFile->getFileSize();
             $additionalData['uri'] = $mediaFile->getUri();
             $mappedWorkload[$uuid]->setAdditionalData($additionalData);
-
-            /* Todo: Implement Chunkdownload
-            if ($additionalData['file_size'] <= $fileChunkByteSize) {
-                $promise = $this->doNormalDownloadRequest($mappedWorkload[$uuid], $client);
-            } else {
-                $promise = $this->doChunkDownloadRequest($fileChunkByteSize, $mappedWorkload[$uuid], $client);
-            }
-            */
 
             $promise = $this->doNormalDownloadRequest($mappedWorkload[$uuid], $client);
 

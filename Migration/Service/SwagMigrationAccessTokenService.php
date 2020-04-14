@@ -37,7 +37,11 @@ class SwagMigrationAccessTokenService
         Context $context
     ): string {
         $sourceContext = $context->getSource();
+        $userId = null;
         if ($sourceContext instanceof AdminApiSource) {
+            /**
+             * @psalm-suppress PossiblyNullArgument
+             */
             $userId = \mb_strtoupper($sourceContext->getUserId());
         }
 
@@ -45,7 +49,7 @@ class SwagMigrationAccessTokenService
             $userId = 'CLI';
         }
 
-        if (!isset($userId)) {
+        if ($userId === null) {
             throw new InvalidContextSourceException(AdminApiSource::class, \get_class($context->getSource()));
         }
 

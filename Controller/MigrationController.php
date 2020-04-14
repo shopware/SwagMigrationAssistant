@@ -14,6 +14,7 @@ use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use SwagMigrationAssistant\Exception\EntityNotExistsException;
 use SwagMigrationAssistant\Exception\MigrationContextPropertyMissingException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
 use SwagMigrationAssistant\Migration\Run\RunServiceInterface;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
@@ -129,6 +130,10 @@ class MigrationController extends AbstractController
 
         $migrationContext = $this->migrationContextFactory->create($run, $offset, $limit, $entity);
 
+        if ($migrationContext === null) {
+            throw new EntityNotExistsException(MigrationContext::class, $runUuid);
+        }
+
         $data = $this->migrationDataFetcher->fetchData($migrationContext, $context);
 
         if (!empty($data)) {
@@ -202,6 +207,11 @@ class MigrationController extends AbstractController
         }
 
         $migrationContext = $this->migrationContextFactory->create($run, $offset, $limit, $entity);
+
+        if ($migrationContext === null) {
+            throw new EntityNotExistsException(MigrationContext::class, $runUuid);
+        }
+
         $this->migrationDataWriter->writeData($migrationContext, $context);
 
         return new JsonResponse([
@@ -271,6 +281,11 @@ class MigrationController extends AbstractController
         }
 
         $migrationContext = $this->migrationContextFactory->create($run, $offset, $limit);
+
+        if ($migrationContext === null) {
+            throw new EntityNotExistsException(MigrationContext::class, $runUuid);
+        }
+
         $this->mediaFileProcessorService->processMediaFiles($migrationContext, $context, $fileChunkByteSize);
 
         return new JsonResponse([

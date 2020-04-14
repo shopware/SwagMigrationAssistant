@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
+use Doctrine\DBAL\Driver\ResultStatement;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactoryInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\TableReaderInterface;
@@ -26,6 +27,11 @@ class TableReader implements TableReaderInterface
     public function read(MigrationContextInterface $migrationContext, string $tableName, array $filter = []): array
     {
         $connection = $this->connectionFactory->createDatabaseConnection($migrationContext);
+
+        if ($connection === null) {
+            return [];
+        }
+
         $query = $connection->createQueryBuilder();
         $query->select('*');
         $query->from($tableName);
@@ -37,6 +43,11 @@ class TableReader implements TableReaderInterface
             }
         }
 
-        return $query->execute()->fetchAll();
+        $query = $query->execute();
+        if (!($query instanceof ResultStatement)) {
+            return [];
+        }
+
+        return $query->fetchAll();
     }
 }

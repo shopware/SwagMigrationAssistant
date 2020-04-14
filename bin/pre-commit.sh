@@ -30,9 +30,7 @@ then
         php -l -d display_errors=0 "$FILE" 1> /dev/null
     done
 
-    composer dump-autoload
-    php "`dirname \"$0\"`"/../../bin/phpstan-config-generator.php
-    php ../../../dev-ops/analyze/vendor/bin/phpstan analyze --level 5 --no-progress --configuration phpstan.neon --autoload-file="$AUTOLOAD_FILE" ${PHP_FILES}
+    "`dirname \"$0\"`"/../../bin/static-analyze.sh
 fi
 
 UNSTAGED_FILES="$(git diff --name-only -- ${PHP_FILES} ${JS_FILES})"

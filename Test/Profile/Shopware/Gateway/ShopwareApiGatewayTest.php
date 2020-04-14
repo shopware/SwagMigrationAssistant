@@ -62,9 +62,15 @@ class ShopwareApiGatewayTest extends TestCase
 
     public function testReadEnvironmentInformationFailed(): void
     {
+        $connection = new SwagMigrationConnectionEntity();
+        $connection->setCredentialFields([
+            'endpoint' => 'testing',
+            'apiUser' => 'testing',
+            'apiKey' => 'testing',
+        ]);
         $migrationContext = new MigrationContext(
             new Shopware55Profile(),
-            new SwagMigrationConnectionEntity()
+            $connection
         );
 
         $connectionFactory = new ConnectionFactory();

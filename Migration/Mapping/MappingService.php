@@ -43,16 +43,34 @@ class MappingService implements MappingServiceInterface
      */
     protected $mediaDefaultFolderRepo;
 
+    /**
+     * @var array
+     */
     protected $values = [];
 
+    /**
+     * @var array
+     */
     protected $migratedSalesChannels = [];
 
+    /**
+     * @var array
+     */
     protected $writeArray = [];
 
+    /**
+     * @var array
+     */
     protected $languageData = [];
 
+    /**
+     * @var array
+     */
     protected $locales = [];
 
+    /**
+     * @var array
+     */
     protected $mappings = [];
 
     /**
@@ -593,7 +611,7 @@ class MappingService implements MappingServiceInterface
         return $localeUuid;
     }
 
-    public function getDefaultLanguage(Context $context): LanguageEntity
+    public function getDefaultLanguage(Context $context): ?LanguageEntity
     {
         if (!empty($this->defaultLanguageData)) {
             return $this->defaultLanguageData;
@@ -601,13 +619,16 @@ class MappingService implements MappingServiceInterface
 
         $languageUuid = $context->getLanguageId();
 
-        /** @var LanguageEntity $language */
-        $language = $context->disableCache(function (Context $context) use ($languageUuid) {
+        $language = $context->disableCache(function (Context $context) use ($languageUuid): ?LanguageEntity {
             $criteria = new Criteria([$languageUuid]);
             $criteria->addAssociation('locale');
 
             return $this->languageRepository->search($criteria, $context)->first();
         });
+
+        if ($language === null) {
+            return null;
+        }
 
         $this->defaultLanguageData = $language;
 
@@ -778,8 +799,13 @@ class MappingService implements MappingServiceInterface
 
     public function getNumberRangeUuid(string $type, string $oldIdentifier, string $checksum, MigrationContextInterface $migrationContext, Context $context): ?string
     {
-        /** @var EntitySearchResult $result */
-        $result = $context->disableCache(function (Context $context) use ($type) {
+        $connection = $migrationContext->getConnection();
+        if ($connection === null) {
+            return null;
+        }
+
+        $connectionId = $connection->getId();
+        $result = $context->disableCache(function (Context $context) use ($type): EntitySearchResult {
             $criteria = new Criteria();
             $criteria->addFilter(new EqualsFilter(
                 'number_range.type.technicalName',
@@ -790,13 +816,17 @@ class MappingService implements MappingServiceInterface
         });
 
         if ($result->getTotal() > 0) {
-            /** @var NumberRangeEntity $numberRange */
+            /** @var NumberRangeEntity|null $numberRange */
             $numberRange = $result->getEntities()->first();
+
+            if ($numberRange === null) {
+                return null;
+            }
 
             $this->saveMapping(
                 [
                     'id' => Uuid::randomHex(),
-                    'connectionId' => $migrationContext->getConnection()->getId(),
+                    'connectionId' => $connectionId,
                     'entity' => DefaultEntities::NUMBER_RANGE,
                     'oldIdentifier' => $oldIdentifier,
                     'entityUuid' => $numberRange->getId(),
@@ -812,7 +842,12 @@ class MappingService implements MappingServiceInterface
 
     public function getDefaultFolderIdByEntity(string $entityName, MigrationContextInterface $migrationContext, Context $context): ?string
     {
-        $connectionId = $migrationContext->getConnection()->getId();
+        $connection = $migrationContext->getConnection();
+        if ($connection === null) {
+            return null;
+        }
+
+        $connectionId = $connection->getId();
         $defaultFolderMapping = $this->getMapping($connectionId, DefaultEntities::MEDIA_DEFAULT_FOLDER, $entityName, $context);
 
         if ($defaultFolderMapping !== null) {
@@ -828,24 +863,28 @@ class MappingService implements MappingServiceInterface
         });
 
         if ($result->getTotal() > 0) {
-            /** @var MediaDefaultFolderEntity $mediaDefaultFolder */
+            /** @var MediaDefaultFolderEntity|null $mediaDefaultFolder */
             $mediaDefaultFolder = $result->getEntities()->first();
+            if ($mediaDefaultFolder === null) {
+                return null;
+            }
 
-            if ($mediaDefaultFolder->getFolder() === null) {
+            $mediaDefaultFolder = $mediaDefaultFolder->getFolder();
+            if ($mediaDefaultFolder === null) {
                 return null;
             }
 
             $this->saveMapping(
                 [
                     'id' => Uuid::randomHex(),
-                    'connectionId' => $migrationContext->getConnection()->getId(),
+                    'connectionId' => $connectionId,
                     'entity' => DefaultEntities::MEDIA_DEFAULT_FOLDER,
                     'oldIdentifier' => $entityName,
-                    'entityUuid' => $mediaDefaultFolder->getFolder()->getId(),
+                    'entityUuid' => $mediaDefaultFolder->getId(),
                 ]
             );
 
-            return $mediaDefaultFolder->getFolder()->getId();
+            return $mediaDefaultFolder->getId();
         }
 
         return null;
@@ -853,16 +892,20 @@ class MappingService implements MappingServiceInterface
 
     public function getThumbnailSizeUuid(int $width, int $height, MigrationContextInterface $migrationContext, Context $context): ?string
     {
+        $connection = $migrationContext->getConnection();
+        if ($connection === null) {
+            return null;
+        }
+        $connectionId = $connection->getId();
+
         $sizeString = $width . '-' . $height;
-        $connectionId = $migrationContext->getConnection()->getId();
         $thumbnailSizeMapping = $this->getMapping($connectionId, DefaultEntities::MEDIA_THUMBNAIL_SIZE, $sizeString, $context);
 
         if ($thumbnailSizeMapping !== null) {
             return $thumbnailSizeMapping['entityUuid'];
         }
 
-        /** @var EntitySearchResult $result */
-        $result = $context->disableCache(function (Context $context) use ($width, $height) {
+        $result = $context->disableCache(function (Context $context) use ($width, $height): EntitySearchResult {
             $criteria = new Criteria();
             $criteria->addFilter(new EqualsFilter('width', $width));
             $criteria->addFilter(new EqualsFilter('height', $height));
@@ -877,7 +920,7 @@ class MappingService implements MappingServiceInterface
             $this->saveMapping(
                 [
                     'id' => Uuid::randomHex(),
-                    'connectionId' => $migrationContext->getConnection()->getId(),
+                    'connectionId' => $connectionId,
                     'entity' => DefaultEntities::MEDIA_THUMBNAIL_SIZE,
                     'oldIdentifier' => $sizeString,
                     'entityUuid' => $thumbnailSize->getId(),
@@ -890,9 +933,6 @@ class MappingService implements MappingServiceInterface
         return null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getMigratedSalesChannelUuids(string $connectionId, Context $context): array
     {
         if (isset($this->migratedSalesChannels[$connectionId])) {
@@ -914,6 +954,11 @@ class MappingService implements MappingServiceInterface
         $uuids = [];
         foreach ($saleschannelMappingCollection as $swagMigrationMappingEntity) {
             $uuid = $swagMigrationMappingEntity->getEntityUuid();
+
+            if ($uuid === null) {
+                continue;
+            }
+
             $uuids[] = $uuid;
             $this->migratedSalesChannels[$connectionId][] = $uuid;
         }
@@ -928,8 +973,7 @@ class MappingService implements MappingServiceInterface
             return $this->defaultAvailabilityRule;
         }
 
-        /** @var RuleEntity $result */
-        $result = $context->disableCache(function (Context $context) {
+        $result = $context->disableCache(function (Context $context): ?RuleEntity {
             $criteria = new Criteria();
             $criteria->addFilter(new EqualsFilter('name', 'Cart >= 0'));
 
@@ -946,7 +990,12 @@ class MappingService implements MappingServiceInterface
 
     public function getDocumentTypeUuid(string $technicalName, Context $context, MigrationContextInterface $migrationContext): ?string
     {
-        $connectionId = $migrationContext->getConnection()->getId();
+        $connection = $migrationContext->getConnection();
+        if ($connection === null) {
+            return null;
+        }
+
+        $connectionId = $connection->getId();
         $documentTypeMapping = $this->getMapping($connectionId, DefaultEntities::ORDER_DOCUMENT_TYPE, $technicalName, $context);
 
         if ($documentTypeMapping !== null) {
@@ -968,7 +1017,7 @@ class MappingService implements MappingServiceInterface
             $this->saveMapping(
                 [
                     'id' => Uuid::randomHex(),
-                    'connectionId' => $migrationContext->getConnection()->getId(),
+                    'connectionId' => $connection->getId(),
                     'entity' => DefaultEntities::ORDER_DOCUMENT_TYPE,
                     'oldIdentifier' => $technicalName,
                     'entityUuid' => $documentType->getId(),
@@ -991,7 +1040,11 @@ class MappingService implements MappingServiceInterface
         if ($result->getTotal() > 0) {
             /** @var CategoryCollection $collection */
             $collection = $result->getEntities();
-            $collection->sortByPosition()->last()->getId();
+            $last = $collection->sortByPosition()->last();
+
+            if ($last !== null) {
+                return $last->getId();
+            }
         }
 
         return null;

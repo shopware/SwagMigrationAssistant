@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Driver\ResultStatement;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
@@ -65,11 +66,15 @@ class ProductReader extends AbstractReader
     {
         $this->setConnection($migrationContext);
 
-        $total = (int) $this->connection->createQueryBuilder()
+        $query = $this->connection->createQueryBuilder()
             ->select('COUNT(*)')
             ->from('s_articles_details')
-            ->execute()
-            ->fetchColumn();
+            ->execute();
+
+        $total = 0;
+        if ($query instanceof ResultStatement) {
+            $total = (int) $query->fetchColumn();
+        }
 
         return new TotalStruct(DefaultEntities::PRODUCT, $total);
     }
@@ -185,7 +190,12 @@ class ProductReader extends AbstractReader
         $query->addOrderBy('product_detail.kind');
         $query->addOrderBy('product_detail.id');
 
-        return $query->execute()->fetchAll();
+        $query = $query->execute();
+        if (!($query instanceof ResultStatement)) {
+            return [];
+        }
+
+        return $query->fetchAll();
     }
 
     private function getCategories(): array
@@ -198,12 +208,17 @@ class ProductReader extends AbstractReader
         $query->from('s_articles_categories', 'product_category');
 
         $query->leftJoin('product_category', 's_categories', 'category', 'category.id = product_category.categoryID');
-        $query->addSelect('product_category.articleID', 'product_category.categoryID as id, category.path');
+        $query->addSelect(['product_category.articleID', 'product_category.categoryID as id, category.path']);
 
         $query->where('product_category.articleID IN (:ids)');
         $query->setParameter('ids', $productIds, Connection::PARAM_INT_ARRAY);
 
-        return $query->execute()->fetchAll(\PDO::FETCH_GROUP);
+        $query = $query->execute();
+        if (!($query instanceof ResultStatement)) {
+            return [];
+        }
+
+        return $query->fetchAll(\PDO::FETCH_GROUP);
     }
 
     private function getPrices(): array
@@ -226,7 +241,12 @@ class ProductReader extends AbstractReader
         $query->where('price.articledetailsID IN (:ids)');
         $query->setParameter('ids', $variantIds, Connection::PARAM_INT_ARRAY);
 
-        $fetchedPrices = $query->execute()->fetchAll(\PDO::FETCH_GROUP);
+        $query = $query->execute();
+        if (!($query instanceof ResultStatement)) {
+            return [];
+        }
+
+        $fetchedPrices = $query->fetchAll(\PDO::FETCH_GROUP);
 
         return $this->mapData($fetchedPrices, [], ['price', 'currencyShortName']);
     }
@@ -257,7 +277,12 @@ class ProductReader extends AbstractReader
         $query->where('asset.articleID IN (:ids) AND variantAsset.id IS NULL');
         $query->setParameter('ids', $productIds, Connection::PARAM_INT_ARRAY);
 
-        $fetchedAssets = $this->mapData($query->execute()->fetchAll(\PDO::FETCH_GROUP), [], ['asset']);
+        $query = $query->execute();
+        if (!($query instanceof ResultStatement)) {
+            return [];
+        }
+
+        $fetchedAssets = $this->mapData($query->fetchAll(\PDO::FETCH_GROUP), [], ['asset']);
         $fetchedVariantAssets = $this->mapData($this->fetchVariantAssets(), [], ['asset', 'img', 'description']);
 
         $assets = [];
@@ -307,7 +332,12 @@ class ProductReader extends AbstractReader
         $query->where('asset.article_detail_id IN (:ids)');
         $query->setParameter('ids', $variantIds, Connection::PARAM_INT_ARRAY);
 
-        return $query->execute()->fetchAll(\PDO::FETCH_GROUP);
+        $query = $query->execute();
+        if (!($query instanceof ResultStatement)) {
+            return [];
+        }
+
+        return $query->fetchAll(\PDO::FETCH_GROUP);
     }
 
     private function fetchMainCategoryShops(): array
@@ -317,7 +347,12 @@ class ProductReader extends AbstractReader
         $query->from('s_core_shops', 'shop');
         $query->addSelect('shop.category_id, IFNULL(shop.main_id, shop.id)');
 
-        return $query->execute()->fetchAll(\PDO::FETCH_KEY_PAIR);
+        $query = $query->execute();
+        if (!($query instanceof ResultStatement)) {
+            return [];
+        }
+
+        return $query->fetchAll(\PDO::FETCH_KEY_PAIR);
     }
 
     private function getProductVisibility(array $categories, array $mainCategoryShops): array

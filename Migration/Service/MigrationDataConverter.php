@@ -11,7 +11,6 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
-use Shopware\Core\Framework\ShopwareHttpException;
 use SwagMigrationAssistant\Migration\Converter\ConverterInterface;
 use SwagMigrationAssistant\Migration\Converter\ConverterRegistryInterface;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
@@ -73,6 +72,11 @@ class MigrationDataConverter implements MigrationDataConverterInterface
 
     public function convert(array $data, MigrationContextInterface $migrationContext, Context $context): void
     {
+        $dataSet = $migrationContext->getDataSet();
+        if ($dataSet === null) {
+            return;
+        }
+
         try {
             $converter = $this->converterRegistry->getConverter($migrationContext);
             $result = $this->filterDeltas($data, $converter, $migrationContext, $context);
@@ -83,7 +87,7 @@ class MigrationDataConverter implements MigrationDataConverterInterface
                 if (!empty($preloadIds)) {
                     $this->mappingService->preloadMappings($preloadIds, $context);
                 }
-                $createData = $this->convertData($context, $data, $converter, $migrationContext, $migrationContext->getDataSet());
+                $createData = $this->convertData($context, $data, $converter, $migrationContext, $dataSet);
 
                 if (\count($createData) === 0) {
                     return;
@@ -99,13 +103,6 @@ class MigrationDataConverter implements MigrationDataConverterInterface
                 );
             }
         } catch (\Exception $exception) {
-            $code = $exception->getCode();
-            if (is_subclass_of($exception, ShopwareHttpException::class, false)) {
-                $code = $exception->getErrorCode();
-            }
-
-            $dataSet = $migrationContext->getDataSet();
-
             $this->loggingService->addLogEntry(new ExceptionRunLog(
                 $migrationContext->getRunUuid(),
                 $dataSet::getEntity(),
@@ -177,8 +174,16 @@ class MigrationDataConverter implements MigrationDataConverterInterface
             $mappedData[$converter->getSourceIdentifier($dataSet)] = $dataSet;
             $checksums[$converter->getSourceIdentifier($dataSet)] = md5(serialize($dataSet));
         }
-        $connectionId = $migrationContext->getConnection()->getId();
-        $entity = $migrationContext->getDataSet()::getEntity();
+
+        $connection = $migrationContext->getConnection();
+        $dataSet = $migrationContext->getDataSet();
+
+        if ($connection === null || $dataSet === null) {
+            return new MappingDeltaResult();
+        }
+
+        $connectionId = $connection->getId();
+        $entity = $dataSet::getEntity();
         $result = $this->mappingService->getMappings($connectionId, $entity, array_keys($checksums), $context);
 
         if ($result->getTotal() > 0) {
@@ -186,13 +191,17 @@ class MigrationDataConverter implements MigrationDataConverterInterface
             $relatedMappings = [];
             /** @var SwagMigrationMappingEntity $mapping */
             foreach ($elements as $mapping) {
+                $oldIdentifier = $mapping->getOldIdentifier();
+                if ($oldIdentifier === null) {
+                    continue;
+                }
+
                 $checksum = $mapping->getChecksum();
                 $preloadIds[] = $mapping->getId();
-                if (isset($checksums[$mapping->getOldIdentifier()])
-                    && $checksums[$mapping->getOldIdentifier()] === $checksum
-                ) {
-                    unset($mappedData[$mapping->getOldIdentifier()]);
+                if (isset($checksums[$oldIdentifier]) && $checksums[$oldIdentifier] === $checksum) {
+                    unset($mappedData[$oldIdentifier]);
                 }
+
                 $additionalData = $mapping->getAdditionalData();
                 if (isset($additionalData['relatedMappings'])) {
                     $relatedMappings[] = $additionalData['relatedMappings'];

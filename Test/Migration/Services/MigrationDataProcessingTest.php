@@ -396,7 +396,7 @@ class MigrationDataProcessingTest extends TestCase
             250
         );
 
-        $this->clearCacheBefore();
+        $this->clearCacheData();
         $data = $this->migrationDataFetcher->fetchData($migrationContext, $context);
         $this->migrationDataConverter->convert($data, $migrationContext, $context);
         $result = $this->loggingRepo->search(new Criteria(), $context);

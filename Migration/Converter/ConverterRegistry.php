@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Migration\Converter;
 
 use SwagMigrationAssistant\Exception\ConverterNotFoundException;
+use SwagMigrationAssistant\Exception\MigrationContextPropertyMissingException;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 class ConverterRegistry implements ConverterRegistryInterface
@@ -17,6 +18,9 @@ class ConverterRegistry implements ConverterRegistryInterface
      */
     private $converters;
 
+    /**
+     * @param ConverterInterface[] $converters
+     */
     public function __construct(iterable $converters)
     {
         $this->converters = $converters;
@@ -33,6 +37,11 @@ class ConverterRegistry implements ConverterRegistryInterface
             }
         }
 
-        throw new ConverterNotFoundException($migrationContext->getConnection()->getProfileName());
+        $connection = $migrationContext->getConnection();
+        if ($connection === null) {
+            throw new MigrationContextPropertyMissingException('Connection');
+        }
+
+        throw new ConverterNotFoundException($connection->getProfileName());
     }
 }

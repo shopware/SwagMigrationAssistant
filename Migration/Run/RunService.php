@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Migration\Run;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Driver\ResultStatement;
 use Doctrine\DBAL\FetchMode;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Dbal\QueryBuilder;
@@ -29,7 +30,6 @@ use Shopware\Storefront\Theme\ThemeService;
 use SwagMigrationAssistant\Exception\MigrationIsRunningException;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionCollection;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistryInterface;
-use SwagMigrationAssistant\Migration\DataSelection\DataSelectionStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\Logging\Log\ThemeCompilingErrorRunLog;
@@ -184,6 +184,11 @@ class RunService implements RunServiceInterface
         $this->cleanupUnwrittenRunData($migrationContext, $context);
 
         $runUuid = $this->createPlainMigrationRun($migrationContext, $context);
+
+        if ($runUuid === null) {
+            return null;
+        }
+
         $accessToken = $this->accessTokenService->updateRunAccessToken($runUuid, $context);
 
         $environmentInformation = $this->getEnvironmentInformation($migrationContext, $context);
@@ -200,8 +205,12 @@ class RunService implements RunServiceInterface
 
     public function calculateWriteProgress(SwagMigrationRunEntity $run, Context $context): array
     {
-        $unsortedTotals = $this->calculateFetchedTotals($run->getId(), $context);
+        $unsortedTotals = $this->calculateFetchedTotals($run->getId());
         $writeProgress = $run->getProgress();
+
+        if ($writeProgress === null) {
+            return [];
+        }
 
         foreach ($writeProgress as $runKey => $runProgress) {
             $groupCount = 0;
@@ -229,6 +238,10 @@ class RunService implements RunServiceInterface
     public function calculateMediaFilesProgress(SwagMigrationRunEntity $run, Context $context): array
     {
         $currentProgress = $run->getProgress();
+        if ($currentProgress === null) {
+            return [];
+        }
+
         $mediaFileTotal = $this->getMediaFileCounts($run->getId(), $context, false);
         $mediaFileCount = $this->getMediaFileCounts($run->getId(), $context, true);
 
@@ -290,7 +303,13 @@ class RunService implements RunServiceInterface
 
         $mappedCounts = [];
         foreach ($counts as $bucket) {
-            $mappedCounts[$bucket->getKey()] = $bucket->getCount();
+            $key = $bucket->getKey();
+
+            if ($key === null) {
+                continue;
+            }
+
+            $mappedCounts[$key] = $bucket->getCount();
         }
 
         return $mappedCounts;
@@ -325,9 +344,15 @@ class RunService implements RunServiceInterface
         if ($dataCount > 0) {
             /** @var SwagMigrationRunEntity $run */
             $run = $this->migrationRunRepo->search(new Criteria([$runUuid]), $context)->first();
-            $this->cleanupMappingChecksums($run->getConnection()->getId(), $context, false);
+            $connection = $run->getConnection();
+
+            if ($connection === null) {
+                return;
+            }
+
+            $this->cleanupMappingChecksums($connection->getId(), $context, false);
         }
-        $this->cleanupMigration($runUuid, $context);
+        $this->cleanupMigration($runUuid);
     }
 
     public function cleanupMappingChecksums(string $connectionUuid, Context $context, bool $resetAll = true): void
@@ -367,7 +392,7 @@ SQL;
 
         $this->fireTrackingInformation(self::TRACKING_EVENT_MIGRATION_FINISHED, $runUuid, $context);
 
-        $this->cleanupMigration($runUuid, $context, true);
+        $this->cleanupMigration($runUuid, true);
     }
 
     public function assignThemeToSalesChannel(string $runUuid, Context $context): void
@@ -375,11 +400,16 @@ SQL;
         /** @var SwagMigrationRunEntity|null $run */
         $run = $this->migrationRunRepo->search(new Criteria([$runUuid]), $context)->first();
 
-        if ($run === null || $run->getConnection() === null) {
+        if ($run === null) {
             return;
         }
 
-        $connectionId = $run->getConnection()->getId();
+        $connection = $run->getConnection();
+        if ($connection === null) {
+            return;
+        }
+
+        $connectionId = $connection->getId();
         $salesChannels = $this->getSalesChannels($connectionId, $context);
         $defaultTheme = $this->getDefaultTheme($context);
 
@@ -406,12 +436,20 @@ SQL;
         /** @var SwagMigrationRunEntity $run */
         $run = $this->migrationRunRepo->search(new Criteria([$runUuid]), $context)->first();
         $progress = $run->getProgress();
-        $timestamp = $run->getUpdatedAt()->getTimestamp();
+        $connection = $run->getConnection();
+        $information = [];
+
+        $time = $run->getUpdatedAt();
+        if ($time === null) {
+            $timestamp = (new \DateTime())->getTimestamp();
+        } else {
+            $timestamp = $time->getTimestamp();
+        }
 
         if ($eventName === self::TRACKING_EVENT_MIGRATION_ABORTED) {
-            if ($run->getConnection() !== null) {
-                $information['profileName'] = $run->getConnection()->getProfileName();
-                $information['gatewayName'] = $run->getConnection()->getGatewayName();
+            if ($connection !== null) {
+                $information['profileName'] = $connection->getProfileName();
+                $information['gatewayName'] = $connection->getGatewayName();
             }
 
             $information['abortedAt'] = $timestamp;
@@ -424,7 +462,6 @@ SQL;
             return;
         }
 
-        $information = [];
         foreach ($progress as $entityGroup) {
             if ($entityGroup['total'] === 0) {
                 continue;
@@ -444,9 +481,9 @@ SQL;
             return;
         }
 
-        if ($run->getConnection() !== null) {
-            $information['profileName'] = $run->getConnection()->getProfileName();
-            $information['gatewayName'] = $run->getConnection()->getGatewayName();
+        if ($connection !== null) {
+            $information['profileName'] = $connection->getProfileName();
+            $information['gatewayName'] = $connection->getGatewayName();
         }
 
         if ($eventName === self::TRACKING_EVENT_MIGRATION_STARTED) {
@@ -460,7 +497,7 @@ SQL;
         $this->storeService->fireTrackingEvent($eventName, $information);
     }
 
-    private function cleanupMigration(string $runUuid, Context $context, bool $removeOnlyWrittenData = false): void
+    private function cleanupMigration(string $runUuid, bool $removeOnlyWrittenData = false): void
     {
         $this->removeMigrationData($runUuid, $removeOnlyWrittenData);
 
@@ -498,18 +535,23 @@ SQL;
         return $countResult->getCount();
     }
 
-    private function calculateFetchedTotals(string $runId, Context $context): array
+    private function calculateFetchedTotals(string $runId): array
     {
         $queryBuilder = $this->dbalConnection->createQueryBuilder();
-        $results = $queryBuilder
+        $query = $queryBuilder
             ->select('entity, COUNT(id) AS total')
             ->from('swag_migration_data')
             ->where('HEX(run_id) = :runId')
             ->andWhere('convert_failure = 0 AND converted IS NOT NULL')
             ->groupBy('entity')
             ->setParameter('runId', $runId)
-            ->execute()
-            ->fetchAll(FetchMode::ASSOCIATIVE);
+            ->execute();
+
+        if (!($query instanceof ResultStatement)) {
+            return [];
+        }
+
+        $results = $query->fetchAll(FetchMode::ASSOCIATIVE);
 
         $mappedCounts = [];
         foreach ($results as $result) {
@@ -527,7 +569,11 @@ SQL;
         Context $context
     ): void {
         $connection = $migrationContext->getConnection();
-        $credentials = $connection->getCredentialFields();
+
+        $credentials = [];
+        if ($connection !== null) {
+            $credentials = $connection->getCredentialFields();
+        }
 
         if (empty($credentials)) {
             $credentials = [];
@@ -548,7 +594,6 @@ SQL;
         $processMediaFiles = false;
         $entityNamesInUse = [];
 
-        /** @var DataSelectionStruct $dataSelection */
         foreach ($dataSelectionCollection as $dataSelection) {
             $entities = [];
             $sumTotal = 0;
@@ -624,19 +669,31 @@ SQL;
         return $total > 0;
     }
 
-    private function createPlainMigrationRun(MigrationContextInterface $migrationContext, Context $context): string
+    private function createPlainMigrationRun(MigrationContextInterface $migrationContext, Context $context): ?string
     {
+        $connection = $migrationContext->getConnection();
+
+        if ($connection === null) {
+            return null;
+        }
+
         $writtenEvent = $this->migrationRunRepo->create(
             [
                 [
-                    'connectionId' => $migrationContext->getConnection()->getId(),
+                    'connectionId' => $connection->getId(),
                     'status' => SwagMigrationRunEntity::STATUS_RUNNING,
                 ],
             ],
             $context
         );
 
-        $ids = $writtenEvent->getEventByEntityName(SwagMigrationRunDefinition::ENTITY_NAME)->getIds();
+        $event = $writtenEvent->getEventByEntityName(SwagMigrationRunDefinition::ENTITY_NAME);
+
+        if ($event === null) {
+            return null;
+        }
+
+        $ids = $event->getIds();
 
         return array_pop($ids);
     }
@@ -675,7 +732,6 @@ SQL;
     {
         $environmentInformationTotals = $environmentInformation->getTotals();
         $totals = [];
-        /** @var DataSelectionStruct $dataSelection */
         foreach ($dataSelectionCollection as $dataSelection) {
             foreach ($dataSelection->getEntityNames() as $entityName) {
                 if (isset($environmentInformationTotals[$entityName]) && !isset($totals[$entityName])) {
@@ -734,9 +790,15 @@ SQL;
 
     private function cleanupUnwrittenRunData(MigrationContextInterface $migrationContext, Context $context): void
     {
+        $connection = $migrationContext->getConnection();
+
+        if ($connection === null) {
+            return;
+        }
+
         $criteria = new Criteria();
         $criteria->addFilter(
-            new EqualsFilter('connectionId', $migrationContext->getConnection()->getId()),
+            new EqualsFilter('connectionId', $connection->getId()),
             new EqualsAnyFilter('status', [SwagMigrationRunEntity::STATUS_FINISHED, SwagMigrationRunEntity::STATUS_ABORTED])
         );
         $criteria->addSorting(new FieldSorting('createdAt', 'DESC'));
@@ -770,7 +832,13 @@ SQL;
 
     private function updateUnprocessedMediaFiles(MigrationContextInterface $migrationContext, string $runUuid): void
     {
-        $connectionId = $migrationContext->getConnection()->getId();
+        $connection = $migrationContext->getConnection();
+
+        if ($connection === null) {
+            return;
+        }
+
+        $connectionId = $connection->getId();
 
         $sql = <<<SQL
 UPDATE swag_migration_media_file AS mediafile
@@ -780,7 +848,7 @@ WHERE HEX(run.connection_id) = ?
 AND mediafile.processed = 0
 AND mediafile.written = 1;
 SQL;
-        $this->dbalConnection->executeQuery(
+        $this->dbalConnection->executeUpdate(
             $sql,
             [$runUuid, $connectionId],
             [\PDO::PARAM_STR, \PDO::PARAM_STR]

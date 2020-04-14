@@ -83,6 +83,11 @@ class MigrationDataWriter implements MigrationDataWriterInterface
     public function writeData(MigrationContextInterface $migrationContext, Context $context): void
     {
         $dataSet = $migrationContext->getDataSet();
+
+        if ($dataSet === null) {
+            return;
+        }
+
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('entity', $dataSet::getEntity()));
         $criteria->addFilter(new EqualsFilter('runId', $migrationContext->getRunUuid()));

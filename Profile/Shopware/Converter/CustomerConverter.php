@@ -68,6 +68,11 @@ abstract class CustomerConverter extends ShopwareConverter
         'salutation',
     ];
 
+    /**
+     * @var string
+     */
+    protected $connectionName;
+
     public function getSourceIdentifier(array $data): string
     {
         return $data['id'];
@@ -95,10 +100,17 @@ abstract class CustomerConverter extends ShopwareConverter
             return new ConvertStruct(null, $oldData);
         }
 
-        $this->connectionId = $migrationContext->getConnection()->getId();
         $this->context = $context;
         $this->mainLocale = $data['_locale'];
         unset($data['_locale']);
+
+        $connection = $migrationContext->getConnection();
+        $this->connectionId = '';
+        $this->connectionName = '';
+        if ($connection !== null) {
+            $this->connectionId = $connection->getId();
+            $this->connectionName = $connection->getName();
+        }
 
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
@@ -183,6 +195,9 @@ abstract class CustomerConverter extends ShopwareConverter
         unset($data['customerGroupId'], $data['customergroup']);
 
         if (isset($data['defaultpayment']['id'])) {
+            /**
+             * @psalm-suppress PossiblyInvalidArgument
+             */
             $defaultPaymentMethodUuid = $this->getDefaultPaymentMethod($data['defaultpayment']);
 
             if ($defaultPaymentMethodUuid === null) {
@@ -226,7 +241,7 @@ abstract class CustomerConverter extends ShopwareConverter
         }
 
         if (isset($data['attributes'])) {
-            $converted['customFields'] = $this->getAttributes($data['attributes'], DefaultEntities::CUSTOMER, $migrationContext->getConnection()->getName(), ['id', 'userID']);
+            $converted['customFields'] = $this->getAttributes($data['attributes'], DefaultEntities::CUSTOMER, $this->connectionName, ['id', 'userID']);
         }
         unset($data['attributes']);
 
@@ -263,8 +278,9 @@ abstract class CustomerConverter extends ShopwareConverter
             $data['customerlanguage'] // TODO use for sales channel information?
         );
 
-        if (empty($data)) {
-            $data = null;
+        $returnData = $data;
+        if (empty($returnData)) {
+            $returnData = null;
         }
 
         if (!isset($converted['defaultBillingAddressId'], $converted['defaultShippingAddressId'])) {
@@ -282,7 +298,7 @@ abstract class CustomerConverter extends ShopwareConverter
 
         $this->updateMainMapping($migrationContext, $context);
 
-        return new ConvertStruct($converted, $data, $this->mainMapping['id']);
+        return new ConvertStruct($converted, $returnData, $this->mainMapping['id']);
     }
 
     protected function setPassword(array &$data, array &$converted): void
@@ -325,9 +341,6 @@ abstract class CustomerConverter extends ShopwareConverter
         return $paymentMethodMapping['entityUuid'];
     }
 
-    /**
-     * @param array[] $originalData
-     */
     protected function getAddresses(array &$originalData, array &$converted, string $customerUuid): void
     {
         $addresses = [];
@@ -369,6 +382,10 @@ abstract class CustomerConverter extends ShopwareConverter
             if (isset($originalData['default_shipping_address_id']) && $address['id'] === $originalData['default_shipping_address_id']) {
                 $converted['defaultShippingAddressId'] = $newAddress['id'];
                 unset($originalData['default_shipping_address_id']);
+            }
+
+            if (!isset($this->mainMapping['entityUuid'])) {
+                continue;
             }
 
             $newAddress['customerId'] = $this->mainMapping['entityUuid'];
@@ -454,7 +471,12 @@ abstract class CustomerConverter extends ShopwareConverter
     protected function getCountryTranslation(array &$country, array $data): void
     {
         $language = $this->mappingService->getDefaultLanguage($this->context);
-        if ($language->getLocale()->getCode() === $this->mainLocale) {
+        if ($language === null) {
+            return;
+        }
+
+        $locale = $language->getLocale();
+        if ($locale === null || $locale->getCode() === $this->mainLocale) {
             return;
         }
 
@@ -473,9 +495,11 @@ abstract class CustomerConverter extends ShopwareConverter
         $this->mappingIds[] = $mapping['id'];
 
         $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);
-        $localeTranslation['languageId'] = $languageUuid;
 
-        $country['translations'][$languageUuid] = $localeTranslation;
+        if ($languageUuid !== null) {
+            $localeTranslation['languageId'] = $languageUuid;
+            $country['translations'][$languageUuid] = $localeTranslation;
+        }
     }
 
     protected function getCountryState(array $oldStateData, array $newCountryData): array
@@ -503,7 +527,12 @@ abstract class CustomerConverter extends ShopwareConverter
     protected function getCountryStateTranslation(array &$state, array $data): void
     {
         $language = $this->mappingService->getDefaultLanguage($this->context);
-        if ($language->getLocale()->getCode() === $this->mainLocale) {
+        if ($language === null) {
+            return;
+        }
+
+        $locale = $language->getLocale();
+        if ($locale === null || $locale->getCode() === $this->mainLocale) {
             return;
         }
 
@@ -518,16 +547,17 @@ abstract class CustomerConverter extends ShopwareConverter
             $data['id'] . ':' . $this->mainLocale,
             $this->context
         );
-        $translation['id'] = $mapping['entityUuid'];
         $this->mappingIds[] = $mapping['id'];
 
         $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);
-        $localeTranslation['languageId'] = $languageUuid;
 
-        $state['translations'][$languageUuid] = $localeTranslation;
+        if ($languageUuid !== null) {
+            $localeTranslation['languageId'] = $languageUuid;
+            $state['translations'][$languageUuid] = $localeTranslation;
+        }
     }
 
-    protected function checkUnsetDefaultShippingAndDefaultBillingAddress(array &$originalData, array &$converted, string $customerUuid, $addresses): void
+    protected function checkUnsetDefaultShippingAndDefaultBillingAddress(array &$originalData, array &$converted, string $customerUuid, array $addresses): void
     {
         if (!isset($converted['defaultBillingAddressId']) && !isset($converted['defaultShippingAddressId'])) {
             $converted['defaultBillingAddressId'] = $addresses[0]['id'];

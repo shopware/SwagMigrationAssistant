@@ -15,6 +15,16 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 abstract class AttributeConverter extends Converter
 {
+    /**
+     * @var string
+     */
+    protected $connectionId;
+
+    /**
+     * @var string
+     */
+    protected $connectionName;
+
     public function getSourceIdentifier(array $data): string
     {
         return $data['name'];
@@ -25,8 +35,16 @@ abstract class AttributeConverter extends Converter
         $this->generateChecksum($data);
         $converted = [];
 
+        $connection = $migrationContext->getConnection();
+        $this->connectionId = '';
+        $this->connectionName = '';
+        if ($connection !== null) {
+            $this->connectionId = $connection->getId();
+            $this->connectionName = $connection->getName();
+        }
+
         $mapping = $this->mappingService->getOrCreateMapping(
-            $migrationContext->getConnection()->getId(),
+            $this->connectionId,
             DefaultEntities::CUSTOM_FIELD_SET,
             $this->getCustomFieldEntityName() . 'CustomFieldSet',
             $context
@@ -34,7 +52,7 @@ abstract class AttributeConverter extends Converter
         $converted['id'] = $mapping['entityUuid'];
         $this->mappingIds[] = $mapping['id'];
 
-        $connectionName = $migrationContext->getConnection()->getName();
+        $connectionName = $this->connectionName;
         $connectionName = str_replace(' ', '', $connectionName);
         $connectionName = preg_replace('/[^A-Za-z0-9\-]/', '', $connectionName);
 
@@ -46,7 +64,7 @@ abstract class AttributeConverter extends Converter
             'translated' => true,
         ];
         $mapping = $this->mappingService->getOrCreateMapping(
-            $migrationContext->getConnection()->getId(),
+            $this->connectionId,
             DefaultEntities::CUSTOM_FIELD_SET_RELATION,
             $this->getCustomFieldEntityName() . 'CustomFieldSetRelation',
             $context
@@ -61,7 +79,7 @@ abstract class AttributeConverter extends Converter
         ];
 
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
-            $migrationContext->getConnection()->getId(),
+            $this->connectionId,
             $migrationContext->getDataSet()::getEntity(),
             $data['name'],
             $context,

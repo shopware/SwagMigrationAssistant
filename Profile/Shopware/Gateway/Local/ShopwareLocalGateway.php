@@ -93,6 +93,19 @@ class ShopwareLocalGateway implements ShopwareGatewayInterface
         $connection = $this->connectionFactory->createDatabaseConnection($migrationContext);
         $profile = $migrationContext->getProfile();
 
+        if ($connection === null) {
+            $error = new DatabaseConnectionException();
+
+            return new EnvironmentInformation(
+                $profile->getSourceSystemName(),
+                $profile->getVersion(),
+                '-',
+                [],
+                [],
+                new RequestStatusStruct($error->getErrorCode(), $error->getMessage())
+            );
+        }
+
         try {
             $connection->connect();
         } catch (\Exception $e) {
@@ -139,6 +152,11 @@ class ShopwareLocalGateway implements ShopwareGatewayInterface
         $totals = [];
         foreach ($readers as $reader) {
             $total = $reader->readTotal($migrationContext);
+
+            if ($total === null) {
+                continue;
+            }
+
             $totals[$total->getEntityName()] = $total;
         }
 
