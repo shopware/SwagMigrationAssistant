@@ -114,10 +114,6 @@ class MigrationProgressService implements MigrationProgressServiceInterface
         // Compare fetched counts
         $compareFetchCountResult = $this->compareFetchCount($run, $totals, $fetchedEntityCounts);
         if ($compareFetchCountResult !== null) {
-            if ($this->validMigrationAccessToken) {
-                $this->abortProcessingRun($run, $context);
-            }
-
             return $compareFetchCountResult;
         }
 
@@ -269,29 +265,85 @@ class MigrationProgressService implements MigrationProgressServiceInterface
      */
     private function compareFetchCount(SwagMigrationRunEntity $run, array $totals, array $fetchedEntityCounts): ?ProgressState
     {
-        foreach ($totals as $entity => $count) {
+        $entryCount = count($totals);
+        $maxKey = $entryCount - 1;
+        $totalsWithoutIndex = array_values($totals);
+        $keysOfTotal = array_keys($totals);
+
+        if ($entryCount === 0) {
+            return null;
+        }
+
+        for ($currentKey = $maxKey; $currentKey > 0; --$currentKey) {
+            $count = $totalsWithoutIndex[$currentKey];
+            $entity = $keysOfTotal[$currentKey];
+
             if ($count === 0) {
                 continue;
             }
 
             if (!isset($fetchedEntityCounts[$entity])
-                || (isset($fetchedEntityCounts[$entity]) && $fetchedEntityCounts[$entity] < $count)
+                || (isset($fetchedEntityCounts[$entity]) && $fetchedEntityCounts[$entity] === 0)
             ) {
-                return new ProgressState(
-                    false,
-                    $this->validMigrationAccessToken,
-                    $run->getId(),
-                    null,
-                    ProgressState::STATUS_FETCH_DATA,
-                    null,
-                    0,
-                    0,
-                    $run->getProgress()
-                );
+                continue;
             }
+
+            if ($fetchedEntityCounts[$entity] === $count && $currentKey === $maxKey) {
+                return null;
+            }
+
+            if ($fetchedEntityCounts[$entity] === $count) {
+                ++$currentKey;
+                if ($currentKey > $maxKey) {
+                    $currentKey = $maxKey;
+                }
+
+                $count = $totalsWithoutIndex[$currentKey];
+                $entity = $keysOfTotal[$currentKey];
+            }
+
+            $finishCount = $fetchedEntityCounts[$entity] ?? 0;
+
+            $progressState = new ProgressState(
+                true,
+                $this->validMigrationAccessToken,
+                $run->getId(),
+                null,
+                ProgressState::STATUS_FETCH_DATA,
+                $entity,
+                $finishCount,
+                $count,
+                $run->getProgress()
+            );
+            $runProgress = $run->getProgress();
+
+            $runProgress = $this->validateEntityGroupCounts($runProgress, $fetchedEntityCounts, $totals);
+            $progressState->setRunProgress($runProgress);
+
+            return $progressState;
         }
 
-        return null;
+        $count = $totalsWithoutIndex[0];
+        $entity = $keysOfTotal[0];
+        $finishCount = $fetchedEntityCounts[0] ?? 0;
+
+        $progressState = new ProgressState(
+            true,
+            $this->validMigrationAccessToken,
+            $run->getId(),
+            null,
+            ProgressState::STATUS_FETCH_DATA,
+            $entity,
+            $finishCount,
+            $count,
+            $run->getProgress()
+        );
+        $runProgress = $run->getProgress();
+
+        $runProgress = $this->validateEntityGroupCounts($runProgress, $fetchedEntityCounts, $totals);
+        $progressState->setRunProgress($runProgress);
+
+        return $progressState;
     }
 
     /**
