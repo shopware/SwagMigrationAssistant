@@ -1,3 +1,6 @@
+# REPLACE-GLOBAL-WITH-NEXT-VERSION
+- PT-11617 - Fix error with too many open database connections
+
 # 1.2.2
 - NTR - Fixes an issue with the layout when resetting the checksums
 

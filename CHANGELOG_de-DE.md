@@ -1,3 +1,6 @@
+# REPLACE-GLOBAL-WITH-NEXT-VERSION
+- PT-11617 - Behebt ein Problem mit zu vielen offenen Datenbankverbindungen per CLI
+
 # 1.2.2
 - NTR - Behebt ein Problem mit dem Layout beim Zurücksetzen der Checksummen
 

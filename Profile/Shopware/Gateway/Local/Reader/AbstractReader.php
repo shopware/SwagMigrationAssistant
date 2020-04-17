@@ -44,6 +44,10 @@ abstract class AbstractReader implements ReaderInterface
 
     protected function setConnection(MigrationContextInterface $migrationContext): void
     {
+        if ($this->connection instanceof Connection && $this->connection->isConnected()) {
+            return;
+        }
+
         $this->connection = $this->connectionFactory->createDatabaseConnection($migrationContext);
     }
 
