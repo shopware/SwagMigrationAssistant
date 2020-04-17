@@ -160,13 +160,13 @@ class MigrateDataCommand extends Command
         $run = $this->migrationRunRepo->search(new Criteria([$progressState->getRunId()]), $context)->first();
 
         if ($run === null) {
-            throw new \InvalidArgumentException('Migration run could not created.');
+            throw new \InvalidArgumentException('Migration run could not be created.');
         }
 
         $migrationContext = $this->migrationContextFactory->create($run);
 
         if ($migrationContext === null) {
-            throw new \InvalidArgumentException('Migration context could not created.');
+            throw new \InvalidArgumentException('Migration context could not be created.');
         }
 
         $this->generatePremapping($run, $context);
@@ -221,7 +221,7 @@ class MigrateDataCommand extends Command
                     );
 
                     if ($migrationContext === null) {
-                        throw new \InvalidArgumentException('Migration context could not created.');
+                        throw new \InvalidArgumentException('Migration context could not be created.');
                     }
 
                     $data = $this->migrationDataFetcher->fetchData($migrationContext, $context);
@@ -261,7 +261,7 @@ class MigrateDataCommand extends Command
                 );
 
                 if ($migrationContext === null) {
-                    throw new \InvalidArgumentException('Migration context could not created.');
+                    throw new \InvalidArgumentException('Migration context could not be created.');
                 }
 
                 $dataSet = $this->dataSetRegistry->getDataSet($migrationContext, $entityProgress['entityName']);
@@ -283,7 +283,7 @@ class MigrateDataCommand extends Command
                     );
 
                     if ($migrationContext === null) {
-                        throw new \InvalidArgumentException('Migration context could not created.');
+                        throw new \InvalidArgumentException('Migration context could not be created.');
                     }
 
                     $this->migrationDataWriter->writeData($migrationContext, $context);
@@ -320,7 +320,7 @@ class MigrateDataCommand extends Command
                         );
 
                         if ($migrationContext === null) {
-                            throw new \InvalidArgumentException('Migration context could not created.');
+                            throw new \InvalidArgumentException('Migration context could not be created.');
                         }
 
                         $this->processorService->processMediaFiles($migrationContext, $context, 5000);
@@ -339,7 +339,7 @@ class MigrateDataCommand extends Command
         $migrationContext = $this->migrationContextFactory->create($run);
 
         if ($migrationContext === null) {
-            throw new \InvalidArgumentException('Migration context could not created.');
+            throw new \InvalidArgumentException('Migration context could not be created.');
         }
 
         $premapping = $this->premappingService->generatePremapping($context, $migrationContext, $run);

@@ -9,6 +9,7 @@ namespace SwagMigrationAssistant\Controller;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Indexing\IndexerRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use SwagMigrationAssistant\Exception\EntityNotExistsException;
@@ -18,6 +19,7 @@ use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
 use SwagMigrationAssistant\Migration\Run\RunServiceInterface;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
+use SwagMigrationAssistant\Migration\Service\EntityPartialIndexerService;
 use SwagMigrationAssistant\Migration\Service\MediaFileProcessorServiceInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataConverterInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
@@ -73,6 +75,16 @@ class MigrationController extends AbstractController
      */
     private $migrationDataConverter;
 
+    /**
+     * @var EntityPartialIndexerService
+     */
+    private $entityPartialIndexerService;
+
+    /**
+     * @var IndexerRegistry
+     */
+    private $dbalPartialIndexerService;
+
     public function __construct(
         MigrationDataFetcherInterface $migrationDataFetcher,
         MigrationDataConverterInterface $migrationDataConverter,
@@ -81,7 +93,9 @@ class MigrationController extends AbstractController
         SwagMigrationAccessTokenService $accessTokenService,
         RunServiceInterface $runService,
         EntityRepositoryInterface $migrationRunRepo,
-        MigrationContextFactoryInterface $migrationContextFactory
+        MigrationContextFactoryInterface $migrationContextFactory,
+        EntityPartialIndexerService $indexerService,
+        IndexerRegistry $dbalPartialIndexerService
     ) {
         $this->migrationDataFetcher = $migrationDataFetcher;
         $this->migrationDataConverter = $migrationDataConverter;
@@ -91,6 +105,8 @@ class MigrationController extends AbstractController
         $this->runService = $runService;
         $this->migrationRunRepo = $migrationRunRepo;
         $this->migrationContextFactory = $migrationContextFactory;
+        $this->entityPartialIndexerService = $indexerService;
+        $this->dbalPartialIndexerService = $dbalPartialIndexerService;
     }
 
     /**
@@ -290,6 +306,42 @@ class MigrationController extends AbstractController
 
         return new JsonResponse([
             'validToken' => true,
+        ]);
+    }
+
+    /**
+     * @Route("/api/v{version}/_action/migration/indexing", name="api.action.migration.indexing", methods={"POST"})
+     */
+    public function indexing(Request $request): JsonResponse
+    {
+        $lastIndexer = $request->get('lastIndexer');
+        $offset = $request->get('offset');
+        $indexingType = $request->get('indexingType', 'entity');
+        $result = null;
+
+        if ($indexingType === 'entity') {
+            $offset = $request->request->get('offset');
+            $result = $this->entityPartialIndexerService->partial($lastIndexer, $offset);
+
+            if ($result === null) {
+                $indexingType = 'dbal';
+                $lastIndexer = null;
+                $offset = null;
+            }
+        }
+
+        if ($indexingType === 'dbal') {
+            $result = $this->dbalPartialIndexerService->partial($lastIndexer, $offset, new \DateTime());
+        }
+
+        if (!$result) {
+            return new JsonResponse(['done' => true]);
+        }
+
+        return new JsonResponse([
+            'lastIndexer' => $result->getIndexer(),
+            'offset' => $result->getOffset(),
+            'indexingType' => $indexingType,
         ]);
     }
 }

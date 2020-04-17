@@ -42,6 +42,9 @@ abstract class AbstractReader implements ReaderInterface
         return null;
     }
 
+    /**
+     * @psalm-suppress RedundantConditionGivenDocblockType
+     */
     protected function setConnection(MigrationContextInterface $migrationContext): void
     {
         if ($this->connection instanceof Connection && $this->connection->isConnected()) {
@@ -148,7 +151,7 @@ abstract class AbstractReader implements ReaderInterface
 
         $defaultShopLocale = '';
         if ($query instanceof ResultStatement) {
-            $defaultShopLocale = $query->fetchColumn();
+            $defaultShopLocale = (string) $query->fetchColumn();
         }
 
         return $defaultShopLocale;

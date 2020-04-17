@@ -543,7 +543,7 @@ class MigrationWorkerService {
             growl: false
         }).then((id) => {
             notificationId = id;
-            return this._migrationService.indexing();
+            return this._migrationIndexingWorker.start();
         }).then(() => {
             // indexing finished
             State.dispatch('notification/updateNotification', {

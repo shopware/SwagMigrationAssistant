@@ -56,5 +56,11 @@
             </errorLevel>
         </MoreSpecificImplementedParamType>
 
+        <DeprecatedClass>
+            <errorLevel type="info">
+                <file name="Controller/MigrationController.php" />
+            </errorLevel>
+        </DeprecatedClass>
+
     </issueHandlers>
 </psalm>
