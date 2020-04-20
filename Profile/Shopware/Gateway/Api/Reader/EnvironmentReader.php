@@ -50,6 +50,8 @@ class EnvironmentReader implements EnvironmentReaderInterface
         ];
 
         if ($this->client === null) {
+            $information['requestStatus'] = new RequestStatusStruct('SWAG-EMPTY-CREDENTIALS', 'Empty credentials');
+
             return $information;
         }
 
