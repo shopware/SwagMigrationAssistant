@@ -240,6 +240,26 @@ class StatusControllerTest extends TestCase
         ];
     }
 
+    public function testGetProfileInformation(): void
+    {
+        $request = new Request(['profileName' => 'shopware55', 'gatewayName' => 'local'], []);
+        $response = $this->controller->getProfileInformation($request);
+
+        static::assertInstanceOf(JsonResponse::class, $response);
+        $this->assertJSON($response->getContent());
+
+        $info = json_decode($response->getContent(), true);
+        static::assertArrayHasKey('profile', $info);
+        static::assertArrayHasKey('name', $info['profile']);
+        static::assertArrayHasKey('sourceSystemName', $info['profile']);
+        static::assertArrayHasKey('version', $info['profile']);
+        static::assertArrayHasKey('author', $info['profile']);
+        static::assertArrayHasKey('icon', $info['profile']);
+        static::assertArrayHasKey('gateway', $info);
+        static::assertArrayHasKey('name', $info['gateway']);
+        static::assertArrayHasKey('snippet', $info['gateway']);
+    }
+
     public function testGetProfiles(): void
     {
         $response = $this->controller->getProfiles();
