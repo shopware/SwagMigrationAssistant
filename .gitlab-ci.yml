@@ -29,6 +29,8 @@ PHP analyze:
         - name: mysql:5.7
           alias: mysql
     script:
+        - apt-get update && apt-get --assume-yes install mysql-client
+        - mysql -uroot -p"$MYSQL_ROOT_PASSWORD" --host mysql < $CI_PROJECT_DIR/development/custom/plugins/SwagMigrationAssistant/sw55.sql
         - ./psh.phar init
         - php bin/console plugin:install --activate SwagMigrationAssistant
         - cd $CI_PROJECT_DIR/development/custom/plugins/SwagMigrationAssistant

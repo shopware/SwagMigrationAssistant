@@ -26,7 +26,6 @@
             <exclude>
                 <directory suffix=".php">./Test</directory>
                 <directory suffix=".php">./Profile/Shopware/Gateway/Api/Reader</directory>
-                <directory suffix=".php">./Profile/Shopware/Gateway/Local/Reader</directory>
                 <directory suffix=".php">./vendor</directory>
                 <directory suffix=".php">./Core/Migration</directory>
 
