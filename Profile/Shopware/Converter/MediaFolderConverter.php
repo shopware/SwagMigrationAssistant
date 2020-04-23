@@ -117,7 +117,7 @@ abstract class MediaFolderConverter extends ShopwareConverter
             unset($data['setting']);
         } else {
             $converted['useParentConfiguration'] = true;
-            // will immediately be overriden by MediaConfigIndexer
+            // will immediately be overridden by MediaConfigIndexer
             $converted['configuration'] = [
                 'id' => Uuid::randomHex(),
             ];
