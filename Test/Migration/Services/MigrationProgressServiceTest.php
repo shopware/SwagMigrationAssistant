@@ -710,12 +710,12 @@ class MigrationProgressServiceTest extends TestCase
     {
         $runProgress = [];
         foreach ($this->runProgress as $currentProgress) {
-            $entites = $currentProgress->getEntities();
+            $entities = $currentProgress->getEntities();
             $currentProgress->setEntities([]);
             $currentProgress = $currentProgress->jsonSerialize();
 
             $serializedEntities = [];
-            foreach ($entites as $entity) {
+            foreach ($entities as $entity) {
                 $serializedEntities[] = $entity->jsonSerialize();
             }
             $currentProgress['entities'] = $serializedEntities;
