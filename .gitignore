@@ -4,3 +4,4 @@ coverage/
 vendor
 phpstan.neon
 *.hot-update.js
+Test/testData

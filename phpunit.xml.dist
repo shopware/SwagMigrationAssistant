@@ -11,6 +11,7 @@
         <env name="APP_DEBUG" value="1"/>
         <env name="APP_SECRET" value="s$cretf0rt3st"/>
         <env name="SHELL_VERBOSITY" value="-1"/>
+        <env name="SYMFONY_DEPRECATIONS_HELPER" value="weak" />
     </php>
 
     <testsuites>
@@ -26,7 +27,6 @@
             <exclude>
                 <directory suffix=".php">./Test</directory>
                 <directory suffix=".php">./Profile/Shopware/Gateway/Api/Reader</directory>
-                <directory suffix=".php">./Profile/Shopware/Gateway/Local/Reader</directory>
                 <directory suffix=".php">./vendor</directory>
                 <directory suffix=".php">./Core/Migration</directory>
 
