@@ -1,4 +1,5 @@
-# REPLACE-GLOBAL-WITH-NEXT-VERSION
+# 1.3.0
+- PT-11586 - Optimierte Produktmigration von Shopware 5
 - PT-11617 - Behebt ein Problem mit zu vielen offenen Datenbankverbindungen per CLI
 
 # 1.2.2
