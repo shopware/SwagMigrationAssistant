@@ -19,12 +19,12 @@ class ProgressState extends Struct
     public const STATUS_DOWNLOAD_DATA = 3;
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $runId;
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $accessToken;
 
@@ -44,7 +44,7 @@ class ProgressState extends Struct
     protected $status;
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $entity;
 
@@ -95,7 +95,7 @@ class ProgressState extends Struct
         return $this->validMigrationRunToken;
     }
 
-    public function getRunId(): string
+    public function getRunId(): ?string
     {
         return $this->runId;
     }
@@ -110,7 +110,7 @@ class ProgressState extends Struct
         return $this->status;
     }
 
-    public function getEntity(): string
+    public function getEntity(): ?string
     {
         return $this->entity;
     }

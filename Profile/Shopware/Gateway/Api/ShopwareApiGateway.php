@@ -120,7 +120,32 @@ class ShopwareApiGateway implements ShopwareGatewayInterface
         }
 
         $totals = $this->readTotals($migrationContext, $context);
-        $credentials = $migrationContext->getConnection()->getCredentialFields();
+
+        $connection = $migrationContext->getConnection();
+
+        if ($connection === null) {
+            return new EnvironmentInformation(
+                $profile->getSourceSystemName(),
+                $profile->getVersion(),
+                '',
+                [],
+                [],
+                null
+            );
+        }
+
+        $credentials = $connection->getCredentialFields();
+
+        if ($credentials === null) {
+            return new EnvironmentInformation(
+                $profile->getSourceSystemName(),
+                $profile->getVersion(),
+                '',
+                [],
+                [],
+                null
+            );
+        }
 
         $displayWarnings = [];
         if ($updateAvailable) {

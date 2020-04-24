@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Migration\Gateway\Reader;
 
+use SwagMigrationAssistant\Exception\MigrationContextPropertyMissingException;
 use SwagMigrationAssistant\Exception\ReaderNotFoundException;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
@@ -17,6 +18,9 @@ class ReaderRegistry implements ReaderRegistryInterface
      */
     private $readers;
 
+    /**
+     * @param ReaderInterface[] $readers
+     */
     public function __construct(iterable $readers)
     {
         $this->readers = $readers;
@@ -33,7 +37,12 @@ class ReaderRegistry implements ReaderRegistryInterface
             }
         }
 
-        throw new ReaderNotFoundException($migrationContext->getDataSet()::getEntity());
+        $dataSet = $migrationContext->getDataSet();
+        if ($dataSet === null) {
+            throw new MigrationContextPropertyMissingException('DataSet');
+        }
+
+        throw new ReaderNotFoundException($dataSet::getEntity());
     }
 
     /**

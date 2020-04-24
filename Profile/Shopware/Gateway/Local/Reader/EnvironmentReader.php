@@ -8,8 +8,8 @@
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Driver\ResultStatement;
 use Doctrine\DBAL\Query\QueryBuilder;
-use Doctrine\DBAL\Schema\Column;
 use SwagMigrationAssistant\Migration\Gateway\Reader\EnvironmentReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactoryInterface;
@@ -48,14 +48,19 @@ class EnvironmentReader implements EnvironmentReaderInterface
 
     protected function setConnection(MigrationContextInterface $migrationContext): void
     {
-        $this->connection = $this->connectionFactory->createDatabaseConnection($migrationContext);
+        $connection = $this->connectionFactory->createDatabaseConnection($migrationContext);
+
+        if ($connection === null) {
+            return;
+        }
+
+        $this->connection = $connection;
     }
 
     protected function addTableSelection(QueryBuilder $query, string $table, string $tableAlias): void
     {
         $columns = $this->connection->getSchemaManager()->listTableColumns($table);
 
-        /** @var Column $column */
         foreach ($columns as $column) {
             $selection = str_replace(
                 ['#tableAlias#', '#column#'],
@@ -67,28 +72,38 @@ class EnvironmentReader implements EnvironmentReaderInterface
         }
     }
 
-    protected function getDefaultCurrency()
+    protected function getDefaultCurrency(): string
     {
-        $query = $this->connection->createQueryBuilder();
-
-        return $query->select('currency')
+        $query = $this->connection->createQueryBuilder()
+            ->select('currency')
             ->from('s_core_currencies')
             ->where('standard = 1')
-            ->execute()
-            ->fetch(\PDO::FETCH_COLUMN);
+            ->execute();
+
+        $defaultCurrency = '';
+        if ($query instanceof ResultStatement) {
+            $defaultCurrency = (string) $query->fetchColumn();
+        }
+
+        return $defaultCurrency;
     }
 
-    protected function getDefaultShopLocale()
+    protected function getDefaultShopLocale(): string
     {
-        $query = $this->connection->createQueryBuilder();
-
-        return $query->select('locale.locale')
+        $query = $this->connection->createQueryBuilder()
+            ->select('locale.locale')
             ->from('s_core_locales', 'locale')
             ->innerJoin('locale', 's_core_shops', 'shop', 'locale.id = shop.locale_id')
             ->where('shop.default = 1')
             ->andWhere('shop.active = 1')
-            ->execute()
-            ->fetch(\PDO::FETCH_COLUMN);
+            ->execute();
+
+        $defaultShopLocale = '';
+        if ($query instanceof ResultStatement) {
+            $defaultShopLocale = (string) $query->fetchColumn();
+        }
+
+        return $defaultShopLocale;
     }
 
     protected function mapData(array $data, array $result = [], array $pathsToRemove = []): array
@@ -111,6 +126,9 @@ class EnvironmentReader implements EnvironmentReaderInterface
         return $result;
     }
 
+    /**
+     * @psalm-suppress MissingParamType
+     */
     private function buildArrayFromChunks(array &$array, array $path, string $fieldKey, $value): void
     {
         $key = array_shift($path);
@@ -129,14 +147,19 @@ class EnvironmentReader implements EnvironmentReaderInterface
 
     private function getHost(): string
     {
-        $query = $this->connection->createQueryBuilder();
-
-        return (string) $query->select('shop.host')
+        $query = $this->connection->createQueryBuilder()
+            ->select('shop.host')
             ->from('s_core_shops', 'shop')
             ->where('shop.default = 1')
             ->andWhere('shop.active = 1')
-            ->execute()
-            ->fetch(\PDO::FETCH_COLUMN);
+            ->execute();
+
+        $host = '';
+        if ($query instanceof ResultStatement) {
+            $host = (string) $query->fetchColumn();
+        }
+
+        return $host;
     }
 
     private function getAdditionalData(): array
@@ -152,7 +175,12 @@ class EnvironmentReader implements EnvironmentReaderInterface
 
         $query->orderBy('shop.main_id');
 
-        $fetchedShops = $query->execute()->fetchAll(\PDO::FETCH_GROUP | \PDO::FETCH_UNIQUE);
+        $query = $query->execute();
+        if (!($query instanceof ResultStatement)) {
+            return [];
+        }
+
+        $fetchedShops = $query->fetchAll(\PDO::FETCH_GROUP | \PDO::FETCH_UNIQUE);
         $shops = $this->mapData($fetchedShops, [], ['shop']);
 
         foreach ($shops as $key => &$shop) {

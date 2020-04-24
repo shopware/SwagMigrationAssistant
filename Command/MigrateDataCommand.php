@@ -158,7 +158,16 @@ class MigrateDataCommand extends Command
 
         /** @var SwagMigrationRunEntity|null $run */
         $run = $this->migrationRunRepo->search(new Criteria([$progressState->getRunId()]), $context)->first();
+
+        if ($run === null) {
+            throw new \InvalidArgumentException('Migration run could not be created.');
+        }
+
         $migrationContext = $this->migrationContextFactory->create($run);
+
+        if ($migrationContext === null) {
+            throw new \InvalidArgumentException('Migration context could not be created.');
+        }
 
         $this->generatePremapping($run, $context);
         $this->fetchData($progressState, $migrationContext, $run, $context);
@@ -169,6 +178,9 @@ class MigrateDataCommand extends Command
         return 0;
     }
 
+    /**
+     * @psalm-suppress PossiblyInvalidArgument
+     */
     private function checkOptions(InputInterface $input): void
     {
         $dataSelections = $input->getArgument('dataSelections');
@@ -208,6 +220,10 @@ class MigrateDataCommand extends Command
                         $dataSet::getEntity()
                     );
 
+                    if ($migrationContext === null) {
+                        throw new \InvalidArgumentException('Migration context could not be created.');
+                    }
+
                     $data = $this->migrationDataFetcher->fetchData($migrationContext, $context);
 
                     if (!empty($data)) {
@@ -244,6 +260,10 @@ class MigrateDataCommand extends Command
                     $entityProgress['entityName']
                 );
 
+                if ($migrationContext === null) {
+                    throw new \InvalidArgumentException('Migration context could not be created.');
+                }
+
                 $dataSet = $this->dataSetRegistry->getDataSet($migrationContext, $entityProgress['entityName']);
 
                 if ($entityProgress['total'] === 0) {
@@ -261,6 +281,10 @@ class MigrateDataCommand extends Command
                         100,
                         $dataSet::getEntity()
                     );
+
+                    if ($migrationContext === null) {
+                        throw new \InvalidArgumentException('Migration context could not be created.');
+                    }
 
                     $this->migrationDataWriter->writeData($migrationContext, $context);
 
@@ -295,6 +319,10 @@ class MigrateDataCommand extends Command
                             100
                         );
 
+                        if ($migrationContext === null) {
+                            throw new \InvalidArgumentException('Migration context could not be created.');
+                        }
+
                         $this->processorService->processMediaFiles($migrationContext, $context, 5000);
                         $entityProgress['currentCount'] += 100;
                     }
@@ -309,6 +337,10 @@ class MigrateDataCommand extends Command
     private function generatePremapping(SwagMigrationRunEntity $run, Context $context): void
     {
         $migrationContext = $this->migrationContextFactory->create($run);
+
+        if ($migrationContext === null) {
+            throw new \InvalidArgumentException('Migration context could not be created.');
+        }
 
         $premapping = $this->premappingService->generatePremapping($context, $migrationContext, $run);
 

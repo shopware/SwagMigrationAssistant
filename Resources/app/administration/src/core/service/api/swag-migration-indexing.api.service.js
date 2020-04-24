@@ -1,14 +1,14 @@
 const ApiService = Shopware.Classes.ApiService;
 
 class MigrationIndexingApiService extends ApiService {
-    constructor(httpClient, loginService, apiEndpoint = 'indexing') {
+    constructor(httpClient, loginService, apiEndpoint = 'migration') {
         super(httpClient, loginService, apiEndpoint);
         this.basicConfig = {
             timeout: 30000
         };
     }
 
-    indexing(lastIndexer = null, offset = null, timestamp = null, additionalHeaders = {}) {
+    indexing(lastIndexer = null, offset = null, timestamp = null, indexingType = null, additionalHeaders = {}) {
         const headers = this.getBasicHeaders(additionalHeaders);
 
         const params = {};
@@ -21,8 +21,11 @@ class MigrationIndexingApiService extends ApiService {
         if (timestamp !== null && timestamp !== undefined) {
             params.timestamp = timestamp;
         }
+        if (indexingType !== null && indexingType !== undefined) {
+            params.indexingType = indexingType;
+        }
 
-        return this.httpClient.post(`_action/${this.getApiBasePath()}`, params, {
+        return this.httpClient.post(`_action/${this.getApiBasePath()}/indexing`, params, {
             ...this.basicConfig,
             headers
         }).then((response) => {

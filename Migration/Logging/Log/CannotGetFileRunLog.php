@@ -27,12 +27,22 @@ class CannotGetFileRunLog extends BaseRunLogEntry
 
     public function getCode(): string
     {
-        return sprintf('SWAG_MIGRATION_CANNOT_GET_%s_FILE', mb_strtoupper($this->getEntity()));
+        $entity = $this->getEntity();
+        if ($entity === null) {
+            return 'SWAG_MIGRATION_CANNOT_GET_FILE';
+        }
+
+        return sprintf('SWAG_MIGRATION_CANNOT_GET_%s_FILE', mb_strtoupper($entity));
     }
 
     public function getTitle(): string
     {
-        return sprintf('The %s file cannot be downloaded / copied', $this->getEntity());
+        $entity = $this->getEntity();
+        if ($entity === null) {
+            return 'The file cannot be downloaded / copied';
+        }
+
+        return sprintf('The %s file cannot be downloaded / copied', $entity);
     }
 
     public function getParameters(): array

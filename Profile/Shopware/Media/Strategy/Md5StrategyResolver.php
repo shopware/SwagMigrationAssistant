@@ -22,7 +22,18 @@ class Md5StrategyResolver implements StrategyResolverInterface
 
     public function resolve(string $path, MigrationContextInterface $migrationContext): string
     {
-        $installationRoot = $migrationContext->getConnection()->getCredentialFields()['installationRoot'];
+        $connection = $migrationContext->getConnection();
+        if ($connection === null) {
+            return '';
+        }
+
+        $credentials = $connection->getCredentialFields();
+
+        if ($credentials === null) {
+            return '';
+        }
+
+        $installationRoot = $credentials['installationRoot'] ?? '';
         if (!$path || $this->isEncoded($path)) {
             return rtrim($installationRoot) . '/' . $this->substringPath($path);
         }
@@ -38,7 +49,7 @@ class Md5StrategyResolver implements StrategyResolverInterface
             return '';
         }
 
-        $realPath = array_slice(str_split($md5hash, 2), 0, 3);
+        $realPath = array_slice(mb_str_split($md5hash, 2, mb_internal_encoding()), 0, 3);
         $realPath = $pathElements[0] . '/' . $pathElements[1] . '/' . implode('/', $realPath) . '/' . $pathInfo['basename'];
 
         if (!$this->hasBlacklistParts($realPath)) {
@@ -87,7 +98,7 @@ class Md5StrategyResolver implements StrategyResolverInterface
 
     private function hasBlacklistParts(string $path): bool
     {
-        foreach (self::BLACKLIST as $key => $value) {
+        foreach (array_keys(self::BLACKLIST) as $key) {
             if (mb_strpos($path, $key) !== false) {
                 return true;
             }

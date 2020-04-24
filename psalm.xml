@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<psalm
+        autoloader="../../../vendor/autoload.php"
+        findUnusedVariablesAndParams="true"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="https://getpsalm.org/schema/config"
+        xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
+>
+    <projectFiles>
+        <directory name="."/>
+        <directory name="Test"/>
+        <ignoreFiles>
+            <directory name="../../../platform"/> <!-- prevents to check shopware -->
+            <directory name="Test/"/> <!-- excluded for now, should be reintegrated in the future -->
+            <directory name="vendor/"/>
+        </ignoreFiles>
+    </projectFiles>
+
+    <issueHandlers>
+        <!-- level 3 issues - slightly lazy code writing, but provably low false-negatives -->
+
+        <InternalMethod errorLevel="info"/>
+        <PropertyNotSetInConstructor errorLevel="info"/>
+        <MissingConstructor errorLevel="info"/>
+        <UnresolvableInclude errorLevel="info"/>
+
+        <UndefinedClass>
+            <errorLevel type="suppress">
+                <directory name="Profile"/>
+            </errorLevel>
+        </UndefinedClass>
+
+        <ImplementedReturnTypeMismatch>
+            <errorLevel type="suppress">
+                <file name="Migration/Setting/GeneralSettingCollection.php" />
+                <file name="Migration/Run/SwagMigrationRunCollection.php" />
+                <file name="Migration/Media/SwagMigrationMediaFileCollection.php" />
+                <file name="Migration/Mapping/SwagMigrationMappingCollection.php" />
+                <file name="Migration/Logging/SwagMigrationLoggingCollection.php" />
+                <file name="Migration/DataSelection/DataSelectionCollection.php" />
+                <file name="Migration/Data/SwagMigrationDataCollection.php" />
+                <file name="Migration/Connection/SwagMigrationConnectionCollection.php" />
+            </errorLevel>
+        </ImplementedReturnTypeMismatch>
+
+        <MoreSpecificImplementedParamType>
+            <errorLevel type="suppress">
+                <file name="Migration/Setting/GeneralSettingCollection.php" />
+                <file name="Migration/Run/SwagMigrationRunCollection.php" />
+                <file name="Migration/Media/SwagMigrationMediaFileCollection.php" />
+                <file name="Migration/Mapping/SwagMigrationMappingCollection.php" />
+                <file name="Migration/Logging/SwagMigrationLoggingCollection.php" />
+                <file name="Migration/DataSelection/DataSelectionCollection.php" />
+                <file name="Migration/Data/SwagMigrationDataCollection.php" />
+                <file name="Migration/Connection/SwagMigrationConnectionCollection.php" />
+            </errorLevel>
+        </MoreSpecificImplementedParamType>
+
+        <DeprecatedClass>
+            <errorLevel type="info">
+                <file name="Controller/MigrationController.php" />
+            </errorLevel>
+        </DeprecatedClass>
+
+    </issueHandlers>
+</psalm>

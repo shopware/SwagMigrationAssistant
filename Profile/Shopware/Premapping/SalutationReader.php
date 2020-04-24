@@ -87,7 +87,9 @@ class SalutationReader extends AbstractPremappingReader
             return [];
         }
 
+        $salutations = [];
         $salutations[] = explode(',', unserialize($result[0]['value'], ['allowed_classes' => false]));
+        $salutations = array_filter($salutations);
 
         if (empty($salutations)) {
             return [];

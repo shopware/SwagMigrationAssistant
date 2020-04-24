@@ -114,6 +114,19 @@ class HttpOrderDocumentProcessor implements MediaFileProcessorInterface
 
         //Do download requests and store the promises
         $client = $this->connectionFactory->createApiClient($migrationContext);
+
+        if ($client === null) {
+            $exception = new \Exception('Http client can not connect to server.');
+            $this->loggingService->addLogEntry(new ExceptionRunLog(
+                $runId,
+                DefaultEntities::ORDER_DOCUMENT,
+                $exception
+            ));
+            $this->loggingService->saveLogging($context);
+
+            return $workload;
+        }
+
         $promises = $this->doMediaDownloadRequests($media, $mappedWorkload, $client);
 
         // Wait for the requests to complete, even if some of them fail

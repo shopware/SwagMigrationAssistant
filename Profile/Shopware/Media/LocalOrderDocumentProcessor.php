@@ -103,6 +103,22 @@ class LocalOrderDocumentProcessor implements MediaFileProcessorInterface
         return $mediaSearchResult->getElements();
     }
 
+    private function getInstallationRoot(MigrationContextInterface $migrationContext): string
+    {
+        $connection = $migrationContext->getConnection();
+        if ($connection === null) {
+            return '';
+        }
+
+        $credentials = $connection->getCredentialFields();
+
+        if ($credentials === null) {
+            return '';
+        }
+
+        return $credentials['installationRoot'] ?? '';
+    }
+
     /**
      * @param MediaProcessWorkloadStruct[] $mappedWorkload
      *
@@ -114,11 +130,12 @@ class LocalOrderDocumentProcessor implements MediaFileProcessorInterface
         MigrationContextInterface $migrationContext,
         Context $context
     ): array {
+        $installationRoot = $this->getInstallationRoot($migrationContext);
         $processedMedia = [];
 
         /** @var SwagMigrationMediaFileEntity $mediaFile */
         foreach ($media as $mediaFile) {
-            $sourcePath = $migrationContext->getConnection()->getCredentialFields()['installationRoot'] . '/files/documents/' . $mediaFile->getFileName() . '.pdf';
+            $sourcePath = $installationRoot . '/files/documents/' . $mediaFile->getFileName() . '.pdf';
 
             if (!file_exists($sourcePath)) {
                 $mappedWorkload[$mediaFile->getMediaId()]->setState(MediaProcessWorkloadStruct::ERROR_STATE);

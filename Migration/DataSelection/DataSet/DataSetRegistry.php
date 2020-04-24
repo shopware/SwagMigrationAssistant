@@ -17,6 +17,9 @@ class DataSetRegistry implements DataSetRegistryInterface
      */
     private $dataSets;
 
+    /**
+     * @param DataSet[] $dataSets
+     */
     public function __construct(iterable $dataSets)
     {
         $this->dataSets = $dataSets;

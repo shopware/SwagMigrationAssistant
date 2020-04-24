@@ -86,9 +86,9 @@ class MigrationProgressService implements MigrationProgressServiceInterface
         $this->validMigrationAccessToken = $this->migrationAccessTokenService->validateMigrationAccessToken($run->getId(), $request, $context);
 
         // Get the current entity counts
-        $progress = [];
-        if ($run->getProgress()) {
-            $progress = $run->getProgress();
+        $progress = $run->getProgress();
+        if ($progress === null) {
+            $progress = [];
         }
         $totals = $this->getTotals($progress);
         $fetchedEntityCounts = $this->runService->calculateCurrentTotals($run->getId(), false, $context);
@@ -130,6 +130,11 @@ class MigrationProgressService implements MigrationProgressServiceInterface
             return $compareMediaDownloadCountResult;
         }
 
+        $progress = $run->getProgress();
+        if ($progress === null) {
+            $progress = [];
+        }
+
         return new ProgressState(
             false,
             $this->validMigrationAccessToken,
@@ -139,7 +144,7 @@ class MigrationProgressService implements MigrationProgressServiceInterface
             null,
             0,
             0,
-            $run->getProgress()
+            $progress
         );
     }
 
@@ -197,7 +202,12 @@ class MigrationProgressService implements MigrationProgressServiceInterface
     {
         $mappedCounts = [];
         foreach ($counts as $bucket) {
-            $mappedCounts[$bucket->getKey()] = $bucket->getCount();
+            $key = $bucket->getKey();
+            if ($key === null) {
+                continue;
+            }
+
+            $mappedCounts[$key] = $bucket->getCount();
         }
 
         return $mappedCounts;
@@ -206,6 +216,14 @@ class MigrationProgressService implements MigrationProgressServiceInterface
     private function buildEntityGroups(SwagMigrationRunEntity $run, ProgressState $state, array $finishedCount): ProgressState
     {
         $runProgress = $run->getProgress();
+
+        if ($runProgress === null) {
+            return new ProgressState(
+                false,
+                false,
+                $run->getId()
+            );
+        }
 
         if ($state->getStatus() === ProgressState::STATUS_WRITE_DATA) {
             // Get totalCounts for write (database totals does not have the total count for every entity in 'toBeWritten'!)
@@ -269,8 +287,9 @@ class MigrationProgressService implements MigrationProgressServiceInterface
         $maxKey = $entryCount - 1;
         $totalsWithoutIndex = array_values($totals);
         $keysOfTotal = array_keys($totals);
+        $runProgress = $run->getProgress();
 
-        if ($entryCount === 0) {
+        if ($entryCount === 0 || $runProgress === null) {
             return null;
         }
 
@@ -293,13 +312,13 @@ class MigrationProgressService implements MigrationProgressServiceInterface
             }
 
             if ($fetchedEntityCounts[$entity] === $count) {
-                ++$currentKey;
+                $key = ++$currentKey;
                 if ($currentKey > $maxKey) {
-                    $currentKey = $maxKey;
+                    $key = $maxKey;
                 }
 
-                $count = $totalsWithoutIndex[$currentKey];
-                $entity = $keysOfTotal[$currentKey];
+                $count = $totalsWithoutIndex[$key];
+                $entity = $keysOfTotal[$key];
             }
 
             $finishCount = $fetchedEntityCounts[$entity] ?? 0;
@@ -313,9 +332,8 @@ class MigrationProgressService implements MigrationProgressServiceInterface
                 $entity,
                 $finishCount,
                 $count,
-                $run->getProgress()
+                $runProgress
             );
-            $runProgress = $run->getProgress();
 
             $runProgress = $this->validateEntityGroupCounts($runProgress, $fetchedEntityCounts, $totals);
             $progressState->setRunProgress($runProgress);
@@ -336,9 +354,8 @@ class MigrationProgressService implements MigrationProgressServiceInterface
             $entity,
             $finishCount,
             $count,
-            $run->getProgress()
+            $runProgress
         );
-        $runProgress = $run->getProgress();
 
         $runProgress = $this->validateEntityGroupCounts($runProgress, $fetchedEntityCounts, $totals);
         $progressState->setRunProgress($runProgress);
@@ -351,6 +368,11 @@ class MigrationProgressService implements MigrationProgressServiceInterface
      */
     private function compareWrittenCount(SwagMigrationRunEntity $run, array $totals, array $writtenEntityCounts): ?ProgressState
     {
+        $progress = $run->getProgress();
+        if ($progress === null) {
+            return null;
+        }
+
         foreach ($totals as $entity => $count) {
             if ($count === 0
                 || (isset($writtenEntityCounts[$entity]) && $writtenEntityCounts[$entity] >= $count)
@@ -369,7 +391,7 @@ class MigrationProgressService implements MigrationProgressServiceInterface
                 $entity,
                 $finishCount,
                 $count,
-                $run->getProgress()
+                $progress
             );
 
             return $this->buildEntityGroups($run, $progressState, $writtenEntityCounts);
@@ -383,6 +405,11 @@ class MigrationProgressService implements MigrationProgressServiceInterface
      */
     private function compareMediaProcessedCount(SwagMigrationRunEntity $run): ?ProgressState
     {
+        $progress = $run->getProgress();
+        if ($progress === null) {
+            return null;
+        }
+
         $totalMediaFileCount = $this->getMediaFileCounts($run->getId(), false);
         $processedMediaFileCount = $this->getMediaFileCounts($run->getId());
 
@@ -396,7 +423,7 @@ class MigrationProgressService implements MigrationProgressServiceInterface
                 'media',
                 $processedMediaFileCount,
                 $totalMediaFileCount,
-                $run->getProgress()
+                $progress
             );
 
             return $this->buildEntityGroups($run, $progressState, ['media' => $processedMediaFileCount]);

@@ -33,12 +33,22 @@ class CannotConvertChildEntity extends BaseRunLogEntry
 
     public function getCode(): string
     {
-        return sprintf('SWAG_MIGRATION_CANNOT_CONVERT_CHILD_%s_ENTITY', mb_strtoupper($this->getEntity()));
+        $entity = $this->getEntity();
+        if ($entity === null) {
+            return 'SWAG_MIGRATION_CANNOT_CONVERT_CHILD_ENTITY';
+        }
+
+        return sprintf('SWAG_MIGRATION_CANNOT_CONVERT_CHILD_%s_ENTITY', mb_strtoupper($entity));
     }
 
     public function getTitle(): string
     {
-        return sprintf('The %s child entity could not be converted', $this->getEntity());
+        $entity = $this->getEntity();
+        if ($entity === null) {
+            return 'The child entity could not be converted';
+        }
+
+        return sprintf('The %s child entity could not be converted', $entity);
     }
 
     public function getParameters(): array

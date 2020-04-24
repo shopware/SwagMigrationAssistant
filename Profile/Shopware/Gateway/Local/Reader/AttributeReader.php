@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
+use Doctrine\DBAL\Driver\ResultStatement;
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Schema\ForeignKeyConstraint;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -29,14 +30,17 @@ abstract class AttributeReader extends AbstractReader
         $foreignKeys = $this->getTableForeignKeys($table);
         $columns = $this->cleanupColumns($columns, $foreignKeys);
 
-        $attributeConfiguration = $this->connection->createQueryBuilder()
+        $query = $this->connection->createQueryBuilder()
             ->select('config.column_name, config.*')
             ->from('s_attribute_configuration', 'config')
             ->where('config.table_name = :table')
             ->setParameter('table', $table)
-            ->execute()
-            ->fetchAll(\PDO::FETCH_GROUP | \PDO::FETCH_UNIQUE)
-        ;
+            ->execute();
+
+        $attributeConfiguration = [];
+        if ($query instanceof ResultStatement) {
+            $attributeConfiguration = $query->fetchAll(\PDO::FETCH_GROUP | \PDO::FETCH_UNIQUE);
+        }
 
         $sql = <<<SQL
 SELECT s.*, l.locale
@@ -60,8 +64,11 @@ SQL;
         // extract field translations and add them to config
         foreach ($attributeConfigTranslations as $translation) {
             $name = str_replace($table . '_', '', $translation['name']);
-            $field = mb_substr($translation['name'], mb_strrpos($translation['name'], '_') + 1);
-            $column = mb_substr($name, 0, mb_strrpos($name, '_'));
+            $nameStrPos = (int) mb_strrpos($name, '_');
+            $column = mb_substr($name, 0, $nameStrPos);
+
+            $translationStrPos = (int) mb_strrpos($translation['name'], '_');
+            $field = mb_substr($translation['name'], $translationStrPos + 1);
 
             if (!isset($attributeConfiguration[$column]['translations'][$field])) {
                 $attributeConfiguration[$column]['translations'][$field] = [];

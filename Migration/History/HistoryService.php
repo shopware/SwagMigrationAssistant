@@ -91,9 +91,7 @@ class HistoryService implements HistoryServiceInterface
         $cleanResult = [];
         foreach ($aggregateResult as $bucket) {
             $detailInformation = $this->extractBucketInformation($bucket);
-            if ($detailInformation !== null) {
-                $cleanResult[] = $detailInformation;
-            }
+            $cleanResult[] = $detailInformation;
         }
 
         return $cleanResult;
@@ -109,7 +107,9 @@ class HistoryService implements HistoryServiceInterface
         $run = $this->getMigrationRun($runUuid, $context);
 
         return function () use ($run, $runUuid, $offset, $total, $context): void {
-            printf('%s%s', $this->getPrefixLogInformation($run), PHP_EOL);
+            if ($run !== null) {
+                printf('%s%s', $this->getPrefixLogInformation($run), PHP_EOL);
+            }
 
             while ($offset < $total) {
                 /** @var SwagMigrationLoggingCollection $logChunk */
@@ -124,7 +124,9 @@ class HistoryService implements HistoryServiceInterface
                 $offset += self::LOG_FETCH_LIMIT;
             }
 
-            printf('%s%s%s', $this->getSuffixLogInformation($run), PHP_EOL, PHP_EOL);
+            if ($run !== null) {
+                printf('%s%s%s', $this->getSuffixLogInformation($run), PHP_EOL, PHP_EOL);
+            }
         };
     }
 
@@ -171,7 +173,7 @@ class HistoryService implements HistoryServiceInterface
         return $run[$runUuid];
     }
 
-    private function getLogChunk($runUuid, int $offset, $context): EntityCollection
+    private function getLogChunk(string $runUuid, int $offset, Context $context): EntityCollection
     {
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('runId', $runUuid));
@@ -184,6 +186,30 @@ class HistoryService implements HistoryServiceInterface
 
     private function getPrefixLogInformation(SwagMigrationRunEntity $run): string
     {
+        $connection = $run->getConnection();
+        $profileName = '-';
+        $gatewayName = '-';
+        $connectionName = '-';
+        if ($connection !== null) {
+            $connectionName = $connection->getName();
+            $profileName = $connection->getProfileName();
+            $gatewayName = $connection->getGatewayName();
+        }
+
+        $updatedAt = $run->getUpdatedAt();
+        if ($updatedAt !== null) {
+            $updatedAt = $updatedAt->format(self::LOG_TIME_FORMAT);
+        } else {
+            $updatedAt = '-';
+        }
+
+        $createdAt = $run->getCreatedAt();
+        if ($createdAt !== null) {
+            $createdAt = $createdAt->format(self::LOG_TIME_FORMAT);
+        } else {
+            $createdAt = '-';
+        }
+
         return sprintf(
             'Migration log generated at %s' . PHP_EOL
             . 'Run id: %s' . PHP_EOL
@@ -199,14 +225,14 @@ class HistoryService implements HistoryServiceInterface
             . '--------------------Log-entries---------------------' . PHP_EOL,
             date(self::LOG_TIME_FORMAT),
             $run->getId(),
-            $run->getStatus(),
-            $run->getCreatedAt()->format(self::LOG_TIME_FORMAT),
-            $run->getUpdatedAt() === null ? '-' : $run->getUpdatedAt()->format(self::LOG_TIME_FORMAT),
-            $run->getUserId(),
-            $run->getConnectionId(),
-            $run->getConnection()->getName(),
-            $run->getConnection()->getProfileName(),
-            $run->getConnection()->getGatewayName(),
+            $run->getStatus() ?? '-',
+            $createdAt,
+            $updatedAt,
+            $run->getUserId() ?? '-',
+            $run->getConnectionId() ?? '-',
+            $connectionName,
+            $profileName,
+            $gatewayName,
             $this->getFormattedSelectedData($run->getProgress())
         );
     }

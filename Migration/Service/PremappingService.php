@@ -13,7 +13,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\IdSearchResult;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -63,7 +62,13 @@ class PremappingService implements PremappingServiceInterface
 
     public function generatePremapping(Context $context, MigrationContextInterface $migrationContext, SwagMigrationRunEntity $run): array
     {
-        $dataSelectionIds = array_column($run->getProgress(), 'id');
+        $progress = $run->getProgress();
+
+        if ($progress === null) {
+            return [];
+        }
+
+        $dataSelectionIds = array_column($progress, 'id');
         $readers = $this->mappingReaderRegistry->getPremappingReaders($migrationContext, $dataSelectionIds);
 
         $preMapping = [];
@@ -80,6 +85,12 @@ class PremappingService implements PremappingServiceInterface
         $this->addPremappingToRun($context, $migrationContext, $premapping);
         $this->updateConnectionPremapping($context, $migrationContext, $premapping);
 
+        $connection = $migrationContext->getConnection();
+
+        if ($connection === null) {
+            return;
+        }
+
         foreach ($premapping as $item) {
             $entity = $item['entity'];
 
@@ -89,7 +100,7 @@ class PremappingService implements PremappingServiceInterface
 
                 if (Uuid::isValid($identifier)) {
                     $this->mappingService->pushMapping(
-                        $migrationContext->getConnection()->getId(),
+                        $connection->getId(),
                         $entity,
                         $id,
                         $identifier
@@ -98,7 +109,7 @@ class PremappingService implements PremappingServiceInterface
                 }
 
                 $this->mappingService->pushValueMapping(
-                    $migrationContext->getConnection()->getId(),
+                    $connection->getId(),
                     $entity,
                     $id,
                     $identifier
@@ -113,10 +124,16 @@ class PremappingService implements PremappingServiceInterface
     {
         $premapping = $this->updateConnectionPremappingStruct($migrationContext, $premapping);
 
+        $connection = $migrationContext->getConnection();
+
+        if ($connection === null) {
+            return;
+        }
+
         $this->connectionRepo->update(
             [
                 [
-                    'id' => $migrationContext->getConnection()->getId(),
+                    'id' => $connection->getId(),
                     'premapping' => $premapping,
                 ],
             ],
@@ -126,7 +143,13 @@ class PremappingService implements PremappingServiceInterface
 
     private function updateConnectionPremappingStruct(MigrationContextInterface $migrationContext, array $premapping): array
     {
-        $connectionPremapping = $migrationContext->getConnection()->getPremapping();
+        $connection = $migrationContext->getConnection();
+
+        if ($connection === null) {
+            return [];
+        }
+
+        $connectionPremapping = $connection->getPremapping();
 
         if ($connectionPremapping === null) {
             return $premapping;
@@ -182,7 +205,6 @@ class PremappingService implements PremappingServiceInterface
 
         $criteria = new Criteria();
         $criteria->addFilter(new MultiFilter(MultiFilter::CONNECTION_OR, $queries));
-        /** @var IdSearchResult $idSearchResult */
         $idSearchResult = $this->mappingRepo->searchIds($criteria, $context);
 
         return $idSearchResult->getIds();

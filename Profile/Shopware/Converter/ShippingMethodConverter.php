@@ -63,9 +63,14 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         $this->generateChecksum($data);
         $this->context = $context;
         $this->runId = $migrationContext->getRunUuid();
-        $this->connectionId = $migrationContext->getConnection()->getId();
         $this->oldShippingMethod = $data['id'];
         $this->mainLocale = $data['_locale'];
+
+        $connection = $migrationContext->getConnection();
+        $this->connectionId = '';
+        if ($connection !== null) {
+            $this->connectionId = $connection->getId();
+        }
 
         if (!isset($data['calculation'])
             || !array_key_exists($data['calculation'], self::CALCULATION_TYPE_MAPPING)
@@ -178,18 +183,24 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             $data['calculation_sql']
         );
 
-        if (empty($data)) {
-            $data = null;
+        $returnData = $data;
+        if (empty($returnData)) {
+            $returnData = null;
         }
         $this->updateMainMapping($migrationContext, $context);
 
-        return new ConvertStruct($converted, $data, $this->mainMapping['id']);
+        return new ConvertStruct($converted, $returnData, $this->mainMapping['id']);
     }
 
     protected function getShippingMethodTranslation(array &$shippingMethod, array $data): void
     {
         $language = $this->mappingService->getDefaultLanguage($this->context);
-        if ($language->getLocale()->getCode() === $this->mainLocale) {
+        if ($language === null) {
+            return;
+        }
+
+        $locale = $language->getLocale();
+        if ($locale === null || $locale->getCode() === $this->mainLocale) {
             return;
         }
 
@@ -210,9 +221,11 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         $this->mappingIds[] = $mapping['id'];
 
         $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);
-        $localeTranslation['languageId'] = $languageUuid;
 
-        $shippingMethod['translations'][$languageUuid] = $localeTranslation;
+        if ($languageUuid !== null) {
+            $localeTranslation['languageId'] = $languageUuid;
+            $shippingMethod['translations'][$languageUuid] = $localeTranslation;
+        }
     }
 
     protected function getCustomerGroupCalculationRule(array $data): array
@@ -538,6 +551,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
     {
         $convertedCosts = [];
         foreach ($shippingCosts as $key => $shippingCost) {
+            $key = (int) $key;
             $cost = [];
 
             $mapping = $this->mappingService->getOrCreateMapping(
@@ -552,7 +566,6 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             $cost['calculation'] = $calculationType;
             $cost['shippingMethodId'] = $this->oldShippingMethod;
 
-            $currencyUuid = null;
             if (isset($shippingCost['currencyShortName'])) {
                 $currencyMapping = $this->mappingService->getMapping(
                     $this->connectionId,

@@ -76,11 +76,17 @@ class ProcessMediaHandler extends AbstractMessageHandler
             throw new EntityNotExistsException(SwagMigrationRunEntity::class, $message->getRunId());
         }
 
-        if ($run->getConnection() === null) {
+        $connection = $run->getConnection();
+        if ($connection === null) {
             throw new EntityNotExistsException(SwagMigrationConnectionEntity::class, $message->getRunId());
         }
 
         $migrationContext = $this->migrationContextFactory->create($run, 0, 0, $message->getDataSet()::getEntity());
+
+        if ($migrationContext === null) {
+            throw new EntityNotExistsException(SwagMigrationConnectionEntity::class, $message->getRunId());
+        }
+
         $workload = [];
         foreach ($message->getMediaFileIds() as $mediaFileId) {
             $workload[] = new MediaProcessWorkloadStruct(
@@ -96,10 +102,10 @@ class ProcessMediaHandler extends AbstractMessageHandler
             $this->processFailures($context, $migrationContext, $processor, $workload, $message->getFileChunkByteSize());
         } catch (ProcessorNotFoundException $e) {
             $this->loggingService->addLogEntry(new ProcessorNotFoundLog(
-                $migrationContext->getRunUuid(),
-                $migrationContext->getDataSet()::getEntity(),
-                $migrationContext->getConnection()->getProfileName(),
-                $migrationContext->getConnection()->getGatewayName()
+                $message->getRunId(),
+                $message->getDataSet()::getEntity(),
+                $connection->getProfileName(),
+                $connection->getGatewayName()
             ));
 
             $this->loggingService->saveLogging($context);

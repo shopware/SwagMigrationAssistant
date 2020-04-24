@@ -507,11 +507,11 @@ class MigrationDataWriterTest extends TestCase
         );
         $data = $this->migrationDataFetcher->fetchData($userMigrationContext, $context);
         $this->migrationDataConverter->convert($data, $userMigrationContext, $context);
-        $this->clearCacheBefore();
+        $this->clearCacheData();
 
         $context->scope(Context::USER_SCOPE, function (Context $context) use ($userMigrationContext): void {
             $this->migrationDataWriter->writeData($userMigrationContext, $context);
-            $this->clearCacheBefore();
+            $this->clearCacheData();
         });
 
         // Add orders
@@ -529,13 +529,13 @@ class MigrationDataWriterTest extends TestCase
         // Get data before writing
         $data = $this->migrationDataFetcher->fetchData($migrationContext, $context);
         $this->migrationDataConverter->convert($data, $migrationContext, $context);
-        $this->clearCacheBefore();
+        $this->clearCacheData();
 
         $orderTotalBefore = $this->orderRepo->search($criteria, $context)->getTotal();
         // Get data after writing
         $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext): void {
             $this->migrationDataWriter->writeData($migrationContext, $context);
-            $this->clearCacheBefore();
+            $this->clearCacheData();
         });
         $orderTotalAfter = $this->orderRepo->search($criteria, $context)->getTotal();
 
@@ -604,7 +604,7 @@ class MigrationDataWriterTest extends TestCase
             250
         );
 
-        $this->clearCacheBefore();
+        $this->clearCacheData();
         $data = $this->migrationDataFetcher->fetchData($migrationContext, $context);
         $this->migrationDataConverter->convert($data, $migrationContext, $context);
 
@@ -790,7 +790,7 @@ class MigrationDataWriterTest extends TestCase
         $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::CATEGORY, '39', $this->context, Uuid::randomHex(), [], $categoryUuid);
 
         $this->mappingService->writeMapping($this->context);
-        $this->clearCacheBefore();
+        $this->clearCacheData();
     }
 
     private function getTranslationTotal(): int

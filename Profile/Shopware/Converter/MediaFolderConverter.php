@@ -42,11 +42,15 @@ abstract class MediaFolderConverter extends ShopwareConverter
     {
         $this->generateChecksum($data);
         $this->context = $context;
-        $this->connectionId = $migrationContext->getConnection()->getId();
         $this->mainLocale = $data['_locale'];
         $this->oldId = $data['id'];
-
         unset($data['_locale']);
+
+        $connection = $migrationContext->getConnection();
+        $this->connectionId = '';
+        if ($connection !== null) {
+            $this->connectionId = $connection->getId();
+        }
 
         $converted = [];
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
@@ -121,12 +125,13 @@ abstract class MediaFolderConverter extends ShopwareConverter
 
         unset($data['position'], $data['garbage_collectable']);
 
-        if (empty($data)) {
-            $data = null;
+        $returnData = $data;
+        if (empty($returnData)) {
+            $returnData = null;
         }
         $this->updateMainMapping($migrationContext, $context);
 
-        return new ConvertStruct($converted, $data, $this->mainMapping['id']);
+        return new ConvertStruct($converted, $returnData, $this->mainMapping['id']);
     }
 
     public function writeMapping(Context $context): void
@@ -155,6 +160,8 @@ abstract class MediaFolderConverter extends ShopwareConverter
             $configuration['mediaThumbnailSizes'] = [];
             foreach ($thumbnailSizes as $size) {
                 $currentSize = explode('x', $size);
+
+                $thumbnailSize = [];
                 $thumbnailSize['width'] = (int) $currentSize[0];
                 $thumbnailSize['height'] = (int) $currentSize[1];
 

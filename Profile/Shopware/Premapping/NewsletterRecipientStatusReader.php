@@ -47,11 +47,18 @@ class NewsletterRecipientStatusReader extends AbstractPremappingReader
 
     protected function fillConnectionPremappingValue(MigrationContextInterface $migrationContext): void
     {
-        if ($migrationContext->getConnection()->getPremapping() === null) {
+        $connection = $migrationContext->getConnection();
+        if ($connection === null) {
             return;
         }
 
-        foreach ($migrationContext->getConnection()->getPremapping() as $premapping) {
+        $mappingArray = $connection->getPremapping();
+
+        if ($mappingArray === null) {
+            return;
+        }
+
+        foreach ($mappingArray as $premapping) {
             if ($premapping['entity'] !== self::MAPPING_NAME) {
                 continue;
             }
@@ -67,6 +74,7 @@ class NewsletterRecipientStatusReader extends AbstractPremappingReader
      */
     private function getMapping(): array
     {
+        $entityData = [];
         $entityData[] = new PremappingEntityStruct('default_newsletter_recipient_status', 'Standard newsletter status', $this->connectionPremappingValue);
 
         return $entityData;
@@ -77,6 +85,7 @@ class NewsletterRecipientStatusReader extends AbstractPremappingReader
      */
     private function getChoices(): array
     {
+        $choices = [];
         $choices[] = new PremappingChoiceStruct('notSet', 'Not set');
         $choices[] = new PremappingChoiceStruct('optIn', 'OptIn');
         $choices[] = new PremappingChoiceStruct('optOut', 'OptOut');

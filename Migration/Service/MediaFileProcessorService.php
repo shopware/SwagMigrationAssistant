@@ -78,6 +78,9 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
             }
 
             if ($currentDataSet::getEntity() !== $mediaFile->getEntity()) {
+                /*
+                 * @psalm-suppress PossiblyNullArgument
+                 */
                 $this->addMessageToBus($migrationContext->getRunUuid(), $context, $fileChunkByteSize, $currentDataSet, $messageMediaUuids);
 
                 try {
@@ -102,7 +105,7 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
             $currentCount = 0;
         }
 
-        if ($currentCount > 0) {
+        if ($currentCount > 0 && $currentDataSet !== null) {
             $this->addMessageToBus($migrationContext->getRunUuid(), $context, $fileChunkByteSize, $currentDataSet, $messageMediaUuids);
         }
 
@@ -137,12 +140,18 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
         MigrationContextInterface $migrationContext,
         SwagMigrationMediaFileEntity $mediaFile
     ): void {
+        $connection = $migrationContext->getConnection();
+
+        if ($connection === null) {
+            return;
+        }
+
         $this->loggingService->addLogEntry(
             new DataSetNotFoundLog(
                 $migrationContext->getRunUuid(),
                 $mediaFile->getEntity(),
                 $mediaFile->getId(),
-                $migrationContext->getConnection()->getProfileName()
+                $connection->getProfileName()
             )
         );
     }

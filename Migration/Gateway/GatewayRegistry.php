@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Migration\Gateway;
 
 use SwagMigrationAssistant\Exception\GatewayNotFoundException;
+use SwagMigrationAssistant\Exception\MigrationContextPropertyMissingException;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 class GatewayRegistry implements GatewayRegistryInterface
@@ -17,6 +18,9 @@ class GatewayRegistry implements GatewayRegistryInterface
      */
     private $gateways;
 
+    /**
+     * @param GatewayInterface[] $gateways
+     */
     public function __construct(iterable $gateways)
     {
         $this->gateways = $gateways;
@@ -24,6 +28,8 @@ class GatewayRegistry implements GatewayRegistryInterface
 
     /**
      * @throws GatewayNotFoundException
+     *
+     * @return GatewayInterface[]
      */
     public function getGateways(MigrationContextInterface $migrationContext): array
     {
@@ -42,8 +48,13 @@ class GatewayRegistry implements GatewayRegistryInterface
      */
     public function getGateway(MigrationContextInterface $migrationContext): GatewayInterface
     {
-        $profileName = $migrationContext->getConnection()->getProfileName();
-        $gatewayName = $migrationContext->getConnection()->getGatewayName();
+        $connection = $migrationContext->getConnection();
+        if ($connection === null) {
+            throw new MigrationContextPropertyMissingException('Connection');
+        }
+
+        $profileName = $connection->getProfileName();
+        $gatewayName = $connection->getGatewayName();
 
         foreach ($this->gateways as $gateway) {
             if ($gateway->supports($migrationContext) && $gateway->getName() === $gatewayName) {

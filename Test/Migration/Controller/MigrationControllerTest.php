@@ -11,6 +11,7 @@ use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Indexing\IndexerRegistryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Indexing\MessageQueue\IndexerMessageSender;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\Store\Services\StoreService;
@@ -39,6 +40,7 @@ use SwagMigrationAssistant\Migration\Profile\ProfileRegistry;
 use SwagMigrationAssistant\Migration\Profile\ProfileRegistryInterface;
 use SwagMigrationAssistant\Migration\Run\RunService;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
+use SwagMigrationAssistant\Migration\Service\EntityPartialIndexerService;
 use SwagMigrationAssistant\Migration\Service\MigrationDataWriter;
 use SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
@@ -249,7 +251,9 @@ class MigrationControllerTest extends TestCase
                 $this->getContainer()->get(StoreService::class)
             ),
             $this->runRepo,
-            $this->migrationContextFactory
+            $this->migrationContextFactory,
+            $this->getContainer()->get(EntityPartialIndexerService::class),
+            $this->getContainer()->get(IndexerRegistryInterface::class)
         );
     }
 

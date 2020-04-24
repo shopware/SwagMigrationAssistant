@@ -289,7 +289,6 @@ class StatusController extends AbstractController
     {
         $connectionId = $request->request->get('connectionId');
         $dataSelectionIds = $request->request->get('dataSelectionIds');
-        $state = null;
 
         if ($connectionId === null) {
             throw new MigrationContextPropertyMissingException('connectionId');
@@ -297,6 +296,10 @@ class StatusController extends AbstractController
 
         /** @var SwagMigrationConnectionEntity|null $connection */
         $connection = $this->migrationConnectionRepo->search(new Criteria([$connectionId]), $context)->first();
+
+        if ($connection === null) {
+            throw new MigrationContextPropertyMissingException('connectionId');
+        }
 
         if (empty($dataSelectionIds)) {
             throw new MigrationContextPropertyMissingException('dataSelectionIds');

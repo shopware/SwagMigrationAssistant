@@ -21,8 +21,14 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 class MediaFileService implements MediaFileServiceInterface
 {
+    /**
+     * @var array
+     */
     protected $writeArray = [];
 
+    /**
+     * @var array
+     */
     protected $uuids = [];
 
     /**
@@ -98,6 +104,9 @@ class MediaFileService implements MediaFileServiceInterface
         $this->saveWrittenFlag($mediaUuids, $migrationContext, $context);
     }
 
+    /**
+     * @psalm-suppress TypeDoesNotContainType
+     */
     private function checkMediaIdsForDuplicates(Context $context): void
     {
         if (empty($this->writeArray)) {
@@ -116,7 +125,7 @@ class MediaFileService implements MediaFileServiceInterface
             $mediaIds[] = $mediaFile['mediaId'];
         }
 
-        if (empty($mediaIds)) {
+        if ($mediaIds === []) {
             return;
         }
 

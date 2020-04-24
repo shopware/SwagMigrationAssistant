@@ -137,6 +137,8 @@
             <argument type="service" id="SwagMigrationAssistant\Migration\Run\RunService"/>
             <argument type="service" id="swag_migration_run.repository"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\MigrationContextFactory"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Service\EntityPartialIndexerService"/>
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Indexing\IndexerRegistryInterface"/>
         </service>
 
         <service id="SwagMigrationAssistant\Controller\PremappingController" public="true">
@@ -202,6 +204,10 @@
             <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\MigrationContextFactory"/>
             <tag name="messenger.message_handler"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Migration\Service\EntityPartialIndexerService">
+            <argument type="tagged" tag="shopware.entity_indexer"/>
         </service>
     </services>
 </container>

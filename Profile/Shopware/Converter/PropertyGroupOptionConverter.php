@@ -80,7 +80,12 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         $this->context = $context;
         $this->locale = $data['_locale'];
         $this->runId = $migrationContext->getRunUuid();
-        $this->connectionId = $migrationContext->getConnection()->getId();
+
+        $connection = $migrationContext->getConnection();
+        $this->connectionId = '';
+        if ($connection !== null) {
+            $this->connectionId = $connection->getId();
+        }
 
         if (!isset($data['group']['name'])) {
             $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
@@ -125,9 +130,14 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         $this->getTranslation($data, $converted);
         $this->updateMainMapping($migrationContext, $context);
 
-        return new ConvertStruct($converted, null, $this->mainMapping['id']);
+        $mainMapping = $this->mainMapping['id'] ?? null;
+
+        return new ConvertStruct($converted, null, $mainMapping);
     }
 
+    /**
+     * @psalm-suppress PossiblyInvalidArgument
+     */
     protected function getMedia(array &$converted, array $data): void
     {
         if (!isset($data['media']['id'])) {
@@ -167,6 +177,7 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         );
 
         $this->getMediaTranslation($newMedia, $data);
+
         $this->convertValue($newMedia, 'name', $data['media'], 'name');
         $this->convertValue($newMedia, 'description', $data['media'], 'description');
 
@@ -189,7 +200,12 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
     protected function getMediaTranslation(array &$media, array $data): void
     {
         $language = $this->mappingService->getDefaultLanguage($this->context);
-        if ($language->getLocale()->getCode() === $this->locale) {
+        if ($language === null) {
+            return;
+        }
+
+        $locale = $language->getLocale();
+        if ($locale === null || $locale->getCode() === $this->locale) {
             return;
         }
 
@@ -208,9 +224,11 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         $this->mappingIds[] = $mapping['id'];
 
         $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->locale, $this->context);
-        $localeTranslation['languageId'] = $languageUuid;
 
-        $media['translations'][$languageUuid] = $localeTranslation;
+        if ($languageUuid !== null) {
+            $localeTranslation['languageId'] = $languageUuid;
+            $media['translations'][$languageUuid] = $localeTranslation;
+        }
     }
 
     protected function createAndDeleteNecessaryMappings(array $data, array $converted): void
@@ -254,11 +272,17 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         $this->mappingIds[] = $mapping['id'];
     }
 
+    /**
+     * @psalm-suppress TypeDoesNotContainType
+     */
     protected function getTranslation(array &$data, array &$converted): void
     {
         $language = $this->mappingService->getDefaultLanguage($this->context);
-        $defaultLanguageUuid = $language->getId();
+        if ($language === null) {
+            return;
+        }
 
+        $defaultLanguageUuid = $language->getId();
         $converted['translations'][$defaultLanguageUuid] = [];
         $this->convertValue($converted['translations'][$defaultLanguageUuid], 'name', $data, 'name', self::TYPE_STRING);
         $this->convertValue($converted['translations'][$defaultLanguageUuid], 'position', $data, 'position', self::TYPE_INTEGER);

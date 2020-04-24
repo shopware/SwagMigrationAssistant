@@ -16,6 +16,9 @@ class WriterRegistry implements WriterRegistryInterface
      */
     private $writers;
 
+    /**
+     * @param WriterInterface[] $writers
+     */
     public function __construct(iterable $writers)
     {
         $this->writers = $writers;

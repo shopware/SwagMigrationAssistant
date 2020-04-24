@@ -17,6 +17,9 @@ class DataSelectionRegistry implements DataSelectionRegistryInterface
      */
     private $dataSelections;
 
+    /**
+     * @param DataSelectionInterface[] $dataSelections
+     */
     public function __construct(iterable $dataSelections)
     {
         $this->dataSelections = $dataSelections;

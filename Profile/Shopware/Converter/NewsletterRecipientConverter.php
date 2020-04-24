@@ -44,6 +44,9 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
      */
     protected $runId;
 
+    /**
+     * @var string[]
+     */
     protected $requiredDataFieldKeys = [
         '_locale',
         'shopId',
@@ -67,12 +70,17 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
 
             return new ConvertStruct(null, $data);
         }
-        $this->connectionId = $migrationContext->getConnection()->getId();
         $oldData = $data;
         $this->generateChecksum($data);
         $this->context = $context;
         $this->locale = $data['_locale'];
         unset($data['_locale']);
+
+        $connection = $migrationContext->getConnection();
+        $this->connectionId = '';
+        if ($connection !== null) {
+            $this->connectionId = $connection->getId();
+        }
 
         $converted = [];
         $this->oldNewsletterRecipientId = $data['id'];
@@ -136,12 +144,13 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
             $data['customer']
         );
 
-        if (empty($data)) {
-            $data = null;
+        $returnData = $data;
+        if (empty($returnData)) {
+            $returnData = null;
         }
         $this->updateMainMapping($migrationContext, $context);
 
-        return new ConvertStruct($converted, $data, $this->mainMapping['id']);
+        return new ConvertStruct($converted, $returnData, $this->mainMapping['id']);
     }
 
     protected function getSalutation(string $salutation): ?string

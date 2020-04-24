@@ -79,7 +79,12 @@ abstract class SalesChannelConverter extends ShopwareConverter
         $this->generateChecksum($data);
         $this->context = $context;
         $this->mainLocale = $data['_locale'];
-        $this->connectionId = $migrationContext->getConnection()->getId();
+
+        $connection = $migrationContext->getConnection();
+        $this->connectionId = '';
+        if ($connection !== null) {
+            $this->connectionId = $connection->getId();
+        }
 
         $converted = [];
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
@@ -250,18 +255,24 @@ abstract class SalesChannelConverter extends ShopwareConverter
             $data['children']
         );
 
-        if (empty($data)) {
-            $data = null;
+        $returnData = $data;
+        if (empty($returnData)) {
+            $returnData = null;
         }
         $this->updateMainMapping($migrationContext, $context);
 
-        return new ConvertStruct($converted, $data, $this->mainMapping['id']);
+        return new ConvertStruct($converted, $returnData, $this->mainMapping['id']);
     }
 
     protected function getSalesChannelTranslation(array &$salesChannel, array $data): void
     {
         $language = $this->mappingService->getDefaultLanguage($this->context);
-        if ($language->getLocale()->getCode() === $this->mainLocale) {
+        if ($language === null) {
+            return;
+        }
+
+        $locale = $language->getLocale();
+        if ($locale === null || $locale->getCode() === $this->mainLocale) {
             return;
         }
 
@@ -278,9 +289,11 @@ abstract class SalesChannelConverter extends ShopwareConverter
         $localeTranslation['id'] = $mapping['entityUuid'];
         $this->mappingIds[] = $mapping['id'];
         $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);
-        $localeTranslation['languageId'] = $languageUuid;
 
-        $salesChannel['translations'][$languageUuid] = $localeTranslation;
+        if ($languageUuid !== null) {
+            $localeTranslation['languageId'] = $languageUuid;
+            $salesChannel['translations'][$languageUuid] = $localeTranslation;
+        }
     }
 
     protected function getFirstActiveShippingMethodId(): string
@@ -289,7 +302,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
             ->setLimit(1)
             ->addFilter(new EqualsFilter('active', true));
 
-        return $this->shippingMethodRepo->searchIds($criteria, Context::createDefaultContext())->getIds()[0];
+        return $this->shippingMethodRepo->searchIds($criteria, Context::createDefaultContext())->firstId() ?? '';
     }
 
     protected function getFirstActivePaymentMethodId(): string
@@ -299,7 +312,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
             ->addFilter(new EqualsFilter('active', true))
             ->addSorting(new FieldSorting('position'));
 
-        return $this->paymentRepository->searchIds($criteria, Context::createDefaultContext())->getIds()[0];
+        return $this->paymentRepository->searchIds($criteria, Context::createDefaultContext())->firstId() ?? '';
     }
 
     protected function getFirstActiveCountryId(): string
@@ -309,7 +322,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
             ->addFilter(new EqualsFilter('active', true))
             ->addSorting(new FieldSorting('position'));
 
-        return $this->countryRepository->searchIds($criteria, Context::createDefaultContext())->getIds()[0];
+        return $this->countryRepository->searchIds($criteria, Context::createDefaultContext())->firstId() ?? '';
     }
 
     protected function filterExistingLanguageSalesChannelRelation(string $salesChannelUuid, array &$languageIds): void
@@ -331,6 +344,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
 
     protected function getSalesChannelLanguages(string $languageUuid, array $data, Context $context): array
     {
+        $languages = [];
         $languages[] = [
             'id' => $languageUuid,
         ];
@@ -358,6 +372,10 @@ abstract class SalesChannelConverter extends ShopwareConverter
 
     private function setRelationMappings(array $children): void
     {
+        if (!isset($this->mainMapping['entityUuid'])) {
+            return;
+        }
+
         foreach ($children as $shop) {
             $mapping = $this->mappingService->getOrCreateMapping(
                 $this->connectionId,

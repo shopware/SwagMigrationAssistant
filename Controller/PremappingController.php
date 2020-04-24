@@ -13,6 +13,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use SwagMigrationAssistant\Exception\EntityNotExistsException;
 use SwagMigrationAssistant\Exception\MigrationContextPropertyMissingException;
+use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationAssistant\Migration\Service\PremappingServiceInterface;
@@ -71,6 +72,10 @@ class PremappingController extends AbstractController
 
         $migrationContext = $this->migrationContextFactory->create($run);
 
+        if ($migrationContext === null) {
+            throw new EntityNotExistsException(MigrationContext::class, $runUuid);
+        }
+
         return new JsonResponse($this->premappingService->generatePremapping($context, $migrationContext, $run));
     }
 
@@ -98,6 +103,10 @@ class PremappingController extends AbstractController
         }
 
         $migrationContext = $this->migrationContextFactory->create($run);
+
+        if ($migrationContext === null) {
+            throw new EntityNotExistsException(MigrationContext::class, $runUuid);
+        }
 
         $this->premappingService->writePremapping($context, $migrationContext, $premapping);
 

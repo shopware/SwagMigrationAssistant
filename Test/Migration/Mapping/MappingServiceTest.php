@@ -113,7 +113,7 @@ class MappingServiceTest extends TestCase
         $mapping1 = $this->mappingService->getOrCreateMapping($this->connectionId, 'product', 'abc', $context);
 
         $this->mappingService->writeMapping($context);
-        $this->clearCacheBefore();
+        $this->clearCacheData();
 
         $newMappingService = new MappingService(
             $this->getContainer()->get('swag_migration_mapping.repository'),
@@ -185,7 +185,7 @@ class MappingServiceTest extends TestCase
 
         $languageMapping = $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::LANGUAGE, $localeCode, $context);
         $this->mappingService->writeMapping($context);
-        $this->clearCacheBefore();
+        $this->clearCacheData();
 
         $mapping = $this->mappingService->getMapping($this->connectionId, DefaultEntities::LANGUAGE, $localeCode, $context);
         static::assertSame($languageMapping['id'], $mapping['id']);

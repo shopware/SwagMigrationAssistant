@@ -61,6 +61,9 @@ abstract class ProductConverter extends ShopwareConverter
         'prices',
     ];
 
+    /**
+     * @var array
+     */
     protected $defaultValues = [
         'minPurchase' => 1,
         'purchaseSteps' => 1,
@@ -82,6 +85,11 @@ abstract class ProductConverter extends ShopwareConverter
      * @var string
      */
     protected $mainProductId;
+
+    /**
+     * @var string
+     */
+    protected $connectionName;
 
     public function __construct(
         MappingServiceInterface $mappingService,
@@ -132,10 +140,17 @@ abstract class ProductConverter extends ShopwareConverter
         $this->context = $context;
         $this->migrationContext = $migrationContext;
         $this->runId = $migrationContext->getRunUuid();
-        $this->connectionId = $migrationContext->getConnection()->getId();
         $this->oldProductId = $data['detail']['ordernumber'];
         $this->mainProductId = $data['detail']['articleID'];
         $this->locale = $data['_locale'];
+
+        $connection = $migrationContext->getConnection();
+        $this->connectionName = '';
+        $this->connectionId = '';
+        if ($connection !== null) {
+            $this->connectionId = $connection->getId();
+            $this->connectionName = $connection->getName();
+        }
 
         $fields = $this->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
         if (!empty($fields)) {
@@ -180,12 +195,15 @@ abstract class ProductConverter extends ShopwareConverter
             unset($data['detail']);
         }
 
-        if (empty($data)) {
-            $data = null;
+        $returnData = $data;
+        if (empty($returnData)) {
+            $returnData = null;
         }
         $this->updateMainMapping($migrationContext, $context);
 
-        return new ConvertStruct($converted, $data, $this->mainMapping['id']);
+        $mainMapping = $this->mainMapping['id'] ?? null;
+
+        return new ConvertStruct($converted, $returnData, $mainMapping);
     }
 
     protected function convertMainProduct(array $data): ConvertStruct
@@ -197,6 +215,8 @@ abstract class ProductConverter extends ShopwareConverter
             $this->context
         );
         $containerUuid = $containerMapping['entityUuid'];
+
+        $converted = [];
         $converted['id'] = $containerUuid;
         $this->mappingIds[] = $containerMapping['id'];
         unset($data['detail']['articleID']);
@@ -252,12 +272,13 @@ abstract class ProductConverter extends ShopwareConverter
             unset($data['detail']);
         }
 
-        if (empty($data)) {
-            $data = null;
+        $returnData = $data;
+        if (empty($returnData)) {
+            $returnData = null;
         }
         $this->updateMainMapping($this->migrationContext, $this->context);
 
-        return new ConvertStruct($converted, $data, $this->mainMapping['id']);
+        return new ConvertStruct($converted, $returnData, $this->mainMapping['id']);
     }
 
     /**
@@ -283,6 +304,8 @@ abstract class ProductConverter extends ShopwareConverter
             $this->context,
             $this->checksum
         );
+
+        $converted = [];
         $converted['id'] = $this->mainMapping['entityUuid'];
         $converted['parentId'] = $parentMapping['entityUuid'];
         $this->mappingIds[] = $parentMapping['id'];
@@ -293,12 +316,15 @@ abstract class ProductConverter extends ShopwareConverter
             unset($data['detail']);
         }
 
-        if (empty($data)) {
-            $data = null;
+        $returnData = $data;
+        if (empty($returnData)) {
+            $returnData = null;
         }
         $this->updateMainMapping($this->migrationContext, $this->context);
 
-        return new ConvertStruct($converted, $data, $this->mainMapping['id']);
+        $mainMapping = $this->mainMapping['id'] ?? null;
+
+        return new ConvertStruct($converted, $returnData, $mainMapping);
     }
 
     private function getUuidForProduct(array &$data): array
@@ -310,6 +336,8 @@ abstract class ProductConverter extends ShopwareConverter
             $this->context,
             $this->checksum
         );
+
+        $converted = [];
         $converted['id'] = $this->mainMapping['entityUuid'];
 
         $mapping = $this->mappingService->getOrCreateMapping(
@@ -326,6 +354,9 @@ abstract class ProductConverter extends ShopwareConverter
         return $converted;
     }
 
+    /**
+     * @psalm-suppress PossiblyInvalidArgument
+     */
     private function getProductData(array &$data, array $converted): array
     {
         if (isset($data['manufacturer'])) {
@@ -378,7 +409,7 @@ abstract class ProductConverter extends ShopwareConverter
         }
 
         if (isset($data['attributes'])) {
-            $converted['customFields'] = $this->getAttributes($data['attributes'], DefaultEntities::PRODUCT, $this->migrationContext->getConnection()->getName(), ['id', 'articleID', 'articledetailsID']);
+            $converted['customFields'] = $this->getAttributes($data['attributes'], DefaultEntities::PRODUCT, $this->connectionName, ['id', 'articleID', 'articledetailsID']);
         }
         unset($data['attributes']);
 
@@ -468,7 +499,7 @@ abstract class ProductConverter extends ShopwareConverter
         return $converted;
     }
 
-    private function getDeliveryTime($shippingTime): ?array
+    private function getDeliveryTime(string $shippingTime): ?array
     {
         $convertedDeliveryTime = [
             'min' => 0,
@@ -520,7 +551,7 @@ abstract class ProductConverter extends ShopwareConverter
         return null;
     }
 
-    private function getOptions(&$converted, &$data): void
+    private function getOptions(array &$converted, array &$data): void
     {
         if (
             !isset($data['configuratorOptions'])
@@ -531,10 +562,15 @@ abstract class ProductConverter extends ShopwareConverter
 
         $options = [];
 
-        $language = $this->mappingService->getDefaultLanguage($this->context);
         $shouldBeTranslated = true;
-        if ($language->getLocale()->getCode() === $this->locale) {
+        $language = $this->mappingService->getDefaultLanguage($this->context);
+        if ($language === null) {
             $shouldBeTranslated = false;
+        } else {
+            $locale = $language->getLocale();
+            if ($locale === null || $locale->getCode() === $this->locale) {
+                $shouldBeTranslated = false;
+            }
         }
 
         foreach ($data['configuratorOptions'] as $option) {
@@ -584,6 +620,7 @@ abstract class ProductConverter extends ShopwareConverter
             $data['id'],
             $this->context
         );
+        $manufacturer = [];
         $manufacturer['id'] = $mapping['entityUuid'];
         $this->mappingIds[] = $mapping['id'];
 
@@ -597,7 +634,7 @@ abstract class ProductConverter extends ShopwareConverter
         }
 
         if (isset($data['attributes'])) {
-            $manufacturer['customFields'] = $this->getAttributes($data['attributes'], DefaultEntities::PRODUCT_MANUFACTURER, $this->migrationContext->getConnection()->getName(), ['id', 'supplierID']);
+            $manufacturer['customFields'] = $this->getAttributes($data['attributes'], DefaultEntities::PRODUCT_MANUFACTURER, $this->connectionName, ['id', 'supplierID']);
         }
 
         return $manufacturer;
@@ -606,7 +643,12 @@ abstract class ProductConverter extends ShopwareConverter
     private function getManufacturerTranslation(array &$manufacturer, array $data): void
     {
         $language = $this->mappingService->getDefaultLanguage($this->context);
-        if ($language->getLocale()->getCode() === $this->locale) {
+        if ($language === null) {
+            return;
+        }
+
+        $locale = $language->getLocale();
+        if ($locale === null || $locale->getCode() === $this->locale) {
             return;
         }
 
@@ -626,9 +668,11 @@ abstract class ProductConverter extends ShopwareConverter
         $this->mappingIds[] = $mapping['id'];
 
         $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->locale, $this->context);
-        $localeTranslation['languageId'] = $languageUuid;
 
-        $manufacturer['translations'][$languageUuid] = $localeTranslation;
+        if ($languageUuid !== null) {
+            $localeTranslation['languageId'] = $languageUuid;
+            $manufacturer['translations'][$languageUuid] = $localeTranslation;
+        }
     }
 
     private function getTax(array $taxData): array
@@ -673,10 +717,15 @@ abstract class ProductConverter extends ShopwareConverter
         return $unit;
     }
 
-    private function getUnitTranslation(array &$unit, $data): void
+    private function getUnitTranslation(array &$unit, array $data): void
     {
         $language = $this->mappingService->getDefaultLanguage($this->context);
-        if ($language->getLocale()->getCode() === $this->locale) {
+        if ($language === null) {
+            return;
+        }
+
+        $locale = $language->getLocale();
+        if ($locale === null || $locale->getCode() === $this->locale) {
             return;
         }
 
@@ -695,9 +744,11 @@ abstract class ProductConverter extends ShopwareConverter
         $this->mappingIds[] = $mapping['id'];
 
         $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->locale, $this->context);
-        $localeTranslation['languageId'] = $languageUuid;
 
-        $unit['translations'][$languageUuid] = $localeTranslation;
+        if ($languageUuid !== null) {
+            $localeTranslation['languageId'] = $languageUuid;
+            $unit['translations'][$languageUuid] = $localeTranslation;
+        }
     }
 
     private function getMedia(array $media, string $oldVariantId, array $converted): array
@@ -784,7 +835,12 @@ abstract class ProductConverter extends ShopwareConverter
     private function getMediaTranslation(array &$media, array $data): void
     {
         $language = $this->mappingService->getDefaultLanguage($this->context);
-        if ($language->getLocale()->getCode() === $this->locale) {
+        if ($language === null) {
+            return;
+        }
+
+        $locale = $language->getLocale();
+        if ($locale === null || $locale->getCode() === $this->locale) {
             return;
         }
 
@@ -803,9 +859,11 @@ abstract class ProductConverter extends ShopwareConverter
         $this->mappingIds[] = $mapping['id'];
 
         $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->locale, $this->context);
-        $localeTranslation['languageId'] = $languageUuid;
 
-        $media['translations'][$languageUuid] = $localeTranslation;
+        if ($languageUuid !== null) {
+            $localeTranslation['languageId'] = $languageUuid;
+            $media['translations'][$languageUuid] = $localeTranslation;
+        }
     }
 
     private function getManufacturerMedia(array $media): array
@@ -816,6 +874,7 @@ abstract class ProductConverter extends ShopwareConverter
             $media['id'],
             $this->context
         );
+        $manufacturerMedia = [];
         $manufacturerMedia['id'] = $mapping['entityUuid'];
         $this->mappingIds[] = $mapping['id'];
 
@@ -882,15 +941,16 @@ abstract class ProductConverter extends ShopwareConverter
         $this->convertValue($localeGroupTranslation, 'name', $data['group'], 'name');
         $this->convertValue($localeGroupTranslation, 'description', $data['group'], 'description');
 
-        $option['translations'][$languageUuid] = $localeOptionTranslation;
-        $option['group']['translations'][$languageUuid] = $localeGroupTranslation;
+        if ($languageUuid !== null) {
+            $option['translations'][$languageUuid] = $localeOptionTranslation;
+            $option['group']['translations'][$languageUuid] = $localeGroupTranslation;
+        }
     }
 
     private function getPrice(array $priceData, float $taxRate): array
     {
         $gross = round((float) $priceData['price'] * (1 + $taxRate / 100), $this->context->getCurrencyPrecision());
 
-        $currencyUuid = null;
         if (isset($priceData['currencyShortName'])) {
             $currencyMapping = $this->mappingService->getMapping(
                 $this->connectionId,
@@ -1050,7 +1110,7 @@ abstract class ProductConverter extends ShopwareConverter
             ];
 
             if (isset($price['attributes'])) {
-                $data['customFields'] = $this->getAttributes($price, DefaultEntities::PRODUCT_PRICE, $this->migrationContext->getConnection()->getName(), ['id', 'priceID']);
+                $data['customFields'] = $this->getAttributes($price, DefaultEntities::PRODUCT_PRICE, $this->connectionName, ['id', 'priceID']);
             }
 
             $newData[] = $data;
@@ -1074,7 +1134,12 @@ abstract class ProductConverter extends ShopwareConverter
         }
 
         $language = $this->mappingService->getDefaultLanguage($this->context);
-        if ($language->getLocale()->getCode() === $this->locale) {
+        if ($language === null) {
+            return;
+        }
+
+        $locale = $language->getLocale();
+        if ($locale === null || $locale->getCode() === $this->locale) {
             return;
         }
 
@@ -1093,24 +1158,25 @@ abstract class ProductConverter extends ShopwareConverter
             $this->oldProductId . ':' . $this->locale,
             $this->context
         );
-        $defaultTranslation['id'] = $mapping['entityUuid'];
         $this->mappingIds[] = $mapping['id'];
 
         $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->locale, $this->context);
         $localeTranslation['languageId'] = $languageUuid;
 
         if (isset($data['attributes'])) {
-            $localeTranslation['customFields'] = $this->getAttributes($data['attributes'], DefaultEntities::PRODUCT, $this->migrationContext->getConnection()->getName(), ['id', 'articleID', 'articledetailsID']);
+            $localeTranslation['customFields'] = $this->getAttributes($data['attributes'], DefaultEntities::PRODUCT, $this->connectionName, ['id', 'articleID', 'articledetailsID']);
         }
 
-        $converted['translations'][$languageUuid] = $localeTranslation;
+        if ($languageUuid !== null) {
+            $converted['translations'][$languageUuid] = $localeTranslation;
+        }
     }
 
     private function getCategoryMapping(array $categories): array
     {
         $categoryMapping = [];
 
-        foreach ($categories as $key => $category) {
+        foreach ($categories as $category) {
             $mapping = $this->mappingService->getMapping(
                 $this->connectionId,
                 DefaultEntities::CATEGORY,

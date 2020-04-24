@@ -30,6 +30,10 @@ class TableReader implements TableReaderInterface
     {
         $client = $this->connectionFactory->createApiClient($migrationContext);
 
+        if ($client === null) {
+            return [];
+        }
+
         /** @var GuzzleResponse $result */
         $result = $client->get(
             'SwagMigrationDynamic',

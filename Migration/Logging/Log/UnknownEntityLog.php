@@ -33,12 +33,22 @@ class UnknownEntityLog extends BaseRunLogEntry
 
     public function getCode(): string
     {
-        return sprintf('SWAG_MIGRATION_%s_ENTITY_UNKNOWN', mb_strtoupper($this->getEntity()));
+        $entity = $this->getEntity();
+        if ($entity === null) {
+            return 'SWAG_MIGRATION_ENTITY_UNKNOWN';
+        }
+
+        return sprintf('SWAG_MIGRATION_%s_ENTITY_UNKNOWN', mb_strtoupper($entity));
     }
 
     public function getTitle(): string
     {
-        return sprintf('Cannot find %s', $this->getEntity());
+        $entity = $this->getEntity();
+        if ($entity === null) {
+            return 'Cannot find entity';
+        }
+
+        return sprintf('Cannot find %s', $entity);
     }
 
     public function getParameters(): array
