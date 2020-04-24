@@ -16,6 +16,8 @@ use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\PropertyGroupOptionDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55ProductConverter;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55ProductOptionRelationConverter;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55ProductPropertyRelationConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55PropertyGroupOptionConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
@@ -64,6 +66,16 @@ class PropertyGroupOptionConverterTest extends TestCase
      */
     private $productConverter;
 
+    /**
+     * @var Shopware55ProductOptionRelationConverter
+     */
+    private $optionRelationConverter;
+
+    /**
+     * @var Shopware55ProductPropertyRelationConverter
+     */
+    private $propertyRelationConverter;
+
     protected function setUp(): void
     {
         $this->context = Context::createDefaultContext();
@@ -81,6 +93,16 @@ class PropertyGroupOptionConverterTest extends TestCase
             $this->mappingService,
             $this->loggingService,
             $mediaFileService
+        );
+
+        $this->optionRelationConverter = new Shopware55ProductOptionRelationConverter(
+            $this->mappingService,
+            $this->loggingService
+        );
+
+        $this->propertyRelationConverter = new Shopware55ProductPropertyRelationConverter(
+            $this->mappingService,
+            $this->loggingService
         );
 
         $this->runId = Uuid::randomHex();
@@ -134,48 +156,114 @@ class PropertyGroupOptionConverterTest extends TestCase
         static::assertCount(0, $this->loggingService->getLoggingArray());
     }
 
-    public function testConvertWithDatasheetsAndProductConfigurators(): void
+    public function testConvertWithPropertiesAndProductConfigurators(): void
     {
-        $propertyData = require __DIR__ . '/../../../_fixtures/property_group_option_data.php';
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
+        $propertyData = require __DIR__ . '/../../../_fixtures/property_group_option_data.php';
+        $optionRelationData = require __DIR__ . '/../../../_fixtures/product_option_relation.php';
+        $propertyRelationData = require __DIR__ . '/../../../_fixtures/product_property_relation.php';
 
-        $mainProduct1 = $this->productConverter->convert($productData[5], $this->context, $this->migrationContext);
+        $mainProduct = $this->productConverter->convert($productData[5], $this->context, $this->migrationContext);
         $this->productConverter->convert($productData[22], $this->context, $this->migrationContext);
         $this->productConverter->convert($productData[23], $this->context, $this->migrationContext);
+        $convertedMainProduct = $mainProduct->getConverted();
 
-        $mainProduct2 = $this->productConverter->convert($productData[4], $this->context, $this->migrationContext);
-        $this->productConverter->convert($productData[14], $this->context, $this->migrationContext);
-        $this->productConverter->convert($productData[18], $this->context, $this->migrationContext);
-        $this->productConverter->convert($productData[19], $this->context, $this->migrationContext);
-        $this->productConverter->convert($productData[20], $this->context, $this->migrationContext);
+        $property0 = $this->propertyGroupOptionConverter->convert($propertyData[4], $this->context, $this->migrationContext);
+        $property1 = $this->propertyGroupOptionConverter->convert($propertyData[2], $this->context, $this->migrationContext);
+        $property2 = $this->propertyGroupOptionConverter->convert($propertyData[3], $this->context, $this->migrationContext);
 
-        $convertResult = $this->propertyGroupOptionConverter->convert($propertyData[0], $this->context, $this->migrationContext);
+        $iterater = 0;
+        foreach ($optionRelationData as &$relation) {
+            $relation['productId'] = $productData[5]['detail']['articleID'];
 
-        $converted = $convertResult->getConverted();
+            $convertedStruct = $this->optionRelationConverter->convert($relation, $this->context, $this->migrationContext);
+            $converted = $convertedStruct->getConverted();
 
-        static::assertNull($convertResult->getUnmapped());
-        static::assertArrayHasKey('id', $converted);
-        static::assertArrayHasKey('group', $converted);
-        static::assertArrayHasKey('translations', $converted);
+            static::assertSame($convertedMainProduct['id'], $converted['id']);
+            static::assertSame(${'property' . $iterater}->getConverted()['id'], $converted['configuratorSettings'][0]['optionId']);
 
-        static::assertArrayHasKey('productProperties', $converted);
-        static::assertArrayHasKey('productConfiguratorSettings', $converted);
+            ++$iterater;
+        }
 
-        static::assertSame($converted['productProperties'][0]['id'], $mainProduct1->getConverted()['id']);
-        static::assertSame($converted['productConfiguratorSettings'][0]['productId'], $mainProduct1->getConverted()['id']);
+        $iterater = 0;
+        foreach ($propertyRelationData as &$relation) {
+            $relation['productId'] = $productData[5]['detail']['articleID'];
 
-        static::assertSame($converted['productProperties'][1]['id'], $mainProduct2->getConverted()['id']);
-        static::assertSame($converted['productConfiguratorSettings'][1]['productId'], $mainProduct2->getConverted()['id']);
+            $convertedStruct = $this->propertyRelationConverter->convert($relation, $this->context, $this->migrationContext);
+            $converted = $convertedStruct->getConverted();
 
-        static::assertSame(
-            'Rot',
-            $converted['translations'][DummyMappingService::DEFAULT_LANGUAGE_UUID]['name']
+            static::assertSame($convertedMainProduct['id'], $converted['id']);
+            static::assertSame(${'property' . $iterater}->getConverted()['id'], $converted['properties'][0]['id']);
+
+            ++$iterater;
+        }
+    }
+
+    public function testConvertWithPropertiesAndProductConfiguratorsAndOldIdentifier(): void
+    {
+        $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
+        $propertyData = require __DIR__ . '/../../../_fixtures/property_group_option_data.php';
+        $optionRelationData = require __DIR__ . '/../../../_fixtures/product_option_relation.php';
+        $propertyRelationData = require __DIR__ . '/../../../_fixtures/product_property_relation.php';
+
+        $mainProduct = $this->productConverter->convert($productData[5], $this->context, $this->migrationContext);
+        $this->productConverter->convert($productData[22], $this->context, $this->migrationContext);
+        $this->productConverter->convert($productData[23], $this->context, $this->migrationContext);
+        $convertedMainProduct = $mainProduct->getConverted();
+
+        $property0 = $this->propertyGroupOptionConverter->convert($propertyData[4], $this->context, $this->migrationContext);
+        $property1 = $this->propertyGroupOptionConverter->convert($propertyData[2], $this->context, $this->migrationContext);
+        $property2 = $this->propertyGroupOptionConverter->convert($propertyData[3], $this->context, $this->migrationContext);
+
+        $mapping = $this->mappingService->getOrCreateMapping(
+            $this->connection->getId(),
+            DefaultEntities::PRODUCT_PROPERTY,
+            $propertyData[4]['id'] . '_' . $convertedMainProduct['id'],
+            $this->context
         );
-        static::assertArrayHasKey('translations', $converted['group']);
-        static::assertSame(
-            'Farbe',
-            $converted['group']['translations'][DummyMappingService::DEFAULT_LANGUAGE_UUID]['name']
+        $oldMappingId0 = $mapping['entityUuid'];
+
+        $mapping = $this->mappingService->getOrCreateMapping(
+            $this->connection->getId(),
+            DefaultEntities::PRODUCT_PROPERTY,
+            $propertyData[2]['id'] . '_' . $convertedMainProduct['id'],
+            $this->context
         );
-        static::assertCount(0, $this->loggingService->getLoggingArray());
+        $oldMappingId1 = $mapping['entityUuid'];
+
+        $mapping = $this->mappingService->getOrCreateMapping(
+            $this->connection->getId(),
+            DefaultEntities::PRODUCT_PROPERTY,
+            $propertyData[3]['id'] . '_' . $convertedMainProduct['id'],
+            $this->context
+        );
+        $oldMappingId2 = $mapping['entityUuid'];
+
+        $iterater = 0;
+        foreach ($optionRelationData as &$relation) {
+            $relation['productId'] = $productData[5]['detail']['articleID'];
+
+            $convertedStruct = $this->optionRelationConverter->convert($relation, $this->context, $this->migrationContext);
+            $converted = $convertedStruct->getConverted();
+
+            static::assertSame($convertedMainProduct['id'], $converted['id']);
+            static::assertSame(${'property' . $iterater}->getConverted()['id'], $converted['configuratorSettings'][0]['optionId']);
+            static::assertSame(${'oldMappingId' . $iterater}, $converted['configuratorSettings'][0]['id']);
+
+            ++$iterater;
+        }
+
+        $iterater = 0;
+        foreach ($propertyRelationData as &$relation) {
+            $relation['productId'] = $productData[5]['detail']['articleID'];
+
+            $convertedStruct = $this->propertyRelationConverter->convert($relation, $this->context, $this->migrationContext);
+            $converted = $convertedStruct->getConverted();
+
+            static::assertSame($convertedMainProduct['id'], $converted['id']);
+            static::assertSame(${'property' . $iterater}->getConverted()['id'], $converted['properties'][0]['id']);
+
+            ++$iterater;
+        }
     }
 }

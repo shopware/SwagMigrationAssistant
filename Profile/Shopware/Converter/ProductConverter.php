@@ -276,7 +276,14 @@ abstract class ProductConverter extends ShopwareConverter
             throw new ParentEntityForChildNotFoundException(DefaultEntities::PRODUCT, $this->oldProductId);
         }
 
-        $converted = $this->getUuidForProduct($data);
+        $this->mainMapping = $this->mappingService->getOrCreateMapping(
+            $this->connectionId,
+            DefaultEntities::PRODUCT,
+            $this->oldProductId,
+            $this->context,
+            $this->checksum
+        );
+        $converted['id'] = $this->mainMapping['entityUuid'];
         $converted['parentId'] = $parentMapping['entityUuid'];
         $this->mappingIds[] = $parentMapping['id'];
         $converted = $this->getProductData($data, $converted);
@@ -419,7 +426,6 @@ abstract class ProductConverter extends ShopwareConverter
         }
 
         $this->getOptions($converted, $data);
-        $this->getFilters($data);
 
         // Legacy data which don't need a mapping or there is no equivalent field
         unset(
@@ -524,12 +530,6 @@ abstract class ProductConverter extends ShopwareConverter
         }
 
         $options = [];
-        $productContainerMapping = $this->mappingService->getMapping(
-            $this->connectionId,
-            DefaultEntities::PRODUCT_CONTAINER,
-            $this->mainProductId,
-            $this->context
-        );
 
         $language = $this->mappingService->getDefaultLanguage($this->context);
         $shouldBeTranslated = true;
@@ -538,19 +538,6 @@ abstract class ProductConverter extends ShopwareConverter
         }
 
         foreach ($data['configuratorOptions'] as $option) {
-            if ($productContainerMapping !== null) {
-                $this->mappingService->createListItemMapping(
-                    $this->connectionId,
-                    'main_product_options',
-                    hash('md5', mb_strtolower($option['name'] . '_' . $option['group']['name'])),
-                    $this->context,
-                    null,
-                    $productContainerMapping['entityUuid']
-                );
-                if (!in_array($productContainerMapping['id'], $this->mappingIds, true)) {
-                    $this->mappingIds[] = $productContainerMapping['id'];
-                }
-            }
             $optionMapping = $this->mappingService->getOrCreateMapping(
                 $this->connectionId,
                 DefaultEntities::PROPERTY_GROUP_OPTION,
@@ -587,90 +574,6 @@ abstract class ProductConverter extends ShopwareConverter
         unset($data['configuratorOptions']);
 
         $converted['options'] = $options;
-    }
-
-    private function getFilters(&$data): void
-    {
-        if (
-            !isset($data['filters'])
-            || !is_array($data['filters'])
-        ) {
-            return;
-        }
-
-        $productContainerMapping = $this->mappingService->getMapping(
-            $this->connectionId,
-            DefaultEntities::PRODUCT_CONTAINER,
-            $this->mainProductId,
-            $this->context
-        );
-
-        if ($productContainerMapping === null) {
-            $productContainerMapping = $this->mappingService->getMapping(
-                $this->connectionId,
-                DefaultEntities::PRODUCT_MAIN,
-                $this->mainProductId,
-                $this->context
-            );
-        }
-
-        if ($productContainerMapping === null) {
-            return;
-        }
-
-        foreach ($data['filters'] as $option) {
-            if (!isset($option['value'], $option['option']['name'])) {
-                continue;
-            }
-
-            $this->mappingService->createListItemMapping(
-                $this->connectionId,
-                'main_product_filter',
-                hash('md5', mb_strtolower($option['value'] . '_' . $option['option']['name'])),
-                $this->context,
-                null,
-                $productContainerMapping['entityUuid']
-            );
-            if (!in_array($productContainerMapping['id'], $this->mappingIds, true)) {
-                $this->mappingIds[] = $productContainerMapping['id'];
-            }
-        }
-        unset($data['filters']);
-    }
-
-    private function getOptionTranslation(array &$option, array $data): void
-    {
-        $localeOptionTranslation = [];
-        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->locale, $this->context);
-        $localeOptionTranslation['languageId'] = $languageUuid;
-        $localeGroupTranslation = $localeOptionTranslation;
-
-        $mapping = $this->mappingService->getOrCreateMapping(
-            $this->connectionId,
-            DefaultEntities::PROPERTY_GROUP_OPTION_TRANSLATION,
-            hash('md5', mb_strtolower($data['name'] . '_' . $data['group']['name'])) . ':' . $this->locale,
-            $this->context
-        );
-        $localeOptionTranslation['id'] = $mapping['entityUuid'];
-        $this->mappingIds[] = $mapping['id'];
-
-        $this->convertValue($localeOptionTranslation, 'name', $data, 'name');
-        $this->convertValue($localeOptionTranslation, 'position', $data, 'position', self::TYPE_INTEGER);
-
-        $mapping = $this->mappingService->getOrCreateMapping(
-            $this->connectionId,
-            DefaultEntities::PROPERTY_GROUP_TRANSLATION,
-            hash('md5', mb_strtolower($data['group']['name'])) . ':' . $this->locale,
-            $this->context
-        );
-        $localeGroupTranslation['id'] = $mapping['entityUuid'];
-        $this->mappingIds[] = $mapping['id'];
-
-        $this->convertValue($localeGroupTranslation, 'name', $data['group'], 'name');
-        $this->convertValue($localeGroupTranslation, 'description', $data['group'], 'description');
-
-        $option['translations'][$languageUuid] = $localeOptionTranslation;
-        $option['group']['translations'][$languageUuid] = $localeGroupTranslation;
     }
 
     private function getManufacturer(array $data): array
@@ -946,6 +849,41 @@ abstract class ProductConverter extends ShopwareConverter
         );
 
         return $manufacturerMedia;
+    }
+
+    private function getOptionTranslation(array &$option, array $data): void
+    {
+        $localeOptionTranslation = [];
+        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->locale, $this->context);
+        $localeOptionTranslation['languageId'] = $languageUuid;
+        $localeGroupTranslation = $localeOptionTranslation;
+
+        $mapping = $this->mappingService->getOrCreateMapping(
+            $this->connectionId,
+            DefaultEntities::PROPERTY_GROUP_OPTION_TRANSLATION,
+            hash('md5', mb_strtolower($data['name'] . '_' . $data['group']['name'])) . ':' . $this->locale,
+            $this->context
+        );
+        $localeOptionTranslation['id'] = $mapping['entityUuid'];
+        $this->mappingIds[] = $mapping['id'];
+
+        $this->convertValue($localeOptionTranslation, 'name', $data, 'name');
+        $this->convertValue($localeOptionTranslation, 'position', $data, 'position', self::TYPE_INTEGER);
+
+        $mapping = $this->mappingService->getOrCreateMapping(
+            $this->connectionId,
+            DefaultEntities::PROPERTY_GROUP_TRANSLATION,
+            hash('md5', mb_strtolower($data['group']['name'])) . ':' . $this->locale,
+            $this->context
+        );
+        $localeGroupTranslation['id'] = $mapping['entityUuid'];
+        $this->mappingIds[] = $mapping['id'];
+
+        $this->convertValue($localeGroupTranslation, 'name', $data['group'], 'name');
+        $this->convertValue($localeGroupTranslation, 'description', $data['group'], 'description');
+
+        $option['translations'][$languageUuid] = $localeOptionTranslation;
+        $option['group']['translations'][$languageUuid] = $localeGroupTranslation;
     }
 
     private function getPrice(array $priceData, float $taxRate): array

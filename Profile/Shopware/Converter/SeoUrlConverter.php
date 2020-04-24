@@ -96,17 +96,27 @@ abstract class SeoUrlConverter extends ShopwareConverter
             );
 
             if ($mapping === null) {
-                $this->loggingService->addLogEntry(
-                    new AssociationRequiredMissingLog(
-                        $migrationContext->getRunUuid(),
-                        DefaultEntities::PRODUCT,
-                        $data['typeId'],
-                        DefaultEntities::SEO_URL
-                    )
+                $mapping = $this->mappingService->getMapping(
+                    $this->connectionId,
+                    DefaultEntities::PRODUCT_CONTAINER,
+                    $data['typeId'],
+                    $context
                 );
 
-                return new ConvertStruct(null, $originalData);
+                if ($mapping === null) {
+                    $this->loggingService->addLogEntry(
+                        new AssociationRequiredMissingLog(
+                            $migrationContext->getRunUuid(),
+                            DefaultEntities::PRODUCT,
+                            $data['typeId'],
+                            DefaultEntities::SEO_URL
+                        )
+                    );
+
+                    return new ConvertStruct(null, $originalData);
+                }
             }
+
             $converted['foreignKey'] = $mapping['entityUuid'];
             $converted['routeName'] = self::ROUTE_NAME_PRODUCT;
             $converted['pathInfo'] = '/detail/' . $mapping['entityUuid'];

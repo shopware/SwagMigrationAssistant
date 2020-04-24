@@ -117,6 +117,10 @@ final class DefaultEntities
 
     public const PRODUCT_TRANSLATION = 'product_translation';
 
+    public const PRODUCT_OPTION_RELATION = 'product_option_relation';
+
+    public const PRODUCT_PROPERTY_RELATION = 'product_property_relation';
+
     public const PRODUCT_PROPERTY = 'product_property';
 
     public const PRODUCT_REVIEW = 'product_review';

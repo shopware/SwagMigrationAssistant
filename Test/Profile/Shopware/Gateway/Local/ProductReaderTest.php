@@ -1,4 +1,9 @@
 <?php declare(strict_types=1);
+/*
+ * (c) shopware AG <info@shopware.com>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace SwagMigrationAssistant\Test\Profile\Shopware\Gateway\Local;
 
@@ -64,7 +69,6 @@ class ProductReaderTest extends TestCase
         static::assertSame('EK', $data[0]['prices'][0]['customergroup']['groupkey']);
         static::assertSame('1029', $data[0]['prices'][1]['id']);
         static::assertSame('H', $data[0]['prices'][1]['customergroup']['groupkey']);
-        static::assertCount(5, $data[0]['filters']);
 
         static::assertSame('4', $data[1]['detail']['id']);
         static::assertSame('4', $data[1]['detail']['articleID']);
@@ -80,7 +84,6 @@ class ProductReaderTest extends TestCase
         static::assertSame('67', $data[1]['categories'][3]['id']);
         static::assertSame('4', $data[1]['prices'][0]['id']);
         static::assertSame('EK', $data[1]['prices'][0]['customergroup']['groupkey']);
-        static::assertCount(5, $data[1]['filters']);
     }
 
     public function testReadTotal(): void

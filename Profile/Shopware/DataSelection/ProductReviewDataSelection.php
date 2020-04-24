@@ -16,7 +16,9 @@ use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ManufacturerAt
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaFolderDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductAttributeDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductOptionRelationDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductPriceAttributeDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductPropertyRelationDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductReviewDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\PropertyGroupOptionDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\TranslationDataSet;
@@ -55,8 +57,9 @@ class ProductReviewDataSelection implements DataSelectionInterface
             ManufacturerAttributeDataSet::getEntity(),
             ProductDataSet::getEntity(),
             PropertyGroupOptionDataSet::getEntity(),
+            ProductOptionRelationDataSet::getEntity(),
+            ProductPropertyRelationDataSet::getEntity(),
             TranslationDataSet::getEntity(),
-
             CustomerAttributeDataSet::getEntity(),
             CustomerDataSet::getEntity(),
             ProductReviewDataSet::getEntity(),

@@ -74,31 +74,6 @@ class ProductReader extends AbstractReader
         return new TotalStruct(DefaultEntities::PRODUCT, $total);
     }
 
-    public function getFilterOptionValues(): array
-    {
-        $variantIds = $this->productMapping->keys();
-
-        $query = $this->connection->createQueryBuilder();
-
-        $query->from('s_filter_articles', 'filter');
-        $query->leftJoin('filter', 's_articles_details', 'details', 'details.articleID = filter.articleID');
-        $query->addSelect('details.id');
-
-        $query->leftJoin('filter', 's_filter_values', 'filter_values', 'filter.valueID = filter_values.id');
-        $this->addTableSelection($query, 's_filter_values', 'filter_values');
-
-        $query->leftJoin('filter_values', 's_filter_options', 'filter_values_option', 'filter_values_option.id = filter_values.optionID');
-        $this->addTableSelection($query, 's_filter_options', 'filter_values_option');
-
-        $query->where('details.id IN (:ids)');
-
-        $query->setParameter('ids', $variantIds, Connection::PARAM_INT_ARRAY);
-
-        $fetchedFilterOptionValues = $query->execute()->fetchAll(\PDO::FETCH_GROUP);
-
-        return $this->mapData($fetchedFilterOptionValues, [], ['filter', 'values']);
-    }
-
     protected function appendAssociatedData(array $products): array
     {
         $categories = $this->getCategories();
@@ -108,7 +83,6 @@ class ProductReader extends AbstractReader
         $prices = $this->getPrices();
         $media = $this->getMedia();
         $options = $this->getConfiguratorOptions();
-        $filterValues = $this->getFilterOptionValues();
 
         // represents the main language of the migrated shop
         $locale = $this->getDefaultShopLocale();
@@ -133,9 +107,6 @@ class ProductReader extends AbstractReader
             if (isset($options[$product['detail']['id']])) {
                 $product['configuratorOptions'] = $options[$product['detail']['id']];
             }
-            if (isset($filterValues[$product['detail']['id']])) {
-                $product['filters'] = $filterValues[$product['detail']['id']];
-            }
             if (isset($productVisibility[$product['id']])) {
                 $product['shops'] = array_values($productVisibility[$product['id']]);
             }
@@ -155,6 +126,27 @@ class ProductReader extends AbstractReader
         foreach ($fetchedProducts as $product) {
             $this->productMapping->set($product['product_detail.id'], $product['product.id']);
         }
+    }
+
+    private function getConfiguratorOptions(): array
+    {
+        $variantIds = $this->productMapping->keys();
+        $query = $this->connection->createQueryBuilder();
+
+        $query->from('s_article_configurator_options', 'configurator_option');
+        $query->addSelect('option_relation.article_id');
+        $this->addTableSelection($query, 's_article_configurator_options', 'configurator_option');
+
+        $query->leftJoin('configurator_option', 's_article_configurator_option_relations', 'option_relation', 'option_relation.option_id = configurator_option.id');
+
+        $query->leftJoin('configurator_option', 's_article_configurator_groups', 'configurator_option_group', 'configurator_option.group_id = configurator_option_group.id');
+        $this->addTableSelection($query, 's_article_configurator_groups', 'configurator_option_group');
+
+        $query->where('option_relation.article_id IN (:ids)');
+        $query->setParameter('ids', $variantIds, Connection::PARAM_INT_ARRAY);
+        $fetchedConfiguratorOptions = $query->execute()->fetchAll(\PDO::FETCH_GROUP);
+
+        return $this->mapData($fetchedConfiguratorOptions, [], ['configurator', 'option']);
     }
 
     private function fetchData(MigrationContextInterface $migrationContext): array
@@ -316,27 +308,6 @@ class ProductReader extends AbstractReader
         $query->setParameter('ids', $variantIds, Connection::PARAM_INT_ARRAY);
 
         return $query->execute()->fetchAll(\PDO::FETCH_GROUP);
-    }
-
-    private function getConfiguratorOptions(): array
-    {
-        $variantIds = $this->productMapping->keys();
-        $query = $this->connection->createQueryBuilder();
-
-        $query->from('s_article_configurator_options', 'configurator_option');
-        $query->addSelect('option_relation.article_id');
-        $this->addTableSelection($query, 's_article_configurator_options', 'configurator_option');
-
-        $query->leftJoin('configurator_option', 's_article_configurator_option_relations', 'option_relation', 'option_relation.option_id = configurator_option.id');
-
-        $query->leftJoin('configurator_option', 's_article_configurator_groups', 'configurator_option_group', 'configurator_option.group_id = configurator_option_group.id');
-        $this->addTableSelection($query, 's_article_configurator_groups', 'configurator_option_group');
-
-        $query->where('option_relation.article_id IN (:ids)');
-        $query->setParameter('ids', $variantIds, Connection::PARAM_INT_ARRAY);
-        $fetchedConfiguratorOptions = $query->execute()->fetchAll(\PDO::FETCH_GROUP);
-
-        return $this->mapData($fetchedConfiguratorOptions, [], ['configurator', 'option']);
     }
 
     private function fetchMainCategoryShops(): array
