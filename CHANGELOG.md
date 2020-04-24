@@ -1,4 +1,5 @@
-# REPLACE-GLOBAL-WITH-NEXT-VERSION
+# 1.3.0
+- PT-11586 - Optimized product migration from Shopware 5
 - PT-11617 - Fix error with too many open database connections
 
 # 1.2.2
