@@ -33,7 +33,12 @@ abstract class ProductOptionRelationConverter extends ShopwareConverter
     {
         $this->generateChecksum($data);
         $this->originalData = $data;
-        $this->connectionId = $migrationContext->getConnection()->getId();
+
+        $connection = $migrationContext->getConnection();
+        $this->connectionId = '';
+        if ($connection !== null) {
+            $this->connectionId = $connection->getId();
+        }
 
         $productContainerMapping = $this->mappingService->getMapping(
             $this->connectionId,
@@ -86,6 +91,7 @@ abstract class ProductOptionRelationConverter extends ShopwareConverter
             );
         }
 
+        $converted = [];
         $converted['id'] = $productContainerMapping['entityUuid'];
         $converted['configuratorSettings'][] = [
             'id' => $this->mainMapping['entityUuid'],

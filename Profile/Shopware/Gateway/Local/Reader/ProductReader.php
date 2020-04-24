@@ -149,7 +149,13 @@ class ProductReader extends AbstractReader
 
         $query->where('option_relation.article_id IN (:ids)');
         $query->setParameter('ids', $variantIds, Connection::PARAM_INT_ARRAY);
-        $fetchedConfiguratorOptions = $query->execute()->fetchAll(\PDO::FETCH_GROUP);
+
+        $query = $query->execute();
+        if (!($query instanceof ResultStatement)) {
+            return [];
+        }
+
+        $fetchedConfiguratorOptions = $query->fetchAll();
 
         return $this->mapData($fetchedConfiguratorOptions, [], ['configurator', 'option']);
     }

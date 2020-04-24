@@ -304,6 +304,8 @@ abstract class ProductConverter extends ShopwareConverter
             $this->context,
             $this->checksum
         );
+
+        $converted = [];
         $converted['id'] = $this->mainMapping['entityUuid'];
         $converted['parentId'] = $parentMapping['entityUuid'];
         $this->mappingIds[] = $parentMapping['id'];
@@ -939,8 +941,10 @@ abstract class ProductConverter extends ShopwareConverter
         $this->convertValue($localeGroupTranslation, 'name', $data['group'], 'name');
         $this->convertValue($localeGroupTranslation, 'description', $data['group'], 'description');
 
-        $option['translations'][$languageUuid] = $localeOptionTranslation;
-        $option['group']['translations'][$languageUuid] = $localeGroupTranslation;
+        if ($languageUuid !== null) {
+            $option['translations'][$languageUuid] = $localeOptionTranslation;
+            $option['group']['translations'][$languageUuid] = $localeGroupTranslation;
+        }
     }
 
     private function getPrice(array $priceData, float $taxRate): array
