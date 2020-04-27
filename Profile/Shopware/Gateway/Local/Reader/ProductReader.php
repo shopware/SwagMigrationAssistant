@@ -155,7 +155,7 @@ class ProductReader extends AbstractReader
             return [];
         }
 
-        $fetchedConfiguratorOptions = $query->fetchAll();
+        $fetchedConfiguratorOptions = $query->fetchAll(\PDO::FETCH_GROUP);
 
         return $this->mapData($fetchedConfiguratorOptions, [], ['configurator', 'option']);
     }
