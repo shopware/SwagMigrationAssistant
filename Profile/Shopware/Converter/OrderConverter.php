@@ -802,6 +802,7 @@ abstract class OrderConverter extends ShopwareConverter
 
             $lineItem = [
                 'id' => $mapping['entityUuid'],
+                'identifier' => $mapping['entityUuid'],
             ];
 
             if ($isProduct) {
@@ -814,20 +815,20 @@ abstract class OrderConverter extends ShopwareConverter
                     );
 
                     if ($mapping !== null) {
-                        $lineItem['identifier'] = $mapping['entityUuid'];
+                        $lineItem['referencedId'] = $mapping['entityUuid'];
+                        $lineItem['productId'] = $mapping['entityUuid'];
+                        $lineItem['payload']['productNumber'] = $originalLineItem['articleordernumber'] ?? '';
                         $this->mappingIds[] = $mapping['id'];
                     }
                 }
 
-                if (!isset($lineItem['identifier'])) {
-                    $lineItem['identifier'] = 'unmapped-product-' . $originalLineItem['articleordernumber'] . '-' . $originalLineItem['articleID'];
-                }
-
                 $lineItem['type'] = LineItem::PRODUCT_LINE_ITEM_TYPE;
             } else {
-                $this->convertValue($lineItem, 'identifier', $originalLineItem, 'articleordernumber');
-
-                $lineItem['type'] = LineItem::CREDIT_LINE_ITEM_TYPE;
+                if ($originalLineItem['price'] < 0) {
+                    $lineItem['type'] = LineItem::CREDIT_LINE_ITEM_TYPE;
+                } else {
+                    $lineItem['type'] = LineItem::CUSTOM_LINE_ITEM_TYPE;
+                }
             }
 
             $this->convertValue($lineItem, 'quantity', $originalLineItem, 'quantity', self::TYPE_INTEGER);
@@ -857,17 +858,6 @@ abstract class OrderConverter extends ShopwareConverter
                     $taxRules,
                     $context->getCurrencyPrecision()
                 );
-            }
-
-            if (!isset($lineItem['identifier'])) {
-                $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
-                    $this->runId,
-                    DefaultEntities::ORDER_LINE_ITEM,
-                    $originalLineItem['id'],
-                    'identifier'
-                ));
-
-                continue;
             }
 
             $lineItems[] = $lineItem;

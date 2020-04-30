@@ -452,43 +452,6 @@ class OrderConverterTest extends TestCase
         }
     }
 
-    public function testConvertWithoutValidLineItems(): void
-    {
-        $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
-        $orderData = require __DIR__ . '/../../../_fixtures/order_data.php';
-        $orderData = $orderData[0];
-        foreach ($orderData['details'] as &$detail) {
-            $detail['modus'] = 1;
-            $detail['articleordernumber'] = '';
-        }
-        unset($detail);
-        $context = Context::createDefaultContext();
-
-        $this->customerConverter->convert(
-            $customerData[0],
-            $context,
-            $this->customerMigrationContext
-        );
-
-        $convertResult = $this->orderConverter->convert(
-            $orderData,
-            $context,
-            $this->migrationContext
-        );
-
-        $converted = $convertResult->getConverted();
-
-        static::assertNull($convertResult->getUnmapped());
-        static::assertArrayHasKey('id', $converted);
-        static::assertSame(Defaults::SALES_CHANNEL, $converted['salesChannelId']);
-        static::assertSame('test@example.com', $converted['orderCustomer']['email']);
-        static::assertCount(3, $this->loggingService->getLoggingArray());
-
-        foreach ($this->loggingService->getLoggingArray() as $log) {
-            static::assertSame('SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_ORDER_LINE_ITEM', $log['code']);
-        }
-    }
-
     public function testConvertWithoutPaymentName(): void
     {
         $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
