@@ -1,3 +1,8 @@
+# 1.4.0
+- PT-11497 - Behebt ein Problem mit falschem Verbindungsstatus
+- PT-11601 - Shopware 6.2 Kompatibilität
+- PT-11462 - Behebt ein Problem bei der Migration von Bestellungen
+
 # 1.3.0
 - PT-11586 - Optimierte Produktmigration von Shopware 5
 - PT-11617 - Behebt ein Problem mit zu vielen offenen Datenbankverbindungen per CLI

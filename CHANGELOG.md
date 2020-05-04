@@ -1,3 +1,8 @@
+# 1.4.0
+- PT-11497 - Solves an issue with incorrect connection state
+- PT-11601 - Shopware 6.2 compatibility
+- PT-11462 - Solves an issue regarding order migration
+
 # 1.3.0
 - PT-11586 - Optimized product migration from Shopware 5
 - PT-11617 - Fix error with too many open database connections
