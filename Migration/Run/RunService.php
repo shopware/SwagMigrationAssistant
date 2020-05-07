@@ -40,7 +40,7 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationAssistant\Migration\Service\ProgressState;
 use SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService;
-use Symfony\Component\Cache\Adapter\TagAwareAdapter;
+use Symfony\Component\Cache\Adapter\TagAwareAdapterInterface;
 
 class RunService implements RunServiceInterface
 {
@@ -89,7 +89,7 @@ class RunService implements RunServiceInterface
     private $indexer;
 
     /**
-     * @var TagAwareAdapter
+     * @var TagAwareAdapterInterface
      */
     private $cache;
 
@@ -146,7 +146,7 @@ class RunService implements RunServiceInterface
         IndexerMessageSender $indexer,
         ThemeService $themeService,
         MappingServiceInterface $mappingService,
-        TagAwareAdapter $cache,
+        TagAwareAdapterInterface $cache,
         EntityDefinition $migrationDataDefinition,
         Connection $dbalConnection,
         LoggingServiceInterface $loggingService,
