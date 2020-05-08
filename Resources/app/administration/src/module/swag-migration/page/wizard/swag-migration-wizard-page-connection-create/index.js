@@ -84,12 +84,16 @@ Component.register('swag-migration-wizard-page-connection-create', {
 
             return this.migrationService.getProfiles().then((profiles) => {
                 this.profiles = profiles;
-                this.profiles.push({
-                    name: 'profileLink'
-                });
+                this.pushLinkToProfiles();
 
                 this.selectDefaultProfile();
                 this.setIsLoading(false);
+            });
+        },
+
+        pushLinkToProfiles() {
+            this.profiles.push({
+                name: 'profileLink'
             });
         },
 
