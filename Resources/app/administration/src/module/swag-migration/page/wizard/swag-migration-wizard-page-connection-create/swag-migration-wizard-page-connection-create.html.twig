@@ -30,6 +30,7 @@
 
                         <sw-single-select :label="$tc('swag-migration.wizard.pages.connectionCreate.profileLabel')"
                                           :placeholder="$tc('swag-migration.wizard.pages.connectionCreate.profilePlaceholder')"
+                                          :popoverClasses="['swag-migration-wizard-page-create-profile']"
                                           :popoverConfig="{active: true, resizeWidth: true, style: { zIndex: 1000, marginLeft: '8px' }}"
                                           :options="profiles"
                                           :value="selection.profile"
@@ -60,6 +61,7 @@
                         <sw-single-select :label="$tc('swag-migration.wizard.pages.connectionCreate.gatewayLabel')"
                                           :placeholder="$tc('swag-migration.wizard.pages.connectionCreate.gatewayPlaceholder')"
                                           :helpText="$tc('swag-migration.wizard.pages.connectionCreate.gatewayTooltip')"
+                                          :popoverClasses="['swag-migration-wizard-page-create-profile']"
                                           :popoverConfig="{active: true, resizeWidth: true, style: { zIndex: 1000, marginLeft: '8px' }}"
                                           :options="gateways"
                                           :value="selection.gateway"
