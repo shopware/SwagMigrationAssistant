@@ -1,3 +1,6 @@
+# 1.4.1
+- NTR - Solve issue with cache service injection
+
 # 1.4.0
 - PT-11497 - Solves an issue with incorrect connection state
 - PT-11601 - Shopware 6.2 compatibility
