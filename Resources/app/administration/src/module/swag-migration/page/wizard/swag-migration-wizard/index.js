@@ -24,53 +24,14 @@ Component.register('swag-migration-wizard', {
     ],
 
     data() {
+        const routes = this.getRoutes();
+
         return {
             context: Shopware.Context.api,
             showModal: true,
             isLoading: true,
             childIsLoading: false,
-            routes: {
-                introduction: {
-                    name: 'swag.migration.wizard.introduction',
-                    index: 0,
-                    titleSnippet: 'swag-migration.wizard.pages.introduction.title'
-                },
-                profileInstallation: {
-                    name: 'swag.migration.wizard.profileInstallation',
-                    index: 0.1,
-                    titleSnippet: 'swag-migration.wizard.pages.profileInstallation.title'
-                },
-                connectionCreate: {
-                    name: 'swag.migration.wizard.connectionCreate',
-                    index: 0.2, // not available through nextRoute (child from profile)
-                    titleSnippet: 'swag-migration.wizard.pages.connectionCreate.title'
-                },
-                connectionSelect: {
-                    name: 'swag.migration.wizard.connectionSelect',
-                    index: 0.3, // not available through nextRoute (child from profile)
-                    titleSnippet: 'swag-migration.wizard.pages.connectionSelect.title'
-                },
-                profileInformation: {
-                    name: 'swag.migration.wizard.profileInformation',
-                    index: 1,
-                    titleSnippet: 'swag-migration.wizard.pages.profileInformation.title'
-                },
-                credentials: {
-                    name: 'swag.migration.wizard.credentials',
-                    index: 2,
-                    titleSnippet: 'swag-migration.wizard.pages.credentials.title'
-                },
-                credentialsSuccess: {
-                    name: 'swag.migration.wizard.credentialsSuccess',
-                    index: 2.1, // not available through nextRoute (child from credentials)
-                    titleSnippet: 'swag-migration.wizard.pages.credentials.statusTitle'
-                },
-                credentialsError: {
-                    name: 'swag.migration.wizard.credentialsError',
-                    index: 2.1, // not available through nextRoute (child from credentials)
-                    titleSnippet: 'swag-migration.wizard.pages.credentials.statusTitle'
-                }
-            },
+            routes,
             connection: {},
             connectionName: '',
             selectedProfile: {},
@@ -226,6 +187,51 @@ Component.register('swag-migration-wizard', {
                 this.onChildRouteChanged(); // update strings for current child
                 this.isLoading = false;
             });
+        },
+
+        getRoutes() {
+            return {
+                introduction: {
+                    name: 'swag.migration.wizard.introduction',
+                    index: 0,
+                    titleSnippet: 'swag-migration.wizard.pages.introduction.title'
+                },
+                profileInstallation: {
+                    name: 'swag.migration.wizard.profileInstallation',
+                    index: 0.1,
+                    titleSnippet: 'swag-migration.wizard.pages.profileInstallation.title'
+                },
+                connectionCreate: {
+                    name: 'swag.migration.wizard.connectionCreate',
+                    index: 0.2, // not available through nextRoute (child from profile)
+                    titleSnippet: 'swag-migration.wizard.pages.connectionCreate.title'
+                },
+                connectionSelect: {
+                    name: 'swag.migration.wizard.connectionSelect',
+                    index: 0.3, // not available through nextRoute (child from profile)
+                    titleSnippet: 'swag-migration.wizard.pages.connectionSelect.title'
+                },
+                profileInformation: {
+                    name: 'swag.migration.wizard.profileInformation',
+                    index: 1,
+                    titleSnippet: 'swag-migration.wizard.pages.profileInformation.title'
+                },
+                credentials: {
+                    name: 'swag.migration.wizard.credentials',
+                    index: 2,
+                    titleSnippet: 'swag-migration.wizard.pages.credentials.title'
+                },
+                credentialsSuccess: {
+                    name: 'swag.migration.wizard.credentialsSuccess',
+                    index: 2.1, // not available through nextRoute (child from credentials)
+                    titleSnippet: 'swag-migration.wizard.pages.credentials.statusTitle'
+                },
+                credentialsError: {
+                    name: 'swag.migration.wizard.credentialsError',
+                    index: 2.1, // not available through nextRoute (child from credentials)
+                    titleSnippet: 'swag-migration.wizard.pages.credentials.statusTitle'
+                }
+            };
         },
 
         /**

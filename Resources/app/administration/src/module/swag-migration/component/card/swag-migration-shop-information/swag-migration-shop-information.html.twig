@@ -76,9 +76,11 @@
                                                         <sw-context-menu-item @click="onClickSelectConnection">
                                                             {{ $tc('swag-migration.index.shopInfoCard.buttonSelectConnection') }}
                                                         </sw-context-menu-item>
-                                                        <sw-context-menu-item @click="onClickProfileInstallation">
-                                                            {{ $tc('swag-migration.index.shopInfoCard.buttonProfileInstallation') }}
-                                                        </sw-context-menu-item>
+                                                        {% block swag_migration_shop_information_actions_profileInstallationItem %}
+                                                            <sw-context-menu-item @click="onClickProfileInstallation">
+                                                                {{ $tc('swag-migration.index.shopInfoCard.buttonProfileInstallation') }}
+                                                            </sw-context-menu-item>
+                                                        {% endblock %}
                                                         <sw-context-menu-item variant="danger" @click="showRemoveCredentialsConfirmModal = true">
                                                             {{ $tc('swag-migration.index.shopInfoCard.buttonRemoveCredentials') }}
                                                         </sw-context-menu-item>
