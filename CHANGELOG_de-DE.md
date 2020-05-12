@@ -1,3 +1,6 @@
+# 1.4.1
+- NTR - Behebt ein Problem beim Injekten des Cache-Services
+
 # 1.4.0
 - PT-11497 - Behebt ein Problem mit falschem Verbindungsstatus
 - PT-11601 - Shopware 6.2 Kompatibilität
