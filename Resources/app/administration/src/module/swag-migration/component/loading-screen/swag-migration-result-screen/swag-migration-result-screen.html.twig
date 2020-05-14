@@ -1,31 +1,79 @@
 {% block swag_migration_result_screen %}
-    <sw-card class="swag-migration-result-screen">
+    <div>
 
-        {% block swag_migration_result_screen_content %}
-            <div class="swag-migration-result-screen__content">
+        {% block swag_migration_result_screen_card %}
+            <sw-card class="swag-migration-result-screen">
 
-                {% block swag_migration_result_screen_icon %}
-                    <div class="swag-migration-result-screen__bubble">
-                        <sw-icon class="swag-migration-result-screen__icon" name="default-action-thumb-up" size="36px" decorative></sw-icon>
+                {% block swag_migration_result_screen_content %}
+                    <div class="swag-migration-result-screen__content">
+
+                        {% block swag_migration_result_screen_icon %}
+                            <div class="swag-migration-result-screen__bubble">
+                                <sw-icon class="swag-migration-result-screen__icon"
+                                         name="default-action-thumb-up"
+                                         size="36px"
+                                         decorative>
+                                </sw-icon>
+                            </div>
+                        {% endblock %}
+
+                        {% block swag_migration_result_screen_title %}
+                            <div class="swag-migration-result-screen__title">
+                                {{ $tc('swag-migration.index.loadingScreenCard.result.title') }}
+                            </div>
+                            <div class="swag-migration-result-screen__caption">
+                                {{ $tc('swag-migration.index.loadingScreenCard.result.caption') }}
+                            </div>
+                        {% endblock %}
+
+                        {% block swag_migration_result_screen_link %}
+                            <router-link class="swag-migration-result-screen__link"
+                                         :to="{ name: 'swag.migration.index.history.detail', params: { id: runId } }">
+                                {{ $tc('swag-migration.index.loadingScreenCard.result.historyLink') }}
+                            </router-link>
+                        {% endblock %}
                     </div>
                 {% endblock %}
-
-                {% block swag_migration_result_screen_title %}
-                    <div class="swag-migration-result-screen__title">
-                        {{ $tc('swag-migration.index.loadingScreenCard.result.title') }}
-                    </div>
-                    <div class="swag-migration-result-screen__caption">
-                        {{ $tc('swag-migration.index.loadingScreenCard.result.caption') }}
-                    </div>
-                {% endblock %}
-
-                {% block swag_migration_result_screen_link %}
-                    <router-link class="swag-migration-result-screen__link"
-                                 :to="{ name: 'swag.migration.index.history.detail', params: { id: runId } }">
-                        {{ $tc('swag-migration.index.loadingScreenCard.result.historyLink') }}
-                    </router-link>
-                {% endblock %}
-            </div>
+            </sw-card>
         {% endblock %}
-    </sw-card>
+
+        {% block swag_migration_result_screen_survey_card %}
+            <sw-card class="swag-migration-result-survey">
+
+                {% block swag_migration_result_screen_survey_content %}
+                    <div class="swag-migration-result-survey__content">
+
+                        {% block swag_migration_result_screen_survey_title %}
+                            <div class="swag-migration-result-survey__title">
+                                {{ $tc('swag-migration.index.loadingScreenCard.result.survey.title') }}
+                            </div>
+                        {% endblock %}
+
+                        {% block swag_migration_result_screen_survey_caption %}
+                            <div class="swag-migration-result-survey__caption">
+                                {{ $tc('swag-migration.index.loadingScreenCard.result.survey.caption') }}
+                            </div>
+                        {% endblock %}
+
+                        {% block swag_migration_result_screen_survey_link %}
+                            <a class="sw-button sw-button--small"
+                               :href="$tc('swag-migration.index.loadingScreenCard.result.survey.link')"
+                               target="_blank"
+                               rel="noopener">
+                                {{ $tc('swag-migration.index.loadingScreenCard.result.survey.buttonText') }}
+                                <sw-icon class="swag-migration-result-survey__external-icon" name="small-arrow-small-external" size="8"></sw-icon>
+                            </a>
+                        {% endblock %}
+
+                        {% block swag_migration_result_screen_survey_icon %}
+                            <div>
+                                <img class="swag-migration-result-survey__icon"
+                                     :src="'/swagmigrationassistant/static/img/wizard-result-survey-icon.svg' | asset">
+                            </div>
+                        {% endblock %}
+                    </div>
+                {% endblock %}
+            </sw-card>
+        {% endblock %}
+    </div>
 {% endblock %}

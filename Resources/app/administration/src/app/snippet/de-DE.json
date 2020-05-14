@@ -305,6 +305,12 @@
           "title": "Der Migrations-Assistent ist fertig",
           "caption": "Die Medien werden weiter im Hintergrund heruntergeladen. Große Dateien können etwas Zeit in Anspruch nehmen.",
           "historyLink": "Details der Migration ansehen",
+          "survey": {
+              "title": "Deine Erfahrungen sind uns wichtig",
+              "caption": "Gib uns gerne eine Rückmeldung über den Migrationsprozess, damit wir die Migration noch besser machen können.",
+              "buttonText": "Jetzt Rückmeldung geben",
+              "link": "https://www.surveymonkey.de/r/RF7J3LV"
+          },
           "notification": {
             "title": "Migration - Historie",
             "message": "Logfile einsehen oder herunterladen",
