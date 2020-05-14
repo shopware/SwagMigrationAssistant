@@ -1,3 +1,6 @@
+# 1.4.2
+- PT-11689 - Add survey to get feedback about the tool from users
+
 # 1.4.1
 - NTR - Solve issue with cache service injection
 
