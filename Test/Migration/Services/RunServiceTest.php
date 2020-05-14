@@ -212,7 +212,8 @@ class RunServiceTest extends TestCase
             $this->getContainer()->get(SwagMigrationDataDefinition::class),
             $this->getContainer()->get(Connection::class),
             $loggingService,
-            $this->getContainer()->get(StoreService::class)
+            $this->getContainer()->get(StoreService::class),
+            $this->getContainer()->get('messenger.bus.shopware')
         );
 
         $this->runServiceWithoutStructure = new RunService(
@@ -235,7 +236,8 @@ class RunServiceTest extends TestCase
             $this->getContainer()->get(SwagMigrationDataDefinition::class),
             $this->getContainer()->get(Connection::class),
             $loggingService,
-            $this->getContainer()->get(StoreService::class)
+            $this->getContainer()->get(StoreService::class),
+            $this->getContainer()->get('messenger.bus.shopware')
         );
     }
 

@@ -21,6 +21,7 @@ use SwagMigrationAssistant\Migration\Profile\ProfileRegistryInterface;
 use SwagMigrationAssistant\Migration\Run\RunServiceInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationProgressServiceInterface;
+use SwagMigrationAssistant\Migration\Setting\GeneralSettingEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -72,6 +73,11 @@ class StatusController extends AbstractController
      */
     private $migrationContextFactory;
 
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $generalSettingRepo;
+
     public function __construct(
         MigrationDataFetcherInterface $migrationDataFetcher,
         MigrationProgressServiceInterface $migrationProgressService,
@@ -80,7 +86,8 @@ class StatusController extends AbstractController
         EntityRepositoryInterface $migrationConnectionRepo,
         ProfileRegistryInterface $profileRegistry,
         GatewayRegistryInterface $gatewayRegistry,
-        MigrationContextFactoryInterface $migrationContextFactory
+        MigrationContextFactoryInterface $migrationContextFactory,
+        EntityRepositoryInterface $generalSettingRepo
     ) {
         $this->migrationDataFetcher = $migrationDataFetcher;
         $this->migrationProgressService = $migrationProgressService;
@@ -90,6 +97,7 @@ class StatusController extends AbstractController
         $this->profileRegistry = $profileRegistry;
         $this->gatewayRegistry = $gatewayRegistry;
         $this->migrationContextFactory = $migrationContextFactory;
+        $this->generalSettingRepo = $generalSettingRepo;
     }
 
     /**
@@ -402,5 +410,30 @@ class StatusController extends AbstractController
         $this->runService->cleanupMappingChecksums($connectionId, $context);
 
         return new Response();
+    }
+
+    /**
+     * @Route("/api/v{version}/_action/migration/cleanup-migration-data", name="api.admin.migration.cleanup-migration-data", methods={"POST"})
+     */
+    public function cleanupMigrationData(): Response
+    {
+        $this->runService->cleanupMigrationData();
+
+        return new Response();
+    }
+
+    /**
+     * @Route("/api/v{version}/_action/migration/get-reset-status", name="api.admin.migration.get-reset-status", methods={"GET"})
+     */
+    public function getResetStatus(Context $context): JsonResponse
+    {
+        /** @var GeneralSettingEntity|null $settings */
+        $settings = $this->generalSettingRepo->search(new Criteria(), $context)->first();
+
+        if ($settings === null) {
+            return new JsonResponse(false);
+        }
+
+        return new JsonResponse($settings->isReset());
     }
 }

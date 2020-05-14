@@ -158,34 +158,34 @@ class OrderStateReader extends AbstractPremappingReader
 
         switch ($sourceId) {
             case -1: // cancelled
-                $preselectionValue = $this->preselectionDictionary[OrderStates::STATE_CANCELLED];
+                $preselectionValue = $this->preselectionDictionary[OrderStates::STATE_CANCELLED] ?? null;
                 break;
             case 0: // open
-                $preselectionValue = $this->preselectionDictionary[OrderStates::STATE_OPEN];
+                $preselectionValue = $this->preselectionDictionary[OrderStates::STATE_OPEN] ?? null;
                 break;
             case 1: // in_process
-                $preselectionValue = $this->preselectionDictionary[OrderStates::STATE_IN_PROGRESS];
+                $preselectionValue = $this->preselectionDictionary[OrderStates::STATE_IN_PROGRESS] ?? null;
                 break;
             case 2: // completed
-                $preselectionValue = $this->preselectionDictionary[OrderStates::STATE_COMPLETED];
+                $preselectionValue = $this->preselectionDictionary[OrderStates::STATE_COMPLETED] ?? null;
                 break;
             case 3: // partially_completed
-                $preselectionValue = $this->preselectionDictionary[OrderStates::STATE_IN_PROGRESS];
+                $preselectionValue = $this->preselectionDictionary[OrderStates::STATE_IN_PROGRESS] ?? null;
                 break;
             case 4: // cancelled_rejected
-                $preselectionValue = $this->preselectionDictionary[OrderStates::STATE_CANCELLED];
+                $preselectionValue = $this->preselectionDictionary[OrderStates::STATE_CANCELLED] ?? null;
                 break;
             case 5: // ready_for_delivery
-                $preselectionValue = $this->preselectionDictionary[OrderStates::STATE_IN_PROGRESS];
+                $preselectionValue = $this->preselectionDictionary[OrderStates::STATE_IN_PROGRESS] ?? null;
                 break;
             case 6: // partially_delivered
-                $preselectionValue = $this->preselectionDictionary[OrderStates::STATE_IN_PROGRESS];
+                $preselectionValue = $this->preselectionDictionary[OrderStates::STATE_IN_PROGRESS] ?? null;
                 break;
             case 7: // completely_delivered
-                $preselectionValue = $this->preselectionDictionary[OrderStates::STATE_IN_PROGRESS];
+                $preselectionValue = $this->preselectionDictionary[OrderStates::STATE_IN_PROGRESS] ?? null;
                 break;
             case 8: // clarification_required
-                $preselectionValue = $this->preselectionDictionary[OrderStates::STATE_IN_PROGRESS];
+                $preselectionValue = $this->preselectionDictionary[OrderStates::STATE_IN_PROGRESS] ?? null;
                 break;
         }
 

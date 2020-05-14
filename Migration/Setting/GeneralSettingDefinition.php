@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Migration\Setting;
 
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\BoolField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\CreatedAtField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\FkField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\PrimaryKey;
@@ -42,6 +43,7 @@ class GeneralSettingDefinition extends EntityDefinition
         return new FieldCollection([
             (new IdField('id', 'id'))->setFlags(new PrimaryKey(), new Required()),
             new FkField('selected_connection_id', 'selectedConnectionId', SwagMigrationConnectionDefinition::class),
+            new BoolField('is_reset', 'isReset'),
             new CreatedAtField(),
             new UpdatedAtField(),
             new ManyToOneAssociationField('selectedConnection', 'selected_connection_id', SwagMigrationConnectionDefinition::class, 'id', true),

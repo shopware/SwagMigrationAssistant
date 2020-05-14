@@ -67,6 +67,7 @@
             <argument type="service" id="Doctrine\DBAL\Connection"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
             <argument type="service" id="Shopware\Core\Framework\Store\Services\StoreService"/>
+            <argument type="service" id="messenger.bus.shopware"/>
         </service>
 
         <service id="SwagMigrationAssistant\Migration\History\HistoryService">
@@ -156,6 +157,7 @@
             <argument type="service" id="SwagMigrationAssistant\Migration\Profile\ProfileRegistry"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Gateway\GatewayRegistry"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\MigrationContextFactory"/>
+            <argument type="service" id="swag_migration_general_setting.repository"/>
         </service>
 
         <service id="SwagMigrationAssistant\Controller\HistoryController" public="true">
@@ -203,6 +205,12 @@
             <argument type="service" id="SwagMigrationAssistant\Migration\Media\MediaFileProcessorRegistry"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\MigrationContextFactory"/>
+            <tag name="messenger.message_handler"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Migration\MessageQueue\Handler\CleanupMigrationHandler">
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+            <argument type="service" id="messenger.bus.shopware"/>
             <tag name="messenger.message_handler"/>
         </service>
 

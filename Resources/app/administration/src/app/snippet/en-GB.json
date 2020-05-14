@@ -4,7 +4,12 @@
       "title": "Migration Assistant",
       "headline": "Moving to Shopware",
       "information": "First thing is to link up your existing shop system - the Migration Assistant will help you along the way.",
-      "button": "Open Migration Assistant"
+      "button": "Open Migration Assistant",
+      "shopInfoCard": {
+          "header": "Migrations-Assistent",
+          "button": "Open",
+          "resetButton": "Abschließen"
+      }
     },
     "general": {
       "mainMenuItemGeneral": "Migration Assistant",
@@ -153,6 +158,7 @@
         "buttonRemoveCredentials": "Delete access data",
         "buttonProfileInstallation": "Install another profile",
         "buttonResetChecksums": "Reset checksums",
+        "buttonResetMigration": "Complete migration",
         "connected": "Connected",
         "notConnected": "Not connected",
         "profile": "System profile:",
@@ -170,10 +176,22 @@
         },
         "resetChecksumsConfirmDialog": {
           "title": "Reset checksums",
-          "content": "If you reset the checksums, all data from the source system will be recognized in the next migration. This includes already migrated or unchanged data sets. <br><br><b>Important:</b> Changes to the data records you have made in Shopware 6 since the last migration, will be overwritten. The source system data has priority.",
+          "content": "If you reset the checksums, all data from the source system will be recognized in the next migration. This includes already migrated or unchanged data sets. <br><br><strong>Important:</strong> Changes to the data records you have made in Shopware 6 since the last migration, will be overwritten. The source system data has priority.",
           "contentHint": "Do you want to reset the checksums?",
           "abortButtonText": "Cancel",
           "confirmButtonText": "Yes, reset"
+        },
+        "resetMigrationConfirmDialog": {
+            "title": "Finalise the migration",
+            "header": "Have you finished migrating your shop data?",
+            "content": "Great! Let's now finalise your migration and clean up temporary files and unused data. <strong>Please note:</strong> Finalising the migration is terminal. You won't be able to migrate any more data via the current connection.",
+            "contentHint": "Do you want to finalise the migration now?",
+            "abortButtonText": "Cancel",
+            "confirmButtonText": "Finalise now",
+            "errorNotification": {
+                "title": "Error occurred while finalising the migration",
+                "message": "A migration is currently in progress."
+            }
         }
       },
       "assistantCard": {

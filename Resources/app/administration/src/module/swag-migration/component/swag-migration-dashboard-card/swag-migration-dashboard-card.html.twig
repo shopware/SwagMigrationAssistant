@@ -1,0 +1,60 @@
+{% block swag_migration_dashboard_card %}
+    <sw-card class="swag-migration-dashboard-card">
+
+        {% block swag_migration_dashboard_card_wrapper %}
+            {%  block swag_migration_dashboard_card_title %}
+                <template #title>
+                    <span class="swag-migration-dashboard-card__title">
+                        {{ $tc('swag-migration.dashboard.title') }}
+                    </span>
+                </template>
+            {% endblock %}
+
+            {% block swag_migration_dashboard_card_container %}
+                <sw-container class="swag-migration-shop-information" rows="auto auto">
+                    {% block fuuuu %}
+                    {% endblock %}
+
+                    {%  block swag_migration_dashboard_card_content %}
+                        <div class="swag-migration-dashboard-card__content">
+
+                            {%  block swag_migration_dashboard_card_wrapper %}
+                                <div class="swag-migration-dashboard-card__wrapper">
+
+                                    {%  block swag_migration_dashboard_card_left_content %}
+                                        <div class="swag-migration-dashboard-card__left-content">
+
+                                            {%  block swag_migration_dashboard_card_headline %}
+                                                <div class="swag-migration-dashboard-card__headline">
+                                                    {{ $tc('swag-migration.dashboard.headline') }}
+                                                </div>
+                                            {% endblock %}
+
+                                            {%  block swag_migration_dashboard_card_information %}
+                                                <div class="swag-migration-dashboard-card__information">
+                                                    {{ $tc('swag-migration.dashboard.information') }}
+                                                </div>
+                                            {% endblock %}
+
+                                            {%  block swag_migration_dashboard_card_button %}
+                                                <sw-button variant="primary" :routerLink="{ name: 'swag.migration.index.main'}">
+                                                    {{ $tc('swag-migration.dashboard.button') }}
+                                                </sw-button>
+                                            {%  endblock %}
+                                        </div>
+                                    {% endblock %}
+
+                                    {%  block swag_migration_dashboard_card_right_content %}
+                                        <div class="swag-migration-dashboard-card__right-content">
+                                            <img :src="'/swagmigrationassistant/static/img/wizard-introduction.svg' | asset">
+                                        </div>
+                                    {% endblock %}
+                                </div>
+                            {% endblock %}
+                        </div>
+                    {% endblock %}
+                </sw-container>
+            {% endblock %}
+        {% endblock %}
+    </sw-card>
+{% endblock %}

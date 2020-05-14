@@ -1,5 +1,5 @@
-import template from './sw-migration-dashboard-card.html.twig';
-import './sw-migration-dashboard-card.scss';
+import template from './swag-migration-dashboard-card.html.twig';
+import './swag-migration-dashboard-card.scss';
 
 const { Component } = Shopware;
 

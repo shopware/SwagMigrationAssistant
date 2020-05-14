@@ -247,7 +247,8 @@ class MigrateDataCommandTest extends TestCase
                 $this->getContainer()->get(SwagMigrationDataDefinition::class),
                 $this->getContainer()->get(Connection::class),
                 new LoggingService($loggingRepo),
-                $this->getContainer()->get(StoreService::class)
+                $this->getContainer()->get(StoreService::class),
+                $this->getContainer()->get('messenger.bus.shopware')
             ),
             $this->getContainer()->get(PremappingService::class),
             $dataFetcher,
