@@ -1,3 +1,6 @@
+# 1.4.2
+- PT-11689 - Fügt einen Umfrage-Link zur Qualität des Produktes hinzu
+
 # 1.4.1
 - NTR - Behebt ein Problem beim Injekten des Cache-Services
 
