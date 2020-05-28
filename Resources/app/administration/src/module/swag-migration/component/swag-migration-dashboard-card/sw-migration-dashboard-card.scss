@@ -1,0 +1,37 @@
+@import "~scss/variables";
+
+.swag-migration-dashboard-card {
+    .sw-card__content {
+        margin-top: 24px;
+    }
+
+    .swag-migration-dashboard-card__title {
+        font-size: 24px;
+    }
+
+    .swag-migration-dashboard-card__headline {
+        font-size: $font-size-large;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+
+    .swag-migration-dashboard-card__information {
+        font-size: $font-size-small;
+        font-weight: normal;
+        width: 440px;
+        margin-bottom: 26px;
+        line-height: 22px;
+    }
+
+    .swag-migration-dashboard-card__wrapper {
+        grid-template-columns: 1fr 1fr;
+        place-items: stretch;
+        gap: 0 15px;
+        width: 100%;
+        display: grid;
+    }
+
+    .swag-migration-dashboard-card__right-content {
+        text-align: right;
+    }
+}
