@@ -1,3 +1,6 @@
+# REPLACE-GLOBAL-WITH-NEXT-VERSION
+- PT-11764 - Werte im Datencheck werden jetzt sortiert ausgegeben
+
 # 1.4.2
 - PT-11689 - Fügt einen Umfrage-Link zur Qualität des Produktes hinzu
 

@@ -68,7 +68,7 @@ class NewsletterRecipientStatusReaderTest extends TestCase
 
         $choices = $result->getChoices();
         static::assertCount(4, $choices);
-        static::assertSame('optOut', $choices[2]->getUuid());
-        static::assertSame('OptOut', $choices[2]->getDescription());
+        static::assertSame('optIn', $choices[2]->getUuid());
+        static::assertSame('OptIn', $choices[2]->getDescription());
     }
 }
