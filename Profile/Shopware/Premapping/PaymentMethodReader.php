@@ -111,6 +111,9 @@ class PaymentMethodReader extends AbstractPremappingReader
         }
 
         $entityData[] = new PremappingEntityStruct('default_payment_method', 'Standard Payment Method', $uuid);
+        usort($entityData, function (PremappingEntityStruct $item1, PremappingEntityStruct $item2) {
+            return strcmp($item1->getDescription(), $item2->getDescription());
+        });
 
         return $entityData;
     }

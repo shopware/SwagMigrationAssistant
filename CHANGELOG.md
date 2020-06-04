@@ -1,3 +1,6 @@
+# REPLACE-GLOBAL-WITH-NEXT-VERSION
+- PT-11764 - Add sorting of pre-mapping values
+
 # 1.4.2
 - PT-11689 - Add survey to get feedback about the tool from users
 

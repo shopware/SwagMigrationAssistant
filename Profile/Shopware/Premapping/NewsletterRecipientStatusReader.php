@@ -86,10 +86,10 @@ class NewsletterRecipientStatusReader extends AbstractPremappingReader
     private function getChoices(): array
     {
         $choices = [];
+        $choices[] = new PremappingChoiceStruct('direct', 'Direct');
         $choices[] = new PremappingChoiceStruct('notSet', 'Not set');
         $choices[] = new PremappingChoiceStruct('optIn', 'OptIn');
         $choices[] = new PremappingChoiceStruct('optOut', 'OptOut');
-        $choices[] = new PremappingChoiceStruct('direct', 'Direct');
 
         return $choices;
     }
