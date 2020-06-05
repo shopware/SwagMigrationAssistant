@@ -92,7 +92,7 @@ abstract class SeoUrlConverter extends ShopwareConverter
         $this->mappingIds[] = $converted['languageId'];
         unset($data['_locale']);
 
-        if ($data['type'] === self::TYPE_PRODUCT) {
+        if ($data['type'] === self::TYPE_PRODUCT && isset($data['typeId'])) {
             $mapping = $this->mappingService->getMapping(
                 $this->connectionId,
                 DefaultEntities::PRODUCT_MAIN,
@@ -126,7 +126,7 @@ abstract class SeoUrlConverter extends ShopwareConverter
             $converted['routeName'] = self::ROUTE_NAME_PRODUCT;
             $converted['pathInfo'] = '/detail/' . $mapping['entityUuid'];
             $this->mappingIds[] = $mapping['id'];
-        } elseif ($data['type'] === self::TYPE_CATEGORY) {
+        } elseif ($data['type'] === self::TYPE_CATEGORY && isset($data['typeId'])) {
             $mapping = $this->mappingService->getMapping(
                 $this->connectionId,
                 DefaultEntities::CATEGORY,

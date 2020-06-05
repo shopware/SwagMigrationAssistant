@@ -1,4 +1,5 @@
 # REPLACE-GLOBAL-WITH-NEXT-VERSION
+- PT-11747 - Ignore seo urls without type id
 - PT-11764 - Add sorting of pre-mapping values
 
 # 1.4.2
