@@ -1,4 +1,5 @@
-# REPLACE-GLOBAL-WITH-NEXT-VERSION
+# 1.5.0
+- PT-11692 - Dashboard-Karte des Migrations-Assistenten ist nun eigene Komponente
 - PT-11747 - Behebt ein Problem, wenn SEO urls keine Typ Id haben
 - PT-11764 - Werte im Datencheck werden jetzt sortiert ausgegeben
 
