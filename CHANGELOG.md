@@ -1,4 +1,5 @@
-# REPLACE-GLOBAL-WITH-NEXT-VERSION
+# 1.5.0
+- PT-11692 - Move migration dashboard card to own component
 - PT-11747 - Ignore seo urls without type id
 - PT-11764 - Add sorting of pre-mapping values
 
