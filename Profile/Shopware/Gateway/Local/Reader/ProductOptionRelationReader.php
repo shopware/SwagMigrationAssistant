@@ -61,7 +61,7 @@ SQL;
 
         $query->from('s_article_configurator_options', 'configurator_option');
         $query->addSelect('"option" AS type');
-        $query->addSelect('MD5(CONCAT(configurator_option.id, option_relation.article_id)) AS identifier');
+        $query->addSelect('MD5(CONCAT(configurator_option.id, product_detail.articleID)) AS identifier');
         $this->addTableSelection($query, 's_article_configurator_options', 'configurator_option');
 
         $query->leftJoin('configurator_option', 's_article_configurator_option_relations', 'option_relation', 'option_relation.option_id = configurator_option.id');
