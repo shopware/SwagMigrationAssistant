@@ -11,8 +11,10 @@
         <directory name="Test"/>
         <ignoreFiles>
             <directory name="../../../platform"/> <!-- prevents to check shopware -->
+            <directory name="../../../vendor"/> <!-- would otherwise inspect vendor -->
             <directory name="Test/"/> <!-- excluded for now, should be reintegrated in the future -->
             <directory name="vendor/"/>
+            <directory name="bin"/>
         </ignoreFiles>
     </projectFiles>
 
