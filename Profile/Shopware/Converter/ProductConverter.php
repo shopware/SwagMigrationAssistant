@@ -982,6 +982,17 @@ abstract class ProductConverter extends ShopwareConverter
             'linked' => true,
         ];
 
+        $listPrice = (float) $priceData['pseudoprice'];
+        if ($listPrice > 0) {
+            $listPriceGross = round((float) $priceData['pseudoprice'] * (1 + $taxRate / 100), $this->context->getCurrencyPrecision());
+            $price[0]['listPrice'] = [
+                'currencyId' => $currencyUuid,
+                'gross' => $listPriceGross,
+                'net' => $listPrice,
+                'linked' => true,
+            ];
+        }
+
         return $price;
     }
 

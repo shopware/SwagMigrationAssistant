@@ -309,7 +309,7 @@ return [
                 'articleID' => '7',
                 'articledetailsID' => '7',
                 'price' => '16.798319327731',
-                'pseudoprice' => '0',
+                'pseudoprice' => '18.691588785047',
                 'baseprice' => null,
                 'percent' => '0.00',
                 'customergroup' => [

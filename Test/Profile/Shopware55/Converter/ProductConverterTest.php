@@ -255,4 +255,19 @@ class ProductConverterTest extends TestCase
         static::assertSame('day', $converted['deliveryTime']['unit']);
         static::assertSame('10-20 days', $converted['deliveryTime']['name']);
     }
+
+    public function testConvertWithPseudoPrices(): void
+    {
+        $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
+
+        $context = Context::createDefaultContext();
+        $convertResult = $this->productConverter->convert($productData[1], $context, $this->migrationContext);
+        $converted = $convertResult->getConverted();
+
+        static::assertNull($convertResult->getUnmapped());
+        static::assertNotNull($convertResult->getMappingUuid());
+        static::assertArrayHasKey('price', $converted);
+        static::assertArrayHasKey('listPrice', $converted['price'][0]);
+        static::assertSame((float) $productData[1]['prices'][0]['pseudoprice'], $converted['price'][0]['listPrice']['net']);
+    }
 }
