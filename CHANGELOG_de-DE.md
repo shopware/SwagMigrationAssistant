@@ -1,3 +1,6 @@
+# 1.5.1
+- PT-11819 - Optimiert die Produkt-Varianten Migration für das Shopware 5 Profil
+
 # 1.5.0
 - PT-11692 - Dashboard-Karte des Migrations-Assistenten ist nun eigene Komponente
 - PT-11747 - Behebt ein Problem, wenn SEO urls keine Typ Id haben
