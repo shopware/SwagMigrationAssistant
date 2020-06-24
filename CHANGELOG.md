@@ -1,3 +1,6 @@
+# 1.5.1
+- PT-11819 - Optimize product variant migration for Shopware 5 profile
+
 # 1.5.0
 - PT-11692 - Move migration dashboard card to own component
 - PT-11747 - Ignore seo urls without type id
