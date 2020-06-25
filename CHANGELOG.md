@@ -1,3 +1,6 @@
+# 1.5.2
+- PT-11788 - Introduce migration of pseudo prices from SW5
+
 # 1.5.1
 - PT-11819 - Optimize product variant migration for Shopware 5 profile
 

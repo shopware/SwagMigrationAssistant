@@ -1,3 +1,6 @@
+# 1.5.2
+- PT-11788 - Migration von Pseudo-Preisen aus SW5 integriert
+
 # 1.5.1
 - PT-11819 - Optimiert die Produkt-Varianten Migration für das Shopware 5 Profil
 
