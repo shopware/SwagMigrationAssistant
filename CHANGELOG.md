@@ -1,3 +1,6 @@
+# 1.5.3
+- PT-11845 - Improve migration of customers
+
 # 1.5.2
 - PT-11788 - Introduce migration of pseudo prices from SW5
 
