@@ -9,12 +9,14 @@ namespace SwagMigrationAssistant\Controller;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
-use SwagMigrationAssistant\Exception\MigrationContextPropertyMissingException;
+use Shopware\Core\Framework\Routing\Exception\MissingRequestParameterException;
+use SwagMigrationAssistant\Exception\MigrationIsRunningException;
 use SwagMigrationAssistant\Migration\History\HistoryServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -42,7 +44,7 @@ class HistoryController extends AbstractController
         $runUuid = $request->query->get('runUuid');
 
         if ($runUuid === null) {
-            throw new MigrationContextPropertyMissingException('runUuid');
+            throw new MissingRequestParameterException('runUuid');
         }
 
         $cleanResult = $this->historyService->getGroupedLogsOfRun(
@@ -69,7 +71,7 @@ class HistoryController extends AbstractController
         $runUuid = $request->request->get('runUuid');
 
         if ($runUuid === null) {
-            throw new MigrationContextPropertyMissingException('runUuid');
+            throw new MissingRequestParameterException('runUuid');
         }
 
         $response = new StreamedResponse();
@@ -87,5 +89,35 @@ class HistoryController extends AbstractController
         ));
 
         return $response;
+    }
+
+    /**
+     * @Route("/api/v{version}/_action/migration/clear-data-of-run", name="api.admin.migration.clear-data-of-run", methods={"POST"})
+     */
+    public function clearDataOfRun(Request $request, Context $context): Response
+    {
+        $runUuid = $request->request->get('runUuid');
+
+        if ($runUuid === null) {
+            throw new MissingRequestParameterException('runUuid');
+        }
+
+        if ($this->historyService->isMediaProcessing()) {
+            throw new MigrationIsRunningException();
+        }
+
+        $this->historyService->clearDataOfRun($runUuid, $context);
+
+        return new Response();
+    }
+
+    /**
+     * @Route("/api/v{version}/_action/migration/is-media-processing", name="api.admin.migration.clear-logs-of-run", methods={"GET"})
+     */
+    public function isMediaProcessing(): JsonResponse
+    {
+        $result = $this->historyService->isMediaProcessing();
+
+        return new JsonResponse($result);
     }
 }

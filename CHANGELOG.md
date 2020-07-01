@@ -1,6 +1,7 @@
 # REPLACE-GLOBAL-WITH-NEXT-VERSION
 - MIG-3 - Fixes a problem with migrating order documents
 - MIG-5 - Improve snippet loading of DataSets
+- MIG-14 - Implement deletion of logs from a selected run
 - MIG-22 - Fixes a problem with migrating orders, caused by aborted orders
 - MIG-23 - Fixes a problem with log file download
 

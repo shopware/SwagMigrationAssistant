@@ -125,6 +125,10 @@ Component.register('swag-migration-history-detail-errors', {
             }
 
             return 'swag-migration.index.error.unknownError';
+        },
+
+        submitDownload() {
+            this.$refs.downloadForm.submit();
         }
     }
 });

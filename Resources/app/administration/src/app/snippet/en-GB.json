@@ -563,7 +563,14 @@
       "shopSystem": "Shop system",
       "selectedData": "Data",
       "contextMenu": {
-        "details": "Show details"
+        "details": "Show details",
+        "downloadLogs": "Download log",
+        "clearLogs": "Delete migration data"
+      },
+      "clearRunDialog": {
+        "title": "Delete migration data",
+        "content": "Deleting migration data will remove log entries, media file entries, temporary migration data records and the migration run, which then will no longer be available in the migration history.",
+        "contentHint": "Do you really want to delete the data?"
       },
       "noData": "No migrations found.",
       "detailPage": {
@@ -577,9 +584,9 @@
         },
         "data": "Data",
         "errors": "Details",
-        "logDownload": "Download log file",
-        "logDescription": "In the overview of the log entries below you can see a summary of the errors that occurred and their frequency. If you need more details, download the log file to fix the migration errors.",
-        "errorCode": "Title",
+        "logDescription": "For more details {link}",
+        "logDownload": "download the log file.",
+        "errorCode": "Error message",
         "errorCount": "Count",
         "noErrorsOccurred": "No errors have occurred.",
         "dataName": "Name",

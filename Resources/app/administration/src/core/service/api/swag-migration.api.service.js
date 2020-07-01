@@ -256,6 +256,19 @@ class MigrationApiService extends ApiService {
         });
     }
 
+    clearDataOfRun(runUuid) {
+        const headers = this.getBasicHeaders();
+
+        return this.httpClient.post(`_action/${this.getApiBasePath()}/clear-data-of-run`, {
+            runUuid
+        }, {
+            ...this.basicConfig,
+            headers
+        }).then((response) => {
+            return ApiService.handleResponse(response);
+        });
+    }
+
     resetChecksums(connectionId, additionalHeaders = {}) {
         const headers = this.getBasicHeaders(additionalHeaders);
 
@@ -280,6 +293,14 @@ class MigrationApiService extends ApiService {
     cleanupMigrationData(additionalHeaders = {}) {
         const headers = this.getBasicHeaders(additionalHeaders);
         return this.httpClient.post(`_action/${this.getApiBasePath()}/cleanup-migration-data`, {
+            ...this.basicConfig,
+            headers
+        });
+    }
+
+    isMediaProcessing(additionalHeaders = {}) {
+        const headers = this.getBasicHeaders(additionalHeaders);
+        return this.httpClient.get(`_action/${this.getApiBasePath()}/is-media-processing`, {
             ...this.basicConfig,
             headers
         });

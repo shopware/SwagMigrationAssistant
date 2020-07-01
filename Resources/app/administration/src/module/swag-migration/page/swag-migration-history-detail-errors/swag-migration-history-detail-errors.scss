@@ -1,3 +1,4 @@
+@import "~scss/variables";
 
 .swag-migration-history-detail-errors {
     .swag-migration-history-detail-errors__no-error {
@@ -8,13 +9,9 @@
         height: 100px;
     }
 
-    .swag-migration-history-detail-errors__download-form {
-        padding: 20px 0;
-        display: flex;
-        align-items: center;
-    }
-
-    .swag-migration-history-detail-errors__download-description {
-        padding-left: 12px;
+    .swag-migration-history-detail-errors__description {
+        margin-top: 16px;
+        font-size: $font-size-small;
+        color: $color-gray-500;
     }
 }

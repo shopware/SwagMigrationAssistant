@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Migration\History;
 
+use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -19,8 +20,12 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
+use Shopware\Core\Framework\Uuid\Uuid;
+use SwagMigrationAssistant\Exception\EntityNotExistsException;
+use SwagMigrationAssistant\Exception\MigrationIsRunningException;
 use SwagMigrationAssistant\Migration\Logging\Log\LogEntryInterface;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingCollection;
+use SwagMigrationAssistant\Migration\MessageQueue\Message\ProcessMediaMessage;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 
 class HistoryService implements HistoryServiceInterface
@@ -38,12 +43,19 @@ class HistoryService implements HistoryServiceInterface
      */
     private $runRepo;
 
+    /**
+     * @var Connection
+     */
+    private $connection;
+
     public function __construct(
         EntityRepositoryInterface $loggingRepo,
-        EntityRepositoryInterface $runRepo
+        EntityRepositoryInterface $runRepo,
+        Connection $connection
     ) {
         $this->loggingRepo = $loggingRepo;
         $this->runRepo = $runRepo;
+        $this->connection = $connection;
     }
 
     public function getGroupedLogsOfRun(
@@ -128,6 +140,32 @@ class HistoryService implements HistoryServiceInterface
                 printf('%s%s%s', $this->getSuffixLogInformation($run), PHP_EOL, PHP_EOL);
             }
         };
+    }
+
+    public function clearDataOfRun(string $runUuid, Context $context): void
+    {
+        /** @var SwagMigrationRunEntity|null $run */
+        $run = $this->runRepo->search(new Criteria([$runUuid]), $context)->first();
+
+        if ($run === null) {
+            throw new EntityNotExistsException('run', $runUuid);
+        }
+
+        if ($run->getStatus() === SwagMigrationRunEntity::STATUS_RUNNING) {
+            throw new MigrationIsRunningException();
+        }
+
+        $this->connection->executeUpdate('DELETE FROM swag_migration_logging WHERE run_id = :runId', ['runId' => Uuid::fromHexToBytes($runUuid)]);
+        $this->connection->executeUpdate('DELETE FROM swag_migration_data WHERE run_id = :runId', ['runId' => Uuid::fromHexToBytes($runUuid)]);
+        $this->connection->executeUpdate('DELETE FROM swag_migration_media_file WHERE run_id = :runId', ['runId' => Uuid::fromHexToBytes($runUuid)]);
+        $this->connection->executeUpdate('DELETE FROM swag_migration_run WHERE id = :runId', ['runId' => Uuid::fromHexToBytes($runUuid)]);
+    }
+
+    public function isMediaProcessing(): bool
+    {
+        $messageSize = $this->connection->executeQuery('SELECT size FROM message_queue_stats WHERE name = :name', ['name' => ProcessMediaMessage::class])->fetchColumn();
+
+        return $messageSize > 0;
     }
 
     private function extractBucketInformation(Bucket $bucket): array

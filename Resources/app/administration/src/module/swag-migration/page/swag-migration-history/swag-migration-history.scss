@@ -27,3 +27,19 @@
         }
     }
 }
+
+.swag-migration-history__run-clear-confirm-modal {
+    .sw-modal__body {
+        padding: 32px;
+    }
+
+    .swag-migration-history__run-clear-confirm-modal-content {
+        text-align: center;
+    }
+
+    .swag-migration-history__run-clear-confirm-modal-content-hint {
+        text-align: center;
+        padding-top: 32px;
+        font-weight: 600;
+    }
+}
