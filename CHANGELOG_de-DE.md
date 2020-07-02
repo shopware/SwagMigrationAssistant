@@ -1,5 +1,6 @@
 # 1.5.3
 - PT-11845 - Verbessern der Migration von Kunden
+- PT-11855 - Verbessern der Migration von Medien
 
 # 1.5.2
 - PT-11788 - Migration von Pseudo-Preisen aus SW5 integriert
