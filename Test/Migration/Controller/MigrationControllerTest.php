@@ -225,10 +225,10 @@ class MigrationControllerTest extends TestCase
             $dataConverter,
             $this->getContainer()->get(MigrationDataWriter::class),
             new DummyMediaFileProcessorService(
-                $this->mediaFileRepo,
                 $this->getContainer()->get('messenger.bus.shopware'),
                 $this->getContainer()->get(DataSetRegistry::class),
-                $loggingService
+                $loggingService,
+                $this->getContainer()->get(Connection::class)
             ),
             $accessTokenService,
             new RunService(

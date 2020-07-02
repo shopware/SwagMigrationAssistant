@@ -108,10 +108,10 @@
         </service>
 
         <service id="SwagMigrationAssistant\Migration\Service\MediaFileProcessorService" public="true">
-            <argument type="service" id="swag_migration_media_file.repository"/>
             <argument type="service" id="messenger.bus.shopware"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
         </service>
 
         <service id="SwagMigrationAssistant\Migration\Media\MediaFileProcessorRegistry">

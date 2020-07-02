@@ -7,18 +7,16 @@
 
 namespace SwagMigrationAssistant\Migration\Service;
 
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Driver\ResultStatement;
+use Doctrine\DBAL\FetchMode;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
+use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\DataSetNotFoundException;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
 use SwagMigrationAssistant\Migration\Logging\Log\DataSetNotFoundLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
-use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileEntity;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\ProcessMediaMessage;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -26,11 +24,6 @@ use Symfony\Component\Messenger\MessageBusInterface;
 class MediaFileProcessorService implements MediaFileProcessorServiceInterface
 {
     public const MESSAGE_SIZE = 5;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $mediaFileRepo;
 
     /**
      * @var MessageBusInterface
@@ -47,37 +40,41 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
      */
     private $loggingService;
 
+    /**
+     * @var Connection
+     */
+    private $dbalConnection;
+
     public function __construct(
-        EntityRepositoryInterface $mediaFileRepo,
         MessageBusInterface $messageBus,
         DataSetRegistry $dataSetRegistry,
-        LoggingService $loggingService
+        LoggingService $loggingService,
+        Connection $dbalConnection
     ) {
-        $this->mediaFileRepo = $mediaFileRepo;
         $this->messageBus = $messageBus;
         $this->dataSetRegistry = $dataSetRegistry;
         $this->loggingService = $loggingService;
+        $this->dbalConnection = $dbalConnection;
     }
 
     public function processMediaFiles(MigrationContextInterface $migrationContext, Context $context, int $fileChunkByteSize): void
     {
-        $mediaFiles = $this->getMediaFiles($context, $migrationContext);
+        $mediaFiles = $this->getMediaFiles($migrationContext);
 
         $currentDataSet = null;
         $currentCount = 0;
         $messageMediaUuids = [];
-        /* @var SwagMigrationMediaFileEntity $mediaFile */
-        foreach ($mediaFiles->getElements() as $mediaFile) {
+        foreach ($mediaFiles as $mediaFile) {
             if ($currentDataSet === null) {
                 try {
-                    $currentDataSet = $this->dataSetRegistry->getDataSet($migrationContext, $mediaFile->getEntity());
+                    $currentDataSet = $this->dataSetRegistry->getDataSet($migrationContext, $mediaFile['entity']);
                 } catch (DataSetNotFoundException $e) {
                     $this->logDataSetNotFoundException($migrationContext, $mediaFile);
                     continue;
                 }
             }
 
-            if ($currentDataSet::getEntity() !== $mediaFile->getEntity()) {
+            if ($currentDataSet::getEntity() !== $mediaFile['entity']) {
                 /*
                  * @psalm-suppress PossiblyNullArgument
                  */
@@ -86,7 +83,7 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
                 try {
                     $messageMediaUuids = [];
                     $currentCount = 0;
-                    $currentDataSet = $this->dataSetRegistry->getDataSet($migrationContext, $mediaFile->getEntity());
+                    $currentDataSet = $this->dataSetRegistry->getDataSet($migrationContext, $mediaFile['entity']);
                 } catch (DataSetNotFoundException $e) {
                     $this->logDataSetNotFoundException($migrationContext, $mediaFile);
                     continue;
@@ -94,7 +91,7 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
             }
 
             ++$currentCount;
-            $messageMediaUuids[] = $mediaFile->getMediaId();
+            $messageMediaUuids[] = Uuid::fromBytesToHex($mediaFile['media_id']);
 
             if ($currentCount < self::MESSAGE_SIZE) {
                 continue;
@@ -112,17 +109,25 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
         $this->loggingService->saveLogging($context);
     }
 
-    private function getMediaFiles(Context $context, MigrationContextInterface $migrationContext): EntitySearchResult
+    private function getMediaFiles(MigrationContextInterface $migrationContext): array
     {
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('runId', $migrationContext->getRunUuid()));
-        $criteria->addFilter(new EqualsFilter('written', true));
-        $criteria->setOffset($migrationContext->getOffset());
-        $criteria->setLimit($migrationContext->getLimit());
-        $criteria->addSorting(new FieldSorting('entity', FieldSorting::ASCENDING));
-        $criteria->addSorting(new FieldSorting('fileSize', FieldSorting::ASCENDING));
+        $queryBuilder = $this->dbalConnection->createQueryBuilder();
+        $query = $queryBuilder
+            ->select('*')
+            ->from('swag_migration_media_file')
+            ->where('HEX(run_id) = :runId')
+            ->andWhere('written = 1')
+            ->orderBy('entity, file_size')
+            ->setFirstResult($migrationContext->getOffset())
+            ->setMaxResults($migrationContext->getLimit())
+            ->setParameter('runId', $migrationContext->getRunUuid());
 
-        return $this->mediaFileRepo->search($criteria, $context);
+        $query = $query->execute();
+        if (!($query instanceof ResultStatement)) {
+            return [];
+        }
+
+        return $query->fetchAll(FetchMode::ASSOCIATIVE);
     }
 
     private function addMessageToBus(string $runUuid, Context $context, int $fileChunkByteSize, DataSet $dataSet, array $mediaUuids): void
@@ -138,7 +143,7 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
 
     private function logDataSetNotFoundException(
         MigrationContextInterface $migrationContext,
-        SwagMigrationMediaFileEntity $mediaFile
+        array $mediaFile
     ): void {
         $connection = $migrationContext->getConnection();
 
@@ -149,8 +154,8 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
         $this->loggingService->addLogEntry(
             new DataSetNotFoundLog(
                 $migrationContext->getRunUuid(),
-                $mediaFile->getEntity(),
-                $mediaFile->getId(),
+                $mediaFile['entity'],
+                $mediaFile['id'],
                 $connection->getProfileName()
             )
         );
