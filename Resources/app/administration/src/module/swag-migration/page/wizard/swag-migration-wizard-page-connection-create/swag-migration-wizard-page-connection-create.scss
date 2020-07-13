@@ -1,22 +1,25 @@
 @import "~scss/variables";
 
-.sw-select-result__result-item-text > span > i,
-.sw-single-select__selection-text > span > i {
-    color: $color-gray-500;
-    font-style: normal;
-    font-size: 12px;
+.swag-migration-wizard-page-create-profile {
+    .sw-select-result__result-item-text > span > i,
+    .sw-single-select__selection-text > span > i {
+        color: $color-gray-500;
+        font-style: normal;
+        font-size: 12px;
+    }
+
+    .swag-migration-wizard-create-connection__install-profile-link-wrapper {
+        grid-template-columns: 1fr 24px;
+        width: 100%;
+        display: grid;
+    }
+
+    .is--active .sw-icon {
+        color: $color-shopware-brand-500;
+    }
+
+    .sw-select-result__result-item-text {
+        width: 100%;
+    }
 }
 
-.swag-migration-wizard-create-connection__install-profile-link-wrapper {
-    grid-template-columns: 1fr 24px;
-    width: 100%;
-    display: grid;
-}
-
-.is--active .sw-icon {
-    color: $color-shopware-brand-500;
-}
-
-.sw-select-result__result-item-text {
-    width: 100%;
-}
