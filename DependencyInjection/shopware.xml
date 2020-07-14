@@ -28,20 +28,24 @@
         </service>
 
         <!-- Shopware MediaHandler -->
-        <service id="SwagMigrationAssistant\Profile\Shopware\Media\HttpMediaDownloadService">
+        <service id="SwagMigrationAssistant\Profile\Shopware\Media\BaseMediaService" abstract="true" />
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Media\HttpMediaDownloadService" parent="SwagMigrationAssistant\Profile\Shopware\Media\BaseMediaService">
             <argument type="service" id="swag_migration_media_file.repository"/>
             <argument type="service" id="media.repository"/>
             <argument type="service" id="Shopware\Core\Content\Media\File\FileSaver"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
             <tag name="shopware.migration.media_file_processor"/>
         </service>
 
-        <service id="SwagMigrationAssistant\Profile\Shopware\Media\LocalMediaProcessor">
+        <service id="SwagMigrationAssistant\Profile\Shopware\Media\LocalMediaProcessor" parent="SwagMigrationAssistant\Profile\Shopware\Media\BaseMediaService">
             <argument type="service" id="swag_migration_media_file.repository"/>
             <argument type="service" id="media.repository"/>
             <argument type="service" id="Shopware\Core\Content\Media\File\FileSaver"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
             <argument type="tagged" tag="shopware.migration.media_strategy_resolver"/>
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
             <tag name="shopware.migration.media_file_processor"/>
         </service>
 
@@ -53,18 +57,20 @@
             <tag name="shopware.migration.media_strategy_resolver"/>
         </service>
 
-        <service id="SwagMigrationAssistant\Profile\Shopware\Media\HttpOrderDocumentProcessor">
+        <service id="SwagMigrationAssistant\Profile\Shopware\Media\HttpOrderDocumentProcessor" parent="SwagMigrationAssistant\Profile\Shopware\Media\BaseMediaService">
             <argument type="service" id="swag_migration_media_file.repository"/>
             <argument type="service" id="Shopware\Core\Content\Media\MediaService"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
             <argument type="service" id="SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory"/>
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
             <tag name="shopware.migration.media_file_processor"/>
         </service>
 
-        <service id="SwagMigrationAssistant\Profile\Shopware\Media\LocalOrderDocumentProcessor">
+        <service id="SwagMigrationAssistant\Profile\Shopware\Media\LocalOrderDocumentProcessor" parent="SwagMigrationAssistant\Profile\Shopware\Media\BaseMediaService">
             <argument type="service" id="swag_migration_media_file.repository"/>
             <argument type="service" id="Shopware\Core\Content\Media\MediaService"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
             <tag name="shopware.migration.media_file_processor"/>
         </service>
 
