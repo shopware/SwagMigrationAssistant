@@ -70,23 +70,45 @@
                                                             </sw-button>
                                                         </template>
 
-                                                        <sw-context-menu-item @click="onClickCreateConnection">
-                                                            {{ $tc('swag-migration.index.shopInfoCard.buttonCreateConnection') }}
-                                                        </sw-context-menu-item>
-                                                        <sw-context-menu-item @click="onClickSelectConnection">
-                                                            {{ $tc('swag-migration.index.shopInfoCard.buttonSelectConnection') }}
-                                                        </sw-context-menu-item>
+                                                        {% block swag_migration_shop_information_actions_createConnectionItem %}
+                                                            <sw-context-menu-item @click="onClickCreateConnection">
+                                                                {{ $tc('swag-migration.index.shopInfoCard.buttonCreateConnection') }}
+                                                            </sw-context-menu-item>
+                                                        {% endblock %}
+
+                                                        {% block swag_migration_shop_information_actions_selectConnectionItem %}
+                                                            <sw-context-menu-item @click="onClickSelectConnection">
+                                                                {{ $tc('swag-migration.index.shopInfoCard.buttonSelectConnection') }}
+                                                            </sw-context-menu-item>
+                                                        {% endblock %}
+
                                                         {% block swag_migration_shop_information_actions_profileInstallationItem %}
                                                             <sw-context-menu-item @click="onClickProfileInstallation">
                                                                 {{ $tc('swag-migration.index.shopInfoCard.buttonProfileInstallation') }}
                                                             </sw-context-menu-item>
                                                         {% endblock %}
-                                                        <sw-context-menu-item variant="danger" @click="showRemoveCredentialsConfirmModal = true">
-                                                            {{ $tc('swag-migration.index.shopInfoCard.buttonRemoveCredentials') }}
-                                                        </sw-context-menu-item>
-                                                        <sw-context-menu-item variant="danger" @click="showResetChecksumsConfirmModal = true">
-                                                            {{ $tc('swag-migration.index.shopInfoCard.buttonResetChecksums') }}
-                                                        </sw-context-menu-item>
+
+                                                        {% block swag_migration_shop_information_actions_removeCredentialsItem %}
+                                                            <sw-context-menu-item variant="danger" @click="showRemoveCredentialsConfirmModal = true">
+                                                                {{ $tc('swag-migration.index.shopInfoCard.buttonRemoveCredentials') }}
+                                                            </sw-context-menu-item>
+                                                        {% endblock %}
+
+                                                        {% block swag_migration_shop_information_actions_resetChecksumsItem %}
+                                                            <sw-context-menu-item variant="danger" @click="showResetChecksumsConfirmModal = true">
+                                                                {{ $tc('swag-migration.index.shopInfoCard.buttonResetChecksums') }}
+                                                            </sw-context-menu-item>
+                                                        {% endblock %}
+
+                                                        {% block swag_migration_shop_information_actions_divider %}
+                                                            <sw-context-menu-divider></sw-context-menu-divider>
+                                                        {% endblock %}
+
+                                                        {% block swag_migration_shop_information_actions_resetMigrationItem %}
+                                                            <sw-context-menu-item @click="openResetMigrationModal">
+                                                                {{ $tc('swag-migration.index.shopInfoCard.buttonResetMigration') }}
+                                                            </sw-context-menu-item>
+                                                        {% endblock %}
                                                     </sw-context-button>
                                                 {% endblock %}
                                             </div>
@@ -273,6 +295,61 @@
                                     </sw-button>
                                 {% endblock %}
                             </template>
+                        {% endblock %}
+                    </sw-modal>
+                {% endblock %}
+
+                {% block swag_migration_shop_information_reset_migration_confirm_modal %}
+                    <sw-modal v-if="showResetMigrationConfirmModal"
+                              class="swag-migration-shop-information__reset-confirm-modal"
+                              :title="$tc('swag-migration.index.shopInfoCard.resetMigrationConfirmDialog.title')"
+                              :isLoading="confirmModalIsLoading"
+                              @modal-close="onCloseResetModal">
+
+                        {% block swag_migration_shop_information_reset_migration_confirm_modal_icon %}
+                            <div class="swag-migration-shop-information__reset-confirm-modal-icon-wrapper">
+                                <sw-icon class="swag-migration-shop-information__confirm-modal-icon" name="default-award-trophy" color="#37D046" size="40"></sw-icon>
+                            </div>
+                        {% endblock %}
+
+                        {% block swag_migration_shop_information_reset_migration_confirm_modal_header %}
+                            <p class="swag-migration-shop-information__reset-confirm-modal-header"
+                               v-html="$tc('swag-migration.index.shopInfoCard.resetMigrationConfirmDialog.header')">
+                            </p>
+                        {% endblock %}
+
+                        {% block swag_migration_shop_information_reset_migration_confirm_modal_content %}
+                            <p class="swag-migration-shop-information__reset-confirm-modal-content"
+                               v-html="$tc('swag-migration.index.shopInfoCard.resetMigrationConfirmDialog.content')">
+                            </p>
+                        {% endblock %}
+
+                        {% block swag_migration_shop_information_reset_migration_confirm_modal_content_hint %}
+                            <p class="swag-migration-shop-information__reset-confirm-modal-content-hint">
+                                {{ $tc('swag-migration.index.shopInfoCard.resetMigrationConfirmDialog.contentHint') }}
+                            </p>
+                        {% endblock %}
+
+                        {% block swag_migration_shop_information_reset_migration_confirm_modal_footer %}
+                        <template #modal-footer>
+
+                            {% block swag_migration_shop_information_reset_migration_confirm_modal_abort %}
+                                <sw-button size="small"
+                                           :disabled="confirmModalIsLoading"
+                                           @click="onCloseResetModal">
+                                    {{ $tc('swag-migration.index.shopInfoCard.resetMigrationConfirmDialog.abortButtonText') }}
+                                </sw-button>
+                            {% endblock %}
+
+                            {% block swag_migration_shop_information_reset_migration_confirm_modal_confirm %}
+                                <sw-button size="small"
+                                           variant="primary"
+                                           :disabled="confirmModalIsLoading"
+                                           @click="onClickResetMigration">
+                                    {{ $tc('swag-migration.index.shopInfoCard.resetMigrationConfirmDialog.confirmButtonText') }}
+                                </sw-button>
+                            {% endblock %}
+                        </template>
                         {% endblock %}
                     </sw-modal>
                 {% endblock %}

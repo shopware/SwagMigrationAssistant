@@ -158,34 +158,34 @@ class OrderDeliveryStateReader extends AbstractPremappingReader
 
         switch ($sourceId) {
             case -1: // cancelled
-                $preselectionValue = $this->preselectionDictionary[OrderDeliveryStates::STATE_CANCELLED];
+                $preselectionValue = $this->preselectionDictionary[OrderDeliveryStates::STATE_CANCELLED] ?? null;
                 break;
             case 0: // open
-                $preselectionValue = $this->preselectionDictionary[OrderDeliveryStates::STATE_OPEN];
+                $preselectionValue = $this->preselectionDictionary[OrderDeliveryStates::STATE_OPEN] ?? null;
                 break;
             case 1: // in_process
-                $preselectionValue = $this->preselectionDictionary[OrderDeliveryStates::STATE_OPEN];
+                $preselectionValue = $this->preselectionDictionary[OrderDeliveryStates::STATE_OPEN] ?? null;
                 break;
             case 2: // completed
-                $preselectionValue = $this->preselectionDictionary[OrderDeliveryStates::STATE_SHIPPED];
+                $preselectionValue = $this->preselectionDictionary[OrderDeliveryStates::STATE_SHIPPED] ?? null;
                 break;
             case 3: // partially_completed
-                $preselectionValue = $this->preselectionDictionary[OrderDeliveryStates::STATE_PARTIALLY_SHIPPED];
+                $preselectionValue = $this->preselectionDictionary[OrderDeliveryStates::STATE_PARTIALLY_SHIPPED] ?? null;
                 break;
             case 4: // cancelled_rejected
-                $preselectionValue = $this->preselectionDictionary[OrderDeliveryStates::STATE_CANCELLED];
+                $preselectionValue = $this->preselectionDictionary[OrderDeliveryStates::STATE_CANCELLED] ?? null;
                 break;
             case 5: // ready_for_delivery
-                $preselectionValue = $this->preselectionDictionary[OrderDeliveryStates::STATE_OPEN];
+                $preselectionValue = $this->preselectionDictionary[OrderDeliveryStates::STATE_OPEN] ?? null;
                 break;
             case 6: // partially_delivered
-                $preselectionValue = $this->preselectionDictionary[OrderDeliveryStates::STATE_PARTIALLY_SHIPPED];
+                $preselectionValue = $this->preselectionDictionary[OrderDeliveryStates::STATE_PARTIALLY_SHIPPED] ?? null;
                 break;
             case 7: // completely_delivered
-                $preselectionValue = $this->preselectionDictionary[OrderDeliveryStates::STATE_SHIPPED];
+                $preselectionValue = $this->preselectionDictionary[OrderDeliveryStates::STATE_SHIPPED] ?? null;
                 break;
             case 8: // clarification_required
-                $preselectionValue = $this->preselectionDictionary[OrderDeliveryStates::STATE_OPEN];
+                $preselectionValue = $this->preselectionDictionary[OrderDeliveryStates::STATE_OPEN] ?? null;
                 break;
         }
 

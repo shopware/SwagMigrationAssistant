@@ -248,7 +248,8 @@ class MigrationControllerTest extends TestCase
                 $dataDefinition,
                 $this->getContainer()->get(Connection::class),
                 $loggingService,
-                $this->getContainer()->get(StoreService::class)
+                $this->getContainer()->get(StoreService::class),
+                $this->getContainer()->get('messenger.bus.shopware')
             ),
             $this->runRepo,
             $this->migrationContextFactory,

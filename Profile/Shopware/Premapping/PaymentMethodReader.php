@@ -163,16 +163,16 @@ class PaymentMethodReader extends AbstractPremappingReader
 
         switch ($sourceName) {
             case 'debit':
-                $preselectionValue = $this->preselectionDictionary[DebitPayment::class];
+                $preselectionValue = $this->preselectionDictionary[DebitPayment::class] ?? null;
                 break;
             case 'cash':
-                $preselectionValue = $this->preselectionDictionary[CashPayment::class];
+                $preselectionValue = $this->preselectionDictionary[CashPayment::class] ?? null;
                 break;
             case 'invoice':
-                $preselectionValue = $this->preselectionDictionary[InvoicePayment::class];
+                $preselectionValue = $this->preselectionDictionary[InvoicePayment::class] ?? null;
                 break;
             case 'prepayment':
-                $preselectionValue = $this->preselectionDictionary[PrePayment::class];
+                $preselectionValue = $this->preselectionDictionary[PrePayment::class] ?? null;
                 break;
         }
 

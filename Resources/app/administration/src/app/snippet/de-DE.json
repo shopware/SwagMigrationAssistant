@@ -4,7 +4,12 @@
       "title": "Migrations-Assistent",
       "headline": "Beginne mit Deinem Umzug zu Shopware",
       "information": "Verbinde zunächst Dein bisheriges Shopsystem – der Migrations-Assistent hilft Dir dabei.",
-      "button": "Migrations-Assistenten öffnen"
+      "button": "Migrations-Assistenten öffnen",
+      "shopInfoCard": {
+          "header": "Migrations-Assistent",
+          "button": "Öffnen",
+          "resetButton": "Abschließen"
+      }
     },
     "general": {
       "mainMenuItemGeneral": "Migrations-Assistent",
@@ -153,6 +158,7 @@
         "buttonRemoveCredentials": "Zugangsdaten löschen",
         "buttonProfileInstallation": "Weiteres Profil installieren",
         "buttonResetChecksums": "Reset der Prüfsummen",
+        "buttonResetMigration": "Migration abschließen",
         "connected": "Verbunden",
         "notConnected": "Nicht verbunden",
         "profile": "System-Profil:",
@@ -170,10 +176,22 @@
         },
         "resetChecksumsConfirmDialog": {
           "title": "Reset der Prüfsummen",
-          "content": "Wenn Du die sogenannten Prüfsummen zurücksetzt, werden bei der nächsten Migration alle Daten aus dem Quellsystem noch einmal berücksichtigt. Dies beinhaltet auch bereits migrierte, unveränderte Datensätze. <br><br><b>Wichtig:</b> Änderungen der Datensätze, die Du seit der letzten Migration in Shopware 6 vorgenommen hast, werden wieder überschrieben. Die Daten aus dem Quellsystem haben Vorrang.",
+          "content": "Wenn Du die sogenannten Prüfsummen zurücksetzt, werden bei der nächsten Migration alle Daten aus dem Quellsystem noch einmal berücksichtigt. Dies beinhaltet auch bereits migrierte, unveränderte Datensätze. <br><br><strong>Wichtig:</strong> Änderungen der Datensätze, die Du seit der letzten Migration in Shopware 6 vorgenommen hast, werden wieder überschrieben. Die Daten aus dem Quellsystem haben Vorrang.",
           "contentHint": "Möchtest du die Prüfsummen zurücksetzen?",
           "abortButtonText": "Abbrechen",
           "confirmButtonText": "Ja, zurücksetzen"
+        },
+        "resetMigrationConfirmDialog": {
+            "title": "Die Migration abschließen",
+            "header": "Deine Shopdaten sind fertig migriert?",
+            "content": "Super! Schließe dann jetzt die Migration ab, um temporäre und ungenutzte Dateien aufzuräumen. <strong>Bitte beachte:</strong> Das Abschließen der Migration ist endgültig. Du kannst danach keine Migration mehr über Deine aktuelle Verbindung durchführen.",
+            "contentHint": "Möchtest Du die Migration jetzt abschließen?",
+            "abortButtonText": "Abbrechen",
+            "confirmButtonText": "Jetzt abschließen",
+            "errorNotification": {
+                "title": "Fehler bei Abschluss der Migration",
+                "message": "Eine Migration wird zur Zeit durchgeführt."
+            }
         }
       },
       "assistantCard": {

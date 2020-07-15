@@ -1,5 +1,10 @@
 {% block sw_dashboard_index_content_intro_card %}
     {% parent %}
 
-    <swag-migration-dashboard-card></swag-migration-dashboard-card>
+    {%  block swag_migration_dashboard_card %}
+
+        {% block sw_dashboard_index_content_migration_card %}
+            <swag-migration-dashboard-card></swag-migration-dashboard-card>
+        {% endblock %}
+    {% endblock %}
 {% endblock %}

@@ -1,7 +1,7 @@
 import template from './swag-migration-shop-information.html.twig';
 import './swag-migration-shop-information.scss';
 
-const { Component } = Shopware;
+const { Component, Mixin } = Shopware;
 const { mapState, mapGetters } = Shopware.Component.getComponentHelper();
 const { format } = Shopware.Utils;
 const { Criteria } = Shopware.Data;
@@ -13,12 +13,17 @@ const BADGE_TYPE = Object.freeze({
 
 Component.register('swag-migration-shop-information', {
     template,
-
     inject: {
+        /** @var {MigrationProcessStoreInitService} migrationProcessStoreInitService */
+        migrationProcessStoreInitService: 'processStoreInitService',
         /** @var {MigrationApiService} migrationService */
         migrationService: 'migrationService',
         repositoryFactory: 'repositoryFactory'
     },
+
+    mixins: [
+        Mixin.getByName('notification')
+    ],
 
     props: {
         connected: {
@@ -33,6 +38,7 @@ Component.register('swag-migration-shop-information', {
             confirmModalIsLoading: false,
             showRemoveCredentialsConfirmModal: false,
             showResetChecksumsConfirmModal: false,
+            showResetMigrationConfirmModal: false,
             lastConnectionCheck: '-',
             lastMigrationDate: '-',
             connection: null,
@@ -160,6 +166,13 @@ Component.register('swag-migration-shop-information', {
     },
 
     watch: {
+        $route: {
+            immediate: true,
+            handler() {
+                this.showResetMigrationConfirmModal = this.$route.meta.resetMigration;
+            }
+        },
+
         connectionId: {
             immediate: true,
             /**
@@ -180,9 +193,22 @@ Component.register('swag-migration-shop-information', {
             this.updateLastMigrationDate();
         },
 
+        openResetMigrationModal() {
+            this.showResetMigrationConfirmModal = true;
+            this.$router.push({
+                name: 'swag.migration.index.resetMigration'
+            });
+        },
+
+        onCloseResetModal() {
+            this.showResetMigrationConfirmModal = false;
+            this.$router.push({
+                name: 'swag.migration.index.main'
+            });
+        },
+
         updateLastMigrationDate() {
             const criteria = new Criteria(1, 1);
-            criteria.addFilter(Criteria.equals('status', 'finished'));
             criteria.addSorting(Criteria.sort('createdAt', 'DESC'));
 
             return this.migrationRunRepository.search(criteria, this.context).then((runs) => {
@@ -269,6 +295,29 @@ Component.register('swag-migration-shop-information', {
             return this.migrationService.resetChecksums(this.connectionId).then(() => {
                 this.showResetChecksumsConfirmModal = false;
                 this.confirmModalIsLoading = false;
+            });
+        },
+
+        onClickResetMigration() {
+            this.confirmModalIsLoading = true;
+            return this.migrationService.cleanupMigrationData().then(() => {
+                this.showResetMigrationConfirmModal = false;
+                this.confirmModalIsLoading = false;
+                this.migrationProcessStoreInitService.initProcessStore();
+
+                this.$nextTick(() => {
+                    this.$router.push({ name: 'swag.migration.emptyScreen' });
+                });
+            }).catch(() => {
+                this.showResetMigrationConfirmModal = false;
+                this.confirmModalIsLoading = false;
+
+                this.createNotificationError({
+                    title: this.$t('swag-migration.index.shopInfoCard.resetMigrationConfirmDialog.errorNotification.title'),
+                    message: this.$t('swag-migration.index.shopInfoCard.resetMigrationConfirmDialog.errorNotification.message'),
+                    variant: 'error',
+                    growl: true
+                });
             });
         }
     }

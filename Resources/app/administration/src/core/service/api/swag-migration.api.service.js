@@ -276,6 +276,14 @@ class MigrationApiService extends ApiService {
             headers
         });
     }
+
+    cleanupMigrationData(additionalHeaders = {}) {
+        const headers = this.getBasicHeaders(additionalHeaders);
+        return this.httpClient.post(`_action/${this.getApiBasePath()}/cleanup-migration-data`, {
+            ...this.basicConfig,
+            headers
+        });
+    }
 }
 
 export default MigrationApiService;

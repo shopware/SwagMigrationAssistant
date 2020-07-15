@@ -42,7 +42,16 @@ Module.register('swag-migration', {
                     path: 'main',
                     component: 'swag-migration-main-page',
                     meta: {
-                        parentPath: 'sw.settings.index'
+                        parentPath: 'sw.settings.index',
+                        resetMigration: false
+                    }
+                },
+                resetMigration: {
+                    path: 'reset-migration',
+                    component: 'swag-migration-main-page',
+                    meta: {
+                        parentPath: 'sw.settings.index',
+                        resetMigration: true
                     }
                 },
                 history: {

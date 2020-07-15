@@ -319,7 +319,8 @@ class MigrationDataWriterTest extends TestCase
             new SwagMigrationDataDefinition(),
             $this->dbConnection,
             new LoggingService($this->loggingRepo),
-            $this->getContainer()->get(StoreService::class)
+            $this->getContainer()->get(StoreService::class),
+            $this->getContainer()->get('messenger.bus.shopware')
         );
     }
 

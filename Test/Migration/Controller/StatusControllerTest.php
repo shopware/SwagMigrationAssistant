@@ -206,7 +206,8 @@ class StatusControllerTest extends TestCase
                 $this->getContainer()->get(SwagMigrationDataDefinition::class),
                 $this->getContainer()->get(Connection::class),
                 new LoggingService($loggingRepo),
-                $this->getContainer()->get(StoreService::class)
+                $this->getContainer()->get(StoreService::class),
+                $this->getContainer()->get('messenger.bus.shopware')
             ),
             new DataSelectionRegistry([
                 new ProductDataSelection(),
@@ -215,7 +216,8 @@ class StatusControllerTest extends TestCase
             $this->connectionRepo,
             $this->getContainer()->get(ProfileRegistry::class),
             $this->getContainer()->get(GatewayRegistry::class),
-            $this->migrationContextFactory
+            $this->migrationContextFactory,
+            $this->generalSettingRepo
         );
     }
 
@@ -658,6 +660,20 @@ class StatusControllerTest extends TestCase
         /** @var SwagMigrationRunEntity $run */
         $run = $this->runRepo->search(new Criteria([$this->runUuid]), $this->context)->first();
         static::assertSame('finished', $run->getStatus());
+    }
+
+    public function testGetResetStatus(): void
+    {
+        $id = $this->generalSettingRepo->searchIds(new Criteria(), $this->context)->firstId();
+        $this->generalSettingRepo->update([['id' => $id, 'isReset' => false]], $this->context);
+
+        $result = $this->controller->getResetStatus($this->context)->getContent();
+        static::assertSame('false', $result);
+
+        $this->generalSettingRepo->update([['id' => $id, 'isReset' => true]], $this->context);
+
+        $result = $this->controller->getResetStatus($this->context)->getContent();
+        static::assertSame('true', $result);
     }
 
     private function isJsonArrayTypeOfProgressState(array $state): bool

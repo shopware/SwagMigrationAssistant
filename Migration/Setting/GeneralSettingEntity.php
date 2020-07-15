@@ -25,6 +25,11 @@ class GeneralSettingEntity extends Entity
      */
     protected $selectedConnection;
 
+    /**
+     * @var bool
+     */
+    protected $isReset;
+
     public function getSelectedConnectionId(): ?string
     {
         return $this->selectedConnectionId;
@@ -43,5 +48,15 @@ class GeneralSettingEntity extends Entity
     public function setSelectedConnection(SwagMigrationConnectionEntity $selectedConnection): void
     {
         $this->selectedConnection = $selectedConnection;
+    }
+
+    public function isReset(): bool
+    {
+        return $this->isReset;
+    }
+
+    public function setIsReset(bool $isReset): void
+    {
+        $this->isReset = $isReset;
     }
 }

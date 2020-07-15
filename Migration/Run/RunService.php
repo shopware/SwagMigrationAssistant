@@ -35,12 +35,14 @@ use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\Logging\Log\ThemeCompilingErrorRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
+use SwagMigrationAssistant\Migration\MessageQueue\Message\CleanupMigrationMessage;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationAssistant\Migration\Service\ProgressState;
 use SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService;
 use Symfony\Component\Cache\Adapter\TagAwareAdapterInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 class RunService implements RunServiceInterface
 {
@@ -133,6 +135,11 @@ class RunService implements RunServiceInterface
      */
     private $storeService;
 
+    /**
+     * @var MessageBusInterface
+     */
+    private $bus;
+
     public function __construct(
         EntityRepositoryInterface $migrationRunRepo,
         EntityRepositoryInterface $connectionRepo,
@@ -150,7 +157,8 @@ class RunService implements RunServiceInterface
         EntityDefinition $migrationDataDefinition,
         Connection $dbalConnection,
         LoggingServiceInterface $loggingService,
-        StoreService $storeService
+        StoreService $storeService,
+        MessageBusInterface $bus
     ) {
         $this->migrationRunRepo = $migrationRunRepo;
         $this->connectionRepo = $connectionRepo;
@@ -169,6 +177,7 @@ class RunService implements RunServiceInterface
         $this->dbalConnection = $dbalConnection;
         $this->loggingService = $loggingService;
         $this->storeService = $storeService;
+        $this->bus = $bus;
     }
 
     public function takeoverMigration(string $runUuid, Context $context): string
@@ -393,6 +402,18 @@ SQL;
         $this->fireTrackingInformation(self::TRACKING_EVENT_MIGRATION_FINISHED, $runUuid, $context);
 
         $this->cleanupMigration($runUuid, true);
+    }
+
+    public function cleanupMigrationData(): void
+    {
+        $result = $this->dbalConnection->executeQuery('SELECT * FROM swag_migration_run WHERE `status` = :status', ['status' => SwagMigrationRunEntity::STATUS_RUNNING])->fetch();
+
+        if ($result !== false) {
+            throw new MigrationIsRunningException();
+        }
+
+        $this->dbalConnection->executeUpdate('UPDATE swag_migration_general_setting SET selected_connection_id = NULL, `is_reset` = 1;');
+        $this->bus->dispatch(new CleanupMigrationMessage());
     }
 
     public function assignThemeToSalesChannel(string $runUuid, Context $context): void
