@@ -150,5 +150,10 @@
                  parent="SwagMigrationAssistant\Profile\Shopware\Converter\SeoUrlConverter">
             <tag name="shopware.migration.converter"/>
         </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55CrossSellingConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware\Converter\CrossSellingConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
     </services>
 </container>
