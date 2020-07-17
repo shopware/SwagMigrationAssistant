@@ -9,7 +9,7 @@ return [
     'product' => [
         'id' => '270',
         'objecttype' => 'article',
-        'objectdata' => 'a:2:{s:10:"txtArtikel";s:65:"Main product with marking free of shipping costs and highlighting";s:19:"txtshortdescription";s:25:"short english description";}',
+        'objectdata' => 'a:2:{s:10:"txtArtikel";s:65:"Main product with marking free of shipping costs and highlighting";s:19:"txtlangbeschreibung";s:25:"short english description";}',
         'objectkey' => '6',
         'objectlanguage' => '2',
         'dirty' => '1',
@@ -19,7 +19,7 @@ return [
     'productnolocale' => [
         'id' => '277',
         'objecttype' => 'article',
-        'objectdata' => 'a:2:{s:10:"txtArtikel";s:65:"Main product with marking free of shipping costs and highlighting";s:19:"txtshortdescription";s:25:"short english description";}',
+        'objectdata' => 'a:2:{s:10:"txtArtikel";s:65:"Main product with marking free of shipping costs and highlighting";s:19:"txtlangbeschreibung";s:25:"short english description";}',
         'objectkey' => '6',
         'objectlanguage' => '2',
         'dirty' => '1',
