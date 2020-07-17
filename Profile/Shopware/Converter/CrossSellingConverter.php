@@ -106,7 +106,8 @@ abstract class CrossSellingConverter extends ShopwareConverter
             $data['type'],
             $data['id'],
             $data['articleID'],
-            $data['relatedarticle']
+            $data['relatedarticle'],
+            $data['position']
         );
 
         $returnData = $data;

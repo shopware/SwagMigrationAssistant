@@ -351,6 +351,11 @@
             <tag name="shopware.migration.reader"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\CrossSellingReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiReader">
+            <tag name="shopware.migration.reader"/>
+        </service>
+
         <!-- Local reader -->
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader" abstract="true">
             <argument type="service" id="SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory"/>

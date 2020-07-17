@@ -42,9 +42,9 @@ SELECT
     COUNT(*)
 FROM
     (
-        SELECT 'accessory' AS "type", accessory.* FROM s_articles_relationships AS accessory
+        SELECT 'accessory' AS type, accessory.* FROM s_articles_relationships AS accessory
         UNION
-        SELECT 'similar' AS "type", similar.* FROM s_articles_similar AS similar
+        SELECT 'similar' AS type, similar.* FROM s_articles_similar AS similar
     ) AS result
 SQL;
 
@@ -56,19 +56,20 @@ SQL;
     protected function fetchData(MigrationContextInterface $migrationContext): array
     {
         $sql = <<<SQL
-SELECT
-       :accessory AS type,
-       acce.*
-FROM s_articles_relationships AS acce
+SELECT * FROM (
+    SELECT
+           :accessory AS type,
+           acce.*
+    FROM s_articles_relationships AS acce
 
-UNION
+    UNION
 
-SELECT
-       :similar AS type,
-       similar.*
-FROM s_articles_similar AS similar
-
-ORDER BY "type", id LIMIT :limit OFFSET :offset
+    SELECT
+           :similar AS type,
+           similar.*
+    FROM s_articles_similar AS similar
+) cross_selling
+ORDER BY cross_selling.type, cross_selling.articleID LIMIT :limit OFFSET :offset
 SQL;
 
         $statement = $this->connection->prepare($sql);
