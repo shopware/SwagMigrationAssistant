@@ -1,5 +1,6 @@
 # REPLACE-GLOBAL-WITH-NEXT-VERSION
 - PT-11864 - Improve media file processing
+- PT-11942 - Improve migration of product-translations
 
 # 1.5.3
 - PT-11845 - Improve migration of customers
