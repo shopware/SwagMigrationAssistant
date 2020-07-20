@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Api\Context\AdminApiSource;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Indexing\MessageQueue\IndexerMessageSender;
+use Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexerRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
@@ -199,7 +199,7 @@ class StatusControllerTest extends TestCase
                 $mediaFileRepo,
                 $salesChannelRepo,
                 $themeRepo,
-                $this->getContainer()->get(IndexerMessageSender::class),
+                $this->getContainer()->get(EntityIndexerRegistry::class),
                 $this->getContainer()->get(ThemeService::class),
                 $mappingService,
                 $this->getContainer()->get('cache.object'),

@@ -14,7 +14,7 @@ use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\InvoicePayment;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Indexing\MessageQueue\IndexerMessageSender;
+use Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexerRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
@@ -312,7 +312,7 @@ class MigrationDataWriterTest extends TestCase
             $this->mediaRepo,
             $this->salesChannelRepo,
             $this->themeRepo,
-            new IndexerMessageSender($this->getContainer()->get('messenger.bus.shopware'), []),
+            new EntityIndexerRegistry([], $this->getContainer()->get('messenger.bus.shopware')),
             new DummyThemeService($this->themeSalesChannelRepo),
             $this->mappingService,
             $this->getContainer()->get('cache.object'),
