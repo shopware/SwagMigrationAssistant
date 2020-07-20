@@ -19,7 +19,20 @@
         "label": {
             "de-DE": "Migrations-Assistent",
             "en-GB": "Migration Assistant"
+        },
+        "description": {
+            "de-DE": "Der Migrations-Assistent stellt eine Verbindung von einer Datenquelle (z.B Shopware 5) zu Shopware 6 her und begleitet Dich Schritt für Schritt beim Migrationsprozess.",
+            "en-GB": "The Migration Assistant establishes a connection between a data source (e.g. Shopware 5) and Shopware 6 and guides you step by step through the migration process."
+        },
+        "manufacturerLink": {
+            "de-DE": "https://store.shopware.com/shopware-ag.html",
+            "en-GB": "https://store.shopware.com/en/shopware-ag.html"
+        },
+        "supportLink": {
+            "de-DE": "https://issues.shopware.com/",
+            "en-GB": "https://issues.shopware.com/"
         }
+
     },
     "autoload": {
         "psr-4": {
