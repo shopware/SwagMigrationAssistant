@@ -1,4 +1,5 @@
-# REPLACE-GLOBAL-WITH-NEXT-VERSION
+# 1.6.0
+- PT-11692 - Add functionality to finish migration and remove unneeded data
 - PT-11864 - Improve media file processing
 - PT-11942 - Improve migration of product-translations
 
