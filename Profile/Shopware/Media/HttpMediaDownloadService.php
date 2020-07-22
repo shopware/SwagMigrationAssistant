@@ -236,6 +236,7 @@ class HttpMediaDownloadService extends BaseMediaService implements MediaFileProc
         $context->disableCache(function (Context $context) use ($filePath, $uuid, $name, $fileSize, $fileExtension): void {
             $mimeType = mime_content_type($filePath);
             $mediaFile = new MediaFile($filePath, $mimeType, $fileExtension, $fileSize);
+            $name = preg_replace('/[^a-zA-Z0-9_-]+/', '-', mb_strtolower($name));
 
             try {
                 $this->fileSaver->persistFileToMedia($mediaFile, $name, $uuid, $context);

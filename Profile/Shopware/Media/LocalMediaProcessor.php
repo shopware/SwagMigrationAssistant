@@ -216,13 +216,14 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
             $mimeType = mime_content_type($filePath);
             $mediaFile = new MediaFile($filePath, $mimeType, $fileExtension, $fileSize);
             $mediaId = $media['media_id'];
+            $fileName = preg_replace('/[^a-zA-Z0-9_-]+/', '-', mb_strtolower($media['file_name']));
 
             try {
-                $this->fileSaver->persistFileToMedia($mediaFile, $media['file_name'], $mediaId, $context);
+                $this->fileSaver->persistFileToMedia($mediaFile, $fileName, $mediaId, $context);
             } catch (DuplicatedMediaFileNameException $e) {
                 $this->fileSaver->persistFileToMedia(
                     $mediaFile,
-                    $media['file_name'] . mb_substr(Uuid::randomHex(), 0, 5),
+                    $fileName . mb_substr(Uuid::randomHex(), 0, 5),
                     $mediaId,
                     $context
                 );

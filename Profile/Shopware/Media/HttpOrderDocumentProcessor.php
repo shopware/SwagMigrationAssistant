@@ -205,6 +205,7 @@ class HttpOrderDocumentProcessor extends BaseMediaService implements MediaFilePr
                 $fileExtension = pathinfo($filePath, PATHINFO_EXTENSION);
                 $mimeType = mime_content_type($filePath);
                 $fileBlob = file_get_contents($filePath);
+                $name = preg_replace('/[^a-zA-Z0-9_-]+/', '-', mb_strtolower($name));
 
                 try {
                     $this->mediaService->saveFile(

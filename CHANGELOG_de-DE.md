@@ -1,5 +1,6 @@
 # REPLACE-GLOBAL-WITH-NEXT-VERSION
 - PT-11910 - Migration von CrossSelling hinzugefügt
+- PT-11955 - Behebt ein Problem beim Speichern der Medien
 
 # 1.6.0
 - PT-11692 - Neue Funktion zum Abschluss des Migrationsprozesses die nicht mehr benötigte Daten entfernt
