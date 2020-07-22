@@ -10,6 +10,7 @@ namespace SwagMigrationAssistant\Profile\Shopware\DataSelection;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionInterface;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionStruct;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CrossSellingDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CustomerAttributeDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CustomerDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ManufacturerAttributeDataSet;
@@ -60,6 +61,7 @@ class ProductReviewDataSelection implements DataSelectionInterface
             ProductOptionRelationDataSet::getEntity(),
             ProductPropertyRelationDataSet::getEntity(),
             TranslationDataSet::getEntity(),
+            CrossSellingDataSet::getEntity(),
             CustomerAttributeDataSet::getEntity(),
             CustomerDataSet::getEntity(),
             ProductReviewDataSet::getEntity(),

@@ -43,6 +43,12 @@ final class DefaultEntities
 
     public const CUSTOMER_GROUP_CUSTOM_FIELD = 'customer_group_custom_field';
 
+    public const CROSS_SELLING = 'product_cross_selling';
+
+    public const CROSS_SELLING_ACCESSORY = 'cross_selling_accessory_item';
+
+    public const CROSS_SELLING_SIMILAR = 'cross_selling_similar_item';
+
     public const DELIVERY_TIME = 'delivery_time';
 
     public const LANGUAGE = 'language';

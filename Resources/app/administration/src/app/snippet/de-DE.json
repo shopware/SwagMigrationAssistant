@@ -251,7 +251,8 @@
           "currency": "Währungen:",
           "sales_channel": "Verkaufskanäle:",
           "product_review": "Bewertungen:",
-          "seo_url": "Seo Urls:"
+          "seo_url": "Seo Urls:",
+          "product_cross_selling": "Cross Selling:"
         },
         "noData": "Es wurden keine Daten zum Migrieren gefunden."
       },

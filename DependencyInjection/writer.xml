@@ -191,5 +191,12 @@
             <argument type="service" id="Shopware\Core\Content\Seo\SeoUrl\SeoUrlDefinition"/>
             <tag name="shopware.migration.writer"/>
         </service>
+
+        <service id="SwagMigrationAssistant\Migration\Writer\CrossSellingWriter"
+                 parent="SwagMigrationAssistant\Migration\Writer\AbstractWriter">
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
+            <argument type="service" id="Shopware\Core\Content\Product\Aggregate\ProductCrossSelling\ProductCrossSellingDefinition"/>
+            <tag name="shopware.migration.writer"/>
+        </service>
     </services>
 </container>
