@@ -161,13 +161,14 @@ class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileP
                 $fileExtension = pathinfo($sourcePath, PATHINFO_EXTENSION);
                 $mimeType = mime_content_type($sourcePath);
                 $fileBlob = file_get_contents($sourcePath);
+                $name = preg_replace('/[^a-zA-Z0-9_-]+/', '-', mb_strtolower($media['file_name']));
 
                 try {
                     $this->mediaService->saveFile(
                         $fileBlob,
                         $fileExtension,
                         $mimeType,
-                        $media['file_name'],
+                        $name,
                         $context,
                         'document',
                         $media['media_id']
@@ -177,7 +178,7 @@ class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileP
                         $fileBlob,
                         $fileExtension,
                         $mimeType,
-                        $media['file_name'] . mb_substr(Uuid::randomHex(), 0, 5),
+                        $name . mb_substr(Uuid::randomHex(), 0, 5),
                         $context,
                         'document',
                         $media['media_id']

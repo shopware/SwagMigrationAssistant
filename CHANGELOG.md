@@ -1,5 +1,6 @@
 # REPLACE-GLOBAL-WITH-NEXT-VERSION
 - PT-11910 - Add migration of cross selling
+- PT-11955 - Fixes a problem with saving media
 
 # 1.6.0
 - PT-11692 - Add functionality to finish migration and remove unneeded data
