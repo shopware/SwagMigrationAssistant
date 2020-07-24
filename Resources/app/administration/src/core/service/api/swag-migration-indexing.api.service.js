@@ -8,7 +8,7 @@ class MigrationIndexingApiService extends ApiService {
         };
     }
 
-    indexing(lastIndexer = null, offset = null, timestamp = null, indexingType = null, additionalHeaders = {}) {
+    indexing(lastIndexer = null, offset = null, timestamp = null, additionalHeaders = {}) {
         const headers = this.getBasicHeaders(additionalHeaders);
 
         const params = {};
@@ -20,9 +20,6 @@ class MigrationIndexingApiService extends ApiService {
         }
         if (timestamp !== null && timestamp !== undefined) {
             params.timestamp = timestamp;
-        }
-        if (indexingType !== null && indexingType !== undefined) {
-            params.indexingType = indexingType;
         }
 
         return this.httpClient.post(`_action/${this.getApiBasePath()}/indexing`, params, {

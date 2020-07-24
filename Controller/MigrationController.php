@@ -9,7 +9,6 @@ namespace SwagMigrationAssistant\Controller;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Indexing\IndexerRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use SwagMigrationAssistant\Exception\EntityNotExistsException;
@@ -80,11 +79,6 @@ class MigrationController extends AbstractController
      */
     private $entityPartialIndexerService;
 
-    /**
-     * @var IndexerRegistry
-     */
-    private $dbalPartialIndexerService;
-
     public function __construct(
         MigrationDataFetcherInterface $migrationDataFetcher,
         MigrationDataConverterInterface $migrationDataConverter,
@@ -94,8 +88,7 @@ class MigrationController extends AbstractController
         RunServiceInterface $runService,
         EntityRepositoryInterface $migrationRunRepo,
         MigrationContextFactoryInterface $migrationContextFactory,
-        EntityPartialIndexerService $indexerService,
-        IndexerRegistry $dbalPartialIndexerService
+        EntityPartialIndexerService $indexerService
     ) {
         $this->migrationDataFetcher = $migrationDataFetcher;
         $this->migrationDataConverter = $migrationDataConverter;
@@ -106,7 +99,6 @@ class MigrationController extends AbstractController
         $this->migrationRunRepo = $migrationRunRepo;
         $this->migrationContextFactory = $migrationContextFactory;
         $this->entityPartialIndexerService = $indexerService;
-        $this->dbalPartialIndexerService = $dbalPartialIndexerService;
     }
 
     /**
@@ -316,23 +308,7 @@ class MigrationController extends AbstractController
     {
         $lastIndexer = $request->get('lastIndexer');
         $offset = $request->get('offset');
-        $indexingType = $request->get('indexingType', 'entity');
-        $result = null;
-
-        if ($indexingType === 'entity') {
-            $offset = $request->request->get('offset');
-            $result = $this->entityPartialIndexerService->partial($lastIndexer, $offset);
-
-            if ($result === null) {
-                $indexingType = 'dbal';
-                $lastIndexer = null;
-                $offset = null;
-            }
-        }
-
-        if ($indexingType === 'dbal') {
-            $result = $this->dbalPartialIndexerService->partial($lastIndexer, $offset, new \DateTime());
-        }
+        $result = $this->entityPartialIndexerService->partial($lastIndexer, $offset);
 
         if (!$result) {
             return new JsonResponse(['done' => true]);
@@ -341,7 +317,6 @@ class MigrationController extends AbstractController
         return new JsonResponse([
             'lastIndexer' => $result->getIndexer(),
             'offset' => $result->getOffset(),
-            'indexingType' => $indexingType,
         ]);
     }
 }

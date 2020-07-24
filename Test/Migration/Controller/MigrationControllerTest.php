@@ -11,8 +11,7 @@ use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Indexing\IndexerRegistryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Indexing\MessageQueue\IndexerMessageSender;
+use Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexerRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\Store\Services\StoreService;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
@@ -241,7 +240,7 @@ class MigrationControllerTest extends TestCase
                 $this->mediaFileRepo,
                 $salesChannelRepo,
                 $themeRepo,
-                $this->getContainer()->get(IndexerMessageSender::class),
+                $this->getContainer()->get(EntityIndexerRegistry::class),
                 $this->getContainer()->get(ThemeService::class),
                 $mappingService,
                 $this->getContainer()->get('cache.object'),
@@ -253,8 +252,7 @@ class MigrationControllerTest extends TestCase
             ),
             $this->runRepo,
             $this->migrationContextFactory,
-            $this->getContainer()->get(EntityPartialIndexerService::class),
-            $this->getContainer()->get(IndexerRegistryInterface::class)
+            $this->getContainer()->get(EntityPartialIndexerService::class)
         );
     }
 

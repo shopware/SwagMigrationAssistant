@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Api\Context\AdminApiSource;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Indexing\MessageQueue\IndexerMessageSender;
+use Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexerRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\Store\Services\StoreService;
@@ -205,7 +205,7 @@ class RunServiceTest extends TestCase
             $mediaFileRepo,
             $this->salesChannelRepo,
             $this->themeRepo,
-            $this->getContainer()->get(IndexerMessageSender::class),
+            $this->getContainer()->get(EntityIndexerRegistry::class),
             $this->getContainer()->get(ThemeService::class),
             $this->mappingService,
             $this->getContainer()->get('cache.object'),
@@ -229,7 +229,7 @@ class RunServiceTest extends TestCase
             $mediaFileRepo,
             $this->salesChannelRepo,
             $this->themeRepo,
-            $this->getContainer()->get(IndexerMessageSender::class),
+            $this->getContainer()->get(EntityIndexerRegistry::class),
             $this->getContainer()->get(ThemeService::class),
             $this->mappingService,
             $this->getContainer()->get('cache.object'),

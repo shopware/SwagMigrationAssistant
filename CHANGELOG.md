@@ -1,5 +1,6 @@
-# REPLACE-GLOBAL-WITH-NEXT-VERSION
+# 1.7.0
 - PT-11910 - Add migration of cross selling
+- PT-11922 - Shopware 6.3 compatibility
 - PT-11955 - Fixes a problem with saving media
 
 # 1.6.0
