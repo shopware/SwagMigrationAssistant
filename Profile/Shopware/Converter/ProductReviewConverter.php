@@ -22,7 +22,6 @@ abstract class ProductReviewConverter extends ShopwareConverter
     protected $requiredDataFieldKeys = [
         '_locale',
         'articleID',
-        'email',
     ];
 
     /**
@@ -103,28 +102,21 @@ abstract class ProductReviewConverter extends ShopwareConverter
         $this->mappingIds[] = $mapping['id'];
         unset($data['articleID']);
 
-        $mapping = $this->mappingService->getMapping(
-            $this->connectionId,
-            DefaultEntities::CUSTOMER,
-            $data['email'],
-            $context
-        );
-
-        if ($mapping === null) {
-            $this->loggingService->addLogEntry(
-                new AssociationRequiredMissingLog(
-                    $migrationContext->getRunUuid(),
-                    DefaultEntities::CUSTOMER,
-                    $data['email'],
-                    DefaultEntities::PRODUCT_REVIEW
-                )
+        if (isset($data['email'])) {
+            $mapping = $this->mappingService->getMapping(
+                $this->connectionId,
+                DefaultEntities::CUSTOMER,
+                $data['email'],
+                $context
             );
 
-            return new ConvertStruct(null, $originalData);
+            if ($mapping !== null) {
+                $converted['customerId'] = $mapping['entityUuid'];
+                $this->mappingIds[] = $mapping['id'];
+            }
         }
-        $converted['customerId'] = $mapping['entityUuid'];
-        $this->mappingIds[] = $mapping['id'];
-        unset($data['email']);
+        $this->convertValue($converted, 'externalEmail', $data, 'email');
+        $this->convertValue($converted, 'externalUser', $data, 'name');
 
         $shopId = $data['shop_id'] === null ? $data['mainShopId'] : $data['shop_id'];
         $mapping = $this->mappingService->getMapping(
@@ -178,8 +170,22 @@ abstract class ProductReviewConverter extends ShopwareConverter
         $this->convertValue($converted, 'status', $data, 'active', self::TYPE_BOOLEAN);
         $this->convertValue($converted, 'comment', $data, 'answer');
 
+        if (isset($data['datum'])) {
+            $this->convertValue($converted, 'createdAt', $data, 'datum');
+        }
+
         $this->updateMainMapping($migrationContext, $context);
 
-        return new ConvertStruct($converted, $data, $this->mainMapping['id']);
+        // There is no equivalent field
+        unset(
+            $data['answer_date']
+        );
+
+        $resultData = $data;
+        if (empty($resultData)) {
+            $resultData = null;
+        }
+
+        return new ConvertStruct($converted, $resultData, $this->mainMapping['id']);
     }
 }
