@@ -7,7 +7,7 @@ import {
     WORKER_INTERRUPT_TYPE
 } from '../../../../core/service/migration/swag-migration-worker.service';
 
-const { Component, State } = Shopware;
+const { Component, State, Mixin } = Shopware;
 const { mapState } = Shopware.Component.getComponentHelper();
 
 Component.register('swag-migration-process-screen', {
@@ -25,6 +25,10 @@ Component.register('swag-migration-process-screen', {
         /** @var {MigrationUiStoreInitService} migrationUiStoreInitService */
         migrationUiStoreInitService: 'uiStoreInitService'
     },
+
+    mixins: [
+        Mixin.getByName('notification')
+    ],
 
     data() {
         return {
@@ -408,6 +412,18 @@ Component.register('swag-migration-process-screen', {
                 State.commit('swagMigration/ui/setIsLoading', true);
                 this.migrationWorkerService.pauseMigration();
             }
+        },
+
+        onSaveButtonClick() {
+            this.migrationService.writePremapping(
+                this.runId,
+                this.premapping
+            ).then(() => {
+                this.createNotificationSuccess({
+                    message: this.$t('swag-migration.index.savePremapping.message'),
+                    growl: true
+                });
+            });
         },
 
         onBackButtonClick() {

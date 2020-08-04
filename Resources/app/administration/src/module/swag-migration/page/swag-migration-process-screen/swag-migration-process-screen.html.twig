@@ -13,31 +13,76 @@
 
         {% block swag_migration_index_smart_bar_actions %}
             <template #smart-bar-actions>
-                <sw-button v-if="abortButtonVisible" @click="onAbortButtonClick">
-                    {{ $tc('swag-migration.index.abortButton') }}
-                </sw-button>
-                <sw-button v-if="backButtonVisible"
-                           variant="primary"
-                           @click="onBackButtonClick">
-                    {{ $tc('swag-migration.index.backButton') }}
-                </sw-button>
-                <sw-button v-if="pauseButtonVisible"
-                           variant="primary"
-                           :disabled="pauseButtonDisabled"
-                           @click="onPauseButtonClick">
-                    {{ $tc('swag-migration.index.pauseButton') }}
-                </sw-button>
-                <sw-button v-if="continueButtonVisible"
-                           variant="primary"
-                           @click="onContinueButtonClick">
-                    {{ $tc('swag-migration.index.continueButton') }}
-                </sw-button>
-                <sw-button v-if="startButtonVisible"
-                           variant="primary"
-                           :disabled="startButtonDisabled"
-                           @click="onStartButtonClick">
-                    {{ $tc('swag-migration.index.startButton') }}
-                </sw-button>
+
+                {% block swag_migration_index_smart_bar_abort_button %}
+                    <sw-button v-if="abortButtonVisible" @click="onAbortButtonClick">
+                        {{ $tc('swag-migration.index.abortButton') }}
+                    </sw-button>
+                {% endblock %}
+
+                {% block swag_migration_index_smart_bar_back_button %}
+                    <sw-button v-if="backButtonVisible"
+                               variant="primary"
+                               @click="onBackButtonClick">
+                        {{ $tc('swag-migration.index.backButton') }}
+                    </sw-button>
+                {% endblock %}
+
+                {% block swag_migration_index_smart_bar_pause_button %}
+                    <sw-button v-if="pauseButtonVisible"
+                               variant="primary"
+                               :disabled="pauseButtonDisabled"
+                               @click="onPauseButtonClick">
+                        {{ $tc('swag-migration.index.pauseButton') }}
+                    </sw-button>
+                {% endblock %}
+
+                {% block swag_migration_index_smart_bar_continue_button %}
+                    <sw-button v-if="continueButtonVisible"
+                               variant="primary"
+                               @click="onContinueButtonClick">
+                        {{ $tc('swag-migration.index.continueButton') }}
+                    </sw-button>
+                {% endblock %}
+
+                {% block swag_migration_index_smart_bar_button_group %}
+                    <sw-button-group
+                        v-if="startButtonVisible"
+                        :splitButton="true">
+
+                        {% block swag_migration_index_smart_bar_start_button %}
+                            <sw-button variant="primary"
+                                       :disabled="startButtonDisabled"
+                                       @click="onStartButtonClick">
+                                {{ $tc('swag-migration.index.startButton') }}
+                            </sw-button>
+                        {% endblock %}
+
+                        {% block swag_migration_index_smart_bar_context_button %}
+                            <sw-context-button :disabled="isLoading">
+                                <template slot="button">
+
+                                    {% block swag_migration_index_smart_bar_context_button_content %}
+                                        <sw-button square
+                                            variant="primary"
+                                            :disabled="isLoading">
+                                            <sw-icon name="small-arrow-medium-down" size="16"></sw-icon>
+                                        </sw-button>
+                                    {% endblock %}
+                                </template>
+
+                                {% block swag_migration_index_smart_bar_premapping_save_button %}
+                                    <sw-context-menu-item @click="onSaveButtonClick"
+                                                          :disabled="isLoading">
+                                        {{ $tc('swag-migration.index.savePremapping.saveButton') }}
+                                    </sw-context-menu-item>
+                                {% endblock %}
+                            </sw-context-button>
+                        {% endblock %}
+
+                    </sw-button-group>
+                {% endblock %}
+
             </template>
         {% endblock %}
 
