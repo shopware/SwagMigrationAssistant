@@ -1,3 +1,6 @@
+# 1.7.1
+- MIG-6 - Add functionality to save premapping without start migration for CLI support
+
 # 1.7.0
 - PT-11910 - Add migration of cross selling
 - PT-11922 - Shopware 6.3 compatibility

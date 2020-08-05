@@ -143,6 +143,10 @@
       "title": "Übersicht",
       "migrateButton": "Migration starten",
       "startButton": "Fortfahren",
+      "savePremapping": {
+          "saveButton": "Premapping speichern",
+          "message": "Das Premapping wurde erfolgreich gespeichert."
+      },
       "pauseButton": "Pausieren",
       "continueButton": "Fortsetzen",
       "abortButton": "Beenden",

@@ -1,3 +1,6 @@
+# 1.7.1
+- MIG-6 - Neue Funktion zum Speichern des Premappings ohne das Starten einer Migration für den CLI-Support
+
 # 1.7.0
 - PT-11910 - Migration von CrossSelling hinzugefügt
 - PT-11922 - Kompatibilität für Shopware 6.3

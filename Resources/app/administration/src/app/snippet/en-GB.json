@@ -143,6 +143,10 @@
       "title": "General",
       "migrateButton": "Start migration",
       "startButton": "Continue",
+      "savePremapping": {
+          "saveButton": "Save premapping",
+          "message": "Premapping has been saved."
+      },
       "pauseButton": "Pause",
       "continueButton": "Continue",
       "abortButton": "Cancel",
