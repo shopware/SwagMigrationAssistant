@@ -32,8 +32,8 @@ class CustomerAndOrderDataSelection implements DataSelectionInterface
     {
         return new DataSelectionStruct(
             self::IDENTIFIER,
-            $this->getEntityNames(),
-            $this->getEntityNamesRequiredForCount(),
+            $this->getDataSets(),
+            $this->getDataSetsRequiredForCount(),
             'swag-migration.index.selectDataCard.dataSelection.customersOrders',
             200,
             true
@@ -43,24 +43,24 @@ class CustomerAndOrderDataSelection implements DataSelectionInterface
     /**
      * {@inheritdoc}
      */
-    public function getEntityNames(): array
+    public function getDataSets(): array
     {
         return [
-            CustomerAttributeDataSet::getEntity(),
-            CustomerDataSet::getEntity(),
-            ShippingMethodDataSet::getEntity(),
-            OrderAttributeDataSet::getEntity(),
-            OrderDataSet::getEntity(),
-            OrderDocumentAttributeDataSet::getEntity(),
-            OrderDocumentDataSet::getEntity(),
+            new CustomerAttributeDataSet(),
+            new CustomerDataSet(),
+            new ShippingMethodDataSet(),
+            new OrderAttributeDataSet(),
+            new OrderDataSet(),
+            new OrderDocumentAttributeDataSet(),
+            new OrderDocumentDataSet(),
         ];
     }
 
-    public function getEntityNamesRequiredForCount(): array
+    public function getDataSetsRequiredForCount(): array
     {
         return [
-            CustomerDataSet::getEntity(),
-            OrderDataSet::getEntity(),
+            new CustomerDataSet(),
+            new OrderDataSet(),
         ];
     }
 }

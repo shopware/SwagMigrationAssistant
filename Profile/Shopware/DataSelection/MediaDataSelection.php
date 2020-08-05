@@ -27,8 +27,8 @@ class MediaDataSelection implements DataSelectionInterface
     {
         return new DataSelectionStruct(
             self::IDENTIFIER,
-            $this->getEntityNames(),
-            $this->getEntityNamesRequiredForCount(),
+            $this->getDataSets(),
+            $this->getDataSetsRequiredForCount(),
             'swag-migration.index.selectDataCard.dataSelection.media',
             300,
             true
@@ -38,18 +38,18 @@ class MediaDataSelection implements DataSelectionInterface
     /**
      * {@inheritdoc}
      */
-    public function getEntityNames(): array
+    public function getDataSets(): array
     {
         return [
-            MediaFolderDataSet::getEntity(),
-            MediaDataSet::getEntity(),
+            new MediaFolderDataSet(),
+            new MediaDataSet(),
         ];
     }
 
-    public function getEntityNamesRequiredForCount(): array
+    public function getDataSetsRequiredForCount(): array
     {
         return [
-            MediaDataSet::getEntity(),
+            new MediaDataSet(),
         ];
     }
 }

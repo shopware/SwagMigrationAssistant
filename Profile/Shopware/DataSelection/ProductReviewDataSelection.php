@@ -38,8 +38,8 @@ class ProductReviewDataSelection implements DataSelectionInterface
     {
         return new DataSelectionStruct(
             self::IDENTIFIER,
-            $this->getEntityNames(),
-            $this->getEntityNamesRequiredForCount(),
+            $this->getDataSets(),
+            $this->getDataSetsRequiredForCount(),
             'swag-migration.index.selectDataCard.dataSelection.productReviews',
             250,
             true
@@ -49,29 +49,29 @@ class ProductReviewDataSelection implements DataSelectionInterface
     /**
      * {@inheritdoc}
      */
-    public function getEntityNames(): array
+    public function getDataSets(): array
     {
         return [
-            MediaFolderDataSet::getEntity(),
-            ProductAttributeDataSet::getEntity(),
-            ProductPriceAttributeDataSet::getEntity(),
-            ManufacturerAttributeDataSet::getEntity(),
-            ProductDataSet::getEntity(),
-            PropertyGroupOptionDataSet::getEntity(),
-            ProductOptionRelationDataSet::getEntity(),
-            ProductPropertyRelationDataSet::getEntity(),
-            TranslationDataSet::getEntity(),
-            CrossSellingDataSet::getEntity(),
-            CustomerAttributeDataSet::getEntity(),
-            CustomerDataSet::getEntity(),
-            ProductReviewDataSet::getEntity(),
+            new MediaFolderDataSet(),
+            new ProductAttributeDataSet(),
+            new ProductPriceAttributeDataSet(),
+            new ManufacturerAttributeDataSet(),
+            new ProductDataSet(),
+            new PropertyGroupOptionDataSet(),
+            new ProductOptionRelationDataSet(),
+            new ProductPropertyRelationDataSet(),
+            new TranslationDataSet(),
+            new CrossSellingDataSet(),
+            new CustomerAttributeDataSet(),
+            new CustomerDataSet(),
+            new ProductReviewDataSet(),
         ];
     }
 
-    public function getEntityNamesRequiredForCount(): array
+    public function getDataSetsRequiredForCount(): array
     {
         return [
-            ProductReviewDataSet::getEntity(),
+            new ProductReviewDataSet(),
         ];
     }
 }

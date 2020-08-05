@@ -69,16 +69,16 @@ Component.register('swag-migration-data-selector', {
             return entityTotals !== undefined && Object.keys(entityTotals).length > 1;
         },
 
-        getHelptext(entityTotals) {
-            if (entityTotals === undefined || Object.keys(entityTotals).length === 0) {
+        getHelptext(item) {
+            if (item.entityTotals === undefined || Object.keys(item.entityTotals).length === 0) {
                 return '';
             }
 
             let string = '';
-            Object.keys(entityTotals).forEach((key) => {
-                string += `${this.$tc(`swag-migration.index.selectDataCard.entities.${key}`)
+            Object.keys(item.entityTotals).forEach((key) => {
+                string += `${this.$tc(item.entityNames[key])
                 } ${
-                    entityTotals[key]
+                    item.entityTotals[key]
                 }</br>`;
             });
 

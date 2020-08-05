@@ -33,8 +33,8 @@ class BasicSettingsDataSelection implements DataSelectionInterface
     {
         return new DataSelectionStruct(
             self::IDENTIFIER,
-            $this->getEntityNames(),
-            $this->getEntityNamesRequiredForCount(),
+            $this->getDataSets(),
+            $this->getDataSetsRequiredForCount(),
             'swag-migration.index.selectDataCard.dataSelection.basicSettings',
             -100,
             true,
@@ -43,22 +43,22 @@ class BasicSettingsDataSelection implements DataSelectionInterface
         );
     }
 
-    public function getEntityNames(): array
+    public function getDataSets(): array
     {
         return [
-            LanguageDataSet::getEntity(),
-            CategoryAttributeDataSet::getEntity(),
-            CategoryDataSet::getEntity(),
-            CustomerGroupAttributeDataSet::getEntity(),
-            CustomerGroupDataSet::getEntity(),
-            CurrencyDataSet::getEntity(),
-            SalesChannelDataSet::getEntity(),
-            NumberRangeDataSet::getEntity(),
+            new LanguageDataSet(),
+            new CategoryAttributeDataSet(),
+            new CategoryDataSet(),
+            new CustomerGroupAttributeDataSet(),
+            new CustomerGroupDataSet(),
+            new CurrencyDataSet(),
+            new SalesChannelDataSet(),
+            new NumberRangeDataSet(),
         ];
     }
 
-    public function getEntityNamesRequiredForCount(): array
+    public function getDataSetsRequiredForCount(): array
     {
-        return $this->getEntityNames();
+        return $this->getDataSets();
     }
 }

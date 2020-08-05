@@ -14,4 +14,9 @@ abstract class DataSet
     abstract public static function getEntity(): string;
 
     abstract public function supports(MigrationContextInterface $migrationContext): bool;
+
+    public function getSnippet(): string
+    {
+        return 'swag-migration.index.selectDataCard.entities.' . static::getEntity();
+    }
 }
