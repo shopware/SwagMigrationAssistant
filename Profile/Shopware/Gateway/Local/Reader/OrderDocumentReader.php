@@ -41,7 +41,7 @@ class OrderDocumentReader extends AbstractReader
             $document['_locale'] = str_replace('_', '-', $locale);
         }
 
-        return $documents;
+        return $this->cleanupResultSet($documents);
     }
 
     public function readTotal(MigrationContextInterface $migrationContext): ?TotalStruct

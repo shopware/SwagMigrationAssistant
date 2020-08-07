@@ -1,3 +1,6 @@
+# REPLACE-GLOBAL-WITH-NEXT-VERSION
+- MIG-3 - Korrigiert ein Problem bei der Migration von Bestelldokumenten
+
 # 1.7.1
 - MIG-6 - Neue Funktion zum Speichern des Premappings ohne das Starten einer Migration für den CLI-Support
 

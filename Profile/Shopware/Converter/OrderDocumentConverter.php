@@ -111,6 +111,19 @@ abstract class OrderDocumentConverter extends ShopwareConverter
             return new ConvertStruct(null, $oldData);
         }
 
+        if (!isset($data['documenttype'])) {
+            $this->loggingService->addLogEntry(
+                new EmptyNecessaryFieldRunLog(
+                    $this->migrationContext->getRunUuid(),
+                    DefaultEntities::ORDER_DOCUMENT,
+                    $this->oldId,
+                    'documenttype'
+                )
+            );
+
+            return new ConvertStruct(null, $oldData);
+        }
+
         $orderMapping = $this->mappingService->getMapping(
             $this->connectionId,
             DefaultEntities::ORDER,
@@ -152,6 +165,7 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         }
 
         $documentType = $this->getDocumentType($data['documenttype']);
+
         if ($documentType === null) {
             return new ConvertStruct(null, $oldData);
         }
