@@ -101,6 +101,24 @@ class OrderDocumentConverterTest extends TestCase
         static::assertSame('SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING_ORDER', $logs[0]['code']);
     }
 
+    public function testConvertWithoutDocumentType(): void
+    {
+        $orderDocumentData = require __DIR__ . '/../../../_fixtures/order_document_data.php';
+        $context = Context::createDefaultContext();
+        unset($orderDocumentData[0]['documenttype']);
+
+        $convertResult = $this->orderDocumentConverter->convert(
+            $orderDocumentData[0],
+            $context,
+            $this->migrationContext
+        );
+        static::assertEmpty($convertResult->getConverted());
+        $logs = $this->loggingService->getLoggingArray();
+        static::assertSame('SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_ORDER_DOCUMENT', $logs[0]['code']);
+        static::assertSame('1', $logs[0]['parameters']['sourceId']);
+        static::assertSame('documenttype', $logs[0]['parameters']['emptyField']);
+    }
+
     public function testConvert(): void
     {
         $orderDocumentData = require __DIR__ . '/../../../_fixtures/order_document_data.php';

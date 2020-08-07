@@ -1,3 +1,6 @@
+# REPLACE-GLOBAL-WITH-NEXT-VERSION
+- MIG-3 - Fix problem on migrate order documents
+
 # 1.7.1
 - MIG-6 - Add functionality to save premapping without start migration for CLI support
 
