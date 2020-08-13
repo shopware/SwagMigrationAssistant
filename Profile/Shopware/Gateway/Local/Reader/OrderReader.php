@@ -73,8 +73,6 @@ class OrderReader extends AbstractReader
 
     private function fetchOrders(MigrationContextInterface $migrationContext): array
     {
-        $ids = $this->fetchIdentifiers('s_order', $migrationContext->getOffset(), $migrationContext->getLimit());
-
         $query = $this->connection->createQueryBuilder();
 
         $query->from('s_order', 'ordering');
@@ -119,9 +117,9 @@ class OrderReader extends AbstractReader
         $query->leftJoin('ordering', 's_core_paymentmeans', 'payment', 'payment.id = ordering.paymentID');
         $this->addTableSelection($query, 's_core_paymentmeans', 'payment');
 
-        $query->where('ordering.status != -1 AND ordering.id IN (:ids)');
-        $query->setParameter('ids', $ids, Connection::PARAM_STR_ARRAY);
-
+        $query->where('ordering.status != -1');
+        $query->setFirstResult($migrationContext->getOffset());
+        $query->setMaxResults($migrationContext->getLimit());
         $query->addOrderBy('ordering.id');
 
         $query = $query->execute();

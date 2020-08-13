@@ -32,19 +32,8 @@ class OrderReaderTest extends TestCase
     protected function setUp(): void
     {
         $this->connectionSetup();
-
         $this->orderReader = new OrderReader(new ConnectionFactory());
-
-        $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
-            $this->connection,
-            $this->runId,
-            new OrderDataSet(),
-            0,
-            10
-        );
-
-        $this->migrationContext->setGateway(new DummyLocalGateway());
+        $this->createMigrationContext(0, 10);
     }
 
     public function testRead(): void
@@ -77,6 +66,44 @@ class OrderReaderTest extends TestCase
         static::assertSame('de-DE', $data[1]['_locale']);
     }
 
+    public function testReadWithoutCanceledOrders(): void
+    {
+        $this->createMigrationContext(0, 1);
+        $data = $this->orderReader->read($this->migrationContext);
+
+        static::assertCount(1, $data);
+        static::assertSame('15', $data[0]['id']);
+        static::assertSame('20001', $data[0]['ordernumber']);
+        static::assertSame('2', $data[0]['userID']);
+        static::assertSame('0', $data[0]['status']);
+        static::assertSame('4', $data[0]['paymentID']);
+        static::assertSame('9', $data[0]['dispatchID']);
+        static::assertSame('EUR', $data[0]['currency']);
+        static::assertSame('1', $data[0]['subshopID']);
+        static::assertSame('2', $data[0]['customer']['id']);
+        static::assertSame('de-DE', $data[0]['_locale']);
+
+        $this->createMigrationContext(1, 1);
+        $data = $this->orderReader->read($this->migrationContext);
+
+        static::assertCount(1, $data);
+        static::assertSame('57', $data[0]['id']);
+        static::assertSame('20002', $data[0]['ordernumber']);
+        static::assertSame('1', $data[0]['userID']);
+        static::assertSame('0', $data[0]['status']);
+        static::assertSame('4', $data[0]['paymentID']);
+        static::assertSame('9', $data[0]['dispatchID']);
+        static::assertSame('EUR', $data[0]['currency']);
+        static::assertSame('1', $data[0]['subshopID']);
+        static::assertSame('1', $data[0]['customer']['id']);
+        static::assertSame('de-DE', $data[0]['_locale']);
+
+        $this->createMigrationContext(3, 1);
+        $data = $this->orderReader->read($this->migrationContext);
+
+        static::assertCount(0, $data);
+    }
+
     public function testReadTotal(): void
     {
         static::assertTrue($this->orderReader->supportsTotal($this->migrationContext));
@@ -85,5 +112,18 @@ class OrderReaderTest extends TestCase
 
         static::assertSame($this->migrationContext->getDataSet()::getEntity(), $totalStruct->getEntityName());
         static::assertSame(2, $totalStruct->getTotal());
+    }
+
+    private function createMigrationContext(int $offset, int $limit): void
+    {
+        $this->migrationContext = new MigrationContext(
+            new Shopware55Profile(),
+            $this->connection,
+            $this->runId,
+            new OrderDataSet(),
+            $offset,
+            $limit
+        );
+        $this->migrationContext->setGateway(new DummyLocalGateway());
     }
 }
