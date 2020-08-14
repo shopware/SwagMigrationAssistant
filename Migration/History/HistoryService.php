@@ -152,7 +152,7 @@ class HistoryService implements HistoryServiceInterface
     {
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('runId', $runUuid));
-        $criteria->addAggregation(new CountAggregation('count', 'runId'));
+        $criteria->addAggregation(new CountAggregation('count', 'id'));
 
         $result = $this->loggingRepo->aggregate($criteria, $context);
         /** @var CountResult $countResult */
