@@ -1,6 +1,7 @@
 # REPLACE-GLOBAL-WITH-NEXT-VERSION
 - MIG-3 - Korrigiert ein Problem bei der Migration von Bestelldokumenten
 - MIG-22 - Behebt ein Problem bei der Migration von Bestellungen, das durch abgebrochene Bestellungen verursacht wurde
+- MIG-23 - Korrigiert ein Problem beim Herunterladen der Logdatei
 
 # 1.7.1
 - MIG-6 - Neue Funktion zum Speichern des Premappings ohne das Starten einer Migration für den CLI-Support
