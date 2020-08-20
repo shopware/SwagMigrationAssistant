@@ -559,7 +559,14 @@
       "shopSystem": "Shopsystem",
       "selectedData": "Daten",
       "contextMenu": {
-        "details": "Details anzeigen"
+        "details": "Details anzeigen",
+        "downloadLogs": "Protokoll herunterladen",
+        "clearLogs": "Migrationsdaten löschen"
+      },
+      "clearRunDialog": {
+        "title": "Migrationsdaten löschen",
+        "content": "Beim Löschen der Migrationsdaten werden Log-Einträge, Mediendateien-Einträge, temporäre Migrationsdatensätze und der Migrationslauf selbst entfernt. Nach dem Löschen ist die Migration in der Historie nicht mehr einsehbar.",
+        "contentHint": "Willst Du die Daten wirklich löschen?"
       },
       "noData": "Es wurden keine Migrationen gefunden.",
       "detailPage": {
@@ -573,9 +580,9 @@
         },
         "data": "Daten",
         "errors": "Details",
-        "logDownload": "Log-Datei herunterladen",
-        "logDescription": "In der Übersicht der Log-Einträge unten siehst Du eine Zusammenfassung der aufgetretenen Fehler und deren Häufigkeit. Falls Du genauere Details benötigst, lade dir die Log-Datei herunter, um die Fehler bei der Migration zu beseitigen.",
-        "errorCode": "Titel",
+        "logDescription": "Für mehr Details {link}",
+        "logDownload": "lade das Protokoll herunter.",
+        "errorCode": "Fehlermeldung",
         "errorCount": "Anzahl",
         "noErrorsOccurred": "Es sind keine Fehler aufgetreten.",
         "dataName": "Name",

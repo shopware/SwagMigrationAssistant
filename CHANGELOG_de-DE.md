@@ -1,6 +1,7 @@
 # REPLACE-GLOBAL-WITH-NEXT-VERSION
 - MIG-3 - Korrigiert ein Problem bei der Migration von Bestelldokumenten
 - MIG-5 - Verbessertes Laden von Snippets der DataSets
+- MIG-14 - Löschen des Protokolls eines Durchlaufes ist jetzt in der Historie möglich
 - MIG-22 - Behebt ein Problem bei der Migration von Bestellungen, das durch abgebrochene Bestellungen verursacht wurde
 - MIG-23 - Korrigiert ein Problem beim Herunterladen der Logdatei
 

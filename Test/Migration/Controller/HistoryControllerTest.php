@@ -11,10 +11,10 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\Routing\Exception\MissingRequestParameterException;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Controller\HistoryController;
-use SwagMigrationAssistant\Exception\MigrationContextPropertyMissingException;
 use SwagMigrationAssistant\Migration\History\HistoryService;
 use SwagMigrationAssistant\Migration\History\HistoryServiceInterface;
 use SwagMigrationAssistant\Migration\Logging\Log\LogEntryInterface;
@@ -129,7 +129,7 @@ class HistoryControllerTest extends TestCase
     {
         $request = new Request();
 
-        $this->expectException(MigrationContextPropertyMissingException::class);
+        $this->expectException(MissingRequestParameterException::class);
         $this->controller->getGroupedLogsOfRun($request, $this->context);
     }
 
@@ -153,7 +153,7 @@ class HistoryControllerTest extends TestCase
     {
         $request = new Request();
 
-        $this->expectException(MigrationContextPropertyMissingException::class);
+        $this->expectException(MissingRequestParameterException::class);
         $this->controller->downloadLogsOfRun($request, $this->context);
     }
 

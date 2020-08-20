@@ -68,6 +68,12 @@
                             <sw-context-menu-item :routerLink="{ name: 'swag.migration.index.history.detail', params:{ id:item.id } }">
                                 {{ $tc('swag-migration.history.contextMenu.details') }}
                             </sw-context-menu-item>
+                            <sw-context-menu-item @click="onContextDownloadLogFile(item.id)">
+                                {{ $tc('swag-migration.history.contextMenu.downloadLogs') }}
+                            </sw-context-menu-item>
+                            <sw-context-menu-item variant="danger" @click="onContextClearRunClicked(item.id)" :disabled="isMediaProcessing">
+                                {{ $tc('swag-migration.history.contextMenu.clearLogs') }}
+                            </sw-context-menu-item>
                         </template>
                     {% endblock %}
 
@@ -81,6 +87,7 @@
                                 </sw-pagination>
                         </template>
                     {% endblock %}
+
                 </sw-data-grid>
             {% endblock %}
 
@@ -95,6 +102,64 @@
             {% block swag_migration_history_router_view %}
                 <router-view></router-view>
             {% endblock %}
+
+            {% block swag_migration_history_log_download_form %}
+                <form class="swag-migration-history-detail-errors__download-form"
+                      ref="downloadLogsOfRunForm"
+                      :action="logDownloadEndpoint"
+                      method="POST">
+                    <input type="hidden"
+                           name="runUuid"
+                           :value="runIdForLogDownload">
+                </form>
+            {% endblock %}
+
+            {% block swag_migration_history_run_clear_confirm_modal %}
+                <sw-modal v-if="showRunClearConfirmModal"
+                          class="swag-migration-history__run-clear-confirm-modal"
+                          :title="$tc('swag-migration.history.clearRunDialog.title')"
+                          :isLoading="runClearConfirmModalIsLoading"
+                          size="460px"
+                          @modal-close="showRunClearConfirmModal = false">
+
+                    {% block swag_migration_history_run_clear_confirm_modal_content %}
+                        <p class="swag-migration-history__run-clear-confirm-modal-content">
+                            {{ $tc('swag-migration.history.clearRunDialog.content') }}
+                        </p>
+                    {% endblock %}
+
+                    {% block swag_migration_history_run_clear_confirm_modal_content_hint %}
+                        <p class="swag-migration-history__run-clear-confirm-modal-content-hint">
+                            {{ $tc('swag-migration.history.clearRunDialog.contentHint') }}
+                        </p>
+                    {% endblock %}
+
+                    {% block swag_migration_history_run_clear_confirm_modal_footer %}
+                        <template #modal-footer>
+
+                            {% block swag_migration_history_run_clear_confirm_modal_abort %}
+                                <sw-button size="small"
+                                           :disabled="runClearConfirmModalIsLoading"
+                                           @click="showRunClearConfirmModal = false">
+                                    {{ $tc('global.default.cancel') }}
+                                </sw-button>
+                            {% endblock %}
+
+                            {% block swag_migration_history_run_clear_confirm_modal_confirm %}
+                                <sw-button size="small"
+                                           variant="primary"
+                                           :disabled="runClearConfirmModalIsLoading"
+                                           @click="onClearRunConfirmed">
+                                    {{ $tc('global.default.delete') }}
+                                </sw-button>
+                            {% endblock %}
+
+                        </template>
+                    {% endblock %}
+
+                </sw-modal>
+            {% endblock %}
+
         </template>
     </sw-card>
 {% endblock %}
