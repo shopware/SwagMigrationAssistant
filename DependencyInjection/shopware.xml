@@ -519,7 +519,7 @@
         </service>
 
         <!-- Shopware Dataselections -->
-        <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\BasicSettingsDataSelection">
+       <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\BasicSettingsDataSelection">
             <tag name="shopware.migration.data_selection"/>
         </service>
 

@@ -35,37 +35,34 @@ class ProductDataSelection implements DataSelectionInterface
     {
         return new DataSelectionStruct(
             self::IDENTIFIER,
-            $this->getEntityNames(),
-            $this->getEntityNamesRequiredForCount(),
+            $this->getDataSets(),
+            $this->getDataSetsRequiredForCount(),
             'swag-migration.index.selectDataCard.dataSelection.products',
             100,
             true
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getEntityNames(): array
+    public function getDataSets(): array
     {
         return [
-            MediaFolderDataSet::getEntity(),
-            ProductAttributeDataSet::getEntity(),
-            ProductPriceAttributeDataSet::getEntity(),
-            ManufacturerAttributeDataSet::getEntity(),
-            ProductDataSet::getEntity(),
-            PropertyGroupOptionDataSet::getEntity(),
-            ProductOptionRelationDataSet::getEntity(),
-            ProductPropertyRelationDataSet::getEntity(),
-            TranslationDataSet::getEntity(),
-            CrossSellingDataSet::getEntity(),
+            new MediaFolderDataSet(),
+            new ProductAttributeDataSet(),
+            new ProductPriceAttributeDataSet(),
+            new ManufacturerAttributeDataSet(),
+            new ProductDataSet(),
+            new PropertyGroupOptionDataSet(),
+            new ProductOptionRelationDataSet(),
+            new ProductPropertyRelationDataSet(),
+            new TranslationDataSet(),
+            new CrossSellingDataSet(),
         ];
     }
 
-    public function getEntityNamesRequiredForCount(): array
+    public function getDataSetsRequiredForCount(): array
     {
         return [
-            ProductDataSet::getEntity(),
+            new ProductDataSet(),
         ];
     }
 }

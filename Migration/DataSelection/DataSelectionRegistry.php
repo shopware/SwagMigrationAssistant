@@ -68,7 +68,7 @@ class DataSelectionRegistry implements DataSelectionRegistryInterface
         $totals = $environmentInformation->getTotals();
         $entityTotals = [];
 
-        foreach ($dataSelection->getEntityNames() as $entityName) {
+        foreach (array_keys($dataSelection->getEntityNames()) as $entityName) {
             if (isset($totals[$entityName])) {
                 $entityTotals[$entityName] = $totals[$entityName]->getTotal();
             }

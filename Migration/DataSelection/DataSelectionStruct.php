@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Migration\DataSelection;
 
 use Shopware\Core\Framework\Struct\Struct;
+use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 
 class DataSelectionStruct extends Struct
 {
@@ -64,18 +65,32 @@ class DataSelectionStruct extends Struct
      */
     protected $requiredSelection;
 
+    /**
+     * @param DataSet[] $dataSets
+     * @param DataSet[] $dataSetsRequiredForCount
+     */
     public function __construct(
         string $id,
-        array $entityNames,
-        array $entityNamesRequiredForCount,
+        array $dataSets,
+        array $dataSetsRequiredForCount,
         string $snippet,
         int $position,
         bool $processMediaFiles = false,
         string $dataType = self::BASIC_DATA_TYPE,
         bool $requiredSelection = false
     ) {
+        $entityNameArray = [];
+        foreach ($dataSets as $dataSet) {
+            $entityNameArray[$dataSet::getEntity()] = $dataSet->getSnippet();
+        }
+
+        $entityNamesRequiredForCount = [];
+        foreach ($dataSetsRequiredForCount as $dataSet) {
+            $entityNamesRequiredForCount[] = $dataSet::getEntity();
+        }
+
         $this->id = $id;
-        $this->entityNames = $entityNames;
+        $this->entityNames = $entityNameArray;
         $this->entityNamesRequiredForCount = $entityNamesRequiredForCount;
         $this->snippet = $snippet;
         $this->position = $position;
@@ -97,7 +112,6 @@ class DataSelectionStruct extends Struct
     public function getCountedTotal(array $totals): int
     {
         $countedTotal = 0;
-
         foreach ($this->entityNamesRequiredForCount as $countedEntityName) {
             if (isset($totals[$countedEntityName])) {
                 $countedTotal += $totals[$countedEntityName]->getTotal();

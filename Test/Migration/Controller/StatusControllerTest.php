@@ -44,6 +44,20 @@ use SwagMigrationAssistant\Migration\Service\MigrationProgressService;
 use SwagMigrationAssistant\Migration\Service\ProgressState;
 use SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\CustomerAndOrderDataSelection;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CustomerAttributeDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CustomerDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ManufacturerAttributeDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaFolderDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderAttributeDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductAttributeDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductOptionRelationDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductPriceAttributeDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductPropertyRelationDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\PropertyGroupOptionDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ShippingMethodDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\TranslationDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\ProductDataSelection;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware54\Shopware54Profile;
@@ -376,22 +390,22 @@ class StatusControllerTest extends TestCase
         $state = json_decode($result->getContent(), true);
 
         static::assertSame($state[0]['id'], 'products');
-        static::assertSame($state[0]['entityNames'][0], DefaultEntities::MEDIA_FOLDER);
-        static::assertSame($state[0]['entityNames'][1], DefaultEntities::PRODUCT_CUSTOM_FIELD);
-        static::assertSame($state[0]['entityNames'][2], DefaultEntities::PRODUCT_PRICE_CUSTOM_FIELD);
-        static::assertSame($state[0]['entityNames'][3], DefaultEntities::PRODUCT_MANUFACTURER_CUSTOM_FIELD);
-        static::assertSame($state[0]['entityNames'][4], DefaultEntities::PRODUCT);
-        static::assertSame($state[0]['entityNames'][5], DefaultEntities::PROPERTY_GROUP_OPTION);
-        static::assertSame($state[0]['entityNames'][6], DefaultEntities::PRODUCT_OPTION_RELATION);
-        static::assertSame($state[0]['entityNames'][7], DefaultEntities::PRODUCT_PROPERTY_RELATION);
-        static::assertSame($state[0]['entityNames'][8], DefaultEntities::TRANSLATION);
+        static::assertSame($state[0]['entityNames'][DefaultEntities::MEDIA_FOLDER], (new MediaFolderDataSet())->getSnippet());
+        static::assertSame($state[0]['entityNames'][DefaultEntities::PRODUCT_CUSTOM_FIELD], (new ProductAttributeDataSet())->getSnippet());
+        static::assertSame($state[0]['entityNames'][DefaultEntities::PRODUCT_PRICE_CUSTOM_FIELD], (new ProductPriceAttributeDataSet())->getSnippet());
+        static::assertSame($state[0]['entityNames'][DefaultEntities::PRODUCT_MANUFACTURER_CUSTOM_FIELD], (new ManufacturerAttributeDataSet())->getSnippet());
+        static::assertSame($state[0]['entityNames'][DefaultEntities::PRODUCT], (new ProductDataSet())->getSnippet());
+        static::assertSame($state[0]['entityNames'][DefaultEntities::PROPERTY_GROUP_OPTION], (new PropertyGroupOptionDataSet())->getSnippet());
+        static::assertSame($state[0]['entityNames'][DefaultEntities::PRODUCT_OPTION_RELATION], (new ProductOptionRelationDataSet())->getSnippet());
+        static::assertSame($state[0]['entityNames'][DefaultEntities::PRODUCT_PROPERTY_RELATION], (new ProductPropertyRelationDataSet())->getSnippet());
+        static::assertSame($state[0]['entityNames'][DefaultEntities::TRANSLATION], (new TranslationDataSet())->getSnippet());
 
         static::assertSame($state[1]['id'], 'customersOrders');
-        static::assertSame($state[1]['entityNames'][0], DefaultEntities::CUSTOMER_CUSTOM_FIELD);
-        static::assertSame($state[1]['entityNames'][1], DefaultEntities::CUSTOMER);
-        static::assertSame($state[1]['entityNames'][2], DefaultEntities::SHIPPING_METHOD);
-        static::assertSame($state[1]['entityNames'][3], DefaultEntities::ORDER_CUSTOM_FIELD);
-        static::assertSame($state[1]['entityNames'][4], DefaultEntities::ORDER);
+        static::assertSame($state[1]['entityNames'][DefaultEntities::CUSTOMER_CUSTOM_FIELD], (new CustomerAttributeDataSet())->getSnippet());
+        static::assertSame($state[1]['entityNames'][DefaultEntities::CUSTOMER], (new CustomerDataSet())->getSnippet());
+        static::assertSame($state[1]['entityNames'][DefaultEntities::SHIPPING_METHOD], (new ShippingMethodDataSet())->getSnippet());
+        static::assertSame($state[1]['entityNames'][DefaultEntities::ORDER_CUSTOM_FIELD], (new OrderAttributeDataSet())->getSnippet());
+        static::assertSame($state[1]['entityNames'][DefaultEntities::ORDER], (new OrderDataSet())->getSnippet());
     }
 
     public function testGetDataSelectionWithoutConnectionId(): void

@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Migration\DataSelection;
 
+use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 interface DataSelectionInterface
@@ -16,12 +17,12 @@ interface DataSelectionInterface
     public function getData(): DataSelectionStruct;
 
     /**
-     * @return string[]
+     * @return DataSet[]
      */
-    public function getEntityNames(): array;
+    public function getDataSets(): array;
 
     /**
-     * @return string[]
+     * @return DataSet[]
      */
-    public function getEntityNamesRequiredForCount(): array;
+    public function getDataSetsRequiredForCount(): array;
 }
