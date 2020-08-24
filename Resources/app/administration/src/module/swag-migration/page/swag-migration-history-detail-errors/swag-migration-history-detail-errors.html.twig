@@ -2,10 +2,6 @@
     <div class="swag-migration-history-detail-errors">
         <div v-if="!isLoading">
 
-            {% block swag_migration_history_detail_errors_download %}
-                {# @deprecated tag:2.0.0 - Use swag_migration_history_detail_errors_download_form block instead #}
-            {% endblock %}
-
             {% block swag_migration_history_detail_errors_grid %}
                 <sw-data-grid v-if="migrationErrors.length > 0"
                               identifier="swag-migration-history-detail-errors"
