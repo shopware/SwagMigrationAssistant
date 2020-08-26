@@ -1,0 +1,24 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Shopware63Profile">
+            <tag name="shopware.migration.profile"/>
+        </service>
+
+        <!-- Shopware 6.3 Profile Converter -->
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63ProductManufacturerConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ProductManufacturerConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63LanguageConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\LanguageConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+    </services>
+</container>

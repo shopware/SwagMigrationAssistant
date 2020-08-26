@@ -112,6 +112,20 @@
               "installationRootPlaceholder": "Root-Verzeichnis eingeben"
             }
           },
+          "shopware6": {
+            "api": {
+              "contentInformation": "Wir benötigen noch einige Daten um eine Verbindung mit Deinem Shopware 6 Shop herstellen zu können. Diese Daten findest Du in der Benutzerverwaltung von Deinem Shopware 5 Backend.",
+              "apiPasswordLabel": "Passwort",
+              "apiPasswordTooltip": "Das Passwort dient der Sicherheit und Identifizierung.",
+              "apiPasswordPlaceholder": "Passwort einfügen",
+              "apiUserLabel": "Benutzername (API-User)",
+              "apiUserTooltip": "Benutzername Deines Shopware 5 Backends.",
+              "apiUserPlaceholder": "Login-Benutzernamen eintragen",
+              "endpointLabel": "Shop-Domain",
+              "endpointPlaceholder": "www.demoshop.com",
+              "endpointSSLLabel": "Mein Shop verwendet eine sichere Verbindung (SSL)"
+            }
+          },
           "statusTitle": "Verbindungscheck",
           "success": {
             "contentTitle": "Erfolgreich verbunden",

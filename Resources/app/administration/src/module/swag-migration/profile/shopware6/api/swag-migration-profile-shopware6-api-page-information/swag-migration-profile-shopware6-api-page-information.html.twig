@@ -1,0 +1,36 @@
+{% block swag_migration_wizard_page_plugin_information %}
+    <div class="swag-migration-wizard swag-migration-wizard-page-plugin-information">
+
+        {% block swag_migration_wizard_page_plugin_information_content %}
+            <div class="swag-migration-wizard__content">
+
+                {% block swag_migration_wizard_page_plugin_information_information %}
+                    <div class="swag-migration-wizard__content-information">
+
+                        {% block swag_migration_wizard_page_plugin_information_svg %}
+                            <img class="swag-migration-wizard__plugin" :src="'/swagmigrationassistant/static/img/wizard-shopware55-api-plugin-information.svg' | asset">
+                        {% endblock %}
+
+                        {% block swag_migration_wizard_page_plugin_information_title %}
+                            <h3 class="information__header">
+                                {{ $tc('swag-migration.wizard.pages.profileInformation.shopware55Api.contentTitle') }}
+                            </h3>
+                        {% endblock %}
+
+                        {% block swag_migration_wizard_page_plugin_information_api_hint %}
+                            <p class="swag-migration-wizard__description">
+                                {{ $tc('swag-migration.wizard.pages.profileInformation.shopware55Api.contentInformation') }}
+                            </p>
+                        {% endblock %}
+
+                        {% block swag_migration_wizard_page_plugin_information_plugin_link %}
+                            <div class="swag-migration-wizard__link">
+                                <a class="link" target="_blank" href="https://store.shopware.com/search?sSearch=Swag226607479310">{{ $tc('swag-migration.wizard.pages.profileInformation.shopware55Api.pluginLink') }}</a>
+                            </div>
+                        {% endblock %}
+                    </div>
+                {% endblock %}
+            </div>
+        {% endblock %}
+    </div>
+{% endblock %}

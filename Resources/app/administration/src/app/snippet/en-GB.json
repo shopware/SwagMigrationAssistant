@@ -112,6 +112,20 @@
               "installationRootPlaceholder": "Enter installation root"
             }
           },
+          "shopware6": {
+            "api": {
+              "contentInformation": "You need valid API credentials to establish a connection between Shopware 6 and Shopware 6. Your API credentials can be found in your Shopware 5 backend under “User administration”.",
+              "apiPasswordLabel": "API Password",
+              "apiPasswordTooltip": "The API password is used for security and identification.",
+              "apiPasswordPlaceholder": "Enter password",
+              "apiUserLabel": "Username (API user)",
+              "apiUserTooltip": "Username of your Shopware 5 backend.",
+              "apiUserPlaceholder": "Enter username",
+              "endpointLabel": "Shop domain",
+              "endpointPlaceholder": "www.demoshop.com",
+              "endpointSSLLabel": "My shop uses a secure connection (SSL)"
+            }
+          },
           "statusTitle": "Connection check",
           "success": {
             "contentTitle": "Connection successful",
