@@ -1,0 +1,34 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <service id="SwagMigrationAssistant\DataProvider\Provider\ProviderRegistry">
+            <argument type="tagged" tag="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Controller\DataProviderController" public="true">
+            <argument type="service" id="SwagMigrationAssistant\DataProvider\Provider\ProviderRegistry"/>
+            <argument type="service" id="SwagMigrationAssistant\DataProvider\Service\EnvironmentService"/>
+        </service>
+
+        <!-- Data providers -->
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\ProductManufacturerProvider">
+            <argument type="service" id="product_manufacturer.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\LanguageProvider">
+            <argument type="service" id="language.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <!-- Services -->
+        <service id="SwagMigrationAssistant\DataProvider\Service\EnvironmentService">
+            <argument type="service" id="currency.repository"/>
+            <argument type="service" id="language.repository"/>
+        </service>
+
+    </services>
+</container>
