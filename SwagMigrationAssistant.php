@@ -40,6 +40,11 @@ class SwagMigrationAssistant extends Plugin
         $loader->load('writer.xml');
     }
 
+    public function rebuildContainer(): bool
+    {
+        return false;
+    }
+
     /**
      * {@inheritdoc}
      */
