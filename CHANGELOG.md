@@ -1,3 +1,6 @@
+# REPLACE-GLOBAL-WITH-NEXT-VERSION
+- MIG-28 - Optimized rebuilding of container for deactivation and activation of the plugin
+
 # 2.0.0
 - MIG-3 - Fixes a problem with migrating order documents
 - MIG-5 - Improve snippet loading of DataSets

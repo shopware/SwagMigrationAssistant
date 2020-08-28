@@ -1,3 +1,6 @@
+# REPLACE-GLOBAL-WITH-NEXT-VERSION
+- MIG-28 - Optmierte Neugenerierung des Containers bei Aktivierung und Deaktivierung
+
 # 2.0.0
 - MIG-3 - Korrigiert ein Problem bei der Migration von Bestelldokumenten
 - MIG-5 - Verbessertes Laden von Snippets der DataSets
