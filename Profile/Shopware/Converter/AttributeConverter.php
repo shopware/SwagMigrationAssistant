@@ -89,7 +89,7 @@ abstract class AttributeConverter extends Converter
             [
                 'id' => $this->mainMapping['entityUuid'],
                 'name' => $converted['name'] . '_' . $data['name'],
-                'type' => $data['type'],
+                'type' => $this->customFieldType($data),
                 'config' => $this->getCustomFieldConfiguration($data),
             ],
         ];
@@ -261,5 +261,37 @@ abstract class AttributeConverter extends Converter
         }
 
         return [];
+    }
+
+    private function customFieldType(array $data): string
+    {
+        if (isset($data['configuration'])) {
+            switch ($data['configuration']['column_type']) {
+                case 'integer':
+                    return 'int';
+                case 'float':
+                    return 'float';
+                case 'html':
+                    return 'html';
+                case 'boolean':
+                    return 'bool';
+                case 'date':
+                case 'datetime':
+                    return 'datetime';
+                case 'combobox':
+                    return 'select';
+                default:
+                    return 'text';
+            }
+        } else {
+            switch ($data['type']) {
+                case 'int':
+                    return 'int';
+                case 'float':
+                    return 'float';
+                default:
+                    return 'text';
+            }
+        }
     }
 }

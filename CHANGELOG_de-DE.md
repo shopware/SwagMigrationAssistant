@@ -4,6 +4,7 @@
 # 2.1.0
 - MIG-13 - Migration von Produktbewertungen ohne Kunden ermöglichen
 - MIG-28 - Optmierte Neugenerierung des Containers bei Aktivierung und Deaktivierung
+- MIG-74 - Optimierte Attributmigration von Shopware 5
 
 # 2.0.0
 - MIG-3 - Korrigiert ein Problem bei der Migration von Bestelldokumenten
