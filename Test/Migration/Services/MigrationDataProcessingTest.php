@@ -11,7 +11,6 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
@@ -20,7 +19,6 @@ use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
-use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
 use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistry;
 use SwagMigrationAssistant\Migration\Logging\Log\LogEntryInterface;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingEntity;
@@ -29,27 +27,18 @@ use SwagMigrationAssistant\Migration\Media\MediaFileService;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationAssistant\Migration\Service\MigrationDataConverterInterface;
-use SwagMigrationAssistant\Migration\Service\MigrationDataFetcher;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CategoryDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CustomerDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\TranslationDataSet;
-use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\EnvironmentReader;
-use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\TableCountReader;
-use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\TableReader;
-use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\ShopwareApiGateway;
-use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\PaymentMethodReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\SalutationReader;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\MigrationServicesTrait;
 use SwagMigrationAssistant\Test\Mock\DataSet\InvalidCustomerDataSet;
-use SwagMigrationAssistant\Test\Mock\DummyCollection;
-use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGateway;
-use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 
 /**
  * Combines tests for data fetching and converting
@@ -77,11 +66,6 @@ class MigrationDataProcessingTest extends TestCase
     /**
      * @var EntityRepositoryInterface
      */
-    private $productRepo;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
     private $salutationRepo;
 
     /**
@@ -93,16 +77,6 @@ class MigrationDataProcessingTest extends TestCase
      * @var string
      */
     private $runUuid;
-
-    /**
-     * @var MigrationDataFetcherInterface
-     */
-    private $dummyDataFetcher;
-
-    /**
-     * @var DummyLoggingService
-     */
-    private $loggingService;
 
     /**
      * @var string
@@ -187,22 +161,6 @@ class MigrationDataProcessingTest extends TestCase
             $this->countryRepo,
             $this->salesChannelRepo
         );
-
-        $this->loggingService = new DummyLoggingService();
-        $connectionFactory = new ConnectionFactory();
-        $this->dummyDataFetcher = new MigrationDataFetcher(
-            new GatewayRegistry(new DummyCollection([
-                new ShopwareApiGateway(
-                    $this->getContainer()->get(ReaderRegistry::class),
-                    new EnvironmentReader($connectionFactory),
-                    new TableReader($connectionFactory),
-                    new TableCountReader($connectionFactory, $this->loggingService),
-                    $this->getContainer()->get('currency.repository')
-                ),
-                new DummyLocalGateway(),
-            ])),
-            $this->loggingService
-        );
     }
 
     public function initMapping(): void
@@ -248,15 +206,14 @@ class MigrationDataProcessingTest extends TestCase
         $this->migrationDataConverter->convert($data, $migrationContext, $context);
 
         static::assertCount(23, $data);
-        static::arrayHasKey('uri', $data[0]);
-        static::arrayHasKey('locale', $data[10]);
+        static::assertArrayHasKey('uri', $data[0]);
+        static::assertArrayHasKey('_locale', $data[10]);
         static::assertSame('27', $data[22]['id']);
         static::assertSame('download', $data[1]['name']);
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('runId', $this->runUuid));
         $criteria->addFilter(new EqualsFilter('entity', DefaultEntities::MEDIA));
-        /** @var EntitySearchResult $result */
         $result = $this->migrationDataRepo->search($criteria, $context);
         static::assertSame(23, $result->getTotal());
     }
@@ -281,7 +238,6 @@ class MigrationDataProcessingTest extends TestCase
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('runId', $this->runUuid));
         $criteria->addFilter(new EqualsFilter('entity', DefaultEntities::CATEGORY));
-        /** @var EntitySearchResult $result */
         $result = $this->migrationDataRepo->search($criteria, $context);
         static::assertSame(8, $result->getTotal());
     }
@@ -306,7 +262,6 @@ class MigrationDataProcessingTest extends TestCase
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('runId', $this->runUuid));
         $criteria->addFilter(new EqualsFilter('entity', 'translation'));
-        /** @var EntitySearchResult $result */
         $result = $this->migrationDataRepo->search($criteria, $context);
         static::assertSame(10, $result->getTotal());
     }
@@ -331,7 +286,6 @@ class MigrationDataProcessingTest extends TestCase
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('runId', $this->runUuid));
         $criteria->addFilter(new EqualsFilter('entity', DefaultEntities::CUSTOMER));
-        /** @var EntitySearchResult $result */
         $result = $this->migrationDataRepo->search($criteria, $context);
         static::assertSame(3, $result->getTotal());
     }
@@ -355,7 +309,6 @@ class MigrationDataProcessingTest extends TestCase
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('runId', $this->runUuid));
         $criteria->addFilter(new EqualsFilter('entity', DefaultEntities::PRODUCT));
-        /** @var EntitySearchResult $result */
         $result = $this->migrationDataRepo->search($criteria, $context);
         static::assertSame(37, $result->getTotal());
     }
@@ -379,7 +332,6 @@ class MigrationDataProcessingTest extends TestCase
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('runId', $this->runUuid));
         $criteria->addFilter(new EqualsFilter('entity', DefaultEntities::PRODUCT));
-        /** @var EntitySearchResult $result */
         $result = $this->migrationDataRepo->search($criteria, $context);
         static::assertSame(37, $result->getTotal());
     }
@@ -437,7 +389,6 @@ class MigrationDataProcessingTest extends TestCase
         $this->runRepo = $this->getContainer()->get('swag_migration_run.repository');
         $this->loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
         $this->migrationDataRepo = $this->getContainer()->get('swag_migration_data.repository');
-        $this->productRepo = $this->getContainer()->get('product.repository');
         $this->paymentRepo = $this->getContainer()->get('payment_method.repository');
         $this->salutationRepo = $this->getContainer()->get('salutation.repository');
         $this->shippingRepo = $this->getContainer()->get('shipping_method.repository');

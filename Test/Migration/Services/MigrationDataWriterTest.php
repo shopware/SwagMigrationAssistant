@@ -87,11 +87,6 @@ class MigrationDataWriterTest extends TestCase
     /**
      * @var EntityRepositoryInterface
      */
-    private $productTranslationRepo;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
     private $customerRepo;
 
     /**
@@ -358,11 +353,10 @@ class MigrationDataWriterTest extends TestCase
             $this->context,
         ]);
 
-        $reflection = new \ReflectionClass(get_class($this->migrationDataWriter));
-        $loggingService = $reflection->getProperty('loggingService');
+        /** @var LoggingService|\ReflectionProperty $loggingService */
+        $loggingService = (new \ReflectionClass(\get_class($this->migrationDataWriter)))->getProperty('loggingService');
         $loggingService->setAccessible(true);
 
-        /** @var LoggingService $loggingService */
         $loggingService = $loggingService->getValue($this->migrationDataWriter);
         $loggingService->saveLogging($this->context);
 
@@ -391,10 +385,10 @@ class MigrationDataWriterTest extends TestCase
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('entity', 'customer'));
-        $customerData = $this->migrationDataRepo->search($criteria, $context);
 
-        /** @var SwagMigrationDataEntity $data */
-        $data = $customerData->first();
+        /** @var SwagMigrationDataEntity|null $data */
+        $data = $this->migrationDataRepo->search($criteria, $context)->first();
+        static::assertNotNull($data);
         $customer = $data->jsonSerialize();
         $customer['id'] = $data->getId();
         unset($customer['run'], $customer['converted'][$missingProperty], $customer['autoIncrement']);
@@ -642,10 +636,9 @@ class MigrationDataWriterTest extends TestCase
         static::assertCount(1, $logs);
     }
 
-    private function invokeMethod(&$object, $methodName, array $parameters = [])
+    private function invokeMethod($object, $methodName, array $parameters = [])
     {
-        $reflection = new \ReflectionClass(get_class($object));
-        $method = $reflection->getMethod($methodName);
+        $method = (new \ReflectionClass(\get_class($object)))->getMethod($methodName);
         $method->setAccessible(true);
 
         return $method->invokeArgs($object, $parameters);
@@ -667,7 +660,6 @@ class MigrationDataWriterTest extends TestCase
         $this->loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
         $this->stateMachineRepository = $this->getContainer()->get('state_machine.repository');
         $this->stateMachineStateRepository = $this->getContainer()->get('state_machine_state.repository');
-        $this->productTranslationRepo = $this->getContainer()->get('product_translation.repository');
         $this->currencyRepo = $this->getContainer()->get('currency.repository');
         $this->salutationRepo = $this->getContainer()->get('salutation.repository');
         $this->deliveryTimeRepo = $this->getContainer()->get('delivery_time.repository');
@@ -792,12 +784,5 @@ class MigrationDataWriterTest extends TestCase
 
         $this->mappingService->writeMapping($this->context);
         $this->clearCacheData();
-    }
-
-    private function getTranslationTotal(): int
-    {
-        return (int) $this->getContainer()->get(Connection::class)
-            ->executeQuery('SELECT count(*) FROM product_translation')
-            ->fetchColumn();
     }
 }
