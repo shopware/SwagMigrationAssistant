@@ -1,0 +1,2937 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Parameter \\#2 \\.\\.\\.\\$args of function array_merge expects array, \\(array\\<string\\>\\)\\|string given\\.$#"
+			count: 1
+			path: Command/MigrateDataCommand.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Migration\\\\Converter\\\\ConverterRegistry\\:\\:\\$converters \\(array\\<SwagMigrationAssistant\\\\Migration\\\\Converter\\\\ConverterInterface\\>\\) does not accept iterable\\<SwagMigrationAssistant\\\\Migration\\\\Converter\\\\ConverterInterface\\>\\.$#"
+			count: 1
+			path: Migration/Converter/ConverterRegistry.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSelectionRegistry\\:\\:\\$dataSelections \\(array\\<SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSelectionInterface\\>\\) does not accept iterable\\<SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSelectionInterface\\>\\.$#"
+			count: 1
+			path: Migration/DataSelection/DataSelectionRegistry.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSetRegistry\\:\\:\\$dataSets \\(array\\<SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\>\\) does not accept iterable\\<SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\>\\.$#"
+			count: 1
+			path: Migration/DataSelection/DataSet/DataSetRegistry.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Migration\\\\Gateway\\\\GatewayRegistry\\:\\:\\$gateways \\(array\\<SwagMigrationAssistant\\\\Migration\\\\Gateway\\\\GatewayInterface\\>\\) does not accept iterable\\<SwagMigrationAssistant\\\\Migration\\\\Gateway\\\\GatewayInterface\\>\\.$#"
+			count: 1
+			path: Migration/Gateway/GatewayRegistry.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Migration\\\\Gateway\\\\Reader\\\\ReaderRegistry\\:\\:\\$readers \\(array\\<SwagMigrationAssistant\\\\Migration\\\\Gateway\\\\Reader\\\\ReaderInterface\\>\\) does not accept iterable\\<SwagMigrationAssistant\\\\Migration\\\\Gateway\\\\Reader\\\\ReaderInterface\\>\\.$#"
+			count: 1
+			path: Migration/Gateway/Reader/ReaderRegistry.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Logging\\\\Log\\\\DebugLog\\:\\:getDescription\\(\\) should return string but returns string\\|false\\.$#"
+			count: 1
+			path: Migration/Logging/Log/DebugLog.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Migration\\\\Media\\\\MediaFileProcessorRegistry\\:\\:\\$processors \\(array\\<SwagMigrationAssistant\\\\Migration\\\\Media\\\\MediaFileProcessorInterface\\>\\) does not accept iterable\\<SwagMigrationAssistant\\\\Migration\\\\Media\\\\MediaFileProcessorInterface\\>\\.$#"
+			count: 1
+			path: Migration/Media/MediaFileProcessorRegistry.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Migration\\\\Premapping\\\\PremappingReaderRegistry\\:\\:\\$preMappingReaders \\(array\\<SwagMigrationAssistant\\\\Migration\\\\Premapping\\\\PremappingReaderInterface\\>\\) does not accept iterable\\<SwagMigrationAssistant\\\\Migration\\\\Premapping\\\\PremappingReaderInterface\\>\\.$#"
+			count: 1
+			path: Migration/Premapping/PremappingReaderRegistry.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Migration\\\\Profile\\\\ProfileRegistry\\:\\:\\$profiles \\(array\\<SwagMigrationAssistant\\\\Migration\\\\Profile\\\\ProfileInterface\\>\\) does not accept iterable\\<SwagMigrationAssistant\\\\Migration\\\\Profile\\\\ProfileInterface\\>\\.$#"
+			count: 1
+			path: Migration/Profile/ProfileRegistry.php
+
+		-
+			message: "#^Parameter \\#1 \\$entityName of method SwagMigrationAssistant\\\\Migration\\\\Run\\\\EntityProgress\\:\\:setEntityName\\(\\) expects string, int\\|string given\\.$#"
+			count: 1
+			path: Migration/Run/RunService.php
+
+		-
+			message: "#^Parameter \\#1 \\$str of function mb_strtoupper expects string, string\\|null given\\.$#"
+			count: 1
+			path: Migration/Service/SwagMigrationAccessTokenService.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Migration\\\\Writer\\\\WriterRegistry\\:\\:\\$writers \\(array\\<SwagMigrationAssistant\\\\Migration\\\\Writer\\\\WriterInterface\\>\\) does not accept iterable\\<SwagMigrationAssistant\\\\Migration\\\\Writer\\\\WriterInterface\\>\\.$#"
+			count: 1
+			path: Migration/Writer/WriterRegistry.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Converter/AttributeConverter.php
+
+		-
+			message: "#^Offset 'id' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Converter/AttributeConverter.php
+
+		-
+			message: "#^Possibly invalid array key type \\(array\\|string\\)\\.$#"
+			count: 3
+			path: Profile/Shopware/Converter/AttributeConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Converter/CategoryConverter.php
+
+		-
+			message: "#^Offset 'id' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Converter/CategoryConverter.php
+
+		-
+			message: "#^Offset 'id' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Converter/CrossSellingConverter.php
+
+		-
+			message: "#^Offset 'id' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Converter/CurrencyConverter.php
+
+		-
+			message: "#^Offset 'entityUuid' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Converter/CustomerConverter.php
+
+		-
+			message: "#^Offset 'id' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Converter/CustomerConverter.php
+
+		-
+			message: "#^Offset 'id' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Converter/CustomerGroupConverter.php
+
+		-
+			message: "#^Offset 'id' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Converter/LanguageConverter.php
+
+		-
+			message: "#^Offset 'id' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Converter/MediaConverter.php
+
+		-
+			message: "#^Offset 'id' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Converter/MediaFolderConverter.php
+
+		-
+			message: "#^Offset 'id' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Converter/NewsletterRecipientConverter.php
+
+		-
+			message: "#^Offset 'id' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Converter/OrderConverter.php
+
+		-
+			message: "#^Offset 'country' does not exist on array\\('id' \\=\\> mixed, 'countryId' \\=\\> null, 'countryStateId' \\=\\> mixed, \\?'country' \\=\\> array\\)\\.$#"
+			count: 1
+			path: Profile/Shopware/Converter/OrderConverter.php
+
+		-
+			message: "#^Offset 'country' does not exist on array\\('id' \\=\\> mixed, 'countryId' \\=\\> mixed, 'countryStateId' \\=\\> mixed, \\?'country' \\=\\> array\\)\\.$#"
+			count: 1
+			path: Profile/Shopware/Converter/OrderConverter.php
+
+		-
+			message: "#^Offset 'id' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Converter/OrderDocumentConverter.php
+
+		-
+			message: "#^Offset 'id' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Converter/ProductConverter.php
+
+		-
+			message: "#^Offset 'id' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Converter/ProductOptionRelationConverter.php
+
+		-
+			message: "#^Offset 'id' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Converter/ProductPropertyRelationConverter.php
+
+		-
+			message: "#^Offset 'id' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Converter/ProductReviewConverter.php
+
+		-
+			message: "#^Offset 'id' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Converter/SalesChannelConverter.php
+
+		-
+			message: "#^Offset 'id' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Converter/SeoUrlConverter.php
+
+		-
+			message: "#^Offset 'id' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Converter/ShippingMethodConverter.php
+
+		-
+			message: "#^Offset 'id' does not exist on array\\|null\\.$#"
+			count: 8
+			path: Profile/Shopware/Converter/TranslationConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Api/Reader/ApiReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Api/Reader/CategoryAttributeReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Api/Reader/CategoryReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Api/Reader/CrossSellingReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Api/Reader/CurrencyReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Api/Reader/CustomerAttributeReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Api/Reader/CustomerGroupAttributeReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Api/Reader/CustomerGroupReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Api/Reader/CustomerReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Api/Reader/LanguageReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Api/Reader/ManufacturerAttributeReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Api/Reader/MediaAlbumReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Api/Reader/MediaReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Api/Reader/NewsletterRecipientReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Api/Reader/NumberRangeReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Api/Reader/OrderAttributeReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Api/Reader/OrderDocumentAttributeReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Api/Reader/OrderDocumentReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Api/Reader/OrderReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Api/Reader/ProductAttributeReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Api/Reader/ProductOptionRelationReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Api/Reader/ProductPriceAttributeReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Api/Reader/ProductPropertyRelationReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Api/Reader/ProductReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Api/Reader/ProductReviewReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Api/Reader/PropertyGroupOptionReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Api/Reader/SalesChannelReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Api/Reader/SeoUrlReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Api/Reader/ShippingMethodReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Api/Reader/TranslationReader.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\AbstractReader\\:\\:buildArrayFromChunks\\(\\) has parameter \\$value with no typehint specified\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Local/Reader/AbstractReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Local/Reader/CategoryAttributeReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Local/Reader/CategoryReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Local/Reader/CrossSellingReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Local/Reader/CurrencyReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Local/Reader/CustomerAttributeReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Local/Reader/CustomerGroupAttributeReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Local/Reader/CustomerGroupReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Local/Reader/CustomerReader.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\EnvironmentReader\\:\\:buildArrayFromChunks\\(\\) has parameter \\$value with no typehint specified\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Local/Reader/EnvironmentReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Local/Reader/LanguageReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Local/Reader/ManufacturerAttributeReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Local/Reader/MediaAlbumReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Local/Reader/MediaReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Local/Reader/NewsletterRecipientReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Local/Reader/NumberRangeReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Local/Reader/OrderAttributeReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Local/Reader/OrderDocumentAttributeReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Local/Reader/OrderDocumentReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Local/Reader/OrderReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Local/Reader/ProductAttributeReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Local/Reader/ProductOptionRelationReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Local/Reader/ProductPriceAttributeReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Local/Reader/ProductPropertyRelationReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Local/Reader/ProductReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Local/Reader/ProductReviewReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Local/Reader/PropertyGroupOptionReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Local/Reader/SalesChannelReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Local/Reader/SeoUrlReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Local/Reader/ShippingMethodReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Gateway/Local/Reader/TranslationReader.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Media/HttpMediaDownloadService.php
+
+		-
+			message: "#^Parameter \\#1 \\$fp of function fwrite expects resource, resource\\|false given\\.$#"
+			count: 1
+			path: Profile/Shopware/Media/HttpMediaDownloadService.php
+
+		-
+			message: "#^Parameter \\#1 \\$fp of function fclose expects resource, resource\\|false given\\.$#"
+			count: 1
+			path: Profile/Shopware/Media/HttpMediaDownloadService.php
+
+		-
+			message: "#^Parameter \\#2 \\$mimeType of class Shopware\\\\Core\\\\Content\\\\Media\\\\File\\\\MediaFile constructor expects string, string\\|false given\\.$#"
+			count: 1
+			path: Profile/Shopware/Media/HttpMediaDownloadService.php
+
+		-
+			message: "#^Parameter \\#2 \\$destination of method Shopware\\\\Core\\\\Content\\\\Media\\\\File\\\\FileSaver\\:\\:persistFileToMedia\\(\\) expects string, string\\|null given\\.$#"
+			count: 1
+			path: Profile/Shopware/Media/HttpMediaDownloadService.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Media/HttpOrderDocumentProcessor.php
+
+		-
+			message: "#^Parameter \\#1 \\$fp of function fwrite expects resource, resource\\|false given\\.$#"
+			count: 1
+			path: Profile/Shopware/Media/HttpOrderDocumentProcessor.php
+
+		-
+			message: "#^Parameter \\#1 \\$fp of function fclose expects resource, resource\\|false given\\.$#"
+			count: 1
+			path: Profile/Shopware/Media/HttpOrderDocumentProcessor.php
+
+		-
+			message: "#^Parameter \\#1 \\$blob of method Shopware\\\\Core\\\\Content\\\\Media\\\\MediaService\\:\\:saveFile\\(\\) expects string, string\\|false given\\.$#"
+			count: 3
+			path: Profile/Shopware/Media/HttpOrderDocumentProcessor.php
+
+		-
+			message: "#^Parameter \\#3 \\$contentType of method Shopware\\\\Core\\\\Content\\\\Media\\\\MediaService\\:\\:saveFile\\(\\) expects string, string\\|false given\\.$#"
+			count: 3
+			path: Profile/Shopware/Media/HttpOrderDocumentProcessor.php
+
+		-
+			message: "#^Parameter \\#4 \\$filename of method Shopware\\\\Core\\\\Content\\\\Media\\\\MediaService\\:\\:saveFile\\(\\) expects string, string\\|null given\\.$#"
+			count: 1
+			path: Profile/Shopware/Media/HttpOrderDocumentProcessor.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\LocalMediaProcessor\\:\\:\\$resolver \\(array\\<SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\Strategy\\\\StrategyResolverInterface\\>\\) does not accept iterable\\<SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\Strategy\\\\StrategyResolverInterface\\>\\.$#"
+			count: 1
+			path: Profile/Shopware/Media/LocalMediaProcessor.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Media/LocalMediaProcessor.php
+
+		-
+			message: "#^Parameter \\#3 \\$fileSize of method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\LocalMediaProcessor\\:\\:persistFileToMedia\\(\\) expects int, int\\|false given\\.$#"
+			count: 1
+			path: Profile/Shopware/Media/LocalMediaProcessor.php
+
+		-
+			message: "#^Parameter \\#2 \\$mimeType of class Shopware\\\\Core\\\\Content\\\\Media\\\\File\\\\MediaFile constructor expects string, string\\|false given\\.$#"
+			count: 1
+			path: Profile/Shopware/Media/LocalMediaProcessor.php
+
+		-
+			message: "#^Parameter \\#2 \\$destination of method Shopware\\\\Core\\\\Content\\\\Media\\\\File\\\\FileSaver\\:\\:persistFileToMedia\\(\\) expects string, string\\|null given\\.$#"
+			count: 1
+			path: Profile/Shopware/Media/LocalMediaProcessor.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware/Media/LocalOrderDocumentProcessor.php
+
+		-
+			message: "#^Parameter \\#1 \\$blob of method Shopware\\\\Core\\\\Content\\\\Media\\\\MediaService\\:\\:saveFile\\(\\) expects string, string\\|false given\\.$#"
+			count: 3
+			path: Profile/Shopware/Media/LocalOrderDocumentProcessor.php
+
+		-
+			message: "#^Parameter \\#3 \\$contentType of method Shopware\\\\Core\\\\Content\\\\Media\\\\MediaService\\:\\:saveFile\\(\\) expects string, string\\|false given\\.$#"
+			count: 3
+			path: Profile/Shopware/Media/LocalOrderDocumentProcessor.php
+
+		-
+			message: "#^Parameter \\#4 \\$filename of method Shopware\\\\Core\\\\Content\\\\Media\\\\MediaService\\:\\:saveFile\\(\\) expects string, string\\|null given\\.$#"
+			count: 1
+			path: Profile/Shopware/Media/LocalOrderDocumentProcessor.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware54/Converter/Shopware54CategoryAttributeConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware54/Converter/Shopware54CategoryConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware54/Converter/Shopware54CrossSellingConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware54/Converter/Shopware54CurrencyConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware54/Converter/Shopware54CustomerAttributeConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware54/Converter/Shopware54CustomerConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware54/Converter/Shopware54CustomerGroupAttributeConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware54/Converter/Shopware54CustomerGroupConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware54/Converter/Shopware54LanguageConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware54/Converter/Shopware54ManufacturerAttributeConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware54/Converter/Shopware54MediaConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware54/Converter/Shopware54MediaFolderConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware54/Converter/Shopware54NewsletterRecipientConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware54/Converter/Shopware54NumberRangeConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware54/Converter/Shopware54OrderAttributeConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware54/Converter/Shopware54OrderConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware54/Converter/Shopware54OrderDocumentAttributeConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware54/Converter/Shopware54OrderDocumentConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware54/Converter/Shopware54ProductAttributeConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware54/Converter/Shopware54ProductConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware54/Converter/Shopware54ProductOptionRelationConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware54/Converter/Shopware54ProductPriceAttributeConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware54/Converter/Shopware54ProductPropertyRelationConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware54/Converter/Shopware54ProductReviewConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware54/Converter/Shopware54PropertyGroupOptionConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware54/Converter/Shopware54SalesChannelConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware54/Converter/Shopware54SeoUrlConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware54/Converter/Shopware54ShippingMethodConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware54/Converter/Shopware54TranslationConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware55/Converter/Shopware55CategoryAttributeConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware55/Converter/Shopware55CategoryConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware55/Converter/Shopware55CrossSellingConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware55/Converter/Shopware55CurrencyConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware55/Converter/Shopware55CustomerAttributeConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware55/Converter/Shopware55CustomerConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware55/Converter/Shopware55CustomerGroupAttributeConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware55/Converter/Shopware55CustomerGroupConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware55/Converter/Shopware55LanguageConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware55/Converter/Shopware55ManufacturerAttributeConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware55/Converter/Shopware55MediaConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware55/Converter/Shopware55MediaFolderConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware55/Converter/Shopware55NewsletterRecipientConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware55/Converter/Shopware55NumberRangeConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware55/Converter/Shopware55OrderAttributeConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware55/Converter/Shopware55OrderConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware55/Converter/Shopware55OrderDocumentAttributeConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware55/Converter/Shopware55OrderDocumentConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware55/Converter/Shopware55ProductAttributeConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware55/Converter/Shopware55ProductConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware55/Converter/Shopware55ProductOptionRelationConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware55/Converter/Shopware55ProductPriceAttributeConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware55/Converter/Shopware55ProductPropertyRelationConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware55/Converter/Shopware55ProductReviewConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware55/Converter/Shopware55PropertyGroupOptionConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware55/Converter/Shopware55SalesChannelConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware55/Converter/Shopware55SeoUrlConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware55/Converter/Shopware55ShippingMethodConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware55/Converter/Shopware55TranslationConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware56/Converter/Shopware56CategoryAttributeConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware56/Converter/Shopware56CategoryConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware56/Converter/Shopware56CrossSellingConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware56/Converter/Shopware56CurrencyConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware56/Converter/Shopware56CustomerAttributeConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware56/Converter/Shopware56CustomerConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware56/Converter/Shopware56CustomerGroupAttributeConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware56/Converter/Shopware56CustomerGroupConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware56/Converter/Shopware56LanguageConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware56/Converter/Shopware56ManufacturerAttributeConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware56/Converter/Shopware56MediaConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware56/Converter/Shopware56MediaFolderConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware56/Converter/Shopware56NewsletterRecipientConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware56/Converter/Shopware56NumberRangeConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware56/Converter/Shopware56OrderAttributeConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware56/Converter/Shopware56OrderConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware56/Converter/Shopware56OrderDocumentAttributeConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware56/Converter/Shopware56OrderDocumentConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware56/Converter/Shopware56ProductAttributeConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware56/Converter/Shopware56ProductConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware56/Converter/Shopware56ProductOptionRelationConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware56/Converter/Shopware56ProductPriceAttributeConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware56/Converter/Shopware56ProductPropertyRelationConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware56/Converter/Shopware56ProductReviewConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware56/Converter/Shopware56PropertyGroupOptionConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware56/Converter/Shopware56SalesChannelConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware56/Converter/Shopware56SeoUrlConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware56/Converter/Shopware56ShippingMethodConverter.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Profile/Shopware56/Converter/Shopware56TranslationConverter.php
+
+		-
+			message: "#^Service \"cache\\.object\" is private\\.$#"
+			count: 1
+			path: Test/Command/MigrateDataCommandTest.php
+
+		-
+			message: "#^Class Shopware\\\\Core\\\\Checkout\\\\Cart\\\\Tax\\\\TaxCalculator does not have a constructor and must be instantiated without any parameters\\.$#"
+			count: 1
+			path: Test/Command/MigrateDataCommandTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$actualJson of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertJson\\(\\) expects string, string\\|false given\\.$#"
+			count: 1
+			path: Test/Migration/Controller/HistoryControllerTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$json of function json_decode expects string, string\\|false given\\.$#"
+			count: 1
+			path: Test/Migration/Controller/HistoryControllerTest.php
+
+		-
+			message: "#^Cannot call method get\\(\\) on SwagMigrationAssistant\\\\Migration\\\\Logging\\\\SwagMigrationLoggingEntity\\|null\\.$#"
+			count: 1
+			path: Test/Migration/Controller/HistoryControllerTest.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\HistoryControllerTest\\:\\:invokeMethod\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: Test/Migration/Controller/HistoryControllerTest.php
+
+		-
+			message: "#^Service \"cache\\.object\" is private\\.$#"
+			count: 1
+			path: Test/Migration/Controller/MigrationControllerTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$json of function json_decode expects string, string\\|false given\\.$#"
+			count: 8
+			path: Test/Migration/Controller/MigrationControllerTest.php
+
+		-
+			message: "#^Class Shopware\\\\Core\\\\Checkout\\\\Cart\\\\Tax\\\\TaxCalculator does not have a constructor and must be instantiated without any parameters\\.$#"
+			count: 1
+			path: Test/Migration/Controller/MigrationControllerTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$json of function json_decode expects string, string\\|false given\\.$#"
+			count: 5
+			path: Test/Migration/Controller/PremappingControllerTest.php
+
+		-
+			message: "#^Offset 'entityUuid' does not exist on array\\|null\\.$#"
+			count: 6
+			path: Test/Migration/Controller/PremappingControllerTest.php
+
+		-
+			message: "#^Class Shopware\\\\Core\\\\Checkout\\\\Cart\\\\Tax\\\\TaxCalculator does not have a constructor and must be instantiated without any parameters\\.$#"
+			count: 1
+			path: Test/Migration/Controller/PremappingControllerTest.php
+
+		-
+			message: "#^Service \"cache\\.object\" is private\\.$#"
+			count: 1
+			path: Test/Migration/Controller/StatusControllerTest.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\StatusControllerTest\\:\\:connectionProvider\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: Test/Migration/Controller/StatusControllerTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$actualJson of method PHPUnit\\\\Framework\\\\Assert\\:\\:assertJson\\(\\) expects string, string\\|false given\\.$#"
+			count: 3
+			path: Test/Migration/Controller/StatusControllerTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$json of function json_decode expects string, string\\|false given\\.$#"
+			count: 12
+			path: Test/Migration/Controller/StatusControllerTest.php
+
+		-
+			message: "#^Class Shopware\\\\Core\\\\Checkout\\\\Cart\\\\Tax\\\\TaxCalculator does not have a constructor and must be instantiated without any parameters\\.$#"
+			count: 1
+			path: Test/Migration/Controller/StatusControllerTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$expected of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertInstanceOf\\(\\) expects class\\-string\\<object\\>, string given\\.$#"
+			count: 1
+			path: Test/Migration/Converter/ConverterRegistryTest.php
+
+		-
+			message: "#^Unable to resolve the template type ExpectedType in call to method static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertInstanceOf\\(\\)$#"
+			count: 1
+			path: Test/Migration/Converter/ConverterRegistryTest.php
+
+		-
+			message: "#^Cannot call method getId\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSelectionStruct\\|null\\.$#"
+			count: 1
+			path: Test/Migration/DataSelection/DataSelectionRegistryTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$expected of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertInstanceOf\\(\\) expects class\\-string\\<object\\>, string given\\.$#"
+			count: 1
+			path: Test/Migration/Exception/ExceptionTest.php
+
+		-
+			message: "#^Unable to resolve the template type ExpectedType in call to method static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertInstanceOf\\(\\)$#"
+			count: 1
+			path: Test/Migration/Exception/ExceptionTest.php
+
+		-
+			message: "#^Offset 'id' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Test/Migration/Mapping/MappingServiceTest.php
+
+		-
+			message: "#^Service \"cache\\.object\" is private\\.$#"
+			count: 1
+			path: Test/Migration/Services/MigrationDataWriterTest.php
+
+		-
+			message: "#^Call to an undefined method ReflectionProperty\\|SwagMigrationAssistant\\\\Migration\\\\Logging\\\\LoggingService\\:\\:setAccessible\\(\\)\\.$#"
+			count: 1
+			path: Test/Migration/Services/MigrationDataWriterTest.php
+
+		-
+			message: "#^Call to an undefined method ReflectionProperty\\|SwagMigrationAssistant\\\\Migration\\\\Logging\\\\LoggingService\\:\\:getValue\\(\\)\\.$#"
+			count: 1
+			path: Test/Migration/Services/MigrationDataWriterTest.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\MigrationDataWriterTest\\:\\:invokeMethod\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: Test/Migration/Services/MigrationDataWriterTest.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\MigrationDataWriterTest\\:\\:invokeMethod\\(\\) has parameter \\$methodName with no typehint specified\\.$#"
+			count: 1
+			path: Test/Migration/Services/MigrationDataWriterTest.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\MigrationDataWriterTest\\:\\:invokeMethod\\(\\) has parameter \\$object with no typehint specified\\.$#"
+			count: 1
+			path: Test/Migration/Services/MigrationDataWriterTest.php
+
+		-
+			message: "#^Class Shopware\\\\Core\\\\Checkout\\\\Cart\\\\Tax\\\\TaxCalculator does not have a constructor and must be instantiated without any parameters\\.$#"
+			count: 1
+			path: Test/Migration/Services/MigrationDataWriterTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationProgressServiceTest\\:\\:\\$writeArray has no typehint specified\\.$#"
+			count: 1
+			path: Test/Migration/Services/MigrationProgressServiceTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationProgressServiceTest\\:\\:\\$credentialFields has no typehint specified\\.$#"
+			count: 1
+			path: Test/Migration/Services/MigrationProgressServiceTest.php
+
+		-
+			message: "#^Service \"cache\\.object\" is private\\.$#"
+			count: 1
+			path: Test/Migration/Services/MigrationProgressServiceTest.php
+
+		-
+			message: "#^Call to function unset\\(\\) contains undefined variable \\$entityGroup\\.$#"
+			count: 4
+			path: Test/Migration/Services/MigrationProgressServiceTest.php
+
+		-
+			message: "#^Argument of an invalid type SwagMigrationAssistant\\\\Migration\\\\Run\\\\RunProgress supplied for foreach, only iterables are supported\\.$#"
+			count: 2
+			path: Test/Migration/Services/MigrationProgressServiceTest.php
+
+		-
+			message: "#^Class Shopware\\\\Core\\\\Checkout\\\\Cart\\\\Tax\\\\TaxCalculator does not have a constructor and must be instantiated without any parameters\\.$#"
+			count: 1
+			path: Test/Migration/Services/MigrationProgressServiceTest.php
+
+		-
+			message: "#^Service \"cache\\.object\" is private\\.$#"
+			count: 2
+			path: Test/Migration/Services/RunServiceTest.php
+
+		-
+			message: "#^Class Shopware\\\\Core\\\\Checkout\\\\Cart\\\\Tax\\\\TaxCalculator does not have a constructor and must be instantiated without any parameters\\.$#"
+			count: 1
+			path: Test/Migration/Services/RunServiceTest.php
+
+		-
+			message: "#^Class Shopware\\\\Core\\\\Checkout\\\\Cart\\\\Tax\\\\TaxCalculator does not have a constructor and must be instantiated without any parameters\\.$#"
+			count: 1
+			path: Test/Migration/Services/MigrationDataProcessingTest.php
+
+		-
+			message: "#^Class Shopware\\\\Core\\\\Checkout\\\\Cart\\\\Tax\\\\TaxCalculator does not have a constructor and must be instantiated without any parameters\\.$#"
+			count: 1
+			path: Test/Profile/Shopware54/Converter/OrderDocumentConverterTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
+			count: 5
+			path: Test/Profile/Shopware54/Converter/OrderDocumentConverterTest.php
+
+		-
+			message: "#^Offset 'fileType' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware54/Converter/OrderDocumentConverterTest.php
+
+		-
+			message: "#^Offset 'static' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware54/Converter/OrderDocumentConverterTest.php
+
+		-
+			message: "#^Offset 'documentType' does not exist on array\\|null\\.$#"
+			count: 2
+			path: Test/Profile/Shopware54/Converter/OrderDocumentConverterTest.php
+
+		-
+			message: "#^Class Shopware\\\\Core\\\\Checkout\\\\Cart\\\\Tax\\\\TaxCalculator does not have a constructor and must be instantiated without any parameters\\.$#"
+			count: 2
+			path: Test/Profile/Shopware55/Converter/OrderConverterTest.php
+
+		-
+			message: "#^Class Shopware\\\\Core\\\\Checkout\\\\Cart\\\\Tax\\\\TaxRuleCalculator does not have a constructor and must be instantiated without any parameters\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/OrderConverterTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
+			count: 10
+			path: Test/Profile/Shopware55/Converter/OrderConverterTest.php
+
+		-
+			message: "#^Offset 'salesChannelId' does not exist on array\\|null\\.$#"
+			count: 6
+			path: Test/Profile/Shopware55/Converter/OrderConverterTest.php
+
+		-
+			message: "#^Offset 'orderCustomer' does not exist on array\\|null\\.$#"
+			count: 6
+			path: Test/Profile/Shopware55/Converter/OrderConverterTest.php
+
+		-
+			message: "#^Offset 'price' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/OrderConverterTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayNotHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/OrderConverterTest.php
+
+		-
+			message: "#^Offset 'transactions' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/OrderConverterTest.php
+
+		-
+			message: "#^Offset 'deliveries' does not exist on array\\|null\\.$#"
+			count: 2
+			path: Test/Profile/Shopware55/Converter/OrderConverterTest.php
+
+		-
+			message: "#^Offset 'addresses' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/OrderConverterTest.php
+
+		-
+			message: "#^Class SwagMigrationAssistant\\\\Test\\\\Mock\\\\DummyCollection implements generic interface IteratorAggregate but does not specify its types\\: TKey, TValue$#"
+			count: 1
+			path: Test/Mock/DummyCollection.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Test/Mock/Gateway/Dummy/Local/DummyLocalGateway.php
+
+		-
+			message: "#^Access to an undefined property SwagMigrationAssistant\\\\Test\\\\Mock\\\\Migration\\\\Mapping\\\\DummyMappingService\\:\\:\\$uuids\\.$#"
+			count: 1
+			path: Test/Mock/Migration/Mapping/DummyMappingService.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Test/Mock/Migration/Media/DummyHttpMediaDownloadService.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Test/Mock/Profile/Dummy/DummyInvalidCustomerConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Repositories\\\\GeneralSettingRepo\\:\\:aggregate\\(\\) should return Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\Search\\\\AggregationResult\\\\AggregationResultCollection but return statement is missing\\.$#"
+			count: 1
+			path: Test/Mock/Repositories/GeneralSettingRepo.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Repositories\\\\GeneralSettingRepo\\:\\:searchIds\\(\\) should return Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\Search\\\\IdSearchResult but return statement is missing\\.$#"
+			count: 1
+			path: Test/Mock/Repositories/GeneralSettingRepo.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Repositories\\\\GeneralSettingRepo\\:\\:update\\(\\) should return Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\Event\\\\EntityWrittenContainerEvent but return statement is missing\\.$#"
+			count: 1
+			path: Test/Mock/Repositories/GeneralSettingRepo.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Repositories\\\\GeneralSettingRepo\\:\\:upsert\\(\\) should return Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\Event\\\\EntityWrittenContainerEvent but return statement is missing\\.$#"
+			count: 1
+			path: Test/Mock/Repositories/GeneralSettingRepo.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Repositories\\\\GeneralSettingRepo\\:\\:create\\(\\) should return Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\Event\\\\EntityWrittenContainerEvent but return statement is missing\\.$#"
+			count: 1
+			path: Test/Mock/Repositories/GeneralSettingRepo.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Repositories\\\\GeneralSettingRepo\\:\\:delete\\(\\) should return Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\Event\\\\EntityWrittenContainerEvent but return statement is missing\\.$#"
+			count: 1
+			path: Test/Mock/Repositories/GeneralSettingRepo.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Repositories\\\\GeneralSettingRepo\\:\\:createVersion\\(\\) should return string but return statement is missing\\.$#"
+			count: 1
+			path: Test/Mock/Repositories/GeneralSettingRepo.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Repositories\\\\GeneralSettingRepo\\:\\:clone\\(\\) should return Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\Event\\\\EntityWrittenContainerEvent but return statement is missing\\.$#"
+			count: 1
+			path: Test/Mock/Repositories/GeneralSettingRepo.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Repositories\\\\MigrationConnectionRepo\\:\\:aggregate\\(\\) should return Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\Search\\\\AggregationResult\\\\AggregationResultCollection but return statement is missing\\.$#"
+			count: 1
+			path: Test/Mock/Repositories/MigrationConnectionRepo.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Repositories\\\\MigrationConnectionRepo\\:\\:searchIds\\(\\) should return Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\Search\\\\IdSearchResult but return statement is missing\\.$#"
+			count: 1
+			path: Test/Mock/Repositories/MigrationConnectionRepo.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Repositories\\\\MigrationConnectionRepo\\:\\:update\\(\\) should return Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\Event\\\\EntityWrittenContainerEvent but return statement is missing\\.$#"
+			count: 1
+			path: Test/Mock/Repositories/MigrationConnectionRepo.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Repositories\\\\MigrationConnectionRepo\\:\\:upsert\\(\\) should return Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\Event\\\\EntityWrittenContainerEvent but return statement is missing\\.$#"
+			count: 1
+			path: Test/Mock/Repositories/MigrationConnectionRepo.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Repositories\\\\MigrationConnectionRepo\\:\\:create\\(\\) should return Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\Event\\\\EntityWrittenContainerEvent but return statement is missing\\.$#"
+			count: 1
+			path: Test/Mock/Repositories/MigrationConnectionRepo.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Repositories\\\\MigrationConnectionRepo\\:\\:delete\\(\\) should return Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\Event\\\\EntityWrittenContainerEvent but return statement is missing\\.$#"
+			count: 1
+			path: Test/Mock/Repositories/MigrationConnectionRepo.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Repositories\\\\MigrationConnectionRepo\\:\\:createVersion\\(\\) should return string but return statement is missing\\.$#"
+			count: 1
+			path: Test/Mock/Repositories/MigrationConnectionRepo.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Repositories\\\\MigrationConnectionRepo\\:\\:clone\\(\\) should return Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\Event\\\\EntityWrittenContainerEvent but return statement is missing\\.$#"
+			count: 1
+			path: Test/Mock/Repositories/MigrationConnectionRepo.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\ApiEnvironmentReaderTest\\:\\:\\$dataArray has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/ApiEnvironmentReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\ApiEnvironmentReaderTest\\:\\:\\$body has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/ApiEnvironmentReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\ApiEnvironmentReaderTest\\:\\:\\$error has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/ApiEnvironmentReaderTest.php
+
+		-
+			message: "#^Parameter \\#3 \\$body of class GuzzleHttp\\\\Psr7\\\\Response constructor expects Psr\\\\Http\\\\Message\\\\StreamInterface\\|resource\\|string\\|null, string\\|false given\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/ApiReaderTest.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/CategoryReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CategoryReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/CategoryReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CategoryReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/CategoryReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CategoryReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/CategoryReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CategoryReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/CategoryReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CategoryReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/CategoryReaderTest.php
+
+		-
+			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/CurrencyReaderTest.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/CurrencyReaderTest.php
+
+		-
+			message: "#^Cannot call method getTotal\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/CurrencyReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CurrencyReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/CurrencyReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CurrencyReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/CurrencyReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CurrencyReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/CurrencyReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CurrencyReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/CurrencyReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CurrencyReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/CurrencyReaderTest.php
+
+		-
+			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/CustomerGroupReaderTest.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/CustomerGroupReaderTest.php
+
+		-
+			message: "#^Cannot call method getTotal\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/CustomerGroupReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CustomerGroupReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/CustomerGroupReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CustomerGroupReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/CustomerGroupReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CustomerGroupReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/CustomerGroupReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CustomerGroupReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/CustomerGroupReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CustomerGroupReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/CustomerGroupReaderTest.php
+
+		-
+			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/CustomerReaderTest.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/CustomerReaderTest.php
+
+		-
+			message: "#^Cannot call method getTotal\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/CustomerReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CustomerReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/CustomerReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CustomerReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/CustomerReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CustomerReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/CustomerReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CustomerReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/CustomerReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CustomerReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/CustomerReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CategoryAttributeReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/CategoryAttributeReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CategoryAttributeReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/CategoryAttributeReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CategoryAttributeReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/CategoryAttributeReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CategoryAttributeReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/CategoryAttributeReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CategoryAttributeReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/CategoryAttributeReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CustomerAttributeReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/CustomerAttributeReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CustomerAttributeReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/CustomerAttributeReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CustomerAttributeReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/CustomerAttributeReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CustomerAttributeReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/CustomerAttributeReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CustomerAttributeReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/CustomerAttributeReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CustomerGroupAttributeReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/CustomerGroupAttributeReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CustomerGroupAttributeReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/CustomerGroupAttributeReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CustomerGroupAttributeReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/CustomerGroupAttributeReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CustomerGroupAttributeReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/CustomerGroupAttributeReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CustomerGroupAttributeReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/CustomerGroupAttributeReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\EnvironmentReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/EnvironmentReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\EnvironmentReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/EnvironmentReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\EnvironmentReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/EnvironmentReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\EnvironmentReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/EnvironmentReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\EnvironmentReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/EnvironmentReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\LanguageReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/LanguageReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\LanguageReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/LanguageReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\LanguageReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/LanguageReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\LanguageReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/LanguageReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\LanguageReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/LanguageReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ManufacturerAttributeReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/ManufacturerAttributeReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ManufacturerAttributeReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/ManufacturerAttributeReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ManufacturerAttributeReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/ManufacturerAttributeReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ManufacturerAttributeReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/ManufacturerAttributeReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ManufacturerAttributeReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/ManufacturerAttributeReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\MediaAlbumReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/MediaAlbumReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\MediaAlbumReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/MediaAlbumReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\MediaAlbumReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/MediaAlbumReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\MediaAlbumReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/MediaAlbumReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\MediaAlbumReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/MediaAlbumReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\MediaReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/MediaReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\MediaReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/MediaReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\MediaReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/MediaReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\MediaReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/MediaReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\MediaReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/MediaReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\MediaReaderTest\\:\\:\\$customerReader \\(SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\CustomerReader\\) does not accept SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\MediaReader\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/MediaReaderTest.php
+
+		-
+			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/MediaReaderTest.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/MediaReaderTest.php
+
+		-
+			message: "#^Cannot call method getTotal\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/MediaReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\NewsletterRecipientReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/NewsletterRecipientReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\NewsletterRecipientReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/NewsletterRecipientReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\NewsletterRecipientReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/NewsletterRecipientReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\NewsletterRecipientReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/NewsletterRecipientReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\NewsletterRecipientReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/NewsletterRecipientReaderTest.php
+
+		-
+			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/NewsletterRecipientReaderTest.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/NewsletterRecipientReaderTest.php
+
+		-
+			message: "#^Cannot call method getTotal\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/NewsletterRecipientReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\NumberRangeReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/NumberRangeReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\NumberRangeReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/NumberRangeReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\NumberRangeReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/NumberRangeReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\NumberRangeReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/NumberRangeReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\NumberRangeReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/NumberRangeReaderTest.php
+
+		-
+			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/NumberRangeReaderTest.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/NumberRangeReaderTest.php
+
+		-
+			message: "#^Cannot call method getTotal\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/NumberRangeReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\OrderAttributeReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/OrderAttributeReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\OrderAttributeReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/OrderAttributeReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\OrderAttributeReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/OrderAttributeReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\OrderAttributeReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/OrderAttributeReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\OrderAttributeReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/OrderAttributeReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\OrderDocumentAttributeReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/OrderDocumentAttributeReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\OrderDocumentAttributeReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/OrderDocumentAttributeReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\OrderDocumentAttributeReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/OrderDocumentAttributeReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\OrderDocumentAttributeReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/OrderDocumentAttributeReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\OrderDocumentAttributeReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/OrderDocumentAttributeReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\OrderDocumentReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/OrderDocumentReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\OrderDocumentReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/OrderDocumentReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\OrderDocumentReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/OrderDocumentReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\OrderDocumentReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/OrderDocumentReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\OrderDocumentReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/OrderDocumentReaderTest.php
+
+		-
+			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/OrderDocumentReaderTest.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/OrderDocumentReaderTest.php
+
+		-
+			message: "#^Cannot call method getTotal\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/OrderDocumentReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\OrderReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/OrderReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\OrderReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/OrderReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\OrderReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/OrderReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\OrderReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/OrderReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\OrderReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/OrderReaderTest.php
+
+		-
+			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/OrderReaderTest.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/OrderReaderTest.php
+
+		-
+			message: "#^Cannot call method getTotal\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/OrderReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ProductAttributeReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/ProductAttributeReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ProductAttributeReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/ProductAttributeReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ProductAttributeReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/ProductAttributeReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ProductAttributeReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/ProductAttributeReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ProductAttributeReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/ProductAttributeReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ProductPriceAttributeReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/ProductPriceAttributeReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ProductPriceAttributeReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/ProductPriceAttributeReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ProductPriceAttributeReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/ProductPriceAttributeReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ProductPriceAttributeReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/ProductPriceAttributeReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ProductPriceAttributeReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/ProductPriceAttributeReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ProductReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/ProductReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ProductReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/ProductReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ProductReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/ProductReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ProductReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/ProductReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ProductReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/ProductReaderTest.php
+
+		-
+			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/ProductReaderTest.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/ProductReaderTest.php
+
+		-
+			message: "#^Cannot call method getTotal\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/ProductReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ProductReviewReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/ProductReviewReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ProductReviewReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/ProductReviewReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ProductReviewReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/ProductReviewReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ProductReviewReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/ProductReviewReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ProductReviewReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/ProductReviewReaderTest.php
+
+		-
+			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/ProductReviewReaderTest.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/ProductReviewReaderTest.php
+
+		-
+			message: "#^Cannot call method getTotal\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/ProductReviewReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\PropertyGroupReviewReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/PropertyGroupOptionReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\PropertyGroupReviewReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/PropertyGroupOptionReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\PropertyGroupReviewReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/PropertyGroupOptionReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\PropertyGroupReviewReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/PropertyGroupOptionReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\PropertyGroupReviewReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/PropertyGroupOptionReaderTest.php
+
+		-
+			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/PropertyGroupOptionReaderTest.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/PropertyGroupOptionReaderTest.php
+
+		-
+			message: "#^Cannot call method getTotal\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/PropertyGroupOptionReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\SalesChannelReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/SalesChannelReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\SalesChannelReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/SalesChannelReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\SalesChannelReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/SalesChannelReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\SalesChannelReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/SalesChannelReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\SalesChannelReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/SalesChannelReaderTest.php
+
+		-
+			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/SalesChannelReaderTest.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/SalesChannelReaderTest.php
+
+		-
+			message: "#^Cannot call method getTotal\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/SalesChannelReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\SeoUrlReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/SeoUrlReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\SeoUrlReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/SeoUrlReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\SeoUrlReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/SeoUrlReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\SeoUrlReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/SeoUrlReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\SeoUrlReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/SeoUrlReaderTest.php
+
+		-
+			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/SeoUrlReaderTest.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/SeoUrlReaderTest.php
+
+		-
+			message: "#^Cannot call method getTotal\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/SeoUrlReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ShippingMethodReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/ShippingMethodReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ShippingMethodReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/ShippingMethodReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ShippingMethodReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/ShippingMethodReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ShippingMethodReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/ShippingMethodReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ShippingMethodReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/ShippingMethodReaderTest.php
+
+		-
+			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/ShippingMethodReaderTest.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/ShippingMethodReaderTest.php
+
+		-
+			message: "#^Cannot call method getTotal\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/ShippingMethodReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\TableReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/TableReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\TableReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/TableReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\TableReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/TableReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\TableReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/TableReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\TableReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/TableReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\TranslationReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/TranslationReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\TranslationReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/TranslationReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\TranslationReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/TranslationReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\TranslationReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/TranslationReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\TranslationReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/TranslationReaderTest.php
+
+		-
+			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/TranslationReaderTest.php
+
+		-
+			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/TranslationReaderTest.php
+
+		-
+			message: "#^Cannot call method getTotal\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/Local/TranslationReaderTest.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\LocalGatewayTest\\:\\:profileProvider\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/LocalGatewayTest.php
+
+		-
+			message: "#^Cannot call method getCode\\(\\) on SwagMigrationAssistant\\\\Migration\\\\RequestStatusStruct\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/ShopwareApiGatewayTest.php
+
+		-
+			message: "#^Cannot call method getMessage\\(\\) on SwagMigrationAssistant\\\\Migration\\\\RequestStatusStruct\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/ShopwareApiGatewayTest.php
+
+		-
+			message: "#^Cannot call method getIsWarning\\(\\) on SwagMigrationAssistant\\\\Migration\\\\RequestStatusStruct\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Gateway/ShopwareApiGatewayTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Premapping\\\\SalutationReaderTest\\:\\:\\$reader \\(SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Premapping\\\\OrderStateReader\\) does not accept SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Premapping\\\\SalutationReader\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Premapping/SalutationReaderTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Premapping\\\\TransactionStateReaderTest\\:\\:\\$reader \\(SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Premapping\\\\TransactionStateReader\\) does not accept SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Premapping\\\\OrderDeliveryStateReader\\.$#"
+			count: 1
+			path: Test/Profile/Shopware/Premapping/TransactionStateReaderTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
+			count: 8
+			path: Test/Profile/Shopware55/Converter/CategoryAttributeConverterTest.php
+
+		-
+			message: "#^Offset 'relations' does not exist on array\\|null\\.$#"
+			count: 4
+			path: Test/Profile/Shopware55/Converter/CategoryAttributeConverterTest.php
+
+		-
+			message: "#^Offset 'customFields' does not exist on array\\|null\\.$#"
+			count: 15
+			path: Test/Profile/Shopware55/Converter/CategoryAttributeConverterTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware55\\\\Converter\\\\CategoryConverterTest\\:\\:\\$connection \\(string\\) does not accept SwagMigrationAssistant\\\\Migration\\\\Connection\\\\SwagMigrationConnectionEntity\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/CategoryConverterTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
+			count: 3
+			path: Test/Profile/Shopware55/Converter/CategoryConverterTest.php
+
+		-
+			message: "#^Offset 'translations' does not exist on array\\|null\\.$#"
+			count: 2
+			path: Test/Profile/Shopware55/Converter/CategoryConverterTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware55\\\\Converter\\\\CrossSellingConverterTest\\:\\:\\$type has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/CrossSellingConverterTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware55\\\\Converter\\\\CrossSellingConverterTest\\:\\:\\$compareProduct has no typehint specified\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/CrossSellingConverterTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware55\\\\Converter\\\\CrossSellingConverterTest\\:\\:\\$connection \\(string\\) does not accept SwagMigrationAssistant\\\\Migration\\\\Connection\\\\SwagMigrationConnectionEntity\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/CrossSellingConverterTest.php
+
+		-
+			message: "#^Offset 'id' does not exist on array\\|null\\.$#"
+			count: 3
+			path: Test/Profile/Shopware55/Converter/CrossSellingConverterTest.php
+
+		-
+			message: "#^Offset 'productId' does not exist on array\\|null\\.$#"
+			count: 2
+			path: Test/Profile/Shopware55/Converter/CrossSellingConverterTest.php
+
+		-
+			message: "#^Offset 'assignedProducts' does not exist on array\\|null\\.$#"
+			count: 7
+			path: Test/Profile/Shopware55/Converter/CrossSellingConverterTest.php
+
+		-
+			message: "#^Cannot call method getId\\(\\) on string\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/CrossSellingConverterTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
+			count: 2
+			path: Test/Profile/Shopware55/Converter/CurrencyConverterTest.php
+
+		-
+			message: "#^Offset 'translations' does not exist on array\\|null\\.$#"
+			count: 3
+			path: Test/Profile/Shopware55/Converter/CurrencyConverterTest.php
+
+		-
+			message: "#^Offset 'shortName' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/CurrencyConverterTest.php
+
+		-
+			message: "#^Offset 'isoCode' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/CurrencyConverterTest.php
+
+		-
+			message: "#^Offset 'name' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/CurrencyConverterTest.php
+
+		-
+			message: "#^Offset 'isDefault' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/CurrencyConverterTest.php
+
+		-
+			message: "#^Offset 'factor' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/CurrencyConverterTest.php
+
+		-
+			message: "#^Offset 'symbol' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/CurrencyConverterTest.php
+
+		-
+			message: "#^Offset 'placedInFront' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/CurrencyConverterTest.php
+
+		-
+			message: "#^Offset 'position' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/CurrencyConverterTest.php
+
+		-
+			message: "#^Offset 'decimalPrecision' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/CurrencyConverterTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
+			count: 2
+			path: Test/Profile/Shopware55/Converter/CustomerAttributeConverterTest.php
+
+		-
+			message: "#^Offset 'relations' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/CustomerAttributeConverterTest.php
+
+		-
+			message: "#^Offset 'customFields' does not exist on array\\|null\\.$#"
+			count: 3
+			path: Test/Profile/Shopware55/Converter/CustomerAttributeConverterTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
+			count: 12
+			path: Test/Profile/Shopware55/Converter/CustomerConverterTest.php
+
+		-
+			message: "#^Offset 'salesChannelId' does not exist on array\\|null\\.$#"
+			count: 3
+			path: Test/Profile/Shopware55/Converter/CustomerConverterTest.php
+
+		-
+			message: "#^Offset 'lastName' does not exist on array\\|null\\.$#"
+			count: 3
+			path: Test/Profile/Shopware55/Converter/CustomerConverterTest.php
+
+		-
+			message: "#^Offset 'guest' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/CustomerConverterTest.php
+
+		-
+			message: "#^Offset 'customerNumber' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/CustomerConverterTest.php
+
+		-
+			message: "#^Offset 'addresses' does not exist on array\\|null\\.$#"
+			count: 9
+			path: Test/Profile/Shopware55/Converter/CustomerConverterTest.php
+
+		-
+			message: "#^Offset 'defaultBillingAddre…' does not exist on array\\|null\\.$#"
+			count: 3
+			path: Test/Profile/Shopware55/Converter/CustomerConverterTest.php
+
+		-
+			message: "#^Offset 'defaultShippingAddr…' does not exist on array\\|null\\.$#"
+			count: 3
+			path: Test/Profile/Shopware55/Converter/CustomerConverterTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
+			count: 2
+			path: Test/Profile/Shopware55/Converter/CustomerGroupAttributeConverterTest.php
+
+		-
+			message: "#^Offset 'relations' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/CustomerGroupAttributeConverterTest.php
+
+		-
+			message: "#^Offset 'customFields' does not exist on array\\|null\\.$#"
+			count: 3
+			path: Test/Profile/Shopware55/Converter/CustomerGroupAttributeConverterTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/CustomerGroupConverterTest.php
+
+		-
+			message: "#^Offset 'name' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/CustomerGroupConverterTest.php
+
+		-
+			message: "#^Offset 'displayGross' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/CustomerGroupConverterTest.php
+
+		-
+			message: "#^Offset 'inputGross' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/CustomerGroupConverterTest.php
+
+		-
+			message: "#^Offset 'hasGlobalDiscount' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/CustomerGroupConverterTest.php
+
+		-
+			message: "#^Offset 'minimumOrderAmount' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/CustomerGroupConverterTest.php
+
+		-
+			message: "#^Offset 'minimumOrderAmountS…' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/CustomerGroupConverterTest.php
+
+		-
+			message: "#^Offset 'translations' does not exist on array\\|null\\.$#"
+			count: 2
+			path: Test/Profile/Shopware55/Converter/CustomerGroupConverterTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/LanguageConverterTest.php
+
+		-
+			message: "#^Offset 'name' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/LanguageConverterTest.php
+
+		-
+			message: "#^Offset 'localeId' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/LanguageConverterTest.php
+
+		-
+			message: "#^Offset 'translationCodeId' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/LanguageConverterTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
+			count: 2
+			path: Test/Profile/Shopware55/Converter/ManufacturerAttributeConverterTest.php
+
+		-
+			message: "#^Offset 'relations' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/ManufacturerAttributeConverterTest.php
+
+		-
+			message: "#^Offset 'customFields' does not exist on array\\|null\\.$#"
+			count: 3
+			path: Test/Profile/Shopware55/Converter/ManufacturerAttributeConverterTest.php
+
+		-
+			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware55\\\\Converter\\\\MediaConverterTest\\:\\:\\$connection \\(string\\) does not accept SwagMigrationAssistant\\\\Migration\\\\Connection\\\\SwagMigrationConnectionEntity\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/MediaConverterTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/MediaConverterTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
+			count: 4
+			path: Test/Profile/Shopware55/Converter/MediaFolderConverterTest.php
+
+		-
+			message: "#^Offset 'name' does not exist on array\\|null\\.$#"
+			count: 4
+			path: Test/Profile/Shopware55/Converter/MediaFolderConverterTest.php
+
+		-
+			message: "#^Offset 'configuration' does not exist on array\\|null\\.$#"
+			count: 8
+			path: Test/Profile/Shopware55/Converter/MediaFolderConverterTest.php
+
+		-
+			message: "#^Offset 'id' does not exist on array\\|null\\.$#"
+			count: 2
+			path: Test/Profile/Shopware55/Converter/MediaFolderConverterTest.php
+
+		-
+			message: "#^Offset 'parentId' does not exist on array\\|null\\.$#"
+			count: 2
+			path: Test/Profile/Shopware55/Converter/MediaFolderConverterTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayNotHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/NewsletterRecipientConverterTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
+			count: 4
+			path: Test/Profile/Shopware55/Converter/NewsletterRecipientConverterTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
+			count: 5
+			path: Test/Profile/Shopware55/Converter/NumberRangeConverterTest.php
+
+		-
+			message: "#^Offset 'global' does not exist on array\\|null\\.$#"
+			count: 5
+			path: Test/Profile/Shopware55/Converter/NumberRangeConverterTest.php
+
+		-
+			message: "#^Offset 'pattern' does not exist on array\\|null\\.$#"
+			count: 5
+			path: Test/Profile/Shopware55/Converter/NumberRangeConverterTest.php
+
+		-
+			message: "#^Offset 'start' does not exist on array\\|null\\.$#"
+			count: 5
+			path: Test/Profile/Shopware55/Converter/NumberRangeConverterTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
+			count: 2
+			path: Test/Profile/Shopware55/Converter/OrderAttributeConverterTest.php
+
+		-
+			message: "#^Offset 'relations' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/OrderAttributeConverterTest.php
+
+		-
+			message: "#^Offset 'customFields' does not exist on array\\|null\\.$#"
+			count: 3
+			path: Test/Profile/Shopware55/Converter/OrderAttributeConverterTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
+			count: 14
+			path: Test/Profile/Shopware55/Converter/ProductAttributeConverterTest.php
+
+		-
+			message: "#^Offset 'relations' does not exist on array\\|null\\.$#"
+			count: 7
+			path: Test/Profile/Shopware55/Converter/ProductAttributeConverterTest.php
+
+		-
+			message: "#^Offset 'customFields' does not exist on array\\|null\\.$#"
+			count: 31
+			path: Test/Profile/Shopware55/Converter/ProductAttributeConverterTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
+			count: 17
+			path: Test/Profile/Shopware55/Converter/ProductConverterTest.php
+
+		-
+			message: "#^Offset 'translations' does not exist on array\\|null\\.$#"
+			count: 3
+			path: Test/Profile/Shopware55/Converter/ProductConverterTest.php
+
+		-
+			message: "#^Offset 'categories' does not exist on array\\|null\\.$#"
+			count: 3
+			path: Test/Profile/Shopware55/Converter/ProductConverterTest.php
+
+		-
+			message: "#^Offset 'children' does not exist on array\\|null\\.$#"
+			count: 2
+			path: Test/Profile/Shopware55/Converter/ProductConverterTest.php
+
+		-
+			message: "#^Offset 'id' does not exist on array\\|null\\.$#"
+			count: 2
+			path: Test/Profile/Shopware55/Converter/ProductConverterTest.php
+
+		-
+			message: "#^Offset 'parentId' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/ProductConverterTest.php
+
+		-
+			message: "#^Offset 'options' does not exist on array\\|null\\.$#"
+			count: 2
+			path: Test/Profile/Shopware55/Converter/ProductConverterTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayNotHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
+			count: 2
+			path: Test/Profile/Shopware55/Converter/ProductConverterTest.php
+
+		-
+			message: "#^Offset 'deliveryTime' does not exist on array\\|null\\.$#"
+			count: 12
+			path: Test/Profile/Shopware55/Converter/ProductConverterTest.php
+
+		-
+			message: "#^Offset 'price' does not exist on array\\|null\\.$#"
+			count: 2
+			path: Test/Profile/Shopware55/Converter/ProductConverterTest.php
+
+		-
+			message: "#^Property Test\\\\Profile\\\\Shopware55\\\\Converter\\\\ProductOptionRelationConverterTest\\:\\:\\$converter \\(SwagMigrationAssistant\\\\Profile\\\\Shopware55\\\\Converter\\\\Shopware55ProductPropertyRelationConverter\\) does not accept SwagMigrationAssistant\\\\Profile\\\\Shopware55\\\\Converter\\\\Shopware55ProductOptionRelationConverter\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/ProductOptionRelationConverterTest.php
+
+		-
+			message: "#^Offset 'id' does not exist on array\\|null\\.$#"
+			count: 4
+			path: Test/Profile/Shopware55/Converter/ProductOptionRelationConverterTest.php
+
+		-
+			message: "#^Offset 'configuratorSettings' does not exist on array\\|null\\.$#"
+			count: 5
+			path: Test/Profile/Shopware55/Converter/ProductOptionRelationConverterTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
+			count: 2
+			path: Test/Profile/Shopware55/Converter/ProductPriceAttributeConverterTest.php
+
+		-
+			message: "#^Offset 'relations' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/ProductPriceAttributeConverterTest.php
+
+		-
+			message: "#^Offset 'customFields' does not exist on array\\|null\\.$#"
+			count: 3
+			path: Test/Profile/Shopware55/Converter/ProductPriceAttributeConverterTest.php
+
+		-
+			message: "#^Offset 'id' does not exist on array\\|null\\.$#"
+			count: 3
+			path: Test/Profile/Shopware55/Converter/ProductPropertyRelationConverterTest.php
+
+		-
+			message: "#^Offset 'properties' does not exist on array\\|null\\.$#"
+			count: 3
+			path: Test/Profile/Shopware55/Converter/ProductPropertyRelationConverterTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
+			count: 3
+			path: Test/Profile/Shopware55/Converter/PropertyGroupOptionConverterTest.php
+
+		-
+			message: "#^Offset 'translations' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/PropertyGroupOptionConverterTest.php
+
+		-
+			message: "#^Offset 'group' does not exist on array\\|null\\.$#"
+			count: 2
+			path: Test/Profile/Shopware55/Converter/PropertyGroupOptionConverterTest.php
+
+		-
+			message: "#^Offset 'id' does not exist on array\\|null\\.$#"
+			count: 11
+			path: Test/Profile/Shopware55/Converter/PropertyGroupOptionConverterTest.php
+
+		-
+			message: "#^Offset 'configuratorSettings' does not exist on array\\|null\\.$#"
+			count: 3
+			path: Test/Profile/Shopware55/Converter/PropertyGroupOptionConverterTest.php
+
+		-
+			message: "#^Offset 'properties' does not exist on array\\|null\\.$#"
+			count: 2
+			path: Test/Profile/Shopware55/Converter/PropertyGroupOptionConverterTest.php
+
+		-
+			message: "#^Cannot call method getId\\(\\) on SwagMigrationAssistant\\\\Migration\\\\Connection\\\\SwagMigrationConnectionEntity\\|null\\.$#"
+			count: 3
+			path: Test/Profile/Shopware55/Converter/SalesChannelConverterTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
+			count: 2
+			path: Test/Profile/Shopware55/Converter/SalesChannelConverterTest.php
+
+		-
+			message: "#^Offset 'languages' does not exist on array\\|null\\.$#"
+			count: 2
+			path: Test/Profile/Shopware55/Converter/SalesChannelConverterTest.php
+
+		-
+			message: "#^Offset 'name' does not exist on array\\|null\\.$#"
+			count: 2
+			path: Test/Profile/Shopware55/Converter/SalesChannelConverterTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/ShippingMethodConverterTest.php
+
+		-
+			message: "#^Offset 'translations' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/ShippingMethodConverterTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$haystack of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertCount\\(\\) expects Countable\\|iterable, array\\|null given\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/TranslationConverterTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
+			count: 4
+			path: Test/Profile/Shopware55/Converter/TranslationConverterTest.php
+
+		-
+			message: "#^Offset 'id' does not exist on array\\|null\\.$#"
+			count: 4
+			path: Test/Profile/Shopware55/Converter/TranslationConverterTest.php
+
+		-
+			message: "#^Offset 'manufacturer' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/TranslationConverterTest.php
+
+		-
+			message: "#^Offset 'unit' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/TranslationConverterTest.php
+
+		-
+			message: "#^Cannot call method getId\\(\\) on SwagMigrationAssistant\\\\Migration\\\\Connection\\\\SwagMigrationConnectionEntity\\|null\\.$#"
+			count: 4
+			path: Test/Profile/Shopware55/Converter/TranslationConverterTest.php
+
