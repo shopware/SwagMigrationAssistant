@@ -11,18 +11,19 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Test\Shopware5DatabaseConnection;
 
 trait LocalCredentialTrait
 {
-    public $db_name = 'sw55';
+    public $db_name = Shopware5DatabaseConnection::DB_NAME;
 
-    public $db_user = 'root';
+    public $db_user = Shopware5DatabaseConnection::DB_USER;
 
-    public $db_password = 'app';
+    public $db_password = Shopware5DatabaseConnection::DB_PASSWORD;
 
-    public $db_host = 'mysql';
+    public $db_host = Shopware5DatabaseConnection::DB_HOST;
 
-    public $db_port = '3306';
+    public $db_port = Shopware5DatabaseConnection::DB_PORT;
 
     /**
      * @var SwagMigrationConnectionEntity
@@ -36,6 +37,10 @@ trait LocalCredentialTrait
 
     public function connectionSetup(): void
     {
+        if (getenv('SWAG_MIGRATION_ASSISTANT_SKIP_SW5_TESTS') === 'true') {
+            static::markTestSkipped('Shopware 5 test database not available. Skipping test');
+        }
+
         $this->runId = Uuid::randomHex();
         $this->connection = new SwagMigrationConnectionEntity();
         $this->connection->setId(Uuid::randomHex());
