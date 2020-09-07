@@ -86,6 +86,7 @@ abstract class CustomerConverter extends ShopwareConverter
         $this->generateChecksum($data);
         $oldData = $data;
         $this->runId = $migrationContext->getRunUuid();
+        $this->migrationContext = $migrationContext;
 
         $fields = $this->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
 
@@ -241,7 +242,7 @@ abstract class CustomerConverter extends ShopwareConverter
         }
 
         if (isset($data['attributes'])) {
-            $converted['customFields'] = $this->getAttributes($data['attributes'], DefaultEntities::CUSTOMER, $this->connectionName, ['id', 'userID']);
+            $converted['customFields'] = $this->getAttributes($data['attributes'], DefaultEntities::CUSTOMER, $this->connectionName, ['id', 'userID'], $this->context);
         }
         unset($data['attributes']);
 

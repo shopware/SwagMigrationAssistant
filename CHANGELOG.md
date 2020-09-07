@@ -1,10 +1,10 @@
 # REPLACE-GLOBAL-WITH-NEXT-VERSION
 - MIG-72 - Recognize correct category type when external link is set
+- MIG-74 - Optimize migration of custom fields
 
 # 2.1.0
 - MIG-13 - Migrate product reviews without customer
 - MIG-28 - Optimized rebuilding of container for deactivation and activation of the plugin
-- MIG-74 - Optimize custom field migration from SW5
 
 # 2.0.0
 - MIG-3 - Fixes a problem with migrating order documents

@@ -78,18 +78,25 @@ abstract class AttributeConverter extends Converter
             ],
         ];
 
+        $additionalData = [];
+        if (isset($data['configuration']['column_type'])) {
+            $additionalData['columnType'] = $data['configuration']['column_type'];
+        }
+
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             $migrationContext->getDataSet()::getEntity(),
             $data['name'],
             $context,
-            $this->checksum
+            $this->checksum,
+            $additionalData
         );
+
         $converted['customFields'] = [
             [
                 'id' => $this->mainMapping['entityUuid'],
                 'name' => $converted['name'] . '_' . $data['name'],
-                'type' => $this->customFieldType($data),
+                'type' => $this->getCustomFieldType($data),
                 'config' => $this->getCustomFieldConfiguration($data),
             ],
         ];
@@ -139,7 +146,7 @@ abstract class AttributeConverter extends Converter
             return $attributeData;
         }
 
-        if ($data['type'] === 'integer') {
+        if ($data['type'] === 'int') {
             $attributeData['type'] = 'number';
             $attributeData['numberType'] = 'int';
             $attributeData['customFieldType'] = 'number';
@@ -263,7 +270,7 @@ abstract class AttributeConverter extends Converter
         return [];
     }
 
-    private function customFieldType(array $data): string
+    private function getCustomFieldType(array $data): string
     {
         if (isset($data['configuration'])) {
             switch ($data['configuration']['column_type']) {

@@ -409,7 +409,7 @@ abstract class ProductConverter extends ShopwareConverter
         }
 
         if (isset($data['attributes'])) {
-            $converted['customFields'] = $this->getAttributes($data['attributes'], DefaultEntities::PRODUCT, $this->connectionName, ['id', 'articleID', 'articledetailsID']);
+            $converted['customFields'] = $this->getAttributes($data['attributes'], DefaultEntities::PRODUCT, $this->connectionName, ['id', 'articleID', 'articledetailsID'], $this->context);
         }
         unset($data['attributes']);
 
@@ -634,7 +634,7 @@ abstract class ProductConverter extends ShopwareConverter
         }
 
         if (isset($data['attributes'])) {
-            $manufacturer['customFields'] = $this->getAttributes($data['attributes'], DefaultEntities::PRODUCT_MANUFACTURER, $this->connectionName, ['id', 'supplierID']);
+            $manufacturer['customFields'] = $this->getAttributes($data['attributes'], DefaultEntities::PRODUCT_MANUFACTURER, $this->connectionName, ['id', 'supplierID'], $this->context);
         }
 
         return $manufacturer;
@@ -1121,7 +1121,7 @@ abstract class ProductConverter extends ShopwareConverter
             ];
 
             if (isset($price['attributes'])) {
-                $data['customFields'] = $this->getAttributes($price, DefaultEntities::PRODUCT_PRICE, $this->connectionName, ['id', 'priceID']);
+                $data['customFields'] = $this->getAttributes($price, DefaultEntities::PRODUCT_PRICE, $this->connectionName, ['id', 'priceID'], $this->context);
             }
 
             $newData[] = $data;
@@ -1175,7 +1175,7 @@ abstract class ProductConverter extends ShopwareConverter
         $localeTranslation['languageId'] = $languageUuid;
 
         if (isset($data['attributes'])) {
-            $localeTranslation['customFields'] = $this->getAttributes($data['attributes'], DefaultEntities::PRODUCT, $this->connectionName, ['id', 'articleID', 'articledetailsID']);
+            $localeTranslation['customFields'] = $this->getAttributes($data['attributes'], DefaultEntities::PRODUCT, $this->connectionName, ['id', 'articleID', 'articledetailsID'], $this->context);
         }
 
         if ($languageUuid !== null) {

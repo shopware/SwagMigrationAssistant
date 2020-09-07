@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
+use Shopware\Core\Framework\Context;
 use SwagMigrationAssistant\Migration\Converter\Converter;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
@@ -109,7 +110,7 @@ abstract class ShopwareConverter extends Converter
         }
     }
 
-    protected function getAttributes(array $attributes, string $entityName, string $connectionName, array $blacklist = []): array
+    protected function getAttributes(array $attributes, string $entityName, string $connectionName, array $blacklist = [], ?Context $context = null): array
     {
         $result = [];
         // remove unwanted characters from connection name
@@ -120,6 +121,38 @@ abstract class ShopwareConverter extends Converter
             if (in_array($attribute, $blacklist, true)) {
                 continue;
             }
+
+            if ($value === null) {
+                continue;
+            }
+
+            $connection = $this->migrationContext->getConnection();
+            if ($context !== null && $connection !== null) {
+                $connectionId = $connection->getId();
+                $mapping = $this->mappingService->getMapping(
+                    $connectionId,
+                    $entityName . '_custom_field',
+                    $attribute,
+                    $context
+                );
+
+                if ($mapping !== null) {
+                    $this->mappingIds[] = $mapping['id'];
+
+                    if (isset($mapping['additionalData']['columnType']) && $mapping['additionalData']['columnType'] === 'boolean') {
+                        $value = (bool) $value;
+                    }
+
+                    if (isset($mapping['additionalData']['columnType']) && $mapping['additionalData']['columnType'] === 'integer') {
+                        $value = (int) $value;
+                    }
+
+                    if (isset($mapping['additionalData']['columnType']) && $mapping['additionalData']['columnType'] === 'float') {
+                        $value = (float) $value;
+                    }
+                }
+            }
+
             $result['migration_' . $connectionName . '_' . $entityName . '_' . $attribute] = $value;
         }
 

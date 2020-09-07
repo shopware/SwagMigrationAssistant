@@ -173,7 +173,7 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         unset($data['documenttype']);
 
         if (isset($data['attributes'])) {
-            $converted['customFields'] = $this->getAttributes($data['attributes'], DefaultEntities::ORDER_DOCUMENT, $this->connectionName, ['id', 'documentID']);
+            $converted['customFields'] = $this->getAttributes($data['attributes'], DefaultEntities::ORDER_DOCUMENT, $this->connectionName, ['id', 'documentID'], $this->context);
         }
         unset($data['attributes']);
 

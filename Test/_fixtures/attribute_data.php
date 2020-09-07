@@ -167,7 +167,7 @@ return [
     ],
     8 => [
         'name' => 'integer2',
-        'type' => 'integer',
+        'type' => 'int',
         '_locale' => 'de-DE',
     ],
     9 => [

@@ -39,6 +39,7 @@ abstract class CustomerGroupConverter extends ShopwareConverter
         $this->generateChecksum($data);
         $this->context = $context;
         $this->locale = $data['_locale'];
+        $this->migrationContext = $migrationContext;
         unset($data['_locale']);
 
         $connection = $migrationContext->getConnection();
@@ -61,7 +62,7 @@ abstract class CustomerGroupConverter extends ShopwareConverter
         $converted['id'] = $this->mainMapping['entityUuid'];
 
         if (isset($data['attributes'])) {
-            $converted['customFields'] = $this->getAttributes($data['attributes'], DefaultEntities::CUSTOMER_GROUP, $this->connectionName, ['id', 'customerGroupID']);
+            $converted['customFields'] = $this->getAttributes($data['attributes'], DefaultEntities::CUSTOMER_GROUP, $this->connectionName, ['id', 'customerGroupID'], $this->context);
         }
 
         $this->getCustomerGroupTranslation($converted, $data);
