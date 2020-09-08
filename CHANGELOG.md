@@ -1,4 +1,4 @@
-# REPLACE-GLOBAL-WITH-NEXT-VERSION
+# 2.1.0
 - MIG-13 - Migrate product reviews without customer
 - MIG-28 - Optimized rebuilding of container for deactivation and activation of the plugin
 
