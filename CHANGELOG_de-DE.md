@@ -1,4 +1,4 @@
-# REPLACE-GLOBAL-WITH-NEXT-VERSION
+# 2.1.0
 - MIG-13 - Migration von Produktbewertungen ohne Kunden ermöglichen
 - MIG-28 - Optmierte Neugenerierung des Containers bei Aktivierung und Deaktivierung
 
