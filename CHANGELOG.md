@@ -1,3 +1,6 @@
+# REPLACE-GLOBAL-WITH-NEXT-VERSION
+- MIG-72 - Recognize correct category type when external link is set
+
 # 2.1.0
 - MIG-13 - Migrate product reviews without customer
 - MIG-28 - Optimized rebuilding of container for deactivation and activation of the plugin

@@ -2416,16 +2416,6 @@ parameters:
 			path: Test/Profile/Shopware55/Converter/CategoryConverterTest.php
 
 		-
-			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
-			count: 3
-			path: Test/Profile/Shopware55/Converter/CategoryConverterTest.php
-
-		-
-			message: "#^Offset 'translations' does not exist on array\\|null\\.$#"
-			count: 2
-			path: Test/Profile/Shopware55/Converter/CategoryConverterTest.php
-
-		-
 			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware55\\\\Converter\\\\CrossSellingConverterTest\\:\\:\\$type has no typehint specified\\.$#"
 			count: 1
 			path: Test/Profile/Shopware55/Converter/CrossSellingConverterTest.php

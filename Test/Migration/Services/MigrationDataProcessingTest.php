@@ -233,13 +233,13 @@ class MigrationDataProcessingTest extends TestCase
         $data = $this->migrationDataFetcher->fetchData($migrationContext, $context);
         $this->migrationDataConverter->convert($data, $migrationContext, $context);
 
-        static::assertCount(8, $data);
+        static::assertCount(9, $data);
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('runId', $this->runUuid));
         $criteria->addFilter(new EqualsFilter('entity', DefaultEntities::CATEGORY));
         $result = $this->migrationDataRepo->search($criteria, $context);
-        static::assertSame(8, $result->getTotal());
+        static::assertSame(9, $result->getTotal());
     }
 
     public function testFetchTranslationDataApiGateway(): void

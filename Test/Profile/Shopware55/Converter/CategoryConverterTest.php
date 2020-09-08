@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Test\Profile\Shopware55\Converter;
 
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
@@ -87,7 +88,7 @@ class CategoryConverterTest extends TestCase
         $convertResult = $this->categoryConverter->convert($categoryData[0], $context, $this->migrationContext);
 
         $converted = $convertResult->getConverted();
-
+        static::assertNotNull($converted);
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey(DummyMappingService::DEFAULT_LANGUAGE_UUID, $converted['translations']);
@@ -103,6 +104,7 @@ class CategoryConverterTest extends TestCase
         $convertResult = $this->categoryConverter->convert($categoryData[3], $context, $this->migrationContext);
 
         $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('parentId', $converted);
@@ -137,5 +139,20 @@ class CategoryConverterTest extends TestCase
         $title = 'The category entity has one or more empty necessary fields';
         static::assertSame($title, $logs[0]['title']);
         static::assertCount(1, $logs);
+    }
+
+    public function testConvertWithExternalLink(): void
+    {
+        $categoryData = require __DIR__ . '/../../../_fixtures/category_data.php';
+
+        $context = Context::createDefaultContext();
+        $convertResult = $this->categoryConverter->convert($categoryData[8], $context, $this->migrationContext);
+
+        $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
+        static::assertNull($convertResult->getUnmapped());
+        static::assertArrayHasKey('id', $converted);
+        static::assertSame(CategoryDefinition::TYPE_LINK, $converted['type']);
+        static::assertSame('www.shopware.com', $converted['externalLink']);
     }
 }

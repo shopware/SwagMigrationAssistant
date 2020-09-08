@@ -584,7 +584,7 @@ class MigrationDataWriterTest extends TestCase
         });
         $totalAfter = $this->dbConnection->query('select count(*) from category')->fetchColumn();
 
-        static::assertSame(8, $totalAfter - $totalBefore);
+        static::assertSame(9, $totalAfter - $totalBefore);
     }
 
     public function testWriteProductData(): void
