@@ -41,7 +41,10 @@ class CategoryAssociationProvider extends AbstractProvider
         $criteria->addFilter(new NotFilter(NotFilter::CONNECTION_AND, [
             new EqualsFilter('afterCategoryId', null),
         ]));
-        $criteria->addSorting(new FieldSorting('autoIncrement'));
+        $criteria->addSorting(
+            new FieldSorting('level'),
+            new FieldSorting('autoIncrement')
+        );
         $result = $this->categoryRepo->search($criteria, $context);
 
         $neededResult = [];

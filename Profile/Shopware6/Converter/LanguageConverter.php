@@ -46,13 +46,11 @@ abstract class LanguageConverter extends ShopwareConverter
             return new ConvertStruct(null, $data, $this->mainMapping['id']);
         }
 
-        // language iso code does not exists here - create a new language with the same id
-        $newLanguageId = $oldLanguageId;
-
+        // language iso code does not exists here - create a new language with the same old id
         $this->mainMapping = $this->getOrCreateMappingMainCompleteFacade(
             DefaultEntities::LANGUAGE,
             $oldLanguageId,
-            $newLanguageId
+            $oldLanguageId
         );
 
         $converted = [];
@@ -66,6 +64,14 @@ abstract class LanguageConverter extends ShopwareConverter
         );
         $converted['localeId'] = $localeUuid;
         $converted['translationCodeId'] = $localeUuid;
+
+        if (isset($data['parentId'])) {
+            $converted['parentId'] = $this->getMappingIdFacade(
+                DefaultEntities::LANGUAGE,
+                $data['parentId']
+            );
+            unset($data['parentId']);
+        }
 
         unset(
             $data['id'],

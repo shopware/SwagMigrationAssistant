@@ -10,19 +10,19 @@ namespace SwagMigrationAssistant\Profile\Shopware6\Converter;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 
-abstract class ProductManufacturerConverter extends ShopwareConverter
+abstract class CategoryConverter extends ShopwareConverter
 {
     public function getSourceIdentifier(array $data): string
     {
         return $data['id'];
     }
 
-    public function convertData(array $data): ConvertStruct
+    protected function convertData(array $data): ConvertStruct
     {
         $converted = $data;
 
         $this->mainMapping = $this->getOrCreateMappingMainCompleteFacade(
-            DefaultEntities::PRODUCT_MANUFACTURER,
+            DefaultEntities::CATEGORY,
             $data['id'],
             $converted['id']
         );
@@ -31,11 +31,12 @@ abstract class ProductManufacturerConverter extends ShopwareConverter
             $converted['translations'],
             DefaultEntities::LANGUAGE,
             'languageId',
-            DefaultEntities::PRODUCT_MANUFACTURER
+            DefaultEntities::CATEGORY
         );
 
         unset(
             // ToDo implement if these associations are migrated
+            $converted['cmsPageId'],
             $converted['mediaId']
         );
 
