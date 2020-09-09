@@ -1,3 +1,6 @@
+# REPLACE-GLOBAL-WITH-NEXT-VERSION
+- MIG-72 - Berücksichtigt korrekten Kategorietypen wenn es einen externen Link gibt
+
 # 2.1.0
 - MIG-13 - Migration von Produktbewertungen ohne Kunden ermöglichen
 - MIG-28 - Optmierte Neugenerierung des Containers bei Aktivierung und Deaktivierung
