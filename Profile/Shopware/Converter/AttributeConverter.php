@@ -78,18 +78,25 @@ abstract class AttributeConverter extends Converter
             ],
         ];
 
+        $additionalData = [];
+        if (isset($data['configuration']['column_type'])) {
+            $additionalData['columnType'] = $data['configuration']['column_type'];
+        }
+
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             $migrationContext->getDataSet()::getEntity(),
             $data['name'],
             $context,
-            $this->checksum
+            $this->checksum,
+            $additionalData
         );
+
         $converted['customFields'] = [
             [
                 'id' => $this->mainMapping['entityUuid'],
                 'name' => $converted['name'] . '_' . $data['name'],
-                'type' => $data['type'],
+                'type' => $this->getCustomFieldType($data),
                 'config' => $this->getCustomFieldConfiguration($data),
             ],
         ];
@@ -139,7 +146,7 @@ abstract class AttributeConverter extends Converter
             return $attributeData;
         }
 
-        if ($data['type'] === 'integer') {
+        if ($data['type'] === 'int') {
             $attributeData['type'] = 'number';
             $attributeData['numberType'] = 'int';
             $attributeData['customFieldType'] = 'number';
@@ -261,5 +268,37 @@ abstract class AttributeConverter extends Converter
         }
 
         return [];
+    }
+
+    private function getCustomFieldType(array $data): string
+    {
+        if (isset($data['configuration'])) {
+            switch ($data['configuration']['column_type']) {
+                case 'integer':
+                    return 'int';
+                case 'float':
+                    return 'float';
+                case 'html':
+                    return 'html';
+                case 'boolean':
+                    return 'bool';
+                case 'date':
+                case 'datetime':
+                    return 'datetime';
+                case 'combobox':
+                    return 'select';
+                default:
+                    return 'text';
+            }
+        } else {
+            switch ($data['type']) {
+                case 'int':
+                    return 'int';
+                case 'float':
+                    return 'float';
+                default:
+                    return 'text';
+            }
+        }
     }
 }

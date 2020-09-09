@@ -92,6 +92,7 @@ abstract class CategoryConverter extends ShopwareConverter
         $this->context = $context;
         $this->oldCategoryId = $data['id'];
         $this->runId = $migrationContext->getRunUuid();
+        $this->migrationContext = $migrationContext;
 
         $connection = $migrationContext->getConnection();
         $this->connectionId = '';
@@ -196,7 +197,7 @@ abstract class CategoryConverter extends ShopwareConverter
         }
 
         if (isset($data['attributes'])) {
-            $converted['customFields'] = $this->getAttributes($data['attributes'], $migrationContext->getDataSet()::getEntity(), $this->connectionName, ['id', 'categoryID']);
+            $converted['customFields'] = $this->getAttributes($data['attributes'], $migrationContext->getDataSet()::getEntity(), $this->connectionName, ['id', 'categoryID'], $this->context);
         }
         unset($data['attributes']);
 

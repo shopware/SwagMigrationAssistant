@@ -1,5 +1,6 @@
 # REPLACE-GLOBAL-WITH-NEXT-VERSION
 - MIG-72 - Recognize correct category type when external link is set
+- MIG-74 - Optimize migration of custom fields
 
 # 2.1.0
 - MIG-13 - Migrate product reviews without customer

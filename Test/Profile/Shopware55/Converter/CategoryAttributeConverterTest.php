@@ -89,7 +89,7 @@ class CategoryAttributeConverterTest extends TestCase
         static::assertArrayHasKey('relations', $converted);
         static::assertSame('category', $converted['relations'][0]['entityName']);
         static::assertSame('migration_ConnectionName_category_categorydate1', $converted['customFields'][0]['name']);
-        static::assertSame('date', $converted['customFields'][0]['type']);
+        static::assertSame('datetime', $converted['customFields'][0]['type']);
         static::assertSame('date', $converted['customFields'][0]['config']['type']);
         static::assertSame('date', $converted['customFields'][0]['config']['dateType']);
         static::assertSame('date', $converted['customFields'][0]['config']['customFieldType']);

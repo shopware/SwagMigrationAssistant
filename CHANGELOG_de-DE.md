@@ -1,5 +1,6 @@
 # REPLACE-GLOBAL-WITH-NEXT-VERSION
 - MIG-72 - Berücksichtigt korrekten Kategorietypen wenn es einen externen Link gibt
+- MIG-74 - Optimierte Attributmigration von Shopware 5
 
 # 2.1.0
 - MIG-13 - Migration von Produktbewertungen ohne Kunden ermöglichen

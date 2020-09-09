@@ -117,6 +117,7 @@ abstract class OrderConverter extends ShopwareConverter
         $this->generateChecksum($data);
         $this->oldId = $data['id'];
         $this->runId = $migrationContext->getRunUuid();
+        $this->migrationContext = $migrationContext;
 
         $fields = $this->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
         if (empty($data['billingaddress']['id'])) {
@@ -330,7 +331,7 @@ abstract class OrderConverter extends ShopwareConverter
         }
 
         if (isset($data['attributes'])) {
-            $converted['customFields'] = $this->getAttributes($data['attributes'], DefaultEntities::ORDER, $this->connectionName, ['id', 'orderID']);
+            $converted['customFields'] = $this->getAttributes($data['attributes'], DefaultEntities::ORDER, $this->connectionName, ['id', 'orderID'], $this->context);
         }
         unset($data['attributes']);
 
