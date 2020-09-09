@@ -11,6 +11,8 @@ final class DefaultEntities
 {
     public const CATEGORY = 'category';
 
+    public const CATEGORY_ASSOCIATION = 'category_association';
+
     public const CATEGORY_TRANSLATION = 'category_translation';
 
     public const CATEGORY_CUSTOM_FIELD = 'category_custom_field';

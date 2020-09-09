@@ -10,6 +10,7 @@ namespace SwagMigrationAssistant\DataProvider\Provider\Data;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 
 class ProductManufacturerProvider extends AbstractProvider
@@ -35,6 +36,7 @@ class ProductManufacturerProvider extends AbstractProvider
         $criteria->setLimit($limit);
         $criteria->setOffset($offset);
         $criteria->addAssociation('translations');
+        $criteria->addSorting(new FieldSorting('id'));
         $result = $this->manufacturerRepo->search($criteria, $context);
 
         return $this->cleanupSearchResult($result);
