@@ -10,19 +10,19 @@ namespace SwagMigrationAssistant\Profile\Shopware6\Converter;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 
-abstract class ProductManufacturerConverter extends ShopwareConverter
+abstract class PropertyGroupConverter extends ShopwareConverter
 {
     public function getSourceIdentifier(array $data): string
     {
         return $data['id'];
     }
 
-    public function convertData(array $data): ConvertStruct
+    protected function convertData(array $data): ConvertStruct
     {
         $converted = $data;
 
         $this->mainMapping = $this->getOrCreateMappingMainCompleteFacade(
-            DefaultEntities::PRODUCT_MANUFACTURER,
+            DefaultEntities::PROPERTY_GROUP,
             $data['id'],
             $converted['id']
         );
@@ -31,14 +31,28 @@ abstract class ProductManufacturerConverter extends ShopwareConverter
             $converted['translations'],
             DefaultEntities::LANGUAGE,
             'languageId',
-            DefaultEntities::PRODUCT_MANUFACTURER
+            DefaultEntities::PROPERTY_GROUP
+        );
+
+        foreach (array_keys($converted['options']) as $key) {
+            $this->convertOption($converted['options'][$key]);
+        }
+
+        return new ConvertStruct($converted, null, $this->mainMapping['id']);
+    }
+
+    protected function convertOption(array &$option): void
+    {
+        $this->updateAssociationIds(
+            $option['translations'],
+            DefaultEntities::LANGUAGE,
+            'languageId',
+            DefaultEntities::PROPERTY_GROUP
         );
 
         unset(
             // ToDo implement if these associations are migrated
-            $converted['mediaId']
+            $option['mediaId']
         );
-
-        return new ConvertStruct($converted, null, $this->mainMapping['id']);
     }
 }

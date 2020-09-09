@@ -36,13 +36,40 @@ class ProductProvider extends AbstractProvider
         $criteria->setLimit($limit);
         $criteria->setOffset($offset);
         $criteria->addAssociation('translations');
+        $criteria->addAssociation('categories');
         $criteria->addSorting(
             new FieldSorting('parentId'), // get 'NULL' parentIds first
             new FieldSorting('id')
         );
         $result = $this->productRepo->search($criteria, $context);
 
-        return $this->cleanupSearchResult($result);
+        $cleanResult = $this->cleanupSearchResult($result, [
+            // remove write protected fields
+            'childCount',
+            'autoIncrement',
+            'availableStock',
+            'available',
+            'displayGroup',
+            'ratingAverage',
+            'categoryTree',
+            'listingPrices',
+            'tax', // taxId is already provided
+        ]);
+
+        // cleanup categories - only ids are needed
+        foreach ($cleanResult as $key => $product) {
+            if (isset($product['categories'])) {
+                $cleanCategories = [];
+                foreach ($product['categories'] as $category) {
+                    $cleanCategories[] = [
+                        'id' => $category['id'],
+                    ];
+                }
+                $cleanResult[$key]['categories'] = $cleanCategories;
+            }
+        }
+
+        return $cleanResult;
     }
 
     public function getProvidedTotal(Context $context): int

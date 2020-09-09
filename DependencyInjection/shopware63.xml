@@ -20,5 +20,35 @@
             <tag name="shopware.migration.converter"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63CurrencyConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\CurrencyConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63CategoryConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\CategoryConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63CategoryAssociationConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\CategoryAssociationConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63TaxConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\TaxConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63PropertyGroupConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\PropertyGroupConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63ProductConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ProductConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
     </services>
 </container>

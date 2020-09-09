@@ -37,12 +37,18 @@ class CategoryProvider extends AbstractProvider
         $criteria->setOffset($offset);
         $criteria->addAssociation('translations');
         $criteria->addSorting(
-            new FieldSorting('parentId'), // get 'NULL' parentIds first
+            new FieldSorting('level'),
             new FieldSorting('autoIncrement')
         );
         $result = $this->categoryRepo->search($criteria, $context);
 
-        return $this->cleanupSearchResult($result, ['afterCategoryId']);
+        return $this->cleanupSearchResult($result, [
+            // remove write protected fields
+            'afterCategoryId',
+            'childCount',
+            'breadcrumb',
+            'autoIncrement',
+        ]);
     }
 
     public function getProvidedTotal(Context $context): int
