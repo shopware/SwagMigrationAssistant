@@ -272,8 +272,13 @@
           "product_review": "Reviews:",
           "seo_url": "Seo urls:",
           "product_cross_selling": "Cross Selling:",
-          "main_variant_relation": "Main variant relations:",
-          "promotion": "Promotions:"
+          "promotion": "Promotions:",
+          "language": "Languages:",
+          "category_association": "Category associations:",
+          "tax": "Tax rates:",
+          "property_group": "Property groups:",
+          "product_manufacturer": "Product manufacturers:",
+          "main_variant_relation": "Main variant relations:"
         },
         "noData": "Nothing found to migrate."
       },

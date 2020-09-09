@@ -10,6 +10,9 @@ namespace SwagMigrationAssistant\Profile\Shopware6\DataSelection;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionInterface;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionStruct;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CategoryAssociationDataSet;
+use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CategoryDataSet;
+use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CurrencyDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\LanguageDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6ProfileInterface;
 
@@ -40,6 +43,9 @@ class BasicSettingsDataSelection implements DataSelectionInterface
     {
         return [
             new LanguageDataSet(),
+            new CurrencyDataSet(),
+            new CategoryDataSet(),
+            new CategoryAssociationDataSet(),
         ];
     }
 
