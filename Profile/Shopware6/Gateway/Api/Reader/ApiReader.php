@@ -12,7 +12,9 @@ use SwagMigrationAssistant\Exception\GatewayReadException;
 use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
+use SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Shopware6ApiGateway;
 use SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection\ConnectionFactoryInterface;
+use SwagMigrationAssistant\Profile\Shopware6\Shopware6ProfileInterface;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 abstract class ApiReader implements ReaderInterface
@@ -25,6 +27,13 @@ abstract class ApiReader implements ReaderInterface
     public function __construct(ConnectionFactoryInterface $connectionFactory)
     {
         $this->connectionFactory = $connectionFactory;
+    }
+
+    public function supports(MigrationContextInterface $migrationContext): bool
+    {
+        return $migrationContext->getProfile() instanceof Shopware6ProfileInterface
+            && $migrationContext->getGateway()->getName() === Shopware6ApiGateway::GATEWAY_NAME
+            && $migrationContext->getDataSet()::getEntity() === $this->getIdentifier();
     }
 
     public function supportsTotal(MigrationContextInterface $migrationContext): bool

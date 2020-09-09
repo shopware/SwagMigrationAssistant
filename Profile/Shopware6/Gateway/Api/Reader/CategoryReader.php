@@ -9,10 +9,10 @@ namespace SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader;
 
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 
-class ProductManufacturerReader extends ApiReader
+class CategoryReader extends ApiReader
 {
     protected function getIdentifier(): string
     {
-        return DefaultEntities::PRODUCT_MANUFACTURER;
+        return DefaultEntities::CATEGORY;
     }
 }
