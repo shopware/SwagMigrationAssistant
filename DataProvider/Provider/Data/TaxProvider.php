@@ -13,21 +13,21 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 
-class LanguageProvider extends AbstractProvider
+class TaxProvider extends AbstractProvider
 {
     /**
      * @var EntityRepositoryInterface
      */
-    private $languageRepo;
+    private $taxRepo;
 
-    public function __construct(EntityRepositoryInterface $languageRepo)
+    public function __construct(EntityRepositoryInterface $taxRepo)
     {
-        $this->languageRepo = $languageRepo;
+        $this->taxRepo = $taxRepo;
     }
 
     public function getIdentifier(): string
     {
-        return DefaultEntities::LANGUAGE;
+        return DefaultEntities::TAX;
     }
 
     public function getProvidedData(int $limit, int $offset, Context $context): array
@@ -35,18 +35,14 @@ class LanguageProvider extends AbstractProvider
         $criteria = new Criteria();
         $criteria->setLimit($limit);
         $criteria->setOffset($offset);
-        $criteria->addAssociation('locale');
-        $criteria->addSorting(
-            new FieldSorting('parentId'), // get 'NULL' parentIds first
-            new FieldSorting('id')
-        );
-        $result = $this->languageRepo->search($criteria, $context);
+        $criteria->addSorting(new FieldSorting('id'));
+        $result = $this->taxRepo->search($criteria, $context);
 
         return $this->cleanupSearchResult($result);
     }
 
     public function getProvidedTotal(Context $context): int
     {
-        return $this->readTotalFromRepo($this->languageRepo, $context);
+        return $this->readTotalFromRepo($this->taxRepo, $context);
     }
 }

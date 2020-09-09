@@ -13,21 +13,21 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 
-class LanguageProvider extends AbstractProvider
+class CategoryProvider extends AbstractProvider
 {
     /**
      * @var EntityRepositoryInterface
      */
-    private $languageRepo;
+    private $categoryRepo;
 
-    public function __construct(EntityRepositoryInterface $languageRepo)
+    public function __construct(EntityRepositoryInterface $categoryRepo)
     {
-        $this->languageRepo = $languageRepo;
+        $this->categoryRepo = $categoryRepo;
     }
 
     public function getIdentifier(): string
     {
-        return DefaultEntities::LANGUAGE;
+        return DefaultEntities::CATEGORY;
     }
 
     public function getProvidedData(int $limit, int $offset, Context $context): array
@@ -35,18 +35,18 @@ class LanguageProvider extends AbstractProvider
         $criteria = new Criteria();
         $criteria->setLimit($limit);
         $criteria->setOffset($offset);
-        $criteria->addAssociation('locale');
+        $criteria->addAssociation('translations');
         $criteria->addSorting(
             new FieldSorting('parentId'), // get 'NULL' parentIds first
-            new FieldSorting('id')
+            new FieldSorting('autoIncrement')
         );
-        $result = $this->languageRepo->search($criteria, $context);
+        $result = $this->categoryRepo->search($criteria, $context);
 
-        return $this->cleanupSearchResult($result);
+        return $this->cleanupSearchResult($result, ['afterCategoryId']);
     }
 
     public function getProvidedTotal(Context $context): int
     {
-        return $this->readTotalFromRepo($this->languageRepo, $context);
+        return $this->readTotalFromRepo($this->categoryRepo, $context);
     }
 }

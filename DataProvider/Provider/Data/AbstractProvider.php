@@ -21,9 +21,12 @@ abstract class AbstractProvider implements ProviderInterface
     protected const FORBIDDEN_EXACT_KEYS = ['createdAt', 'updatedAt', 'extensions', 'versionId', '_uniqueIdentifier', 'translated'];
     protected const FORBIDDEN_CONTAINS_KEYS = ['VersionId'];
 
-    protected function readTotalFromRepo(EntityRepositoryInterface $repo, Context $context): int
+    protected function readTotalFromRepo(EntityRepositoryInterface $repo, Context $context, ?Criteria $criteria = null): int
     {
-        $criteria = new Criteria();
+        if ($criteria === null) {
+            $criteria = new Criteria();
+        }
+
         $criteria->addAggregation(new CountAggregation('count', 'id'));
 
         /** @var CountResult|null $result */
@@ -41,7 +44,7 @@ abstract class AbstractProvider implements ProviderInterface
      *
      * cleans up the result and transforms it into an associative array
      */
-    protected function cleanupSearchResult($result): array
+    protected function cleanupSearchResult($result, array $stripExactKeys = []): array
     {
         if ($result instanceof EntityCollection) {
             $cleanResult = array_values($result->getElements());
@@ -54,6 +57,12 @@ abstract class AbstractProvider implements ProviderInterface
             if (is_string($key)) {
                 // cleanup forbidden keys that match exactly
                 if (in_array($key, self::FORBIDDEN_EXACT_KEYS, true)) {
+                    unset($cleanResult[$key]);
+                    continue;
+                }
+
+                // cleanup keys that were specified as an argument
+                if (in_array($key, $stripExactKeys, true)) {
                     unset($cleanResult[$key]);
                     continue;
                 }
@@ -87,7 +96,7 @@ abstract class AbstractProvider implements ProviderInterface
                 }
 
                 // cleanup child array
-                $cleanResult[$key] = $this->cleanupSearchResult($cleanResult[$key]);
+                $cleanResult[$key] = $this->cleanupSearchResult($cleanResult[$key], $stripExactKeys);
                 continue;
             }
 
