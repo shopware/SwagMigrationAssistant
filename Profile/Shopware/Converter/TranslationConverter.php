@@ -69,6 +69,8 @@ abstract class TranslationConverter extends ShopwareConverter
         switch ($data['objecttype']) {
             case 'article':
                 return $this->createProductTranslation($data);
+            case 'variant':
+                return $this->createProductVariantTranslation($data);
             case 'supplier':
                 return $this->createManufacturerProductTranslation($data);
             case 'config_units':
@@ -188,7 +190,84 @@ abstract class TranslationConverter extends ShopwareConverter
         }
         $this->updateMainMapping($this->migrationContext, $this->context);
 
-        return new ConvertStruct($product, $returnData, $this->mainMapping['id']);
+        return new ConvertStruct($product, $returnData, $this->mainMapping['id'] ?? null);
+    }
+
+    protected function createProductVariantTranslation(array &$data): ConvertStruct
+    {
+        if (!isset($data['ordernumber'])) {
+            return new ConvertStruct(null, $data);
+        }
+        $sourceData = $data;
+        $product = [];
+        $mapping = $this->mappingService->getMapping(
+            $this->connectionId,
+            DefaultEntities::PRODUCT,
+            $data['ordernumber'],
+            $this->context
+        );
+
+        if ($mapping === null) {
+            $this->loggingService->addLogEntry(
+                new AssociationRequiredMissingLog(
+                    $this->runId,
+                    DefaultEntities::PRODUCT,
+                    $data['id'],
+                    DefaultEntities::TRANSLATION
+                )
+            );
+
+            return new ConvertStruct(null, $sourceData);
+        }
+        $product['id'] = $mapping['entityUuid'];
+        $this->mappingIds[] = $mapping['id'];
+        $product['entityDefinitionClass'] = ProductDefinition::class;
+
+        $objectData = $this->unserializeTranslation($data, DefaultEntities::PRODUCT_TRANSLATION);
+        if ($objectData === null) {
+            return new ConvertStruct(null, $sourceData);
+        }
+
+        $productTranslation = [];
+        foreach ($objectData as $key => $value) {
+            $this->getAttribute(DefaultEntities::PRODUCT, $key, $value, $productTranslation, $objectData);
+        }
+
+        if (empty($objectData)) {
+            unset($data['objectdata']);
+        } else {
+            $data['objectdata'] = serialize($objectData);
+        }
+
+        unset($data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
+
+        $this->mainMapping = $this->mappingService->getOrCreateMapping(
+            $this->connectionId,
+            DefaultEntities::TRANSLATION,
+            $data['id'],
+            $this->context,
+            $this->checksum
+        );
+        $productTranslation['id'] = $this->mainMapping['entityUuid'];
+        unset($data['id'], $data['objectkey']);
+
+        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $data['locale'], $this->context);
+
+        if ($languageUuid !== null) {
+            $productTranslation['languageId'] = $languageUuid;
+            $product['translations'][$languageUuid] = $productTranslation;
+        }
+
+        unset($data['name'], $data['locale']);
+
+        /** @var array $returnData */
+        $returnData = $data;
+        if (empty($returnData)) {
+            $returnData = null;
+        }
+        $this->updateMainMapping($this->migrationContext, $this->context);
+
+        return new ConvertStruct($product, $returnData, $this->mainMapping['id'] ?? null);
     }
 
     protected function createManufacturerProductTranslation(array &$data): ConvertStruct
@@ -267,7 +346,7 @@ abstract class TranslationConverter extends ShopwareConverter
         }
         $this->updateMainMapping($this->migrationContext, $this->context);
 
-        return new ConvertStruct($manufacturer, $returnData, $this->mainMapping['id']);
+        return new ConvertStruct($manufacturer, $returnData, $this->mainMapping['id'] ?? null);
     }
 
     protected function createUnitTranslation(array $data): ConvertStruct
@@ -352,7 +431,7 @@ abstract class TranslationConverter extends ShopwareConverter
         }
         $this->updateMainMapping($this->migrationContext, $this->context);
 
-        return new ConvertStruct($unit, $data, $this->mainMapping['id']);
+        return new ConvertStruct($unit, $data, $this->mainMapping['id'] ?? null);
     }
 
     protected function createCategoryTranslation(array $data): ConvertStruct
@@ -445,7 +524,7 @@ abstract class TranslationConverter extends ShopwareConverter
         }
         $this->updateMainMapping($this->migrationContext, $this->context);
 
-        return new ConvertStruct($category, $data, $this->mainMapping['id']);
+        return new ConvertStruct($category, $data, $this->mainMapping['id'] ?? null);
     }
 
     protected function createConfiguratorOptionTranslation(array $data): ConvertStruct
@@ -525,7 +604,7 @@ abstract class TranslationConverter extends ShopwareConverter
         }
         $this->updateMainMapping($this->migrationContext, $this->context);
 
-        return new ConvertStruct($configuratorOption, $data, $this->mainMapping['id']);
+        return new ConvertStruct($configuratorOption, $data, $this->mainMapping['id'] ?? null);
     }
 
     protected function createConfiguratorOptionGroupTranslation(array $data): ConvertStruct
@@ -606,7 +685,7 @@ abstract class TranslationConverter extends ShopwareConverter
         }
         $this->updateMainMapping($this->migrationContext, $this->context);
 
-        return new ConvertStruct($configuratorOptionGroup, $data, $this->mainMapping['id']);
+        return new ConvertStruct($configuratorOptionGroup, $data, $this->mainMapping['id'] ?? null);
     }
 
     protected function createPropertyValueTranslation(array $data): ConvertStruct
@@ -682,7 +761,7 @@ abstract class TranslationConverter extends ShopwareConverter
         }
         $this->updateMainMapping($this->migrationContext, $this->context);
 
-        return new ConvertStruct($propertyValue, $data, $this->mainMapping['id']);
+        return new ConvertStruct($propertyValue, $data, $this->mainMapping['id'] ?? null);
     }
 
     protected function createPropertyOptionTranslation(array $data): ConvertStruct
@@ -759,7 +838,7 @@ abstract class TranslationConverter extends ShopwareConverter
         }
         $this->updateMainMapping($this->migrationContext, $this->context);
 
-        return new ConvertStruct($propertyOption, $data, $this->mainMapping['id']);
+        return new ConvertStruct($propertyOption, $data, $this->mainMapping['id'] ?? null);
     }
 
     protected function getAttribute(string $entityName, string $key, string $value, array &$translation, array &$objectData): void

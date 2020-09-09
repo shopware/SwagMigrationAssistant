@@ -440,4 +440,22 @@ class TranslationConverterTest extends TestCase
         $logs = $this->loggingService->getLoggingArray();
         static::assertSame('SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_TRANSLATION', $logs[0]['code']);
     }
+
+    public function testConvertVariantAttributeTranslation(): void
+    {
+        $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
+        $context = Context::createDefaultContext();
+
+        $productConverter = new Shopware55ProductConverter($this->mappingService, $this->loggingService, new DummyMediaFileService());
+        $productConverter->convert($productData[0], $context, $this->productMigrationContext);
+
+        $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
+        $convertResult = $this->translationConverter->convert($translationData['variant'], $context, $this->migrationContext);
+        /** @var array $converted */
+        $converted = $convertResult->getConverted();
+
+        static::assertNotNull($convertResult->getMappingUuid());
+        static::assertCount(0, $this->loggingService->getLoggingArray());
+        static::assertArrayHasKey('translations', $converted);
+    }
 }

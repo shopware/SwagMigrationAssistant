@@ -1,5 +1,6 @@
 # REPLACE-GLOBAL-WITH-NEXT-VERSION
 - MIG-72 - Recognize correct category type when external link is set
+- MIG-73 - Recognize variant attribute translations on SW5 migration
 - MIG-74 - Optimize migration of custom fields
 
 # 2.1.0

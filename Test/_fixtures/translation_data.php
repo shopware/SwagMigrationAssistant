@@ -106,4 +106,15 @@ return [
         'locale' => 'en-GB',
         'name' => null,
     ],
+    'variant' => [
+        'id' => '666',
+        'objecttype' => 'variant',
+        'objectdata' => 'a:1:{s:17:"__attribute_attr1";s:17:"My free textfield";}',
+        'objectkey' => '111',
+        'objectlanguage' => '2',
+        'dirty' => null,
+        'locale' => 'en-GB',
+        'name' => null,
+        'ordernumber' => 'SW10006',
+    ],
 ];
