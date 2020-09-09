@@ -10,7 +10,10 @@ namespace SwagMigrationAssistant\Profile\Shopware6\DataSelection;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionInterface;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionStruct;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\ProductDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\ProductManufacturerDataSet;
+use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\PropertyGroupDataSet;
+use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\TaxDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6ProfileInterface;
 
 class ProductDataSelection implements DataSelectionInterface
@@ -37,12 +40,17 @@ class ProductDataSelection implements DataSelectionInterface
     public function getDataSets(): array
     {
         return [
+            new TaxDataSet(),
+            new PropertyGroupDataSet(),
             new ProductManufacturerDataSet(),
+            new ProductDataSet(),
         ];
     }
 
     public function getDataSetsRequiredForCount(): array
     {
-        return $this->getDataSets();
+        return [
+            new ProductDataSet(),
+        ];
     }
 }
