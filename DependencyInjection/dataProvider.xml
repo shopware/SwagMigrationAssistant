@@ -58,6 +58,8 @@
         <service id="SwagMigrationAssistant\DataProvider\Service\EnvironmentService">
             <argument type="service" id="currency.repository"/>
             <argument type="service" id="language.repository"/>
+            <argument>%kernel.shopware_version%</argument>
+            <argument>%kernel.shopware_version_revision%</argument>
         </service>
 
     </services>

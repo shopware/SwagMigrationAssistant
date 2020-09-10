@@ -79,6 +79,12 @@
             "contentTitle": "Installiere den Migration Connector",
             "contentInformation": "Für die Migration ist die Installation des kostenlosen Plugins „Migration Connector“ erforderlich. Dieses findest Du in Deinem Shopware 5 Backend unter: Plugin Manager > Erweiterungen > Migrationstools. Bitte installiere und aktiviere das Plugin.",
             "pluginLink": "Mehr Informationen zum Plugin"
+          },
+          "shopware6Api": {
+            "contentTitle": "Integration benötigt",
+            "contentInformation": "Es ist erforderlich, eine Integration im Quellsystem unter Einstellungen > System > Integrationen anzulegen.",
+            "pluginLink": "Weitere Informationen über Integrationen",
+            "link": "https://docs.shopware.com/de/shopware-6-de/settings/system/integrationen"
           }
         },
         "credentials": {
@@ -114,13 +120,13 @@
           },
           "shopware6": {
             "api": {
-              "contentInformation": "Wir benötigen noch einige Daten um eine Verbindung mit Deinem Shopware 6 Shop herstellen zu können. Diese Daten findest Du in der Benutzerverwaltung von Deinem Shopware 5 Backend.",
-              "apiPasswordLabel": "Passwort",
-              "apiPasswordTooltip": "Das Passwort dient der Sicherheit und Identifizierung.",
-              "apiPasswordPlaceholder": "Passwort einfügen",
-              "apiUserLabel": "Benutzername (API-User)",
-              "apiUserTooltip": "Benutzername Deines Shopware 5 Backends.",
-              "apiUserPlaceholder": "Login-Benutzernamen eintragen",
+              "contentInformation": "Du benötigst gültige API-Anmeldeinformationen, um eine Verbindung zwischen Deiner Quell- und Ziel-Instanz von Shopware 6 herzustellen. Diese erhälst Du, wenn Du eine Integration in Deinem Quellsystem erstellst.",
+              "apiPasswordLabel": "Sicherheitsschlüssel",
+              "apiPasswordTooltip": "Der Sicherheitsschlüssel dient der Sicherheit und Identifizierung.",
+              "apiPasswordPlaceholder": "Sicherheitsschlüssel einfügen",
+              "apiUserLabel": "Zugangs-ID",
+              "apiUserTooltip": "Zugangs-ID Deiner Integration im Quellsystem",
+              "apiUserPlaceholder": "Zugangs-ID eintragen",
               "endpointLabel": "Shop-Domain",
               "endpointPlaceholder": "www.demoshop.com",
               "endpointSSLLabel": "Mein Shop verwendet eine sichere Verbindung (SSL)"

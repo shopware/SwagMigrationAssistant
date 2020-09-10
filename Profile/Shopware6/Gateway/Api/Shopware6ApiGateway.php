@@ -12,7 +12,6 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\Currency\CurrencyEntity;
-use SwagMigrationAssistant\Migration\DisplayWarning;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\Gateway\Reader\EnvironmentReaderInterface;
 use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistryInterface;
@@ -128,12 +127,12 @@ class Shopware6ApiGateway implements ShopwareGatewayInterface
         }
 
         $displayWarnings = [];
+        /*
         if ($updateAvailable) {
-            $displayWarnings[] = new DisplayWarning('swag-migration.index.pluginVersionText', [
-                'sourceSystem' => 'Shopware 6',
-                'pluginName' => 'Migration Assistant',
-            ]);
+            ToDo@MJ implement proper version validation to make sure the other shopware instance is compatible with this one.
+            ToDo@MJ show the user an appropriate error message
         }
+        */
 
         /** @var CurrencyEntity $targetSystemCurrency */
         $targetSystemCurrency = $this->currencyRepository->search(new Criteria([Defaults::CURRENCY]), $context)->get(Defaults::CURRENCY);
@@ -164,7 +163,6 @@ class Shopware6ApiGateway implements ShopwareGatewayInterface
 
     public function readTable(MigrationContextInterface $migrationContext, string $tableName, array $filter = []): array
     {
-        // TODO: Implement readTable() method.
         return [];
     }
 }
