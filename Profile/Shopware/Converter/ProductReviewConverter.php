@@ -169,10 +169,7 @@ abstract class ProductReviewConverter extends ShopwareConverter
         $this->convertValue($converted, 'points', $data, 'points', self::TYPE_FLOAT);
         $this->convertValue($converted, 'status', $data, 'active', self::TYPE_BOOLEAN);
         $this->convertValue($converted, 'comment', $data, 'answer');
-
-        if (isset($data['datum'])) {
-            $this->convertValue($converted, 'createdAt', $data, 'datum');
-        }
+        $this->convertValue($converted, 'createdAt', $data, 'datum');
 
         $this->updateMainMapping($migrationContext, $context);
 

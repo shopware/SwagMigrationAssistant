@@ -37,7 +37,7 @@ abstract class ShopwareConverter extends Converter
         string $sourceKey,
         string $castType = self::TYPE_STRING
     ): void {
-        if ($sourceData[$sourceKey] !== null && $sourceData[$sourceKey] !== '') {
+        if (isset($sourceData[$sourceKey]) && $sourceData[$sourceKey] !== '') {
             switch ($castType) {
                 case self::TYPE_BOOLEAN:
                     $sourceValue = (bool) $sourceData[$sourceKey];

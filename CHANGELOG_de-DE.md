@@ -1,4 +1,5 @@
 # REPLACE-GLOBAL-WITH-NEXT-VERSION
+- MIG-39 - Optimierung im Basiskonverter
 - MIG-72 - Berücksichtigt korrekten Kategorietypen wenn es einen externen Link gibt
 - MIG-73 - Berücksichtigt die Attributübersetzungen bei Variantenartikeln von SW5
 - MIG-74 - Optimierte Attributmigration von Shopware 5
