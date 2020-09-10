@@ -17,6 +17,7 @@ use SwagMigrationAssistant\Migration\Converter\ConverterRegistryInterface;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\Profile\ProfileInterface;
+use SwagMigrationAssistant\Profile\Shopware\Converter\ProductConverter;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CategoryAttributeDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CategoryDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CurrencyDataSet;
@@ -77,7 +78,6 @@ use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55OrderAttribute
 use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55OrderConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55OrderDocumentConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55ProductAttributeConverter;
-use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55ProductConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55ProductPriceAttributeConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55PropertyGroupOptionConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55SalesChannelConverter;
@@ -139,6 +139,7 @@ class ConverterRegistryTest extends TestCase
             250
         );
         $result = $this->converterRegistry->getConverter($migrationContext);
+
         static::assertInstanceOf($converterClass, $result);
     }
 
@@ -356,7 +357,7 @@ class ConverterRegistryTest extends TestCase
             [
                 new Shopware55Profile(),
                 new ProductDataSet(),
-                Shopware55ProductConverter::class,
+                ProductConverter::class,
             ],
             [
                 new Shopware55Profile(),

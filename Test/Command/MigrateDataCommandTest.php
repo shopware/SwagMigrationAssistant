@@ -34,6 +34,7 @@ use SwagMigrationAssistant\Migration\Media\MediaFileService;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextFactory;
 use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
+use SwagMigrationAssistant\Migration\Premapping\PremappingReaderRegistry;
 use SwagMigrationAssistant\Migration\Profile\ProfileRegistry;
 use SwagMigrationAssistant\Migration\Profile\ProfileRegistryInterface;
 use SwagMigrationAssistant\Migration\Run\RunService;
@@ -250,7 +251,13 @@ class MigrateDataCommandTest extends TestCase
                 $this->getContainer()->get(StoreService::class),
                 $this->getContainer()->get('messenger.bus.shopware')
             ),
-            $this->getContainer()->get(PremappingService::class),
+            new PremappingService(
+                new PremappingReaderRegistry([]),
+                $mappingService,
+                $this->getContainer()->get('swag_migration_mapping.repository'),
+                $this->runRepo,
+                $this->connectionRepo
+            ),
             $dataFetcher,
             $this->getMigrationDataConverter(
                 $this->getContainer()->get(EntityWriter::class),
