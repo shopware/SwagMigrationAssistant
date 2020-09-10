@@ -1,0 +1,14 @@
+@import "~scss/variables";
+
+.swag-migration-profile-shopware6-api-page-information {
+    .swag-migration-profile-shopware6-api-page-information__icon {
+        pointer-events: none;
+        display: inline-block;
+        margin-bottom: 16px;
+
+        .sw-settings-item__icon {
+            margin: 0;
+        }
+    }
+}
+

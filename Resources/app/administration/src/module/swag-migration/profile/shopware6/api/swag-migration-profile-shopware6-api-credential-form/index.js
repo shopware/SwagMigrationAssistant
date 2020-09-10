@@ -1,8 +1,6 @@
 import template from './swag-migration-profile-shopware6-api-credential-form.html.twig';
 
 const { Component } = Shopware;
-const ShopwareError = Shopware.Classes.ShopwareError;
-const API_KEY_INVALID_ERROR_CODE = 'SWAG_MIGRATION_INVALID_API_KEY';
 
 Component.register('swag-migration-profile-shopware6-api-credential-form', {
     template,
@@ -22,8 +20,7 @@ Component.register('swag-migration-profile-shopware6-api-credential-form', {
                 endpoint: '',
                 apiUser: '',
                 apiPassword: ''
-            },
-            apiPasswordErrorCode: ''
+            }
         };
     },
 
@@ -34,21 +31,6 @@ Component.register('swag-migration-profile-shopware6-api-credential-form', {
             }
 
             return this.inputCredentials.apiPassword.length;
-        },
-
-        apiPasswordError() {
-            if (this.apiPasswordErrorCode === '') {
-                return null;
-            }
-
-            return new ShopwareError({
-                code: this.apiPasswordErrorCode,
-                meta: {
-                    parameters: {
-                        length: this.apiPasswordLength
-                    }
-                }
-            });
         }
     },
 
@@ -93,13 +75,7 @@ Component.register('swag-migration-profile-shopware6-api-credential-form', {
         },
 
         apiPasswordValid(apiPassword) {
-            if (apiPassword === null || apiPassword.length < 1) {
-                this.apiPasswordErrorCode = API_KEY_INVALID_ERROR_CODE;
-                return false;
-            }
-
-            this.apiPasswordErrorCode = '';
-            return true;
+            return apiPassword !== null && apiPassword.length >= 1;
         },
 
         emitOnChildRouteReadyChanged(isReady) {

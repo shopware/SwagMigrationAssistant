@@ -26,12 +26,26 @@ class EnvironmentService implements EnvironmentServiceInterface
      */
     private $languageRepository;
 
+    /**
+     * @var string
+     */
+    private $shopwareVersion;
+
+    /**
+     * @var string
+     */
+    private $shopwareRevision;
+
     public function __construct(
         EntityRepositoryInterface $currencyRepository,
-        EntityRepositoryInterface $languageRepository
+        EntityRepositoryInterface $languageRepository,
+        string $shopwareVersion,
+        string $shopwareRevision
     ) {
         $this->currencyRepository = $currencyRepository;
         $this->languageRepository = $languageRepository;
+        $this->shopwareVersion = $shopwareVersion;
+        $this->shopwareRevision = $shopwareRevision;
     }
 
     public function getEnvironmentData(Context $context): array
@@ -53,10 +67,9 @@ class EnvironmentService implements EnvironmentServiceInterface
         return [
             'defaultShopLanguage' => $defaultLanguageLocaleCode,
             'defaultCurrency' => $defaultCurrencyIsoCode,
-            // ToDo replace dummy data with real environment information
-            'shopwareVersion' => '6.3.0.0',
-            'versionText' => 'v6.3.0.0 Stable version',
-            'revision' => '1',
+            'shopwareVersion' => $this->shopwareVersion,
+            'versionText' => $this->shopwareVersion,
+            'revision' => $this->shopwareRevision,
             'additionalData' => [],
             'updateAvailable' => false,
         ];

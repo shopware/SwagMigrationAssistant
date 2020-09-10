@@ -1,31 +1,40 @@
-{% block swag_migration_wizard_page_plugin_information %}
-    <div class="swag-migration-wizard swag-migration-wizard-page-plugin-information">
+{% block swag_migration_wizard_page_plugin_information_shopware6 %}
+    <div class="swag-migration-wizard swag-migration-wizard-page-plugin-information swag-migration-profile-shopware6-api-page-information">
 
-        {% block swag_migration_wizard_page_plugin_information_content %}
+        {% block swag_migration_wizard_page_plugin_information_shopware6_content %}
             <div class="swag-migration-wizard__content">
 
-                {% block swag_migration_wizard_page_plugin_information_information %}
+                {% block swag_migration_wizard_page_plugin_information_shopware6_information %}
                     <div class="swag-migration-wizard__content-information">
 
-                        {% block swag_migration_wizard_page_plugin_information_svg %}
-                            <img class="swag-migration-wizard__plugin" :src="'/swagmigrationassistant/static/img/wizard-shopware55-api-plugin-information.svg' | asset">
+                        {% block swag_migration_wizard_page_plugin_information_shopware6_icon %}
+                            <div class="swag-migration-profile-shopware6-api-page-information__icon sw-settings-item">
+                                <div class="sw-settings-item__icon background--enabled"">
+                                    <sw-icon name="default-action-settings">
+                                    </sw-icon>
+                                </div>
+                            </div>
                         {% endblock %}
 
-                        {% block swag_migration_wizard_page_plugin_information_title %}
+                        {% block swag_migration_wizard_page_plugin_information_shopware6_title %}
                             <h3 class="information__header">
-                                {{ $tc('swag-migration.wizard.pages.profileInformation.shopware55Api.contentTitle') }}
+                                {{ $tc('swag-migration.wizard.pages.profileInformation.shopware6Api.contentTitle') }}
                             </h3>
                         {% endblock %}
 
-                        {% block swag_migration_wizard_page_plugin_information_api_hint %}
+                        {% block swag_migration_wizard_page_plugin_information_shopware6_api_hint %}
                             <p class="swag-migration-wizard__description">
-                                {{ $tc('swag-migration.wizard.pages.profileInformation.shopware55Api.contentInformation') }}
+                                {{ $tc('swag-migration.wizard.pages.profileInformation.shopware6Api.contentInformation') }}
                             </p>
                         {% endblock %}
 
-                        {% block swag_migration_wizard_page_plugin_information_plugin_link %}
+                        {% block swag_migration_wizard_page_plugin_information_shopware6_plugin_link %}
                             <div class="swag-migration-wizard__link">
-                                <a class="link" target="_blank" href="https://store.shopware.com/search?sSearch=Swag226607479310">{{ $tc('swag-migration.wizard.pages.profileInformation.shopware55Api.pluginLink') }}</a>
+                                <a class="link"
+                                   target="_blank"
+                                   :href="$tc('swag-migration.wizard.pages.profileInformation.shopware6Api.link')">
+                                    {{ $tc('swag-migration.wizard.pages.profileInformation.shopware6Api.pluginLink') }}
+                                </a>
                             </div>
                         {% endblock %}
                     </div>

@@ -79,6 +79,12 @@
             "contentTitle": "Plugin required",
             "contentInformation": "The required plugin “Migration Connector” is free and can be found in your Shopware 5 backend under Plugin Manager > Extensions > Migration tools. Please install and activate the plugin to proceed.",
             "pluginLink": "More information about the plugin"
+          },
+          "shopware6Api": {
+            "contentTitle": "Integration required",
+            "contentInformation": "It is required to create an integration in the source system via Settings > System > Integrations.",
+            "pluginLink": "More information about integrations",
+            "link": "https://docs.shopware.com/en/shopware-6-en/settings/system/integrationen"
           }
         },
         "credentials": {
@@ -114,13 +120,13 @@
           },
           "shopware6": {
             "api": {
-              "contentInformation": "You need valid API credentials to establish a connection between Shopware 6 and Shopware 6. Your API credentials can be found in your Shopware 5 backend under “User administration”.",
-              "apiPasswordLabel": "API Password",
-              "apiPasswordTooltip": "The API password is used for security and identification.",
-              "apiPasswordPlaceholder": "Enter password",
-              "apiUserLabel": "Username (API user)",
-              "apiUserTooltip": "Username of your Shopware 5 backend.",
-              "apiUserPlaceholder": "Enter username",
+              "contentInformation": "You need valid API credentials to establish a connection between your source and target Shopware 6 instance. You get these when you create an integration in your source system.",
+              "apiPasswordLabel": "Secret access key",
+              "apiPasswordTooltip": "The secret access key is used for security and identification.",
+              "apiPasswordPlaceholder": "Enter secret access key",
+              "apiUserLabel": "Access key ID",
+              "apiUserTooltip": "Access key ID of your integration.",
+              "apiUserPlaceholder": "Enter access key ID",
               "endpointLabel": "Shop domain",
               "endpointPlaceholder": "www.demoshop.com",
               "endpointSSLLabel": "My shop uses a secure connection (SSL)"
