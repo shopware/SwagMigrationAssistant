@@ -490,15 +490,12 @@ abstract class TranslationConverter extends ShopwareConverter
         );
         $categoryTranslation['id'] = $this->mainMapping['entityUuid'];
 
-        if (isset($objectData['description'])) {
-            $this->convertValue($categoryTranslation, 'name', $objectData, 'description');
-        }
+        $this->convertValue($categoryTranslation, 'name', $objectData, 'description');
 
         foreach ($objectData as $key => $value) {
             if ($key === 'description') {
                 $this->convertValue($categoryTranslation, 'name', $objectData, $key);
             }
-
             $this->getAttribute(DefaultEntities::CATEGORY, $key, $value, $categoryTranslation, $objectData);
         }
 
@@ -574,11 +571,9 @@ abstract class TranslationConverter extends ShopwareConverter
             if ($key === 'name') {
                 $this->convertValue($propertyGroupOptionTranslation, 'name', $objectData, $key);
             }
-
             if ($key === 'position') {
                 $this->convertValue($propertyGroupOptionTranslation, 'position', $objectData, $key, self::TYPE_INTEGER);
             }
-
             $this->getAttribute(DefaultEntities::PROPERTY_GROUP_OPTION, $key, $value, $propertyGroupOptionTranslation, $objectData);
         }
 
