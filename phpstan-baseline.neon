@@ -191,11 +191,6 @@ parameters:
 			path: Profile/Shopware/Converter/ShippingMethodConverter.php
 
 		-
-			message: "#^Offset 'id' does not exist on array\\|null\\.$#"
-			count: 8
-			path: Profile/Shopware/Converter/TranslationConverter.php
-
-		-
 			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
 			count: 1
 			path: Profile/Shopware/Gateway/Api/Reader/ApiReader.php
