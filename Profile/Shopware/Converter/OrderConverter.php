@@ -163,6 +163,7 @@ abstract class OrderConverter extends ShopwareConverter
         $this->uuid = $converted['id'];
 
         $this->convertValue($converted, 'orderNumber', $data, 'ordernumber');
+        $this->convertValue($converted, 'customerComment', $data, 'customercomment');
 
         $customerMapping = $this->mappingService->getMapping(
             $this->connectionId,
@@ -342,7 +343,6 @@ abstract class OrderConverter extends ShopwareConverter
             $data['invoice_shipping_tax_rate'],
             $data['transactionID'],
             $data['comment'],
-            $data['customercomment'],
             $data['internalcomment'],
             $data['partnerID'],
             $data['temporaryID'],

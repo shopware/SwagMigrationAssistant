@@ -1,3 +1,6 @@
+# REPLACE-GLOBAL-WITH-NEXT-VERSION
+- MIG-85 - Migrate customer comments in orders
+
 # 2.1.1
 - MIG-39 - Optimized basic converter
 - MIG-72 - Recognize correct category type when external link is set
