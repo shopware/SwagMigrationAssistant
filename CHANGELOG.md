@@ -1,4 +1,4 @@
-# REPLACE-GLOBAL-WITH-NEXT-VERSION
+# 2.1.1
 - MIG-39 - Optimized basic converter
 - MIG-72 - Recognize correct category type when external link is set
 - MIG-73 - Recognize variant attribute translations on SW5 migration
