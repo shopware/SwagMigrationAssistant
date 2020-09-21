@@ -1,4 +1,4 @@
-# REPLACE-GLOBAL-WITH-NEXT-VERSION
+# 2.1.1
 - MIG-39 - Optimierung im Basiskonverter
 - MIG-72 - Berücksichtigt korrekten Kategorietypen wenn es einen externen Link gibt
 - MIG-73 - Berücksichtigt die Attributübersetzungen bei Variantenartikeln von SW5
