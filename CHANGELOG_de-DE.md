@@ -1,3 +1,6 @@
+# REPLACE-GLOBAL-WITH-NEXT-VERSION
+- MIG-85 - Berücksichtigt die Kundenkommentare bei Bestellungen
+
 # 2.1.1
 - MIG-39 - Optimierung im Basiskonverter
 - MIG-72 - Berücksichtigt korrekten Kategorietypen wenn es einen externen Link gibt
