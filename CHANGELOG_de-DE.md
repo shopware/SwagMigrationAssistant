@@ -1,5 +1,6 @@
 # REPLACE-GLOBAL-WITH-NEXT-VERSION
 - MIG-85 - Berücksichtigt die Kundenkommentare bei Bestellungen
+- MIG-90 - Behebt einen Fehler bei der Variantenmigration
 
 # 2.1.1
 - MIG-39 - Optimierung im Basiskonverter

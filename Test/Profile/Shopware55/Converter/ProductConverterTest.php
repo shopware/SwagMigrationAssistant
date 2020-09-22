@@ -100,6 +100,8 @@ class ProductConverterTest extends TestCase
 
         static::assertNull($convertResult->getUnmapped());
         static::assertNotNull($convertResult->getMappingUuid());
+        static::assertNotNull($converted);
+        static::assertNotNull($converted['categories']);
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('manufacturer', $converted);
         static::assertArrayHasKey('price', $converted);
@@ -127,6 +129,8 @@ class ProductConverterTest extends TestCase
         $converted = $convertResult->getConverted();
 
         static::assertNull($convertResult->getUnmapped());
+        static::assertNotNull($converted);
+        static::assertNotNull($converted['categories']);
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('manufacturer', $converted);
         static::assertArrayHasKey('price', $converted);
@@ -148,12 +152,18 @@ class ProductConverterTest extends TestCase
         $converted = $convertResult->getConverted();
 
         static::assertNull($convertResult->getUnmapped());
+        static::assertNotNull($converted);
+        static::assertNotNull($converted['children']);
+        static::assertNotNull($converted['translations']);
+        static::assertNotNull($converted['categories']);
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('manufacturer', $converted);
         static::assertArrayHasKey('price', $converted);
         static::assertSame($converted['translations'][DummyMappingService::DEFAULT_LANGUAGE_UUID]['name'], $converted['children'][0]['translations'][DummyMappingService::DEFAULT_LANGUAGE_UUID]['name']);
         static::assertSame($converted['id'], $converted['children'][0]['parentId']);
         static::assertSame([], $converted['categories']);
+        static::assertArrayNotHasKey('options', $converted);
+        static::assertArrayHasKey('options', $converted['children'][0]);
         static::assertCount(0, $this->loggingService->getLoggingArray());
     }
 
@@ -166,7 +176,9 @@ class ProductConverterTest extends TestCase
         $convertResult = $this->productConverter->convert($productData[15], $context, $this->migrationContext);
 
         $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
         $convertedContainer = $convertResultContainer->getConverted();
+        static::assertNotNull($convertedContainer);
 
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
@@ -202,6 +214,7 @@ class ProductConverterTest extends TestCase
         $convertResult = $this->productConverter->convert($productData, $context, $this->migrationContext);
 
         $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
 
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
@@ -263,6 +276,7 @@ class ProductConverterTest extends TestCase
         $context = Context::createDefaultContext();
         $convertResult = $this->productConverter->convert($productData[1], $context, $this->migrationContext);
         $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
 
         static::assertNull($convertResult->getUnmapped());
         static::assertNotNull($convertResult->getMappingUuid());
