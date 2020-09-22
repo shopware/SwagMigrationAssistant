@@ -717,7 +717,7 @@ class MigrationDataWriterTest extends TestCase
             0,
             $this->context
         );
-        $this->mappingService->getOrCreateMapping($this->connectionId, OrderStateReader::getMappingName(), '0', $this->context, Uuid::randomHex(), [], $orderStateUuid);
+        $this->mappingService->createMapping($this->connectionId, OrderStateReader::getMappingName(), '0', Uuid::randomHex(), [], $orderStateUuid);
 
         $transactionStateUuid = $this->getTransactionStateUuid(
             $this->stateMachineRepository,
