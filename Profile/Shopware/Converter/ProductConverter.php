@@ -225,6 +225,8 @@ abstract class ProductConverter extends ShopwareConverter
 
         $converted['children'][] = $converted;
         $converted['productNumber'] .= 'M';
+        // Remove options from product container as in core
+        unset($converted['options']);
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::PRODUCT,

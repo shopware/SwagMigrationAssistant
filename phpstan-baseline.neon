@@ -2741,53 +2741,8 @@ parameters:
 			path: Test/Profile/Shopware55/Converter/ProductAttributeConverterTest.php
 
 		-
-			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
-			count: 17
-			path: Test/Profile/Shopware55/Converter/ProductConverterTest.php
-
-		-
-			message: "#^Offset 'translations' does not exist on array\\|null\\.$#"
-			count: 3
-			path: Test/Profile/Shopware55/Converter/ProductConverterTest.php
-
-		-
-			message: "#^Offset 'categories' does not exist on array\\|null\\.$#"
-			count: 3
-			path: Test/Profile/Shopware55/Converter/ProductConverterTest.php
-
-		-
-			message: "#^Offset 'children' does not exist on array\\|null\\.$#"
-			count: 2
-			path: Test/Profile/Shopware55/Converter/ProductConverterTest.php
-
-		-
-			message: "#^Offset 'id' does not exist on array\\|null\\.$#"
-			count: 2
-			path: Test/Profile/Shopware55/Converter/ProductConverterTest.php
-
-		-
-			message: "#^Offset 'parentId' does not exist on array\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/ProductConverterTest.php
-
-		-
-			message: "#^Offset 'options' does not exist on array\\|null\\.$#"
-			count: 2
-			path: Test/Profile/Shopware55/Converter/ProductConverterTest.php
-
-		-
-			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayNotHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
-			count: 2
-			path: Test/Profile/Shopware55/Converter/ProductConverterTest.php
-
-		-
 			message: "#^Offset 'deliveryTime' does not exist on array\\|null\\.$#"
 			count: 12
-			path: Test/Profile/Shopware55/Converter/ProductConverterTest.php
-
-		-
-			message: "#^Offset 'price' does not exist on array\\|null\\.$#"
-			count: 2
 			path: Test/Profile/Shopware55/Converter/ProductConverterTest.php
 
 		-
