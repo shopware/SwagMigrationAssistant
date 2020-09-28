@@ -22,6 +22,8 @@ Component.register('swag-migration-history', {
         this.migrationService.isMediaProcessing().then((response) => {
             this.isMediaProcessing = response.data;
         });
+        this.logDownloadEndpoint = `/api/v${this.migrationService.getApiVersion()}/_action/` +
+            `${this.migrationService.getApiBasePath()}/download-logs-of-run`;
     },
 
     data() {
@@ -37,7 +39,7 @@ Component.register('swag-migration-history', {
             sortDirection: 'DESC',
             oldParams: {},
             context: Shopware.Context.api,
-            logDownloadEndpoint: `/_action/${this.migrationService.getApiBasePath()}/migration/download-logs-of-run`,
+            logDownloadEndpoint: '',
             runIdForLogDownload: '',
             runIdForRunClear: '',
             showRunClearConfirmModal: false,
