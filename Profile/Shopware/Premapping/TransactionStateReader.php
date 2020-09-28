@@ -97,8 +97,15 @@ class TransactionStateReader extends AbstractPremappingReader
                 if (isset($this->connectionPremappingDictionary[$data['id']])) {
                     $uuid = $this->connectionPremappingDictionary[$data['id']]['destinationUuid'];
                 }
+                if (!empty($data['description'])) {
+                    $description = $data['description'];
+                } elseif (!empty($data['name'])) {
+                    $description = $data['name'];
+                } else {
+                    $description = $data['id'];
+                }
 
-                $entityData[] = new PremappingEntityStruct($data['id'], $data['description'], $uuid);
+                $entityData[] = new PremappingEntityStruct($data['id'], $description, $uuid);
             }
         }
         usort($entityData, function (PremappingEntityStruct $item1, PremappingEntityStruct $item2) {
