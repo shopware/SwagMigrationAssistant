@@ -74,6 +74,7 @@ class PaymentMethodReaderTest extends TestCase
         $gatewayMock->method('readTable')->willReturn([
             ['id' => '1', 'name' => 'debit', 'description' => 'Direct debit'],
             ['id' => '2', 'name' => 'cash', 'description' => 'Cash'],
+            ['id' => '3', 'name' => 'no_description', 'description' => ''],
         ]);
 
         $gatewayRegistryMock = $this->createMock(GatewayRegistry::class);
@@ -92,10 +93,19 @@ class PaymentMethodReaderTest extends TestCase
         $result = $this->reader->getPremapping($this->context, $this->migrationContext);
 
         static::assertInstanceOf(PremappingStruct::class, $result);
-        static::assertCount(3, $result->getMapping());
+        static::assertCount(4, $result->getMapping());
         static::assertCount(2, $result->getChoices());
 
         $choices = $result->getChoices();
         static::assertSame('Cash', $choices[1]->getDescription());
+    }
+
+    public function testPremappingChoicesWithEmptyDescription(): void
+    {
+        $result = $this->reader->getPremapping($this->context, $this->migrationContext);
+
+        static::assertInstanceOf(PremappingStruct::class, $result);
+        $mapping = $result->getMapping();
+        static::assertSame('no_description', $mapping[3]->getDescription());
     }
 }

@@ -83,6 +83,7 @@ class OrderStateReaderTest extends TestCase
         $gatewayMock->method('readTable')->willReturn([
             ['id' => '0', 'name' => 'open', 'description' => 'Open', 'group' => 'state', 'mail' => 1],
             ['id' => '1', 'name' => 'in_process', 'description' => 'In progress', 'group' => 'state', 'mail' => 1],
+            ['id' => '2', 'name' => 'no_description', 'description' => '', 'group' => 'state', 'mail' => 1],
         ]);
 
         $gatewayRegistryMock = $this->createMock(GatewayRegistry::class);
@@ -96,10 +97,19 @@ class OrderStateReaderTest extends TestCase
         $result = $this->reader->getPremapping($this->context, $this->migrationContext);
 
         static::assertInstanceOf(PremappingStruct::class, $result);
-        static::assertCount(2, $result->getMapping());
+        static::assertCount(3, $result->getMapping());
         static::assertCount(2, $result->getChoices());
 
         $choices = $result->getChoices();
         static::assertSame('In Progress', $choices[1]->getDescription());
+    }
+
+    public function testPremappingChoicesWithEmptyDescription(): void
+    {
+        $result = $this->reader->getPremapping($this->context, $this->migrationContext);
+
+        static::assertInstanceOf(PremappingStruct::class, $result);
+        $mapping = $result->getMapping();
+        static::assertSame('no_description', $mapping[2]->getDescription());
     }
 }

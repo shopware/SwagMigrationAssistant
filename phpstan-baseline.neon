@@ -2386,11 +2386,6 @@ parameters:
 			path: Test/Profile/Shopware/Premapping/SalutationReaderTest.php
 
 		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Premapping\\\\TransactionStateReaderTest\\:\\:\\$reader \\(SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Premapping\\\\TransactionStateReader\\) does not accept SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Premapping\\\\OrderDeliveryStateReader\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Premapping/TransactionStateReaderTest.php
-
-		-
 			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
 			count: 8
 			path: Test/Profile/Shopware55/Converter/CategoryAttributeConverterTest.php

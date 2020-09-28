@@ -23,7 +23,6 @@ use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
-use SwagMigrationAssistant\Profile\Shopware\Premapping\OrderDeliveryStateReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\TransactionStateReader;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
@@ -84,12 +83,13 @@ class TransactionStateReaderTest extends TestCase
         $gatewayMock->method('readTable')->willReturn([
             ['id' => '1', 'name' => 'open', 'description' => 'Open', 'group' => 'payment', 'mail' => 0],
             ['id' => '2', 'name' => 'completely_paid', 'description' => 'Completely paid', 'group' => 'payment', 'mail' => 0],
+            ['id' => '3', 'name' => 'no_description', 'description' => '', 'group' => 'payment', 'mail' => 0],
         ]);
 
         $gatewayRegistryMock = $this->createMock(GatewayRegistry::class);
         $gatewayRegistryMock->method('getGateway')->willReturn($gatewayMock);
 
-        $this->reader = new OrderDeliveryStateReader($smRepoMock, $smsRepoMock, $gatewayRegistryMock);
+        $this->reader = new TransactionStateReader($smRepoMock, $smsRepoMock, $gatewayRegistryMock);
     }
 
     public function testGetPremapping(): void
@@ -97,10 +97,19 @@ class TransactionStateReaderTest extends TestCase
         $result = $this->reader->getPremapping($this->context, $this->migrationContext);
 
         static::assertInstanceOf(PremappingStruct::class, $result);
-        static::assertCount(0, $result->getMapping());
+        static::assertCount(3, $result->getMapping());
         static::assertCount(2, $result->getChoices());
 
         $choices = $result->getChoices();
         static::assertSame('Paid', $choices[1]->getDescription());
+    }
+
+    public function testPremappingChoicesWithEmptyDescription(): void
+    {
+        $result = $this->reader->getPremapping($this->context, $this->migrationContext);
+
+        static::assertInstanceOf(PremappingStruct::class, $result);
+        $mapping = $result->getMapping();
+        static::assertSame('no_description', $mapping[2]->getDescription());
     }
 }
