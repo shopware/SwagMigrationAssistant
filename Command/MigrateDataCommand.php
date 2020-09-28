@@ -140,15 +140,23 @@ class MigrateDataCommand extends Command
         $this->checkOptions($input);
 
         $context = Context::createDefaultContext();
-        /** @var GeneralSettingEntity $generalSetting */
+        /** @var GeneralSettingEntity|null $generalSetting */
         $generalSetting = $this->generalSettingRepo->search(new Criteria(), $context)->first();
+        if ($generalSetting === null) {
+            throw new \RuntimeException('No settings found');
+        }
 
-        if ($generalSetting->getSelectedConnectionId() === null) {
+        $selectedConnectionId = $generalSetting->getSelectedConnectionId();
+        if ($selectedConnectionId === null) {
             throw new \InvalidArgumentException('At first please create a connection via the administration.');
         }
 
-        /** @var SwagMigrationConnectionEntity $connection */
-        $connection = $this->migrationConnectionRepo->search(new Criteria([$generalSetting->getSelectedConnectionId()]), $context)->first();
+        /** @var SwagMigrationConnectionEntity|null $connection */
+        $connection = $this->migrationConnectionRepo->search(new Criteria([$selectedConnectionId]), $context)->first();
+        if ($connection === null) {
+            throw new \InvalidArgumentException(sprintf('No connection found for ID "%s".', $selectedConnectionId));
+        }
+
         $migrationContext = $this->migrationContextFactory->createByConnection($connection);
         $progressState = $this->runService->createMigrationRun($migrationContext, $this->dataSelectionNames, $context);
 
@@ -156,9 +164,13 @@ class MigrateDataCommand extends Command
             throw new \InvalidArgumentException('Another migration is currently running.');
         }
 
-        /** @var SwagMigrationRunEntity|null $run */
-        $run = $this->migrationRunRepo->search(new Criteria([$progressState->getRunId()]), $context)->first();
+        $runId = $progressState->getRunId();
+        if ($runId === null) {
+            throw new \InvalidArgumentException('Migration run could not be created.');
+        }
 
+        /** @var SwagMigrationRunEntity|null $run */
+        $run = $this->migrationRunRepo->search(new Criteria([$runId]), $context)->first();
         if ($run === null) {
             throw new \InvalidArgumentException('Migration run could not be created.');
         }
