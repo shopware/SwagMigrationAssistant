@@ -131,7 +131,7 @@ class HttpOrderDocumentProcessor extends BaseMediaService implements MediaFilePr
 
         // Wait for the requests to complete, even if some of them fail
         /** @var array $results */
-        $results = Promise\settle($promises)->wait();
+        $results = Promise\Utils::settle($promises)->wait();
 
         //handle responses
         $failureUuids = [];
