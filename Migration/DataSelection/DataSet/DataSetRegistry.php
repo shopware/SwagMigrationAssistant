@@ -43,14 +43,14 @@ class DataSetRegistry implements DataSetRegistryInterface
     /**
      * {@inheritdoc}
      */
-    public function getDataSet(MigrationContextInterface $migrationContext, string $entity): DataSet
+    public function getDataSet(MigrationContextInterface $migrationContext, string $dataSetName): DataSet
     {
         foreach ($this->dataSets as $dataSet) {
-            if ($dataSet->supports($migrationContext) && $dataSet::getEntity() === $entity) {
+            if ($dataSet->supports($migrationContext) && $dataSet::getEntity() === $dataSetName) {
                 return $dataSet;
             }
         }
 
-        throw new DataSetNotFoundException($entity);
+        throw new DataSetNotFoundException($dataSetName);
     }
 }

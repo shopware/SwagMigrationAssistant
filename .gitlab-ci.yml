@@ -34,10 +34,8 @@ PHP analyze:
         - cd $CI_PROJECT_DIR/development/custom/plugins/SwagMigrationAssistant
         - bin/static-analyze.sh
         - cd $CI_PROJECT_DIR/development
-        - php dev-ops/analyze/vendor/bin/php-cs-fixer fix --config=vendor/shopware/platform/.php_cs.dist --dry-run -vvv --allow-risky=yes --format=junit custom/plugins/SwagMigrationAssistant | tee php-cs-fixer.xml
-    artifacts:
-        reports:
-            junit: php-cs-fixer.xml
+        - php dev-ops/analyze/vendor/bin/ecs check --config=vendor/shopware/platform/easy-coding-standard.php custom/plugins/SwagMigrationAssistant
+        - php dev-ops/analyze/vendor/bin/php-cs-fixer fix --config=custom/plugins/SwagMigrationAssistant/.php_cs.dist custom/plugins/SwagMigrationAssistant
 
 PHPUnit (MariaDB):
     stage: Testing

@@ -15,7 +15,7 @@ use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\PropertyGroupOp
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGateway;
 
-class PropertyGroupReviewReaderTest extends TestCase
+class PropertyGroupOptionReaderTest extends TestCase
 {
     use LocalCredentialTrait;
 
@@ -74,8 +74,11 @@ class PropertyGroupReviewReaderTest extends TestCase
         static::assertTrue($this->propertyGroupOptionReader->supportsTotal($this->migrationContext));
 
         $totalStruct = $this->propertyGroupOptionReader->readTotal($this->migrationContext);
+        static::assertNotNull($totalStruct);
+        $dataSet = $this->migrationContext->getDataSet();
+        static::assertNotNull($dataSet);
 
-        static::assertSame($this->migrationContext->getDataSet()::getEntity(), $totalStruct->getEntityName());
+        static::assertSame($dataSet::getEntity(), $totalStruct->getEntityName());
         static::assertSame(94, $totalStruct->getTotal());
     }
 }

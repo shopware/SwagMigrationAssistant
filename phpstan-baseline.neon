@@ -1,11 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Parameter \\#2 \\.\\.\\.\\$args of function array_merge expects array, \\(array\\<string\\>\\)\\|string given\\.$#"
-			count: 1
-			path: Command/MigrateDataCommand.php
-
-		-
 			message: "#^Property SwagMigrationAssistant\\\\Migration\\\\Converter\\\\ConverterRegistry\\:\\:\\$converters \\(array\\<SwagMigrationAssistant\\\\Migration\\\\Converter\\\\ConverterInterface\\>\\) does not accept iterable\\<SwagMigrationAssistant\\\\Migration\\\\Converter\\\\ConverterInterface\\>\\.$#"
 			count: 1
 			path: Migration/Converter/ConverterRegistry.php
@@ -1431,31 +1426,6 @@ parameters:
 			path: Test/Profile/Shopware/Gateway/Local/CategoryReaderTest.php
 
 		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CategoryReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CategoryReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CategoryReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CategoryReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CategoryReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CategoryReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CategoryReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CategoryReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CategoryReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CategoryReaderTest.php
-
-		-
 			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
 			count: 1
 			path: Test/Profile/Shopware/Gateway/Local/CurrencyReaderTest.php
@@ -1467,31 +1437,6 @@ parameters:
 
 		-
 			message: "#^Cannot call method getTotal\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CurrencyReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CurrencyReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CurrencyReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CurrencyReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CurrencyReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CurrencyReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CurrencyReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CurrencyReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CurrencyReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CurrencyReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
 			count: 1
 			path: Test/Profile/Shopware/Gateway/Local/CurrencyReaderTest.php
 
@@ -1511,31 +1456,6 @@ parameters:
 			path: Test/Profile/Shopware/Gateway/Local/CustomerGroupReaderTest.php
 
 		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CustomerGroupReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CustomerGroupReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CustomerGroupReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CustomerGroupReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CustomerGroupReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CustomerGroupReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CustomerGroupReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CustomerGroupReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CustomerGroupReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CustomerGroupReaderTest.php
-
-		-
 			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
 			count: 1
 			path: Test/Profile/Shopware/Gateway/Local/CustomerReaderTest.php
@@ -1549,231 +1469,6 @@ parameters:
 			message: "#^Cannot call method getTotal\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
 			count: 1
 			path: Test/Profile/Shopware/Gateway/Local/CustomerReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CustomerReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CustomerReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CustomerReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CustomerReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CustomerReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CustomerReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CustomerReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CustomerReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CustomerReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CustomerReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CategoryAttributeReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CategoryAttributeReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CategoryAttributeReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CategoryAttributeReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CategoryAttributeReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CategoryAttributeReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CategoryAttributeReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CategoryAttributeReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CategoryAttributeReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CategoryAttributeReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CustomerAttributeReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CustomerAttributeReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CustomerAttributeReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CustomerAttributeReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CustomerAttributeReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CustomerAttributeReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CustomerAttributeReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CustomerAttributeReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CustomerAttributeReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CustomerAttributeReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CustomerGroupAttributeReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CustomerGroupAttributeReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CustomerGroupAttributeReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CustomerGroupAttributeReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CustomerGroupAttributeReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CustomerGroupAttributeReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CustomerGroupAttributeReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CustomerGroupAttributeReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CustomerGroupAttributeReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CustomerGroupAttributeReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\EnvironmentReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/EnvironmentReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\EnvironmentReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/EnvironmentReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\EnvironmentReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/EnvironmentReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\EnvironmentReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/EnvironmentReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\EnvironmentReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/EnvironmentReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\LanguageReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/LanguageReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\LanguageReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/LanguageReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\LanguageReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/LanguageReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\LanguageReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/LanguageReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\LanguageReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/LanguageReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ManufacturerAttributeReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/ManufacturerAttributeReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ManufacturerAttributeReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/ManufacturerAttributeReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ManufacturerAttributeReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/ManufacturerAttributeReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ManufacturerAttributeReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/ManufacturerAttributeReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ManufacturerAttributeReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/ManufacturerAttributeReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\MediaAlbumReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/MediaAlbumReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\MediaAlbumReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/MediaAlbumReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\MediaAlbumReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/MediaAlbumReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\MediaAlbumReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/MediaAlbumReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\MediaAlbumReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/MediaAlbumReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\MediaReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/MediaReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\MediaReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/MediaReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\MediaReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/MediaReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\MediaReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/MediaReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\MediaReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/MediaReaderTest.php
 
 		-
 			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\MediaReaderTest\\:\\:\\$customerReader \\(SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\CustomerReader\\) does not accept SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\MediaReader\\.$#"
@@ -1796,31 +1491,6 @@ parameters:
 			path: Test/Profile/Shopware/Gateway/Local/MediaReaderTest.php
 
 		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\NewsletterRecipientReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/NewsletterRecipientReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\NewsletterRecipientReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/NewsletterRecipientReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\NewsletterRecipientReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/NewsletterRecipientReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\NewsletterRecipientReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/NewsletterRecipientReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\NewsletterRecipientReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/NewsletterRecipientReaderTest.php
-
-		-
 			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
 			count: 1
 			path: Test/Profile/Shopware/Gateway/Local/NewsletterRecipientReaderTest.php
@@ -1834,31 +1504,6 @@ parameters:
 			message: "#^Cannot call method getTotal\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
 			count: 1
 			path: Test/Profile/Shopware/Gateway/Local/NewsletterRecipientReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\NumberRangeReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/NumberRangeReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\NumberRangeReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/NumberRangeReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\NumberRangeReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/NumberRangeReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\NumberRangeReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/NumberRangeReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\NumberRangeReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/NumberRangeReaderTest.php
 
 		-
 			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
@@ -1876,81 +1521,6 @@ parameters:
 			path: Test/Profile/Shopware/Gateway/Local/NumberRangeReaderTest.php
 
 		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\OrderAttributeReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/OrderAttributeReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\OrderAttributeReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/OrderAttributeReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\OrderAttributeReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/OrderAttributeReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\OrderAttributeReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/OrderAttributeReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\OrderAttributeReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/OrderAttributeReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\OrderDocumentAttributeReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/OrderDocumentAttributeReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\OrderDocumentAttributeReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/OrderDocumentAttributeReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\OrderDocumentAttributeReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/OrderDocumentAttributeReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\OrderDocumentAttributeReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/OrderDocumentAttributeReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\OrderDocumentAttributeReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/OrderDocumentAttributeReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\OrderDocumentReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/OrderDocumentReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\OrderDocumentReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/OrderDocumentReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\OrderDocumentReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/OrderDocumentReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\OrderDocumentReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/OrderDocumentReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\OrderDocumentReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/OrderDocumentReaderTest.php
-
-		-
 			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
 			count: 1
 			path: Test/Profile/Shopware/Gateway/Local/OrderDocumentReaderTest.php
@@ -1964,31 +1534,6 @@ parameters:
 			message: "#^Cannot call method getTotal\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
 			count: 1
 			path: Test/Profile/Shopware/Gateway/Local/OrderDocumentReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\OrderReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/OrderReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\OrderReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/OrderReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\OrderReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/OrderReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\OrderReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/OrderReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\OrderReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/OrderReaderTest.php
 
 		-
 			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
@@ -2006,81 +1551,6 @@ parameters:
 			path: Test/Profile/Shopware/Gateway/Local/OrderReaderTest.php
 
 		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ProductAttributeReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/ProductAttributeReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ProductAttributeReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/ProductAttributeReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ProductAttributeReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/ProductAttributeReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ProductAttributeReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/ProductAttributeReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ProductAttributeReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/ProductAttributeReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ProductPriceAttributeReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/ProductPriceAttributeReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ProductPriceAttributeReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/ProductPriceAttributeReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ProductPriceAttributeReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/ProductPriceAttributeReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ProductPriceAttributeReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/ProductPriceAttributeReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ProductPriceAttributeReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/ProductPriceAttributeReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ProductReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/ProductReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ProductReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/ProductReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ProductReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/ProductReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ProductReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/ProductReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ProductReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/ProductReaderTest.php
-
-		-
 			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
 			count: 1
 			path: Test/Profile/Shopware/Gateway/Local/ProductReaderTest.php
@@ -2094,31 +1564,6 @@ parameters:
 			message: "#^Cannot call method getTotal\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
 			count: 1
 			path: Test/Profile/Shopware/Gateway/Local/ProductReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ProductReviewReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/ProductReviewReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ProductReviewReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/ProductReviewReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ProductReviewReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/ProductReviewReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ProductReviewReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/ProductReviewReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ProductReviewReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/ProductReviewReaderTest.php
 
 		-
 			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
@@ -2136,71 +1581,6 @@ parameters:
 			path: Test/Profile/Shopware/Gateway/Local/ProductReviewReaderTest.php
 
 		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\PropertyGroupReviewReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/PropertyGroupOptionReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\PropertyGroupReviewReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/PropertyGroupOptionReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\PropertyGroupReviewReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/PropertyGroupOptionReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\PropertyGroupReviewReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/PropertyGroupOptionReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\PropertyGroupReviewReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/PropertyGroupOptionReaderTest.php
-
-		-
-			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/PropertyGroupOptionReaderTest.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/PropertyGroupOptionReaderTest.php
-
-		-
-			message: "#^Cannot call method getTotal\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/PropertyGroupOptionReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\SalesChannelReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/SalesChannelReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\SalesChannelReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/SalesChannelReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\SalesChannelReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/SalesChannelReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\SalesChannelReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/SalesChannelReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\SalesChannelReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/SalesChannelReaderTest.php
-
-		-
 			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
 			count: 1
 			path: Test/Profile/Shopware/Gateway/Local/SalesChannelReaderTest.php
@@ -2214,31 +1594,6 @@ parameters:
 			message: "#^Cannot call method getTotal\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
 			count: 1
 			path: Test/Profile/Shopware/Gateway/Local/SalesChannelReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\SeoUrlReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/SeoUrlReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\SeoUrlReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/SeoUrlReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\SeoUrlReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/SeoUrlReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\SeoUrlReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/SeoUrlReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\SeoUrlReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/SeoUrlReaderTest.php
 
 		-
 			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
@@ -2256,31 +1611,6 @@ parameters:
 			path: Test/Profile/Shopware/Gateway/Local/SeoUrlReaderTest.php
 
 		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ShippingMethodReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/ShippingMethodReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ShippingMethodReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/ShippingMethodReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ShippingMethodReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/ShippingMethodReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ShippingMethodReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/ShippingMethodReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ShippingMethodReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/ShippingMethodReaderTest.php
-
-		-
 			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
 			count: 1
 			path: Test/Profile/Shopware/Gateway/Local/ShippingMethodReaderTest.php
@@ -2294,56 +1624,6 @@ parameters:
 			message: "#^Cannot call method getTotal\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
 			count: 1
 			path: Test/Profile/Shopware/Gateway/Local/ShippingMethodReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\TableReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/TableReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\TableReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/TableReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\TableReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/TableReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\TableReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/TableReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\TableReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/TableReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\TranslationReaderTest\\:\\:\\$db_name has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/TranslationReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\TranslationReaderTest\\:\\:\\$db_user has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/TranslationReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\TranslationReaderTest\\:\\:\\$db_password has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/TranslationReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\TranslationReaderTest\\:\\:\\$db_host has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/TranslationReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\TranslationReaderTest\\:\\:\\$db_port has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/TranslationReaderTest.php
 
 		-
 			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
