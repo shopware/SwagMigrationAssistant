@@ -159,7 +159,6 @@ class ProductConverterTest extends TestCase
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('manufacturer', $converted);
         static::assertArrayHasKey('price', $converted);
-        static::assertSame($converted['translations'][DummyMappingService::DEFAULT_LANGUAGE_UUID]['name'], $converted['children'][0]['translations'][DummyMappingService::DEFAULT_LANGUAGE_UUID]['name']);
         static::assertSame($converted['id'], $converted['children'][0]['parentId']);
         static::assertSame([], $converted['categories']);
         static::assertArrayNotHasKey('options', $converted);

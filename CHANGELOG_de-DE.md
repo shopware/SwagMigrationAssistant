@@ -3,6 +3,7 @@
 - MIG-90 - Behebt einen Fehler bei der Variantenmigration
 - MIG-92 - Behebt ein Problem beim Download der Historie
 - MIG-98 - Behebt ein Problem wenn die Premapping-Datensätze keine Beschreibung enthalten
+- MIG-103 - Verbessert die Migration von Variantenübersetzungen
 
 # 2.1.1
 - MIG-39 - Optimierung im Basiskonverter

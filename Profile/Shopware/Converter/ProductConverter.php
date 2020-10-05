@@ -258,7 +258,7 @@ abstract class ProductConverter extends ShopwareConverter
             }
         }
         $converted['children'][0]['parentId'] = $containerUuid;
-        unset($data['detail']['id']);
+        unset($data['detail']['id'], $converted['children'][0]['translations'], $converted['children'][0]['customFields']);
 
         if (isset($data['categories'])) {
             $converted['categories'] = $this->getCategoryMapping($data['categories']);

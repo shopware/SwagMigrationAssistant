@@ -70,17 +70,24 @@ class TranslationConverterTest extends TestCase
      */
     private $categoryMigrationContext;
 
+    /**
+     * @var string
+     */
+    private $connectionId;
+
     protected function setUp(): void
     {
         $this->mappingService = new DummyMappingService();
         $this->loggingService = new DummyLoggingService();
         $this->translationConverter = new Shopware55TranslationConverter($this->mappingService, $this->loggingService);
 
+        $this->connectionId = Uuid::randomHex();
+
         $connection = new SwagMigrationConnectionEntity();
-        $connection->setId(Uuid::randomHex());
+        $connection->setId($this->connectionId);
         $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
         $connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
-        $connection->setName('shopware');
+        $connection->setName('Shopware 5.5');
         $connection->setCredentialFields([]);
 
         $this->runId = Uuid::randomHex();
@@ -337,7 +344,7 @@ class TranslationConverterTest extends TestCase
         $context = Context::createDefaultContext();
         $defaultLanguage = DummyMappingService::DEFAULT_LANGUAGE_UUID;
         $this->mappingService->getOrCreateMapping(
-            $this->migrationContext->getConnection()->getId(),
+            $this->connectionId,
             DefaultEntities::PROPERTY_GROUP_OPTION . '_option',
             '11',
             $context
@@ -360,7 +367,7 @@ class TranslationConverterTest extends TestCase
         $context = Context::createDefaultContext();
         $defaultLanguage = DummyMappingService::DEFAULT_LANGUAGE_UUID;
         $this->mappingService->getOrCreateMapping(
-            $this->migrationContext->getConnection()->getId(),
+            $this->connectionId,
             DefaultEntities::PROPERTY_GROUP . '_option',
             '5',
             $context
@@ -383,7 +390,7 @@ class TranslationConverterTest extends TestCase
         $context = Context::createDefaultContext();
         $defaultLanguage = DummyMappingService::DEFAULT_LANGUAGE_UUID;
         $this->mappingService->getOrCreateMapping(
-            $this->migrationContext->getConnection()->getId(),
+            $this->connectionId,
             DefaultEntities::PROPERTY_GROUP_OPTION . '_property',
             '31',
             $context
@@ -406,7 +413,7 @@ class TranslationConverterTest extends TestCase
         $context = Context::createDefaultContext();
         $defaultLanguage = DummyMappingService::DEFAULT_LANGUAGE_UUID;
         $this->mappingService->getOrCreateMapping(
-            $this->migrationContext->getConnection()->getId(),
+            $this->connectionId,
             DefaultEntities::PROPERTY_GROUP . '_property',
             '8',
             $context
@@ -446,6 +453,8 @@ class TranslationConverterTest extends TestCase
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
         $context = Context::createDefaultContext();
 
+        $productMapping = $this->mappingService->createMapping($this->connectionId, ProductDataSet::getEntity(), 'SW10006', null, null, Uuid::randomHex());
+        $translationMapping = $this->mappingService->createMapping($this->connectionId, TranslationDataSet::getEntity(), '666', null, null, Uuid::randomHex());
         $productConverter = new Shopware55ProductConverter($this->mappingService, $this->loggingService, new DummyMediaFileService());
         $productConverter->convert($productData[0], $context, $this->productMigrationContext);
 
@@ -454,8 +463,23 @@ class TranslationConverterTest extends TestCase
         /** @var array $converted */
         $converted = $convertResult->getConverted();
 
+        $expected = [
+            'id' => $productMapping['entityUuid'],
+            'entityDefinitionClass' => "Shopware\Core\Content\Product\ProductDefinition",
+            'translations' => [
+                DummyMappingService::DEFAULT_LANGUAGE_UUID => [
+                    'customFields' => [
+                        'migration_Shopware55_product_attr1' => 'My free textfield',
+                    ],
+                    'id' => $translationMapping['entityUuid'],
+                    'languageId' => DummyMappingService::DEFAULT_LANGUAGE_UUID,
+                ],
+            ],
+        ];
+
         static::assertNotNull($convertResult->getMappingUuid());
         static::assertCount(0, $this->loggingService->getLoggingArray());
         static::assertArrayHasKey('translations', $converted);
+        static::assertSame($expected, $converted);
     }
 }
