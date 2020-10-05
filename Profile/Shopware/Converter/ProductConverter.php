@@ -429,7 +429,6 @@ abstract class ProductConverter extends ShopwareConverter
         $this->convertValue($converted, 'markAsTopseller', $data, 'topseller', self::TYPE_BOOLEAN);
         $this->convertValue($converted, 'allowNotification', $data, 'notification', self::TYPE_BOOLEAN);
         $this->convertValue($converted, 'manufacturerNumber', $data['detail'], 'suppliernumber');
-        $this->convertValue($converted, 'sales', $data['detail'], 'sales', self::TYPE_INTEGER);
         $this->convertValue($converted, 'stock', $data['detail'], 'instock', self::TYPE_INTEGER);
         $this->convertValue($converted, 'minStock', $data['detail'], 'stockmin', self::TYPE_INTEGER);
         $this->convertValue($converted, 'isCloseout', $data['detail'], 'laststock', self::TYPE_BOOLEAN);
@@ -479,6 +478,7 @@ abstract class ProductConverter extends ShopwareConverter
             $data['filtergroupID'],
             $data['template'],
             $data['detail']['additionaltext'],
+            $data['detail']['sales'],
             $data['shippingtime']
         );
 

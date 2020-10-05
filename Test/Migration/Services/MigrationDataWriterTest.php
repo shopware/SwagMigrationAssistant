@@ -609,7 +609,7 @@ class MigrationDataWriterTest extends TestCase
         $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext): void {
             $this->migrationDataWriter->writeData($migrationContext, $context);
         });
-        $productTotalAfter = $this->dbConnection->query('select count(*) from product')->fetchColumn();
+        $productTotalAfter = (int) $this->dbConnection->query('select count(*) from product')->fetchColumn();
 
         static::assertSame(42, $productTotalAfter - $productTotalBefore);
     }

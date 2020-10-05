@@ -12,7 +12,6 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexerRegistry;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\Store\Services\StoreService;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
@@ -281,11 +280,13 @@ class MigrateDataCommandTest extends TestCase
 
     public function testExecution(): void
     {
+        $dbConnection = $this->getContainer()->get(Connection::class);
+        $productTotalBefore = (int) $dbConnection->query('select count(*) from product')->fetchColumn();
         $this->commandTester->execute([
             'command' => $this->command->getName(),
             'dataSelections' => ['products'],
         ]);
-        $result = $this->getContainer()->get('product.repository')->search(new Criteria(), $this->context)->count();
-        static::assertSame(42, $result);
+        $productTotalAfter = (int) $dbConnection->query('select count(*) from product')->fetchColumn();
+        static::assertSame(42, $productTotalAfter - $productTotalBefore);
     }
 }
