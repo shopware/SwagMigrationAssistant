@@ -5,3 +5,4 @@ vendor
 phpstan.neon
 *.hot-update.js
 Test/testData
+/var/

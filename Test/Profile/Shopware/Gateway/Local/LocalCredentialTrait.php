@@ -15,14 +15,29 @@ use SwagMigrationAssistant\Test\Shopware5DatabaseConnection;
 
 trait LocalCredentialTrait
 {
+    /**
+     * @var string
+     */
     public $db_name = Shopware5DatabaseConnection::DB_NAME;
 
+    /**
+     * @var string
+     */
     public $db_user = Shopware5DatabaseConnection::DB_USER;
 
+    /**
+     * @var string
+     */
     public $db_password = Shopware5DatabaseConnection::DB_PASSWORD;
 
+    /**
+     * @var string
+     */
     public $db_host = Shopware5DatabaseConnection::DB_HOST;
 
+    /**
+     * @var string
+     */
     public $db_port = Shopware5DatabaseConnection::DB_PORT;
 
     /**

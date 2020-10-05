@@ -199,6 +199,9 @@ class MigrateDataCommand extends Command
         if (!$dataSelections) {
             throw new \InvalidArgumentException('No dataSelections entered');
         }
+        if (!\is_array($dataSelections)) {
+            $dataSelections = [$dataSelections];
+        }
         $this->dataSelectionNames[] = BasicSettingsDataSelection::IDENTIFIER;
         $this->dataSelectionNames = array_merge($this->dataSelectionNames, $dataSelections);
     }
