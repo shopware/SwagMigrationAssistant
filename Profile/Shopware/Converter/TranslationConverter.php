@@ -843,6 +843,8 @@ abstract class TranslationConverter extends ShopwareConverter
         if ($connection !== null) {
             $connectionName = $connection->getName();
         }
+        $connectionName = str_replace(' ', '', $connectionName);
+        $connectionName = preg_replace('/[^A-Za-z0-9\-]/', '', $connectionName);
 
         $isAttribute = mb_strpos($key, '__attribute_');
         if ($isAttribute !== false) {

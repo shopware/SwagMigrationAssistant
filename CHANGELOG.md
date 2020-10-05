@@ -3,6 +3,7 @@
 - MIG-90 - Fix variant migration
 - MIG-92 - Fix broken history download
 - MIG-98 - Fix premappings without description
+- MIG-103 - Improves the migration of variant translations
 
 # 2.1.1
 - MIG-39 - Optimized basic converter

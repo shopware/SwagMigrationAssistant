@@ -2145,8 +2145,3 @@ parameters:
 			count: 1
 			path: Test/Profile/Shopware55/Converter/TranslationConverterTest.php
 
-		-
-			message: "#^Cannot call method getId\\(\\) on SwagMigrationAssistant\\\\Migration\\\\Connection\\\\SwagMigrationConnectionEntity\\|null\\.$#"
-			count: 4
-			path: Test/Profile/Shopware55/Converter/TranslationConverterTest.php
-
