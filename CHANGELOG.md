@@ -1,4 +1,4 @@
-# REPLACE-GLOBAL-WITH-NEXT-VERSION
+# 2.1.2
 - MIG-85 - Migrate customer comments in orders
 - MIG-90 - Fix variant migration
 - MIG-92 - Fix broken history download

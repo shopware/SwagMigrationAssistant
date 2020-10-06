@@ -58,6 +58,12 @@
             </errorLevel>
         </MoreSpecificImplementedParamType>
 
+        <DeprecatedFunction>
+            <errorLevel type="info">
+                <referencedFunction name="guzzlehttp\promise\settle"/>
+            </errorLevel>
+        </DeprecatedFunction>
+
         <DeprecatedClass>
             <errorLevel type="info">
                 <file name="Controller/MigrationController.php" />

@@ -1,4 +1,4 @@
-# REPLACE-GLOBAL-WITH-NEXT-VERSION
+# 2.1.2
 - MIG-85 - Berücksichtigt die Kundenkommentare bei Bestellungen
 - MIG-90 - Behebt einen Fehler bei der Variantenmigration
 - MIG-92 - Behebt ein Problem beim Download der Historie
