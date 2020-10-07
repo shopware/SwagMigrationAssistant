@@ -32,7 +32,6 @@
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Media\HttpMediaDownloadService" parent="SwagMigrationAssistant\Profile\Shopware\Media\BaseMediaService">
             <argument type="service" id="swag_migration_media_file.repository"/>
-            <argument type="service" id="media.repository"/>
             <argument type="service" id="Shopware\Core\Content\Media\File\FileSaver"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
             <argument type="service" id="Doctrine\DBAL\Connection"/>
@@ -41,7 +40,6 @@
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Media\LocalMediaProcessor" parent="SwagMigrationAssistant\Profile\Shopware\Media\BaseMediaService">
             <argument type="service" id="swag_migration_media_file.repository"/>
-            <argument type="service" id="media.repository"/>
             <argument type="service" id="Shopware\Core\Content\Media\File\FileSaver"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
             <argument type="tagged" tag="shopware.migration.media_strategy_resolver"/>

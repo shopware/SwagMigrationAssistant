@@ -111,11 +111,6 @@ class StatusControllerTest extends TestCase
     /**
      * @var string
      */
-    private $invalidRunUuid;
-
-    /**
-     * @var string
-     */
     private $invalidConnectionId;
 
     /**

@@ -75,11 +75,6 @@ class MigrationProgressServiceTest extends TestCase
     private $runUuid;
 
     /**
-     * @var string
-     */
-    private $profileId;
-
-    /**
      * @var MigrationProgressServiceInterface
      */
     private $progressService;

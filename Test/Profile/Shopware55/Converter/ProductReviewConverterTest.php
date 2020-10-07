@@ -47,11 +47,6 @@ class ProductReviewConverterTest extends TestCase
     private $migrationContext;
 
     /**
-     * @var string
-     */
-    private $productUuid;
-
-    /**
      * @var array
      */
     private $products;
