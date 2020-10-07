@@ -1207,7 +1207,7 @@ parameters:
 
 		-
 			message: "#^Service \"cache\\.object\" is private\\.$#"
-			count: 2
+			count: 1
 			path: Test/Migration/Services/RunServiceTest.php
 
 		-

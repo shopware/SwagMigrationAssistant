@@ -18,24 +18,17 @@ use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Storefront\Theme\ThemeService;
 use SwagMigrationAssistant\Command\MigrateDataCommand;
-use SwagMigrationAssistant\Controller\MigrationController;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
-use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistryInterface;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
-use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
-use SwagMigrationAssistant\Migration\Gateway\GatewayRegistryInterface;
 use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistry;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Media\MediaFileService;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextFactory;
-use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
 use SwagMigrationAssistant\Migration\Premapping\PremappingReaderRegistry;
-use SwagMigrationAssistant\Migration\Profile\ProfileRegistry;
-use SwagMigrationAssistant\Migration\Profile\ProfileRegistryInterface;
 use SwagMigrationAssistant\Migration\Run\RunService;
 use SwagMigrationAssistant\Migration\Service\MediaFileProcessorService;
 use SwagMigrationAssistant\Migration\Service\MigrationDataWriter;
@@ -73,24 +66,9 @@ class MigrateDataCommandTest extends TestCase
     private $application;
 
     /**
-     * @var MigrationController
-     */
-    private $controller;
-
-    /**
-     * @var string
-     */
-    private $runUuid;
-
-    /**
      * @var EntityRepositoryInterface
      */
     private $runRepo;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $generalSettingRepo;
 
     /**
      * @var EntityRepositoryInterface
@@ -101,26 +79,6 @@ class MigrateDataCommandTest extends TestCase
      * @var string
      */
     private $connectionId;
-
-    /**
-     * @var ProfileRegistryInterface
-     */
-    private $profileRegistry;
-
-    /**
-     * @var GatewayRegistryInterface
-     */
-    private $gatewayRegistry;
-
-    /**
-     * @var DataSetRegistryInterface
-     */
-    private $dataSetRegistry;
-
-    /**
-     * @var string
-     */
-    private $invalidRunUuid;
 
     /**
      * @var EntityRepositoryInterface
@@ -137,23 +95,13 @@ class MigrateDataCommandTest extends TestCase
      */
     private $mediaFileRepo;
 
-    /**
-     * @var MigrationContextFactoryInterface
-     */
-    private $migrationContextFactory;
-
     protected function setUp(): void
     {
         $this->context = Context::createDefaultContext();
         $this->mediaFileRepo = $this->getContainer()->get('swag_migration_media_file.repository');
         $this->dataRepo = $this->getContainer()->get('swag_migration_data.repository');
         $this->connectionRepo = $this->getContainer()->get('swag_migration_connection.repository');
-        $this->generalSettingRepo = $this->getContainer()->get('swag_migration_general_setting.repository');
         $this->runRepo = $this->getContainer()->get('swag_migration_run.repository');
-        $this->profileRegistry = $this->getContainer()->get(ProfileRegistry::class);
-        $this->gatewayRegistry = $this->getContainer()->get(GatewayRegistry::class);
-        $this->dataSetRegistry = $this->getContainer()->get(DataSetRegistry::class);
-        $this->migrationContextFactory = $this->getContainer()->get(MigrationContextFactory::class);
         $salesChannelRepo = $this->getContainer()->get('sales_channel.repository');
         $themeRepo = $this->getContainer()->get('theme.repository');
         $mappingService = $this->getContainer()->get(MappingService::class);
