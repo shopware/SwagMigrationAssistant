@@ -22,8 +22,6 @@ use Shopware\Storefront\Theme\ThemeService;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry;
-use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
-use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistryInterface;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
 use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistry;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
@@ -80,27 +78,12 @@ class RunServiceTest extends TestCase
     /**
      * @var RunService
      */
-    private $runService;
-
-    /**
-     * @var RunService
-     */
     private $runServiceWithoutStructure;
 
     /**
      * @var SwagMigrationConnectionEntity
      */
     private $connection;
-
-    /**
-     * @var Connection
-     */
-    private $dbConnection;
-
-    /**
-     * @var DataSetRegistryInterface
-     */
-    private $dataSetRegistry;
 
     /**
      * @var MigrationContextFactoryInterface
@@ -119,7 +102,6 @@ class RunServiceTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->dbConnection = $this->getContainer()->get(Connection::class);
         $entityWriter = $this->getContainer()->get(EntityWriter::class);
         $this->runRepo = $this->getContainer()->get('swag_migration_run.repository');
         $this->dataRepo = $this->getContainer()->get('swag_migration_data.repository');
@@ -129,7 +111,6 @@ class RunServiceTest extends TestCase
         $mediaFileRepo = $this->getContainer()->get('swag_migration_media_file.repository');
         $this->salesChannelRepo = $this->getContainer()->get('sales_channel.repository');
         $this->themeRepo = $this->getContainer()->get('theme.repository');
-        $this->dataSetRegistry = $this->getContainer()->get(DataSetRegistry::class);
         $this->migrationContextFactory = $this->getContainer()->get(MigrationContextFactory::class);
 
         $this->mappingService = new MappingService(
@@ -185,36 +166,6 @@ class RunServiceTest extends TestCase
             ),
             new DummyLocalGateway(),
         ]));
-
-        $this->runService = new RunService(
-            $this->runRepo,
-            $this->connectionRepo,
-            $this->getMigrationDataFetcher(
-                $entityWriter,
-                $this->mappingService,
-                $mediaFileService,
-                $loggingRepo,
-                $this->getContainer()->get(SwagMigrationDataDefinition::class),
-                $this->dataSetRegistry,
-                $this->getContainer()->get('currency.repository'),
-                $this->getContainer()->get(ReaderRegistry::class)
-            ),
-            new SwagMigrationAccessTokenService($this->runRepo),
-            new DataSelectionRegistry([]),
-            $this->dataRepo,
-            $mediaFileRepo,
-            $this->salesChannelRepo,
-            $this->themeRepo,
-            $this->getContainer()->get(EntityIndexerRegistry::class),
-            $this->getContainer()->get(ThemeService::class),
-            $this->mappingService,
-            $this->getContainer()->get('cache.object'),
-            $this->getContainer()->get(SwagMigrationDataDefinition::class),
-            $this->getContainer()->get(Connection::class),
-            $loggingService,
-            $this->getContainer()->get(StoreService::class),
-            $this->getContainer()->get('messenger.bus.shopware')
-        );
 
         $this->runServiceWithoutStructure = new RunService(
             $this->runRepo,

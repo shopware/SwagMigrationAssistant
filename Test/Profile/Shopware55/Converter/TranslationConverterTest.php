@@ -51,11 +51,6 @@ class TranslationConverterTest extends TestCase
     private $runId;
 
     /**
-     * @var string
-     */
-    private $profileId;
-
-    /**
      * @var MigrationContextInterface
      */
     private $migrationContext;
@@ -91,7 +86,6 @@ class TranslationConverterTest extends TestCase
         $connection->setCredentialFields([]);
 
         $this->runId = Uuid::randomHex();
-        $this->profileId = Uuid::randomHex();
 
         $profile = new Shopware55Profile();
 

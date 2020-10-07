@@ -26,8 +26,6 @@ use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistryInterface;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
-use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
-use SwagMigrationAssistant\Migration\Gateway\GatewayRegistryInterface;
 use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistry;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
@@ -35,8 +33,6 @@ use SwagMigrationAssistant\Migration\Media\MediaFileService;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextFactory;
 use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
-use SwagMigrationAssistant\Migration\Profile\ProfileRegistry;
-use SwagMigrationAssistant\Migration\Profile\ProfileRegistryInterface;
 use SwagMigrationAssistant\Migration\Run\RunService;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationAssistant\Migration\Service\EntityPartialIndexerService;
@@ -74,27 +70,12 @@ class MigrationControllerTest extends TestCase
     /**
      * @var EntityRepositoryInterface
      */
-    private $generalSettingRepo;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
     private $connectionRepo;
 
     /**
      * @var string
      */
     private $connectionId;
-
-    /**
-     * @var ProfileRegistryInterface
-     */
-    private $profileRegistry;
-
-    /**
-     * @var GatewayRegistryInterface
-     */
-    private $gatewayRegistry;
 
     /**
      * @var DataSetRegistryInterface
@@ -134,15 +115,12 @@ class MigrationControllerTest extends TestCase
         $this->dataRepo = $this->getContainer()->get('swag_migration_data.repository');
         $loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
         $this->connectionRepo = $this->getContainer()->get('swag_migration_connection.repository');
-        $this->generalSettingRepo = $this->getContainer()->get('swag_migration_general_setting.repository');
         $this->runRepo = $this->getContainer()->get('swag_migration_run.repository');
         $paymentRepo = $this->getContainer()->get('payment_method.repository');
         $shippingRepo = $this->getContainer()->get('shipping_method.repository');
         $countryRepo = $this->getContainer()->get('country.repository');
         $salesChannelRepo = $this->getContainer()->get('sales_channel.repository');
         $themeRepo = $this->getContainer()->get('theme.repository');
-        $this->profileRegistry = $this->getContainer()->get(ProfileRegistry::class);
-        $this->gatewayRegistry = $this->getContainer()->get(GatewayRegistry::class);
         $this->dataSetRegistry = $this->getContainer()->get(DataSetRegistry::class);
         $this->migrationContextFactory = $this->getContainer()->get(MigrationContextFactory::class);
         $loggingService = new LoggingService($loggingRepo);

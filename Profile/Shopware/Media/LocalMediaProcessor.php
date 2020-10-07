@@ -42,11 +42,6 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
     private $mediaFileRepo;
 
     /**
-     * @var EntityRepositoryInterface
-     */
-    private $mediaRepo;
-
-    /**
      * @var LoggingServiceInterface
      */
     private $loggingService;
@@ -61,14 +56,12 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
      */
     public function __construct(
         EntityRepositoryInterface $migrationMediaFileRepo,
-        EntityRepositoryInterface $mediaRepo,
         FileSaver $fileSaver,
         LoggingServiceInterface $loggingService,
         iterable $resolver,
         Connection $dbalConnection
     ) {
         $this->mediaFileRepo = $migrationMediaFileRepo;
-        $this->mediaRepo = $mediaRepo;
         $this->fileSaver = $fileSaver;
         $this->loggingService = $loggingService;
         $this->resolver = $resolver;

@@ -46,24 +46,17 @@ class HttpMediaDownloadService extends BaseMediaService implements MediaFileProc
     private $mediaFileRepo;
 
     /**
-     * @var EntityRepositoryInterface
-     */
-    private $mediaRepo;
-
-    /**
      * @var LoggingServiceInterface
      */
     private $loggingService;
 
     public function __construct(
         EntityRepositoryInterface $migrationMediaFileRepo,
-        EntityRepositoryInterface $mediaRepo,
         FileSaver $fileSaver,
         LoggingServiceInterface $loggingService,
         Connection $dbalConnection
     ) {
         $this->mediaFileRepo = $migrationMediaFileRepo;
-        $this->mediaRepo = $mediaRepo;
         $this->fileSaver = $fileSaver;
         $this->loggingService = $loggingService;
         parent::__construct($dbalConnection);
