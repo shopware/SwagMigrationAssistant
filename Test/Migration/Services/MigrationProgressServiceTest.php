@@ -227,9 +227,55 @@ class MigrationProgressServiceTest extends TestCase
         );
     }
 
-    public function testGetProgressInPremappingStatus(): void
+    public function testGetProgressInPremappingStatusWithValidToken(): void
     {
         $context = Context::createDefaultContext();
+
+        $progress = $this->progressService->getProgress(new Request(), $context);
+
+        $credentialFields = $this->connection->getCredentialFields();
+        static::assertSame($this->credentialFields, $credentialFields);
+
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('id', $this->runUuid));
+        /** @var SwagMigrationRunEntity $run */
+        $run = $this->runRepo->search($criteria, $context)->first();
+        static::assertSame(SwagMigrationRunEntity::STATUS_ABORTED, $run->getStatus());
+
+        $expectedProgress = [
+            'runId' => $this->runUuid,
+            'accessToken' => null,
+            'migrationRunning' => false,
+            'validMigrationRunToken' => true,
+            'status' => ProgressState::STATUS_FETCH_DATA,
+            'entity' => null,
+            'entityCount' => 0,
+            'finishedCount' => 0,
+        ];
+
+        $encodedProgress = json_encode($progress);
+        static::assertIsNotBool($encodedProgress);
+
+        $progress = json_decode($encodedProgress, true);
+        unset($progress['runProgress'], $progress['extensions']);
+
+        static::assertSame($expectedProgress, $progress);
+    }
+
+    public function testGetProgressInPremappingStatusWithInvalidToken(): void
+    {
+        $context = Context::createDefaultContext();
+        // Invalid access token
+        $this->runRepo->update(
+            [
+                [
+                    'id' => $this->runUuid,
+                    'accessToken' => 'random',
+                ],
+            ],
+            $context
+        );
+
         $progress = $this->progressService->getProgress(new Request(), $context);
 
         $credentialFields = $this->connection->getCredentialFields();
@@ -245,7 +291,7 @@ class MigrationProgressServiceTest extends TestCase
             'runId' => $this->runUuid,
             'accessToken' => null,
             'migrationRunning' => true,
-            'validMigrationRunToken' => true,
+            'validMigrationRunToken' => false,
             'status' => ProgressState::STATUS_PREMAPPING,
             'entity' => null,
             'entityCount' => 0,

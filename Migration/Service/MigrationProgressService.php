@@ -109,6 +109,22 @@ class MigrationProgressService implements MigrationProgressServiceInterface
         $fetchedEntityCounts = $this->runService->calculateCurrentTotals($run->getId(), false, $context);
 
         if (empty($totals) || empty($fetchedEntityCounts)) {
+            if ($this->validMigrationAccessToken) {
+                $this->abortProcessingRun($run, $context);
+
+                return new ProgressState(
+                    false,
+                    $this->validMigrationAccessToken,
+                    $run->getId(),
+                    null,
+                    ProgressState::STATUS_FETCH_DATA,
+                    null,
+                    0,
+                    0,
+                    $progress
+                );
+            }
+
             $migrationContext = $this->migrationContextFactory->create($run);
 
             $premapping = null;
@@ -168,6 +184,19 @@ class MigrationProgressService implements MigrationProgressServiceInterface
             0,
             0,
             $progress
+        );
+    }
+
+    private function abortProcessingRun(SwagMigrationRunEntity $run, Context $context): void
+    {
+        $this->migrationRunRepository->update(
+            [
+                [
+                    'id' => $run->getId(),
+                    'status' => SwagMigrationRunEntity::STATUS_ABORTED,
+                ],
+            ],
+            $context
         );
     }
 
