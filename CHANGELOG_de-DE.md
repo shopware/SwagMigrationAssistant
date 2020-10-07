@@ -1,3 +1,6 @@
+# REPLACE-GLOBAL-WITH-NEXT-VERSION
+- MIG-75 - Verbessert das Übernehmen einer Migration
+
 # 2.1.2
 - MIG-85 - Berücksichtigt die Kundenkommentare bei Bestellungen
 - MIG-90 - Behebt einen Fehler bei der Variantenmigration

@@ -1,3 +1,6 @@
+# REPLACE-GLOBAL-WITH-NEXT-VERSION
+- MIG-75 - Improves the takeover of a migration
+
 # 2.1.2
 - MIG-85 - Migrate customer comments in orders
 - MIG-90 - Fix variant migration
