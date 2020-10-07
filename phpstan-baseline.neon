@@ -1156,21 +1156,6 @@ parameters:
 			path: Test/Migration/Services/MigrationDataWriterTest.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\MigrationDataWriterTest\\:\\:invokeMethod\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\MigrationDataWriterTest\\:\\:invokeMethod\\(\\) has parameter \\$methodName with no typehint specified\\.$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\MigrationDataWriterTest\\:\\:invokeMethod\\(\\) has parameter \\$object with no typehint specified\\.$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
 			message: "#^Class Shopware\\\\Core\\\\Checkout\\\\Cart\\\\Tax\\\\TaxCalculator does not have a constructor and must be instantiated without any parameters\\.$#"
 			count: 1
 			path: Test/Migration/Services/MigrationDataWriterTest.php
