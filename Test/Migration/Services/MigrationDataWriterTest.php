@@ -5,7 +5,7 @@
  * file that was distributed with this source code.
  */
 
-namespace SwagMigrationAssistant\Test\Migration;
+namespace SwagMigrationAssistant\Test\Migration\Services;
 
 use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\TestCase;
@@ -636,7 +636,7 @@ class MigrationDataWriterTest extends TestCase
         static::assertCount(1, $logs);
     }
 
-    private function invokeMethod($object, $methodName, array $parameters = [])
+    private function invokeMethod(object $object, string $methodName, array $parameters = []): ?object
     {
         $method = (new \ReflectionClass(\get_class($object)))->getMethod($methodName);
         $method->setAccessible(true);

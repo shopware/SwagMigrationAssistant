@@ -5,7 +5,7 @@
  * file that was distributed with this source code.
  */
 
-namespace SwagMigrationAssistant\Test\Gateway;
+namespace SwagMigrationAssistant\Test\Migration\Gateway;
 
 use PHPUnit\Framework\TestCase;
 use SwagMigrationAssistant\Exception\GatewayNotFoundException;
