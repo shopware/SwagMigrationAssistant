@@ -4,7 +4,8 @@ class MigrationApiService extends ApiService {
     constructor(httpClient, loginService, apiEndpoint = 'migration') {
         super(httpClient, loginService, apiEndpoint);
         this.basicConfig = {
-            timeout: 30000
+            timeout: 30000,
+            version: Shopware.Context.api.apiVersion
         };
     }
 
