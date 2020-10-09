@@ -1096,16 +1096,6 @@ parameters:
 			path: Test/Migration/Controller/StatusControllerTest.php
 
 		-
-			message: "#^Parameter \\#1 \\$actualJson of method PHPUnit\\\\Framework\\\\Assert\\:\\:assertJson\\(\\) expects string, string\\|false given\\.$#"
-			count: 3
-			path: Test/Migration/Controller/StatusControllerTest.php
-
-		-
-			message: "#^Parameter \\#1 \\$json of function json_decode expects string, string\\|false given\\.$#"
-			count: 12
-			path: Test/Migration/Controller/StatusControllerTest.php
-
-		-
 			message: "#^Class Shopware\\\\Core\\\\Checkout\\\\Cart\\\\Tax\\\\TaxCalculator does not have a constructor and must be instantiated without any parameters\\.$#"
 			count: 1
 			path: Test/Migration/Controller/StatusControllerTest.php

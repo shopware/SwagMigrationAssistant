@@ -19,6 +19,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
+use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
 use SwagMigrationAssistant\Migration\Run\RunServiceInterface;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use Symfony\Component\HttpFoundation\Request;
@@ -60,18 +61,32 @@ class MigrationProgressService implements MigrationProgressServiceInterface
      */
     private $runService;
 
+    /**
+     * @var PremappingServiceInterface
+     */
+    private $premappingService;
+
+    /**
+     * @var MigrationContextFactoryInterface
+     */
+    private $migrationContextFactory;
+
     public function __construct(
         EntityRepositoryInterface $migrationRunRepository,
         EntityRepositoryInterface $migrationDataRepository,
         EntityRepositoryInterface $migrationMediaFileRepository,
         SwagMigrationAccessTokenService $migrationAccessTokenService,
-        RunServiceInterface $runService
+        RunServiceInterface $runService,
+        PremappingServiceInterface $premappingService,
+        MigrationContextFactoryInterface $migrationContextFactory
     ) {
         $this->migrationRunRepository = $migrationRunRepository;
         $this->migrationDataRepository = $migrationDataRepository;
         $this->migrationMediaFileRepository = $migrationMediaFileRepository;
         $this->migrationAccessTokenService = $migrationAccessTokenService;
         $this->runService = $runService;
+        $this->premappingService = $premappingService;
+        $this->migrationContextFactory = $migrationContextFactory;
     }
 
     public function getProgress(Request $request, Context $context): ProgressState
@@ -96,14 +111,38 @@ class MigrationProgressService implements MigrationProgressServiceInterface
         if (empty($totals) || empty($fetchedEntityCounts)) {
             if ($this->validMigrationAccessToken) {
                 $this->abortProcessingRun($run, $context);
+
+                return new ProgressState(
+                    false,
+                    $this->validMigrationAccessToken,
+                    $run->getId(),
+                    null,
+                    ProgressState::STATUS_FETCH_DATA,
+                    null,
+                    0,
+                    0,
+                    $progress
+                );
+            }
+
+            $migrationContext = $this->migrationContextFactory->create($run);
+
+            $premapping = null;
+            if ($migrationContext !== null) {
+                $premapping = $this->premappingService->generatePremapping($context, $migrationContext, $run);
+            }
+
+            $status = ProgressState::STATUS_PREMAPPING;
+            if (empty($premapping)) {
+                $status = ProgressState::STATUS_FETCH_DATA;
             }
 
             return new ProgressState(
-                false,
+                true,
                 $this->validMigrationAccessToken,
                 $run->getId(),
                 null,
-                ProgressState::STATUS_FETCH_DATA,
+                $status,
                 null,
                 0,
                 0,
@@ -307,7 +346,7 @@ class MigrationProgressService implements MigrationProgressServiceInterface
                 continue;
             }
 
-            if ($fetchedEntityCounts[$entity] === $count && $currentKey === $maxKey) {
+            if ($fetchedEntityCounts[$entity] >= $count && $currentKey === $maxKey) {
                 return null;
             }
 

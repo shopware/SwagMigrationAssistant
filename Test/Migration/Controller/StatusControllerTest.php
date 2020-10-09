@@ -64,6 +64,7 @@ use SwagMigrationAssistant\Profile\Shopware54\Shopware54Profile;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Profile\Shopware56\Shopware56Profile;
 use SwagMigrationAssistant\Test\MigrationServicesTrait;
+use SwagMigrationAssistant\Test\Profile\Shopware\Gateway\Local\LocalCredentialTrait;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -72,6 +73,7 @@ class StatusControllerTest extends TestCase
 {
     use MigrationServicesTrait;
     use IntegrationTestBehaviour;
+    use LocalCredentialTrait;
 
     /**
      * @var StatusController
@@ -120,6 +122,8 @@ class StatusControllerTest extends TestCase
 
     protected function setUp(): void
     {
+        $this->connectionSetup();
+
         $this->context = Context::createDefaultContext();
         $mediaFileRepo = $this->getContainer()->get('swag_migration_media_file.repository');
         $dataRepo = $this->getContainer()->get('swag_migration_data.repository');
@@ -138,13 +142,9 @@ class StatusControllerTest extends TestCase
                     [
                         'id' => $this->connectionId,
                         'name' => 'myConnection',
-                        'credentialFields' => [
-                            'endpoint' => 'testEndpoint',
-                            'apiUser' => 'testUser',
-                            'apiKey' => 'testKey',
-                        ],
-                        'profileName' => Shopware55Profile::PROFILE_NAME,
-                        'gatewayName' => ShopwareLocalGateway::GATEWAY_NAME,
+                        'credentialFields' => $this->connection->getCredentialFields(),
+                        'profileName' => $this->connection->getProfileName(),
+                        'gatewayName' => $this->connection->getGatewayName(),
                     ],
                 ],
                 $context
@@ -255,11 +255,8 @@ class StatusControllerTest extends TestCase
     {
         $request = new Request(['profileName' => 'shopware55', 'gatewayName' => 'local'], []);
         $response = $this->controller->getProfileInformation($request);
+        $info = $this->jsonResponseToArray($response);
 
-        static::assertInstanceOf(JsonResponse::class, $response);
-        $this->assertJSON($response->getContent());
-
-        $info = json_decode($response->getContent(), true);
         static::assertArrayHasKey('profile', $info);
         static::assertArrayHasKey('name', $info['profile']);
         static::assertArrayHasKey('sourceSystemName', $info['profile']);
@@ -274,9 +271,7 @@ class StatusControllerTest extends TestCase
     public function testGetProfiles(): void
     {
         $response = $this->controller->getProfiles();
-
-        static::assertInstanceOf(JsonResponse::class, $response);
-        $this->assertJSON($response->getContent());
+        $this->jsonResponseToArray($response);
     }
 
     public function testGetGatewaysWithoutProfileName(): void
@@ -290,11 +285,8 @@ class StatusControllerTest extends TestCase
     {
         $request = new Request(['profileName' => 'shopware55'], []);
         $response = $this->controller->getGateways($request);
+        $gateways = $this->jsonResponseToArray($response);
 
-        static::assertInstanceOf(JsonResponse::class, $response);
-        $this->assertJSON($response->getContent());
-
-        $gateways = json_decode($response->getContent(), true);
         static::assertSame('local', $gateways[0]['name']);
         static::assertNotNull($gateways[0]['snippet']);
         static::assertSame('api', $gateways[1]['name']);
@@ -381,8 +373,8 @@ class StatusControllerTest extends TestCase
 
         $context = Context::createDefaultContext();
         $request = new Request(['connectionId' => $connectionId]);
-        $result = $this->controller->getDataSelection($request, $context);
-        $state = json_decode($result->getContent(), true);
+        $response = $this->controller->getDataSelection($request, $context);
+        $state = $this->jsonResponseToArray($response);
 
         static::assertSame($state[0]['id'], 'products');
         static::assertSame($state[0]['entityNames'][DefaultEntities::MEDIA_FOLDER], (new MediaFolderDataSet())->getSnippet());
@@ -419,8 +411,8 @@ class StatusControllerTest extends TestCase
     public function testGetState(): void
     {
         $context = Context::createDefaultContext();
-        $result = $this->controller->getState(new Request(), $context);
-        $state = json_decode($result->getContent(), true);
+        $response = $this->controller->getState(new Request(), $context);
+        $state = $this->jsonResponseToArray($response);
         static::assertTrue($this->isJsonArrayTypeOfProgressState($state));
     }
 
@@ -450,26 +442,23 @@ class StatusControllerTest extends TestCase
         $runningCriteria->addFilter(new EqualsFilter('status', SwagMigrationRunEntity::STATUS_RUNNING));
 
         // Get state migration with invalid accessToken
-        $totalAbortedBefore = $this->runRepo->search($abortedCriteria, $context)->getTotal();
         $totalBefore = $this->runRepo->search(new Criteria(), $context)->getTotal();
         $result = $this->controller->getState($requestWithoutToken, $context);
-        $state = json_decode($result->getContent(), true);
+        $state = $this->jsonResponseToArray($result);
         $totalAfter = $this->runRepo->search(new Criteria(), $context)->getTotal();
-        $totalAbortedAfter = $this->runRepo->search($abortedCriteria, $context)->getTotal();
         $totalProcessing = $this->runRepo->search($runningCriteria, $context)->getTotal();
         static::assertTrue($this->isJsonArrayTypeOfProgressState($state));
-        static::assertFalse($state['migrationRunning']);
+        static::assertTrue($state['migrationRunning']);
         static::assertFalse($state['validMigrationRunToken']);
-        static::assertSame(ProgressState::STATUS_FETCH_DATA, $state['status']);
+        static::assertSame(ProgressState::STATUS_PREMAPPING, $state['status']);
         static::assertSame(0, $totalAfter - $totalBefore);
-        static::assertSame(0, $totalAbortedAfter - $totalAbortedBefore);
         static::assertSame(1, $totalProcessing);
 
         // Get state migration with valid accessToken and abort running migration
         $totalAbortedBefore = $this->runRepo->search($abortedCriteria, $context)->getTotal();
         $totalBefore = $this->runRepo->search(new Criteria(), $context)->getTotal();
         $result = $this->controller->getState($requestWithToken, $context);
-        $state = json_decode($result->getContent(), true);
+        $state = $this->jsonResponseToArray($result);
         $totalAfter = $this->runRepo->search(new Criteria(), $context)->getTotal();
         $totalAbortedAfter = $this->runRepo->search($abortedCriteria, $context)->getTotal();
         $totalProcessing = $this->runRepo->search($runningCriteria, $context)->getTotal();
@@ -484,8 +473,8 @@ class StatusControllerTest extends TestCase
         // Create new migration without abort a running migration
         $totalAbortedBefore = $this->runRepo->search($abortedCriteria, $context)->getTotal();
         $totalBefore = $this->runRepo->search(new Criteria(), $context)->getTotal();
-        $result = $this->controller->createMigration($requestWithToken, $context);
-        $state = json_decode($result->getContent(), true);
+        $result = $this->controller->createMigration($requestWithoutToken, $context);
+        $state = $this->jsonResponseToArray($result);
         $totalAfter = $this->runRepo->search(new Criteria(), $context)->getTotal();
         $totalAbortedAfter = $this->runRepo->search($abortedCriteria, $context)->getTotal();
         $totalProcessing = $this->runRepo->search($runningCriteria, $context)->getTotal();
@@ -500,12 +489,12 @@ class StatusControllerTest extends TestCase
         $totalAbortedBefore = $this->runRepo->search($abortedCriteria, $context)->getTotal();
         $totalBefore = $this->runRepo->search(new Criteria(), $context)->getTotal();
         $result = $this->controller->createMigration($requestWithoutToken, $context);
-        $state = json_decode($result->getContent(), true);
+        $state = $this->jsonResponseToArray($result);
         $totalAfter = $this->runRepo->search(new Criteria(), $context)->getTotal();
         $totalAbortedAfter = $this->runRepo->search($abortedCriteria, $context)->getTotal();
         $totalProcessing = $this->runRepo->search($runningCriteria, $context)->getTotal();
         static::assertTrue($this->isJsonArrayTypeOfProgressState($state));
-        static::assertFalse($state['migrationRunning']);
+        static::assertTrue($state['migrationRunning']);
         static::assertFalse($state['validMigrationRunToken']);
         static::assertSame(0, $totalAfter - $totalBefore);
         static::assertSame(0, $totalAbortedAfter - $totalAbortedBefore);
@@ -522,7 +511,7 @@ class StatusControllerTest extends TestCase
         $totalAbortedBefore = $this->runRepo->search($abortedCriteria, $context)->getTotal();
         $totalBefore = $this->runRepo->search(new Criteria(), $context)->getTotal();
         $result = $this->controller->createMigration($requestWithToken, $context);
-        $state = json_decode($result->getContent(), true);
+        $state = $this->jsonResponseToArray($result);
         $totalAfter = $this->runRepo->search(new Criteria(), $context)->getTotal();
         $totalAbortedAfter = $this->runRepo->search($abortedCriteria, $context)->getTotal();
         $totalProcessing = $this->runRepo->search($runningCriteria, $context)->getTotal();
@@ -573,7 +562,7 @@ class StatusControllerTest extends TestCase
 
         $request = new Request([], $params);
         $result = $this->controller->takeoverMigration($request, $context);
-        $resultArray = json_decode($result->getContent(), true);
+        $resultArray = $this->jsonResponseToArray($result);
         static::assertArrayHasKey('accessToken', $resultArray);
 
         $criteria = new Criteria();
@@ -595,7 +584,7 @@ class StatusControllerTest extends TestCase
         ]);
 
         $result = $this->controller->checkConnection($request, $context);
-        $environmentInformation = json_decode($result->getContent(), true);
+        $environmentInformation = $this->jsonResponseToArray($result);
 
         static::assertSame($environmentInformation['totals']['product']['total'], 37);
         static::assertSame($environmentInformation['totals']['customer']['total'], 2);
@@ -632,7 +621,7 @@ class StatusControllerTest extends TestCase
         $response = $this->controller->checkConnection($request, $this->context);
         static::assertSame(Response::HTTP_OK, $response->getStatusCode());
 
-        $jsonResponse = json_decode($response->getContent(), true);
+        $jsonResponse = $this->jsonResponseToArray($response);
         //this is not the actual expected response because of the DummyMigrationDataFetcher
         static::assertSame('Shopware', $jsonResponse['sourceSystemName']);
         static::assertSame('', $jsonResponse['requestStatus']['code']);
@@ -713,5 +702,18 @@ class StatusControllerTest extends TestCase
                 $context
             );
         });
+    }
+
+    private function jsonResponseToArray(?Response $response): array
+    {
+        static::assertNotNull($response);
+        static::assertInstanceOf(JsonResponse::class, $response);
+        $content = $response->getContent();
+        static::assertIsNotBool($content);
+        $this->assertJSON($content);
+        $array = json_decode($content, true);
+        static::assertIsArray($array);
+
+        return $array;
     }
 }

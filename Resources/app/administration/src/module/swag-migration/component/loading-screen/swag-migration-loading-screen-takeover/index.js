@@ -110,10 +110,7 @@ Component.register('swag-migration-loading-screen-takeover', {
                     return;
                 }
 
-                if (
-                    runState.status === MIGRATION_STATUS.PREMAPPING ||
-                    runState.status === MIGRATION_STATUS.FETCH_DATA
-                ) {
+                if (runState.status === MIGRATION_STATUS.PREMAPPING) {
                     this.isLoading = false;
                     this.showAbortModal = true;
                     return;

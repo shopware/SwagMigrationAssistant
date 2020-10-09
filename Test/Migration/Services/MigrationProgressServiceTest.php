@@ -29,6 +29,7 @@ use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Media\MediaFileService;
 use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\MigrationContextFactory;
 use SwagMigrationAssistant\Migration\Run\EntityProgress;
 use SwagMigrationAssistant\Migration\Run\RunProgress;
 use SwagMigrationAssistant\Migration\Run\RunService;
@@ -36,18 +37,19 @@ use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationProgressService;
 use SwagMigrationAssistant\Migration\Service\MigrationProgressServiceInterface;
+use SwagMigrationAssistant\Migration\Service\PremappingService;
 use SwagMigrationAssistant\Migration\Service\ProgressState;
 use SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
-use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
-use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\MigrationServicesTrait;
+use SwagMigrationAssistant\Test\Profile\Shopware\Gateway\Local\LocalCredentialTrait;
 use Symfony\Component\HttpFoundation\Request;
 
 class MigrationProgressServiceTest extends TestCase
 {
     use MigrationServicesTrait;
     use IntegrationTestBehaviour;
+    use LocalCredentialTrait;
 
     /**
      * @var EntityRepositoryInterface
@@ -131,6 +133,8 @@ class MigrationProgressServiceTest extends TestCase
 
     protected function setUp(): void
     {
+        $this->connectionSetup();
+
         $context = Context::createDefaultContext();
         $this->connectionRepo = $this->getContainer()->get('swag_migration_connection.repository');
         $this->runRepo = $this->getContainer()->get('swag_migration_run.repository');
@@ -143,10 +147,7 @@ class MigrationProgressServiceTest extends TestCase
         $this->runUuid = Uuid::randomHex();
         $this->runProgress = require __DIR__ . '/../../_fixtures/run_progress_data.php';
 
-        $this->credentialFields = [
-            'apiUser' => 'testUser',
-            'apiKey' => 'testKey',
-        ];
+        $this->credentialFields = $this->connection->getCredentialFields();
 
         $context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context): void {
             $this->connectionId = Uuid::randomHex();
@@ -154,13 +155,10 @@ class MigrationProgressServiceTest extends TestCase
                 [
                     [
                         'id' => $this->connectionId,
-                        'name' => 'myConnection',
-                        'credentialFields' => [
-                            'apiUser' => 'testUser',
-                            'apiKey' => 'testKey',
-                        ],
-                        'profileName' => Shopware55Profile::PROFILE_NAME,
-                        'gatewayName' => ShopwareLocalGateway::GATEWAY_NAME,
+                        'name' => 'TestName',
+                        'credentialFields' => $this->connection->getCredentialFields(),
+                        'profileName' => $this->connection->getProfileName(),
+                        'gatewayName' => $this->connection->getGatewayName(),
                     ],
                 ],
                 $context
@@ -218,8 +216,90 @@ class MigrationProgressServiceTest extends TestCase
                 new LoggingService($this->loggingRepo),
                 $this->getContainer()->get(StoreService::class),
                 $this->getContainer()->get('messenger.bus.shopware')
-            )
+            ),
+            $this->getContainer()->get(PremappingService::class),
+            $this->getContainer()->get(MigrationContextFactory::class)
         );
+    }
+
+    public function testGetProgressInPremappingStatusWithValidToken(): void
+    {
+        $context = Context::createDefaultContext();
+
+        $progress = $this->progressService->getProgress(new Request(), $context);
+
+        $credentialFields = $this->connection->getCredentialFields();
+        static::assertSame($this->credentialFields, $credentialFields);
+
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('id', $this->runUuid));
+        /** @var SwagMigrationRunEntity $run */
+        $run = $this->runRepo->search($criteria, $context)->first();
+        static::assertSame(SwagMigrationRunEntity::STATUS_ABORTED, $run->getStatus());
+
+        $expectedProgress = [
+            'runId' => $this->runUuid,
+            'accessToken' => null,
+            'migrationRunning' => false,
+            'validMigrationRunToken' => true,
+            'status' => ProgressState::STATUS_FETCH_DATA,
+            'entity' => null,
+            'entityCount' => 0,
+            'finishedCount' => 0,
+        ];
+
+        $encodedProgress = json_encode($progress);
+        static::assertIsNotBool($encodedProgress);
+
+        $progress = json_decode($encodedProgress, true);
+        unset($progress['runProgress'], $progress['extensions']);
+
+        static::assertSame($expectedProgress, $progress);
+    }
+
+    public function testGetProgressInPremappingStatusWithInvalidToken(): void
+    {
+        $context = Context::createDefaultContext();
+        // Invalid access token
+        $this->runRepo->update(
+            [
+                [
+                    'id' => $this->runUuid,
+                    'accessToken' => 'random',
+                ],
+            ],
+            $context
+        );
+
+        $progress = $this->progressService->getProgress(new Request(), $context);
+
+        $credentialFields = $this->connection->getCredentialFields();
+        static::assertSame($this->credentialFields, $credentialFields);
+
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('id', $this->runUuid));
+        /** @var SwagMigrationRunEntity $run */
+        $run = $this->runRepo->search($criteria, $context)->first();
+        static::assertSame(SwagMigrationRunEntity::STATUS_RUNNING, $run->getStatus());
+
+        $expectedProgress = [
+            'runId' => $this->runUuid,
+            'accessToken' => null,
+            'migrationRunning' => true,
+            'validMigrationRunToken' => false,
+            'status' => ProgressState::STATUS_PREMAPPING,
+            'entity' => null,
+            'entityCount' => 0,
+            'finishedCount' => 0,
+        ];
+
+        $encodedProgress = json_encode($progress);
+        static::assertIsNotBool($encodedProgress);
+
+        $progress = json_decode($encodedProgress, true);
+        unset($progress['runProgress'], $progress['extensions']);
+
+        static::assertSame($expectedProgress, $progress);
     }
 
     public function testGetProgressFetchInProgress(): void
