@@ -966,7 +966,7 @@ class MappingService implements MappingServiceInterface
         return $uuids;
     }
 
-    //Todo: Remove if we migrate every data of the shipping method
+    // ToDo MIG-107 - Remove if we migrate every data of the shipping method
     public function getDefaultAvailabilityRule(Context $context): ?string
     {
         if (isset($this->defaultAvailabilityRule)) {

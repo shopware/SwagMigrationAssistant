@@ -196,7 +196,7 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         $converted['media'] = $newMedia;
     }
 
-    // Todo: Check if this is necessary, because name and description is currently not translatable
+    // ToDo MIG-110 - Check if this is necessary, because name and description is currently not translatable
     protected function getMediaTranslation(array &$media, array $data): void
     {
         $language = $this->mappingService->getDefaultLanguage($this->context);

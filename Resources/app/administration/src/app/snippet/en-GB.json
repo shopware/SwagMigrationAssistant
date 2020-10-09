@@ -6,9 +6,9 @@
       "information": "First thing is to link up your existing shop system - the Migration Assistant will help you along the way.",
       "button": "Open Migration Assistant",
       "shopInfoCard": {
-          "header": "Migrations-Assistent",
+          "header": "Migration Assistant",
           "button": "Open",
-          "resetButton": "Abschließen"
+          "resetButton": "Finish"
       }
     },
     "general": {

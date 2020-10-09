@@ -273,10 +273,8 @@ abstract class CustomerConverter extends ShopwareConverter
             $data['paymentID'],
             $data['firstlogin'],
             $data['lastlogin'],
-
-            // TODO check how to handle these
-            $data['language'], // TODO use for sales channel information?
-            $data['customerlanguage'] // TODO use for sales channel information?
+            $data['language'],
+            $data['customerlanguage']
         );
 
         $returnData = $data;

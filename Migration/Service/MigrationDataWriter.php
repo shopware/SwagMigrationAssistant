@@ -153,7 +153,6 @@ class MigrationDataWriter implements MigrationDataWriterInterface
             );
         } catch (\Exception $exception) {
             // Worst case: something unknown goes wrong (most likely some foreign key constraint that fails)
-            // TODO: If the core catches the exceptions and writes the remaining valid data this must be refactored.
             $this->writePerEntity($converted, $dataSet::getEntity(), $updateWrittenData, $migrationContext, $context);
         } finally {
             // Update written-Flag of the entity in the data table
