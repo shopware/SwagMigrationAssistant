@@ -471,8 +471,6 @@ abstract class ProductConverter extends ShopwareConverter
             $data['available_to'],
             $data['pseudosales'],
             $data['configurator_set_id'],
-
-            // TODO check how to handle these
             $data['pricegroupID'],
             $data['pricegroupActive'],
             $data['filtergroupID'],
@@ -833,7 +831,7 @@ abstract class ProductConverter extends ShopwareConverter
         return ['media' => $mediaObjects, 'cover' => $cover];
     }
 
-    // Todo: Check if this is necessary, because name and description is currently not translatable
+    // ToDo MIG-110 - Check if this is necessary, because name and description is currently not translatable
     private function getMediaTranslation(array &$media, array $data): void
     {
         $language = $this->mappingService->getDefaultLanguage($this->context);

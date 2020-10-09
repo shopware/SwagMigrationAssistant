@@ -5,7 +5,7 @@ variables:
     WEB_DOCUMENT_ROOT: $CI_PROJECT_DIR/development/public
 
 stages:
-    - Static analyzes
+    - Static validation
     - Testing
 
 default:
@@ -21,10 +21,9 @@ default:
         - /entrypoint supervisord > /dev/null 2>&1 &
 
 
-# Stage: static
-
+# Stage: Static validation
 PHP analyze:
-    stage: Static analyzes
+    stage: Static validation
     services:
         - name: mysql:5.7
           alias: mysql
@@ -36,6 +35,13 @@ PHP analyze:
         - cd $CI_PROJECT_DIR/development
         - php dev-ops/analyze/vendor/bin/ecs check --config=vendor/shopware/platform/easy-coding-standard.php custom/plugins/SwagMigrationAssistant
         - php dev-ops/analyze/vendor/bin/php-cs-fixer fix --config=custom/plugins/SwagMigrationAssistant/.php_cs.dist custom/plugins/SwagMigrationAssistant
+
+ToDos resolved:
+    stage: Static validation
+    allow_failure: true
+    script:
+        - cd $CI_PROJECT_DIR/development/custom/plugins/SwagMigrationAssistant
+        - bin/check-todos.sh $CI_COMMIT_BRANCH
 
 PHPUnit (MariaDB):
     stage: Testing

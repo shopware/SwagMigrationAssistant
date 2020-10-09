@@ -225,8 +225,6 @@ abstract class CategoryConverter extends ShopwareConverter
             $data['cmsheadline'],
             $data['categorypath'],
             $data['shops'],
-
-            // TODO check how to handle these
             $data['template'],
             $data['external_target'],
             $data['mediaID'],

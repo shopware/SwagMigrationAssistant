@@ -354,9 +354,7 @@ abstract class OrderConverter extends ShopwareConverter
             $data['changed'],
             $data['payment'],
             $data['paymentID'],
-
-            // TODO check how to handle these
-            $data['language'], // TODO use for sales channel information?
+            $data['language'], // ToDo MIG-109 - Use for SalesChannel information?
             $data['documents']
         );
 
