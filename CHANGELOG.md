@@ -1,3 +1,6 @@
+# REPLACE-GLOBAL-WITH-NEXT-VERSION
+- MIG-100 - Add migration profile for Shopware 5.7
+
 # 4.1.1
 - MIG-206 - Migrate product creation date
 - MIG-237 - Fix customer vatId migration
