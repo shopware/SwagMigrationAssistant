@@ -1,5 +1,6 @@
 # REPLACE-GLOBAL-WITH-NEXT-VERSION
 - MIG-75 - Verbessert das Übernehmen einer Migration
+- MIG-105 - Warnung hinzufügen, wenn sich die Standardsprachen unterscheiden
 - MIG-106 - Verbessert die Migration von Bestellpositionen
 - MIG-124 - ACL-Privilegien hinzugefügt
 

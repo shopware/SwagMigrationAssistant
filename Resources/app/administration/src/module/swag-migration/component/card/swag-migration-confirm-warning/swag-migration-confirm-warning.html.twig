@@ -2,7 +2,7 @@
     <div class="swag-migration-confirm-warning">
 
         {% block swag_migration_confirm_warning_card %}
-            <sw-card class="swag-migration-confirm-warning__card">
+            <sw-card class="swag-migration-confirm-warning__card" v-if="hasDifferentCurrency">
 
                 {% block swag_migration_confirm_warning_bubble %}
                     <div class="swag-migration-confirm-warning__bubble">
@@ -35,6 +35,48 @@
                 {% block swag_migration_confirm_warning_checkbox %}
                     <sw-checkbox-field class="swag-migration-confirm-warning__checkbox"
                                        :label="$tc('swag-migration.index.confirmWarningCard.currencyMismatch.checkboxLabel')"
+                                       v-model="isCurrencyChecked"
+                                       @change="onCheckboxValueChanged">
+                    </sw-checkbox-field>
+                {% endblock %}
+            </sw-card>
+        {% endblock %}
+
+        {% block swag_migration_confirm_language_warning_card %}
+            <sw-card class="swag-migration-confirm-warning__card" v-if="hasDifferentLanguage">
+
+                {% block swag_migration_confirm_language_warning_bubble %}
+                    <div class="swag-migration-confirm-warning__bubble">
+                        <sw-icon class="swag-migration-confirm-warning__bubble-icon"
+                                 name="default-badge-warning"
+                                 size="36px"
+                                 decorative>
+                        </sw-icon>
+                    </div>
+                {% endblock %}
+
+                {% block swag_migration_confirm_language_warning_title %}
+                    <h5 class="swag-migration-confirm-warning__title">
+                        {{ $tc('swag-migration.index.confirmWarningCard.languageMismatch.title') }}
+                    </h5>
+                {% endblock %}
+
+                {% block swag_migration_confirm_language_warning_text %}
+                    <p class="swag-migration-confirm-warning__text">
+                        {{ $tc('swag-migration.index.confirmWarningCard.languageMismatch.text', 0, { sourceSystemLanguage, targetSystemLanguage }) }}
+                    </p>
+                {% endblock %}
+
+                {% block swag_migration_confirm_language_warning_question %}
+                    <p class="swag-migration-confirm-warning__question">
+                        {{ $tc('swag-migration.index.confirmWarningCard.languageMismatch.question', 0, { targetSystemLanguage }) }}
+                    </p>
+                {% endblock %}
+
+                {% block swag_migration_confirm_language_warning_checkbox %}
+                    <sw-checkbox-field class="swag-migration-confirm-warning__checkbox"
+                                       :label="$tc('swag-migration.index.confirmWarningCard.currencyMismatch.checkboxLabel')"
+                                       v-model="isLanguageChecked"
                                        @change="onCheckboxValueChanged">
                     </sw-checkbox-field>
                 {% endblock %}

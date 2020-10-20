@@ -65,6 +65,7 @@ trait MigrationServicesTrait
         EntityDefinition $dataDefinition,
         DataSetRegistryInterface $dataSetRegistry,
         EntityRepositoryInterface $currencyRepository,
+        EntityRepositoryInterface $languageRepository,
         ReaderRegistryInterface $readerRegistry
     ): MigrationDataFetcherInterface {
         $loggingService = new LoggingService($loggingRepo);
@@ -76,7 +77,8 @@ trait MigrationServicesTrait
                 new EnvironmentReader($connectionFactory),
                 new TableReader($connectionFactory),
                 new TableCountReader($connectionFactory, $loggingService),
-                $currencyRepository
+                $currencyRepository,
+                $languageRepository
             ),
             new DummyLocalGateway(),
         ]));

@@ -266,6 +266,12 @@
           "text": "Die Währung der zu migrierenden Daten stimmt nicht mit der Standard Währung [{targetSystemCurrency}] überein. Die Daten mit [{sourceSystemCurrency}] können migriert werden, sie werden aber nicht automatisch umgerechnet. Im Nachhinein kann eine manuelle Anpassung der Preise erfolgen.",
           "question": "Bist Du sicher, dass die Daten in die Standard Währung [{targetSystemCurrency}] migriert werden sollen?",
           "checkboxLabel": "Ja, ich möchte fortfahren"
+        },
+        "languageMismatch": {
+            "title": "Die Migration hat eine andere Sprache erkannt",
+            "text": "Die Sprache der zu migrierenden Daten stimmt nicht mit der Standard Sprache [{targetSystemLanguage}] überein. Die Daten mit [{sourceSystemLanguage}] können migriert werden, sie werden aber nicht automatisch umgerechnet. Im Nachhinein kann eine manuelle Anpassung der Übersetzungen erfolgen.",
+            "question": "Bist Du sicher, dass die Daten in die Standard Sprache [{targetSystemLanguage}] migriert werden sollen?",
+            "checkboxLabel": "Ja, ich möchte fortfahren"
         }
       },
       "premappingCard": {

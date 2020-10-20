@@ -162,7 +162,8 @@ class RunServiceTest extends TestCase
                 new EnvironmentReader($connectionFactory),
                 new TableReader($connectionFactory),
                 new TableCountReader($connectionFactory, $loggingService),
-                $this->getContainer()->get('currency.repository')
+                $this->getContainer()->get('currency.repository'),
+                $this->getContainer()->get('language.repository')
             ),
             new DummyLocalGateway(),
         ]));
