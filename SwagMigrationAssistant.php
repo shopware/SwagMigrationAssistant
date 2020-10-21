@@ -63,6 +63,7 @@ class SwagMigrationAssistant extends Plugin
         $now = (new \DateTime())->format(Defaults::STORAGE_DATE_TIME_FORMAT);
 
         $connection->beginTransaction();
+
         try {
             $connection->insert('swag_migration_general_setting', [
                 'id' => Uuid::randomBytes(),
@@ -72,6 +73,7 @@ class SwagMigrationAssistant extends Plugin
             $connection->commit();
         } catch (DBALException $e) {
             $connection->rollBack();
+
             throw $e;
         }
     }

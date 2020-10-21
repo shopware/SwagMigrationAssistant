@@ -140,6 +140,7 @@ class CategoryReader extends AbstractReader
                 foreach ($parentCategoryIds as $parentCategoryId) {
                     if (isset($mainCategoryLocales[$parentCategoryId])) {
                         $locale = str_replace('_', '-', $mainCategoryLocales[$parentCategoryId]);
+
                         break;
                     }
                 }

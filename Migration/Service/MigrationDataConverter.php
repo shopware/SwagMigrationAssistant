@@ -153,6 +153,7 @@ class MigrationDataConverter implements MigrationDataConverterInterface
                     'mappingUuid' => null,
                     'convertFailure' => true,
                 ];
+
                 continue;
             }
         }

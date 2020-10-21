@@ -145,12 +145,15 @@ abstract class TranslationConverter extends ShopwareConverter
             switch ($key) {
                 case 'txtArtikel':
                     $this->convertValue($productTranslation, 'name', $objectData, 'txtArtikel');
+
                     break;
                 case 'txtlangbeschreibung':
                     $this->convertValue($productTranslation, 'description', $objectData, 'txtlangbeschreibung');
+
                     break;
                 case 'txtpackunit':
                     $this->convertValue($productTranslation, 'packUnit', $objectData, 'txtpackunit');
+
                     break;
             }
 
@@ -400,9 +403,11 @@ abstract class TranslationConverter extends ShopwareConverter
             switch ($key) {
                 case 'unit':
                     $this->convertValue($unitTranslation, 'shortCode', $objectData, 'unit');
+
                     break;
                 case 'description':
                     $this->convertValue($unitTranslation, 'name', $objectData, 'description');
+
                     break;
             }
 
@@ -857,6 +862,7 @@ abstract class TranslationConverter extends ShopwareConverter
     protected function unserializeTranslation(array $data, string $entity): ?array
     {
         $objectDataSerialized = $data['objectdata'];
+
         try {
             $objectData = unserialize($objectDataSerialized, ['allowed_classes' => false]);
         } catch (\Exception $error) {

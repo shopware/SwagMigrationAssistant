@@ -363,6 +363,7 @@ class MigrateDataCommand extends Command
             foreach ($item->getMapping() as $mapping) {
                 if ($mapping->getDestinationUuid() === '') {
                     $this->runService->abortMigration($run->getId(), $context);
+
                     throw new \InvalidArgumentException('Premapping is incomplete, please fill it in before performing the migration.');
                 }
             }

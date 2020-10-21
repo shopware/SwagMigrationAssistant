@@ -224,6 +224,7 @@ class EnvironmentReader implements EnvironmentReaderInterface
             if (isset($e->getHandlerContext()['errno']) && $e->getHandlerContext()['errno'] === 60) {
                 throw new RequestCertificateInvalidException($e->getHandlerContext()['url']);
             }
+
             throw new GatewayReadException('Shopware 5.5 Api SwagMigrationEnvironment', 466);
         }
     }
