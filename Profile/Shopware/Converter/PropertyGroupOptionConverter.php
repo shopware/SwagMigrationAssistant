@@ -287,7 +287,7 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         $this->convertValue($converted['translations'][$defaultLanguageUuid], 'name', $data, 'name', self::TYPE_STRING);
         $this->convertValue($converted['translations'][$defaultLanguageUuid], 'position', $data, 'position', self::TYPE_INTEGER);
 
-        if ($converted['translations'][$defaultLanguageUuid] === [] || !isset($converted['translations'][$defaultLanguageUuid]['name'])) {
+        if (empty($converted['translations'][$defaultLanguageUuid]) || !isset($converted['translations'][$defaultLanguageUuid]['name'])) {
             unset($converted['translations'][$defaultLanguageUuid]);
         }
 
@@ -295,7 +295,7 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         $this->convertValue($converted['group']['translations'][$defaultLanguageUuid], 'name', $data['group'], 'name', self::TYPE_STRING);
         $this->convertValue($converted['group']['translations'][$defaultLanguageUuid], 'description', $data['group'], 'description', self::TYPE_STRING);
 
-        if ($converted['group']['translations'][$defaultLanguageUuid] === [] || !isset($converted['group']['translations'][$defaultLanguageUuid]['name'])) {
+        if (empty($converted['group']['translations'][$defaultLanguageUuid]) || !isset($converted['group']['translations'][$defaultLanguageUuid]['name'])) {
             unset($converted['group']['translations'][$defaultLanguageUuid]);
         }
 

@@ -4,7 +4,8 @@ use PhpCsFixer\Finder;
 use PhpCsFixer\Config;
 
 $finder = Finder::create()
-    ->in(__DIR__);
+    ->in(__DIR__)
+    ->notPath('/var/');
 
 $licenseInformation = <<<'EOF'
 (c) shopware AG <info@shopware.com>

@@ -460,6 +460,7 @@ class MappingService implements MappingServiceInterface
             if ($writeMapping['connectionId'] === $connectionId && $writeMapping['entityUuid'] === $entityUuid) {
                 unset($this->writeArray[$key]);
                 $this->writeArray = array_values($this->writeArray);
+
                 break;
             }
         }

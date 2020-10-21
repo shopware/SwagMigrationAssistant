@@ -175,27 +175,35 @@ class DataSelectionRegistryTest extends TestCase
             switch ($dataSelection->getId()) {
                 case 'basicSettings':
                     static::assertSame($dataSelection->getTotal(), 159);
+
                     break;
                 case 'numberRanges':
                     static::assertSame($dataSelection->getTotal(), 5);
+
                     break;
                 case 'products':
                     static::assertSame($dataSelection->getTotal(), 100);
+
                     break;
                 case 'customersOrders':
                     static::assertSame($dataSelection->getTotal(), 28);
+
                     break;
                 case 'media':
                     static::assertSame($dataSelection->getTotal(), 1200);
+
                     break;
                 case 'newsletterRecipient':
                     static::assertSame($dataSelection->getTotal(), 50);
+
                     break;
                 case 'productReviews':
                     static::assertSame($dataSelection->getTotal(), 3000);
+
                     break;
                 case 'seoUrls':
                     static::assertSame($dataSelection->getTotal(), 4000);
+
                     break;
             }
         }

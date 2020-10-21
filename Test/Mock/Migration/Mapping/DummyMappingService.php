@@ -106,6 +106,7 @@ class DummyMappingService extends MappingService
         foreach ($this->writeArray as $writeMapping) {
             if ($writeMapping['profile'] === $connectionId && $writeMapping['entityUuid'] === $entityUuid) {
                 unset($writeMapping);
+
                 break;
             }
         }

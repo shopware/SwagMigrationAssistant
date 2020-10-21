@@ -116,6 +116,7 @@ class CategoryConverterTest extends TestCase
         $categoryData = require __DIR__ . '/../../../_fixtures/category_data.php';
 
         $context = Context::createDefaultContext();
+
         try {
             $this->categoryConverter->convert($categoryData[4], $context, $this->migrationContext);
         } catch (\Exception $e) {

@@ -105,6 +105,7 @@ class PremappingService implements PremappingServiceInterface
                         $id,
                         $identifier
                     );
+
                     continue;
                 }
 

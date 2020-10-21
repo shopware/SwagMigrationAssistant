@@ -483,11 +483,13 @@ abstract class ProductConverter extends ShopwareConverter
         foreach ($this->defaultValues as $key => $value) {
             if (!isset($converted[$key])) {
                 $converted[$key] = $value;
+
                 continue;
             }
 
             if (is_numeric($value) && $value > $converted[$key]) {
                 $converted[$key] = $value;
+
                 continue;
             }
         }
