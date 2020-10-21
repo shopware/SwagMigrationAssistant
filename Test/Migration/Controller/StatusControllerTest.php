@@ -608,6 +608,7 @@ class StatusControllerTest extends TestCase
         static::assertSame($environmentInformation['requestStatus']['message'], 'No error.');
 
         $request = new Request();
+
         try {
             $this->controller->checkConnection($request, $context);
         } catch (\Exception $e) {

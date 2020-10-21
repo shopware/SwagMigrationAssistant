@@ -368,6 +368,7 @@ class MigrationDataProcessingTest extends TestCase
                 || ($type === LogEntryInterface::LOG_LEVEL_WARNING && $log->getCode() === 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_CUSTOMER')
             ) {
                 ++$countValidLogging;
+
                 continue;
             }
 

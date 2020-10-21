@@ -71,6 +71,7 @@ $connectionParams = [
 $connection = DriverManager::getConnection($connectionParams);
 
 $ping = true;
+
 try {
     $ping = $connection->ping();
 } catch (\Exception $e) {

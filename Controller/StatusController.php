@@ -128,6 +128,7 @@ class StatusController extends AbstractController
                     'author' => $profile->getAuthorName(),
                     'icon' => $profile->getIconPath(),
                 ];
+
                 break;
             }
         }
@@ -146,6 +147,7 @@ class StatusController extends AbstractController
                     'name' => $gateway->getName(),
                     'snippet' => $gateway->getSnippetName(),
                 ];
+
                 break;
             }
         }

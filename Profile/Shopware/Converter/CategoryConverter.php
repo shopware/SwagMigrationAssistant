@@ -276,6 +276,7 @@ abstract class CategoryConverter extends ShopwareConverter
             $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $data['_locale'], $this->context);
         } catch (\Exception $exception) {
             $this->mappingService->deleteMapping($converted['id'], $this->connectionId, $this->context);
+
             throw $exception;
         }
 

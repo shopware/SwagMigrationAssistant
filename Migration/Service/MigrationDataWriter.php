@@ -187,6 +187,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
             if (!isset($writeErrors[$index])) {
                 $newData[] = $entity;
                 ++$index;
+
                 continue;
             }
 

@@ -42,15 +42,19 @@ class Shopware54OrderDocumentConverter extends OrderDocumentConverter
         switch ($data['id']) {
             case '1':
                 $key = 'invoice';
+
                 break;
             case '2':
                 $key = 'delivery_note';
+
                 break;
             case '3':
                 $key = 'credit_note';
+
                 break;
             case '4':
                 $key = 'storno';
+
                 break;
             default:
                 $this->loggingService->addLogEntry(new DocumentTypeNotSupported(

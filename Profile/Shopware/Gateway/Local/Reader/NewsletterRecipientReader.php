@@ -46,6 +46,7 @@ class NewsletterRecipientReader extends AbstractReader
         foreach ($newsletterData as &$item) {
             if (is_array($item) && isset($item['customer'], $shopsByCustomer[$item['id']][0]['shopId']) && $item['customer'] === '1') {
                 $this->addShopAndLocaleByCustomer($item, $shopsByCustomer[$item['id']][0]);
+
                 continue;
             }
 

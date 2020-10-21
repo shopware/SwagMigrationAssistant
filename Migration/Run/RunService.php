@@ -230,6 +230,7 @@ class RunService implements RunServiceInterface
 
                 if (!isset($unsortedTotals[$entityName])) {
                     $writeProgress[$runKey]['entities'][$entityKey]['total'] = 0;
+
                     continue;
                 }
 
@@ -264,6 +265,7 @@ class RunService implements RunServiceInterface
                 }
                 $runProgress['currentCount'] = $mediaFileCount;
                 $runProgress['total'] = $mediaFileTotal;
+
                 break;
             }
         }

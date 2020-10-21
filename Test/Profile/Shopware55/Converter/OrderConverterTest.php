@@ -185,6 +185,7 @@ class OrderConverterTest extends TestCase
         $orderData = require __DIR__ . '/../../../_fixtures/order_data.php';
 
         $context = Context::createDefaultContext();
+
         try {
             $this->orderConverter->convert($orderData[0], $context, $this->migrationContext);
         } catch (\Exception $e) {
