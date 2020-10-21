@@ -829,6 +829,7 @@ abstract class OrderConverter extends ShopwareConverter
                     $lineItem['type'] = LineItem::CUSTOM_LINE_ITEM_TYPE;
                 }
             }
+            $lineItem['payload']['options'] = [];
 
             $this->convertValue($lineItem, 'quantity', $originalLineItem, 'quantity', self::TYPE_INTEGER);
             $this->convertValue($lineItem, 'label', $originalLineItem, 'name');
