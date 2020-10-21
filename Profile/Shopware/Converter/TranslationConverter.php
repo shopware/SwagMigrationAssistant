@@ -856,8 +856,9 @@ abstract class TranslationConverter extends ShopwareConverter
 
     protected function unserializeTranslation(array $data, string $entity): ?array
     {
+        $objectDataSerialized = $data['objectdata'];
         try {
-            $objectData = unserialize($data['objectdata'], ['allowed_classes' => false]);
+            $objectData = unserialize($objectDataSerialized, ['allowed_classes' => false]);
         } catch (\Exception $error) {
             $objectData = null;
         }
@@ -869,7 +870,7 @@ abstract class TranslationConverter extends ShopwareConverter
                     DefaultEntities::TRANSLATION,
                     $data['id'],
                     $entity,
-                    $data['objectdata']
+                    $objectDataSerialized
                 )
             );
 
