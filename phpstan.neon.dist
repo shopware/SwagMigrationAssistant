@@ -3,6 +3,7 @@ includes:
 
 parameters:
     level: 8
+    tmpDir: var/cache/phpstan
     inferPrivatePropertyTypeFromConstructor: true
     checkMissingIterableValueType: false
     symfony:
@@ -13,3 +14,4 @@ parameters:
         unusedClassElements: true
     excludes_analyse:
         - vendor
+        - var
