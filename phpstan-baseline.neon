@@ -1229,47 +1229,6 @@ parameters:
 			message: "#^Class Shopware\\\\Core\\\\Checkout\\\\Cart\\\\Tax\\\\TaxRuleCalculator does not have a constructor and must be instantiated without any parameters\\.$#"
 			count: 1
 			path: Test/Profile/Shopware55/Converter/OrderConverterTest.php
-
-		-
-			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
-			count: 10
-			path: Test/Profile/Shopware55/Converter/OrderConverterTest.php
-
-		-
-			message: "#^Offset 'salesChannelId' does not exist on array\\|null\\.$#"
-			count: 6
-			path: Test/Profile/Shopware55/Converter/OrderConverterTest.php
-
-		-
-			message: "#^Offset 'orderCustomer' does not exist on array\\|null\\.$#"
-			count: 6
-			path: Test/Profile/Shopware55/Converter/OrderConverterTest.php
-
-		-
-			message: "#^Offset 'price' does not exist on array\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/OrderConverterTest.php
-
-		-
-			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayNotHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/OrderConverterTest.php
-
-		-
-			message: "#^Offset 'transactions' does not exist on array\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/OrderConverterTest.php
-
-		-
-			message: "#^Offset 'deliveries' does not exist on array\\|null\\.$#"
-			count: 2
-			path: Test/Profile/Shopware55/Converter/OrderConverterTest.php
-
-		-
-			message: "#^Offset 'addresses' does not exist on array\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/OrderConverterTest.php
-
 		-
 			message: "#^Class SwagMigrationAssistant\\\\Test\\\\Mock\\\\DummyCollection implements generic interface IteratorAggregate but does not specify its types\\: TKey, TValue$#"
 			count: 1

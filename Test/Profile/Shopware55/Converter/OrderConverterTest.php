@@ -170,6 +170,7 @@ class OrderConverterTest extends TestCase
 
         $converted = $convertResult->getConverted();
 
+        static::assertNotNull($converted);
         static::assertNull($convertResult->getUnmapped());
         static::assertNotNull($convertResult->getMappingUuid());
         static::assertArrayHasKey('id', $converted);
@@ -178,6 +179,9 @@ class OrderConverterTest extends TestCase
         static::assertSame(Defaults::SALES_CHANNEL, $converted['salesChannelId']);
         static::assertSame('test@example.com', $converted['orderCustomer']['email']);
         static::assertCount(0, $this->loggingService->getLoggingArray());
+        static::assertArrayHasKey('lineItems', $converted);
+        static::assertArrayHasKey('options', $converted['lineItems'][0]['payload']);
+        static::assertSame([], $converted['lineItems'][0]['payload']['options']);
     }
 
     public function testConvertWithoutCustomer(): void
@@ -219,6 +223,8 @@ class OrderConverterTest extends TestCase
         );
 
         $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
+
         /** @var CartPrice $cartPrice */
         $cartPrice = $converted['price'];
 
@@ -299,6 +305,7 @@ class OrderConverterTest extends TestCase
 
         $converted = $convertResult->getConverted();
 
+        static::assertNotNull($converted);
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
         static::assertArrayNotHasKey('lineItems', $converted);
@@ -330,6 +337,7 @@ class OrderConverterTest extends TestCase
 
         $converted = $convertResult->getConverted();
 
+        static::assertNotNull($converted);
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
         static::assertSame(Defaults::SALES_CHANNEL, $converted['salesChannelId']);
@@ -360,6 +368,7 @@ class OrderConverterTest extends TestCase
 
         $converted = $convertResult->getConverted();
 
+        static::assertNotNull($converted);
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
         static::assertSame(Defaults::SALES_CHANNEL, $converted['salesChannelId']);
@@ -442,6 +451,7 @@ class OrderConverterTest extends TestCase
 
         $converted = $convertResult->getConverted();
 
+        static::assertNotNull($converted);
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
         static::assertSame(Defaults::SALES_CHANNEL, $converted['salesChannelId']);
