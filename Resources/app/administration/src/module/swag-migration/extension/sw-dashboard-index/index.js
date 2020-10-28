@@ -31,6 +31,7 @@ Component.override('sw-dashboard-index', {
 
     methods: {
         createdComponent() {
+            this.$super('createdComponent');
             return this.migrationRunRepository.search(new Criteria(), this.context).then((items) => {
                 this.runExists = items.length > 0;
 
