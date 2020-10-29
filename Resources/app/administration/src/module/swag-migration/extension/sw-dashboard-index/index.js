@@ -6,9 +6,10 @@ const { Criteria } = Shopware.Data;
 Component.override('sw-dashboard-index', {
     template,
 
-    inject: {
-        repositoryFactory: 'repositoryFactory'
-    },
+    inject: [
+        'repositoryFactory',
+        'acl'
+    ],
 
     data() {
         return {
@@ -32,6 +33,11 @@ Component.override('sw-dashboard-index', {
     methods: {
         createdComponent() {
             this.$super('createdComponent');
+
+            if (!this.acl.isAdmin()) {
+                return new Promise((resolve) => { resolve(); });
+            }
+
             return this.migrationRunRepository.search(new Criteria(), this.context).then((items) => {
                 this.runExists = items.length > 0;
 

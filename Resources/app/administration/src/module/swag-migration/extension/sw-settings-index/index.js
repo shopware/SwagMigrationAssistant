@@ -4,5 +4,9 @@ import './sw-settings-index.scss';
 const { Component } = Shopware;
 
 Component.override('sw-settings-index', {
-    template
+    template,
+
+    inject: [
+        'acl'
+    ]
 });

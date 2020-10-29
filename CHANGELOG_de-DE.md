@@ -1,6 +1,7 @@
 # REPLACE-GLOBAL-WITH-NEXT-VERSION
 - MIG-75 - Verbessert das Übernehmen einer Migration
 - MIG-106 - Verbessert die Migration von Bestellpositionen
+- MIG-124 - ACL-Privilegien hinzugefügt
 
 # 2.1.2
 - MIG-85 - Berücksichtigt die Kundenkommentare bei Bestellungen

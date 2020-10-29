@@ -10,6 +10,7 @@ namespace SwagMigrationAssistant\Controller;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\Routing\Annotation\Acl;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use SwagMigrationAssistant\Exception\EntityNotExistsException;
 use SwagMigrationAssistant\Exception\MigrationContextPropertyMissingException;
@@ -54,6 +55,7 @@ class PremappingController extends AbstractController
 
     /**
      * @Route("/api/v{version}/_action/migration/generate-premapping", name="api.admin.migration.generate-premapping", methods={"POST"})
+     * @Acl({"admin"})
      */
     public function generatePremapping(Request $request, Context $context): JsonResponse
     {
@@ -81,6 +83,7 @@ class PremappingController extends AbstractController
 
     /**
      * @Route("/api/v{version}/_action/migration/write-premapping", name="api.admin.migration.write-premapping", methods={"POST"})
+     * @Acl({"admin"})
      */
     public function writePremapping(Request $request, Context $context): JsonResponse
     {

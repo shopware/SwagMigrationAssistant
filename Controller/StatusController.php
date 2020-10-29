@@ -10,6 +10,7 @@ namespace SwagMigrationAssistant\Controller;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\Routing\Annotation\Acl;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use SwagMigrationAssistant\Exception\EntityNotExistsException;
 use SwagMigrationAssistant\Exception\MigrationContextPropertyMissingException;
@@ -102,6 +103,7 @@ class StatusController extends AbstractController
 
     /**
      * @Route("/api/v{version}/_action/migration/get-profile-information", name="api.admin.migration.get-profile-information", methods={"GET"})
+     * @Acl({"admin"})
      */
     public function getProfileInformation(Request $request): ?Response
     {
@@ -166,6 +168,7 @@ class StatusController extends AbstractController
 
     /**
      * @Route("/api/v{version}/_action/migration/get-profiles", name="api.admin.migration.get-profiles", methods={"GET"})
+     * @Acl({"admin"})
      */
     public function getProfiles(): Response
     {
@@ -186,6 +189,7 @@ class StatusController extends AbstractController
 
     /**
      * @Route("/api/v{version}/_action/migration/get-gateways", name="api.admin.migration.get-gateways", methods={"GET"})
+     * @Acl({"admin"})
      */
     public function getGateways(Request $request): Response
     {
@@ -211,6 +215,7 @@ class StatusController extends AbstractController
 
     /**
      * @Route("/api/v{version}/_action/migration/update-connection-credentials", name="api.admin.migration.update-connection-credentials", methods={"POST"})
+     * @Acl({"admin"})
      */
     public function updateConnectionCredentials(Request $request, Context $context): Response
     {
@@ -235,6 +240,7 @@ class StatusController extends AbstractController
 
     /**
      * @Route("/api/v{version}/_action/migration/data-selection", name="api.admin.migration.data-selection", methods={"GET"})
+     * @Acl({"admin"})
      */
     public function getDataSelection(Request $request, Context $context): JsonResponse
     {
@@ -260,6 +266,7 @@ class StatusController extends AbstractController
 
     /**
      * @Route("/api/v{version}/_action/migration/check-connection", name="api.admin.migration.check-connection", methods={"POST"})
+     * @Acl({"admin"})
      */
     public function checkConnection(Request $request, Context $context): JsonResponse
     {
@@ -284,6 +291,7 @@ class StatusController extends AbstractController
 
     /**
      * @Route("/api/v{version}/_action/migration/get-state", name="api.admin.migration.get-state", methods={"POST"})
+     * @Acl({"admin"})
      */
     public function getState(Request $request, Context $context): JsonResponse
     {
@@ -294,6 +302,7 @@ class StatusController extends AbstractController
 
     /**
      * @Route("/api/v{version}/_action/migration/create-migration", name="api.admin.migration.create-migration", methods={"POST"})
+     * @Acl({"admin"})
      */
     public function createMigration(Request $request, Context $context): JsonResponse
     {
@@ -327,6 +336,7 @@ class StatusController extends AbstractController
 
     /**
      * @Route("/api/v{version}/_action/migration/takeover-migration", name="api.admin.migration.takeover-migration", methods={"POST"})
+     * @Acl({"admin"})
      */
     public function takeoverMigration(Request $request, Context $context): JsonResponse
     {
@@ -345,6 +355,7 @@ class StatusController extends AbstractController
      * Aborts an already running migration remotely.
      *
      * @Route("/api/v{version}/_action/migration/abort-migration", name="api.admin.migration.abort-migration", methods={"POST"})
+     * @Acl({"admin"})
      */
     public function abortMigration(Request $request, Context $context): Response
     {
@@ -361,6 +372,7 @@ class StatusController extends AbstractController
 
     /**
      * @Route("/api/v{version}/_action/migration/finish-migration", name="api.admin.migration.finish-migration", methods={"POST"})
+     * @Acl({"admin"})
      */
     public function finishMigration(Request $request, Context $context): Response
     {
@@ -377,6 +389,7 @@ class StatusController extends AbstractController
 
     /**
      * @Route("/api/v{version}/_action/migration/assign-themes", name="api.admin.migration.assign-themes", methods={"POST"})
+     * @Acl({"admin"})
      */
     public function assignThemes(Request $request, Context $context): Response
     {
@@ -393,6 +406,7 @@ class StatusController extends AbstractController
 
     /**
      * @Route("/api/v{version}/_action/migration/reset-checksums", name="api.admin.migration.reset-checksums", methods={"POST"})
+     * @Acl({"admin"})
      */
     public function resetChecksums(Request $request, Context $context): Response
     {
@@ -416,6 +430,7 @@ class StatusController extends AbstractController
 
     /**
      * @Route("/api/v{version}/_action/migration/cleanup-migration-data", name="api.admin.migration.cleanup-migration-data", methods={"POST"})
+     * @Acl({"admin"})
      */
     public function cleanupMigrationData(): Response
     {
@@ -426,6 +441,7 @@ class StatusController extends AbstractController
 
     /**
      * @Route("/api/v{version}/_action/migration/get-reset-status", name="api.admin.migration.get-reset-status", methods={"GET"})
+     * @Acl({"admin"})
      */
     public function getResetStatus(Context $context): JsonResponse
     {
