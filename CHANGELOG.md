@@ -1,6 +1,7 @@
 # REPLACE-GLOBAL-WITH-NEXT-VERSION
 - MIG-75 - Improves the takeover of a migration
 - MIG-106 - Improves the migration of order line items
+- MIG-124 - Added ACL privileges
 
 # 2.1.2
 - MIG-85 - Migrate customer comments in orders

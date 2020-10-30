@@ -10,6 +10,7 @@ namespace SwagMigrationAssistant\Controller;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\Routing\Annotation\Acl;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use SwagMigrationAssistant\Exception\EntityNotExistsException;
 use SwagMigrationAssistant\Exception\MigrationContextPropertyMissingException;
@@ -103,6 +104,7 @@ class MigrationController extends AbstractController
 
     /**
      * @Route("/api/v{version}/_action/migration/fetch-data", name="api.admin.migration.fetch-data", methods={"POST"})
+     * @Acl({"admin"})
      */
     public function fetchData(Request $request, Context $context): JsonResponse
     {
@@ -155,6 +157,7 @@ class MigrationController extends AbstractController
 
     /**
      * @Route("/api/v{version}/_action/migration/update-write-progress", name="api.admin.migration.update-write-progress", methods={"POST"})
+     * @Acl({"admin"})
      */
     public function updateWriteProgress(Request $request, Context $context): JsonResponse
     {
@@ -185,6 +188,7 @@ class MigrationController extends AbstractController
 
     /**
      * @Route("/api/v{version}/_action/migration/write-data", name="api.admin.migration.write-data", methods={"POST"})
+     * @Acl({"admin"})
      */
     public function writeData(Request $request, Context $context): JsonResponse
     {
@@ -229,6 +233,7 @@ class MigrationController extends AbstractController
 
     /**
      * @Route("/api/v{version}/_action/migration/update-media-files-progress", name="api.admin.migration.update-media-files-progress", methods={"POST"})
+     * @Acl({"admin"})
      */
     public function updateMediaFilesProgress(Request $request, Context $context): JsonResponse
     {
@@ -259,6 +264,7 @@ class MigrationController extends AbstractController
 
     /**
      * @Route("/api/v{version}/_action/migration/process-media", name="api.admin.migration.process-media", methods={"POST"})
+     * @Acl({"admin"})
      */
     public function processMedia(Request $request, Context $context): JsonResponse
     {
@@ -303,6 +309,7 @@ class MigrationController extends AbstractController
 
     /**
      * @Route("/api/v{version}/_action/migration/indexing", name="api.action.migration.indexing", methods={"POST"})
+     * @Acl({"admin"})
      */
     public function indexing(Request $request): JsonResponse
     {
