@@ -523,4 +523,33 @@ class OrderConverterTest extends TestCase
             static::assertSame('SWAG_MIGRATION_ORDER_STATE_ENTITY_UNKNOWN', $log['code']);
         }
     }
+
+    public function testConvertWithOrderLanguage(): void
+    {
+        $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
+        $orderData = require __DIR__ . '/../../../_fixtures/order_data.php';
+        $context = Context::createDefaultContext();
+
+        $this->customerConverter->convert(
+            $customerData[0],
+            $context,
+            $this->customerMigrationContext
+        );
+
+        $orderData[0]['locale'] = 'af-ZA';
+        $convertResult = $this->orderConverter->convert(
+            $orderData[0],
+            $context,
+            $this->migrationContext
+        );
+
+        $converted = $convertResult->getConverted();
+
+        static::assertNotNull($converted);
+        static::assertNull($convertResult->getUnmapped());
+        static::assertNotNull($convertResult->getMappingUuid());
+        static::assertArrayHasKey('id', $converted);
+        static::assertCount(0, $this->loggingService->getLoggingArray());
+        static::assertSame(DummyMappingService::DEFAULT_LANGUAGE_UUID, $converted['languageId']);
+    }
 }
