@@ -32,7 +32,7 @@ class MediaConverterTest extends TestCase
     private $runId;
 
     /**
-     * @var string
+     * @var SwagMigrationConnectionEntity
      */
     private $connection;
 
@@ -78,8 +78,10 @@ class MediaConverterTest extends TestCase
 
         $converted = $convertResult->getConverted();
 
+        static::assertNotNull($converted);
         static::assertNull($convertResult->getUnmapped());
         static::assertNotNull($convertResult->getMappingUuid());
         static::assertArrayHasKey('id', $converted);
+        static::assertSame($mediaData[0]['description'], $converted['alt']);
     }
 }

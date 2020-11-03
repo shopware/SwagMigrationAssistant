@@ -39,7 +39,7 @@ return [
             'id' => '1',
             'albumID' => '-1',
             'name' => 'brot',
-            'description' => '',
+            'description' => 'Nices Brot',
             'path' => 'media/image/brot.jpg',
             'type' => 'IMAGE',
             'extension' => 'jpg',

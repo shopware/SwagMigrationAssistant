@@ -93,6 +93,8 @@ class CategoryConverterTest extends TestCase
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey(DummyMappingService::DEFAULT_LANGUAGE_UUID, $converted['translations']);
         static::assertNotNull($convertResult->getMappingUuid());
+        static::assertSame($categoryData[0]['asset']['name'], $converted['media']['title']);
+        static::assertSame($categoryData[0]['asset']['description'], $converted['media']['alt']);
     }
 
     public function testConvertWithParent(): void

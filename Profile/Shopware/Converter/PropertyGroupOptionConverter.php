@@ -177,9 +177,8 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         );
 
         $this->getMediaTranslation($newMedia, $data);
-
-        $this->convertValue($newMedia, 'name', $data['media'], 'name');
-        $this->convertValue($newMedia, 'description', $data['media'], 'description');
+        $this->convertValue($newMedia, 'title', $data['media'], 'name');
+        $this->convertValue($newMedia, 'alt', $data['media'], 'description');
 
         $albumMapping = $this->mappingService->getMapping(
             $this->connectionId,
@@ -196,7 +195,6 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         $converted['media'] = $newMedia;
     }
 
-    // ToDo MIG-110 - Check if this is necessary, because name and description is currently not translatable
     protected function getMediaTranslation(array &$media, array $data): void
     {
         $language = $this->mappingService->getDefaultLanguage($this->context);
@@ -211,8 +209,8 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
 
         $localeTranslation = [];
 
-        $this->convertValue($localeTranslation, 'name', $data['media'], 'name');
-        $this->convertValue($localeTranslation, 'description', $data['media'], 'description');
+        $this->convertValue($localeTranslation, 'title', $data['media'], 'name');
+        $this->convertValue($localeTranslation, 'alt', $data['media'], 'description');
 
         $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,

@@ -156,4 +156,25 @@ return [
         ],
         '_locale' => 'de-DE',
     ],
+    10 => [
+        'type' => 'property',
+        'id' => '3',
+        'name' => '16%',
+        'position' => '0',
+        'group' => [
+            'id' => '1',
+            'name' => 'Alkoholgehalt',
+            'description' => 'Alkoholgehalt',
+        ],
+        'media' => [
+            'id' => '772',
+            'name' => 'bienenkleber',
+            'description' => 'Nice Bienenkleber',
+            'path' => 'media/image/bienenkleber.jpg',
+            'file_size' => '21918',
+            'albumID' => '-1',
+            'attribute' => null,
+        ],
+        '_locale' => 'de-DE',
+    ],
 ];

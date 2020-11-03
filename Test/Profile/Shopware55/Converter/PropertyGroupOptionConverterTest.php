@@ -135,25 +135,28 @@ class PropertyGroupOptionConverterTest extends TestCase
     {
         $propertyData = require __DIR__ . '/../../../_fixtures/property_group_option_data.php';
 
-        $convertResult = $this->propertyGroupOptionConverter->convert($propertyData[0], $this->context, $this->migrationContext);
+        $convertResult = $this->propertyGroupOptionConverter->convert($propertyData[10], $this->context, $this->migrationContext);
 
         $converted = $convertResult->getConverted();
 
         static::assertNull($convertResult->getUnmapped());
         static::assertNotNull($convertResult->getMappingUuid());
+        static::assertNotNull($converted);
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('group', $converted);
         static::assertArrayHasKey('translations', $converted);
         static::assertSame(
-            'Rot',
+            '16%',
             $converted['translations'][DummyMappingService::DEFAULT_LANGUAGE_UUID]['name']
         );
         static::assertArrayHasKey('translations', $converted['group']);
         static::assertSame(
-            'Farbe',
+            'Alkoholgehalt',
             $converted['group']['translations'][DummyMappingService::DEFAULT_LANGUAGE_UUID]['name']
         );
         static::assertCount(0, $this->loggingService->getLoggingArray());
+        static::assertSame($propertyData[10]['media']['name'], $converted['media']['title']);
+        static::assertSame($propertyData[10]['media']['description'], $converted['media']['alt']);
     }
 
     public function testConvertWithPropertiesAndProductConfigurators(): void
@@ -167,6 +170,7 @@ class PropertyGroupOptionConverterTest extends TestCase
         $this->productConverter->convert($productData[22], $this->context, $this->migrationContext);
         $this->productConverter->convert($productData[23], $this->context, $this->migrationContext);
         $convertedMainProduct = $mainProduct->getConverted();
+        static::assertNotNull($convertedMainProduct);
 
         $property0 = $this->propertyGroupOptionConverter->convert($propertyData[4], $this->context, $this->migrationContext);
         $property1 = $this->propertyGroupOptionConverter->convert($propertyData[2], $this->context, $this->migrationContext);
@@ -179,6 +183,7 @@ class PropertyGroupOptionConverterTest extends TestCase
             $convertedStruct = $this->optionRelationConverter->convert($relation, $this->context, $this->migrationContext);
             $converted = $convertedStruct->getConverted();
 
+            static::assertNotNull($converted);
             static::assertSame($convertedMainProduct['id'], $converted['id']);
             static::assertSame(${'property' . $iterater}->getConverted()['id'], $converted['configuratorSettings'][0]['optionId']);
 
@@ -192,6 +197,7 @@ class PropertyGroupOptionConverterTest extends TestCase
             $convertedStruct = $this->propertyRelationConverter->convert($relation, $this->context, $this->migrationContext);
             $converted = $convertedStruct->getConverted();
 
+            static::assertNotNull($converted);
             static::assertSame($convertedMainProduct['id'], $converted['id']);
             static::assertSame(${'property' . $iterater}->getConverted()['id'], $converted['properties'][0]['id']);
 
@@ -210,6 +216,7 @@ class PropertyGroupOptionConverterTest extends TestCase
         $this->productConverter->convert($productData[22], $this->context, $this->migrationContext);
         $this->productConverter->convert($productData[23], $this->context, $this->migrationContext);
         $convertedMainProduct = $mainProduct->getConverted();
+        static::assertNotNull($convertedMainProduct);
 
         $property0 = $this->propertyGroupOptionConverter->convert($propertyData[4], $this->context, $this->migrationContext);
         $property1 = $this->propertyGroupOptionConverter->convert($propertyData[2], $this->context, $this->migrationContext);
@@ -239,31 +246,33 @@ class PropertyGroupOptionConverterTest extends TestCase
         );
         $oldMappingId2 = $mapping['entityUuid'];
 
-        $iterater = 0;
+        $iterator = 0;
         foreach ($optionRelationData as &$relation) {
             $relation['productId'] = $productData[5]['detail']['articleID'];
 
             $convertedStruct = $this->optionRelationConverter->convert($relation, $this->context, $this->migrationContext);
             $converted = $convertedStruct->getConverted();
 
+            static::assertNotNull($converted);
             static::assertSame($convertedMainProduct['id'], $converted['id']);
-            static::assertSame(${'property' . $iterater}->getConverted()['id'], $converted['configuratorSettings'][0]['optionId']);
-            static::assertSame(${'oldMappingId' . $iterater}, $converted['configuratorSettings'][0]['id']);
+            static::assertSame(${'property' . $iterator}->getConverted()['id'], $converted['configuratorSettings'][0]['optionId']);
+            static::assertSame(${'oldMappingId' . $iterator}, $converted['configuratorSettings'][0]['id']);
 
-            ++$iterater;
+            ++$iterator;
         }
 
-        $iterater = 0;
+        $iterator = 0;
         foreach ($propertyRelationData as &$relation) {
             $relation['productId'] = $productData[5]['detail']['articleID'];
 
             $convertedStruct = $this->propertyRelationConverter->convert($relation, $this->context, $this->migrationContext);
             $converted = $convertedStruct->getConverted();
 
+            static::assertNotNull($converted);
             static::assertSame($convertedMainProduct['id'], $converted['id']);
-            static::assertSame(${'property' . $iterater}->getConverted()['id'], $converted['properties'][0]['id']);
+            static::assertSame(${'property' . $iterator}->getConverted()['id'], $converted['properties'][0]['id']);
 
-            ++$iterater;
+            ++$iterator;
         }
     }
 }
