@@ -44,7 +44,7 @@ class NewsletterRecipientReader extends AbstractReader
         $shops = $this->getShopsAndLocalesByGroupId();
 
         foreach ($newsletterData as &$item) {
-            if (is_array($item) && isset($item['customer'], $shopsByCustomer[$item['id']][0]['shopId']) && $item['customer'] === '1') {
+            if (\is_array($item) && isset($item['customer'], $shopsByCustomer[$item['id']][0]['shopId']) && $item['customer'] === '1') {
                 $this->addShopAndLocaleByCustomer($item, $shopsByCustomer[$item['id']][0]);
 
                 continue;
@@ -78,7 +78,7 @@ class NewsletterRecipientReader extends AbstractReader
     {
         if (isset($defaultShop[$item['groupID']][0])) {
             $item['shopId'] = $defaultShop[$item['groupID']][0]['shopId'];
-            $item['_locale'] = str_replace('_', '-', $defaultShop[$item['groupID']][0]['locale']);
+            $item['_locale'] = \str_replace('_', '-', $defaultShop[$item['groupID']][0]['locale']);
 
             return;
         }
@@ -88,7 +88,7 @@ class NewsletterRecipientReader extends AbstractReader
             $shopId = $shop['mainId'] ?? $shop['shopId'];
 
             $item['shopId'] = $shopId;
-            $item['_locale'] = str_replace('_', '-', $shop['locale']);
+            $item['_locale'] = \str_replace('_', '-', $shop['locale']);
         }
     }
 
@@ -97,7 +97,7 @@ class NewsletterRecipientReader extends AbstractReader
         $shopId = $shop['mainId'] ?? $shop['shopId'];
 
         $item['shopId'] = $shopId;
-        $item['_locale'] = str_replace('_', '-', $shop['locale']);
+        $item['_locale'] = \str_replace('_', '-', $shop['locale']);
     }
 
     private function fetchData(array $ids): array
@@ -200,7 +200,7 @@ class NewsletterRecipientReader extends AbstractReader
         $resultSet = [];
 
         foreach ($shops as $shop) {
-            $groupId = unserialize($shop['groupID'], ['allowed_classes' => false]);
+            $groupId = \unserialize($shop['groupID'], ['allowed_classes' => false]);
             if (!isset($resultSet[$groupId])) {
                 $resultSet[$groupId] = [];
             }

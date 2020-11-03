@@ -55,13 +55,13 @@ class ShippingMethodReader extends AbstractReader
                 $item['shippingCountries'] = $shippingCountries[$item['id']];
             }
             if (isset($paymentMethods[$item['id']])) {
-                $item['paymentMethods'] = array_column($paymentMethods[$item['id']], 'paymentID');
+                $item['paymentMethods'] = \array_column($paymentMethods[$item['id']], 'paymentID');
             }
             if (isset($excludedCategories[$item['id']])) {
-                $item['excludedCategories'] = array_column($excludedCategories[$item['id']], 'categoryID');
+                $item['excludedCategories'] = \array_column($excludedCategories[$item['id']], 'categoryID');
             }
 
-            $item['_locale'] = str_replace('_', '-', $locale);
+            $item['_locale'] = \str_replace('_', '-', $locale);
         }
 
         return $this->cleanupResultSet($resultSet);

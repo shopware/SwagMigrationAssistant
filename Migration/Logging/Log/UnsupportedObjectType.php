@@ -48,7 +48,7 @@ class UnsupportedObjectType extends BaseRunLogEntry
     {
         $args = $this->getParameters();
 
-        return sprintf(
+        return \sprintf(
             '%s of object type "%s" with source id "%s" could not be converted.',
             $args['entity'],
             $args['objectType'],

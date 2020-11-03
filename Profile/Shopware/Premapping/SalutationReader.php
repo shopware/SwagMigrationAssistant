@@ -59,9 +59,9 @@ class SalutationReader extends AbstractPremappingReader
     public function supports(MigrationContextInterface $migrationContext, array $entityGroupNames): bool
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
-            && (in_array(CustomerAndOrderDataSelection::IDENTIFIER, $entityGroupNames, true)
-            || in_array(NewsletterRecipientDataSelection::IDENTIFIER, $entityGroupNames, true)
-            || in_array(ProductReviewDataSelection::IDENTIFIER, $entityGroupNames, true));
+            && (\in_array(CustomerAndOrderDataSelection::IDENTIFIER, $entityGroupNames, true)
+            || \in_array(NewsletterRecipientDataSelection::IDENTIFIER, $entityGroupNames, true)
+            || \in_array(ProductReviewDataSelection::IDENTIFIER, $entityGroupNames, true));
     }
 
     public function getPremapping(Context $context, MigrationContextInterface $migrationContext): PremappingStruct
@@ -88,8 +88,8 @@ class SalutationReader extends AbstractPremappingReader
         }
 
         $salutations = [];
-        $salutations[] = explode(',', unserialize($result[0]['value'], ['allowed_classes' => false]));
-        $salutations = array_filter($salutations);
+        $salutations[] = \explode(',', \unserialize($result[0]['value'], ['allowed_classes' => false]));
+        $salutations = \array_filter($salutations);
 
         if (empty($salutations)) {
             return [];
@@ -99,14 +99,14 @@ class SalutationReader extends AbstractPremappingReader
 
         if (!empty($configuredSalutations)) {
             foreach ($configuredSalutations as $configuredSalutation) {
-                $salutations[] = explode(
+                $salutations[] = \explode(
                     ',',
-                    unserialize($configuredSalutation['value'], ['allowed_classes' => false])
+                    \unserialize($configuredSalutation['value'], ['allowed_classes' => false])
                 );
             }
         }
 
-        $salutations = array_values(array_unique(array_merge(...$salutations)));
+        $salutations = \array_values(\array_unique(\array_merge(...$salutations)));
         $entityData = [];
 
         foreach ($salutations as $salutation) {
@@ -117,8 +117,8 @@ class SalutationReader extends AbstractPremappingReader
 
             $entityData[] = new PremappingEntityStruct($salutation, $salutation, $uuid);
         }
-        usort($entityData, function (PremappingEntityStruct $item1, PremappingEntityStruct $item2) {
-            return strcmp($item1->getDescription(), $item2->getDescription());
+        \usort($entityData, function (PremappingEntityStruct $item1, PremappingEntityStruct $item2) {
+            return \strcmp($item1->getDescription(), $item2->getDescription());
         });
 
         return $entityData;

@@ -53,11 +53,11 @@ abstract class BaseRunLogEntry implements LogEntryInterface
 
     public function getTitleSnippet(): string
     {
-        return sprintf('%s.%s.title', $this->getSnippetRoot(), $this->getCode());
+        return \sprintf('%s.%s.title', $this->getSnippetRoot(), $this->getCode());
     }
 
     public function getDescriptionSnippet(): string
     {
-        return sprintf('%s.%s.description', $this->getSnippetRoot(), $this->getCode());
+        return \sprintf('%s.%s.description', $this->getSnippetRoot(), $this->getCode());
     }
 }

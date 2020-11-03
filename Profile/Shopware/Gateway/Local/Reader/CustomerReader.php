@@ -40,7 +40,7 @@ class CustomerReader extends AbstractReader
         $this->setConnection($migrationContext);
 
         $fetchedCustomers = $this->fetchCustomers($migrationContext);
-        $ids = array_column($fetchedCustomers, 'customer.id');
+        $ids = \array_column($fetchedCustomers, 'customer.id');
 
         $customers = $this->mapData($fetchedCustomers, [], ['customer', 'customerGroupId']);
         $resultSet = $this->assignAssociatedData($customers, $ids);
@@ -114,15 +114,15 @@ class CustomerReader extends AbstractReader
         $locale = $this->getDefaultShopLocale();
 
         foreach ($customers as $key => &$customer) {
-            $customer['_locale'] = str_replace('_', '-', $locale);
+            $customer['_locale'] = \str_replace('_', '-', $locale);
             if (isset($addresses[$customer['id']])) {
-                $customer['addresses'] = array_slice($addresses[$customer['id']], 0, self::MAX_ADDRESS_COUNT);
+                $customer['addresses'] = \array_slice($addresses[$customer['id']], 0, self::MAX_ADDRESS_COUNT);
             }
             if (isset($paymentData[$customer['id']])) {
                 $customer['paymentdata'] = $paymentData[$customer['id']];
             }
             if (isset($customer['customerlanguage']['locale'])) {
-                $customer['customerlanguage']['locale'] = str_replace('_', '-', $customer['customerlanguage']['locale']);
+                $customer['customerlanguage']['locale'] = \str_replace('_', '-', $customer['customerlanguage']['locale']);
             }
         }
         unset($customer);

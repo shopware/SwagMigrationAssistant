@@ -40,7 +40,7 @@ class ThemeCompilingErrorRunLog extends BaseRunLogEntry
     {
         $args = $this->getParameters();
 
-        return sprintf(
+        return \sprintf(
             'The theme with id "%s" could not be compiled.',
             $args['sourceId']
         );

@@ -90,7 +90,7 @@ class HttpMediaDownloadService extends BaseMediaService implements MediaFileProc
             $mediaIds[] = $work->getMediaId();
         }
 
-        if (!is_dir('_temp') && !mkdir('_temp') && !is_dir('_temp')) {
+        if (!\is_dir('_temp') && !\mkdir('_temp') && !\is_dir('_temp')) {
             $exception = new NoFileSystemPermissionsException();
             $this->loggingService->addLogEntry(new ExceptionRunLog(
                 $runId,
@@ -122,7 +122,7 @@ class HttpMediaDownloadService extends BaseMediaService implements MediaFileProc
             $state = $result['state'];
             $additionalData = $mappedWorkload[$uuid]->getAdditionalData();
 
-            $oldWorkloadSearchResult = array_filter(
+            $oldWorkloadSearchResult = \array_filter(
                 $workload,
                 function (MediaProcessWorkloadStruct $work) use ($uuid) {
                     return $work->getMediaId() === $uuid;
@@ -130,7 +130,7 @@ class HttpMediaDownloadService extends BaseMediaService implements MediaFileProc
             );
 
             /** @var MediaProcessWorkloadStruct $oldWorkload */
-            $oldWorkload = array_pop($oldWorkloadSearchResult);
+            $oldWorkload = \array_pop($oldWorkloadSearchResult);
 
             if ($state !== 'fulfilled') {
                 $mappedWorkload[$uuid] = $oldWorkload;
@@ -152,12 +152,12 @@ class HttpMediaDownloadService extends BaseMediaService implements MediaFileProc
             }
 
             $response = $result['value'];
-            $fileExtension = pathinfo($additionalData['uri'], PATHINFO_EXTENSION);
-            $filePath = sprintf('_temp/%s.%s', $uuid, $fileExtension);
+            $fileExtension = \pathinfo($additionalData['uri'], PATHINFO_EXTENSION);
+            $filePath = \sprintf('_temp/%s.%s', $uuid, $fileExtension);
 
-            $fileHandle = fopen($filePath, 'ab');
-            fwrite($fileHandle, $response->getBody()->getContents());
-            fclose($fileHandle);
+            $fileHandle = \fopen($filePath, 'ab');
+            \fwrite($fileHandle, $response->getBody()->getContents());
+            \fclose($fileHandle);
 
             if ($mappedWorkload[$uuid]->getState() === MediaProcessWorkloadStruct::FINISH_STATE) {
                 //move media to media system
@@ -170,7 +170,7 @@ class HttpMediaDownloadService extends BaseMediaService implements MediaFileProc
                     $fileExtension,
                     $context
                 );
-                unlink($filePath);
+                \unlink($filePath);
                 $finishedUuids[] = $uuid;
             }
 
@@ -182,7 +182,7 @@ class HttpMediaDownloadService extends BaseMediaService implements MediaFileProc
         $this->setProcessedFlag($runId, $context, $finishedUuids, $failureUuids);
         $this->loggingService->saveLogging($context);
 
-        return array_values($mappedWorkload);
+        return \array_values($mappedWorkload);
     }
 
     private function getMediaName(array $media, string $mediaId): string
@@ -205,7 +205,7 @@ class HttpMediaDownloadService extends BaseMediaService implements MediaFileProc
     {
         $promises = [];
         foreach ($media as $mediaFile) {
-            $uuid = mb_strtolower($mediaFile['media_id']);
+            $uuid = \mb_strtolower($mediaFile['media_id']);
             $additionalData = [];
             $additionalData['file_size'] = $mediaFile['file_size'];
             $additionalData['uri'] = $mediaFile['uri'];
@@ -227,16 +227,16 @@ class HttpMediaDownloadService extends BaseMediaService implements MediaFileProc
     private function persistFileToMedia(string $filePath, string $uuid, string $name, int $fileSize, string $fileExtension, Context $context): void
     {
         $context->disableCache(function (Context $context) use ($filePath, $uuid, $name, $fileSize, $fileExtension): void {
-            $mimeType = mime_content_type($filePath);
+            $mimeType = \mime_content_type($filePath);
             $mediaFile = new MediaFile($filePath, $mimeType, $fileExtension, $fileSize);
-            $name = preg_replace('/[^a-zA-Z0-9_-]+/', '-', mb_strtolower($name));
+            $name = \preg_replace('/[^a-zA-Z0-9_-]+/', '-', \mb_strtolower($name));
 
             try {
                 $this->fileSaver->persistFileToMedia($mediaFile, $name, $uuid, $context);
             } catch (DuplicatedMediaFileNameException $e) {
                 $this->fileSaver->persistFileToMedia(
                     $mediaFile,
-                    $name . mb_substr(Uuid::randomHex(), 0, 5),
+                    $name . \mb_substr(Uuid::randomHex(), 0, 5),
                     $uuid,
                     $context
                 );
@@ -273,7 +273,7 @@ class HttpMediaDownloadService extends BaseMediaService implements MediaFileProc
         $mediaFiles = $this->getMediaFiles($finishedUuids, $runId);
         $updateProcessedMediaFiles = [];
         foreach ($mediaFiles as $data) {
-            if (!in_array($data['media_id'], $failureUuids, true)) {
+            if (!\in_array($data['media_id'], $failureUuids, true)) {
                 $updateProcessedMediaFiles[] = [
                     'id' => $data['id'],
                     'processed' => true,

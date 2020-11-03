@@ -65,7 +65,7 @@ class ProcessorNotFoundLog implements LogEntryInterface
     {
         $args = $this->getParameters();
 
-        return sprintf(
+        return \sprintf(
             'Processor for profile "%s", gateway "%s" and entity "%s" not found.',
             $args['profileName'],
             $args['gatewayName'],
@@ -95,11 +95,11 @@ class ProcessorNotFoundLog implements LogEntryInterface
 
     public function getTitleSnippet(): string
     {
-        return sprintf('%s.%s.title', $this->getSnippetRoot(), $this->getCode());
+        return \sprintf('%s.%s.title', $this->getSnippetRoot(), $this->getCode());
     }
 
     public function getDescriptionSnippet(): string
     {
-        return sprintf('%s.%s.description', $this->getSnippetRoot(), $this->getCode());
+        return \sprintf('%s.%s.description', $this->getSnippetRoot(), $this->getCode());
     }
 }

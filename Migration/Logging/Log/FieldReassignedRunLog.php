@@ -38,7 +38,7 @@ class FieldReassignedRunLog extends BaseRunLogEntry
             return 'SWAG_MIGRATION_ENTITY_FIELD_REASSIGNED';
         }
 
-        return sprintf('SWAG_MIGRATION_%s_ENTITY_FIELD_REASSIGNED', mb_strtoupper($entity));
+        return \sprintf('SWAG_MIGRATION_%s_ENTITY_FIELD_REASSIGNED', \mb_strtoupper($entity));
     }
 
     public function getTitle(): string
@@ -48,7 +48,7 @@ class FieldReassignedRunLog extends BaseRunLogEntry
             return 'The entity has a field that was reassigned';
         }
 
-        return sprintf('The %s entity has a field that was reassigned', $entity);
+        return \sprintf('The %s entity has a field that was reassigned', $entity);
     }
 
     public function getParameters(): array
@@ -65,7 +65,7 @@ class FieldReassignedRunLog extends BaseRunLogEntry
     {
         $args = $this->getParameters();
 
-        return sprintf(
+        return \sprintf(
             'The %s entity with the source id "%s" got the field %s replaced with %s.',
             $args['entity'],
             $args['sourceId'],
@@ -76,11 +76,11 @@ class FieldReassignedRunLog extends BaseRunLogEntry
 
     public function getTitleSnippet(): string
     {
-        return sprintf('%s.%s.title', $this->getSnippetRoot(), 'SWAG_MIGRATION_ENTITY_FIELD_REASSIGNED');
+        return \sprintf('%s.%s.title', $this->getSnippetRoot(), 'SWAG_MIGRATION_ENTITY_FIELD_REASSIGNED');
     }
 
     public function getDescriptionSnippet(): string
     {
-        return sprintf('%s.%s.description', $this->getSnippetRoot(), 'SWAG_MIGRATION_ENTITY_FIELD_REASSIGNED');
+        return \sprintf('%s.%s.description', $this->getSnippetRoot(), 'SWAG_MIGRATION_ENTITY_FIELD_REASSIGNED');
     }
 }

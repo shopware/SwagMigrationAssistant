@@ -27,7 +27,7 @@ class LanguageReader extends AbstractReader
     public function read(MigrationContextInterface $migrationContext): array
     {
         $this->setConnection($migrationContext);
-        $fetchedShopLocaleIds = array_unique($this->fetchShopLocaleIds());
+        $fetchedShopLocaleIds = \array_unique($this->fetchShopLocaleIds());
         $locales = $this->fetchLocales($fetchedShopLocaleIds);
 
         return $this->appendAssociatedData($locales);
@@ -35,7 +35,7 @@ class LanguageReader extends AbstractReader
 
     private function appendAssociatedData(array $locales): array
     {
-        $translations = $this->fetchTranslations(array_keys($locales));
+        $translations = $this->fetchTranslations(\array_keys($locales));
 
         $defaultLocale = $this->getDefaultShopLocale();
 
@@ -43,12 +43,12 @@ class LanguageReader extends AbstractReader
             if (isset($translations[$key])) {
                 $locale['translations'] = $translations[$key];
             }
-            $locale['locale'] = str_replace('_', '-', $locale['locale']);
+            $locale['locale'] = \str_replace('_', '-', $locale['locale']);
             // locale of the main language in which the dataset is probably created
-            $locale['_locale'] = str_replace('_', '-', $defaultLocale);
+            $locale['_locale'] = \str_replace('_', '-', $defaultLocale);
         }
 
-        return array_values($locales);
+        return \array_values($locales);
     }
 
     private function fetchShopLocaleIds(): array

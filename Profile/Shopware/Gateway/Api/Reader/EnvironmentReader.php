@@ -140,7 +140,7 @@ class EnvironmentReader implements EnvironmentReaderInterface
     private function readData(Client $apiClient, bool $verified = false): array
     {
         $config = $apiClient->getConfig();
-        $config = array_merge($config, [
+        $config = \array_merge($config, [
             'verify' => $verified,
         ]);
 
@@ -154,7 +154,7 @@ class EnvironmentReader implements EnvironmentReaderInterface
             throw new GatewayReadException('Shopware 5.5 Api SwagMigrationEnvironment', 466);
         }
 
-        $arrayResult = json_decode($result->getBody()->getContents(), true);
+        $arrayResult = \json_decode($result->getBody()->getContents(), true);
 
         if (!isset($arrayResult['data'])) {
             throw new GatewayReadException('Shopware 5.5 Api SwagMigrationEnvironment', 466);
@@ -182,7 +182,7 @@ class EnvironmentReader implements EnvironmentReaderInterface
             throw new GatewayReadException('Shopware 5.5 Api SwagMigrationEnvironment', 466);
         }
 
-        $arrayResult = json_decode($result->getBody()->getContents(), true);
+        $arrayResult = \json_decode($result->getBody()->getContents(), true);
 
         if (!isset($arrayResult['success'])
             || (isset($arrayResult['success']) && $arrayResult['success'] === false)
@@ -217,7 +217,7 @@ class EnvironmentReader implements EnvironmentReaderInterface
             throw new GatewayReadException('Shopware 5.5 Api SwagMigrationEnvironment', 466);
         } catch (GuzzleRequestException $e) {
             $response = $e->getResponse();
-            if ($response !== null && mb_strpos($response->getBody()->getContents(), 'SSL required')) {
+            if ($response !== null && \mb_strpos($response->getBody()->getContents(), 'SSL required')) {
                 throw new SslRequiredException();
             }
 

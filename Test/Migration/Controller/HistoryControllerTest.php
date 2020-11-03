@@ -141,7 +141,7 @@ class HistoryControllerTest extends TestCase
         static::assertInstanceOf(JsonResponse::class, $response);
         static::assertJson($response->getContent());
 
-        $json = json_decode($response->getContent(), true);
+        $json = \json_decode($response->getContent(), true);
         static::assertArrayHasKey('total', $json);
         static::assertArrayHasKey('items', $json);
         static::assertArrayHasKey('downloadUrl', $json);
@@ -198,7 +198,7 @@ class HistoryControllerTest extends TestCase
 
     public function invokeMethod(object $object, string $methodName, array $parameters)
     {
-        $reflection = new \ReflectionClass(get_class($object));
+        $reflection = new \ReflectionClass(\get_class($object));
         $method = $reflection->getMethod($methodName);
         $method->setAccessible(true);
 

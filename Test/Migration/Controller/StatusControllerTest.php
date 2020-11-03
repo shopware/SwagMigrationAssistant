@@ -570,7 +570,7 @@ class StatusControllerTest extends TestCase
         $criteria->addFilter(new EqualsFilter('accessToken', $resultArray['accessToken']));
         /** @var SwagMigrationRunEntity $run */
         $run = $this->runRepo->search($criteria, $context)->first();
-        static::assertSame($run->getUserId(), mb_strtoupper($userId));
+        static::assertSame($run->getUserId(), \mb_strtoupper($userId));
 
         $this->expectException(MigrationContextPropertyMissingException::class);
         $this->controller->takeoverMigration(new Request(), $context);
@@ -678,9 +678,9 @@ class StatusControllerTest extends TestCase
 
     private function isJsonArrayTypeOfProgressState(array $state): bool
     {
-        return array_key_exists('migrationRunning', $state)
-            && array_key_exists('runId', $state)
-            && array_key_exists('runProgress', $state)
+        return \array_key_exists('migrationRunning', $state)
+            && \array_key_exists('runId', $state)
+            && \array_key_exists('runProgress', $state)
         ;
     }
 
@@ -713,7 +713,7 @@ class StatusControllerTest extends TestCase
         $content = $response->getContent();
         static::assertIsNotBool($content);
         $this->assertJSON($content);
-        $array = json_decode($content, true);
+        $array = \json_decode($content, true);
         static::assertIsArray($array);
 
         return $array;

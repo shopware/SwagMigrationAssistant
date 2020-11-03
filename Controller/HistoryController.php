@@ -55,7 +55,7 @@ class HistoryController extends AbstractController
         );
 
         return new JsonResponse([
-            'total' => count($cleanResult),
+            'total' => \count($cleanResult),
             'items' => $cleanResult,
             'downloadUrl' => $this->generateUrl(
                 'api.admin.migration.download-logs-of-run',

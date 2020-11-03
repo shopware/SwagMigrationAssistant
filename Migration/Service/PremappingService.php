@@ -68,7 +68,7 @@ class PremappingService implements PremappingServiceInterface
             return [];
         }
 
-        $dataSelectionIds = array_column($progress, 'id');
+        $dataSelectionIds = \array_column($progress, 'id');
         $readers = $this->mappingReaderRegistry->getPremappingReaders($migrationContext, $dataSelectionIds);
 
         $preMapping = [];

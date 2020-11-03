@@ -50,7 +50,7 @@ abstract class MediaConverter extends ShopwareConverter
 
     public function getMediaUuids(array $converted): ?array
     {
-        return array_column($converted, 'id');
+        return \array_column($converted, 'id');
     }
 
     public function writeMapping(Context $context): void

@@ -178,7 +178,7 @@ class PremappingControllerTest extends TestCase
     {
         $request = new Request([], [
             'runUuid' => $this->runUuid,
-            'premapping' => json_decode((new JsonResponse([$this->premapping]))->getContent(), true),
+            'premapping' => \json_decode((new JsonResponse([$this->premapping]))->getContent(), true),
         ]);
 
         $this->controller->writePremapping(
@@ -207,7 +207,7 @@ class PremappingControllerTest extends TestCase
     public function testWritePremappingWithoutRunUuid(): void
     {
         $request = new Request([], [
-            'premapping' => json_decode((new JsonResponse([$this->premapping]))->getContent(), true),
+            'premapping' => \json_decode((new JsonResponse([$this->premapping]))->getContent(), true),
         ]);
 
         $this->expectException(MigrationContextPropertyMissingException::class);
@@ -234,7 +234,7 @@ class PremappingControllerTest extends TestCase
     {
         $request = new Request([], [
             'runUuid' => Uuid::randomHex(),
-            'premapping' => json_decode((new JsonResponse([$this->premapping]))->getContent(), true),
+            'premapping' => \json_decode((new JsonResponse([$this->premapping]))->getContent(), true),
         ]);
 
         $this->expectException(EntityNotExistsException::class);
@@ -248,7 +248,7 @@ class PremappingControllerTest extends TestCase
     {
         $request = new Request([], [
             'runUuid' => $this->runUuid,
-            'premapping' => json_decode((new JsonResponse([$this->premapping]))->getContent(), true),
+            'premapping' => \json_decode((new JsonResponse([$this->premapping]))->getContent(), true),
         ]);
 
         $this->controller->writePremapping(
@@ -283,7 +283,7 @@ class PremappingControllerTest extends TestCase
 
         $request = new Request([], [
             'runUuid' => $this->runUuid,
-            'premapping' => json_decode((new JsonResponse([$premapping]))->getContent(), true),
+            'premapping' => \json_decode((new JsonResponse([$premapping]))->getContent(), true),
         ]);
         $this->clearCacheData();
 

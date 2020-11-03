@@ -184,11 +184,11 @@ abstract class CategoryConverter extends ShopwareConverter
         }
         if (isset($converted['metaDescription'])) {
             // meta description has a limit of 255 characters in SW6
-            $converted['metaDescription'] = mb_substr($converted['metaDescription'], 0, 255);
+            $converted['metaDescription'] = \mb_substr($converted['metaDescription'], 0, 255);
         }
         if (isset($converted['keywords'])) {
             // keywords has a limit of 255 characters in SW6
-            $converted['keywords'] = mb_substr($converted['keywords'], 0, 255);
+            $converted['keywords'] = \mb_substr($converted['keywords'], 0, 255);
         }
 
         if (isset($data['asset'])) {

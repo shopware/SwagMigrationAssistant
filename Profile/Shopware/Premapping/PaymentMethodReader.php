@@ -68,8 +68,8 @@ class PaymentMethodReader extends AbstractPremappingReader
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && (
-                in_array(CustomerAndOrderDataSelection::IDENTIFIER, $entityGroupNames, true)
-                || in_array(ProductReviewDataSelection::IDENTIFIER, $entityGroupNames, true)
+                \in_array(CustomerAndOrderDataSelection::IDENTIFIER, $entityGroupNames, true)
+                || \in_array(ProductReviewDataSelection::IDENTIFIER, $entityGroupNames, true)
             );
     }
 
@@ -118,8 +118,8 @@ class PaymentMethodReader extends AbstractPremappingReader
         }
 
         $entityData[] = new PremappingEntityStruct('default_payment_method', 'Standard Payment Method', $uuid);
-        usort($entityData, function (PremappingEntityStruct $item1, PremappingEntityStruct $item2) {
-            return strcmp($item1->getDescription(), $item2->getDescription());
+        \usort($entityData, function (PremappingEntityStruct $item1, PremappingEntityStruct $item2) {
+            return \strcmp($item1->getDescription(), $item2->getDescription());
         });
 
         return $entityData;

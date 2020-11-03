@@ -61,10 +61,10 @@ class EntityPartialIndexerService
      */
     private function getIndexers(): array
     {
-        if (!is_array($this->indexer)) {
-            return array_values(iterator_to_array($this->indexer));
+        if (!\is_array($this->indexer)) {
+            return \array_values(\iterator_to_array($this->indexer));
         }
 
-        return array_values($this->indexer);
+        return \array_values($this->indexer);
     }
 }

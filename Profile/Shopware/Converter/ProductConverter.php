@@ -158,7 +158,7 @@ abstract class ProductConverter extends ShopwareConverter
                 $this->runId,
                 DefaultEntities::PRODUCT,
                 $this->oldProductId,
-                implode(',', $fields)
+                \implode(',', $fields)
             ));
 
             return new ConvertStruct(null, $data);
@@ -487,7 +487,7 @@ abstract class ProductConverter extends ShopwareConverter
                 continue;
             }
 
-            if (is_numeric($value) && $value > $converted[$key]) {
+            if (\is_numeric($value) && $value > $converted[$key]) {
                 $converted[$key] = $value;
 
                 continue;
@@ -510,10 +510,10 @@ abstract class ProductConverter extends ShopwareConverter
         ];
 
         $deliveryTime = [];
-        preg_match('/([0-9]*)\s*-\s*([0-9]*)/', $shippingTime, $deliveryTime);
+        \preg_match('/([0-9]*)\s*-\s*([0-9]*)/', $shippingTime, $deliveryTime);
 
         if (empty($deliveryTime)) {
-            preg_match('/([0-9]*)\s*/', $shippingTime, $deliveryTime);
+            \preg_match('/([0-9]*)\s*/', $shippingTime, $deliveryTime);
         }
 
         if (empty($deliveryTime)) {
@@ -557,7 +557,7 @@ abstract class ProductConverter extends ShopwareConverter
     {
         if (
             !isset($data['configuratorOptions'])
-            || !is_array($data['configuratorOptions'])
+            || !\is_array($data['configuratorOptions'])
         ) {
             return;
         }
@@ -579,14 +579,14 @@ abstract class ProductConverter extends ShopwareConverter
             $optionMapping = $this->mappingService->getOrCreateMapping(
                 $this->connectionId,
                 DefaultEntities::PROPERTY_GROUP_OPTION,
-                hash('md5', mb_strtolower($option['name'] . '_' . $option['group']['name'])),
+                \hash('md5', \mb_strtolower($option['name'] . '_' . $option['group']['name'])),
                 $this->context
             );
             $this->mappingIds[] = $optionMapping['id'];
             $optionGroupMapping = $this->mappingService->getOrCreateMapping(
                 $this->connectionId,
                 DefaultEntities::PROPERTY_GROUP,
-                hash('md5', mb_strtolower($option['group']['name'])),
+                \hash('md5', \mb_strtolower($option['group']['name'])),
                 $this->context
             );
             $this->mappingIds[] = $optionGroupMapping['id'];
@@ -825,7 +825,7 @@ abstract class ProductConverter extends ShopwareConverter
             $newProductMedia['media'] = $newMedia;
             $mediaObjects[] = $newProductMedia;
 
-            if ($cover === null && ((int) $mediaData['main'] === 1 || count($media) === 1)) {
+            if ($cover === null && ((int) $mediaData['main'] === 1 || \count($media) === 1)) {
                 $cover = $newProductMedia;
             }
         }
@@ -922,7 +922,7 @@ abstract class ProductConverter extends ShopwareConverter
         $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::PROPERTY_GROUP_OPTION_TRANSLATION,
-            hash('md5', mb_strtolower($data['name'] . '_' . $data['group']['name'])) . ':' . $this->locale,
+            \hash('md5', \mb_strtolower($data['name'] . '_' . $data['group']['name'])) . ':' . $this->locale,
             $this->context
         );
         $localeOptionTranslation['id'] = $mapping['entityUuid'];
@@ -934,7 +934,7 @@ abstract class ProductConverter extends ShopwareConverter
         $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::PROPERTY_GROUP_TRANSLATION,
-            hash('md5', mb_strtolower($data['group']['name'])) . ':' . $this->locale,
+            \hash('md5', \mb_strtolower($data['group']['name'])) . ':' . $this->locale,
             $this->context
         );
         $localeGroupTranslation['id'] = $mapping['entityUuid'];
@@ -951,7 +951,7 @@ abstract class ProductConverter extends ShopwareConverter
 
     private function getPrice(array $priceData, float $taxRate): array
     {
-        $gross = round((float) $priceData['price'] * (1 + $taxRate / 100), $this->context->getCurrencyPrecision());
+        $gross = \round((float) $priceData['price'] * (1 + $taxRate / 100), $this->context->getCurrencyPrecision());
 
         if (isset($priceData['currencyShortName'])) {
             $currencyMapping = $this->mappingService->getMapping(
@@ -986,7 +986,7 @@ abstract class ProductConverter extends ShopwareConverter
 
         $listPrice = (float) $priceData['pseudoprice'];
         if ($listPrice > 0) {
-            $listPriceGross = round((float) $priceData['pseudoprice'] * (1 + $taxRate / 100), $this->context->getCurrencyPrecision());
+            $listPriceGross = \round((float) $priceData['pseudoprice'] * (1 + $taxRate / 100), $this->context->getCurrencyPrecision());
             $price[0]['listPrice'] = [
                 'currencyId' => $currencyUuid,
                 'gross' => $listPriceGross,
@@ -1143,7 +1143,7 @@ abstract class ProductConverter extends ShopwareConverter
         $this->convertValue($converted, 'metaDescription', $data, 'description');
         if (isset($converted['metaDescription'])) {
             // meta description is limited to 255 characters in Shopware 6
-            $converted['metaDescription'] = mb_substr($converted['metaDescription'], 0, 255);
+            $converted['metaDescription'] = \mb_substr($converted['metaDescription'], 0, 255);
         }
 
         $language = $this->mappingService->getDefaultLanguage($this->context);

@@ -84,7 +84,7 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
             $mappedWorkload[$work->getMediaId()] = $work;
         }
 
-        if (!is_dir('_temp') && !mkdir('_temp') && !is_dir('_temp')) {
+        if (!\is_dir('_temp') && !\mkdir('_temp') && !\is_dir('_temp')) {
             $exception = new NoFileSystemPermissionsException();
             $this->loggingService->addLogEntry(new ExceptionRunLog(
                 $runId,
@@ -96,7 +96,7 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
             return $workload;
         }
 
-        $media = $this->getMediaFiles(array_keys($mappedWorkload), $migrationContext->getRunUuid());
+        $media = $this->getMediaFiles(\array_keys($mappedWorkload), $migrationContext->getRunUuid());
         $mappedWorkload = $this->getMediaPathMapping($media, $mappedWorkload, $migrationContext);
 
         return $this->copyMediaFiles($media, $mappedWorkload, $migrationContext, $context);
@@ -154,7 +154,7 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
             $mediaId = $mediaFile['media_id'];
             $sourcePath = $mappedWorkload[$mediaId]->getAdditionalData()['path'];
 
-            if (!file_exists($sourcePath)) {
+            if (!\file_exists($sourcePath)) {
                 $resolver = $this->getResolver($mediaFile, $migrationContext);
 
                 if ($resolver === null) {
@@ -172,14 +172,14 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
                 }
             }
 
-            $fileExtension = pathinfo($sourcePath, PATHINFO_EXTENSION);
-            $filePath = sprintf('_temp/%s.%s', $rowId, $fileExtension);
+            $fileExtension = \pathinfo($sourcePath, PATHINFO_EXTENSION);
+            $filePath = \sprintf('_temp/%s.%s', $rowId, $fileExtension);
 
-            if (copy($sourcePath, $filePath)) {
-                $fileSize = filesize($filePath);
+            if (\copy($sourcePath, $filePath)) {
+                $fileSize = \filesize($filePath);
                 $mappedWorkload[$mediaId]->setState(MediaProcessWorkloadStruct::FINISH_STATE);
                 $this->persistFileToMedia($filePath, $mediaFile, $fileSize, $fileExtension, $context);
-                unlink($filePath);
+                \unlink($filePath);
             } else {
                 $mappedWorkload[$mediaId]->setState(MediaProcessWorkloadStruct::ERROR_STATE);
                 $this->loggingService->addLogEntry(new CannotGetFileRunLog(
@@ -195,7 +195,7 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
         $this->setProcessedFlag($migrationContext->getRunUuid(), $context, $processedMedia, $failureUuids);
         $this->loggingService->saveLogging($context);
 
-        return array_values($mappedWorkload);
+        return \array_values($mappedWorkload);
     }
 
     private function persistFileToMedia(
@@ -206,17 +206,17 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
         Context $context
     ): void {
         $context->disableCache(function (Context $context) use ($filePath, $media, $fileSize, $fileExtension): void {
-            $mimeType = mime_content_type($filePath);
+            $mimeType = \mime_content_type($filePath);
             $mediaFile = new MediaFile($filePath, $mimeType, $fileExtension, $fileSize);
             $mediaId = $media['media_id'];
-            $fileName = preg_replace('/[^a-zA-Z0-9_-]+/', '-', mb_strtolower($media['file_name']));
+            $fileName = \preg_replace('/[^a-zA-Z0-9_-]+/', '-', \mb_strtolower($media['file_name']));
 
             try {
                 $this->fileSaver->persistFileToMedia($mediaFile, $fileName, $mediaId, $context);
             } catch (DuplicatedMediaFileNameException $e) {
                 $this->fileSaver->persistFileToMedia(
                     $mediaFile,
-                    $fileName . mb_substr(Uuid::randomHex(), 0, 5),
+                    $fileName . \mb_substr(Uuid::randomHex(), 0, 5),
                     $mediaId,
                     $context
                 );

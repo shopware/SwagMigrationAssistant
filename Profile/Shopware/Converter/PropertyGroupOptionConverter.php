@@ -57,7 +57,7 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
 
     public function getSourceIdentifier(array $data): string
     {
-        return hash('md5', mb_strtolower($data['name'] . '_' . $data['group']['name'] . '_' . $data['type']));
+        return \hash('md5', \mb_strtolower($data['name'] . '_' . $data['group']['name'] . '_' . $data['type']));
     }
 
     public function getMediaUuids(array $converted): ?array
@@ -101,7 +101,7 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::PROPERTY_GROUP_OPTION,
-            hash('md5', mb_strtolower($data['name'] . '_' . $data['group']['name'])),
+            \hash('md5', \mb_strtolower($data['name'] . '_' . $data['group']['name'])),
             $context
         );
         $this->mappingIds[] = $mapping['id'];
@@ -109,7 +109,7 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         $propertyGroupMapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::PROPERTY_GROUP,
-            hash('md5', mb_strtolower($data['group']['name'])),
+            \hash('md5', \mb_strtolower($data['group']['name'])),
             $context
         );
         $this->mappingIds[] = $propertyGroupMapping['id'];
@@ -258,7 +258,7 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::PROPERTY_GROUP_OPTION,
-            hash('md5', mb_strtolower($data['name'] . '_' . $data['group']['name'] . '_' . $data['type'])),
+            \hash('md5', \mb_strtolower($data['name'] . '_' . $data['group']['name'] . '_' . $data['type'])),
             $this->context,
             $this->checksum
         );
@@ -266,7 +266,7 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::PROPERTY_GROUP_OPTION,
-            hash('md5', mb_strtolower($data['group']['name'] . '_' . $data['type'])),
+            \hash('md5', \mb_strtolower($data['group']['name'] . '_' . $data['type'])),
             $this->context
         );
         $this->mappingIds[] = $mapping['id'];

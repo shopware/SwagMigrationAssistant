@@ -75,9 +75,9 @@ $ping = true;
 try {
     $ping = $connection->ping();
 } catch (\Exception $e) {
-    putenv('SWAG_MIGRATION_ASSISTANT_SKIP_SW5_TESTS=true');
+    \putenv('SWAG_MIGRATION_ASSISTANT_SKIP_SW5_TESTS=true');
 }
 
 if ($ping === false) {
-    putenv('SWAG_MIGRATION_ASSISTANT_SKIP_SW5_TESTS=true');
+    \putenv('SWAG_MIGRATION_ASSISTANT_SKIP_SW5_TESTS=true');
 }

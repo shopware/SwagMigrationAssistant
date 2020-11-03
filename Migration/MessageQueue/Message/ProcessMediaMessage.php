@@ -39,14 +39,14 @@ class ProcessMediaMessage
 
     public function withContext(Context $context): ProcessMediaMessage
     {
-        $this->contextData = serialize($context);
+        $this->contextData = \serialize($context);
 
         return $this;
     }
 
     public function readContext(): Context
     {
-        return unserialize($this->contextData);
+        return \unserialize($this->contextData);
     }
 
     public function setContextData(string $contextData): void

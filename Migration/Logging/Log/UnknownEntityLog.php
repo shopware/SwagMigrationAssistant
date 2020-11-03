@@ -38,7 +38,7 @@ class UnknownEntityLog extends BaseRunLogEntry
             return 'SWAG_MIGRATION_ENTITY_UNKNOWN';
         }
 
-        return sprintf('SWAG_MIGRATION_%s_ENTITY_UNKNOWN', mb_strtoupper($entity));
+        return \sprintf('SWAG_MIGRATION_%s_ENTITY_UNKNOWN', \mb_strtoupper($entity));
     }
 
     public function getTitle(): string
@@ -48,7 +48,7 @@ class UnknownEntityLog extends BaseRunLogEntry
             return 'Cannot find entity';
         }
 
-        return sprintf('Cannot find %s', $entity);
+        return \sprintf('Cannot find %s', $entity);
     }
 
     public function getParameters(): array
@@ -65,7 +65,7 @@ class UnknownEntityLog extends BaseRunLogEntry
     {
         $args = $this->getParameters();
 
-        return sprintf(
+        return \sprintf(
             'The %s entity with the source id "%s" cannot find the depended %s entity with the source id "%s".',
             $args['requiredForEntity'],
             $args['requiredForSourceId'],
@@ -76,11 +76,11 @@ class UnknownEntityLog extends BaseRunLogEntry
 
     public function getTitleSnippet(): string
     {
-        return sprintf('%s.%s.title', $this->getSnippetRoot(), 'SWAG_MIGRATION_ENTITY_UNKNOWN');
+        return \sprintf('%s.%s.title', $this->getSnippetRoot(), 'SWAG_MIGRATION_ENTITY_UNKNOWN');
     }
 
     public function getDescriptionSnippet(): string
     {
-        return sprintf('%s.%s.description', $this->getSnippetRoot(), 'SWAG_MIGRATION_ENTITY_UNKNOWN');
+        return \sprintf('%s.%s.description', $this->getSnippetRoot(), 'SWAG_MIGRATION_ENTITY_UNKNOWN');
     }
 }

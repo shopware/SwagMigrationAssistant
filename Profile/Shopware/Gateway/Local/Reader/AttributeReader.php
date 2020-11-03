@@ -63,12 +63,12 @@ SQL;
 
         // extract field translations and add them to config
         foreach ($attributeConfigTranslations as $translation) {
-            $name = str_replace($table . '_', '', $translation['name']);
-            $nameStrPos = (int) mb_strrpos($name, '_');
-            $column = mb_substr($name, 0, $nameStrPos);
+            $name = \str_replace($table . '_', '', $translation['name']);
+            $nameStrPos = (int) \mb_strrpos($name, '_');
+            $column = \mb_substr($name, 0, $nameStrPos);
 
-            $translationStrPos = (int) mb_strrpos($translation['name'], '_');
-            $field = mb_substr($translation['name'], $translationStrPos + 1);
+            $translationStrPos = (int) \mb_strrpos($translation['name'], '_');
+            $field = \mb_substr($translation['name'], $translationStrPos + 1);
 
             if (!isset($attributeConfiguration[$column]['translations'][$field])) {
                 $attributeConfiguration[$column]['translations'][$field] = [];
@@ -83,7 +83,7 @@ SQL;
             $columnData = [
                 'name' => $column->getName(),
                 'type' => $column->getType()->getName(),
-                '_locale' => str_replace('_', '-', $locale),
+                '_locale' => \str_replace('_', '-', $locale),
                 'configuration' => null,
             ];
 
@@ -122,11 +122,11 @@ SQL;
         }
 
         if ($fks !== []) {
-            $fks = array_merge(...$fks);
+            $fks = \array_merge(...$fks);
         }
 
         foreach ($columns as $column) {
-            if ($column->getAutoincrement() === true || in_array($column->getName(), $fks, true)) {
+            if ($column->getAutoincrement() === true || \in_array($column->getName(), $fks, true)) {
                 continue;
             }
             $result[] = $column;

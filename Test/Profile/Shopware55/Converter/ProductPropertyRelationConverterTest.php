@@ -93,7 +93,7 @@ class ProductPropertyRelationConverterTest extends TestCase
             $mapping = $this->mappingService->getOrCreateMapping(
                 $connectionId,
                 DefaultEntities::PROPERTY_GROUP_OPTION,
-                hash('md5', mb_strtolower($data['name'] . '_' . $data['group']['name'])),
+                \hash('md5', \mb_strtolower($data['name'] . '_' . $data['group']['name'])),
                 $this->context
             );
             $this->propertyUuids[$key] = $mapping['entityUuid'];

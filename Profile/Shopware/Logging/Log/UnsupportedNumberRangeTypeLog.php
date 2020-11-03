@@ -50,7 +50,7 @@ class UnsupportedNumberRangeTypeLog extends BaseRunLogEntry
     {
         $args = $this->getParameters();
 
-        return sprintf(
+        return \sprintf(
             'NumberRange-Entity with source id "%s" could not be converted because of unsupported type: %s.',
             $args['sourceId'],
             $args['type']

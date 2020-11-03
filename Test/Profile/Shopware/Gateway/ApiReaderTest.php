@@ -28,7 +28,7 @@ class ApiReaderTest extends TestCase
             'testKey' => 'testValue',
         ];
 
-        $body = json_encode([
+        $body = \json_encode([
             'data' => $dataArray,
         ]);
 

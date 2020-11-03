@@ -32,7 +32,7 @@ class CannotGetFileRunLog extends BaseRunLogEntry
             return 'SWAG_MIGRATION_CANNOT_GET_FILE';
         }
 
-        return sprintf('SWAG_MIGRATION_CANNOT_GET_%s_FILE', mb_strtoupper($entity));
+        return \sprintf('SWAG_MIGRATION_CANNOT_GET_%s_FILE', \mb_strtoupper($entity));
     }
 
     public function getTitle(): string
@@ -42,7 +42,7 @@ class CannotGetFileRunLog extends BaseRunLogEntry
             return 'The file cannot be downloaded / copied';
         }
 
-        return sprintf('The %s file cannot be downloaded / copied', $entity);
+        return \sprintf('The %s file cannot be downloaded / copied', $entity);
     }
 
     public function getParameters(): array
@@ -58,7 +58,7 @@ class CannotGetFileRunLog extends BaseRunLogEntry
     {
         $args = $this->getParameters();
 
-        return sprintf(
+        return \sprintf(
             'The %s file with the uri "%s" and media id "%s" cannot be downloaded / copied.',
             $args['entity'],
             $args['uri'],
@@ -68,11 +68,11 @@ class CannotGetFileRunLog extends BaseRunLogEntry
 
     public function getTitleSnippet(): string
     {
-        return sprintf('%s.%s.title', $this->getSnippetRoot(), 'SWAG_MIGRATION_CANNOT_GET_FILE');
+        return \sprintf('%s.%s.title', $this->getSnippetRoot(), 'SWAG_MIGRATION_CANNOT_GET_FILE');
     }
 
     public function getDescriptionSnippet(): string
     {
-        return sprintf('%s.%s.description', $this->getSnippetRoot(), 'SWAG_MIGRATION_CANNOT_GET_FILE');
+        return \sprintf('%s.%s.description', $this->getSnippetRoot(), 'SWAG_MIGRATION_CANNOT_GET_FILE');
     }
 }

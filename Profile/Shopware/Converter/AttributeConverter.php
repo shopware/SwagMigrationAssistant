@@ -53,13 +53,13 @@ abstract class AttributeConverter extends Converter
         $this->mappingIds[] = $mapping['id'];
 
         $connectionName = $this->connectionName;
-        $connectionName = str_replace(' ', '', $connectionName);
-        $connectionName = preg_replace('/[^A-Za-z0-9\-]/', '', $connectionName);
+        $connectionName = \str_replace(' ', '', $connectionName);
+        $connectionName = \preg_replace('/[^A-Za-z0-9\-]/', '', $connectionName);
 
         $converted['name'] = 'migration_' . $connectionName . '_' . $this->getCustomFieldEntityName();
         $converted['config'] = [
             'label' => [
-                $data['_locale'] => ucfirst($this->getCustomFieldEntityName()) . ' migration custom fields (attributes)',
+                $data['_locale'] => \ucfirst($this->getCustomFieldEntityName()) . ' migration custom fields (attributes)',
             ],
             'translated' => true,
         ];
@@ -121,7 +121,7 @@ abstract class AttributeConverter extends Converter
 
     protected function getCustomFieldConfiguration(array $data): array
     {
-        $locale = str_replace('_', '-', $data['_locale']);
+        $locale = \str_replace('_', '-', $data['_locale']);
 
         if (isset($data['configuration'])) {
             return $this->getConfiguredCustomFieldData($data, $locale);
@@ -250,7 +250,7 @@ abstract class AttributeConverter extends Converter
 
         if ($data['configuration']['column_type'] === 'combobox') {
             $options = [];
-            foreach (json_decode($data['configuration']['array_store']) as $keyValue) {
+            foreach (\json_decode($data['configuration']['array_store']) as $keyValue) {
                 $options[] = [
                     'value' => $keyValue->key,
                     'label' => [

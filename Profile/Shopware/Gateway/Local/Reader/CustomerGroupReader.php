@@ -35,7 +35,7 @@ class CustomerGroupReader extends AbstractReader
         $this->setConnection($migrationContext);
 
         $fetchedCustomerGroups = $this->fetchCustomerGroups($migrationContext);
-        $groupIds = array_column($fetchedCustomerGroups, 'customerGroup.id');
+        $groupIds = \array_column($fetchedCustomerGroups, 'customerGroup.id');
         $customerGroups = $this->mapData($fetchedCustomerGroups, [], ['customerGroup']);
 
         $fetchedDiscounts = $this->fetchCustomerGroupDiscounts($groupIds);
@@ -45,7 +45,7 @@ class CustomerGroupReader extends AbstractReader
         $locale = $this->getDefaultShopLocale();
 
         foreach ($customerGroups as $key => &$customerGroup) {
-            $customerGroup['_locale'] = str_replace('_', '-', $locale);
+            $customerGroup['_locale'] = \str_replace('_', '-', $locale);
             if (isset($discounts[$customerGroup['id']])) {
                 $customerGroup['discounts'] = $discounts[$customerGroup['id']];
             }

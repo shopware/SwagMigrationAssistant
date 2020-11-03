@@ -27,7 +27,7 @@ class EmptyNecessaryFieldRunLog extends BaseRunLogEntry
             return 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD';
         }
 
-        return sprintf('SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_%s', mb_strtoupper($entity));
+        return \sprintf('SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_%s', \mb_strtoupper($entity));
     }
 
     public function getLevel(): string
@@ -42,7 +42,7 @@ class EmptyNecessaryFieldRunLog extends BaseRunLogEntry
             return 'The entity has one or more empty necessary fields';
         }
 
-        return sprintf('The %s entity has one or more empty necessary fields', $entity);
+        return \sprintf('The %s entity has one or more empty necessary fields', $entity);
     }
 
     public function getParameters(): array
@@ -58,7 +58,7 @@ class EmptyNecessaryFieldRunLog extends BaseRunLogEntry
     {
         $args = $this->getParameters();
 
-        return sprintf(
+        return \sprintf(
             'The %s entity with the source id %s does not have the necessary data for the field(s): %s',
             $args['entity'],
             $args['sourceId'],
@@ -68,11 +68,11 @@ class EmptyNecessaryFieldRunLog extends BaseRunLogEntry
 
     public function getTitleSnippet(): string
     {
-        return sprintf('%s.%s.title', $this->getSnippetRoot(), 'SWAG_MIGRATION__SHOPWARE_EMPTY_NECESSARY_DATA_FIELDS');
+        return \sprintf('%s.%s.title', $this->getSnippetRoot(), 'SWAG_MIGRATION__SHOPWARE_EMPTY_NECESSARY_DATA_FIELDS');
     }
 
     public function getDescriptionSnippet(): string
     {
-        return sprintf('%s.%s.description', $this->getSnippetRoot(), 'SWAG_MIGRATION__SHOPWARE_EMPTY_NECESSARY_DATA_FIELDS');
+        return \sprintf('%s.%s.description', $this->getSnippetRoot(), 'SWAG_MIGRATION__SHOPWARE_EMPTY_NECESSARY_DATA_FIELDS');
     }
 }

@@ -38,7 +38,7 @@ class SeoUrlReader extends AbstractReader
         $seoUrls = $this->extractTypeInformation($seoUrls);
 
         foreach ($seoUrls as &$seoUrl) {
-            $seoUrl['_locale'] = str_replace('_', '-', $seoUrl['_locale']);
+            $seoUrl['_locale'] = \str_replace('_', '-', $seoUrl['_locale']);
         }
 
         return $this->cleanupResultSet($seoUrls);
@@ -88,7 +88,7 @@ class SeoUrlReader extends AbstractReader
     private function extractTypeInformation(array $seoUrls): array
     {
         foreach ($seoUrls as &$seoUrl) {
-            parse_str($seoUrl['org_path'], $output);
+            \parse_str($seoUrl['org_path'], $output);
             $seoUrl['type'] = $output['sViewport'];
             if ($output['sViewport'] === 'cat') {
                 $seoUrl['typeId'] = $output['sCategory'];

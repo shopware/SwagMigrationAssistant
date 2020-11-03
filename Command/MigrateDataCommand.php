@@ -154,7 +154,7 @@ class MigrateDataCommand extends Command
         /** @var SwagMigrationConnectionEntity|null $connection */
         $connection = $this->migrationConnectionRepo->search(new Criteria([$selectedConnectionId]), $context)->first();
         if ($connection === null) {
-            throw new \InvalidArgumentException(sprintf('No connection found for ID "%s".', $selectedConnectionId));
+            throw new \InvalidArgumentException(\sprintf('No connection found for ID "%s".', $selectedConnectionId));
         }
 
         $migrationContext = $this->migrationContextFactory->createByConnection($connection);
@@ -203,7 +203,7 @@ class MigrateDataCommand extends Command
             $dataSelections = [$dataSelections];
         }
         $this->dataSelectionNames[] = BasicSettingsDataSelection::IDENTIFIER;
-        $this->dataSelectionNames = array_merge($this->dataSelectionNames, $dataSelections);
+        $this->dataSelectionNames = \array_merge($this->dataSelectionNames, $dataSelections);
     }
 
     private function fetchData(ProgressState $progressState, MigrationContextInterface $migrationContext, SwagMigrationRunEntity $run, Context $context): void

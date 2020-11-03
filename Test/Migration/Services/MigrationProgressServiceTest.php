@@ -249,10 +249,10 @@ class MigrationProgressServiceTest extends TestCase
             'finishedCount' => 0,
         ];
 
-        $encodedProgress = json_encode($progress);
+        $encodedProgress = \json_encode($progress);
         static::assertIsNotBool($encodedProgress);
 
-        $progress = json_decode($encodedProgress, true);
+        $progress = \json_decode($encodedProgress, true);
         unset($progress['runProgress'], $progress['extensions']);
 
         static::assertSame($expectedProgress, $progress);
@@ -294,10 +294,10 @@ class MigrationProgressServiceTest extends TestCase
             'finishedCount' => 0,
         ];
 
-        $encodedProgress = json_encode($progress);
+        $encodedProgress = \json_encode($progress);
         static::assertIsNotBool($encodedProgress);
 
-        $progress = json_decode($encodedProgress, true);
+        $progress = \json_decode($encodedProgress, true);
         unset($progress['runProgress'], $progress['extensions']);
 
         static::assertSame($expectedProgress, $progress);

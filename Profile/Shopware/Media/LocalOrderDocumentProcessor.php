@@ -76,7 +76,7 @@ class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileP
             $mappedWorkload[$work->getMediaId()] = $work;
         }
 
-        if (!is_dir('_temp') && !mkdir('_temp') && !is_dir('_temp')) {
+        if (!\is_dir('_temp') && !\mkdir('_temp') && !\is_dir('_temp')) {
             $exception = new NoFileSystemPermissionsException();
             $this->loggingService->addLogEntry(new ExceptionRunLog(
                 $runId,
@@ -88,7 +88,7 @@ class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileP
             return $workload;
         }
 
-        $media = $this->getMediaFiles(array_keys($mappedWorkload), $migrationContext->getRunUuid());
+        $media = $this->getMediaFiles(\array_keys($mappedWorkload), $migrationContext->getRunUuid());
 
         return $this->copyMediaFiles($media, $mappedWorkload, $migrationContext, $context);
     }
@@ -127,7 +127,7 @@ class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileP
             $sourcePath = $installationRoot . '/files/documents/' . $mediaFile['file_name'] . '.pdf';
             $mediaId = $mediaFile['media_id'];
 
-            if (!file_exists($sourcePath)) {
+            if (!\file_exists($sourcePath)) {
                 $mappedWorkload[$mediaId]->setState(MediaProcessWorkloadStruct::ERROR_STATE);
                 $this->loggingService->addLogEntry(new CannotGetFileRunLog(
                     $mappedWorkload[$mediaId]->getRunId(),
@@ -148,7 +148,7 @@ class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileP
         $this->setProcessedFlag($migrationContext->getRunUuid(), $context, $processedMedia);
         $this->loggingService->saveLogging($context);
 
-        return array_values($mappedWorkload);
+        return \array_values($mappedWorkload);
     }
 
     private function persistFileToMedia(
@@ -158,10 +158,10 @@ class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileP
     ): void {
         $context->disableCache(function (Context $context) use ($sourcePath, $media): void {
             $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($sourcePath, $media): void {
-                $fileExtension = pathinfo($sourcePath, PATHINFO_EXTENSION);
-                $mimeType = mime_content_type($sourcePath);
-                $fileBlob = file_get_contents($sourcePath);
-                $name = preg_replace('/[^a-zA-Z0-9_-]+/', '-', mb_strtolower($media['file_name']));
+                $fileExtension = \pathinfo($sourcePath, PATHINFO_EXTENSION);
+                $mimeType = \mime_content_type($sourcePath);
+                $fileBlob = \file_get_contents($sourcePath);
+                $name = \preg_replace('/[^a-zA-Z0-9_-]+/', '-', \mb_strtolower($media['file_name']));
 
                 try {
                     $this->mediaService->saveFile(
@@ -178,7 +178,7 @@ class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileP
                         $fileBlob,
                         $fileExtension,
                         $mimeType,
-                        $name . mb_substr(Uuid::randomHex(), 0, 5),
+                        $name . \mb_substr(Uuid::randomHex(), 0, 5),
                         $context,
                         'document',
                         $media['media_id']

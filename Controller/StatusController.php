@@ -261,7 +261,7 @@ class StatusController extends AbstractController
 
         $environmentInformation = $this->migrationDataFetcher->getEnvironmentInformation($migrationContext, $context);
 
-        return new JsonResponse(array_values($this->dataSelectionRegistry->getDataSelections($migrationContext, $environmentInformation)->getElements()));
+        return new JsonResponse(\array_values($this->dataSelectionRegistry->getDataSelections($migrationContext, $environmentInformation)->getElements()));
     }
 
     /**
