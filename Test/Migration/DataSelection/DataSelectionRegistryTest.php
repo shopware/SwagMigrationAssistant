@@ -155,7 +155,7 @@ class DataSelectionRegistryTest extends TestCase
         foreach ($dataSelections as $dataSelection) {
             static::assertInstanceOf(DataSelectionStruct::class, $dataSelection);
 
-            if (sizeof($dataSelection->getEntityNamesRequiredForCount()) > 0) {
+            if (\sizeof($dataSelection->getEntityNamesRequiredForCount()) > 0) {
                 static::assertNotEmpty($dataSelection->getCountedTotal($totals));
             }
         }

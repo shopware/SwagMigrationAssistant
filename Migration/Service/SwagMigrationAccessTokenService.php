@@ -58,9 +58,9 @@ class SwagMigrationAccessTokenService
 
     public function invalidateRunAccessToken(string $runId, Context $context): void
     {
-        $token = hash(
+        $token = \hash(
             'sha256',
-            sprintf('invalid_%s', time())
+            \sprintf('invalid_%s', \time())
         );
 
         $this->migrationRunRepo->update(
@@ -96,9 +96,9 @@ class SwagMigrationAccessTokenService
 
     private function createMigrationAccessToken(string $runId, string $userId, Context $context): string
     {
-        $token = hash(
+        $token = \hash(
             'sha256',
-            sprintf('%s_%s_%s', $runId, $userId, time())
+            \sprintf('%s_%s_%s', $runId, $userId, \time())
         );
 
         $this->migrationRunRepo->update(

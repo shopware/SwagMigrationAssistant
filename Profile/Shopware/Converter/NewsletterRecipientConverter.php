@@ -65,7 +65,7 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
                 $this->runId,
                 DefaultEntities::NEWSLETTER_RECIPIENT,
                 $data['id'],
-                implode(',', $fields)
+                \implode(',', $fields)
             ));
 
             return new ConvertStruct(null, $data);

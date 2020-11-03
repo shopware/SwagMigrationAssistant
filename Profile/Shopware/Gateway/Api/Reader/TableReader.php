@@ -49,7 +49,7 @@ class TableReader implements TableReaderInterface
             throw new GatewayReadException('Shopware Api ' . $tableName);
         }
 
-        $arrayResult = json_decode($result->getBody()->getContents(), true);
+        $arrayResult = \json_decode($result->getBody()->getContents(), true);
 
         return $arrayResult['data'];
     }

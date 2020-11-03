@@ -50,7 +50,7 @@ class UnsupportedShippingPriceLog extends BaseRunLogEntry
     {
         $args = $this->getParameters();
 
-        return sprintf(
+        return \sprintf(
             'ShippingPrice-Entity with source id "%s" of shipping method "%s" could not be converted because of unsupported factor price calculation.',
             $args['sourceId'],
             $args['shippingMethodId']

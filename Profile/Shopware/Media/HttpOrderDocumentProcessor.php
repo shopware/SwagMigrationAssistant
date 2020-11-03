@@ -97,7 +97,7 @@ class HttpOrderDocumentProcessor extends BaseMediaService implements MediaFilePr
             $mediaIds[] = $work->getMediaId();
         }
 
-        if (!is_dir('_temp') && !mkdir('_temp') && !is_dir('_temp')) {
+        if (!\is_dir('_temp') && !\mkdir('_temp') && !\is_dir('_temp')) {
             $exception = new NoFileSystemPermissionsException();
             $this->loggingService->addLogEntry(new ExceptionRunLog(
                 $runId,
@@ -110,7 +110,7 @@ class HttpOrderDocumentProcessor extends BaseMediaService implements MediaFilePr
         }
 
         //Fetch media from database
-        $media = $this->getMediaFiles(array_keys($mappedWorkload), $migrationContext->getRunUuid());
+        $media = $this->getMediaFiles(\array_keys($mappedWorkload), $migrationContext->getRunUuid());
 
         //Do download requests and store the promises
         $client = $this->connectionFactory->createApiClient($migrationContext);
@@ -140,7 +140,7 @@ class HttpOrderDocumentProcessor extends BaseMediaService implements MediaFilePr
             $state = $result['state'];
             $additionalData = $mappedWorkload[$uuid]->getAdditionalData();
 
-            $oldWorkloadSearchResult = array_filter(
+            $oldWorkloadSearchResult = \array_filter(
                 $workload,
                 function (MediaProcessWorkloadStruct $work) use ($uuid) {
                     return $work->getMediaId() === $uuid;
@@ -148,7 +148,7 @@ class HttpOrderDocumentProcessor extends BaseMediaService implements MediaFilePr
             );
 
             /** @var MediaProcessWorkloadStruct $oldWorkload */
-            $oldWorkload = array_pop($oldWorkloadSearchResult);
+            $oldWorkload = \array_pop($oldWorkloadSearchResult);
 
             if ($state !== 'fulfilled') {
                 $mappedWorkload[$uuid] = $oldWorkload;
@@ -170,17 +170,17 @@ class HttpOrderDocumentProcessor extends BaseMediaService implements MediaFilePr
             }
 
             $response = $result['value'];
-            $filePath = sprintf('_temp/%s.%s', $uuid, 'pdf');
+            $filePath = \sprintf('_temp/%s.%s', $uuid, 'pdf');
 
-            $fileHandle = fopen($filePath, 'ab');
-            fwrite($fileHandle, $response->getBody()->getContents());
-            fclose($fileHandle);
+            $fileHandle = \fopen($filePath, 'ab');
+            \fwrite($fileHandle, $response->getBody()->getContents());
+            \fclose($fileHandle);
 
             if ($mappedWorkload[$uuid]->getState() === MediaProcessWorkloadStruct::FINISH_STATE) {
                 //move media to media system
                 $filename = $this->getMediaName($media, $uuid);
                 $this->persistFileToMedia($filePath, $uuid, $filename, $context);
-                unlink($filePath);
+                \unlink($filePath);
                 $finishedUuids[] = $uuid;
             }
 
@@ -192,7 +192,7 @@ class HttpOrderDocumentProcessor extends BaseMediaService implements MediaFilePr
         $this->setProcessedFlag($runId, $context, $finishedUuids, $failureUuids);
         $this->loggingService->saveLogging($context);
 
-        return array_values($mappedWorkload);
+        return \array_values($mappedWorkload);
     }
 
     /**
@@ -202,10 +202,10 @@ class HttpOrderDocumentProcessor extends BaseMediaService implements MediaFilePr
     {
         $context->disableCache(function (Context $context) use ($filePath, $uuid, $name): void {
             $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($filePath, $uuid, $name): void {
-                $fileExtension = pathinfo($filePath, PATHINFO_EXTENSION);
-                $mimeType = mime_content_type($filePath);
-                $fileBlob = file_get_contents($filePath);
-                $name = preg_replace('/[^a-zA-Z0-9_-]+/', '-', mb_strtolower($name));
+                $fileExtension = \pathinfo($filePath, PATHINFO_EXTENSION);
+                $mimeType = \mime_content_type($filePath);
+                $fileBlob = \file_get_contents($filePath);
+                $name = \preg_replace('/[^a-zA-Z0-9_-]+/', '-', \mb_strtolower($name));
 
                 try {
                     $this->mediaService->saveFile(
@@ -222,7 +222,7 @@ class HttpOrderDocumentProcessor extends BaseMediaService implements MediaFilePr
                         $fileBlob,
                         $fileExtension,
                         $mimeType,
-                        $name . mb_substr(Uuid::randomHex(), 0, 5),
+                        $name . \mb_substr(Uuid::randomHex(), 0, 5),
                         $context,
                         'document',
                         $uuid
@@ -251,7 +251,7 @@ class HttpOrderDocumentProcessor extends BaseMediaService implements MediaFilePr
     {
         $promises = [];
         foreach ($media as $mediaFile) {
-            $uuid = mb_strtolower($mediaFile['media_id']);
+            $uuid = \mb_strtolower($mediaFile['media_id']);
             $additionalData = [];
             $additionalData['file_size'] = $mediaFile['file_size'];
             $additionalData['uri'] = $mediaFile['uri'];

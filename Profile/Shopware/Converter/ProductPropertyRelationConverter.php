@@ -69,7 +69,7 @@ abstract class ProductPropertyRelationConverter extends ShopwareConverter
         $optionMapping = $this->mappingService->getMapping(
             $this->connectionId,
             DefaultEntities::PROPERTY_GROUP_OPTION,
-            hash('md5', mb_strtolower($data['name'] . '_' . $data['group']['name'])),
+            \hash('md5', \mb_strtolower($data['name'] . '_' . $data['group']['name'])),
             $context
         );
 

@@ -139,7 +139,7 @@ class ShopwareApiGateway implements ShopwareGatewayInterface
         if (!isset($environmentData['defaultShopLanguage'])) {
             $environmentData['defaultShopLanguage'] = $targetSystemLocale->getCode();
         }
-        $environmentData['defaultShopLanguage'] = str_replace('_', '-', $environmentData['defaultShopLanguage']);
+        $environmentData['defaultShopLanguage'] = \str_replace('_', '-', $environmentData['defaultShopLanguage']);
 
         $totals = $this->readTotals($migrationContext, $context);
 

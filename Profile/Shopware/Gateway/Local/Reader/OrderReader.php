@@ -40,7 +40,7 @@ class OrderReader extends AbstractReader
         $this->setConnection($migrationContext);
         $fetchedOrders = $this->fetchOrders($migrationContext);
 
-        $this->orderIds = array_column($fetchedOrders, 'ordering.id');
+        $this->orderIds = \array_column($fetchedOrders, 'ordering.id');
 
         $resultSet = $this->appendAssociatedData(
             $this->mapData(
@@ -139,7 +139,7 @@ class OrderReader extends AbstractReader
         $locale = $this->getDefaultShopLocale();
 
         foreach ($orders as $key => &$order) {
-            $order['_locale'] = str_replace('_', '-', $locale);
+            $order['_locale'] = \str_replace('_', '-', $locale);
             if (isset($orderDetails[$order['id']])) {
                 $order['details'] = $orderDetails[$order['id']];
             }

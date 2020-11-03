@@ -41,7 +41,7 @@ class WriteExceptionRunLog extends BaseRunLogEntry
             'entity' => $this->getEntity(),
             'dataId' => $this->getSourceId(),
             'error' => $this->error,
-            'description' => json_encode([
+            'description' => \json_encode([
                 'entity' => $this->getEntity(),
                 'dataId' => $this->getSourceId(),
                 'error' => $this->error,

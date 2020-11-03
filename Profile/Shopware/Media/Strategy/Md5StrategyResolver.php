@@ -17,7 +17,7 @@ class Md5StrategyResolver implements StrategyResolverInterface
 
     public function supports(string $path, MigrationContextInterface $migrationContext): bool
     {
-        return file_exists($this->resolve($path, $migrationContext));
+        return \file_exists($this->resolve($path, $migrationContext));
     }
 
     public function resolve(string $path, MigrationContextInterface $migrationContext): string
@@ -35,40 +35,40 @@ class Md5StrategyResolver implements StrategyResolverInterface
 
         $installationRoot = $credentials['installationRoot'] ?? '';
         if (!$path || $this->isEncoded($path)) {
-            return rtrim($installationRoot) . '/' . $this->substringPath($path);
+            return \rtrim($installationRoot) . '/' . $this->substringPath($path);
         }
 
         $path = $this->normalize($path);
 
-        $path = ltrim($path, '/');
-        $pathElements = explode('/', $path);
-        $pathInfo = pathinfo($path);
-        $md5hash = md5($path);
+        $path = \ltrim($path, '/');
+        $pathElements = \explode('/', $path);
+        $pathInfo = \pathinfo($path);
+        $md5hash = \md5($path);
 
         if (empty($pathInfo['extension'])) {
             return '';
         }
 
-        $split = str_split($md5hash, 2);
+        $split = \str_split($md5hash, 2);
 
-        if (!is_array($split)) {
+        if (!\is_array($split)) {
             return '';
         }
 
-        $realPath = array_slice($split, 0, 3);
-        $realPath = $pathElements[0] . '/' . $pathElements[1] . '/' . implode('/', $realPath) . '/' . $pathInfo['basename'];
+        $realPath = \array_slice($split, 0, 3);
+        $realPath = $pathElements[0] . '/' . $pathElements[1] . '/' . \implode('/', $realPath) . '/' . $pathInfo['basename'];
 
         if (!$this->hasBlacklistParts($realPath)) {
-            return rtrim($installationRoot) . '/' . $realPath;
+            return \rtrim($installationRoot) . '/' . $realPath;
         }
 
         foreach (self::BLACKLIST as $key => $value) {
             // must be called 2 times, because the second level won't be matched in the first call
-            $rp = str_replace($key, $value, $realPath);
-            $realPath = str_replace($key, $value, $rp);
+            $rp = \str_replace($key, $value, $realPath);
+            $realPath = \str_replace($key, $value, $rp);
         }
 
-        return rtrim($installationRoot) . '/' . $realPath;
+        return \rtrim($installationRoot) . '/' . $realPath;
     }
 
     private function isEncoded(string $path): bool
@@ -77,12 +77,12 @@ class Md5StrategyResolver implements StrategyResolverInterface
             return false;
         }
 
-        return (bool) preg_match("/.*(media\/(?:archive|image|model|music|pdf|temp|unknown|video|vector)(?:\/thumbnail)?\/(?:([0-9a-f]{2}\/[0-9a-f]{2}\/[0-9a-f]{2}\/))((.+)\.(.+)))/", $path);
+        return (bool) \preg_match("/.*(media\/(?:archive|image|model|music|pdf|temp|unknown|video|vector)(?:\/thumbnail)?\/(?:([0-9a-f]{2}\/[0-9a-f]{2}\/[0-9a-f]{2}\/))((.+)\.(.+)))/", $path);
     }
 
     private function substringPath(string $path): ?string
     {
-        preg_match("/(media\/(?:archive|image|model|music|pdf|temp|unknown|video|vector)(?:\/thumbnail)?\/.*)/", $path, $matches);
+        \preg_match("/(media\/(?:archive|image|model|music|pdf|temp|unknown|video|vector)(?:\/thumbnail)?\/.*)/", $path, $matches);
 
         return empty($matches) ? null : $matches[0];
     }
@@ -90,10 +90,10 @@ class Md5StrategyResolver implements StrategyResolverInterface
     private function normalize(string $path): string
     {
         // remove filesystem directories
-        $path = str_replace('//', '/', $path);
+        $path = \str_replace('//', '/', $path);
 
         // remove everything before /media/...
-        preg_match("/.*((media\/(?:archive|image|model|music|pdf|temp|unknown|video|vector)(?:\/thumbnail)?).*\/((.+)\.(.+)))/", $path, $matches);
+        \preg_match("/.*((media\/(?:archive|image|model|music|pdf|temp|unknown|video|vector)(?:\/thumbnail)?).*\/((.+)\.(.+)))/", $path, $matches);
 
         if (!empty($matches)) {
             return $matches[2] . '/' . $matches[3];
@@ -104,8 +104,8 @@ class Md5StrategyResolver implements StrategyResolverInterface
 
     private function hasBlacklistParts(string $path): bool
     {
-        foreach (array_keys(self::BLACKLIST) as $key) {
-            if (mb_strpos($path, $key) !== false) {
+        foreach (\array_keys(self::BLACKLIST) as $key) {
+            if (\mb_strpos($path, $key) !== false) {
                 return true;
             }
         }

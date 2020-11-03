@@ -36,7 +36,7 @@ class PropertyGroupOptionReader extends AbstractReader
         $locale = $this->getDefaultShopLocale();
 
         foreach ($options as $key => &$option) {
-            $option['_locale'] = str_replace('_', '-', $locale);
+            $option['_locale'] = \str_replace('_', '-', $locale);
         }
         unset($option);
 

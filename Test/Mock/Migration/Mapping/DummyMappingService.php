@@ -22,6 +22,8 @@ class DummyMappingService extends MappingService
 {
     public const DEFAULT_LANGUAGE_UUID = '20080911ffff4fffafffffff19830531';
     public const DEFAULT_LOCAL_UUID = '20080911ffff4fffafffffff19830531';
+    public const DEFAULT_GERMANY_UUID = '20080911ffff4fffafffffff19830511';
+    public const DEFAULT_UK_UUID = '20080911ffff4fffafffffff19830512';
 
     public function __construct()
     {
@@ -71,12 +73,17 @@ class DummyMappingService extends MappingService
     {
         $entity = $mapping['entity'];
         $oldIdentifier = $mapping['oldIdentifier'];
-        $this->mappings[md5($entity . $oldIdentifier)] = $mapping;
+        $this->mappings[\md5($entity . $oldIdentifier)] = $mapping;
     }
 
     public function getMapping(string $connectionId, string $entityName, string $oldIdentifier, Context $context): ?array
     {
-        return $this->mappings[md5($entityName . $oldIdentifier)] ?? null;
+        return $this->mappings[\md5($entityName . $oldIdentifier)] ?? null;
+    }
+
+    public function getMappingArray(): array
+    {
+        return $this->mappings;
     }
 
     public function getMappings(string $connectionId, string $entityName, array $ids, Context $context): EntitySearchResult
@@ -96,8 +103,8 @@ class DummyMappingService extends MappingService
 
     public function getUuidList(string $connectionId, string $entityName, string $identifier, Context $context): array
     {
-        return isset($this->mappings[md5($entityName . $identifier)])
-            ? array_column($this->mappings[md5($entityName . $identifier)], 'entityUuid')
+        return isset($this->mappings[\md5($entityName . $identifier)])
+            ? \array_column($this->mappings[\md5($entityName . $identifier)], 'entityUuid')
             : [];
     }
 
@@ -133,6 +140,14 @@ class DummyMappingService extends MappingService
 
     public function getCountryUuid(string $oldIdentifier, string $iso, string $iso3, string $connectionId, Context $context): ?string
     {
+        if ($iso === 'DE') {
+            return self::DEFAULT_GERMANY_UUID;
+        }
+
+        if ($iso === 'GB') {
+            return self::DEFAULT_UK_UUID;
+        }
+
         return null;
     }
 

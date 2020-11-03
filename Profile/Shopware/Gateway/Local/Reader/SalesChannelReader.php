@@ -39,14 +39,14 @@ class SalesChannelReader extends AbstractReader
         $locale = $this->getDefaultShopLocale();
 
         foreach ($salesChannels as $key => &$salesChannel) {
-            $salesChannel['locale'] = str_replace('_', '-', $salesChannel['locale']);
-            $salesChannel['_locale'] = str_replace('_', '-', $locale);
+            $salesChannel['locale'] = \str_replace('_', '-', $salesChannel['locale']);
+            $salesChannel['_locale'] = \str_replace('_', '-', $locale);
             if (!empty($salesChannel['main_id'])) {
                 $salesChannels[$salesChannel['main_id']]['children'][] = $salesChannel;
                 unset($salesChannels[$key]);
             }
         }
-        $salesChannels = array_values($salesChannels);
+        $salesChannels = \array_values($salesChannels);
 
         return $this->cleanupResultSet($salesChannels);
     }

@@ -62,7 +62,7 @@ class EnvironmentReader implements EnvironmentReaderInterface
         $columns = $this->connection->getSchemaManager()->listTableColumns($table);
 
         foreach ($columns as $column) {
-            $selection = str_replace(
+            $selection = \str_replace(
                 ['#tableAlias#', '#column#'],
                 [$tableAlias, $column->getName()],
                 '`#tableAlias#`.`#column#` as `#tableAlias#.#column#`'
@@ -109,15 +109,15 @@ class EnvironmentReader implements EnvironmentReaderInterface
     protected function mapData(array $data, array $result = [], array $pathsToRemove = []): array
     {
         foreach ($data as $key => $value) {
-            if (is_numeric($key)) {
+            if (\is_numeric($key)) {
                 $result[$key] = $this->mapData($value, [], $pathsToRemove);
             } else {
-                $paths = explode('.', $key);
-                $fieldKey = $paths[count($paths) - 1];
-                $chunks = explode('_', $paths[0]);
+                $paths = \explode('.', $key);
+                $fieldKey = $paths[\count($paths) - 1];
+                $chunks = \explode('_', $paths[0]);
 
                 if (!empty($pathsToRemove)) {
-                    $chunks = array_diff($chunks, $pathsToRemove);
+                    $chunks = \array_diff($chunks, $pathsToRemove);
                 }
                 $this->buildArrayFromChunks($result, $chunks, $fieldKey, $value);
             }
@@ -131,14 +131,14 @@ class EnvironmentReader implements EnvironmentReaderInterface
      */
     private function buildArrayFromChunks(array &$array, array $path, string $fieldKey, $value): void
     {
-        $key = array_shift($path);
+        $key = \array_shift($path);
 
         if (empty($key)) {
             $array[$fieldKey] = $value;
         } elseif (empty($path)) {
             $array[$key][$fieldKey] = $value;
         } else {
-            if (!isset($array[$key]) || !is_array($array[$key])) {
+            if (!isset($array[$key]) || !\is_array($array[$key])) {
                 $array[$key] = [];
             }
             $this->buildArrayFromChunks($array[$key], $path, $fieldKey, $value);
@@ -190,6 +190,6 @@ class EnvironmentReader implements EnvironmentReaderInterface
             }
         }
 
-        return array_values($shops);
+        return \array_values($shops);
     }
 }

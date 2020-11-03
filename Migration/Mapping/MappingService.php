@@ -225,8 +225,8 @@ class MappingService implements MappingServiceInterface
         string $oldIdentifier,
         Context $context
     ): ?array {
-        if (isset($this->mappings[md5($entityName . $oldIdentifier)])) {
-            return $this->mappings[md5($entityName . $oldIdentifier)];
+        if (isset($this->mappings[\md5($entityName . $oldIdentifier)])) {
+            return $this->mappings[\md5($entityName . $oldIdentifier)];
         }
         /** @var EntitySearchResult $result */
         $result = $context->disableCache(function (Context $context) use ($connectionId, $entityName, $oldIdentifier) {
@@ -252,7 +252,7 @@ class MappingService implements MappingServiceInterface
                 'checksum' => $element->getChecksum(),
                 'additionalData' => $element->getAdditionalData(),
             ];
-            $this->mappings[md5($entityName . $oldIdentifier)] = $mapping;
+            $this->mappings[\md5($entityName . $oldIdentifier)] = $mapping;
 
             return $mapping;
         }
@@ -302,7 +302,7 @@ class MappingService implements MappingServiceInterface
             );
         }
 
-        $mapping = array_merge($mapping, $updateData);
+        $mapping = \array_merge($mapping, $updateData);
         $this->saveMapping($mapping);
 
         return $mapping;
@@ -333,7 +333,7 @@ class MappingService implements MappingServiceInterface
             foreach ($elements as $mapping) {
                 $entityName = $mapping->getEntity();
                 $oldIdentifier = $mapping->getOldIdentifier();
-                $this->mappings[md5($entityName . $oldIdentifier)] = [
+                $this->mappings[\md5($entityName . $oldIdentifier)] = [
                     'id' => $mapping->getId(),
                     'connectionId' => $mapping->getConnectionId(),
                     'entity' => $entityName,
@@ -427,8 +427,8 @@ class MappingService implements MappingServiceInterface
 
     public function getUuidList(string $connectionId, string $entityName, string $identifier, Context $context): array
     {
-        if (isset($this->mappings[md5($entityName . $identifier)])) {
-            return $this->mappings[md5($entityName . $identifier)];
+        if (isset($this->mappings[\md5($entityName . $identifier)])) {
+            return $this->mappings[\md5($entityName . $identifier)];
         }
 
         /** @var EntitySearchResult $result */
@@ -449,7 +449,7 @@ class MappingService implements MappingServiceInterface
             }
         }
 
-        $this->mappings[md5($entityName . $identifier)] = $uuidList;
+        $this->mappings[\md5($entityName . $identifier)] = $uuidList;
 
         return $uuidList;
     }
@@ -459,7 +459,7 @@ class MappingService implements MappingServiceInterface
         foreach ($this->writeArray as $key => $writeMapping) {
             if ($writeMapping['connectionId'] === $connectionId && $writeMapping['entityUuid'] === $entityUuid) {
                 unset($this->writeArray[$key]);
-                $this->writeArray = array_values($this->writeArray);
+                $this->writeArray = \array_values($this->writeArray);
 
                 break;
             }
@@ -482,7 +482,7 @@ class MappingService implements MappingServiceInterface
         });
 
         if ($result->getTotal() > 0) {
-            $this->migrationMappingRepo->delete(array_values($result->getData()), $context);
+            $this->migrationMappingRepo->delete(\array_values($result->getData()), $context);
         }
     }
 
@@ -967,7 +967,6 @@ class MappingService implements MappingServiceInterface
         return $uuids;
     }
 
-    // ToDo MIG-107 - Remove if we migrate every data of the shipping method
     public function getDefaultAvailabilityRule(Context $context): ?string
     {
         if (isset($this->defaultAvailabilityRule)) {
@@ -1055,7 +1054,7 @@ class MappingService implements MappingServiceInterface
     {
         $entity = $mapping['entity'];
         $oldIdentifier = $mapping['oldIdentifier'];
-        $this->mappings[md5($entity . $oldIdentifier)] = $mapping;
+        $this->mappings[\md5($entity . $oldIdentifier)] = $mapping;
         $this->writeArray[] = $mapping;
     }
 
@@ -1063,7 +1062,7 @@ class MappingService implements MappingServiceInterface
     {
         $entity = $mapping['entity'];
         $oldIdentifier = $mapping['oldIdentifier'];
-        $this->mappings[md5($entity . $oldIdentifier)][] = $mapping;
+        $this->mappings[\md5($entity . $oldIdentifier)][] = $mapping;
         $this->writeArray[] = $mapping;
     }
 

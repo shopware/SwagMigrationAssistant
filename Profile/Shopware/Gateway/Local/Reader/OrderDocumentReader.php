@@ -38,7 +38,7 @@ class OrderDocumentReader extends AbstractReader
         $locale = $this->getDefaultShopLocale();
 
         foreach ($documents as &$document) {
-            $document['_locale'] = str_replace('_', '-', $locale);
+            $document['_locale'] = \str_replace('_', '-', $locale);
         }
 
         return $this->cleanupResultSet($documents);

@@ -50,7 +50,7 @@ class UnsupportedShippingCalculationType extends BaseRunLogEntry
     {
         $args = $this->getParameters();
 
-        return sprintf(
+        return \sprintf(
             'ShippingMethod-Entity with source id "%s" could not be converted because of unsupported calculation type "%s".',
             $args['sourceId'],
             $args['type']

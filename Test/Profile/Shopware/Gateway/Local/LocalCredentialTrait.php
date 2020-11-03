@@ -52,7 +52,7 @@ trait LocalCredentialTrait
 
     public function connectionSetup(): void
     {
-        if (getenv('SWAG_MIGRATION_ASSISTANT_SKIP_SW5_TESTS') === 'true') {
+        if (\getenv('SWAG_MIGRATION_ASSISTANT_SKIP_SW5_TESTS') === 'true') {
             static::markTestSkipped('Shopware 5 test database not available. Skipping test');
         }
 

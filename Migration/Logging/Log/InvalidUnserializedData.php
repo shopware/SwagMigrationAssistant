@@ -60,7 +60,7 @@ class InvalidUnserializedData extends BaseRunLogEntry
     {
         $args = $this->getParameters();
 
-        return sprintf(
+        return \sprintf(
             'The %s entity with source id "%s" could not be converted because of invalid unserialized object data for the "%s" entity and the raw data is: %s',
             $args['entity'],
             $args['sourceId'],

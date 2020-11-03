@@ -158,7 +158,7 @@ class MediaFileService implements MediaFileServiceInterface
             unset($files[$mediaFile->getMediaId()]);
         }
 
-        $this->writeArray = array_values($files);
+        $this->writeArray = \array_values($files);
     }
 
     private function saveWrittenFlag(array $mediaUuids, MigrationContextInterface $migrationContext, Context $context): void

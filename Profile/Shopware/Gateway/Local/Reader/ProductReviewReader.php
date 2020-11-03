@@ -37,7 +37,7 @@ class ProductReviewReader extends AbstractReader
         $fetchedReviews = $this->mapData($fetchedReviews, [], ['vote', 'mainShopId']);
 
         foreach ($fetchedReviews as &$review) {
-            $review['_locale'] = str_replace('_', '-', $review['_locale']);
+            $review['_locale'] = \str_replace('_', '-', $review['_locale']);
         }
 
         return $this->cleanupResultSet($fetchedReviews);

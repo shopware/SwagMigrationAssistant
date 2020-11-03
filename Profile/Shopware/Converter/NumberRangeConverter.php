@@ -66,7 +66,7 @@ abstract class NumberRangeConverter extends ShopwareConverter
             $this->numberRangeTypes = $this->numberRangeTypeRepo->search(new Criteria(), $context)->getEntities();
         }
 
-        if (!array_key_exists($data['name'], self::TYPE_MAPPING)) {
+        if (!\array_key_exists($data['name'], self::TYPE_MAPPING)) {
             $this->loggingService->addLogEntry(
                 new UnsupportedNumberRangeTypeLog(
                     $migrationContext->getRunUuid(),

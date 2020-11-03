@@ -39,9 +39,9 @@ abstract class BaseMediaService
 
         $result = $query->fetchAll();
         foreach ($result as &$media) {
-            $media['id'] = mb_strtolower($media['id']);
-            $media['run_id'] = mb_strtolower($media['run_id']);
-            $media['media_id'] = mb_strtolower($media['media_id']);
+            $media['id'] = \mb_strtolower($media['id']);
+            $media['run_id'] = \mb_strtolower($media['run_id']);
+            $media['media_id'] = \mb_strtolower($media['media_id']);
         }
 
         return $result;

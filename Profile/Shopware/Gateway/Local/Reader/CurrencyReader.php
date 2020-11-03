@@ -39,7 +39,7 @@ class CurrencyReader extends AbstractReader
         $locale = $this->getDefaultShopLocale();
 
         foreach ($currencies as $key => &$currency) {
-            $currency['_locale'] = str_replace('_', '-', $locale);
+            $currency['_locale'] = \str_replace('_', '-', $locale);
         }
 
         $currencies = $this->mapData($currencies, [], ['currency']);

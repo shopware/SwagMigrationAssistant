@@ -85,7 +85,7 @@ class MediaAlbumReader extends AbstractReader
             return $albums;
         }
 
-        return array_merge(...$albums);
+        return \array_merge(...$albums);
     }
 
     private function getChildAlbums(array &$mediaAlbums, string $id, string $locale): array
@@ -111,6 +111,6 @@ class MediaAlbumReader extends AbstractReader
             return $albums;
         }
 
-        return array_merge(...$albums);
+        return \array_merge(...$albums);
     }
 }

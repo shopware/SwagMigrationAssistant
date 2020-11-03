@@ -95,7 +95,7 @@ abstract class CustomerConverter extends ShopwareConverter
                 $this->runId,
                 DefaultEntities::CUSTOMER,
                 $data['id'],
-                implode(',', $fields)
+                \implode(',', $fields)
             ));
 
             return new ConvertStruct(null, $oldData);
@@ -306,7 +306,7 @@ abstract class CustomerConverter extends ShopwareConverter
 
         if ($originalEncoder === 'md5' || $originalEncoder === 'sha256') {
             $converted['legacyPassword'] = $data['password'];
-            $converted['legacyEncoder'] = ucfirst($originalEncoder);
+            $converted['legacyEncoder'] = \ucfirst($originalEncoder);
             unset($data['password'], $data['encoder']);
 
             return;
@@ -352,7 +352,7 @@ abstract class CustomerConverter extends ShopwareConverter
                     $this->runId,
                     DefaultEntities::CUSTOMER_ADDRESS,
                     $address['id'],
-                    implode(',', $fields)
+                    \implode(',', $fields)
                 ));
 
                 continue;

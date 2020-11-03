@@ -55,13 +55,13 @@ class TableCountReader implements TableCountReaderInterface
             throw new GatewayReadException('Shopware Api table count.');
         }
 
-        $arrayResult = json_decode($result->getBody()->getContents(), true);
+        $arrayResult = \json_decode($result->getBody()->getContents(), true);
 
         if (!isset($arrayResult['data'])) {
             return [];
         }
 
-        if (count($arrayResult['data']['exceptions']) > 0) {
+        if (\count($arrayResult['data']['exceptions']) > 0) {
             $this->logExceptions($arrayResult['data']['exceptions'], $migrationContext, $context);
         }
 

@@ -54,11 +54,16 @@ class ShippingMethodConverterTest extends TestCase
      */
     private $context;
 
+    /**
+     * @var DummyMappingService
+     */
+    private $mappingService;
+
     protected function setUp(): void
     {
-        $mappingService = new DummyMappingService();
+        $this->mappingService = new DummyMappingService();
         $this->loggingService = new DummyLoggingService();
-        $this->shippingMethodConverter = new Shopware55ShippingMethodConverter($mappingService, $this->loggingService);
+        $this->shippingMethodConverter = new Shopware55ShippingMethodConverter($this->mappingService, $this->loggingService);
 
         $this->runId = Uuid::randomHex();
         $this->connection = new SwagMigrationConnectionEntity();
@@ -75,7 +80,7 @@ class ShippingMethodConverterTest extends TestCase
             250
         );
 
-        $mappingService->getOrCreateMapping(
+        $this->mappingService->getOrCreateMapping(
             $this->connection->getId(),
             DefaultEntities::DELIVERY_TIME,
             'default_delivery_time',
@@ -85,7 +90,7 @@ class ShippingMethodConverterTest extends TestCase
             Uuid::randomHex()
         );
 
-        $mappingService->getOrCreateMapping(
+        $this->mappingService->getOrCreateMapping(
             $this->connection->getId(),
             DefaultEntities::DELIVERY_TIME,
             'default_delivery_time',
@@ -95,7 +100,7 @@ class ShippingMethodConverterTest extends TestCase
             Uuid::randomHex()
         );
 
-        $mappingService->getOrCreateMapping(
+        $this->mappingService->getOrCreateMapping(
             $this->connection->getId(),
             DefaultEntities::CURRENCY,
             'EUR',
@@ -160,5 +165,610 @@ class ShippingMethodConverterTest extends TestCase
         static::assertSame($error->getSourceId(), $logs[0]['sourceId']);
         static::assertSame($error->getEntity(), $logs[0]['entity']);
         static::assertSame($error->getParameters()['shippingMethodId'], $logs[0]['parameters']['shippingMethodId']);
+    }
+
+    public function conditionDataProvider(): array
+    {
+        return [
+            'fromAndToTimeRange' => [
+                'bindValues' => [
+                    'bind_time_from' => 25200,
+                    'bind_time_to' => 28800,
+                ],
+
+                'expectedConditions' => [
+                    [
+                        'type' => 'timeRange',
+                        'value' => [
+                            'fromTime' => '07:00',
+                            'toTime' => '08:00',
+                        ],
+                    ],
+                ],
+            ],
+
+            'lastStock' => [
+                'bindValues' => [
+                    'bind_laststock' => true,
+                ],
+
+                'expectedConditions' => [
+                    [
+                        'type' => 'cartLineItemClearanceSale',
+                        'value' => [
+                            'clearanceSale' => true,
+                        ],
+                    ],
+                ],
+            ],
+
+            'fromAndToWeight' => [
+                'bindValues' => [
+                    'bind_weight_from' => '10',
+                    'bind_weight_to' => '100',
+                ],
+
+                'expectedConditions' => [
+                    [
+                        'type' => 'cartWeight',
+                        'value' => [
+                            'operator' => '>=',
+                            'weight' => '10',
+                        ],
+                    ],
+                    [
+                        'type' => 'cartWeight',
+                        'value' => [
+                            'operator' => '<=',
+                            'weight' => '100',
+                        ],
+                    ],
+                ],
+            ],
+
+            'onlyFromWeight' => [
+                'bindValues' => [
+                    'bind_weight_from' => '10',
+                ],
+
+                'expectedConditions' => [
+                    [
+                        'type' => 'cartWeight',
+                        'value' => [
+                            'operator' => '>=',
+                            'weight' => '10',
+                        ],
+                    ],
+                ],
+            ],
+
+            'onlyToWeight' => [
+                'bindValues' => [
+                    'bind_weight_to' => '100',
+                ],
+
+                'expectedConditions' => [
+                    [
+                        'type' => 'cartWeight',
+                        'value' => [
+                            'operator' => '<=',
+                            'weight' => '100',
+                        ],
+                    ],
+                ],
+            ],
+
+            'fromAndToPrice' => [
+                'bindValues' => [
+                    'bind_price_from' => '10',
+                    'bind_price_to' => '100',
+                ],
+
+                'expectedConditions' => [
+                    [
+                        'type' => 'cartLineItemTotalPrice',
+                        'value' => [
+                            'operator' => '>=',
+                            'amount' => '10',
+                        ],
+                    ],
+                    [
+                        'type' => 'cartLineItemTotalPrice',
+                        'value' => [
+                            'operator' => '<=',
+                            'amount' => '100',
+                        ],
+                    ],
+                ],
+            ],
+
+            'onlyFromPrice' => [
+                'bindValues' => [
+                    'bind_price_from' => '10',
+                ],
+
+                'expectedConditions' => [
+                    [
+                        'type' => 'cartLineItemTotalPrice',
+                        'value' => [
+                            'operator' => '>=',
+                            'amount' => '10',
+                        ],
+                    ],
+                ],
+            ],
+
+            'onlyToPrice' => [
+                'bindValues' => [
+                    'bind_price_to' => '100',
+                ],
+
+                'expectedConditions' => [
+                    [
+                        'type' => 'cartLineItemTotalPrice',
+                        'value' => [
+                            'operator' => '<=',
+                            'amount' => '100',
+                        ],
+                    ],
+                ],
+            ],
+
+            'fromAndToWeekday' => [
+                'bindValues' => [
+                    'bind_weekday_from' => '1',
+                    'bind_weekday_to' => '5',
+                ],
+
+                'expectedConditions' => [
+                    [
+                        'type' => 'orContainer',
+                        'children' => [
+                            [
+                                'type' => 'dayOfWeek',
+                                'value' => [
+                                    'operator' => '=',
+                                    'dayOfWeek' => 1,
+                                ],
+                            ],
+                            [
+                                'type' => 'dayOfWeek',
+                                'value' => [
+                                    'operator' => '=',
+                                    'dayOfWeek' => 2,
+                                ],
+                            ],
+                            [
+                                'type' => 'dayOfWeek',
+                                'value' => [
+                                    'operator' => '=',
+                                    'dayOfWeek' => 3,
+                                ],
+                            ],
+                            [
+                                'type' => 'dayOfWeek',
+                                'value' => [
+                                    'operator' => '=',
+                                    'dayOfWeek' => 4,
+                                ],
+                            ],
+                            [
+                                'type' => 'dayOfWeek',
+                                'value' => [
+                                    'operator' => '=',
+                                    'dayOfWeek' => 5,
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+
+            'onlyFromWeekday' => [
+                'bindValues' => [
+                    'bind_weekday_from' => '5',
+                ],
+
+                'expectedConditions' => [
+                    [
+                        'type' => 'orContainer',
+                        'children' => [
+                            [
+                                'type' => 'dayOfWeek',
+                                'value' => [
+                                    'operator' => '=',
+                                    'dayOfWeek' => 5,
+                                ],
+                            ],
+                            [
+                                'type' => 'dayOfWeek',
+                                'value' => [
+                                    'operator' => '=',
+                                    'dayOfWeek' => 6,
+                                ],
+                            ],
+                            [
+                                'type' => 'dayOfWeek',
+                                'value' => [
+                                    'operator' => '=',
+                                    'dayOfWeek' => 7,
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+
+            'onlyToWeekday' => [
+                'bindValues' => [
+                    'bind_weekday_to' => '3',
+                ],
+
+                'expectedConditions' => [
+                    [
+                        'type' => 'orContainer',
+                        'children' => [
+                            [
+                                'type' => 'dayOfWeek',
+                                'value' => [
+                                    'operator' => '=',
+                                    'dayOfWeek' => 1,
+                                ],
+                            ],
+                            [
+                                'type' => 'dayOfWeek',
+                                'value' => [
+                                    'operator' => '=',
+                                    'dayOfWeek' => 2,
+                                ],
+                            ],
+                            [
+                                'type' => 'dayOfWeek',
+                                'value' => [
+                                    'operator' => '=',
+                                    'dayOfWeek' => 3,
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+
+            'fromBiggerThenToWeekday' => [
+                'bindValues' => [
+                    'bind_weekday_from' => '5',
+                    'bind_weekday_to' => '2',
+                ],
+
+                'expectedConditions' => [
+                    [
+                        'type' => 'orContainer',
+                        'children' => [
+                            [
+                                'type' => 'dayOfWeek',
+                                'value' => [
+                                    'operator' => '=',
+                                    'dayOfWeek' => 1,
+                                ],
+                            ],
+                            [
+                                'type' => 'dayOfWeek',
+                                'value' => [
+                                    'operator' => '=',
+                                    'dayOfWeek' => 2,
+                                ],
+                            ],
+                            [
+                                'type' => 'dayOfWeek',
+                                'value' => [
+                                    'operator' => '=',
+                                    'dayOfWeek' => 5,
+                                ],
+                            ],
+                            [
+                                'type' => 'dayOfWeek',
+                                'value' => [
+                                    'operator' => '=',
+                                    'dayOfWeek' => 6,
+                                ],
+                            ],
+                            [
+                                'type' => 'dayOfWeek',
+                                'value' => [
+                                    'operator' => '=',
+                                    'dayOfWeek' => 7,
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+
+            'allExtendedConfigurationsInOne' => [
+                'bindValues' => [
+                    'bind_time_from' => 25200,
+                    'bind_time_to' => 28800,
+                    'bind_laststock' => true,
+                    'bind_weight_from' => '10',
+                    'bind_weight_to' => '100',
+                    'bind_price_from' => '10',
+                    'bind_price_to' => '100',
+                    'bind_weekday_from' => '1',
+                    'bind_weekday_to' => '3',
+                ],
+
+                'expectedConditions' => [
+                    [
+                        'type' => 'orContainer',
+                        'children' => [
+                            [
+                                'type' => 'dayOfWeek',
+                                'value' => [
+                                    'operator' => '=',
+                                    'dayOfWeek' => 1,
+                                ],
+                            ],
+                            [
+                                'type' => 'dayOfWeek',
+                                'value' => [
+                                    'operator' => '=',
+                                    'dayOfWeek' => 2,
+                                ],
+                            ],
+                            [
+                                'type' => 'dayOfWeek',
+                                'value' => [
+                                    'operator' => '=',
+                                    'dayOfWeek' => 3,
+                                ],
+                            ],
+                        ],
+                    ],
+                    [
+                        'type' => 'timeRange',
+                        'value' => [
+                            'fromTime' => '07:00',
+                            'toTime' => '08:00',
+                        ],
+                    ],
+                    [
+                        'type' => 'cartLineItemClearanceSale',
+                        'value' => [
+                            'clearanceSale' => true,
+                        ],
+                    ],
+                    [
+                        'type' => 'cartWeight',
+                        'value' => [
+                            'operator' => '>=',
+                            'weight' => '10',
+                        ],
+                    ],
+                    [
+                        'type' => 'cartWeight',
+                        'value' => [
+                            'operator' => '<=',
+                            'weight' => '100',
+                        ],
+                    ],
+                    [
+                        'type' => 'cartLineItemTotalPrice',
+                        'value' => [
+                            'operator' => '>=',
+                            'amount' => '10',
+                        ],
+                    ],
+                    [
+                        'type' => 'cartLineItemTotalPrice',
+                        'value' => [
+                            'operator' => '<=',
+                            'amount' => '100',
+                        ],
+                    ],
+                ],
+            ],
+
+            'shippingCountries' => [
+                'bindValues' => [
+                    'shippingCountries' => [
+                        [
+                            'countryID' => '1',
+                            'countryiso' => 'DE',
+                            'iso3' => 'DEU',
+                        ],
+                        [
+                            'countryID' => '2',
+                            'countryiso' => 'GB',
+                            'iso3' => 'GBK',
+                        ],
+                    ],
+                ],
+
+                'expectedConditions' => [
+                    [
+                        'type' => 'customerShippingCountry',
+                        'value' => [
+                            'operator' => '=',
+                            'countryIds' => [
+                                DummyMappingService::DEFAULT_GERMANY_UUID,
+                                DummyMappingService::DEFAULT_UK_UUID,
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+
+            'paymentMethods' => [
+                'bindValues' => [
+                    'paymentMethods' => [
+                        '1',
+                        '2',
+                        '3',
+                    ],
+                ],
+
+                'expectedConditions' => [
+                    [
+                        'type' => 'paymentMethod',
+                        'value' => [
+                            'operator' => '=',
+                            'paymentMethodIds' => [
+                                Uuid::randomHex(),
+                                Uuid::randomHex(),
+                                Uuid::randomHex(),
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+
+            'excludedCategories' => [
+                'bindValues' => [
+                    'excludedCategories' => [
+                        '1',
+                        '2',
+                        '3',
+                    ],
+                ],
+
+                'expectedConditions' => [
+                    [
+                        'type' => 'cartLineItemInCategory',
+                        'value' => [
+                            'operator' => '!=',
+                            'categoryIds' => [
+                                Uuid::randomHex(),
+                                Uuid::randomHex(),
+                                Uuid::randomHex(),
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+
+            'freeShipping' => [
+                'bindValues' => [
+                    'bind_shippingfree' => '1',
+                ],
+
+                'expectedConditions' => [
+                    [
+                        'type' => 'cartHasDeliveryFreeItem',
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider conditionDataProvider
+     */
+    public function testConvertCondition(array $bindValues, array $excpetedConditions): void
+    {
+        $shippingMethodData = require __DIR__ . '/../../../_fixtures/shipping_method_data.php';
+
+        foreach ($bindValues as $key => $bindValue) {
+            $shippingMethodData[0][$key] = $bindValue;
+        }
+
+        if (isset($excpetedConditions[0]['type'], $excpetedConditions[0]['value']['paymentMethodIds']) && $excpetedConditions[0]['type'] === 'paymentMethod') {
+            $this->mappingService->getOrCreateMapping(
+                $this->connection->getId(),
+                DefaultEntities::PAYMENT_METHOD,
+                '1',
+                $this->context,
+                null,
+                null,
+                $excpetedConditions[0]['value']['paymentMethodIds'][0]
+            );
+
+            $this->mappingService->getOrCreateMapping(
+                $this->connection->getId(),
+                DefaultEntities::PAYMENT_METHOD,
+                '2',
+                $this->context,
+                null,
+                null,
+                $excpetedConditions[0]['value']['paymentMethodIds'][1]
+            );
+
+            $this->mappingService->getOrCreateMapping(
+                $this->connection->getId(),
+                DefaultEntities::PAYMENT_METHOD,
+                '3',
+                $this->context,
+                null,
+                null,
+                $excpetedConditions[0]['value']['paymentMethodIds'][2]
+            );
+        }
+
+        if (isset($excpetedConditions[0]['type'], $excpetedConditions[0]['value']['categoryIds']) && $excpetedConditions[0]['type'] === 'cartLineItemInCategory') {
+            $this->mappingService->getOrCreateMapping(
+                $this->connection->getId(),
+                DefaultEntities::CATEGORY,
+                '1',
+                $this->context,
+                null,
+                null,
+                $excpetedConditions[0]['value']['categoryIds'][0]
+            );
+
+            $this->mappingService->getOrCreateMapping(
+                $this->connection->getId(),
+                DefaultEntities::CATEGORY,
+                '2',
+                $this->context,
+                null,
+                null,
+                $excpetedConditions[0]['value']['categoryIds'][1]
+            );
+
+            $this->mappingService->getOrCreateMapping(
+                $this->connection->getId(),
+                DefaultEntities::CATEGORY,
+                '3',
+                $this->context,
+                null,
+                null,
+                $excpetedConditions[0]['value']['categoryIds'][2]
+            );
+        }
+
+        $convertResult = $this->shippingMethodConverter->convert($shippingMethodData[0], $this->context, $this->migrationContext);
+        $converted = $convertResult->getConverted();
+
+        static::assertNull($convertResult->getUnmapped());
+        static::assertNotNull($converted);
+        static::assertNotNull($convertResult->getMappingUuid());
+        static::assertArrayHasKey('id', $converted);
+        static::assertArrayHasKey('availabilityRule', $converted);
+        static::assertArrayHasKey('conditions', $converted['availabilityRule']);
+
+        $availabilityRule = $converted['availabilityRule'];
+        static::assertArrayHasKey('children', $availabilityRule['conditions'][0]['children'][0]);
+        $conditions = $availabilityRule['conditions'][0]['children'][0]['children'];
+
+        foreach ($conditions as &$condition) {
+            unset(
+                $condition['id'],
+                $condition['ruleId'],
+                $condition['parentId'],
+                $condition['position']
+            );
+
+            if (isset($condition['children'])) {
+                foreach ($condition['children'] as &$child) {
+                    unset(
+                        $child['id'],
+                        $child['ruleId'],
+                        $child['parentId'],
+                        $child['position']
+                    );
+                }
+            }
+        }
+
+        static::assertSame($excpetedConditions, $conditions);
     }
 }

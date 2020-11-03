@@ -49,7 +49,7 @@ class DocumentTypeNotSupported extends BaseRunLogEntry
     {
         $args = $this->getParameters();
 
-        return sprintf(
+        return \sprintf(
             'The document with the source id "%s" could not be converted because the document type "%s" is not supported.',
             $args['sourceId'],
             $args['type']

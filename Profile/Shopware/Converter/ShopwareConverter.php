@@ -119,11 +119,11 @@ abstract class ShopwareConverter extends Converter
     {
         $result = [];
         // remove unwanted characters from connection name
-        $connectionName = str_replace(' ', '', $connectionName);
-        $connectionName = preg_replace('/[^A-Za-z0-9\-]/', '', $connectionName);
+        $connectionName = \str_replace(' ', '', $connectionName);
+        $connectionName = \preg_replace('/[^A-Za-z0-9\-]/', '', $connectionName);
 
         foreach ($attributes as $attribute => $value) {
-            if (in_array($attribute, $blacklist, true)) {
+            if (\in_array($attribute, $blacklist, true)) {
                 continue;
             }
 

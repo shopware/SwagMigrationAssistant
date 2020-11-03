@@ -46,7 +46,7 @@ class ApiEnvironmentReaderTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->body = json_encode([
+        $this->body = \json_encode([
             'data' => $this->dataArray,
         ]);
 

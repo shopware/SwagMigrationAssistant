@@ -45,7 +45,7 @@ class CleanupMigrationHandler extends AbstractMessageHandler
             'swag_migration_connection',
         ];
 
-        $step = array_search($message->getTableName(), $tablesToReset, true);
+        $step = \array_search($message->getTableName(), $tablesToReset, true);
         if ($step !== false) {
             $currentStep = $step;
         }

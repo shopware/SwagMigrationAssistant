@@ -132,7 +132,7 @@ abstract class OrderConverter extends ShopwareConverter
                 $this->runId,
                 DefaultEntities::ORDER,
                 $this->oldId,
-                implode(',', $fields)
+                \implode(',', $fields)
             ));
 
             return new ConvertStruct(null, $data);
@@ -336,7 +336,7 @@ abstract class OrderConverter extends ShopwareConverter
         }
         unset($data['attributes']);
 
-        $converted['deepLinkCode'] = md5($converted['id']);
+        $converted['deepLinkCode'] = \md5($converted['id']);
 
         // Legacy data which don't need a mapping or there is no equivalent field
         unset(
@@ -463,7 +463,7 @@ abstract class OrderConverter extends ShopwareConverter
                 $this->runId,
                 DefaultEntities::ORDER_ADDRESS,
                 $originalData['id'],
-                implode(',', $fields)
+                \implode(',', $fields)
             ));
 
             return [];
@@ -868,7 +868,7 @@ abstract class OrderConverter extends ShopwareConverter
 
     protected function getTaxRules(array $originalData): TaxRuleCollection
     {
-        $taxRates = array_unique(array_column($originalData['details'], 'tax_rate'));
+        $taxRates = \array_unique(\array_column($originalData['details'], 'tax_rate'));
 
         $taxRules = [];
         foreach ($taxRates as $taxRate) {

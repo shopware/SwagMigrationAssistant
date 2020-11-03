@@ -42,7 +42,7 @@ abstract class ApiReader implements ReaderInterface
             'limit' => $migrationContext->getLimit(),
         ];
 
-        $queryParams = array_merge($queryParams, $this->getExtraParameters());
+        $queryParams = \array_merge($queryParams, $this->getExtraParameters());
         $client = $this->connectionFactory->createApiClient($migrationContext);
 
         if ($client === null) {
@@ -61,7 +61,7 @@ abstract class ApiReader implements ReaderInterface
             throw new GatewayReadException('Shopware Api ' . $migrationContext->getDataSet()::getEntity());
         }
 
-        $arrayResult = json_decode($result->getBody()->getContents(), true);
+        $arrayResult = \json_decode($result->getBody()->getContents(), true);
 
         return $arrayResult['data'];
     }

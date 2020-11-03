@@ -163,7 +163,7 @@ abstract class TranslationConverter extends ShopwareConverter
         if (empty($objectData)) {
             unset($data['objectdata']);
         } else {
-            $data['objectdata'] = serialize($objectData);
+            $data['objectdata'] = \serialize($objectData);
         }
 
         unset($data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
@@ -239,7 +239,7 @@ abstract class TranslationConverter extends ShopwareConverter
         if (empty($objectData)) {
             unset($data['objectdata']);
         } else {
-            $data['objectdata'] = serialize($objectData);
+            $data['objectdata'] = \serialize($objectData);
         }
 
         unset($data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
@@ -329,7 +329,7 @@ abstract class TranslationConverter extends ShopwareConverter
         if (empty($objectData)) {
             unset($data['objectdata']);
         } else {
-            $data['objectdata'] = serialize($objectData);
+            $data['objectdata'] = \serialize($objectData);
         }
 
         unset($data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
@@ -397,7 +397,7 @@ abstract class TranslationConverter extends ShopwareConverter
         $unitTranslation['id'] = $this->mainMapping['entityUuid'];
 
         /** @var array $objectData */
-        $objectData = array_pop($objectData);
+        $objectData = \array_pop($objectData);
 
         foreach ($objectData as $key => $value) {
             switch ($key) {
@@ -417,7 +417,7 @@ abstract class TranslationConverter extends ShopwareConverter
         if (empty($objectData)) {
             unset($data['objectdata']);
         } else {
-            $data['objectdata'] = serialize($objectData);
+            $data['objectdata'] = \serialize($objectData);
         }
 
         unset($data['id'], $data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
@@ -507,7 +507,7 @@ abstract class TranslationConverter extends ShopwareConverter
         if (empty($objectData)) {
             unset($data['objectdata']);
         } else {
-            $data['objectdata'] = serialize($objectData);
+            $data['objectdata'] = \serialize($objectData);
         }
 
         unset($data['id'], $data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
@@ -585,7 +585,7 @@ abstract class TranslationConverter extends ShopwareConverter
         if (empty($objectData)) {
             unset($data['objectdata']);
         } else {
-            $data['objectdata'] = serialize($objectData);
+            $data['objectdata'] = \serialize($objectData);
         }
 
         unset($data['id'], $data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
@@ -666,7 +666,7 @@ abstract class TranslationConverter extends ShopwareConverter
         if (empty($objectData)) {
             unset($data['objectdata']);
         } else {
-            $data['objectdata'] = serialize($objectData);
+            $data['objectdata'] = \serialize($objectData);
         }
 
         unset($data['id'], $data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
@@ -742,7 +742,7 @@ abstract class TranslationConverter extends ShopwareConverter
         if (empty($objectData)) {
             unset($data['objectdata']);
         } else {
-            $data['objectdata'] = serialize($objectData);
+            $data['objectdata'] = \serialize($objectData);
         }
 
         unset($data['id'], $data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
@@ -819,7 +819,7 @@ abstract class TranslationConverter extends ShopwareConverter
         if (empty($objectData)) {
             unset($data['objectdata']);
         } else {
-            $data['objectdata'] = serialize($objectData);
+            $data['objectdata'] = \serialize($objectData);
         }
 
         unset($data['id'], $data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
@@ -848,12 +848,12 @@ abstract class TranslationConverter extends ShopwareConverter
         if ($connection !== null) {
             $connectionName = $connection->getName();
         }
-        $connectionName = str_replace(' ', '', $connectionName);
-        $connectionName = preg_replace('/[^A-Za-z0-9\-]/', '', $connectionName);
+        $connectionName = \str_replace(' ', '', $connectionName);
+        $connectionName = \preg_replace('/[^A-Za-z0-9\-]/', '', $connectionName);
 
-        $isAttribute = mb_strpos($key, '__attribute_');
+        $isAttribute = \mb_strpos($key, '__attribute_');
         if ($isAttribute !== false) {
-            $key = 'migration_' . $connectionName . '_' . $entityName . '_' . str_replace('__attribute_', '', $key);
+            $key = 'migration_' . $connectionName . '_' . $entityName . '_' . \str_replace('__attribute_', '', $key);
             $translation['customFields'][$key] = $value;
             unset($objectData[$key]);
         }
@@ -864,7 +864,7 @@ abstract class TranslationConverter extends ShopwareConverter
         $objectDataSerialized = $data['objectdata'];
 
         try {
-            $objectData = unserialize($objectDataSerialized, ['allowed_classes' => false]);
+            $objectData = \unserialize($objectDataSerialized, ['allowed_classes' => false]);
         } catch (\Exception $error) {
             $objectData = null;
         }

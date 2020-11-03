@@ -38,7 +38,7 @@ class CannotConvertChildEntity extends BaseRunLogEntry
             return 'SWAG_MIGRATION_CANNOT_CONVERT_CHILD_ENTITY';
         }
 
-        return sprintf('SWAG_MIGRATION_CANNOT_CONVERT_CHILD_%s_ENTITY', mb_strtoupper($entity));
+        return \sprintf('SWAG_MIGRATION_CANNOT_CONVERT_CHILD_%s_ENTITY', \mb_strtoupper($entity));
     }
 
     public function getTitle(): string
@@ -48,7 +48,7 @@ class CannotConvertChildEntity extends BaseRunLogEntry
             return 'The child entity could not be converted';
         }
 
-        return sprintf('The %s child entity could not be converted', $entity);
+        return \sprintf('The %s child entity could not be converted', $entity);
     }
 
     public function getParameters(): array
@@ -64,7 +64,7 @@ class CannotConvertChildEntity extends BaseRunLogEntry
     {
         $args = $this->getParameters();
 
-        return sprintf(
+        return \sprintf(
             'The %s child entity from the %s parent entity with the id "%s" could not be converted.',
             $args['entity'],
             $args['parentEntity'],
@@ -74,11 +74,11 @@ class CannotConvertChildEntity extends BaseRunLogEntry
 
     public function getTitleSnippet(): string
     {
-        return sprintf('%s.%s.title', $this->getSnippetRoot(), 'SWAG_MIGRATION_CANNOT_CONVERT_CHILD_ENTITY');
+        return \sprintf('%s.%s.title', $this->getSnippetRoot(), 'SWAG_MIGRATION_CANNOT_CONVERT_CHILD_ENTITY');
     }
 
     public function getDescriptionSnippet(): string
     {
-        return sprintf('%s.%s.description', $this->getSnippetRoot(), 'SWAG_MIGRATION_CANNOT_CONVERT_CHILD_ENTITY');
+        return \sprintf('%s.%s.description', $this->getSnippetRoot(), 'SWAG_MIGRATION_CANNOT_CONVERT_CHILD_ENTITY');
     }
 }

@@ -322,10 +322,10 @@ class MigrationProgressService implements MigrationProgressServiceInterface
      */
     private function compareFetchCount(SwagMigrationRunEntity $run, array $totals, array $fetchedEntityCounts): ?ProgressState
     {
-        $entryCount = count($totals);
+        $entryCount = \count($totals);
         $maxKey = $entryCount - 1;
-        $totalsWithoutIndex = array_values($totals);
-        $keysOfTotal = array_keys($totals);
+        $totalsWithoutIndex = \array_values($totals);
+        $keysOfTotal = \array_keys($totals);
         $runProgress = $run->getProgress();
 
         if ($entryCount === 0 || $runProgress === null) {

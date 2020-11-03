@@ -33,7 +33,7 @@ class NumberRangeReader extends AbstractReader
     {
         $this->setConnection($migrationContext);
         $numberRanges = $this->fetchNumberRanges();
-        $prefix = unserialize($this->fetchPrefix(), ['allowed_classes' => false]);
+        $prefix = \unserialize($this->fetchPrefix(), ['allowed_classes' => false]);
 
         if (!$prefix) {
             $prefix = '';
@@ -42,7 +42,7 @@ class NumberRangeReader extends AbstractReader
         $locale = $this->getDefaultShopLocale();
 
         foreach ($numberRanges as &$numberRange) {
-            $numberRange['_locale'] = str_replace('_', '-', $locale);
+            $numberRange['_locale'] = \str_replace('_', '-', $locale);
             $numberRange['prefix'] = $prefix;
         }
 

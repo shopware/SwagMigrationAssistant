@@ -216,7 +216,7 @@ abstract class OrderDocumentConverter extends ShopwareConverter
 
         $knownTypes = ['invoice', 'delivery_note', 'storno', 'credit_note'];
 
-        if (!in_array($data['key'], $knownTypes, true)) {
+        if (!\in_array($data['key'], $knownTypes, true)) {
             $this->loggingService->addLogEntry(new DocumentTypeNotSupported(
                 $this->runId,
                 $data['id'],

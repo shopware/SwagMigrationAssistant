@@ -47,7 +47,7 @@ class DeliveryTimeReader extends AbstractPremappingReader
     public function supports(MigrationContextInterface $migrationContext, array $entityGroupNames): bool
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
-            && in_array(CustomerAndOrderDataSelection::IDENTIFIER, $entityGroupNames, true);
+            && \in_array(CustomerAndOrderDataSelection::IDENTIFIER, $entityGroupNames, true);
     }
 
     public function getPremapping(Context $context, MigrationContextInterface $migrationContext): PremappingStruct

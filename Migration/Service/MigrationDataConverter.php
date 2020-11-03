@@ -173,7 +173,7 @@ class MigrationDataConverter implements MigrationDataConverterInterface
 
         foreach ($data as $dataSet) {
             $mappedData[$converter->getSourceIdentifier($dataSet)] = $dataSet;
-            $checksums[$converter->getSourceIdentifier($dataSet)] = md5(serialize($dataSet));
+            $checksums[$converter->getSourceIdentifier($dataSet)] = \md5(\serialize($dataSet));
         }
 
         $connection = $migrationContext->getConnection();
@@ -185,7 +185,7 @@ class MigrationDataConverter implements MigrationDataConverterInterface
 
         $connectionId = $connection->getId();
         $entity = $dataSet::getEntity();
-        $result = $this->mappingService->getMappings($connectionId, $entity, array_keys($checksums), $context);
+        $result = $this->mappingService->getMappings($connectionId, $entity, \array_keys($checksums), $context);
 
         if ($result->getTotal() > 0) {
             $elements = $result->getEntities()->getElements();
@@ -210,12 +210,12 @@ class MigrationDataConverter implements MigrationDataConverterInterface
             }
 
             if ($relatedMappings !== []) {
-                $preloadIds = array_values(
-                    array_unique(array_merge($preloadIds, ...$relatedMappings))
+                $preloadIds = \array_values(
+                    \array_unique(\array_merge($preloadIds, ...$relatedMappings))
                 );
             }
         }
-        $resultSet = new MappingDeltaResult(array_values($mappedData), $preloadIds);
+        $resultSet = new MappingDeltaResult(\array_values($mappedData), $preloadIds);
         unset($checksums, $mappedData);
 
         return $resultSet;

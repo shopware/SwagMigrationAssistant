@@ -274,14 +274,14 @@ class MigrationControllerTest extends TestCase
         $request = new Request([], $params);
         $result = $this->controller->fetchData($request, $context);
 
-        static::assertSame(['validToken' => false], json_decode($result->getContent(), true));
+        static::assertSame(['validToken' => false], \json_decode($result->getContent(), true));
         static::assertSame(Response::HTTP_OK, $result->getStatusCode());
 
         $params[SwagMigrationAccessTokenService::ACCESS_TOKEN_NAME] = 'testToken';
         $request = new Request([], $params);
         $result = $this->controller->fetchData($request, $context);
 
-        static::assertSame(['validToken' => true], json_decode($result->getContent(), true));
+        static::assertSame(['validToken' => true], \json_decode($result->getContent(), true));
         static::assertSame(Response::HTTP_OK, $result->getStatusCode());
     }
 
@@ -359,7 +359,7 @@ class MigrationControllerTest extends TestCase
         $this->createDataRows(DefaultEntities::MEDIA, 14);
 
         $result = $this->controller->updateWriteProgress($request, $context);
-        $progress = json_decode($result->getContent(), true);
+        $progress = \json_decode($result->getContent(), true);
 
         static::assertSame(10, $progress[0]['entities'][0]['total']);
         static::assertSame(11, $progress[0]['entities'][1]['total']);
@@ -410,7 +410,7 @@ class MigrationControllerTest extends TestCase
         $this->createMediaFileRows(10, true);
 
         $result = $this->controller->updateMediaFilesProgress($request, $context);
-        $progress = json_decode($result->getContent(), true);
+        $progress = \json_decode($result->getContent(), true);
 
         static::assertSame(14, $progress[2]['entities'][0]['currentCount']);
         static::assertSame(24, $progress[2]['entities'][0]['total']);
@@ -478,14 +478,14 @@ class MigrationControllerTest extends TestCase
         $request = new Request([], $params);
         $result = $this->controller->writeData($request, $context);
 
-        static::assertSame(['validToken' => false], json_decode($result->getContent(), true));
+        static::assertSame(['validToken' => false], \json_decode($result->getContent(), true));
         static::assertSame(Response::HTTP_OK, $result->getStatusCode());
 
         $params[SwagMigrationAccessTokenService::ACCESS_TOKEN_NAME] = 'testToken';
         $request = new Request([], $params);
         $result = $this->controller->writeData($request, $context);
 
-        static::assertSame(['validToken' => true], json_decode($result->getContent(), true));
+        static::assertSame(['validToken' => true], \json_decode($result->getContent(), true));
         static::assertSame(Response::HTTP_OK, $result->getStatusCode());
     }
 
@@ -502,13 +502,13 @@ class MigrationControllerTest extends TestCase
         $request = new Request([], $params);
         $result = $this->controller->processMedia($request, $context);
 
-        static::assertSame(['validToken' => false], json_decode($result->getContent(), true));
+        static::assertSame(['validToken' => false], \json_decode($result->getContent(), true));
 
         $params[SwagMigrationAccessTokenService::ACCESS_TOKEN_NAME] = 'testToken';
 
         $request = new Request([], $params);
         $result = $this->controller->processMedia($request, $context);
-        $result = json_decode($result->getContent(), true);
+        $result = \json_decode($result->getContent(), true);
 
         static::assertSame([
             'validToken' => true,

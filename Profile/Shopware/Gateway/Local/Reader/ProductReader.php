@@ -93,7 +93,7 @@ class ProductReader extends AbstractReader
         $locale = $this->getDefaultShopLocale();
 
         foreach ($products as $key => &$product) {
-            $product['_locale'] = str_replace('_', '-', $locale);
+            $product['_locale'] = \str_replace('_', '-', $locale);
             $product['assets'] = [];
 
             if (isset($categories[$product['id']])) {
@@ -107,13 +107,13 @@ class ProductReader extends AbstractReader
             }
             if (isset($media['general'][$product['id']])) {
                 $generalAssets = $media['general'][$product['id']];
-                $product['assets'] = array_merge($product['assets'], $generalAssets);
+                $product['assets'] = \array_merge($product['assets'], $generalAssets);
             }
             if (isset($options[$product['detail']['id']])) {
                 $product['configuratorOptions'] = $options[$product['detail']['id']];
             }
             if (isset($productVisibility[$product['id']])) {
-                $product['shops'] = array_values($productVisibility[$product['id']]);
+                $product['shops'] = \array_values($productVisibility[$product['id']]);
             }
         }
         unset(
@@ -206,7 +206,7 @@ class ProductReader extends AbstractReader
 
     private function getCategories(): array
     {
-        $productIds = array_values(
+        $productIds = \array_values(
             $this->productMapping->getIterator()->getArrayCopy()
         );
         $query = $this->connection->createQueryBuilder();
@@ -259,7 +259,7 @@ class ProductReader extends AbstractReader
 
     private function getMedia(): array
     {
-        $productIds = array_values(
+        $productIds = \array_values(
             $this->productMapping->getIterator()->getArrayCopy()
         );
 
@@ -369,8 +369,8 @@ class ProductReader extends AbstractReader
                 if (empty($category['path'])) {
                     continue;
                 }
-                $parentCategoryIds = array_values(
-                    array_filter(explode('|', $category['path']))
+                $parentCategoryIds = \array_values(
+                    \array_filter(\explode('|', $category['path']))
                 );
                 foreach ($parentCategoryIds as $parentCategoryId) {
                     if (isset($mainCategoryShops[$parentCategoryId])) {

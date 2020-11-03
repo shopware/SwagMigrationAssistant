@@ -620,7 +620,7 @@ SQL;
         foreach ($dataSelectionCollection as $dataSelection) {
             $entities = [];
             $sumTotal = 0;
-            foreach (array_keys($dataSelection->getEntityNames()) as $entityName) {
+            foreach (\array_keys($dataSelection->getEntityNames()) as $entityName) {
                 if (isset($entityNamesInUse[$entityName])) {
                     continue;
                 }
@@ -718,7 +718,7 @@ SQL;
 
         $ids = $event->getIds();
 
-        return array_pop($ids);
+        return \array_pop($ids);
     }
 
     private function getEnvironmentInformation(MigrationContextInterface $migrationContext, Context $context): EnvironmentInformation
@@ -756,7 +756,7 @@ SQL;
         $environmentInformationTotals = $environmentInformation->getTotals();
         $totals = [];
         foreach ($dataSelectionCollection as $dataSelection) {
-            foreach (array_keys($dataSelection->getEntityNames()) as $entityName) {
+            foreach (\array_keys($dataSelection->getEntityNames()) as $entityName) {
                 if (isset($environmentInformationTotals[$entityName]) && !isset($totals[$entityName])) {
                     $totals[$entityName] = $environmentInformationTotals[$entityName]->getTotal();
                 } elseif (!isset($totals[$entityName])) {
@@ -808,7 +808,7 @@ SQL;
             return null;
         }
 
-        return reset($ids);
+        return \reset($ids);
     }
 
     private function cleanupUnwrittenRunData(MigrationContextInterface $migrationContext, Context $context): void

@@ -63,7 +63,7 @@ abstract class Converter implements ConverterInterface
      */
     protected function generateChecksum(array $data): void
     {
-        $this->checksum = md5(serialize($data));
+        $this->checksum = \md5(\serialize($data));
     }
 
     /**

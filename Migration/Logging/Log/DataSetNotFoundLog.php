@@ -48,7 +48,7 @@ class DataSetNotFoundLog extends BaseRunLogEntry
     {
         $args = $this->getParameters();
 
-        return sprintf(
+        return \sprintf(
             'DataSet for profile "%s" and entity "%s" not found. Entity with id "%s" could not be processed.',
             $args['profileName'],
             $args['entity'],

@@ -32,7 +32,7 @@ class AssociationRequiredMissingLog extends BaseRunLogEntry
             return 'SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING';
         }
 
-        return sprintf('SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING_%s', mb_strtoupper($entity));
+        return \sprintf('SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING_%s', \mb_strtoupper($entity));
     }
 
     public function getTitle(): string
@@ -42,7 +42,7 @@ class AssociationRequiredMissingLog extends BaseRunLogEntry
             return 'Associated not found';
         }
 
-        return sprintf('Associated %s not found', $entity);
+        return \sprintf('Associated %s not found', $entity);
     }
 
     public function getParameters(): array
@@ -58,7 +58,7 @@ class AssociationRequiredMissingLog extends BaseRunLogEntry
     {
         $args = $this->getParameters();
 
-        return sprintf(
+        return \sprintf(
             'The %s with the source id "%s" can not be found but is required for %s.',
             $args['missingEntity'],
             $args['sourceId'],
@@ -68,11 +68,11 @@ class AssociationRequiredMissingLog extends BaseRunLogEntry
 
     public function getTitleSnippet(): string
     {
-        return sprintf('%s.%s.title', $this->getSnippetRoot(), 'SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING');
+        return \sprintf('%s.%s.title', $this->getSnippetRoot(), 'SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING');
     }
 
     public function getDescriptionSnippet(): string
     {
-        return sprintf('%s.%s.description', $this->getSnippetRoot(), 'SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING');
+        return \sprintf('%s.%s.description', $this->getSnippetRoot(), 'SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING');
     }
 }

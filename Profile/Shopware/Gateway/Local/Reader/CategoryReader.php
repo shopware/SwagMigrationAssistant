@@ -126,20 +126,20 @@ class CategoryReader extends AbstractReader
     {
         $resultSet = [];
         $ignoredCategories = $this->getIgnoredCategories();
-        $defaultLocale = str_replace('_', '-', $this->getDefaultShopLocale());
+        $defaultLocale = \str_replace('_', '-', $this->getDefaultShopLocale());
 
         foreach ($categories as $category) {
             $locale = '';
-            if (in_array($category['parent'], $ignoredCategories, true)) {
+            if (\in_array($category['parent'], $ignoredCategories, true)) {
                 $category['parent'] = null;
             }
             if (!empty($category['path'])) {
-                $parentCategoryIds = array_values(
-                    array_filter(explode('|', $category['path']))
+                $parentCategoryIds = \array_values(
+                    \array_filter(\explode('|', $category['path']))
                 );
                 foreach ($parentCategoryIds as $parentCategoryId) {
                     if (isset($mainCategoryLocales[$parentCategoryId])) {
-                        $locale = str_replace('_', '-', $mainCategoryLocales[$parentCategoryId]);
+                        $locale = \str_replace('_', '-', $mainCategoryLocales[$parentCategoryId]);
 
                         break;
                     }

@@ -126,7 +126,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
 
         try {
             $currentWriter = $this->writerRegistry->getWriter($dataSet::getEntity());
-            $currentWriter->writeData(array_values($converted), $context);
+            $currentWriter->writeData(\array_values($converted), $context);
         } catch (WriterNotFoundException $writerNotFoundException) {
             $this->loggingService->addLogEntry(new ExceptionRunLog(
                 $migrationContext->getRunUuid(),
@@ -158,7 +158,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
             // Update written-Flag of the entity in the data table
             $this->entityWriter->update(
                 $this->dataDefinition,
-                array_values($updateWrittenData),
+                \array_values($updateWrittenData),
                 WriteContext::createFromContext($context)
             );
             $this->removeChecksumsOfUnwrittenData($updateWrittenData, $mappingIds, $context);
@@ -218,7 +218,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
         $writeErrors = [];
         foreach ($exception->getErrors() as $error) {
             $pointer = $error['source']['pointer'] ?? '/';
-            preg_match('/^\/(\d+)\//', $pointer, $matches, PREG_UNMATCHED_AS_NULL);
+            \preg_match('/^\/(\d+)\//', $pointer, $matches, PREG_UNMATCHED_AS_NULL);
 
             if (isset($matches[1])) {
                 $index = (int) $matches[1];
