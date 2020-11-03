@@ -62,6 +62,16 @@ class EnvironmentInformation extends Struct
     protected $displayWarnings;
 
     /**
+     * @var string
+     */
+    protected $sourceSystemLocale;
+
+    /**
+     * @var string
+     */
+    protected $targetSystemLocale;
+
+    /**
      * @param TotalStruct[]    $totals
      * @param DisplayWarning[] $displayWarnings
      */
@@ -75,7 +85,9 @@ class EnvironmentInformation extends Struct
         bool $migrationDisabled = false,
         array $displayWarnings = [],
         string $targetSystemCurrency = '',
-        string $sourceSystemCurrency = ''
+        string $sourceSystemCurrency = '',
+        string $sourceSystemLocale = '',
+        string $targetSystemLocale = ''
     ) {
         $this->sourceSystemName = $sourceSystemName;
         $this->sourceSystemVersion = $sourceSystemVersion;
@@ -87,6 +99,8 @@ class EnvironmentInformation extends Struct
         $this->targetSystemCurrency = $targetSystemCurrency;
         $this->sourceSystemCurrency = $sourceSystemCurrency;
         $this->displayWarnings = $displayWarnings;
+        $this->sourceSystemLocale = $sourceSystemLocale;
+        $this->targetSystemLocale = $targetSystemLocale;
     }
 
     public function getSourceSystemName(): string
@@ -143,5 +157,25 @@ class EnvironmentInformation extends Struct
     public function getSourceSystemCurrency(): string
     {
         return $this->sourceSystemCurrency;
+    }
+
+    public function getSourceSystemLocale(): string
+    {
+        return $this->sourceSystemLocale;
+    }
+
+    public function setSourceSystemLocale(string $sourceSystemLocale): void
+    {
+        $this->sourceSystemLocale = $sourceSystemLocale;
+    }
+
+    public function getTargetSystemLocale(): string
+    {
+        return $this->targetSystemLocale;
+    }
+
+    public function setTargetSystemLocale(string $targetSystemLocale): void
+    {
+        $this->targetSystemLocale = $targetSystemLocale;
     }
 }

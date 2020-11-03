@@ -21,6 +21,8 @@ class DeprecatedTagTest extends TestCase
     private $whiteList = [
         'Test/',
         'Resources/public/',
+        'var/',
+        'vendor/',
     ];
 
     public function testAllFilesForDeprecated(): void

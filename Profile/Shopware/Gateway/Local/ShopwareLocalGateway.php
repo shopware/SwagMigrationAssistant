@@ -12,6 +12,8 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\Currency\CurrencyEntity;
+use Shopware\Core\System\Language\LanguageEntity;
+use Shopware\Core\System\Locale\LocaleEntity;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\Gateway\Reader\EnvironmentReaderInterface;
 use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistry;
@@ -52,18 +54,25 @@ class ShopwareLocalGateway implements ShopwareGatewayInterface
      */
     private $currencyRepository;
 
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $languageRepository;
+
     public function __construct(
         ReaderRegistry $readerRegistry,
         EnvironmentReaderInterface $localEnvironmentReader,
         TableReaderInterface $localTableReader,
         ConnectionFactoryInterface $connectionFactory,
-        EntityRepositoryInterface $currencyRepository
+        EntityRepositoryInterface $currencyRepository,
+        EntityRepositoryInterface $languageRepository
     ) {
         $this->readerRegistry = $readerRegistry;
         $this->localEnvironmentReader = $localEnvironmentReader;
         $this->localTableReader = $localTableReader;
         $this->connectionFactory = $connectionFactory;
         $this->currencyRepository = $currencyRepository;
+        $this->languageRepository = $languageRepository;
     }
 
     public function getName(): string
@@ -129,6 +138,19 @@ class ShopwareLocalGateway implements ShopwareGatewayInterface
             $environmentData['defaultCurrency'] = $targetSystemCurrency->getIsoCode();
         }
 
+        $criteria = new Criteria([Defaults::LANGUAGE_SYSTEM]);
+        $criteria->addAssociation('locale');
+        /** @var LanguageEntity $targetSystemLanguage */
+        $targetSystemLanguage = $this->languageRepository->search($criteria, $context)->get(Defaults::LANGUAGE_SYSTEM);
+
+        /** @var LocaleEntity $targetSystemLocale */
+        $targetSystemLocale = $targetSystemLanguage->getLocale();
+
+        if (!isset($environmentData['defaultShopLanguage'])) {
+            $environmentData['defaultShopLanguage'] = $targetSystemLocale->getCode();
+        }
+        $environmentData['defaultShopLanguage'] = str_replace('_', '-', $environmentData['defaultShopLanguage']);
+
         $totals = $this->readTotals($migrationContext, $context);
 
         return new EnvironmentInformation(
@@ -141,7 +163,9 @@ class ShopwareLocalGateway implements ShopwareGatewayInterface
             false,
             [],
             $targetSystemCurrency->getIsoCode(),
-            $environmentData['defaultCurrency']
+            $environmentData['defaultCurrency'],
+            $environmentData['defaultShopLanguage'],
+            $targetSystemLocale->getCode()
         );
     }
 

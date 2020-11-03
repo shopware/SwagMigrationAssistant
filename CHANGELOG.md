@@ -1,5 +1,6 @@
 # 2.2.0
 - MIG-75 - Improves the takeover of a migration
+- MIG-105 - Add warning if default languages differ
 - MIG-106 - Improves the migration of order line items
 - MIG-124 - Added ACL privileges
 

@@ -64,12 +64,16 @@ class LocalGatewayTest extends TestCase
         /** @var EntityRepositoryInterface $currencyRepository */
         $currencyRepository = $this->getContainer()->get('currency.repository');
 
+        /** @var EntityRepositoryInterface $languageRepository */
+        $languageRepository = $this->getContainer()->get('language.repository');
+
         $gatewaySource = new ShopwareLocalGateway(
             $readerRegistry,
             $localEnvironmentReader,
             $localTableReader,
             $connectionFactory,
-            $currencyRepository
+            $currencyRepository,
+            $languageRepository
         );
         $migrationContext->setGateway($gatewaySource);
         $gatewayRegistry = new GatewayRegistry([
@@ -113,12 +117,16 @@ class LocalGatewayTest extends TestCase
         /** @var EntityRepositoryInterface $currencyRepository */
         $currencyRepository = $this->getContainer()->get('currency.repository');
 
+        /** @var EntityRepositoryInterface $languageRepository */
+        $languageRepository = $this->getContainer()->get('language.repository');
+
         $gatewaySource = new ShopwareLocalGateway(
             $readerRegistry,
             $localEnvironmentReader,
             $localTableReader,
             $connectionFactory,
-            $currencyRepository
+            $currencyRepository,
+            $languageRepository
         );
         $migrationContext->setGateway($gatewaySource);
         $gatewayRegistry = new GatewayRegistry([
@@ -153,12 +161,16 @@ class LocalGatewayTest extends TestCase
         /** @var EntityRepositoryInterface $currencyRepository */
         $currencyRepository = $this->getContainer()->get('currency.repository');
 
+        /** @var EntityRepositoryInterface $languageRepository */
+        $languageRepository = $this->getContainer()->get('language.repository');
+
         $gateway = new ShopwareLocalGateway(
             $readerRegistry,
             $localEnvironmentReader,
             $localTableReader,
             $connectionFactory,
-            $currencyRepository
+            $currencyRepository,
+            $languageRepository
         );
         $migrationContext->setGateway($gateway);
         $response = $gateway->readEnvironmentInformation($migrationContext, Context::createDefaultContext());

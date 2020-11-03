@@ -266,6 +266,12 @@
           "text": "The currency of the data to be migrated does not match the standard currency [{targetSystemCurrency}]. Data with [{sourceSystemCurrency}] can still be migrated, but it will not be automatically converted. You can adjust the prices manually afterwards.",
           "question": "Are you sure that the data should be migrated in the standard currency [{targetSystemCurrency}]?",
           "checkboxLabel": "Yes, I would like to continue"
+        },
+        "languageMismatch": {
+            "title": "Migration has recognised another language",
+            "text": "The language of the data to be migrated does not match the standard language [{targetSystemLanguage}]. Data with [{sourceSystemLanguage}] can still be migrated, but it will not be automatically converted. You can adjust the translations manually afterwards.",
+            "question": "Are you sure that the data should be migrated in the standard language [{targetSystemLanguage}]?",
+            "checkboxLabel": "Yes, I would like to continue"
         }
       },
       "premappingCard": {

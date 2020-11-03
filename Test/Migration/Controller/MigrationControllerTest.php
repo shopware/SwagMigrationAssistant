@@ -184,6 +184,7 @@ class MigrationControllerTest extends TestCase
             $dataDefinition,
             $this->dataSetRegistry,
             $this->getContainer()->get('currency.repository'),
+            $this->getContainer()->get('language.repository'),
             $this->getContainer()->get(ReaderRegistry::class)
         );
         $dataConverter = $this->getMigrationDataConverter(

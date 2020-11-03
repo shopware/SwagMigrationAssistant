@@ -550,8 +550,15 @@ Component.register('swag-migration-process-screen', {
 
                     if (this.environmentInformation.sourceSystemCurrency !== '' &&
                         this.environmentInformation.targetSystemCurrency !== '' &&
-                        this.environmentInformation.sourceSystemCurrency !==
-                            this.environmentInformation.targetSystemCurrency) {
+                        this.environmentInformation.sourceSystemLocale !== '' &&
+                        this.environmentInformation.targetSystemLocale !== '' &&
+                        (
+                            this.environmentInformation.sourceSystemCurrency !==
+                            this.environmentInformation.targetSystemCurrency ||
+                            this.environmentInformation.sourceSystemLocale !==
+                            this.environmentInformation.targetSystemLocale
+                        )
+                    ) {
                         State.commit('swagMigration/ui/setComponentIndex', UI_COMPONENT_INDEX.WARNING_CONFIRM);
                     } else {
                         State.commit('swagMigration/ui/setComponentIndex', UI_COMPONENT_INDEX.PREMAPPING);
