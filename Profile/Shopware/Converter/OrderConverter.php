@@ -336,6 +336,19 @@ abstract class OrderConverter extends ShopwareConverter
         }
         unset($data['attributes']);
 
+        if (isset($data['locale'])) {
+            $languageMapping = $this->mappingService->getLanguageUuid(
+                $this->connectionId,
+                $data['locale'],
+                $this->context
+            );
+
+            if ($languageMapping !== null) {
+                $converted['languageId'] = $languageMapping;
+            }
+        }
+        unset($data['locale']);
+
         $converted['deepLinkCode'] = \md5($converted['id']);
 
         // Legacy data which don't need a mapping or there is no equivalent field
@@ -354,7 +367,7 @@ abstract class OrderConverter extends ShopwareConverter
             $data['changed'],
             $data['payment'],
             $data['paymentID'],
-            $data['language'], // ToDo MIG-109 - Use for SalesChannel information?
+            $data['language'],
             $data['documents']
         );
 
