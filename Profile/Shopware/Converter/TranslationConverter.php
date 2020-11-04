@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
 use Shopware\Core\Content\Category\CategoryDefinition;
+use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Content\Product\Aggregate\ProductManufacturer\ProductManufacturerDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Content\Property\Aggregate\PropertyGroupOption\PropertyGroupOptionDefinition;
@@ -85,6 +86,8 @@ abstract class TranslationConverter extends ShopwareConverter
                 return $this->createPropertyValueTranslation($data);
             case 'propertyoption':
                 return $this->createPropertyOptionTranslation($data);
+            case 'articleimage':
+                return $this->createProductMediaTranslation($data);
         }
 
         $this->loggingService->addLogEntry(
@@ -884,5 +887,84 @@ abstract class TranslationConverter extends ShopwareConverter
         }
 
         return $objectData;
+    }
+
+    protected function createProductMediaTranslation(array $data): ConvertStruct
+    {
+        if (!isset($data['mediaId'])) {
+            return new ConvertStruct(null, $data);
+        }
+        $sourceData = $data;
+
+        $media = [];
+        $mapping = $this->mappingService->getMapping(
+            $this->connectionId,
+            DefaultEntities::MEDIA,
+            $data['mediaId'],
+            $this->context
+        );
+
+        if ($mapping === null) {
+            $this->loggingService->addLogEntry(
+                new AssociationRequiredMissingLog(
+                    $this->runId,
+                    DefaultEntities::MEDIA,
+                    $data['mediaId'],
+                    DefaultEntities::TRANSLATION
+                )
+            );
+
+            return new ConvertStruct(null, $sourceData);
+        }
+        unset($data['objectkey'], $data['mediaId']);
+
+        $media['id'] = $mapping['entityUuid'];
+        $this->mappingIds[] = $mapping['id'];
+        $media['entityDefinitionClass'] = MediaDefinition::class;
+
+        $objectData = $this->unserializeTranslation($data, DefaultEntities::MEDIA);
+        if ($objectData === null) {
+            return new ConvertStruct(null, $sourceData);
+        }
+
+        $mediaTranslation = [];
+        $this->mainMapping = $this->mappingService->getOrCreateMapping(
+            $this->connectionId,
+            DefaultEntities::TRANSLATION,
+            $data['id'],
+            $this->context,
+            $this->checksum
+        );
+        $mediaTranslation['id'] = $this->mainMapping['entityUuid'];
+
+        foreach (array_keys($objectData) as $key) {
+            if ($key === 'description') {
+                $this->convertValue($mediaTranslation, 'alt', $objectData, $key);
+            }
+        }
+
+        if (empty($objectData)) {
+            unset($data['objectdata']);
+        } else {
+            $data['objectdata'] = serialize($objectData);
+        }
+
+        unset($data['id'], $data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
+
+        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $data['locale'], $this->context);
+
+        if ($languageUuid !== null) {
+            $mediaTranslation['languageId'] = $languageUuid;
+            $media['translations'][$languageUuid] = $mediaTranslation;
+        }
+
+        unset($data['name'], $data['locale'], $data['ordernumber']);
+
+        if (empty($data)) {
+            $data = null;
+        }
+        $this->updateMainMapping($this->migrationContext, $this->context);
+
+        return new ConvertStruct($media, $data, $this->mainMapping['id'] ?? null);
     }
 }

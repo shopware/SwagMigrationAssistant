@@ -38,7 +38,7 @@ class TranslationReader extends AbstractReader
         $resultSet = $this->mapData(
             $fetchedTranslations,
             [],
-            ['translation', 'locale', 'name', 'ordernumber']
+            ['translation', 'locale', 'name', 'ordernumber', 'mediaId']
         );
 
         return $this->cleanupResultSet($resultSet);
@@ -79,6 +79,9 @@ class TranslationReader extends AbstractReader
 
         $query->leftJoin('translation', 's_articles_details', 'variant', 'translation.objecttype = "variant" AND translation.objectkey = variant.id');
         $query->addSelect('variant.ordernumber');
+
+        $query->leftJoin('translation', 's_articles_img', 'images', 'translation.objecttype = "articleimage" AND translation.objectkey = images.id');
+        $query->addSelect('images.media_id AS mediaId');
 
         $query->where('translation.id IN (:ids)');
         $query->setParameter('ids', $ids, Connection::PARAM_STR_ARRAY);

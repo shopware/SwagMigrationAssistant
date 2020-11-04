@@ -117,4 +117,16 @@ return [
         'name' => null,
         'ordernumber' => 'SW10006',
     ],
+    'articleimage' => [
+        'id' => '289',
+        'objecttype' => 'articleimage',
+        'objectdata' => 'a:1:{s:11:"description";s:23:"EN - Nice Spachtelmasse";}',
+        'objectkey' => '628',
+        'objectlanguage' => '2',
+        'dirty' => '1',
+        'locale' => 'en-GB',
+        'name' => null,
+        'ordernumber' => null,
+        'mediaId' => '769',
+    ],
 ];
