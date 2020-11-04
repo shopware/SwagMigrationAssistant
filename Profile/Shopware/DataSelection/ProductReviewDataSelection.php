@@ -13,6 +13,7 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CrossSellingDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CustomerAttributeDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CustomerDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MainVariantRelationDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ManufacturerAttributeDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaFolderDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductAttributeDataSet;
@@ -62,6 +63,7 @@ class ProductReviewDataSelection implements DataSelectionInterface
             new ProductPropertyRelationDataSet(),
             new TranslationDataSet(),
             new CrossSellingDataSet(),
+            new MainVariantRelationDataSet(),
             new CustomerAttributeDataSet(),
             new CustomerDataSet(),
             new ProductReviewDataSet(),

@@ -192,6 +192,9 @@
         <service id="SwagMigrationAssistant\Profile\Shopware\Converter\CrossSellingConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter" abstract="true"/>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware\Converter\MainVariantRelationConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter" abstract="true"/>
+
         <!-- Shopware Reader -->
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiReader" abstract="true">
             <argument type="service" id="SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory"/>
@@ -352,6 +355,11 @@
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\CrossSellingReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiReader">
+            <tag name="shopware.migration.reader"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\MainVariantRelationReader"
                  parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiReader">
             <tag name="shopware.migration.reader"/>
         </service>
@@ -518,6 +526,11 @@
             <tag name="shopware.migration.reader"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\MainVariantRelationReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader">
+            <tag name="shopware.migration.reader"/>
+        </service>
+
         <!-- Shopware Dataselections -->
        <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\BasicSettingsDataSelection">
             <tag name="shopware.migration.data_selection"/>
@@ -661,6 +674,10 @@
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CrossSellingDataSet">
+            <tag name="shopware.migration.data_set"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MainVariantRelationDataSet">
             <tag name="shopware.migration.data_set"/>
         </service>
 

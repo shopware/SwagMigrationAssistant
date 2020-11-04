@@ -176,4 +176,14 @@ abstract class AbstractReader implements ReaderInterface
 
         return $result;
     }
+
+    protected function getDataSetEntity(MigrationContextInterface $migrationContext): ?string
+    {
+        $dataSet = $migrationContext->getDataSet();
+        if ($dataSet === null) {
+            return null;
+        }
+
+        return $dataSet::getEntity();
+    }
 }

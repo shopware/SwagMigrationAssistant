@@ -69,6 +69,8 @@ final class DefaultEntities
 
     public const MEDIA_TRANSLATION = 'media_translation';
 
+    public const MAIN_VARIANT_RELATION = 'main_variant_relation';
+
     public const NEWSLETTER_RECIPIENT = 'newsletter_recipient';
 
     public const NUMBER_RANGE = 'number_range';

@@ -937,7 +937,7 @@ abstract class TranslationConverter extends ShopwareConverter
         );
         $mediaTranslation['id'] = $this->mainMapping['entityUuid'];
 
-        foreach (array_keys($objectData) as $key) {
+        foreach (\array_keys($objectData) as $key) {
             if ($key === 'description') {
                 $this->convertValue($mediaTranslation, 'alt', $objectData, $key);
             }
@@ -946,7 +946,7 @@ abstract class TranslationConverter extends ShopwareConverter
         if (empty($objectData)) {
             unset($data['objectdata']);
         } else {
-            $data['objectdata'] = serialize($objectData);
+            $data['objectdata'] = \serialize($objectData);
         }
 
         unset($data['id'], $data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);

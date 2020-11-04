@@ -1,4 +1,5 @@
 # REPLACE-GLOBAL-WITH-NEXT-VERSION
+- MIG-114 - Provide migration of main variant information
 - MIG-118 - Fix migration of credit line items
 
 # 2.2.1

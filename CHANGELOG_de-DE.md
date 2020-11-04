@@ -1,4 +1,5 @@
 # REPLACE-GLOBAL-WITH-NEXT-VERSION
+- MIG-114 - Migration der Hauptvarianten-Information ermöglichen
 - MIG-118 - Korrigiert die Migration der Kredit-Bestellpositionen
 
 # 2.2.1

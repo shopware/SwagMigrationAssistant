@@ -256,7 +256,8 @@
           "sales_channel": "Verkaufskanäle:",
           "product_review": "Bewertungen:",
           "seo_url": "Seo Urls:",
-          "product_cross_selling": "Cross Selling:"
+          "product_cross_selling": "Cross Selling:",
+          "main_variant_relation": "Hauptvariantenrelationen:"
         },
         "noData": "Es wurden keine Daten zum Migrieren gefunden."
       },
