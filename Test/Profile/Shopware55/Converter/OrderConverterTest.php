@@ -9,7 +9,9 @@ namespace SwagMigrationAssistant\Test\Profile\Shopware55\Converter;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Cart\Price\PriceRounding;
+use Shopware\Core\Checkout\Cart\Price\Struct\AbsolutePriceDefinition;
 use Shopware\Core\Checkout\Cart\Price\Struct\CartPrice;
+use Shopware\Core\Checkout\Cart\Price\Struct\QuantityPriceDefinition;
 use Shopware\Core\Checkout\Cart\Tax\TaxCalculator;
 use Shopware\Core\Checkout\Cart\Tax\TaxRuleCalculator;
 use Shopware\Core\Defaults;
@@ -182,6 +184,18 @@ class OrderConverterTest extends TestCase
         static::assertArrayHasKey('lineItems', $converted);
         static::assertArrayHasKey('options', $converted['lineItems'][0]['payload']);
         static::assertSame([], $converted['lineItems'][0]['payload']['options']);
+
+        /** @var QuantityPriceDefinition $priceDefinition */
+        $priceDefinition = $converted['lineItems'][0]['priceDefinition'];
+        static::assertInstanceOf(QuantityPriceDefinition::class, $priceDefinition);
+        static::assertTrue($priceDefinition->isCalculated());
+        static::assertSame(459.95, $priceDefinition->getPrice());
+        static::assertSame(2, $priceDefinition->getQuantity());
+
+        /** @var AbsolutePriceDefinition $creditPriceDefinition */
+        $creditPriceDefinition = $converted['lineItems'][1]['priceDefinition'];
+        static::assertInstanceOf(AbsolutePriceDefinition::class, $creditPriceDefinition);
+        static::assertSame(-2.0, $creditPriceDefinition->getPrice());
     }
 
     public function testConvertWithoutCustomer(): void

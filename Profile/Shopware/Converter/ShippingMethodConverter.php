@@ -940,7 +940,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
                 'position' => ++$position,
                 'value' => [
                     'operator' => $conditionValueMapping[$key]['operator'],
-                    $conditionValueMapping[$key]['value'] => $data,
+                    $conditionValueMapping[$key]['value'] => (float) $data,
                 ],
             ];
 

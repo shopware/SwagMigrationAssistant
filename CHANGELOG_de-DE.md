@@ -1,3 +1,6 @@
+# REPLACE-GLOBAL-WITH-NEXT-VERSION
+- MIG-118 - Korrigiert die Migration der Kredit-Bestellpositionen
+
 # 2.2.1
 - MIG-105 - Warnung hinzufügen, wenn sich die Standardsprachen unterscheiden
 - MIG-107 - Verbessert die Migration von Versandarten

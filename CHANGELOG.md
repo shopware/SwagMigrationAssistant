@@ -1,3 +1,6 @@
+# REPLACE-GLOBAL-WITH-NEXT-VERSION
+- MIG-118 - Fix migration of credit line items
+
 # 2.2.1
 - MIG-105 - Add warning if default languages differ
 - MIG-107 - Improves the migration of shipping methods
