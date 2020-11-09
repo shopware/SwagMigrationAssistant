@@ -1,4 +1,4 @@
-# REPLACE-GLOBAL-WITH-NEXT-VERSION
+# 2.2.1
 - MIG-105 - Add warning if default languages differ
 - MIG-107 - Improves the migration of shipping methods
 - MIG-109 - Improve migration of orders
