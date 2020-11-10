@@ -151,7 +151,7 @@ class OrderReader extends AbstractReader
                 $order['documents'] = $orderDocuments[$order['id']];
             }
             if (isset($order['locale'])) {
-                $order['locale'] = str_replace('_', '-', $order['locale']);
+                $order['locale'] = \str_replace('_', '-', $order['locale']);
             }
         }
 

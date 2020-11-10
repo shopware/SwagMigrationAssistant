@@ -213,14 +213,14 @@ class ShippingMethodConverterTest extends TestCase
                         'type' => 'cartWeight',
                         'value' => [
                             'operator' => '>=',
-                            'weight' => '10',
+                            'weight' => 10.0,
                         ],
                     ],
                     [
                         'type' => 'cartWeight',
                         'value' => [
                             'operator' => '<=',
-                            'weight' => '100',
+                            'weight' => 100.0,
                         ],
                     ],
                 ],
@@ -236,7 +236,7 @@ class ShippingMethodConverterTest extends TestCase
                         'type' => 'cartWeight',
                         'value' => [
                             'operator' => '>=',
-                            'weight' => '10',
+                            'weight' => 10.0,
                         ],
                     ],
                 ],
@@ -252,7 +252,7 @@ class ShippingMethodConverterTest extends TestCase
                         'type' => 'cartWeight',
                         'value' => [
                             'operator' => '<=',
-                            'weight' => '100',
+                            'weight' => 100.0,
                         ],
                     ],
                 ],
@@ -269,14 +269,14 @@ class ShippingMethodConverterTest extends TestCase
                         'type' => 'cartLineItemTotalPrice',
                         'value' => [
                             'operator' => '>=',
-                            'amount' => '10',
+                            'amount' => 10.0,
                         ],
                     ],
                     [
                         'type' => 'cartLineItemTotalPrice',
                         'value' => [
                             'operator' => '<=',
-                            'amount' => '100',
+                            'amount' => 100.0,
                         ],
                     ],
                 ],
@@ -292,7 +292,7 @@ class ShippingMethodConverterTest extends TestCase
                         'type' => 'cartLineItemTotalPrice',
                         'value' => [
                             'operator' => '>=',
-                            'amount' => '10',
+                            'amount' => 10.0,
                         ],
                     ],
                 ],
@@ -308,7 +308,7 @@ class ShippingMethodConverterTest extends TestCase
                         'type' => 'cartLineItemTotalPrice',
                         'value' => [
                             'operator' => '<=',
-                            'amount' => '100',
+                            'amount' => 100.0,
                         ],
                     ],
                 ],
@@ -541,28 +541,28 @@ class ShippingMethodConverterTest extends TestCase
                         'type' => 'cartWeight',
                         'value' => [
                             'operator' => '>=',
-                            'weight' => '10',
+                            'weight' => 10.0,
                         ],
                     ],
                     [
                         'type' => 'cartWeight',
                         'value' => [
                             'operator' => '<=',
-                            'weight' => '100',
+                            'weight' => 100.0,
                         ],
                     ],
                     [
                         'type' => 'cartLineItemTotalPrice',
                         'value' => [
                             'operator' => '>=',
-                            'amount' => '10',
+                            'amount' => 10.0,
                         ],
                     ],
                     [
                         'type' => 'cartLineItemTotalPrice',
                         'value' => [
                             'operator' => '<=',
-                            'amount' => '100',
+                            'amount' => 100.0,
                         ],
                     ],
                 ],

@@ -234,7 +234,7 @@ return [
                 'articleID' => '1',
                 'articleordernumber' => 'SW10001',
                 'price' => '459.95',
-                'quantity' => '1',
+                'quantity' => '2',
                 'name' => 'Hauptartikel',
                 'status' => '0',
                 'shipped' => '0',

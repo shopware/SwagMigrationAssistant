@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
+use Shopware\Core\Checkout\Cart\Price\Struct\AbsolutePriceDefinition;
 use Shopware\Core\Checkout\Cart\Price\Struct\CalculatedPrice;
 use Shopware\Core\Checkout\Cart\Price\Struct\CartPrice;
 use Shopware\Core\Checkout\Cart\Price\Struct\QuantityPriceDefinition;
@@ -17,6 +18,7 @@ use Shopware\Core\Checkout\Cart\Tax\Struct\TaxRuleCollection;
 use Shopware\Core\Checkout\Cart\Tax\TaxCalculator;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
@@ -869,8 +871,21 @@ abstract class OrderConverter extends ShopwareConverter
                 $lineItem['priceDefinition'] = new QuantityPriceDefinition(
                     (float) $originalLineItem['price'],
                     $taxRules,
-                    $context->getCurrencyPrecision()
+                    $context->getCurrencyPrecision(),
+                    $lineItem['quantity'] ?? 1,
+                    true
                 );
+
+                if ($lineItem['type'] === LineItem::CREDIT_LINE_ITEM_TYPE) {
+                    $lineItem['priceDefinition'] = new AbsolutePriceDefinition(
+                        (float) $originalLineItem['price'],
+                        $context->getCurrencyPrecision()
+                    );
+                }
+            }
+
+            if (!isset($lineItem['referencedId']) && $lineItem['type'] !== LineItem::CREDIT_LINE_ITEM_TYPE) {
+                $lineItem['referencedId'] = Uuid::randomHex();
             }
 
             $lineItems[] = $lineItem;
