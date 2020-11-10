@@ -147,7 +147,7 @@ return [
                 'articleID' => '6',
                 'img' => 'handschuh',
                 'main' => '1',
-                'description' => '',
+                'description' => 'Nicer Handschuh',
                 'position' => '1',
                 'width' => '0',
                 'height' => '0',

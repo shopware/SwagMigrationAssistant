@@ -110,6 +110,7 @@ class ProductConverterTest extends TestCase
             $converted['translations'][DummyMappingService::DEFAULT_LANGUAGE_UUID]['name']
         );
         static::assertSame([], $converted['categories']);
+        static::assertSame($productData[0]['assets'][0]['description'], $converted['media'][0]['media']['alt']);
         static::assertCount(0, $this->loggingService->getLoggingArray());
     }
 

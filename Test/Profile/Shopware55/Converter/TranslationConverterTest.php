@@ -8,6 +8,8 @@
 namespace SwagMigrationAssistant\Test\Profile\Shopware55\Converter;
 
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Content\Media\MediaDefinition;
+use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Content\Property\Aggregate\PropertyGroupOption\PropertyGroupOptionDefinition;
 use Shopware\Core\Content\Property\PropertyGroupDefinition;
 use Shopware\Core\Framework\Context;
@@ -459,7 +461,7 @@ class TranslationConverterTest extends TestCase
 
         $expected = [
             'id' => $productMapping['entityUuid'],
-            'entityDefinitionClass' => "Shopware\Core\Content\Product\ProductDefinition",
+            'entityDefinitionClass' => ProductDefinition::class,
             'translations' => [
                 DummyMappingService::DEFAULT_LANGUAGE_UUID => [
                     'customFields' => [
@@ -475,5 +477,88 @@ class TranslationConverterTest extends TestCase
         static::assertCount(0, $this->loggingService->getLoggingArray());
         static::assertArrayHasKey('translations', $converted);
         static::assertSame($expected, $converted);
+    }
+
+    public function testConvertProductMediaTranslation(): void
+    {
+        $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
+        $translationData = $translationData['articleimage'];
+
+        $context = Context::createDefaultContext();
+        $mediaMapping = $this->mappingService->getOrCreateMapping(
+            $this->connectionId,
+            DefaultEntities::MEDIA,
+            $translationData['mediaId'],
+            $context
+        );
+        $translationMapping = $this->mappingService->getOrCreateMapping(
+            $this->connectionId,
+            DefaultEntities::TRANSLATION,
+            $translationData['id'],
+            $context
+        );
+
+        $expectedData = [
+            'id' => $mediaMapping['entityUuid'],
+            'entityDefinitionClass' => MediaDefinition::class,
+            'translations' => [
+                DummyMappingService::DEFAULT_LANGUAGE_UUID => [
+                    'id' => $translationMapping['entityUuid'],
+                    'alt' => 'EN - Nice Spachtelmasse',
+                    'languageId' => DummyMappingService::DEFAULT_LANGUAGE_UUID,
+                ],
+            ],
+        ];
+
+        $convertResult = $this->translationConverter->convert($translationData, $context, $this->migrationContext);
+        $converted = $convertResult->getConverted();
+
+        static::assertNull($convertResult->getUnmapped());
+        static::assertNotNull($convertResult->getMappingUuid());
+        static::assertNotNull($converted);
+        static::assertCount(0, $this->loggingService->getLoggingArray());
+        static::assertSame($expectedData, $converted);
+    }
+
+    public function testConvertProductMediaTranslationWithoutMediaId(): void
+    {
+        $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
+        $translationData = $translationData['articleimage'];
+        unset($translationData['mediaId']);
+
+        $context = Context::createDefaultContext();
+        $convertResult = $this->translationConverter->convert($translationData, $context, $this->migrationContext);
+        $converted = $convertResult->getConverted();
+        $logs = $this->loggingService->getLoggingArray();
+
+        static::assertNotNull($convertResult->getUnmapped());
+        static::assertNull($convertResult->getMappingUuid());
+        static::assertNull($converted);
+        static::assertCount(0, $logs);
+    }
+
+    public function testConvertProductMediaTranslationWithoutMediaMapping(): void
+    {
+        $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
+        $translationData = $translationData['articleimage'];
+
+        $context = Context::createDefaultContext();
+        $convertResult = $this->translationConverter->convert($translationData, $context, $this->migrationContext);
+        $converted = $convertResult->getConverted();
+        $logs = $this->loggingService->getLoggingArray();
+
+        static::assertNotNull($convertResult->getUnmapped());
+        static::assertNull($convertResult->getMappingUuid());
+        static::assertNull($converted);
+        static::assertCount(1, $logs);
+
+        $logParameters = [
+            'missingEntity' => DefaultEntities::MEDIA,
+            'requiredFor' => DefaultEntities::TRANSLATION,
+            'sourceId' => '769',
+        ];
+
+        static::assertSame('SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING_MEDIA', $logs[0]['code']);
+        static::assertSame($logParameters, $logs[0]['parameters']);
     }
 }

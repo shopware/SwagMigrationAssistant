@@ -1855,16 +1855,6 @@ parameters:
 			path: Test/Profile/Shopware55/Converter/ManufacturerAttributeConverterTest.php
 
 		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware55\\\\Converter\\\\MediaConverterTest\\:\\:\\$connection \\(string\\) does not accept SwagMigrationAssistant\\\\Migration\\\\Connection\\\\SwagMigrationConnectionEntity\\.$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/MediaConverterTest.php
-
-		-
-			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/MediaConverterTest.php
-
-		-
 			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
 			count: 4
 			path: Test/Profile/Shopware55/Converter/MediaFolderConverterTest.php
@@ -1993,36 +1983,6 @@ parameters:
 			message: "#^Offset 'properties' does not exist on array\\|null\\.$#"
 			count: 3
 			path: Test/Profile/Shopware55/Converter/ProductPropertyRelationConverterTest.php
-
-		-
-			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
-			count: 3
-			path: Test/Profile/Shopware55/Converter/PropertyGroupOptionConverterTest.php
-
-		-
-			message: "#^Offset 'translations' does not exist on array\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/PropertyGroupOptionConverterTest.php
-
-		-
-			message: "#^Offset 'group' does not exist on array\\|null\\.$#"
-			count: 2
-			path: Test/Profile/Shopware55/Converter/PropertyGroupOptionConverterTest.php
-
-		-
-			message: "#^Offset 'id' does not exist on array\\|null\\.$#"
-			count: 11
-			path: Test/Profile/Shopware55/Converter/PropertyGroupOptionConverterTest.php
-
-		-
-			message: "#^Offset 'configuratorSettings' does not exist on array\\|null\\.$#"
-			count: 3
-			path: Test/Profile/Shopware55/Converter/PropertyGroupOptionConverterTest.php
-
-		-
-			message: "#^Offset 'properties' does not exist on array\\|null\\.$#"
-			count: 2
-			path: Test/Profile/Shopware55/Converter/PropertyGroupOptionConverterTest.php
 
 		-
 			message: "#^Cannot call method getId\\(\\) on SwagMigrationAssistant\\\\Migration\\\\Connection\\\\SwagMigrationConnectionEntity\\|null\\.$#"

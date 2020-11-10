@@ -306,7 +306,20 @@ abstract class CategoryConverter extends ShopwareConverter
             $media['name'] = $categoryMedia['id'];
         }
 
+        $this->mediaFileService->saveMediaFile(
+            [
+                'runId' => $this->runId,
+                'entity' => MediaDataSet::getEntity(),
+                'uri' => $media['uri'] ?? $media['path'],
+                'fileName' => $media['name'],
+                'fileSize' => (int) $media['file_size'],
+                'mediaId' => $categoryMedia['id'],
+            ]
+        );
+
         $this->getMediaTranslation($categoryMedia, ['media' => $media]);
+        $this->convertValue($categoryMedia, 'title', $media, 'name');
+        $this->convertValue($categoryMedia, 'alt', $media, 'description');
 
         $albumMapping = $this->mappingService->getMapping(
             $this->connectionId,
@@ -319,17 +332,6 @@ abstract class CategoryConverter extends ShopwareConverter
             $categoryMedia['mediaFolderId'] = $albumMapping['entityUuid'];
             $this->mappingIds[] = $albumMapping['id'];
         }
-
-        $this->mediaFileService->saveMediaFile(
-            [
-                'runId' => $this->runId,
-                'entity' => MediaDataSet::getEntity(),
-                'uri' => $media['uri'] ?? $media['path'],
-                'fileName' => $media['name'],
-                'fileSize' => (int) $media['file_size'],
-                'mediaId' => $categoryMedia['id'],
-            ]
-        );
 
         return $categoryMedia;
     }
@@ -348,8 +350,8 @@ abstract class CategoryConverter extends ShopwareConverter
 
         $localeTranslation = [];
 
-        $this->convertValue($localeTranslation, 'name', $data['media'], 'name');
-        $this->convertValue($localeTranslation, 'description', $data['media'], 'description');
+        $this->convertValue($localeTranslation, 'title', $data['media'], 'name');
+        $this->convertValue($localeTranslation, 'alt', $data['media'], 'description');
 
         $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,

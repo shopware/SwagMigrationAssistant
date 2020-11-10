@@ -10,6 +10,7 @@ namespace SwagMigrationAssistant\Profile\Shopware\DataSelection;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionInterface;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionStruct;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CrossSellingDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ManufacturerAttributeDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaFolderDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductAttributeDataSet;
@@ -58,6 +59,7 @@ class SeoUrlDataSelection implements DataSelectionInterface
             new ProductOptionRelationDataSet(),
             new ProductPropertyRelationDataSet(),
             new TranslationDataSet(),
+            new CrossSellingDataSet(),
             new SeoUrlDataSet(),
         ];
     }
