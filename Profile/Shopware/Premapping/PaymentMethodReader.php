@@ -44,12 +44,17 @@ class PaymentMethodReader extends AbstractPremappingReader
     /**
      * @var string[]
      */
-    private $preselectionSourceNameDictonary = [];
+    private $preselectionSourceNameDictionary = [];
 
     /**
      * @var GatewayRegistryInterface
      */
     private $gatewayRegistry;
+
+    /**
+     * @var string[]
+     */
+    private $choiceUuids;
 
     public function __construct(
         EntityRepositoryInterface $paymentMethodRepo,
@@ -76,8 +81,8 @@ class PaymentMethodReader extends AbstractPremappingReader
     public function getPremapping(Context $context, MigrationContextInterface $migrationContext): PremappingStruct
     {
         $this->fillConnectionPremappingDictionary($migrationContext);
-        $mapping = $this->getMapping($migrationContext);
         $choices = $this->getChoices($context);
+        $mapping = $this->getMapping($migrationContext);
         $this->setPreselection($mapping);
 
         return new PremappingStruct(self::getMappingName(), $mapping, $choices);
@@ -95,7 +100,7 @@ class PaymentMethodReader extends AbstractPremappingReader
 
         $entityData = [];
         foreach ($preMappingData as $data) {
-            $this->preselectionSourceNameDictonary[$data['id']] = $data['name'];
+            $this->preselectionSourceNameDictionary[$data['id']] = $data['name'];
             $uuid = '';
 
             if (isset($this->connectionPremappingDictionary[$data['id']])) {
@@ -109,12 +114,20 @@ class PaymentMethodReader extends AbstractPremappingReader
                 $description = $data['id'];
             }
 
+            if (!isset($this->choiceUuids[$uuid])) {
+                $uuid = '';
+            }
+
             $entityData[] = new PremappingEntityStruct($data['id'], $description, $uuid);
         }
 
         $uuid = '';
         if (isset($this->connectionPremappingDictionary['default_payment_method'])) {
             $uuid = $this->connectionPremappingDictionary['default_payment_method']['destinationUuid'];
+
+            if (!isset($this->choiceUuids[$uuid])) {
+                $uuid = '';
+            }
         }
 
         $entityData[] = new PremappingEntityStruct('default_payment_method', 'Standard Payment Method', $uuid);
@@ -140,6 +153,7 @@ class PaymentMethodReader extends AbstractPremappingReader
             $name = $paymentMethod->getName() ?? '';
             $this->preselectionDictionary[$paymentMethod->getHandlerIdentifier()] = $paymentMethod->getId();
             $choices[] = new PremappingChoiceStruct($paymentMethod->getId(), $name);
+            $this->choiceUuids[$paymentMethod->getId()] = $paymentMethod->getId();
         }
 
         return $choices;
@@ -151,11 +165,11 @@ class PaymentMethodReader extends AbstractPremappingReader
     private function setPreselection(array $mapping): void
     {
         foreach ($mapping as $item) {
-            if (!isset($this->preselectionSourceNameDictonary[$item->getSourceId()]) || $item->getDestinationUuid() !== '') {
+            if (!isset($this->preselectionSourceNameDictionary[$item->getSourceId()]) || $item->getDestinationUuid() !== '') {
                 continue;
             }
 
-            $sourceName = $this->preselectionSourceNameDictonary[$item->getSourceId()];
+            $sourceName = $this->preselectionSourceNameDictionary[$item->getSourceId()];
             $preselectionValue = $this->getPreselectionValue($sourceName);
 
             if ($preselectionValue !== null) {

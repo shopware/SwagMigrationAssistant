@@ -44,27 +44,42 @@ class DeliveryTimeReaderTest extends TestCase
      */
     private $context;
 
+    /**
+     * @var DeliveryTimeEntity
+     */
+    private $timeOne;
+
     public function setUp(): void
     {
+        $this->context = Context::createDefaultContext();
         $connection = new SwagMigrationConnectionEntity();
         $connection->setId(Uuid::randomHex());
         $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
         $connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
         $connection->setCredentialFields([]);
-        $connection->setPremapping([]);
-
-        $this->context = Context::createDefaultContext();
 
         $mock = $this->createMock(EntityRepository::class);
-        $timeOne = new DeliveryTimeEntity();
-        $timeOne->setId(Uuid::randomHex());
-        $timeOne->setName('1-2 days');
+        $this->timeOne = new DeliveryTimeEntity();
+        $this->timeOne->setId(Uuid::randomHex());
+        $this->timeOne->setName('1-2 days');
 
         $timeTwo = new DeliveryTimeEntity();
         $timeTwo->setId(Uuid::randomHex());
         $timeTwo->setName('2-5 days');
 
-        $mock->method('search')->willReturn(new EntitySearchResult(2, new EntityCollection([$timeOne, $timeTwo]), null, new Criteria(), $this->context));
+        $premapping = [[
+            'entity' => 'delivery_time',
+            'mapping' => [
+                0 => [
+                    'sourceId' => 'default_delivery_time',
+                    'description' => 'Default delivery time',
+                    'destinationUuid' => $this->timeOne->getId(),
+                ],
+            ],
+        ]];
+        $connection->setPremapping($premapping);
+
+        $mock->method('search')->willReturn(new EntitySearchResult(2, new EntityCollection([$this->timeOne, $timeTwo]), null, new Criteria(), $this->context));
 
         /* @var EntityRepositoryInterface $mock */
         $this->deliveryTimeReader = new DeliveryTimeReader($mock);
@@ -85,5 +100,42 @@ class DeliveryTimeReaderTest extends TestCase
 
         $choices = $result->getChoices();
         static::assertSame('2-5 days', $choices[1]->getDescription());
+        static::assertSame($this->timeOne->getId(), $result->getMapping()[0]->getDestinationUuid());
+    }
+
+    public function testGetPremappingInvalidUuid(): void
+    {
+        $connection = new SwagMigrationConnectionEntity();
+        $connection->setId(Uuid::randomHex());
+        $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
+        $connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
+        $connection->setCredentialFields([]);
+
+        $premapping = [[
+            'entity' => 'delivery_time',
+            'mapping' => [
+                0 => [
+                    'sourceId' => 'default_delivery_time',
+                    'description' => 'Default delivery time',
+                    'destinationUuid' => Uuid::randomHex(),
+                ],
+            ],
+        ]];
+        $connection->setPremapping($premapping);
+
+        $this->migrationContext = new MigrationContext(
+            new Shopware55Profile(),
+            $connection
+        );
+
+        $result = $this->deliveryTimeReader->getPremapping($this->context, $this->migrationContext);
+
+        static::assertInstanceOf(PremappingStruct::class, $result);
+        static::assertCount(1, $result->getMapping());
+        static::assertCount(2, $result->getChoices());
+
+        $choices = $result->getChoices();
+        static::assertSame('2-5 days', $choices[1]->getDescription());
+        static::assertEmpty($result->getMapping()[0]->getDestinationUuid());
     }
 }

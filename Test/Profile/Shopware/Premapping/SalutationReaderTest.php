@@ -45,6 +45,16 @@ class SalutationReaderTest extends TestCase
      */
     private $context;
 
+    /**
+     * @var SalutationEntity
+     */
+    private $salutationTwo;
+
+    /**
+     * @var SalutationEntity
+     */
+    private $salutationOne;
+
     public function setUp(): void
     {
         $this->context = Context::createDefaultContext();
@@ -54,24 +64,46 @@ class SalutationReaderTest extends TestCase
         $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
         $connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
         $connection->setCredentialFields([]);
-        $connection->setPremapping([]);
 
-        $salutationOne = new SalutationEntity();
-        $salutationOne->setId(Uuid::randomHex());
-        $salutationOne->setDisplayName('Mr');
-        $salutationOne->setSalutationKey('mr');
+        $this->salutationOne = new SalutationEntity();
+        $this->salutationOne->setId(Uuid::randomHex());
+        $this->salutationOne->setDisplayName('Mr');
+        $this->salutationOne->setSalutationKey('mr');
 
-        $salutationTwo = new SalutationEntity();
-        $salutationTwo->setId(Uuid::randomHex());
-        $salutationTwo->setDisplayName('Ms');
-        $salutationTwo->setSalutationKey('ms');
+        $this->salutationTwo = new SalutationEntity();
+        $this->salutationTwo->setId(Uuid::randomHex());
+        $this->salutationTwo->setDisplayName('Ms');
+        $this->salutationTwo->setSalutationKey('ms');
+
+        $premapping = [[
+            'entity' => 'salutation',
+            'mapping' => [
+                0 => [
+                    'sourceId' => 'mr',
+                    'description' => 'mr',
+                    'destinationUuid' => $this->salutationOne->getId(),
+                ],
+                1 => [
+                    'sourceId' => 'ms',
+                    'description' => 'ms',
+                    'destinationUuid' => $this->salutationTwo->getId(),
+                ],
+
+                2 => [
+                    'sourceId' => 'salutation-invalid',
+                    'description' => 'salutation-invalid',
+                    'destinationUuid' => Uuid::randomHex(),
+                ],
+            ],
+        ]];
+        $connection->setPremapping($premapping);
 
         $mock = $this->createMock(EntityRepository::class);
-        $mock->method('search')->willReturn(new EntitySearchResult(2, new EntityCollection([$salutationOne, $salutationTwo]), null, new Criteria(), $this->context));
+        $mock->method('search')->willReturn(new EntitySearchResult(2, new EntityCollection([$this->salutationOne, $this->salutationTwo]), null, new Criteria(), $this->context));
 
         $gatewayMock = $this->createMock(ShopwareLocalGateway::class);
         $gatewayMock->method('readTable')->willReturn([
-            ['id' => '1', 'name' => 'shopsalutations', 'value' => 's:5:"mr,ms";'],
+            ['id' => '1', 'name' => 'shopsalutations', 'value' => 's:24:"mr,ms,salutation-invalid";'],
         ]);
 
         $gatewayRegistryMock = $this->createMock(GatewayRegistry::class);
@@ -90,10 +122,14 @@ class SalutationReaderTest extends TestCase
         $result = $this->reader->getPremapping($this->context, $this->migrationContext);
 
         static::assertInstanceOf(PremappingStruct::class, $result);
-        static::assertCount(2, $result->getMapping());
+        static::assertCount(3, $result->getMapping());
         static::assertCount(2, $result->getChoices());
 
         $choices = $result->getChoices();
+        static::assertSame('mr', $choices[0]->getDescription());
         static::assertSame('ms', $choices[1]->getDescription());
+        static::assertSame($this->salutationOne->getId(), $result->getMapping()[0]->getDestinationUuid());
+        static::assertSame($this->salutationTwo->getId(), $result->getMapping()[1]->getDestinationUuid());
+        static::assertEmpty($result->getMapping()[2]->getDestinationUuid());
     }
 }

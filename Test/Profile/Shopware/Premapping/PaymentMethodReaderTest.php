@@ -46,6 +46,16 @@ class PaymentMethodReaderTest extends TestCase
      */
     private $context;
 
+    /**
+     * @var PaymentMethodEntity
+     */
+    private $debitMock;
+
+    /**
+     * @var PaymentMethodEntity
+     */
+    private $cashMock;
+
     public function setUp(): void
     {
         $this->context = Context::createDefaultContext();
@@ -55,26 +65,49 @@ class PaymentMethodReaderTest extends TestCase
         $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
         $connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
         $connection->setCredentialFields([]);
-        $connection->setPremapping([]);
 
-        $debitMock = new PaymentMethodEntity();
-        $debitMock->setId(Uuid::randomHex());
-        $debitMock->setName('Debit');
-        $debitMock->setHandlerIdentifier(DebitPayment::class);
+        $this->debitMock = new PaymentMethodEntity();
+        $this->debitMock->setId(Uuid::randomHex());
+        $this->debitMock->setName('Debit');
+        $this->debitMock->setHandlerIdentifier(DebitPayment::class);
 
-        $cashMock = new PaymentMethodEntity();
-        $cashMock->setId(Uuid::randomHex());
-        $cashMock->setName('Cash');
-        $cashMock->setHandlerIdentifier(CashPayment::class);
+        $this->cashMock = new PaymentMethodEntity();
+        $this->cashMock->setId(Uuid::randomHex());
+        $this->cashMock->setName('Cash');
+        $this->cashMock->setHandlerIdentifier(CashPayment::class);
+
+        $premapping = [[
+            'entity' => 'payment_method',
+            'mapping' => [
+                0 => [
+                    'sourceId' => 'debit',
+                    'description' => 'debit',
+                    'destinationUuid' => $this->debitMock->getId(),
+                ],
+                1 => [
+                    'sourceId' => 'cash',
+                    'description' => 'cash',
+                    'destinationUuid' => $this->cashMock->getId(),
+                ],
+
+                2 => [
+                    'sourceId' => 'payment-invalid',
+                    'description' => 'payment-invalid',
+                    'destinationUuid' => Uuid::randomHex(),
+                ],
+            ],
+        ]];
+        $connection->setPremapping($premapping);
 
         $mock = $this->createMock(EntityRepository::class);
-        $mock->method('search')->willReturn(new EntitySearchResult(2, new EntityCollection([$debitMock, $cashMock]), null, new Criteria(), $this->context));
+        $mock->method('search')->willReturn(new EntitySearchResult(2, new EntityCollection([$this->debitMock, $this->cashMock]), null, new Criteria(), $this->context));
 
         $gatewayMock = $this->createMock(ShopwareLocalGateway::class);
         $gatewayMock->method('readTable')->willReturn([
             ['id' => '1', 'name' => 'debit', 'description' => 'Direct debit'],
             ['id' => '2', 'name' => 'cash', 'description' => 'Cash'],
             ['id' => '3', 'name' => 'no_description', 'description' => ''],
+            ['id' => '4', 'name' => 'payment-invalid', 'description' => 'payment-invalid'],
         ]);
 
         $gatewayRegistryMock = $this->createMock(GatewayRegistry::class);
@@ -93,11 +126,16 @@ class PaymentMethodReaderTest extends TestCase
         $result = $this->reader->getPremapping($this->context, $this->migrationContext);
 
         static::assertInstanceOf(PremappingStruct::class, $result);
-        static::assertCount(4, $result->getMapping());
+        static::assertCount(5, $result->getMapping());
         static::assertCount(2, $result->getChoices());
 
         $choices = $result->getChoices();
+        static::assertSame('Debit', $choices[0]->getDescription());
         static::assertSame('Cash', $choices[1]->getDescription());
+        static::assertSame($this->cashMock->getId(), $result->getMapping()[0]->getDestinationUuid());
+        static::assertSame($this->debitMock->getId(), $result->getMapping()[1]->getDestinationUuid());
+        static::assertEmpty($result->getMapping()[2]->getDestinationUuid());
+        static::assertEmpty($result->getMapping()[3]->getDestinationUuid());
     }
 
     public function testPremappingChoicesWithEmptyDescription(): void

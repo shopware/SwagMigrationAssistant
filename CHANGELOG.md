@@ -1,6 +1,7 @@
 # REPLACE-GLOBAL-WITH-NEXT-VERSION
 - MIG-114 - Provide migration of main variant information
 - MIG-118 - Fix migration of credit line items
+- MIG-120 - Solves an issue when loading the pre-mapping
 
 # 2.2.1
 - MIG-105 - Add warning if default languages differ

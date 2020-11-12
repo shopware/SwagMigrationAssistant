@@ -45,6 +45,16 @@ class TransactionStateReaderTest extends TestCase
      */
     private $context;
 
+    /**
+     * @var StateMachineStateEntity
+     */
+    private $stateOpen;
+
+    /**
+     * @var StateMachineStateEntity
+     */
+    private $stateClosed;
+
     public function setUp(): void
     {
         $this->context = Context::createDefaultContext();
@@ -55,24 +65,45 @@ class TransactionStateReaderTest extends TestCase
         $smRepoMock->method('search')->willReturn(new EntitySearchResult(1, new EntityCollection([$stateMachine]), null, new Criteria(), $this->context));
 
         $smsRepoMock = $this->createMock(EntityRepository::class);
-        $stateOpen = new StateMachineStateEntity();
-        $stateOpen->setId(Uuid::randomHex());
-        $stateOpen->setName('Open');
-        $stateOpen->setTechnicalName('open');
+        $this->stateOpen = new StateMachineStateEntity();
+        $this->stateOpen->setId(Uuid::randomHex());
+        $this->stateOpen->setName('Open');
+        $this->stateOpen->setTechnicalName('open');
 
-        $stateClosed = new StateMachineStateEntity();
-        $stateClosed->setId(Uuid::randomHex());
-        $stateClosed->setName('Paid');
-        $stateClosed->setTechnicalName('paid');
+        $this->stateClosed = new StateMachineStateEntity();
+        $this->stateClosed->setId(Uuid::randomHex());
+        $this->stateClosed->setName('Paid');
+        $this->stateClosed->setTechnicalName('paid');
 
-        $smsRepoMock->method('search')->willReturn(new EntitySearchResult(2, new EntityCollection([$stateOpen, $stateClosed]), null, new Criteria(), $this->context));
+        $smsRepoMock->method('search')->willReturn(new EntitySearchResult(2, new EntityCollection([$this->stateOpen, $this->stateClosed]), null, new Criteria(), $this->context));
 
         $connection = new SwagMigrationConnectionEntity();
         $connection->setId(Uuid::randomHex());
         $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
         $connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
         $connection->setCredentialFields([]);
-        $connection->setPremapping([]);
+        $premapping = [[
+            'entity' => 'transaction_state',
+            'mapping' => [
+                0 => [
+                    'sourceId' => '1',
+                    'description' => 'open',
+                    'destinationUuid' => $this->stateOpen->getId(),
+                ],
+                1 => [
+                    'sourceId' => '2',
+                    'description' => 'in_process',
+                    'destinationUuid' => $this->stateClosed->getId(),
+                ],
+
+                2 => [
+                    'sourceId' => '300',
+                    'description' => 'payment-invalid',
+                    'destinationUuid' => Uuid::randomHex(),
+                ],
+            ],
+        ]];
+        $connection->setPremapping($premapping);
 
         $this->migrationContext = new MigrationContext(
             new Shopware55Profile(),
@@ -83,7 +114,8 @@ class TransactionStateReaderTest extends TestCase
         $gatewayMock->method('readTable')->willReturn([
             ['id' => '1', 'name' => 'open', 'description' => 'Open', 'group' => 'payment', 'mail' => 0],
             ['id' => '2', 'name' => 'completely_paid', 'description' => 'Completely paid', 'group' => 'payment', 'mail' => 0],
-            ['id' => '3', 'name' => 'no_description', 'description' => '', 'group' => 'payment', 'mail' => 0],
+            ['id' => '200', 'name' => 'no_description', 'description' => '', 'group' => 'payment', 'mail' => 0],
+            ['id' => '300', 'name' => 'payment-invalid', 'description' => 'payment-invalid', 'group' => 'payment', 'mail' => 0],
         ]);
 
         $gatewayRegistryMock = $this->createMock(GatewayRegistry::class);
@@ -97,19 +129,16 @@ class TransactionStateReaderTest extends TestCase
         $result = $this->reader->getPremapping($this->context, $this->migrationContext);
 
         static::assertInstanceOf(PremappingStruct::class, $result);
-        static::assertCount(3, $result->getMapping());
+        static::assertCount(4, $result->getMapping());
         static::assertCount(2, $result->getChoices());
 
         $choices = $result->getChoices();
+        static::assertSame('Open', $choices[0]->getDescription());
         static::assertSame('Paid', $choices[1]->getDescription());
-    }
-
-    public function testPremappingChoicesWithEmptyDescription(): void
-    {
-        $result = $this->reader->getPremapping($this->context, $this->migrationContext);
-
-        static::assertInstanceOf(PremappingStruct::class, $result);
-        $mapping = $result->getMapping();
-        static::assertSame('no_description', $mapping[2]->getDescription());
+        static::assertSame('no_description', $result->getMapping()[2]->getDescription());
+        static::assertSame($this->stateClosed->getId(), $result->getMapping()[0]->getDestinationUuid());
+        static::assertSame($this->stateOpen->getId(), $result->getMapping()[1]->getDestinationUuid());
+        static::assertEmpty($result->getMapping()[2]->getDestinationUuid());
+        static::assertEmpty($result->getMapping()[3]->getDestinationUuid());
     }
 }

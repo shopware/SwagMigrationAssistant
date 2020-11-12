@@ -34,6 +34,11 @@ class DeliveryTimeReader extends AbstractPremappingReader
      */
     private $deliveryTimeRepo;
 
+    /**
+     * @var string[]
+     */
+    private $choiceUuids;
+
     public function __construct(EntityRepositoryInterface $deliveryTimeRepo)
     {
         $this->deliveryTimeRepo = $deliveryTimeRepo;
@@ -52,9 +57,9 @@ class DeliveryTimeReader extends AbstractPremappingReader
 
     public function getPremapping(Context $context, MigrationContextInterface $migrationContext): PremappingStruct
     {
+        $choices = $this->getChoices($context);
         $this->fillConnectionPremappingValue($migrationContext);
         $mapping = $this->getMapping();
-        $choices = $this->getChoices($context);
 
         return new PremappingStruct(self::getMappingName(), $mapping, $choices);
     }
@@ -75,7 +80,9 @@ class DeliveryTimeReader extends AbstractPremappingReader
         foreach ($mappingArray as $premapping) {
             if ($premapping['entity'] === self::MAPPING_NAME) {
                 foreach ($premapping['mapping'] as $mapping) {
-                    $this->connectionPremappingValue = $mapping['destinationUuid'];
+                    if (isset($this->choiceUuids[$mapping['destinationUuid']])) {
+                        $this->connectionPremappingValue = $mapping['destinationUuid'];
+                    }
                 }
             }
         }
@@ -104,7 +111,9 @@ class DeliveryTimeReader extends AbstractPremappingReader
         $choices = [];
         /** @var DeliveryTimeEntity $deliveryTime */
         foreach ($deliveryTimes as $deliveryTime) {
-            $choices[] = new PremappingChoiceStruct($deliveryTime->getId(), $deliveryTime->getName());
+            $id = $deliveryTime->getId();
+            $choices[] = new PremappingChoiceStruct($id, $deliveryTime->getName());
+            $this->choiceUuids[$id] = $id;
         }
 
         return $choices;
