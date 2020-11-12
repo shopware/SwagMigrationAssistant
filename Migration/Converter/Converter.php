@@ -89,4 +89,14 @@ abstract class Converter implements ConverterInterface
             $context
         );
     }
+
+    protected function getDataSetEntity(MigrationContextInterface $migrationContext): ?string
+    {
+        $dataSet = $migrationContext->getDataSet();
+        if ($dataSet === null) {
+            return null;
+        }
+
+        return $dataSet::getEntity();
+    }
 }
