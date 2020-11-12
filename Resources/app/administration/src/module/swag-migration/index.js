@@ -1,7 +1,6 @@
 import './mixin';
 import './component';
 import './page';
-import './extension/sw-settings-index';
 import './extension/sw-dashboard-index';
 import './profile';
 import MigrationProcessStore from '../../core/data/migrationProcess.store';
@@ -159,5 +158,12 @@ Module.register('swag-migration', {
                 privilege: 'admin'
             }
         }
+    },
+
+    settingsItem: {
+        group: 'plugins',
+        to: 'swag.migration.index',
+        iconComponent: 'swag-migration-settings-icon',
+        privilege: 'admin'
     }
 });
