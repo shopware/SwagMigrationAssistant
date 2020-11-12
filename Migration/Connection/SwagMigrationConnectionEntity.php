@@ -10,7 +10,6 @@ namespace SwagMigrationAssistant\Migration\Connection;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
 use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingCollection;
-use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
 use SwagMigrationAssistant\Migration\Setting\GeneralSettingCollection;
 
@@ -29,7 +28,7 @@ class SwagMigrationConnectionEntity extends Entity
     protected $credentialFields;
 
     /**
-     * @var PremappingStruct[]
+     * @var array
      */
     protected $premapping;
 
@@ -83,9 +82,6 @@ class SwagMigrationConnectionEntity extends Entity
         return $this->premapping;
     }
 
-    /**
-     * @param PremappingStruct[] $premapping
-     */
     public function setPremapping(array $premapping): void
     {
         $this->premapping = $premapping;

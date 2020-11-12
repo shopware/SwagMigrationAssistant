@@ -43,6 +43,11 @@ class SalutationReader extends AbstractPremappingReader
      */
     private $gatewayRegistry;
 
+    /**
+     * @var string[]
+     */
+    private $choiceUuids;
+
     public function __construct(
         EntityRepositoryInterface $salutationRepo,
         GatewayRegistryInterface $gatewayRegistry
@@ -67,8 +72,8 @@ class SalutationReader extends AbstractPremappingReader
     public function getPremapping(Context $context, MigrationContextInterface $migrationContext): PremappingStruct
     {
         $this->fillConnectionPremappingDictionary($migrationContext);
-        $mapping = $this->getMapping($migrationContext);
         $choices = $this->getChoices($context);
+        $mapping = $this->getMapping($migrationContext);
         $this->setPreselection($mapping);
 
         return new PremappingStruct(self::getMappingName(), $mapping, $choices);
@@ -113,6 +118,10 @@ class SalutationReader extends AbstractPremappingReader
             $uuid = '';
             if (isset($this->connectionPremappingDictionary[$salutation])) {
                 $uuid = $this->connectionPremappingDictionary[$salutation]['destinationUuid'];
+
+                if (!isset($this->choiceUuids[$uuid])) {
+                    $uuid = '';
+                }
             }
 
             $entityData[] = new PremappingEntityStruct($salutation, $salutation, $uuid);
@@ -136,8 +145,10 @@ class SalutationReader extends AbstractPremappingReader
         $choices = [];
         /** @var SalutationEntity $salutation */
         foreach ($salutations as $salutation) {
-            $this->preselectionDictionary[$salutation->getSalutationKey()] = $salutation->getId();
-            $choices[] = new PremappingChoiceStruct($salutation->getId(), $salutation->getSalutationKey());
+            $id = $salutation->getId();
+            $this->preselectionDictionary[$salutation->getSalutationKey()] = $id;
+            $choices[] = new PremappingChoiceStruct($id, $salutation->getSalutationKey());
+            $this->choiceUuids[$id] = $id;
         }
 
         return $choices;

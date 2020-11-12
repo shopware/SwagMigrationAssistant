@@ -49,6 +49,11 @@ class OrderDeliveryStateReader extends AbstractPremappingReader
      */
     private $gatewayRegistry;
 
+    /**
+     * @var string[]
+     */
+    private $choiceUuids;
+
     public function __construct(
         EntityRepositoryInterface $stateMachineRepo,
         EntityRepositoryInterface $stateMachineStateRepo,
@@ -73,8 +78,8 @@ class OrderDeliveryStateReader extends AbstractPremappingReader
     public function getPremapping(Context $context, MigrationContextInterface $migrationContext): PremappingStruct
     {
         $this->fillConnectionPremappingDictionary($migrationContext);
-        $mapping = $this->getMapping($migrationContext);
         $choices = $this->getChoices($context);
+        $mapping = $this->getMapping($migrationContext);
         $this->setPreselection($mapping);
 
         return new PremappingStruct(self::getMappingName(), $mapping, $choices);
@@ -96,6 +101,10 @@ class OrderDeliveryStateReader extends AbstractPremappingReader
                 $uuid = '';
                 if (isset($this->connectionPremappingDictionary[$data['id']])) {
                     $uuid = $this->connectionPremappingDictionary[$data['id']]['destinationUuid'];
+
+                    if (!isset($this->choiceUuids[$uuid])) {
+                        $uuid = '';
+                    }
                 }
                 if (!empty($data['description'])) {
                     $description = $data['description'];
@@ -134,8 +143,10 @@ class OrderDeliveryStateReader extends AbstractPremappingReader
         $choices = [];
         /** @var StateMachineStateEntity $state */
         foreach ($states as $state) {
-            $this->preselectionDictionary[$state->getTechnicalName()] = $state->getId();
-            $choices[] = new PremappingChoiceStruct($state->getId(), $state->getName());
+            $id = $state->getId();
+            $this->preselectionDictionary[$state->getTechnicalName()] = $id;
+            $choices[] = new PremappingChoiceStruct($id, $state->getName());
+            $this->choiceUuids[$id] = $id;
         }
 
         return $choices;
