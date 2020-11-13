@@ -53,6 +53,7 @@ class ProductProvider extends AbstractProvider
             'ratingAverage',
             'categoryTree',
             'listingPrices',
+            'sales',
             'tax', // taxId is already provided
         ]);
 

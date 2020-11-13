@@ -284,7 +284,8 @@
           "tax": "Steuersätze:",
           "property_group": "Produkteigenschaften-Gruppen:",
           "product_manufacturer": "Hersteller:",
-          "main_variant_relation": "Hauptvariantenrelationen:"
+          "main_variant_relation": "Hauptvariantenrelationen:",
+          "unit": "Einheiten:"
         },
         "noData": "Es wurden keine Daten zum Migrieren gefunden."
       },

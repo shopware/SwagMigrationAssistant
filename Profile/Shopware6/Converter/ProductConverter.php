@@ -75,9 +75,15 @@ abstract class ProductConverter extends ShopwareConverter
             );
         }
 
+        if (isset($converted['unitId'])) {
+            $converted['unitId'] = $this->getMappingIdFacade(
+                DefaultEntities::UNIT,
+                $converted['unitId']
+            );
+        }
+
         unset(
             // ToDo implement if these associations are migrated
-            $converted['unitId'],
             $converted['coverId'],
             $converted['deliveryTimeId']
         );
