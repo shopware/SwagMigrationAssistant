@@ -82,6 +82,6 @@ abstract class ProductConverter extends ShopwareConverter
             $converted['deliveryTimeId']
         );
 
-        return new ConvertStruct($converted, null, $this->mainMapping['id']);
+        return new ConvertStruct($converted, null, $this->mainMapping['id'] ?? null);
     }
 }

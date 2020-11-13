@@ -17,6 +17,6 @@ class Shopware63TaxConverter extends TaxConverter
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile()->getName() === Shopware63Profile::PROFILE_NAME
-            && $migrationContext->getDataSet()::getEntity() === TaxDataSet::getEntity();
+            && $this->getDataSetEntity($migrationContext) === TaxDataSet::getEntity();
     }
 }

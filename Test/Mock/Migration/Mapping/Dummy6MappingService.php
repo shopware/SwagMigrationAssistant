@@ -44,7 +44,7 @@ class Dummy6MappingService extends MappingService
 
     public function getMapping(string $connectionId, string $entityName, string $oldIdentifier, Context $context): ?array
     {
-        return $this->mappings[md5($entityName . $oldIdentifier)] ?? null;
+        return $this->mappings[\md5($entityName . $oldIdentifier)] ?? null;
     }
 
     public function getMappings(string $connectionId, string $entityName, array $ids, Context $context): EntitySearchResult
@@ -68,8 +68,8 @@ class Dummy6MappingService extends MappingService
 
     public function getUuidList(string $connectionId, string $entityName, string $identifier, Context $context): array
     {
-        return isset($this->mappings[md5($entityName . $identifier)])
-            ? array_column($this->mappings[md5($entityName . $identifier)], 'entityUuid')
+        return isset($this->mappings[\md5($entityName . $identifier)])
+            ? \array_column($this->mappings[\md5($entityName . $identifier)], 'entityUuid')
             : [];
     }
 
@@ -78,7 +78,8 @@ class Dummy6MappingService extends MappingService
         foreach ($this->writeArray as $key => $writeMapping) {
             if ($writeMapping['connectionId'] === $connectionId && $writeMapping['entityUuid'] === $entityUuid) {
                 unset($this->writeArray[$key]);
-                $this->writeArray = array_values($this->writeArray);
+                $this->writeArray = \array_values($this->writeArray);
+
                 break;
             }
         }
@@ -287,26 +288,16 @@ class Dummy6MappingService extends MappingService
 
     public function getLanguageUuid(string $connectionId, string $localeCode, Context $context, bool $withoutMapping = false): ?string
     {
-        $withoutMapping = false; // ignore this setting for the DummyMappingService
-        if (!$withoutMapping && isset($this->languageData[$localeCode])) {
+        if (isset($this->languageData[$localeCode])) {
             return $this->languageData[$localeCode];
         }
 
         $languageUuid = $this->searchLanguageInMapping($connectionId, $localeCode, $context);
-        if (!$withoutMapping && $languageUuid !== null) {
+        if ($languageUuid !== null) {
             return $languageUuid;
         }
 
-        $localeUuid = $this->searchLocale($localeCode, $context);
-
-        $languageUuid = $this->searchLanguageByLocale($localeUuid, $context);
-
-        if ($languageUuid === null) {
-            return $languageUuid;
-        }
-        $this->languageData[$localeCode] = $languageUuid;
-
-        return $languageUuid;
+        return null;
     }
 
     public function getLocaleUuid(string $connectionId, string $localeCode, Context $context): string
@@ -359,10 +350,5 @@ class Dummy6MappingService extends MappingService
     private function searchLocale(string $localeCode, Context $context): string
     {
         return self::FALLBACK_LOCALE_UUID_FOR_EVERY_CODE;
-    }
-
-    private function searchLanguageByLocale(string $localeUuid, Context $context): ?string
-    {
-        return null;
     }
 }

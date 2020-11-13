@@ -39,6 +39,6 @@ abstract class ProductManufacturerConverter extends ShopwareConverter
             $converted['mediaId']
         );
 
-        return new ConvertStruct($converted, null, $this->mainMapping['id']);
+        return new ConvertStruct($converted, null, $this->mainMapping['id'] ?? null);
     }
 }

@@ -48,7 +48,7 @@ class TotalReader implements TotalReaderInterface
             throw new GatewayReadException('Shopware 6 Api total', 466);
         }
 
-        $decoded = json_decode($result->getBody()->getContents(), true);
+        $decoded = \json_decode($result->getBody()->getContents(), true);
 
         return $this->prepareTotals($decoded);
     }

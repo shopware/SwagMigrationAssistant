@@ -17,7 +17,6 @@ use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6ProfileInterface;
-use SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63ProductManufacturerConverter;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\Dummy6MappingService;
 
@@ -34,7 +33,7 @@ abstract class ShopwareConverterTest extends TestCase
     protected $mappingService;
 
     /**
-     * @var Shopware63ProductManufacturerConverter
+     * @var ConverterInterface
      */
     protected $converter;
 
@@ -72,11 +71,16 @@ abstract class ShopwareConverterTest extends TestCase
 
     public function testConvert(): void
     {
-        $basePath = rtrim($this->getFixtureBasePath(), '/') . '/';
+        $basePath = \rtrim($this->getFixtureBasePath(), '/') . '/';
+        $glob = \glob($basePath . '*');
 
-        $testcaseDirectories = array_filter(glob($basePath . '*'), 'is_dir');
+        if ($glob === false) {
+            return;
+        }
+
+        $testcaseDirectories = \array_filter($glob, 'is_dir');
         foreach ($testcaseDirectories as $testcase) {
-            $fixtureName = basename($testcase);
+            $fixtureName = \basename($testcase);
             $this->doSingleConvert($testcase . '/', $fixtureName);
 
             $this->loggingService->resetLogging();
@@ -96,7 +100,7 @@ abstract class ShopwareConverterTest extends TestCase
 
     abstract protected function getFixtureBasePath(): string;
 
-    private function getAssertMessage($notes = ''): string
+    private function getAssertMessage(string $notes = ''): string
     {
         $childClassName = static::class;
 
@@ -110,7 +114,13 @@ abstract class ShopwareConverterTest extends TestCase
 
     private function loadMapping(array $mappingArray): void
     {
-        $connectionId = $this->migrationContext->getConnection()->getId();
+        $connection = $this->migrationContext->getConnection();
+
+        if ($connection === null) {
+            return;
+        }
+
+        $connectionId = $connection->getId();
         foreach ($mappingArray as $mapping) {
             $this->mappingService->createMapping(
                 $connectionId,
@@ -123,7 +133,7 @@ abstract class ShopwareConverterTest extends TestCase
         }
     }
 
-    private function doSingleConvert($fixtureFolderPath, $fixtureName): void
+    private function doSingleConvert(string $fixtureFolderPath, string $fixtureName): void
     {
         $mappingArray = require $fixtureFolderPath . 'mapping.php';
         $input = require $fixtureFolderPath . 'input.php';
@@ -141,13 +151,13 @@ abstract class ShopwareConverterTest extends TestCase
         static::assertSame($expectedOutput, $output, $this->getAssertMessage($fixtureName . ': Output of converter does not match.'));
 
         $logs = $this->loggingService->getLoggingArray();
-        static::assertCount(count($expectedLogArray), $logs, $this->getAssertMessage($fixtureName . ': Log count not as expected.'));
+        static::assertCount(\count($expectedLogArray), $logs, $this->getAssertMessage($fixtureName . ': Log count not as expected.'));
 
         foreach ($expectedLogArray as $index => $expectedLog) {
             static::assertArrayHasKey($index, $logs, $this->getAssertMessage($fixtureName . ': Log not found (make sure the log array order matches the logging order).'));
             $realLog = $logs[$index];
 
-            foreach (array_keys($expectedLog) as $key) {
+            foreach (\array_keys($expectedLog) as $key) {
                 static::assertSame($expectedLog[$key], $realLog[$key], $this->getAssertMessage($fixtureName . ': Log key not as expected (make sure the log array order matches the logging order).'));
             }
         }

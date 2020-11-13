@@ -12,12 +12,12 @@ use SwagMigrationAssistant\DataProvider\Exception\ProviderNotFoundException;
 class ProviderRegistry implements ProviderRegistryInterface
 {
     /**
-     * @var ProviderInterface[]
+     * @var ProviderInterface[]|iterable
      */
     private $providers;
 
     /**
-     * @param ProviderInterface[] $providers
+     * @param ProviderInterface[]|iterable $providers
      */
     public function __construct(iterable $providers)
     {

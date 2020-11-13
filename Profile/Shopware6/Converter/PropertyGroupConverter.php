@@ -34,11 +34,11 @@ abstract class PropertyGroupConverter extends ShopwareConverter
             DefaultEntities::PROPERTY_GROUP
         );
 
-        foreach (array_keys($converted['options']) as $key) {
+        foreach (\array_keys($converted['options']) as $key) {
             $this->convertOption($converted['options'][$key]);
         }
 
-        return new ConvertStruct($converted, null, $this->mainMapping['id']);
+        return new ConvertStruct($converted, null, $this->mainMapping['id'] ?? null);
     }
 
     protected function convertOption(array &$option): void
