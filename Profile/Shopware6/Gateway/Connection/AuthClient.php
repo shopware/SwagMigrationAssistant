@@ -60,7 +60,7 @@ class AuthClient implements AuthClientInterface
         $this->setupBearerTokenIfNeeded();
 
         try {
-            return $this->apiClient->get($endpoint, array_merge($config, [
+            return $this->apiClient->get($endpoint, \array_merge($config, [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->bearerToken,
                 ],
@@ -72,7 +72,7 @@ class AuthClient implements AuthClientInterface
 
             $this->renewBearerToken();
 
-            return $this->apiClient->get($endpoint, array_merge($config, [
+            return $this->apiClient->get($endpoint, \array_merge($config, [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->bearerToken,
                 ],
@@ -109,7 +109,7 @@ class AuthClient implements AuthClientInterface
             ],
         ]);
 
-        $result = json_decode($response->getBody()->getContents(), true);
+        $result = \json_decode($response->getBody()->getContents(), true);
 
         if (!empty($result['access_token'])) {
             $this->bearerToken = $result['access_token'];

@@ -61,6 +61,6 @@ abstract class CurrencyConverter extends ShopwareConverter
             DefaultEntities::CURRENCY
         );
 
-        return new ConvertStruct($converted, null, $this->mainMapping['id']);
+        return new ConvertStruct($converted, null, $this->mainMapping['id'] ?? null);
     }
 }

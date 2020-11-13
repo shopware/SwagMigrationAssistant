@@ -17,6 +17,6 @@ class Shopware63ProductManufacturerConverter extends ProductManufacturerConverte
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile()->getName() === Shopware63Profile::PROFILE_NAME
-            && $migrationContext->getDataSet()::getEntity() === ProductManufacturerDataSet::getEntity();
+            && $this->getDataSetEntity($migrationContext) === ProductManufacturerDataSet::getEntity();
     }
 }

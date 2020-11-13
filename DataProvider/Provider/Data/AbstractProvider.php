@@ -47,29 +47,29 @@ abstract class AbstractProvider implements ProviderInterface
     protected function cleanupSearchResult($result, array $stripExactKeys = []): array
     {
         if ($result instanceof EntityCollection) {
-            $cleanResult = array_values($result->getElements());
+            $cleanResult = \array_values($result->getElements());
         } else {
             $cleanResult = $result;
         }
 
         foreach ($cleanResult as $key => $value) {
             // cleanup of associative arrays (non integer keys)
-            if (is_string($key)) {
+            if (\is_string($key)) {
                 // cleanup forbidden keys that match exactly
-                if (in_array($key, self::FORBIDDEN_EXACT_KEYS, true)) {
+                if (\in_array($key, self::FORBIDDEN_EXACT_KEYS, true)) {
                     unset($cleanResult[$key]);
                     continue;
                 }
 
                 // cleanup keys that were specified as an argument
-                if (in_array($key, $stripExactKeys, true)) {
+                if (\in_array($key, $stripExactKeys, true)) {
                     unset($cleanResult[$key]);
                     continue;
                 }
 
                 // cleanup forbidden keys that contains the needle
                 foreach (self::FORBIDDEN_CONTAINS_KEYS as $forbiddenNeedle) {
-                    if (mb_strpos($key, $forbiddenNeedle)) {
+                    if (\mb_strpos($key, $forbiddenNeedle)) {
                         unset($cleanResult[$key]);
                         continue;
                     }
@@ -78,7 +78,7 @@ abstract class AbstractProvider implements ProviderInterface
 
             // convert collections to plain arrays
             if ($value instanceof EntityCollection) {
-                $cleanResult[$key] = array_values($value->getElements());
+                $cleanResult[$key] = \array_values($value->getElements());
                 $value = $cleanResult[$key];
             }
 
@@ -88,8 +88,8 @@ abstract class AbstractProvider implements ProviderInterface
                 $value = $cleanResult[$key];
             }
 
-            if (is_array($value)) {
-                if (empty(array_filter($value))) {
+            if (\is_array($value)) {
+                if (empty(\array_filter($value))) {
                     // if all entries of the array equal to FALSE this key will be removed (for example null or '' entries).
                     unset($cleanResult[$key]);
                     continue;

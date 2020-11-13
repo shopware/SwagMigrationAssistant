@@ -33,7 +33,7 @@ abstract class ApiReader implements ReaderInterface
     {
         return $migrationContext->getProfile() instanceof Shopware6ProfileInterface
             && $migrationContext->getGateway()->getName() === Shopware6ApiGateway::GATEWAY_NAME
-            && $migrationContext->getDataSet()::getEntity() === $this->getIdentifier();
+            && $this->getDataSetEntity($migrationContext) === $this->getIdentifier();
     }
 
     public function supportsTotal(MigrationContextInterface $migrationContext): bool
@@ -49,7 +49,7 @@ abstract class ApiReader implements ReaderInterface
             'limit' => $migrationContext->getLimit(),
         ];
 
-        $queryParams = array_merge($queryParams, $this->getExtraParameters());
+        $queryParams = \array_merge($queryParams, $this->getExtraParameters());
         $client = $this->connectionFactory->createApiClient($migrationContext);
 
         if ($client === null) {
@@ -65,10 +65,10 @@ abstract class ApiReader implements ReaderInterface
         );
 
         if ($result->getStatusCode() !== SymfonyResponse::HTTP_OK) {
-            throw new GatewayReadException('Shopware Api ' . $migrationContext->getDataSet()::getEntity());
+            throw new GatewayReadException('Shopware Api ' . $this->getDataSetEntity($migrationContext));
         }
 
-        return json_decode($result->getBody()->getContents(), true);
+        return \json_decode($result->getBody()->getContents(), true);
     }
 
     public function readTotal(MigrationContextInterface $migrationContext): ?TotalStruct
@@ -84,5 +84,15 @@ abstract class ApiReader implements ReaderInterface
     protected function getExtraParameters(): array
     {
         return [];
+    }
+
+    protected function getDataSetEntity(MigrationContextInterface $migrationContext): ?string
+    {
+        $dataSet = $migrationContext->getDataSet();
+        if ($dataSet === null) {
+            return null;
+        }
+
+        return $dataSet::getEntity();
     }
 }

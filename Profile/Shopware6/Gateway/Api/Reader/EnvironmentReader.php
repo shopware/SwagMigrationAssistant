@@ -118,7 +118,7 @@ class EnvironmentReader implements EnvironmentReaderInterface
                 throw new GatewayReadException('Shopware 6 API Environment Call', 466);
             }
 
-            return json_decode($result->getBody()->getContents(), true);
+            return \json_decode($result->getBody()->getContents(), true);
         } catch (ClientException $e) {
             if ($e->getCode() === 401) {
                 throw new InvalidConnectionAuthenticationException('get-data');
@@ -132,13 +132,14 @@ class EnvironmentReader implements EnvironmentReaderInterface
             }
 
             $response = $e->getResponse();
-            if ($response !== null && mb_strpos($response->getBody()->getContents(), 'SSL required')) {
+            if ($response !== null && \mb_strpos($response->getBody()->getContents(), 'SSL required')) {
                 throw new SslRequiredException();
             }
 
             if (isset($e->getHandlerContext()['errno']) && $e->getHandlerContext()['errno'] === 60) {
                 throw new RequestCertificateInvalidException($e->getHandlerContext()['url']);
             }
+
             throw new GatewayReadException('Shopware 6 API Environment Call', 466);
         }
     }

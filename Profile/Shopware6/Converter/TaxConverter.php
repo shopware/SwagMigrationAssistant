@@ -56,6 +56,6 @@ abstract class TaxConverter extends ShopwareConverter
 
         $converted = $data;
 
-        return new ConvertStruct($converted, null, $this->mainMapping['id']);
+        return new ConvertStruct($converted, null, $this->mainMapping['id'] ?? null);
     }
 }

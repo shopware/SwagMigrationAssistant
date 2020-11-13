@@ -17,6 +17,6 @@ class Shopware63CategoryAssociationConverter extends CategoryAssociationConverte
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile()->getName() === Shopware63Profile::PROFILE_NAME
-            && $migrationContext->getDataSet()::getEntity() === CategoryAssociationDataSet::getEntity();
+            && $this->getDataSetEntity($migrationContext) === CategoryAssociationDataSet::getEntity();
     }
 }

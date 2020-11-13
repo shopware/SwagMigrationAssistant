@@ -85,6 +85,6 @@ abstract class LanguageConverter extends ShopwareConverter
             $returnData = null;
         }
 
-        return new ConvertStruct($converted, $returnData, $this->mainMapping['id']);
+        return new ConvertStruct($converted, $returnData, $this->mainMapping['id'] ?? null);
     }
 }
