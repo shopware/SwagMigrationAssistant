@@ -29,11 +29,6 @@ return [
         'newIdentifier' => 'a2f2918aaf5d42a2ba219c82c2bc275d',
     ],
     [
-        'entityName' => DefaultEntities::PRODUCT_MANUFACTURER,
-        'oldIdentifier' => '954217f3551b4fe091d9cdea5731d582',
-        'newIdentifier' => '954217f3551b4fe091d9cdea5731d582',
-    ],
-    [
         'entityName' => DefaultEntities::CURRENCY,
         'oldIdentifier' => 'b7d2554b0ce847cd82f3ac9bd1c0dfca',
         'newIdentifier' => 'b7d2554b0ce847cd82f3ac9bd1c0dfca',

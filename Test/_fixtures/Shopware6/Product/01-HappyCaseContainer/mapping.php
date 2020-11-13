@@ -43,4 +43,9 @@ return [
         'oldIdentifier' => '18b930393f8b41bd92bb7ca3e8ef5429',
         'newIdentifier' => '18b930393f8b41bd92bb7ca3e8ef5429',
     ],
+    [
+        'entityName' => DefaultEntities::UNIT,
+        'oldIdentifier' => '284217f3551b4fe091d9cdea5731d582',
+        'newIdentifier' => '284217f3551b4fe091d9cdea5731d582',
+    ],
 ];

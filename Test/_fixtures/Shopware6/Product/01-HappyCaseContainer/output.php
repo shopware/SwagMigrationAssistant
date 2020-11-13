@@ -8,6 +8,7 @@
 return [
     'taxId' => 'a2f2918aaf5d42a2ba219c82c2bc275d',
     'manufacturerId' => '954217f3551b4fe091d9cdea5731d582',
+    'unitId' => '284217f3551b4fe091d9cdea5731d582',
     'active' => true,
     'price' => [
         [

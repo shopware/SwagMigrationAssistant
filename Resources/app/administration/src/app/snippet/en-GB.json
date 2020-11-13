@@ -284,7 +284,8 @@
           "tax": "Tax rates:",
           "property_group": "Property groups:",
           "product_manufacturer": "Product manufacturers:",
-          "main_variant_relation": "Main variant relations:"
+          "main_variant_relation": "Main variant relations:",
+          "unit": "Scale units:"
         },
         "noData": "Nothing found to migrate."
       },
