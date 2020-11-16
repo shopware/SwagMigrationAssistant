@@ -285,7 +285,8 @@
           "property_group": "Produkteigenschaften-Gruppen:",
           "product_manufacturer": "Hersteller:",
           "main_variant_relation": "Hauptvariantenrelationen:",
-          "unit": "Einheiten:"
+          "unit": "Einheiten:",
+          "rule": "Regeln:"
         },
         "noData": "Es wurden keine Daten zum Migrieren gefunden."
       },

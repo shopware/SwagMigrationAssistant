@@ -54,5 +54,10 @@
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\UnitConverter">
             <tag name="shopware.migration.converter"/>
         </service>
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63RuleConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\RuleConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
     </services>
 </container>

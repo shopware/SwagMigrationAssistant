@@ -285,7 +285,8 @@
           "property_group": "Property groups:",
           "product_manufacturer": "Product manufacturers:",
           "main_variant_relation": "Main variant relations:",
-          "unit": "Scale units:"
+          "unit": "Scale units:",
+          "rule": "Rules:"
         },
         "noData": "Nothing found to migrate."
       },
