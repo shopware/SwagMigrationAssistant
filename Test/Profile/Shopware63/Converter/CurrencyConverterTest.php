@@ -10,13 +10,13 @@ namespace SwagMigrationAssistant\Test\Profile\Shopware63\Converter;
 use SwagMigrationAssistant\Migration\Converter\ConverterInterface;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
-use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CurrencyDataSet;
+use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63CurrencyConverter;
 
 class CurrencyConverterTest extends ShopwareConverterTest
 {
-    protected function createConverter(MappingServiceInterface $mappingService, LoggingServiceInterface $loggingService): ConverterInterface
+    protected function createConverter(Shopware6MappingServiceInterface $mappingService, LoggingServiceInterface $loggingService): ConverterInterface
     {
         return new Shopware63CurrencyConverter($mappingService, $loggingService);
     }

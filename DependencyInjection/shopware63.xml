@@ -54,6 +54,17 @@
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\UnitConverter">
             <tag name="shopware.migration.converter"/>
         </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63MediaFolderConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\MediaFolderConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63MediaFolderInheritanceConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\MediaFolderInheritanceConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
         <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63RuleConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\RuleConverter">
             <tag name="shopware.migration.converter"/>
@@ -78,6 +89,5 @@
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ProductConverter">
             <tag name="shopware.migration.converter"/>
         </service>
-
     </services>
 </container>

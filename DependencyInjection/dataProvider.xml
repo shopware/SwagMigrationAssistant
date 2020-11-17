@@ -39,6 +39,16 @@
             <tag name="shopware.dataProvider.provider"/>
         </service>
 
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\MediaFolderProvider">
+            <argument type="service" id="media_folder.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\MediaFolderInheritanceProvider">
+            <argument type="service" id="media_folder.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
         <service id="SwagMigrationAssistant\DataProvider\Provider\Data\ProductProvider">
             <argument type="service" id="product.repository"/>
             <tag name="shopware.dataProvider.provider"/>
