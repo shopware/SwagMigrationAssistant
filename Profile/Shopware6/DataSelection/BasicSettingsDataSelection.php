@@ -12,6 +12,7 @@ use SwagMigrationAssistant\Migration\DataSelection\DataSelectionStruct;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CategoryAssociationDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CategoryDataSet;
+use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CountryDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CurrencyDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\LanguageDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\RuleDataSet;
@@ -50,6 +51,7 @@ class BasicSettingsDataSelection implements DataSelectionInterface
             new CategoryDataSet(),
             new CategoryAssociationDataSet(),
             new RuleDataSet(),
+            new CountryDataSet(),
         ];
     }
 

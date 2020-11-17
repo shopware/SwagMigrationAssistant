@@ -47,6 +47,21 @@ abstract class RuleConverter extends ShopwareConverter
                         $condition['value']['currencyIds'] = $newCurrencies;
                     }
                 }
+
+                if (isset($condition['type'], $condition['value']['countryIds']) && ($condition['type'] === 'customerBillingCountry' || $condition['type'] === 'customerShippingCountry')) {
+                    $newCurrencies = [];
+                    $countryIds = $condition['value']['countryIds'];
+                    foreach ($countryIds as $countryId) {
+                        $uuid = $this->getMappingIdFacade(DefaultEntities::COUNTRY, $countryId);
+                        if ($uuid !== null) {
+                            $newCurrencies[] = $uuid;
+                        }
+                    }
+
+                    if (!empty($newCurrencies)) {
+                        $condition['value']['countryIds'] = $newCurrencies;
+                    }
+                }
             }
         }
 

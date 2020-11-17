@@ -59,5 +59,10 @@
             <tag name="shopware.migration.converter"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63CountryConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\CountryConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
     </services>
 </container>
