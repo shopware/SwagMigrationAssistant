@@ -16,10 +16,10 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\Language\LanguageEntity;
 use Shopware\Core\System\Locale\LocaleEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
-use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingService;
 
-class Dummy6MappingService extends MappingService
+class Dummy6MappingService extends Shopware6MappingService
 {
     public const DEFAULT_CMS_PAGE_UUID = '112155944d6e48aab56471f7df094d53';
     public const DEFAULT_LANGUAGE_UUID = Defaults::LANGUAGE_SYSTEM;

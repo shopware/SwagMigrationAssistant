@@ -65,6 +65,8 @@ final class DefaultEntities
 
     public const MEDIA_FOLDER = 'media_folder';
 
+    public const MEDIA_FOLDER_INHERITANCE = 'media_folder_inheritance'; // simulated entity for parent relationships
+
     public const MEDIA_FOLDER_CONFIGURATION = 'media_folder_configuration';
 
     public const MEDIA_THUMBNAIL_SIZE = 'media_thumbnail_size';

@@ -11,10 +11,17 @@ use Shopware\Core\Framework\Context;
 use SwagMigrationAssistant\Migration\Converter\Converter;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
+use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface;
 
 abstract class ShopwareConverter extends Converter
 {
+    /**
+     * @var Shopware6MappingServiceInterface
+     */
+    protected $mappingService;
+
     /**
      * @var Context
      */
@@ -34,6 +41,13 @@ abstract class ShopwareConverter extends Converter
      * @var string
      */
     protected $runId;
+
+    public function __construct(
+        Shopware6MappingServiceInterface $mappingService,
+        LoggingServiceInterface $loggingService
+    ) {
+        parent::__construct($mappingService, $loggingService);
+    }
 
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {

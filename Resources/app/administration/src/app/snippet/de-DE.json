@@ -286,6 +286,8 @@
           "product_manufacturer": "Hersteller:",
           "main_variant_relation": "Hauptvariantenrelationen:",
           "unit": "Einheiten:",
+          "media_folder": "Medienordner:",
+          "media_folder_inheritance": "Medienordner-Vererbungen:",
           "rule": "Regeln:",
           "country": "Länder:",
           "custom_field_set": "Zusatzfelder:"
