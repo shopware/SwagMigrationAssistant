@@ -286,7 +286,8 @@
           "product_manufacturer": "Product manufacturers:",
           "main_variant_relation": "Main variant relations:",
           "unit": "Scale units:",
-          "rule": "Rules:"
+          "rule": "Rules:",
+          "country": "Countries:"
         },
         "noData": "Nothing found to migrate."
       },

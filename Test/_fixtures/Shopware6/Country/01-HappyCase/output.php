@@ -1,0 +1,31 @@
+<?php declare(strict_types=1);
+/*
+ * (c) shopware AG <info@shopware.com>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+return [
+    'name' => 'TakkaTukkaLand',
+    'iso' => 'takka',
+    'position' => 1,
+    'taxFree' => false,
+    'active' => true,
+    'shippingAvailable' => true,
+    'iso3' => 'takka',
+    'displayStateInRegistration' => false,
+    'forceStateInRegistration' => false,
+    'translations' => [
+        [
+            'countryId' => '411f6e68d78f407292e535624c3289e4',
+            'name' => 'TakkaTukkaLand',
+            'languageId' => '5dd637353d044752ae6a8c6e7f53430b',
+        ],
+        [
+            'countryId' => '411f6e68d78f407292e535624c3289e4',
+            'name' => 'DE - TakkaTukkaLand',
+            'languageId' => '41248655c60c4dd58cde43f14cd4f149',
+        ],
+    ],
+    'id' => '411f6e68d78f407292e535624c3289e4',
+];

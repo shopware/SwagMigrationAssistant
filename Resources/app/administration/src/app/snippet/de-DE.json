@@ -286,7 +286,8 @@
           "product_manufacturer": "Hersteller:",
           "main_variant_relation": "Hauptvariantenrelationen:",
           "unit": "Einheiten:",
-          "rule": "Regeln:"
+          "rule": "Regeln:",
+          "country": "Länder:"
         },
         "noData": "Es wurden keine Daten zum Migrieren gefunden."
       },
