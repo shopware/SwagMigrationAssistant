@@ -49,6 +49,11 @@
             <tag name="shopware.dataProvider.provider"/>
         </service>
 
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\DeliveryTimeProvider">
+            <argument type="service" id="delivery_time.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
         <service id="SwagMigrationAssistant\DataProvider\Provider\Data\ProductProvider">
             <argument type="service" id="product.repository"/>
             <tag name="shopware.dataProvider.provider"/>
