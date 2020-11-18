@@ -69,5 +69,10 @@
             <tag name="shopware.migration.converter"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63CustomFieldSetConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\CustomFieldSetConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
     </services>
 </container>
