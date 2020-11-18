@@ -37,6 +37,7 @@ class ProductProvider extends AbstractProvider
         $criteria->setOffset($offset);
         $criteria->addAssociation('translations');
         $criteria->addAssociation('categories');
+        $criteria->addAssociation('prices');
         $criteria->addSorting(
             new FieldSorting('parentId'), // get 'NULL' parentIds first
             new FieldSorting('id')
