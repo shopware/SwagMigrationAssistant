@@ -103,10 +103,16 @@ abstract class ProductConverter extends ShopwareConverter
             unset($price);
         }
 
+        if (isset($converted['deliveryTimeId'])) {
+            $converted['deliveryTimeId'] = $this->getMappingIdFacade(
+                DefaultEntities::DELIVERY_TIME,
+                $converted['deliveryTimeId']
+            );
+        }
+
         unset(
             // ToDo implement if these associations are migrated
-            $converted['coverId'],
-            $converted['deliveryTimeId']
+            $converted['coverId']
         );
 
         return new ConvertStruct($converted, null, $this->mainMapping['id'] ?? null);

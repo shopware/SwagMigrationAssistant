@@ -8,7 +8,6 @@
 return [
     'unitId' => '14ccfa8bcf454491bc622194c8d5ba8f',
     'coverId' => 'c1d5999a74fa4fd48a83a320b28efb1b',
-    'deliveryTimeId' => '926f236e9544440484a9624ed640775c',
     'taxId' => 'a2f2918aaf5d42a2ba219c82c2bc275d',
     'manufacturerId' => '954217f3551b4fe091d9cdea5731d582',
     'active' => true,
