@@ -287,7 +287,8 @@
           "main_variant_relation": "Hauptvariantenrelationen:",
           "unit": "Einheiten:",
           "rule": "Regeln:",
-          "country": "Länder:"
+          "country": "Länder:",
+          "custom_field_set": "Zusatzfelder:"
         },
         "noData": "Es wurden keine Daten zum Migrieren gefunden."
       },

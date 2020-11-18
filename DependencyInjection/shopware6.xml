@@ -59,6 +59,9 @@
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\CustomerGroupConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter" abstract="true"/>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\CustomFieldSetConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter" abstract="true"/>
+
         <!-- Shopware Reader -->
         <service id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\EnvironmentReader">
             <argument type="service" id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection\ConnectionFactory"/>
@@ -130,6 +133,10 @@
             <tag name="shopware.migration.data_set"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CustomFieldSetDataSet">
+            <tag name="shopware.migration.data_set"/>
+        </service>
+
         <!-- API reader -->
         <service id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\CategoryAssociationReader"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\ApiReader">
@@ -191,6 +198,11 @@
             <tag name="shopware.migration.reader"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\CustomFieldSetReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\ApiReader">
+            <tag name="shopware.migration.reader"/>
+        </service>
+
         <!-- Writer -->
         <service id="SwagMigrationAssistant\Profile\Shopware6\Writer\ProductManufacturerWriter"
                  parent="SwagMigrationAssistant\Migration\Writer\AbstractWriter">
@@ -231,6 +243,13 @@
                  parent="SwagMigrationAssistant\Migration\Writer\AbstractWriter">
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
             <argument type="service" id="Shopware\Core\Content\Rule\RuleDefinition"/>
+            <tag name="shopware.migration.writer"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware6\Writer\CustomFieldSetWriter"
+                 parent="SwagMigrationAssistant\Migration\Writer\AbstractWriter">
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
+            <argument type="service" id="Shopware\Core\System\CustomField\Aggregate\CustomFieldSet\CustomFieldSetDefinition"/>
             <tag name="shopware.migration.writer"/>
         </service>
     </services>

@@ -74,6 +74,11 @@
             <tag name="shopware.dataProvider.provider"/>
         </service>
 
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\CustomFieldSetProvider">
+            <argument type="service" id="custom_field_set.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
         <!-- Services -->
         <service id="SwagMigrationAssistant\DataProvider\Service\EnvironmentService">
             <argument type="service" id="currency.repository"/>

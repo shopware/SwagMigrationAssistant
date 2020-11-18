@@ -287,7 +287,8 @@
           "main_variant_relation": "Main variant relations:",
           "unit": "Scale units:",
           "rule": "Rules:",
-          "country": "Countries:"
+          "country": "Countries:",
+          "custom_field_set": "Custom field sets:"
         },
         "noData": "Nothing found to migrate."
       },
