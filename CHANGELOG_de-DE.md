@@ -2,6 +2,7 @@
 - MIG-114 - Migration der Hauptvarianten-Information ermöglichen
 - MIG-118 - Korrigiert die Migration der Kredit-Bestellpositionen
 - MIG-120 - Behebt ein Problem beim Laden des Premappings
+- MIG-162 - Behebt ein Problem bei der Migration von Produkten mit leeren Freitextfeldern 
 
 # 2.2.1
 - MIG-105 - Warnung hinzufügen, wenn sich die Standardsprachen unterscheiden

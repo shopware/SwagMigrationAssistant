@@ -115,7 +115,7 @@ abstract class ShopwareConverter extends Converter
         }
     }
 
-    protected function getAttributes(array $attributes, string $entityName, string $connectionName, array $blacklist = [], ?Context $context = null): array
+    protected function getAttributes(array $attributes, string $entityName, string $connectionName, array $blacklist = [], ?Context $context = null): ?array
     {
         $result = [];
         // remove unwanted characters from connection name
@@ -159,6 +159,10 @@ abstract class ShopwareConverter extends Converter
             }
 
             $result['migration_' . $connectionName . '_' . $entityName . '_' . $attribute] = $value;
+        }
+
+        if (empty($result)) {
+            return null;
         }
 
         return $result;

@@ -125,7 +125,7 @@ class MediaFileService implements MediaFileServiceInterface
             $mediaIds[] = $mediaFile['mediaId'];
         }
 
-        if ($mediaIds === []) {
+        if (empty($mediaIds)) {
             return;
         }
 
