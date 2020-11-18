@@ -114,6 +114,23 @@ class ProductConverterTest extends TestCase
         static::assertCount(0, $this->loggingService->getLoggingArray());
     }
 
+    public function testConvertWithoutAttributes(): void
+    {
+        $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
+        $productData['0']['attributes'] = [];
+
+        $context = Context::createDefaultContext();
+        $convertResult = $this->productConverter->convert($productData[0], $context, $this->migrationContext);
+
+        $converted = $convertResult->getConverted();
+
+        static::assertNull($convertResult->getUnmapped());
+        static::assertNotNull($convertResult->getMappingUuid());
+        static::assertNotNull($converted);
+        static::assertNull($converted['customFields']);
+        static::assertCount(0, $this->loggingService->getLoggingArray());
+    }
+
     public function testConvertWithCategory(): void
     {
         $mediaFileService = new DummyMediaFileService();
