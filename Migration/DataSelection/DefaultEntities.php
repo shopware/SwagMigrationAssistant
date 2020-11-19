@@ -81,6 +81,8 @@ final class DefaultEntities
 
     public const NUMBER_RANGE_TRANSLATION = 'number_range_translation';
 
+    public const NUMBER_RANGE_TYPE = 'number_range_type';
+
     public const ORDER = 'order';
 
     public const ORDER_ADDRESS = 'order_address';

@@ -17,6 +17,7 @@ use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CurrencyDataS
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CustomerGroupDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CustomFieldSetDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\LanguageDataSet;
+use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\NumberRangeDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\RuleDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\UnitDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6ProfileInterface;
@@ -55,6 +56,7 @@ class BasicSettingsDataSelection implements DataSelectionInterface
             new CountryDataSet(),
             new CustomerGroupDataSet(),
             new CustomFieldSetDataSet(),
+            new NumberRangeDataSet(),
             new RuleDataSet(),
         ];
     }

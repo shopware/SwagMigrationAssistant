@@ -196,6 +196,22 @@ class Dummy6MappingService extends MappingService
         return null;
     }
 
+    public function getNumberRangeTypeUuid(string $type, string $oldIdentifier, MigrationContextInterface $migrationContext, Context $context): ?string
+    {
+        $connection = $migrationContext->getConnection();
+        if ($connection === null) {
+            return null;
+        }
+
+        $numberRangeTypeMapping = $this->getMapping($connection->getId(), DefaultEntities::NUMBER_RANGE_TYPE, $oldIdentifier, $context);
+
+        if ($numberRangeTypeMapping !== null) {
+            return $numberRangeTypeMapping['entityUuid'];
+        }
+
+        return null;
+    }
+
     public function getDefaultFolderIdByEntity(string $entityName, MigrationContextInterface $migrationContext, Context $context): ?string
     {
         $connection = $migrationContext->getConnection();
