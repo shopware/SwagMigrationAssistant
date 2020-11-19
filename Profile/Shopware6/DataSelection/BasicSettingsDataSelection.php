@@ -17,6 +17,7 @@ use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CurrencyDataS
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CustomerGroupDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CustomFieldSetDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\LanguageDataSet;
+use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\MailTemplateDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\MediaFolderDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\MediaFolderInheritanceDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\NumberRangeDataSet;
@@ -66,6 +67,7 @@ class BasicSettingsDataSelection implements DataSelectionInterface
             new RuleDataSet(),
             new SnippetSetDataSet(),
             new SnippetDataSet(),
+            new MailTemplateDataSet(),
         ];
     }
 

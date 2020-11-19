@@ -292,7 +292,8 @@
           "country": "Countries:",
           "custom_field_set": "Custom field sets:",
           "snippet": "Snippets:",
-          "snippet_set": "Snippet sets:"
+          "snippet_set": "Snippet sets:",
+          "mail_template": "Email templates:"
         },
         "noData": "Nothing found to migrate."
       },
