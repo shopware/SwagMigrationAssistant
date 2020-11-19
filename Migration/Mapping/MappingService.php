@@ -28,6 +28,7 @@ use Shopware\Core\System\Currency\CurrencyEntity;
 use Shopware\Core\System\DeliveryTime\DeliveryTimeEntity;
 use Shopware\Core\System\Language\LanguageEntity;
 use Shopware\Core\System\Locale\LocaleEntity;
+use Shopware\Core\System\NumberRange\Aggregate\NumberRangeType\NumberRangeTypeEntity;
 use Shopware\Core\System\NumberRange\NumberRangeEntity;
 use Shopware\Core\System\Tax\TaxEntity;
 use SwagMigrationAssistant\Exception\LocaleNotFoundException;
@@ -107,6 +108,11 @@ class MappingService implements MappingServiceInterface
     protected $numberRangeRepo;
 
     /**
+     * @var EntityRepositoryInterface
+     */
+    protected $numberRangeTypeRepo;
+
+    /**
      * @var LanguageEntity
      */
     protected $defaultLanguageData;
@@ -171,6 +177,7 @@ class MappingService implements MappingServiceInterface
         EntityRepositoryInterface $cmsPageRepo,
         EntityRepositoryInterface $deliveryTimeRepo,
         EntityRepositoryInterface $documentTypeRepo,
+        EntityRepositoryInterface $numberRangeTypeRepo,
         EntityWriterInterface $entityWriter,
         EntityDefinition $mappingDefinition
     ) {
@@ -188,6 +195,7 @@ class MappingService implements MappingServiceInterface
         $this->cmsPageRepo = $cmsPageRepo;
         $this->deliveryTimeRepo = $deliveryTimeRepo;
         $this->documentTypeRepo = $documentTypeRepo;
+        $this->numberRangeTypeRepo = $numberRangeTypeRepo;
         $this->entityWriter = $entityWriter;
         $this->mappingDefinition = $mappingDefinition;
     }
@@ -805,6 +813,51 @@ class MappingService implements MappingServiceInterface
             );
 
             return $numberRange->getId();
+        }
+
+        return null;
+    }
+
+    public function getNumberRangeTypeUuid(string $type, string $oldIdentifier, MigrationContextInterface $migrationContext, Context $context): ?string
+    {
+        $connection = $migrationContext->getConnection();
+        if ($connection === null) {
+            return null;
+        }
+
+        $connectionId = $connection->getId();
+        $typeMapping = $this->getMapping($connectionId, DefaultEntities::NUMBER_RANGE_TYPE, $oldIdentifier, $context);
+
+        if ($typeMapping !== null) {
+            return $typeMapping['entityUuid'];
+        }
+
+        $result = $context->disableCache(function (Context $context) use ($type): EntitySearchResult {
+            $criteria = new Criteria();
+            $criteria->addFilter(new EqualsFilter('technicalName', $type));
+
+            return $this->numberRangeTypeRepo->search($criteria, $context);
+        });
+
+        if ($result->getTotal() > 0) {
+            /** @var NumberRangeTypeEntity|null $numberRangeType */
+            $numberRangeType = $result->getEntities()->first();
+
+            if ($numberRangeType === null) {
+                return null;
+            }
+
+            $this->saveMapping(
+                [
+                    'id' => Uuid::randomHex(),
+                    'connectionId' => $connectionId,
+                    'entity' => DefaultEntities::NUMBER_RANGE_TYPE,
+                    'oldIdentifier' => $oldIdentifier,
+                    'entityUuid' => $numberRangeType->getId(),
+                ]
+            );
+
+            return $numberRangeType->getId();
         }
 
         return null;
