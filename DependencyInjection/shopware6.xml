@@ -23,6 +23,7 @@
         <service id="SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingService"
                  parent="SwagMigrationAssistant\Migration\Mapping\MappingService">
             <argument type="service" id="number_range_type.repository"/>
+            <argument type="service" id="mail_template_type.repository"/>
         </service>
 
         <!-- Shopware Converter Base classes -->
@@ -77,6 +78,9 @@
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\NumberRangeConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\MailTemplateConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\SnippetConverter"
@@ -180,6 +184,10 @@
             <tag name="shopware.migration.data_set"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\MailTemplateDataSet">
+            <tag name="shopware.migration.data_set"/>
+        </service>
+
         <!-- API reader -->
         <service id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\CategoryAssociationReader"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\ApiReader">
@@ -271,6 +279,11 @@
             <tag name="shopware.migration.reader"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\MailTemplateReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\ApiReader">
+            <tag name="shopware.migration.reader"/>
+        </service>
+
         <!-- Writer -->
         <service id="SwagMigrationAssistant\Profile\Shopware6\Writer\ProductManufacturerWriter"
                  parent="SwagMigrationAssistant\Migration\Writer\AbstractWriter">
@@ -339,6 +352,13 @@
                  parent="SwagMigrationAssistant\Migration\Writer\AbstractWriter">
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
             <argument type="service" id="Shopware\Core\System\Snippet\Aggregate\SnippetSet\SnippetSetDefinition"/>
+            <tag name="shopware.migration.writer"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware6\Writer\MailTemplateWriter"
+                 parent="SwagMigrationAssistant\Migration\Writer\AbstractWriter">
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
+            <argument type="service" id="Shopware\Core\Content\MailTemplate\MailTemplateDefinition"/>
             <tag name="shopware.migration.writer"/>
         </service>
     </services>

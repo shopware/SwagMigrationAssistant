@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware6\Mapping;
 
+use Shopware\Core\Content\MailTemplate\Aggregate\MailTemplateType\MailTemplateTypeEntity;
 use Shopware\Core\Content\Media\Aggregate\MediaDefaultFolder\MediaDefaultFolderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
@@ -28,6 +29,11 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
      */
     protected $numberRangeTypeRepo;
 
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $mailTemplateTypeRepo;
+
     public function __construct(
         EntityRepositoryInterface $migrationMappingRepo,
         EntityRepositoryInterface $localeRepository,
@@ -45,7 +51,8 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
         EntityRepositoryInterface $documentTypeRepo,
         EntityWriterInterface $entityWriter,
         EntityDefinition $mappingDefinition,
-        EntityRepositoryInterface $numberRangeTypeRepo
+        EntityRepositoryInterface $numberRangeTypeRepo,
+        EntityRepositoryInterface $mailTemplateTypeRepo
     ) {
         parent::__construct(
             $migrationMappingRepo,
@@ -67,6 +74,52 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
         );
 
         $this->numberRangeTypeRepo = $numberRangeTypeRepo;
+        $this->mailTemplateTypeRepo = $mailTemplateTypeRepo;
+    }
+
+    public function getMailTemplateTypeUuid(string $type, string $oldIdentifier, MigrationContextInterface $migrationContext, Context $context): ?string
+    {
+        $connection = $migrationContext->getConnection();
+        if ($connection === null) {
+            return null;
+        }
+
+        $connectionId = $connection->getId();
+        $typeMapping = $this->getMapping($connectionId, DefaultEntities::MAIL_TEMPLATE_TYPE, $oldIdentifier, $context);
+
+        if ($typeMapping !== null) {
+            return $typeMapping['entityUuid'];
+        }
+
+        $result = $context->disableCache(function (Context $context) use ($type): EntitySearchResult {
+            $criteria = new Criteria();
+            $criteria->addFilter(new EqualsFilter('technicalName', $type));
+
+            return $this->mailTemplateTypeRepo->search($criteria, $context);
+        });
+
+        if ($result->getTotal() > 0) {
+            /** @var MailTemplateTypeEntity|null $mailTemplateType */
+            $mailTemplateType = $result->getEntities()->first();
+
+            if ($mailTemplateType === null) {
+                return null;
+            }
+
+            $this->saveMapping(
+                [
+                    'id' => Uuid::randomHex(),
+                    'connectionId' => $connectionId,
+                    'entity' => DefaultEntities::NUMBER_RANGE_TYPE,
+                    'oldIdentifier' => $oldIdentifier,
+                    'entityUuid' => $mailTemplateType->getId(),
+                ]
+            );
+
+            return $mailTemplateType->getId();
+        }
+
+        return null;
     }
 
     public function getNumberRangeTypeUuid(string $type, string $oldIdentifier, MigrationContextInterface $migrationContext, Context $context): ?string

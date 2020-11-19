@@ -292,7 +292,8 @@
           "country": "Länder:",
           "custom_field_set": "Zusatzfelder:",
           "snippet": "Textbausteine:",
-          "snippet_set": "Textbaustein-Sets:"
+          "snippet_set": "Textbaustein-Sets:",
+          "mail_template": "E-Mail-Template:"
         },
         "noData": "Es wurden keine Daten zum Migrieren gefunden."
       },

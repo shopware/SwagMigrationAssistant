@@ -212,6 +212,26 @@ class Dummy6MappingService extends Shopware6MappingService
         return null;
     }
 
+    public function getMailTemplateTypeUuid(
+        string $type,
+        string $oldIdentifier,
+        MigrationContextInterface $migrationContext,
+        Context $context
+    ): ?string {
+        $connection = $migrationContext->getConnection();
+        if ($connection === null) {
+            return null;
+        }
+
+        $mailTemplateTypeMapping = $this->getMapping($connection->getId(), DefaultEntities::MAIL_TEMPLATE_TYPE, $oldIdentifier, $context);
+
+        if ($mailTemplateTypeMapping !== null) {
+            return $mailTemplateTypeMapping['entityUuid'];
+        }
+
+        return null;
+    }
+
     public function getDefaultFolderIdByEntity(string $entityName, MigrationContextInterface $migrationContext, Context $context): ?string
     {
         $connection = $migrationContext->getConnection();

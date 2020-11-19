@@ -13,6 +13,8 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 interface Shopware6MappingServiceInterface extends MappingServiceInterface
 {
+    public function getMailTemplateTypeUuid(string $type, string $oldIdentifier, MigrationContextInterface $migrationContext, Context $context): ?string;
+
     public function getNumberRangeTypeUuid(string $type, string $oldIdentifier, MigrationContextInterface $migrationContext, Context $context): ?string;
 
     public function getDefaultFolderIdByEntity(string $entityName, MigrationContextInterface $migrationContext, Context $context): ?string;

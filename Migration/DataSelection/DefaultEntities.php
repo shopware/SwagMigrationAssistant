@@ -59,6 +59,8 @@ final class DefaultEntities
 
     public const MAIL_TEMPLATE = 'mail_template';
 
+    public const MAIL_TEMPLATE_TYPE = 'mail_template_type';
+
     public const MEDIA = 'media';
 
     public const MEDIA_DEFAULT_FOLDER = 'media_default_folder';
