@@ -15,6 +15,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\IdSearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\NumberRange\Aggregate\NumberRangeType\NumberRangeTypeEntity;
@@ -32,7 +33,12 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
     /**
      * @var EntityRepositoryInterface
      */
-    private $mailTemplateTypeRepo;
+    protected $mailTemplateTypeRepo;
+
+    /**
+     * @var EntityRepositoryInterface
+     */
+    protected $salutationRepo;
 
     public function __construct(
         EntityRepositoryInterface $migrationMappingRepo,
@@ -52,7 +58,8 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
         EntityWriterInterface $entityWriter,
         EntityDefinition $mappingDefinition,
         EntityRepositoryInterface $numberRangeTypeRepo,
-        EntityRepositoryInterface $mailTemplateTypeRepo
+        EntityRepositoryInterface $mailTemplateTypeRepo,
+        EntityRepositoryInterface $salutationRepo
     ) {
         parent::__construct(
             $migrationMappingRepo,
@@ -75,6 +82,7 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
 
         $this->numberRangeTypeRepo = $numberRangeTypeRepo;
         $this->mailTemplateTypeRepo = $mailTemplateTypeRepo;
+        $this->salutationRepo = $salutationRepo;
     }
 
     public function getMailTemplateTypeUuid(string $type, string $oldIdentifier, MigrationContextInterface $migrationContext, Context $context): ?string
@@ -210,5 +218,45 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
         }
 
         return null;
+    }
+
+    public function getSalutationUuid(string $oldIdentifier, string $salutationKey, MigrationContextInterface $migrationContext, Context $context): ?string
+    {
+        $connection = $migrationContext->getConnection();
+        if ($connection === null) {
+            return null;
+        }
+
+        $connectionId = $connection->getId();
+        $salutationMapping = $this->getMapping($connectionId, DefaultEntities::SALUTATION, $oldIdentifier, $context);
+
+        if ($salutationMapping !== null) {
+            return $salutationMapping['entityUuid'];
+        }
+
+        /** @var IdSearchResult $result */
+        $result = $context->disableCache(function (Context $context) use ($salutationKey) {
+            $criteria = new Criteria();
+            $criteria->addFilter(new EqualsFilter('salutationKey', $salutationKey));
+            $criteria->setLimit(1);
+
+            return $this->salutationRepo->searchIds($criteria, $context);
+        });
+
+        $salutationId = $result->firstId();
+
+        if ($salutationId !== null) {
+            $this->saveMapping(
+                [
+                    'id' => Uuid::randomHex(),
+                    'connectionId' => $connectionId,
+                    'entity' => DefaultEntities::SALUTATION,
+                    'oldIdentifier' => $oldIdentifier,
+                    'entityUuid' => $salutationId,
+                ]
+            );
+        }
+
+        return $salutationId;
     }
 }

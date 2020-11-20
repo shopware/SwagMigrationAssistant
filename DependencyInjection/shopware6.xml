@@ -24,6 +24,7 @@
                  parent="SwagMigrationAssistant\Migration\Mapping\MappingService">
             <argument type="service" id="number_range_type.repository"/>
             <argument type="service" id="mail_template_type.repository"/>
+            <argument type="service" id="salutation.repository"/>
         </service>
 
         <!-- Shopware Converter Base classes -->
@@ -69,6 +70,9 @@
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\CountryConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\SalutationConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\CustomerGroupConverter"
@@ -176,6 +180,10 @@
             <tag name="shopware.migration.data_set"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\SalutationDataSet">
+            <tag name="shopware.migration.data_set"/>
+        </service>
+
         <service id="SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\SnippetDataSet">
             <tag name="shopware.migration.data_set"/>
         </service>
@@ -269,6 +277,11 @@
             <tag name="shopware.migration.reader"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\SalutationReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\ApiReader">
+            <tag name="shopware.migration.reader"/>
+        </service>
+
         <service id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\SnippetReader"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\ApiReader">
             <tag name="shopware.migration.reader"/>
@@ -317,6 +330,13 @@
                  parent="SwagMigrationAssistant\Migration\Writer\AbstractWriter">
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
             <argument type="service" id="Shopware\Core\System\Unit\UnitDefinition"/>
+            <tag name="shopware.migration.writer"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware6\Writer\SalutationWriter"
+                 parent="SwagMigrationAssistant\Migration\Writer\AbstractWriter">
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
+            <argument type="service" id="Shopware\Core\System\Salutation\SalutationDefinition"/>
             <tag name="shopware.migration.writer"/>
         </service>
 
