@@ -22,6 +22,7 @@ use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\MediaFolderDa
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\MediaFolderInheritanceDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\NumberRangeDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\RuleDataSet;
+use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\SalutationDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\SnippetDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\SnippetSetDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\UnitDataSet;
@@ -61,6 +62,7 @@ class BasicSettingsDataSelection implements DataSelectionInterface
             new CategoryDataSet(),
             new CategoryAssociationDataSet(),
             new CountryDataSet(),
+            new SalutationDataSet(),
             new CustomerGroupDataSet(),
             new CustomFieldSetDataSet(),
             new NumberRangeDataSet(),

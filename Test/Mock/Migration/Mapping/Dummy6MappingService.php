@@ -249,6 +249,22 @@ class Dummy6MappingService extends Shopware6MappingService
         return null;
     }
 
+    public function getSalutationUuid(string $oldIdentifier, string $salutationKey, MigrationContextInterface $migrationContext, Context $context): ?string
+    {
+        $connection = $migrationContext->getConnection();
+        if ($connection === null) {
+            return null;
+        }
+
+        $salutationMapping = $this->getMapping($connection->getId(), DefaultEntities::SALUTATION, $oldIdentifier, $context);
+
+        if ($salutationMapping !== null) {
+            return $salutationMapping['entityUuid'];
+        }
+
+        return null;
+    }
+
     public function getThumbnailSizeUuid(int $width, int $height, MigrationContextInterface $migrationContext, Context $context): ?string
     {
         $connection = $migrationContext->getConnection();

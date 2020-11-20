@@ -288,6 +288,7 @@
           "unit": "Scale units:",
           "media_folder": "Media folders:",
           "media_folder_inheritance": "Media folder inheritances:",
+          "salutation": "Salutations:",
           "rule": "Rules:",
           "country": "Countries:",
           "custom_field_set": "Custom field sets:",

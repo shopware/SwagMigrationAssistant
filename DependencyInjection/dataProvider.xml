@@ -79,6 +79,11 @@
             <tag name="shopware.dataProvider.provider"/>
         </service>
 
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\SalutationProvider">
+            <argument type="service" id="salutation.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
         <service id="SwagMigrationAssistant\DataProvider\Provider\Data\CustomerGroupProvider">
             <argument type="service" id="customer_group.repository"/>
             <tag name="shopware.dataProvider.provider"/>
