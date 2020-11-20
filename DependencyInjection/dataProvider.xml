@@ -94,6 +94,16 @@
             <tag name="shopware.dataProvider.provider"/>
         </service>
 
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\SnippetProvider">
+            <argument type="service" id="snippet.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\SnippetSetProvider">
+            <argument type="service" id="snippet_set.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
         <!-- Services -->
         <service id="SwagMigrationAssistant\DataProvider\Service\EnvironmentService">
             <argument type="service" id="currency.repository"/>

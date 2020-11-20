@@ -89,5 +89,16 @@
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ProductConverter">
             <tag name="shopware.migration.converter"/>
         </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63SnippetConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\SnippetConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63SnippetSetConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\SnippetSetConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
     </services>
 </container>
