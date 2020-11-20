@@ -183,6 +183,10 @@ final class DefaultEntities
 
     public const SHIPPING_METHOD_TRANSLATION = 'shipping_method_translation';
 
+    public const SNIPPET = 'snippet';
+
+    public const SNIPPET_SET = 'snippet_set';
+
     public const TAX = 'tax';
 
     public const TRANSLATION = 'translation';

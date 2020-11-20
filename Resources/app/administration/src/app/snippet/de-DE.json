@@ -290,7 +290,9 @@
           "media_folder_inheritance": "Medienordner-Vererbungen:",
           "rule": "Regeln:",
           "country": "Länder:",
-          "custom_field_set": "Zusatzfelder:"
+          "custom_field_set": "Zusatzfelder:",
+          "snippet": "Textbausteine:",
+          "snippet_set": "Textbaustein-Sets:"
         },
         "noData": "Es wurden keine Daten zum Migrieren gefunden."
       },

@@ -290,7 +290,9 @@
           "media_folder_inheritance": "Media folder inheritances:",
           "rule": "Rules:",
           "country": "Countries:",
-          "custom_field_set": "Custom field sets:"
+          "custom_field_set": "Custom field sets:",
+          "snippet": "Snippets:",
+          "snippet_set": "Snippet sets:"
         },
         "noData": "Nothing found to migrate."
       },
