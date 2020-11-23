@@ -12,7 +12,7 @@ return [
     'active' => true,
     'price' => [
         [
-            'currencyId' => 'b7d2554b0ce847cd82f3ac9bd1c0dfca',
+            'currencyId' => 'b8d2554b0ce847cd82f3ac9bd1c0dfca',
             'net' => 751.66,
             'gross' => 751.66,
             'linked' => true,
@@ -29,7 +29,7 @@ return [
     'purchasePrice' => 62.34,
     'purchasePrices' => [
         [
-            'currencyId' => 'b7d2554b0ce847cd82f3ac9bd1c0dfca',
+            'currencyId' => 'b8d2554b0ce847cd82f3ac9bd1c0dfca',
             'net' => 62.34,
             'gross' => 62.34,
             'linked' => true,
@@ -48,7 +48,7 @@ return [
             'ruleId' => '8b773a602272453eb4df291c7c83c5e5',
             'price' => [
                 [
-                    'currencyId' => 'b7d2554b0ce847cd82f3ac9bd1c0dfca',
+                    'currencyId' => 'b8d2554b0ce847cd82f3ac9bd1c0dfca',
                     'net' => 140,
                     'gross' => 140,
                     'linked' => true,
@@ -63,7 +63,7 @@ return [
             'ruleId' => '83a7d5ac26004476a91fd7aaeca70004',
             'price' => [
                 [
-                    'currencyId' => 'b7d2554b0ce847cd82f3ac9bd1c0dfca',
+                    'currencyId' => 'b8d2554b0ce847cd82f3ac9bd1c0dfca',
                     'net' => 350,
                     'gross' => 350,
                     'linked' => true,
@@ -79,7 +79,7 @@ return [
             'ruleId' => 'a6cc47655efc4fa893e91d1cdea88f8b',
             'price' => [
                 [
-                    'currencyId' => 'b7d2554b0ce847cd82f3ac9bd1c0dfca',
+                    'currencyId' => 'b8d2554b0ce847cd82f3ac9bd1c0dfca',
                     'net' => 611,
                     'gross' => 611,
                     'linked' => true,
@@ -95,7 +95,7 @@ return [
             'ruleId' => '8b773a602272453eb4df291c7c83c5e5',
             'price' => [
                 [
-                    'currencyId' => 'b7d2554b0ce847cd82f3ac9bd1c0dfca',
+                    'currencyId' => 'b8d2554b0ce847cd82f3ac9bd1c0dfca',
                     'net' => 588,
                     'gross' => 588,
                     'linked' => true,
@@ -111,7 +111,7 @@ return [
             'ruleId' => '83a7d5ac26004476a91fd7aaeca70004',
             'price' => [
                 [
-                    'currencyId' => 'b7d2554b0ce847cd82f3ac9bd1c0dfca',
+                    'currencyId' => 'b8d2554b0ce847cd82f3ac9bd1c0dfca',
                     'net' => 958,
                     'gross' => 958,
                     'linked' => true,
@@ -126,7 +126,7 @@ return [
             'ruleId' => 'a6cc47655efc4fa893e91d1cdea88f8b',
             'price' => [
                 [
-                    'currencyId' => 'b7d2554b0ce847cd82f3ac9bd1c0dfca',
+                    'currencyId' => 'b8d2554b0ce847cd82f3ac9bd1c0dfca',
                     'net' => 217,
                     'gross' => 217,
                     'linked' => true,

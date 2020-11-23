@@ -82,6 +82,27 @@ abstract class ProductConverter extends ShopwareConverter
             );
         }
 
+        if (isset($converted['purchasePrices'])) {
+            $this->updateAssociationIds(
+                $converted['purchasePrices'],
+                DefaultEntities::CURRENCY,
+                'currencyId',
+                DefaultEntities::PRODUCT
+            );
+        }
+
+        if (isset($converted['prices'])) {
+            foreach ($converted['prices'] as &$price) {
+                $this->updateAssociationIds(
+                    $price['price'],
+                    DefaultEntities::CURRENCY,
+                    'currencyId',
+                    DefaultEntities::PRODUCT
+                );
+            }
+            unset($price);
+        }
+
         unset(
             // ToDo implement if these associations are migrated
             $converted['coverId'],
