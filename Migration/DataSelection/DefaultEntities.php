@@ -143,6 +143,8 @@ final class DefaultEntities
 
     public const PRODUCT_REVIEW = 'product_review';
 
+    public const PRODUCT_SORTING = 'product_sorting';
+
     public const PRODUCT_VISIBILITY = 'product_visibility';
 
     public const PROMOTION = 'promotion';
