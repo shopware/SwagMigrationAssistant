@@ -39,7 +39,7 @@ class CurrencyProvider extends AbstractProvider
         $criteria->addSorting(new FieldSorting('id'));
         $result = $this->currencyRepo->search($criteria, $context);
 
-        return $this->cleanupSearchResult($result);
+        return $this->cleanupSearchResult($result, ['currencyId']);
     }
 
     public function getProvidedTotal(Context $context): int

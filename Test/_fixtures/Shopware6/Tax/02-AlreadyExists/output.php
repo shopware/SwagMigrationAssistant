@@ -5,4 +5,8 @@
  * file that was distributed with this source code.
  */
 
-return null;
+return [
+    'taxRate' => 13,
+    'name' => 'Thirteen',
+    'id' => '8ed3ed1fc3b943e8b64e7ce66e669c6e',
+];

@@ -24,14 +24,7 @@ abstract class CountryConverter extends ShopwareConverter
         $countryUuid = $this->mappingService->getCountryUuid($data['id'], $data['iso'], $data['iso3'], $this->connectionId, $this->context);
 
         if ($countryUuid !== null) {
-            // the mapping is still needed for dependencies
-            $this->mainMapping = $this->getOrCreateMappingMainCompleteFacade(
-                DefaultEntities::COUNTRY,
-                $data['id'],
-                $countryUuid
-            );
-
-            return new ConvertStruct(null, $data, $this->mainMapping['id']);
+            $converted['id'] = $countryUuid;
         }
 
         $this->mainMapping = $this->getOrCreateMappingMainCompleteFacade(

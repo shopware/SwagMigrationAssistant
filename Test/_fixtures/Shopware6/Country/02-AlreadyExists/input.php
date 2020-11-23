@@ -17,12 +17,10 @@ return [
     'forceStateInRegistration' => false,
     'translations' => [
         [
-            'countryId' => '411f6e68d78f407292e535624c3289e4',
             'name' => 'TakkaTukkaLand',
             'languageId' => '2fbb5fe2e29a4d70aa5854ce7ce3e20b',
         ],
         [
-            'countryId' => '411f6e68d78f407292e535624c3289e4',
             'name' => 'DE - TakkaTukkaLand',
             'languageId' => 'a3632dd1442e441eb0a98adb86885ae0',
         ],
