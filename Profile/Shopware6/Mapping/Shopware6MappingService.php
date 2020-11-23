@@ -319,4 +319,44 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
 
         return $seoUrlTemplateId;
     }
+
+    public function getSystemConfigUuid(string $oldIdentifier, string $configurationKey, MigrationContextInterface $migrationContext, Context $context): ?string
+    {
+        $connection = $migrationContext->getConnection();
+        if ($connection === null) {
+            return null;
+        }
+
+        $connectionId = $connection->getId();
+        $systemConfigMapping = $this->getMapping($connectionId, DefaultEntities::SYSTEM_CONFIG, $oldIdentifier, $context);
+
+        if ($systemConfigMapping !== null) {
+            return $systemConfigMapping['entityUuid'];
+        }
+
+        /** @var IdSearchResult $result */
+        $result = $context->disableCache(function (Context $context) use ($configurationKey) {
+            $criteria = new Criteria();
+            $criteria->addFilter(new EqualsFilter('configurationKey', $configurationKey));
+            $criteria->setLimit(1);
+
+            return $this->salutationRepo->searchIds($criteria, $context);
+        });
+
+        $systemConfigId = $result->firstId();
+
+        if ($systemConfigId !== null) {
+            $this->saveMapping(
+                [
+                    'id' => Uuid::randomHex(),
+                    'connectionId' => $connectionId,
+                    'entity' => DefaultEntities::SYSTEM_CONFIG,
+                    'oldIdentifier' => $oldIdentifier,
+                    'entityUuid' => $systemConfigId,
+                ]
+            );
+        }
+
+        return $systemConfigId;
+    }
 }

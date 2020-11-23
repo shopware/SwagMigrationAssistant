@@ -195,6 +195,8 @@ final class DefaultEntities
 
     public const SNIPPET_SET = 'snippet_set';
 
+    public const SYSTEM_CONFIG = 'system_config';
+
     public const TAX = 'tax';
 
     public const TRANSLATION = 'translation';

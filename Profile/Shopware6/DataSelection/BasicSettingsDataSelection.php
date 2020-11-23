@@ -29,6 +29,7 @@ use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\SalutationDat
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\ShippingMethodDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\SnippetDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\SnippetSetDataSet;
+use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\SystemConfigDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\UnitDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6ProfileInterface;
 
@@ -78,6 +79,7 @@ class BasicSettingsDataSelection implements DataSelectionInterface
             new ShippingMethodDataSet(),
             new SalesChannelDataSet(),
             new SalesChannelDomainDataSet(),
+            new SystemConfigDataSet(),
         ];
     }
 

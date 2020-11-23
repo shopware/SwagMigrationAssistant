@@ -169,6 +169,11 @@
             <tag name="shopware.dataProvider.provider"/>
         </service>
 
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\SystemConfigProvider">
+            <argument type="service" id="system_config.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
         <!-- Services -->
         <service id="SwagMigrationAssistant\DataProvider\Service\EnvironmentService">
             <argument type="service" id="currency.repository"/>
