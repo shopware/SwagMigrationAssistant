@@ -42,7 +42,7 @@ class LanguageProvider extends AbstractProvider
         );
         $result = $this->languageRepo->search($criteria, $context);
 
-        return $this->cleanupSearchResult($result);
+        return $this->cleanupSearchResult($result, ['languageId']);
     }
 
     public function getProvidedTotal(Context $context): int

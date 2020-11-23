@@ -9,7 +9,6 @@ namespace SwagMigrationAssistant\Profile\Shopware6\Converter;
 
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
-use SwagMigrationAssistant\Migration\Logging\Log\EntityAlreadyExistsRunLog;
 
 abstract class CurrencyConverter extends ShopwareConverter
 {
@@ -20,39 +19,23 @@ abstract class CurrencyConverter extends ShopwareConverter
 
     protected function convertData(array $data): ConvertStruct
     {
-        $oldCurrencyId = $data['id'];
-        $newCurrencyId = $this->mappingService->getCurrencyUuidWithoutMapping(
+        $converted = $data;
+
+        $currencyId = $this->mappingService->getCurrencyUuidWithoutMapping(
             $this->connectionId,
             $data['isoCode'],
             $this->context
         );
 
-        if ($newCurrencyId !== null) {
-            // currency with that iso code already exists - no need to migrate this currency
-            $this->loggingService->addLogEntry(new EntityAlreadyExistsRunLog(
-                $this->runId,
-                DefaultEntities::CURRENCY,
-                $data['id']
-            ));
-
-            // the mapping is still needed for dependencies
-            $this->mainMapping = $this->getOrCreateMappingMainCompleteFacade(
-                DefaultEntities::CURRENCY,
-                $oldCurrencyId,
-                $newCurrencyId
-            );
-
-            return new ConvertStruct(null, $data, $this->mainMapping['id']);
+        if ($currencyId !== null) {
+            $converted['id'] = $currencyId;
         }
 
-        // currency iso code does not exists here - create a new currency with the same old id
         $this->mainMapping = $this->getOrCreateMappingMainCompleteFacade(
             DefaultEntities::CURRENCY,
-            $oldCurrencyId,
-            $oldCurrencyId
+            $data['id'],
+            $converted['id']
         );
-
-        $converted = $data;
 
         $this->updateAssociationIds(
             $converted['translations'],

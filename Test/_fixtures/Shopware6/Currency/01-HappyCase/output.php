@@ -15,13 +15,11 @@ return [
     'decimalPrecision' => 2,
     'translations' => [
         [
-            'currencyId' => '11f6678d903c467b85892e1badd53cc6',
             'shortName' => 'SEK',
             'name' => 'Schwedische Kronen',
             'languageId' => '41248655c60c4dd58cde43f14cd4f149',
         ],
         [
-            'currencyId' => '11f6678d903c467b85892e1badd53cc6',
             'shortName' => 'SEK',
             'name' => 'Swedish krone',
             'languageId' => '5dd637353d044752ae6a8c6e7f53430b',

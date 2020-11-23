@@ -15,13 +15,11 @@ return [
     'decimalPrecision' => 2,
     'translations' => [
         [
-            'currencyId' => 'b7d2554b0ce847cd82f3ac9bd1c0dfca',
             'shortName' => 'EUR',
             'name' => 'Euro',
             'languageId' => '1d4d1c257dab4759ae9dbc15314822a5',
         ],
         [
-            'currencyId' => 'b7d2554b0ce847cd82f3ac9bd1c0dfca',
             'shortName' => 'EUR',
             'name' => 'Euro',
             'languageId' => '2fbb5fe2e29a4d70aa5854ce7ce3e20b',

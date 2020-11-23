@@ -39,7 +39,7 @@ class CountryProvider extends AbstractProvider
         $criteria->addSorting(new FieldSorting('id'));
         $result = $this->countryRepo->search($criteria, $context);
 
-        return $this->cleanupSearchResult($result);
+        return $this->cleanupSearchResult($result, ['countryId']);
     }
 
     public function getProvidedTotal(Context $context): int

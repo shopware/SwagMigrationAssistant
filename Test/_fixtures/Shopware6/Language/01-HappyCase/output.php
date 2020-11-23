@@ -6,9 +6,9 @@
  */
 
 return [
-    'id' => '69f122e76ec34f89bb0b22bd3ca0a368',
-    'name' => 'PlattdeutschNEU',
+    'parentId' => '41248655c60c4dd58cde43f14cd4f149',
     'localeId' => '212ab9a95510421085d9d0009f969236',
     'translationCodeId' => '212ab9a95510421085d9d0009f969236',
-    'parentId' => '41248655c60c4dd58cde43f14cd4f149',
+    'name' => 'PlattdeutschNEU',
+    'id' => '69f122e76ec34f89bb0b22bd3ca0a368',
 ];
