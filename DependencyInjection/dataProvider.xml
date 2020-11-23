@@ -89,6 +89,11 @@
             <tag name="shopware.dataProvider.provider"/>
         </service>
 
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\ShippingMethodProvider">
+            <argument type="service" id="shipping_method.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
         <service id="SwagMigrationAssistant\DataProvider\Provider\Data\CustomerGroupProvider">
             <argument type="service" id="customer_group.repository"/>
             <tag name="shopware.dataProvider.provider"/>

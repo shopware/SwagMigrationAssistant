@@ -14,6 +14,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\Metric\CountAggregation;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\Metric\CountResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\Struct\Struct;
 use SwagMigrationAssistant\DataProvider\Provider\ProviderInterface;
 
 abstract class AbstractProvider implements ProviderInterface
@@ -76,14 +77,8 @@ abstract class AbstractProvider implements ProviderInterface
                 }
             }
 
-            // convert collections to plain arrays
-            if ($value instanceof EntityCollection) {
-                $cleanResult[$key] = \array_values($value->getElements());
-                $value = $cleanResult[$key];
-            }
-
-            // convert entities to associative arrays
-            if ($value instanceof Entity) {
+            // convert collections & entities to arrays
+            if ($value instanceof \JsonSerializable) {
                 $cleanResult[$key] = $value->jsonSerialize();
                 $value = $cleanResult[$key];
             }
