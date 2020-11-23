@@ -78,6 +78,9 @@
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\SalutationConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\ShippingMethodConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\CustomerGroupConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
 
@@ -191,6 +194,10 @@
             <tag name="shopware.migration.data_set"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\ShippingMethodDataSet">
+            <tag name="shopware.migration.data_set"/>
+        </service>
+
         <service id="SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\SnippetDataSet">
             <tag name="shopware.migration.data_set"/>
         </service>
@@ -290,6 +297,11 @@
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\SalutationReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\ApiReader">
+            <tag name="shopware.migration.reader"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\ShippingMethodReader"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\ApiReader">
             <tag name="shopware.migration.reader"/>
         </service>
