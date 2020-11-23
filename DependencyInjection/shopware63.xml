@@ -164,5 +164,10 @@
             <tag name="shopware.migration.converter"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63ProductSortingConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ProductSortingConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
     </services>
 </container>

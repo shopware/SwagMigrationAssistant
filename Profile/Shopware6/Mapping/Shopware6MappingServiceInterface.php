@@ -24,4 +24,6 @@ interface Shopware6MappingServiceInterface extends MappingServiceInterface
     public function getSeoUrlTemplateUuid(string $oldIdentifier, ?string $salesChannelId, string $routeName, MigrationContextInterface $migrationContext, Context $context): ?string;
 
     public function getSystemConfigUuid(string $oldIdentifier, string $configurationKey, MigrationContextInterface $migrationContext, Context $context): ?string;
+
+    public function getProductSortingUuid(string $key, Context $context): array;
 }

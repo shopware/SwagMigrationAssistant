@@ -9,6 +9,7 @@ namespace SwagMigrationAssistant\Profile\Shopware6\Mapping;
 
 use Shopware\Core\Content\MailTemplate\Aggregate\MailTemplateType\MailTemplateTypeEntity;
 use Shopware\Core\Content\Media\Aggregate\MediaDefaultFolder\MediaDefaultFolderEntity;
+use Shopware\Core\Content\Product\SalesChannel\Sorting\ProductSortingEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -46,6 +47,16 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
      */
     protected $seoUrlTemplateRepo;
 
+    /**
+     * @var EntityRepositoryInterface
+     */
+    protected $systemConfigRepo;
+
+    /**
+     * @var EntityRepositoryInterface
+     */
+    protected $productSortingRepo;
+
     public function __construct(
         EntityRepositoryInterface $migrationMappingRepo,
         EntityRepositoryInterface $localeRepository,
@@ -66,7 +77,9 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
         EntityRepositoryInterface $numberRangeTypeRepo,
         EntityRepositoryInterface $mailTemplateTypeRepo,
         EntityRepositoryInterface $salutationRepo,
-        EntityRepositoryInterface $seoUrlTemplateRepo
+        EntityRepositoryInterface $seoUrlTemplateRepo,
+        EntityRepositoryInterface $systemConfigRepo,
+        EntityRepositoryInterface $productSortingRepo
     ) {
         parent::__construct(
             $migrationMappingRepo,
@@ -91,6 +104,8 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
         $this->mailTemplateTypeRepo = $mailTemplateTypeRepo;
         $this->salutationRepo = $salutationRepo;
         $this->seoUrlTemplateRepo = $seoUrlTemplateRepo;
+        $this->systemConfigRepo = $systemConfigRepo;
+        $this->productSortingRepo = $productSortingRepo;
     }
 
     public function getMailTemplateTypeUuid(string $type, string $oldIdentifier, MigrationContextInterface $migrationContext, Context $context): ?string
@@ -340,7 +355,7 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
             $criteria->addFilter(new EqualsFilter('configurationKey', $configurationKey));
             $criteria->setLimit(1);
 
-            return $this->salutationRepo->searchIds($criteria, $context);
+            return $this->systemConfigRepo->searchIds($criteria, $context);
         });
 
         $systemConfigId = $result->firstId();
@@ -358,5 +373,29 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
         }
 
         return $systemConfigId;
+    }
+
+    public function getProductSortingUuid(string $key, Context $context): array
+    {
+        /** @var EntitySearchResult $result */
+        $result = $context->disableCache(function (Context $context) use ($key) {
+            $criteria = new Criteria();
+            $criteria->addFilter(new EqualsFilter('key', $key));
+            $criteria->setLimit(1);
+
+            return $this->productSortingRepo->search($criteria, $context);
+        });
+
+        /** @var ProductSortingEntity|null $productSorting */
+        $productSorting = $result->first();
+        $id = null;
+        $isLocked = false;
+
+        if ($productSorting !== null) {
+            $id = $productSorting->getId();
+            $isLocked = $productSorting->isLocked();
+        }
+
+        return [$id, $isLocked];
     }
 }
