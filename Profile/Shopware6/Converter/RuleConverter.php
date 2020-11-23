@@ -33,6 +33,18 @@ abstract class RuleConverter extends ShopwareConverter
                     unset($condition['value']);
                 }
 
+                if (isset($condition['type']) && $condition['type'] === 'customerIsCompany' && !isset($condition['value'])) {
+                    $condition['value'] = [
+                        'isCompany' => false,
+                    ];
+                }
+
+                if (isset($condition['type']) && $condition['type'] === 'customerIsNewCustomer' && !isset($condition['value'])) {
+                    $condition['value'] = [
+                        'isNew' => false,
+                    ];
+                }
+
                 if (isset($condition['type'], $condition['value']['currencyIds']) && $condition['type'] === 'currency') {
                     $newCurrencies = [];
                     $currencyIds = $condition['value']['currencyIds'];
