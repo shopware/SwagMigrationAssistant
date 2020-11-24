@@ -14,13 +14,21 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\Metric\CountAggregation;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\Metric\CountResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\Struct\Struct;
+use SwagMigrationAssistant\DataProvider\Exception\ProviderHasNoTableAccessException;
 use SwagMigrationAssistant\DataProvider\Provider\ProviderInterface;
+use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 
 abstract class AbstractProvider implements ProviderInterface
 {
     protected const FORBIDDEN_EXACT_KEYS = ['createdAt', 'updatedAt', 'extensions', 'versionId', '_uniqueIdentifier', 'translated'];
     protected const FORBIDDEN_CONTAINS_KEYS = ['VersionId'];
+
+    public function getProvidedTable(Context $context): array
+    {
+        throw new ProviderHasNoTableAccessException($this->getIdentifier());
+    }
 
     protected function readTotalFromRepo(EntityRepositoryInterface $repo, Context $context, ?Criteria $criteria = null): int
     {
@@ -38,6 +46,15 @@ abstract class AbstractProvider implements ProviderInterface
         }
 
         return $result->getCount();
+    }
+
+    protected function readTableFromRepo(EntityRepositoryInterface $repository, Context $context, ?Criteria $criteria = null): array
+    {
+        if ($criteria === null) {
+            $criteria = new Criteria();
+        }
+
+        return $repository->search($criteria, $context)->getEntities()->jsonSerialize();
     }
 
     /**

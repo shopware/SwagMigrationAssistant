@@ -84,6 +84,16 @@
             <tag name="shopware.dataProvider.provider"/>
         </service>
 
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\SalesChannelProvider">
+            <argument type="service" id="sales_channel.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\SalesChannelDomainProvider">
+            <argument type="service" id="sales_channel_domain.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
         <service id="SwagMigrationAssistant\DataProvider\Provider\Data\SalutationProvider">
             <argument type="service" id="salutation.repository"/>
             <tag name="shopware.dataProvider.provider"/>
@@ -126,6 +136,11 @@
 
         <service id="SwagMigrationAssistant\DataProvider\Provider\Data\ProductFeatureSetProvider">
             <argument type="service" id="product_feature_set.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\PaymentMethodProvider">
+            <argument type="service" id="payment_method.repository"/>
             <tag name="shopware.dataProvider.provider"/>
         </service>
 

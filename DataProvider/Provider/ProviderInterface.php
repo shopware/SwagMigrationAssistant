@@ -16,4 +16,6 @@ interface ProviderInterface
     public function getProvidedData(int $limit, int $offset, Context $context): array;
 
     public function getProvidedTotal(Context $context): int;
+
+    public function getProvidedTable(Context $context): array;
 }

@@ -23,6 +23,8 @@ use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\MediaFolderDa
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\MediaFolderInheritanceDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\NumberRangeDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\RuleDataSet;
+use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\SalesChannelDataSet;
+use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\SalesChannelDomainDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\SalutationDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\ShippingMethodDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\SnippetDataSet;
@@ -74,6 +76,8 @@ class BasicSettingsDataSelection implements DataSelectionInterface
             new MailTemplateDataSet(),
             new DeliveryTimeDataSet(),
             new ShippingMethodDataSet(),
+            new SalesChannelDataSet(),
+            new SalesChannelDomainDataSet(),
         ];
     }
 
