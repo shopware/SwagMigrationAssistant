@@ -15,6 +15,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\IdSearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\Uuid\Uuid;
@@ -40,6 +41,11 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
      */
     protected $salutationRepo;
 
+    /**
+     * @var EntityRepositoryInterface
+     */
+    protected $seoUrlTemplateRepo;
+
     public function __construct(
         EntityRepositoryInterface $migrationMappingRepo,
         EntityRepositoryInterface $localeRepository,
@@ -59,7 +65,8 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
         EntityDefinition $mappingDefinition,
         EntityRepositoryInterface $numberRangeTypeRepo,
         EntityRepositoryInterface $mailTemplateTypeRepo,
-        EntityRepositoryInterface $salutationRepo
+        EntityRepositoryInterface $salutationRepo,
+        EntityRepositoryInterface $seoUrlTemplateRepo
     ) {
         parent::__construct(
             $migrationMappingRepo,
@@ -83,6 +90,7 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
         $this->numberRangeTypeRepo = $numberRangeTypeRepo;
         $this->mailTemplateTypeRepo = $mailTemplateTypeRepo;
         $this->salutationRepo = $salutationRepo;
+        $this->seoUrlTemplateRepo = $seoUrlTemplateRepo;
     }
 
     public function getMailTemplateTypeUuid(string $type, string $oldIdentifier, MigrationContextInterface $migrationContext, Context $context): ?string
@@ -258,5 +266,57 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
         }
 
         return $salutationId;
+    }
+
+    public function getSeoUrlTemplateUuid(
+        string $oldIdentifier,
+        ?string $salesChannelId,
+        string $routeName,
+        MigrationContextInterface $migrationContext,
+        Context $context
+    ): ?string {
+        $connection = $migrationContext->getConnection();
+        if ($connection === null) {
+            return null;
+        }
+
+        $connectionId = $connection->getId();
+        $seoUrlTemplateMapping = $this->getMapping($connectionId, DefaultEntities::SEO_URL_TEMPLATE, $oldIdentifier, $context);
+        if ($seoUrlTemplateMapping !== null) {
+            return $seoUrlTemplateMapping['entityUuid'];
+        }
+
+        /** @var IdSearchResult $result */
+        $result = $context->disableCache(function (Context $context) use ($salesChannelId, $routeName) {
+            $criteria = new Criteria();
+            $criteria->addFilter(
+                new MultiFilter(
+                    MultiFilter::CONNECTION_AND,
+                    [
+                        new EqualsFilter('salesChannelId', $salesChannelId),
+                        new EqualsFilter('routeName', $routeName),
+                    ]
+                )
+            );
+            $criteria->setLimit(1);
+
+            return $this->seoUrlTemplateRepo->searchIds($criteria, $context);
+        });
+
+        $seoUrlTemplateId = $result->firstId();
+
+        if ($seoUrlTemplateId !== null) {
+            $this->saveMapping(
+                [
+                    'id' => Uuid::randomHex(),
+                    'connectionId' => $connectionId,
+                    'entity' => DefaultEntities::SEO_URL_TEMPLATE,
+                    'oldIdentifier' => $oldIdentifier,
+                    'entityUuid' => $seoUrlTemplateId,
+                ]
+            );
+        }
+
+        return $seoUrlTemplateId;
     }
 }

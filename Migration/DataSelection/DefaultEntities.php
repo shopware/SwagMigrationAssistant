@@ -183,6 +183,8 @@ final class DefaultEntities
 
     public const SEO_URL = 'seo_url';
 
+    public const SEO_URL_TEMPLATE = 'seo_url_template';
+
     public const SHIPPING_METHOD = 'shipping_method';
 
     public const SHIPPING_METHOD_PRICE = 'shipping_method_price';

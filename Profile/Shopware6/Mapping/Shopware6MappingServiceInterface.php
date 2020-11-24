@@ -20,4 +20,6 @@ interface Shopware6MappingServiceInterface extends MappingServiceInterface
     public function getDefaultFolderIdByEntity(string $entityName, MigrationContextInterface $migrationContext, Context $context): ?string;
 
     public function getSalutationUuid(string $oldIdentifier, string $salutationKey, MigrationContextInterface $migrationContext, Context $context): ?string;
+
+    public function getSeoUrlTemplateUuid(string $oldIdentifier, ?string $salesChannelId, string $routeName, MigrationContextInterface $migrationContext, Context $context): ?string;
 }
