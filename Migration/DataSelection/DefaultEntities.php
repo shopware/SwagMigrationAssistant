@@ -117,6 +117,8 @@ final class DefaultEntities
 
     public const PRODUCT_CUSTOM_FIELD = 'product_custom_field';
 
+    public const PRODUCT_FEATURE_SET = 'product_feature_set';
+
     public const PRODUCT_MAIN = 'product_mainProduct';
 
     public const PRODUCT_MANUFACTURER = 'product_manufacturer';

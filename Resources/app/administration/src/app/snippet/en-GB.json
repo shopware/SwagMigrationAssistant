@@ -294,7 +294,8 @@
           "custom_field_set": "Custom field sets:",
           "snippet": "Snippets:",
           "snippet_set": "Snippet sets:",
-          "mail_template": "Email templates:"
+          "mail_template": "Email templates:",
+          "product_feature_set": "Essential characteristics:"
         },
         "noData": "Nothing found to migrate."
       },
