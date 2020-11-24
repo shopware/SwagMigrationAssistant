@@ -80,6 +80,16 @@
             <tag name="shopware.migration.converter"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63SalesChannelConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\SalesChannelConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63SalesChannelDomainConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\SalesChannelConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
         <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63SalutationConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\SalutationConverter">
             <tag name="shopware.migration.converter"/>

@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Controller;
 
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Routing\Annotation\Acl;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\Framework\Routing\Exception\MissingRequestParameterException;
 use SwagMigrationAssistant\DataProvider\Provider\ProviderRegistryInterface;
@@ -42,6 +43,7 @@ class DataProviderController
 
     /**
      * @Route("/api/v{version}/_action/data-provider/get-environment", name="api.admin.data-provider.get-environment", methods={"GET"})
+     * @Acl({"admin"})
      */
     public function getEnvironment(Context $context): Response
     {
@@ -52,6 +54,7 @@ class DataProviderController
 
     /**
      * @Route("/api/v{version}/_action/data-provider/get-data", name="api.admin.data-provider.get-data", methods={"GET"})
+     * @Acl({"admin"})
      */
     public function getData(Request $request, Context $context): Response
     {
@@ -71,6 +74,7 @@ class DataProviderController
 
     /**
      * @Route("/api/v{version}/_action/data-provider/get-total", name="api.admin.data-provider.get-total", methods={"GET"})
+     * @Acl({"admin"})
      */
     public function getTotal(Request $request, Context $context): Response
     {
@@ -88,5 +92,23 @@ class DataProviderController
         }
 
         return new JsonResponse($totals);
+    }
+
+    /**
+     * @Route("/api/v{version}/_action/data-provider/get-table", name="api.admin.data-provider.get-table", methods={"GET"})
+     * @Acl({"admin"})
+     */
+    public function getTable(Request $request, Context $context): Response
+    {
+        $identifier = $request->query->get('identifier');
+
+        if ($identifier === null) {
+            throw new MissingRequestParameterException('identifier');
+        }
+
+        $provider = $this->providerRegistry->getDataProvider($identifier);
+        $data = $provider->getProvidedTable($context);
+
+        return new JsonResponse($data);
     }
 }

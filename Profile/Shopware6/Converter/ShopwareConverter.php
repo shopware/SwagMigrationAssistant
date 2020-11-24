@@ -186,4 +186,31 @@ abstract class ShopwareConverter extends Converter
         $converted[$associationKey] = $associationEntities;
         unset($converted[$idsKey]);
     }
+
+    /**
+     * Removes all other keys except the ID (which may then be mapped), so no updates to the other entity occur.
+     * Only supports single key entities.
+     */
+    protected function updateEntityAssociation(array &$converted, string $entityKey, ?string $mappingEntity = null): void
+    {
+        $associationEntities = [];
+
+        if (!isset($converted[$entityKey])) {
+            return;
+        }
+
+        foreach ($converted[$entityKey] as $associatedEntity) {
+            $identifier = $associatedEntity['id'];
+
+            if ($mappingEntity !== null) {
+                $identifier = $this->getMappingIdFacade($mappingEntity, $identifier);
+            }
+
+            $associationEntities[] = [
+                'id' => $identifier,
+            ];
+        }
+
+        $converted[$entityKey] = $associationEntities;
+    }
 }

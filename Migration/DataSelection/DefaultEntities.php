@@ -177,6 +177,8 @@ final class DefaultEntities
 
     public const SALES_CHANNEL = 'sales_channel';
 
+    public const SALES_CHANNEL_DOMAIN = 'sales_channel_domain';
+
     public const SALES_CHANNEL_TRANSLATION = 'sales_channel_translation';
 
     public const SEO_URL = 'seo_url';

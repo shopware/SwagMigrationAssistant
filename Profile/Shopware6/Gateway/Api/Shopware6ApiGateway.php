@@ -16,7 +16,8 @@ use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\Gateway\Reader\EnvironmentReaderInterface;
 use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistryInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware\Gateway\ShopwareGatewayInterface;
+use SwagMigrationAssistant\Profile\Shopware6\Gateway\ShopwareGatewayInterface;
+use SwagMigrationAssistant\Profile\Shopware6\Gateway\TableReaderInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Gateway\TotalReaderInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6ProfileInterface;
 
@@ -44,16 +45,23 @@ class Shopware6ApiGateway implements ShopwareGatewayInterface
      */
     private $totalReader;
 
+    /**
+     * @var TableReaderInterface
+     */
+    private $tableReader;
+
     public function __construct(
         ReaderRegistryInterface $readerRegistry,
         EnvironmentReaderInterface $environmentReader,
         EntityRepositoryInterface $currencyRepository,
-        TotalReaderInterface $totalReader
+        TotalReaderInterface $totalReader,
+        TableReaderInterface $tableReader
     ) {
         $this->readerRegistry = $readerRegistry;
         $this->environmentReader = $environmentReader;
         $this->currencyRepository = $currencyRepository;
         $this->totalReader = $totalReader;
+        $this->tableReader = $tableReader;
     }
 
     public function getName(): string
@@ -163,6 +171,6 @@ class Shopware6ApiGateway implements ShopwareGatewayInterface
 
     public function readTable(MigrationContextInterface $migrationContext, string $tableName, array $filter = []): array
     {
-        return [];
+        return $this->tableReader->read($migrationContext, $tableName, $filter);
     }
 }
