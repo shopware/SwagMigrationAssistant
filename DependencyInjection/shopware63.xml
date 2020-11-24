@@ -115,9 +115,13 @@
             <tag name="shopware.migration.converter"/>
         </service>
 
-
         <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63MailTemplateConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\MailTemplateConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63ProductFeatureSetConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ProductFeatureSetConverter">
             <tag name="shopware.migration.converter"/>
         </service>
 

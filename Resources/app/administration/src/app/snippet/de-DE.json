@@ -294,7 +294,8 @@
           "custom_field_set": "Zusatzfelder:",
           "snippet": "Textbausteine:",
           "snippet_set": "Textbaustein-Sets:",
-          "mail_template": "E-Mail-Template:"
+          "mail_template": "E-Mail-Template:",
+          "product_feature_set": "Wesentliche Merkmale:"
         },
         "noData": "Es wurden keine Daten zum Migrieren gefunden."
       },
