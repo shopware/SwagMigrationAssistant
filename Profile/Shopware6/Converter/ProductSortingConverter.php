@@ -25,10 +25,6 @@ abstract class ProductSortingConverter extends ShopwareConverter
             $this->context
         );
 
-        if ($isLocked) {
-            return new ConvertStruct(null, $data);
-        }
-
         if ($productSortingUuid !== null) {
             $converted['id'] = $productSortingUuid;
         }
@@ -38,6 +34,10 @@ abstract class ProductSortingConverter extends ShopwareConverter
             $data['id'],
             $converted['id']
         );
+
+        if ($isLocked) {
+            return new ConvertStruct(null, $data, $this->mainMapping['id'] ?? null);
+        }
 
         $this->updateAssociationIds(
             $converted['translations'],

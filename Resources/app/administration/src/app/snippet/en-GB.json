@@ -298,7 +298,9 @@
           "snippet": "Snippets:",
           "snippet_set": "Snippet sets:",
           "mail_template": "Email templates:",
-          "product_feature_set": "Essential characteristics:"
+          "product_feature_set": "Essential characteristics:",
+          "product_sorting": "Product sorting:",
+          "system_config": "Basic information:"
         },
         "noData": "Nothing found to migrate."
       },

@@ -21,7 +21,7 @@ abstract class SystemConfigConverter extends ShopwareConverter
     {
         $converted = $data;
 
-        $systemConfigUuid = $this->mappingService->getSystemConfigUuid($data['id'], $data['configurationKey'], $this->migrationContext, $this->context);
+        $systemConfigUuid = $this->mappingService->getSystemConfigUuid($data['id'], $data['configurationKey'], $data['salesChannelId'] ?? null, $this->migrationContext, $this->context);
 
         if ($systemConfigUuid !== null) {
             $converted['id'] = $systemConfigUuid;
@@ -32,6 +32,13 @@ abstract class SystemConfigConverter extends ShopwareConverter
             $data['id'],
             $converted['id']
         );
+
+        if (isset($converted['salesChannelId'])) {
+            $converted['salesChannelId'] = $this->getMappingIdFacade(
+                DefaultEntities::SALES_CHANNEL,
+                $converted['salesChannelId']
+            );
+        }
 
         return new ConvertStruct($converted, null, $this->mainMapping['id'] ?? null);
     }

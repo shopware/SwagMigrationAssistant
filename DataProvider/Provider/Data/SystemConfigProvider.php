@@ -48,7 +48,7 @@ class SystemConfigProvider extends AbstractProvider
                 'core.scheduled_indexers',
             ])
         ]));
-        $criteria->addSorting(new FieldSorting('id'));
+        $criteria->addSorting(new FieldSorting('salesChannelId', FieldSorting::DESCENDING), new FieldSorting('id'));
         $result = $this->systemConfigRepo->search($criteria, $context);
 
         return $this->cleanupSearchResult($result);

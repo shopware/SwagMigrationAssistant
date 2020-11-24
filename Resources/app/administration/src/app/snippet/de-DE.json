@@ -298,7 +298,9 @@
           "snippet": "Textbausteine:",
           "snippet_set": "Textbaustein-Sets:",
           "mail_template": "E-Mail-Template:",
-          "product_feature_set": "Wesentliche Merkmale:"
+          "product_feature_set": "Wesentliche Merkmale:",
+          "product_sorting": "Produkt-Sortierungen:",
+          "system_config": "Stammdaten:"
         },
         "noData": "Es wurden keine Daten zum Migrieren gefunden."
       },
