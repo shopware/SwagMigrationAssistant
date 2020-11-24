@@ -335,7 +335,7 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
         return $seoUrlTemplateId;
     }
 
-    public function getSystemConfigUuid(string $oldIdentifier, string $configurationKey, MigrationContextInterface $migrationContext, Context $context): ?string
+    public function getSystemConfigUuid(string $oldIdentifier, string $configurationKey, ?string $salesChannelId, MigrationContextInterface $migrationContext, Context $context): ?string
     {
         $connection = $migrationContext->getConnection();
         if ($connection === null) {
@@ -350,9 +350,17 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
         }
 
         /** @var IdSearchResult $result */
-        $result = $context->disableCache(function (Context $context) use ($configurationKey) {
+        $result = $context->disableCache(function (Context $context) use ($configurationKey, $salesChannelId) {
             $criteria = new Criteria();
-            $criteria->addFilter(new EqualsFilter('configurationKey', $configurationKey));
+            $criteria->addFilter(
+                new MultiFilter(
+                    MultiFilter::CONNECTION_AND,
+                    [
+                        new EqualsFilter('salesChannelId', $salesChannelId),
+                        new EqualsFilter('configurationKey', $configurationKey),
+                    ]
+                )
+            );
             $criteria->setLimit(1);
 
             return $this->systemConfigRepo->searchIds($criteria, $context);

@@ -372,6 +372,32 @@ class Dummy6MappingService extends Shopware6MappingService
         return $localeUuid;
     }
 
+    public function getSystemConfigUuid(string $oldIdentifier, string $configurationKey, ?string $salesChannelId, MigrationContextInterface $migrationContext, Context $context): ?string
+    {
+        $connection = $migrationContext->getConnection();
+        if ($connection === null) {
+            return null;
+        }
+        $connectionId = $connection->getId();
+
+        $mapping = $this->getMapping($connectionId, DefaultEntities::SYSTEM_CONFIG, $oldIdentifier, $context);
+
+        if ($mapping !== null) {
+            return $mapping['entityUuid'];
+        }
+
+        return null;
+    }
+
+    public function getProductSortingUuid(string $key, Context $context): array
+    {
+        $mapping = $this->getMapping('dummy-connection-id', DefaultEntities::PRODUCT_SORTING, $key, $context);
+        $id = $mapping['entityUuid'] ?? null;
+        $isLocked = $key === 'is-locked';
+
+        return [$id, $isLocked];
+    }
+
     private function isUuidDuplicate(string $connectionId, string $entityName, string $id, string $uuid, Context $context): bool
     {
         foreach ($this->writeArray as $item) {

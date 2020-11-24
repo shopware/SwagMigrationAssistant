@@ -100,19 +100,7 @@ abstract class ShopwareConverterTest extends TestCase
 
     abstract protected function getFixtureBasePath(): string;
 
-    private function getAssertMessage(string $notes = ''): string
-    {
-        $childClassName = static::class;
-
-        $message = "Child class: ${childClassName}";
-        if ($notes !== '') {
-            $message .= PHP_EOL . $notes;
-        }
-
-        return $message;
-    }
-
-    private function loadMapping(array $mappingArray): void
+    protected function loadMapping(array $mappingArray): void
     {
         $connection = $this->migrationContext->getConnection();
 
@@ -131,6 +119,18 @@ abstract class ShopwareConverterTest extends TestCase
                 $mapping['newIdentifier']
             );
         }
+    }
+
+    private function getAssertMessage(string $notes = ''): string
+    {
+        $childClassName = static::class;
+
+        $message = "Child class: ${childClassName}";
+        if ($notes !== '') {
+            $message .= PHP_EOL . $notes;
+        }
+
+        return $message;
     }
 
     private function doSingleConvert(string $fixtureFolderPath, string $fixtureName): void
