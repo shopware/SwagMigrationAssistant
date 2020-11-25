@@ -109,6 +109,9 @@
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\ProductFeatureSetConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\MediaConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+
         <!-- Shopware Reader -->
         <service id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\EnvironmentReader">
             <argument type="service" id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection\ConnectionFactory"/>
@@ -132,6 +135,10 @@
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\DataSelection\BasicSettingsDataSelection">
+            <tag name="shopware.migration.data_selection"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware6\DataSelection\MediaDataSelection">
             <tag name="shopware.migration.data_selection"/>
         </service>
 
@@ -233,6 +240,10 @@
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\ProductFeatureSetDataSet">
+            <tag name="shopware.migration.data_set"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\MediaDataSet">
             <tag name="shopware.migration.data_set"/>
         </service>
 
@@ -365,6 +376,11 @@
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\ProductFeatureSetReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\ApiReader">
+            <tag name="shopware.migration.reader"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\MediaReader"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\ApiReader">
             <tag name="shopware.migration.reader"/>
         </service>
