@@ -135,10 +135,18 @@ abstract class ShopwareConverterTest extends TestCase
 
     private function doSingleConvert(string $fixtureFolderPath, string $fixtureName): void
     {
-        $mappingArray = require $fixtureFolderPath . 'mapping.php';
         $input = require $fixtureFolderPath . 'input.php';
         $expectedOutput = require $fixtureFolderPath . 'output.php';
-        $expectedLogArray = require $fixtureFolderPath . 'log.php';
+
+        $mappingArray = [];
+        if (\file_exists($fixtureFolderPath . 'mapping.php')) {
+            $mappingArray = require $fixtureFolderPath . 'mapping.php';
+        }
+
+        $expectedLogArray = [];
+        if (\file_exists($fixtureFolderPath . 'log.php')) {
+            $expectedLogArray = require $fixtureFolderPath . 'log.php';
+        }
 
         $this->loadMapping($mappingArray);
 
