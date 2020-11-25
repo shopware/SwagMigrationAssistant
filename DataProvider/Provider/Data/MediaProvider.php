@@ -47,6 +47,11 @@ class MediaProvider extends AbstractProvider
             'mediaTypeRaw',
             'metaData',
             'mediaType',
+            'mediaId',
+            'thumbnails',
+            'thumbnailsRo',
+            'hasFile',
+            'url',
         ]);
     }
 

@@ -33,6 +33,7 @@ abstract class MediaConverter extends ShopwareConverter
             'languageId',
             DefaultEntities::MEDIA
         );
+        $converted['hasFile'] = false;
 
         return new ConvertStruct($converted, null, $this->mainMapping['id'] ?? null);
     }
