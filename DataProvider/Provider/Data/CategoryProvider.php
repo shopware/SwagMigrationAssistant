@@ -36,6 +36,8 @@ class CategoryProvider extends AbstractProvider
         $criteria->setLimit($limit);
         $criteria->setOffset($offset);
         $criteria->addAssociation('translations');
+        $criteria->addAssociation('media.translations');
+        $criteria->addAssociation('media.tags');
         $criteria->addSorting(
             new FieldSorting('level'),
             new FieldSorting('autoIncrement')
@@ -48,6 +50,20 @@ class CategoryProvider extends AbstractProvider
             'childCount',
             'breadcrumb',
             'autoIncrement',
+
+            // media
+            'mimeType',
+            'fileExtension',
+            'fileSize',
+            'mediaTypeRaw',
+            'metaData',
+            'mediaType',
+            'mediaId',
+            'thumbnails',
+            'thumbnailsRo',
+            'hasFile',
+            'url',
+            'userId', // maybe put back in, if we migrate users
         ]);
     }
 
