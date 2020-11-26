@@ -40,6 +40,7 @@ class ProductProvider extends AbstractProvider
         $criteria->addAssociation('prices');
         $criteria->addAssociation('media.media.tags');
         $criteria->addAssociation('media.media.translations');
+        $criteria->addAssociation('visibilities');
         $criteria->addSorting(
             new FieldSorting('parentId'), // get 'NULL' parentIds first
             new FieldSorting('id')

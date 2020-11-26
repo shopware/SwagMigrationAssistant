@@ -131,7 +131,7 @@ abstract class ShopwareConverter extends Converter
     /**
      * Replaces every id (associationIdKey) in the specified array of entities with the right mapping dependent one.
      */
-    protected function updateAssociationIds(array &$associationArray, string $entity, string $associationIdKey, string $sourceEntity): void
+    protected function updateAssociationIds(array &$associationArray, string $entity, string $associationIdKey, string $sourceEntity, bool $logMissing = true, bool $unsetMissing = false): void
     {
         foreach ($associationArray as $key => $association) {
             $oldAssociationId = $association[$associationIdKey];
@@ -142,12 +142,18 @@ abstract class ShopwareConverter extends Converter
             );
 
             if (empty($newAssociationId)) {
-                $this->loggingService->addLogEntry(new AssociationRequiredMissingLog(
-                    $this->runId,
-                    $entity,
-                    $oldAssociationId,
-                    $sourceEntity
-                ));
+                if ($logMissing) {
+                    $this->loggingService->addLogEntry(new AssociationRequiredMissingLog(
+                        $this->runId,
+                        $entity,
+                        $oldAssociationId,
+                        $sourceEntity
+                    ));
+                }
+
+                if ($unsetMissing) {
+                    unset($associationArray[$key][$associationIdKey]);
+                }
 
                 continue;
             }

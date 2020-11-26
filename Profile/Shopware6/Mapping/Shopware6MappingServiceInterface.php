@@ -26,4 +26,6 @@ interface Shopware6MappingServiceInterface extends MappingServiceInterface
     public function getSystemConfigUuid(string $oldIdentifier, string $configurationKey, ?string $salesChannelId, MigrationContextInterface $migrationContext, Context $context): ?string;
 
     public function getProductSortingUuid(string $key, Context $context): array;
+
+    public function getStateMachineStateUuid(string $oldIdentifier, string $technicalName, string $stateMachineTechnicalName, MigrationContextInterface $migrationContext, Context $context): ?string;
 }

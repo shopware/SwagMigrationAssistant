@@ -398,6 +398,23 @@ class Dummy6MappingService extends Shopware6MappingService
         return [$id, $isLocked];
     }
 
+    public function getStateMachineStateUuid(string $oldIdentifier, string $technicalName, string $stateMachineTechnicalName, MigrationContextInterface $migrationContext, Context $context): ?string
+    {
+        $connection = $migrationContext->getConnection();
+        if ($connection === null) {
+            return null;
+        }
+        $connectionId = $connection->getId();
+
+        $mapping = $this->getMapping($connectionId, DefaultEntities::STATE_MACHINE_STATE, $oldIdentifier, $context);
+
+        if ($mapping !== null) {
+            return $mapping['entityUuid'];
+        }
+
+        return null;
+    }
+
     private function isUuidDuplicate(string $connectionId, string $entityName, string $id, string $uuid, Context $context): bool
     {
         foreach ($this->writeArray as $item) {

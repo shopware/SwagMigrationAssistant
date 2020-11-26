@@ -199,6 +199,8 @@ final class DefaultEntities
 
     public const SNIPPET_SET = 'snippet_set';
 
+    public const STATE_MACHINE_STATE = 'state_machine_state';
+
     public const SYSTEM_CONFIG = 'system_config';
 
     public const TAX = 'tax';
