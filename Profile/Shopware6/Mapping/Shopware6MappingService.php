@@ -57,6 +57,11 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
      */
     protected $productSortingRepo;
 
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $stateMachineStateRepo;
+
     public function __construct(
         EntityRepositoryInterface $migrationMappingRepo,
         EntityRepositoryInterface $localeRepository,
@@ -79,7 +84,8 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
         EntityRepositoryInterface $salutationRepo,
         EntityRepositoryInterface $seoUrlTemplateRepo,
         EntityRepositoryInterface $systemConfigRepo,
-        EntityRepositoryInterface $productSortingRepo
+        EntityRepositoryInterface $productSortingRepo,
+        EntityRepositoryInterface $stateMachineStateRepo
     ) {
         parent::__construct(
             $migrationMappingRepo,
@@ -106,6 +112,7 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
         $this->seoUrlTemplateRepo = $seoUrlTemplateRepo;
         $this->systemConfigRepo = $systemConfigRepo;
         $this->productSortingRepo = $productSortingRepo;
+        $this->stateMachineStateRepo = $stateMachineStateRepo;
     }
 
     public function getMailTemplateTypeUuid(string $type, string $oldIdentifier, MigrationContextInterface $migrationContext, Context $context): ?string
@@ -405,5 +412,46 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
         }
 
         return [$id, $isLocked];
+    }
+
+    public function getStateMachineStateUuid(string $oldIdentifier, string $technicalName, string $stateMachineTechnicalName, MigrationContextInterface $migrationContext, Context $context): ?string
+    {
+        $connection = $migrationContext->getConnection();
+        if ($connection === null) {
+            return null;
+        }
+
+        $connectionId = $connection->getId();
+        $stateMachineStateMapping = $this->getMapping($connectionId, DefaultEntities::STATE_MACHINE_STATE, $oldIdentifier, $context);
+
+        if ($stateMachineStateMapping !== null) {
+            return $stateMachineStateMapping['entityUuid'];
+        }
+
+        /** @var IdSearchResult $result */
+        $result = $context->disableCache(function (Context $context) use ($technicalName, $stateMachineTechnicalName) {
+            $criteria = new Criteria();
+            $criteria->addFilter(new EqualsFilter('technicalName', $technicalName));
+            $criteria->addFilter(new EqualsFilter('stateMachine.technicalName', $stateMachineTechnicalName));
+            $criteria->setLimit(1);
+
+            return $this->stateMachineStateRepo->searchIds($criteria, $context);
+        });
+
+        $stateMachineStateId = $result->firstId();
+
+        if ($stateMachineStateId !== null) {
+            $this->saveMapping(
+                [
+                    'id' => Uuid::randomHex(),
+                    'connectionId' => $connectionId,
+                    'entity' => DefaultEntities::STATE_MACHINE_STATE,
+                    'oldIdentifier' => $oldIdentifier,
+                    'entityUuid' => $stateMachineStateId,
+                ]
+            );
+        }
+
+        return $stateMachineStateId;
     }
 }

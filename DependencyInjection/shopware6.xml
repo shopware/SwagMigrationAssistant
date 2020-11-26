@@ -29,6 +29,7 @@
             <argument type="service" id="seo_url_template.repository"/>
             <argument type="service" id="system_config.repository"/>
             <argument type="service" id="product_sorting.repository"/>
+            <argument type="service" id="state_machine_state.repository"/>
         </service>
 
         <!-- Shopware Converter Base classes -->
@@ -68,6 +69,9 @@
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\ProductConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\OrderConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\UnitConverter"
@@ -208,6 +212,10 @@
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\ProductDataSet">
+            <tag name="shopware.migration.data_set"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\OrderDataSet">
             <tag name="shopware.migration.data_set"/>
         </service>
 
@@ -399,6 +407,11 @@
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\NumberRangeReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\ApiReader">
+            <tag name="shopware.migration.reader"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\OrderReader"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\ApiReader">
             <tag name="shopware.migration.reader"/>
         </service>

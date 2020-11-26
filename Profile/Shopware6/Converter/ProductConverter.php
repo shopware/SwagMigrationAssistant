@@ -123,6 +123,16 @@ abstract class ProductConverter extends ShopwareConverter
             unset($mediaAssociation);
         }
 
+        if (isset($converted['visibilities'])) {
+            $this->updateAssociationIds(
+                $converted['visibilities'],
+                DefaultEntities::SALES_CHANNEL,
+                'salesChannelId',
+                DefaultEntities::PRODUCT,
+                false
+            );
+        }
+
         return new ConvertStruct($converted, null, $this->mainMapping['id'] ?? null);
     }
 }
