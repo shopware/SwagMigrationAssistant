@@ -30,6 +30,11 @@ In migrating your Shopware 5 shop, you can either perform the migration locally 
 
 The Migration Connector provides API endpoints that allow Shopware 6 to establish a secure data connection with the active Shopware 5 shop. As long as you are using Shopware 6, you should leave the plugin enabled. This is the only way to update the data at any time.
 
+## Info for Magento 1.9 users
+
+If you want to process a large number of orders you can increase the performance by adding a MySQL index to your magento database.
+
+```ALTER TABLE `sales_flat_order_item` ADD INDEX (`parent_item_id`);```
 
 
 ## Get started with the Migration Assistant:
