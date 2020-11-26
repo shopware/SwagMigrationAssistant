@@ -43,7 +43,6 @@ return [
     'grouped' => false,
     'prices' => [
         [
-            'productId' => 'fb2dbbee297c472c9e916b26952615ff',
             'quantityStart' => 11,
             'ruleId' => '8b773a602272453eb4df291c7c83c5e5',
             'price' => [
@@ -58,7 +57,6 @@ return [
             'id' => '5a2146bdb26f47f190219369739e9eb2',
         ],
         [
-            'productId' => 'fb2dbbee297c472c9e916b26952615ff',
             'quantityStart' => 11,
             'ruleId' => '83a7d5ac26004476a91fd7aaeca70004',
             'price' => [
@@ -73,7 +71,6 @@ return [
             'id' => '7afaf0146e704f51b6c1cfbb88cc2f87',
         ],
         [
-            'productId' => 'fb2dbbee297c472c9e916b26952615ff',
             'quantityStart' => 1,
             'quantityEnd' => 10,
             'ruleId' => 'a6cc47655efc4fa893e91d1cdea88f8b',
@@ -89,7 +86,6 @@ return [
             'id' => '98aa30371c4b478f911ac065b1b26c95',
         ],
         [
-            'productId' => 'fb2dbbee297c472c9e916b26952615ff',
             'quantityStart' => 1,
             'quantityEnd' => 10,
             'ruleId' => '8b773a602272453eb4df291c7c83c5e5',
@@ -105,7 +101,6 @@ return [
             'id' => 'd227858abc15478eb68b21494676dd01',
         ],
         [
-            'productId' => 'fb2dbbee297c472c9e916b26952615ff',
             'quantityStart' => 1,
             'quantityEnd' => 10,
             'ruleId' => '83a7d5ac26004476a91fd7aaeca70004',
@@ -121,7 +116,6 @@ return [
             'id' => 'e7040b0a1e054dafac6ad4c4c8f3490d',
         ],
         [
-            'productId' => 'fb2dbbee297c472c9e916b26952615ff',
             'quantityStart' => 11,
             'ruleId' => 'a6cc47655efc4fa893e91d1cdea88f8b',
             'price' => [
@@ -138,12 +132,12 @@ return [
     ],
     'translations' => [
         [
-            'productId' => 'fb2dbbee297c472c9e916b26952615ff',
             'name' => 'Incredible Steel Dogspa',
             'description' => 'Qui distinctio reiciendis facere et veniam quam voluptatem reiciendis. Et id commodi accusantium quas. Dolor sequi sit ipsum ut molestiae. Nesciunt praesentium aut architecto eos.',
             'languageId' => '2fbb5fe2e29a4d70aa5854ce7ce3e20b',
         ],
     ],
+    'coverId' => 'bdeb106f47ab4255b2bd5f35d84cae7c',
     'deliveryTimeId' => 'bdeb106f47ab4255b2bd5f35d84cae7c',
     'id' => 'fb2dbbee297c472c9e916b26952615ff',
 ];

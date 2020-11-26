@@ -38,6 +38,8 @@ class ProductProvider extends AbstractProvider
         $criteria->addAssociation('translations');
         $criteria->addAssociation('categories');
         $criteria->addAssociation('prices');
+        $criteria->addAssociation('media.media.tags');
+        $criteria->addAssociation('media.media.translations');
         $criteria->addSorting(
             new FieldSorting('parentId'), // get 'NULL' parentIds first
             new FieldSorting('id')
@@ -56,6 +58,21 @@ class ProductProvider extends AbstractProvider
             'listingPrices',
             'sales',
             'tax', // taxId is already provided
+            'productId',
+
+            // media
+            'mimeType',
+            'fileExtension',
+            'fileSize',
+            'mediaTypeRaw',
+            'metaData',
+            'mediaType',
+            'mediaId',
+            'thumbnails',
+            'thumbnailsRo',
+            'hasFile',
+            'url',
+            'userId', // maybe put back in, if we migrate users
         ]);
 
         // cleanup categories - only ids are needed

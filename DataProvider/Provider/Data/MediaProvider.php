@@ -52,6 +52,7 @@ class MediaProvider extends AbstractProvider
             'thumbnailsRo',
             'hasFile',
             'url',
+            'userId', // maybe put back in, if we migrate users
         ]);
     }
 
