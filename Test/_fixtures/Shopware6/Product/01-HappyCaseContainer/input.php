@@ -43,7 +43,6 @@ return [
     'grouped' => false,
     'translations' => [
         [
-            'productId' => '6313d15a735a4fd08508dd349ad010f9',
             'name' => 'MyProductNeu',
             'description' => 'MyProductDescription',
             'languageId' => '2fbb5fe2e29a4d70aa5854ce7ce3e20b',

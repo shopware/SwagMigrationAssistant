@@ -110,10 +110,18 @@ abstract class ProductConverter extends ShopwareConverter
             );
         }
 
-        unset(
-            // ToDo implement if these associations are migrated
-            $converted['coverId']
-        );
+        if (isset($converted['media'])) {
+            foreach ($converted['media'] as &$mediaAssociation) {
+                $this->updateAssociationIds(
+                    $mediaAssociation['media']['translations'],
+                    DefaultEntities::LANGUAGE,
+                    'languageId',
+                    DefaultEntities::MEDIA
+                );
+                $mediaAssociation['media']['hasFile'] = false;
+            }
+            unset($mediaAssociation);
+        }
 
         return new ConvertStruct($converted, null, $this->mainMapping['id'] ?? null);
     }

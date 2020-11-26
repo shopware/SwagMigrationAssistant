@@ -34,7 +34,7 @@ class ProductDataSelection implements DataSelectionInterface
             $this->getDataSetsRequiredForCount(),
             'swag-migration.index.selectDataCard.dataSelection.products',
             100,
-            false // ToDo enable when media processing is implemented
+            true
         );
     }
 

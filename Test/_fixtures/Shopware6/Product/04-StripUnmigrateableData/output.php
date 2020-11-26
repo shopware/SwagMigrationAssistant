@@ -7,6 +7,7 @@
 
 return [
     'unitId' => null,
+    'coverId' => 'c1d5999a74fa4fd48a83a320b28efb1b',
     'taxId' => 'a2f2918aaf5d42a2ba219c82c2bc275d',
     'manufacturerId' => null,
     'active' => true,
@@ -40,7 +41,6 @@ return [
     'grouped' => false,
     'translations' => [
         [
-            'productId' => '6313d15a735a4fd08508dd349ad010f9',
             'name' => 'MyProductNeu',
             'description' => 'MyProductDescription',
             'languageId' => '2fbb5fe2e29a4d70aa5854ce7ce3e20b',
