@@ -34,10 +34,19 @@ abstract class CategoryConverter extends ShopwareConverter
             DefaultEntities::CATEGORY
         );
 
+        if (isset($converted['media'])) {
+            $this->updateAssociationIds(
+                $converted['media']['translations'],
+                DefaultEntities::LANGUAGE,
+                'languageId',
+                DefaultEntities::MEDIA
+            );
+            $converted['media']['hasFile'] = false;
+        }
+
         unset(
             // ToDo implement if these associations are migrated
-            $converted['cmsPageId'],
-            $converted['mediaId']
+            $converted['cmsPageId']
         );
 
         return new ConvertStruct($converted, null, $this->mainMapping['id'] ?? null);
