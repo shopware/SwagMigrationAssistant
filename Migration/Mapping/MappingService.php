@@ -209,11 +209,16 @@ class MappingService implements MappingServiceInterface
             return $this->createMapping($connectionId, $entityName, $oldIdentifier, $checksum, $additionalData, $uuid);
         }
 
+        if ($additionalData !== null) {
+            $mapping['additionalData'] = $additionalData;
+        }
+
         if ($uuid !== null) {
             $mapping['entityUuid'] = $uuid;
-            $this->saveMapping($mapping);
+        }
 
-            return $mapping;
+        if ($uuid !== null || $additionalData !== null) {
+            $this->saveMapping($mapping);
         }
 
         return $mapping;
