@@ -257,7 +257,8 @@
           "newsletterRecipient": "Newsletter-Empfänger",
           "productReviews": "Produktbewertungen",
           "seoUrls": "SEO Urls",
-          "promotions": "Rabatte & Aktionen"
+          "promotions": "Rabatte & Aktionen",
+          "cms": "Layouts"
         },
         "entities": {
           "category": "Kategorien:",
@@ -300,7 +301,8 @@
           "mail_template": "E-Mail-Template:",
           "product_feature_set": "Wesentliche Merkmale:",
           "product_sorting": "Produkt-Sortierungen:",
-          "system_config": "Stammdaten:"
+          "system_config": "Stammdaten:",
+          "cms_page": "Layouts:"
         },
         "noData": "Es wurden keine Daten zum Migrieren gefunden."
       },

@@ -17,6 +17,8 @@ final class DefaultEntities
 
     public const CATEGORY_CUSTOM_FIELD = 'category_custom_field';
 
+    public const CMS_PAGE = 'cms_page';
+
     public const COUNTRY = 'country';
 
     public const COUNTRY_TRANSLATION = 'country_translation';

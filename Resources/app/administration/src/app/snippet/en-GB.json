@@ -257,7 +257,8 @@
           "newsletterRecipient": "Newsletter recipient",
           "productReviews": "Product reviews",
           "seoUrls": "Seo urls",
-          "promotions": "Promotions"
+          "promotions": "Promotions",
+          "cms": "Layouts"
         },
         "entities": {
           "category": "Categories:",
@@ -300,7 +301,8 @@
           "mail_template": "Email templates:",
           "product_feature_set": "Essential characteristics:",
           "product_sorting": "Product sorting:",
-          "system_config": "Basic information:"
+          "system_config": "Basic information:",
+          "cms_page": "Layouts:"
         },
         "noData": "Nothing found to migrate."
       },

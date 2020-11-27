@@ -62,7 +62,7 @@ abstract class AbstractProvider implements ProviderInterface
      *
      * cleans up the result and transforms it into an associative array
      */
-    protected function cleanupSearchResult($result, array $stripExactKeys = []): array
+    protected function cleanupSearchResult($result, array $stripExactKeys = [], array $doNotTouchKeys = []): array
     {
         if ($result instanceof EntityCollection) {
             $cleanResult = \array_values($result->getElements());
@@ -72,7 +72,7 @@ abstract class AbstractProvider implements ProviderInterface
 
         foreach ($cleanResult as $key => $value) {
             // cleanup of associative arrays (non integer keys)
-            if (\is_string($key)) {
+            if (\is_string($key) && !\in_array($key, $doNotTouchKeys, true)) {
                 // cleanup forbidden keys that match exactly
                 if (\in_array($key, self::FORBIDDEN_EXACT_KEYS, true)) {
                     unset($cleanResult[$key]);
@@ -100,7 +100,7 @@ abstract class AbstractProvider implements ProviderInterface
                 $value = $cleanResult[$key];
             }
 
-            if (\is_array($value)) {
+            if (\is_array($value) && !\in_array($key, $doNotTouchKeys, true)) {
                 if (empty(\array_filter($value))) {
                     // if all entries of the array equal to FALSE this key will be removed (for example null or '' entries).
                     unset($cleanResult[$key]);
@@ -108,12 +108,12 @@ abstract class AbstractProvider implements ProviderInterface
                 }
 
                 // cleanup child array
-                $cleanResult[$key] = $this->cleanupSearchResult($cleanResult[$key], $stripExactKeys);
+                $cleanResult[$key] = $this->cleanupSearchResult($cleanResult[$key], $stripExactKeys, $doNotTouchKeys);
                 continue;
             }
 
             // remove null value keys
-            if ($value === null) {
+            if ($value === null && !\in_array($key, $doNotTouchKeys, true)) {
                 unset($cleanResult[$key]);
                 continue;
             }
