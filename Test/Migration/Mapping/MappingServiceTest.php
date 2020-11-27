@@ -105,6 +105,16 @@ class MappingServiceTest extends TestCase
 
         $mapping2 = $this->mappingService->getOrCreateMapping(Uuid::randomHex(), 'product', '123', $context);
         static::assertSame($mapping1, $mapping2);
+
+        $uuid = Uuid::randomHex();
+        $additionalData = [
+            'key' => 'value',
+        ];
+        $expectedData = $mapping2;
+        $expectedData['entityUuid'] = $uuid;
+        $expectedData['additionalData'] = $additionalData;
+        $mapping3 = $this->mappingService->getOrCreateMapping(Uuid::randomHex(), 'product', '123', $context, null, ['key' => 'value'], $uuid);
+        static::assertSame($expectedData, $mapping3);
     }
 
     public function testReadExistingMappings(): void
