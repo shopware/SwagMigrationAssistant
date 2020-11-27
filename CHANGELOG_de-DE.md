@@ -4,6 +4,7 @@
 - MIG-120 - Behebt ein Problem beim Laden des Premappings
 - MIG-162 - Behebt ein Problem bei der Migration von Produkten mit leeren Freitextfeldern 
 - MIG-167 - Behebt ein Problem bei der Migration von Freitextfeldwerten
+- MIG-168 - Optimiertes Request Handling
 
 # 2.2.1
 - MIG-105 - Warnung hinzufügen, wenn sich die Standardsprachen unterscheiden

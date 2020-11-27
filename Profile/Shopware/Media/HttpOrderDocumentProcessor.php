@@ -172,7 +172,13 @@ class HttpOrderDocumentProcessor extends BaseMediaService implements MediaFilePr
             $response = $result['value'];
             $filePath = \sprintf('_temp/%s.%s', $uuid, 'pdf');
 
-            $fileHandle = \fopen($filePath, 'ab');
+            $streamContext = \stream_context_create([
+                'http' => [
+                    'follow_location' => 0,
+                    'max_redirects' => 0,
+                ],
+            ]);
+            $fileHandle = \fopen($filePath, 'ab', false, $streamContext);
             \fwrite($fileHandle, $response->getBody()->getContents());
             \fclose($fileHandle);
 
@@ -204,7 +210,13 @@ class HttpOrderDocumentProcessor extends BaseMediaService implements MediaFilePr
             $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($filePath, $uuid, $name): void {
                 $fileExtension = \pathinfo($filePath, PATHINFO_EXTENSION);
                 $mimeType = \mime_content_type($filePath);
-                $fileBlob = \file_get_contents($filePath);
+                $streamContext = \stream_context_create([
+                    'http' => [
+                        'follow_location' => 0,
+                        'max_redirects' => 0,
+                    ],
+                ]);
+                $fileBlob = \file_get_contents($filePath, false, $streamContext);
                 $name = \preg_replace('/[^a-zA-Z0-9_-]+/', '-', \mb_strtolower($name));
 
                 try {

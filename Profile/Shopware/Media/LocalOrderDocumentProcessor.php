@@ -160,7 +160,13 @@ class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileP
             $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($sourcePath, $media): void {
                 $fileExtension = \pathinfo($sourcePath, PATHINFO_EXTENSION);
                 $mimeType = \mime_content_type($sourcePath);
-                $fileBlob = \file_get_contents($sourcePath);
+                $streamContext = \stream_context_create([
+                    'http' => [
+                        'follow_location' => 0,
+                        'max_redirects' => 0,
+                    ],
+                ]);
+                $fileBlob = \file_get_contents($sourcePath, false, $streamContext);
                 $name = \preg_replace('/[^a-zA-Z0-9_-]+/', '-', \mb_strtolower($media['file_name']));
 
                 try {
