@@ -4,6 +4,7 @@
 - MIG-120 - Solves an issue when loading the pre-mapping
 - MIG-162 - Solves an issue on migrating products with empty custom fields
 - MIG-167 - Solves an issue on migrating custom field values
+- MIG-168 - Optimized request options
 
 # 2.2.1
 - MIG-105 - Add warning if default languages differ

@@ -155,7 +155,13 @@ class HttpMediaDownloadService extends BaseMediaService implements MediaFileProc
             $fileExtension = \pathinfo($additionalData['uri'], PATHINFO_EXTENSION);
             $filePath = \sprintf('_temp/%s.%s', $uuid, $fileExtension);
 
-            $fileHandle = \fopen($filePath, 'ab');
+            $streamContext = \stream_context_create([
+                'http' => [
+                    'follow_location' => 0,
+                    'max_redirects' => 0,
+                ],
+            ]);
+            $fileHandle = \fopen($filePath, 'ab', false, $streamContext);
             \fwrite($fileHandle, $response->getBody()->getContents());
             \fclose($fileHandle);
 
