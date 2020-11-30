@@ -1,4 +1,5 @@
 # 2.2.2
+- MIG-110 - Verbessert die Migration der Medien
 - MIG-114 - Migration der Hauptvarianten-Information ermöglichen
 - MIG-118 - Korrigiert die Migration der Kredit-Bestellpositionen
 - MIG-120 - Behebt ein Problem beim Laden des Premappings
