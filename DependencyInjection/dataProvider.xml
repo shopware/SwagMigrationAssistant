@@ -189,6 +189,21 @@
             <tag name="shopware.dataProvider.provider"/>
         </service>
 
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\ProductStreamProvider">
+            <argument type="service" id="product_stream.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\ProductStreamFilterInheritanceProvider">
+            <argument type="service" id="product_stream_filter.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\CrossSellingProvider">
+            <argument type="service" id="product_cross_selling.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
         <!-- Services -->
         <service id="SwagMigrationAssistant\DataProvider\Service\EnvironmentService">
             <argument type="service" id="currency.repository"/>

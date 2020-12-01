@@ -302,7 +302,9 @@
           "product_feature_set": "Wesentliche Merkmale:",
           "product_sorting": "Produkt-Sortierungen:",
           "system_config": "Stammdaten:",
-          "cms_page": "Layouts:"
+          "cms_page": "Layouts:",
+          "product_stream": "Dynamische Produktgruppen:",
+          "product_stream_filter_inheritance": "Dynamische Produktgruppen-Filter:"
         },
         "noData": "Es wurden keine Daten zum Migrieren gefunden."
       },
