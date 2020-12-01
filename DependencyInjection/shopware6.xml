@@ -140,6 +140,15 @@
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\CmsPageConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\ProductStreamConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\ProductStreamFilterInheritanceConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\CrossSellingConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+
         <!-- Shopware Reader -->
         <service id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\EnvironmentReader">
             <argument type="service" id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection\ConnectionFactory"/>
@@ -316,6 +325,18 @@
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CmsPageDataSet">
+            <tag name="shopware.migration.data_set"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\ProductStreamDataSet">
+            <tag name="shopware.migration.data_set"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\ProductStreamFilterInheritanceDataSet">
+            <tag name="shopware.migration.data_set"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CrossSellingDataSet">
             <tag name="shopware.migration.data_set"/>
         </service>
 
@@ -501,6 +522,21 @@
             <tag name="shopware.migration.reader"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\ProductStreamReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\ApiReader">
+            <tag name="shopware.migration.reader"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\ProductStreamFilterInheritanceReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\ApiReader">
+            <tag name="shopware.migration.reader"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\CrossSellingReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\ApiReader">
+            <tag name="shopware.migration.reader"/>
+        </service>
+
         <!-- Writer -->
         <service id="SwagMigrationAssistant\Profile\Shopware6\Writer\ProductManufacturerWriter"
                  parent="SwagMigrationAssistant\Migration\Writer\AbstractWriter">
@@ -632,6 +668,20 @@
                  parent="SwagMigrationAssistant\Migration\Writer\AbstractWriter">
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
             <argument type="service" id="Shopware\Core\Content\Cms\CmsPageDefinition"/>
+            <tag name="shopware.migration.writer"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware6\Writer\ProductStreamWriter"
+                 parent="SwagMigrationAssistant\Migration\Writer\AbstractWriter">
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
+            <argument type="service" id="Shopware\Core\Content\ProductStream\ProductStreamDefinition"/>
+            <tag name="shopware.migration.writer"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware6\Writer\ProductStreamFilterInheritanceWriter"
+                 parent="SwagMigrationAssistant\Migration\Writer\AbstractWriter">
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
+            <argument type="service" id="Shopware\Core\Content\ProductStream\Aggregate\ProductStreamFilter\ProductStreamFilterDefinition"/>
             <tag name="shopware.migration.writer"/>
         </service>
     </services>

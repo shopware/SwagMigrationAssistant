@@ -178,5 +178,20 @@
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\CmsPageConverter">
             <tag name="shopware.migration.converter"/>
         </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63ProductStreamConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ProductStreamConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63ProductStreamFilterInheritanceConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ProductStreamFilterInheritanceConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63CrossSellingConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\CrossSellingConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
     </services>
 </container>

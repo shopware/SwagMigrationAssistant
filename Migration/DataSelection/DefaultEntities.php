@@ -147,6 +147,10 @@ final class DefaultEntities
 
     public const PRODUCT_SORTING = 'product_sorting';
 
+    public const PRODUCT_STREAM = 'product_stream';
+
+    public const PRODUCT_STREAM_FILTER_INHERITANCE = 'product_stream_filter_inheritance';
+
     public const PRODUCT_VISIBILITY = 'product_visibility';
 
     public const PROMOTION = 'promotion';

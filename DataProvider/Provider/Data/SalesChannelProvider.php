@@ -58,6 +58,7 @@ class SalesChannelProvider extends AbstractProvider
         $criteria->addFilter(new EqualsAnyFilter('typeId', [
             Defaults::SALES_CHANNEL_TYPE_STOREFRONT,
             Defaults::SALES_CHANNEL_TYPE_API,
+            Defaults::SALES_CHANNEL_TYPE_PRODUCT_COMPARISON,
         ]));
 
         return $this->readTotalFromRepo($this->salesChannelRepo, $context, $criteria);
