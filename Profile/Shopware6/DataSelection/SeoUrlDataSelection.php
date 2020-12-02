@@ -35,7 +35,7 @@ class SeoUrlDataSelection implements DataSelectionInterface
             $this->getDataSetsRequiredForCount(),
             'swag-migration.index.selectDataCard.dataSelection.seoUrls',
             600,
-            false
+            true
         );
     }
 

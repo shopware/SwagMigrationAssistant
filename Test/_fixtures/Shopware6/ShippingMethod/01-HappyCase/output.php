@@ -64,6 +64,31 @@ return [
             'id' => 'cfdbb85022314529a1e4caa84829e1b8',
         ],
     ],
+    'media' => [
+        'uploadedAt' => '2020-11-06T07:54:21.173+00:00',
+        'fileName' => 'waschmaschine_600x600',
+        'mediaFolderId' => 'd4641502e1f34c5193d74d2e408bbed4',
+        'hasFile' => false,
+        'private' => false,
+        'translations' => [
+            [
+                'languageId' => '5dd637353d044752ae6a8c6e7f53430b',
+                'title' => 'Nice title',
+                'alt' => 'Nice alt',
+            ],
+            [
+                'languageId' => '41248655c60c4dd58cde43f14cd4f149',
+                'title' => 'Another title',
+                'alt' => 'Another alt',
+            ],
+        ],
+        'tags' => [
+            [
+                'name' => 'Tag!',
+                'id' => 'cfdbb85022314529a1e4caa84829e1b8',
+            ],
+        ],
+        'id' => '84356a71233d4b3e9f417dcc8850c82f',
+    ],
     'id' => '89fb34641dfa4a9a96a5421616e07a24',
-    //'mediaId' => '0e286f600b614fc885c254d01dbb8dc3',
 ];

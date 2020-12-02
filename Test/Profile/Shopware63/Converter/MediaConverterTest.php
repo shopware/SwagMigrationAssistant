@@ -10,15 +10,16 @@ namespace SwagMigrationAssistant\Test\Profile\Shopware63\Converter;
 use SwagMigrationAssistant\Migration\Converter\ConverterInterface;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63MediaConverter;
 
 class MediaConverterTest extends ShopwareConverterTest
 {
-    protected function createConverter(Shopware6MappingServiceInterface $mappingService, LoggingServiceInterface $loggingService): ConverterInterface
+    protected function createConverter(Shopware6MappingServiceInterface $mappingService, LoggingServiceInterface $loggingService, MediaFileServiceInterface $mediaFileService): ConverterInterface
     {
-        return new Shopware63MediaConverter($mappingService, $loggingService);
+        return new Shopware63MediaConverter($mappingService, $loggingService, $mediaFileService);
     }
 
     protected function createDataSet(): DataSet

@@ -36,10 +36,24 @@ class ProductManufacturerProvider extends AbstractProvider
         $criteria->setLimit($limit);
         $criteria->setOffset($offset);
         $criteria->addAssociation('translations');
+        $criteria->addAssociation('media.translations');
+        $criteria->addAssociation('media.tags');
         $criteria->addSorting(new FieldSorting('id'));
         $result = $this->manufacturerRepo->search($criteria, $context);
 
-        return $this->cleanupSearchResult($result);
+        return $this->cleanupSearchResult($result,
+            [
+                'mimeType',
+                'fileExtension',
+                'mediaTypeRaw',
+                'metaData',
+                'mediaType',
+                'mediaId',
+                'thumbnails',
+                'thumbnailsRo',
+                'hasFile',
+                'userId', // maybe put back in, if we migrate users
+            ]);
     }
 
     public function getProvidedTotal(Context $context): int

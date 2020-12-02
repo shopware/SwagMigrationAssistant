@@ -38,10 +38,27 @@ class ShippingMethodProvider extends AbstractProvider
         $criteria->addAssociation('translations');
         $criteria->addAssociation('prices');
         $criteria->addAssociation('tags');
+        $criteria->addAssociation('media.tags');
+        $criteria->addAssociation('media.translations');
         $criteria->addSorting(new FieldSorting('id'));
         $result = $this->shippingMethodRepo->search($criteria, $context);
 
-        return $this->cleanupSearchResult($result, ['shippingMethodId', 'deliveryTime']);
+        return $this->cleanupSearchResult($result, [
+            'shippingMethodId',
+            'deliveryTime',
+
+            // media
+            'mimeType',
+            'fileExtension',
+            'mediaTypeRaw',
+            'metaData',
+            'mediaType',
+            'mediaId',
+            'thumbnails',
+            'thumbnailsRo',
+            'hasFile',
+            'userId', // maybe put back in, if we migrate users
+        ]);
     }
 
     public function getProvidedTotal(Context $context): int

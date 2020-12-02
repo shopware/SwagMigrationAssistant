@@ -39,7 +39,9 @@
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\ProductManufacturerConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Media\MediaFileService" />
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\LanguageConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
@@ -51,7 +53,9 @@
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\CategoryConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Media\MediaFileService" />
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\CategoryAssociationConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
@@ -66,10 +70,14 @@
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\PropertyGroupConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Media\MediaFileService"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\ProductConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Media\MediaFileService" />
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\OrderConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
@@ -93,7 +101,9 @@
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\ShippingMethodConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Media\MediaFileService" />
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\CustomerGroupConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
@@ -105,7 +115,9 @@
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\MailTemplateConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Media\MediaFileService" />
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\SnippetConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
@@ -117,7 +129,9 @@
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\MediaConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Media\MediaFileService" />
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\SeoUrlTemplateConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
@@ -683,6 +697,11 @@
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
             <argument type="service" id="Shopware\Core\Content\ProductStream\Aggregate\ProductStreamFilter\ProductStreamFilterDefinition"/>
             <tag name="shopware.migration.writer"/>
+        </service>
+
+        <!-- Shopware MediaHandler -->
+        <service id="SwagMigrationAssistant\Profile\Shopware6\Media\HttpMediaDownloadService" parent="SwagMigrationAssistant\Profile\Shopware\Media\HttpMediaDownloadService">
+            <tag name="shopware.migration.media_file_processor"/>
         </service>
     </services>
 </container>

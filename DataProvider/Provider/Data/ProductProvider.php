@@ -64,7 +64,6 @@ class ProductProvider extends AbstractProvider
             // media
             'mimeType',
             'fileExtension',
-            'fileSize',
             'mediaTypeRaw',
             'metaData',
             'mediaType',
@@ -72,7 +71,6 @@ class ProductProvider extends AbstractProvider
             'thumbnails',
             'thumbnailsRo',
             'hasFile',
-            'url',
             'userId', // maybe put back in, if we migrate users
         ]);
 

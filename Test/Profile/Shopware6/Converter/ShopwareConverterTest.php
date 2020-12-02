@@ -14,11 +14,13 @@ use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Converter\ConverterInterface;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6ProfileInterface;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\Dummy6MappingService;
+use SwagMigrationAssistant\Test\Mock\Migration\Media\DummyMediaFileService;
 
 abstract class ShopwareConverterTest extends TestCase
 {
@@ -42,11 +44,17 @@ abstract class ShopwareConverterTest extends TestCase
      */
     protected $migrationContext;
 
+    /**
+     * @var DummyMediaFileService
+     */
+    private $mediaService;
+
     protected function setUp(): void
     {
         $this->loggingService = new DummyLoggingService();
         $this->mappingService = new Dummy6MappingService();
-        $this->converter = $this->createConverter($this->mappingService, $this->loggingService);
+        $this->mediaService = new DummyMediaFileService();
+        $this->converter = $this->createConverter($this->mappingService, $this->loggingService, $this->mediaService);
 
         $runId = Uuid::randomHex();
         $connection = new SwagMigrationConnectionEntity();
@@ -88,7 +96,7 @@ abstract class ShopwareConverterTest extends TestCase
         }
     }
 
-    abstract protected function createConverter(Shopware6MappingServiceInterface $mappingService, LoggingServiceInterface $loggingService): ConverterInterface;
+    abstract protected function createConverter(Shopware6MappingServiceInterface $mappingService, LoggingServiceInterface $loggingService, MediaFileServiceInterface $mediaFileService): ConverterInterface;
 
     abstract protected function createProfile(): Shopware6ProfileInterface;
 
@@ -148,6 +156,11 @@ abstract class ShopwareConverterTest extends TestCase
             $expectedLogArray = require $fixtureFolderPath . 'log.php';
         }
 
+        $mediaFileArray = [];
+        if (\file_exists($fixtureFolderPath . 'media.php')) {
+            $mediaFileArray = require $fixtureFolderPath . 'media.php';
+        }
+
         $this->loadMapping($mappingArray);
 
         $context = Context::createDefaultContext();
@@ -168,6 +181,17 @@ abstract class ShopwareConverterTest extends TestCase
             foreach (\array_keys($expectedLog) as $key) {
                 static::assertSame($expectedLog[$key], $realLog[$key], $this->getAssertMessage($fixtureName . ': Log key not as expected (make sure the log array order matches the logging order).'));
             }
+        }
+
+        $mediaFiles = $this->mediaService->getMediaFileArray();
+        static::assertCount(\count($mediaFileArray), $mediaFiles, $this->getAssertMessage($fixtureName . ': Media file count not as expected.'));
+
+        foreach ($mediaFileArray as $index => $expectedFile) {
+            static::assertArrayHasKey($index, $mediaFiles, $this->getAssertMessage($fixtureName . ': Media file not found (make sure the media file array order matches the convert order).'));
+            $realMediaFile = $mediaFiles[$index];
+            $expectedFile = \array_merge(['runId' => $this->migrationContext->getRunUuid()], $expectedFile);
+
+            static::assertSame($expectedFile, $realMediaFile, $this->getAssertMessage($fixtureName . ': Media file key not as expected (make sure the media file array order matches the convert order).'));
         }
     }
 }

@@ -24,4 +24,9 @@ class DummyMediaFileService extends MediaFileService
     public function setWrittenFlag(array $converted, MigrationContextInterface $migrationContext, Context $context): void
     {
     }
+
+    public function getMediaFileArray(): array
+    {
+        return $this->writeArray;
+    }
 }

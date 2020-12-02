@@ -9,12 +9,41 @@ namespace SwagMigrationAssistant\Profile\Shopware6\Converter;
 
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
+use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface;
 
 abstract class ShippingMethodConverter extends ShopwareConverter
 {
+    /**
+     * @var MediaFileServiceInterface
+     */
+    protected $mediaFileService;
+
+    public function __construct(
+        Shopware6MappingServiceInterface $mappingService,
+        LoggingServiceInterface $loggingService,
+        MediaFileServiceInterface $mediaFileService
+    ) {
+        parent::__construct($mappingService, $loggingService);
+        $this->mediaFileService = $mediaFileService;
+    }
+
     public function getSourceIdentifier(array $data): string
     {
         return $data['id'];
+    }
+
+    public function getMediaUuids(array $converted): ?array
+    {
+        $mediaIds = [];
+        foreach ($converted as $manufacturer) {
+            if (isset($manufacturer['media']['id'])) {
+                $mediaIds[] = $manufacturer['media']['id'];
+            }
+        }
+
+        return $mediaIds;
     }
 
     protected function convertData(array $data): ConvertStruct
@@ -50,10 +79,9 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             $converted['taxId'] = $this->getMappingIdFacade(DefaultEntities::TAX, $data['taxId']);
         }
 
-        unset(
-            // ToDo implement if these associations are migrated
-            $converted['mediaId']
-        );
+        if (isset($converted['media'])) {
+            $this->updateMediaAssociation($converted['media']);
+        }
 
         return new ConvertStruct($converted, null, $this->mainMapping['id'] ?? null);
     }

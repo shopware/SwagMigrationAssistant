@@ -54,7 +54,6 @@ class CategoryProvider extends AbstractProvider
             // media
             'mimeType',
             'fileExtension',
-            'fileSize',
             'mediaTypeRaw',
             'metaData',
             'mediaType',
@@ -62,7 +61,6 @@ class CategoryProvider extends AbstractProvider
             'thumbnails',
             'thumbnailsRo',
             'hasFile',
-            'url',
             'userId', // maybe put back in, if we migrate users
         ]);
     }

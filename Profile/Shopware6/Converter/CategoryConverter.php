@@ -9,12 +9,41 @@ namespace SwagMigrationAssistant\Profile\Shopware6\Converter;
 
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
+use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface;
 
 abstract class CategoryConverter extends ShopwareConverter
 {
+    /**
+     * @var MediaFileServiceInterface
+     */
+    protected $mediaFileService;
+
+    public function __construct(
+        Shopware6MappingServiceInterface $mappingService,
+        LoggingServiceInterface $loggingService,
+        MediaFileServiceInterface $mediaFileService
+    ) {
+        parent::__construct($mappingService, $loggingService);
+        $this->mediaFileService = $mediaFileService;
+    }
+
     public function getSourceIdentifier(array $data): string
     {
         return $data['id'];
+    }
+
+    public function getMediaUuids(array $converted): ?array
+    {
+        $mediaIds = [];
+        foreach ($converted as $category) {
+            if (isset($category['media']['id'])) {
+                $mediaIds[] = $category['media']['id'];
+            }
+        }
+
+        return $mediaIds;
     }
 
     protected function convertData(array $data): ConvertStruct
@@ -35,13 +64,7 @@ abstract class CategoryConverter extends ShopwareConverter
         );
 
         if (isset($converted['media'])) {
-            $this->updateAssociationIds(
-                $converted['media']['translations'],
-                DefaultEntities::LANGUAGE,
-                'languageId',
-                DefaultEntities::MEDIA
-            );
-            $converted['media']['hasFile'] = false;
+            $this->updateMediaAssociation($converted['media']);
         }
 
         unset(
