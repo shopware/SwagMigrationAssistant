@@ -10,9 +10,12 @@ namespace SwagMigrationAssistant\Profile\Shopware6\Converter;
 use Shopware\Core\Framework\Context;
 use SwagMigrationAssistant\Migration\Converter\Converter;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
+use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface;
 
 abstract class ShopwareConverter extends Converter
@@ -21,6 +24,11 @@ abstract class ShopwareConverter extends Converter
      * @var Shopware6MappingServiceInterface
      */
     protected $mappingService;
+
+    /**
+     * @var MediaFileServiceInterface|null
+     */
+    protected $mediaFileService;
 
     /**
      * @var Context
@@ -218,5 +226,36 @@ abstract class ShopwareConverter extends Converter
         }
 
         $converted[$entityKey] = $associationEntities;
+    }
+
+    protected function updateMediaAssociation(array &$mediaArray): void
+    {
+        if (isset($mediaArray['translations'])) {
+            $this->updateAssociationIds(
+                $mediaArray['translations'],
+                DefaultEntities::LANGUAGE,
+                'languageId',
+                DefaultEntities::MEDIA
+            );
+        }
+
+        if ($this->mediaFileService !== null) {
+            $this->mediaFileService->saveMediaFile(
+                [
+                    'runId' => $this->runId,
+                    'entity' => MediaDataSet::getEntity(),
+                    'uri' => $mediaArray['url'],
+                    'fileName' => $mediaArray['fileName'],
+                    'fileSize' => (int) $mediaArray['fileSize'],
+                    'mediaId' => $mediaArray['id'],
+                ]
+            );
+        }
+
+        $mediaArray['hasFile'] = false;
+        unset(
+            $mediaArray['url'],
+            $mediaArray['fileSize']
+        );
     }
 }

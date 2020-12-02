@@ -54,6 +54,8 @@ return [
             'media' => [
                 'uploadedAt' => '2020-11-06T07:54:21.173+00:00',
                 'fileName' => 'waschmaschine_600x600',
+                'url' => 'http://nextsupport.local/media/74/58/cd/1605193590/c608d01990d9dec31d7556184a806353.jpg',
+                'fileSize' => 100,
                 'mediaFolderId' => 'd4641502e1f34c5193d74d2e408bbed4',
                 'hasFile' => true,
                 'private' => false,

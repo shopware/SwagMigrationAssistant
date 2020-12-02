@@ -43,7 +43,6 @@ class MediaProvider extends AbstractProvider
         return $this->cleanupSearchResult($result, [
             'mimeType',
             'fileExtension',
-            'fileSize',
             'mediaTypeRaw',
             'metaData',
             'mediaType',
@@ -51,7 +50,6 @@ class MediaProvider extends AbstractProvider
             'thumbnails',
             'thumbnailsRo',
             'hasFile',
-            'url',
             'userId', // maybe put back in, if we migrate users
         ]);
     }

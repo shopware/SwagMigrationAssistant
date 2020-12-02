@@ -37,10 +37,23 @@ class MailTemplateProvider extends AbstractProvider
         $criteria->setOffset($offset);
         $criteria->addAssociation('translations');
         $criteria->addAssociation('mailTemplateType');
+        $criteria->addAssociation('media.media.tags');
+        $criteria->addAssociation('media.media.translations');
         $criteria->addSorting(new FieldSorting('id'));
         $result = $this->mailTemplateRepo->search($criteria, $context);
 
-        return $this->cleanupSearchResult($result);
+        return $this->cleanupSearchResult($result,[
+            'mimeType',
+            'fileExtension',
+            'mediaTypeRaw',
+            'metaData',
+            'mediaType',
+            'mediaId',
+            'thumbnails',
+            'thumbnailsRo',
+            'hasFile',
+            'userId', // maybe put back in, if we migrate users
+        ]);
     }
 
     public function getProvidedTotal(Context $context): int

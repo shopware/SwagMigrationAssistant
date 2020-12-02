@@ -9,6 +9,8 @@ return [
     'id' => 'fed8e4628ff74aa89152d8db32bb7b8d',
     'uploadedAt' => '2020-11-12T15:06:33.881+00:00',
     'fileName' => '722be997c723e7ec4e8cc6975f5d2ae1',
+    'url' => 'http://nextsupport.local/media/74/58/cd/1605193590/722be997c723e7ec4e8cc6975f5d2ae1.jpg',
+    'fileSize' => 100,
     'translations' => [
         [
             'languageId' => '2fbb5fe2e29a4d70aa5854ce7ce3e20b',

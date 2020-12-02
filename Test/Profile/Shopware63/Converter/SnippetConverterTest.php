@@ -8,6 +8,7 @@
 use SwagMigrationAssistant\Migration\Converter\ConverterInterface;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\SnippetDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63SnippetConverter;
@@ -15,7 +16,7 @@ use SwagMigrationAssistant\Test\Profile\Shopware63\Converter\ShopwareConverterTe
 
 class SnippetConverterTest extends ShopwareConverterTest
 {
-    protected function createConverter(Shopware6MappingServiceInterface $mappingService, LoggingServiceInterface $loggingService): ConverterInterface
+    protected function createConverter(Shopware6MappingServiceInterface $mappingService, LoggingServiceInterface $loggingService, MediaFileServiceInterface $mediaFileService): ConverterInterface
     {
         return new Shopware63SnippetConverter($mappingService, $loggingService);
     }

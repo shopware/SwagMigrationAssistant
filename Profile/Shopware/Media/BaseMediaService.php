@@ -9,6 +9,7 @@ namespace SwagMigrationAssistant\Profile\Shopware\Media;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\ResultStatement;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 abstract class BaseMediaService
 {
@@ -20,6 +21,16 @@ abstract class BaseMediaService
     public function __construct(Connection $dbalConnection)
     {
         $this->dbalConnection = $dbalConnection;
+    }
+
+    protected function getDataSetEntity(MigrationContextInterface $migrationContext): ?string
+    {
+        $dataSet = $migrationContext->getDataSet();
+        if ($dataSet === null) {
+            return null;
+        }
+
+        return $dataSet::getEntity();
     }
 
     protected function getMediaFiles(array $mediaIds, string $runId): array

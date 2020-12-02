@@ -8,6 +8,38 @@
 return [
     'id' => 'fee20daa2f2a45178c808f2f69b686d4',
     'mailTemplateTypeId' => '5dd637353d044752ae6a8c6e7f53430b',
+    'media' => [
+        [
+            'position' => 1,
+            'media' => [
+                'uploadedAt' => '2020-11-06T07:54:21.173+00:00',
+                'fileName' => 'waschmaschine_600x600',
+                'mediaFolderId' => 'd4641502e1f34c5193d74d2e408bbed4',
+                'hasFile' => false,
+                'private' => false,
+                'translations' => [
+                    [
+                        'languageId' => '5dd637353d044752ae6a8c6e7f53430b',
+                        'title' => 'Nice title',
+                        'alt' => 'Nice alt',
+                    ],
+                    [
+                        'languageId' => '60d637353d044752ae6a8c6e7f53430b',
+                        'title' => 'Another title',
+                        'alt' => 'Another alt',
+                    ],
+                ],
+                'tags' => [
+                    [
+                        'name' => 'Tag!',
+                        'id' => 'cfdbb85022314529a1e4caa84829e1b8',
+                    ],
+                ],
+                'id' => '84356a71233d4b3e9f417dcc8850c82f',
+            ],
+            'id' => 'eb5483a9c77c4919b5d110e8d745a1cc',
+        ],
+    ],
     'systemDefault' => true,
     'senderName' => '{{ shopName }}',
     'description' => '',
