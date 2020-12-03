@@ -12,11 +12,6 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 
 abstract class CrossSellingConverter extends ShopwareConverter
 {
-    public function getSourceIdentifier(array $data): string
-    {
-        return $data['id'];
-    }
-
     protected function convertData(array $data): ConvertStruct
     {
         $converted = $data;

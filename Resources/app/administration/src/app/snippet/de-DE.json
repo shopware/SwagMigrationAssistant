@@ -273,6 +273,8 @@
           "product_property_relation": "Produkteigenschaften:",
           "property_group_option": "Eigenschaften:",
           "order_document": "Bestelldokumente:",
+          "order_document_base_config": "Dokumentkonfigurationen:",
+          "order_document_inheritance": "Bestelldokument-Relationen:",
           "number_range": "Nummernkreise:",
           "shipping_method": "Versandmethoden:",
           "currency": "Währungen:",

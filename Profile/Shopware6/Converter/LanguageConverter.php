@@ -12,11 +12,6 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 
 abstract class LanguageConverter extends ShopwareConverter
 {
-    public function getSourceIdentifier(array $data): string
-    {
-        return $data['id'];
-    }
-
     public function convertData(array $data): ConvertStruct
     {
         $converted = $data;

@@ -214,6 +214,22 @@
             <tag name="shopware.dataProvider.provider"/>
         </service>
 
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\DocumentProvider">
+            <argument type="service" id="document.repository"/>
+            <argument type="service" id="router"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\DocumentInheritanceProvider">
+            <argument type="service" id="document.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\DocumentBaseConfigProvider">
+            <argument type="service" id="document_base_config.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
         <!-- Services -->
         <service id="SwagMigrationAssistant\DataProvider\Service\EnvironmentService">
             <argument type="service" id="currency.repository"/>

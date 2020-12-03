@@ -38,7 +38,9 @@ class MediaFolderProvider extends AbstractProvider
         $criteria->addSorting(new FieldSorting('id'));
         $criteria->addAssociation('configuration.mediaThumbnailSizes');
         $criteria->addAssociation('defaultFolder');
-        $result = $this->mediaFolderRepo->search($criteria, $context);
+        $result = $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($criteria) {
+            return $this->mediaFolderRepo->search($criteria, $context);
+        });
 
         return $this->cleanupSearchResult($result, [
             'defaultFolderId',
@@ -51,6 +53,8 @@ class MediaFolderProvider extends AbstractProvider
 
     public function getProvidedTotal(Context $context): int
     {
-        return $this->readTotalFromRepo($this->mediaFolderRepo, $context);
+        return $context->scope(Context::SYSTEM_SCOPE, function (Context $context) {
+            return $this->readTotalFromRepo($this->mediaFolderRepo, $context);
+        });
     }
 }

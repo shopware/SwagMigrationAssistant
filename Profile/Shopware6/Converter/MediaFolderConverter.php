@@ -13,11 +13,6 @@ use SwagMigrationAssistant\Profile\Shopware6\Logging\Log\UnsupportedMediaDefault
 
 abstract class MediaFolderConverter extends ShopwareConverter
 {
-    public function getSourceIdentifier(array $data): string
-    {
-        return $data['id'];
-    }
-
     protected function convertData(array $data): ConvertStruct
     {
         $converted = $data;
