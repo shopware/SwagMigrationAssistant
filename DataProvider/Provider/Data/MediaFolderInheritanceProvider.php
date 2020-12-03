@@ -39,7 +39,9 @@ class MediaFolderInheritanceProvider extends AbstractProvider
         $criteria->setOffset($offset);
         $criteria->addSorting(new FieldSorting('id'));
         $criteria->addFilter(new NotFilter(NotFilter::CONNECTION_OR, [new EqualsFilter('parentId', null)]));
-        $result = $this->mediaFolderRepo->search($criteria, $context);
+        $result = $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($criteria) {
+            return $this->mediaFolderRepo->search($criteria, $context);
+        });
 
         return $this->cleanupSearchResult($result, [
             'defaultFolder',
@@ -57,6 +59,8 @@ class MediaFolderInheritanceProvider extends AbstractProvider
         $criteria = new Criteria();
         $criteria->addFilter(new NotFilter(NotFilter::CONNECTION_OR, [new EqualsFilter('parentId', null)]));
 
-        return $this->readTotalFromRepo($this->mediaFolderRepo, $context, $criteria);
+        return $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($criteria) {
+            return $this->readTotalFromRepo($this->mediaFolderRepo, $context, $criteria);
+        });
     }
 }

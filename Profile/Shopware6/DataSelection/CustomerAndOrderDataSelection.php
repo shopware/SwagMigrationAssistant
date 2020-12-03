@@ -11,6 +11,8 @@ use SwagMigrationAssistant\Migration\DataSelection\DataSelectionInterface;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionStruct;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CustomerDataSet;
+use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\DocumentDataSet;
+use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\DocumentInheritanceDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\OrderDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6ProfileInterface;
 
@@ -40,6 +42,8 @@ class CustomerAndOrderDataSelection implements DataSelectionInterface
         return [
             new CustomerDataSet(),
             new OrderDataSet(),
+            new DocumentDataSet(),
+            new DocumentInheritanceDataSet(),
         ];
     }
 

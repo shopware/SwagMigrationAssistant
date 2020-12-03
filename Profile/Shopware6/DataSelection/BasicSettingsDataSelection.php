@@ -17,6 +17,7 @@ use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CurrencyDataS
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CustomerGroupDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CustomFieldSetDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\DeliveryTimeDataSet;
+use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\DocumentBaseConfigDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\LanguageDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\MailTemplateDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\MediaFolderDataSet;
@@ -82,6 +83,7 @@ class BasicSettingsDataSelection implements DataSelectionInterface
             new SalesChannelDomainDataSet(),
             new SystemConfigDataSet(),
             new ProductSortingDataSet(),
+            new DocumentBaseConfigDataSet(),
         ];
     }
 

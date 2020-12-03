@@ -274,6 +274,8 @@
           "property_group_option": "Properties:",
           "number_range": "Number ranges:",
           "order_document": "Order documents:",
+          "order_document_base_config": "Document config:",
+          "order_document_inheritance": "Order document relations:",
           "shipping_method": "Shipping methods:",
           "currency": "Currencies:",
           "sales_channel": "Sales channels:",

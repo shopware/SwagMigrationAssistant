@@ -13,11 +13,6 @@ use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedNumberRangeTy
 
 abstract class NumberRangeConverter extends ShopwareConverter
 {
-    public function getSourceIdentifier(array $data): string
-    {
-        return $data['id'];
-    }
-
     protected function convertData(array $data): ConvertStruct
     {
         $converted = $data;

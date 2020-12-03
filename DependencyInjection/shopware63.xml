@@ -203,5 +203,20 @@
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\CrossSellingConverter">
             <tag name="shopware.migration.converter"/>
         </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63DocumentConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\DocumentConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63DocumentInheritanceConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\DocumentInheritanceConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63DocumentBaseConfigConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\DocumentBaseConfigConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
     </services>
 </container>

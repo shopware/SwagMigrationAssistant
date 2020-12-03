@@ -52,7 +52,9 @@ class MediaFolderWriter extends AbstractWriter
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsAnyFilter('defaultFolderId', $defaultFolderIds));
-        $ids = $this->mediaFolderRepo->searchIds($criteria, $context)->getIds();
+        $ids = $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($criteria) {
+            return $this->mediaFolderRepo->searchIds($criteria, $context)->getIds();
+        });
 
         $update = [];
 
