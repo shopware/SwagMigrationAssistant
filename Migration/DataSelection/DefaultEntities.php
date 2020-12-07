@@ -111,6 +111,8 @@ final class DefaultEntities
 
     public const ORDER_CUSTOM_FIELD = 'order_custom_field';
 
+    public const PAGE_SYSTEM_CONFIG = 'page_system_config';
+
     public const PAYMENT_METHOD = 'payment_method';
 
     public const PRODUCT = 'product';

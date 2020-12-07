@@ -11,6 +11,7 @@ use SwagMigrationAssistant\Migration\DataSelection\DataSelectionInterface;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionStruct;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CmsPageDataSet;
+use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\PageSystemConfigDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6ProfileInterface;
 
 class CmsDataSelection implements DataSelectionInterface
@@ -41,6 +42,7 @@ class CmsDataSelection implements DataSelectionInterface
             (new MediaDataSelection())->getDataSets(),
             [
                 new CmsPageDataSet(),
+                new PageSystemConfigDataSet(),
             ]
         );
     }
