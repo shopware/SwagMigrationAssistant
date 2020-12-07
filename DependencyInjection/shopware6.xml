@@ -166,6 +166,9 @@
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\CrossSellingConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\ProductReviewConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+
         <!-- Shopware Reader -->
         <service id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\EnvironmentReader">
             <argument type="service" id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection\ConnectionFactory"/>
@@ -209,6 +212,10 @@
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\DataSelection\CmsDataSelection">
+            <tag name="shopware.migration.data_selection"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware6\DataSelection\ProductReviewDataSelection">
             <tag name="shopware.migration.data_selection"/>
         </service>
 
@@ -361,15 +368,19 @@
             <tag name="shopware.migration.data_set"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\ProductSortingDataSet">
+            <tag name="shopware.migration.data_set"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\ProductReviewDataSet">
+            <tag name="shopware.migration.data_set"/>
+        </service>
+
         <!-- premapping -->
         <service id="SwagMigrationAssistant\Profile\Shopware6\Premapping\PaymentMethodReader">
             <argument type="service" id="payment_method.repository"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Gateway\GatewayRegistry"/>
             <tag name="shopware.migration.pre_mapping_reader"/>
-        </service>
-
-        <service id="SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\ProductSortingDataSet">
-            <tag name="shopware.migration.data_set"/>
         </service>
 
         <!-- API reader -->
@@ -399,6 +410,11 @@
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\ProductReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\ApiReader">
+            <tag name="shopware.migration.reader"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\ProductReviewReader"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\ApiReader">
             <tag name="shopware.migration.reader"/>
         </service>

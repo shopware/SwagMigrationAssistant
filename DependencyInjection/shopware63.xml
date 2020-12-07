@@ -15,6 +15,11 @@
             <tag name="shopware.migration.converter"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63ProductReviewConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ProductReviewConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
         <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63LanguageConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\LanguageConverter">
             <tag name="shopware.migration.converter"/>
