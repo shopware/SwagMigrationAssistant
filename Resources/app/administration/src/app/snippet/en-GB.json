@@ -302,6 +302,7 @@
           "product_feature_set": "Essential characteristics:",
           "product_sorting": "Product sorting:",
           "system_config": "Basic information:",
+          "page_system_config": "Page basic information:",
           "cms_page": "Layouts:",
           "product_stream": "Dynamic product groups:",
           "product_stream_filter_inheritance": "Dynamic product group filters:"

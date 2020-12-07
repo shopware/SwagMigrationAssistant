@@ -17,7 +17,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 
-class SystemConfigProvider extends AbstractProvider
+class PageSystemConfigProvider extends AbstractProvider
 {
     /**
      * @var EntityRepositoryInterface
@@ -31,7 +31,7 @@ class SystemConfigProvider extends AbstractProvider
 
     public function getIdentifier(): string
     {
-        return DefaultEntities::SYSTEM_CONFIG;
+        return DefaultEntities::PAGE_SYSTEM_CONFIG;
     }
 
     public function getProvidedData(int $limit, int $offset, Context $context): array
@@ -39,7 +39,7 @@ class SystemConfigProvider extends AbstractProvider
         $criteria = new Criteria();
         $criteria->setLimit($limit);
         $criteria->setOffset($offset);
-        $criteria->addFilter(new NotFilter(NotFilter::CONNECTION_OR, [
+        $criteria->addFilter(
             new EqualsAnyFilter('configurationKey', [
                 'core.basicInformation.contactPage',
                 'core.basicInformation.shippingPaymentInfoPage',
@@ -49,7 +49,7 @@ class SystemConfigProvider extends AbstractProvider
                 'core.basicInformation.tosPage',
                 'core.scheduled_indexers',
             ])
-        ]));
+        );
         $criteria->addSorting(new FieldSorting('salesChannelId', FieldSorting::DESCENDING), new FieldSorting('id'));
         $result = $this->systemConfigRepo->search($criteria, $context);
 
@@ -60,7 +60,7 @@ class SystemConfigProvider extends AbstractProvider
     {
         $criteria = new Criteria();
 
-        $criteria->addFilter(new NotFilter(NotFilter::CONNECTION_OR, [
+        $criteria->addFilter(
             new EqualsAnyFilter('configurationKey', [
                 'core.basicInformation.contactPage',
                 'core.basicInformation.shippingPaymentInfoPage',
@@ -70,7 +70,7 @@ class SystemConfigProvider extends AbstractProvider
                 'core.basicInformation.tosPage',
                 'core.scheduled_indexers',
             ])
-        ]));
+        );
 
         return $this->readTotalFromRepo($this->systemConfigRepo, $context, $criteria);
     }

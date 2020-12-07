@@ -179,6 +179,11 @@
             <tag name="shopware.dataProvider.provider"/>
         </service>
 
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\PageSystemConfigProvider">
+            <argument type="service" id="system_config.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
         <service id="SwagMigrationAssistant\DataProvider\Provider\Data\ProductSortingProvider">
             <argument type="service" id="product_sorting.repository"/>
             <tag name="shopware.dataProvider.provider"/>

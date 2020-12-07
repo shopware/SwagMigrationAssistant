@@ -302,6 +302,7 @@
           "product_feature_set": "Wesentliche Merkmale:",
           "product_sorting": "Produkt-Sortierungen:",
           "system_config": "Stammdaten:",
+          "page_system_config": "Layout-Stammdaten:",
           "cms_page": "Layouts:",
           "product_stream": "Dynamische Produktgruppen:",
           "product_stream_filter_inheritance": "Dynamische Produktgruppen-Filter:"
