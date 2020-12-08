@@ -96,11 +96,10 @@ class HttpOrderDocumentProcessor extends BaseMediaService implements MediaFilePr
         }
 
         if (!\is_dir('_temp') && !\mkdir('_temp') && !\is_dir('_temp')) {
-            $exception = new NoFileSystemPermissionsException();
             $this->loggingService->addLogEntry(new ExceptionRunLog(
                 $runId,
                 DefaultEntities::ORDER_DOCUMENT,
-                $exception
+                new NoFileSystemPermissionsException()
             ));
             $this->loggingService->saveLogging($context);
 
@@ -114,11 +113,10 @@ class HttpOrderDocumentProcessor extends BaseMediaService implements MediaFilePr
         $client = $this->connectionFactory->createApiClient($migrationContext);
 
         if ($client === null) {
-            $exception = new \Exception('Http client can not connect to server.');
             $this->loggingService->addLogEntry(new ExceptionRunLog(
                 $runId,
                 DefaultEntities::ORDER_DOCUMENT,
-                $exception
+                new \Exception('Http client can not connect to server.')
             ));
             $this->loggingService->saveLogging($context);
 
@@ -286,7 +284,7 @@ class HttpOrderDocumentProcessor extends BaseMediaService implements MediaFilePr
 
             $workload->setCurrentOffset((int) $additionalData['file_size']);
             $workload->setState(MediaProcessWorkloadStruct::FINISH_STATE);
-        } catch (\Exception $exception) {
+        } catch (\Throwable $exception) {
             $promise = null;
             $workload->setErrorCount($workload->getErrorCount() + 1);
         }
