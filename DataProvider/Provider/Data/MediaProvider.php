@@ -42,7 +42,6 @@ class MediaProvider extends AbstractProvider
 
         return $this->cleanupSearchResult($result, [
             'mimeType',
-            'fileExtension',
             'mediaTypeRaw',
             'metaData',
             'mediaType',

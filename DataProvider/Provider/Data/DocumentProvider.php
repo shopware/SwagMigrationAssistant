@@ -55,7 +55,6 @@ class DocumentProvider extends AbstractProvider
 
             // media
             'mimeType',
-            'fileExtension',
             'mediaTypeRaw',
             'metaData',
             'mediaType',

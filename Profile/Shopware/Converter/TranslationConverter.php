@@ -902,7 +902,7 @@ abstract class TranslationConverter extends ShopwareConverter
 
         try {
             $objectData = \unserialize($objectDataSerialized, ['allowed_classes' => false]);
-        } catch (\Exception $error) {
+        } catch (\Throwable $error) {
             $objectData = null;
         }
 

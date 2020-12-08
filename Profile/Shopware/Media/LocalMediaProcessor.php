@@ -85,11 +85,10 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
         }
 
         if (!\is_dir('_temp') && !\mkdir('_temp') && !\is_dir('_temp')) {
-            $exception = new NoFileSystemPermissionsException();
             $this->loggingService->addLogEntry(new ExceptionRunLog(
                 $runId,
                 DefaultEntities::MEDIA,
-                $exception
+                new NoFileSystemPermissionsException()
             ));
             $this->loggingService->saveLogging($context);
 
