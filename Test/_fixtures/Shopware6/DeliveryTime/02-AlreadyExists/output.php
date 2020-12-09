@@ -5,10 +5,8 @@
  * file that was distributed with this source code.
  */
 
-use SwagMigrationAssistant\Test\Mock\Migration\Mapping\Dummy6MappingService;
-
 return [
-    'id' => Dummy6MappingService::DEFAULT_DELIVERY_TIME_UUID,
+    'id' => '14bd484a9e284e1aa47e1a0b4941d598',
     'name' => '5-6 years',
     'min' => 5,
     'max' => 6,

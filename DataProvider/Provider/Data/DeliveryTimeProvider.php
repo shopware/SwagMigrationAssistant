@@ -39,7 +39,7 @@ class DeliveryTimeProvider extends AbstractProvider
         $criteria->addSorting(new FieldSorting('id'));
         $result = $this->deliveryTimeRepo->search($criteria, $context);
 
-        return $this->cleanupSearchResult($result);
+        return $this->cleanupSearchResult($result, ['deliveryTimeId']);
     }
 
     public function getProvidedTotal(Context $context): int

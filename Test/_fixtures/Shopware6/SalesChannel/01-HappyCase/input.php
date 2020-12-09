@@ -91,13 +91,6 @@ return [
             'name' => 'Standard',
             'active' => true,
             'deliveryTimeId' => '80293267cbeb4513bc4d3cede0144022',
-            'deliveryTime' => [
-                'name' => '1-3 days',
-                'min' => 1,
-                'max' => 3,
-                'unit' => 'day',
-                'id' => '80293267cbeb4513bc4d3cede0144022',
-            ],
             'availabilityRuleId' => '28caae75a5624f0d985abd0eb32aa160',
             'id' => '6e028d0f24114544ad25235d56bb8846',
         ],

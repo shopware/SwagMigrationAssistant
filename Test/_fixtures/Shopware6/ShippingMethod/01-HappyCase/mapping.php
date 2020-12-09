@@ -28,4 +28,9 @@ return [
         'oldIdentifier' => 'b7d2554b0ce847cd82f3ac9bd1c0dfca',
         'newIdentifier' => 'b8d2554b0ce847cd82f3ac9bd1c0dfca',
     ],
+    [
+        'entityName' => DefaultEntities::DELIVERY_TIME,
+        'oldIdentifier' => '80293267cbeb4513bc4d3cede0144022',
+        'newIdentifier' => 'bdeb106f47ab4255b2bd5f35d84cae7c',
+    ],
 ];

@@ -25,7 +25,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\Country\CountryEntity;
 use Shopware\Core\System\Currency\CurrencyEntity;
-use Shopware\Core\System\DeliveryTime\DeliveryTimeEntity;
 use Shopware\Core\System\Language\LanguageEntity;
 use Shopware\Core\System\Locale\LocaleEntity;
 use Shopware\Core\System\NumberRange\NumberRangeEntity;
@@ -633,14 +632,12 @@ class MappingService implements MappingServiceInterface
         $criteria->addFilter(new EqualsFilter('unit', $unit));
         $criteria->setLimit(1);
 
-        $result = $this->deliveryTimeRepo->search($criteria, $context);
+        $result = $this->deliveryTimeRepo->searchIds($criteria, $context);
 
-        $deliveryTimeUuid = Uuid::randomHex();
-        if ($result->getTotal() > 0) {
-            /** @var DeliveryTimeEntity $element */
-            $element = $result->getEntities()->first();
+        $deliveryTimeUuid = $result->firstId();
 
-            $deliveryTimeUuid = $element->getId();
+        if ($deliveryTimeUuid === null) {
+            $deliveryTimeUuid = Uuid::isValid($name) ? $name : Uuid::randomHex();
         }
 
         $this->saveMapping(

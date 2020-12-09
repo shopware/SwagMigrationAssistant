@@ -10,7 +10,7 @@ return [
     'active' => true,
     'description' => 'Beschreibung',
     'trackingUrl' => 'https://nolp.dhl.de/%s',
-    'deliveryTimeId' => '80293267cbeb4513bc4d3cede0144022',
+    'deliveryTimeId' => 'bdeb106f47ab4255b2bd5f35d84cae7c',
     'translations' => [
         [
             'name' => 'Express',
