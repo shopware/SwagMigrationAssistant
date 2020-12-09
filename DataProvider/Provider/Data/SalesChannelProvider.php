@@ -49,7 +49,7 @@ class SalesChannelProvider extends AbstractProvider
         ]));
         $result = $this->salesChannelRepo->search($criteria, $context);
 
-        return $this->cleanupSearchResult($result, ['analyticsId', 'hreflangDefaultDomainId']);
+        return $this->cleanupSearchResult($result, ['analyticsId', 'hreflangDefaultDomainId', 'deliveryTime']);
     }
 
     public function getProvidedTotal(Context $context): int

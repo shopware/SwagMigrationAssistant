@@ -21,6 +21,8 @@ abstract class DeliveryTimeConverter extends ShopwareConverter
     {
         $converted = $data;
 
+        $converted['id'] = $this->mappingService->getDeliveryTime($this->connectionId, $this->context, $data['min'], $data['max'], $data['unit'], $data['id']);
+
         $this->mainMapping = $this->getOrCreateMappingMainCompleteFacade(
             DefaultEntities::DELIVERY_TIME,
             $data['id'],

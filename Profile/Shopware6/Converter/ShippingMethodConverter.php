@@ -79,6 +79,10 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             $converted['taxId'] = $this->getMappingIdFacade(DefaultEntities::TAX, $data['taxId']);
         }
 
+        if (isset($data['deliveryTimeId'])) {
+            $converted['deliveryTimeId'] = $this->getMappingIdFacade(DefaultEntities::DELIVERY_TIME, $data['deliveryTimeId']);
+        }
+
         if (isset($converted['media'])) {
             $this->updateMediaAssociation($converted['media']);
         }
