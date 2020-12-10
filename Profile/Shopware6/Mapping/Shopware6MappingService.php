@@ -9,8 +9,6 @@ namespace SwagMigrationAssistant\Profile\Shopware6\Mapping;
 
 use Shopware\Core\Content\Cms\Aggregate\CmsPageTranslation\CmsPageTranslationEntity;
 use Shopware\Core\Content\Cms\CmsPageCollection;
-use Shopware\Core\Content\MailTemplate\Aggregate\MailTemplateType\MailTemplateTypeEntity;
-use Shopware\Core\Content\Media\Aggregate\MediaDefaultFolder\MediaDefaultFolderEntity;
 use Shopware\Core\Content\Product\SalesChannel\Sorting\ProductSortingEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
@@ -20,10 +18,8 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\IdSearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\Uuid\Uuid;
-use Shopware\Core\System\NumberRange\Aggregate\NumberRangeType\NumberRangeTypeEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -68,7 +64,12 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
     /**
      * @var EntityRepositoryInterface
      */
-    private $stateMachineStateRepo;
+    protected $stateMachineStateRepo;
+
+    /**
+     * @var EntityRepositoryInterface
+     */
+    protected $countryStateRepo;
 
     /**
      * @var EntityRepositoryInterface
@@ -100,7 +101,8 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
         EntityRepositoryInterface $systemConfigRepo,
         EntityRepositoryInterface $productSortingRepo,
         EntityRepositoryInterface $stateMachineStateRepo,
-        EntityRepositoryInterface $documentBaseConfigRepo
+        EntityRepositoryInterface $documentBaseConfigRepo,
+        EntityRepositoryInterface $countryStateRepo
     ) {
         parent::__construct(
             $migrationMappingRepo,
@@ -130,6 +132,7 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
         $this->productSortingRepo = $productSortingRepo;
         $this->stateMachineStateRepo = $stateMachineStateRepo;
         $this->documentBaseConfigRepo = $documentBaseConfigRepo;
+        $this->countryStateRepo = $countryStateRepo;
     }
 
     public function getMailTemplateTypeUuid(string $type, string $oldIdentifier, MigrationContextInterface $migrationContext, Context $context): ?string
@@ -146,35 +149,27 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
             return $typeMapping['entityUuid'];
         }
 
-        $result = $context->disableCache(function (Context $context) use ($type): EntitySearchResult {
+        /** @var string|null $mailTemplateTypeId */
+        $mailTemplateTypeId = $context->disableCache(function (Context $context) use ($type): ?string {
             $criteria = new Criteria();
             $criteria->addFilter(new EqualsFilter('technicalName', $type));
 
-            return $this->mailTemplateTypeRepo->search($criteria, $context);
+            return $this->mailTemplateTypeRepo->searchIds($criteria, $context)->firstId();
         });
 
-        if ($result->getTotal() > 0) {
-            /** @var MailTemplateTypeEntity|null $mailTemplateType */
-            $mailTemplateType = $result->getEntities()->first();
-
-            if ($mailTemplateType === null) {
-                return null;
-            }
-
+        if ($mailTemplateTypeId !== null) {
             $this->saveMapping(
                 [
                     'id' => Uuid::randomHex(),
                     'connectionId' => $connectionId,
                     'entity' => DefaultEntities::NUMBER_RANGE_TYPE,
                     'oldIdentifier' => $oldIdentifier,
-                    'entityUuid' => $mailTemplateType->getId(),
+                    'entityUuid' => $mailTemplateTypeId,
                 ]
             );
-
-            return $mailTemplateType->getId();
         }
 
-        return null;
+        return $mailTemplateTypeId;
     }
 
     public function getSystemDefaultMailTemplateUuid(string $type, string $oldIdentifier, string $connectionId, MigrationContextInterface $migrationContext, Context $context): string
@@ -226,35 +221,27 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
             return $typeMapping['entityUuid'];
         }
 
-        $result = $context->disableCache(function (Context $context) use ($type): EntitySearchResult {
+        /** @var string|null $numberRangeTypeId */
+        $numberRangeTypeId = $context->disableCache(function (Context $context) use ($type): ?string {
             $criteria = new Criteria();
             $criteria->addFilter(new EqualsFilter('technicalName', $type));
 
-            return $this->numberRangeTypeRepo->search($criteria, $context);
+            return $this->numberRangeTypeRepo->searchIds($criteria, $context)->firstId();
         });
 
-        if ($result->getTotal() > 0) {
-            /** @var NumberRangeTypeEntity|null $numberRangeType */
-            $numberRangeType = $result->getEntities()->first();
-
-            if ($numberRangeType === null) {
-                return null;
-            }
-
+        if ($numberRangeTypeId !== null) {
             $this->saveMapping(
                 [
                     'id' => Uuid::randomHex(),
                     'connectionId' => $connectionId,
                     'entity' => DefaultEntities::NUMBER_RANGE_TYPE,
                     'oldIdentifier' => $oldIdentifier,
-                    'entityUuid' => $numberRangeType->getId(),
+                    'entityUuid' => $numberRangeTypeId,
                 ]
             );
-
-            return $numberRangeType->getId();
         }
 
-        return null;
+        return $numberRangeTypeId;
     }
 
     public function getDefaultFolderIdByEntity(string $entityName, MigrationContextInterface $migrationContext, Context $context): ?string
@@ -271,35 +258,27 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
             return $defaultFolderMapping['entityUuid'];
         }
 
-        /** @var EntitySearchResult $result */
-        $result = $context->disableCache(function (Context $context) use ($entityName) {
+        /** @var string|null $mediaDefaultFolderId */
+        $mediaDefaultFolderId = $context->disableCache(function (Context $context) use ($entityName): ?string {
             $criteria = new Criteria();
             $criteria->addFilter(new EqualsFilter('entity', $entityName));
 
-            return $this->mediaDefaultFolderRepo->search($criteria, $context);
+            return $this->mediaDefaultFolderRepo->searchIds($criteria, $context)->firstId();
         });
 
-        if ($result->getTotal() > 0) {
-            /** @var MediaDefaultFolderEntity|null $mediaDefaultFolder */
-            $mediaDefaultFolder = $result->getEntities()->first();
-            if ($mediaDefaultFolder === null) {
-                return null;
-            }
-
+        if ($mediaDefaultFolderId !== null) {
             $this->saveMapping(
                 [
                     'id' => Uuid::randomHex(),
                     'connectionId' => $connectionId,
                     'entity' => DefaultEntities::MEDIA_DEFAULT_FOLDER,
                     'oldIdentifier' => $entityName,
-                    'entityUuid' => $mediaDefaultFolder->getId(),
+                    'entityUuid' => $mediaDefaultFolderId,
                 ]
             );
-
-            return $mediaDefaultFolder->getId();
         }
 
-        return null;
+        return $mediaDefaultFolderId;
     }
 
     public function getSalutationUuid(string $oldIdentifier, string $salutationKey, MigrationContextInterface $migrationContext, Context $context): ?string
@@ -316,16 +295,14 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
             return $salutationMapping['entityUuid'];
         }
 
-        /** @var IdSearchResult $result */
-        $result = $context->disableCache(function (Context $context) use ($salutationKey) {
+        /** @var string|null $salutationId */
+        $salutationId = $context->disableCache(function (Context $context) use ($salutationKey): ?string {
             $criteria = new Criteria();
             $criteria->addFilter(new EqualsFilter('salutationKey', $salutationKey));
             $criteria->setLimit(1);
 
-            return $this->salutationRepo->searchIds($criteria, $context);
+            return $this->salutationRepo->searchIds($criteria, $context)->firstId();
         });
-
-        $salutationId = $result->firstId();
 
         if ($salutationId !== null) {
             $this->saveMapping(
@@ -360,8 +337,8 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
             return $seoUrlTemplateMapping['entityUuid'];
         }
 
-        /** @var IdSearchResult $result */
-        $result = $context->disableCache(function (Context $context) use ($salesChannelId, $routeName) {
+        /** @var string|null $seoUrlTemplateId */
+        $seoUrlTemplateId = $context->disableCache(function (Context $context) use ($salesChannelId, $routeName): ?string {
             $criteria = new Criteria();
             $criteria->addFilter(
                 new MultiFilter(
@@ -374,10 +351,8 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
             );
             $criteria->setLimit(1);
 
-            return $this->seoUrlTemplateRepo->searchIds($criteria, $context);
+            return $this->seoUrlTemplateRepo->searchIds($criteria, $context)->firstId();
         });
-
-        $seoUrlTemplateId = $result->firstId();
 
         if ($seoUrlTemplateId !== null) {
             $this->saveMapping(
@@ -408,8 +383,8 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
             return $systemConfigMapping['entityUuid'];
         }
 
-        /** @var IdSearchResult $result */
-        $result = $context->disableCache(function (Context $context) use ($configurationKey, $salesChannelId) {
+        /** @var string|null $systemConfigId */
+        $systemConfigId = $context->disableCache(function (Context $context) use ($configurationKey, $salesChannelId): ?string {
             $criteria = new Criteria();
             $criteria->addFilter(
                 new MultiFilter(
@@ -422,10 +397,8 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
             );
             $criteria->setLimit(1);
 
-            return $this->systemConfigRepo->searchIds($criteria, $context);
+            return $this->systemConfigRepo->searchIds($criteria, $context)->firstId();
         });
-
-        $systemConfigId = $result->firstId();
 
         if ($systemConfigId !== null) {
             $this->saveMapping(
@@ -480,17 +453,15 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
             return $stateMachineStateMapping['entityUuid'];
         }
 
-        /** @var IdSearchResult $result */
-        $result = $context->disableCache(function (Context $context) use ($technicalName, $stateMachineTechnicalName) {
+        /** @var string|null $stateMachineStateId */
+        $stateMachineStateId = $context->disableCache(function (Context $context) use ($technicalName, $stateMachineTechnicalName): ?string {
             $criteria = new Criteria();
             $criteria->addFilter(new EqualsFilter('technicalName', $technicalName));
             $criteria->addFilter(new EqualsFilter('stateMachine.technicalName', $stateMachineTechnicalName));
             $criteria->setLimit(1);
 
-            return $this->stateMachineStateRepo->searchIds($criteria, $context);
+            return $this->stateMachineStateRepo->searchIds($criteria, $context)->firstId();
         });
-
-        $stateMachineStateId = $result->firstId();
 
         if ($stateMachineStateId !== null) {
             $this->saveMapping(
@@ -588,5 +559,39 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
         }
 
         return $oldIdentifier;
+    }
+
+    public function getCountryStateUuid(string $oldIdentifier, string $countryIso, string $countryIso3, string $countryStateCode, string $connectionId, Context $context): ?string
+    {
+        $countryStateMapping = $this->getMapping($connectionId, DefaultEntities::COUNTRY_STATE, $oldIdentifier, $context);
+
+        if ($countryStateMapping !== null) {
+            return $countryStateMapping['entityUuid'];
+        }
+
+        /** @var string|null $countryStateUuid */
+        $countryStateUuid = $context->disableCache(function (Context $context) use ($countryStateCode, $countryIso, $countryIso3): ?string {
+            $criteria = new Criteria();
+            $criteria->addFilter(new EqualsFilter('shortCode', $countryStateCode));
+            $criteria->addFilter(new EqualsFilter('country.iso', $countryIso));
+            $criteria->addFilter(new EqualsFilter('country.iso3', $countryIso3));
+            $criteria->setLimit(1);
+
+            return $this->countryStateRepo->searchIds($criteria, $context)->firstId();
+        });
+
+        if ($countryStateUuid !== null) {
+            $this->saveMapping(
+                [
+                    'id' => Uuid::randomHex(),
+                    'connectionId' => $connectionId,
+                    'entity' => DefaultEntities::COUNTRY_STATE,
+                    'oldIdentifier' => $oldIdentifier,
+                    'entityUuid' => $countryStateUuid,
+                ]
+            );
+        }
+
+        return $countryStateUuid;
     }
 }

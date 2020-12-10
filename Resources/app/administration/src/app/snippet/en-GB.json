@@ -307,7 +307,8 @@
           "page_system_config": "Page basic information:",
           "cms_page": "Layouts:",
           "product_stream": "Dynamic product groups:",
-          "product_stream_filter_inheritance": "Dynamic product group filters:"
+          "product_stream_filter_inheritance": "Dynamic product group filters:",
+          "country_state": "Country states:"
         },
         "noData": "Nothing found to migrate."
       },

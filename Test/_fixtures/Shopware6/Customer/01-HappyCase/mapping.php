@@ -38,4 +38,9 @@ return [
         'oldIdentifier' => 'b218059fad4d4a79a58906fbc47f705a',
         'newIdentifier' => 'ac18059fad4d4a79a58906fbc47f705a',
     ],
+    [
+        'entityName' => DefaultEntities::COUNTRY_STATE,
+        'oldIdentifier' => '92fa111b3a81433fb22fd17d3d6804fc',
+        'newIdentifier' => '427bb25afa8348a1899df4338fb487c2',
+    ],
 ];
