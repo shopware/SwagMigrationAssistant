@@ -27,11 +27,6 @@ class DocumentConverterTest extends ShopwareConverterTest
         return new DocumentDataSet();
     }
 
-    protected function getConverterTestClassName(): string
-    {
-        return self::class;
-    }
-
     protected function getFixtureBasePath(): string
     {
         return __DIR__ . '/../../../_fixtures/Shopware6/Document/';

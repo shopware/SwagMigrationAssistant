@@ -77,22 +77,75 @@ abstract class ShopwareConverterTest extends TestCase
         static::assertTrue($supportsDefinition, $this->getAssertMessage('Converter does not support migration context.'));
     }
 
-    public function testConvert(): void
+    public function dataProviderConvert(): iterable
     {
         $basePath = \rtrim($this->getFixtureBasePath(), '/') . '/';
         $glob = \glob($basePath . '*');
 
         if ($glob === false) {
-            return;
+            return [];
         }
 
-        $testcaseDirectories = \array_filter($glob, 'is_dir');
-        foreach ($testcaseDirectories as $testcase) {
-            $fixtureName = \basename($testcase);
-            $this->doSingleConvert($testcase . '/', $fixtureName);
+        foreach (\array_filter($glob, 'is_dir') as $dir) {
+            yield \basename($dir) => [$dir];
+        }
+    }
 
-            $this->loggingService->resetLogging();
-            $this->mappingService->resetMappingService();
+    /**
+     * @dataProvider dataProviderConvert
+     */
+    public function testConvert(string $fixtureFolderPath): void
+    {
+        $input = require $fixtureFolderPath . '/input.php';
+        $expectedOutput = require $fixtureFolderPath . '/output.php';
+
+        $mappingArray = [];
+        if (\file_exists($fixtureFolderPath . '/mapping.php')) {
+            $mappingArray = require $fixtureFolderPath . '/mapping.php';
+        }
+
+        $expectedLogArray = [];
+        if (\file_exists($fixtureFolderPath . '/log.php')) {
+            $expectedLogArray = require $fixtureFolderPath . '/log.php';
+        }
+
+        $mediaFileArray = [];
+        if (\file_exists($fixtureFolderPath . '/media.php')) {
+            $mediaFileArray = require $fixtureFolderPath . '/media.php';
+        }
+
+        $this->loadMapping($mappingArray);
+
+        $context = Context::createDefaultContext();
+
+        $convertResult = $this->converter->convert($input, $context, $this->migrationContext);
+        $output = $convertResult->getConverted();
+
+        $fixtureName = \basename($fixtureFolderPath);
+        static::assertNotNull($convertResult->getMappingUuid(), $this->getAssertMessage($fixtureName . ': No mappingUuid in converted result struct.'));
+        static::assertSame($expectedOutput, $output, $this->getAssertMessage($fixtureName . ': Output of converter does not match.'));
+
+        $logs = $this->loggingService->getLoggingArray();
+        static::assertCount(\count($expectedLogArray), $logs, $this->getAssertMessage($fixtureName . ': Log count not as expected.'));
+
+        foreach ($expectedLogArray as $index => $expectedLog) {
+            static::assertArrayHasKey($index, $logs, $this->getAssertMessage($fixtureName . ': Log not found (make sure the log array order matches the logging order).'));
+            $realLog = $logs[$index];
+
+            foreach (\array_keys($expectedLog) as $key) {
+                static::assertSame($expectedLog[$key], $realLog[$key], $this->getAssertMessage($fixtureName . ': Log key not as expected (make sure the log array order matches the logging order).'));
+            }
+        }
+
+        $mediaFiles = $this->mediaService->getMediaFileArray();
+        static::assertCount(\count($mediaFileArray), $mediaFiles, $this->getAssertMessage($fixtureName . ': Media file count not as expected.'));
+
+        foreach ($mediaFileArray as $index => $expectedFile) {
+            static::assertArrayHasKey($index, $mediaFiles, $this->getAssertMessage($fixtureName . ': Media file not found (make sure the media file array order matches the convert order).'));
+            $realMediaFile = $mediaFiles[$index];
+            $expectedFile = \array_merge(['runId' => $this->migrationContext->getRunUuid()], $expectedFile);
+
+            static::assertSame($expectedFile, $realMediaFile, $this->getAssertMessage($fixtureName . ': Media file key not as expected (make sure the media file array order matches the convert order).'));
         }
     }
 
@@ -103,8 +156,6 @@ abstract class ShopwareConverterTest extends TestCase
     abstract protected function getProfileName(): string;
 
     abstract protected function createDataSet(): DataSet;
-
-    abstract protected function getConverterTestClassName(): string;
 
     abstract protected function getFixtureBasePath(): string;
 
@@ -139,59 +190,5 @@ abstract class ShopwareConverterTest extends TestCase
         }
 
         return $message;
-    }
-
-    private function doSingleConvert(string $fixtureFolderPath, string $fixtureName): void
-    {
-        $input = require $fixtureFolderPath . 'input.php';
-        $expectedOutput = require $fixtureFolderPath . 'output.php';
-
-        $mappingArray = [];
-        if (\file_exists($fixtureFolderPath . 'mapping.php')) {
-            $mappingArray = require $fixtureFolderPath . 'mapping.php';
-        }
-
-        $expectedLogArray = [];
-        if (\file_exists($fixtureFolderPath . 'log.php')) {
-            $expectedLogArray = require $fixtureFolderPath . 'log.php';
-        }
-
-        $mediaFileArray = [];
-        if (\file_exists($fixtureFolderPath . 'media.php')) {
-            $mediaFileArray = require $fixtureFolderPath . 'media.php';
-        }
-
-        $this->loadMapping($mappingArray);
-
-        $context = Context::createDefaultContext();
-
-        $convertResult = $this->converter->convert($input, $context, $this->migrationContext);
-        $output = $convertResult->getConverted();
-
-        static::assertNotNull($convertResult->getMappingUuid(), $this->getAssertMessage($fixtureName . ': No mappingUuid in converted result struct.'));
-        static::assertSame($expectedOutput, $output, $this->getAssertMessage($fixtureName . ': Output of converter does not match.'));
-
-        $logs = $this->loggingService->getLoggingArray();
-        static::assertCount(\count($expectedLogArray), $logs, $this->getAssertMessage($fixtureName . ': Log count not as expected.'));
-
-        foreach ($expectedLogArray as $index => $expectedLog) {
-            static::assertArrayHasKey($index, $logs, $this->getAssertMessage($fixtureName . ': Log not found (make sure the log array order matches the logging order).'));
-            $realLog = $logs[$index];
-
-            foreach (\array_keys($expectedLog) as $key) {
-                static::assertSame($expectedLog[$key], $realLog[$key], $this->getAssertMessage($fixtureName . ': Log key not as expected (make sure the log array order matches the logging order).'));
-            }
-        }
-
-        $mediaFiles = $this->mediaService->getMediaFileArray();
-        static::assertCount(\count($mediaFileArray), $mediaFiles, $this->getAssertMessage($fixtureName . ': Media file count not as expected.'));
-
-        foreach ($mediaFileArray as $index => $expectedFile) {
-            static::assertArrayHasKey($index, $mediaFiles, $this->getAssertMessage($fixtureName . ': Media file not found (make sure the media file array order matches the convert order).'));
-            $realMediaFile = $mediaFiles[$index];
-            $expectedFile = \array_merge(['runId' => $this->migrationContext->getRunUuid()], $expectedFile);
-
-            static::assertSame($expectedFile, $realMediaFile, $this->getAssertMessage($fixtureName . ': Media file key not as expected (make sure the media file array order matches the convert order).'));
-        }
     }
 }
