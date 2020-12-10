@@ -32,6 +32,7 @@ abstract class CustomerConverter extends ShopwareConverter
 
         $this->updateAssociationIds($converted['addresses'], DefaultEntities::COUNTRY, 'countryId', DefaultEntities::CUSTOMER);
         $this->updateAssociationIds($converted['addresses'], DefaultEntities::SALUTATION, 'salutationId', DefaultEntities::CUSTOMER);
+        $this->updateAssociationIds($converted['addresses'], DefaultEntities::COUNTRY_STATE, 'countryStateId', DefaultEntities::COUNTRY_STATE);
 
         return new ConvertStruct($converted, null, $this->mainMapping['id'] ?? null);
     }

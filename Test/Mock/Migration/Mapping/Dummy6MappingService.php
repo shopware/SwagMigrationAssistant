@@ -448,6 +448,17 @@ class Dummy6MappingService extends Shopware6MappingService
         return null;
     }
 
+    public function getCountryStateUuid(string $oldIdentifier, string $countryIso, string $countryIso3, string $countryStateCode, string $connectionId, Context $context): ?string
+    {
+        $mapping = $this->getMapping($connectionId, DefaultEntities::COUNTRY_STATE, $oldIdentifier, $context);
+
+        if ($mapping !== null) {
+            return $mapping['entityUuid'];
+        }
+
+        return $oldIdentifier;
+    }
+
     private function isUuidDuplicate(string $connectionId, string $entityName, string $id, string $uuid, Context $context): bool
     {
         foreach ($this->writeArray as $item) {

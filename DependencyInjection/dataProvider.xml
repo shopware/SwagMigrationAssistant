@@ -84,6 +84,11 @@
             <tag name="shopware.dataProvider.provider"/>
         </service>
 
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\CountryStateProvider">
+            <argument type="service" id="country_state.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
         <service id="SwagMigrationAssistant\DataProvider\Provider\Data\SalesChannelProvider">
             <argument type="service" id="sales_channel.repository"/>
             <tag name="shopware.dataProvider.provider"/>
@@ -227,6 +232,11 @@
 
         <service id="SwagMigrationAssistant\DataProvider\Provider\Data\DocumentBaseConfigProvider">
             <argument type="service" id="document_base_config.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\PromotionProvider">
+            <argument type="service" id="promotion.repository"/>
             <tag name="shopware.dataProvider.provider"/>
         </service>
 

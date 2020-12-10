@@ -32,6 +32,7 @@
             <argument type="service" id="product_sorting.repository"/>
             <argument type="service" id="state_machine_state.repository"/>
             <argument type="service" id="document_base_config.repository"/>
+            <argument type="service" id="country_state.repository"/>
         </service>
 
         <!-- Shopware Converter Base classes -->
@@ -88,6 +89,9 @@
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\CountryConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\CountryStateConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\SalesChannelConverter"
@@ -171,6 +175,9 @@
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\DocumentBaseConfigConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareMediaConverter" abstract="true"/>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\PromotionConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+
         <!-- Shopware Reader -->
         <service id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\EnvironmentReader">
             <argument type="service" id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection\ConnectionFactory"/>
@@ -214,6 +221,10 @@
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\DataSelection\CmsDataSelection">
+            <tag name="shopware.migration.data_selection"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware6\DataSelection\PromotionDataSelection">
             <tag name="shopware.migration.data_selection"/>
         </service>
 
@@ -271,6 +282,10 @@
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CountryDataSet">
+            <tag name="shopware.migration.data_set"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CountryStateDataSet">
             <tag name="shopware.migration.data_set"/>
         </service>
 
@@ -370,6 +385,10 @@
             <tag name="shopware.migration.data_set"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\PromotionDataSet">
+            <tag name="shopware.migration.data_set"/>
+        </service>
+
         <service id="SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\ProductSortingDataSet">
             <tag name="shopware.migration.data_set"/>
         </service>
@@ -464,6 +483,11 @@
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\CountryReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\ApiReader">
+            <tag name="shopware.migration.reader"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\CountryStateReader"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\ApiReader">
             <tag name="shopware.migration.reader"/>
         </service>
@@ -604,6 +628,11 @@
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\DocumentBaseConfigReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\ApiReader">
+            <tag name="shopware.migration.reader"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\PromotionReader"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\ApiReader">
             <tag name="shopware.migration.reader"/>
         </service>
@@ -763,6 +792,13 @@
             <tag name="shopware.migration.writer"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware6\Writer\PromotionWriter"
+                 parent="SwagMigrationAssistant\Migration\Writer\AbstractWriter">
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
+            <argument type="service" id="Shopware\Core\Checkout\Promotion\PromotionDefinition"/>
+            <tag name="shopware.migration.writer"/>
+        </service>
+
         <service id="SwagMigrationAssistant\Profile\Shopware6\Writer\DocumentInheritanceWriter"
                  parent="SwagMigrationAssistant\Migration\Writer\AbstractWriter">
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
@@ -774,6 +810,13 @@
                  parent="SwagMigrationAssistant\Migration\Writer\AbstractWriter">
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
             <argument type="service" id="Shopware\Core\Checkout\Document\Aggregate\DocumentBaseConfig\DocumentBaseConfigDefinition"/>
+            <tag name="shopware.migration.writer"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware6\Writer\CountryStateWriter"
+                 parent="SwagMigrationAssistant\Migration\Writer\AbstractWriter">
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
+            <argument type="service" id="Shopware\Core\System\Country\Aggregate\CountryState\CountryStateDefinition"/>
             <tag name="shopware.migration.writer"/>
         </service>
 

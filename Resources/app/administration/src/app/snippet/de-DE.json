@@ -307,7 +307,9 @@
           "page_system_config": "Layout-Stammdaten:",
           "cms_page": "Layouts:",
           "product_stream": "Dynamische Produktgruppen:",
-          "product_stream_filter_inheritance": "Dynamische Produktgruppen-Filter:"
+          "product_stream_filter_inheritance": "Dynamische Produktgruppen-Filter:",
+          "promotions": "Rabatte & Aktionen:",
+          "country_state": "Bundesländer:"
         },
         "noData": "Es wurden keine Daten zum Migrieren gefunden."
       },

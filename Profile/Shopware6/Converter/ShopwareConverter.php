@@ -139,6 +139,10 @@ abstract class ShopwareConverter extends Converter
     protected function updateAssociationIds(array &$associationArray, string $entity, string $associationIdKey, string $sourceEntity, bool $logMissing = true, bool $unsetMissing = false): void
     {
         foreach ($associationArray as $key => $association) {
+            if (!isset($association[$associationIdKey])) {
+                continue;
+            }
+
             $oldAssociationId = $association[$associationIdKey];
 
             $newAssociationId = $this->getMappingIdFacade(
