@@ -13,4 +13,9 @@ return [
         'oldIdentifier' => 'delivery_note',
         'newIdentifier' => '41248655c60c4dd58cde43f14cd4f149',
     ],
+    [
+        'entityName' => DefaultEntities::ORDER_DOCUMENT_BASE_CONFIG,
+        'oldIdentifier' => '285c94d513214fbdafd2b2ba84d630e4',
+        'newIdentifier' => '03d042cfce284f5a98ad6c417dc26236',
+    ],
 ];

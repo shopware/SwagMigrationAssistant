@@ -30,6 +30,7 @@
             <argument type="service" id="system_config.repository"/>
             <argument type="service" id="product_sorting.repository"/>
             <argument type="service" id="state_machine_state.repository"/>
+            <argument type="service" id="document_base_config.repository"/>
         </service>
 
         <!-- Shopware Converter Base classes -->

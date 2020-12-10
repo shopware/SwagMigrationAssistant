@@ -310,6 +310,17 @@ class Dummy6MappingService extends Shopware6MappingService
         return null;
     }
 
+    public function getGlobalDocumentBaseConfigUuid(string $oldIdentifier, string $documentTypeId, string $connectionId, MigrationContextInterface $migrationContext, Context $context): string
+    {
+        $baseConfigMapping = $this->getMapping($connectionId, DefaultEntities::ORDER_DOCUMENT_BASE_CONFIG, $oldIdentifier, $context);
+
+        if ($baseConfigMapping) {
+            return $baseConfigMapping['entityUuid'];
+        }
+
+        return $oldIdentifier;
+    }
+
     public function getLowestRootCategoryUuid(Context $context): ?string
     {
         return null;

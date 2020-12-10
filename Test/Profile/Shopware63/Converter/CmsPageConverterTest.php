@@ -27,11 +27,6 @@ class CmsPageConverterTest extends ShopwareConverterTest
         return new CmsPageDataSet();
     }
 
-    protected function getConverterTestClassName(): string
-    {
-        return self::class;
-    }
-
     protected function getFixtureBasePath(): string
     {
         return __DIR__ . '/../../../_fixtures/Shopware6/CmsPage/';

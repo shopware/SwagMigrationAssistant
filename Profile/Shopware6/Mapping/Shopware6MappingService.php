@@ -62,6 +62,11 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
      */
     private $stateMachineStateRepo;
 
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $documentBaseConfigRepo;
+
     public function __construct(
         EntityRepositoryInterface $migrationMappingRepo,
         EntityRepositoryInterface $localeRepository,
@@ -85,7 +90,8 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
         EntityRepositoryInterface $seoUrlTemplateRepo,
         EntityRepositoryInterface $systemConfigRepo,
         EntityRepositoryInterface $productSortingRepo,
-        EntityRepositoryInterface $stateMachineStateRepo
+        EntityRepositoryInterface $stateMachineStateRepo,
+        EntityRepositoryInterface $documentBaseConfigRepo
     ) {
         parent::__construct(
             $migrationMappingRepo,
@@ -113,6 +119,7 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
         $this->systemConfigRepo = $systemConfigRepo;
         $this->productSortingRepo = $productSortingRepo;
         $this->stateMachineStateRepo = $stateMachineStateRepo;
+        $this->documentBaseConfigRepo = $documentBaseConfigRepo;
     }
 
     public function getMailTemplateTypeUuid(string $type, string $oldIdentifier, MigrationContextInterface $migrationContext, Context $context): ?string
@@ -453,5 +460,40 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
         }
 
         return $stateMachineStateId;
+    }
+
+    public function getGlobalDocumentBaseConfigUuid(string $oldIdentifier, string $documentTypeId, string $connectionId, MigrationContextInterface $migrationContext, Context $context): string
+    {
+        $globalDocumentBaseConfig = $this->getMapping($connectionId, DefaultEntities::ORDER_DOCUMENT_BASE_CONFIG, $oldIdentifier, $context);
+
+        if ($globalDocumentBaseConfig !== null) {
+            return $globalDocumentBaseConfig['entityUuid'];
+        }
+
+        /** @var string|null $baseConfigId */
+        $baseConfigId = $context->disableCache(function (Context $context) use ($documentTypeId) {
+            $criteria = new Criteria();
+            $criteria->addFilter(new EqualsFilter('global', true));
+            $criteria->addFilter(new EqualsFilter('documentTypeId', $documentTypeId));
+            $criteria->setLimit(1);
+
+            return $this->documentBaseConfigRepo->searchIds($criteria, $context)->firstId();
+        });
+
+        if ($baseConfigId === null) {
+            $baseConfigId = $oldIdentifier;
+        }
+
+        $this->saveMapping(
+            [
+                'baseConfigId' => Uuid::randomHex(),
+                'connectionId' => $connectionId,
+                'entity' => DefaultEntities::ORDER_DOCUMENT_BASE_CONFIG,
+                'oldIdentifier' => $oldIdentifier,
+                'entityUuid' => $baseConfigId,
+            ]
+        );
+
+        return $baseConfigId;
     }
 }

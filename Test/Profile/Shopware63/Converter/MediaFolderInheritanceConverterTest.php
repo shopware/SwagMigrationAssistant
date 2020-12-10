@@ -27,11 +27,6 @@ class MediaFolderInheritanceConverterTest extends ShopwareConverterTest
         return new MediaFolderInheritanceDataSet();
     }
 
-    protected function getConverterTestClassName(): string
-    {
-        return self::class;
-    }
-
     protected function getFixtureBasePath(): string
     {
         return __DIR__ . '/../../../_fixtures/Shopware6/MediaFolderInheritance/';

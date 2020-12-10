@@ -29,4 +29,9 @@ class DummyMediaFileService extends MediaFileService
     {
         return $this->writeArray;
     }
+
+    public function resetMediaFileArray(): void
+    {
+        $this->writeArray = [];
+    }
 }

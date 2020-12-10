@@ -27,11 +27,6 @@ class RuleConverterTest extends ShopwareConverterTest
         return new RuleDataSet();
     }
 
-    protected function getConverterTestClassName(): string
-    {
-        return self::class;
-    }
-
     protected function getFixtureBasePath(): string
     {
         return __DIR__ . '/../../../_fixtures/Shopware6/Rule/';
