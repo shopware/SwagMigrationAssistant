@@ -7,6 +7,8 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware6\Mapping;
 
+use Shopware\Core\Content\Cms\Aggregate\CmsPageTranslation\CmsPageTranslationEntity;
+use Shopware\Core\Content\Cms\CmsPageCollection;
 use Shopware\Core\Content\MailTemplate\Aggregate\MailTemplateType\MailTemplateTypeEntity;
 use Shopware\Core\Content\Media\Aggregate\MediaDefaultFolder\MediaDefaultFolderEntity;
 use Shopware\Core\Content\Product\SalesChannel\Sorting\ProductSortingEntity;
@@ -15,6 +17,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\IdSearchResult;
@@ -495,5 +498,53 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
         );
 
         return $baseConfigId;
+    }
+
+    public function getCmsPageUuidByNames(array $names, string $oldIdentifier, string $connectionId, MigrationContextInterface $migrationContext, Context $context): string
+    {
+        $cmsPageMapping = $this->getMapping($connectionId, DefaultEntities::CMS_PAGE, $oldIdentifier, $context);
+
+        if ($cmsPageMapping !== null) {
+            return $cmsPageMapping['entityUuid'];
+        }
+
+        /** @var CmsPageCollection $cmsPages */
+        $cmsPages = $context->disableCache(function (Context $context) use ($names) {
+            $criteria = new Criteria();
+            $criteria->addAssociation('translations');
+            $criteria->addFilter(new EqualsAnyFilter('translations.name', $names));
+            $criteria->addFilter(new EqualsFilter('locked', false));
+
+            return $this->cmsPageRepo->search($criteria, $context)->getEntities();
+        });
+
+        foreach ($cmsPages as $cmsPage) {
+            $translations = $cmsPage->getTranslations();
+            if ($translations === null) {
+                continue;
+            }
+
+            $newNames = \array_map(static function (CmsPageTranslationEntity $translation) {
+                return $translation->getName();
+            }, $translations->getElements());
+
+            if (\count(\array_diff($names, $newNames)) > 0 && \count($names) === \count($newNames)) {
+                continue;
+            }
+
+            $this->saveMapping(
+                [
+                    'id' => Uuid::randomHex(),
+                    'connectionId' => $connectionId,
+                    'entity' => DefaultEntities::CMS_PAGE,
+                    'oldIdentifier' => $oldIdentifier,
+                    'entityUuid' => $cmsPage->getId(),
+                ]
+            );
+
+            return $cmsPage->getId();
+        }
+
+        return $oldIdentifier;
     }
 }
