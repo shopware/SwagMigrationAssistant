@@ -6,16 +6,8 @@
  */
 
 return [
-    'id' => 'fee20daa2f2a45178c808f2f69b686d4',
-    'mailTemplateTypeId' => '730b81ecc16341a482459c60a053b111',
-    'mailTemplateType' => [
-        'name' => 'Customer password recovery',
-        'technicalName' => 'customer.recovery.request',
-        'availableEntities' => [
-            'customerRecovery' => 'customer_recovery',
-        ],
-        'id' => '730b81ecc16341a482459c60a053b111',
-    ],
+    'id' => '4e36dd2c6d3b4ab792c8f8dd90db462e',
+    'mailTemplateTypeId' => '5dd637353d044752ae6a8c6e7f53430b',
     'systemDefault' => true,
     'senderName' => '{{ shopName }}',
     'description' => '',
@@ -81,41 +73,7 @@ return [
 
         Yours sincerely
         Your {{ shopName }}-Team',
-            'languageId' => '2fbb5fe2e29a4d70aa5854ce7ce3e20b',
-        ],
-        [
-            'senderName' => '{{ shopName }}',
-            'description' => '',
-            'subject' => 'Password Wiederherstellung',
-            'contentHtml' => '
-
-        Hallo {{ customerRecovery.customer.firstName }} {{ customerRecovery.customer.lastName }},
-
-        Sie haben ein neues Passwort für Ihren {{ shopName }}-Account angefordert.
-        Klicken Sie auf folgenden Link, um Ihr Passwort zurückzusetzen:
-
-        {{ resetUrl }}
-
-        Dieser Link ist für die nächsten 2 Stunden gültig.
-        Falls Sie Ihr Passwort nicht zurücksetzen möchten, ignorieren Sie diese E-Mail - es wird dann keine Änderung vorgenommen.
-
-        Mit freundlichen Grüßen
-        Ihr {{ shopName }}-Team
-
-',
-            'contentPlain' => '        Hallo {{ customerRecovery.customer.firstName }} {{ customerRecovery.customer.lastName }},
-
-        Sie haben ein neues Passwort für Ihren {{ shopName }}-Account angefordert.
-        Klicken Sie auf folgenden Link, um Ihr Passwort zurückzusetzen:
-
-        {{ resetUrl }}
-
-        Dieser Link ist für die nächsten 2 Stunden gültig.
-        Falls Sie Ihr Passwort nicht zurücksetzen möchten, ignorieren Sie diese E-Mail - es wird dann keine Änderung vorgenommen.
-
-        Mit freundlichen Grüßen
-        Ihr {{ shopName }}-Team',
-            'languageId' => 'a3632dd1442e441eb0a98adb86885ae0',
+            'languageId' => '5dd637353d044752ae6a8c6e7f53430b',
         ],
     ],
 ];

@@ -25,6 +25,7 @@
                  parent="SwagMigrationAssistant\Migration\Mapping\MappingService">
             <argument type="service" id="number_range_type.repository"/>
             <argument type="service" id="mail_template_type.repository"/>
+            <argument type="service" id="mail_template.repository"/>
             <argument type="service" id="salutation.repository"/>
             <argument type="service" id="seo_url_template.repository"/>
             <argument type="service" id="system_config.repository"/>

@@ -31,19 +31,6 @@ abstract class MailTemplateConverter extends ShopwareMediaConverter
     {
         $converted = $data;
 
-        $this->mainMapping = $this->getOrCreateMappingMainCompleteFacade(
-            DefaultEntities::MAIL_TEMPLATE,
-            $data['id'],
-            $converted['id']
-        );
-
-        $this->updateAssociationIds(
-            $converted['translations'],
-            DefaultEntities::LANGUAGE,
-            'languageId',
-            DefaultEntities::MAIL_TEMPLATE
-        );
-
         if (isset($converted['mailTemplateType']['technicalName'])) {
             $typeUuid = $this->mappingService->getMailTemplateTypeUuid($converted['mailTemplateType']['technicalName'], $converted['mailTemplateTypeId'], $this->migrationContext, $this->context);
 
@@ -56,12 +43,29 @@ abstract class MailTemplateConverter extends ShopwareMediaConverter
                     )
                 );
 
-                return new ConvertStruct(null, $data, $this->mainMapping['id'] ?? null);
+                return new ConvertStruct(null, $data, $converted['id'] ?? null);
             }
 
             unset($converted['mailTemplateType']);
             $converted['mailTemplateTypeId'] = $typeUuid;
         }
+
+        if ($data['systemDefault']) {
+            $converted['id'] = $this->mappingService->getSystemDefaultMailTemplateUuid($converted['mailTemplateTypeId'], $data['id'], $this->connectionId, $this->migrationContext, $this->context);
+        }
+
+        $this->mainMapping = $this->getOrCreateMappingMainCompleteFacade(
+            DefaultEntities::MAIL_TEMPLATE,
+            $data['id'],
+            $converted['id']
+        );
+
+        $this->updateAssociationIds(
+            $converted['translations'],
+            DefaultEntities::LANGUAGE,
+            'languageId',
+            DefaultEntities::MAIL_TEMPLATE
+        );
 
         if (isset($converted['media'])) {
             foreach ($converted['media'] as &$mediaAssociation) {

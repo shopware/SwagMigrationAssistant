@@ -232,6 +232,17 @@ class Dummy6MappingService extends Shopware6MappingService
         return null;
     }
 
+    public function getSystemDefaultMailTemplateUuid(string $type, string $oldIdentifier, string $connectionId, MigrationContextInterface $migrationContext, Context $context): string
+    {
+        $mailTemplateMapping = $this->getMapping($connectionId, DefaultEntities::MAIL_TEMPLATE, $oldIdentifier, $context);
+
+        if ($mailTemplateMapping) {
+            return $mailTemplateMapping['entityUuid'];
+        }
+
+        return $oldIdentifier;
+    }
+
     public function getDefaultFolderIdByEntity(string $entityName, MigrationContextInterface $migrationContext, Context $context): ?string
     {
         $connection = $migrationContext->getConnection();

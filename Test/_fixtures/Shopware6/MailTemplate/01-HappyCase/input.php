@@ -7,24 +7,34 @@
 
 return [
     'id' => 'fee20daa2f2a45178c808f2f69b686d4',
-    'mailTemplateTypeId' => '5dd637353d044752ae6a8c6e7f53430b',
+    'mailTemplateTypeId' => '730b81ecc16341a482459c60a053b111',
+    'mailTemplateType' => [
+        'name' => 'Customer password recovery',
+        'technicalName' => 'customer.recovery.request',
+        'availableEntities' => [
+            'customerRecovery' => 'customer_recovery',
+        ],
+        'id' => '730b81ecc16341a482459c60a053b111',
+    ],
     'media' => [
         [
             'position' => 1,
             'media' => [
                 'uploadedAt' => '2020-11-06T07:54:21.173+00:00',
                 'fileName' => 'waschmaschine_600x600',
+                'url' => 'http://nextsupport.local/media/74/58/cd/1605193590/c608d01990d9dec31d7556184a806353.jpg',
+                'fileSize' => 100,
                 'mediaFolderId' => 'd4641502e1f34c5193d74d2e408bbed4',
-                'hasFile' => false,
+                'hasFile' => true,
                 'private' => false,
                 'translations' => [
                     [
-                        'languageId' => '5dd637353d044752ae6a8c6e7f53430b',
+                        'languageId' => '2fbb5fe2e29a4d70aa5854ce7ce3e20b',
                         'title' => 'Nice title',
                         'alt' => 'Nice alt',
                     ],
                     [
-                        'languageId' => '60d637353d044752ae6a8c6e7f53430b',
+                        'languageId' => 'a3632dd1442e441eb0a98adb86885ae0',
                         'title' => 'Another title',
                         'alt' => 'Another alt',
                     ],
@@ -74,7 +84,6 @@ return [
         Your {{ shopName }}-Team',
     'translations' => [
         [
-            'mailTemplateId' => 'fee20daa2f2a45178c808f2f69b686d4',
             'senderName' => '{{ shopName }}',
             'description' => '',
             'subject' => 'Password recovery',
@@ -106,10 +115,9 @@ return [
 
         Yours sincerely
         Your {{ shopName }}-Team',
-            'languageId' => '5dd637353d044752ae6a8c6e7f53430b',
+            'languageId' => '2fbb5fe2e29a4d70aa5854ce7ce3e20b',
         ],
         [
-            'mailTemplateId' => 'fee20daa2f2a45178c808f2f69b686d4',
             'senderName' => '{{ shopName }}',
             'description' => '',
             'subject' => 'Password Wiederherstellung',
@@ -141,7 +149,7 @@ return [
 
         Mit freundlichen Grüßen
         Ihr {{ shopName }}-Team',
-            'languageId' => '60d637353d044752ae6a8c6e7f53430b',
+            'languageId' => 'a3632dd1442e441eb0a98adb86885ae0',
         ],
     ],
 ];

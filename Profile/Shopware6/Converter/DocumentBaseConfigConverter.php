@@ -33,7 +33,7 @@ abstract class DocumentBaseConfigConverter extends ShopwareMediaConverter
         if ($converted['documentTypeId'] === null) {
             $this->loggingService->addLogEntry(new UnsupportedDocumentTypeLog($this->runId, DefaultEntities::ORDER_DOCUMENT_BASE_CONFIG, $data['id'], $data['documentType']['technicalName']));
 
-            return new ConvertStruct(null, $data, $this->mainMapping['id'] ?? null);
+            return new ConvertStruct(null, $data, $converted['id'] ?? null);
         }
         unset($converted['documentType']);
 
