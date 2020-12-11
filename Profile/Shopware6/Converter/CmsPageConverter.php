@@ -16,12 +16,6 @@ abstract class CmsPageConverter extends ShopwareConverter
     {
         $converted = $data;
 
-        $this->mainMapping = $this->getOrCreateMappingMainCompleteFacade(
-            DefaultEntities::CMS_PAGE,
-            $data['id'],
-            $converted['id']
-        );
-
         if (isset($converted['translations'])) {
             $this->updateAssociationIds(
                 $converted['translations'],
@@ -29,7 +23,15 @@ abstract class CmsPageConverter extends ShopwareConverter
                 'languageId',
                 DefaultEntities::CMS_PAGE
             );
+
+            $converted['id'] = $this->mappingService->getCmsPageUuidByNames(\array_column($converted['translations'], 'name'), $data['id'], $this->connectionId, $this->migrationContext, $this->context);
         }
+
+        $this->mainMapping = $this->getOrCreateMappingMainCompleteFacade(
+            DefaultEntities::CMS_PAGE,
+            $data['id'],
+            $converted['id']
+        );
 
         if (isset($data['previewMediaId'])) {
             $converted['previewMediaId'] = $this->getMappingIdFacade(DefaultEntities::MEDIA, $data['previewMediaId']);
