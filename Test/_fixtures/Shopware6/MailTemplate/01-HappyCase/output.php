@@ -7,14 +7,38 @@
 
 return [
     'id' => 'fee20daa2f2a45178c808f2f69b686d4',
-    'mailTemplateTypeId' => '730b81ecc16341a482459c60a053b111',
-    'mailTemplateType' => [
-        'name' => 'Customer password recovery',
-        'technicalName' => 'customer.recovery.request',
-        'availableEntities' => [
-            'customerRecovery' => 'customer_recovery',
+    'mailTemplateTypeId' => '5dd637353d044752ae6a8c6e7f53430b',
+    'media' => [
+        [
+            'position' => 1,
+            'media' => [
+                'uploadedAt' => '2020-11-06T07:54:21.173+00:00',
+                'fileName' => 'waschmaschine_600x600',
+                'mediaFolderId' => 'd4641502e1f34c5193d74d2e408bbed4',
+                'hasFile' => false,
+                'private' => false,
+                'translations' => [
+                    [
+                        'languageId' => '5dd637353d044752ae6a8c6e7f53430b',
+                        'title' => 'Nice title',
+                        'alt' => 'Nice alt',
+                    ],
+                    [
+                        'languageId' => '60d637353d044752ae6a8c6e7f53430b',
+                        'title' => 'Another title',
+                        'alt' => 'Another alt',
+                    ],
+                ],
+                'tags' => [
+                    [
+                        'name' => 'Tag!',
+                        'id' => 'cfdbb85022314529a1e4caa84829e1b8',
+                    ],
+                ],
+                'id' => '84356a71233d4b3e9f417dcc8850c82f',
+            ],
+            'id' => 'eb5483a9c77c4919b5d110e8d745a1cc',
         ],
-        'id' => '730b81ecc16341a482459c60a053b111',
     ],
     'systemDefault' => true,
     'senderName' => '{{ shopName }}',
@@ -81,7 +105,7 @@ return [
 
         Yours sincerely
         Your {{ shopName }}-Team',
-            'languageId' => '2fbb5fe2e29a4d70aa5854ce7ce3e20b',
+            'languageId' => '5dd637353d044752ae6a8c6e7f53430b',
         ],
         [
             'senderName' => '{{ shopName }}',
@@ -115,7 +139,7 @@ return [
 
         Mit freundlichen Grüßen
         Ihr {{ shopName }}-Team',
-            'languageId' => 'a3632dd1442e441eb0a98adb86885ae0',
+            'languageId' => '60d637353d044752ae6a8c6e7f53430b',
         ],
     ],
 ];

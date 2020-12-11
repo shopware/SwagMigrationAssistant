@@ -43,6 +43,9 @@ class MailTemplateProvider extends AbstractProvider
         $result = $this->mailTemplateRepo->search($criteria, $context);
 
         return $this->cleanupSearchResult($result,[
+            'mailTemplateId',
+
+            // media
             'mimeType',
             'fileExtension',
             'mediaTypeRaw',

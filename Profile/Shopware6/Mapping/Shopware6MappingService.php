@@ -43,6 +43,11 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
     /**
      * @var EntityRepositoryInterface
      */
+    protected $mailTemplateRepo;
+
+    /**
+     * @var EntityRepositoryInterface
+     */
     protected $salutationRepo;
 
     /**
@@ -89,6 +94,7 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
         EntityDefinition $mappingDefinition,
         EntityRepositoryInterface $numberRangeTypeRepo,
         EntityRepositoryInterface $mailTemplateTypeRepo,
+        EntityRepositoryInterface $mailTemplateRepo,
         EntityRepositoryInterface $salutationRepo,
         EntityRepositoryInterface $seoUrlTemplateRepo,
         EntityRepositoryInterface $systemConfigRepo,
@@ -117,6 +123,7 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
 
         $this->numberRangeTypeRepo = $numberRangeTypeRepo;
         $this->mailTemplateTypeRepo = $mailTemplateTypeRepo;
+        $this->mailTemplateRepo = $mailTemplateRepo;
         $this->salutationRepo = $salutationRepo;
         $this->seoUrlTemplateRepo = $seoUrlTemplateRepo;
         $this->systemConfigRepo = $systemConfigRepo;
@@ -168,6 +175,41 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
         }
 
         return null;
+    }
+
+    public function getSystemDefaultMailTemplateUuid(string $type, string $oldIdentifier, string $connectionId, MigrationContextInterface $migrationContext, Context $context): string
+    {
+        $defaultMailTemplate = $this->getMapping($connectionId, DefaultEntities::MAIL_TEMPLATE, $oldIdentifier, $context);
+
+        if ($defaultMailTemplate !== null) {
+            return $defaultMailTemplate['entityUuid'];
+        }
+
+        /** @var string|null $mailTemplateId */
+        $mailTemplateId = $context->disableCache(function (Context $context) use ($type) {
+            $criteria = new Criteria();
+            $criteria->addFilter(new EqualsFilter('systemDefault', true));
+            $criteria->addFilter(new EqualsFilter('mailTemplateTypeId', $type));
+            $criteria->setLimit(1);
+
+            return $this->mailTemplateRepo->searchIds($criteria, $context)->firstId();
+        });
+
+        if ($mailTemplateId === null) {
+            $mailTemplateId = $oldIdentifier;
+        }
+
+        $this->saveMapping(
+            [
+                'id' => Uuid::randomHex(),
+                'connectionId' => $connectionId,
+                'entity' => DefaultEntities::MAIL_TEMPLATE,
+                'oldIdentifier' => $oldIdentifier,
+                'entityUuid' => $mailTemplateId,
+            ]
+        );
+
+        return $mailTemplateId;
     }
 
     public function getNumberRangeTypeUuid(string $type, string $oldIdentifier, MigrationContextInterface $migrationContext, Context $context): ?string
@@ -489,7 +531,7 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
 
         $this->saveMapping(
             [
-                'baseConfigId' => Uuid::randomHex(),
+                'id' => Uuid::randomHex(),
                 'connectionId' => $connectionId,
                 'entity' => DefaultEntities::ORDER_DOCUMENT_BASE_CONFIG,
                 'oldIdentifier' => $oldIdentifier,
