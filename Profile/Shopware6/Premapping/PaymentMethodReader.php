@@ -94,10 +94,13 @@ class PaymentMethodReader extends AbstractPremappingReader
         $entityData = [];
         foreach ($preMappingData as $data) {
             $this->sourceIdToHandlerDictionary[$data['id']] = $data['handlerIdentifier'];
-            $uuid = '';
 
-            if (isset($this->connectionPremappingDictionary[$data['id']], $this->choiceUuids[$uuid])) {
+            if (isset($this->connectionPremappingDictionary[$data['id']])) {
                 $uuid = $this->connectionPremappingDictionary[$data['id']]['destinationUuid'];
+            }
+
+            if (!isset($uuid) || !isset($this->choiceUuids[$uuid])) {
+                $uuid = '';
             }
 
             $entityData[] = new PremappingEntityStruct($data['id'], $data['name'] ?? $data['id'], $uuid);
