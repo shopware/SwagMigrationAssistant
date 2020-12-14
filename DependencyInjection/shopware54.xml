@@ -155,5 +155,10 @@
                  parent="SwagMigrationAssistant\Profile\Shopware\Converter\CrossSellingConverter">
             <tag name="shopware.migration.converter"/>
         </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware54\Converter\Shopware54MainVariantRelationConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware\Converter\MainVariantRelationConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
     </services>
 </container>

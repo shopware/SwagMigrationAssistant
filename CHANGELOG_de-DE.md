@@ -1,3 +1,6 @@
+# REPLACE-GLOBAL-WITH-NEXT-VERSION
+- MIG-181 - Migration der Hauptvarianten-Informationen ermöglichen für Shopware 5.4 / 5.6
+
 # 2.2.2
 - MIG-110 - Verbessert die Migration der Medien
 - MIG-114 - Migration der Hauptvarianten-Information ermöglichen
