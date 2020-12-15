@@ -219,5 +219,11 @@
         <service id="SwagMigrationAssistant\Migration\Service\EntityPartialIndexerService">
             <argument type="tagged" tag="shopware.entity_indexer"/>
         </service>
+
+        <service id="SwagMigrationAssistant\Migration\MessageQueue\OrderCountIndexer"
+                 decorates="Shopware\Core\Checkout\Customer\DataAbstractionLayer\CustomerIndexer">
+            <argument type="service" id="customer.repository"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\MessageQueue\OrderCountIndexer.inner"/>
+        </service>
     </services>
 </container>
