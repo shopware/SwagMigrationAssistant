@@ -10,6 +10,7 @@ return [
     'typeId' => 'bc7eb01d348e4546a7abe666f41e3648',
     'global' => true,
     'name' => 'Invoices',
+    'description' => 'Description',
     'pattern' => '{n}',
     'start' => 1000,
     'type' => [
@@ -17,6 +18,18 @@ return [
         'technicalName' => 'document_invoice',
         'global' => false,
         'id' => 'bc7eb01d348e4546a7abe666f41e3648',
+    ],
+    'numberRangeSalesChannels' => [
+        [
+            'id' => '11a462b3a55a425cbf5a2a67e2f1d74a',
+            'salesChannelId' => '3f05f1f6514d43f7ae11a669c7557d1c',
+            'numberRangeTypeId' => 'bc7eb01d348e4546a7abe666f41e3648',
+        ],
+        [
+            'id' => '46a541455bdd48b7a0e1da70abf0888e',
+            'salesChannelId' => '98432def39fc4624b33213a56b8c944d',
+            'numberRangeTypeId' => 'bc7eb01d348e4546a7abe666f41e3648',
+        ],
     ],
     'translations' => [
         [

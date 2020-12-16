@@ -74,7 +74,6 @@ class BasicSettingsDataSelection implements DataSelectionInterface
             new SalutationDataSet(),
             new CustomerGroupDataSet(),
             new CustomFieldSetDataSet(),
-            new NumberRangeDataSet(),
             new RuleDataSet(),
             new SnippetSetDataSet(),
             new SnippetDataSet(),
@@ -86,6 +85,7 @@ class BasicSettingsDataSelection implements DataSelectionInterface
             new SystemConfigDataSet(),
             new ProductSortingDataSet(),
             new DocumentBaseConfigDataSet(),
+            new NumberRangeDataSet(),
         ];
     }
 

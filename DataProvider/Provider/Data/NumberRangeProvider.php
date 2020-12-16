@@ -35,12 +35,14 @@ class NumberRangeProvider extends AbstractProvider
         $criteria = new Criteria();
         $criteria->setLimit($limit);
         $criteria->setOffset($offset);
+        $criteria->addAssociation('numberRangeSalesChannels');
+        $criteria->addAssociation('state');
         $criteria->addAssociation('translations');
         $criteria->addAssociation('type');
         $criteria->addSorting(new FieldSorting('id'));
         $result = $this->numberRangeRepo->search($criteria, $context);
 
-        return $this->cleanupSearchResult($result);
+        return $this->cleanupSearchResult($result, ['numberRangeId']);
     }
 
     public function getProvidedTotal(Context $context): int

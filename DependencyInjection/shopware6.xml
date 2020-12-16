@@ -113,7 +113,9 @@
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\NumberRangeConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true">
+            <argument type="service" id="number_range_state.repository" />
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\MailTemplateConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareMediaConverter" abstract="true"/>

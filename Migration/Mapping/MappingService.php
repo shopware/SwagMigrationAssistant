@@ -27,7 +27,6 @@ use Shopware\Core\System\Country\CountryEntity;
 use Shopware\Core\System\Currency\CurrencyEntity;
 use Shopware\Core\System\Language\LanguageEntity;
 use Shopware\Core\System\Locale\LocaleEntity;
-use Shopware\Core\System\NumberRange\NumberRangeEntity;
 use Shopware\Core\System\Tax\TaxEntity;
 use SwagMigrationAssistant\Exception\LocaleNotFoundException;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
@@ -780,13 +779,12 @@ class MappingService implements MappingServiceInterface
             $type
         ));
 
-        $result = $this->numberRangeRepo->search($criteria, $context);
+        $result = $this->numberRangeRepo->searchIds($criteria, $context);
 
         if ($result->getTotal() > 0) {
-            /** @var NumberRangeEntity|null $numberRange */
-            $numberRange = $result->getEntities()->first();
+            $numberRangeId = $result->firstId();
 
-            if ($numberRange === null) {
+            if ($numberRangeId === null) {
                 return null;
             }
 
@@ -796,12 +794,12 @@ class MappingService implements MappingServiceInterface
                     'connectionId' => $connectionId,
                     'entity' => DefaultEntities::NUMBER_RANGE,
                     'oldIdentifier' => $oldIdentifier,
-                    'entityUuid' => $numberRange->getId(),
+                    'entityUuid' => $numberRangeId,
                     'checksum' => $checksum,
                 ]
             );
 
-            return $numberRange->getId();
+            return $numberRangeId;
         }
 
         return null;
