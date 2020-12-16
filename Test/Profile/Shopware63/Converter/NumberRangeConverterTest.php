@@ -7,6 +7,8 @@
 
 namespace SwagMigrationAssistant\Test\Profile\Shopware63\Converter;
 
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use SwagMigrationAssistant\Migration\Converter\ConverterInterface;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
@@ -17,9 +19,14 @@ use SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63NumberRangeCon
 
 class NumberRangeConverterTest extends ShopwareConverterTest
 {
+    use KernelTestBehaviour;
+
     protected function createConverter(Shopware6MappingServiceInterface $mappingService, LoggingServiceInterface $loggingService, MediaFileServiceInterface $mediaFileService): ConverterInterface
     {
-        return new Shopware63NumberRangeConverter($mappingService, $loggingService);
+        /** @var EntityRepositoryInterface $numberRangeRepo */
+        $numberRangeRepo = $this->getContainer()->get('number_range_state.repository');
+
+        return new Shopware63NumberRangeConverter($mappingService, $loggingService, $numberRangeRepo);
     }
 
     protected function createDataSet(): DataSet
