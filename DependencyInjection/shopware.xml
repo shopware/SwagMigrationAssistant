@@ -195,6 +195,11 @@
         <service id="SwagMigrationAssistant\Profile\Shopware\Converter\MainVariantRelationConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter" abstract="true"/>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware\Converter\PromotionConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter" abstract="true">
+            <argument type="service" id="sales_channel.repository"/>
+        </service>
+
         <!-- Shopware Reader -->
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiReader" abstract="true">
             <argument type="service" id="SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory"/>
@@ -315,6 +320,11 @@
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ProductReviewReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiReader">
+            <tag name="shopware.migration.reader"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\PromotionReader"
                  parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiReader">
             <tag name="shopware.migration.reader"/>
         </service>
@@ -531,6 +541,11 @@
             <tag name="shopware.migration.reader"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\PromotionReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader">
+            <tag name="shopware.migration.reader"/>
+        </service>
+
         <!-- Shopware Dataselections -->
        <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\BasicSettingsDataSelection">
             <tag name="shopware.migration.data_selection"/>
@@ -557,6 +572,10 @@
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\SeoUrlDataSelection">
+            <tag name="shopware.migration.data_selection"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\PromotionDataSelection">
             <tag name="shopware.migration.data_selection"/>
         </service>
 
@@ -681,6 +700,10 @@
             <tag name="shopware.migration.data_set"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\PromotionDataSet">
+            <tag name="shopware.migration.data_set"/>
+        </service>
+
         <!-- Shopware PreMappingReader -->
         <service id="SwagMigrationAssistant\Profile\Shopware\Premapping\OrderStateReader">
             <argument type="service" id="state_machine.repository"/>
@@ -736,6 +759,13 @@
                  parent="SwagMigrationAssistant\Migration\Writer\AbstractWriter">
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
             <argument type="service" id="Shopware\Core\Content\Product\ProductDefinition"/>
+            <tag name="shopware.migration.writer"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Writer\PromotionWriter"
+                 parent="SwagMigrationAssistant\Migration\Writer\AbstractWriter">
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
+            <argument type="service" id="Shopware\Core\Checkout\Promotion\PromotionDefinition"/>
             <tag name="shopware.migration.writer"/>
         </service>
     </services>
