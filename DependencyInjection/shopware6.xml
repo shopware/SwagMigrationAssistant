@@ -15,6 +15,7 @@
             <argument type="service" id="SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistry"/>
             <argument type="service" id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\EnvironmentReader"/>
             <argument type="service" id="currency.repository"/>
+            <argument type="service" id="language.repository"/>
             <argument type="service" id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\TotalReader"/>
             <argument type="service" id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\TableReader"/>
             <tag name="shopware.migration.gateway"/>

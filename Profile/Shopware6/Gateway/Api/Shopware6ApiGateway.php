@@ -12,6 +12,8 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\Currency\CurrencyEntity;
+use Shopware\Core\System\Language\LanguageEntity;
+use Shopware\Core\System\Locale\LocaleEntity;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\Gateway\Reader\EnvironmentReaderInterface;
 use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistryInterface;
@@ -41,6 +43,11 @@ class Shopware6ApiGateway implements ShopwareGatewayInterface
     private $currencyRepository;
 
     /**
+     * @var EntityRepositoryInterface
+     */
+    private $languageRepository;
+
+    /**
      * @var TotalReaderInterface
      */
     private $totalReader;
@@ -54,12 +61,14 @@ class Shopware6ApiGateway implements ShopwareGatewayInterface
         ReaderRegistryInterface $readerRegistry,
         EnvironmentReaderInterface $environmentReader,
         EntityRepositoryInterface $currencyRepository,
+        EntityRepositoryInterface $languageRepository,
         TotalReaderInterface $totalReader,
         TableReaderInterface $tableReader
     ) {
         $this->readerRegistry = $readerRegistry;
         $this->environmentReader = $environmentReader;
         $this->currencyRepository = $currencyRepository;
+        $this->languageRepository = $languageRepository;
         $this->totalReader = $totalReader;
         $this->tableReader = $tableReader;
     }
@@ -148,6 +157,14 @@ class Shopware6ApiGateway implements ShopwareGatewayInterface
             $environmentDataArray['defaultCurrency'] = $targetSystemCurrency->getIsoCode();
         }
 
+        $criteria = new Criteria([Defaults::LANGUAGE_SYSTEM]);
+        $criteria->addAssociation('locale');
+        /** @var LanguageEntity $targetSystemLanguage */
+        $targetSystemLanguage = $this->languageRepository->search($criteria, $context)->get(Defaults::LANGUAGE_SYSTEM);
+
+        /** @var LocaleEntity $targetSystemLocale */
+        $targetSystemLocale = $targetSystemLanguage->getLocale();
+
         $totals = $this->readTotals($migrationContext, $context);
 
         return new EnvironmentInformation(
@@ -160,7 +177,9 @@ class Shopware6ApiGateway implements ShopwareGatewayInterface
             $updateAvailable,
             $displayWarnings,
             $targetSystemCurrency->getIsoCode(),
-            $environmentDataArray['defaultCurrency']
+            $environmentDataArray['defaultCurrency'],
+            $environmentDataArray['defaultShopLanguage'],
+            $targetSystemLocale->getCode()
         );
     }
 
