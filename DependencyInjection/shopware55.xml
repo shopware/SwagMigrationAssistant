@@ -160,5 +160,10 @@
                  parent="SwagMigrationAssistant\Profile\Shopware\Converter\MainVariantRelationConverter">
             <tag name="shopware.migration.converter"/>
         </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55PromotionConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware\Converter\PromotionConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
     </services>
 </container>

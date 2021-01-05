@@ -21,6 +21,7 @@ use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\CustomerAndOrderDataSelection;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\NewsletterRecipientDataSelection;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\ProductReviewDataSelection;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\PromotionDataSelection;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\ShopwareGatewayInterface;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
@@ -66,7 +67,8 @@ class SalutationReader extends AbstractPremappingReader
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && (\in_array(CustomerAndOrderDataSelection::IDENTIFIER, $entityGroupNames, true)
             || \in_array(NewsletterRecipientDataSelection::IDENTIFIER, $entityGroupNames, true)
-            || \in_array(ProductReviewDataSelection::IDENTIFIER, $entityGroupNames, true));
+            || \in_array(ProductReviewDataSelection::IDENTIFIER, $entityGroupNames, true)
+            || \in_array(PromotionDataSelection::IDENTIFIER, $entityGroupNames, true));
     }
 
     public function getPremapping(Context $context, MigrationContextInterface $migrationContext): PremappingStruct

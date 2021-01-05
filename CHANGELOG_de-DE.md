@@ -1,6 +1,7 @@
 # REPLACE-GLOBAL-WITH-NEXT-VERSION
 - MIG-125 - Verbessert die Migration von Bestellungen, sodass die Anzahl der Kundenbestellungen indexiert wird
 - MIG-181 - Migration der Hauptvarianten-Informationen ermöglichen für Shopware 5.4 / 5.6
+- MIG-182 - Migration der Gutscheine hinzugefügt
 - MIG-187 - Verbessert die Migration von Medien ohne Dateinamen
 
 # 2.2.2

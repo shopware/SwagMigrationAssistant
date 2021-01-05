@@ -135,6 +135,16 @@ final class DefaultEntities
 
     public const PRODUCT_VISIBILITY = 'product_visibility';
 
+    public const PROMOTION = 'promotion';
+
+    public const PROMOTION_DISCOUNT = 'promotion_discount';
+
+    public const PROMOTION_DISCOUNT_RULE = 'promotion_discount_rule';
+
+    public const PROMOTION_INDIVIDUAL_CODE = 'promotion_individual_code';
+
+    public const PROMOTION_PERSONA_RULE = 'promotion_persona_rule';
+
     public const PROPERTY_GROUP = 'property_group';
 
     public const PROPERTY_GROUP_TRANSLATION = 'property_group_translation';

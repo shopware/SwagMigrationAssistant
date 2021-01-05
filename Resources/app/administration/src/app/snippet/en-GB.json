@@ -236,7 +236,8 @@
           "basicSettings": "Basic data",
           "newsletterRecipient": "Newsletter recipient",
           "productReviews": "Product reviews",
-          "seoUrls": "Seo urls"
+          "seoUrls": "Seo urls",
+          "promotions": "Promotions"
         },
         "entities": {
           "category": "Categories:",
@@ -257,7 +258,8 @@
           "product_review": "Reviews:",
           "seo_url": "Seo urls:",
           "product_cross_selling": "Cross Selling:",
-          "main_variant_relation": "Main variant relations:"
+          "main_variant_relation": "Main variant relations:",
+          "promotion": "Promotions:"
         },
         "noData": "Nothing found to migrate."
       },
