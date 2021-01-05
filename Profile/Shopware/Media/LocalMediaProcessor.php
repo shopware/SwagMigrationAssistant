@@ -178,7 +178,19 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
             if (\copy($sourcePath, $filePath)) {
                 $fileSize = \filesize($filePath);
                 $mappedWorkload[$mediaId]->setState(MediaProcessWorkloadStruct::FINISH_STATE);
-                $this->persistFileToMedia($filePath, $mediaFile, $fileSize, $fileExtension, $context);
+
+                try {
+                    $this->persistFileToMedia($filePath, $mediaFile, $fileSize, $fileExtension, $context);
+                } catch (\Exception $e) {
+                    $mappedWorkload[$mediaId]->setState(MediaProcessWorkloadStruct::ERROR_STATE);
+                    $failureUuids[$rowId] = $mediaId;
+                    $this->loggingService->addLogEntry(new ExceptionRunLog(
+                        $mappedWorkload[$mediaId]->getRunId(),
+                        DefaultEntities::MEDIA,
+                        $e,
+                        $mediaId
+                    ));
+                }
                 \unlink($filePath);
             } else {
                 $mappedWorkload[$mediaId]->setState(MediaProcessWorkloadStruct::ERROR_STATE);

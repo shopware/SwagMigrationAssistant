@@ -168,16 +168,29 @@ class HttpMediaDownloadService extends BaseMediaService implements MediaFileProc
             if ($mappedWorkload[$uuid]->getState() === MediaProcessWorkloadStruct::FINISH_STATE) {
                 //move media to media system
                 $filename = $this->getMediaName($media, $uuid);
-                $this->persistFileToMedia(
-                    $filePath,
-                    $uuid,
-                    $filename,
-                    (int) $additionalData['file_size'],
-                    $fileExtension,
-                    $context
-                );
+
+                try {
+                    $this->persistFileToMedia(
+                        $filePath,
+                        $uuid,
+                        $filename,
+                        (int) $additionalData['file_size'],
+                        $fileExtension,
+                        $context
+                    );
+                    $finishedUuids[] = $uuid;
+                } catch (\Exception $e) {
+                    $failureUuids[] = $uuid;
+                    $mappedWorkload[$uuid]->setState(MediaProcessWorkloadStruct::ERROR_STATE);
+                    $this->loggingService->addLogEntry(new ExceptionRunLog(
+                        $mappedWorkload[$uuid]->getRunId(),
+                        DefaultEntities::MEDIA,
+                        $e,
+                        $uuid
+                    ));
+                }
+
                 \unlink($filePath);
-                $finishedUuids[] = $uuid;
             }
 
             if ($oldWorkload->getErrorCount() === $mappedWorkload[$uuid]->getErrorCount()) {

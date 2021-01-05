@@ -3,7 +3,8 @@
 - MIG-181 - Provide migration of main variant information for Shopware 5.4 / 5.6
 - MIG-182 - Migration of vouchers added
 - MIG-187 - Improves the migration of media without filename
-- MIG-118 - Fix migration of product line items
+- MIG-188 - Improves media download stability
+- MIG-189 - Fix migration of product line items
 
 # 2.2.2
 - MIG-110 - Improves the migration of media
