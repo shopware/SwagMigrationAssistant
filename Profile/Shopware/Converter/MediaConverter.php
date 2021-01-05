@@ -84,7 +84,7 @@ abstract class MediaConverter extends ShopwareConverter
         );
         $converted['id'] = $this->mainMapping['entityUuid'];
 
-        if (!isset($data['name'])) {
+        if (empty($data['name'])) {
             $data['name'] = $converted['id'];
         }
 

@@ -791,7 +791,7 @@ abstract class ProductConverter extends ShopwareConverter
             $newMedia['id'] = $mapping['entityUuid'];
             $this->mappingIds[] = $mapping['id'];
 
-            if (!isset($mediaData['media']['name'])) {
+            if (empty($mediaData['media']['name'])) {
                 $mediaData['media']['name'] = $newMedia['id'];
             }
 
