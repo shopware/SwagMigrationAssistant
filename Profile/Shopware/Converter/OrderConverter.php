@@ -18,7 +18,6 @@ use Shopware\Core\Checkout\Cart\Tax\Struct\TaxRuleCollection;
 use Shopware\Core\Checkout\Cart\Tax\TaxCalculator;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
@@ -882,10 +881,6 @@ abstract class OrderConverter extends ShopwareConverter
                         $context->getCurrencyPrecision()
                     );
                 }
-            }
-
-            if (!isset($lineItem['referencedId']) && $lineItem['type'] !== LineItem::CREDIT_LINE_ITEM_TYPE) {
-                $lineItem['referencedId'] = Uuid::randomHex();
             }
 
             $lineItems[] = $lineItem;

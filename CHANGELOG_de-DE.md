@@ -3,6 +3,7 @@
 - MIG-181 - Migration der Hauptvarianten-Informationen ermöglichen für Shopware 5.4 / 5.6
 - MIG-182 - Migration der Gutscheine hinzugefügt
 - MIG-187 - Verbessert die Migration von Medien ohne Dateinamen
+- MIG-118 - Korrigiert die Migration der Produkt-Bestellpositionen
 
 # 2.2.2
 - MIG-110 - Verbessert die Migration der Medien
