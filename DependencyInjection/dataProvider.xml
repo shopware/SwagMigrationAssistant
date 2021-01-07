@@ -11,6 +11,7 @@
         <service id="SwagMigrationAssistant\Controller\DataProviderController" public="true">
             <argument type="service" id="SwagMigrationAssistant\DataProvider\Provider\ProviderRegistry"/>
             <argument type="service" id="SwagMigrationAssistant\DataProvider\Service\EnvironmentService"/>
+            <argument type="service" id="SwagMigrationAssistant\DataProvider\Provider\GenerateDocumentProvider"/>
         </service>
 
         <!-- Data providers -->
@@ -238,6 +239,13 @@
         <service id="SwagMigrationAssistant\DataProvider\Provider\Data\PromotionProvider">
             <argument type="service" id="promotion.repository"/>
             <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\GenerateDocumentProvider">
+            <argument type="service" id="document.repository"/>
+            <argument type="service" id="order.repository"/>
+            <argument type="service" id="Shopware\Core\Checkout\Document\FileGenerator\FileGeneratorRegistry"/>
+            <argument type="service" id="Shopware\Core\Checkout\Document\DocumentGenerator\DocumentGeneratorRegistry"/>
         </service>
 
         <!-- Services -->

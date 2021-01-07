@@ -119,13 +119,6 @@ abstract class OrderConverter extends ShopwareConverter
             true
         );
 
-        foreach ($converted['lineItems'] as &$lineItem) {
-            if (!isset($lineItem['productId'])) {
-                unset($lineItem['referencedId']);
-            }
-        }
-        unset($lineItem);
-
         $this->updateAssociationIds(
             $converted['lineItems'],
             DefaultEntities::MEDIA,
