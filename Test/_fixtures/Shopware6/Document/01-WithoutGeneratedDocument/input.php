@@ -62,5 +62,6 @@ return [
         'technicalName' => 'delivery_note',
         'id' => '3292943c32e5499f9a54cc5ff1a16abe',
     ],
+    'generateUrl' => 'http://nextsupport.local/api/v3/_action/data-provider/generate-document?identifier=439564d3fc194166bf1c2c9e21942469',
     'id' => '439564d3fc194166bf1c2c9e21942469',
 ];

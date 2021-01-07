@@ -92,8 +92,12 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
             && $this->getDataSetEntity($migrationContext) === DefaultEntities::ORDER_DOCUMENT_GENERATED;
     }
 
-    public function process(MigrationContextInterface $migrationContext, Context $context, array $workload, int $fileChunkByteSize = 0): array
-    {
+    public function process(
+        MigrationContextInterface $migrationContext,
+        Context $context,
+        array $workload,
+        int $fileChunkByteSize = 0
+    ): array {
         /** @var MediaProcessWorkloadStruct[] $mappedWorkload */
         $mappedWorkload = [];
         $documentIds = [];
@@ -168,7 +172,7 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
             }
 
             if ($mappedWorkload[$uuid]->getState() === MediaProcessWorkloadStruct::FINISH_STATE) {
-                $this->handelCompleteRequest($context, $result, $uuid, $finishedUuids);
+                $this->handleCompleteRequest($context, $result, $uuid, $finishedUuids);
             }
 
             if ($oldWorkload->getErrorCount() === $mappedWorkload[$uuid]->getErrorCount()) {
@@ -239,7 +243,7 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
         return $promises;
     }
 
-    private function handelCompleteRequest(Context $context, array $result, string $uuid, array &$finishedUuids): void
+    private function handleCompleteRequest(Context $context, array $result, string $documentId, array &$finishedUuids): void
     {
         $response = $result['value'];
         $arrayResponse = \json_decode($response->getBody()->getContents(), true);
@@ -253,8 +257,8 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
 
         $mapping = $this->mappingService->getMapping(
             $this->connection->getId(),
-            DefaultEntities::ORDER_DOCUMENT_GENERATED,
-            $uuid,
+            DefaultEntities::ORDER_DOCUMENT_GENERATED_MEDIA,
+            $documentId,
             $context
         );
 
@@ -263,13 +267,11 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
             $mediaId = $mapping['entityUuid'];
         }
 
-        $mediaFileId = null;
         $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use (
             $fileBlob,
             $fileContentType,
             $fileName,
-            &$mediaFileId,
-            $mediaId
+            &$mediaId
         ): void {
             $clearFileBlob = \base64_decode($fileBlob, true);
 
@@ -277,7 +279,7 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
                 return;
             }
 
-            $mediaFileId = $this->mediaService->saveFile(
+            $mediaId = $this->mediaService->saveFile(
                 $clearFileBlob,
                 'pdf',
                 $fileContentType,
@@ -290,26 +292,26 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
 
         $this->mappingService->getOrCreateMapping(
             $this->connection->getId(),
-            DefaultEntities::ORDER_DOCUMENT_GENERATED,
-            $uuid,
+            DefaultEntities::ORDER_DOCUMENT_GENERATED_MEDIA,
+            $documentId,
             $context,
             null,
             null,
-            $mediaFileId
+            $mediaId
         );
         $this->mappingService->writeMapping($context);
 
         $this->documentRepository->update(
             [
                 [
-                    'id' => $uuid,
-                    'documentMediaFileId' => $mediaFileId,
+                    'id' => $documentId,
+                    'documentMediaFileId' => $mediaId,
                 ],
             ],
             $context
         );
 
-        $finishedUuids[] = $uuid;
+        $finishedUuids[] = $documentId;
     }
 
     private function handleFailedRequest(
