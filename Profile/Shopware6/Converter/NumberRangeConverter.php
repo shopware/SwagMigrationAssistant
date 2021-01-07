@@ -63,8 +63,10 @@ abstract class NumberRangeConverter extends ShopwareConverter
                 $this->checkForExistingNumberRange($converted);
             }
 
-            foreach ($converted['numberRangeSalesChannels'] as &$numberRangeSalesChannel) {
-                $numberRangeSalesChannel['numberRangeTypeId'] = $typeUuid;
+            if (isset($converted['numberRangeSalesChannels'])) {
+                foreach ($converted['numberRangeSalesChannels'] as &$numberRangeSalesChannel) {
+                    $numberRangeSalesChannel['numberRangeTypeId'] = $typeUuid;
+                }
             }
 
             unset($numberRangeSalesChannel, $converted['type']);

@@ -9,6 +9,7 @@ namespace SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Promise\PromiseInterface;
 use Psr\Http\Message\ResponseInterface;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -73,6 +74,31 @@ class AuthClient implements AuthClientInterface
             $this->renewBearerToken();
 
             return $this->apiClient->get($endpoint, \array_merge($config, [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->bearerToken,
+                ],
+            ]));
+        }
+    }
+
+    public function getAsync(string $endpoint, array $config): PromiseInterface
+    {
+        $this->setupBearerTokenIfNeeded();
+
+        try {
+            return $this->apiClient->getAsync($endpoint, \array_merge($config, [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->bearerToken,
+                ],
+            ]));
+        } catch (ClientException $clientException) {
+            if ($clientException->getCode() !== Response::HTTP_UNAUTHORIZED) {
+                throw $clientException;
+            }
+
+            $this->renewBearerToken();
+
+            return $this->apiClient->getAsync($endpoint, \array_merge($config, [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->bearerToken,
                 ],

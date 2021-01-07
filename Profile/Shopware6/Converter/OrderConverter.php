@@ -61,6 +61,10 @@ abstract class OrderConverter extends ShopwareConverter
             );
             unset($delivery['stateMachineState']);
 
+            if (isset($delivery['shippingOrderAddress']['countryStateId'])) {
+                $delivery['shippingOrderAddress']['countryStateId'] = $this->getMappingIdFacade(DefaultEntities::COUNTRY_STATE, $delivery['shippingOrderAddress']['countryStateId']);
+            }
+
             $delivery['shippingOrderAddress']['countryId'] = $this->getMappingIdFacade(DefaultEntities::COUNTRY, $delivery['shippingOrderAddress']['countryId']);
             $delivery['shippingOrderAddress']['salutationId'] = $this->getMappingIdFacade(DefaultEntities::SALUTATION, $delivery['shippingOrderAddress']['salutationId']);
         }
@@ -94,6 +98,13 @@ abstract class OrderConverter extends ShopwareConverter
 
         $this->updateAssociationIds(
             $converted['addresses'],
+            DefaultEntities::COUNTRY_STATE,
+            'countryStateId',
+            DefaultEntities::ORDER
+        );
+
+        $this->updateAssociationIds(
+            $converted['addresses'],
             DefaultEntities::SALUTATION,
             'salutationId',
             DefaultEntities::ORDER
@@ -107,6 +118,13 @@ abstract class OrderConverter extends ShopwareConverter
             false,
             true
         );
+
+        foreach ($converted['lineItems'] as &$lineItem) {
+            if (!isset($lineItem['productId'])) {
+                unset($lineItem['referencedId']);
+            }
+        }
+        unset($lineItem);
 
         $this->updateAssociationIds(
             $converted['lineItems'],

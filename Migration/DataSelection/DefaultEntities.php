@@ -99,6 +99,8 @@ final class DefaultEntities
 
     public const ORDER_DOCUMENT = 'order_document';
 
+    public const ORDER_DOCUMENT_GENERATED = 'order_document_generated';
+
     public const ORDER_DOCUMENT_BASE_CONFIG = 'order_document_base_config';
 
     public const ORDER_DOCUMENT_CUSTOM_FIELD = 'order_document_custom_field';
