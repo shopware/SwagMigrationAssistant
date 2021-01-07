@@ -11,6 +11,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Routing\Annotation\Acl;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\Framework\Routing\Exception\MissingRequestParameterException;
+use SwagMigrationAssistant\DataProvider\Provider\GenerateDocumentProvider;
 use SwagMigrationAssistant\DataProvider\Provider\ProviderRegistryInterface;
 use SwagMigrationAssistant\DataProvider\Service\EnvironmentServiceInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -33,12 +34,19 @@ class DataProviderController
      */
     private $environmentService;
 
+    /**
+     * @var GenerateDocumentProvider
+     */
+    private $generateDocumentProvider;
+
     public function __construct(
         ProviderRegistryInterface $providerRegistry,
-        EnvironmentServiceInterface $environmentService
+        EnvironmentServiceInterface $environmentService,
+        GenerateDocumentProvider $generateDocumentProvider
     ) {
         $this->providerRegistry = $providerRegistry;
         $this->environmentService = $environmentService;
+        $this->generateDocumentProvider = $generateDocumentProvider;
     }
 
     /**
@@ -110,5 +118,22 @@ class DataProviderController
         $data = $provider->getProvidedTable($context);
 
         return new JsonResponse($data);
+    }
+
+    /**
+     * @Route("/api/v{version}/_action/data-provider/generate-document", name="api.admin.data-provider.generate-document", methods={"GET"})
+     * @Acl({"admin"})
+     */
+    public function generateDocument(Request $request, Context $context): JsonResponse
+    {
+        $identifier = $request->query->get('identifier');
+
+        if ($identifier === null) {
+            throw new MissingRequestParameterException('identifier');
+        }
+
+        $documentData = $this->generateDocumentProvider->generateDocument($identifier, $context);
+
+        return new JsonResponse($documentData);
     }
 }

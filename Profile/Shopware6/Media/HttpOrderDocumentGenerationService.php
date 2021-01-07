@@ -28,13 +28,6 @@ use SwagMigrationAssistant\Profile\Shopware\Media\BaseMediaService;
 use SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection\AuthClient;
 use SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection\ConnectionFactoryInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6ProfileInterface;
-use function array_filter;
-use function array_pop;
-use function array_values;
-use function is_dir;
-use function json_decode;
-use function mb_strtolower;
-use function mkdir;
 
 class HttpOrderDocumentGenerationService extends BaseMediaService implements MediaFileProcessorInterface
 {
@@ -113,7 +106,6 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
 
         $this->connection = $connection;
 
-        // Media are documents
         foreach ($workload as $work) {
             $mappedWorkload[$work->getMediaId()] = $work;
             $documentIds[] = $work->getMediaId();
@@ -130,7 +122,6 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
             return $workload;
         }
 
-        // MediaFiles are documents
         $documents = $this->getMediaFiles($documentIds, $runId);
 
         //Do download requests and store the promises
@@ -280,8 +271,14 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
             &$mediaFileId,
             $mediaId
         ): void {
+            $clearFileBlob = \base64_decode($fileBlob, true);
+
+            if ($clearFileBlob === false) {
+                return;
+            }
+
             $mediaFileId = $this->mediaService->saveFile(
-                \base64_decode($fileBlob, true),
+                $clearFileBlob,
                 'pdf',
                 $fileContentType,
                 $fileName,
