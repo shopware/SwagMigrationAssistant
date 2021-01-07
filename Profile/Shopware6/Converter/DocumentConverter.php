@@ -62,6 +62,7 @@ abstract class DocumentConverter extends ShopwareMediaConverter
                     'uri' => $converted['generateUrl'],
                     'fileName' => $converted['id'],
                     'fileSize' => 0,
+                    // The mediaId is here the documentId
                     'mediaId' => $converted['id'],
                 ]
             );

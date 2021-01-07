@@ -101,6 +101,10 @@ final class DefaultEntities
 
     public const ORDER_DOCUMENT_GENERATED = 'order_document_generated';
 
+    public const ORDER_DOCUMENT_GENERATED_MEDIA = 'order_document_generated_media';
+
+    public const ORDER_DOCUMENT_GENERATED_MEDIA_FILE = 'order_document_generated_media_file';
+
     public const ORDER_DOCUMENT_BASE_CONFIG = 'order_document_base_config';
 
     public const ORDER_DOCUMENT_CUSTOM_FIELD = 'order_document_custom_field';

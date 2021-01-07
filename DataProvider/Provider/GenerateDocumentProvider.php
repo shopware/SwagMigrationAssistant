@@ -52,7 +52,7 @@ class GenerateDocumentProvider
         $this->documentGeneratorRegistry = $documentGeneratorRegistry;
     }
 
-    public function generateDocument(string $identifier, Context $context): array
+    public function generateDocument(string $identifier, Context $context): ?GeneratedDocument
     {
         $criteria = new Criteria([ $identifier ]);
         $criteria->addAssociation('documentType');
@@ -60,12 +60,12 @@ class GenerateDocumentProvider
         $document = $this->documentRepository->search($criteria, $context)->first();
 
         if ($document === null) {
-            return [];
+            return null;
         }
 
         $documentMediaFile = $document->getDocumentMediaFile();
         if ($document->isStatic() || ($documentMediaFile !== null && $documentMediaFile->getFileName() !== null)) {
-            return [];
+            return null;
         }
 
         $config = DocumentConfigurationFactory::createConfiguration($document->getConfig());
@@ -79,7 +79,7 @@ class GenerateDocumentProvider
 
         $documentType = $document->getDocumentType();
         if ($documentType === null) {
-            return [];
+            return null;
         }
 
         $documentGenerator = $this->documentGeneratorRegistry->getGenerator(
@@ -89,7 +89,7 @@ class GenerateDocumentProvider
         $order = $this->getOrderById($document->getOrderId(), $document->getOrderVersionId(), $context);
 
         if ($order === null) {
-            return [];
+            return null;
         }
 
         $generatedDocument->setHtml($documentGenerator->generate($order, $config, $context));
@@ -97,11 +97,7 @@ class GenerateDocumentProvider
         $fileBlob = $fileGenerator->generate($generatedDocument);
         $generatedDocument->setFileBlob($fileBlob);
 
-        return [
-            'file_blob' => \base64_encode($generatedDocument->getFileBlob()),
-            'file_name' => $generatedDocument->getFilename(),
-            'file_content_type' => $generatedDocument->getContentType()
-        ];
+        return $generatedDocument;
     }
 
     private function getOrderById(string $orderId, string $versionId, Context $context): ?OrderEntity

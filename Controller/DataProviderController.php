@@ -132,8 +132,16 @@ class DataProviderController
             throw new MissingRequestParameterException('identifier');
         }
 
-        $documentData = $this->generateDocumentProvider->generateDocument($identifier, $context);
+        $generatedDocument = $this->generateDocumentProvider->generateDocument($identifier, $context);
 
-        return new JsonResponse($documentData);
+        if ($generatedDocument === null) {
+            throw new \Exception('Document could not be generated.');
+        }
+
+        return new JsonResponse([
+            'file_blob' => \base64_encode($generatedDocument->getFileBlob()),
+            'file_name' => $generatedDocument->getFilename(),
+            'file_content_type' => $generatedDocument->getContentType(),
+        ]);
     }
 }
