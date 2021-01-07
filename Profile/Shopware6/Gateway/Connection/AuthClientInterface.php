@@ -7,9 +7,12 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection;
 
+use GuzzleHttp\Promise\PromiseInterface;
 use Psr\Http\Message\ResponseInterface;
 
 interface AuthClientInterface
 {
     public function getRequest(string $endpoint, array $config): ResponseInterface;
+
+    public function getAsync(string $endpoint, array $config): PromiseInterface;
 }

@@ -412,6 +412,10 @@
             <tag name="shopware.migration.data_set"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\OrderDocumentGeneratedDataSet">
+            <tag name="shopware.migration.data_set"/>
+        </service>
+
         <!-- premapping -->
         <service id="SwagMigrationAssistant\Profile\Shopware6\Premapping\PaymentMethodReader">
             <argument type="service" id="payment_method.repository"/>
@@ -829,6 +833,17 @@
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Media\HttpOrderDocumentService" parent="SwagMigrationAssistant\Profile\Shopware6\Media\HttpMediaDownloadService">
+            <tag name="shopware.migration.media_file_processor"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware6\Media\HttpOrderDocumentGenerationService" parent="SwagMigrationAssistant\Profile\Shopware\Media\BaseMediaService">
+            <argument type="service" id="document.repository"/>
+            <argument type="service" id="swag_migration_media_file.repository"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
+            <argument type="service" id="SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingService"/>
+            <argument type="service" id="Shopware\Core\Content\Media\MediaService"/>
+            <argument type="service" id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection\ConnectionFactory"/>
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
             <tag name="shopware.migration.media_file_processor"/>
         </service>
     </services>

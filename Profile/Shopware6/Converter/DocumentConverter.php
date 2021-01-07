@@ -20,6 +20,8 @@ abstract class DocumentConverter extends ShopwareMediaConverter
         foreach ($converted as $document) {
             if (isset($document['documentMediaFile']['id'])) {
                 $mediaIds[] = $document['documentMediaFile']['id'];
+            } else {
+                $mediaIds[] = $document['id'];
             }
         }
 
@@ -50,6 +52,21 @@ abstract class DocumentConverter extends ShopwareMediaConverter
 
         if (isset($converted['documentMediaFile'])) {
             $this->updateMediaAssociation($converted['documentMediaFile'], DocumentDataSet::getEntity());
+        }
+
+        if (isset($converted['generateUrl'])) {
+            $this->mediaFileService->saveMediaFile(
+                [
+                    'runId' => $this->runId,
+                    'entity' => DefaultEntities::ORDER_DOCUMENT_GENERATED,
+                    'uri' => $converted['generateUrl'],
+                    'fileName' => $converted['id'],
+                    'fileSize' => 0,
+                    'mediaId' => $converted['id'],
+                ]
+            );
+
+            unset($converted['generateUrl']);
         }
 
         return new ConvertStruct($converted, null, $this->mainMapping['id'] ?? null);
