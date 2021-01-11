@@ -149,7 +149,6 @@ return [
         [
             'orderId' => 'efaf7e8752b242baa67ed795d18f785d',
             'identifier' => '59708e360b82402bbf3ceb2b7bff4ebb',
-            'referencedId' => '59708e360b82402bbf3ceb2b7bff4ebb',
             'quantity' => 2,
             'unitPrice' => 329.81,
             'totalPrice' => 659.62,
@@ -196,7 +195,6 @@ return [
                 'isNew' => false,
                 'purchasePrice' => 90.85,
                 'purchasePrices' => '{"currencyId":"b7d2554b0ce847cd82f3ac9bd1c0dfca","net":90.85,"gross":90.85,"linked":true,"listPrice":null,"extensions":[]}',
-                'productNumber' => '63c0720dd1d748efa94220256e2bb5c7',
                 'manufacturerId' => '3634c8f559524c85b59acadfd419a93a',
                 'taxId' => 'ddeda88505ca4ce39799b51ccfab5cac',
                 'categoryIds' => [
@@ -229,7 +227,6 @@ return [
         [
             'orderId' => 'efaf7e8752b242baa67ed795d18f785d',
             'identifier' => '553274a0ccb641488c5ba5801414d2bc',
-            'referencedId' => '553274a0ccb641488c5ba5801414d2bc',
             'quantity' => 1,
             'unitPrice' => 590.4953271028038,
             'totalPrice' => 590.5,
@@ -276,7 +273,6 @@ return [
                 'isNew' => false,
                 'purchasePrice' => 76.94,
                 'purchasePrices' => '{"currencyId":"b7d2554b0ce847cd82f3ac9bd1c0dfca","net":71.90654205607476,"gross":76.94,"linked":true,"listPrice":null,"extensions":[]}',
-                'productNumber' => 'f5cfda12b99e401aaa6de8ec4f78d9b7',
                 'manufacturerId' => 'f5ef1ab8d7ef42d8aa349fb09d1949be',
                 'taxId' => 'dfdd3af489d14e3f9fe45966c43c5182',
                 'categoryIds' => [
@@ -310,7 +306,6 @@ return [
         2 => [
             'orderId' => 'efaf7e8752b242baa67ed795d18f785d',
             'identifier' => '575eb6fe95364285b26a5eb57d5ab24e',
-            'referencedId' => '575eb6fe95364285b26a5eb57d5ab24e',
             'quantity' => 5,
             'unitPrice' => 576.6355140186915,
             'totalPrice' => 2883.18,
@@ -356,7 +351,6 @@ return [
                 'isNew' => false,
                 'purchasePrice' => 88.41,
                 'purchasePrices' => '{"currencyId":"b7d2554b0ce847cd82f3ac9bd1c0dfca","net":82.62616822429906,"gross":88.41,"linked":true,"listPrice":null,"extensions":[]}',
-                'productNumber' => 'e4a50fc7df7e44b191daa3258712e415',
                 'manufacturerId' => '3634c8f559524c85b59acadfd419a93a',
                 'taxId' => 'dfdd3af489d14e3f9fe45966c43c5182',
                 'categoryIds' => [
