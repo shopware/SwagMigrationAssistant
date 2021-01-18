@@ -744,7 +744,7 @@ abstract class OrderConverter extends ShopwareConverter
         }
 
         if (isset($data['trackingcode']) && $data['trackingcode'] !== '') {
-            $delivery['trackingCode'] = $data['trackingcode'];
+            $delivery['trackingCodes'] = \explode(',', $data['trackingcode']);
         }
 
         if (isset($converted['lineItems'])) {
