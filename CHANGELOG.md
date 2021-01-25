@@ -5,6 +5,7 @@
 - MIG-187 - Improves the migration of media without filename
 - MIG-188 - Improves media download stability
 - MIG-189 - Fix migration of product line items
+- Improve the extendability of the plugin
 
 # 2.2.2
 - MIG-110 - Improves the migration of media
