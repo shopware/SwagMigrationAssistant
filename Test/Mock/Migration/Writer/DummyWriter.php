@@ -17,7 +17,8 @@ class DummyWriter implements WriterInterface
         return 'dummy';
     }
 
-    public function writeData(array $data, Context $context): void
+    public function writeData(array $data, Context $context): ?array
     {
+        return null;
     }
 }

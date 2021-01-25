@@ -6,6 +6,7 @@
 - MIG-188 - Improves media download stability
 - MIG-189 - Fix migration of product line items
 - MIG-194 - Optimizes sales channel migration
+- MIG-196 - Improve the extendability of the plugin
 
 # 2.2.2
 - MIG-110 - Improves the migration of media

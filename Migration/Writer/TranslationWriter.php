@@ -36,7 +36,7 @@ class TranslationWriter implements WriterInterface
         return DefaultEntities::TRANSLATION;
     }
 
-    public function writeData(array $data, Context $context): void
+    public function writeData(array $data, Context $context): array
     {
         $translationArray = [];
         foreach ($data as $translationData) {
@@ -45,14 +45,17 @@ class TranslationWriter implements WriterInterface
             $translationArray[$entityDefinitionClass][] = $translationData;
         }
 
+        $writeResults = [];
         foreach ($translationArray as $entityDefinitionClass => $translation) {
-            $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($entityDefinitionClass, $translation): void {
-                $this->entityWriter->upsert(
+            $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($entityDefinitionClass, $translation, &$writeResults): void {
+                $writeResults[] = $this->entityWriter->upsert(
                     $this->registry->get($entityDefinitionClass),
                     $translation,
                     WriteContext::createFromContext($context)
                 );
             });
         }
+
+        return $writeResults;
     }
 }

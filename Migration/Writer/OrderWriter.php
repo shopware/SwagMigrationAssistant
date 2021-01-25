@@ -10,32 +10,23 @@ namespace SwagMigrationAssistant\Migration\Writer;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
 use Shopware\Core\Framework\Struct\Serializer\StructNormalizer;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 
-class OrderWriter implements WriterInterface
+class OrderWriter extends AbstractWriter
 {
-    /**
-     * @var EntityWriterInterface
-     */
-    private $entityWriter;
-
     /**
      * @var StructNormalizer
      */
     private $structNormalizer;
 
-    /**
-     * @var EntityDefinition
-     */
-    private $definition;
-
-    public function __construct(EntityWriterInterface $entityWriter, StructNormalizer $structNormalizer, EntityDefinition $definition)
-    {
-        $this->entityWriter = $entityWriter;
+    public function __construct(
+        EntityWriterInterface $entityWriter,
+        EntityDefinition $definition,
+        StructNormalizer $structNormalizer
+    ) {
+        parent::__construct($entityWriter, $definition);
         $this->structNormalizer = $structNormalizer;
-        $this->definition = $definition;
     }
 
     public function supports(): string
@@ -43,7 +34,7 @@ class OrderWriter implements WriterInterface
         return DefaultEntities::ORDER;
     }
 
-    public function writeData(array $data, Context $context): void
+    public function writeData(array $data, Context $context): array
     {
         foreach ($data as &$item) {
             foreach ($item['transactions'] as &$transaction) {
@@ -53,12 +44,6 @@ class OrderWriter implements WriterInterface
         }
         unset($item);
 
-        $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($data): void {
-            $this->entityWriter->upsert(
-                $this->definition,
-                $data,
-                WriteContext::createFromContext($context)
-            );
-        });
+        return parent::writeData($data, $context);
     }
 }
