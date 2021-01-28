@@ -6,6 +6,7 @@
 - MIG-188 - Verbessert die Stabilität des Mediendownloads
 - MIG-189 - Korrigiert die Migration der Produkt-Bestellpositionen
 - MIG-194 - Optimiert die Migration von Verkaufskanälen
+- MIG-196 - Verbessert die Erweiterbarkeit des Plugins
 
 # 2.2.2
 - MIG-110 - Verbessert die Migration der Medien

@@ -81,10 +81,11 @@
             <tag name="shopware.migration.writer"/>
         </service>
 
-        <service id="SwagMigrationAssistant\Migration\Writer\OrderWriter">
+        <service id="SwagMigrationAssistant\Migration\Writer\OrderWriter"
+                 parent="SwagMigrationAssistant\Migration\Writer\AbstractWriter">
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
-            <argument type="service" id="Shopware\Core\Framework\Struct\Serializer\StructNormalizer"/>
             <argument type="service" id="Shopware\Core\Checkout\Order\OrderDefinition"/>
+            <argument type="service" id="Shopware\Core\Framework\Struct\Serializer\StructNormalizer"/>
             <tag name="shopware.migration.writer"/>
         </service>
 
