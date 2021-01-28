@@ -302,7 +302,22 @@ abstract class SalesChannelConverter extends ShopwareConverter
             ->setLimit(1)
             ->addFilter(new EqualsFilter('active', true));
 
-        return $this->shippingMethodRepo->searchIds($criteria, Context::createDefaultContext())->firstId() ?? '';
+        $id = $this->shippingMethodRepo->searchIds($criteria, Context::createDefaultContext())->firstId() ?? '';
+
+        if ($id === '') {
+            $mapping = $this->mappingService->getMapping(
+                $this->connectionId,
+                DefaultEntities::SHIPPING_METHOD,
+                'default_shipping_method',
+                $this->context
+            );
+
+            if ($mapping !== null) {
+                $id = $mapping['entityUuid'];
+            }
+        }
+
+        return $id;
     }
 
     protected function getFirstActivePaymentMethodId(): string
@@ -312,7 +327,22 @@ abstract class SalesChannelConverter extends ShopwareConverter
             ->addFilter(new EqualsFilter('active', true))
             ->addSorting(new FieldSorting('position'));
 
-        return $this->paymentRepository->searchIds($criteria, Context::createDefaultContext())->firstId() ?? '';
+        $id = $this->paymentRepository->searchIds($criteria, Context::createDefaultContext())->firstId() ?? '';
+
+        if ($id === '') {
+            $mapping = $this->mappingService->getMapping(
+                $this->connectionId,
+                DefaultEntities::PAYMENT_METHOD,
+                'default_payment_method',
+                $this->context
+            );
+
+            if ($mapping !== null) {
+                $id = $mapping['entityUuid'];
+            }
+        }
+
+        return $id;
     }
 
     protected function getFirstActiveCountryId(): string
