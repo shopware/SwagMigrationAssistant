@@ -66,7 +66,7 @@ class AbstractWriterTest extends TestCase
         $this->dataToWrite = ['test' => '1234'];
 
         $this->entityWriter
-            ->expects(self::once())
+            ->expects(static::once())
             ->method('upsert')
             ->with(
                 $this->entityDefinition,
@@ -83,6 +83,6 @@ class AbstractWriterTest extends TestCase
 
         $result = $this->abstractWriter->writeData($this->dataToWrite, $this->context);
 
-        self::assertEquals(['test' => '1234'], $result);
+        static::assertEquals(['test' => '1234'], $result);
     }
 }
