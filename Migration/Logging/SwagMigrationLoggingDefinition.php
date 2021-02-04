@@ -33,14 +33,14 @@ class SwagMigrationLoggingDefinition extends EntityDefinition
     public function defineFields(): FieldCollection
     {
         return new FieldCollection([
-            (new IdField('id', 'id'))->setFlags(new PrimaryKey(), new Required()),
-            (new StringField('level', 'level', 64))->setFlags(new Required()),
-            (new StringField('code', 'code'))->setFlags(new Required()),
-            (new LongTextField('title', 'title'))->setFlags(new Required()),
-            (new LongTextField('description', 'description'))->setFlags(new Required()),
-            (new JsonField('parameters', 'parameters'))->setFlags(new Required()),
-            (new StringField('title_snippet', 'titleSnippet'))->setFlags(new Required()),
-            (new StringField('description_snippet', 'descriptionSnippet'))->setFlags(new Required()),
+            (new IdField('id', 'id'))->addFlags(new PrimaryKey(), new Required()),
+            (new StringField('level', 'level', 64))->addFlags(new Required()),
+            (new StringField('code', 'code'))->addFlags(new Required()),
+            (new LongTextField('title', 'title'))->addFlags(new Required()),
+            (new LongTextField('description', 'description'))->addFlags(new Required()),
+            (new JsonField('parameters', 'parameters'))->addFlags(new Required()),
+            (new StringField('title_snippet', 'titleSnippet'))->addFlags(new Required()),
+            (new StringField('description_snippet', 'descriptionSnippet'))->addFlags(new Required()),
             new StringField('entity', 'entity', 128),
             new StringField('source_id', 'sourceId', 64),
             new FkField('run_id', 'runId', SwagMigrationRunDefinition::class),
