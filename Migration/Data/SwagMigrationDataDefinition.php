@@ -35,11 +35,11 @@ class SwagMigrationDataDefinition extends EntityDefinition
     public function defineFields(): FieldCollection
     {
         return new FieldCollection([
-            (new IdField('id', 'id'))->setFlags(new PrimaryKey(), new Required()),
-            (new FkField('run_id', 'runId', SwagMigrationRunDefinition::class))->setFlags(new Required()),
+            (new IdField('id', 'id'))->addFlags(new PrimaryKey(), new Required()),
+            (new FkField('run_id', 'runId', SwagMigrationRunDefinition::class))->addFlags(new Required()),
             (new IntField('auto_increment', 'autoIncrement'))->addFlags(new WriteProtected()),
-            (new StringField('entity', 'entity'))->setFlags(new Required()),
-            (new JsonField('raw', 'raw'))->setFlags(new Required()),
+            (new StringField('entity', 'entity'))->addFlags(new Required()),
+            (new JsonField('raw', 'raw'))->addFlags(new Required()),
             new JsonField('converted', 'converted'),
             new JsonField('unmapped', 'unmapped'),
             new IdField('mapping_uuid', 'mappingUuid'),

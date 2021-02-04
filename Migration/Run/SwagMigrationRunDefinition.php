@@ -36,14 +36,14 @@ class SwagMigrationRunDefinition extends EntityDefinition
     public function defineFields(): FieldCollection
     {
         return new FieldCollection([
-            (new IdField('id', 'id'))->setFlags(new PrimaryKey(), new Required()),
+            (new IdField('id', 'id'))->addFlags(new PrimaryKey(), new Required()),
             new FkField('connection_id', 'connectionId', SwagMigrationConnectionDefinition::class),
             new JsonField('environment_information', 'environmentInformation'),
             new JsonField('progress', 'progress'),
             new JsonField('premapping', 'premapping'),
             new StringField('user_id', 'userId'),
             new StringField('access_token', 'accessToken'),
-            (new StringField('status', 'status'))->setFlags(new Required()),
+            (new StringField('status', 'status'))->addFlags(new Required()),
             new CreatedAtField(),
             new UpdatedAtField(),
             new ManyToOneAssociationField('connection', 'connection_id', SwagMigrationConnectionDefinition::class, 'id', true),

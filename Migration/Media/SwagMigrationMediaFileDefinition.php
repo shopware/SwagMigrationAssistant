@@ -33,13 +33,13 @@ class SwagMigrationMediaFileDefinition extends EntityDefinition
     public function defineFields(): FieldCollection
     {
         return new FieldCollection([
-            (new IdField('id', 'id'))->setFlags(new PrimaryKey(), new Required()),
-            (new FkField('run_id', 'runId', SwagMigrationRunDefinition::class))->setFlags(new Required()),
-            (new StringField('entity', 'entity'))->setFlags(new Required()),
-            (new StringField('uri', 'uri'))->setFlags(new Required()),
-            (new StringField('file_name', 'fileName'))->setFlags(new Required()),
-            (new IntField('file_size', 'fileSize'))->setFlags(new Required()),
-            (new IdField('media_id', 'mediaId'))->setFlags(new Required()),
+            (new IdField('id', 'id'))->addFlags(new PrimaryKey(), new Required()),
+            (new FkField('run_id', 'runId', SwagMigrationRunDefinition::class))->addFlags(new Required()),
+            (new StringField('entity', 'entity'))->addFlags(new Required()),
+            (new StringField('uri', 'uri'))->addFlags(new Required()),
+            (new StringField('file_name', 'fileName'))->addFlags(new Required()),
+            (new IntField('file_size', 'fileSize'))->addFlags(new Required()),
+            (new IdField('media_id', 'mediaId'))->addFlags(new Required()),
             new BoolField('written', 'written'),
             new BoolField('processed', 'processed'),
             new BoolField('process_failure', 'processFailure'),

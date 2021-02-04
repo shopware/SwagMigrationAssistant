@@ -32,9 +32,9 @@ class SwagMigrationMappingDefinition extends EntityDefinition
     public function defineFields(): FieldCollection
     {
         return new FieldCollection([
-            (new IdField('id', 'id'))->setFlags(new PrimaryKey(), new Required()),
-            (new FkField('connection_id', 'connectionId', SwagMigrationConnectionDefinition::class))->setFlags(new Required()),
-            (new StringField('entity', 'entity'))->setFlags(new Required()),
+            (new IdField('id', 'id'))->addFlags(new PrimaryKey(), new Required()),
+            (new FkField('connection_id', 'connectionId', SwagMigrationConnectionDefinition::class))->addFlags(new Required()),
+            (new StringField('entity', 'entity'))->addFlags(new Required()),
             new StringField('old_identifier', 'oldIdentifier'),
             new IdField('entity_uuid', 'entityUuid'),
             new StringField('entity_value', 'entityValue'),
