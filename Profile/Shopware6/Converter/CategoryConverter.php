@@ -46,7 +46,7 @@ abstract class CategoryConverter extends ShopwareMediaConverter
         }
 
         unset(
-            // ToDo implement if these associations are migrated
+            // handled when layouts selected for migration
             $converted['cmsPageId']
         );
 

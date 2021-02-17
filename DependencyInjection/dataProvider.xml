@@ -35,6 +35,11 @@
             <tag name="shopware.dataProvider.provider"/>
         </service>
 
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\CategoryCmsPageAssociationProvider">
+            <argument type="service" id="category.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
         <service id="SwagMigrationAssistant\DataProvider\Provider\Data\CurrencyProvider">
             <argument type="service" id="currency.repository"/>
             <tag name="shopware.dataProvider.provider"/>
