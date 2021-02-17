@@ -65,6 +65,9 @@
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\CategoryAssociationConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\CategoryCmsPageAssociationConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\MediaFolderConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
 
@@ -252,6 +255,10 @@
             <tag name="shopware.migration.data_set"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CategoryCmsPageAssociationDataSet">
+            <tag name="shopware.migration.data_set"/>
+        </service>
+
         <service id="SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CurrencyDataSet">
             <tag name="shopware.migration.data_set"/>
         </service>
@@ -425,6 +432,11 @@
 
         <!-- API reader -->
         <service id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\CategoryAssociationReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\ApiReader">
+            <tag name="shopware.migration.reader"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\CategoryCmsPageAssociationReader"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\ApiReader">
             <tag name="shopware.migration.reader"/>
         </service>
@@ -653,6 +665,13 @@
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Writer\CategoryAssociationWriter"
+                 parent="SwagMigrationAssistant\Migration\Writer\AbstractWriter">
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
+            <argument type="service" id="Shopware\Core\Content\Category\CategoryDefinition"/>
+            <tag name="shopware.migration.writer"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware6\Writer\CategoryCmsPageAssociationWriter"
                  parent="SwagMigrationAssistant\Migration\Writer\AbstractWriter">
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
             <argument type="service" id="Shopware\Core\Content\Category\CategoryDefinition"/>

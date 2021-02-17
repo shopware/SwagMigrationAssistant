@@ -45,7 +45,6 @@ class CmsPageProvider extends AbstractProvider
         $criteria->addAssociation('sections.blocks.slots.translations');
         $criteria->addSorting(new FieldSorting('id'));
         $criteria
-            ->addFilter(new EqualsFilter('locked', false))
             ->getAssociation('sections')
             ->addFilter(new EqualsFilter('locked', false))
             ->getAssociation('blocks')
@@ -95,7 +94,6 @@ class CmsPageProvider extends AbstractProvider
     public function getProvidedTotal(Context $context): int
     {
         $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('locked', false));
 
         return $this->readTotalFromRepo($this->cmsPageRepo, $context, $criteria);
     }

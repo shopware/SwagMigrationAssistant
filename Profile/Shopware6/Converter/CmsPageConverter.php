@@ -16,6 +16,20 @@ abstract class CmsPageConverter extends ShopwareConverter
     {
         $converted = $data;
 
+        // handle locked default layouts
+        if (isset($converted['locked']) && $converted['locked'] === true) {
+            $this->mappingService->mapLockedCmsPageUuidByNameAndType(
+                \array_column($converted['translations'], 'name'),
+                $converted['type'],
+                $data['id'],
+                $this->connectionId,
+                $this->migrationContext,
+                $this->context
+            );
+
+            return new ConvertStruct(null, $data);
+        }
+
         if (isset($converted['translations'])) {
             $this->updateAssociationIds(
                 $converted['translations'],

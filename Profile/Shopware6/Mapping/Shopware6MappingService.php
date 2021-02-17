@@ -561,6 +561,59 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
         return $oldIdentifier;
     }
 
+    public function mapLockedCmsPageUuidByNameAndType(
+        array $names,
+        string $type,
+        string $oldIdentifier,
+        string $connectionId,
+        MigrationContextInterface $migrationContext,
+        Context $context
+    ): void {
+        $cmsPageMapping = $this->getMapping($connectionId, DefaultEntities::CMS_PAGE, $oldIdentifier, $context);
+
+        if ($cmsPageMapping !== null) {
+            return;
+        }
+
+        /** @var CmsPageCollection $cmsPages */
+        $cmsPages = $context->disableCache(function (Context $context) use ($names, $type) {
+            $criteria = new Criteria();
+            $criteria->addAssociation('translations');
+            $criteria->addFilter(new EqualsAnyFilter('translations.name', $names));
+            $criteria->addFilter(new EqualsFilter('type', $type));
+            $criteria->addFilter(new EqualsFilter('locked', true));
+
+            return $this->cmsPageRepo->search($criteria, $context)->getEntities();
+        });
+
+        foreach ($cmsPages as $cmsPage) {
+            $translations = $cmsPage->getTranslations();
+            if ($translations === null) {
+                continue;
+            }
+
+            $newNames = \array_map(static function (CmsPageTranslationEntity $translation) {
+                return $translation->getName();
+            }, $translations->getElements());
+
+            if (\count(\array_diff($names, $newNames)) > 0 && \count($names) === \count($newNames)) {
+                continue;
+            }
+
+            $this->saveMapping(
+                [
+                    'id' => Uuid::randomHex(),
+                    'connectionId' => $connectionId,
+                    'entity' => DefaultEntities::CMS_PAGE,
+                    'oldIdentifier' => $oldIdentifier,
+                    'entityUuid' => $cmsPage->getId(),
+                ]
+            );
+
+            return;
+        }
+    }
+
     public function getCountryStateUuid(string $oldIdentifier, string $countryIso, string $countryIso3, string $countryStateCode, string $connectionId, Context $context): ?string
     {
         $countryStateMapping = $this->getMapping($connectionId, DefaultEntities::COUNTRY_STATE, $oldIdentifier, $context);
