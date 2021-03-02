@@ -19,7 +19,7 @@ class Migration1593494859AddEntityUuidConnectionKeyToMapping extends MigrationSt
 
     public function update(Connection $connection): void
     {
-        $connection->executeUpdate('ALTER TABLE swag_migration_mapping ADD INDEX `idx.swag_migration_mapping.entity_uuid_connection_id` (`entity_uuid`, `connection_id`);');
+        $connection->executeStatement('ALTER TABLE swag_migration_mapping ADD INDEX `idx.swag_migration_mapping.entity_uuid_connection_id` (`entity_uuid`, `connection_id`);');
     }
 
     public function updateDestructive(Connection $connection): void

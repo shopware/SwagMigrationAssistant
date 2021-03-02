@@ -30,13 +30,19 @@ class ApiEnvironmentReaderTest extends TestCase
 
     private $body;
 
-    /** @var RequestException */
+    /**
+     * @var RequestException
+     */
     private $sslInsecureException;
 
-    /** @var ShopwareHttpException */
+    /**
+     * @var ShopwareHttpException
+     */
     private $sslInsecureShopwareException;
 
-    /** @var ShopwareHttpException */
+    /**
+     * @var ShopwareHttpException
+     */
     private $gatewayReadException;
 
     private $error = [
@@ -86,7 +92,7 @@ class ApiEnvironmentReaderTest extends TestCase
         );
 
         $mock = $this->getMockBuilder(ConnectionFactory::class)->getMock();
-        $mock->expects(static::once())
+        $mock->expects(static::exactly(2))
             ->method('createApiClient')
             ->with($migrationContext)
             ->willReturn($client);
@@ -119,7 +125,7 @@ class ApiEnvironmentReaderTest extends TestCase
             new Shopware55Profile()
         );
         $mock = $this->getMockBuilder(ConnectionFactory::class)->getMock();
-        $mock->expects(static::once())
+        $mock->expects(static::exactly(2))
             ->method('createApiClient')
             ->with($migrationContext)
             ->willReturn($client);
@@ -154,7 +160,7 @@ class ApiEnvironmentReaderTest extends TestCase
             new Shopware55Profile()
         );
         $mock = $this->getMockBuilder(ConnectionFactory::class)->getMock();
-        $mock->expects(static::once())
+        $mock->expects(static::exactly(2))
             ->method('createApiClient')
             ->with($migrationContext)
             ->willReturn($client);
@@ -185,7 +191,7 @@ class ApiEnvironmentReaderTest extends TestCase
             new Shopware55Profile()
         );
         $mock = $this->getMockBuilder(ConnectionFactory::class)->getMock();
-        $mock->expects(static::once())
+        $mock->expects(static::exactly(2))
             ->method('createApiClient')
             ->with($migrationContext)
             ->willReturn($client);
@@ -217,7 +223,7 @@ class ApiEnvironmentReaderTest extends TestCase
             new Shopware55Profile()
         );
         $mock = $this->getMockBuilder(ConnectionFactory::class)->getMock();
-        $mock->expects(static::once())
+        $mock->expects(static::exactly(2))
             ->method('createApiClient')
             ->with($migrationContext)
             ->willReturn($client);

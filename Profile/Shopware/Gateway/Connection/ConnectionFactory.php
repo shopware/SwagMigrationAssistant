@@ -14,7 +14,7 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 class ConnectionFactory implements ConnectionFactoryInterface
 {
-    public function createApiClient(MigrationContextInterface $migrationContext): ?Client
+    public function createApiClient(MigrationContextInterface $migrationContext, bool $verify = false): ?Client
     {
         $connection = $migrationContext->getConnection();
 
@@ -32,7 +32,7 @@ class ConnectionFactory implements ConnectionFactoryInterface
             'base_uri' => $credentials['endpoint'] . '/api/',
             'auth' => [$credentials['apiUser'], $credentials['apiKey'], 'digest'],
             'connect_timeout' => 5.0,
-            'verify' => false,
+            'verify' => $verify,
         ];
 
         return new Client($options);

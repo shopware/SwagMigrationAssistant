@@ -44,7 +44,7 @@ class CustomerGroupReader extends AbstractReader
         // represents the main language of the migrated shop
         $locale = $this->getDefaultShopLocale();
 
-        foreach ($customerGroups as $key => &$customerGroup) {
+        foreach ($customerGroups as &$customerGroup) {
             $customerGroup['_locale'] = \str_replace('_', '-', $locale);
             if (isset($discounts[$customerGroup['id']])) {
                 $customerGroup['discounts'] = $discounts[$customerGroup['id']];

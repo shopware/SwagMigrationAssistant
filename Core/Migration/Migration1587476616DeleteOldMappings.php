@@ -25,7 +25,7 @@ INNER JOIN swag_migration_connection ON profile_name IN ('shopware54', 'shopware
 WHERE entity = 'main_product_filter' OR entity = 'main_product_options'
 SQL;
 
-        $connection->executeUpdate($sql);
+        $connection->executeStatement($sql);
     }
 
     public function updateDestructive(Connection $connection): void

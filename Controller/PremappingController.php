@@ -54,7 +54,7 @@ class PremappingController extends AbstractController
     }
 
     /**
-     * @Route("/api/v{version}/_action/migration/generate-premapping", name="api.admin.migration.generate-premapping", methods={"POST"})
+     * @Route("/api/_action/migration/generate-premapping", name="api.admin.migration.generate-premapping", methods={"POST"})
      * @Acl({"admin"})
      */
     public function generatePremapping(Request $request, Context $context): JsonResponse
@@ -82,7 +82,7 @@ class PremappingController extends AbstractController
     }
 
     /**
-     * @Route("/api/v{version}/_action/migration/write-premapping", name="api.admin.migration.write-premapping", methods={"POST"})
+     * @Route("/api/_action/migration/write-premapping", name="api.admin.migration.write-premapping", methods={"POST"})
      * @Acl({"admin"})
      */
     public function writePremapping(Request $request, Context $context): JsonResponse

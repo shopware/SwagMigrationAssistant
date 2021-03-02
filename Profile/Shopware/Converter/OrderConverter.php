@@ -870,15 +870,12 @@ abstract class OrderConverter extends ShopwareConverter
                 $lineItem['priceDefinition'] = new QuantityPriceDefinition(
                     (float) $originalLineItem['price'],
                     $taxRules,
-                    $context->getCurrencyPrecision(),
-                    $lineItem['quantity'] ?? 1,
-                    true
+                    $lineItem['quantity'] ?? 1
                 );
 
                 if ($lineItem['type'] === LineItem::CREDIT_LINE_ITEM_TYPE) {
                     $lineItem['priceDefinition'] = new AbsolutePriceDefinition(
-                        (float) $originalLineItem['price'],
-                        $context->getCurrencyPrecision()
+                        (float) $originalLineItem['price']
                     );
                 }
             }

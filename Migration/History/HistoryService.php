@@ -155,10 +155,10 @@ class HistoryService implements HistoryServiceInterface
             throw new MigrationIsRunningException();
         }
 
-        $this->connection->executeUpdate('DELETE FROM swag_migration_logging WHERE run_id = :runId', ['runId' => Uuid::fromHexToBytes($runUuid)]);
-        $this->connection->executeUpdate('DELETE FROM swag_migration_data WHERE run_id = :runId', ['runId' => Uuid::fromHexToBytes($runUuid)]);
-        $this->connection->executeUpdate('DELETE FROM swag_migration_media_file WHERE run_id = :runId', ['runId' => Uuid::fromHexToBytes($runUuid)]);
-        $this->connection->executeUpdate('DELETE FROM swag_migration_run WHERE id = :runId', ['runId' => Uuid::fromHexToBytes($runUuid)]);
+        $this->connection->executeStatement('DELETE FROM swag_migration_logging WHERE run_id = :runId', ['runId' => Uuid::fromHexToBytes($runUuid)]);
+        $this->connection->executeStatement('DELETE FROM swag_migration_data WHERE run_id = :runId', ['runId' => Uuid::fromHexToBytes($runUuid)]);
+        $this->connection->executeStatement('DELETE FROM swag_migration_media_file WHERE run_id = :runId', ['runId' => Uuid::fromHexToBytes($runUuid)]);
+        $this->connection->executeStatement('DELETE FROM swag_migration_run WHERE id = :runId', ['runId' => Uuid::fromHexToBytes($runUuid)]);
     }
 
     public function isMediaProcessing(): bool

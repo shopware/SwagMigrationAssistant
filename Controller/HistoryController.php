@@ -38,7 +38,7 @@ class HistoryController extends AbstractController
     }
 
     /**
-     * @Route("/api/v{version}/migration/get-grouped-logs-of-run", name="api.admin.migration.get-grouped-logs-of-run", methods={"GET"})
+     * @Route("/api/migration/get-grouped-logs-of-run", name="api.admin.migration.get-grouped-logs-of-run", methods={"GET"})
      * @Acl({"admin"})
      */
     public function getGroupedLogsOfRun(Request $request, Context $context): JsonResponse
@@ -66,7 +66,7 @@ class HistoryController extends AbstractController
     }
 
     /**
-     * @Route("/api/v{version}/_action/migration/download-logs-of-run", name="api.admin.migration.download-logs-of-run", defaults={"auth_required"=false}, methods={"POST"})
+     * @Route("/api/_action/migration/download-logs-of-run", name="api.admin.migration.download-logs-of-run", defaults={"auth_required"=false}, methods={"POST"})
      * @Acl({"admin"})
      */
     public function downloadLogsOfRun(Request $request, Context $context): StreamedResponse
@@ -95,7 +95,7 @@ class HistoryController extends AbstractController
     }
 
     /**
-     * @Route("/api/v{version}/_action/migration/clear-data-of-run", name="api.admin.migration.clear-data-of-run", methods={"POST"})
+     * @Route("/api/_action/migration/clear-data-of-run", name="api.admin.migration.clear-data-of-run", methods={"POST"})
      * @Acl({"admin"})
      */
     public function clearDataOfRun(Request $request, Context $context): Response
@@ -116,7 +116,7 @@ class HistoryController extends AbstractController
     }
 
     /**
-     * @Route("/api/v{version}/_action/migration/is-media-processing", name="api.admin.migration.clear-logs-of-run", methods={"GET"})
+     * @Route("/api/_action/migration/is-media-processing", name="api.admin.migration.clear-logs-of-run", methods={"GET"})
      * @Acl({"admin"})
      */
     public function isMediaProcessing(): JsonResponse

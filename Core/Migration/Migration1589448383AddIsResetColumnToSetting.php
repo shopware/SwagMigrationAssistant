@@ -22,7 +22,7 @@ class Migration1589448383AddIsResetColumnToSetting extends MigrationStep
         $sql = <<<SQL
 ALTER TABLE `swag_migration_general_setting` ADD `is_reset` TINYINT(1)  NOT NULL DEFAULT '0' AFTER `selected_connection_id`;
 SQL;
-        $connection->executeUpdate($sql);
+        $connection->executeStatement($sql);
     }
 
     public function updateDestructive(Connection $connection): void

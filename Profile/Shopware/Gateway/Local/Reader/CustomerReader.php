@@ -113,7 +113,7 @@ class CustomerReader extends AbstractReader
         // represents the main language of the migrated shop
         $locale = $this->getDefaultShopLocale();
 
-        foreach ($customers as $key => &$customer) {
+        foreach ($customers as &$customer) {
             $customer['_locale'] = \str_replace('_', '-', $locale);
             if (isset($addresses[$customer['id']])) {
                 $customer['addresses'] = \array_slice($addresses[$customer['id']], 0, self::MAX_ADDRESS_COUNT);

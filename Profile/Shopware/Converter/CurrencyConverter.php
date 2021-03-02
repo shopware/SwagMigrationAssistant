@@ -72,7 +72,14 @@ abstract class CurrencyConverter extends ShopwareConverter
         $this->convertValue($converted, 'position', $data, 'position', self::TYPE_INTEGER);
         $this->convertValue($converted, 'symbol', $data, 'templatechar');
         $converted['placedInFront'] = ((int) $data['symbol_position']) > 16;
-        $converted['decimalPrecision'] = $context->getCurrencyPrecision();
+
+        $converted['itemRounding'] = [
+            'decimals' => $context->getRounding()->getDecimals(),
+            'interval' => 0.01,
+            'roundForNet' => true,
+        ];
+
+        $converted['totalRounding'] = $converted['itemRounding'];
 
         unset(
             $data['id'],

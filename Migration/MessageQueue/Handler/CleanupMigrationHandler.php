@@ -55,7 +55,7 @@ class CleanupMigrationHandler extends AbstractMessageHandler
             $nextMessage = new CleanupMigrationMessage($tablesToReset[$nextStep]);
             $this->bus->dispatch($nextMessage);
         }
-        $this->connection->executeUpdate('DELETE FROM ' . $tablesToReset[$currentStep] . ';');
+        $this->connection->executeStatement('DELETE FROM ' . $tablesToReset[$currentStep] . ';');
     }
 
     public static function getHandledMessages(): iterable

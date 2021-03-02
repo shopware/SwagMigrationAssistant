@@ -8,7 +8,6 @@
 namespace SwagMigrationAssistant\Test;
 
 use Shopware\Core\Checkout\Cart\Tax\TaxCalculator;
-use Shopware\Core\Checkout\Cart\Tax\TaxRuleCalculator;
 use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryStates;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStates;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
@@ -112,9 +111,7 @@ trait MigrationServicesTrait
                     new Shopware55OrderConverter(
                         $mappingService,
                         $loggingService,
-                        new TaxCalculator(
-                            new TaxRuleCalculator()
-                        )
+                        new TaxCalculator()
                     ),
                     new Shopware55SalesChannelConverter($mappingService, $loggingService, $paymentRepo, $shippingRepo, $countryRepo, $salesChannelRepo),
                     new DummyInvalidCustomerConverter($mappingService, $loggingService, $validator),

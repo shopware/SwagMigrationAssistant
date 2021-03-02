@@ -142,7 +142,7 @@ class OrderReader extends AbstractReader
         // represents the main language of the migrated shop
         $locale = $this->getDefaultShopLocale();
 
-        foreach ($orders as $key => &$order) {
+        foreach ($orders as &$order) {
             $order['_locale'] = \str_replace('_', '-', $locale);
             if (isset($orderDetails[$order['id']])) {
                 $order['details'] = $orderDetails[$order['id']];

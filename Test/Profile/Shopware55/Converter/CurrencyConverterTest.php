@@ -96,6 +96,7 @@ class CurrencyConverterTest extends TestCase
 
         static::assertNull($convertResult->getUnmapped());
         static::assertNotNull($convertResult->getMappingUuid());
+        static::assertNotNull($converted);
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('translations', $converted);
         static::assertSame('COC', $converted['translations'][$defaultLanguage]['shortName']);
@@ -110,7 +111,10 @@ class CurrencyConverterTest extends TestCase
         static::assertSame('COOCIES', $converted['symbol']);
         static::assertFalse($converted['placedInFront']);
         static::assertSame(0, $converted['position']);
-        static::assertSame($this->context->getCurrencyPrecision(), $converted['decimalPrecision']);
+        static::assertArrayHasKey('itemRounding', $converted);
+        static::assertArrayHasKey('totalRounding', $converted);
+        static::assertSame($this->context->getRounding()->getDecimals(), $converted['itemRounding']['decimals']);
+        static::assertSame($this->context->getRounding()->getDecimals(), $converted['totalRounding']['decimals']);
     }
 
     public function testConvertWhichExists(): void

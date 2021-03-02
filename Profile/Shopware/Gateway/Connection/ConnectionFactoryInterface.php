@@ -13,7 +13,7 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 interface ConnectionFactoryInterface
 {
-    public function createApiClient(MigrationContextInterface $migrationContext): ?Client;
+    public function createApiClient(MigrationContextInterface $migrationContext, bool $verify = false): ?Client;
 
     public function createDatabaseConnection(MigrationContextInterface $migrationContext): ?Connection;
 }

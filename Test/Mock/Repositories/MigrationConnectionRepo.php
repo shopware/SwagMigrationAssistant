@@ -16,6 +16,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\Aggreg
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\IdSearchResult;
+use Shopware\Core\Framework\DataAbstractionLayer\Write\CloneBehavior;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionDefinition;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
@@ -80,7 +81,7 @@ class MigrationConnectionRepo implements EntityRepositoryInterface
     {
     }
 
-    public function clone(string $id, Context $context, ?string $newId = null): EntityWrittenContainerEvent
+    public function clone(string $id, Context $context, ?string $newId = null, ?CloneBehavior $behavior = null): EntityWrittenContainerEvent
     {
     }
 }

@@ -134,7 +134,7 @@ class MappingService implements MappingServiceInterface
     protected $entityWriter;
 
     /**
-     * @var string
+     * @var string | null
      */
     protected $defaultAvailabilityRule;
 
@@ -985,12 +985,11 @@ class MappingService implements MappingServiceInterface
             return $this->ruleRepo->search($criteria, $context)->first();
         });
 
-        $uuids = null;
         if ($result !== null) {
-            $uuids = $result->getId();
+            $this->defaultAvailabilityRule = $result->getId();
         }
 
-        return $uuids;
+        return $this->defaultAvailabilityRule;
     }
 
     public function getDocumentTypeUuid(string $technicalName, Context $context, MigrationContextInterface $migrationContext): ?string

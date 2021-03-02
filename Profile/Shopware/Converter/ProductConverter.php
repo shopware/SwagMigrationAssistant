@@ -91,6 +91,11 @@ abstract class ProductConverter extends ShopwareConverter
      */
     protected $connectionName;
 
+    /**
+     * @var string | null
+     */
+    protected $currencyUuid;
+
     public function __construct(
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
@@ -445,7 +450,8 @@ abstract class ProductConverter extends ShopwareConverter
         $this->convertValue($converted, 'referenceUnit', $data['detail'], 'referenceunit', self::TYPE_FLOAT);
         $this->convertValue($converted, 'releaseDate', $data['detail'], 'releasedate', self::TYPE_DATETIME);
         $this->convertValue($converted, 'shippingFree', $data['detail'], 'shippingfree', self::TYPE_BOOLEAN);
-        $this->convertValue($converted, 'purchasePrice', $data['detail'], 'purchaseprice', self::TYPE_FLOAT);
+
+        $this->setPurchasePrices($data, $converted);
 
         if (isset($data['detail']['shippingtime'])) {
             $deliveryTime = $this->getDeliveryTime($data['detail']['shippingtime']);
@@ -499,6 +505,38 @@ abstract class ProductConverter extends ShopwareConverter
         }
 
         return $converted;
+    }
+
+    private function setPurchasePrices(array &$data, array &$converted): void
+    {
+        if ($this->currencyUuid === null) {
+            return;
+        }
+
+        $purchasePrice = 0.0;
+        if (isset($data['detail']['purchaseprice'])) {
+            $purchasePrice = (float) $data['detail']['purchaseprice'];
+        }
+        unset($data['detail']['purchaseprice']);
+
+        $price = [];
+        if ($this->currencyUuid !== Defaults::CURRENCY) {
+            $price[] = [
+                'currencyId' => Defaults::CURRENCY,
+                'gross' => $purchasePrice,
+                'net' => $purchasePrice,
+                'linked' => true,
+            ];
+        }
+
+        $price[] = [
+            'currencyId' => $this->currencyUuid,
+            'gross' => $purchasePrice,
+            'net' => $purchasePrice,
+            'linked' => true,
+        ];
+
+        $converted['purchasePrices'] = $price;
     }
 
     private function getDeliveryTime(string $shippingTime): ?array
@@ -950,7 +988,7 @@ abstract class ProductConverter extends ShopwareConverter
 
     private function getPrice(array $priceData, float $taxRate): array
     {
-        $gross = \round((float) $priceData['price'] * (1 + $taxRate / 100), $this->context->getCurrencyPrecision());
+        $gross = \round((float) $priceData['price'] * (1 + $taxRate / 100), $this->context->getRounding()->getDecimals());
 
         if (isset($priceData['currencyShortName'])) {
             $currencyMapping = $this->mappingService->getMapping(
@@ -963,11 +1001,11 @@ abstract class ProductConverter extends ShopwareConverter
         if (!isset($currencyMapping)) {
             return [];
         }
-        $currencyUuid = $currencyMapping['entityUuid'];
+        $this->currencyUuid = $currencyMapping['entityUuid'];
         $this->mappingIds[] = $currencyMapping['id'];
 
         $price = [];
-        if ($currencyUuid !== Defaults::CURRENCY) {
+        if ($this->currencyUuid !== Defaults::CURRENCY) {
             $price[] = [
                 'currencyId' => Defaults::CURRENCY,
                 'gross' => $gross,
@@ -977,7 +1015,7 @@ abstract class ProductConverter extends ShopwareConverter
         }
 
         $price[] = [
-            'currencyId' => $currencyUuid,
+            'currencyId' => $this->currencyUuid,
             'gross' => $gross,
             'net' => (float) $priceData['price'],
             'linked' => true,
@@ -985,9 +1023,9 @@ abstract class ProductConverter extends ShopwareConverter
 
         $listPrice = (float) $priceData['pseudoprice'];
         if ($listPrice > 0) {
-            $listPriceGross = \round((float) $priceData['pseudoprice'] * (1 + $taxRate / 100), $this->context->getCurrencyPrecision());
+            $listPriceGross = \round((float) $priceData['pseudoprice'] * (1 + $taxRate / 100), $this->context->getRounding()->getDecimals());
             $price[0]['listPrice'] = [
-                'currencyId' => $currencyUuid,
+                'currencyId' => $this->currencyUuid,
                 'gross' => $listPriceGross,
                 'net' => $listPrice,
                 'linked' => true,

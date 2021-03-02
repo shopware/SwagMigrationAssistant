@@ -92,7 +92,7 @@ class ProductReader extends AbstractReader
         // represents the main language of the migrated shop
         $locale = $this->getDefaultShopLocale();
 
-        foreach ($products as $key => &$product) {
+        foreach ($products as &$product) {
             $product['_locale'] = \str_replace('_', '-', $locale);
             $product['assets'] = [];
 
@@ -206,8 +206,10 @@ class ProductReader extends AbstractReader
 
     private function getCategories(): array
     {
+        /** @var \ArrayIterator<string, string> $iterator */
+        $iterator = $this->productMapping->getIterator();
         $productIds = \array_values(
-            $this->productMapping->getIterator()->getArrayCopy()
+            $iterator->getArrayCopy()
         );
         $query = $this->connection->createQueryBuilder();
 
@@ -259,8 +261,10 @@ class ProductReader extends AbstractReader
 
     private function getMedia(): array
     {
+        /** @var \ArrayIterator<string, string> $iterator */
+        $iterator = $this->productMapping->getIterator();
         $productIds = \array_values(
-            $this->productMapping->getIterator()->getArrayCopy()
+            $iterator->getArrayCopy()
         );
 
         $query = $this->connection->createQueryBuilder();
