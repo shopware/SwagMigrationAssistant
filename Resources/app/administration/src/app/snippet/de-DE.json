@@ -465,6 +465,10 @@
           "title": "Filewriter nicht gefunden",
           "description": "Filewriter für die „{entity}“-Entität konnte nicht gefunden werden."
         },
+        "SWAG_MIGRATION__SHOPWARE_CANNOT_DOWNLOAD_DATA": {
+          "title": "Konnte Medien nicht herunterladen",
+          "description": "Konnte Medien nicht herunterladen. Betroffene Datei: {uri}"
+        },
         "SWAG_MIGRATION__SHOPWARE_PARENT_ENTITY_NOT_FOUND": {
           "title": "Eltern-Entität nicht gefunden",
           "description": "Eltern-Entität für das „{entity}“-Kind konnte nicht gefunden werden."
