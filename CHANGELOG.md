@@ -1,5 +1,6 @@
 # REPLACE-GLOBAL-WITH-NEXT-VERSION
 - MIG-213 - Prevents abortion of a migration if some products with variants could not be written
+- MIG-214 - Improves progress display in CLI
 
 # 3.0.0
 - MIG-125 - Improves the migration of orders, that customer order count is indexed
