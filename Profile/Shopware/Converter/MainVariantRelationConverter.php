@@ -49,38 +49,46 @@ abstract class MainVariantRelationConverter extends ShopwareConverter
             return new ConvertStruct(null, $data);
         }
 
-        $mainMapping = $this->mappingService->getMapping(
+        $this->mainMapping = $this->mappingService->getOrCreateMapping(
+            $this->connectionId,
+            DefaultEntities::MAIN_VARIANT_RELATION,
+            $data['id'],
+            $context,
+            $this->checksum
+        );
+
+        $mainProductMapping = $this->mappingService->getMapping(
             $this->connectionId,
             DefaultEntities::PRODUCT_CONTAINER,
             $data['id'],
             $context
         );
 
-        $variantMapping = $this->mappingService->getMapping(
+        $variantProductMapping = $this->mappingService->getMapping(
             $this->connectionId,
             DefaultEntities::PRODUCT,
             $data['ordernumber'],
             $context
         );
 
-        if ($mainMapping === null) {
+        if ($mainProductMapping === null) {
             $this->addAssociationRequiredLog(DefaultEntities::PRODUCT_CONTAINER, $data['id']);
 
             return new ConvertStruct(null, $data);
         }
 
-        if ($variantMapping === null) {
+        if ($variantProductMapping === null) {
             $this->addAssociationRequiredLog(DefaultEntities::PRODUCT, $data['ordernumber']);
 
             return new ConvertStruct(null, $data);
         }
 
-        $this->mappingIds[] = $mainMapping['id'];
-        $this->mappingIds[] = $variantMapping['id'];
+        $this->mappingIds[] = $mainProductMapping['id'];
+        $this->mappingIds[] = $variantProductMapping['id'];
 
         $converted = [];
-        $converted['id'] = $mainMapping['entityUuid'];
-        $converted['mainVariantId'] = $variantMapping['entityUuid'];
+        $converted['id'] = $mainProductMapping['entityUuid'];
+        $converted['mainVariantId'] = $variantProductMapping['entityUuid'];
         unset($data['id'], $data['ordernumber']);
 
         $returnData = $data;
@@ -88,7 +96,9 @@ abstract class MainVariantRelationConverter extends ShopwareConverter
             $returnData = null;
         }
 
-        return new ConvertStruct($converted, $returnData);
+        $this->updateMainMapping($migrationContext, $context);
+
+        return new ConvertStruct($converted, $returnData, $this->mainMapping['id'] ?? null);
     }
 
     private function addAssociationRequiredLog(string $requiredEntity, string $id): void
