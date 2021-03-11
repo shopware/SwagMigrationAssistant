@@ -245,8 +245,12 @@ class MigrateDataCommand extends Command
                         $this->migrationDataConverter->convert($data, $migrationContext, $context);
                     }
 
-                    $progressBar->advance(100);
                     $entityProgress->setCurrentCount($entityProgress->getCurrentCount() + 100);
+                    if ($entityProgress->getCurrentCount() >= $entityProgress->getTotal()) {
+                        $progressBar->setProgress($progressBar->getMaxSteps());
+                    } else {
+                        $progressBar->advance(100);
+                    }
                 }
 
                 $progressBar->finish();
@@ -303,8 +307,12 @@ class MigrateDataCommand extends Command
 
                     $this->migrationDataWriter->writeData($migrationContext, $context);
 
-                    $progressBar->advance(100);
                     $entityProgress['currentCount'] += 100;
+                    if ($entityProgress['currentCount'] >= $entityProgress['total']) {
+                        $progressBar->setProgress($progressBar->getMaxSteps());
+                    } else {
+                        $progressBar->advance(100);
+                    }
                 }
 
                 $progressBar->finish();
@@ -327,6 +335,10 @@ class MigrateDataCommand extends Command
         foreach ($mediaFilesProgress as $progress) {
             if ($progress['id'] === 'processMediaFiles') {
                 foreach ($progress['entities'] as $entityProgress) {
+                    $progressBar = new ProgressBar($this->output, $entityProgress['total']);
+                    $progressBar->setFormat('[%bar%] %current%/%max% Process ' . $entityProgress['entityName']);
+                    $progressBar->start();
+
                     while ($entityProgress['currentCount'] < $entityProgress['total']) {
                         $migrationContext = $this->migrationContextFactory->create(
                             $run,
@@ -340,7 +352,15 @@ class MigrateDataCommand extends Command
 
                         $this->processorService->processMediaFiles($migrationContext, $context, 5000);
                         $entityProgress['currentCount'] += 100;
+                        if ($entityProgress['currentCount'] >= $entityProgress['total']) {
+                            $progressBar->setProgress($progressBar->getMaxSteps());
+                        } else {
+                            $progressBar->advance(100);
+                        }
                     }
+
+                    $progressBar->finish();
+                    $this->output->writeln('');
                 }
             }
         }
