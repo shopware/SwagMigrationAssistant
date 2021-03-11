@@ -276,7 +276,12 @@ class MigrationDataWriter implements MigrationDataWriterInterface
         }
 
         if (!empty($mappingsRequireUpdate)) {
-            $this->mappingRepo->update($mappingsRequireUpdate, $context);
+            // check if mappings exist
+            $existingMappingIds = $this->mappingRepo->searchIds(new Criteria(\array_column($mappingsRequireUpdate, 'id')), $context)->getIds();
+
+            $this->mappingRepo->update(\array_filter($mappingsRequireUpdate, static function (array $update) use ($existingMappingIds) {
+                return \in_array($update['id'], $existingMappingIds, true);
+            }), $context);
         }
     }
 }

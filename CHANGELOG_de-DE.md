@@ -1,3 +1,6 @@
+# REPLACE-GLOBAL-WITH-NEXT-VERSION
+- MIG-213 - Verhindert den Abbruch der Migration beim Schreiben von fehlerhaften Produktvarianten
+
 # 3.0.0
 - MIG-125 - Verbessert die Migration von Bestellungen, sodass die Anzahl der Kundenbestellungen indexiert wird
 - MIG-181 - Migration der Hauptvarianten-Informationen ermöglichen für Shopware 5.4 / 5.6

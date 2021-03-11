@@ -33,6 +33,7 @@ use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistry;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingEntity;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
+use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingEntity;
 use SwagMigrationAssistant\Migration\Media\MediaFileService;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\Run\RunService;
@@ -138,6 +139,11 @@ class MigrationDataWriterTest extends TestCase
      * @var EntityRepositoryInterface
      */
     private $migrationDataRepo;
+
+    /**
+     * @var EntityRepositoryInterface
+     */
+    private $migrationMappingRepo;
 
     /**
      * @var string
@@ -323,9 +329,12 @@ class MigrationDataWriterTest extends TestCase
     public function requiredProperties(): array
     {
         return [
-            ['email'],
-            ['firstName'],
-            ['lastName'],
+            ['email', true],
+            ['email', false],
+            ['firstName', true],
+            ['firstName', false],
+            ['lastName', true],
+            ['lastName', false],
         ];
     }
 
@@ -369,7 +378,7 @@ class MigrationDataWriterTest extends TestCase
     /**
      * @dataProvider requiredProperties
      */
-    public function testWriteInvalidData(string $missingProperty): void
+    public function testWriteInvalidData(string $missingProperty, bool $mappingExists): void
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
@@ -395,6 +404,10 @@ class MigrationDataWriterTest extends TestCase
         unset($customer['run'], $customer['converted'][$missingProperty], $customer['autoIncrement']);
 
         $this->migrationDataRepo->update([$customer], $context);
+        if (!$mappingExists) {
+            $this->migrationMappingRepo->delete([['id' => $data->getMappingUuid()]], $context);
+        }
+
         $customerTotalBefore = $this->customerRepo->search(new Criteria(), $context)->getTotal();
         $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext): void {
             $this->dummyDataWriter->writeData($migrationContext, $context);
@@ -405,10 +418,20 @@ class MigrationDataWriterTest extends TestCase
         static::assertCount(1, $this->loggingService->getLoggingArray());
         $this->loggingService->resetLogging();
 
-        $failureConvertCriteria = new Criteria();
+        $failureConvertCriteria = new Criteria([$data->getId()]);
         $failureConvertCriteria->addFilter(new EqualsFilter('writeFailure', true));
-        $result = $this->migrationDataRepo->search($failureConvertCriteria, $context);
-        static::assertSame(1, $result->getTotal());
+        $result = $this->migrationDataRepo->searchIds($failureConvertCriteria, $context)->firstId();
+        static::assertNotNull($result);
+
+        $checksumResetCriteria = new Criteria([$data->getMappingUuid() ?? '']);
+        /** @var SwagMigrationMappingEntity|null $result */
+        $result = $this->migrationMappingRepo->search($checksumResetCriteria, $context)->first();
+        if ($mappingExists) {
+            static::assertNotNull($result);
+            static::assertNull($result->getChecksum());
+        } else {
+            static::assertNull($result);
+        }
     }
 
     public function testWriteSalesChannelData(): void
@@ -658,6 +681,7 @@ class MigrationDataWriterTest extends TestCase
         $this->customerRepo = $this->getContainer()->get('customer.repository');
         $this->connectionRepo = $this->getContainer()->get('swag_migration_connection.repository');
         $this->migrationDataRepo = $this->getContainer()->get('swag_migration_data.repository');
+        $this->migrationMappingRepo = $this->getContainer()->get('swag_migration_mapping.repository');
         $this->loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
         $this->stateMachineRepository = $this->getContainer()->get('state_machine.repository');
         $this->stateMachineStateRepository = $this->getContainer()->get('state_machine_state.repository');
