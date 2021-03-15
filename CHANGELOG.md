@@ -1,6 +1,7 @@
-# REPLACE-GLOBAL-WITH-NEXT-VERSION
+# 3.0.1
 - MIG-213 - Prevents abortion of a migration if some products with variants could not be written
 - MIG-214 - Improves progress display in CLI
+- MIG-216 - Fix issue with customer emails longer than 64 characters
 
 # 3.0.0
 - MIG-125 - Improves the migration of orders, that customer order count is indexed
