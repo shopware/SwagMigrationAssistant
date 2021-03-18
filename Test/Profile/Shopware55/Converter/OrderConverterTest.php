@@ -37,6 +37,7 @@ use SwagMigrationAssistant\Test\MigrationServicesTrait;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Validator\Validation;
 
 class OrderConverterTest extends TestCase
 {
@@ -86,7 +87,7 @@ class OrderConverterTest extends TestCase
 
         $taxCalculator = new TaxCalculator($taxRuleCalculator);
         $this->orderConverter = new Shopware55OrderConverter($mappingService, $this->loggingService, $taxCalculator);
-        $this->customerConverter = new Shopware55CustomerConverter($mappingService, $this->loggingService);
+        $this->customerConverter = new Shopware55CustomerConverter($mappingService, $this->loggingService, Validation::createValidator());
 
         $connectionId = Uuid::randomHex();
         $this->runId = Uuid::randomHex();

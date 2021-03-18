@@ -529,6 +529,10 @@
           "title": "Konnte {entity} nicht finden",
           "description": "Die {requiredForEntity} Entität mit der Quell-ID „{requiredForSourceId}“ konnte nicht die abhängige {entity} Entität mit der Quell-Id „{sourceId}“ finden."
         },
+        "SWAG_MIGRATION__INVALID_EMAIL_ADDRESS": {
+          "title": "E-Mail-Adresse ungültig",
+          "description": "Die E-Mail-Adresse der Entität {entity} mit der Quell-ID „{sourceId}“ ist ungültig: {email}"
+        },
         "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_NUMBER_RANGE_TYPE": {
           "title": "Nummernkreis-Typ nicht unterstützt",
           "description": "Die Nummernkreis Entität mit der Quell-ID „{sourceId}“ konnte wegen folgendem nicht unterstützten Typs nicht konvertiert werden: {type}"

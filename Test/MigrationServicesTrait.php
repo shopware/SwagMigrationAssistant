@@ -54,6 +54,7 @@ use SwagMigrationAssistant\Test\Mock\DummyCollection;
 use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGateway;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 use SwagMigrationAssistant\Test\Mock\Profile\Dummy\DummyInvalidCustomerConverter;
+use Symfony\Component\Validator\Validation;
 
 trait MigrationServicesTrait
 {
@@ -98,6 +99,7 @@ trait MigrationServicesTrait
         EntityRepositoryInterface $salesChannelRepo
     ): MigrationDataConverterInterface {
         $loggingService = new LoggingService($loggingRepo);
+        $validator = Validation::createValidator();
         $converterRegistry = new ConverterRegistry(
             new DummyCollection(
                 [
@@ -105,8 +107,8 @@ trait MigrationServicesTrait
                     new Shopware55TranslationConverter($mappingService, $loggingService),
                     new Shopware55CategoryConverter($mappingService, $loggingService, $mediaFileService),
                     new Shopware55MediaConverter($mappingService, $loggingService, $mediaFileService),
-                    new Shopware55CustomerConverter($mappingService, $loggingService),
-                    new Shopware55CustomerConverter($mappingService, $loggingService),
+                    new Shopware55CustomerConverter($mappingService, $loggingService, $validator),
+                    new Shopware55CustomerConverter($mappingService, $loggingService, $validator),
                     new Shopware55OrderConverter(
                         $mappingService,
                         $loggingService,
@@ -115,7 +117,7 @@ trait MigrationServicesTrait
                         )
                     ),
                     new Shopware55SalesChannelConverter($mappingService, $loggingService, $paymentRepo, $shippingRepo, $countryRepo, $salesChannelRepo),
-                    new DummyInvalidCustomerConverter($mappingService, $loggingService),
+                    new DummyInvalidCustomerConverter($mappingService, $loggingService, $validator),
                 ]
             )
         );

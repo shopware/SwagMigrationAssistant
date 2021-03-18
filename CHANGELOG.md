@@ -1,3 +1,6 @@
+# 3.0.2
+- MIG-218 - Prevents abortion of a migration if customer has an invalid email address
+
 # 3.0.1
 - MIG-213 - Prevents abortion of a migration if some products with variants could not be written
 - MIG-214 - Improves progress display in CLI
