@@ -14,9 +14,14 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
 use SwagMigrationAssistant\Migration\Logging\Log\FieldReassignedRunLog;
 use SwagMigrationAssistant\Migration\Logging\Log\UnknownEntityLog;
+use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Profile\Shopware\Logging\Log\InvalidEmailAddressLog;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\PaymentMethodReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\SalutationReader;
+use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 abstract class CustomerConverter extends ShopwareConverter
 {
@@ -73,6 +78,20 @@ abstract class CustomerConverter extends ShopwareConverter
      */
     protected $connectionName;
 
+    /**
+     * @var ValidatorInterface
+     */
+    protected $validator;
+
+    public function __construct(
+        MappingServiceInterface $mappingService,
+        LoggingServiceInterface $loggingService,
+        ValidatorInterface $validator
+    ) {
+        parent::__construct($mappingService, $loggingService);
+        $this->validator = $validator;
+    }
+
     public function getSourceIdentifier(array $data): string
     {
         return $data['id'];
@@ -96,6 +115,17 @@ abstract class CustomerConverter extends ShopwareConverter
                 DefaultEntities::CUSTOMER,
                 $data['id'],
                 \implode(',', $fields)
+            ));
+
+            return new ConvertStruct(null, $oldData);
+        }
+
+        if (!$this->checkEmailValidity($data['email'])) {
+            $this->loggingService->addLogEntry(new InvalidEmailAddressLog(
+                $this->runId,
+                DefaultEntities::CUSTOMER,
+                $data['id'],
+                $data['email']
             ));
 
             return new ConvertStruct(null, $oldData);
@@ -628,5 +658,16 @@ abstract class CustomerConverter extends ShopwareConverter
         $this->mappingIds[] = $mapping['id'];
 
         return $mapping['entityUuid'];
+    }
+
+    protected function checkEmailValidity(string $email): bool
+    {
+        $constraint = new Email();
+        $errors = $this->validator->validate(
+            $email,
+            $constraint
+        );
+
+        return \count($errors) === 0;
     }
 }

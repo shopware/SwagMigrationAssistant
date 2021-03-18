@@ -10,6 +10,7 @@ namespace SwagMigrationAssistant\Test\Profile\Shopware55\Converter;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
@@ -23,9 +24,12 @@ use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55CustomerConver
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class CustomerConverterTest extends TestCase
 {
+    use IntegrationTestBehaviour;
+
     /**
      * @var Shopware55CustomerConverter
      */
@@ -65,7 +69,9 @@ class CustomerConverterTest extends TestCase
     {
         $this->loggingService = new DummyLoggingService();
         $this->mappingService = new DummyMappingService();
-        $this->customerConverter = new Shopware55CustomerConverter($this->mappingService, $this->loggingService);
+        /** @var ValidatorInterface $validator */
+        $validator = $this->getContainer()->get('validator');
+        $this->customerConverter = new Shopware55CustomerConverter($this->mappingService, $this->loggingService, $validator);
 
         $this->connectionId = Uuid::randomHex();
         $this->runId = Uuid::randomHex();
@@ -133,6 +139,27 @@ class CustomerConverterTest extends TestCase
         static::assertSame(Defaults::SALES_CHANNEL, $converted['salesChannelId']);
         static::assertSame('Mustermann', $converted['lastName']);
         static::assertCount(0, $this->loggingService->getLoggingArray());
+    }
+
+    public function testConvertWithInvalidEmail(): void
+    {
+        $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
+        $customerData[0]['email'] = '42';
+
+        $context = Context::createDefaultContext();
+        $convertResult = $this->customerConverter->convert(
+            $customerData[0],
+            $context,
+            $this->migrationContext
+        );
+
+        static::assertNull($convertResult->getConverted());
+
+        $logs = $this->loggingService->getLoggingArray();
+        static::assertCount(1, $logs);
+
+        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION__INVALID_EMAIL_ADDRESS');
+        static::assertSame($logs[0]['parameters']['email'], '42');
     }
 
     /**

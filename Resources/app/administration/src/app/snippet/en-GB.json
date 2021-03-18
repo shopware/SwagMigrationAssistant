@@ -529,6 +529,10 @@
           "title": "Cannot find {entity}",
           "description": "The {requiredForEntity} entity with the source id \"{requiredForSourceId}\" cannot find the depended {entity} entity with the source id \"{sourceId}\"."
         },
+        "SWAG_MIGRATION__INVALID_EMAIL_ADDRESS": {
+          "title": "Invalid Email address",
+          "description": "The email address of the entity {entity}  with source id \"{sourceId}\" is invalid: {email}"
+        },
         "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_NUMBER_RANGE_TYPE": {
           "title": "Unsupported number range type",
           "description": "NumberRange-Entity with source id \"{sourceId}\" could not be converted because of unsupported type: {type}."

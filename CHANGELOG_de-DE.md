@@ -1,3 +1,6 @@
+# 3.0.2
+- MIG-218 - Verhindert den Abbruch der Migration, wenn ein Kunde eine ungültige E-Mail-Adresse hat
+
 # 3.0.1
 - MIG-213 - Verhindert den Abbruch der Migration beim Schreiben von fehlerhaften Produktvarianten
 - MIG-214 - Verbessert die Fortschrittsdarstellung in der CLI
