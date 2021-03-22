@@ -847,17 +847,44 @@ abstract class TranslationConverter extends ShopwareConverter
     protected function getAttribute(string $entityName, string $key, string $value, array &$translation, array &$objectData): void
     {
         $connection = $this->migrationContext->getConnection();
-        $connectionName = '';
-        if ($connection !== null) {
-            $connectionName = $connection->getName();
+
+        if ($connection === null) {
+            return;
         }
+
+        $connectionName = $connection->getName();
         $connectionName = \str_replace(' ', '', $connectionName);
         $connectionName = \preg_replace('/[^A-Za-z0-9\-]/', '', $connectionName);
 
         $isAttribute = \mb_strpos($key, '__attribute_');
         if ($isAttribute !== false) {
-            $key = 'migration_' . $connectionName . '_' . $entityName . '_' . \str_replace('__attribute_', '', $key);
-            $translation['customFields'][$key] = $value;
+            $identifier = \str_replace('__attribute_', '', $key);
+            $newKey = 'migration_' . $connectionName . '_' . $entityName . '_' . $identifier;
+
+            $mapping = $this->mappingService->getMapping(
+                $connection->getId(),
+                $entityName . '_custom_field',
+                $identifier,
+                $this->context
+            );
+
+            if ($mapping !== null) {
+                $this->mappingIds[] = $mapping['id'];
+
+                if (isset($mapping['additionalData']['columnType']) && $mapping['additionalData']['columnType'] === 'boolean') {
+                    $value = (bool) $value;
+                }
+
+                if (isset($mapping['additionalData']['columnType']) && $mapping['additionalData']['columnType'] === 'integer') {
+                    $value = (int) $value;
+                }
+
+                if (isset($mapping['additionalData']['columnType']) && $mapping['additionalData']['columnType'] === 'float') {
+                    $value = (float) $value;
+                }
+            }
+
+            $translation['customFields'][$newKey] = $value;
             unset($objectData[$key]);
         }
     }
