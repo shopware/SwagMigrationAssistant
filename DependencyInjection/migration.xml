@@ -142,12 +142,20 @@
             <argument type="service" id="swag_migration_run.repository"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\MigrationContextFactory"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Service\EntityPartialIndexerService"/>
+
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
         </service>
 
         <service id="SwagMigrationAssistant\Controller\PremappingController" public="true">
             <argument type="service" id="SwagMigrationAssistant\Migration\Service\PremappingService"/>
             <argument type="service" id="swag_migration_run.repository"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\MigrationContextFactory"/>
+
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
         </service>
 
         <service id="SwagMigrationAssistant\Controller\StatusController" public="true">
@@ -160,10 +168,18 @@
             <argument type="service" id="SwagMigrationAssistant\Migration\Gateway\GatewayRegistry"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\MigrationContextFactory"/>
             <argument type="service" id="swag_migration_general_setting.repository"/>
+
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
         </service>
 
         <service id="SwagMigrationAssistant\Controller\HistoryController" public="true">
             <argument type="service" id="SwagMigrationAssistant\Migration\History\HistoryService"/>
+
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
         </service>
 
         <service id="SwagMigrationAssistant\Command\MigrateDataCommand">

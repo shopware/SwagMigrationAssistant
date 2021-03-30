@@ -51,7 +51,7 @@ class GeneralSettingRepo implements EntityRepositoryInterface
         $setting->setSelectedConnectionId($this->entityUuid);
         $setting->setUniqueIdentifier($this->entityUuid);
 
-        return new EntitySearchResult(1, new EntityCollection([$setting]), null, $criteria, $context);
+        return new EntitySearchResult(GeneralSettingDefinition::ENTITY_NAME, 1, new EntityCollection([$setting]), null, $criteria, $context);
     }
 
     public function update(array $data, Context $context): EntityWrittenContainerEvent

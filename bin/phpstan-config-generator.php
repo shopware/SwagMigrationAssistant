@@ -12,7 +12,7 @@ use SwagMigrationAssistant\SwagMigrationAssistant;
 use Symfony\Component\Dotenv\Dotenv;
 
 $classLoader = require __DIR__ . '/../../../../vendor/autoload.php';
-(new Dotenv(true))->load(__DIR__ . '/../../../../.env');
+(new Dotenv())->load(__DIR__ . '/../../../../.env');
 
 $shopwareVersion = Versions::getVersion('shopware/platform');
 

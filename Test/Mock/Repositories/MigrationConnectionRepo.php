@@ -54,7 +54,7 @@ class MigrationConnectionRepo implements EntityRepositoryInterface
         $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
         $connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
 
-        return new EntitySearchResult(1, new EntityCollection([$connection]), null, $criteria, $context);
+        return new EntitySearchResult(SwagMigrationConnectionDefinition::ENTITY_NAME, 1, new EntityCollection([$connection]), null, $criteria, $context);
     }
 
     public function update(array $data, Context $context): EntityWrittenContainerEvent

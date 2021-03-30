@@ -46,11 +46,6 @@ parameters:
 			path: Migration/Profile/ProfileRegistry.php
 
 		-
-			message: "#^Parameter \\#1 \\$entityName of method SwagMigrationAssistant\\\\Migration\\\\Run\\\\EntityProgress\\:\\:setEntityName\\(\\) expects string, int\\|string given\\.$#"
-			count: 1
-			path: Migration/Run/RunService.php
-
-		-
 			message: "#^Parameter \\#1 \\$str of function mb_strtoupper expects string, string\\|null given\\.$#"
 			count: 1
 			path: Migration/Service/SwagMigrationAccessTokenService.php
@@ -1016,11 +1011,6 @@ parameters:
 			path: Profile/Shopware56/Converter/Shopware56TranslationConverter.php
 
 		-
-			message: "#^Service \"cache\\.object\" is private\\.$#"
-			count: 1
-			path: Test/Command/MigrateDataCommandTest.php
-
-		-
 			message: "#^Parameter \\#1 \\$actualJson of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertJson\\(\\) expects string, string\\|false given\\.$#"
 			count: 1
 			path: Test/Migration/Controller/HistoryControllerTest.php
@@ -1041,11 +1031,6 @@ parameters:
 			path: Test/Migration/Controller/HistoryControllerTest.php
 
 		-
-			message: "#^Service \"cache\\.object\" is private\\.$#"
-			count: 1
-			path: Test/Migration/Controller/MigrationControllerTest.php
-
-		-
 			message: "#^Parameter \\#1 \\$json of function json_decode expects string, string\\|false given\\.$#"
 			count: 8
 			path: Test/Migration/Controller/MigrationControllerTest.php
@@ -1059,11 +1044,6 @@ parameters:
 			message: "#^Offset 'entityUuid' does not exist on array\\|null\\.$#"
 			count: 6
 			path: Test/Migration/Controller/PremappingControllerTest.php
-
-		-
-			message: "#^Service \"cache\\.object\" is private\\.$#"
-			count: 1
-			path: Test/Migration/Controller/StatusControllerTest.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\StatusControllerTest\\:\\:connectionProvider\\(\\) has no return typehint specified\\.$#"
@@ -1091,11 +1071,6 @@ parameters:
 			path: Test/Migration/Mapping/MappingServiceTest.php
 
 		-
-			message: "#^Service \"cache\\.object\" is private\\.$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
 			message: "#^Call to an undefined method ReflectionProperty\\|SwagMigrationAssistant\\\\Migration\\\\Logging\\\\LoggingService\\:\\:setAccessible\\(\\)\\.$#"
 			count: 1
 			path: Test/Migration/Services/MigrationDataWriterTest.php
@@ -1116,11 +1091,6 @@ parameters:
 			path: Test/Migration/Services/MigrationProgressServiceTest.php
 
 		-
-			message: "#^Service \"cache\\.object\" is private\\.$#"
-			count: 1
-			path: Test/Migration/Services/MigrationProgressServiceTest.php
-
-		-
 			message: "#^Call to function unset\\(\\) contains undefined variable \\$entityGroup\\.$#"
 			count: 4
 			path: Test/Migration/Services/MigrationProgressServiceTest.php
@@ -1129,11 +1099,6 @@ parameters:
 			message: "#^Argument of an invalid type SwagMigrationAssistant\\\\Migration\\\\Run\\\\RunProgress supplied for foreach, only iterables are supported\\.$#"
 			count: 2
 			path: Test/Migration/Services/MigrationProgressServiceTest.php
-
-		-
-			message: "#^Service \"cache\\.object\" is private\\.$#"
-			count: 1
-			path: Test/Migration/Services/RunServiceTest.php
 
 		-
 			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"

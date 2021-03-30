@@ -16,6 +16,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateEntity;
+use Shopware\Core\System\StateMachine\StateMachineDefinition;
 use Shopware\Core\System\StateMachine\StateMachineEntity;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
@@ -62,7 +63,7 @@ class OrderStateReaderTest extends TestCase
         $stateMachine = new StateMachineEntity();
         $stateMachine->setId(Uuid::randomHex());
         $stateMachine->setName('Order state');
-        $smRepoMock->method('search')->willReturn(new EntitySearchResult(1, new EntityCollection([$stateMachine]), null, new Criteria(), $this->context));
+        $smRepoMock->method('search')->willReturn(new EntitySearchResult(StateMachineDefinition::ENTITY_NAME, 1, new EntityCollection([$stateMachine]), null, new Criteria(), $this->context));
 
         $smsRepoMock = $this->createMock(EntityRepository::class);
         $this->stateOpen = new StateMachineStateEntity();
@@ -75,7 +76,7 @@ class OrderStateReaderTest extends TestCase
         $this->stateClosed->setName('In Progress');
         $this->stateClosed->setTechnicalName('in_progress');
 
-        $smsRepoMock->method('search')->willReturn(new EntitySearchResult(2, new EntityCollection([$this->stateOpen, $this->stateClosed]), null, new Criteria(), $this->context));
+        $smsRepoMock->method('search')->willReturn(new EntitySearchResult(StateMachineDefinition::ENTITY_NAME, 2, new EntityCollection([$this->stateOpen, $this->stateClosed]), null, new Criteria(), $this->context));
 
         $connection = new SwagMigrationConnectionEntity();
         $connection->setId(Uuid::randomHex());

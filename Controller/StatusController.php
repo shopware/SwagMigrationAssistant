@@ -226,6 +226,10 @@ class StatusController extends AbstractController
             throw new MigrationContextPropertyMissingException('connectionId');
         }
 
+        if ($credentialFields === null) {
+            throw new MigrationContextPropertyMissingException('credentialFields');
+        }
+
         /** @var SwagMigrationConnectionEntity|null $connection */
         $connection = $this->migrationConnectionRepo->search(new Criteria([$connectionId]), $context)->first();
 

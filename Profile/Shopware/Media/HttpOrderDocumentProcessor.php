@@ -204,51 +204,49 @@ class HttpOrderDocumentProcessor extends BaseMediaService implements MediaFilePr
      */
     private function persistFileToMedia(string $filePath, string $uuid, string $name, Context $context): void
     {
-        $context->disableCache(function (Context $context) use ($filePath, $uuid, $name): void {
-            $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($filePath, $uuid, $name): void {
-                $fileExtension = \pathinfo($filePath, PATHINFO_EXTENSION);
-                $mimeType = \mime_content_type($filePath);
-                $streamContext = \stream_context_create([
-                    'http' => [
-                        'follow_location' => 0,
-                        'max_redirects' => 0,
-                    ],
-                ]);
-                $fileBlob = \file_get_contents($filePath, false, $streamContext);
-                $name = \preg_replace('/[^a-zA-Z0-9_-]+/', '-', \mb_strtolower($name));
+        $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($filePath, $uuid, $name): void {
+            $fileExtension = \pathinfo($filePath, PATHINFO_EXTENSION);
+            $mimeType = \mime_content_type($filePath);
+            $streamContext = \stream_context_create([
+                'http' => [
+                    'follow_location' => 0,
+                    'max_redirects' => 0,
+                ],
+            ]);
+            $fileBlob = \file_get_contents($filePath, false, $streamContext);
+            $name = \preg_replace('/[^a-zA-Z0-9_-]+/', '-', \mb_strtolower($name));
 
-                try {
-                    $this->mediaService->saveFile(
-                        $fileBlob,
-                        $fileExtension,
-                        $mimeType,
-                        $name,
-                        $context,
-                        'document',
-                        $uuid
-                    );
-                } catch (DuplicatedMediaFileNameException $e) {
-                    $this->mediaService->saveFile(
-                        $fileBlob,
-                        $fileExtension,
-                        $mimeType,
-                        $name . \mb_substr(Uuid::randomHex(), 0, 5),
-                        $context,
-                        'document',
-                        $uuid
-                    );
-                } catch (IllegalFileNameException | EmptyMediaFilenameException $e) {
-                    $this->mediaService->saveFile(
-                        $fileBlob,
-                        $fileExtension,
-                        $mimeType,
-                        $uuid,
-                        $context,
-                        'document',
-                        $uuid
-                    );
-                }
-            });
+            try {
+                $this->mediaService->saveFile(
+                    $fileBlob,
+                    $fileExtension,
+                    $mimeType,
+                    $name,
+                    $context,
+                    'document',
+                    $uuid
+                );
+            } catch (DuplicatedMediaFileNameException $e) {
+                $this->mediaService->saveFile(
+                    $fileBlob,
+                    $fileExtension,
+                    $mimeType,
+                    $name . \mb_substr(Uuid::randomHex(), 0, 5),
+                    $context,
+                    'document',
+                    $uuid
+                );
+            } catch (IllegalFileNameException | EmptyMediaFilenameException $e) {
+                $this->mediaService->saveFile(
+                    $fileBlob,
+                    $fileExtension,
+                    $mimeType,
+                    $uuid,
+                    $context,
+                    'document',
+                    $uuid
+                );
+            }
         });
     }
 

@@ -217,25 +217,23 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
         string $fileExtension,
         Context $context
     ): void {
-        $context->disableCache(function (Context $context) use ($filePath, $media, $fileSize, $fileExtension): void {
-            $mimeType = \mime_content_type($filePath);
-            $mediaFile = new MediaFile($filePath, $mimeType, $fileExtension, $fileSize);
-            $mediaId = $media['media_id'];
-            $fileName = \preg_replace('/[^a-zA-Z0-9_-]+/', '-', \mb_strtolower($media['file_name']));
+        $mimeType = \mime_content_type($filePath);
+        $mediaFile = new MediaFile($filePath, $mimeType, $fileExtension, $fileSize);
+        $mediaId = $media['media_id'];
+        $fileName = \preg_replace('/[^a-zA-Z0-9_-]+/', '-', \mb_strtolower($media['file_name']));
 
-            try {
-                $this->fileSaver->persistFileToMedia($mediaFile, $fileName, $mediaId, $context);
-            } catch (DuplicatedMediaFileNameException $e) {
-                $this->fileSaver->persistFileToMedia(
-                    $mediaFile,
-                    $fileName . \mb_substr(Uuid::randomHex(), 0, 5),
-                    $mediaId,
-                    $context
-                );
-            } catch (IllegalFileNameException | EmptyMediaFilenameException $e) {
-                $this->fileSaver->persistFileToMedia($mediaFile, Uuid::randomHex(), $mediaId, $context);
-            }
-        });
+        try {
+            $this->fileSaver->persistFileToMedia($mediaFile, $fileName, $mediaId, $context);
+        } catch (DuplicatedMediaFileNameException $e) {
+            $this->fileSaver->persistFileToMedia(
+                $mediaFile,
+                $fileName . \mb_substr(Uuid::randomHex(), 0, 5),
+                $mediaId,
+                $context
+            );
+        } catch (IllegalFileNameException | EmptyMediaFilenameException $e) {
+            $this->fileSaver->persistFileToMedia($mediaFile, Uuid::randomHex(), $mediaId, $context);
+        }
     }
 
     private function setProcessedFlag(string $runId, Context $context, array $finishedUuids, array $failureUuids): void
