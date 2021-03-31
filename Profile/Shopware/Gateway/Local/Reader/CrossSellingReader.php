@@ -82,10 +82,9 @@ SQL;
         $statement->bindValue('similar', DefaultEntities::CROSS_SELLING_SIMILAR, \PDO::PARAM_STR);
         $statement->bindValue('limit', $migrationContext->getLimit(), \PDO::PARAM_INT);
         $statement->bindValue('offset', $migrationContext->getOffset(), \PDO::PARAM_INT);
-        $statement->setFetchMode(\PDO::FETCH_ASSOC);
         $statement->execute();
 
-        return $statement->fetchAll();
+        return $statement->fetchAllAssociative();
     }
 
     private function enrichWithPositionData(array &$fetchedCrossSelling, int $offset): void

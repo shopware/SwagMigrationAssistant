@@ -16,6 +16,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\Aggreg
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\IdSearchResult;
+use Shopware\Core\Framework\DataAbstractionLayer\Write\CloneBehavior;
 use SwagMigrationAssistant\Migration\Setting\GeneralSettingDefinition;
 use SwagMigrationAssistant\Migration\Setting\GeneralSettingEntity;
 
@@ -50,7 +51,7 @@ class GeneralSettingRepo implements EntityRepositoryInterface
         $setting->setSelectedConnectionId($this->entityUuid);
         $setting->setUniqueIdentifier($this->entityUuid);
 
-        return new EntitySearchResult(1, new EntityCollection([$setting]), null, $criteria, $context);
+        return new EntitySearchResult(GeneralSettingDefinition::ENTITY_NAME, 1, new EntityCollection([$setting]), null, $criteria, $context);
     }
 
     public function update(array $data, Context $context): EntityWrittenContainerEvent
@@ -77,7 +78,7 @@ class GeneralSettingRepo implements EntityRepositoryInterface
     {
     }
 
-    public function clone(string $id, Context $context, ?string $newId = null): EntityWrittenContainerEvent
+    public function clone(string $id, Context $context, ?string $newId = null, ?CloneBehavior $behavior = null): EntityWrittenContainerEvent
     {
     }
 }

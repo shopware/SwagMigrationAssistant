@@ -385,7 +385,7 @@ AND m.checksum IS NOT NULL;
 SQL;
         }
 
-        $this->dbalConnection->executeQuery(
+        $this->dbalConnection->executeStatement(
             $sql,
             [$connectionUuid],
             [\PDO::PARAM_STR]
@@ -414,7 +414,7 @@ SQL;
             throw new MigrationIsRunningException();
         }
 
-        $this->dbalConnection->executeUpdate('UPDATE swag_migration_general_setting SET selected_connection_id = NULL, `is_reset` = 1;');
+        $this->dbalConnection->executeStatement('UPDATE swag_migration_general_setting SET selected_connection_id = NULL, `is_reset` = 1;');
         $this->bus->dispatch(new CleanupMigrationMessage());
     }
 
@@ -631,7 +631,7 @@ SQL;
                 }
 
                 $entityProgress = new EntityProgress();
-                $entityProgress->setEntityName($entityName);
+                $entityProgress->setEntityName((string) $entityName);
                 $entityProgress->setCurrentCount(0);
                 $entityProgress->setTotal($total);
 
@@ -871,7 +871,7 @@ WHERE HEX(run.connection_id) = ?
 AND mediafile.processed = 0
 AND mediafile.written = 1;
 SQL;
-        $this->dbalConnection->executeUpdate(
+        $this->dbalConnection->executeStatement(
             $sql,
             [$runUuid, $connectionId],
             [\PDO::PARAM_STR, \PDO::PARAM_STR]

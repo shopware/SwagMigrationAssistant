@@ -19,7 +19,7 @@ class Migration1593508853AddMappingUuidKeyToData extends MigrationStep
 
     public function update(Connection $connection): void
     {
-        $connection->executeUpdate('ALTER TABLE swag_migration_data ADD INDEX `idx.swag_migration_data.mapping_uuid` (`mapping_uuid`);');
+        $connection->executeStatement('ALTER TABLE swag_migration_data ADD INDEX `idx.swag_migration_data.mapping_uuid` (`mapping_uuid`);');
     }
 
     public function updateDestructive(Connection $connection): void

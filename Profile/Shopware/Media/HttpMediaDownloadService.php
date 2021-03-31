@@ -245,24 +245,22 @@ class HttpMediaDownloadService extends BaseMediaService implements MediaFileProc
      */
     private function persistFileToMedia(string $filePath, string $uuid, string $name, int $fileSize, string $fileExtension, Context $context): void
     {
-        $context->disableCache(function (Context $context) use ($filePath, $uuid, $name, $fileSize, $fileExtension): void {
-            $mimeType = \mime_content_type($filePath);
-            $mediaFile = new MediaFile($filePath, $mimeType, $fileExtension, $fileSize);
-            $name = \preg_replace('/[^a-zA-Z0-9_-]+/', '-', \mb_strtolower($name));
+        $mimeType = \mime_content_type($filePath);
+        $mediaFile = new MediaFile($filePath, $mimeType, $fileExtension, $fileSize);
+        $name = \preg_replace('/[^a-zA-Z0-9_-]+/', '-', \mb_strtolower($name));
 
-            try {
-                $this->fileSaver->persistFileToMedia($mediaFile, $name, $uuid, $context);
-            } catch (DuplicatedMediaFileNameException $e) {
-                $this->fileSaver->persistFileToMedia(
-                    $mediaFile,
-                    $name . \mb_substr(Uuid::randomHex(), 0, 5),
-                    $uuid,
-                    $context
-                );
-            } catch (IllegalFileNameException | EmptyMediaFilenameException $e) {
-                $this->fileSaver->persistFileToMedia($mediaFile, Uuid::randomHex(), $uuid, $context);
-            }
-        });
+        try {
+            $this->fileSaver->persistFileToMedia($mediaFile, $name, $uuid, $context);
+        } catch (DuplicatedMediaFileNameException $e) {
+            $this->fileSaver->persistFileToMedia(
+                $mediaFile,
+                $name . \mb_substr(Uuid::randomHex(), 0, 5),
+                $uuid,
+                $context
+            );
+        } catch (IllegalFileNameException | EmptyMediaFilenameException $e) {
+            $this->fileSaver->persistFileToMedia($mediaFile, Uuid::randomHex(), $uuid, $context);
+        }
     }
 
     private function doNormalDownloadRequest(MediaProcessWorkloadStruct $workload, Client $client): ?Promise\PromiseInterface

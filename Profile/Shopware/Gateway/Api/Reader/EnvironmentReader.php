@@ -9,6 +9,7 @@ namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException as GuzzleRequestException;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
 use Shopware\Core\Framework\ShopwareHttpException;
@@ -35,6 +36,11 @@ class EnvironmentReader implements EnvironmentReaderInterface
      */
     private $connectionFactory;
 
+    /**
+     * @var MigrationContextInterface
+     */
+    private $migrationContext;
+
     public function __construct(ConnectionFactoryInterface $connectionFactory)
     {
         $this->connectionFactory = $connectionFactory;
@@ -42,6 +48,7 @@ class EnvironmentReader implements EnvironmentReaderInterface
 
     public function read(MigrationContextInterface $migrationContext): array
     {
+        $this->migrationContext = $migrationContext;
         $this->client = $this->connectionFactory->createApiClient($migrationContext);
 
         $information = [
@@ -139,16 +146,15 @@ class EnvironmentReader implements EnvironmentReaderInterface
      */
     private function readData(Client $apiClient, bool $verified = false): array
     {
-        $config = $apiClient->getConfig();
-        $config = \array_merge($config, [
-            'verify' => $verified,
-        ]);
+        if ($verified) {
+            $apiClient = $this->connectionFactory->createApiClient($this->migrationContext, $verified);
+        }
 
-        $result = $this->doSecureRequest(
-            $apiClient,
-            'SwagMigrationEnvironment',
-            $config
-        );
+        if ($apiClient === null) {
+            throw new GatewayReadException('Shopware 5.5 Api SwagMigrationEnvironment', 466);
+        }
+
+        $result = $this->doSecureRequest($apiClient, 'SwagMigrationEnvironment');
 
         if ($result->getStatusCode() !== SymfonyResponse::HTTP_OK) {
             throw new GatewayReadException('Shopware 5.5 Api SwagMigrationEnvironment', 466);
@@ -165,14 +171,7 @@ class EnvironmentReader implements EnvironmentReaderInterface
 
     private function checkForShopware(Client $apiClient): bool
     {
-        $config = $apiClient->getConfig();
-        $config['verify'] = false;
-
-        $result = $this->doSecureRequest(
-            $apiClient,
-            'version',
-            $config
-        );
+        $result = $this->doSecureRequest($apiClient, 'version');
 
         if ($result->getStatusCode() === SymfonyResponse::HTTP_NOT_FOUND) {
             return false;
@@ -199,14 +198,11 @@ class EnvironmentReader implements EnvironmentReaderInterface
      * @throws RequestCertificateInvalidException
      * @throws SslRequiredException
      */
-    private function doSecureRequest(Client $apiClient, string $endpoint, array $config): GuzzleResponse
+    private function doSecureRequest(Client $apiClient, string $endpoint): GuzzleResponse
     {
         try {
             /** @var GuzzleResponse $result */
-            $result = $apiClient->get(
-                $endpoint,
-                $config
-            );
+            $result = $apiClient->get($endpoint);
 
             return $result;
         } catch (ClientException $e) {
@@ -225,6 +221,8 @@ class EnvironmentReader implements EnvironmentReaderInterface
                 throw new RequestCertificateInvalidException($e->getHandlerContext()['url']);
             }
 
+            throw new GatewayReadException('Shopware 5.5 Api SwagMigrationEnvironment', 466);
+        } catch (ConnectException $e) {
             throw new GatewayReadException('Shopware 5.5 Api SwagMigrationEnvironment', 466);
         }
     }

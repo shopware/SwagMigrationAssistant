@@ -16,6 +16,7 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\Language\LanguageEntity;
 use Shopware\Core\System\Locale\LocaleEntity;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
+use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 class DummyMappingService extends MappingService
@@ -88,7 +89,7 @@ class DummyMappingService extends MappingService
 
     public function getMappings(string $connectionId, string $entityName, array $ids, Context $context): EntitySearchResult
     {
-        return new EntitySearchResult(0, new EntityCollection(), null, new Criteria(), $context);
+        return new EntitySearchResult(SwagMigrationMappingDefinition::ENTITY_NAME, 0, new EntityCollection(), null, new Criteria(), $context);
     }
 
     public function getUuidsByEntity(string $connectionId, string $entityName, Context $context): array

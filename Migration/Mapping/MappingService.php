@@ -13,7 +13,6 @@ use Shopware\Core\Content\Cms\CmsPageDefinition;
 use Shopware\Core\Content\Cms\CmsPageEntity;
 use Shopware\Core\Content\Media\Aggregate\MediaDefaultFolder\MediaDefaultFolderEntity;
 use Shopware\Core\Content\Media\Aggregate\MediaThumbnailSize\MediaThumbnailSizeEntity;
-use Shopware\Core\Content\Rule\RuleEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
@@ -21,7 +20,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\IdSearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
 use Shopware\Core\Framework\Uuid\Uuid;
@@ -134,7 +132,7 @@ class MappingService implements MappingServiceInterface
     protected $entityWriter;
 
     /**
-     * @var string
+     * @var string | null
      */
     protected $defaultAvailabilityRule;
 
@@ -233,16 +231,14 @@ class MappingService implements MappingServiceInterface
         if (isset($this->mappings[\md5($entityName . $oldIdentifier)])) {
             return $this->mappings[\md5($entityName . $oldIdentifier)];
         }
-        /** @var EntitySearchResult $result */
-        $result = $context->disableCache(function (Context $context) use ($connectionId, $entityName, $oldIdentifier) {
-            $criteria = new Criteria();
-            $criteria->addFilter(new EqualsFilter('connectionId', $connectionId));
-            $criteria->addFilter(new EqualsFilter('entity', $entityName));
-            $criteria->addFilter(new EqualsFilter('oldIdentifier', $oldIdentifier));
-            $criteria->setLimit(1);
 
-            return $this->migrationMappingRepo->search($criteria, $context);
-        });
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('connectionId', $connectionId));
+        $criteria->addFilter(new EqualsFilter('entity', $entityName));
+        $criteria->addFilter(new EqualsFilter('oldIdentifier', $oldIdentifier));
+        $criteria->setLimit(1);
+
+        $result = $this->migrationMappingRepo->search($criteria, $context);
 
         if ($result->getTotal() > 0) {
             /** @var SwagMigrationMappingEntity $element */
@@ -315,22 +311,17 @@ class MappingService implements MappingServiceInterface
 
     public function getMappings(string $connectionId, string $entityName, array $ids, Context $context): EntitySearchResult
     {
-        return $context->disableCache(function (Context $context) use ($connectionId, $entityName, $ids) {
-            $criteria = new Criteria();
-            $criteria->addFilter(new EqualsFilter('connectionId', $connectionId));
-            $criteria->addFilter(new EqualsFilter('entity', $entityName));
-            $criteria->addFilter(new EqualsAnyFilter('oldIdentifier', $ids));
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('connectionId', $connectionId));
+        $criteria->addFilter(new EqualsFilter('entity', $entityName));
+        $criteria->addFilter(new EqualsAnyFilter('oldIdentifier', $ids));
 
-            return $this->migrationMappingRepo->search($criteria, $context);
-        });
+        return $this->migrationMappingRepo->search($criteria, $context);
     }
 
     public function preloadMappings(array $mappingIds, Context $context): void
     {
-        /** @var EntitySearchResult $result */
-        $result = $context->disableCache(function (Context $context) use ($mappingIds) {
-            return $this->migrationMappingRepo->search(new Criteria($mappingIds), $context);
-        });
+        $result = $this->migrationMappingRepo->search(new Criteria($mappingIds), $context);
 
         if ($result->count() > 0) {
             $elements = $result->getEntities()->getElements();
@@ -354,14 +345,12 @@ class MappingService implements MappingServiceInterface
 
     public function getUuidsByEntity(string $connectionId, string $entityName, Context $context): array
     {
-        /** @var SwagMigrationMappingEntity[] $entities */
-        $entities = $context->disableCache(function (Context $context) use ($connectionId, $entityName) {
-            $criteria = new Criteria();
-            $criteria->addFilter(new EqualsFilter('connectionId', $connectionId));
-            $criteria->addFilter(new EqualsFilter('entity', $entityName));
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('connectionId', $connectionId));
+        $criteria->addFilter(new EqualsFilter('entity', $entityName));
 
-            return $this->migrationMappingRepo->search($criteria, $context)->getEntities();
-        });
+        /** @var SwagMigrationMappingEntity[] $entities */
+        $entities = $this->migrationMappingRepo->search($criteria, $context)->getEntities();
 
         $entityUuids = [];
         foreach ($entities as $entity) {
@@ -377,16 +366,13 @@ class MappingService implements MappingServiceInterface
             return $this->values[$entityName][$oldIdentifier];
         }
 
-        /** @var EntitySearchResult $result */
-        $result = $context->disableCache(function (Context $context) use ($connectionId, $entityName, $oldIdentifier) {
-            $criteria = new Criteria();
-            $criteria->addFilter(new EqualsFilter('connectionId', $connectionId));
-            $criteria->addFilter(new EqualsFilter('entity', $entityName));
-            $criteria->addFilter(new EqualsFilter('oldIdentifier', $oldIdentifier));
-            $criteria->setLimit(1);
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('connectionId', $connectionId));
+        $criteria->addFilter(new EqualsFilter('entity', $entityName));
+        $criteria->addFilter(new EqualsFilter('oldIdentifier', $oldIdentifier));
+        $criteria->setLimit(1);
 
-            return $this->migrationMappingRepo->search($criteria, $context);
-        });
+        $result = $this->migrationMappingRepo->search($criteria, $context);
 
         if ($result->getTotal() > 0) {
             /** @var SwagMigrationMappingEntity $element */
@@ -436,15 +422,12 @@ class MappingService implements MappingServiceInterface
             return $this->mappings[\md5($entityName . $identifier)];
         }
 
-        /** @var EntitySearchResult $result */
-        $result = $context->disableCache(function (Context $context) use ($connectionId, $entityName, $identifier) {
-            $criteria = new Criteria();
-            $criteria->addFilter(new EqualsFilter('connectionId', $connectionId));
-            $criteria->addFilter(new EqualsFilter('entity', $entityName));
-            $criteria->addFilter(new EqualsFilter('oldIdentifier', $identifier));
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('connectionId', $connectionId));
+        $criteria->addFilter(new EqualsFilter('entity', $entityName));
+        $criteria->addFilter(new EqualsFilter('oldIdentifier', $identifier));
 
-            return $this->migrationMappingRepo->search($criteria, $context);
-        });
+        $result = $this->migrationMappingRepo->search($criteria, $context);
 
         $uuidList = [];
         if ($result->getTotal() > 0) {
@@ -476,15 +459,12 @@ class MappingService implements MappingServiceInterface
             }
         }
 
-        /** @var IdSearchResult $result */
-        $result = $context->disableCache(function (Context $context) use ($entityUuid, $connectionId) {
-            $criteria = new Criteria();
-            $criteria->addFilter(new EqualsFilter('entityUuid', $entityUuid));
-            $criteria->addFilter(new EqualsFilter('connectionId', $connectionId));
-            $criteria->setLimit(1);
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('entityUuid', $entityUuid));
+        $criteria->addFilter(new EqualsFilter('connectionId', $connectionId));
+        $criteria->setLimit(1);
 
-            return $this->migrationMappingRepo->searchIds($criteria, $context);
-        });
+        $result = $this->migrationMappingRepo->searchIds($criteria, $context);
 
         if ($result->getTotal() > 0) {
             $this->migrationMappingRepo->delete(\array_values($result->getData()), $context);
@@ -625,12 +605,10 @@ class MappingService implements MappingServiceInterface
 
         $languageUuid = $context->getLanguageId();
 
-        $language = $context->disableCache(function (Context $context) use ($languageUuid): ?LanguageEntity {
-            $criteria = new Criteria([$languageUuid]);
-            $criteria->addAssociation('locale');
+        $criteria = new Criteria([$languageUuid]);
+        $criteria->addAssociation('locale');
 
-            return $this->languageRepository->search($criteria, $context)->first();
-        });
+        $language = $this->languageRepository->search($criteria, $context)->first();
 
         if ($language === null) {
             return null;
@@ -649,16 +627,13 @@ class MappingService implements MappingServiceInterface
             return $deliveryTimeMapping['entityUuid'];
         }
 
-        /** @var EntitySearchResult $result */
-        $result = $context->disableCache(function (Context $context) use ($minValue, $maxValue, $unit) {
-            $criteria = new Criteria();
-            $criteria->addFilter(new EqualsFilter('min', $minValue));
-            $criteria->addFilter(new EqualsFilter('max', $maxValue));
-            $criteria->addFilter(new EqualsFilter('unit', $unit));
-            $criteria->setLimit(1);
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('min', $minValue));
+        $criteria->addFilter(new EqualsFilter('max', $maxValue));
+        $criteria->addFilter(new EqualsFilter('unit', $unit));
+        $criteria->setLimit(1);
 
-            return $this->deliveryTimeRepo->search($criteria, $context);
-        });
+        $result = $this->deliveryTimeRepo->search($criteria, $context);
 
         $deliveryTimeUuid = Uuid::randomHex();
         if ($result->getTotal() > 0) {
@@ -689,15 +664,12 @@ class MappingService implements MappingServiceInterface
             return $countryMapping['entityUuid'];
         }
 
-        /** @var EntitySearchResult $result */
-        $result = $context->disableCache(function (Context $context) use ($iso, $iso3) {
-            $criteria = new Criteria();
-            $criteria->addFilter(new EqualsFilter('iso', $iso));
-            $criteria->addFilter(new EqualsFilter('iso3', $iso3));
-            $criteria->setLimit(1);
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('iso', $iso));
+        $criteria->addFilter(new EqualsFilter('iso3', $iso3));
+        $criteria->setLimit(1);
 
-            return $this->countryRepository->search($criteria, $context);
-        });
+        $result = $this->countryRepository->search($criteria, $context);
 
         if ($result->getTotal() > 0) {
             /** @var CountryEntity $element */
@@ -746,14 +718,11 @@ class MappingService implements MappingServiceInterface
 
     public function getCurrencyUuidWithoutMapping(string $connectionId, string $oldIsoCode, Context $context): ?string
     {
-        /** @var EntitySearchResult $result */
-        $result = $context->disableCache(function (Context $context) use ($oldIsoCode) {
-            $criteria = new Criteria();
-            $criteria->addFilter(new EqualsFilter('isoCode', $oldIsoCode));
-            $criteria->setLimit(1);
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('isoCode', $oldIsoCode));
+        $criteria->setLimit(1);
 
-            return $this->currencyRepository->search($criteria, $context);
-        });
+        $result = $this->currencyRepository->search($criteria, $context);
 
         if ($result->getTotal() > 0) {
             /** @var CurrencyEntity $element */
@@ -773,14 +742,11 @@ class MappingService implements MappingServiceInterface
             return $taxMapping['entityUuid'];
         }
 
-        /** @var EntitySearchResult $result */
-        $result = $context->disableCache(function (Context $context) use ($taxRate) {
-            $criteria = new Criteria();
-            $criteria->addFilter(new EqualsFilter('taxRate', $taxRate));
-            $criteria->setLimit(1);
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('taxRate', $taxRate));
+        $criteria->setLimit(1);
 
-            return $this->taxRepo->search($criteria, $context);
-        });
+        $result = $this->taxRepo->search($criteria, $context);
 
         if ($result->getTotal() > 0) {
             /** @var TaxEntity $tax */
@@ -811,15 +777,13 @@ class MappingService implements MappingServiceInterface
         }
 
         $connectionId = $connection->getId();
-        $result = $context->disableCache(function (Context $context) use ($type): EntitySearchResult {
-            $criteria = new Criteria();
-            $criteria->addFilter(new EqualsFilter(
-                'number_range.type.technicalName',
-                $type
-            ));
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter(
+            'number_range.type.technicalName',
+            $type
+        ));
 
-            return $this->numberRangeRepo->search($criteria, $context);
-        });
+        $result = $this->numberRangeRepo->search($criteria, $context);
 
         if ($result->getTotal() > 0) {
             /** @var NumberRangeEntity|null $numberRange */
@@ -860,13 +824,10 @@ class MappingService implements MappingServiceInterface
             return $defaultFolderMapping['entityUuid'];
         }
 
-        /** @var EntitySearchResult $result */
-        $result = $context->disableCache(function (Context $context) use ($entityName) {
-            $criteria = new Criteria();
-            $criteria->addFilter(new EqualsFilter('entity', $entityName));
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('entity', $entityName));
 
-            return $this->mediaDefaultFolderRepo->search($criteria, $context);
-        });
+        $result = $this->mediaDefaultFolderRepo->search($criteria, $context);
 
         if ($result->getTotal() > 0) {
             /** @var MediaDefaultFolderEntity|null $mediaDefaultFolder */
@@ -911,13 +872,11 @@ class MappingService implements MappingServiceInterface
             return $thumbnailSizeMapping['entityUuid'];
         }
 
-        $result = $context->disableCache(function (Context $context) use ($width, $height): EntitySearchResult {
-            $criteria = new Criteria();
-            $criteria->addFilter(new EqualsFilter('width', $width));
-            $criteria->addFilter(new EqualsFilter('height', $height));
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('width', $width));
+        $criteria->addFilter(new EqualsFilter('height', $height));
 
-            return $this->thumbnailSizeRepo->search($criteria, $context);
-        });
+        $result = $this->thumbnailSizeRepo->search($criteria, $context);
 
         if ($result->getTotal() > 0) {
             /** @var MediaThumbnailSizeEntity $thumbnailSize */
@@ -945,14 +904,11 @@ class MappingService implements MappingServiceInterface
             return $this->migratedSalesChannels[$connectionId];
         }
 
-        /** @var EntitySearchResult $result */
-        $result = $context->disableCache(function (Context $context) use ($connectionId) {
-            $criteria = new Criteria();
-            $criteria->addFilter(new EqualsFilter('connectionId', $connectionId));
-            $criteria->addFilter(new EqualsFilter('entity', DefaultEntities::SALES_CHANNEL));
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('connectionId', $connectionId));
+        $criteria->addFilter(new EqualsFilter('entity', DefaultEntities::SALES_CHANNEL));
 
-            return $this->migrationMappingRepo->search($criteria, $context);
-        });
+        $result = $this->migrationMappingRepo->search($criteria, $context);
 
         /** @var SwagMigrationMappingCollection $saleschannelMappingCollection */
         $saleschannelMappingCollection = $result->getEntities();
@@ -978,19 +934,16 @@ class MappingService implements MappingServiceInterface
             return $this->defaultAvailabilityRule;
         }
 
-        $result = $context->disableCache(function (Context $context): ?RuleEntity {
-            $criteria = new Criteria();
-            $criteria->addFilter(new EqualsFilter('name', 'Cart >= 0'));
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('name', 'Cart >= 0'));
 
-            return $this->ruleRepo->search($criteria, $context)->first();
-        });
+        $result = $this->ruleRepo->search($criteria, $context)->first();
 
-        $uuids = null;
         if ($result !== null) {
-            $uuids = $result->getId();
+            $this->defaultAvailabilityRule = $result->getId();
         }
 
-        return $uuids;
+        return $this->defaultAvailabilityRule;
     }
 
     public function getDocumentTypeUuid(string $technicalName, Context $context, MigrationContextInterface $migrationContext): ?string
@@ -1007,13 +960,10 @@ class MappingService implements MappingServiceInterface
             return $documentTypeMapping['entityUuid'];
         }
 
-        /** @var EntitySearchResult $result */
-        $result = $context->disableCache(function (Context $context) use ($technicalName) {
-            $criteria = new Criteria();
-            $criteria->addFilter(new EqualsFilter('technicalName', $technicalName));
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('technicalName', $technicalName));
 
-            return $this->documentTypeRepo->search($criteria, $context);
-        });
+        $result = $this->documentTypeRepo->search($criteria, $context);
 
         if ($result->getTotal() > 0) {
             /** @var DocumentTypeEntity $documentType */
@@ -1084,16 +1034,13 @@ class MappingService implements MappingServiceInterface
             }
         }
 
-        /** @var EntitySearchResult $result */
-        $result = $context->disableCache(function (Context $context) use ($connectionId, $entityName, $id, $uuid) {
-            $criteria = new Criteria();
-            $criteria->addFilter(new EqualsFilter('connectionId', $connectionId));
-            $criteria->addFilter(new EqualsFilter('entity', $entityName));
-            $criteria->addFilter(new EqualsFilter('oldIdentifier', $id));
-            $criteria->addFilter(new EqualsFilter('entityUuid', $uuid));
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('connectionId', $connectionId));
+        $criteria->addFilter(new EqualsFilter('entity', $entityName));
+        $criteria->addFilter(new EqualsFilter('oldIdentifier', $id));
+        $criteria->addFilter(new EqualsFilter('entityUuid', $uuid));
 
-            return $this->migrationMappingRepo->searchIds($criteria, $context);
-        });
+        $result = $this->migrationMappingRepo->searchIds($criteria, $context);
 
         if ($result->getTotal() > 0) {
             return true;
@@ -1104,15 +1051,12 @@ class MappingService implements MappingServiceInterface
 
     private function searchLanguageInMapping(string $localeCode, Context $context): ?string
     {
-        /** @var EntitySearchResult $result */
-        $result = $context->disableCache(function (Context $context) use ($localeCode) {
-            $criteria = new Criteria();
-            $criteria->addFilter(new EqualsFilter('entity', DefaultEntities::LANGUAGE));
-            $criteria->addFilter(new EqualsFilter('oldIdentifier', $localeCode));
-            $criteria->setLimit(1);
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('entity', DefaultEntities::LANGUAGE));
+        $criteria->addFilter(new EqualsFilter('oldIdentifier', $localeCode));
+        $criteria->setLimit(1);
 
-            return $this->migrationMappingRepo->search($criteria, $context);
-        });
+        $result = $this->migrationMappingRepo->search($criteria, $context);
 
         if ($result->getTotal() > 0) {
             /** @var SwagMigrationMappingEntity $element */
@@ -1129,14 +1073,11 @@ class MappingService implements MappingServiceInterface
      */
     private function searchLocale(string $localeCode, Context $context): string
     {
-        /** @var EntitySearchResult $result */
-        $result = $context->disableCache(function (Context $context) use ($localeCode) {
-            $criteria = new Criteria();
-            $criteria->addFilter(new EqualsFilter('code', $localeCode));
-            $criteria->setLimit(1);
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('code', $localeCode));
+        $criteria->setLimit(1);
 
-            return $this->localeRepository->search($criteria, $context);
-        });
+        $result = $this->localeRepository->search($criteria, $context);
 
         if ($result->getTotal() > 0) {
             /** @var LocaleEntity $element */
@@ -1150,14 +1091,11 @@ class MappingService implements MappingServiceInterface
 
     private function searchLanguageByLocale(string $localeUuid, Context $context): ?string
     {
-        /** @var EntitySearchResult $result */
-        $result = $context->disableCache(function (Context $context) use ($localeUuid) {
-            $criteria = new Criteria();
-            $criteria->addFilter(new EqualsFilter('localeId', $localeUuid));
-            $criteria->setLimit(1);
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('localeId', $localeUuid));
+        $criteria->setLimit(1);
 
-            return $this->languageRepository->search($criteria, $context);
-        });
+        $result = $this->languageRepository->search($criteria, $context);
 
         if ($result->getTotal() > 0) {
             /** @var LanguageEntity $element */

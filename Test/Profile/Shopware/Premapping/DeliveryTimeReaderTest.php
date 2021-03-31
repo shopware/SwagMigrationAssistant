@@ -16,6 +16,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\System\DeliveryTime\DeliveryTimeDefinition;
 use Shopware\Core\System\DeliveryTime\DeliveryTimeEntity;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\MigrationContext;
@@ -79,7 +80,7 @@ class DeliveryTimeReaderTest extends TestCase
         ]];
         $connection->setPremapping($premapping);
 
-        $mock->method('search')->willReturn(new EntitySearchResult(2, new EntityCollection([$this->timeOne, $timeTwo]), null, new Criteria(), $this->context));
+        $mock->method('search')->willReturn(new EntitySearchResult(DeliveryTimeDefinition::ENTITY_NAME, 2, new EntityCollection([$this->timeOne, $timeTwo]), null, new Criteria(), $this->context));
 
         /* @var EntityRepositoryInterface $mock */
         $this->deliveryTimeReader = new DeliveryTimeReader($mock);

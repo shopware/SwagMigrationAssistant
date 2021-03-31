@@ -125,10 +125,10 @@ class SalesChannelConverterTest extends TestCase
 
     public function testConvertWithInactiveRequirements(): void
     {
-        $this->dbalConnection->executeUpdate(
+        $this->dbalConnection->executeStatement(
             'UPDATE payment_method SET active = 0;'
         );
-        $this->dbalConnection->executeUpdate(
+        $this->dbalConnection->executeStatement(
             'UPDATE shipping_method SET active = 0;'
         );
 

@@ -135,7 +135,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
             ));
             $this->loggingService->saveLogging($context);
 
-            foreach ($updateWrittenData as $id => &$data) {
+            foreach ($updateWrittenData as &$data) {
                 $data['written'] = false;
                 $data['writeFailure'] = true;
             }

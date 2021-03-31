@@ -35,7 +35,7 @@ class PropertyGroupOptionReader extends AbstractReader
         $options = $this->mapData($fetchedConfiguratorOptions, [], ['property']);
         $locale = $this->getDefaultShopLocale();
 
-        foreach ($options as $key => &$option) {
+        foreach ($options as &$option) {
             $option['_locale'] = \str_replace('_', '-', $locale);
         }
         unset($option);
@@ -48,7 +48,7 @@ class PropertyGroupOptionReader extends AbstractReader
         $this->setConnection($migrationContext);
 
         $sql = <<<SQL
-SELECT 
+SELECT
     COUNT(*)
 FROM
     (
@@ -56,17 +56,18 @@ FROM
             'property' AS "property.type",
             filter.id AS "property.id"
         FROM s_filter_values AS filter
-        
+
         UNION
-        
-        SELECT 
+
+        SELECT
             'option' AS "property.type",
             opt.id AS "property.id"
         FROM s_article_configurator_options AS opt
     ) AS result
 SQL;
-
-        $total = (int) $this->connection->executeQuery($sql)->fetchColumn();
+        $statement = $this->connection->prepare($sql);
+        $statement->execute();
+        $total = (int) $statement->fetchOne();
 
         return new TotalStruct(DefaultEntities::PROPERTY_GROUP_OPTION, $total);
     }
@@ -123,9 +124,8 @@ SQL;
         $statement = $this->connection->prepare($sql);
         $statement->bindValue('limit', $migrationContext->getLimit(), \PDO::PARAM_INT);
         $statement->bindValue('offset', $migrationContext->getOffset(), \PDO::PARAM_INT);
-        $statement->setFetchMode(\PDO::FETCH_ASSOC);
         $statement->execute();
 
-        return $statement->fetchAll();
+        return $statement->fetchAllAssociative();
     }
 }

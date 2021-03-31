@@ -1,3 +1,6 @@
+# REPLACE-GLOBAL-WITH-NEXT-VERSION
+- MIG-203 - Kompatibilität für Shopware 6.4
+
 # 3.0.2
 - MIG-218 - Verhindert den Abbruch der Migration, wenn ein Kunde eine ungültige E-Mail-Adresse hat
 - MIG-219 - Behebt ein Problem bei der Migration von Übersetzungen der Freitextfelder

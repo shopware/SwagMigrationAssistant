@@ -22,7 +22,7 @@ class Migration1563456847CleanupLogging extends MigrationStep
         $sql = <<<SQL
 DROP TABLE `swag_migration_logging`;
 SQL;
-        $connection->executeUpdate($sql);
+        $connection->executeStatement($sql);
 
         $sql = <<<SQL
 CREATE TABLE IF NOT EXISTS `swag_migration_logging` (
@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS `swag_migration_logging` (
     DEFAULT CHARSET = utf8mb4
     COLLATE = utf8mb4_unicode_ci;
 SQL;
-        $connection->executeUpdate($sql);
+        $connection->executeStatement($sql);
     }
 
     public function updateDestructive(Connection $connection): void

@@ -20,9 +20,9 @@ class Migration1568882317AddChecksumToMapping extends MigrationStep
     public function update(Connection $connection): void
     {
         $sql = <<<SQL
-ALTER TABLE `swag_migration_mapping` ADD `checksum` VARCHAR(255) COLLATE utf8mb4_unicode_ci NULL AFTER `entity_value`; 
+ALTER TABLE `swag_migration_mapping` ADD `checksum` VARCHAR(255) COLLATE utf8mb4_unicode_ci NULL AFTER `entity_value`;
 SQL;
-        $connection->executeUpdate($sql);
+        $connection->executeStatement($sql);
     }
 
     public function updateDestructive(Connection $connection): void

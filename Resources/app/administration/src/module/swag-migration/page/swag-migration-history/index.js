@@ -22,7 +22,7 @@ Component.register('swag-migration-history', {
         this.migrationService.isMediaProcessing().then((response) => {
             this.isMediaProcessing = response.data;
         });
-        this.logDownloadEndpoint = `/api/v${this.migrationService.getApiVersion()}/_action/` +
+        this.logDownloadEndpoint = '/api/_action/' +
             `${this.migrationService.getApiBasePath()}/download-logs-of-run`;
     },
 
@@ -122,7 +122,7 @@ Component.register('swag-migration-history', {
             this.isLoading = true;
 
             const params = this.normalizeListingParams(
-                this.getListingParams()
+                this.getMainListingParams()
             );
 
             if (JSON.stringify(this.oldParams) === JSON.stringify(params)) {

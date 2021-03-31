@@ -38,9 +38,10 @@ class CurrencyReader extends AbstractReader
         // represents the main language of the migrated shop
         $locale = $this->getDefaultShopLocale();
 
-        foreach ($currencies as $key => &$currency) {
+        foreach ($currencies as &$currency) {
             $currency['_locale'] = \str_replace('_', '-', $locale);
         }
+        unset($currency);
 
         $currencies = $this->mapData($currencies, [], ['currency']);
 

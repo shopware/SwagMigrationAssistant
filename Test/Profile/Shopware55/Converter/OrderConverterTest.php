@@ -8,12 +8,10 @@
 namespace SwagMigrationAssistant\Test\Profile\Shopware55\Converter;
 
 use PHPUnit\Framework\TestCase;
-use Shopware\Core\Checkout\Cart\Price\PriceRounding;
 use Shopware\Core\Checkout\Cart\Price\Struct\AbsolutePriceDefinition;
 use Shopware\Core\Checkout\Cart\Price\Struct\CartPrice;
 use Shopware\Core\Checkout\Cart\Price\Struct\QuantityPriceDefinition;
 use Shopware\Core\Checkout\Cart\Tax\TaxCalculator;
-use Shopware\Core\Checkout\Cart\Tax\TaxRuleCalculator;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Uuid\Uuid;
@@ -82,10 +80,7 @@ class OrderConverterTest extends TestCase
     {
         $this->loggingService = new DummyLoggingService();
         $mappingService = new DummyMappingService();
-        $rounding = new PriceRounding();
-        $taxRuleCalculator = new TaxRuleCalculator($rounding);
-
-        $taxCalculator = new TaxCalculator($taxRuleCalculator);
+        $taxCalculator = new TaxCalculator();
         $this->orderConverter = new Shopware55OrderConverter($mappingService, $this->loggingService, $taxCalculator);
         $this->customerConverter = new Shopware55CustomerConverter($mappingService, $this->loggingService, Validation::createValidator());
 

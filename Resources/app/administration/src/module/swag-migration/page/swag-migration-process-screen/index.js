@@ -18,8 +18,6 @@ Component.register('swag-migration-process-screen', {
         migrationService: 'migrationService',
         /** @var {MigrationWorkerService} migrationWorkerService */
         migrationWorkerService: 'migrationWorkerService',
-        /** @var {ApiService} swagMigrationRunService */
-        swagMigrationRunService: 'swagMigrationRunService',
         /** @var {MigrationProcessStoreInitService} migrationProcessStoreInitService */
         migrationProcessStoreInitService: 'processStoreInitService',
         /** @var {MigrationUiStoreInitService} migrationUiStoreInitService */
