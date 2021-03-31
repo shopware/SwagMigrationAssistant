@@ -67,7 +67,7 @@ Component.register('swag-migration-history-detail-errors', {
     methods: {
         async getList() {
             this.isLoading = true;
-            const params = this.getListingParams();
+            const params = this.getMainListingParams();
 
             if (this.allMigrationErrors === null) {
                 await this.loadAllMigrationErrors();

@@ -15,6 +15,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateDefinition;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateEntity;
 use Shopware\Core\System\StateMachine\StateMachineDefinition;
 use Shopware\Core\System\StateMachine\StateMachineEntity;
@@ -76,7 +77,7 @@ class OrderDeliveryStateReaderTest extends TestCase
         $this->stateClosed->setName('Closed');
         $this->stateClosed->setTechnicalName('closed');
 
-        $smsRepoMock->method('search')->willReturn(new EntitySearchResult(StateMachineDefinition::ENTITY_NAME, 2, new EntityCollection([$this->stateOpen, $this->stateClosed]), null, new Criteria(), $this->context));
+        $smsRepoMock->method('search')->willReturn(new EntitySearchResult(StateMachineStateDefinition::ENTITY_NAME, 2, new EntityCollection([$this->stateOpen, $this->stateClosed]), null, new Criteria(), $this->context));
 
         $connection = new SwagMigrationConnectionEntity();
         $connection->setId(Uuid::randomHex());

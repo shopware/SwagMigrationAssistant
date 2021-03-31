@@ -16,14 +16,10 @@ export const WORKER_INTERRUPT_TYPE = Object.freeze({
 class MigrationWorkerService {
     /**
      * @param {MigrationApiService} migrationService
-     * @param {MigrationRunService} migrationRunService
-     * @param {MigrationLoggingService} migrationLoggingService
      * @param {MigrationIndexingWorker} migrationIndexingWorker
      */
     constructor(
         migrationService,
-        migrationRunService,
-        migrationLoggingService,
         migrationIndexingWorker
     ) {
         // will be toggled when we receive a response for our 'migrationWanted' request
@@ -36,8 +32,6 @@ class MigrationWorkerService {
         );
 
         this._migrationService = migrationService;
-        this._migrationRunService = migrationRunService;
-        this._migrationLoggingService = migrationLoggingService;
         this._migrationIndexingWorker = migrationIndexingWorker;
         this._workerStatusManager = new WorkerStatusManager(
             this._migrationService

@@ -19,8 +19,8 @@ class Migration1615794849ChangeLengthsOfLoggingColumns extends MigrationStep
 
     public function update(Connection $connection): void
     {
-        $connection->executeUpdate('ALTER TABLE swag_migration_logging MODIFY `source_id` VARCHAR(255)');
-        $connection->executeUpdate('ALTER TABLE swag_migration_logging MODIFY `entity` VARCHAR(255)');
+        $connection->executeStatement('ALTER TABLE swag_migration_logging MODIFY `source_id` VARCHAR(255)');
+        $connection->executeStatement('ALTER TABLE swag_migration_logging MODIFY `entity` VARCHAR(255)');
     }
 
     public function updateDestructive(Connection $connection): void

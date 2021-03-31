@@ -6,8 +6,6 @@ const { Application } = Shopware;
 Application.addServiceProvider('migrationWorkerService', (container) => {
     return new MigrationWorkerService(
         container.migrationService,
-        container.swagMigrationRunService,
-        container.swagMigrationLoggingService,
         container.migrationIndexingWorkerService
     );
 });
