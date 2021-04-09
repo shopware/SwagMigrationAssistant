@@ -202,11 +202,51 @@ class ProductConverterTest extends TestCase
         static::assertArrayHasKey('manufacturer', $converted);
         static::assertArrayHasKey('price', $converted);
         static::assertArrayHasKey('options', $converted);
+
+        static::assertArrayHasKey('media', $converted);
+        static::assertCount(2, $converted['media']);
+        static::assertSame('hemd', $converted['media'][0]['media']['title']);
+        static::assertSame(2, $converted['media'][0]['position']);
+        static::assertSame('hemd1', $converted['media'][1]['media']['title']);
+        static::assertSame(1, $converted['media'][1]['position']);
+        static::assertArrayHasKey('cover', $converted);
+        static::assertSame('hemd1', $converted['cover']['media']['title']);
+
         static::assertSame($convertedContainer['id'], $converted['parentId']);
         static::assertCount(0, $this->loggingService->getLoggingArray());
 
         static::assertSame('Größe', $converted['options'][0]['group']['translations'][DummyMappingService::DEFAULT_LANGUAGE_UUID]['name']);
         static::assertSame('M', $converted['options'][0]['translations'][DummyMappingService::DEFAULT_LANGUAGE_UUID]['name']);
+    }
+
+    public function testConvertVariantProductWithSpecialCoverImageConstellation(): void
+    {
+        $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
+
+        $context = Context::createDefaultContext();
+        $convertResultContainer = $this->productConverter->convert($productData[1], $context, $this->migrationContext);
+
+        $preparedProductData = $productData[15];
+        $preparedProductData['assets'][0]['main'] = '1';
+
+        $convertResult = $this->productConverter->convert($preparedProductData, $context, $this->migrationContext);
+
+        $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
+        $convertedContainer = $convertResultContainer->getConverted();
+        static::assertNotNull($convertedContainer);
+
+        static::assertNull($convertResult->getUnmapped());
+        static::assertArrayHasKey('id', $converted);
+
+        static::assertArrayHasKey('media', $converted);
+        static::assertCount(2, $converted['media']);
+        static::assertSame('hemd', $converted['media'][0]['media']['title']);
+        static::assertSame(2, $converted['media'][0]['position']);
+        static::assertSame('hemd1', $converted['media'][1]['media']['title']);
+        static::assertSame(1, $converted['media'][1]['position']);
+        static::assertArrayHasKey('cover', $converted);
+        static::assertSame('hemd', $converted['cover']['media']['title']);
     }
 
     public function testConvertVariantProductWithoutParent(): void
