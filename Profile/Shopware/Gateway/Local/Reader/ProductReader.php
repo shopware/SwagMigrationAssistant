@@ -293,7 +293,7 @@ class ProductReader extends AbstractReader
         }
 
         $fetchedAssets = $this->mapData($query->fetchAll(\PDO::FETCH_GROUP), [], ['asset']);
-        $fetchedVariantAssets = $this->mapData($this->fetchVariantAssets(), [], ['asset', 'img', 'description']);
+        $fetchedVariantAssets = $this->mapData($this->fetchVariantAssets(), [], ['asset', 'img', 'description', 'main', 'position']);
 
         $assets = [];
         foreach ($fetchedVariantAssets as $articleId => $productAssets) {
@@ -327,6 +327,7 @@ class ProductReader extends AbstractReader
         $query->addSelect('parentasset.articleID');
         $this->addTableSelection($query, 's_articles_img', 'asset');
         $query->addSelect('parentasset.img as img, parentasset.description as description');
+        $query->addSelect('parentasset.main as main, parentasset.position as position');
 
         $query->leftJoin('asset', 's_articles_img_attributes', 'asset_attributes', 'asset_attributes.imageID = asset.id');
         $this->addTableSelection($query, 's_articles_img_attributes', 'asset_attributes');

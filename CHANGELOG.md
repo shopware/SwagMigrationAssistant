@@ -1,5 +1,6 @@
 # REPLACE-GLOBAL-WITH-NEXT-VERSION
 - MIG-203 - Shopware 6.4 compatibility
+- MIG-220 - Optimize product image cover migration
 
 # 3.0.2
 - MIG-218 - Prevents abortion of a migration if customer has an invalid email address

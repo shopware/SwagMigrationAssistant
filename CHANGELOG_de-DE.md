@@ -1,5 +1,6 @@
 # REPLACE-GLOBAL-WITH-NEXT-VERSION
 - MIG-203 - Kompatibilität für Shopware 6.4
+- MIG-220 - Optimiert die Migration von Produkt-Vorschaubildern
 
 # 3.0.2
 - MIG-218 - Verhindert den Abbruch der Migration, wenn ein Kunde eine ungültige E-Mail-Adresse hat

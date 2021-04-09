@@ -795,6 +795,8 @@ abstract class ProductConverter extends ShopwareConverter
     {
         $mediaObjects = [];
         $cover = null;
+        $lastPosition = null;
+        $main = false;
         foreach ($media as $mediaData) {
             if (!isset($mediaData['media']['id'])) {
                 $this->loggingService->addLogEntry(new CannotConvertChildEntity(
@@ -863,8 +865,19 @@ abstract class ProductConverter extends ShopwareConverter
             $newProductMedia['media'] = $newMedia;
             $mediaObjects[] = $newProductMedia;
 
-            if ($cover === null && ((int) $mediaData['main'] === 1 || \count($media) === 1)) {
+            if ($main === true) {
+                continue;
+            }
+
+            if ($cover === null
+                || (int) $mediaData['main'] === 1
+                || ((int) $newProductMedia['position'] < $lastPosition && (int) $mediaData['main'] !== 1)
+            ) {
                 $cover = $newProductMedia;
+                $lastPosition = (int) $newProductMedia['position'];
+                if ((int) $mediaData['main'] === 1) {
+                    $main = true;
+                }
             }
         }
 
