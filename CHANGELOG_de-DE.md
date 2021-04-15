@@ -1,4 +1,4 @@
-# REPLACE-GLOBAL-WITH-NEXT-VERSION
+# 4.0.0
 - MIG-203 - Kompatibilität für Shopware 6.4
 - MIG-220 - Optimiert die Migration von Produkt-Vorschaubildern
 
