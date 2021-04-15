@@ -50,7 +50,7 @@ class DataProviderController
     }
 
     /**
-     * @Route("/api/v{version}/_action/data-provider/get-environment", name="api.admin.data-provider.get-environment", methods={"GET"})
+     * @Route("/api/_action/data-provider/get-environment", name="api.admin.data-provider.get-environment", methods={"GET"})
      * @Acl({"admin"})
      */
     public function getEnvironment(Context $context): Response
@@ -61,14 +61,14 @@ class DataProviderController
     }
 
     /**
-     * @Route("/api/v{version}/_action/data-provider/get-data", name="api.admin.data-provider.get-data", methods={"GET"})
+     * @Route("/api/_action/data-provider/get-data", name="api.admin.data-provider.get-data", methods={"GET"})
      * @Acl({"admin"})
      */
     public function getData(Request $request, Context $context): Response
     {
         $identifier = $request->query->get('identifier');
-        $limit = (int) $request->query->get('limit', 250);
-        $offset = (int) $request->query->get('offset', 0);
+        $limit = (int) $request->query->get('limit', '250');
+        $offset = (int) $request->query->get('offset', '0');
 
         if ($identifier === null) {
             throw new MissingRequestParameterException('identifier');
@@ -81,18 +81,12 @@ class DataProviderController
     }
 
     /**
-     * @Route("/api/v{version}/_action/data-provider/get-total", name="api.admin.data-provider.get-total", methods={"GET"})
+     * @Route("/api/_action/data-provider/get-total", name="api.admin.data-provider.get-total", methods={"GET"})
      * @Acl({"admin"})
      */
     public function getTotal(Request $request, Context $context): Response
     {
-        $identifierArray = $request->query->get('identifierArray', []);
-
-        if (empty($identifierArray)) {
-            $providerArray = $this->providerRegistry->getAllDataProviders();
-        } else {
-            $providerArray = $this->providerRegistry->getDataProviderArray($identifierArray);
-        }
+        $providerArray = $this->providerRegistry->getAllDataProviders();
 
         $totals = [];
         foreach ($providerArray as $identifier => $provider) {
@@ -103,7 +97,7 @@ class DataProviderController
     }
 
     /**
-     * @Route("/api/v{version}/_action/data-provider/get-table", name="api.admin.data-provider.get-table", methods={"GET"})
+     * @Route("/api/_action/data-provider/get-table", name="api.admin.data-provider.get-table", methods={"GET"})
      * @Acl({"admin"})
      */
     public function getTable(Request $request, Context $context): Response
@@ -121,7 +115,7 @@ class DataProviderController
     }
 
     /**
-     * @Route("/api/v{version}/_action/data-provider/generate-document", name="api.admin.data-provider.generate-document", methods={"GET"})
+     * @Route("/api/_action/data-provider/generate-document", name="api.admin.data-provider.generate-document", methods={"GET"})
      * @Acl({"admin"})
      */
     public function generateDocument(Request $request, Context $context): JsonResponse

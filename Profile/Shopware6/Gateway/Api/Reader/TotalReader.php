@@ -37,11 +37,7 @@ class TotalReader implements TotalReaderInterface
 
         $result = $client->getRequest(
             'get-total',
-            [
-                'query' => [
-                    'identifierArray' => [], // query every total instead of selected ones.
-                ],
-            ]
+            []
         );
 
         if ($result->getStatusCode() !== SymfonyResponse::HTTP_OK) {
