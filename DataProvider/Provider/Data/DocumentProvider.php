@@ -68,7 +68,6 @@ class DocumentProvider extends AbstractProvider
         foreach ($cleanResult as &$document) {
             if (!isset($document['documentMediaFile'])) {
                 $document['generateUrl'] = $this->router->generate('api.admin.data-provider.generate-document', [
-                    'version' => PlatformRequest::API_VERSION,
                     'documentId' => $document['id'],
                 ], RouterInterface::ABSOLUTE_URL);
 
@@ -76,7 +75,6 @@ class DocumentProvider extends AbstractProvider
             }
 
             $document['documentMediaFile']['url'] = $this->router->generate('api.action.download.document', [
-                'version' => PlatformRequest::API_VERSION,
                 'documentId' => $document['id'],
                 'deepLinkCode' => $document['deepLinkCode'],
             ], RouterInterface::ABSOLUTE_URL);

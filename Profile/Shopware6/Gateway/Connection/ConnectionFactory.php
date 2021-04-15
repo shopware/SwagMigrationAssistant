@@ -10,7 +10,6 @@ namespace SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection;
 use GuzzleHttp\Client;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\PlatformRequest;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 class ConnectionFactory implements ConnectionFactoryInterface
@@ -40,7 +39,7 @@ class ConnectionFactory implements ConnectionFactoryInterface
         }
 
         $options = [
-            'base_uri' => $credentials['endpoint'] . '/api/v' . PlatformRequest::API_VERSION . '/_action/data-provider/',
+            'base_uri' => $credentials['endpoint'] . '/api/_action/data-provider/',
             'connect_timeout' => 5.0,
             'verify' => false,
         ];

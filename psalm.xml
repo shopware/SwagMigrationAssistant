@@ -67,6 +67,12 @@
             </errorLevel>
         </DeprecatedFunction>
 
+        <DeprecatedMethod>
+            <errorLevel type="info">
+                <referencedMethod name="Doctrine\DBAL\Driver\ResultStatement::fetchAll"/>
+            </errorLevel>
+        </DeprecatedMethod>
+
         <DeprecatedClass>
             <errorLevel type="info">
                 <file name="Controller/MigrationController.php"/>

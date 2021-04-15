@@ -14,7 +14,6 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
@@ -149,13 +148,10 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
             return $typeMapping['entityUuid'];
         }
 
-        /** @var string|null $mailTemplateTypeId */
-        $mailTemplateTypeId = $context->disableCache(function (Context $context) use ($type): ?string {
-            $criteria = new Criteria();
-            $criteria->addFilter(new EqualsFilter('technicalName', $type));
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('technicalName', $type));
 
-            return $this->mailTemplateTypeRepo->searchIds($criteria, $context)->firstId();
-        });
+        $mailTemplateTypeId = $this->mailTemplateTypeRepo->searchIds($criteria, $context)->firstId();
 
         if ($mailTemplateTypeId !== null) {
             $this->saveMapping(
@@ -180,15 +176,12 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
             return $defaultMailTemplate['entityUuid'];
         }
 
-        /** @var string|null $mailTemplateId */
-        $mailTemplateId = $context->disableCache(function (Context $context) use ($type) {
-            $criteria = new Criteria();
-            $criteria->addFilter(new EqualsFilter('systemDefault', true));
-            $criteria->addFilter(new EqualsFilter('mailTemplateTypeId', $type));
-            $criteria->setLimit(1);
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('systemDefault', true));
+        $criteria->addFilter(new EqualsFilter('mailTemplateTypeId', $type));
+        $criteria->setLimit(1);
 
-            return $this->mailTemplateRepo->searchIds($criteria, $context)->firstId();
-        });
+        $mailTemplateId = $this->mailTemplateRepo->searchIds($criteria, $context)->firstId();
 
         if ($mailTemplateId === null) {
             $mailTemplateId = $oldIdentifier;
@@ -221,13 +214,10 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
             return $typeMapping['entityUuid'];
         }
 
-        /** @var string|null $numberRangeTypeId */
-        $numberRangeTypeId = $context->disableCache(function (Context $context) use ($type): ?string {
-            $criteria = new Criteria();
-            $criteria->addFilter(new EqualsFilter('technicalName', $type));
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('technicalName', $type));
 
-            return $this->numberRangeTypeRepo->searchIds($criteria, $context)->firstId();
-        });
+        $numberRangeTypeId = $this->numberRangeTypeRepo->searchIds($criteria, $context)->firstId();
 
         if ($numberRangeTypeId !== null) {
             $this->saveMapping(
@@ -258,13 +248,10 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
             return $defaultFolderMapping['entityUuid'];
         }
 
-        /** @var string|null $mediaDefaultFolderId */
-        $mediaDefaultFolderId = $context->disableCache(function (Context $context) use ($entityName): ?string {
-            $criteria = new Criteria();
-            $criteria->addFilter(new EqualsFilter('entity', $entityName));
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('entity', $entityName));
 
-            return $this->mediaDefaultFolderRepo->searchIds($criteria, $context)->firstId();
-        });
+        $mediaDefaultFolderId = $this->mediaDefaultFolderRepo->searchIds($criteria, $context)->firstId();
 
         if ($mediaDefaultFolderId !== null) {
             $this->saveMapping(
@@ -295,14 +282,11 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
             return $salutationMapping['entityUuid'];
         }
 
-        /** @var string|null $salutationId */
-        $salutationId = $context->disableCache(function (Context $context) use ($salutationKey): ?string {
-            $criteria = new Criteria();
-            $criteria->addFilter(new EqualsFilter('salutationKey', $salutationKey));
-            $criteria->setLimit(1);
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('salutationKey', $salutationKey));
+        $criteria->setLimit(1);
 
-            return $this->salutationRepo->searchIds($criteria, $context)->firstId();
-        });
+        $salutationId = $this->salutationRepo->searchIds($criteria, $context)->firstId();
 
         if ($salutationId !== null) {
             $this->saveMapping(
@@ -337,22 +321,19 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
             return $seoUrlTemplateMapping['entityUuid'];
         }
 
-        /** @var string|null $seoUrlTemplateId */
-        $seoUrlTemplateId = $context->disableCache(function (Context $context) use ($salesChannelId, $routeName): ?string {
-            $criteria = new Criteria();
-            $criteria->addFilter(
-                new MultiFilter(
-                    MultiFilter::CONNECTION_AND,
-                    [
-                        new EqualsFilter('salesChannelId', $salesChannelId),
-                        new EqualsFilter('routeName', $routeName),
-                    ]
-                )
-            );
-            $criteria->setLimit(1);
+        $criteria = new Criteria();
+        $criteria->addFilter(
+            new MultiFilter(
+                MultiFilter::CONNECTION_AND,
+                [
+                    new EqualsFilter('salesChannelId', $salesChannelId),
+                    new EqualsFilter('routeName', $routeName),
+                ]
+            )
+        );
+        $criteria->setLimit(1);
 
-            return $this->seoUrlTemplateRepo->searchIds($criteria, $context)->firstId();
-        });
+        $seoUrlTemplateId = $this->seoUrlTemplateRepo->searchIds($criteria, $context)->firstId();
 
         if ($seoUrlTemplateId !== null) {
             $this->saveMapping(
@@ -383,22 +364,19 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
             return $systemConfigMapping['entityUuid'];
         }
 
-        /** @var string|null $systemConfigId */
-        $systemConfigId = $context->disableCache(function (Context $context) use ($configurationKey, $salesChannelId): ?string {
-            $criteria = new Criteria();
-            $criteria->addFilter(
-                new MultiFilter(
-                    MultiFilter::CONNECTION_AND,
-                    [
-                        new EqualsFilter('salesChannelId', $salesChannelId),
-                        new EqualsFilter('configurationKey', $configurationKey),
-                    ]
-                )
-            );
-            $criteria->setLimit(1);
+        $criteria = new Criteria();
+        $criteria->addFilter(
+            new MultiFilter(
+                MultiFilter::CONNECTION_AND,
+                [
+                    new EqualsFilter('salesChannelId', $salesChannelId),
+                    new EqualsFilter('configurationKey', $configurationKey),
+                ]
+            )
+        );
+        $criteria->setLimit(1);
 
-            return $this->systemConfigRepo->searchIds($criteria, $context)->firstId();
-        });
+        $systemConfigId = $this->systemConfigRepo->searchIds($criteria, $context)->firstId();
 
         if ($systemConfigId !== null) {
             $this->saveMapping(
@@ -417,14 +395,11 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
 
     public function getProductSortingUuid(string $key, Context $context): array
     {
-        /** @var EntitySearchResult $result */
-        $result = $context->disableCache(function (Context $context) use ($key) {
-            $criteria = new Criteria();
-            $criteria->addFilter(new EqualsFilter('key', $key));
-            $criteria->setLimit(1);
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('key', $key));
+        $criteria->setLimit(1);
 
-            return $this->productSortingRepo->search($criteria, $context);
-        });
+        $result = $this->productSortingRepo->search($criteria, $context);
 
         /** @var ProductSortingEntity|null $productSorting */
         $productSorting = $result->first();
@@ -453,15 +428,12 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
             return $stateMachineStateMapping['entityUuid'];
         }
 
-        /** @var string|null $stateMachineStateId */
-        $stateMachineStateId = $context->disableCache(function (Context $context) use ($technicalName, $stateMachineTechnicalName): ?string {
-            $criteria = new Criteria();
-            $criteria->addFilter(new EqualsFilter('technicalName', $technicalName));
-            $criteria->addFilter(new EqualsFilter('stateMachine.technicalName', $stateMachineTechnicalName));
-            $criteria->setLimit(1);
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('technicalName', $technicalName));
+        $criteria->addFilter(new EqualsFilter('stateMachine.technicalName', $stateMachineTechnicalName));
+        $criteria->setLimit(1);
 
-            return $this->stateMachineStateRepo->searchIds($criteria, $context)->firstId();
-        });
+        $stateMachineStateId = $this->stateMachineStateRepo->searchIds($criteria, $context)->firstId();
 
         if ($stateMachineStateId !== null) {
             $this->saveMapping(
@@ -486,15 +458,12 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
             return $globalDocumentBaseConfig['entityUuid'];
         }
 
-        /** @var string|null $baseConfigId */
-        $baseConfigId = $context->disableCache(function (Context $context) use ($documentTypeId) {
-            $criteria = new Criteria();
-            $criteria->addFilter(new EqualsFilter('global', true));
-            $criteria->addFilter(new EqualsFilter('documentTypeId', $documentTypeId));
-            $criteria->setLimit(1);
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('global', true));
+        $criteria->addFilter(new EqualsFilter('documentTypeId', $documentTypeId));
+        $criteria->setLimit(1);
 
-            return $this->documentBaseConfigRepo->searchIds($criteria, $context)->firstId();
-        });
+        $baseConfigId = $this->documentBaseConfigRepo->searchIds($criteria, $context)->firstId();
 
         if ($baseConfigId === null) {
             $baseConfigId = $oldIdentifier;
@@ -521,15 +490,13 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
             return $cmsPageMapping['entityUuid'];
         }
 
-        /** @var CmsPageCollection $cmsPages */
-        $cmsPages = $context->disableCache(function (Context $context) use ($names) {
-            $criteria = new Criteria();
-            $criteria->addAssociation('translations');
-            $criteria->addFilter(new EqualsAnyFilter('translations.name', $names));
-            $criteria->addFilter(new EqualsFilter('locked', false));
+        $criteria = new Criteria();
+        $criteria->addAssociation('translations');
+        $criteria->addFilter(new EqualsAnyFilter('translations.name', $names));
+        $criteria->addFilter(new EqualsFilter('locked', false));
 
-            return $this->cmsPageRepo->search($criteria, $context)->getEntities();
-        });
+        /** @var CmsPageCollection $cmsPages */
+        $cmsPages = $this->cmsPageRepo->search($criteria, $context)->getEntities();
 
         foreach ($cmsPages as $cmsPage) {
             $translations = $cmsPage->getTranslations();
@@ -575,16 +542,14 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
             return;
         }
 
-        /** @var CmsPageCollection $cmsPages */
-        $cmsPages = $context->disableCache(function (Context $context) use ($names, $type) {
-            $criteria = new Criteria();
-            $criteria->addAssociation('translations');
-            $criteria->addFilter(new EqualsAnyFilter('translations.name', $names));
-            $criteria->addFilter(new EqualsFilter('type', $type));
-            $criteria->addFilter(new EqualsFilter('locked', true));
+        $criteria = new Criteria();
+        $criteria->addAssociation('translations');
+        $criteria->addFilter(new EqualsAnyFilter('translations.name', $names));
+        $criteria->addFilter(new EqualsFilter('type', $type));
+        $criteria->addFilter(new EqualsFilter('locked', true));
 
-            return $this->cmsPageRepo->search($criteria, $context)->getEntities();
-        });
+        /** @var CmsPageCollection $cmsPages */
+        $cmsPages = $this->cmsPageRepo->search($criteria, $context)->getEntities();
 
         foreach ($cmsPages as $cmsPage) {
             $translations = $cmsPage->getTranslations();
@@ -622,16 +587,13 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
             return $countryStateMapping['entityUuid'];
         }
 
-        /** @var string|null $countryStateUuid */
-        $countryStateUuid = $context->disableCache(function (Context $context) use ($countryStateCode, $countryIso, $countryIso3): ?string {
-            $criteria = new Criteria();
-            $criteria->addFilter(new EqualsFilter('shortCode', $countryStateCode));
-            $criteria->addFilter(new EqualsFilter('country.iso', $countryIso));
-            $criteria->addFilter(new EqualsFilter('country.iso3', $countryIso3));
-            $criteria->setLimit(1);
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('shortCode', $countryStateCode));
+        $criteria->addFilter(new EqualsFilter('country.iso', $countryIso));
+        $criteria->addFilter(new EqualsFilter('country.iso3', $countryIso3));
+        $criteria->setLimit(1);
 
-            return $this->countryStateRepo->searchIds($criteria, $context)->firstId();
-        });
+        $countryStateUuid = $this->countryStateRepo->searchIds($criteria, $context)->firstId();
 
         if ($countryStateUuid !== null) {
             $this->saveMapping(

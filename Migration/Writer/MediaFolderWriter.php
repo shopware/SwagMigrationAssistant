@@ -36,7 +36,7 @@ class MediaFolderWriter extends AbstractWriter
         return DefaultEntities::MEDIA_FOLDER;
     }
 
-    public function writeData(array $data, Context $context): void
+    public function writeData(array $data, Context $context): array
     {
         $defaultFolderIds = [];
 
@@ -69,6 +69,6 @@ class MediaFolderWriter extends AbstractWriter
             $this->mediaFolderRepo->update($update, $context);
         }
 
-        parent::writeData($data, $context);
+        return parent::writeData($data, $context);
     }
 }
