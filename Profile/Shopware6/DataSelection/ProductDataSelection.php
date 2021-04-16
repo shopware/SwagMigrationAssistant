@@ -18,6 +18,7 @@ use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\ProductStream
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\ProductStreamFilterInheritanceDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\PropertyGroupDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\TaxDataSet;
+use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\TaxRuleDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6ProfileInterface;
 
 class ProductDataSelection implements DataSelectionInterface
@@ -45,6 +46,7 @@ class ProductDataSelection implements DataSelectionInterface
     {
         return [
             new TaxDataSet(),
+            new TaxRuleDataSet(),
             new PropertyGroupDataSet(),
             new ProductFeatureSetDataSet(),
             new ProductManufacturerDataSet(),

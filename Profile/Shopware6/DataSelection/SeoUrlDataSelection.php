@@ -16,6 +16,7 @@ use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\PropertyGroup
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\SeoUrlDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\SeoUrlTemplateDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\TaxDataSet;
+use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\TaxRuleDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6ProfileInterface;
 
 class SeoUrlDataSelection implements DataSelectionInterface
@@ -43,6 +44,7 @@ class SeoUrlDataSelection implements DataSelectionInterface
     {
         return [
             new TaxDataSet(),
+            new TaxRuleDataSet(),
             new PropertyGroupDataSet(),
             new ProductManufacturerDataSet(),
             new ProductDataSet(),

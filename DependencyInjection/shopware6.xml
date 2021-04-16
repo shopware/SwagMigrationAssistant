@@ -34,6 +34,8 @@
             <argument type="service" id="state_machine_state.repository"/>
             <argument type="service" id="document_base_config.repository"/>
             <argument type="service" id="country_state.repository"/>
+            <argument type="service" id="tax_rule.repository"/>
+            <argument type="service" id="tax_rule_type.repository"/>
         </service>
 
         <!-- Shopware Converter Base classes -->
@@ -75,6 +77,9 @@
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\TaxConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\TaxRuleConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\PropertyGroupConverter"
@@ -283,6 +288,10 @@
             <tag name="shopware.migration.data_set"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\TaxRuleDataSet">
+            <tag name="shopware.migration.data_set"/>
+        </service>
+
         <service id="SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\UnitDataSet">
             <tag name="shopware.migration.data_set"/>
         </service>
@@ -477,6 +486,11 @@
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\TaxReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\ApiReader">
+            <tag name="shopware.migration.reader"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\TaxRuleReader"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\ApiReader">
             <tag name="shopware.migration.reader"/>
         </service>
@@ -689,6 +703,13 @@
                  parent="SwagMigrationAssistant\Migration\Writer\AbstractWriter">
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
             <argument type="service" id="Shopware\Core\System\Tax\TaxDefinition"/>
+            <tag name="shopware.migration.writer"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware6\Writer\TaxRuleWriter"
+                 parent="SwagMigrationAssistant\Migration\Writer\AbstractWriter">
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
+            <argument type="service" id="Shopware\Core\System\Tax\Aggregate\TaxRule\TaxRuleDefinition"/>
             <tag name="shopware.migration.writer"/>
         </service>
 

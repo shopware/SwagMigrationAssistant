@@ -5,12 +5,15 @@
  * file that was distributed with this source code.
  */
 
-use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+namespace SwagMigrationAssistant\Profile\Shopware6\Writer;
 
-return [
-    [
-        'entityName' => DefaultEntities::TAX,
-        'oldIdentifier' => 'f310ac6fdcf8430da945e291a5e446b1',
-        'newIdentifier' => '8ed3ed1fc3b943e8b64e7ce66e669c6e',
-    ],
-];
+use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Writer\AbstractWriter;
+
+class TaxRuleWriter extends AbstractWriter
+{
+    public function supports(): string
+    {
+        return DefaultEntities::TAX_RULE;
+    }
+}

@@ -55,6 +55,11 @@
             <tag name="shopware.migration.converter"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63TaxRuleConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\TaxRuleConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
         <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63PropertyGroupConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\PropertyGroupConverter">
             <tag name="shopware.migration.converter"/>
