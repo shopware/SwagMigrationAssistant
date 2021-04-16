@@ -15,9 +15,11 @@ abstract class TaxConverter extends ShopwareConverter
     protected function convertData(array $data): ConvertStruct
     {
         $converted = $data;
-        $taxId = $this->mappingService->getTaxUuid(
+        $taxId = $this->mappingService->getTaxUuidByCriteria(
             $this->connectionId,
-            $data['taxRate'],
+            $data['id'],
+            (float) $data['taxRate'],
+            $data['name'],
             $this->context
         );
 

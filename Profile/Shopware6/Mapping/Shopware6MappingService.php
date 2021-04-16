@@ -73,6 +73,16 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
     /**
      * @var EntityRepositoryInterface
      */
+    protected $taxRuleRepo;
+
+    /**
+     * @var EntityRepositoryInterface
+     */
+    protected $taxRuleTypeRepo;
+
+    /**
+     * @var EntityRepositoryInterface
+     */
     private $documentBaseConfigRepo;
 
     public function __construct(
@@ -101,7 +111,9 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
         EntityRepositoryInterface $productSortingRepo,
         EntityRepositoryInterface $stateMachineStateRepo,
         EntityRepositoryInterface $documentBaseConfigRepo,
-        EntityRepositoryInterface $countryStateRepo
+        EntityRepositoryInterface $countryStateRepo,
+        EntityRepositoryInterface $taxRuleRepo,
+        EntityRepositoryInterface $taxRuleTypeRepo
     ) {
         parent::__construct(
             $migrationMappingRepo,
@@ -132,6 +144,8 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
         $this->stateMachineStateRepo = $stateMachineStateRepo;
         $this->documentBaseConfigRepo = $documentBaseConfigRepo;
         $this->countryStateRepo = $countryStateRepo;
+        $this->taxRuleRepo = $taxRuleRepo;
+        $this->taxRuleTypeRepo = $taxRuleTypeRepo;
     }
 
     public function getMailTemplateTypeUuid(string $type, string $oldIdentifier, MigrationContextInterface $migrationContext, Context $context): ?string
@@ -608,5 +622,107 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
         }
 
         return $countryStateUuid;
+    }
+
+    public function getTaxUuidByCriteria(string $connectionId, string $sourceId, float $taxRate, string $name, Context $context): ?string
+    {
+        $taxMapping = $this->getMapping($connectionId, DefaultEntities::TAX, $sourceId, $context);
+
+        if ($taxMapping !== null) {
+            return $taxMapping['entityUuid'];
+        }
+
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('taxRate', $taxRate));
+        $criteria->addFilter(new EqualsFilter('name', $name));
+        $criteria->setLimit(1);
+
+        $result = $this->taxRepo->searchIds($criteria, $context);
+
+        if ($result->getTotal() > 0) {
+            $taxUuid = $result->firstId();
+
+            $this->saveMapping(
+                [
+                    'id' => Uuid::randomHex(),
+                    'connectionId' => $connectionId,
+                    'entity' => DefaultEntities::TAX,
+                    'oldIdentifier' => $sourceId,
+                    'entityUuid' => $taxUuid,
+                ]
+            );
+
+            return $taxUuid;
+        }
+
+        return null;
+    }
+
+    public function getTaxRuleUuidByCriteria(string $connectionId, string $sourceId, string $taxId, string $countryId, string $taxRuleTypeId, Context $context): ?string
+    {
+        $taxRuleMapping = $this->getMapping($connectionId, DefaultEntities::TAX_RULE, $sourceId, $context);
+
+        if ($taxRuleMapping !== null) {
+            return $taxRuleMapping['entityUuid'];
+        }
+
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('taxId', $taxId));
+        $criteria->addFilter(new EqualsFilter('countryId', $countryId));
+        $criteria->addFilter(new EqualsFilter('taxRuleTypeId', $taxRuleTypeId));
+        $criteria->setLimit(1);
+
+        $result = $this->taxRuleRepo->searchIds($criteria, $context);
+
+        if ($result->getTotal() > 0) {
+            $taxRuleUuid = $result->firstId();
+
+            $this->saveMapping(
+                [
+                    'id' => Uuid::randomHex(),
+                    'connectionId' => $connectionId,
+                    'entity' => DefaultEntities::TAX_RULE,
+                    'oldIdentifier' => $sourceId,
+                    'entityUuid' => $taxRuleUuid,
+                ]
+            );
+
+            return $taxRuleUuid;
+        }
+
+        return null;
+    }
+
+    public function getTaxRuleTypeUuidByCriteria(string $connectionId, string $sourceId, string $technicalName, Context $context): ?string
+    {
+        $taxRuleTypeMapping = $this->getMapping($connectionId, DefaultEntities::TAX_RULE_TYPE, $sourceId, $context);
+
+        if ($taxRuleTypeMapping !== null) {
+            return $taxRuleTypeMapping['entityUuid'];
+        }
+
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('technicalName', $technicalName));
+        $criteria->setLimit(1);
+
+        $result = $this->taxRuleTypeRepo->searchIds($criteria, $context);
+
+        if ($result->getTotal() > 0) {
+            $taxRuleTypeUuid = $result->firstId();
+
+            $this->saveMapping(
+                [
+                    'id' => Uuid::randomHex(),
+                    'connectionId' => $connectionId,
+                    'entity' => DefaultEntities::TAX_RULE_TYPE,
+                    'oldIdentifier' => $sourceId,
+                    'entityUuid' => $taxRuleTypeUuid,
+                ]
+            );
+
+            return $taxRuleTypeUuid;
+        }
+
+        return null;
     }
 }

@@ -170,12 +170,34 @@ class Dummy6MappingService extends Shopware6MappingService
         return null;
     }
 
-    public function getTaxUuid(string $connectionId, float $taxRate, Context $context): ?string
+    public function getTaxUuidByCriteria(string $connectionId, string $sourceId, float $taxRate, string $name, Context $context): ?string
     {
-        $taxMapping = $this->getMapping($connectionId, DefaultEntities::TAX, (string) $taxRate, $context);
+        $taxMapping = $this->getMapping($connectionId, DefaultEntities::TAX, $sourceId, $context);
 
         if ($taxMapping !== null) {
             return $taxMapping['entityUuid'];
+        }
+
+        return null;
+    }
+
+    public function getTaxRuleUuidByCriteria(string $connectionId, string $sourceId, string $taxId, string $countryId, string $taxRuleTypeId, Context $context): ?string
+    {
+        $taxRuleMapping = $this->getMapping($connectionId, DefaultEntities::TAX_RULE, $sourceId, $context);
+
+        if ($taxRuleMapping !== null) {
+            return $taxRuleMapping['entityUuid'];
+        }
+
+        return null;
+    }
+
+    public function getTaxRuleTypeUuidByCriteria(string $connectionId, string $sourceId, string $technicalName, Context $context): ?string
+    {
+        $taxRuleTypeMapping = $this->getMapping($connectionId, DefaultEntities::TAX_RULE_TYPE, $sourceId, $context);
+
+        if ($taxRuleTypeMapping !== null) {
+            return $taxRuleTypeMapping['entityUuid'];
         }
 
         return null;

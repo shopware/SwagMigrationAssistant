@@ -223,6 +223,10 @@ final class DefaultEntities
 
     public const TAX = 'tax';
 
+    public const TAX_RULE = 'tax_rule';
+
+    public const TAX_RULE_TYPE = 'tax_rule_type';
+
     public const TRANSLATION = 'translation';
 
     public const UNIT = 'unit';
