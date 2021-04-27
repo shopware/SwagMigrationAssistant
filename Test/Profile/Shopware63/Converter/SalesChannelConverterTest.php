@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Test\Profile\Shopware63\Converter;
 
+use Shopware\Core\Framework\Context;
 use SwagMigrationAssistant\Migration\Converter\ConverterInterface;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
@@ -17,6 +18,38 @@ use SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63SalesChannelCo
 
 class SalesChannelConverterTest extends ShopwareConverterTest
 {
+    /**
+     * @dataProvider dataProviderConvert
+     */
+    public function testConvert(string $fixtureFolderPath): void
+    {
+        if (!str_contains($fixtureFolderPath, '02-DefaultSalesChannel')) {
+            parent::testConvert($fixtureFolderPath);
+
+            return;
+        }
+
+        $input = require $fixtureFolderPath . '/input.php';
+        $expectedOutput = require $fixtureFolderPath . '/output.php';
+
+        $mappingArray = [];
+        if (\file_exists($fixtureFolderPath . '/mapping.php')) {
+            $mappingArray = require $fixtureFolderPath . '/mapping.php';
+        }
+
+        $this->loadMapping($mappingArray);
+
+        $context = Context::createDefaultContext();
+        $convertResult = $this->converter->convert($input, $context, $this->migrationContext);
+        $output = $convertResult->getConverted();
+
+        static::assertNotNull($output);
+        static::assertNotSame($output['id'], $input['id']);
+
+        unset($output['id']);
+        static::assertSame($expectedOutput, $output);
+    }
+
     protected function createConverter(Shopware6MappingServiceInterface $mappingService, LoggingServiceInterface $loggingService, MediaFileServiceInterface $mediaFileService): ConverterInterface
     {
         return new Shopware63SalesChannelConverter($mappingService, $loggingService);
