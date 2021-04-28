@@ -198,6 +198,7 @@ class MappingServiceTest extends TestCase
         $this->clearCacheData();
 
         $mapping = $this->mappingService->getMapping($this->connectionId, DefaultEntities::LANGUAGE, $localeCode, $context);
+        static::assertNotNull($mapping);
         static::assertSame($languageMapping['id'], $mapping['id']);
 
         $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::LANGUAGE, 'en-GB', $context);

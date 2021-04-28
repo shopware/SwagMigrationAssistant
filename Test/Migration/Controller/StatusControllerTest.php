@@ -231,7 +231,7 @@ class StatusControllerTest extends TestCase
         );
     }
 
-    public function connectionProvider()
+    public function connectionProvider(): array
     {
         return [
             [

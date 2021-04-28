@@ -139,6 +139,7 @@ class HistoryControllerTest extends TestCase
         $response = $this->controller->getGroupedLogsOfRun($request, $this->context);
 
         static::assertInstanceOf(JsonResponse::class, $response);
+        static::assertIsString($response->getContent());
         static::assertJson($response->getContent());
 
         $json = \json_decode($response->getContent(), true);
@@ -171,6 +172,7 @@ class HistoryControllerTest extends TestCase
         $result = $this->invokeMethod($this->historyService, 'getLogChunk', [$this->runUuid, 0, $this->context]);
 
         static::assertInstanceOf(SwagMigrationLoggingCollection::class, $result);
+        static::assertNotNull($result->first());
         static::assertSame('Lorem Ipsum', $result->first()->get('description'));
     }
 
@@ -178,6 +180,7 @@ class HistoryControllerTest extends TestCase
     {
         $result = $this->runRepo->search(new Criteria([$this->runUuid]), $this->context);
         $run = $result->first();
+        /** @var string $result */
         $result = $this->invokeMethod($this->historyService, 'getPrefixLogInformation', [$run]);
 
         static::assertStringContainsString('Migration log generated at', $result);
@@ -189,6 +192,7 @@ class HistoryControllerTest extends TestCase
     {
         $result = $this->runRepo->search(new Criteria([$this->runUuid]), $this->context);
         $run = $result->first();
+        /** @var string $result */
         $result = $this->invokeMethod($this->historyService, 'getSuffixLogInformation', [$run]);
 
         static::assertStringContainsString('--------------------Additional-metadata---------------------', $result);
@@ -196,6 +200,9 @@ class HistoryControllerTest extends TestCase
         static::assertStringContainsString('Premapping {JSON}: ----------------------------------------------------', $result);
     }
 
+    /**
+     * @return HistoryService|string|SwagMigrationLoggingCollection
+     */
     public function invokeMethod(object $object, string $methodName, array $parameters)
     {
         $reflection = new \ReflectionClass(\get_class($object));

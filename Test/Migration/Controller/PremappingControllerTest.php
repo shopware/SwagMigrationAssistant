@@ -178,7 +178,7 @@ class PremappingControllerTest extends TestCase
     {
         $request = new Request([], [
             'runUuid' => $this->runUuid,
-            'premapping' => \json_decode((new JsonResponse([$this->premapping]))->getContent(), true),
+            'premapping' => \json_decode((string) (new JsonResponse([$this->premapping]))->getContent(), true),
         ]);
 
         $this->controller->writePremapping(
@@ -200,6 +200,8 @@ class PremappingControllerTest extends TestCase
             $this->context
         );
 
+        static::assertNotNull($firstMapping);
+        static::assertNotNull($secondMapping);
         static::assertSame($this->firstState->getDestinationUuid(), $firstMapping['entityUuid']);
         static::assertSame($this->secondState->getDestinationUuid(), $secondMapping['entityUuid']);
     }
@@ -207,7 +209,7 @@ class PremappingControllerTest extends TestCase
     public function testWritePremappingWithoutRunUuid(): void
     {
         $request = new Request([], [
-            'premapping' => \json_decode((new JsonResponse([$this->premapping]))->getContent(), true),
+            'premapping' => \json_decode((string) (new JsonResponse([$this->premapping]))->getContent(), true),
         ]);
 
         $this->expectException(MigrationContextPropertyMissingException::class);
@@ -234,7 +236,7 @@ class PremappingControllerTest extends TestCase
     {
         $request = new Request([], [
             'runUuid' => Uuid::randomHex(),
-            'premapping' => \json_decode((new JsonResponse([$this->premapping]))->getContent(), true),
+            'premapping' => \json_decode((string) (new JsonResponse([$this->premapping]))->getContent(), true),
         ]);
 
         $this->expectException(EntityNotExistsException::class);
@@ -248,7 +250,7 @@ class PremappingControllerTest extends TestCase
     {
         $request = new Request([], [
             'runUuid' => $this->runUuid,
-            'premapping' => \json_decode((new JsonResponse([$this->premapping]))->getContent(), true),
+            'premapping' => \json_decode((string) (new JsonResponse([$this->premapping]))->getContent(), true),
         ]);
 
         $this->controller->writePremapping(
@@ -270,6 +272,8 @@ class PremappingControllerTest extends TestCase
             $this->context
         );
 
+        static::assertNotNull($firstMapping);
+        static::assertNotNull($secondMapping);
         static::assertSame($this->firstState->getDestinationUuid(), $firstMapping['entityUuid']);
         static::assertSame($this->secondState->getDestinationUuid(), $secondMapping['entityUuid']);
 
@@ -283,7 +287,7 @@ class PremappingControllerTest extends TestCase
 
         $request = new Request([], [
             'runUuid' => $this->runUuid,
-            'premapping' => \json_decode((new JsonResponse([$premapping]))->getContent(), true),
+            'premapping' => \json_decode((string) (new JsonResponse([$premapping]))->getContent(), true),
         ]);
         $this->clearCacheData();
 
@@ -306,6 +310,8 @@ class PremappingControllerTest extends TestCase
             $this->context
         );
 
+        static::assertNotNull($firstMapping);
+        static::assertNotNull($secondMapping);
         static::assertSame($firstState->getDestinationUuid(), $firstMapping['entityUuid']);
         static::assertSame($secondState->getDestinationUuid(), $secondMapping['entityUuid']);
     }
