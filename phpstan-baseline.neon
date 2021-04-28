@@ -46,11 +46,6 @@ parameters:
 			path: Migration/Profile/ProfileRegistry.php
 
 		-
-			message: "#^Parameter \\#1 \\$entityName of method SwagMigrationAssistant\\\\Migration\\\\Run\\\\EntityProgress\\:\\:setEntityName\\(\\) expects string, int\\|string given\\.$#"
-			count: 1
-			path: Migration/Run/RunService.php
-
-		-
 			message: "#^Parameter \\#1 \\$str of function mb_strtoupper expects string, string\\|null given\\.$#"
 			count: 1
 			path: Migration/Service/SwagMigrationAccessTokenService.php
@@ -132,16 +127,6 @@ parameters:
 
 		-
 			message: "#^Offset 'id' does not exist on array\\|null\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/OrderConverter.php
-
-		-
-			message: "#^Offset 'country' does not exist on array\\('id' \\=\\> mixed, 'countryId' \\=\\> null, 'countryStateId' \\=\\> mixed, \\?'country' \\=\\> array\\)\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/OrderConverter.php
-
-		-
-			message: "#^Offset 'country' does not exist on array\\('id' \\=\\> mixed, 'countryId' \\=\\> mixed, 'countryStateId' \\=\\> mixed, \\?'country' \\=\\> array\\)\\.$#"
 			count: 1
 			path: Profile/Shopware/Converter/OrderConverter.php
 
@@ -1026,16 +1011,6 @@ parameters:
 			path: Profile/Shopware56/Converter/Shopware56TranslationConverter.php
 
 		-
-			message: "#^Service \"cache\\.object\" is private\\.$#"
-			count: 1
-			path: Test/Command/MigrateDataCommandTest.php
-
-		-
-			message: "#^Class Shopware\\\\Core\\\\Checkout\\\\Cart\\\\Tax\\\\TaxCalculator does not have a constructor and must be instantiated without any parameters\\.$#"
-			count: 1
-			path: Test/Command/MigrateDataCommandTest.php
-
-		-
 			message: "#^Parameter \\#1 \\$actualJson of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertJson\\(\\) expects string, string\\|false given\\.$#"
 			count: 1
 			path: Test/Migration/Controller/HistoryControllerTest.php
@@ -1056,18 +1031,8 @@ parameters:
 			path: Test/Migration/Controller/HistoryControllerTest.php
 
 		-
-			message: "#^Service \"cache\\.object\" is private\\.$#"
-			count: 1
-			path: Test/Migration/Controller/MigrationControllerTest.php
-
-		-
 			message: "#^Parameter \\#1 \\$json of function json_decode expects string, string\\|false given\\.$#"
 			count: 8
-			path: Test/Migration/Controller/MigrationControllerTest.php
-
-		-
-			message: "#^Class Shopware\\\\Core\\\\Checkout\\\\Cart\\\\Tax\\\\TaxCalculator does not have a constructor and must be instantiated without any parameters\\.$#"
-			count: 1
 			path: Test/Migration/Controller/MigrationControllerTest.php
 
 		-
@@ -1081,32 +1046,12 @@ parameters:
 			path: Test/Migration/Controller/PremappingControllerTest.php
 
 		-
-			message: "#^Class Shopware\\\\Core\\\\Checkout\\\\Cart\\\\Tax\\\\TaxCalculator does not have a constructor and must be instantiated without any parameters\\.$#"
-			count: 1
-			path: Test/Migration/Controller/PremappingControllerTest.php
-
-		-
-			message: "#^Service \"cache\\.object\" is private\\.$#"
-			count: 1
-			path: Test/Migration/Controller/StatusControllerTest.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\StatusControllerTest\\:\\:connectionProvider\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: Test/Migration/Controller/StatusControllerTest.php
 
 		-
-			message: "#^Class Shopware\\\\Core\\\\Checkout\\\\Cart\\\\Tax\\\\TaxCalculator does not have a constructor and must be instantiated without any parameters\\.$#"
-			count: 1
-			path: Test/Migration/Controller/StatusControllerTest.php
-
-		-
 			message: "#^Parameter \\#1 \\$expected of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertInstanceOf\\(\\) expects class\\-string\\<object\\>, string given\\.$#"
-			count: 1
-			path: Test/Migration/Converter/ConverterRegistryTest.php
-
-		-
-			message: "#^Unable to resolve the template type ExpectedType in call to method static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertInstanceOf\\(\\)$#"
 			count: 1
 			path: Test/Migration/Converter/ConverterRegistryTest.php
 
@@ -1121,19 +1066,9 @@ parameters:
 			path: Test/Migration/Exception/ExceptionTest.php
 
 		-
-			message: "#^Unable to resolve the template type ExpectedType in call to method static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertInstanceOf\\(\\)$#"
-			count: 1
-			path: Test/Migration/Exception/ExceptionTest.php
-
-		-
 			message: "#^Offset 'id' does not exist on array\\|null\\.$#"
 			count: 1
 			path: Test/Migration/Mapping/MappingServiceTest.php
-
-		-
-			message: "#^Service \"cache\\.object\" is private\\.$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
 
 		-
 			message: "#^Call to an undefined method ReflectionProperty\\|SwagMigrationAssistant\\\\Migration\\\\Logging\\\\LoggingService\\:\\:setAccessible\\(\\)\\.$#"
@@ -1142,11 +1077,6 @@ parameters:
 
 		-
 			message: "#^Call to an undefined method ReflectionProperty\\|SwagMigrationAssistant\\\\Migration\\\\Logging\\\\LoggingService\\:\\:getValue\\(\\)\\.$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
-			message: "#^Class Shopware\\\\Core\\\\Checkout\\\\Cart\\\\Tax\\\\TaxCalculator does not have a constructor and must be instantiated without any parameters\\.$#"
 			count: 1
 			path: Test/Migration/Services/MigrationDataWriterTest.php
 
@@ -1161,11 +1091,6 @@ parameters:
 			path: Test/Migration/Services/MigrationProgressServiceTest.php
 
 		-
-			message: "#^Service \"cache\\.object\" is private\\.$#"
-			count: 1
-			path: Test/Migration/Services/MigrationProgressServiceTest.php
-
-		-
 			message: "#^Call to function unset\\(\\) contains undefined variable \\$entityGroup\\.$#"
 			count: 4
 			path: Test/Migration/Services/MigrationProgressServiceTest.php
@@ -1175,60 +1100,6 @@ parameters:
 			count: 2
 			path: Test/Migration/Services/MigrationProgressServiceTest.php
 
-		-
-			message: "#^Class Shopware\\\\Core\\\\Checkout\\\\Cart\\\\Tax\\\\TaxCalculator does not have a constructor and must be instantiated without any parameters\\.$#"
-			count: 1
-			path: Test/Migration/Services/MigrationProgressServiceTest.php
-
-		-
-			message: "#^Service \"cache\\.object\" is private\\.$#"
-			count: 1
-			path: Test/Migration/Services/RunServiceTest.php
-
-		-
-			message: "#^Class Shopware\\\\Core\\\\Checkout\\\\Cart\\\\Tax\\\\TaxCalculator does not have a constructor and must be instantiated without any parameters\\.$#"
-			count: 1
-			path: Test/Migration/Services/RunServiceTest.php
-
-		-
-			message: "#^Class Shopware\\\\Core\\\\Checkout\\\\Cart\\\\Tax\\\\TaxCalculator does not have a constructor and must be instantiated without any parameters\\.$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataProcessingTest.php
-
-		-
-			message: "#^Class Shopware\\\\Core\\\\Checkout\\\\Cart\\\\Tax\\\\TaxCalculator does not have a constructor and must be instantiated without any parameters\\.$#"
-			count: 1
-			path: Test/Profile/Shopware54/Converter/OrderDocumentConverterTest.php
-
-		-
-			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
-			count: 5
-			path: Test/Profile/Shopware54/Converter/OrderDocumentConverterTest.php
-
-		-
-			message: "#^Offset 'fileType' does not exist on array\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware54/Converter/OrderDocumentConverterTest.php
-
-		-
-			message: "#^Offset 'static' does not exist on array\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware54/Converter/OrderDocumentConverterTest.php
-
-		-
-			message: "#^Offset 'documentType' does not exist on array\\|null\\.$#"
-			count: 2
-			path: Test/Profile/Shopware54/Converter/OrderDocumentConverterTest.php
-
-		-
-			message: "#^Class Shopware\\\\Core\\\\Checkout\\\\Cart\\\\Tax\\\\TaxCalculator does not have a constructor and must be instantiated without any parameters\\.$#"
-			count: 2
-			path: Test/Profile/Shopware55/Converter/OrderConverterTest.php
-
-		-
-			message: "#^Class Shopware\\\\Core\\\\Checkout\\\\Cart\\\\Tax\\\\TaxRuleCalculator does not have a constructor and must be instantiated without any parameters\\.$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/OrderConverterTest.php
 		-
 			message: "#^Class SwagMigrationAssistant\\\\Test\\\\Mock\\\\DummyCollection implements generic interface IteratorAggregate but does not specify its types\\: TKey, TValue$#"
 			count: 1
@@ -1653,61 +1524,6 @@ parameters:
 			message: "#^Cannot call method getId\\(\\) on string\\.$#"
 			count: 1
 			path: Test/Profile/Shopware55/Converter/CrossSellingConverterTest.php
-
-		-
-			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
-			count: 2
-			path: Test/Profile/Shopware55/Converter/CurrencyConverterTest.php
-
-		-
-			message: "#^Offset 'translations' does not exist on array\\|null\\.$#"
-			count: 3
-			path: Test/Profile/Shopware55/Converter/CurrencyConverterTest.php
-
-		-
-			message: "#^Offset 'shortName' does not exist on array\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/CurrencyConverterTest.php
-
-		-
-			message: "#^Offset 'isoCode' does not exist on array\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/CurrencyConverterTest.php
-
-		-
-			message: "#^Offset 'name' does not exist on array\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/CurrencyConverterTest.php
-
-		-
-			message: "#^Offset 'isDefault' does not exist on array\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/CurrencyConverterTest.php
-
-		-
-			message: "#^Offset 'factor' does not exist on array\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/CurrencyConverterTest.php
-
-		-
-			message: "#^Offset 'symbol' does not exist on array\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/CurrencyConverterTest.php
-
-		-
-			message: "#^Offset 'placedInFront' does not exist on array\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/CurrencyConverterTest.php
-
-		-
-			message: "#^Offset 'position' does not exist on array\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/CurrencyConverterTest.php
-
-		-
-			message: "#^Offset 'decimalPrecision' does not exist on array\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/CurrencyConverterTest.php
 
 		-
 			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
