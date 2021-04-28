@@ -363,10 +363,8 @@ class MigrationDataWriterTest extends TestCase
             $this->context,
         ]);
 
-        /** @var LoggingService|\ReflectionProperty $loggingService */
         $loggingService = (new \ReflectionClass(\get_class($this->migrationDataWriter)))->getProperty('loggingService');
         $loggingService->setAccessible(true);
-
         $loggingService = $loggingService->getValue($this->migrationDataWriter);
         $loggingService->saveLogging($this->context);
 

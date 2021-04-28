@@ -32,6 +32,8 @@ class ExceptionTest extends TestCase
 {
     /**
      * @dataProvider exceptionProvider
+     *
+     * @param class-string<object> $exceptionClass
      */
     public function testExceptions(ShopwareHttpException $exceptionInstance, string $exceptionClass, int $expectedStatusCode, string $expectedErrorCode): void
     {

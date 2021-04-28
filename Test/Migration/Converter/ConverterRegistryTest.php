@@ -124,6 +124,8 @@ class ConverterRegistryTest extends TestCase
 
     /**
      * @dataProvider converterProvider
+     *
+     * @param class-string<object> $converterClass
      */
     public function testConverterCollection(ProfileInterface $profile, DataSet $dataSet, string $converterClass): void
     {
