@@ -1101,26 +1101,6 @@ parameters:
 			path: Test/Migration/Services/MigrationProgressServiceTest.php
 
 		-
-			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
-			count: 5
-			path: Test/Profile/Shopware54/Converter/OrderDocumentConverterTest.php
-
-		-
-			message: "#^Offset 'fileType' does not exist on array\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware54/Converter/OrderDocumentConverterTest.php
-
-		-
-			message: "#^Offset 'static' does not exist on array\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware54/Converter/OrderDocumentConverterTest.php
-
-		-
-			message: "#^Offset 'documentType' does not exist on array\\|null\\.$#"
-			count: 2
-			path: Test/Profile/Shopware54/Converter/OrderDocumentConverterTest.php
-
-		-
 			message: "#^Class SwagMigrationAssistant\\\\Test\\\\Mock\\\\DummyCollection implements generic interface IteratorAggregate but does not specify its types\\: TKey, TValue$#"
 			count: 1
 			path: Test/Mock/DummyCollection.php
