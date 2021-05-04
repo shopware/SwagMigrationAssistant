@@ -1,5 +1,6 @@
 # REPLACE-GLOBAL-WITH-NEXT-VERSION
 - MIG-221 - Behebt die Migration von Rechnungen
+- MIG-224 - Optimierung der Attributwertmigration aus SW5
 
 # 4.0.0
 - MIG-203 - Kompatibilität für Shopware 6.4

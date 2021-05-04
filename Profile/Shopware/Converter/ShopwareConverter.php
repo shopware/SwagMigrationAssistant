@@ -127,7 +127,7 @@ abstract class ShopwareConverter extends Converter
                 continue;
             }
 
-            if ($value === null) {
+            if ($value === null || $value === '') {
                 continue;
             }
 
@@ -143,6 +143,12 @@ abstract class ShopwareConverter extends Converter
 
                 if ($mapping !== null) {
                     $this->mappingIds[] = $mapping['id'];
+
+                    if (isset($mapping['additionalData']['columnType']) && \in_array($mapping['additionalData']['columnType'], ['text', 'string'], true)) {
+                        if ($value !== \strip_tags($value)) {
+                            continue;
+                        }
+                    }
 
                     if (isset($mapping['additionalData']['columnType']) && $mapping['additionalData']['columnType'] === 'boolean') {
                         $value = (bool) $value;
