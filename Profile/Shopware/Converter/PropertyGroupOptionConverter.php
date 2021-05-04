@@ -57,7 +57,12 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
 
     public function getSourceIdentifier(array $data): string
     {
-        return \hash('md5', \mb_strtolower($data['name'] . '_' . $data['group']['name'] . '_' . $data['type']));
+        $group = 'unknown';
+        if (isset($data['group'])) {
+            $group = $data['group']['name'];
+        }
+
+        return \hash('md5', \mb_strtolower($data['name'] . '_' . $group . '_' . $data['type']));
     }
 
     public function getMediaUuids(array $converted): ?array
