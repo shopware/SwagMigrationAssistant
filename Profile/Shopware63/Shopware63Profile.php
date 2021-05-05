@@ -15,7 +15,7 @@ class Shopware63Profile implements Shopware6ProfileInterface
 
     public const SOURCE_SYSTEM_NAME = 'Shopware';
 
-    public const SOURCE_SYSTEM_VERSION = '6.3.0.0';
+    public const SOURCE_SYSTEM_VERSION = '>=6.3.0.0';
 
     public const AUTHOR_NAME = 'shopware AG';
 
