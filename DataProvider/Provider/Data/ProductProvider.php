@@ -60,6 +60,7 @@ class ProductProvider extends AbstractProvider
             'sales',
             'tax', // taxId is already provided
             'productId',
+            'cheapestPrice',
 
             // media
             'mimeType',

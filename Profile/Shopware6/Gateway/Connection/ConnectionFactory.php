@@ -39,7 +39,7 @@ class ConnectionFactory implements ConnectionFactoryInterface
         }
 
         $options = [
-            'base_uri' => $credentials['endpoint'] . '/api/_action/data-provider/',
+            'base_uri' => \rtrim($credentials['endpoint'], '/') . '/',
             'connect_timeout' => 5.0,
             'verify' => false,
         ];
