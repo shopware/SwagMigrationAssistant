@@ -19,6 +19,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AuthClient implements AuthClientInterface
 {
+    private const DEFAULT_API_ENDPOINT = 'api/_action/data-provider/';
+
     /**
      * @var Client
      */
@@ -58,6 +60,7 @@ class AuthClient implements AuthClientInterface
 
     public function getRequest(string $endpoint, array $config): ResponseInterface
     {
+        $endpoint = self::DEFAULT_API_ENDPOINT . $endpoint;
         $this->setupBearerTokenIfNeeded();
 
         try {
@@ -83,6 +86,7 @@ class AuthClient implements AuthClientInterface
 
     public function getAsync(string $endpoint, array $config): PromiseInterface
     {
+        $endpoint = self::DEFAULT_API_ENDPOINT . $endpoint;
         $this->setupBearerTokenIfNeeded();
 
         try {
@@ -127,7 +131,7 @@ class AuthClient implements AuthClientInterface
             return; // TODO: throw exception
         }
 
-        $response = $this->apiClient->post('/api/oauth/token', [
+        $response = $this->apiClient->post('api/oauth/token', [
             'json' => [
                 'grant_type' => 'client_credentials',
                 'client_id' => $credentials['apiUser'],

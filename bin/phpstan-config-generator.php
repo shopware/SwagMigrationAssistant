@@ -27,8 +27,6 @@ $swagMigrationAssistant = [
     'version' => $composerJson['version'],
     'active' => true,
     'path' => $pluginRootPath,
-    'name' => 'SwagMigrationAssistant',
-    'version' => $composerJson['version'],
 ];
 $pluginLoader = new StaticKernelPluginLoader($classLoader, null, [$swagMigrationAssistant]);
 
