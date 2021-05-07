@@ -70,8 +70,46 @@ abstract class RuleConverter extends ShopwareConverter
                     }
                 }
             }
+
+            $converted['conditions'] = $this->sortConditions($converted['conditions']);
         }
 
-        return new ConvertStruct($converted, null, $this->mainMapping['id']);
+        return new ConvertStruct($converted, null, $this->mainMapping['id'] ?? null);
+    }
+
+    private function sortConditions(array $conditions): array
+    {
+        $roots = [];
+        $sorted = [];
+        $parentMap = [];
+        foreach ($conditions as $condition) {
+            if (!isset($condition['parentId'])) {
+                $roots[] = $condition;
+            } else {
+                $parentMap[$condition['parentId']][] = $condition;
+            }
+        }
+
+        foreach ($roots as $root) {
+            $sorted[] = $root;
+
+            $this->recursiveAddChildren($root['id'], $parentMap, $sorted);
+        }
+
+        return $sorted;
+    }
+
+    private function recursiveAddChildren(string $rootId, array &$parentMap, array &$sorted): void
+    {
+        if (!isset($parentMap[$rootId])) {
+            return;
+        }
+
+        $children = $parentMap[$rootId];
+
+        foreach ($children as $child) {
+            $sorted[] = $child;
+            $this->recursiveAddChildren($child['id'], $parentMap, $sorted);
+        }
     }
 }
