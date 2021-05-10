@@ -8,7 +8,7 @@ Component.register('swag-migration-history-selected-data', {
     props: {
         entityGroups: {
             type: Array,
-            default: []
+            default: () => { return []; }
         }
     },
 

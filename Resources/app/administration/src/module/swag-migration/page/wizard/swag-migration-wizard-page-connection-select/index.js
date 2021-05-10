@@ -12,7 +12,8 @@ Component.register('swag-migration-wizard-page-connection-select', {
 
     props: {
         currentConnectionId: {
-            type: String
+            type: String,
+            default: ''
         }
     },
 

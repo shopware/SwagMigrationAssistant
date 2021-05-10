@@ -6,14 +6,14 @@ const { Component, Mixin } = Shopware;
 Component.register('swag-migration-history-detail-errors', {
     template,
 
-    mixins: [
-        Mixin.getByName('listing')
-    ],
-
     inject: {
         /** @var {MigrationApiService} migrationService */
         migrationService: 'migrationService'
     },
+
+    mixins: [
+        Mixin.getByName('listing')
+    ],
 
     props: {
         migrationRun: {

@@ -54,7 +54,7 @@ class ExceptionRunLog extends BaseRunLogEntry
             'exceptionLine' => $this->exception->getLine(),
             'exceptionTrace' => \preg_replace('/[[:^print:]]/', '', $this->exception->getTraceAsString()),
             'description' => \sprintf(
-                'Entity: %s, sourceId: %s' . PHP_EOL . '%s',
+                'Entity: %s, sourceId: %s' . \PHP_EOL . '%s',
                 $entity,
                 $this->getSourceId() ?? '-',
                 \preg_replace('/[[:^print:]]/', '', $this->exception->getMessage())
