@@ -17,6 +17,7 @@
             <directory name="vendor"/>
             <directory name="var"/>
             <directory name="bin"/>
+            <file name="easy-coding-standard.php"/>
         </ignoreFiles>
     </projectFiles>
 

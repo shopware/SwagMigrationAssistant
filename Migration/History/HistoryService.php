@@ -120,7 +120,7 @@ class HistoryService implements HistoryServiceInterface
 
         return function () use ($run, $runUuid, $offset, $total, $context): void {
             if ($run !== null) {
-                \printf('%s%s', $this->getPrefixLogInformation($run), PHP_EOL);
+                \printf('%s%s', $this->getPrefixLogInformation($run), \PHP_EOL);
             }
 
             while ($offset < $total) {
@@ -128,16 +128,16 @@ class HistoryService implements HistoryServiceInterface
                 $logChunk = $this->getLogChunk($runUuid, $offset, $context);
 
                 foreach ($logChunk->getElements() as $logEntry) {
-                    \printf('[%s] %s%s', $logEntry->getLevel(), $logEntry->getCode(), PHP_EOL);
-                    \printf('%s%s', $logEntry->getTitle(), PHP_EOL);
-                    \printf('%s%s%s', $logEntry->getDescription(), PHP_EOL, PHP_EOL);
+                    \printf('[%s] %s%s', $logEntry->getLevel(), $logEntry->getCode(), \PHP_EOL);
+                    \printf('%s%s', $logEntry->getTitle(), \PHP_EOL);
+                    \printf('%s%s%s', $logEntry->getDescription(), \PHP_EOL, \PHP_EOL);
                 }
 
                 $offset += self::LOG_FETCH_LIMIT;
             }
 
             if ($run !== null) {
-                \printf('%s%s%s', $this->getSuffixLogInformation($run), PHP_EOL, PHP_EOL);
+                \printf('%s%s%s', $this->getSuffixLogInformation($run), \PHP_EOL, \PHP_EOL);
             }
         };
     }
@@ -249,18 +249,18 @@ class HistoryService implements HistoryServiceInterface
         }
 
         return \sprintf(
-            'Migration log generated at %s' . PHP_EOL
-            . 'Run id: %s' . PHP_EOL
-            . 'Status: %s' . PHP_EOL
-            . 'Created at: %s' . PHP_EOL
-            . 'Updated at: %s' . PHP_EOL
-            . 'Last control user id: %s' . PHP_EOL
-            . 'Connection id: %s' . PHP_EOL
-            . 'Connection name: %s' . PHP_EOL
-            . 'Profile: %s' . PHP_EOL
-            . 'Gateway: %s' . PHP_EOL . PHP_EOL
-            . 'Selected data:' . PHP_EOL . '%s' . PHP_EOL
-            . '--------------------Log-entries---------------------' . PHP_EOL,
+            'Migration log generated at %s' . \PHP_EOL
+            . 'Run id: %s' . \PHP_EOL
+            . 'Status: %s' . \PHP_EOL
+            . 'Created at: %s' . \PHP_EOL
+            . 'Updated at: %s' . \PHP_EOL
+            . 'Last control user id: %s' . \PHP_EOL
+            . 'Connection id: %s' . \PHP_EOL
+            . 'Connection name: %s' . \PHP_EOL
+            . 'Profile: %s' . \PHP_EOL
+            . 'Gateway: %s' . \PHP_EOL . \PHP_EOL
+            . 'Selected data:' . \PHP_EOL . '%s' . \PHP_EOL
+            . '--------------------Log-entries---------------------' . \PHP_EOL,
             \date(self::LOG_TIME_FORMAT),
             $run->getId(),
             $run->getStatus() ?? '-',
@@ -283,10 +283,10 @@ class HistoryService implements HistoryServiceInterface
 
         $output = '';
         foreach ($progress as $group) {
-            $output .= \sprintf('- %s (total: %d)' . PHP_EOL, $group['id'], $group['total']);
+            $output .= \sprintf('- %s (total: %d)' . \PHP_EOL, $group['id'], $group['total']);
             foreach ($group['entities'] as $entity) {
                 $output .= \sprintf(
-                    "\t- %s (total: %d)" . PHP_EOL,
+                    "\t- %s (total: %d)" . \PHP_EOL,
                     $entity['entityName'],
                     $entity['total']
                 );
@@ -299,11 +299,11 @@ class HistoryService implements HistoryServiceInterface
     private function getSuffixLogInformation(SwagMigrationRunEntity $run): string
     {
         return \sprintf(
-            '--------------------Additional-metadata---------------------' . PHP_EOL
-            . 'Environment information {JSON}:' . PHP_EOL . '%s' . PHP_EOL . PHP_EOL
-            . 'Premapping {JSON}: ----------------------------------------------------' . PHP_EOL . '%s' . PHP_EOL,
-            \json_encode($run->getEnvironmentInformation(), JSON_PRETTY_PRINT),
-            \json_encode($run->getPremapping(), JSON_PRETTY_PRINT)
+            '--------------------Additional-metadata---------------------' . \PHP_EOL
+            . 'Environment information {JSON}:' . \PHP_EOL . '%s' . \PHP_EOL . \PHP_EOL
+            . 'Premapping {JSON}: ----------------------------------------------------' . \PHP_EOL . '%s' . \PHP_EOL,
+            \json_encode($run->getEnvironmentInformation(), \JSON_PRETTY_PRINT),
+            \json_encode($run->getPremapping(), \JSON_PRETTY_PRINT)
         );
     }
 }

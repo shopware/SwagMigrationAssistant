@@ -49,7 +49,8 @@ class Md5StrategyResolver implements StrategyResolverInterface
             return '';
         }
 
-        $split = \str_split($md5hash, 2);
+        /** @var array | bool $split */
+        $split = \mb_str_split($md5hash, 2);
 
         if (!\is_array($split)) {
             return '';
