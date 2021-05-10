@@ -152,7 +152,7 @@ class HttpMediaDownloadService extends BaseMediaService implements MediaFileProc
             }
 
             $response = $result['value'];
-            $fileExtension = \pathinfo($additionalData['uri'], PATHINFO_EXTENSION);
+            $fileExtension = \pathinfo($additionalData['uri'], \PATHINFO_EXTENSION);
             $filePath = \sprintf('_temp/%s.%s', $uuid, $fileExtension);
 
             $streamContext = \stream_context_create([

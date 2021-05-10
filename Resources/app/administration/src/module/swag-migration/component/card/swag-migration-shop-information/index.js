@@ -25,6 +25,14 @@ Component.register('swag-migration-shop-information', {
         Mixin.getByName('notification')
     ],
 
+    filters: {
+        localizedNumberFormat(value) {
+            const locale = `${this.adminLocaleLanguage}-${this.adminLocaleRegion}`;
+            const formatter = new Intl.NumberFormat(locale);
+            return formatter.format(value);
+        }
+    },
+
     props: {
         connected: {
             type: Boolean,
@@ -44,14 +52,6 @@ Component.register('swag-migration-shop-information', {
             connection: null,
             context: Shopware.Context.api
         };
-    },
-
-    filters: {
-        localizedNumberFormat(value) {
-            const locale = `${this.adminLocaleLanguage}-${this.adminLocaleRegion}`;
-            const formatter = new Intl.NumberFormat(locale);
-            return formatter.format(value);
-        }
     },
 
     computed: {

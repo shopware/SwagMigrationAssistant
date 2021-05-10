@@ -172,7 +172,7 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
                 }
             }
 
-            $fileExtension = \pathinfo($sourcePath, PATHINFO_EXTENSION);
+            $fileExtension = \pathinfo($sourcePath, \PATHINFO_EXTENSION);
             $filePath = \sprintf('_temp/%s.%s', $rowId, $fileExtension);
 
             if (\copy($sourcePath, $filePath)) {

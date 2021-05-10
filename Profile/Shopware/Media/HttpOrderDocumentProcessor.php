@@ -205,7 +205,7 @@ class HttpOrderDocumentProcessor extends BaseMediaService implements MediaFilePr
     private function persistFileToMedia(string $filePath, string $uuid, string $name, Context $context): void
     {
         $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($filePath, $uuid, $name): void {
-            $fileExtension = \pathinfo($filePath, PATHINFO_EXTENSION);
+            $fileExtension = \pathinfo($filePath, \PATHINFO_EXTENSION);
             $mimeType = \mime_content_type($filePath);
             $streamContext = \stream_context_create([
                 'http' => [

@@ -29,6 +29,12 @@ Component.register('swag-migration-history-detail', {
         };
     },
 
+    metaInfo() {
+        return {
+            title: this.$createTitle()
+        };
+    },
+
     computed: {
         migrationRunRepository() {
             return this.repositoryFactory.create('swag_migration_run');
@@ -95,12 +101,6 @@ Component.register('swag-migration-history-detail', {
             return this.migrationRun.status === null ? '' :
                 `swag-migration-history-detail__run-status-value--${this.migrationRun.status}`;
         }
-    },
-
-    metaInfo() {
-        return {
-            title: this.$createTitle()
-        };
     },
 
     created() {

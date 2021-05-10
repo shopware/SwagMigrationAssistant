@@ -218,7 +218,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
         $writeErrors = [];
         foreach ($exception->getErrors() as $error) {
             $pointer = $error['source']['pointer'] ?? '/';
-            \preg_match('/^\/(\d+)\//', $pointer, $matches, PREG_UNMATCHED_AS_NULL);
+            \preg_match('/^\/(\d+)\//', $pointer, $matches, \PREG_UNMATCHED_AS_NULL);
 
             if (isset($matches[1])) {
                 $index = (int) $matches[1];
