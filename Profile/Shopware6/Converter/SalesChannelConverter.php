@@ -98,6 +98,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
         $converted['shippingMethodId'] = $this->getMappingIdFacade(DefaultEntities::SHIPPING_METHOD, $data['shippingMethodId']);
         $converted['countryId'] = $this->getMappingIdFacade(DefaultEntities::COUNTRY, $data['countryId']);
         $converted['paymentMethodId'] = $this->getMappingIdFacade(DefaultEntities::PAYMENT_METHOD, $data['paymentMethodId']);
+        $converted['active'] = false;
 
         if (isset($converted['paymentMethodIds'])) {
             $this->reformatMtoNAssociation(

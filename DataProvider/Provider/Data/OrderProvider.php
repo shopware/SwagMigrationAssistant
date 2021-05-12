@@ -55,7 +55,7 @@ class OrderProvider extends AbstractProvider
             'amountNet',
             'orderDeliveryPositions',
             'autoIncrement',
-        ], ['payload']);
+        ], ['payload', 'taxRules', 'calculatedTaxes']);
 
         foreach ($result as &$row) {
             unset(
