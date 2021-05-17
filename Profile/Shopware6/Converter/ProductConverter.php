@@ -7,11 +7,17 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware6\Converter;
 
+use Shopware\Core\Defaults;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 
 abstract class ProductConverter extends ShopwareMediaConverter
 {
+    /**
+     * @var string|null
+     */
+    private $sourceDefaultCurrencyUuid;
+
     public function getMediaUuids(array $converted): ?array
     {
         $mediaIds = [];
@@ -36,6 +42,11 @@ abstract class ProductConverter extends ShopwareMediaConverter
             $converted['id']
         );
 
+        $this->sourceDefaultCurrencyUuid = $this->getMappingIdFacade(
+            DefaultEntities::CURRENCY,
+            Defaults::CURRENCY
+        );
+
         if (isset($converted['price'])) {
             $this->updateAssociationIds(
                 $converted['price'],
@@ -43,6 +54,8 @@ abstract class ProductConverter extends ShopwareMediaConverter
                 'currencyId',
                 DefaultEntities::PRODUCT
             );
+
+            $this->checkDefaultCurrency($converted, 'price');
         }
 
         if (isset($converted['translations'])) {
@@ -98,6 +111,8 @@ abstract class ProductConverter extends ShopwareMediaConverter
                 'currencyId',
                 DefaultEntities::PRODUCT
             );
+
+            $this->checkDefaultCurrency($converted, 'purchasePrices');
         }
 
         if (isset($converted['prices'])) {
@@ -110,6 +125,11 @@ abstract class ProductConverter extends ShopwareMediaConverter
                 );
             }
             unset($price);
+
+            foreach ($converted['prices'] as &$priceRule) {
+                $this->checkDefaultCurrency($priceRule, 'price');
+            }
+            unset($priceRule);
         }
 
         if (isset($converted['deliveryTimeId'])) {
@@ -137,5 +157,30 @@ abstract class ProductConverter extends ShopwareMediaConverter
         }
 
         return new ConvertStruct($converted, null, $this->mainMapping['id'] ?? null);
+    }
+
+    private function checkDefaultCurrency(array &$source, string $key): void
+    {
+        // If the default currency of source and destination is identically, there is no need to add a default price
+        if ($this->sourceDefaultCurrencyUuid === Defaults::CURRENCY) {
+            return;
+        }
+
+        $hasDefaultPrice = false;
+        $defaultPrice = [];
+        foreach ($source[$key] as $price) {
+            if ($price['currencyId'] === Defaults::CURRENCY) {
+                $hasDefaultPrice = true;
+            }
+
+            if ($price['currencyId'] === $this->sourceDefaultCurrencyUuid) {
+                $defaultPrice = $price;
+            }
+        }
+
+        if ($defaultPrice !== [] && $hasDefaultPrice !== true) {
+            $defaultPrice['currencyId'] = Defaults::CURRENCY;
+            $source[$key][] = $defaultPrice;
+        }
     }
 }

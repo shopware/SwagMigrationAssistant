@@ -6,46 +6,69 @@
  */
 
 return [
-    'taxId' => 'ddeda88505ca4ce39799b51ccfab5cac',
-    'manufacturerId' => '6884b95de2a94940ad21b814221d53f2',
-    'unitId' => '0101b50100d14daf81859834e047a465',
+    'taxId' => 'a2f2918aaf5d42a2ba219c82c2bc275d',
+    'manufacturerId' => '954217f3551b4fe091d9cdea5731d582',
+    'unitId' => '284217f3551b4fe091d9cdea5731d582',
     'active' => true,
     'price' => [
         [
-            'currencyId' => 'b7d2554b0ce847cd82f3ac9bd1c0dfca',
-            'net' => 751.66,
-            'gross' => 751.66,
+            'currencyId' => '88d2554b0ce847cd82f3ac9bd1c0dfca',
+            'net' => 91.72999999999999,
+            'gross' => 99.99,
             'linked' => true,
             'listPrice' => null,
+            'extensions' => [],
+        ],
+        [
+            'currencyId' => '18b930393f8b41bd92bb7ca3e8ef5429',
+            'net' => 183.49,
+            'gross' => 200,
+            'linked' => true,
+            'listPrice' => null,
+            'extensions' => [],
+        ],
+        [
+            'currencyId' => 'b7d2554b0ce847cd82f3ac9bd1c0dfca',
+            'net' => 91.72999999999999,
+            'gross' => 99.99,
+            'linked' => true,
+            'listPrice' => null,
+            'extensions' => [],
         ],
     ],
-    'productNumber' => 'fc6a82a112724fa79cdfa57aaa7dd347',
-    'stock' => 33,
+    'productNumber' => 'SW10000',
+    'stock' => 99,
     'restockTime' => 3,
     'isCloseout' => false,
     'purchaseSteps' => 1,
     'minPurchase' => 1,
     'shippingFree' => false,
-    'purchasePrice' => 62.34,
     'purchasePrices' => [
         [
-            'currencyId' => 'b7d2554b0ce847cd82f3ac9bd1c0dfca',
-            'net' => 62.34,
-            'gross' => 62.34,
+            'currencyId' => '88d2554b0ce847cd82f3ac9bd1c0dfca',
+            'net' => 10,
+            'gross' => 10,
             'linked' => true,
-            'listPrice' => null,
+        ],
+        [
+            'currencyId' => 'b7d2554b0ce847cd82f3ac9bd1c0dfca',
+            'net' => 10,
+            'gross' => 10,
+            'linked' => true,
         ],
     ],
-    'width' => 671,
-    'height' => 979,
-    'name' => 'Incredible Steel Dogspa',
-    'description' => 'Qui distinctio reiciendis facere et veniam quam voluptatem reiciendis. Et id commodi accusantium quas. Dolor sequi sit ipsum ut molestiae. Nesciunt praesentium aut architecto eos.',
-    'grouped' => false,
     'prices' => [
         [
             'quantityStart' => 11,
             'ruleId' => '8b773a602272453eb4df291c7c83c5e5',
             'price' => [
+                [
+                    'currencyId' => '88d2554b0ce847cd82f3ac9bd1c0dfca',
+                    'net' => 140,
+                    'gross' => 140,
+                    'linked' => true,
+                    'listPrice' => null,
+                ],
                 [
                     'currencyId' => 'b7d2554b0ce847cd82f3ac9bd1c0dfca',
                     'net' => 140,
@@ -60,6 +83,13 @@ return [
             'quantityStart' => 11,
             'ruleId' => '83a7d5ac26004476a91fd7aaeca70004',
             'price' => [
+                [
+                    'currencyId' => '88d2554b0ce847cd82f3ac9bd1c0dfca',
+                    'net' => 350,
+                    'gross' => 350,
+                    'linked' => true,
+                    'listPrice' => null,
+                ],
                 [
                     'currencyId' => 'b7d2554b0ce847cd82f3ac9bd1c0dfca',
                     'net' => 350,
@@ -76,6 +106,13 @@ return [
             'ruleId' => 'a6cc47655efc4fa893e91d1cdea88f8b',
             'price' => [
                 [
+                    'currencyId' => '88d2554b0ce847cd82f3ac9bd1c0dfca',
+                    'net' => 611,
+                    'gross' => 611,
+                    'linked' => true,
+                    'listPrice' => null,
+                ],
+                [
                     'currencyId' => 'b7d2554b0ce847cd82f3ac9bd1c0dfca',
                     'net' => 611,
                     'gross' => 611,
@@ -90,6 +127,13 @@ return [
             'quantityEnd' => 10,
             'ruleId' => '8b773a602272453eb4df291c7c83c5e5',
             'price' => [
+                [
+                    'currencyId' => '88d2554b0ce847cd82f3ac9bd1c0dfca',
+                    'net' => 588,
+                    'gross' => 588,
+                    'linked' => true,
+                    'listPrice' => null,
+                ],
                 [
                     'currencyId' => 'b7d2554b0ce847cd82f3ac9bd1c0dfca',
                     'net' => 588,
@@ -106,6 +150,13 @@ return [
             'ruleId' => '83a7d5ac26004476a91fd7aaeca70004',
             'price' => [
                 [
+                    'currencyId' => '88d2554b0ce847cd82f3ac9bd1c0dfca',
+                    'net' => 958,
+                    'gross' => 958,
+                    'linked' => true,
+                    'listPrice' => null,
+                ],
+                [
                     'currencyId' => 'b7d2554b0ce847cd82f3ac9bd1c0dfca',
                     'net' => 958,
                     'gross' => 958,
@@ -120,6 +171,13 @@ return [
             'ruleId' => 'a6cc47655efc4fa893e91d1cdea88f8b',
             'price' => [
                 [
+                    'currencyId' => '88d2554b0ce847cd82f3ac9bd1c0dfca',
+                    'net' => 217,
+                    'gross' => 217,
+                    'linked' => true,
+                    'listPrice' => null,
+                ],
+                [
                     'currencyId' => 'b7d2554b0ce847cd82f3ac9bd1c0dfca',
                     'net' => 217,
                     'gross' => 217,
@@ -130,13 +188,25 @@ return [
             'id' => 'f9b4c52a40664c0d8b6e4f99f05a4f5f',
         ],
     ],
+    'name' => 'MyProductNeu',
+    'description' => 'MyProductDescription',
+    'grouped' => false,
     'translations' => [
         [
-            'name' => 'Incredible Steel Dogspa',
-            'description' => 'Qui distinctio reiciendis facere et veniam quam voluptatem reiciendis. Et id commodi accusantium quas. Dolor sequi sit ipsum ut molestiae. Nesciunt praesentium aut architecto eos.',
+            'name' => 'MyProductNeu',
+            'description' => 'MyProductDescription',
             'languageId' => '2fbb5fe2e29a4d70aa5854ce7ce3e20b',
         ],
     ],
-    'coverId' => 'bdeb106f47ab4255b2bd5f35d84cae7c',
-    'id' => 'fb2dbbee297c472c9e916b26952615ff',
+    'categories' => [
+        [
+            'id' => '11c0cf07bce544138255b4370ac7eab8',
+        ],
+    ],
+    'id' => '6313d15a735a4fd08508dd349ad010f9',
+    'properties' => [
+        [
+            'id' => 'd7e9ceac19a948abad07667419424b13',
+        ],
+    ],
 ];

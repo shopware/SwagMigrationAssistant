@@ -26,7 +26,7 @@ return [
     [
         'entityName' => DefaultEntities::CURRENCY,
         'oldIdentifier' => 'b7d2554b0ce847cd82f3ac9bd1c0dfca',
-        'newIdentifier' => 'b8d2554b0ce847cd82f3ac9bd1c0dfca',
+        'newIdentifier' => 'b7d2554b0ce847cd82f3ac9bd1c0dfca',
     ],
     [
         'entityName' => DefaultEntities::UNIT,
