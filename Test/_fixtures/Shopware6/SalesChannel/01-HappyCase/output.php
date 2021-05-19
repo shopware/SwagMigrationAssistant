@@ -34,7 +34,7 @@ return [
             'id' => '5dd637353d044752ae6a8c6e7f53430b',
         ],
     ],
-    'active' => false,
+    'active' => true,
     'maintenance' => false,
     'maintenanceIpWhitelist' => ['127.0.0.1'],
     'taxCalculationType' => 'horizontal',
