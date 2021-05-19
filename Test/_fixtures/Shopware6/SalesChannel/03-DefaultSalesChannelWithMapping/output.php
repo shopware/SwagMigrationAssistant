@@ -34,7 +34,7 @@ return [
             'id' => '5dd637353d044752ae6a8c6e7f53430b',
         ],
     ],
-    'active' => false,
+    'active' => true,
     'maintenance' => false,
     'maintenanceIpWhitelist' => ['127.0.0.1'],
     'taxCalculationType' => 'horizontal',
@@ -53,8 +53,8 @@ return [
     ],
     'translations' => [
         [
-            'salesChannelId' => '3f05f1f6514d43f7ae11a669c7557d1c',
-            'name' => 'Test',
+            'salesChannelId' => 'cfbd5018d38d41d8adca10d94fc8bdd7',
+            'name' => 'Test (Migration)',
             'languageId' => '5dd637353d044752ae6a8c6e7f53430b',
         ],
     ],

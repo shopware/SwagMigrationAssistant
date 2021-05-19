@@ -22,6 +22,12 @@ abstract class SalesChannelConverter extends ShopwareConverter
             $mapping = $this->getMappingIdFacade(DefaultEntities::SALES_CHANNEL, $data['id']);
             $converted['id'] = $mapping ?? Uuid::randomHex();
             $converted['name'] .= ' (Migration)';
+
+            foreach ($converted['translations'] as &$translation) {
+                $translation['salesChannelId'] = $converted['id'];
+                $translation['name'] .= ' (Migration)';
+            }
+            unset($translation);
         }
 
         $this->mainMapping = $this->getOrCreateMappingMainCompleteFacade(
@@ -98,7 +104,6 @@ abstract class SalesChannelConverter extends ShopwareConverter
         $converted['shippingMethodId'] = $this->getMappingIdFacade(DefaultEntities::SHIPPING_METHOD, $data['shippingMethodId']);
         $converted['countryId'] = $this->getMappingIdFacade(DefaultEntities::COUNTRY, $data['countryId']);
         $converted['paymentMethodId'] = $this->getMappingIdFacade(DefaultEntities::PAYMENT_METHOD, $data['paymentMethodId']);
-        $converted['active'] = false;
 
         if (isset($converted['paymentMethodIds'])) {
             $this->reformatMtoNAssociation(

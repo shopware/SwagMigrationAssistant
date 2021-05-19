@@ -41,6 +41,7 @@ class SystemConfigProvider extends AbstractProvider
         $criteria->setOffset($offset);
         $criteria->addFilter(new NotFilter(NotFilter::CONNECTION_OR, [
             new EqualsAnyFilter('configurationKey', [
+                'core.store.apiUri',
                 'core.basicInformation.contactPage',
                 'core.basicInformation.shippingPaymentInfoPage',
                 'core.basicInformation.privacyPage',

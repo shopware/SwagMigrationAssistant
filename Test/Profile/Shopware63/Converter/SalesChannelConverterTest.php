@@ -46,6 +46,11 @@ class SalesChannelConverterTest extends ShopwareConverterTest
         static::assertNotNull($output);
         static::assertNotSame($output['id'], $input['id']);
 
+        foreach ($output['translations'] as &$translation) {
+            static::assertNotSame($translation['salesChannelId'], $input['id']);
+            unset($translation['salesChannelId']);
+        }
+
         unset($output['id']);
         static::assertSame($expectedOutput, $output);
     }
