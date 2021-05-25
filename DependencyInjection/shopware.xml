@@ -259,11 +259,6 @@
             <tag name="shopware.migration.reader"/>
         </service>
 
-        <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\CustomerWishlistReader"
-                 parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader">
-            <tag name="shopware.migration.reader"/>
-        </service>
-
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\LanguageReader"
                  parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiReader">
             <tag name="shopware.migration.reader"/>
@@ -381,6 +376,11 @@
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\MainVariantRelationReader"
                  parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiReader">
+            <tag name="shopware.migration.reader"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\CustomerWishlistReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader">
             <tag name="shopware.migration.reader"/>
         </service>
 
@@ -552,6 +552,11 @@
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\PromotionReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader">
+            <tag name="shopware.migration.reader"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\CustomerWishlistReader"
                  parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader">
             <tag name="shopware.migration.reader"/>
         </service>
