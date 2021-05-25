@@ -258,7 +258,8 @@
           "productReviews": "Produktbewertungen",
           "seoUrls": "SEO Urls",
           "promotions": "Rabatte & Aktionen",
-          "cms": "Layouts"
+          "cms": "Layouts",
+          "customerWishlists": "Merklisten"
         },
         "entities": {
           "category": "Kategorien:",
@@ -293,6 +294,7 @@
           "property_group": "Produkteigenschaften-Gruppen:",
           "product_manufacturer": "Hersteller:",
           "main_variant_relation": "Hauptvariantenrelationen:",
+          "customerWishlist": "Merklisten:",
           "unit": "Einheiten:",
           "media_folder": "Medienordner:",
           "media_folder_inheritance": "Medienordner-Vererbungen:",

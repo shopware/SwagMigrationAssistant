@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<files psalm-version="4.6.1@e93e532e4eaad6d68c4d7b606853800eaceccc72">
+  <file src="Migration/History/HistoryService.php">
+    <DeprecatedMethod occurrences="1">
+      <code>fetchColumn</code>
+    </DeprecatedMethod>
+  </file>
+  <file src="Migration/Run/RunService.php">
+    <DeprecatedClass occurrences="1">
+      <code>FetchMode::ASSOCIATIVE</code>
+    </DeprecatedClass>
+    <DeprecatedMethod occurrences="2">
+      <code>fetch</code>
+      <code>fetchAll</code>
+    </DeprecatedMethod>
+  </file>
+  <file src="Migration/Service/MediaFileProcessorService.php">
+    <DeprecatedClass occurrences="1">
+      <code>FetchMode::ASSOCIATIVE</code>
+    </DeprecatedClass>
+    <DeprecatedMethod occurrences="1">
+      <code>fetchAll</code>
+    </DeprecatedMethod>
+  </file>
+  <file src="Profile/Shopware/Gateway/Local/Reader/AbstractReader.php">
+    <DeprecatedMethod occurrences="2">
+      <code>fetchAll</code>
+      <code>fetchColumn</code>
+    </DeprecatedMethod>
+  </file>
+  <file src="Profile/Shopware/Gateway/Local/Reader/AttributeReader.php">
+    <DeprecatedMethod occurrences="2">
+      <code>fetchAll</code>
+      <code>fetchAll</code>
+    </DeprecatedMethod>
+  </file>
+  <file src="Profile/Shopware/Gateway/Local/Reader/CategoryReader.php">
+    <DeprecatedMethod occurrences="4">
+      <code>fetchAll</code>
+      <code>fetchAll</code>
+      <code>fetchAll</code>
+      <code>fetchColumn</code>
+    </DeprecatedMethod>
+  </file>
+  <file src="Profile/Shopware/Gateway/Local/Reader/CustomerWishlistReader.php">
+      <DeprecatedMethod occurrences="2">
+          <code>fetchAll</code>
+          <code>fetchColumn</code>
+      </DeprecatedMethod>
+  </file>
+  <file src="Profile/Shopware/Gateway/Local/Reader/CrossSellingReader.php">
+    <DeprecatedMethod occurrences="1">
+      <code>fetchColumn</code>
+    </DeprecatedMethod>
+  </file>
+  <file src="Profile/Shopware/Gateway/Local/Reader/CurrencyReader.php">
+    <DeprecatedMethod occurrences="2">
+      <code>fetchAll</code>
+      <code>fetchColumn</code>
+    </DeprecatedMethod>
+  </file>
+  <file src="Profile/Shopware/Gateway/Local/Reader/CustomerGroupReader.php">
+    <DeprecatedMethod occurrences="3">
+      <code>fetchAll</code>
+      <code>fetchAll</code>
+      <code>fetchColumn</code>
+    </DeprecatedMethod>
+  </file>
+  <file src="Profile/Shopware/Gateway/Local/Reader/CustomerReader.php">
+    <DeprecatedMethod occurrences="4">
+      <code>fetchAll</code>
+      <code>fetchAll</code>
+      <code>fetchAll</code>
+      <code>fetchColumn</code>
+    </DeprecatedMethod>
+  </file>
+  <file src="Profile/Shopware/Gateway/Local/Reader/EnvironmentReader.php">
+    <DeprecatedMethod occurrences="4">
+      <code>fetchAll</code>
+      <code>fetchColumn</code>
+      <code>fetchColumn</code>
+      <code>fetchColumn</code>
+    </DeprecatedMethod>
+  </file>
+  <file src="Profile/Shopware/Gateway/Local/Reader/LanguageReader.php">
+    <DeprecatedMethod occurrences="3">
+      <code>fetchAll</code>
+      <code>fetchAll</code>
+      <code>fetchAll</code>
+    </DeprecatedMethod>
+  </file>
+  <file src="Profile/Shopware/Gateway/Local/Reader/MainVariantRelationReader.php">
+    <DeprecatedMethod occurrences="2">
+      <code>fetchAll</code>
+      <code>fetchColumn</code>
+    </DeprecatedMethod>
+  </file>
+  <file src="Profile/Shopware/Gateway/Local/Reader/MediaAlbumReader.php">
+    <DeprecatedMethod occurrences="1">
+      <code>fetchAll</code>
+    </DeprecatedMethod>
+  </file>
+  <file src="Profile/Shopware/Gateway/Local/Reader/MediaReader.php">
+    <DeprecatedMethod occurrences="2">
+      <code>fetchAll</code>
+      <code>fetchColumn</code>
+    </DeprecatedMethod>
+  </file>
+  <file src="Profile/Shopware/Gateway/Local/Reader/NewsletterRecipientReader.php">
+    <DeprecatedMethod occurrences="5">
+      <code>fetchAll</code>
+      <code>fetchAll</code>
+      <code>fetchAll</code>
+      <code>fetchAll</code>
+      <code>fetchColumn</code>
+    </DeprecatedMethod>
+  </file>
+  <file src="Profile/Shopware/Gateway/Local/Reader/NumberRangeReader.php">
+    <DeprecatedMethod occurrences="3">
+      <code>fetchAll</code>
+      <code>fetchColumn</code>
+      <code>fetchColumn</code>
+    </DeprecatedMethod>
+  </file>
+  <file src="Profile/Shopware/Gateway/Local/Reader/OrderDocumentReader.php">
+    <DeprecatedMethod occurrences="2">
+      <code>fetchAll</code>
+      <code>fetchColumn</code>
+    </DeprecatedMethod>
+  </file>
+  <file src="Profile/Shopware/Gateway/Local/Reader/OrderReader.php">
+    <DeprecatedMethod occurrences="4">
+      <code>fetchAll</code>
+      <code>fetchAll</code>
+      <code>fetchAll</code>
+      <code>fetchColumn</code>
+    </DeprecatedMethod>
+  </file>
+  <file src="Profile/Shopware/Gateway/Local/Reader/ProductOptionRelationReader.php">
+    <DeprecatedMethod occurrences="2">
+      <code>fetchAll</code>
+      <code>fetchColumn</code>
+    </DeprecatedMethod>
+  </file>
+  <file src="Profile/Shopware/Gateway/Local/Reader/ProductPropertyRelationReader.php">
+    <DeprecatedMethod occurrences="2">
+      <code>fetchAll</code>
+      <code>fetchColumn</code>
+    </DeprecatedMethod>
+  </file>
+  <file src="Profile/Shopware/Gateway/Local/Reader/ProductReader.php">
+    <DeprecatedMethod occurrences="8">
+      <code>fetchAll</code>
+      <code>fetchAll</code>
+      <code>fetchAll</code>
+      <code>fetchAll</code>
+      <code>fetchAll</code>
+      <code>fetchAll</code>
+      <code>fetchAll</code>
+      <code>fetchColumn</code>
+    </DeprecatedMethod>
+  </file>
+  <file src="Profile/Shopware/Gateway/Local/Reader/ProductReviewReader.php">
+    <DeprecatedMethod occurrences="2">
+      <code>fetchAll</code>
+      <code>fetchColumn</code>
+    </DeprecatedMethod>
+  </file>
+  <file src="Profile/Shopware/Gateway/Local/Reader/PromotionReader.php">
+    <DeprecatedMethod occurrences="3">
+      <code>fetchAll</code>
+      <code>fetchAll</code>
+      <code>fetchColumn</code>
+    </DeprecatedMethod>
+  </file>
+  <file src="Profile/Shopware/Gateway/Local/Reader/SalesChannelReader.php">
+    <DeprecatedMethod occurrences="2">
+      <code>fetchAll</code>
+      <code>fetchColumn</code>
+    </DeprecatedMethod>
+  </file>
+  <file src="Profile/Shopware/Gateway/Local/Reader/SeoUrlReader.php">
+    <DeprecatedMethod occurrences="2">
+      <code>fetchAll</code>
+      <code>fetchColumn</code>
+    </DeprecatedMethod>
+  </file>
+  <file src="Profile/Shopware/Gateway/Local/Reader/ShippingMethodReader.php">
+    <DeprecatedMethod occurrences="6">
+      <code>fetchAll</code>
+      <code>fetchAll</code>
+      <code>fetchAll</code>
+      <code>fetchAll</code>
+      <code>fetchAll</code>
+      <code>fetchColumn</code>
+    </DeprecatedMethod>
+  </file>
+  <file src="Profile/Shopware/Gateway/Local/Reader/TableReader.php">
+    <DeprecatedMethod occurrences="1">
+      <code>fetchAll</code>
+    </DeprecatedMethod>
+  </file>
+  <file src="Profile/Shopware/Gateway/Local/Reader/TranslationReader.php">
+    <DeprecatedMethod occurrences="2">
+      <code>fetchAll</code>
+      <code>fetchColumn</code>
+    </DeprecatedMethod>
+  </file>
+  <file src="Profile/Shopware/Media/BaseMediaService.php">
+    <DeprecatedMethod occurrences="1">
+      <code>fetchAll</code>
+    </DeprecatedMethod>
+  </file>
+</files>

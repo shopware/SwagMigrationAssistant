@@ -155,6 +155,9 @@
         <service id="SwagMigrationAssistant\Profile\Shopware\Converter\CustomerGroupConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter" abstract="true"/>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware\Converter\CustomerWishlistConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter" abstract="true"/>
+
         <service id="SwagMigrationAssistant\Profile\Shopware\Converter\PropertyGroupOptionConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter" abstract="true">
             <argument type="service" id="SwagMigrationAssistant\Migration\Media\MediaFileService"/>
@@ -253,6 +256,11 @@
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\CustomerReader"
                  parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiReader">
+            <tag name="shopware.migration.reader"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\CustomerWishlistReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader">
             <tag name="shopware.migration.reader"/>
         </service>
 
@@ -561,6 +569,10 @@
             <tag name="shopware.migration.data_selection"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\WishlistDataSelection">
+            <tag name="shopware.migration.data_selection"/>
+        </service>
+
         <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\MediaDataSelection">
             <tag name="shopware.migration.data_selection"/>
         </service>
@@ -635,6 +647,10 @@
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CustomerGroupDataSet">
+            <tag name="shopware.migration.data_set"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CustomerWishlistDataSet">
             <tag name="shopware.migration.data_set"/>
         </service>
 
