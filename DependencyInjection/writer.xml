@@ -118,6 +118,13 @@
             <tag name="shopware.migration.writer"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Migration\Writer\CustomerWishlistWriter"
+                 parent="SwagMigrationAssistant\Migration\Writer\AbstractWriter">
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
+            <argument type="service" id="Shopware\Core\Checkout\Customer\Aggregate\CustomerWishlist\CustomerWishlistDefinition"/>
+            <tag name="shopware.migration.writer"/>
+        </service>
+
         <service id="SwagMigrationAssistant\Migration\Writer\ManufacturerAttributeWriter"
                  parent="SwagMigrationAssistant\Migration\Writer\AbstractWriter">
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>

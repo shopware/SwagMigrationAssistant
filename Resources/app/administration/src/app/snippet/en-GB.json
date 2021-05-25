@@ -258,7 +258,8 @@
           "productReviews": "Product reviews",
           "seoUrls": "Seo urls",
           "promotions": "Promotions",
-          "cms": "Layouts"
+          "cms": "Layouts",
+          "customerWishlists": "Wishlists"
         },
         "entities": {
           "category": "Categories:",
@@ -293,6 +294,7 @@
           "property_group": "Property groups:",
           "product_manufacturer": "Product manufacturers:",
           "main_variant_relation": "Main variant relations:",
+          "customer_wishlist": "Wishlists:",
           "unit": "Scale units:",
           "media_folder": "Media folders:",
           "media_folder_inheritance": "Media folder inheritances:",
