@@ -65,6 +65,11 @@
             <tag name="shopware.dataProvider.provider"/>
         </service>
 
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\ProductMainVariantRelationProvider">
+            <argument type="service" id="product.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
         <service id="SwagMigrationAssistant\DataProvider\Provider\Data\TaxProvider">
             <argument type="service" id="tax.repository"/>
             <tag name="shopware.dataProvider.provider"/>
