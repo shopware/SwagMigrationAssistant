@@ -496,17 +496,14 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
         return $baseConfigId;
     }
 
-    public function getCmsPageUuidByNames(array $names, string $oldIdentifier, string $connectionId, MigrationContextInterface $migrationContext, Context $context): string
+    public function getCmsPageUuidByNames(array $names, Context $context): ?string
     {
-        $cmsPageMapping = $this->getMapping($connectionId, DefaultEntities::CMS_PAGE, $oldIdentifier, $context);
-
-        if ($cmsPageMapping !== null) {
-            return $cmsPageMapping['entityUuid'];
-        }
-
         $criteria = new Criteria();
         $criteria->addAssociation('translations');
-        $criteria->addFilter(new EqualsAnyFilter('translations.name', $names));
+        $criteria->addFilter(new MultiFilter(MultiFilter::CONNECTION_OR, [
+            new EqualsAnyFilter('translations.name', $names),
+            new EqualsAnyFilter('name', $names),
+        ]));
         $criteria->addFilter(new EqualsFilter('locked', false));
 
         /** @var CmsPageCollection $cmsPages */
@@ -526,20 +523,10 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
                 continue;
             }
 
-            $this->saveMapping(
-                [
-                    'id' => Uuid::randomHex(),
-                    'connectionId' => $connectionId,
-                    'entity' => DefaultEntities::CMS_PAGE,
-                    'oldIdentifier' => $oldIdentifier,
-                    'entityUuid' => $cmsPage->getId(),
-                ]
-            );
-
             return $cmsPage->getId();
         }
 
-        return $oldIdentifier;
+        return null;
     }
 
     public function mapLockedCmsPageUuidByNameAndType(

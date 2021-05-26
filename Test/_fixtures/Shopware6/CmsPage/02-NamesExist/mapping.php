@@ -19,8 +19,9 @@ return [
         'newIdentifier' => '5dd637353d044752ae6a8c6e7f53430b',
     ],
     [
+        'connectionId' => 'global',
         'entityName' => DefaultEntities::CMS_PAGE,
-        'oldIdentifier' => '755003030901492a9a7905d79e4a75cd',
+        'oldIdentifier' => 'isDuplicate',
         'newIdentifier' => '6a4334b0b66b4029ae9598b8e6221f22',
     ],
 ];

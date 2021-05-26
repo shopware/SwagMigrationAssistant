@@ -171,8 +171,13 @@ abstract class ShopwareConverterTest extends TestCase
 
         $connectionId = $connection->getId();
         foreach ($mappingArray as $mapping) {
+            $mappingConnection = null;
+            if (isset($mapping['connectionId'])) {
+                $mappingConnection = $mapping['connectionId'];
+            }
+
             $this->mappingService->createMapping(
-                $connectionId,
+                $mappingConnection ?? $connectionId,
                 $mapping['entityName'],
                 $mapping['oldIdentifier'],
                 null,

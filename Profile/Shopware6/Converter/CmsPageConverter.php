@@ -30,17 +30,7 @@ abstract class CmsPageConverter extends ShopwareConverter
             return new ConvertStruct(null, $data);
         }
 
-        if (isset($converted['translations'])) {
-            $this->updateAssociationIds(
-                $converted['translations'],
-                DefaultEntities::LANGUAGE,
-                'languageId',
-                DefaultEntities::CMS_PAGE
-            );
-
-            $converted['id'] = $this->mappingService->getCmsPageUuidByNames(\array_column($converted['translations'], 'name'), $data['id'], $this->connectionId, $this->migrationContext, $this->context);
-        }
-
+        $this->updateTranslations($converted);
         $this->mainMapping = $this->getOrCreateMappingMainCompleteFacade(
             DefaultEntities::CMS_PAGE,
             $data['id'],
@@ -100,6 +90,34 @@ abstract class CmsPageConverter extends ShopwareConverter
             if (isset($section['backgroundMediaId'])) {
                 $section['backgroundMediaId'] = $this->getMappingIdFacade(DefaultEntities::MEDIA, $section['backgroundMediaId']);
             }
+        }
+    }
+
+    private function updateTranslations(array &$converted): void
+    {
+        $names = \array_column($converted['translations'], 'name');
+        $names[] = $converted['name'];
+        $duplicatePageUuid = $this->mappingService->getCmsPageUuidByNames($names, $this->context);
+        $isDuplicated = $duplicatePageUuid !== null && $converted['id'] !== $duplicatePageUuid;
+
+        if (isset($converted['translations'])) {
+            $this->updateAssociationIds(
+                $converted['translations'],
+                DefaultEntities::LANGUAGE,
+                'languageId',
+                DefaultEntities::CMS_PAGE
+            );
+
+            if ($isDuplicated) {
+                foreach ($converted['translations'] as &$translation) {
+                    $translation['name'] .= ' (Migration)';
+                }
+                unset($translation);
+            }
+        }
+
+        if ($isDuplicated) {
+            $converted['name'] .= ' (Migration)';
         }
     }
 }
