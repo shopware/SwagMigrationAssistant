@@ -27,6 +27,14 @@ abstract class ProductConverter extends ShopwareMediaConverter
                     $mediaIds[] = $media['media']['id'];
                 }
             }
+
+            if (isset($product['configuratorSettings'])) {
+                foreach ($product['configuratorSettings'] as $setting) {
+                    if (isset($setting['media'])) {
+                        $mediaIds[] = $setting['media']['id'];
+                    }
+                }
+            }
         }
 
         return $mediaIds;
@@ -113,6 +121,26 @@ abstract class ProductConverter extends ShopwareMediaConverter
             );
 
             $this->checkDefaultCurrency($converted, 'purchasePrices');
+        }
+
+        if (isset($converted['configuratorSettings'])) {
+            foreach ($converted['configuratorSettings'] as &$setting) {
+                if (isset($setting['price'])) {
+                    $this->updateAssociationIds(
+                        $setting['price'],
+                        DefaultEntities::CURRENCY,
+                        'currencyId',
+                        DefaultEntities::PRODUCT
+                    );
+
+                    $this->checkDefaultCurrency($setting, 'price');
+                }
+
+                if (isset($setting['media'])) {
+                    $this->updateMediaAssociation($setting['media']);
+                }
+            }
+            unset($setting);
         }
 
         if (isset($converted['prices'])) {
