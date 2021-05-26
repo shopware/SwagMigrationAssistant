@@ -41,7 +41,7 @@ class ProductProvider extends AbstractProvider
         $criteria->addAssociation('media.media.tags');
         $criteria->addAssociation('media.media.translations');
         $criteria->addAssociation('visibilities');
-        $criteria->addAssociation('configuratorSettings');
+        $criteria->addAssociation('configuratorSettings.media');
         $criteria->addSorting(
             new FieldSorting('parentId'), // get 'NULL' parentIds first
             new FieldSorting('id')
@@ -62,6 +62,7 @@ class ProductProvider extends AbstractProvider
             'tax', // taxId is already provided
             'productId',
             'cheapestPrice',
+            'mainVariantId',
 
             // media
             'mimeType',
