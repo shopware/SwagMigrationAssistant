@@ -6,7 +6,7 @@
  */
 
 return [
-    'name' => 'Imprint',
+    'name' => 'Imprint (Migration)',
     'type' => 'page',
     'sections' => [
         [
@@ -80,15 +80,15 @@ return [
     ],
     'translations' => [
         [
-            'name' => 'Impressum',
+            'name' => 'Impressum (Migration)',
             'languageId' => '41248655c60c4dd58cde43f14cd4f149',
         ],
         [
-            'name' => 'Imprint',
+            'name' => 'Imprint (Migration)',
             'languageId' => '5dd637353d044752ae6a8c6e7f53430b',
         ],
     ],
     'config' => null,
     'locked' => false,
-    'id' => '6a4334b0b66b4029ae9598b8e6221f22',
+    'id' => '755003030901492a9a7905d79e4a75cd',
 ];

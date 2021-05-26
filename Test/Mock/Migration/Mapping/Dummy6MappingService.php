@@ -355,15 +355,15 @@ class Dummy6MappingService extends Shopware6MappingService
         return $oldIdentifier;
     }
 
-    public function getCmsPageUuidByNames(array $names, string $oldIdentifier, string $connectionId, MigrationContextInterface $migrationContext, Context $context): string
+    public function getCmsPageUuidByNames(array $names, Context $context): ?string
     {
-        $cmsPageMapping = $this->getMapping($connectionId, DefaultEntities::CMS_PAGE, $oldIdentifier, $context);
+        $cmsPageMapping = $this->getMapping('global', DefaultEntities::CMS_PAGE, 'isDuplicate', $context);
 
         if ($cmsPageMapping) {
             return $cmsPageMapping['entityUuid'];
         }
 
-        return $oldIdentifier;
+        return null;
     }
 
     public function getLowestRootCategoryUuid(Context $context): ?string

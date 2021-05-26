@@ -33,7 +33,7 @@ interface Shopware6MappingServiceInterface extends MappingServiceInterface
 
     public function getGlobalDocumentBaseConfigUuid(string $oldIdentifier, string $documentTypeId, string $connectionId, MigrationContextInterface $migrationContext, Context $context): string;
 
-    public function getCmsPageUuidByNames(array $names, string $oldIdentifier, string $connectionId, MigrationContextInterface $migrationContext, Context $context): string;
+    public function getCmsPageUuidByNames(array $names, Context $context): ?string;
 
     public function mapLockedCmsPageUuidByNameAndType(array $names, string $type, string $oldIdentifier, string $connectionId, MigrationContextInterface $migrationContext, Context $context): void;
 
