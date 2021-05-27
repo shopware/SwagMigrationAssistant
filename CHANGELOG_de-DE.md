@@ -1,6 +1,8 @@
 # REPLACE-GLOBAL-WITH-NEXT-VERSION
+- MIG-126 - Migrationsprofil für Shopware 6 hinzugefügt
 - MIG-221 - Behebt die Migration von Rechnungen
 - MIG-224 - Optimierung der Attributwertmigration aus SW5
+- MIG-233 - Migration der Merkzettel / Wunschlisten hinzugefügt
 
 # 4.0.0
 - MIG-203 - Kompatibilität für Shopware 6.4
