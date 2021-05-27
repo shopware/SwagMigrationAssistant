@@ -1,0 +1,247 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Shopware63Profile">
+            <tag name="shopware.migration.profile"/>
+        </service>
+
+        <!-- Shopware 6.3 Profile Converter -->
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63ProductManufacturerConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ProductManufacturerConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63ProductReviewConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ProductReviewConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63LanguageConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\LanguageConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63DeliveryTimeConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\DeliveryTimeConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63CurrencyConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\CurrencyConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63CategoryConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\CategoryConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63CategoryAssociationConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\CategoryAssociationConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63CategoryCmsPageAssociationConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\CategoryCmsPageAssociationConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63TaxConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\TaxConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63TaxRuleConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\TaxRuleConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63PropertyGroupConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\PropertyGroupConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63ProductConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ProductConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63OrderConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\OrderConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63UnitConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\UnitConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63MediaFolderConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\MediaFolderConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63MediaFolderInheritanceConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\MediaFolderInheritanceConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63RuleConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\RuleConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63CountryConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\CountryConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63CountryStateConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\CountryStateConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63SalesChannelConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\SalesChannelConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63SalesChannelDomainConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\SalesChannelConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63SalutationConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\SalutationConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63ShippingMethodConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShippingMethodConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63CustomerGroupConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\CustomerGroupConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63CustomFieldSetConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\CustomFieldSetConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63NumberRangeConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\NumberRangeConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63SnippetConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\SnippetConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63SnippetSetConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\SnippetSetConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63MailTemplateConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\MailTemplateConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63ProductFeatureSetConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ProductFeatureSetConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63ProductMainVariantRelationConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ProductMainVariantRelationConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63MediaConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\MediaConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63SeoUrlTemplateConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\SeoUrlTemplateConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63SeoUrlConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\SeoUrlConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63NewsletterRecipientConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\SeoUrlConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63CustomerConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\CustomerConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63SystemConfigConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\SystemConfigConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63PageSystemConfigConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\PageSystemConfigConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63ProductSortingConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ProductSortingConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63CmsPageConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\CmsPageConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63ProductStreamConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ProductStreamConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63ProductStreamFilterInheritanceConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ProductStreamFilterInheritanceConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63CrossSellingConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\CrossSellingConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63DocumentConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\DocumentConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63DocumentInheritanceConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\DocumentInheritanceConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63DocumentBaseConfigConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\DocumentBaseConfigConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63PromotionConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\PromotionConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+    </services>
+</container>

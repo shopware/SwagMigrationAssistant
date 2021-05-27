@@ -476,11 +476,6 @@ parameters:
 			path: Profile/Shopware/Gateway/Local/Reader/TranslationReader.php
 
 		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: Profile/Shopware/Media/HttpMediaDownloadService.php
-
-		-
 			message: "#^Parameter \\#1 \\$fp of function fwrite expects resource, resource\\|false given\\.$#"
 			count: 1
 			path: Profile/Shopware/Media/HttpMediaDownloadService.php

@@ -151,7 +151,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
                 $migrationContext,
                 $context
             );
-        } catch (\Exception $exception) {
+        } catch (\Throwable $exception) {
             // Worst case: something unknown goes wrong (most likely some foreign key constraint that fails)
             $this->writePerEntity($converted, $dataSet::getEntity(), $updateWrittenData, $migrationContext, $context);
         } finally {
@@ -208,7 +208,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
 
         try {
             $currentWriter->writeData($newData, $context);
-        } catch (\Exception $exception) {
+        } catch (\Throwable $exception) {
             $this->writePerEntity($converted, $entityName, $updateWrittenData, $migrationContext, $context);
         }
     }
@@ -240,7 +240,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
             try {
                 $currentWriter = $this->writerRegistry->getWriter($entityName);
                 $currentWriter->writeData([$entity], $context);
-            } catch (\Exception $exception) {
+            } catch (\Throwable $exception) {
                 $this->loggingService->addLogEntry(new ExceptionRunLog(
                     $migrationContext->getRunUuid(),
                     $entityName,

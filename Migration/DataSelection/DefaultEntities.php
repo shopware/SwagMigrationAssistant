@@ -11,9 +11,15 @@ final class DefaultEntities
 {
     public const CATEGORY = 'category';
 
+    public const CATEGORY_ASSOCIATION = 'category_association';
+
+    public const CATEGORY_CMS_PAGE_ASSOCIATION = 'category_cms_page_association';
+
     public const CATEGORY_TRANSLATION = 'category_translation';
 
     public const CATEGORY_CUSTOM_FIELD = 'category_custom_field';
+
+    public const CMS_PAGE = 'cms_page';
 
     public const COUNTRY = 'country';
 
@@ -57,11 +63,15 @@ final class DefaultEntities
 
     public const MAIL_TEMPLATE = 'mail_template';
 
+    public const MAIL_TEMPLATE_TYPE = 'mail_template_type';
+
     public const MEDIA = 'media';
 
     public const MEDIA_DEFAULT_FOLDER = 'media_default_folder';
 
     public const MEDIA_FOLDER = 'media_folder';
+
+    public const MEDIA_FOLDER_INHERITANCE = 'media_folder_inheritance'; // simulated entity for parent relationships
 
     public const MEDIA_FOLDER_CONFIGURATION = 'media_folder_configuration';
 
@@ -79,6 +89,8 @@ final class DefaultEntities
 
     public const NUMBER_RANGE_TRANSLATION = 'number_range_translation';
 
+    public const NUMBER_RANGE_TYPE = 'number_range_type';
+
     public const ORDER = 'order';
 
     public const ORDER_ADDRESS = 'order_address';
@@ -89,7 +101,17 @@ final class DefaultEntities
 
     public const ORDER_DOCUMENT = 'order_document';
 
+    public const ORDER_DOCUMENT_GENERATED = 'order_document_generated';
+
+    public const ORDER_DOCUMENT_GENERATED_MEDIA = 'order_document_generated_media';
+
+    public const ORDER_DOCUMENT_GENERATED_MEDIA_FILE = 'order_document_generated_media_file';
+
+    public const ORDER_DOCUMENT_BASE_CONFIG = 'order_document_base_config';
+
     public const ORDER_DOCUMENT_CUSTOM_FIELD = 'order_document_custom_field';
+
+    public const ORDER_DOCUMENT_INHERITANCE = 'order_document_inheritance';
 
     public const ORDER_DOCUMENT_MEDIA = 'order_document_media';
 
@@ -101,6 +123,8 @@ final class DefaultEntities
 
     public const ORDER_CUSTOM_FIELD = 'order_custom_field';
 
+    public const PAGE_SYSTEM_CONFIG = 'page_system_config';
+
     public const PAYMENT_METHOD = 'payment_method';
 
     public const PRODUCT = 'product';
@@ -108,6 +132,8 @@ final class DefaultEntities
     public const PRODUCT_CONTAINER = 'product_container';
 
     public const PRODUCT_CUSTOM_FIELD = 'product_custom_field';
+
+    public const PRODUCT_FEATURE_SET = 'product_feature_set';
 
     public const PRODUCT_MAIN = 'product_mainProduct';
 
@@ -132,6 +158,12 @@ final class DefaultEntities
     public const PRODUCT_PROPERTY = 'product_property';
 
     public const PRODUCT_REVIEW = 'product_review';
+
+    public const PRODUCT_SORTING = 'product_sorting';
+
+    public const PRODUCT_STREAM = 'product_stream';
+
+    public const PRODUCT_STREAM_FILTER_INHERITANCE = 'product_stream_filter_inheritance';
 
     public const PRODUCT_VISIBILITY = 'product_visibility';
 
@@ -167,9 +199,13 @@ final class DefaultEntities
 
     public const SALES_CHANNEL = 'sales_channel';
 
+    public const SALES_CHANNEL_DOMAIN = 'sales_channel_domain';
+
     public const SALES_CHANNEL_TRANSLATION = 'sales_channel_translation';
 
     public const SEO_URL = 'seo_url';
+
+    public const SEO_URL_TEMPLATE = 'seo_url_template';
 
     public const SHIPPING_METHOD = 'shipping_method';
 
@@ -177,7 +213,19 @@ final class DefaultEntities
 
     public const SHIPPING_METHOD_TRANSLATION = 'shipping_method_translation';
 
+    public const SNIPPET = 'snippet';
+
+    public const SNIPPET_SET = 'snippet_set';
+
+    public const STATE_MACHINE_STATE = 'state_machine_state';
+
+    public const SYSTEM_CONFIG = 'system_config';
+
     public const TAX = 'tax';
+
+    public const TAX_RULE = 'tax_rule';
+
+    public const TAX_RULE_TYPE = 'tax_rule_type';
 
     public const TRANSLATION = 'translation';
 
