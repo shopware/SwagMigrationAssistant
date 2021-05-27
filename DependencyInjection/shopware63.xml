@@ -184,8 +184,14 @@
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\SeoUrlConverter">
             <tag name="shopware.migration.converter"/>
         </service>
+
         <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63CustomerConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\CustomerConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63CustomerWishlistConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\CustomerWishlistConverter">
             <tag name="shopware.migration.converter"/>
         </service>
 

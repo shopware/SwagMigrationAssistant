@@ -55,6 +55,8 @@ final class DefaultEntities
 
     public const CROSS_SELLING_SIMILAR = 'cross_selling_similar_item';
 
+    public const CUSTOMER_WISHLIST = 'customer_wishlist';
+
     public const DELIVERY_TIME = 'delivery_time';
 
     public const LANGUAGE = 'language';

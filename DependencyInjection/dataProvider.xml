@@ -195,6 +195,11 @@
             <tag name="shopware.dataProvider.provider"/>
         </service>
 
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\CustomerWishlistProvider">
+            <argument type="service" id="customer_wishlist.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
         <service id="SwagMigrationAssistant\DataProvider\Provider\Data\SystemConfigProvider">
             <argument type="service" id="system_config.repository"/>
             <tag name="shopware.dataProvider.provider"/>

@@ -23,7 +23,7 @@ class SalesChannelConverterTest extends ShopwareConverterTest
      */
     public function testConvert(string $fixtureFolderPath): void
     {
-        if (!str_contains($fixtureFolderPath, '02-DefaultSalesChannel')) {
+        if (!\str_contains($fixtureFolderPath, '02-DefaultSalesChannel')) {
             parent::testConvert($fixtureFolderPath);
 
             return;

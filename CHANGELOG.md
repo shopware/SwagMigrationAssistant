@@ -1,6 +1,8 @@
 # REPLACE-GLOBAL-WITH-NEXT-VERSION
+- MIG-126 - Add migration profile for Shopware 6
 - MIG-221 - Fix migration of invoices
 - MIG-224 - Optimize attribute value migration handling from SW5
+- MIG-233 - Migration of notes / wishlists added
 
 # 4.0.0
 - MIG-203 - Shopware 6.4 compatibility

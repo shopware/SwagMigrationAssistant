@@ -42,6 +42,12 @@
       <code>fetchColumn</code>
     </DeprecatedMethod>
   </file>
+  <file src="Profile/Shopware/Gateway/Local/Reader/CustomerWishlistReader.php">
+      <DeprecatedMethod occurrences="2">
+          <code>fetchAll</code>
+          <code>fetchColumn</code>
+      </DeprecatedMethod>
+  </file>
   <file src="Profile/Shopware/Gateway/Local/Reader/CrossSellingReader.php">
     <DeprecatedMethod occurrences="1">
       <code>fetchColumn</code>
