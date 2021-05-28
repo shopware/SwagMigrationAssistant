@@ -14,7 +14,7 @@ return [
         'articleID' => '2',
         'ordernumber' => 'SW10002.3',
         'datum' => '2021-05-21',
-        'defaultShop' => '1',
+        'subshopID' => '1',
     ],
     [
         'id' => '3',
@@ -24,6 +24,6 @@ return [
         'articleID' => '3',
         'ordernumber' => 'SW10003',
         'datum' => '2021-05-21',
-        'defaultShop' => '1',
+        'subshopID' => '1',
     ],
 ];

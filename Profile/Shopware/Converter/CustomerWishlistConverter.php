@@ -54,8 +54,8 @@ abstract class CustomerWishlistConverter extends ShopwareConverter
             return new ConvertStruct(null, $data);
         }
 
-        $defaultShopMapping = $this->mappingService->getMapping($this->connectionId, DefaultEntities::SALES_CHANNEL, $data['defaultShop'], $context);
-        if ($defaultShopMapping === null) {
+        $shopMapping = $this->mappingService->getMapping($this->connectionId, DefaultEntities::SALES_CHANNEL, $data['subshopID'], $context);
+        if ($shopMapping === null) {
             return new ConvertStruct(null, $data);
         }
 
@@ -65,7 +65,7 @@ abstract class CustomerWishlistConverter extends ShopwareConverter
         $converted = [];
         $converted['id'] = $this->mainMapping['entityUuid'];
         $converted['customerId'] = $customerMapping['entityUuid'];
-        $converted['salesChannelId'] = $defaultShopMapping['entityUuid'];
+        $converted['salesChannelId'] = $shopMapping['entityUuid'];
         $converted['products'][] = [
             'productId' => $productMapping['entityUuid'],
         ];

@@ -149,7 +149,7 @@ class CustomerWishlistConverterTest extends TestCase
     public function testConvertWithoutSalesChannel(): void
     {
         $data = require __DIR__ . '/../../../_fixtures/customer_wishlist.php';
-        $data[0]['defaultShop'] = '99';
+        $data[0]['subshopID'] = '99';
 
         $convertResult = $this->converter->convert($data[0], $this->context, $this->migrationContext);
         $this->converter->writeMapping($this->context);
