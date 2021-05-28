@@ -34,7 +34,7 @@ class CustomerWishlistReader extends AbstractReader
     {
         $this->setConnection($migrationContext);
         $fetched = $this->fetchData($migrationContext);
-        $fetched = $this->mapData($fetched, [], ['note', 'defaultShop']);
+        $fetched = $this->mapData($fetched, [], ['note', 'subshopID']);
 
         return $this->cleanupResultSet($fetched);
     }
@@ -45,7 +45,8 @@ class CustomerWishlistReader extends AbstractReader
 
         $query = $this->connection->createQueryBuilder()
             ->select('COUNT(*)')
-            ->from('s_order_notes')
+            ->from('s_order_notes', 'note')
+            ->innerJoin('note', 's_user', 'customer', 'note.userID = customer.id')
             ->execute();
 
         $total = 0;
@@ -64,8 +65,8 @@ class CustomerWishlistReader extends AbstractReader
         $query->from('s_order_notes', 'note');
         $this->addTableSelection($query, 's_order_notes', 'note');
 
-        $query->innerJoin('note', 's_core_shops', 'shop', 'shop.default = 1');
-        $query->addSelect('shop.id as defaultShop');
+        $query->innerJoin('note', 's_user', 'customer', 'note.userID = customer.id');
+        $query->addSelect('subshopID');
 
         $query->setParameter('ids', $ids, Connection::PARAM_STR_ARRAY);
         $query->addOrderBy('note.id');
