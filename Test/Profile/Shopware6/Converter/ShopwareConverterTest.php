@@ -193,7 +193,7 @@ abstract class ShopwareConverterTest extends TestCase
 
         $message = "Child class: ${childClassName}";
         if ($notes !== '') {
-            $message .= PHP_EOL . $notes;
+            $message .= \PHP_EOL . $notes;
         }
 
         return $message;
