@@ -373,6 +373,7 @@ abstract class CustomerConverter extends ShopwareConverter
     protected function getAddresses(array &$originalData, array &$converted, string $customerUuid): void
     {
         $addresses = [];
+        $mainVatId = null;
         foreach ($originalData['addresses'] as $address) {
             $newAddress = [];
 
@@ -406,11 +407,17 @@ abstract class CustomerConverter extends ShopwareConverter
             if (isset($originalData['default_billing_address_id']) && $address['id'] === $originalData['default_billing_address_id']) {
                 $converted['defaultBillingAddressId'] = $newAddress['id'];
                 unset($originalData['default_billing_address_id']);
+                if (empty($mainVatId) && isset($address['ustid']) && $address['ustid'] !== '') {
+                    $mainVatId = $address['ustid'];
+                }
             }
 
             if (isset($originalData['default_shipping_address_id']) && $address['id'] === $originalData['default_shipping_address_id']) {
                 $converted['defaultShippingAddressId'] = $newAddress['id'];
                 unset($originalData['default_shipping_address_id']);
+                if (isset($address['ustid']) && $address['ustid'] !== '') {
+                    $mainVatId = $address['ustid'];
+                }
             }
 
             if (!isset($this->mainMapping['entityUuid'])) {
@@ -431,16 +438,23 @@ abstract class CustomerConverter extends ShopwareConverter
             $this->convertValue($newAddress, 'street', $address, 'street');
             $this->convertValue($newAddress, 'department', $address, 'department');
             $this->convertValue($newAddress, 'title', $address, 'title');
-            $this->convertValue($newAddress, 'vatId', $address, 'ustid');
             $this->convertValue($newAddress, 'phoneNumber', $address, 'phone');
             $this->convertValue($newAddress, 'additionalAddressLine1', $address, 'additional_address_line1');
             $this->convertValue($newAddress, 'additionalAddressLine2', $address, 'additional_address_line2');
 
+            if (isset($address['ustid']) && $address['ustid'] !== '') {
+                $converted['vatIds'][] = $address['ustid'];
+            }
             $addresses[] = $newAddress;
         }
 
         if (empty($addresses)) {
             return;
+        }
+
+        if (isset($mainVatId)) {
+            \array_unshift($converted['vatIds'], $mainVatId);
+            $converted['vatIds'] = \array_unique($converted['vatIds']);
         }
 
         $converted['addresses'] = $addresses;
