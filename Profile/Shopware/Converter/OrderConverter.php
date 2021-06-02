@@ -289,6 +289,9 @@ abstract class OrderConverter extends ShopwareConverter
         );
 
         $converted['deliveries'] = $this->getDeliveries($data, $converted, $shippingCosts);
+        if (isset($data['shippingaddress']['ustid']) && $data['shippingaddress']['ustid'] !== '') {
+            $converted['orderCustomer']['vatIds'][] = $data['shippingaddress']['ustid'];
+        }
         unset(
             $data['trackingcode'],
             $data['shippingMethod'],
@@ -311,6 +314,9 @@ abstract class OrderConverter extends ShopwareConverter
             ));
 
             return new ConvertStruct(null, $data);
+        }
+        if (isset($data['billingaddress']['ustid']) && $data['billingaddress']['ustid'] !== '') {
+            $converted['orderCustomer']['vatIds'][] = $data['billingaddress']['ustid'];
         }
         $converted['billingAddressId'] = $billingAddress['id'];
         $converted['addresses'][] = $billingAddress;
@@ -546,9 +552,6 @@ abstract class OrderConverter extends ShopwareConverter
         $this->convertValue($address, 'street', $originalData, 'street');
         $this->convertValue($address, 'department', $originalData, 'department');
         $this->convertValue($address, 'title', $originalData, 'title');
-        if (isset($originalData['ustid'])) {
-            $this->convertValue($address, 'vatId', $originalData, 'ustid');
-        }
         $this->convertValue($address, 'phoneNumber', $originalData, 'phone');
         $this->convertValue($address, 'additionalAddressLine1', $originalData, 'additional_address_line1');
         $this->convertValue($address, 'additionalAddressLine2', $originalData, 'additional_address_line2');

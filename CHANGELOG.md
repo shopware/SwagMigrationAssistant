@@ -1,3 +1,6 @@
+# REPLACE-GLOBAL-WITH-NEXT-VERSION
+- MIG-237 - Fix customer vatId migration
+
 # 4.1.0
 - MIG-126 - Add migration profile for Shopware 6
 - MIG-221 - Fix migration of invoices

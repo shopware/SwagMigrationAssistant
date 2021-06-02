@@ -1,3 +1,6 @@
+# REPLACE-GLOBAL-WITH-NEXT-VERSION
+- MIG-237 - Behebt ein Problem bei der Migration der UStId
+
 # 4.1.0
 - MIG-126 - Migrationsprofil für Shopware 6 hinzugefügt
 - MIG-221 - Behebt die Migration von Rechnungen
