@@ -1,5 +1,6 @@
 # REPLACE-GLOBAL-WITH-NEXT-VERSION
 - MIG-237 - Fix customer vatId migration
+- MIG-240 - Optimize customer order count indexer
 
 # 4.1.0
 - MIG-126 - Add migration profile for Shopware 6
