@@ -1,5 +1,6 @@
 # REPLACE-GLOBAL-WITH-NEXT-VERSION
 - MIG-237 - Behebt ein Problem bei der Migration der UStId
+- MIG-240 - Optimiert den Customer Indexer zum Zählen der Bestellungen
 
 # 4.1.0
 - MIG-126 - Migrationsprofil für Shopware 6 hinzugefügt
