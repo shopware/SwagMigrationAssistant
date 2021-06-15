@@ -1,4 +1,5 @@
 # REPLACE-GLOBAL-WITH-NEXT-VERSION
+- MIG-206 - Migration des Erstelldatums der Produkte
 - MIG-237 - Behebt ein Problem bei der Migration der UStId
 
 # 4.1.0
