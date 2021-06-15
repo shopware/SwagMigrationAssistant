@@ -430,6 +430,7 @@ abstract class ProductConverter extends ShopwareConverter
             unset($data['active']);
         }
 
+        $this->convertValue($converted, 'createdAt', $data, 'datum', self::TYPE_DATETIME);
         $this->convertValue($converted, 'isCloseout', $data, 'laststock', self::TYPE_BOOLEAN);
         $this->convertValue($converted, 'markAsTopseller', $data, 'topseller', self::TYPE_BOOLEAN);
         $this->convertValue($converted, 'allowNotification', $data, 'notification', self::TYPE_BOOLEAN);
