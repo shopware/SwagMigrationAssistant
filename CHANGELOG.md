@@ -1,4 +1,5 @@
 # REPLACE-GLOBAL-WITH-NEXT-VERSION
+- MIG-206 - Migrate product creation date
 - MIG-237 - Fix customer vatId migration
 - MIG-240 - Optimize customer order count indexer
 
