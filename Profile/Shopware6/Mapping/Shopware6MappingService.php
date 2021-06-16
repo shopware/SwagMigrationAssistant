@@ -56,7 +56,7 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
     protected $systemConfigRepo;
 
     /**
-     * @var EntityRepositoryInterface
+     * @var EntityRepositoryInterface|null
      */
     protected $productSortingRepo;
 
@@ -108,7 +108,7 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
         EntityRepositoryInterface $salutationRepo,
         EntityRepositoryInterface $seoUrlTemplateRepo,
         EntityRepositoryInterface $systemConfigRepo,
-        EntityRepositoryInterface $productSortingRepo,
+        ?EntityRepositoryInterface $productSortingRepo,
         EntityRepositoryInterface $stateMachineStateRepo,
         EntityRepositoryInterface $documentBaseConfigRepo,
         EntityRepositoryInterface $countryStateRepo,
@@ -409,6 +409,10 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
 
     public function getProductSortingUuid(string $key, Context $context): array
     {
+        if ($this->productSortingRepo === null) {
+            return [null, false];
+        }
+
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('key', $key));
         $criteria->setLimit(1);

@@ -1,17 +1,5 @@
-# REPLACE-GLOBAL-WITH-NEXT-VERSION
-- MIG-206 - Migrate product creation date
-- MIG-237 - Fix customer vatId migration
-- MIG-240 - Optimize customer order count indexer
-
-# 4.1.0
+# 3.1.0
 - MIG-126 - Add migration profile for Shopware 6
-- MIG-221 - Fix migration of invoices
-- MIG-224 - Optimize attribute value migration handling from SW5
-- MIG-233 - Migration of notes / wishlists added
-
-# 4.0.0
-- MIG-203 - Shopware 6.4 compatibility
-- MIG-220 - Optimize product image cover migration
 
 # 3.0.2
 - MIG-218 - Prevents abortion of a migration if customer has an invalid email address

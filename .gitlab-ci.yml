@@ -3,16 +3,15 @@ variables:
     DOCKER_HOST: "tcp://docker:2375"
     MYSQL_ROOT_PASSWORD: app
     WEB_DOCUMENT_ROOT: $CI_PROJECT_DIR/development/public
-    DEV_IMAGE: shopware/development:7.4-composer-2
-    DEVELOPMENT_BRANCH: "6.4.0.0"
-    PLATFORM_BRANCH: "6.4.0.0"
+    DEVELOPMENT_BRANCH: "6.3.5.4"
+    PLATFORM_BRANCH: "6.3.5.4"
 
 stages:
     - Static validation
     - Testing
 
 default:
-    image: $DEV_IMAGE
+    image: shopware/development:latest
     before_script:
         - zip -rq plugin.zip .
         - git clone --branch $DEVELOPMENT_BRANCH http://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.shopware.com/shopware/6/product/development.git
@@ -60,9 +59,6 @@ PHPUnit (MariaDB):
         - ./psh.phar init
         - php bin/console plugin:install --activate SwagMigrationAssistant
         - composer dump-autoload -d custom/plugins/SwagMigrationAssistant
-        - cd $CI_PROJECT_DIR/development/custom/plugins/SwagMigrationAssistant
-        - touch vendor/composer/InstalledVersions.php
-        - cd -
         - ./psh.phar init-test-databases
         - php -d pcov.enabled=1 -d pcov.directory=$CI_PROJECT_DIR
             vendor/bin/phpunit
@@ -78,7 +74,3 @@ PHPUnit (MariaDB):
             - development/build/artifacts/phpunit.clover.xml
         reports:
             junit: development/build/artifacts/phpunit.junit.xml
-    parallel:
-        matrix:
-            -   DEV_IMAGE: shopware/development:8.0-composer-2
-            -   DEV_IMAGE: shopware/development:7.4-composer-2

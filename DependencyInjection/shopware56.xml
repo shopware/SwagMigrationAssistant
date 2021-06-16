@@ -81,11 +81,6 @@
             <tag name="shopware.migration.converter"/>
         </service>
 
-        <service id="SwagMigrationAssistant\Profile\Shopware56\Converter\Shopware56CustomerWishlistConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware\Converter\CustomerWishlistConverter">
-            <tag name="shopware.migration.converter"/>
-        </service>
-
         <service id="SwagMigrationAssistant\Profile\Shopware56\Converter\Shopware56OrderConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware\Converter\OrderConverter">
             <tag name="shopware.migration.converter"/>

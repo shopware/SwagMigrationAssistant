@@ -130,12 +130,17 @@ abstract class OrderConverter extends ShopwareConverter
 
         $this->updateLineItems($converted['lineItems']);
 
+        unset($converted['price']['rawTotal']);
+
         return new ConvertStruct($converted, null, $this->mainMapping['id'] ?? null);
     }
 
     private function updateLineItems(array &$lineItems): void
     {
         foreach ($lineItems as &$converted) {
+            $converted['priceDefinition']['precision'] = $this->context->getCurrencyPrecision();
+            unset($converted['price']['rawTotal']);
+
             if (!isset($converted['productId'])) {
                 unset($converted['referencedId'], $converted['payload']['productNumber']);
             }

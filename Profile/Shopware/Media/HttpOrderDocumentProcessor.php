@@ -89,10 +89,12 @@ class HttpOrderDocumentProcessor extends BaseMediaService implements MediaFilePr
         //Map workload with uuids as keys
         /** @var MediaProcessWorkloadStruct[] $mappedWorkload */
         $mappedWorkload = [];
+        $mediaIds = [];
         $runId = $migrationContext->getRunUuid();
 
         foreach ($workload as $work) {
             $mappedWorkload[$work->getMediaId()] = $work;
+            $mediaIds[] = $work->getMediaId();
         }
 
         if (!\is_dir('_temp') && !\mkdir('_temp') && !\is_dir('_temp')) {

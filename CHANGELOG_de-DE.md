@@ -1,17 +1,5 @@
-# REPLACE-GLOBAL-WITH-NEXT-VERSION
-- MIG-206 - Migration des Erstelldatums der Produkte
-- MIG-237 - Behebt ein Problem bei der Migration der UStId
-- MIG-240 - Optimiert den Customer Indexer zum Zählen der Bestellungen
-
-# 4.1.0
+# 3.1.0
 - MIG-126 - Migrationsprofil für Shopware 6 hinzugefügt
-- MIG-221 - Behebt die Migration von Rechnungen
-- MIG-224 - Optimierung der Attributwertmigration aus SW5
-- MIG-233 - Migration der Merkzettel / Wunschlisten hinzugefügt
-
-# 4.0.0
-- MIG-203 - Kompatibilität für Shopware 6.4
-- MIG-220 - Optimiert die Migration von Produkt-Vorschaubildern
 
 # 3.0.2
 - MIG-218 - Verhindert den Abbruch der Migration, wenn ein Kunde eine ungültige E-Mail-Adresse hat

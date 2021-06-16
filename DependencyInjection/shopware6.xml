@@ -30,7 +30,7 @@
             <argument type="service" id="salutation.repository"/>
             <argument type="service" id="seo_url_template.repository"/>
             <argument type="service" id="system_config.repository"/>
-            <argument type="service" id="product_sorting.repository"/>
+            <argument type="service" id="product_sorting.repository" on-invalid="null"/>
             <argument type="service" id="state_machine_state.repository"/>
             <argument type="service" id="document_base_config.repository"/>
             <argument type="service" id="country_state.repository"/>
@@ -156,9 +156,6 @@
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\CustomerConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
 
-        <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\CustomerWishlistConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
-
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\SystemConfigConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
 
@@ -234,10 +231,6 @@
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\DataSelection\CustomerAndOrderDataSelection">
-            <tag name="shopware.migration.data_selection"/>
-        </service>
-
-        <service id="SwagMigrationAssistant\Profile\Shopware6\DataSelection\WishlistDataSelection">
             <tag name="shopware.migration.data_selection"/>
         </service>
 
@@ -379,10 +372,6 @@
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CustomerDataSet">
-            <tag name="shopware.migration.data_set"/>
-        </service>
-
-        <service id="SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CustomerWishlistDataSet">
             <tag name="shopware.migration.data_set"/>
         </service>
 
@@ -638,11 +627,6 @@
             <tag name="shopware.migration.reader"/>
         </service>
 
-        <service id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\CustomerWishlistReader"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\ApiReader">
-            <tag name="shopware.migration.reader"/>
-        </service>
-
         <service id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\SystemConfigReader"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\ApiReader">
             <tag name="shopware.migration.reader"/>
@@ -842,7 +826,7 @@
         <service id="SwagMigrationAssistant\Profile\Shopware6\Writer\ProductSortingWriter"
                  parent="SwagMigrationAssistant\Migration\Writer\AbstractWriter">
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
-            <argument type="service" id="Shopware\Core\Content\Product\SalesChannel\Sorting\ProductSortingDefinition"/>
+            <argument type="service" id="Shopware\Core\Content\Product\SalesChannel\Sorting\ProductSortingDefinition" on-invalid="ignore"/>
             <tag name="shopware.migration.writer"/>
         </service>
 

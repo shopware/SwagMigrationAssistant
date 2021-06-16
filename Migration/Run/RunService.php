@@ -631,7 +631,7 @@ SQL;
                 }
 
                 $entityProgress = new EntityProgress();
-                $entityProgress->setEntityName($entityName);
+                $entityProgress->setEntityName((string) $entityName);
                 $entityProgress->setCurrentCount(0);
                 $entityProgress->setTotal($total);
 

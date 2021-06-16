@@ -16,11 +16,11 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 class ProductSortingProvider extends AbstractProvider
 {
     /**
-     * @var EntityRepositoryInterface
+     * @var EntityRepositoryInterface|null
      */
     private $productSortingRepo;
 
-    public function __construct(EntityRepositoryInterface $productSortingRepo)
+    public function __construct(?EntityRepositoryInterface $productSortingRepo)
     {
         $this->productSortingRepo = $productSortingRepo;
     }
@@ -32,6 +32,10 @@ class ProductSortingProvider extends AbstractProvider
 
     public function getProvidedData(int $limit, int $offset, Context $context): array
     {
+        if ($this->productSortingRepo === null) {
+            return [];
+        }
+
         $criteria = new Criteria();
         $criteria->addAssociation('translations');
         $criteria->setLimit($limit);
@@ -44,6 +48,10 @@ class ProductSortingProvider extends AbstractProvider
 
     public function getProvidedTotal(Context $context): int
     {
+        if ($this->productSortingRepo === null) {
+            return 0;
+        }
+
         return $this->readTotalFromRepo($this->productSortingRepo, $context);
     }
 }

@@ -122,7 +122,7 @@ Component.register('swag-migration-history', {
             this.isLoading = true;
 
             const params = this.normalizeListingParams(
-                this.getMainListingParams()
+                this.getListingParams()
             );
 
             if (JSON.stringify(this.oldParams) === JSON.stringify(params)) {
