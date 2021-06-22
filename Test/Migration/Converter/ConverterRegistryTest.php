@@ -105,6 +105,28 @@ use SwagMigrationAssistant\Profile\Shopware56\Converter\Shopware56PropertyGroupO
 use SwagMigrationAssistant\Profile\Shopware56\Converter\Shopware56SalesChannelConverter;
 use SwagMigrationAssistant\Profile\Shopware56\Converter\Shopware56TranslationConverter;
 use SwagMigrationAssistant\Profile\Shopware56\Shopware56Profile;
+use SwagMigrationAssistant\Profile\Shopware57\Converter\Shopware57CategoryAttributeConverter;
+use SwagMigrationAssistant\Profile\Shopware57\Converter\Shopware57CategoryConverter;
+use SwagMigrationAssistant\Profile\Shopware57\Converter\Shopware57CurrencyConverter;
+use SwagMigrationAssistant\Profile\Shopware57\Converter\Shopware57CustomerAttributeConverter;
+use SwagMigrationAssistant\Profile\Shopware57\Converter\Shopware57CustomerConverter;
+use SwagMigrationAssistant\Profile\Shopware57\Converter\Shopware57CustomerGroupAttributeConverter;
+use SwagMigrationAssistant\Profile\Shopware57\Converter\Shopware57LanguageConverter;
+use SwagMigrationAssistant\Profile\Shopware57\Converter\Shopware57ManufacturerAttributeConverter;
+use SwagMigrationAssistant\Profile\Shopware57\Converter\Shopware57MediaConverter;
+use SwagMigrationAssistant\Profile\Shopware57\Converter\Shopware57MediaFolderConverter;
+use SwagMigrationAssistant\Profile\Shopware57\Converter\Shopware57NewsletterRecipientConverter;
+use SwagMigrationAssistant\Profile\Shopware57\Converter\Shopware57NumberRangeConverter;
+use SwagMigrationAssistant\Profile\Shopware57\Converter\Shopware57OrderAttributeConverter;
+use SwagMigrationAssistant\Profile\Shopware57\Converter\Shopware57OrderConverter;
+use SwagMigrationAssistant\Profile\Shopware57\Converter\Shopware57OrderDocumentConverter;
+use SwagMigrationAssistant\Profile\Shopware57\Converter\Shopware57ProductAttributeConverter;
+use SwagMigrationAssistant\Profile\Shopware57\Converter\Shopware57ProductConverter;
+use SwagMigrationAssistant\Profile\Shopware57\Converter\Shopware57ProductPriceAttributeConverter;
+use SwagMigrationAssistant\Profile\Shopware57\Converter\Shopware57PropertyGroupOptionConverter;
+use SwagMigrationAssistant\Profile\Shopware57\Converter\Shopware57SalesChannelConverter;
+use SwagMigrationAssistant\Profile\Shopware57\Converter\Shopware57TranslationConverter;
+use SwagMigrationAssistant\Profile\Shopware57\Shopware57Profile;
 use SwagMigrationAssistant\Test\Profile\Shopware\DataSet\FooDataSet;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -485,6 +507,111 @@ class ConverterRegistryTest extends TestCase
                 new Shopware56Profile(),
                 new TranslationDataSet(),
                 Shopware56TranslationConverter::class,
+            ],
+            [
+                new Shopware57Profile(),
+                new CategoryAttributeDataSet(),
+                Shopware57CategoryAttributeConverter::class,
+            ],
+            [
+                new Shopware57Profile(),
+                new CategoryDataSet(),
+                Shopware57CategoryConverter::class,
+            ],
+            [
+                new Shopware57Profile(),
+                new CurrencyDataSet(),
+                Shopware57CurrencyConverter::class,
+            ],
+            [
+                new Shopware57Profile(),
+                new CustomerAttributeDataSet(),
+                Shopware57CustomerAttributeConverter::class,
+            ],
+            [
+                new Shopware57Profile(),
+                new CustomerDataSet(),
+                Shopware57CustomerConverter::class,
+            ],
+            [
+                new Shopware57Profile(),
+                new CustomerGroupAttributeDataSet(),
+                Shopware57CustomerGroupAttributeConverter::class,
+            ],
+            [
+                new Shopware57Profile(),
+                new LanguageDataSet(),
+                Shopware57LanguageConverter::class,
+            ],
+            [
+                new Shopware57Profile(),
+                new ManufacturerAttributeDataSet(),
+                Shopware57ManufacturerAttributeConverter::class,
+            ],
+            [
+                new Shopware57Profile(),
+                new MediaDataSet(),
+                Shopware57MediaConverter::class,
+            ],
+            [
+                new Shopware57Profile(),
+                new MediaFolderDataSet(),
+                Shopware57MediaFolderConverter::class,
+            ],
+            [
+                new Shopware57Profile(),
+                new NewsletterRecipientDataSet(),
+                Shopware57NewsletterRecipientConverter::class,
+            ],
+            [
+                new Shopware57Profile(),
+                new NumberRangeDataSet(),
+                Shopware57NumberRangeConverter::class,
+            ],
+            [
+                new Shopware57Profile(),
+                new OrderAttributeDataSet(),
+                Shopware57OrderAttributeConverter::class,
+            ],
+            [
+                new Shopware57Profile(),
+                new OrderDataSet(),
+                Shopware57OrderConverter::class,
+            ],
+            [
+                new Shopware57Profile(),
+                new OrderDocumentDataSet(),
+                Shopware57OrderDocumentConverter::class,
+            ],
+            [
+                new Shopware57Profile(),
+                new ProductAttributeDataSet(),
+                Shopware57ProductAttributeConverter::class,
+            ],
+            [
+                new Shopware57Profile(),
+                new ProductDataSet(),
+                Shopware57ProductConverter::class,
+            ],
+            [
+                new Shopware57Profile(),
+                new ProductPriceAttributeDataSet(),
+                Shopware57ProductPriceAttributeConverter::class,
+            ],
+            [
+                new Shopware57Profile(),
+                new PropertyGroupOptionDataSet(),
+                Shopware57PropertyGroupOptionConverter::class,
+            ],
+            [
+                new Shopware57Profile(),
+                new SalesChannelDataSet(),
+                Shopware57SalesChannelConverter::class,
+            ],
+            [
+                new Shopware57Profile(),
+                new TranslationDataSet(),
+                Shopware57TranslationConverter::class,
             ],
         ];
     }

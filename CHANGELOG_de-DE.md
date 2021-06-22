@@ -1,3 +1,6 @@
+# REPLACE-GLOBAL-WITH-NEXT-VERSION
+- MIG-100 - Migrationsprofil für Shopware 5.7 hinzugefügt
+
 # 4.1.1
 - MIG-206 - Migration des Erstelldatums der Produkte
 - MIG-237 - Behebt ein Problem bei der Migration der UStId
