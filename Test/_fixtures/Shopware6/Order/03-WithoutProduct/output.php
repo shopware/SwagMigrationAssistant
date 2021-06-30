@@ -39,6 +39,7 @@ return [
         ],
         'positionPrice' => 4133.3,
         'taxStatus' => 'net',
+        'rawTotal' => 4376.45,
     ],
     'shippingCosts' => [
         'unitPrice' => 0,
