@@ -15,7 +15,7 @@ class MigrationIndexingWorker {
                 await this._indexingApiService.indexing(
                     lastResult.lastIndexer,
                     lastResult.offset,
-                    lastResult.timestamp
+                    lastResult.timestamp,
                     // eslint-disable-next-line no-loop-func
                 ).then((result) => {
                     if (result.done !== undefined && result.done === true) {

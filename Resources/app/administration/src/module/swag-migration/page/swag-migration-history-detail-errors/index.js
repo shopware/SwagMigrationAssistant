@@ -8,18 +8,18 @@ Component.register('swag-migration-history-detail-errors', {
 
     inject: {
         /** @var {MigrationApiService} migrationService */
-        migrationService: 'migrationService'
+        migrationService: 'migrationService',
     },
 
     mixins: [
-        Mixin.getByName('listing')
+        Mixin.getByName('listing'),
     ],
 
     props: {
         migrationRun: {
             type: Object,
-            required: true
-        }
+            required: true,
+        },
     },
 
     data() {
@@ -31,13 +31,13 @@ Component.register('swag-migration-history-detail-errors', {
             sortDirection: 'DESC',
             disableRouteParams: true,
             limit: 10,
-            downloadUrl: ''
+            downloadUrl: '',
         };
     },
 
     metaInfo() {
         return {
-            title: this.$createTitle()
+            title: this.$createTitle(),
         };
     },
 
@@ -50,7 +50,7 @@ Component.register('swag-migration-history-detail-errors', {
                     label: this.$tc('swag-migration.history.detailPage.errorCode'),
                     primary: true,
                     allowResize: true,
-                    sortable: true
+                    sortable: true,
                 },
                 {
                     property: 'count',
@@ -58,10 +58,10 @@ Component.register('swag-migration-history-detail-errors', {
                     label: this.$tc('swag-migration.history.detailPage.errorCount'),
                     primary: true,
                     allowResize: true,
-                    sortable: true
-                }
+                    sortable: true,
+                },
             ];
-        }
+        },
     },
 
     methods: {
@@ -88,7 +88,7 @@ Component.register('swag-migration-history-detail-errors', {
 
         loadAllMigrationErrors() {
             return this.migrationService.getGroupedLogsOfRun(
-                this.migrationRun.id
+                this.migrationRun.id,
             ).then((response) => {
                 this.total = response.total;
                 this.allMigrationErrors = response.items;
@@ -129,6 +129,6 @@ Component.register('swag-migration-history-detail-errors', {
 
         submitDownload() {
             this.$refs.downloadForm.submit();
-        }
-    }
+        },
+    },
 });

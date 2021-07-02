@@ -108,16 +108,16 @@ class MigrationController extends AbstractController
      */
     public function fetchData(Request $request, Context $context): JsonResponse
     {
-        $runUuid = $request->request->get('runUuid');
-        $entity = $request->request->get('entity');
+        $runUuid = $request->request->getAlnum('runUuid');
+        $entity = (string) $request->request->get('entity');
         $offset = $request->request->getInt('offset');
         $limit = $request->request->getInt('limit', 250);
 
-        if ($runUuid === null) {
+        if ($runUuid === '') {
             throw new MigrationContextPropertyMissingException('runUuid');
         }
 
-        if ($entity === null) {
+        if ($entity === '') {
             throw new MigrationContextPropertyMissingException('entity');
         }
 
@@ -161,9 +161,9 @@ class MigrationController extends AbstractController
      */
     public function updateWriteProgress(Request $request, Context $context): JsonResponse
     {
-        $runUuid = $request->request->get('runUuid');
+        $runUuid = $request->request->getAlnum('runUuid');
 
-        if ($runUuid === null) {
+        if ($runUuid === '') {
             throw new MigrationContextPropertyMissingException('runUuid');
         }
 
@@ -192,16 +192,16 @@ class MigrationController extends AbstractController
      */
     public function writeData(Request $request, Context $context): JsonResponse
     {
-        $runUuid = $request->request->get('runUuid');
-        $entity = $request->request->get('entity');
+        $runUuid = $request->request->getAlnum('runUuid');
+        $entity = (string) $request->request->get('entity');
         $offset = $request->request->getInt('offset');
         $limit = $request->request->getInt('limit', 250);
 
-        if ($runUuid === null) {
+        if ($runUuid === '') {
             throw new MigrationContextPropertyMissingException('runUuid');
         }
 
-        if ($entity === null) {
+        if ($entity === '') {
             throw new MigrationContextPropertyMissingException('entity');
         }
 
@@ -237,9 +237,9 @@ class MigrationController extends AbstractController
      */
     public function updateMediaFilesProgress(Request $request, Context $context): JsonResponse
     {
-        $runUuid = $request->request->get('runUuid');
+        $runUuid = $request->request->getAlnum('runUuid');
 
-        if ($runUuid === null) {
+        if ($runUuid === '') {
             throw new MigrationContextPropertyMissingException('runUuid');
         }
 
@@ -268,12 +268,12 @@ class MigrationController extends AbstractController
      */
     public function processMedia(Request $request, Context $context): JsonResponse
     {
-        $runUuid = $request->request->get('runUuid');
+        $runUuid = $request->request->getAlnum('runUuid');
         $fileChunkByteSize = $request->request->getInt('fileChunkByteSize', 1000 * 1000);
         $offset = $request->request->getInt('offset');
         $limit = $request->request->getInt('limit', 250);
 
-        if ($runUuid === null) {
+        if ($runUuid === '') {
             throw new MigrationContextPropertyMissingException('runUuid');
         }
 
@@ -315,7 +315,10 @@ class MigrationController extends AbstractController
     {
         $lastIndexer = $request->get('lastIndexer');
         $offset = $request->get('offset');
-        $result = $this->entityPartialIndexerService->partial($lastIndexer, $offset);
+        $result = $this->entityPartialIndexerService->partial(
+            \is_string($lastIndexer) ? $lastIndexer : null,
+            \is_array($offset) ? $offset : null
+        );
 
         if (!$result) {
             return new JsonResponse(['done' => true]);

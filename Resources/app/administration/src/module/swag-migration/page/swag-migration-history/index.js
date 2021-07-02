@@ -10,12 +10,12 @@ Component.register('swag-migration-history', {
     inject: {
         repositoryFactory: 'repositoryFactory',
         /** @var {MigrationApiService} migrationService */
-        migrationService: 'migrationService'
+        migrationService: 'migrationService',
     },
 
     mixins: [
         Mixin.getByName('listing'),
-        Mixin.getByName('notification')
+        Mixin.getByName('notification'),
     ],
 
     data() {
@@ -25,7 +25,7 @@ Component.register('swag-migration-history', {
             migrationDateOptions: {
                 hour: '2-digit',
                 minute: '2-digit',
-                second: '2-digit'
+                second: '2-digit',
             },
             sortBy: 'createdAt',
             sortDirection: 'DESC',
@@ -36,13 +36,13 @@ Component.register('swag-migration-history', {
             runIdForRunClear: '',
             showRunClearConfirmModal: false,
             runClearConfirmModalIsLoading: false,
-            isMediaProcessing: true
+            isMediaProcessing: true,
         };
     },
 
     metaInfo() {
         return {
-            title: this.$createTitle()
+            title: this.$createTitle(),
         };
     },
 
@@ -53,7 +53,7 @@ Component.register('swag-migration-history', {
 
         migrationColumns() {
             return this.getMigrationColumns();
-        }
+        },
     },
 
     created() {
@@ -72,49 +72,49 @@ Component.register('swag-migration-history', {
                     dataIndex: 'connection.name',
                     label: this.$tc('swag-migration.history.connectionName'),
                     primary: true,
-                    allowResize: true
+                    allowResize: true,
                 },
                 {
                     property: 'environmentInformation.sourceSystemDomain',
                     dataIndex: 'environmentInformation.sourceSystemDomain',
                     label: this.$tc('swag-migration.history.shopDomain'),
                     visible: false,
-                    allowResize: true
+                    allowResize: true,
                 },
                 {
                     property: 'environmentInformation.sourceSystemName',
                     dataIndex: 'environmentInformation.sourceSystemName',
                     label: this.$tc('swag-migration.history.shopSystem'),
                     visible: false,
-                    allowResize: true
+                    allowResize: true,
                 },
                 {
                     property: 'connection.profile',
                     dataIndex: 'connection.profileName',
                     label: this.$tc('swag-migration.history.profileAndGateway'),
-                    allowResize: true
+                    allowResize: true,
                 },
                 {
                     property: 'status',
                     dataIndex: 'status',
                     label: this.$tc('swag-migration.history.status'),
                     align: 'center',
-                    allowResize: true
+                    allowResize: true,
                 },
                 {
                     property: 'progress',
                     dataIndex: 'progress',
                     label: this.$tc('swag-migration.history.selectedData'),
                     visible: false,
-                    allowResize: true
+                    allowResize: true,
                 },
                 {
                     property: 'createdAt',
                     dataIndex: 'createdAt',
                     label: this.$tc('swag-migration.history.importDateTime'),
                     align: 'right',
-                    allowResize: true
-                }
+                    allowResize: true,
+                },
             ];
         },
 
@@ -122,7 +122,7 @@ Component.register('swag-migration-history', {
             this.isLoading = true;
 
             const params = this.normalizeListingParams(
-                this.getMainListingParams()
+                this.getMainListingParams(),
             );
 
             if (JSON.stringify(this.oldParams) === JSON.stringify(params)) {
@@ -180,7 +180,7 @@ Component.register('swag-migration-history', {
             }).catch(() => {
                 this.createNotificationError({
                     message: this.$t('swag-migration.index.shopInfoCard.resetMigrationConfirmDialog.errorNotification.message'),
-                    growl: true
+                    growl: true,
                 });
             });
         },
@@ -192,6 +192,6 @@ Component.register('swag-migration-history', {
 
         onClearRunConfirmed() {
             this.clearDataOfRun(this.runIdForRunClear);
-        }
-    }
+        },
+    },
 });

@@ -14,7 +14,7 @@ Application.addServiceProvider('processStoreInitService', (container) => {
     return new ProcessStoreInitService(
         container.migrationService,
         container.repositoryFactory,
-        Shopware.Context.api
+        Shopware.Context.api,
     );
 });
 

@@ -10,7 +10,7 @@ export const WORKER_INTERRUPT_TYPE = Object.freeze({
     TAKEOVER: 'takeover',
     STOP: 'stop',
     PAUSE: 'pause',
-    CONNECTION_LOST: 'connectionLost'
+    CONNECTION_LOST: 'connectionLost',
 });
 
 class MigrationWorkerService {
@@ -20,7 +20,7 @@ class MigrationWorkerService {
      */
     constructor(
         migrationService,
-        migrationIndexingWorker
+        migrationIndexingWorker,
     ) {
         // will be toggled when we receive a response for our 'migrationWanted' request
         this._broadcastResponseFlag = false;
@@ -28,13 +28,13 @@ class MigrationWorkerService {
         // handles cross browser tab communication
         this._broadcastService = new StorageBroadcastService(
             this._onBroadcastReceived.bind(this),
-            'swag-migration-service'
+            'swag-migration-service',
         );
 
         this._migrationService = migrationService;
         this._migrationIndexingWorker = migrationIndexingWorker;
         this._workerStatusManager = new WorkerStatusManager(
-            this._migrationService
+            this._migrationService,
         );
         this._workRunner = null;
 
@@ -101,7 +101,7 @@ class MigrationWorkerService {
     checkForRunningMigration() {
         return new Promise((resolve) => {
             this._migrationService.getState({
-                swagMigrationAccessToken: MigrationWorkerService.migrationAccessToken
+                swagMigrationAccessToken: MigrationWorkerService.migrationAccessToken,
             }).then((state) => {
                 resolve(this.processStateResponse(state));
             }).catch((error) => {
@@ -111,7 +111,7 @@ class MigrationWorkerService {
                     isMigrationAccessTokenValid: false,
                     status: null,
                     accessToken: null,
-                    requestErrorCode: error !== undefined && error.response !== undefined ? error.response.code : ''
+                    requestErrorCode: error !== undefined && error.response !== undefined ? error.response.code : '',
                 };
 
                 returnValue.isMigrationAccessTokenValid = true;
@@ -136,7 +136,7 @@ class MigrationWorkerService {
         return new Promise((resolve) => {
             this._migrationService.createMigration(
                 this._migrationProcessState.connectionId,
-                dataSelectionIds
+                dataSelectionIds,
             ).then((state) => {
                 const returnState = this.processStateResponse(state);
 
@@ -152,7 +152,7 @@ class MigrationWorkerService {
                     isMigrationRunning: false,
                     isMigrationAccessTokenValid: true,
                     status: null,
-                    accessToken: null
+                    accessToken: null,
                 };
 
                 this._restoreState = {};
@@ -180,7 +180,7 @@ class MigrationWorkerService {
             isMigrationAccessTokenValid: false,
             status: null,
             accessToken: null,
-            runProgress: null
+            runProgress: null,
         };
 
         this._restoreState = state;
@@ -237,7 +237,7 @@ class MigrationWorkerService {
             this._migrationProcessState.statusIndex,
             indicies.groupIndex,
             indicies.entityIndex,
-            this._restoreState.finishedCount
+            this._restoreState.finishedCount,
         );
     }
 
@@ -287,7 +287,7 @@ class MigrationWorkerService {
                 ) {
                     return {
                         groupIndex,
-                        entityIndex
+                        entityIndex,
                     };
                 }
             }
@@ -295,7 +295,7 @@ class MigrationWorkerService {
 
         return {
             groupIndex: -1,
-            entityIndex: -1
+            entityIndex: -1,
         };
     }
 
@@ -332,7 +332,7 @@ class MigrationWorkerService {
         statusIndex = MIGRATION_STATUS.FETCH_DATA,
         groupStartIndex = 0,
         entityStartIndex = 0,
-        entityOffset = 0
+        entityOffset = 0,
     ) {
         return new Promise(async (resolve) => {
             // Wait for the 'migrationWanted' request and response to allow or deny the migration
@@ -348,14 +348,14 @@ class MigrationWorkerService {
 
             const params = {
                 swagMigrationAccessToken: MigrationWorkerService.migrationAccessToken,
-                runUuid: this._migrationProcessState.runId
+                runUuid: this._migrationProcessState.runId,
             };
 
             this._workRunner = new WorkerRequest(
                 params,
                 this._workerStatusManager,
                 this._migrationService,
-                this._onInterrupt.bind(this)
+                this._onInterrupt.bind(this),
             );
 
             // fetch
@@ -364,7 +364,7 @@ class MigrationWorkerService {
                     MIGRATION_STATUS.FETCH_DATA,
                     groupStartIndex,
                     entityStartIndex,
-                    entityOffset
+                    entityOffset,
                 );
 
                 groupStartIndex = 0;
@@ -378,7 +378,7 @@ class MigrationWorkerService {
                     MIGRATION_STATUS.WRITE_DATA,
                     groupStartIndex,
                     entityStartIndex,
-                    entityOffset
+                    entityOffset,
                 );
 
                 groupStartIndex = 0;
@@ -392,7 +392,7 @@ class MigrationWorkerService {
                     MIGRATION_STATUS.PROCESS_MEDIA_FILES,
                     groupStartIndex,
                     entityStartIndex,
-                    entityOffset
+                    entityOffset,
                 );
 
                 groupStartIndex = 0;
@@ -431,7 +431,7 @@ class MigrationWorkerService {
                 status,
                 groupStartIndex,
                 entityStartIndex,
-                entityOffset
+                entityOffset,
             );
 
             resolve();
@@ -448,7 +448,7 @@ class MigrationWorkerService {
     isMigrationRunningInOtherTab() {
         return new Promise(async (resolve) => {
             this._broadcastService.sendMessage({
-                migrationMessage: 'migrationWanted'
+                migrationMessage: 'migrationWanted',
             });
 
             const oldFlag = this._broadcastResponseFlag;
@@ -474,7 +474,7 @@ class MigrationWorkerService {
         if (data.migrationMessage === 'migrationWanted') {
             if (this._migrationProcessState.isMigrating) {
                 this._broadcastService.sendMessage({
-                    migrationMessage: 'migrationDenied'
+                    migrationMessage: 'migrationDenied',
                 });
             }
         }
@@ -496,7 +496,7 @@ class MigrationWorkerService {
 
         return this._workerStatusManager.changeStatus(
             this._migrationProcessState.runId,
-            MIGRATION_STATUS.FINISHED
+            MIGRATION_STATUS.FINISHED,
         ).then(() => {
             this._showFinishNotification(this._migrationProcessState.runId);
             this._resetProgress();
@@ -517,9 +517,9 @@ class MigrationWorkerService {
             actions: [
                 {
                     label: this.applicationRoot.$t('swag-migration.index.loadingScreenCard.result.notification.actionLabel'),
-                    route: { name: 'swag.migration.index.history.detail', params: { id: runId } }
-                }
-            ]
+                    route: { name: 'swag.migration.index.history.detail', params: { id: runId } },
+                },
+            ],
         });
     }
 
@@ -534,7 +534,7 @@ class MigrationWorkerService {
             message: this.applicationRoot.$t('swag-migration.index.loadingScreenCard.result.indexingNotification.running.message'),
             variant: 'info',
             isLoading: true,
-            growl: false
+            growl: false,
         }).then((id) => {
             notificationId = id;
             return this._migrationIndexingWorker.start();
@@ -547,7 +547,7 @@ class MigrationWorkerService {
                 variant: 'info',
                 isLoading: false,
                 visited: false,
-                growl: true
+                growl: true,
             });
         });
     }

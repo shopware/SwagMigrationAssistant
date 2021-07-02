@@ -7,7 +7,7 @@ const SSL_REQUIRED_ERROR_CODE = 'SWAG_MIGRATION__SSL_REQUIRED';
 
 const CONNECTION_NAME_ERRORS = Object.freeze({
     NAME_TO_SHORT: 'SWAG_MIGRATION_CONNECTION_NAME_TO_SHORT',
-    NAME_ALREADY_EXISTS: 'SWAG_MIGRATION_CONNECTION_NAME_ALREADY_EXISTS'
+    NAME_ALREADY_EXISTS: 'SWAG_MIGRATION_CONNECTION_NAME_ALREADY_EXISTS',
 });
 
 Component.register('swag-migration-wizard', {
@@ -16,11 +16,11 @@ Component.register('swag-migration-wizard', {
     inject: {
         /** @var {MigrationApiService} migrationService */
         migrationService: 'migrationService',
-        repositoryFactory: 'repositoryFactory'
+        repositoryFactory: 'repositoryFactory',
     },
 
     mixins: [
-        Mixin.getByName('swag-wizard')
+        Mixin.getByName('swag-wizard'),
     ],
 
     data() {
@@ -38,13 +38,13 @@ Component.register('swag-migration-wizard', {
             childRouteReady: false, // child routes with forms will emit and change this value depending on their validation.
             errorMessageSnippet: '',
             connectionNameErrorCode: '',
-            currentErrorCode: ''
+            currentErrorCode: '',
         };
     },
 
     metaInfo() {
         return {
-            title: this.$createTitle()
+            title: this.$createTitle(),
         };
     },
 
@@ -60,7 +60,7 @@ Component.register('swag-migration-wizard', {
         modalSize() {
             if ([
                 this.routes.credentialsSuccess,
-                this.routes.credentialsError
+                this.routes.credentialsError,
             ].includes(this.currentRoute)) {
                 return '460px';
             }
@@ -132,7 +132,7 @@ Component.register('swag-migration-wizard', {
             if ([
                 this.routes.credentials,
                 this.routes.connectionCreate,
-                this.routes.connectionSelect
+                this.routes.connectionSelect,
             ].includes(this.currentRoute)) {
                 return !this.childRouteReady || this.isLoading;
             }
@@ -159,7 +159,7 @@ Component.register('swag-migration-wizard', {
             }
 
             return `swag-migration-profile-${this.connection.profileName}-${this.connection.gatewayName}-credential-form`;
-        }
+        },
     },
 
     created() {
@@ -194,43 +194,43 @@ Component.register('swag-migration-wizard', {
                 introduction: {
                     name: 'swag.migration.wizard.introduction',
                     index: 0,
-                    titleSnippet: 'swag-migration.wizard.pages.introduction.title'
+                    titleSnippet: 'swag-migration.wizard.pages.introduction.title',
                 },
                 profileInstallation: {
                     name: 'swag.migration.wizard.profileInstallation',
                     index: 0.1,
-                    titleSnippet: 'swag-migration.wizard.pages.profileInstallation.title'
+                    titleSnippet: 'swag-migration.wizard.pages.profileInstallation.title',
                 },
                 connectionCreate: {
                     name: 'swag.migration.wizard.connectionCreate',
                     index: 0.2, // not available through nextRoute (child from profile)
-                    titleSnippet: 'swag-migration.wizard.pages.connectionCreate.title'
+                    titleSnippet: 'swag-migration.wizard.pages.connectionCreate.title',
                 },
                 connectionSelect: {
                     name: 'swag.migration.wizard.connectionSelect',
                     index: 0.3, // not available through nextRoute (child from profile)
-                    titleSnippet: 'swag-migration.wizard.pages.connectionSelect.title'
+                    titleSnippet: 'swag-migration.wizard.pages.connectionSelect.title',
                 },
                 profileInformation: {
                     name: 'swag.migration.wizard.profileInformation',
                     index: 1,
-                    titleSnippet: 'swag-migration.wizard.pages.profileInformation.title'
+                    titleSnippet: 'swag-migration.wizard.pages.profileInformation.title',
                 },
                 credentials: {
                     name: 'swag.migration.wizard.credentials',
                     index: 2,
-                    titleSnippet: 'swag-migration.wizard.pages.credentials.title'
+                    titleSnippet: 'swag-migration.wizard.pages.credentials.title',
                 },
                 credentialsSuccess: {
                     name: 'swag.migration.wizard.credentialsSuccess',
                     index: 2.1, // not available through nextRoute (child from credentials)
-                    titleSnippet: 'swag-migration.wizard.pages.credentials.statusTitle'
+                    titleSnippet: 'swag-migration.wizard.pages.credentials.statusTitle',
                 },
                 credentialsError: {
                     name: 'swag.migration.wizard.credentialsError',
                     index: 2.1, // not available through nextRoute (child from credentials)
-                    titleSnippet: 'swag-migration.wizard.pages.credentials.statusTitle'
-                }
+                    titleSnippet: 'swag-migration.wizard.pages.credentials.statusTitle',
+                },
             };
         },
 
@@ -250,7 +250,7 @@ Component.register('swag-migration-wizard', {
             this.trimCredentials();
             return this.migrationService.updateConnectionCredentials(
                 this.connection.id,
-                this.connection.credentialFields
+                this.connection.credentialFields,
             ).then((response) => {
                 if (response.errors && response.errors.length > 0) {
                     this.isLoading = false;
@@ -340,14 +340,14 @@ Component.register('swag-migration-wizard', {
                 // navigate to module
                 this.$router.push({
                     name: 'swag.migration.index',
-                    params: { connectionId: this.connection.id }
+                    params: { connectionId: this.connection.id },
                 });
 
                 return;
             }
 
             this.$router.push({
-                name: 'swag.migration.emptyScreen'
+                name: 'swag.migration.emptyScreen',
             });
         },
 
@@ -355,7 +355,7 @@ Component.register('swag-migration-wizard', {
             this.checkForDisabledRoute();
             if ([
                 this.routes.credentialsSuccess,
-                this.routes.credentialsError
+                this.routes.credentialsError,
             ].includes(this.currentRoute)) {
                 this.$nextTick(() => {
                     this.$refs.primaryButton.$el.focus();
@@ -513,7 +513,7 @@ Component.register('swag-migration-wizard', {
                 this.routes.profileInformation,
                 this.routes.credentials,
                 this.routes.credentialsSuccess,
-                this.routes.credentialsError
+                this.routes.credentialsError,
             ].includes(this.currentRoute)) {
                 this.navigateToRoute(this.routes.profileInstallation);
             }
@@ -612,6 +612,6 @@ Component.register('swag-migration-wizard', {
 
         onConnectionSelected(value) {
             this.connection = value;
-        }
-    }
+        },
+    },
 });

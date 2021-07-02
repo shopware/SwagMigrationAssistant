@@ -8,19 +8,19 @@ Component.register('swag-migration-wizard-page-profile-information', {
     props: {
         profileInformationComponent: {
             type: String,
-            default: ''
-        }
+            default: '',
+        },
     },
 
     metaInfo() {
         return {
-            title: this.$createTitle()
+            title: this.$createTitle(),
         };
     },
 
     computed: {
         componentIsLoaded() {
             return Component.getComponentRegistry().has(this.profileInformationComponent);
-        }
-    }
+        },
+    },
 });

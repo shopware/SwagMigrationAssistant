@@ -10,7 +10,7 @@ Component.register('swag-migration-history-detail', {
     inject: {
         /** @var {MigrationApiService} migrationService */
         migrationService: 'migrationService',
-        repositoryFactory: 'repositoryFactory'
+        repositoryFactory: 'repositoryFactory',
     },
 
     data() {
@@ -22,16 +22,16 @@ Component.register('swag-migration-history-detail', {
             migrationDateOptions: {
                 hour: '2-digit',
                 minute: '2-digit',
-                second: '2-digit'
+                second: '2-digit',
             },
             currentTab: 'data',
-            context: Shopware.Context.api
+            context: Shopware.Context.api,
         };
     },
 
     metaInfo() {
         return {
-            title: this.$createTitle()
+            title: this.$createTitle(),
         };
     },
 
@@ -100,7 +100,7 @@ Component.register('swag-migration-history-detail', {
         runStatusClasses() {
             return this.migrationRun.status === null ? '' :
                 `swag-migration-history-detail__run-status-value--${this.migrationRun.status}`;
-        }
+        },
     },
 
     created() {
@@ -147,6 +147,6 @@ Component.register('swag-migration-history-detail', {
 
         newActiveTabItem(item) {
             this.currentTab = item.name;
-        }
-    }
+        },
+    },
 });

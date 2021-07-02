@@ -8,7 +8,7 @@ Component.override('sw-dashboard-index', {
 
     inject: [
         'repositoryFactory',
-        'acl'
+        'acl',
     ],
 
     data() {
@@ -16,14 +16,14 @@ Component.override('sw-dashboard-index', {
             context: Shopware.Context.api,
             runExists: false,
             loading: true,
-            run: {}
+            run: {},
         };
     },
 
     computed: {
         migrationRunRepository() {
             return this.repositoryFactory.create('swag_migration_run');
-        }
+        },
     },
 
     created() {
@@ -47,6 +47,6 @@ Component.override('sw-dashboard-index', {
 
                 this.loading = false;
             });
-        }
-    }
+        },
+    },
 });

@@ -27,14 +27,14 @@ Module.register('swag-migration', {
             path: 'empty',
             meta: {
                 parentPath: 'sw.settings.index',
-                privilege: 'admin'
-            }
+                privilege: 'admin',
+            },
         },
         index: {
             component: 'swag-migration-index',
             path: 'index',
             meta: {
-                parentPath: 'sw.settings.index'
+                parentPath: 'sw.settings.index',
             },
             redirect: { name: 'swag.migration.index.main' },
             children: {
@@ -44,8 +44,8 @@ Module.register('swag-migration', {
                     meta: {
                         parentPath: 'sw.settings.index',
                         resetMigration: false,
-                        privilege: 'admin'
-                    }
+                        privilege: 'admin',
+                    },
                 },
                 resetMigration: {
                     path: 'reset-migration',
@@ -53,8 +53,8 @@ Module.register('swag-migration', {
                     meta: {
                         parentPath: 'sw.settings.index',
                         resetMigration: true,
-                        privilege: 'admin'
-                    }
+                        privilege: 'admin',
+                    },
                 },
                 history: {
                     path: 'history',
@@ -65,32 +65,32 @@ Module.register('swag-migration', {
                             component: 'swag-migration-history-detail',
                             meta: {
                                 parentPath: 'sw.settings.index',
-                                privilege: 'admin'
-                            }
-                        }
+                                privilege: 'admin',
+                            },
+                        },
                     },
                     meta: {
                         parentPath: 'sw.settings.index',
-                        privilege: 'admin'
-                    }
+                        privilege: 'admin',
+                    },
                 },
                 dataSelector: {
                     path: 'dataSelector',
                     component: 'swag-migration-data-selector',
                     meta: {
                         parentPath: 'sw.settings.index',
-                        privilege: 'admin'
-                    }
-                }
-            }
+                        privilege: 'admin',
+                    },
+                },
+            },
         },
         processScreen: {
             path: 'processScreen',
             component: 'swag-migration-process-screen',
             meta: {
                 parentPath: 'sw.settings.index',
-                privilege: 'admin'
-            }
+                privilege: 'admin',
+            },
         },
         wizard: {
             component: 'swag-migration-wizard',
@@ -101,69 +101,69 @@ Module.register('swag-migration', {
                     path: 'introduction',
                     component: 'swag-migration-wizard-page-introduction',
                     meta: {
-                        privilege: 'admin'
-                    }
+                        privilege: 'admin',
+                    },
                 },
                 profileInstallation: {
                     path: 'profile/installation',
                     component: 'swag-migration-wizard-page-profile-installation',
                     meta: {
-                        privilege: 'admin'
-                    }
+                        privilege: 'admin',
+                    },
                 },
                 connectionCreate: {
                     path: 'connection/create',
                     component: 'swag-migration-wizard-page-connection-create',
                     meta: {
-                        privilege: 'admin'
-                    }
+                        privilege: 'admin',
+                    },
                 },
                 connectionSelect: {
                     path: 'connection/select',
                     component: 'swag-migration-wizard-page-connection-select',
                     meta: {
-                        privilege: 'admin'
-                    }
+                        privilege: 'admin',
+                    },
                 },
                 profileInformation: {
                     path: 'profile/information',
                     component: 'swag-migration-wizard-page-profile-information',
                     meta: {
-                        privilege: 'admin'
-                    }
+                        privilege: 'admin',
+                    },
                 },
                 credentials: {
                     path: 'credentials',
                     component: 'swag-migration-wizard-page-credentials',
                     meta: {
-                        privilege: 'admin'
-                    }
+                        privilege: 'admin',
+                    },
                 },
                 credentialsSuccess: {
                     path: 'credentials/success',
                     component: 'swag-migration-wizard-page-credentials-success',
                     meta: {
-                        privilege: 'admin'
-                    }
+                        privilege: 'admin',
+                    },
                 },
                 credentialsError: {
                     path: 'credentials/error',
                     component: 'swag-migration-wizard-page-credentials-error',
                     meta: {
-                        privilege: 'admin'
-                    }
-                }
+                        privilege: 'admin',
+                    },
+                },
             },
             meta: {
-                privilege: 'admin'
-            }
-        }
+                privilege: 'admin',
+            },
+        },
     },
 
     settingsItem: {
         group: 'plugins',
         to: 'swag.migration.index',
         iconComponent: 'swag-migration-settings-icon',
-        privilege: 'admin'
-    }
+        privilege: 'admin',
+    },
 });

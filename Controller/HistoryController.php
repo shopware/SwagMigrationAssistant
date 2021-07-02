@@ -43,9 +43,9 @@ class HistoryController extends AbstractController
      */
     public function getGroupedLogsOfRun(Request $request, Context $context): JsonResponse
     {
-        $runUuid = $request->query->get('runUuid');
+        $runUuid = $request->query->getAlnum('runUuid');
 
-        if ($runUuid === null) {
+        if ($runUuid === '') {
             throw new MissingRequestParameterException('runUuid');
         }
 
@@ -71,9 +71,9 @@ class HistoryController extends AbstractController
      */
     public function downloadLogsOfRun(Request $request, Context $context): StreamedResponse
     {
-        $runUuid = $request->request->get('runUuid');
+        $runUuid = $request->request->getAlnum('runUuid');
 
-        if ($runUuid === null) {
+        if ($runUuid === '') {
             throw new MissingRequestParameterException('runUuid');
         }
 
@@ -100,9 +100,9 @@ class HistoryController extends AbstractController
      */
     public function clearDataOfRun(Request $request, Context $context): Response
     {
-        $runUuid = $request->request->get('runUuid');
+        $runUuid = $request->request->getAlnum('runUuid');
 
-        if ($runUuid === null) {
+        if ($runUuid === '') {
             throw new MissingRequestParameterException('runUuid');
         }
 

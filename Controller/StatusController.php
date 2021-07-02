@@ -107,14 +107,14 @@ class StatusController extends AbstractController
      */
     public function getProfileInformation(Request $request): ?Response
     {
-        $profileName = $request->query->get('profileName');
-        $gatewayName = $request->query->get('gatewayName');
+        $profileName = (string) $request->query->get('profileName');
+        $gatewayName = (string) $request->query->get('gatewayName');
 
-        if ($profileName === null) {
+        if ($profileName === '') {
             throw new MigrationContextPropertyMissingException('profileName');
         }
 
-        if ($gatewayName === null) {
+        if ($gatewayName === '') {
             throw new MigrationContextPropertyMissingException('gatewayName');
         }
 
@@ -193,9 +193,9 @@ class StatusController extends AbstractController
      */
     public function getGateways(Request $request): Response
     {
-        $profileName = $request->query->get('profileName');
+        $profileName = (string) $request->query->get('profileName');
 
-        if ($profileName === null) {
+        if ($profileName === '') {
             throw new MigrationContextPropertyMissingException('profileName');
         }
 
@@ -219,14 +219,16 @@ class StatusController extends AbstractController
      */
     public function updateConnectionCredentials(Request $request, Context $context): Response
     {
-        $connectionId = $request->request->get('connectionId');
+        $connectionId = $request->request->getAlnum('connectionId');
+
+        /** @var array|mixed $credentialFields */
         $credentialFields = $request->request->get('credentialFields');
 
-        if ($connectionId === null) {
+        if ($connectionId === '') {
             throw new MigrationContextPropertyMissingException('connectionId');
         }
 
-        if ($credentialFields === null) {
+        if (!\is_array($credentialFields)) {
             throw new MigrationContextPropertyMissingException('credentialFields');
         }
 
@@ -248,9 +250,9 @@ class StatusController extends AbstractController
      */
     public function getDataSelection(Request $request, Context $context): JsonResponse
     {
-        $connectionId = $request->query->get('connectionId');
+        $connectionId = $request->query->getAlnum('connectionId');
 
-        if ($connectionId === null) {
+        if ($connectionId === '') {
             throw new MigrationContextPropertyMissingException('connectionId');
         }
 
@@ -274,9 +276,9 @@ class StatusController extends AbstractController
      */
     public function checkConnection(Request $request, Context $context): JsonResponse
     {
-        $connectionId = $request->request->get('connectionId');
+        $connectionId = $request->request->getAlnum('connectionId');
 
-        if ($connectionId === null) {
+        if ($connectionId === '') {
             throw new MigrationContextPropertyMissingException('connectionId');
         }
 
@@ -310,10 +312,12 @@ class StatusController extends AbstractController
      */
     public function createMigration(Request $request, Context $context): JsonResponse
     {
-        $connectionId = $request->request->get('connectionId');
+        $connectionId = $request->request->getAlnum('connectionId');
+
+        /** @var array|mixed $dataSelectionIds */
         $dataSelectionIds = $request->request->get('dataSelectionIds');
 
-        if ($connectionId === null) {
+        if ($connectionId === '') {
             throw new MigrationContextPropertyMissingException('connectionId');
         }
 
@@ -324,7 +328,7 @@ class StatusController extends AbstractController
             throw new MigrationContextPropertyMissingException('connectionId');
         }
 
-        if (empty($dataSelectionIds)) {
+        if (!\is_array($dataSelectionIds) || empty($dataSelectionIds)) {
             throw new MigrationContextPropertyMissingException('dataSelectionIds');
         }
 
@@ -344,9 +348,9 @@ class StatusController extends AbstractController
      */
     public function takeoverMigration(Request $request, Context $context): JsonResponse
     {
-        $runUuid = $request->request->get('runUuid');
+        $runUuid = $request->request->getAlnum('runUuid');
 
-        if ($runUuid === null) {
+        if ($runUuid === '') {
             throw new MigrationContextPropertyMissingException('runUuid');
         }
 
@@ -363,9 +367,9 @@ class StatusController extends AbstractController
      */
     public function abortMigration(Request $request, Context $context): Response
     {
-        $runUuid = $request->request->get('runUuid');
+        $runUuid = $request->request->getAlnum('runUuid');
 
-        if ($runUuid === null) {
+        if ($runUuid === '') {
             throw new MigrationContextPropertyMissingException('runUuid');
         }
 
@@ -380,9 +384,9 @@ class StatusController extends AbstractController
      */
     public function finishMigration(Request $request, Context $context): Response
     {
-        $runUuid = $request->request->get('runUuid');
+        $runUuid = $request->request->getAlnum('runUuid');
 
-        if ($runUuid === null) {
+        if ($runUuid === '') {
             throw new MigrationContextPropertyMissingException('runUuid');
         }
 
@@ -397,9 +401,9 @@ class StatusController extends AbstractController
      */
     public function assignThemes(Request $request, Context $context): Response
     {
-        $runUuid = $request->request->get('runUuid');
+        $runUuid = $request->request->getAlnum('runUuid');
 
-        if ($runUuid === null) {
+        if ($runUuid === '') {
             throw new MigrationContextPropertyMissingException('runUuid');
         }
 
@@ -414,9 +418,9 @@ class StatusController extends AbstractController
      */
     public function resetChecksums(Request $request, Context $context): Response
     {
-        $connectionId = $request->request->get('connectionId');
+        $connectionId = $request->request->getAlnum('connectionId');
 
-        if ($connectionId === null) {
+        if ($connectionId === '') {
             throw new MigrationContextPropertyMissingException('connectionId');
         }
 

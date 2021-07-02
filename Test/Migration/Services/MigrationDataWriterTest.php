@@ -314,7 +314,7 @@ class MigrationDataWriterTest extends TestCase
             $this->mediaRepo,
             $this->salesChannelRepo,
             $this->themeRepo,
-            new EntityIndexerRegistry([], $this->getContainer()->get('messenger.bus.shopware')),
+            new EntityIndexerRegistry([], $this->getContainer()->get('messenger.bus.shopware'), $this->getContainer()->get('event_dispatcher')),
             new DummyThemeService($this->themeSalesChannelRepo),
             $this->mappingService,
             $this->getContainer()->get('cache.object'),

@@ -10,8 +10,8 @@ Component.register('swag-migration-profile-shopware6-api-credential-form', {
             type: Object,
             default() {
                 return {};
-            }
-        }
+            },
+        },
     },
 
     data() {
@@ -19,8 +19,8 @@ Component.register('swag-migration-profile-shopware6-api-credential-form', {
             inputCredentials: {
                 endpoint: '',
                 apiUser: '',
-                apiPassword: ''
-            }
+                apiPassword: '',
+            },
         };
     },
 
@@ -31,7 +31,7 @@ Component.register('swag-migration-profile-shopware6-api-credential-form', {
             }
 
             return this.inputCredentials.apiPassword.length;
-        }
+        },
     },
 
     watch: {
@@ -45,9 +45,9 @@ Component.register('swag-migration-profile-shopware6-api-credential-form', {
 
                 this.inputCredentials = newCredentials;
                 this.emitOnChildRouteReadyChanged(
-                    this.areCredentialsValid(this.inputCredentials)
+                    this.areCredentialsValid(this.inputCredentials),
                 );
-            }
+            },
         },
 
         inputCredentials: {
@@ -55,8 +55,8 @@ Component.register('swag-migration-profile-shopware6-api-credential-form', {
             handler(newInputCredentials) {
                 delete newInputCredentials.bearer_token;
                 this.emitCredentials(newInputCredentials);
-            }
-        }
+            },
+        },
     },
 
     methods: {
@@ -85,12 +85,12 @@ Component.register('swag-migration-profile-shopware6-api-credential-form', {
         emitCredentials(newInputCredentials) {
             this.$emit('onCredentialsChanged', newInputCredentials);
             this.emitOnChildRouteReadyChanged(
-                this.areCredentialsValid(newInputCredentials)
+                this.areCredentialsValid(newInputCredentials),
             );
         },
 
         onKeyPressEnter() {
             this.$emit('onTriggerPrimaryClick');
-        }
-    }
+        },
+    },
 });

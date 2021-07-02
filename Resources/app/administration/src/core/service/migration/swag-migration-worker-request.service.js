@@ -14,7 +14,7 @@ const { Application, State } = Shopware;
 export const WORKER_API_OPERATION = Object.freeze({
     1: 'fetchData',
     2: 'writeData',
-    3: 'processMedia'
+    3: 'processMedia',
 });
 
 export class WorkerRequest {
@@ -28,7 +28,7 @@ export class WorkerRequest {
         requestParams,
         workerStatusManager,
         migrationService,
-        onInterruptCB
+        onInterruptCB,
     ) {
         this._MAX_REQUEST_TIME = 10000; // in ms
         this._DEFAULT_CHUNK_SIZE = 25; // in data sets
@@ -128,7 +128,7 @@ export class WorkerRequest {
                             entityCount,
                             entityGroups[groupIndex],
                             groupProgress,
-                            entityOffset
+                            entityOffset,
                         );
 
                         if (this._interrupt !== '') {
@@ -178,7 +178,7 @@ export class WorkerRequest {
             State.commit('swagMigration/process/setEntityProgress', {
                 groupId: group.id,
                 groupCurrentCount: groupProgress + newOffset,
-                groupTotal: group.total
+                groupTotal: group.total,
             });
 
             currentOffset += this._successfulChunk;

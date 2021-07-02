@@ -4,8 +4,8 @@ variables:
     MYSQL_ROOT_PASSWORD: app
     WEB_DOCUMENT_ROOT: $CI_PROJECT_DIR/development/public
     DEV_IMAGE: shopware/development:7.4-composer-2
-    DEVELOPMENT_BRANCH: "6.4.0.0"
-    PLATFORM_BRANCH: "6.4.0.0"
+    DEVELOPMENT_BRANCH: "trunk"
+    PLATFORM_BRANCH: "trunk"
 
 stages:
     - Static validation
@@ -48,8 +48,7 @@ ToDos resolved:
 PHPUnit (MariaDB):
     stage: Testing
     services:
-        # required until we fix NEXT-15275
-        -   name: mariadb:10.3.28
+        -   name: mariadb:10.3
             alias: mysql
     script:
         - apt-get update && apt-get --assume-yes install default-mysql-client
@@ -80,5 +79,12 @@ PHPUnit (MariaDB):
             junit: development/build/artifacts/phpunit.junit.xml
     parallel:
         matrix:
-            -   DEV_IMAGE: shopware/development:8.0-composer-2
-            -   DEV_IMAGE: shopware/development:7.4-composer-2
+            -   DEV_IMAGE:
+                    - shopware/development:7.4-composer-2
+                    - shopware/development:8.0-composer-2
+            -   DEVELOPMENT_BRANCH: 6.4.0.0
+                PLATFORM_BRANCH: 6.4.0.0
+            -   DEVELOPMENT_BRANCH: trunk
+                PLATFORM_BRANCH: 6.4.2.0
+            -   DEVELOPMENT_BRANCH: trunk
+                PLATFORM_BRANCH: trunk

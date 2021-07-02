@@ -2,7 +2,7 @@ let notificationId = null;
 
 Shopware.WorkerNotification.register('newsletterRecipientTask', {
     name: 'SwagMigrationAssistant\\Migration\\MessageQueue\\Message\\ProcessMediaMessage',
-    fn: onMediaProcessingMessageFound
+    fn: onMediaProcessingMessageFound,
 });
 
 function onMediaProcessingMessageFound(next, { $root, entry, notification }) {
@@ -13,14 +13,14 @@ function onMediaProcessingMessageFound(next, { $root, entry, notification }) {
         title: $root.$t('swag-migration.worker-listener.mediaProcessing.title'),
         message: $root.$tc(
             'swag-migration.worker-listener.mediaProcessing.message',
-            mediaFileCount
+            mediaFileCount,
         ),
         variant: 'info',
         metadata: {
-            size: mediaFileCount
+            size: mediaFileCount,
         },
         growl: false,
-        isLoading: true
+        isLoading: true,
     };
 
     // Create new notification
@@ -37,10 +37,10 @@ function onMediaProcessingMessageFound(next, { $root, entry, notification }) {
 
         if (mediaFileCount === 0) {
             config.title = $root.$t(
-                'swag-migration.worker-listener.mediaProcessing.titleSuccess'
+                'swag-migration.worker-listener.mediaProcessing.titleSuccess',
             );
             config.message = $root.$t(
-                'swag-migration.worker-listener.mediaProcessing.messageSuccess'
+                'swag-migration.worker-listener.mediaProcessing.messageSuccess',
             );
             config.isLoading = false;
         }

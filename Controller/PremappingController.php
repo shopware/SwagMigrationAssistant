@@ -59,9 +59,9 @@ class PremappingController extends AbstractController
      */
     public function generatePremapping(Request $request, Context $context): JsonResponse
     {
-        $runUuid = $request->request->get('runUuid');
+        $runUuid = $request->request->getAlnum('runUuid');
 
-        if ($runUuid === null) {
+        if ($runUuid === '') {
             throw new MigrationContextPropertyMissingException('runUuid');
         }
 
@@ -87,14 +87,16 @@ class PremappingController extends AbstractController
      */
     public function writePremapping(Request $request, Context $context): JsonResponse
     {
-        $runUuid = $request->request->get('runUuid');
+        $runUuid = $request->request->getAlnum('runUuid');
+
+        /** @var array|mixed $premapping */
         $premapping = $request->request->get('premapping');
 
-        if ($runUuid === null) {
+        if ($runUuid === '') {
             throw new MigrationContextPropertyMissingException('runUuid');
         }
 
-        if ($premapping === null) {
+        if (!\is_array($premapping)) {
             throw new MigrationContextPropertyMissingException('premapping');
         }
 

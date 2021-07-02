@@ -4,7 +4,7 @@ class MigrationIndexingApiService extends ApiService {
     constructor(httpClient, loginService, apiEndpoint = 'migration') {
         super(httpClient, loginService, apiEndpoint);
         this.basicConfig = {
-            timeout: 30000
+            timeout: 30000,
         };
     }
 
@@ -24,7 +24,7 @@ class MigrationIndexingApiService extends ApiService {
 
         return this.httpClient.post(`_action/${this.getApiBasePath()}/indexing`, params, {
             ...this.basicConfig,
-            headers
+            headers,
         }).then((response) => {
             return ApiService.handleResponse(response);
         });

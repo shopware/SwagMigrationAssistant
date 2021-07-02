@@ -10,8 +10,8 @@ Component.register('swag-migration-profile-shopware-local-credential-form', {
             type: Object,
             default() {
                 return {};
-            }
-        }
+            },
+        },
     },
 
     data() {
@@ -22,8 +22,8 @@ Component.register('swag-migration-profile-shopware-local-credential-form', {
                 dbUser: '',
                 dbPassword: '',
                 dbName: '',
-                installationRoot: ''
-            }
+                installationRoot: '',
+            },
         };
     },
 
@@ -38,17 +38,17 @@ Component.register('swag-migration-profile-shopware-local-credential-form', {
 
                 this.inputCredentials = newCredentials;
                 this.emitOnChildRouteReadyChanged(
-                    this.areCredentialsValid(this.inputCredentials)
+                    this.areCredentialsValid(this.inputCredentials),
                 );
-            }
+            },
         },
 
         inputCredentials: {
             deep: true,
             handler(newInputCredentials) {
                 this.emitCredentials(newInputCredentials);
-            }
-        }
+            },
+        },
     },
 
     methods: {
@@ -69,12 +69,12 @@ Component.register('swag-migration-profile-shopware-local-credential-form', {
         emitCredentials(newInputCredentials) {
             this.$emit('onCredentialsChanged', newInputCredentials);
             this.emitOnChildRouteReadyChanged(
-                this.areCredentialsValid(newInputCredentials)
+                this.areCredentialsValid(newInputCredentials),
             );
         },
 
         onKeyPressEnter() {
             this.$emit('onTriggerPrimaryClick');
-        }
-    }
+        },
+    },
 });

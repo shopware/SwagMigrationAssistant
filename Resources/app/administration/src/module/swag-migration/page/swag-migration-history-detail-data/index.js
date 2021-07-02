@@ -7,14 +7,14 @@ Component.register('swag-migration-history-detail-data', {
     template,
 
     mixins: [
-        Mixin.getByName('listing')
+        Mixin.getByName('listing'),
     ],
 
     props: {
         migrationRun: {
             type: Object,
-            required: true
-        }
+            required: true,
+        },
     },
 
     data() {
@@ -25,13 +25,13 @@ Component.register('swag-migration-history-detail-data', {
             sortBy: 'createdAt',
             sortDirection: 'DESC',
             disableRouteParams: true,
-            limit: 10
+            limit: 10,
         };
     },
 
     metaInfo() {
         return {
-            title: this.$createTitle()
+            title: this.$createTitle(),
         };
     },
 
@@ -43,20 +43,20 @@ Component.register('swag-migration-history-detail-data', {
                     label: this.$tc('swag-migration.history.detailPage.dataName'),
                     primary: true,
                     allowResize: true,
-                    sortable: false
+                    sortable: false,
                 },
                 {
                     property: 'count',
                     label: this.$tc('swag-migration.history.detailPage.dataCount'),
                     allowResize: true,
-                    sortable: false
-                }
+                    sortable: false,
+                },
             ];
         },
 
         entityGroups() {
             return this.migrationRun.progress.filter((group) => (group.id !== 'processMediaFiles'));
-        }
+        },
     },
 
     methods: {
@@ -77,6 +77,6 @@ Component.register('swag-migration-history-detail-data', {
 
             this.isLoading = false;
             return this.items;
-        }
-    }
+        },
+    },
 });

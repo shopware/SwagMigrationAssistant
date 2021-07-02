@@ -14,20 +14,20 @@ Component.register('swag-migration-wizard-page-profile-installation', {
             pluginIsLoading: false,
             pluginIsSaveSuccessful: false,
             isInstalled: false,
-            pluginName: 'SwagMigrationMagento'
+            pluginName: 'SwagMigrationMagento',
         };
     },
 
     metaInfo() {
         return {
-            title: this.$createTitle()
+            title: this.$createTitle(),
         };
     },
 
     computed: {
         pluginRepository() {
             return this.repositoryFactory.create('plugin');
-        }
+        },
     },
 
     created() {
@@ -77,6 +77,6 @@ Component.register('swag-migration-wizard-page-profile-installation', {
                         window.location.reload();
                     });
                 });
-        }
-    }
+        },
+    },
 });

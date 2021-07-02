@@ -12,26 +12,26 @@ Component.register('swag-migration-premapping', {
         /** @var {MigrationApiService} migrationService */
         migrationService: 'migrationService',
         /** @var {MigrationWorkerService} migrationWorkerService */
-        migrationWorkerService: 'migrationWorkerService'
+        migrationWorkerService: 'migrationWorkerService',
     },
 
     data() {
         return {
             isLoading: false,
-            premappingInput: []
+            premappingInput: [],
         };
     },
 
     computed: {
         ...mapState('swagMigration/process', [
-            'runId'
+            'runId',
         ]),
 
         ...mapState('swagMigration/ui', [
             'unfilledPremapping',
             'filledPremapping',
             'isPremappingValid',
-            'premapping'
+            'premapping',
         ]),
 
         displayUnfilledPremapping() {
@@ -40,7 +40,7 @@ Component.register('swag-migration-premapping', {
 
         displayFilledPremapping() {
             return this.filledPremapping.length > 0;
-        }
+        },
     },
 
     watch: {
@@ -52,8 +52,8 @@ Component.register('swag-migration-premapping', {
                 }
 
                 this.fetchPremapping(newRunId);
-            }
-        }
+            },
+        },
     },
 
     created() {
@@ -71,7 +71,7 @@ Component.register('swag-migration-premapping', {
             if (this.premapping !== null && this.premapping.length > 0) {
                 this.$nextTick(() => {
                     this.notifyPremappingValidWatchers(
-                        this.validatePremapping(false)
+                        this.validatePremapping(false),
                     );
                     this.isLoading = false;
                 });
@@ -87,7 +87,7 @@ Component.register('swag-migration-premapping', {
                 } else {
                     State.commit('swagMigration/ui/setPremapping', premapping);
                     this.notifyPremappingValidWatchers(
-                        this.validatePremapping(false)
+                        this.validatePremapping(false),
                     );
 
                     this.isLoading = false;
@@ -130,6 +130,6 @@ Component.register('swag-migration-premapping', {
 
                 return currentValue;
             }, 0);
-        }
-    }
+        },
+    },
 });

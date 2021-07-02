@@ -18,7 +18,7 @@ export const MIGRATION_STATUS = Object.freeze({
     FETCH_DATA: 1,
     WRITE_DATA: 2,
     PROCESS_MEDIA_FILES: 3,
-    FINISHED: 4
+    FINISHED: 4,
 });
 
 const MIGRATION_DISPLAY_STATUS = {};
@@ -178,5 +178,5 @@ export class WorkerStatusManager {
 
 export default {
     WorkerStatusManager,
-    MIGRATION_STATUS
+    MIGRATION_STATUS,
 };

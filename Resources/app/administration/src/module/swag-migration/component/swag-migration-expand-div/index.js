@@ -10,25 +10,25 @@ Component.register('swag-migration-expand-div', {
         expandTitle: {
             type: String,
             default: '',
-            required: false
+            required: false,
         },
 
         collapseTitle: {
             type: String,
             default: '',
-            required: false
-        }
+            required: false,
+        },
     },
 
     data() {
         return {
-            isExpanded: false
+            isExpanded: false,
         };
     },
 
     methods: {
         onClick() {
             this.isExpanded = !this.isExpanded;
-        }
-    }
+        },
+    },
 });

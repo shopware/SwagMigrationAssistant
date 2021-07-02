@@ -15,12 +15,12 @@ Component.register('swag-migration-main-page', {
         /** @var {MigrationProcessStoreInitService} migrationProcessStoreInitService */
         migrationProcessStoreInitService: 'processStoreInitService',
         /** @var {MigrationUiStoreInitService} migrationUiStoreInitService */
-        migrationUiStoreInitService: 'uiStoreInitService'
+        migrationUiStoreInitService: 'uiStoreInitService',
     },
 
     metaInfo() {
         return {
-            title: this.$createTitle()
+            title: this.$createTitle(),
         };
     },
 
@@ -28,11 +28,11 @@ Component.register('swag-migration-main-page', {
         ...mapState('swagMigration/process', [
             'environmentInformation',
             'connectionId',
-            'isMigrating'
+            'isMigrating',
         ]),
 
         ...mapState('swagMigration/ui', [
-            'isLoading'
+            'isLoading',
         ]),
 
         displayWarnings() {
@@ -48,7 +48,7 @@ Component.register('swag-migration-main-page', {
                         this.environmentInformation.requestStatus.code === ''
                     )
                 );
-        }
+        },
     },
 
     created() {
@@ -111,6 +111,6 @@ Component.register('swag-migration-main-page', {
                 State.commit('swagMigration/ui/setIsLoading', true);
                 this.$router.push({ name: 'swag.migration.processScreen', params: { startMigration: true } });
             });
-        }
-    }
+        },
+    },
 });

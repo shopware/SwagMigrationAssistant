@@ -77,7 +77,9 @@ class OrderCountIndexer extends EntityIndexer
     }
 
     /**
-     * @param int $offset
+     * @param array|null $offset
+     *
+     * @deprecated tag:v6.5.0 The parameter $offset will be native typed
      */
     public function iterate($offset): ?EntityIndexingMessage
     {
@@ -87,5 +89,15 @@ class OrderCountIndexer extends EntityIndexer
     public function update(EntityWrittenContainerEvent $event): ?EntityIndexingMessage
     {
         return $this->inner->update($event);
+    }
+
+    public function getTotal(): int
+    {
+        return $this->inner->getTotal();
+    }
+
+    public function getDecorated(): EntityIndexer
+    {
+        return $this->inner;
     }
 }
