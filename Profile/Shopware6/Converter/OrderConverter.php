@@ -130,6 +130,10 @@ abstract class OrderConverter extends ShopwareConverter
 
         $this->updateLineItems($converted['lineItems']);
 
+        if (!isset($converted['price']['rawTotal']) && isset($converted['price']['totalPrice'])) {
+            $converted['price']['rawTotal'] = $converted['price']['totalPrice'];
+        }
+
         return new ConvertStruct($converted, null, $this->mainMapping['id'] ?? null);
     }
 
